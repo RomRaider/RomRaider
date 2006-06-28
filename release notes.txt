@@ -1,0 +1,133 @@
+Enginuity is a full featured Engine Control Unit editing application for tuning SSP2 Subarus, meant to be used in conjuction with datalogging and ECU flash and dump utilities. Enginuity will give you full control over timing, fuel, boost and many other parameters in your ECU, competing with very expensive and proprietary software. Enginuity will remove your need for piggyback systems designed to control these functions, and, in most cases, work as well as any stand alone engine management. Reflashing your stock ECU also has the added benefit of a manufacturer tested base map, giving you top notch performance and saving time tuning idle and low throttle applications.
+
+Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested and not intended for use by inexperienced users. In addition to being incomplete and untested, only experienced tuners with the required tools (ie, wideband oxygen sensor) should modify an ECU image. As with any engine management, changes could result in severe engine damage. Use at your own risk.
+
+Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
+
+0.2.6b Release Notes
+--------------------
+This release should make Enginuity a lot more convenient to use. The main new features are keyboard navigation and map copying and pasting. Tables are now navigable using the following key commands:
+
+Arrow keys: move cursor
++/-: Adjust values
+ctrl +/-: Adjust values (fine)
+ctrl up and down: Adjust values
+ctrl+c: copy selection
+ctrl+v: paste
+
+In addition, typing numbers when a cell is selected will automatically set focus to the "Set Value" field, and pressing enter will commit the change.
+
+Map copying is now supported. Pressing ctrl-c and ctrl-v will copy and paste a selection. To copy an entire table, select Edit->Copy Table on the table menu. Tables are copied to the clipboard in a tab-delimited string which can be pasted in Excel or other spreadsheet applications, or in a text editor. 
+
+
+Changes:
+--------
+0.2.6b (4/5/2006)
+-----------------
+- Shortcut keys
+- Improve display of tables too large for window (MDI)
+- Improve exception reporting
+- Improve saved window position on exit (panel size, maximized)
+- Remove "copy" from table menu -- its in the edit menu
+- Fix vertical overhead on table size for new graphical buttons
+- Fix rounding issues with set value
+- Fix ctrl-click on tables  
+- Resize cells to make best use of screen
+- Prevent simultaneous selection of axiis and table values 
+- Map copying
+- Graphical icons
+- Cascade windows (MDI)
+- Fix table frame JScrollPane (MDI)
+
+
+0.2.5b (3/28/2006)
+------------------
+- Import tables by single address
+- Refresh image button
+- Table properties
+- Add "obsolete" tag for images with more recent revisions
+- Fix application not closing files after reading
+- Add file extensions to open/save dialog (HEX, BIN)
+- Fix parser searching by XML ID instead of internal storage ID
+- Image properties
+- Show positive (red) and negative (blue) value changes on tables
+BUG FIXES:
+- Decrement (fine) increments
+- Files not closing after being read
+- Set value rounds goofy
+- 1D tables not colorizing properly
+- 2D tables not working properly
+- Set value field shows negative numbers
+
+
+0.2.4a (3/21/2006)
+------------------
+- "Base" attribute for extending/duplicating tables
+- "Omit" attribute not required to omit tables -- just set storageaddress to "0"
+- Fine and coarse adjustment of values
+- Direct value input
+- Support for ROMs with or without RAM sectors
+
+
+0.2.3a (2/27/2006)
+------------------
+- ECU definitions including each other (endless loop) is now handled
+- "Omit" attribute allows incomplete tables to be removed from inheriting definitions
+- Nested includes (includes more than 1 definition deep) tested and working properly
+
+
+0.2.2a (2/26/2006)
+------------------
+- Include support in XML definitions (exception handling not yet implemented!)
+
+
+0.2.1a (2/13/2006)
+------------------
+- Handles storage addresses that are out of range
+- Fixed conflicting parent/child table sizes (done) 
+- Replaced "<Table Name>" menu with "Table" -- makes it more obviously a menu
+- Fixed 3D table sizing problem
+- Fixed colorizing exception
+- Fixed backwards endians
+- Fixed storage address out of range exception
+- Improved close image method
+
+
+.20a (2/11/2006)
+----------------
+-Completely rewritten
+-XML ECU definitions
+-View multiple images and tables
+
+
+.14a (11/26/2005)
+------------------
+-Improved axis cell modification
+-Fixed absolute value calculations
+
+.13a
+-----
+-Revised text entry of values
+-Added EUDM WRX support
+-Improved multiple cell selection
+-Improved axis cell modification
+-Axis cell changes can be saved
+
+Supported ECU Versions/Version Added - Deprecated as of version .20a. ECU versions are now defined in ecu_defs.xml.
+----------------------
+2004/2005 USDM WRX:
+-A4TF300E .13a
+-A4TF400E .13a
+-A4TF800E .13a
+-A4TF500F .13a
+-A4TF510F .13a
+-A4TF800F .13a
+
+2002/2003 USDM WRX:
+-A4TC300L .13a
+-A4SGC00C .13a
+-A4SGD10C .13a
+-A4SG900C .13a
+
+2003 EUDM WRX:
+-A4TE001G .13a
