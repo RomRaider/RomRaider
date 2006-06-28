@@ -4,7 +4,7 @@ import Enginuity.SwingComponents.TableFrame;
 
 public class Table2D extends Table {
     
-    private Table1D axis;
+    private Table1D axis = new Table1D();
     
     public Table2D() {
         super();

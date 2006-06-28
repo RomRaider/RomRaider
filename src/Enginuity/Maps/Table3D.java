@@ -1,6 +1,6 @@
 package Enginuity.Maps;
 
-import Enginuity.Maps.XML.RomAttributeParser;
+import Enginuity.XML.RomAttributeParser;
 import Enginuity.SwingComponents.TableFrame;
 import Enginuity.SwingComponents.VTextIcon;
 import java.awt.BorderLayout;
@@ -13,12 +13,12 @@ import javax.swing.JPanel;
 
 public class Table3D extends Table {
     
-    private Table1D      xAxis;
-    private Table1D      yAxis;
+    private Table1D      xAxis = new Table1D();
+    private Table1D      yAxis = new Table1D();
     private DataCell[][] data = new DataCell[1][1];
-    private boolean      swapXY;
-    private boolean      flipX;
-    private boolean      flipY;
+    private boolean      swapXY = false;
+    private boolean      flipX = false;
+    private boolean      flipY = false;
     
     public Table3D() {
         super();
@@ -50,7 +50,7 @@ public class Table3D extends Table {
         this.swapXY = swapXY;
     }
 
-    public boolean isFlipX() {
+    public boolean getFlipX() {
         return flipX;
     }
 
@@ -58,7 +58,7 @@ public class Table3D extends Table {
         this.flipX = flipX;
     }
 
-    public boolean isFlipY() {
+    public boolean getFlipY() {
         return flipY;
     }
 

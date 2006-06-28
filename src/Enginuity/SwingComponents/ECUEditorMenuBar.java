@@ -1,12 +1,10 @@
 package Enginuity.SwingComponents;
 
 import Enginuity.*;
-import Enginuity.Exceptions.RomNotFoundException;
-import Enginuity.Maps.ECUDefinitionCollection;
+import Enginuity.XML.RomNotFoundException;
 import Enginuity.Maps.Rom;
-import Enginuity.Maps.XML.DOMRomUnmarshaller;
+import Enginuity.XML.DOMRomUnmarshaller;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -149,21 +147,22 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
     }
     
-    public void openImage(File input) throws XMLParseException {            
+    public void openImage(File inputFile) throws XMLParseException {            
             try {     
-                ECUDefinitionCollection roms = new ECUDefinitionCollection();
                 InputSource src = new InputSource(new FileInputStream(parent.getSettings().getEcuDefinitionFile()));                
                 DOMRomUnmarshaller domUms = new DOMRomUnmarshaller();
                 DOMParser parser = new DOMParser();                
                 parser.parse(src);                
                 Document doc = parser.getDocument();
+                FileInputStream fis = new FileInputStream(inputFile);
+                byte[] input = new byte[fis.available()];                
+                fis.read(input);     
                 
-                roms = domUms.unmarshallXMLDefinition(doc.getDocumentElement());                
-                Rom ecuImage = roms.parseRom(input);
-                ecuImage.setFileName(input.getName());
+                Rom rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input);
+                rom.populateTables(input);
+                rom.setFileName(inputFile.getName());
                 
-                parent.addRom(ecuImage);
-                //System.out.println("File opened: " + ecuImage.getFileName());
+                parent.addRom(rom);
                 
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
@@ -172,7 +171,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (RomNotFoundException ex) {
-                new JOptionPane().showMessageDialog(parent, "ECU Definition Not Found", input.getName() + " - Error", JOptionPane.ERROR_MESSAGE);
+                new JOptionPane().showMessageDialog(parent, "ECU Definition Not Found", inputFile.getName() + " - Error", JOptionPane.ERROR_MESSAGE);
             }
          
     }       

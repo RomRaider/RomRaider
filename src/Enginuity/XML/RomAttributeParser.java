@@ -1,6 +1,6 @@
 // Parses attributes from ROM XML
 
-package Enginuity.Maps.XML;
+package Enginuity.XML;
 
 import Enginuity.Maps.Table;
 import Enginuity.Maps.Scale;
@@ -11,9 +11,9 @@ public abstract class RomAttributeParser {
     }
     
     public static int parseEndian(String input) {
-        if (input.equalsIgnoreCase("big")) {
+        if (input.equalsIgnoreCase("big") || input.equalsIgnoreCase(Table.ENDIAN_BIG+"")) {
             return Table.ENDIAN_BIG;
-        } else if (input.equalsIgnoreCase("little")) {
+        } else if (input.equalsIgnoreCase("little") || input.equalsIgnoreCase(Table.ENDIAN_LITTLE+"")) {
             return Table.ENDIAN_LITTLE;
         } else {
             return Table.ENDIAN_LITTLE;
@@ -29,7 +29,11 @@ public abstract class RomAttributeParser {
     }
     
     public static int parseStorageType(String input) {
-        return Integer.parseInt(input.substring(4)) / 8;        
+        try {
+            return Integer.parseInt(input.substring(4)) / 8;
+        } catch (Exception ex) {
+            return Integer.parseInt(input);
+        }        
     }
     
     public static int parseScaleType(String input) {
@@ -41,13 +45,13 @@ public abstract class RomAttributeParser {
     }
     
     public static int parseTableType(String input) {
-        if (input.equalsIgnoreCase("3D")) {
+        if (input.equalsIgnoreCase("3D") || input.equalsIgnoreCase(Table.TABLE_3D+"")) {
             return Table.TABLE_3D;
-        } else if (input.equalsIgnoreCase("2D")) {
+        } else if (input.equalsIgnoreCase("2D") || input.equalsIgnoreCase(Table.TABLE_2D+"")) {
             return Table.TABLE_2D;
-        } else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis")) {
+        } else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(Table.TABLE_X_AXIS+"")) {
             return Table.TABLE_X_AXIS;
-        } else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis")) {
+        } else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(Table.TABLE_Y_AXIS+"")) {
             return Table.TABLE_Y_AXIS;
         } else {
             return Table.TABLE_1D;

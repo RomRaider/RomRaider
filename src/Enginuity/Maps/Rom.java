@@ -3,6 +3,7 @@
 package Enginuity.Maps;
 
 import Enginuity.ECUEditor;
+import Enginuity.XML.TableNotFoundException;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 
@@ -10,7 +11,7 @@ import javax.swing.JOptionPane;
 
 public class Rom {
     
-    private RomID romID;
+    private RomID romID = new RomID();
     private String fileName = "";
     private Vector<Table> tables = new Vector<Table>();
     private ECUEditor container;
@@ -20,7 +21,27 @@ public class Rom {
     }
     
     public void addTable(Table table) {
-        tables.add(table);
+        boolean tableExists = false;
+        for (int i = 0; i < tables.size(); i++) {
+            if (tables.get(i).getName().equalsIgnoreCase(table.getName())) {
+                tables.remove(i);
+                tables.add(table);
+                tableExists = true;
+                break;
+            }
+        }
+        if (!tableExists) {
+            tables.add(table);
+        }
+    }
+    
+    public Table getTable(String tableName) throws TableNotFoundException {
+        for (int i = 0; i < tables.size(); i++) {
+            if (tables.get(i).getName().equalsIgnoreCase(tableName)) {
+                return tables.get(i);
+            }
+        }
+        throw new TableNotFoundException();
     }
     
     public void populateTables(byte[] binData) {
@@ -30,6 +51,9 @@ public class Rom {
                 tables.get(i).populateTable(binData);
             } catch (ArrayIndexOutOfBoundsException ex) {                
                 new JOptionPane().showMessageDialog(container, "Storage address for table \"" + tables.get(i).getName() + "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                tables.remove(i);
+            } catch (NullPointerException ex) {
+                new JOptionPane().showMessageDialog(container, "There was an error loading table " + tables.get(i).getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                 tables.remove(i);
             }
         }

@@ -33,7 +33,7 @@ public class ECUEditor extends JFrame implements WindowListener {
     private RomTree      imageList           = new RomTree(imageRoot);
     private Vector<Rom>  images              = new Vector<Rom>();
     private Settings     settings            = new Settings();
-    private String       version             = new String("0.2.1 Alpha");
+    private String       version             = new String("0.2.2 Alpha");
     private String       titleText           = new String("Enginuity v" + version);
     private JDesktopPane rightPanel          = new JDesktopPane();
     private Rom          lastSelectedRom     = null;
@@ -126,7 +126,6 @@ public class ECUEditor extends JFrame implements WindowListener {
         RomTreeNode[] tableNodes = new RomTreeNode[tables.size()];
         for (int i = 0; i < tables.size(); i++) {
             tableNodes[i] = new RomTreeNode(tables.get(i));
-            //tableNodes[i].set
             node.add(tableNodes[i]);
             
             TableFrame frame = new TableFrame(tables.get(i));

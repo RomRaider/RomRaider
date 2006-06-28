@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class Table1D extends Table {
     
-    private boolean isAxis = false;
+    private boolean isAxis = false;    
     
     public Table1D() {
         super();

@@ -1,6 +1,6 @@
 package Enginuity.Maps;
 
-import Enginuity.Maps.XML.RomAttributeParser;
+import Enginuity.XML.RomAttributeParser;
 import Enginuity.SwingComponents.TableFrame;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,7 +23,7 @@ public abstract class Table extends JPanel {
     protected int        type;
     protected String     category;
     protected String     description;
-    protected Scale      scale;
+    protected Scale      scale = new Scale();
     protected int        storageAddress;
     protected int        storageType;//number of bytes per cell
     protected int        endian;
@@ -50,6 +50,14 @@ public abstract class Table extends JPanel {
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
         centerPanel.setVisible(true);
+    }
+    
+    public DataCell[] getData() {
+        return data;
+    }
+    
+    public void setData(DataCell[] data) {
+        this.data = data;
     }
     
     public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
