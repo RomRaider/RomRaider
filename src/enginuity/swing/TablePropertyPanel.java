@@ -15,7 +15,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         realToByte.setText(table.getScale().getByteExpression());
         storageSize.setText("uint" + (table.getStorageType() * 8));
         storageAddress.setText("0x" + Integer.toHexString(table.getStorageAddress()));
-        if (table.getEndian() == table.ENDIAN_BIG) endian.setText("big");
+        if (table.getEndian() == Table.ENDIAN_BIG) endian.setText("big");
         else endian.setText("little");
         description.setText(table.getDescription());
         System.out.println(table.getDescription());
