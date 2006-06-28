@@ -108,7 +108,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             try {
                 this.openImageDialog();
             } catch (Exception ex) {
-                new JOptionPane().showMessageDialog(parent, new DebugPanel(ex,
+                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
             
@@ -116,7 +116,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             try {
                 this.saveImage(parent.getLastSelectedRom());
             } catch (Exception ex) {
-                new JOptionPane().showMessageDialog(parent, new DebugPanel(ex,
+                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
             
@@ -130,15 +130,14 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             System.exit(0);
             
         } else if (e.getSource() == romProperties) {
-            new JOptionPane().showMessageDialog(parent, (Object)(new RomPropertyPanel(parent.getLastSelectedRom())),
+            JOptionPane.showMessageDialog(parent, (Object)(new RomPropertyPanel(parent.getLastSelectedRom())),
                     parent.getLastSelectedRom().getRomIDString() + " Properties", JOptionPane.INFORMATION_MESSAGE);
             
         } else if (e.getSource() == refreshImage) {
             try {
                 refreshImage();
-                throw new Exception();
             } catch (Exception ex) {            
-                new JOptionPane().showMessageDialog(parent, new DebugPanel(ex,
+                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
             
@@ -168,10 +167,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
             fc.setFileFilter(new ECUImageFilter());
 
-            if (fc.showSaveDialog(parent) == fc.APPROVE_OPTION) {
+            if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
                 boolean save = true;
                 if (fc.getSelectedFile().exists()) {
-                    if (new JOptionPane().showConfirmDialog(parent, fc.getSelectedFile().getName() + " already exists! Overwrite?") == JOptionPane.CANCEL_OPTION) {
+                    if (JOptionPane.showConfirmDialog(parent, fc.getSelectedFile().getName() + " already exists! Overwrite?") == JOptionPane.CANCEL_OPTION) {
                         save = false;
                     }                 
                 }
@@ -193,7 +192,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());        
         
-        if (fc.showOpenDialog(parent) == fc.APPROVE_OPTION) {
+        if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             openImage(fc.getSelectedFile());
             parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
         }
@@ -229,10 +228,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             progress.dispose();
             
         } catch (RomNotFoundException ex) {
-            new JOptionPane().showMessageDialog(parent, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
             
         } catch (StackOverflowError ex) {
-            new JOptionPane().showMessageDialog(parent, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
             
         }         
     }       

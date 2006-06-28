@@ -343,98 +343,93 @@ public class SettingsForm extends JFrame implements MouseListener {
     }// </editor-fold>//GEN-END:initComponents
 
     public void mouseClicked(MouseEvent e) {
-        if (e.getSource() == maxColor) {
-            JColorChooser chooser = new JColorChooser();                    
-            Color color = chooser.showDialog(this.getContentPane(), "Background Color", settings.getMaxColor());
-            
-            if (color != null) {
-                maxColor.setBackground(color);
-            }
-            
-        } else if (e.getSource() == minColor) {
-            JColorChooser chooser = new JColorChooser();                    
-            Color color = chooser.showDialog(this.getContentPane(), "Background Color", settings.getMinColor());
-            
-            if (color != null) {
-                minColor.setBackground(color);
-            }
-            
-        } else if (e.getSource() == highlightColor) {
-            JColorChooser chooser = new JColorChooser();                    
-            Color color = chooser.showDialog(this.getContentPane(), "Background Color", settings.getHighlightColor());
-            
-            if (color != null) {
-                highlightColor.setBackground(color);
-            }
-            
-        } else if (e.getSource() == axisColor) {
-            JColorChooser chooser = new JColorChooser();                    
-            Color color = chooser.showDialog(this.getContentPane(), "Background Color", settings.getAxisColor());
-            
-            if (color != null) {
-                axisColor.setBackground(color);
-            }
-            
-        } else if (e.getSource() == increaseColor) {
-            JColorChooser chooser = new JColorChooser();                    
-            Color color = chooser.showDialog(this.getContentPane(), "Background Color", settings.getIncreaseBorder());
-            
-            if (color != null) {
-                increaseColor.setBackground(color);
-            }
-            
-        } else if (e.getSource() == decreaseColor) {
-            JColorChooser chooser = new JColorChooser();                    
-            Color color = chooser.showDialog(this.getContentPane(), "Background Color", settings.getDecreaseBorder());
-            
-            if (color != null) {
-                decreaseColor.setBackground(color);
-            }
-            
-       } else if (e.getSource() == btnApply) {
-            applySettings();
-            
-        } else if (e.getSource() == btnOk) {
-            applySettings();
-            this.dispose();
-            
-        } else if (e.getSource() == btnCancel) {
-            this.dispose();            
-            
-        } else if (e.getSource() == btnEcuDefinitionBrowse) {
-            JFileChooser fc = new JFileChooser(new File(ecuDefinitionFile.getText()));  
-            fc.setFileFilter(new XMLFilter());
-            
-            if (fc.showOpenDialog(this) == fc.APPROVE_OPTION) {
-                ecuDefinitionFile.setText(fc.getSelectedFile().getAbsolutePath());
-            }            
+		if (e.getSource() == maxColor) {
+			Color color = JColorChooser.showDialog(this.getContentPane(),
+					"Background Color", settings.getMaxColor());
+			if (color != null) {
+				maxColor.setBackground(color);
+			}
+		}
+		else if (e.getSource() == minColor) {
+			Color color = JColorChooser.showDialog(this.getContentPane(),
+					"Background Color", settings.getMinColor());
+			if (color != null) {
+				minColor.setBackground(color);
+			}
+		}
+		else if (e.getSource() == highlightColor) {
+			Color color = JColorChooser.showDialog(this.getContentPane(),
+					"Background Color", settings.getHighlightColor());
+			if (color != null) {
+				highlightColor.setBackground(color);
+			}
+		}
+		else if (e.getSource() == axisColor) {
+			Color color = JColorChooser.showDialog(this.getContentPane(),
+					"Background Color", settings.getAxisColor());
+			if (color != null) {
+				axisColor.setBackground(color);
+			}
+		}
+		else if (e.getSource() == increaseColor) {
+			Color color = JColorChooser.showDialog(this.getContentPane(),
+					"Background Color", settings.getIncreaseBorder());
+			if (color != null) {
+				increaseColor.setBackground(color);
+			}
+		}
+		else if (e.getSource() == decreaseColor) {
+			Color color = JColorChooser.showDialog(this.getContentPane(),
+					"Background Color", settings.getDecreaseBorder());
+			if (color != null) {
+				decreaseColor.setBackground(color);
+			}
+		}
+		else if (e.getSource() == btnApply) {
+			applySettings();
+		}
+		else if (e.getSource() == btnOk) {
+			applySettings();
+			this.dispose();
+		}
+		else if (e.getSource() == btnCancel) {
+			this.dispose();
+		}
+		else if (e.getSource() == btnEcuDefinitionBrowse) {
+			JFileChooser fc = new JFileChooser(new File(ecuDefinitionFile
+					.getText()));
+			fc.setFileFilter(new XMLFilter());
 
-        } else if (e.getSource() == btnChooseFont) {
-            JFontChooser fc = new JFontChooser(this);
-            fc.setLocationRelativeTo(this);
-            if (fc.showDialog(settings.getTableFont()) == fc.OK_OPTION) {
-                btnChooseFont.setFont(fc.getFont());
-                btnChooseFont.setText(fc.getFont().getFontName());
-            }            
-            
-        } else if (e.getSource() == reset) {
-            settings = new Settings();
-            initSettings();
-            
-        }
-    }
+			if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+				ecuDefinitionFile.setText(fc.getSelectedFile()
+						.getAbsolutePath());
+			}
+		}
+		else if (e.getSource() == btnChooseFont) {
+			JFontChooser fc = new JFontChooser(this);
+			fc.setLocationRelativeTo(this);
+			if (fc.showDialog(settings.getTableFont()) == JFontChooser.OK_OPTION) {
+				btnChooseFont.setFont(fc.getFont());
+				btnChooseFont.setText(fc.getFont().getFontName());
+			}
+		}
+		else if (e.getSource() == reset) {
+			settings = new Settings();
+			initSettings();
+		}
+	}
     
     public void applySettings() {
         try {
             Integer.parseInt(cellHeight.getText());
         } catch (NumberFormatException ex) {
-            //number formatted imporperly, reset
+            // number formatted imporperly, reset
             cellHeight.setText((int)(settings.getCellSize().getHeight())+"");
         }
         try {
             Integer.parseInt(cellWidth.getText());
         } catch (NumberFormatException ex) {
-            //number formatted imporperly, reset
+            // number formatted imporperly, reset
             cellWidth.setText((int)(settings.getCellSize().getWidth())+"");
         }        
         

@@ -141,7 +141,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             table.getFrame().dispose();
             
         } else if (e.getSource() == tableProperties) {
-            new JOptionPane().showMessageDialog(table, (Object)(new TablePropertyPanel(table)),
+            JOptionPane.showMessageDialog(table, (Object)(new TablePropertyPanel(table)),
                     table.getName() + " Table Properties", JOptionPane.INFORMATION_MESSAGE);
             
         } else if (e.getSource() == copySel) {
@@ -154,10 +154,10 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             table.paste();
             
         } else if (e.getSource() == compareOff) {
-            table.compare(table.COMPARE_OFF);
+            table.compare(Table.COMPARE_OFF);
             
         } else if (e.getSource() == compareOriginal) {
-            table.compare(table.COMPARE_ORIGINAL);
+            table.compare(Table.COMPARE_ORIGINAL);
             
         } else if (e.getSource() == compareMap) {
             JTableChooser chooser = new JTableChooser();

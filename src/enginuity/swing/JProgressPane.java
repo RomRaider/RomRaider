@@ -1,8 +1,8 @@
 package enginuity.swing;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,7 +18,7 @@ public class JProgressPane extends JFrame {
         
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2, 1));
-        label.setHorizontalAlignment(label.CENTER);
+        label.setHorizontalAlignment(JLabel.CENTER);
         label.setText(status);
         panel.add(label);
         panel.add(progressBar);

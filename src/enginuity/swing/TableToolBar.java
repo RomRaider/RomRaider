@@ -95,7 +95,7 @@ public class TableToolBar extends JToolBar implements MouseListener {
         };  
         
         // set input mapping
-        InputMap im = getInputMap(this.WHEN_IN_FOCUSED_WINDOW);
+        InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         
@@ -162,11 +162,11 @@ public class TableToolBar extends JToolBar implements MouseListener {
     }
     
     public void setInputMap(InputMap im) {
-        incrementFine.setInputMap(this.WHEN_FOCUSED, im);
-        decrementFine.setInputMap(this.WHEN_FOCUSED, im);
-        incrementCoarse.setInputMap(this.WHEN_FOCUSED, im);
-        decrementCoarse.setInputMap(this.WHEN_FOCUSED, im);
-        setValue.setInputMap(this.WHEN_FOCUSED, im);        
+        incrementFine.setInputMap(WHEN_FOCUSED, im);
+        decrementFine.setInputMap(WHEN_FOCUSED, im);
+        incrementCoarse.setInputMap(WHEN_FOCUSED, im);
+        decrementCoarse.setInputMap(WHEN_FOCUSED, im);
+        setValue.setInputMap(WHEN_FOCUSED, im);        
     }
     
     public void mousePressed(MouseEvent e) { }

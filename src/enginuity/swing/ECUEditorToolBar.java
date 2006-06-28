@@ -1,18 +1,17 @@
 package enginuity.swing;
 
-import enginuity.swing.DebugPanel;
-import enginuity.swing.ECUEditorMenuBar;
-import enginuity.ECUEditor;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.management.modelmbean.XMLParseException;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.border.LineBorder;
+
+import enginuity.ECUEditor;
 
 public class ECUEditorToolBar extends JToolBar implements ActionListener {
     
@@ -75,14 +74,14 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
             try { 
                 ((ECUEditorMenuBar)parent.getJMenuBar()).openImageDialog();
             } catch (Exception ex) {                
-                new JOptionPane().showMessageDialog(parent, new DebugPanel(ex,
+                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);   
             }
         } else if (e.getSource() == saveImage) {
             try {
                 ((ECUEditorMenuBar)parent.getJMenuBar()).saveImage(parent.getLastSelectedRom());
             } catch (Exception ex) {               
-                new JOptionPane().showMessageDialog(parent, new DebugPanel(ex,
+                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE); 
             }
         } else if (e.getSource() == closeImage) {
@@ -91,7 +90,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
             try {
                 ((ECUEditorMenuBar)parent.getJMenuBar()).refreshImage();
             } catch (Exception ex) {
-                new JOptionPane().showMessageDialog(parent, new DebugPanel(ex,
+                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);  
             }                
         }

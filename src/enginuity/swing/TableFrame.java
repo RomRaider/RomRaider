@@ -24,7 +24,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         toolBar = new TableToolBar(table, this);
         this.add(toolBar, BorderLayout.NORTH);
         this.setJMenuBar(new TableMenuBar(table));
-        this.setDefaultCloseOperation(this.HIDE_ON_CLOSE);
+        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
         table.setFrame(this);
         this.addInternalFrameListener(this);        
     }
