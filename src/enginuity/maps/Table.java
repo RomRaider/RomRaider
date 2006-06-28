@@ -39,6 +39,12 @@ public abstract class Table extends JPanel implements Serializable {
     public static final int TABLE_X_AXIS = 4;
     public static final int TABLE_Y_AXIS = 5;
     
+    public static final int COMPARE_OFF      = 0;
+    public static final int COMPARE_ORIGINAL = 1;
+    public static final int COMPARE_TABLE    = 2;
+    public static final int COMPARE_PERCENT  = 0;
+    public static final int COMPARE_ABSOLUTE = 1;
+    
     protected String     name;
     protected int        type;
     protected String     category = "Other";
@@ -69,7 +75,9 @@ public abstract class Table extends JPanel implements Serializable {
     protected Table axisParent;   
     protected Color maxColor;
     protected Color minColor;
-    protected boolean isAxis = false;      
+    protected boolean isAxis = false;    
+    protected int compareType = 0;
+    protected int compareDisplay = 1;
     
     public Table() {
         this.setLayout(borderLayout);
@@ -404,43 +412,91 @@ public abstract class Table extends JPanel implements Serializable {
     }
     
     public void colorize() {
-        if (!isStatic && !isAxis) {
-            int high = 0;
-            int low  = 999999999;
-            
-            for (int i = 0; i < data.length; i++) {
-                if (data[i].getBinValue() > high) {
-                    high = data[i].getBinValue();
-                } 
-                if (data[i].getBinValue() < low) {
-                    low = data[i].getBinValue();
+        if (compareType == COMPARE_OFF) {
+            if (!isStatic && !isAxis) {
+                int high = 0;
+                int low  = 999999999;
+
+                for (int i = 0; i < getDataSize(); i++) {
+                    if (data[i].getBinValue() > high) {
+                        high = data[i].getBinValue();
+                    } 
+                    if (data[i].getBinValue() < low) {
+                        low = data[i].getBinValue();
+                    }
                 }
+                for (int i = 0; i < getDataSize(); i++) {
+                    double scale = (double)(data[i].getBinValue() - low) / (high - low);
+                    int r = (int)((maxColor.getRed() - minColor.getRed()) * scale) + minColor.getRed();
+                    int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
+                    int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
+
+                    data[i].setColor(new Color(r, g, b));
+                }
+            } else { // is static/axis
+                for (int i = 0; i < getDataSize(); i++) {
+                    data[i].setColor(axisParent.getRom().getContainer().getSettings().getAxisColor());
+                    data[i].setOpaque(true);
+                    data[i].setBorder(new LineBorder(Color.BLACK, 1));
+                    data[i].setHorizontalAlignment(data[i].CENTER);
+                }
+            }  
+            
+        } else { // comparing is on
+            if (!isStatic) {
+                int high = 0;
+                
+                // determine ratios
+                for (int i = 0; i < getDataSize(); i++) {
+                    if (Math.abs(data[i].getBinValue() - data[i].getOriginalValue()) > high) {
+                        high = Math.abs(data[i].getBinValue() - data[i].getOriginalValue());
+                    } 
+                }
+                
+                // colorize
+                for (int i = 0; i < getDataSize(); i++) {
+                    int cellDifference = Math.abs(data[i].getBinValue() - data[i].getOriginalValue());
+                    double scale;
+                    if (high == 0) scale = 0;
+                    else scale = (double)cellDifference / (double)high;
+                    
+                    int r = (int)((maxColor.getRed() - minColor.getRed()) * scale) + minColor.getRed();
+                    int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
+                    int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
+                    if (r > 255) r = 255;
+                    if (g > 255) g = 255;
+                    if (b > 255) b = 255;
+                    if (r < 0) r = 0;
+                    if (g < 0) g = 0;
+                    if (b < 0) b = 0;
+
+                    if (scale != 0) data[i].setColor(new Color(r, g, b));
+                    else data[i].setColor(new Color(160,160,160));
+
+                    // set border
+                    if (data[i].getBinValue() > data[i].getOriginalValue()) {
+                        data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                    } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
+                        data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                    } else {
+                        data[i].setBorder(new LineBorder(Color.BLACK, 1));
+                    }
+                }    
             }
-            for (int i = 0; i < data.length; i++) {
-                double scale = (double)(data[i].getBinValue() - low) / (high - low);
-                int r = (int)((maxColor.getRed() - minColor.getRed()) * scale) + minColor.getRed();
-                int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
-                int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
-                
-                data[i].setColor(new Color(r, g, b));
-                
-                // set border
+        }  
+        
+        // colorize border
+        if (!isStatic) {
+            for (int i = 0; i < getDataSize(); i++) {
                 if (data[i].getBinValue() > data[i].getOriginalValue()) {
                     data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
                 } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
                     data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
                 } else {
                     data[i].setBorder(new LineBorder(Color.BLACK, 1));
-                }
+                }        
             }
-        } else { // is static/axis
-            for (int i = 0; i < getDataSize(); i++) {
-                data[i].setColor(axisParent.getRom().getContainer().getSettings().getAxisColor());
-                data[i].setOpaque(true);
-                data[i].setBorder(new LineBorder(Color.BLACK, 1));
-                data[i].setHorizontalAlignment(data[i].CENTER);
-            }
-        }  
+        }
     }
     
     public void setFrame(TableFrame frame) {
@@ -696,6 +752,28 @@ public abstract class Table extends JPanel implements Serializable {
         }         
     }   
     
+    public void pasteCompare() {
+        StringTokenizer st = new StringTokenizer("");
+        try {
+            String input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            st = new StringTokenizer(input);
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
+        } catch (IOException ex) { }
+        
+        String pasteType = st.nextToken();
+
+        if (pasteType.equalsIgnoreCase("[Table1D]")) { // copied entire table
+            int i = 0;
+            while (st.hasMoreTokens()) {
+                String currentToken = st.nextToken();
+                try {
+                    if (!data[i].getText().equalsIgnoreCase(currentToken)) data[i].setCompareRealValue(currentToken);
+                } catch (ArrayIndexOutOfBoundsException ex) { /* table larger than target, ignore*/ }
+                i++; 
+            }        
+        }
+    }
+    
     public void finalize(Settings settings) {
         // apply settings to cells
         for (int i = 0; i < getDataSize(); i++) {
@@ -768,5 +846,23 @@ public abstract class Table extends JPanel implements Serializable {
             new JOptionPane().showMessageDialog(container.getContainer(), panel,
                     "Warning", JOptionPane.ERROR_MESSAGE);
         }        
+    }
+    
+    public void compare(int compareType) {
+        this.compareType = compareType;
+        
+        for (int i = 0; i < getDataSize(); i++) {
+            if (compareType == this.COMPARE_ORIGINAL) data[i].setCompareValue(data[i].getOriginalValue()); 
+            data[i].setCompareType(compareType);
+            data[i].setCompareDisplay(compareDisplay);
+            data[i].updateDisplayValue();
+        }       
+        colorize();
+    }
+
+    public void setCompareDisplay(int compareDisplay) {
+        this.compareDisplay = compareDisplay;
+        compare(compareType);
+        colorize();
     }
 }

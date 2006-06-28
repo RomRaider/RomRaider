@@ -5,14 +5,21 @@ Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested 
 Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
 
 
-0.2.7.3b Release Notes (4/17/2006)
+0.2.7.4b Release Notes (5/09/2006)
 ----------------------------------
-The next release was supposed to include table comparing, but I found more changes I wanted to make than I originally anticipated. Once again, a number of minor bugs have been fixed as well as a couple small new features. The major issue with 0.2.7.2b was false byte conversion warnings being generated. This has been fixed. Table comparing will be available in the next release, hopefully in the next week.
+I intended to add a few more features and release this as version 0.2.8b, but a fairly major bug was found with 16-bit 3D tables. This type of table is not found in USDM ECUs, so it wasn't found until very recently. If you have a JDM or EDM car, PLEASE BE SURE TO USE ONLY 0.2.7.4b OR HIGHER. 
 
+I also included what I've finished of map comparing. You can now compare the current values in tables to their original values to show changes you have made. In the next release, I will finish this, allowing you to compare to other tables as well.
 
 
 Changes:
 --------
+0.2.7.4b (5/09/2006)
+--------------------
+- Fixed 16-bit 3D tables saving improperly
+- Added compare to original value function
+
+
 0.2.7.3b (4/17/2006)
 --------------------
 - Fix border colors not showing changes from keyboard

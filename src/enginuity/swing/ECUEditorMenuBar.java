@@ -203,6 +203,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         try {     
             parent.repaintPanel();
             JProgressPane progress = new JProgressPane(parent, "Opening file...", "Parsing ECU definitions...");
+            progress.update("Parsing ECU definitions...", 0);
             
             InputSource src = new InputSource(new FileInputStream(parent.getSettings().getEcuDefinitionFile()));                
             DOMRomUnmarshaller domUms = new DOMRomUnmarshaller();
@@ -229,8 +230,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             
         } catch (RomNotFoundException ex) {
             new JOptionPane().showMessageDialog(parent, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
+            
         } catch (StackOverflowError ex) {
             new JOptionPane().showMessageDialog(parent, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
+            
         }         
     }       
 }

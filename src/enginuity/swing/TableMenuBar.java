@@ -59,11 +59,6 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         close.setText("Close " + table.getName());
         
         compareMenu.setMnemonic('C');
-        //////////
-        
-        compareMenu.setEnabled(false);
-        
-        ////////
         compareOriginal.setMnemonic('C');
         compareMap.setMnemonic('M');
         compareOff.setMnemonic('O');
@@ -85,6 +80,9 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         compareOff.addActionListener(this);
         comparePercent.addActionListener(this);
         compareAbsolute.addActionListener(this);
+        
+        // FOR 0.2.7.4b ONLY!! DELETE FOR 0.2.8b!
+        compareMap.setEnabled(false);
         
         
         this.add(editMenu);
@@ -132,21 +130,48 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == undoAll) {
             table.undoAll();
+            
         } else if (e.getSource() == revert) {
             table.setRevertPoint();
+            
         } else if (e.getSource() == undoSel) {
             table.undoSelected();
+            
         } else if (e.getSource() == close) {
             table.getFrame().dispose();
+            
         } else if (e.getSource() == tableProperties) {
             new JOptionPane().showMessageDialog(table, (Object)(new TablePropertyPanel(table)),
                     table.getName() + " Table Properties", JOptionPane.INFORMATION_MESSAGE);
+            
         } else if (e.getSource() == copySel) {
             table.copySelection();
+            
         } else if (e.getSource() == copyTable) {
             table.copyTable();
+            
         } else if (e.getSource() == paste) {
             table.paste();
+            
+        } else if (e.getSource() == compareOff) {
+            table.compare(table.COMPARE_OFF);
+            
+        } else if (e.getSource() == compareOriginal) {
+            table.compare(table.COMPARE_ORIGINAL);
+            
+        } else if (e.getSource() == compareMap) {
+            JTableChooser chooser = new JTableChooser();
+            if (chooser.showChooser(table.getRom().getContainer().getImages(), table.getRom().getContainer(), table) == true) {
+                table.pasteCompare();
+                table.compare(Table.COMPARE_TABLE);
+            }            
+            
+        } else if (e.getSource() == compareAbsolute) {
+            table.setCompareDisplay(Table.COMPARE_ABSOLUTE);
+            
+        } else if (e.getSource() == comparePercent) {
+            table.setCompareDisplay(Table.COMPARE_PERCENT);
+            
         }
     }
 }

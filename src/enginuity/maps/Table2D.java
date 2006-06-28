@@ -205,6 +205,34 @@ public class Table2D extends Table implements Serializable {
         }           
     }
     
+    public void pasteCompare() {
+        StringTokenizer st = new StringTokenizer("");
+        String input = "";
+        try {
+            input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            st = new StringTokenizer(input);
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
+        } catch (IOException ex) { }
+        
+        String pasteType = st.nextToken();
+        
+        if (pasteType.equalsIgnoreCase("[Table2D]")) { // Paste table             
+            String newline = System.getProperty("line.separator");            
+            String axisValues = "[Table1D]" + newline + st.nextToken(newline);
+            String dataValues = "[Table1D]" + newline + st.nextToken(newline);
+            
+            // put axis in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues+""), null);             
+            axis.pasteCompare();            
+            // put datavalues in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues+""), null);   
+            super.pasteCompare();
+            // reset clipboard            
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input+""), null);  
+            
+        }         
+    }    
+    
     public void setAxisColor(Color axisColor) {
         axis.setAxisColor(axisColor);
     }

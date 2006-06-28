@@ -39,13 +39,12 @@ import org.xml.sax.InputSource;
 
 public class ECUEditor extends JFrame implements WindowListener {
     
-    private JScrollPane  imagePane           = new JScrollPane();
     private DefaultMutableTreeNode imageRoot = new DefaultMutableTreeNode("Open Images");
     private RomTree      imageList           = new RomTree(imageRoot);
     private Vector<Rom>  images              = new Vector<Rom>();
     private Settings     settings            = new Settings();
-    private String       version             = new String("0.2.8 Beta");
-    private String       versionDate         = new String("4/12/2006");
+    private String       version             = new String("0.2.7.4 Beta");
+    private String       versionDate         = new String("5/09/2006");
     private String       titleText           = new String("Enginuity v" + version);
     private MDIDesktopPane rightPanel        = new MDIDesktopPane();    
     private Rom          lastSelectedRom     = null;
@@ -136,7 +135,7 @@ public class ECUEditor extends JFrame implements WindowListener {
     
     public void addRom(Rom input) {
         // add to image vector
-        images.add(input);
+        getImages().add(input);
         
         // add to ecu image list pane
         RomTreeNode romNode = new RomTreeNode(input);
@@ -198,13 +197,13 @@ public class ECUEditor extends JFrame implements WindowListener {
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
             if (((RomTreeNode)imageRoot.getChildAt(i)).getRom() == lastSelectedRom) {
                 
-                for (int j = 0; j < images.get(i).getTables().size(); j++) {
-                    rightPanel.remove(((Table)images.get(i).getTables().get(i)).getFrame());
+                for (int j = 0; j < getImages().get(i).getTables().size(); j++) {
+                    rightPanel.remove(((Table)getImages().get(i).getTables().get(i)).getFrame());
                 }
                 
-                ((Rom)images.get(i)).closeImage();
+                ((Rom)getImages().get(i)).closeImage();
                 imageRoot.remove((RomTreeNode)imageRoot.getChildAt(i));
-                images.remove(i);
+                getImages().remove(i);
             }
         }
         imageList.updateUI();
@@ -219,8 +218,8 @@ public class ECUEditor extends JFrame implements WindowListener {
     
     public void closeAllImages() {
         while (imageRoot.getChildCount() > 0) {
-            ((Rom)images.get(0)).closeImage();
-            images.remove(0);
+            ((Rom)getImages().get(0)).closeImage();
+            getImages().remove(0);
             imageRoot.remove(0);
         }
         imageList.updateUI();
@@ -261,8 +260,8 @@ public class ECUEditor extends JFrame implements WindowListener {
     
     public void setSettings(Settings settings) {
         this.settings = settings;
-        for (int i = 0; i < images.size(); i++) {
-            images.get(i).setContainer(this);
+        for (int i = 0; i < getImages().size(); i++) {
+            getImages().get(i).setContainer(this);
         }
     }
     
@@ -270,4 +269,8 @@ public class ECUEditor extends JFrame implements WindowListener {
         rightPanel.repaint();
         rightPanel.update(rightPanel.getGraphics());
     }          
+
+    public Vector<Rom> getImages() {
+        return images;
+    }
 }

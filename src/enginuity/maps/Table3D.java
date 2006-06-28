@@ -152,40 +152,113 @@ public class Table3D extends Table implements Serializable {
     }
     
     public void colorize() {
-        if (!isStatic) {
-            int high = 0;
-            int low  = 999999999;
-            for (int x = 0; x < data.length; x++) {
-                for (int y = 0; y < data[0].length; y++) {
-                    if (data[x][y].getBinValue() > high) {
-                        high = data[x][y].getBinValue();
-                    } 
-                    if (data[x][y].getBinValue() < low) {
-                        low = data[x][y].getBinValue();
+        if (compareType == COMPARE_OFF) {
+            if (!isStatic && !isAxis) {
+                int high = 0;
+                int low  = 999999999;
+                for (int x = 0; x < data.length; x++) {
+                    for (int y = 0; y < data[0].length; y++) {
+                        if (data[x][y].getBinValue() > high) {
+                            high = data[x][y].getBinValue();
+                        } 
+                        if (data[x][y].getBinValue() < low) {
+                            low = data[x][y].getBinValue();
+                        }
                     }
                 }
+                for (int x = 0; x < data.length; x++) {
+                    for (int y = 0; y < data[0].length; y++) {
+                        double scale = Math.abs((double)(data[x][y].getBinValue() - low) / (high - low));
+
+                        int r = (int)((maxColor.getRed() - minColor.getRed()) * scale) + minColor.getRed();
+                        int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
+                        int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
+                        data[x][y].setColor(new Color(r, g, b));
+                    }             
+                }
             }
+        } else { // comparing is on
+            if (!isStatic) {
+                int high = 0;
+                
+                // determine ratios
+                 for (int x = 0; x < data.length; x++) {
+                    for (int y = 0; y < data[0].length; y++) {
+                        if (Math.abs(data[x][y].getBinValue() - data[x][y].getOriginalValue()) > high) {
+                            high = Math.abs(data[x][y].getBinValue() - data[x][y].getOriginalValue());
+                        } 
+                    }
+                 }
+                
+                // colorize  
+                for (int x = 0; x < data.length; x++) {
+                    for (int y = 0; y < data[0].length; y++) {
+                        
+                        int cellDifference = Math.abs(data[x][y].getBinValue() - data[x][y].getOriginalValue());
+                        
+                        double scale;
+                        if (high == 0) scale = 0;
+                        else scale = (double)cellDifference / (double)high;
+
+                        int r = (int)((maxColor.getRed() - minColor.getRed()) * scale) + minColor.getRed();
+                        int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
+                        int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
+                        if (r > 255) r = 255;
+                        if (g > 255) g = 255;
+                        if (b > 255) b = 255;
+                        if (r < 0) r = 0;
+                        if (g < 0) g = 0;
+                        if (b < 0) b = 0;
+
+                        if (scale != 0) data[x][y].setColor(new Color(r, g, b));
+                        else data[x][y].setColor(new Color(160,160,160));
+
+                        // set border
+                        if (data[x][y].getBinValue() > data[x][y].getOriginalValue()) {
+                            data[x][y].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                        } else if (data[x][y].getBinValue() < data[x][y].getOriginalValue()) {
+                            data[x][y].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                        } else {
+                            data[x][y].setBorder(new LineBorder(Color.BLACK, 1));
+                        }
+                        
+                    }
+                }    
+            }
+            xAxis.colorize();
+            yAxis.colorize();
+        }
+        
+        // colorize borders
+        if (!isStatic) {
             for (int x = 0; x < data.length; x++) {
                 for (int y = 0; y < data[0].length; y++) {
-                    double scale = (double)(data[x][y].getBinValue() - low) / (high - low);
-                    
-                    int r = (int)((maxColor.getRed() - minColor.getRed()) * scale) + minColor.getRed();
-                    int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
-                    int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
-                    data[x][y].setColor(new Color(r, g, b));
-                    
-                    // set border
+
                     if (data[x][y].getBinValue() > data[x][y].getOriginalValue()) {
                         data[x][y].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
                     } else if (data[x][y].getBinValue() < data[x][y].getOriginalValue()) {
                         data[x][y].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
                     } else {
                         data[x][y].setBorder(new LineBorder(Color.BLACK, 1));
-                    }                       
-                }             
+                    }    
+                }
             }
         }
     }
+    
+    public void compare(int compareType) {
+        this.compareType = compareType;
+
+        for (int x = 0; x < data.length; x++) {
+            for (int y = 0; y < data[0].length; y++) {
+                if (compareType == this.COMPARE_ORIGINAL) data[x][y].setCompareValue(data[x][y].getOriginalValue()); 
+                data[x][y].setCompareType(compareType);
+                data[x][y].setCompareDisplay(compareDisplay);
+                data[x][y].updateDisplayValue();
+            }
+        }       
+        colorize();
+    }    
     
     public void setFrame(TableFrame frame) {
         this.frame = frame;
@@ -308,9 +381,9 @@ public class Table3D extends Table implements Serializable {
             for (int y = 0; y < xAxis.getDataSize(); y++) {
                 byte[] output = RomAttributeParser.parseIntegerValue(data[y][x].getBinValue(), endian, storageType);
                 for (int z = 0; z < storageType; z++) {
-                    binData[offset * storageType + storageAddress - ramOffset] = output[z];
-                    offset++;
+                    binData[offset * storageType + z + storageAddress - ramOffset] = output[z];
                 }
+                offset++;
             }
         }
         return binData;
@@ -504,6 +577,46 @@ public class Table3D extends Table implements Serializable {
             yAxis.paste();
         }   
     }
+        
+    public void pasteCompare() {
+        StringTokenizer st = new StringTokenizer("");
+        String input = "";
+        try {
+            input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            st = new StringTokenizer(input);
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
+        } catch (IOException ex) { }
+        
+        String pasteType = st.nextToken();
+        
+        if (pasteType.equalsIgnoreCase("[Table3D]")) { // Paste table             
+            String newline = System.getProperty("line.separator");
+            String xAxisValues = "[Table1D]" + newline + st.nextToken(newline);
+            
+            // build y axis and data values
+            StringBuffer yAxisValues = new StringBuffer("[Table1D]" + newline + st.nextToken("\t"));
+            StringBuffer dataValues = new StringBuffer("[Table3D]" + newline + st.nextToken("\t") + st.nextToken(newline));
+            while (st.hasMoreTokens()) {
+                yAxisValues.append("\t" + st.nextToken("\t"));
+                dataValues.append(newline + st.nextToken("\t") + st.nextToken(newline));
+            }
+            
+            // put x axis in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(xAxisValues+""), null);             
+            xAxis.pasteCompare();  
+            // put y axis in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(yAxisValues+""), null);             
+            yAxis.pasteCompare();  
+            // put datavalues in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues+""), null);   
+            pasteCompareValues();
+            // reset clipboard            
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input+""), null);              
+        } 
+        colorize();
+    }    
+    
+    
     
     public void pasteValues() {        
         StringTokenizer st = new StringTokenizer("");
@@ -543,6 +656,40 @@ public class Table3D extends Table implements Serializable {
             }
         }        
     }
+    
+    public void pasteCompareValues() {        
+        StringTokenizer st = new StringTokenizer("");
+        try {
+            String input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            st = new StringTokenizer(input);
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
+        } catch (IOException ex) { }
+         
+        String pasteType = st.nextToken();
+        
+        // figure paste start cell
+        int startX = 0;
+        int startY = 0;
+        
+        // set values 
+        String newline = System.getProperty("line.separator");
+        for (int y = startY; y < getSizeY(); y++) {
+            if (st.hasMoreTokens()) {
+                StringTokenizer currentLine = new StringTokenizer(st.nextToken(newline));
+                for (int x = startX; x < getSizeX(); x++) {
+                    if (currentLine.hasMoreTokens()) {
+                        String currentToken = currentLine.nextToken();
+                        boolean tableLarger = false;
+                        try {
+                            if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
+                                data[x][y].setCompareRealValue(currentToken);
+                            }
+                        } catch (ArrayIndexOutOfBoundsException ex) { /* copied table is larger than current table*/ }
+                    }
+                }             
+            }
+        }        
+    }    
     
     public void finalize(Settings settings) {    
         // apply settings to cells

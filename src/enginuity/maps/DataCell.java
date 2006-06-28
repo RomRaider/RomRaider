@@ -1,5 +1,6 @@
 package enginuity.maps;
 
+import com.sun.corba.se.spi.activation._ActivatorImplBase;
 import enginuity.maps.Scale;
 import enginuity.maps.Table;
 import java.awt.Color;
@@ -17,7 +18,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private int     binValue       = 0;
     private int     originalValue  = 0;
     private Scale   scale          = new Scale();
-    private String  displayValue      = "";
+    private String  displayValue   = "";
     private Color   scaledColor    = new Color(0,0,0);
     private Color   highlightColor = new Color(155,155,255);
     private Color   increaseBorder = Color.RED;
@@ -27,6 +28,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private Table   table;
     private int     x = 0;
     private int     y = 0;
+    private int     compareValue   = 0;
+    private int     compareType    = Table.COMPARE_OFF;
+    private int     compareDisplay = Table.COMPARE_ABSOLUTE;
     
     public DataCell() { }
     
@@ -43,8 +47,24 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     
     public void updateDisplayValue() {
         DecimalFormat formatter = new DecimalFormat(scale.getFormat());
-        displayValue = formatter.format(calcDisplayValue(binValue, table.getScale().getExpression()));
-        this.setText(displayValue);
+        
+        if (getCompareType() == Table.COMPARE_OFF) {
+            displayValue = formatter.format(calcDisplayValue(binValue, table.getScale().getExpression()));
+            
+        } else {
+            if (getCompareDisplay() == Table.COMPARE_ABSOLUTE) {
+                displayValue = formatter.format(
+                            calcDisplayValue(binValue, table.getScale().getExpression()) -
+                            calcDisplayValue(compareValue, table.getScale().getExpression()));    
+                
+            } else if (getCompareDisplay() == Table.COMPARE_PERCENT) {
+                double difference = calcDisplayValue(binValue, table.getScale().getExpression()) - 
+                                    calcDisplayValue(compareValue, table.getScale().getExpression()); 
+                if (difference == 0) displayValue = "0%";
+                else displayValue = (int)(difference / calcDisplayValue(binValue, table.getScale().getExpression()) * 100)+"%";
+            }
+        }
+        setText(displayValue);
     }
     
     public double calcDisplayValue(int input, String expression) {
@@ -179,8 +199,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         if (!input.equalsIgnoreCase("x")) {
             JEP parser = new JEP();
             parser.initSymTab(); // clear the contents of the symbol table
-            parser.addStandardConstants();
-            parser.addComplex(); // among other things adds i to the symbol table
             parser.addVariable("x", Double.parseDouble(input));
             parser.parseExpression(table.getScale().getByteExpression());
             this.setBinValue((int)Math.round(parser.getValue()));
@@ -209,5 +227,37 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setDecreaseBorder(Color decreaseBorder) {
         this.decreaseBorder = decreaseBorder;
+    }
+
+    public int getCompareValue() {
+        return compareValue;
+    }
+
+    public void setCompareValue(int compareValue) {
+        this.compareValue = compareValue;
+    }
+
+    public int getCompareType() {
+        return compareType;
+    }
+
+    public void setCompareType(int compareType) {
+        this.compareType = compareType;
+    }
+
+    public int getCompareDisplay() {
+        return compareDisplay;
+    }
+    
+    public void setCompareRealValue(String input) {
+            JEP parser = new JEP();
+            parser.initSymTab(); // clear the contents of the symbol table
+            parser.addVariable("x", Double.parseDouble(input));
+            parser.parseExpression(table.getScale().getByteExpression());
+            this.setCompareValue((int)Math.round(parser.getValue()));        
+    }
+
+    public void setCompareDisplay(int compareDisplay) {
+        this.compareDisplay = compareDisplay;
     }
 }
