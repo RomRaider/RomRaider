@@ -1,0 +1,80 @@
+Enginuity is a full featured Engine Control Unit editing application for tuning SSP2 Subarus, meant to be used in conjuction with datalogging and ECU flash and dump utilities. Enginuity will give you full control over timing, fuel, boost and many other parameters in your ECU, competing with very expensive and proprietary software. Enginuity will remove your need for piggyback systems designed to control these functions, and, in most cases, work as well as any stand alone engine management. Reflashing your stock ECU also has the added benefit of a manufacturer tested base map, giving you top notch performance and saving time tuning idle and low throttle applications.
+
+You must have version 1.5.0 of the Java Runtime Environment installed! It is available from http://java.sun.com/j2se/1.5.0/download.jsp under the name JDK 5.0 Update 5.
+
+Enginuity is currently in ALPHA TEST status, meaning it is untested and not intended for use by inexperienced users. In addition to being incomplete and untested, only experienced tuners with the required tools (ie, wideband oxygen sensor) should modify an ECU image. As with any engine management, changes could result in severe engine damage. Use at your own risk.
+
+Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
+
+0.2.2a Release Notes
+--------------------
+This release was very rushed as I finally got includes to work but don't have the time to thoroughly test and handle exceptions. This was because I felt it would be better to get an extra day of testing in than waiting to fix the known issues. These issues will be listed below and should be worked around until 0.2.2.1a (or 0.2.3a?) is released, hopefully very soon. 0.2.2a has not been tested and should not be used to tune your car without verifying the data in a hex editor, period. If you don't know what that means, don't do it.
+
+Known issues:
+-------------
+- No handling for "looped" includes in ECU definitions (example:)
+<xmlid>WRXBASE base="whatever"</xmlid>
+<xmlid>whatever base="WRXBASE"</xmlid>
+
+- Definitions must include all tables present in node being included (ie, if BASE has ignition, rev limit and injector scaling, you must provide the remaining information for all of these tables in any definition INCLUDing it.)
+
+- Nested includes have not been tested (including a node which includes another node). If you're intested in testing, this would be a good one to try.
+
+
+Changes:
+--------
+0.2.2a (2/26/2006)
+------------------
+- Include support in XML definitions (exception handling not yet implemented!)
+
+
+0.2.1a (2/13/2006)
+------------------
+- Handles storage addresses that are out of range
+- Fixed conflicting parent/child table sizes (done) 
+- Replaced "<Table Name>" menu with "Table" -- makes it more obviously a menu
+- Fixed 3D table sizing problem
+- Fixed colorizing exception
+- Fixed backwards endians
+- Fixed storage address out of range exception
+- Improved close image method
+
+
+.20a (2/11/2006)
+----------------
+-Completely rewritten
+-XML ECU definitions
+-View multiple images and tables
+
+
+.14a (11/26/2005)
+------------------
+-Improved axis cell modification
+-Fixed absolute value calculations
+
+.13a
+-----
+-Revised text entry of values
+-Added EUDM WRX support
+-Improved multiple cell selection
+-Improved axis cell modification
+-Axis cell changes can be saved
+
+Supported ECU Versions/Version Added - Deprecated as of version .20a. ECU versions are now defined in ecu_defs.xml.
+----------------------
+2004/2005 USDM WRX:
+-A4TF300E .13a
+-A4TF400E .13a
+-A4TF800E .13a
+-A4TF500F .13a
+-A4TF510F .13a
+-A4TF800F .13a
+
+2002/2003 USDM WRX:
+-A4TC300L .13a
+-A4SGC00C .13a
+-A4SGD10C .13a
+-A4SG900C .13a
+
+2003 EUDM WRX:
+-A4TE001G .13a
