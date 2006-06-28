@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE ecurom> 
+<roms>
+   <rom> 
+      <romid> 
+         <xmlid>A4TF400E</xmlid> 
+         <internalidaddress>200</internalidaddress> 
+         <internalidstring>A4TF400E</internalidstring> 
+         <caseid>AH792</caseid> 
+         <ecuid>1234567890</ecuid> 
+         <make>Subaru</make> 
+         <market>USDM</market> 
+         <model>Impreza</model> 
+         <submodel>WRX</submodel> 
+         <transmission>Manual</transmission> 
+         <year>2004</year> 
+         <flashmethod>wrx04</flashmethod>          
+         <memmodel>unknown</memmodel> 
+      </romid> 
+      <table type="3D" name="Main Ignition Map" category="Timing" swapxy="false" flipx="false" flipy="false" storagetype="uint8" endian="little" sizex="16" sizey="15" storageaddress="0x293EB"> 
+         <scaling units="degrees" expression="(x-57)*360/1024" format="#.00" increment="1" /> 
+         <table type="X Axis" name="Engine Load" storagetype="uint16" endian="little" sizex="16" storageaddress="0x293C9"> 
+            <scaling units="grams" expression="x/8192" format="0.00" increment="256" /> 
+         </table> 
+         <table type="Y Axis" name="Engine RPM" storagetype="uint16" endian="little" sizey="15" storageaddress="0x293AA"> 
+            <scaling units="RPM" expression="x/256*50" format="#" increment="256" /> 
+         </table> 
+         <description>"This is a map of base ignition values."</description> 
+      </table> 
+      <table type="2D" name="Rev Limit" storagetype="uint16" endian="little" sizey="2" storageaddress="0x291C8"> 
+         <scaling units="RPM" expression="x/256*50" format="#" increment="256" /> 
+         <description>"RPM at which limiter turns on and off."</description> 
+         <table type="Static Y Axis" name="Condition" units="" sizey="2" storageaddress="0x291C8"> 
+            <data>on</data> 
+            <data>off</data> 
+         </table> 
+      </table> 
+      <table type="1D" name="Injector Flow Scaling" category="Fuel" storagetype="uint16" endian="little" storageaddress="0x286BB" sizey="1"> 
+         <scaling units="cc" expression="2447960/x" format="#.00" increment="-17" /> 
+         <description>"Injector flow rating in cc/min"</description> 
+      </table> 
+   </rom> 
+</roms>
