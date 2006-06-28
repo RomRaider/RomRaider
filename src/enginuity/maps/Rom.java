@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 
-//import Enginuity.
-
 public class Rom implements Serializable {
     
     private RomID romID = new RomID();
@@ -67,11 +65,11 @@ public class Rom implements Serializable {
                     i--;
                 }
             } catch (ArrayIndexOutOfBoundsException ex) {                
-                new JOptionPane().showMessageDialog(container, "Storage address for table \"" + tables.get(i).getName() + 
+                JOptionPane.showMessageDialog(container, "Storage address for table \"" + tables.get(i).getName() + 
                         "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                 tables.removeElementAt(i);
             } catch (NullPointerException ex) {
-                new JOptionPane().showMessageDialog(container, "There was an error loading table " + tables.get(i).getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(container, "There was an error loading table " + tables.get(i).getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                 tables.removeElementAt(i);
             }
         }
@@ -132,11 +130,19 @@ public class Rom implements Serializable {
         return binData;
     }
     
-    public void closeImage() {
-        for (int i = 0; i < tables.size(); i++) {
-            tables.get(i).getFrame().dispose();
-        }
-    }
+    public void finalize() {
+		try {
+			super.finalize();
+			for (int i = 0; i < tables.size(); i++) {
+				tables.get(i).getFrame().dispose();
+			}
+			tables.clear();
+			tables = null;
+			container = null;
+			binData = null;
+		}
+		catch (Throwable t) {}
+	}
     
     public int getRealFileSize() {
         return binData.length;
