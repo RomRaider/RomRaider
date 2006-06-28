@@ -251,7 +251,7 @@ public class Table3D extends Table implements Serializable {
 
         for (int x = 0; x < data.length; x++) {
             for (int y = 0; y < data[0].length; y++) {
-                if (compareType == this.COMPARE_ORIGINAL) data[x][y].setCompareValue(data[x][y].getOriginalValue()); 
+                if (compareType == COMPARE_ORIGINAL) data[x][y].setCompareValue(data[x][y].getOriginalValue()); 
                 data[x][y].setCompareType(compareType);
                 data[x][y].setCompareDisplay(compareDisplay);
                 data[x][y].updateDisplayValue();
@@ -645,7 +645,6 @@ public class Table3D extends Table implements Serializable {
                 for (int x = startX; x < getSizeX(); x++) {
                     if (currentLine.hasMoreTokens()) {
                         String currentToken = currentLine.nextToken();
-                        boolean tableLarger = false;
                         try {
                             if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
                                 data[x][y].setRealValue(currentToken);
@@ -679,7 +678,6 @@ public class Table3D extends Table implements Serializable {
                 for (int x = startX; x < getSizeX(); x++) {
                     if (currentLine.hasMoreTokens()) {
                         String currentToken = currentLine.nextToken();
-                        boolean tableLarger = false;
                         try {
                             if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
                                 data[x][y].setCompareRealValue(currentToken);
