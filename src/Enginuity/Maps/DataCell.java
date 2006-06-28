@@ -75,9 +75,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         }
         this.updateDisplayValue();
         if (binValue > getOriginalValue()) {
-            this.setBorder(new LineBorder(Color.RED, 3));
+            this.setBorder(new LineBorder(Color.RED, 2));
         } else if (binValue < getOriginalValue()) {
-            this.setBorder(new LineBorder(Color.BLUE, 3));
+            this.setBorder(new LineBorder(Color.BLUE, 2));
         } else {
             this.setBorder(new LineBorder(Color.BLACK, 1));
         }
@@ -103,6 +103,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         } else {
             this.setBackground(scaledColor);
         }
+        requestFocus();
     }
 
     public void setHighlighted(Boolean highlighted) {
@@ -123,20 +124,22 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void mouseEntered(MouseEvent e) {
         table.highlight(x, y);
     }
+    
     public void mousePressed(MouseEvent e) {         
         if (!table.isStatic()) {            
             if (!e.isControlDown()) table.clearSelection();
-            table.startHighlight(x, y);
+            table.startHighlight(x, y);            
         }
+        requestFocus();
     }
+    
     public void mouseReleased(MouseEvent e) {         
         if (!table.isStatic()) {
             table.stopHighlight();
         }
     }
-    public void mouseClicked(MouseEvent e) { 
-        //this.setSelected(!selected);
-    }
+    
+    public void mouseClicked(MouseEvent e) { }
     public void mouseExited(MouseEvent e) { }
     
     public void increment(int increment) {
@@ -146,6 +149,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setTable(Table table) {
         this.table = table;
+        this.setInputMap(this.WHEN_FOCUSED, table.getInputMap(this.WHEN_FOCUSED));
     }
 
     public void setXCoord(int x) {
@@ -179,12 +183,14 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     
     public void setRealValue(String input) { 
         // create parser
-        JEP parser = new JEP();
-        parser.initSymTab(); // clear the contents of the symbol table
-        parser.addStandardConstants();
-        parser.addComplex(); // among other things adds i to the symbol table
-        parser.addVariable("x", Double.parseDouble(input));
-        parser.parseExpression(table.getScale().getByteExpression());
-        this.setBinValue((int)parser.getValue());
+        if (!input.equalsIgnoreCase("x")) {
+            JEP parser = new JEP();
+            parser.initSymTab(); // clear the contents of the symbol table
+            parser.addStandardConstants();
+            parser.addComplex(); // among other things adds i to the symbol table
+            parser.addVariable("x", Double.parseDouble(input));
+            parser.parseExpression(table.getScale().getByteExpression());
+            this.setBinValue((int)Math.round(parser.getValue()));
+        }
     }
 }

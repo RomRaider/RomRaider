@@ -5,9 +5,17 @@ import Enginuity.SwingComponents.TableFrame;
 import Enginuity.SwingComponents.VTextIcon;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.StringTokenizer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -169,12 +177,16 @@ public class Table3D extends Table implements Serializable {
     public void setFrame(TableFrame frame) {
         this.frame = frame;
         xAxis.setFrame(frame);
-        yAxis.setFrame(frame);
+        yAxis.setFrame(frame);    
+        frame.setSize(getFrameSize());
+    }
+    
+    public Dimension getFrameSize() {
         int height = verticalOverhead + cellHeight * data[0].length;
         int width = horizontalOverhead + data.length * cellWidth;
         if (height < minHeight) height = minHeight;
-        if (width < minWidth) width = minWidth;        
-        frame.setSize(width, height);
+        if (width < minWidth) width = minWidth;    
+        return new Dimension(width, height);
     }
     
     public String toString() {
@@ -301,5 +313,221 @@ public class Table3D extends Table implements Serializable {
         }
         xAxis.setRealValue(realValue);
         yAxis.setRealValue(realValue);
+    }
+    
+    public void addKeyListener(KeyListener listener) {
+        xAxis.addKeyListener(listener);
+        yAxis.addKeyListener(listener);
+        for (int x = 0; x < this.getSizeX(); x++) {
+            for (int y = 0; y < this.getSizeY(); y++) {
+                data[x][y].addKeyListener(listener);
+            }
+        }
+    }    
+    
+    public void selectCellAt(int y, Table1D axisType) { 
+        if (axisType.getType() == TABLE_Y_AXIS) {
+            selectCellAt(0, y);
+        } else { // y axis
+            selectCellAt(y, 0);
+        }
+    }
+    
+    public void selectCellAt(int x, int y) { 
+        clearSelection();
+        data[x][y].setSelected(true);
+        highlightX = x;
+        highlightY = y;
+    }
+    
+    public void cursorUp() { 
+        if (highlightY > 0 && data[highlightX][highlightY].isSelected()) selectCellAt(highlightX, highlightY - 1);  
+        else if (!xAxis.isStatic() && data[highlightX][highlightY].isSelected()) xAxis.selectCellAt(highlightX);
+        else {
+            xAxis.cursorUp();
+            yAxis.cursorUp();
+        }
+    }    
+    
+    public void cursorDown() {
+        if (highlightY < getSizeY() - 1 && data[highlightX][highlightY].isSelected()) selectCellAt(highlightX, highlightY + 1); 
+        else {
+            xAxis.cursorDown();
+            yAxis.cursorDown();
+        }
+    }    
+    
+    public void cursorLeft() {     
+        if (highlightX > 0 && data[highlightX][highlightY].isSelected()) selectCellAt(highlightX - 1, highlightY); 
+        else if (!yAxis.isStatic() && data[highlightX][highlightY].isSelected()) yAxis.selectCellAt(highlightY);
+        else {
+            xAxis.cursorLeft();
+            yAxis.cursorLeft();
+        }
+    }    
+    
+    public void cursorRight() { 
+        if (highlightX < getSizeX() - 1 && data[highlightX][highlightY].isSelected()) selectCellAt(highlightX + 1, highlightY);   
+        else {
+            xAxis.cursorRight();
+            yAxis.cursorRight();
+        }    
+    }     
+    
+    public void startHighlight(int x, int y) {
+        xAxis.clearSelection();
+        yAxis.clearSelection();        
+        super.startHighlight(x, y);
+    }
+    
+    public void copySelection() {
+        // find bounds of selection
+        // coords[0] = x min, y min, x max, y max
+        boolean copy = false;
+        int[] coords = new int[4];
+        coords[0] = this.getSizeX();
+        coords[1] = this.getSizeY();
+        
+        for (int x = 0; x < this.getSizeX(); x++) {
+            for (int y = 0; y < this.getSizeY(); y++) {
+                if (data[x][y].isSelected()) {
+                    if (x < coords[0]) {
+                        coords[0] = x;
+                        copy = true;
+                    }
+                    if (x > coords[2]) {
+                        coords[2] = x;                        
+                        copy = true;
+                    }
+                    if (y < coords[1]) {
+                        coords[1] = y;
+                        copy = true;
+                    }
+                    if (y > coords[3]) {
+                        coords[3] = y;
+                        copy = true;
+                    }
+                }
+            }
+        }     
+        // make string of selection
+        if (copy) {
+            String newline = System.getProperty("line.separator");
+            StringBuffer output = new StringBuffer("[Selection3D]" + newline);
+            for (int y = coords[1]; y <= coords[3]; y++) {
+                for (int x = coords[0]; x <= coords[2]; x++) {
+                    if (data[x][y].isSelected()) output.append(data[x][y].getText());
+                    else output.append("x"); // x represents non-selected cell
+                    if (x < coords[2]) output.append("\t");
+                }
+                if (y < coords[3]) output.append(newline);                
+                //copy to clipboard
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output+""), null);
+            }          
+        } else {
+            xAxis.copySelection();
+            yAxis.copySelection();
+        }
+    }
+    
+    public void copyTable() {
+        // create string
+        String newline = System.getProperty("line.separator");
+        StringBuffer output = new StringBuffer("[Table3D]" + newline);
+        output.append(xAxis.getTableAsString() + newline);
+        
+        for (int y = 0; y < getSizeY(); y++) {
+            output.append(yAxis.getCellAsString(y) + "\t");
+            for (int x = 0; x < getSizeX(); x++) {
+               output.append(data[x][y].getText());
+               if (x < getSizeX() - 1) output.append("\t");
+            }
+            if (y < getSizeY() - 1) output.append(newline);                
+        }        
+        //copy to clipboard
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output+""), null);  
+    }
+    
+    public void paste() {
+        StringTokenizer st = new StringTokenizer("");
+        String input = "";
+        try {
+            input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            st = new StringTokenizer(input);
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
+        } catch (IOException ex) { }
+        
+        String pasteType = st.nextToken();
+        
+        if (pasteType.equalsIgnoreCase("[Table3D]")) { // Paste table             
+            String newline = System.getProperty("line.separator");
+            String xAxisValues = "[Table1D]" + newline + st.nextToken(newline);
+            
+            // build y axis and data values
+            StringBuffer yAxisValues = new StringBuffer("[Table1D]" + newline + st.nextToken("\t"));
+            StringBuffer dataValues = new StringBuffer("[Table3D]" + newline + st.nextToken("\t") + st.nextToken(newline));
+            while (st.hasMoreTokens()) {
+                yAxisValues.append("\t" + st.nextToken("\t"));
+                dataValues.append(newline + st.nextToken("\t") + st.nextToken(newline));
+            }
+            
+            // put x axis in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(xAxisValues+""), null);             
+            xAxis.paste();  
+            // put y axis in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(yAxisValues+""), null);             
+            yAxis.paste();  
+            // put datavalues in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues+""), null);   
+            pasteValues();
+            // reset clipboard            
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input+""), null);  
+            
+        } else if (pasteType.equalsIgnoreCase("[Selection3D]")) { // paste selection            
+            pasteValues();
+        } else if (pasteType.equalsIgnoreCase("[Selection1D]")) { // paste selection            
+            xAxis.paste();
+            yAxis.paste();
+        }   
+    }
+    
+    public void pasteValues() {        
+        StringTokenizer st = new StringTokenizer("");
+        try {
+            String input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            st = new StringTokenizer(input);
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
+        } catch (IOException ex) { }
+         
+        String pasteType = st.nextToken();
+        
+        // figure paste start cell
+        int startX = 0;
+        int startY = 0;
+        // if pasting a table, startX and Y at 0, else highlight is start
+        if (pasteType.equalsIgnoreCase("[Selection3D]")) {
+            startX = highlightX;
+            startY = highlightY;
+        }
+        
+        // set values 
+        String newline = System.getProperty("line.separator");
+        for (int y = startY; y < getSizeY(); y++) {
+            if (st.hasMoreTokens()) {
+                StringTokenizer currentLine = new StringTokenizer(st.nextToken(newline));
+                for (int x = startX; x < getSizeX(); x++) {
+                    if (currentLine.hasMoreTokens()) {
+                        String currentToken = currentLine.nextToken();
+                        boolean tableLarger = false;
+                        try {
+                            if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
+                                data[x][y].setRealValue(currentToken);
+                            }
+                        } catch (ArrayIndexOutOfBoundsException ex) { /* copied table is larger than current table*/ }
+                    }
+                }             
+            }
+        }
+        
     }
 }

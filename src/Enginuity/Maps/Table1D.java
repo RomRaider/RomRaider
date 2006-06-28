@@ -13,14 +13,10 @@ public class Table1D extends Table implements Serializable {
         super();
     }
     
-    public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
+    public void populateTable(byte[] input) {
         centerLayout.setRows(1);
         centerLayout.setColumns(this.getDataSize());
-        try {
-            super.populateTable(input);
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new ArrayIndexOutOfBoundsException();
-        }            
+        super.populateTable(input);
         
         // add to table
         for (int i = 0; i < this.getDataSize(); i++) {
@@ -44,7 +40,7 @@ public class Table1D extends Table implements Serializable {
     
     public void clearSelection() {
         super.clearSelection();
-        if (isAxis) axisParent.clearSelection();                
+        //if (isAxis) axisParent.clearSelection();                
     }
     
     public void clearSelection(boolean calledByParent) {
@@ -63,5 +59,62 @@ public class Table1D extends Table implements Serializable {
                 data[i].setColor(Color.WHITE);
             }
         }
-    }      
+    }  
+    
+    public void cursorUp() { 
+        if (type == Table.TABLE_Y_AXIS) {
+            if (highlightY > 0 && data[highlightY].isSelected()) selectCellAt(highlightY - 1);
+        } else if (type == Table.TABLE_X_AXIS) { 
+            // Y axis is on top.. nothing happens
+        } else if (type == Table.TABLE_1D) {
+            // no where to move up to
+        }
+    }
+    public void cursorDown() { 
+        if (type == Table.TABLE_Y_AXIS) {
+            if (highlightY < getDataSize() - 1 && data[highlightY].isSelected()) selectCellAt(highlightY + 1);
+        } else if (type == Table.TABLE_X_AXIS && data[highlightY].isSelected()) { 
+            ((Table3D)axisParent).selectCellAt(highlightY, this);
+        } else if (type == Table.TABLE_1D) {
+            // no where to move down to
+        }    
+    }
+    
+    public void cursorLeft() { 
+        if (type == Table.TABLE_Y_AXIS) {
+            // X axis is on left.. nothing happens
+        } else if (type == Table.TABLE_X_AXIS && data[highlightY].isSelected()) { 
+            if (highlightY > 0) selectCellAt(highlightY - 1);
+        } else if (type == Table.TABLE_1D && data[highlightY].isSelected()) {
+            if (highlightY > 0) selectCellAt(highlightY - 1);
+        }   
+    }
+    
+    public void cursorRight() { 
+        if (type == Table.TABLE_Y_AXIS && data[highlightY].isSelected()) {            
+            ((Table3D)axisParent).selectCellAt(highlightY, this);
+        } else if (type == Table.TABLE_X_AXIS && data[highlightY].isSelected()) { 
+            if (highlightY < getDataSize() - 1) selectCellAt(highlightY + 1);
+        } else if (type == Table.TABLE_1D && data[highlightY].isSelected()) {
+            if (highlightY < getDataSize() - 1) selectCellAt(highlightY + 1);
+        }     
+    }     
+    
+    public void startHighlight(int x, int y) {
+        if (isAxis) axisParent.clearSelection();
+        super.startHighlight(x, y);
+    }
+    
+    public StringBuffer getTableAsString() {
+        StringBuffer output = new StringBuffer("");
+        for (int i = 0; i < getDataSize(); i++) {
+            output.append(data[i].getText());
+            if (i < getDataSize() - 1) output.append("\t");
+        }
+        return output;
+    }
+    
+    public String getCellAsString(int index) {
+        return data[index].getText();    
+    }
 }

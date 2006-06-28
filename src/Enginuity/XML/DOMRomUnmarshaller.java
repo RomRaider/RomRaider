@@ -11,45 +11,39 @@ public class DOMRomUnmarshaller {
     
     public DOMRomUnmarshaller() { }
     
-    public Rom unmarshallXMLDefinition (Node rootNode, byte[] input) throws RomNotFoundException, XMLParseException, StackOverflowError {
-        try {
-            Node n;
-            NodeList nodes = rootNode.getChildNodes();
+    public Rom unmarshallXMLDefinition (Node rootNode, byte[] input) throws RomNotFoundException, XMLParseException, StackOverflowError, Exception {
+        Node n;
+        NodeList nodes = rootNode.getChildNodes();
 
-            for (int i = 0; i < nodes.getLength(); i++) { 
-                n = nodes.item(i);
-                
-                if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {  
-                    Node n2;
-                    NodeList nodes2 = n.getChildNodes();
-                    
-                    for (int z = 0; z < nodes2.getLength(); z++) {
-                        n2 = nodes2.item(z);
-                        if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
+        for (int i = 0; i < nodes.getLength(); i++) { 
+            n = nodes.item(i);
 
-                            RomID romID = unmarshallRomID(n2, new RomID());
-                            String ecuID = new String(input, romID.getInternalIdAddress(), romID.getInternalIdString().length());
-                            
-                            if (romID.getInternalIdString().equalsIgnoreCase(ecuID) && !ecuID.equalsIgnoreCase("")) {
-                                Rom output = unmarshallRom(n, new Rom());
-                                
-                                //set ram offset
-                                output.getRomID().setRamOffset(output.getRomID().getFileSize() - input.length);
-                                return output;
-                            }
+            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {  
+                Node n2;
+                NodeList nodes2 = n.getChildNodes();
+
+                for (int z = 0; z < nodes2.getLength(); z++) {
+                    n2 = nodes2.item(z);
+                    if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
+
+                        RomID romID = unmarshallRomID(n2, new RomID());
+                        String ecuID = new String(input, romID.getInternalIdAddress(), romID.getInternalIdString().length());
+
+                        if (romID.getInternalIdString().equalsIgnoreCase(ecuID) && !ecuID.equalsIgnoreCase("")) {
+                            Rom output = unmarshallRom(n, new Rom());
+
+                            //set ram offset
+                            output.getRomID().setRamOffset(output.getRomID().getFileSize() - input.length);
+                            return output;
                         }
                     }
                 }
             }
-        } catch (NullPointerException ex) {
-            System.out.println(ex);            
-        } catch (StackOverflowError ex) { //endless loop in includes
-            throw new StackOverflowError();
         }
         throw new RomNotFoundException();
     }                   
     
-    public Rom unmarshallRom (Node rootNode, Rom rom) throws XMLParseException, RomNotFoundException, StackOverflowError {
+    public Rom unmarshallRom (Node rootNode, Rom rom) throws XMLParseException, RomNotFoundException, StackOverflowError, Exception {
 	Node n;
 	NodeList nodes = rootNode.getChildNodes();
         
@@ -85,33 +79,29 @@ public class DOMRomUnmarshaller {
 	return rom;
     }    
     
-    public Rom getBaseRom(Node rootNode, String xmlID, Rom rom) throws XMLParseException, RomNotFoundException {
+    public Rom getBaseRom(Node rootNode, String xmlID, Rom rom) throws XMLParseException, RomNotFoundException, StackOverflowError, Exception {
         Node n;
         NodeList nodes = rootNode.getChildNodes();  
         
-        try {
-            for (int i = 0; i < nodes.getLength(); i++) { 
-                n = nodes.item(i);
+        for (int i = 0; i < nodes.getLength(); i++) { 
+            n = nodes.item(i);
 
-                if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {  
-                    Node n2;
-                    NodeList nodes2 = n.getChildNodes();
+            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {  
+                Node n2;
+                NodeList nodes2 = n.getChildNodes();
 
-                    for (int z = 0; z < nodes2.getLength(); z++) {
-                        n2 = nodes2.item(z);
-                        if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
+                for (int z = 0; z < nodes2.getLength(); z++) {
+                    n2 = nodes2.item(z);
+                    if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
 
-                            RomID romID = unmarshallRomID(n2, new RomID());
-                            if (romID.getXmlid().equalsIgnoreCase(xmlID)) {
-                                Rom returnrom = unmarshallRom(n, rom);
-                                return returnrom;
-                            }
+                        RomID romID = unmarshallRomID(n2, new RomID());
+                        if (romID.getXmlid().equalsIgnoreCase(xmlID)) {
+                            Rom returnrom = unmarshallRom(n, rom);
+                            return returnrom;
                         }
                     }
                 }
-            }                 
-        } catch (StackOverflowError ex) {
-            throw new StackOverflowError();
+            }
         }
         throw new RomNotFoundException();
     }
@@ -156,12 +146,8 @@ public class DOMRomUnmarshaller {
 		    romID.setFileSize(RomAttributeParser.parseFileSize(unmarshallText(n)));
 		} else if (n.getNodeName().equalsIgnoreCase("obsolete")) {
 		    romID.setObsolete(Boolean.parseBoolean(unmarshallText(n)));
-		} else {
-		    // unexpected element in RomID (skip)
-		}
-	    } else {
-		// unexpected node-type in RomID (skip)
-	    }
+		} else { /* unexpected element in RomID (skip) */ }
+	    } else { /* unexpected node-type in RomID (skip) */ }
 	}
 	return romID;
     }
@@ -171,7 +157,7 @@ public class DOMRomUnmarshaller {
         return output;
     }
    
-    private Table unmarshallTable(Node tableNode, Table table, Rom rom) throws XMLParseException, TableIsOmittedException {
+    private Table unmarshallTable(Node tableNode, Table table, Rom rom) throws XMLParseException, TableIsOmittedException, Exception {
         
         if (unmarshallAttribute(tableNode, "omit", "false").equalsIgnoreCase("true")) {
             throw new TableIsOmittedException();
@@ -182,11 +168,7 @@ public class DOMRomUnmarshaller {
             try {
                 table = (Table)ObjectCloner.deepCopy((Object)rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
                 
-            } catch (TableNotFoundException ex) {
-                // table not found
-            } catch (NullPointerException ex) {
-                ex.printStackTrace();
-            } catch (Exception ex) {
+            } catch (TableNotFoundException ex) { /* table not found */ } catch (NullPointerException ex) {
                 ex.printStackTrace();
             }
         }
@@ -207,8 +189,7 @@ public class DOMRomUnmarshaller {
                        unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static X Axis")) {
                 table = new Table1D();
             } else {
-                // huh?
-                System.out.println(table);
+                throw new XMLParseException();
             }            
         }
             
@@ -287,12 +268,8 @@ public class DOMRomUnmarshaller {
                     dataCell.setDisplayValue(unmarshallText(n));
                     dataCell.setTable(table);
                     ((Table1D)table).addStaticDataCell(dataCell);
-                } else {
-		    // unexpected element in Table (skip)
-		}
-	    } else {
-		// unexpected node-type in Table (skip)
-	    }
+                } else { /*unexpected element in Table (skip) */ }
+	    } else { /* unexpected node-type in Table (skip) */ }
 	}
 	return table;
     }   

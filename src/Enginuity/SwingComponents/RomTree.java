@@ -33,9 +33,10 @@ public class RomTree extends JTree implements MouseListener, TreeSelectionListen
         if (e.getClickCount() == 2) {
             try {
                 RomTreeNode node = (RomTreeNode)this.getLastSelectedPathComponent(); 
-                node.getTable().getFrame().setVisible(true);
-                node.getTable().getFrame().setSelected(true);
-            } catch (PropertyVetoException ex) {
+                //node.getTable().getFrame().setVisible(true);
+                //node.getTable().getFrame().setSelected(true);
+                container.displayTable(node.getFrame());
+            //} catch (PropertyVetoException ex) {
             } catch (ClassCastException ex) {
             } catch (NullPointerException ex) { }
         }

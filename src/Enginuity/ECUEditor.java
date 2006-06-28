@@ -4,6 +4,7 @@ import Enginuity.Maps.Rom;
 import Enginuity.Maps.Table;
 import Enginuity.SwingComponents.ECUEditorToolBar;
 import Enginuity.SwingComponents.ECUEditorMenuBar;
+import Enginuity.SwingComponents.MDIDesktopPane;
 import Enginuity.SwingComponents.RomTree;
 import Enginuity.SwingComponents.RomTreeNode;
 import Enginuity.SwingComponents.TableFrame;
@@ -19,11 +20,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import javax.swing.ImageIcon;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class ECUEditor extends JFrame implements WindowListener {
@@ -33,10 +34,11 @@ public class ECUEditor extends JFrame implements WindowListener {
     private RomTree      imageList           = new RomTree(imageRoot);
     private Vector<Rom>  images              = new Vector<Rom>();
     private Settings     settings            = new Settings();
-    private String       version             = new String("0.2.5 Beta");
+    private String       version             = new String("0.2.6 Beta");
     private String       titleText           = new String("Enginuity v" + version);
-    private JDesktopPane rightPanel          = new JDesktopPane();
+    private MDIDesktopPane rightPanel          = new MDIDesktopPane();    
     private Rom          lastSelectedRom     = null;
+    private JSplitPane   splitPane           = new JSplitPane();
     private ECUEditorToolBar toolBar;
     private ECUEditorMenuBar menuBar;
     
@@ -52,13 +54,14 @@ public class ECUEditor extends JFrame implements WindowListener {
         } catch (ClassNotFoundException ex) {
         }        
         setSize(getSettings().getWindowSize()[0], getSettings().getWindowSize()[1]);
-        setLocation(getSettings().getWindowLocation()[0], getSettings().getWindowLocation()[1]);   
+        setLocation(getSettings().getWindowLocation()[0], getSettings().getWindowLocation()[1]); 
+        if (getSettings().isWindowMaximized() == true) setExtendedState(JFrame.MAXIMIZED_BOTH);
         
         JScrollPane rightScrollPane = new JScrollPane(rightPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);   
         JScrollPane leftScrollPane = new JScrollPane(imageList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);   
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
         splitPane.setDividerSize(4);
-        splitPane.setDividerLocation(150);
+        splitPane.setDividerLocation(getSettings().getSplitPaneLocation());
         this.getContentPane().add(splitPane);
         rightPanel.setBackground(Color.BLACK);
         imageList.setScrollsOnExpand(true);
@@ -69,7 +72,7 @@ public class ECUEditor extends JFrame implements WindowListener {
         this.setJMenuBar(menuBar);    
         toolBar = new ECUEditorToolBar(this);
         this.add(toolBar, BorderLayout.NORTH);
-        
+                
         //set remaining window properties
         setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -79,17 +82,23 @@ public class ECUEditor extends JFrame implements WindowListener {
     }
 
     public void windowClosing(WindowEvent e) {
-        getSettings().setWindowSize(getSize().width, getSize().height);
-        getSettings().setWindowLocation(getLocation().x, getLocation().y);
+        getSettings().setSplitPaneLocation(splitPane.getDividerLocation());
+        if (getExtendedState() == JFrame.MAXIMIZED_BOTH) getSettings().setWindowMaximized(true);
+        else {
+            getSettings().setWindowMaximized(false);
+            getSettings().setWindowSize(getSize().width, getSize().height);   
+            getSettings().setWindowLocation(getLocation().x, getLocation().y);         
+        }
+        
         try {
             ObjectOutputStream out = new ObjectOutputStream(
                                     new FileOutputStream(new File("./settings.dat")));
             out.writeObject(getSettings());
             out.close();
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            new JOptionPane().showMessageDialog(this, ex.getStackTrace(), "Exception", JOptionPane.ERROR_MESSAGE);  
         } catch (IOException ex) {
-            ex.printStackTrace();
+            new JOptionPane().showMessageDialog(this, ex.getStackTrace(), "Exception", JOptionPane.ERROR_MESSAGE);  
         }       
     }
     public void windowOpened(WindowEvent e) { }
@@ -129,11 +138,29 @@ public class ECUEditor extends JFrame implements WindowListener {
             node.add(tableNodes[i]);
             
             TableFrame frame = new TableFrame(tables.get(i));
-            rightPanel.add(frame);
+            tableNodes[i].setFrame(frame);
+            //rightPanel.add(frame);
         }
         imageList.expandRow(imageList.getRowCount() - 1);
         imageList.updateUI();
         this.setLastSelectedRom(input);
+    }
+    
+    public void displayTable(TableFrame frame) {
+        frame.setVisible(true);
+        try {
+            rightPanel.add(frame);
+        } catch (IllegalArgumentException ex) {
+            // table is already open, so set focus
+            frame.requestFocus();
+        }
+        frame.setSize(frame.getTable().getFrameSize());
+        rightPanel.repaint();
+    }
+    
+    public void removeDisplayTable(TableFrame frame) {
+        rightPanel.remove(frame);
+        rightPanel.repaint();
     }
     
     public void closeImage() {

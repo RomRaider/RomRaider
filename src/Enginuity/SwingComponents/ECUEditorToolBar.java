@@ -1,20 +1,24 @@
 package Enginuity.SwingComponents;
 
 import Enginuity.ECUEditor;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.management.modelmbean.XMLParseException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
+import javax.swing.border.LineBorder;
 
 public class ECUEditorToolBar extends JToolBar implements ActionListener {
     
     private ECUEditor parent;
-    private JButton openImage  = new JButton("Open");
-    private JButton saveImage  = new JButton("Save");
-    private JButton refreshImage  = new JButton("Refresh");
-    private JButton closeImage = new JButton("Close");
+    private JButton openImage  = new JButton(new ImageIcon("./graphics/icon-open.png"));
+    private JButton saveImage  = new JButton(new ImageIcon("./graphics/icon-save.png"));
+    private JButton refreshImage = new JButton(new ImageIcon("./graphics/icon-refresh.png"));
+    private JButton closeImage = new JButton(new ImageIcon("./graphics/icon-close.png"));
     
     public ECUEditorToolBar(ECUEditor parent) {
         super();
@@ -24,6 +28,15 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         this.add(saveImage);
         this.add(closeImage);
         this.add(refreshImage);
+        
+        openImage.setMaximumSize(new Dimension(58,50));
+        openImage.setBorder(new LineBorder(new Color(150,150,150), 1));
+        saveImage.setMaximumSize(new Dimension(50,50));
+        saveImage.setBorder(new LineBorder(new Color(150,150,150), 1));
+        closeImage.setMaximumSize(new Dimension(50,50));
+        closeImage.setBorder(new LineBorder(new Color(150,150,150), 1));
+        refreshImage.setMaximumSize(new Dimension(50,50));
+        refreshImage.setBorder(new LineBorder(new Color(150,150,150), 1));
 
         updateButtons();
         
@@ -59,19 +72,23 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         if (e.getSource() == openImage) {
             try { 
                 ((ECUEditorMenuBar)parent.getJMenuBar()).openImageDialog();
-            } catch (XMLParseException ex) {                
-                new JOptionPane(ex, JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {                
+                new JOptionPane().showMessageDialog(parent, ex.getStackTrace(), "Exception", JOptionPane.ERROR_MESSAGE);   
             }
         } else if (e.getSource() == saveImage) {
             try {
                 ((ECUEditorMenuBar)parent.getJMenuBar()).saveImage(parent.getLastSelectedRom());
-            } catch (XMLParseException ex) {                
-                new JOptionPane(ex, JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {               
+                new JOptionPane().showMessageDialog(parent, ex.getStackTrace(), "Exception", JOptionPane.ERROR_MESSAGE);   
             }
         } else if (e.getSource() == closeImage) {
             ((ECUEditorMenuBar)parent.getJMenuBar()).closeImage();
         } else if (e.getSource() == refreshImage) {
-            ((ECUEditorMenuBar)parent.getJMenuBar()).refreshImage();
+            try {
+                ((ECUEditorMenuBar)parent.getJMenuBar()).refreshImage();
+            } catch (Exception ex) {
+                new JOptionPane().showMessageDialog(parent, ex.getStackTrace(), "Exception", JOptionPane.ERROR_MESSAGE);   
+            }                
         }
     }    
 }

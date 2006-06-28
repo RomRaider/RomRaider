@@ -2,7 +2,15 @@ package Enginuity.Maps;
 
 import Enginuity.SwingComponents.TableFrame;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.KeyListener;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.StringTokenizer;
 import javax.swing.JLabel;
 
 public class Table2D extends Table implements Serializable {
@@ -11,7 +19,7 @@ public class Table2D extends Table implements Serializable {
     
     public Table2D() {
         super();
-        verticalOverhead += 15;
+        verticalOverhead += 18;
     }
 
     public Table1D getAxis() {
@@ -33,12 +41,16 @@ public class Table2D extends Table implements Serializable {
 
     public void setFrame(TableFrame frame) {
         this.frame = frame;
-        axis.setFrame(frame);
+        axis.setFrame(frame);      
+        frame.setSize(getFrameSize());
+    }
+    
+    public Dimension getFrameSize() {        
         int height = verticalOverhead + cellHeight * 2;
         int width = horizontalOverhead + data.length * cellWidth;
         if (height < minHeight) height = minHeight;
-        if (width < minWidth) width = minWidth;        
-        frame.setSize(width, height);
+        if (width < minWidth) width = minWidth;  
+        return new Dimension(width, height);        
     }
     
     public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
@@ -101,5 +113,81 @@ public class Table2D extends Table implements Serializable {
     public void setRealValue(String realValue) {
         axis.setRealValue(realValue);
         super.setRealValue(realValue);
+    } 
+    
+    public void addKeyListener(KeyListener listener) {
+        super.addKeyListener(listener);
+        axis.addKeyListener(listener);       
+    }    
+    
+    public void selectCellAt(int y, Table1D axisType) { 
+        selectCellAt(y);
+    }
+    
+    public void cursorUp() { 
+        if (!axis.isStatic()) axis.selectCellAt(highlightY);
+    }
+    public void cursorDown() { }
+    
+    public void cursorLeft() { 
+        if (highlightY > 0) selectCellAt(highlightY - 1);
+    }
+    
+    public void cursorRight() { 
+        if (highlightY < data.length - 1) selectCellAt(highlightY + 1);
+    }   
+    
+    public void startHighlight(int x, int y) {
+        axis.clearSelection();     
+        super.startHighlight(x, y);
+    }    
+    
+    public void copySelection() {
+        super.copySelection();
+        axis.copySelection();
+    }
+    
+    public void copyTable() {
+        // create string
+        String newline = System.getProperty("line.separator");
+        StringBuffer output = new StringBuffer("[Table2D]" + newline);
+        output.append(axis.getTableAsString() + newline);
+        output.append(super.getTableAsString());
+        //copy to clipboard
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output+""), null);          
+    }
+    
+    public void paste() {
+        StringTokenizer st = new StringTokenizer("");
+        String input = "";
+        try {
+            input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            st = new StringTokenizer(input);
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
+        } catch (IOException ex) { }
+        
+        String pasteType = st.nextToken();
+        
+        if (pasteType.equalsIgnoreCase("[Table2D]")) { // Paste table             
+            String newline = System.getProperty("line.separator");            
+            String axisValues = "[Table1D]" + newline + st.nextToken(newline);
+            String dataValues = "[Table1D]" + newline + st.nextToken(newline);
+            
+            // put axis in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues+""), null);             
+            axis.paste();            
+            // put datavalues in clipboard and paste
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues+""), null);   
+            super.paste();
+            // reset clipboard            
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input+""), null);  
+            
+        } else if (pasteType.equalsIgnoreCase("[Selection1D]")) { // paste selection            
+            if (data[highlightY].isSelected()) {
+                super.paste();
+            } else {
+                axis.paste();
+            }
+        }           
     }
 }

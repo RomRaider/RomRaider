@@ -10,6 +10,7 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     private Rom    rom;
     private Table  table;
     private String toolTip;
+    private TableFrame frame;
     
     public RomTreeNode(Rom rom) {
         super(rom.getFileName());
@@ -47,5 +48,13 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     
     public String getToolTipText() {
         return toolTip;
+    }
+
+    public TableFrame getFrame() {
+        return frame;
+    }
+
+    public void setFrame(TableFrame frame) {
+        this.frame = frame;
     }
 }

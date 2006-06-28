@@ -54,6 +54,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(openImage);  
         fileMenu.add(saveImage);
         fileMenu.add(refreshImage);
+        fileMenu.add(new JSeparator());
         fileMenu.add(closeImage);
         fileMenu.add(closeAll);
         fileMenu.add(new JSeparator());
@@ -105,18 +106,18 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         romProperties.setText(file + "Properties");
     }
 
-    public void actionPerformed(ActionEvent e)  {
+    public void actionPerformed(ActionEvent e) {
         if (e.getSource() == openImage) {
             try {
                 this.openImageDialog();
-            } catch (XMLParseException ex) {
-                new JOptionPane().showMessageDialog(parent, ex, "XML Parse Exception", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                new JOptionPane().showMessageDialog(parent, ex.getStackTrace(), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == saveImage) {
             try {
                 this.saveImage(parent.getLastSelectedRom());
-            } catch (XMLParseException ex) {
-                new JOptionPane().showMessageDialog(parent, ex, "XML Parse Exception", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                new JOptionPane().showMessageDialog(parent, ex.getStackTrace(), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == closeImage) {
             this.closeImage();
@@ -128,7 +129,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             new JOptionPane().showMessageDialog(parent, (Object)(new RomPropertyPanel(parent.getLastSelectedRom())),
                     parent.getLastSelectedRom().getRomIDString() + " Properties", JOptionPane.INFORMATION_MESSAGE);
         } else if (e.getSource() == refreshImage) {
-            refreshImage();
+            try {
+                refreshImage();
+            } catch (Exception ex) {
+                new JOptionPane().showMessageDialog(parent, ex.getStackTrace(), "Exception", JOptionPane.ERROR_MESSAGE);              
+            }
         } else if (e.getSource() == tableDef) {
             try {
                 new DefinitionBuilder(parent.getLastSelectedRom(), parent.getSettings().getLastImageDir());
@@ -138,14 +143,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
     }
     
-    public void refreshImage() {
+    public void refreshImage() throws Exception {
         File file = parent.getLastSelectedRom().getFullFileName();
         parent.closeImage();
-        try {
-            openImage(file);
-        } catch (XMLParseException ex) {
-            ex.printStackTrace();
-        }           
+        openImage(file);
     }
     
     public void closeImage() {
@@ -156,7 +157,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         parent.closeAllImages();
     }
     
-    public void saveImage(Rom input) throws XMLParseException {
+    public void saveImage(Rom input) throws XMLParseException, Exception {
         if (parent.getLastSelectedRom() != null) {
             JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
             fc.setFileFilter(new ECUImageFilter());
@@ -169,17 +170,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                     }                 
                 }
                 if (save) {
-                    try {
-                        byte[] output = parent.getLastSelectedRom().saveFile();
-                        FileOutputStream fos = new FileOutputStream(fc.getSelectedFile());
-                        fos.write(output);
-                        fos.close();
+                    byte[] output = parent.getLastSelectedRom().saveFile();
+                    FileOutputStream fos = new FileOutputStream(fc.getSelectedFile());
+                    fos.write(output);
+                    fos.close();
 
-                    } catch (FileNotFoundException ex) {
-                        ex.printStackTrace();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }  
                     parent.closeImage();
                     openImage(fc.getSelectedFile());
                 }
@@ -187,7 +182,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
     }
     
-    public void openImageDialog() throws XMLParseException {
+    public void openImageDialog() throws XMLParseException, Exception {
         JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());        
         
@@ -197,39 +192,33 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
     }
     
-    public void openImage(File inputFile) throws XMLParseException {            
-            try {     
-                InputSource src = new InputSource(new FileInputStream(parent.getSettings().getEcuDefinitionFile()));                
-                DOMRomUnmarshaller domUms = new DOMRomUnmarshaller();
-                DOMParser parser = new DOMParser();                
-                parser.parse(src);                
-                Document doc = parser.getDocument();
-                FileInputStream fis = new FileInputStream(inputFile);
-                byte[] input = new byte[fis.available()];                
-                fis.read(input);     
-                fis.close();
-                
-                Rom rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input);
-                rom.populateTables(input);
-                rom.setFileName(inputFile.getName());
-                
-                if (rom.getRomID().isObsolete()) {
-                    // insert JOptionPane with link to ECU revision wiki here
-                }
-                
-                parent.addRom(rom);
-                rom.setFullFileName(inputFile);
-                
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (SAXException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (RomNotFoundException ex) {
-                new JOptionPane().showMessageDialog(parent, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
-            } catch (StackOverflowError ex) {
-                new JOptionPane().showMessageDialog(parent, "Malformed \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
-            }         
+    public void openImage(File inputFile) throws XMLParseException, Exception {            
+        try {     
+            InputSource src = new InputSource(new FileInputStream(parent.getSettings().getEcuDefinitionFile()));                
+            DOMRomUnmarshaller domUms = new DOMRomUnmarshaller();
+            DOMParser parser = new DOMParser();                
+            parser.parse(src);                
+            Document doc = parser.getDocument();
+            FileInputStream fis = new FileInputStream(inputFile);
+            byte[] input = new byte[fis.available()];                
+            fis.read(input);     
+            fis.close();
+
+            Rom rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input);
+            rom.populateTables(input);
+            rom.setFileName(inputFile.getName());
+
+            if (rom.getRomID().isObsolete()) {
+                // insert JOptionPane with link to ECU revision wiki here
+            }
+
+            parent.addRom(rom);
+            rom.setFullFileName(inputFile);
+
+        } catch (RomNotFoundException ex) {
+            new JOptionPane().showMessageDialog(parent, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
+        } catch (StackOverflowError ex) {
+            new JOptionPane().showMessageDialog(parent, "Malformed \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
+        }         
     }       
 }

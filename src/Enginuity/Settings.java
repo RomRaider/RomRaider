@@ -8,9 +8,11 @@ public class Settings implements Serializable {
     
     private int[] windowSize = new int[2];
     private int[] windowLocation = new int[2];
+    private int   splitPaneLocation = 150;
+    private boolean windowMaximized = false;
     private File  ecuDefinitionFile = new File("./ecu_defs.xml");
     private File  lastImageDir = new File("./images");
-    private boolean debug = true;
+    private boolean debug = false;
     
     public Settings() {
         windowSize[0] = 800;
@@ -54,5 +56,21 @@ public class Settings implements Serializable {
 
     public void setLastImageDir(File lastImageDir) {
         this.lastImageDir = lastImageDir;
+    }
+
+    public int getSplitPaneLocation() {
+        return splitPaneLocation;
+    }
+
+    public void setSplitPaneLocation(int splitPaneLocation) {
+        this.splitPaneLocation = splitPaneLocation;
+    }
+
+    public boolean isWindowMaximized() {
+        return windowMaximized;
+    }
+
+    public void setWindowMaximized(boolean windowMaximized) {
+        this.windowMaximized = windowMaximized;
     }
 }

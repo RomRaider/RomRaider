@@ -1,5 +1,3 @@
 package Enginuity.XML;
 
-public class TableNotFoundException extends Exception {
-    
-}
+public class TableNotFoundException extends Exception { }
