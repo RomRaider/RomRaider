@@ -1,17 +1,15 @@
 package enginuity.xml;
 
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import enginuity.Settings;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.io.File;
-import java.io.FileInputStream;
-import org.w3c.dom.Document;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
+
+import enginuity.Settings;
 
 public class DOMSettingsUnmarshaller {
     
@@ -51,10 +49,6 @@ public class DOMSettingsUnmarshaller {
                                                      unmarshallAttribute(n, "x", 800)));
                 
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("location")) {  
-                // set default location in center of screen
-                Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-                Point location = new Point(((int)(screenSize.getWidth() - settings.getWindowSize().getWidth()) / 2),
-                ((int)(screenSize.getHeight() - settings.getWindowSize().getHeight()) / 2));        
                 settings.setWindowLocation(new Point(unmarshallAttribute(n, "x", 0), 
                                                      unmarshallAttribute(n, "y", 0)));                
                 
@@ -176,29 +170,32 @@ public class DOMSettingsUnmarshaller {
                          unmarshallAttribute(colorNode, "b", 155));
     }
         
-    private String unmarshallText(Node textNode) {
-	StringBuffer buf = new StringBuffer();
+	// Will this function be used? It is not used now and could be removed...
+   private String unmarshallText(Node textNode) {
+		StringBuffer buf = new StringBuffer();
+		Node n;
+		NodeList nodes = textNode.getChildNodes();
 
-	Node n;
-	NodeList nodes = textNode.getChildNodes();
+		for (int i = 0; i < nodes.getLength(); i++) {
+			n = nodes.item(i);
 
-	for (int i = 0; i < nodes.getLength(); i++){
-	    n = nodes.item(i);
-
-	    if (n.getNodeType() == Node.TEXT_NODE) {
-		buf.append(n.getNodeValue());
-	    } else {
-		// expected a text-only node (skip)
-	    }
+			if (n.getNodeType() == Node.TEXT_NODE) {
+				buf.append(n.getNodeValue());
+			}
+			else {
+				// expected a text-only node (skip)
+			}
+		}
+		return buf.toString();
 	}
-	return buf.toString();
-    }    
+
+	private String unmarshallAttribute(Node node, String name,
+			String defaultValue) {
+		Node n = node.getAttributes().getNamedItem(name);
+		return (n != null) ? (n.getNodeValue()) : (defaultValue);
+	}  
     
-    private String unmarshallAttribute(Node node, String name, String defaultValue) {
-	Node n = node.getAttributes().getNamedItem(name);
-	return (n!=null)?(n.getNodeValue()):(defaultValue);
-    }  
-    
+	// Will this function be used? It is not used now and could be removed...
     private Double unmarshallAttribute(Node node, String name, double defaultValue) {
         return Double.parseDouble(unmarshallAttribute(node, name, defaultValue+""));
     }   

@@ -163,7 +163,8 @@ public class DOMRomUnmarshaller {
 	return romID;
     }
     
-    private Table copyTable(Table input) {
+	// Will this function be used? It is not used now and could be removed...
+   private Table copyTable(Table input) {
         Table output = input;
         return output;
     }

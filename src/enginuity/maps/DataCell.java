@@ -1,17 +1,16 @@
 package enginuity.maps;
 
-import com.sun.corba.se.spi.activation._ActivatorImplBase;
-import enginuity.maps.Scale;
-import enginuity.maps.Table;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
-import org.nfunk.jep.*;
+
+import org.nfunk.jep.JEP;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
     
