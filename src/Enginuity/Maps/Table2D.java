@@ -1,8 +1,9 @@
 package Enginuity.Maps;
 
 import Enginuity.SwingComponents.TableFrame;
+import java.io.Serializable;
 
-public class Table2D extends Table {
+public class Table2D extends Table implements Serializable {
     
     private Table1D axis = new Table1D();
     
@@ -29,6 +30,7 @@ public class Table2D extends Table {
 
     public void setFrame(TableFrame frame) {
         this.frame = frame;
+        axis.setFrame(frame);
         int height = verticalOverhead + cellHeight * 2;
         int width = horizontalOverhead + data.length * cellWidth;
         if (height < minHeight) height = minHeight;
@@ -57,14 +59,9 @@ public class Table2D extends Table {
         this.colorize();     
     }
     
-    public void increment() {
-        super.increment();
-        axis.increment();
-    }
-
-    public void decrement() {
-        super.decrement();
-        axis.decrement();
+    public void increment(int increment) {
+        super.increment(increment);
+        axis.increment(increment);
     }
     
     public void clearSelection() {
@@ -93,5 +90,10 @@ public class Table2D extends Table {
         binData = super.saveFile(binData);
         binData = axis.saveFile(binData);
         return binData;
+    }
+       
+    public void setRealValue(String realValue) {
+        axis.setRealValue(realValue);
+        super.setRealValue(realValue);
     }
 }

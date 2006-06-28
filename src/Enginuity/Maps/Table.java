@@ -5,11 +5,11 @@ import Enginuity.SwingComponents.TableFrame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.io.Serializable;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public abstract class Table extends JPanel {
+public abstract class Table extends JPanel implements Serializable {
     
     public static final int ENDIAN_LITTLE= 1;
     public static final int ENDIAN_BIG   = 2;
@@ -39,12 +39,14 @@ public abstract class Table extends JPanel {
     protected int cellHeight = 23;
     protected int cellWidth = 45;
     protected int minHeight = 100;
-    protected int minWidth = 200;
+    protected int minWidth = 370;
     protected Rom container;
     protected int highlightX;
     protected int highlightY;
     protected boolean highlight = false;
     protected Table axisParent;
+    protected boolean beforeRam = false;
+    protected int ramOffset = 0;
     
     public Table() {
         this.setLayout(borderLayout);
@@ -62,12 +64,14 @@ public abstract class Table extends JPanel {
     
     public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
         if (!isStatic) {
+            if (!beforeRam) ramOffset = container.getRomID().getRamOffset();
+            
             for (int i = 0; i < data.length; i++) {
                 if (data[i] == null) {
                     data[i] = new DataCell(scale);
                     data[i].setTable(this);
                     try {
-                        data[i].setBinValue(RomAttributeParser.parseByteValue(input, endian, storageAddress + i * storageType, storageType));
+                        data[i].setBinValue(RomAttributeParser.parseByteValue(input, endian, storageAddress + i * storageType - ramOffset, storageType));
                     } catch (ArrayIndexOutOfBoundsException ex) {
                         throw new ArrayIndexOutOfBoundsException();
                     }
@@ -242,18 +246,18 @@ public abstract class Table extends JPanel {
         return frame;
     }
     
-    public void increment() {
+    public void increment(int increment) {
         if (!isStatic) {
             for (int i = 0; i < data.length; i++) {
-                if (data[i].isSelected()) data[i].increment();
+                if (data[i].isSelected()) data[i].increment(increment);
             }
         }
     }
-    
-    public void decrement() {
+       
+    public void setRealValue(String realValue) {
         if (!isStatic) {
             for (int i = 0; i < data.length; i++) {
-                if (data[i].isSelected()) data[i].decrement();
+                if (data[i].isSelected()) data[i].setRealValue(realValue);
             }
         }
     }
@@ -316,6 +320,7 @@ public abstract class Table extends JPanel {
                 data[i].setOriginalValue(data[i].getBinValue());
             }
         }
+        colorize();
     }
     
     public void undoAll() {
@@ -324,6 +329,7 @@ public abstract class Table extends JPanel {
                 data[i].setBinValue(data[i].getOriginalValue());
             }
         }
+        colorize();
     }
     
     public void undoSelected() {
@@ -332,6 +338,7 @@ public abstract class Table extends JPanel {
                 if (data[i].isSelected()) data[i].setBinValue(data[i].getOriginalValue());
             }
         }
+        colorize();
     }
     
     public byte[] saveFile(byte[] binData) {
@@ -340,10 +347,18 @@ public abstract class Table extends JPanel {
                 // need to deal with storage type (num bytes)
                 byte[] output = RomAttributeParser.parseIntegerValue(data[i].getBinValue(), endian, storageType);
                 for (int z = 0; z < storageType; z++) {                    
-                    binData[i * storageType + z + storageAddress] = output[z];
+                    binData[i * storageType + z + storageAddress - ramOffset] = output[z];
                 }
             }
         }              
         return binData;
+    }
+
+    public boolean isBeforeRam() {
+        return beforeRam;
+    }
+
+    public void setBeforeRam(boolean beforeRam) {
+        this.beforeRam = beforeRam;
     }
 }

@@ -11,15 +11,15 @@ import javax.swing.JSeparator;
 public class TableMenuBar extends JMenuBar implements ActionListener {
     
     private Table     table;    
-    private JMenu     fileMenu = new JMenu("Table");
-    private JMenuItem compare  = new JMenuItem("Compare");
-    private JMenuItem copy     = new JMenuItem("Copy");
-    private JMenuItem graph    = new JMenuItem("View Graph");
-    private JMenuItem overlay  = new JMenuItem("Overlay Log");
-    private JMenuItem undoSel  = new JMenuItem("Undo Selected Changes");
-    private JMenuItem undoAll  = new JMenuItem("Undo All Changes");
-    private JMenuItem revert   = new JMenuItem("Set Revert Point");
-    private JMenuItem close    = new JMenuItem("Close Table");
+    private JMenu     fileMenu  = new JMenu("Table");
+    private JMenuItem compare   = new JMenuItem("Compare");
+    private JMenuItem copy      = new JMenuItem("Copy");
+    private JMenuItem graph     = new JMenuItem("View Graph");
+    private JMenuItem overlay   = new JMenuItem("Overlay Log");
+    private JMenuItem undoSel   = new JMenuItem("Undo Selected Changes");
+    private JMenuItem undoAll   = new JMenuItem("Undo All Changes");
+    private JMenuItem revert    = new JMenuItem("Set Revert Point");
+    private JMenuItem close     = new JMenuItem("Close Table");
     
     public TableMenuBar(Table table) {
         super();

@@ -7,11 +7,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.Serializable;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class Table3D extends Table {
+public class Table3D extends Table implements Serializable {
     
     private Table1D      xAxis = new Table1D();
     private Table1D      yAxis = new Table1D();
@@ -87,10 +87,13 @@ public class Table3D extends Table {
     public void populateTable(byte[] input) throws NullPointerException, ArrayIndexOutOfBoundsException {
         // fill first empty cell        
         centerPanel.add(new JLabel());
+        if (!beforeRam) ramOffset = container.getRomID().getRamOffset();
         
         // populate axiis
         try {
+            xAxis.setContainer(container);
             xAxis.populateTable(input);
+            yAxis.setContainer(container);
             yAxis.populateTable(input);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new ArrayIndexOutOfBoundsException();
@@ -111,7 +114,7 @@ public class Table3D extends Table {
                     data[y][x].setBinValue(
                             RomAttributeParser.parseByteValue(input,
                                                               endian, 
-                                                              storageAddress + offset * storageType,
+                                                              storageAddress + offset * storageType - ramOffset,
                                                               storageType)); 
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     throw new ArrayIndexOutOfBoundsException();
@@ -164,6 +167,8 @@ public class Table3D extends Table {
     
     public void setFrame(TableFrame frame) {
         this.frame = frame;
+        xAxis.setFrame(frame);
+        yAxis.setFrame(frame);
         int height = verticalOverhead + cellHeight * data[0].length;
         int width = horizontalOverhead + data.length * cellWidth;
         if (height < minHeight) height = minHeight;
@@ -182,28 +187,16 @@ public class Table3D extends Table {
                 yAxis;
     }    
     
-    public void increment() {
+    public void increment(int increment) {
         if (!isStatic) {
             for (int x = 0; x < this.getSizeX(); x++) {
                 for (int y = 0; y < this.getSizeY(); y++) {
-                    if (data[x][y].isSelected()) data[x][y].increment();
+                    if (data[x][y].isSelected()) data[x][y].increment(increment);
                 }
             }
         }
-        xAxis.increment();
-        yAxis.increment();
-    }
-
-    public void decrement() {
-        if (!isStatic) {
-            for (int x = 0; x < this.getSizeX(); x++) {
-                for (int y = 0; y < this.getSizeY(); y++) {
-                    if (data[x][y].isSelected()) data[x][y].decrement();
-                }
-            }
-        }
-        xAxis.decrement();
-        yAxis.decrement();
+        xAxis.increment(increment);
+        yAxis.increment(increment);
     }
     
     public void clearSelection() {
@@ -254,6 +247,7 @@ public class Table3D extends Table {
         }
         yAxis.setRevertPoint();
         xAxis.setRevertPoint();
+        colorize();
     }
     
     public void undoAll() {
@@ -264,6 +258,7 @@ public class Table3D extends Table {
         }
         yAxis.undoAll();
         xAxis.undoAll();
+        colorize();
     }
     
     public void undoSelected() {
@@ -274,6 +269,7 @@ public class Table3D extends Table {
         }
         yAxis.undoSelected();
         xAxis.undoSelected();
+        colorize();
     }      
     
     
@@ -286,11 +282,23 @@ public class Table3D extends Table {
             for (int y = 0; y < xAxis.getDataSize(); y++) {
                 byte[] output = RomAttributeParser.parseIntegerValue(data[y][x].getBinValue(), endian, storageType);
                 for (int z = 0; z < storageType; z++) {
-                    binData[offset * storageType + storageAddress] = output[z];
+                    binData[offset * storageType + storageAddress - ramOffset] = output[z];
                     offset++;
                 }
             }
         }
         return binData;
+    }
+       
+    public void setRealValue(String realValue) {
+        if (!isStatic) {
+            for (int x = 0; x < this.getSizeX(); x++) {
+                for (int y = 0; y < this.getSizeY(); y++) {
+                    if (data[x][y].isSelected()) data[x][y].setRealValue(realValue);
+                }
+            }
+        }
+        xAxis.setRealValue(realValue);
+        yAxis.setRealValue(realValue);
     }
 }

@@ -2,7 +2,9 @@
 
 package Enginuity.Maps;
 
-public class RomID {
+import java.io.Serializable;
+
+public class RomID implements Serializable {
     
     private String xmlid;//ID stored in XML
     private int    internalIdAddress;//address of ECU version in image
@@ -17,6 +19,8 @@ public class RomID {
     private int    year;
     private String flashMethod;//flash method string used for ecuflash
     private String memModel;//model used for reflashing with ecuflash
+    private int    fileSize;
+    private int    ramOffset;
     
     public String toString() {
         return "\n   ---- RomID " + xmlid + " ----" +
@@ -141,4 +145,20 @@ public class RomID {
     public void setMemModel(String memModel) {
         this.memModel = memModel;
     }   
+
+    public int getRamOffset() {
+        return ramOffset;
+    }
+
+    public void setRamOffset(int ramOffset) {
+        this.ramOffset = ramOffset;
+    }
+
+    public int getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(int fileSize) {
+        this.fileSize = fileSize;
+    }
 }

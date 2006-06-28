@@ -97,4 +97,17 @@ public abstract class RomAttributeParser {
         }
         return output;
     }
+    
+    public static int parseFileSize(String input) throws NumberFormatException {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException ex) {
+            if (input.substring(input.length() - 2).equalsIgnoreCase("kb")) {
+                return Integer.parseInt(input.substring(0, input.length() - 2)) * 1024;
+            } else if (input.substring(input.length() - 2).equalsIgnoreCase("mb")) {
+                return Integer.parseInt(input.substring(0, input.length() - 2)) * 1024 * 1024;
+            }
+            throw new NumberFormatException();
+        }
+    }
 }

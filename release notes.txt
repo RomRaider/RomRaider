@@ -6,13 +6,22 @@ Enginuity is currently in ALPHA TEST status, meaning it is untested and not inte
 
 Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
 
-0.2.3a Release Notes
+0.2.4a Release Notes
 --------------------
-Yesterday's release (0.2.2a) was intended only as a very short term test release, and I got the fixes done about as quickly as I could have hoped. All known issues with current functionality have been dealt with and ECU definition include support is working quite well. We're now ready to move on to more fully developing the interface, which should make users happy. :)
+Includes are now working much better than they were in 0.2.3a. Adding more definitions should be much more intuitive, and I plan on adding a good number before doing any more development. Coarse and absolute value input will make tuning more user friendly and faster. Also, the 160kb/192kb difference in ROMs dumped with and without RAM sectors is now accounted for, rather than just 192kb images. We're getting close to a stable release.
 
 
 Changes:
 --------
+0.2.4a (3/21/2006)
+------------------
+- "Base" attribute for extending/duplicating tables
+- "Omit" attribute not required to omit tables -- just set storageaddress to "0"
+- Fine and coarse adjustment of values
+- Direct value input
+- Support for ROMs with or without RAM sectors
+
+
 0.2.3a (2/27/2006)
 ------------------
 - ECU definitions including each other (endless loop) is now handled

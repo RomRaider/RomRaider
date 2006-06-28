@@ -1,8 +1,9 @@
 package Enginuity.Maps;
 
 import java.awt.Color;
+import java.io.Serializable;
 
-public class Table1D extends Table {
+public class Table1D extends Table implements Serializable {
     
     private boolean isAxis = false;    
     

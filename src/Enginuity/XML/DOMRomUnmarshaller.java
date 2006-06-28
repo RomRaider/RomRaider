@@ -29,8 +29,13 @@ public class DOMRomUnmarshaller {
 
                             RomID romID = unmarshallRomID(n2, new RomID());
                             String ecuID = new String(input, romID.getInternalIdAddress(), romID.getXmlid().length());
+                            
                             if (romID.getXmlid().equalsIgnoreCase(ecuID)) {
-                                return unmarshallRom(n, new Rom());
+                                Rom output = unmarshallRom(n, new Rom());
+                                
+                                //set ram offset
+                                output.getRomID().setRamOffset(output.getRomID().getFileSize() - input.length);
+                                return output;
                             }
                         }
                     }
@@ -66,7 +71,7 @@ public class DOMRomUnmarshaller {
                     } catch (TableNotFoundException e) { /* table does not already exist (do nothing) */ }                                  
                     
                     try {
-                        table = unmarshallTable(n, table);  
+                        table = unmarshallTable(n, table, rom);  
                         table.setContainer(rom);     
                         rom.addTable(table);
                     } catch (TableIsOmittedException ex) { // table is not supported in inherited def (skip)
@@ -146,6 +151,8 @@ public class DOMRomUnmarshaller {
 		    romID.setFlashMethod(unmarshallText(n));
 		} else if (n.getNodeName().equalsIgnoreCase("memmodel")) {
 		    romID.setMemModel(unmarshallText(n));
+		} else if (n.getNodeName().equalsIgnoreCase("filesize")) {
+		    romID.setFileSize(RomAttributeParser.parseFileSize(unmarshallText(n)));
 		} else {
 		    // unexpected element in RomID (skip)
 		}
@@ -155,11 +162,30 @@ public class DOMRomUnmarshaller {
 	}
 	return romID;
     }
+    
+    private Table copyTable(Table input) {
+        Table output = input;
+        return output;
+    }
    
-    private Table unmarshallTable(Node tableNode, Table table) throws XMLParseException, TableIsOmittedException {
+    private Table unmarshallTable(Node tableNode, Table table, Rom rom) throws XMLParseException, TableIsOmittedException {
         
         if (unmarshallAttribute(tableNode, "omit", "false").equalsIgnoreCase("true")) {
             throw new TableIsOmittedException();
+        }
+        
+        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase("none")) {
+            
+            try {
+                table = (Table)ObjectCloner.deepCopy((Object)rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
+                
+            } catch (TableNotFoundException ex) {
+                // table not found
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         
         try {
@@ -178,14 +204,14 @@ public class DOMRomUnmarshaller {
                        unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static X Axis")) {
                 table = new Table1D();
             } else {
-                if (table.getType() < 1) {;
-                    table = new Table1D();
-                }
+                // huh?
+                System.out.println(table);
             }            
         }
             
         table.setName(unmarshallAttribute(tableNode, "name", table.getName()));
         table.setType(RomAttributeParser.parseTableType(unmarshallAttribute(tableNode, "type", table.getType())));
+        if (unmarshallAttribute(tableNode, "beforeram", "false").equalsIgnoreCase("true")) table.setBeforeRam(true);
         
         if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static X Axis") ||
                 unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static Y Axis")) {
@@ -225,7 +251,7 @@ public class DOMRomUnmarshaller {
                         if (RomAttributeParser.parseTableType(unmarshallAttribute(n, "type", "unknown")) == Table.TABLE_Y_AXIS ||                            
                                 RomAttributeParser.parseTableType(unmarshallAttribute(n, "type", "unknown")) == Table.TABLE_X_AXIS) {                         
                             
-                            Table1D tempTable = (Table1D)unmarshallTable(n, ((Table2D)table).getAxis());
+                            Table1D tempTable = (Table1D)unmarshallTable(n, ((Table2D)table).getAxis(), rom);
                             if (tempTable.getDataSize() != table.getDataSize()) tempTable.setDataSize(table.getDataSize());
                             tempTable.setData(((Table2D)table).getAxis().getData());
                             tempTable.setAxisParent(table);
@@ -235,7 +261,7 @@ public class DOMRomUnmarshaller {
                     }  else if (table.getType() == Table.TABLE_3D) {
                         if (RomAttributeParser.parseTableType(unmarshallAttribute(n, "type", "unknown")) == Table.TABLE_X_AXIS) {  
                             
-                            Table1D tempTable = (Table1D)unmarshallTable(n, ((Table3D)table).getXAxis());
+                            Table1D tempTable = (Table1D)unmarshallTable(n, ((Table3D)table).getXAxis(), rom);
                             if (tempTable.getDataSize() != ((Table3D)table).getSizeX()) tempTable.setDataSize(((Table3D)table).getSizeX());        
                             tempTable.setData(((Table3D)table).getXAxis().getData());               
                             tempTable.setAxisParent(table);
@@ -243,7 +269,7 @@ public class DOMRomUnmarshaller {
                             
                         } else if (RomAttributeParser.parseTableType(unmarshallAttribute(n, "type", "unknown")) == Table.TABLE_Y_AXIS) { 
                             
-                            Table1D tempTable = (Table1D)unmarshallTable(n, ((Table3D)table).getYAxis());
+                            Table1D tempTable = (Table1D)unmarshallTable(n, ((Table3D)table).getYAxis(), rom);
                             if (tempTable.getDataSize() != ((Table3D)table).getSizeY()) tempTable.setDataSize(((Table3D)table).getSizeY());     
                             tempTable.setData(((Table3D)table).getYAxis().getData());                 
                             tempTable.setAxisParent(table);
@@ -255,7 +281,7 @@ public class DOMRomUnmarshaller {
 		} else if (n.getNodeName().equalsIgnoreCase("data")) {
                     // parse and add data to table
                     DataCell dataCell = new DataCell();
-                    dataCell.setRealValue(unmarshallText(n));
+                    dataCell.setDisplayValue(unmarshallText(n));
                     dataCell.setTable(table);
                     ((Table1D)table).addStaticDataCell(dataCell);
                 } else {
@@ -271,6 +297,7 @@ public class DOMRomUnmarshaller {
     private Scale unmarshallScale (Node scaleNode, Scale scale) {        
         scale.setUnit(unmarshallAttribute(scaleNode, "units", scale.getUnit()));
         scale.setExpression(unmarshallAttribute(scaleNode, "expression", scale.getExpression()));
+        scale.setByteExpression(unmarshallAttribute(scaleNode, "to_byte", scale.getByteExpression()));
         scale.setFormat(unmarshallAttribute(scaleNode, "format", "#"));
         scale.setIncrement(Integer.parseInt(unmarshallAttribute(scaleNode, "increment", scale.getIncrement())));
         

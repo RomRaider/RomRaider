@@ -4,12 +4,13 @@ package Enginuity.Maps;
 
 import Enginuity.ECUEditor;
 import Enginuity.XML.TableNotFoundException;
+import java.io.Serializable;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 
 //import Enginuity.
 
-public class Rom {
+public class Rom implements Serializable {
     
     private RomID romID = new RomID();
     private String fileName = "";
@@ -51,7 +52,14 @@ public class Rom {
         this.binData = binData;
         for (int i = 0; i < getTables().size(); i++) {
             try {
-                tables.get(i).populateTable(binData);
+                // if storageaddress has not been set (or is set to 0) omit table
+                if (tables.get(i).getStorageAddress() != 0) {
+                    tables.get(i).populateTable(binData);
+                } else {
+                    tables.remove(i);
+                    // decrement i because length of vector has changed
+                    i--;
+                }
             } catch (ArrayIndexOutOfBoundsException ex) {                
                 new JOptionPane().showMessageDialog(container, "Storage address for table \"" + tables.get(i).getName() + "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                 tables.remove(i);

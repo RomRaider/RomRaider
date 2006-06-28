@@ -2,13 +2,16 @@
 
 package Enginuity.Maps;
 
-public class Scale {
+import java.io.Serializable;
+
+public class Scale implements Serializable {
     
     public static final int LINEAR  = 1;
     public static final int INVERSE = 2;
     
     private String unit;
-    private String expression;
+    private String expression = "x";
+    private String byteExpression = "x";
     private String format;
     private int    increment;
     
@@ -62,5 +65,13 @@ public class Scale {
         else if (increment < 1) return false;
         
         return true;
+    }
+
+    public String getByteExpression() {
+        return byteExpression;
+    }
+
+    public void setByteExpression(String byteExpression) {
+        this.byteExpression = byteExpression;
     }
 }

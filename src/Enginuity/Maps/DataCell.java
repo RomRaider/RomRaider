@@ -4,17 +4,18 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
-import org.nfunk.jep.JEP;
+import org.nfunk.jep.*;
 
-public class DataCell extends JLabel implements MouseListener {
+public class DataCell extends JLabel implements MouseListener, Serializable {
     
     private int     binValue       = 0;
     private int     originalValue  = 0;
     private Scale   scale          = new Scale();
-    private String  realValue      = "";
+    private String  displayValue      = "";
     private Color   scaledColor    = new Color(0,0,0);
     private Color   highlightColor = new Color(155,155,255);
     private Boolean selected       = false;
@@ -38,19 +39,20 @@ public class DataCell extends JLabel implements MouseListener {
         this.addMouseListener(this);
     }
     
-    public void calcRealValue() {
-        DecimalFormat formatter = new DecimalFormat(scale.getFormat());
- 
-        // create parser
+    public void updateDisplayValue() {
+        DecimalFormat formatter = new DecimalFormat(scale.getFormat()); 
+        displayValue = formatter.format(calcDisplayValue(binValue, table.getScale().getExpression()));        
+        this.setText(displayValue);
+    }
+    
+    public double calcDisplayValue(int input, String expression) {
         JEP parser = new JEP();
         parser.initSymTab(); // clear the contents of the symbol table
         parser.addStandardConstants();
         parser.addComplex(); // among other things adds i to the symbol table
-        parser.addVariable("x", binValue);
-        parser.parseExpression(scale.getExpression());
-        
-        realValue = formatter.format(parser.getValue());        
-        this.setText(realValue);
+        parser.addVariable("x", input);
+        parser.parseExpression(expression);
+        return parser.getValue();
     }
     
     public void setColor(Color color) {
@@ -58,9 +60,9 @@ public class DataCell extends JLabel implements MouseListener {
         if (!selected) super.setBackground(color);
     }
     
-    public void setRealValue(String realValue) {
-        this.realValue = realValue;
-        this.setText(realValue);
+    public void setDisplayValue(String displayValue) {
+        this.displayValue = displayValue;
+        this.setText(displayValue);
     }
     
     public void setBinValue(int binValue) {
@@ -71,7 +73,7 @@ public class DataCell extends JLabel implements MouseListener {
         } else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
             this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
         }
-        this.calcRealValue();
+        this.updateDisplayValue();
         if (binValue != getOriginalValue()) {
             this.setBorder(new LineBorder(Color.RED, 3));
         } else {
@@ -84,7 +86,7 @@ public class DataCell extends JLabel implements MouseListener {
     }
         
     public String toString() {
-        return realValue;
+        return displayValue;
     }
 
     public Boolean isSelected() {
@@ -98,6 +100,7 @@ public class DataCell extends JLabel implements MouseListener {
         } else {
             this.setBackground(scaledColor);
         }
+        table.getFrame().getToolBar().setCoarseValue(table.getScale().getIncrement());
     }
 
     public void setHighlighted(Boolean highlighted) {
@@ -134,12 +137,9 @@ public class DataCell extends JLabel implements MouseListener {
     }
     public void mouseExited(MouseEvent e) { }
     
-    public void increment() {
-        this.setBinValue(binValue + scale.getIncrement());
-    }
-    
-    public void decrement() {
-        this.setBinValue(binValue - scale.getIncrement());
+    public void increment(int increment) {
+        if (table.getScale().getIncrement() < 0) increment = 0 - increment;
+        this.setBinValue(binValue + increment);
     }
 
     public void setTable(Table table) {
@@ -173,5 +173,16 @@ public class DataCell extends JLabel implements MouseListener {
     
     public void setRevertPoint() {
         this.setOriginalValue(binValue);
+    }
+    
+    public void setRealValue(String input) { 
+        // create parser
+        JEP parser = new JEP();
+        parser.initSymTab(); // clear the contents of the symbol table
+        parser.addStandardConstants();
+        parser.addComplex(); // among other things adds i to the symbol table
+        parser.addVariable("x", Double.parseDouble(input));
+        parser.parseExpression(table.getScale().getByteExpression());
+        this.setBinValue((int)parser.getValue());
     }
 }
