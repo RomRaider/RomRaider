@@ -24,7 +24,7 @@ public class URL extends JLabel implements MouseListener {
         Font f = getFont();
         FontMetrics fm = getFontMetrics(f);
         int x1 = 0;
-        int y1 = fm.getHeight();
+        int y1 = fm.getHeight() + 3;
         int x2 = fm.stringWidth(getText());
         if (getText().length() > 0)
         g.drawLine(x1, y1, x2, y1);

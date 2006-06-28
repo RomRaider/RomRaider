@@ -160,8 +160,7 @@ public class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("highlight")) {  
                 settings.setHighlightColor(unmarshallColor(n));               
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("increaseborder")) {  
-                settings.setIncreaseBorder(unmarshallColor(n));      
-                System.out.println(unmarshallColor(n));  
+                settings.setIncreaseBorder(unmarshallColor(n));     
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("decreaseborder")) {  
                 settings.setDecreaseBorder(unmarshallColor(n));               
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("axis")) {  

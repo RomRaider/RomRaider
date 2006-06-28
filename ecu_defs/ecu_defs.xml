@@ -29,8 +29,8 @@
      <scaling units="RPM" expression="x/256*50" to_byte="x/50*256" format="#" increment="256" /> 
      </table> 
      <description>"Ignition Correction values, added * IAM / 16."</description> 
- </table>       
-  
+ </table>
+
  <table type="3D" name="FUEL - Low Detonation" category="Fuel" swapxy="false" flipx="false" flipy="false" storagetype="uint8" endian="big" sizex="14" sizey="16"> 
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x/128)" to_byte="(14.7/x-1)*128" format="#.00" increment="1" /> 
       <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="14"> 
@@ -173,12 +173,12 @@
  </table>
       
  <table type="3D" name="EGT Limit" category="CEL" swapxy="false" flipx="false" flipy="false" storagetype="uint8" endian="big" sizex="2" sizey="2"> 
- <scaling units="?" expression="1.8*(x-40)*5+32" to_byte="1.8/(x+40)/5-32" format="#" increment="1" /> 
+ <scaling units="Celcius" expression="(x*4)+40" to_byte="(x-40)/4" format="#" increment="1" /> 
       <table type="X Axis" name="Load" storagetype="uint16" endian="big" sizex="2"> 
-      <scaling units="grams" expression="x/8192" to_byte="x*8192" format="0.00" increment="256" />
+      <scaling units="grams" expression="x*.0001220703125" to_byte="x/.0001220703125" format="#.00" increment="256" />
       </table> 
-      <table type="Y Axis" name="Engine RPM" storagetype="uint16" endian="big" sizey="2"> 
-      <scaling units="RPM" expression="x/256*50" to_byte="x/50*256" format="#" increment="256" /> 
+      <table type="Y Axis" name="RPM" storagetype="uint16" endian="big" sizey="2"> 
+      <scaling units="RPM" expression="x*.1953125" to_byte="x/.1953125" format="#" increment="256" /> 
       </table> 
       <description>"Maximum allowed Exhaust Gas Temperature limit before Check Engine Light."</description> 
  </table>
@@ -192,8 +192,8 @@
       <description>"RPM at which limiter turns on and off."</description> 
  </table>
 
- <table type="1D" name="Rev Limit - IGN Retard" category="Timing" storagetype="uint16" endian="big" sizey="1">
-	<scaling units="degrees" expression="x/360" to_byte="x*360" format="#.00" increment="1"/>
+ <table type="1D" name="Rev Limit - IGN Retard" category="Timing" storagetype="uint8" endian="big" sizey="1">
+	<scaling units="degrees" expression="x*.3515625" to_byte="x/.3515625" format="#.00" increment="1"/>
 	<description>"Degrees of Ignition to Retard when hitting the limiter"</description>
  </table>
 
@@ -208,9 +208,20 @@
  </table>
 
  <table type="2D" name="BOOST - Compensation (Atmospheric Pressure)" category="Boost" storagetype="uint8" endian="big" sizey="12"> 
- <scaling units="%" expression="x/2.55" to_byte="x*2.55" format="#" increment="3" /> 
-      <table type="Y Axis" name="Atmospheric Pressure" storagetype="uint16" endian="big" sizey="12"> 
-      <scaling units="?" expression="x" to_byte="x" format="#" increment="1" />
+ <scaling units="WG DC %" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="#.00" increment="1" /> 
+      <table type="Static Y Axis" name="Atm Pressure PSI" sizey="12"> 
+<data>7.83</data>
+<data>8.55</data>
+<data>9.13</data>
+<data>9.71</data>
+<data>10.44</data>
+<data>11.02</data>
+<data>11.60</data>
+<data>12.18</data>
+<data>12.90</data>
+<data>13.48</data>
+<data>14.06</data>
+<data>14.64</data>      
       </table> 
  </table>
 
@@ -226,9 +237,14 @@
  </table> 
       
  <table type="2D" name="Wastegate Duty Compensation (Atmospheric Pressure)" category="Boost" storagetype="uint8" endian="big" sizey="6"> 
- <scaling units="%" expression="x/2.55" to_byte="x*2.55" format="#" increment="3" /> 
-      <table type="Y Axis" name="Atmospheric Pressure" storagetype="uint16" endian="big" sizey="6"> 
-      <scaling units="?" expression="x" to_byte="x" format="#" increment="1" />
+ <scaling units="%" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="#.00" increment="1" /> 
+      <table type="Static Y Axis" name="Atmospheric Pressure PSI" sizey="6"> 
+<data>8.55</data>
+<data>9.71</data>
+<data>11.02</data>
+<data>12.18</data>
+<data>13.48</data>
+<data>14.64</data>
       </table> 
  </table>
 
@@ -305,20 +321,29 @@
       <description>"Voltage at which a CEL will throw due to MAF voltage"</description> 
  </table> 
       
- <table type="2D" name="Boost Limit (CEL) ?" category="CEL" storagetype="uint16" endian="big" sizey="5"> 
- <scaling units="PSI" expression="x/100" to_byte="x*100" format="#.00" increment="256" />  
-      <table type="Y Axis" name="?" storagetype="uint16" endian="big" sizey="5">
-      <scaling units="?" expression="x" to_byte="x" format="#" increment="256" />
+ <table type="2D" name="Boost Limit (CEL)" category="CEL" storagetype="uint16" endian="big" sizey="5"> 
+ <scaling units="Relative PSI" expression="(x*0.019290019154)-14.4" to_byte="(x+14.4)/0.019290019154" format="#.00" increment="256" />  
+      <table type="Static Y Axis" name="Atm Pressure PSI" sizey="5">
+      <data>9.71</data> 
+      <data>11.02</data>
+      <data>12.18</data> 
+      <data>13.48</data>
+      <data>14.64</data>
       </table>
-      <description>"Max boost before Check Engine Light, per gear?"</description> 
+      <description>"Max boost before Check Engine Light, Relative PSI vs Atmospheric"</description> 
  </table>
       
- <table type="2D" name="Boost Limit (Fuel Cut) ?" category="Boost" storagetype="uint16" endian="big" sizey="5"> 
- <scaling units="?" expression="x/100" to_byte="x*100" format="#.00" increment="256" /> 
-      <table type="Y Axis" name="?" storagetype="uint16" endian="big" sizey="5">
-      <scaling units="?" expression="x" to_byte="x" format="#" increment="256" />      
+ <table type="2D" name="Boost Limit (Fuel Cut)" category="Boost" storagetype="uint16" endian="big" sizey="6"> 
+ <scaling units="Relative PSI" expression="(x*0.019290019154)-14.5" to_byte="(x+14.5)/0.019290019154" format="#.00" increment="1" /> 
+      <table type="Static Y Axis" name="Atm Pressure PSI" sizey="6">
+      <data>8.55</data> 
+      <data>9.71</data> 
+      <data>11.02</data>
+      <data>12.18</data> 
+      <data>13.48</data>
+      <data>14.64</data>
       </table>
-      <description>"Max boost before fuel cut."</description> 
+      <description>"Max boost before fuel cut Boost is Relative vs Atmospheric Pressure"</description> 
  </table>
       
  <table type="2D" name="Tip-In Enrichment" category="Fuel" storagetype="uint8" endian="big" sizey="18"> 
@@ -354,18 +379,46 @@
 	<description>"Open Loop Throttle Threshold %"</description>
  </table>
 
+ <table type="2D" name="CL TPS Min Enter" category="OLCL" storagetype="uint8" endian="big" sizey="16">
+	<scaling units="TPS %" expression="x*.58828936483126" to_byte="x/.58828936483126" format="#.00" increment="1" />
+	<table type="Static Y Axis" name="RPM" sizey="16">
+<data>0</data>
+<data>400</data>
+<data>800</data>
+<data>1200</data>
+<data>1600</data>
+<data>2000</data>
+<data>2400</data>
+<data>2800</data>
+<data>3200</data>
+<data>3600</data>
+<data>4000</data>
+<data>4400</data>
+<data>4800</data>
+<data>5200</data>
+<data>5600</data>
+<data>6000</data>
+	</table>	
+	<description>"Min amount of Throttle to Enable Closed Loop?"</description>
+ </table>
+
+ <table type="1D" name="CL Cruise AFR" category="OLCL" storagetype="uint16" endian="big" sizey="1">
+ <scaling units="AFR" expression="(x*-.00179443359375)+22.27969" to_byte="(x-22.27969)/-.00179443359375" format="#.00" increment="256" />
+	<description>"CL Cruise AFR"</description>
+ </table>
+
  <table type="1D" name="CL Min Coolant Temp" category="OLCL" storagetype="uint16" endian="big" sizey="1"> 
  <scaling units="F" expression="1.8*(x/256)+32" to_byte="(x-32)/1.8*256" format="#" increment="256" /> 
       <description>"Minimum coolant temp for closed loop fueling."</description> 
  </table> 
 
- <table type="1D" name="CL Max EGT" category="OLCL" storagetype="uint16" endian="big" sizey="1"> 
- <scaling units="Degrees F" expression="1.8*(x/256)+32" to_byte="(x-32)/1.8*256" format="#" increment="256" /> 
+ <table type="1D" name="CL Max EGT" category="OLCL" storagetype="uint8" endian="big" sizey="2"> 
+ <scaling units="Degrees F" expression="((x*4)+40)*1.8+32" to_byte="(((x-32)/1.8)-40)/4" format="#" increment="256" /> 
         <description>"Maximum exhaust gas temperature for closed loop fueling."</description> 
  </table> 
 
- <table type="1D" name="CL Max EGT - High Det" category="OLCL" storagetype="uint16" endian="big" sizey="1"> 
- <scaling units="Degrees F" expression="1.8*(x/256)+32" to_byte="(x-32)/1.8*256" format="#" increment="256" /> 
+ <table type="1D" name="CL Max EGT - High Det" category="OLCL" storagetype="uint8" endian="big" sizey="2"> 
+ <scaling units="Degrees F" expression="((x*4)+40)*1.8+32" to_byte="(((x-32)/1.8)-40)/4" format="#" increment="256" /> 
       <description>"Maximum exhaust gas temperature for closed loop fueling. High Det"</description> 
  </table>
  
@@ -399,22 +452,45 @@
 	<description>"Closed Loop Modified Load"</description>
  </table>
 
- <table type="1D" name="CL Delay A" category="OLCL"  storagetype="uint16" endian="big" sizey="1">
+ <table type="2D" name="CL Modified Load - Bugeye" category="OLCL" storagetype="uint8" endian="big" sizey="16">
+	<scaling units="Inj MS" expression="x*.0625" to_byte="x/.0625" format="#.00" increment="1" />
+	<table type="Static Y Axis" name="Engine RPM" sizey="16">
+<data>0</data>
+<data>400</data>
+<data>800</data>
+<data>1200</data>
+<data>1600</data>
+<data>2000</data>
+<data>2400</data>
+<data>2800</data>
+<data>3200</data>
+<data>3600</data>
+<data>4000</data>
+<data>4400</data>
+<data>4800</data>
+<data>5200</data>
+<data>5600</data>
+<data>6000</data>
+	</table>	
+	<description>"Closed Loop Modified Load"</description>
+ </table>
+
+ <table type="1D" name="CL Delay A - Inc RPM" category="OLCL"  storagetype="uint16" endian="big" sizey="4">
 	<scaling units="g/sec" expression="x/8912" to_byte="x*8912" format="#.00" increment="256" />
 	<description>"CL Delays A (g/sec) Increasing RPM"</description>
  </table>
 
- <table type="1D" name="CL Delay B" category="OLCL" storagetype="uint16" endian="big" sizey="1">
+ <table type="1D" name="CL Delay B - Dec RPM" category="OLCL" storagetype="uint16" endian="big" sizey="4">
 	<scaling units="g/sec" expression="x/8912" to_byte="x*8912" format="#.00" increment="256" />
 	<description>"CL Delays B (g/sec) Decreasing RPM"</description>
  </table>
 
- <table type="1D" name="CL Delay C" category="OLCL" storagetype="uint16" endian="big" sizey="1">
+ <table type="1D" name="CL Delay C - Inc MPH" category="OLCL" storagetype="uint16" endian="big" sizey="4">
 	<scaling units="g/sec" expression="x/8912" to_byte="x*8912" format="#.00" increment="256" />
 	<description>"CL Delays C (g/sec) Increasing MPH"</description>
  </table>
 
- <table type="1D" name="CL Delay D" category="OLCL" storagetype="uint16" endian="big" sizey="1">
+ <table type="1D" name="CL Delay D - Dec MPH" category="OLCL" storagetype="uint16" endian="big" sizey="4">
 	<scaling units="g/sec" expression="x/8912" to_byte="x*8912" format="#.00" increment="256" />
 	<description>"CL Delays D (g/sec) Decreasing MPH"</description>
  </table>
@@ -459,48 +535,69 @@
 	<description>"ECU Id and Cal ID"</description>
  </table>
 
- <table type="3D" name="test" category="Boost" swapxy="false" flipx="false" flipy="false" storagetype="uint8" endian="big" sizex="10" sizey="14"> 
- <scaling units="?" expression="x" to_byte="x" format="#" increment="3" /> 
-     <table type="X Axis" name="?" storagetype="uint16" endian="big" sizex="10"> 
-     <scaling units="?" expression="x" to_byte="x" format="#" increment="256" /> 
-     </table> 
-     <table type="Y Axis" name="?" storagetype="uint16" endian="big" sizey="14"> 
-     <scaling units="?" expression="x" to_byte="x" format="#" increment="256" /> 
-     </table> 
-     <description>"test"</description> 
- </table>
-
-
- <table type="1D" name="CEL - P0037" category="CEL" storagetype="uint16" endian="big" sizey="2">
+ <table type="1D" name="CEL - P0037" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
 	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
-<description>"CEL - P0037"</description>
+<description>"CEL - P0037 Rear O2 Sensor Heater Control Circuit Low"</description>
  </table>
 
- <table type="1D" name="CEL - P0038" category="CEL" storagetype="uint16" endian="big" sizey="2">
+ <table type="1D" name="CEL - P0038" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
 	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
-<description>"CEL - P0038"</description>
+<description>"CEL - P0038 Rear 02 Sensor Heater Control Circuit High"</description>
  </table>
 
- <table type="1D" name="CEL - P0137" category="CEL" storagetype="uint16" endian="big" sizey="2">
+ <table type="1D" name="CEL - P0137" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
 	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
-<description>"CEL - P0137"</description>
+<description>"CEL - P0137 Rear O2 Sensor Low Voltage"</description>
  </table>
 
- <table type="1D" name="CEL - P0138" category="CEL" storagetype="uint16" endian="big" sizey="2">
+ <table type="1D" name="CEL - P0138" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
 	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
-<description>"CEL - P0138"</description>
+<description>"CEL - P0138 Rear O2 Sensor High Voltage"</description>
  </table>
 
- <table type="1D" name="CEL - P0139" category="CEL" storagetype="uint16" endian="big" sizey="2">
+ <table type="1D" name="CEL - P0139" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
 	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
-<description>"CEL - P0139"</description>
+<description>"CEL - P0139 Rear O2 Sensor Circuit Slow Response"</description>
  </table>
 
- <table type="1D" name="CEL - P0420" category="CEL" storagetype="uint16" endian="big" sizey="2">
+ <table type="1D" name="CEL - P0420" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
 	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
-<description>"CEL - P0420"</description>
+<description>"CEL - P0420 Catalyst System Efficiency Below Threshold"</description>
  </table>
 
+ <table type="1D" name="CEL - P0545" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
+	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
+<description>"CEL - P0545 Exhaust Gas Temperature Sensor Circuit Low"</description>
+ </table>
+
+ <table type="1D" name="CEL - P0546" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
+	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
+<description>"CEL - P0546 Exhaust Gas Temperature Sensor Circuit High"</description>
+ </table>
+
+ <table type="1D" name="CEL - P1301" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
+	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
+<description>"CEL - P1301 Misfire Detected (High Temperature Exhaust Gas)"</description>
+ </table>
+
+ <table type="1D" name="CEL - P1312" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
+	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
+<description>"CEL - P1312 Exhaust Gas Temperature Sensor Malfunction"</description>
+ </table>
+
+ <table type="1D" name="CEL - P1544" category="CEL Fix" storagetype="uint16" endian="big" sizey="2">
+	<scaling units="DTC Code" expression="x" to_byte="x" format="#" increment="1" />
+<description>"CEL - P1544 Exhaust Gas Temperature Too High"</description>
+ </table>
+
+
+ <table type="2D" name="Front o2 Scaling" category="Fuel" storagetype="uint16" endian="big" sizey="13"> 
+ <scaling units="AFR" expression="(x*.0001220703125)*14.7" to_byte="(x/14.7)/.0001220703125" format="#.00" increment="1" /> 
+ 	<table type="Y Axis" name="Voltage" storagetype="uint16" endian="big" sizey="13">
+ 	<scaling units="volts" expression="x" to_byte="x" format="#.00" increment="1" />
+     <description>"Front o2 Sensor Scaling"</description> 
+      </table>
+ </table>
 
 </rom>
 
@@ -516,6 +613,7 @@
          <year>2004</year>
          <flashmethod>wrx04</flashmethod>
          <memmodel>unknown</memmodel>
+         <obsolete>true</obsolete>
       </romid>
       
       <table name="IGN - Base Timing" storageaddress="0x293EB"> 
@@ -526,8 +624,8 @@
       <table name="IGN - Correction" storageaddress="0x298BD">
          <table type="X Axis" storageaddress="0x298A1"/>
          <table type="Y Axis" storageaddress="0x29880"/>
-      </table> 
- 
+      </table>
+
       <table name="BOOST - WG DC (MT)" storageaddress="0x2A68E">
          <table type="X Axis" storageaddress="0x2A67C" />
          <table type="Y Axis" storageaddress="0x2A66B" />
@@ -548,9 +646,9 @@
          <table type="Y Axis" storageaddress="0x28EED" />
       </table>
 
-      <table name="EGT Limit" storageaddress="0x2AFFC">
-         <table type="X Axis" storageaddress="0x2AFF6" />
-         <table type="Y Axis" storageaddress="0x2AFF1" />
+      <table name="EGT Limit" storageaddress="0x2AFFA">
+         <table type="X Axis" storageaddress="0x2AFEF" />
+         <table type="Y Axis" storageaddress="0x2AFF4" />
       </table>
 
       
@@ -568,18 +666,13 @@
       <table name="Injector Pulse Width" storageaddress="0x286C3" />
       <table name="Boost Speed Limiting" storageaddress="0x2A7DC" />
       <table name="Fuel Speed Limiting" storageaddress="0x291E9" />
-      
+      <table name="CEL - MAF Threshold" storageaddress="0x2AD7C" />      
       <table name="MAF Sensor Scaling" storageaddress="0x2808A">
         <table type="Y Axis" storageaddress="0x28028" />
         </table>
 
-      <table name="Boost Limit (CEL) ?" storageaddress="0x2AECE">
-	<table type="Y Axis" storageaddress="0x2AECA" />
-	</table>
-
-      <table name="Boost Limit (Fuel Cut) ?" storageaddress="0x291F9">
-	<table type="Y Axis" storageaddress="0x291F5" />
-	</table>
+      <table name="Boost Limit (CEL)" storageaddress="0x2AEE1" />
+      <table name="Boost Limit (Fuel Cut)" storageaddress="0x291F9" />
 
       <table name="Tip-In Enrichment" storageaddress="0x29107">
 	<table type="Y Axis" storageaddress="0x290E5" />
@@ -590,6 +683,8 @@
       <table name="AM - Boost Disable" storageaddress="0x2A7EF" />
       <table name="AM - Fuel Map Switch Threshold" storageaddress="0x28DCC" />
       <table name="OL TPS Threshold" storageaddress="0x28D5A"/>
+      <table name="CL TPS Min Enter" storageaddress="0x28A8E"/>
+      <table name="CL Cruise AFR" storageaddress="0x0F3E8"/>
       <table name="CL Min Coolant Temp" storageaddress="0x28D60" />
       <table name="CL Max EGT" storageaddress="0x28D68" /> 
       <table name="CL Max EGT - High Det" storageaddress="0x28D6A" /> 
@@ -599,10 +694,10 @@
       <table name="CL Max MPH Increasing" storageaddress="0x28D67" />
       <table name="CL Max MPH Trigger" storageaddress="0x28D6B"/>
       <table name="CL Modified Load" storageaddress="0x28D5D" />
-      <table name="CL Delay A" storageaddress="0x28D72" />
-      <table name="CL Delay B" storageaddress="0x28D7A" />
-      <table name="CL Delay C" storageaddress="0x28D82" />
-      <table name="CL Delay D" storageaddress="0x28D8A" />
+      <table name="CL Delay A - Inc RPM" storageaddress="0x28D72" />
+      <table name="CL Delay B - Dec RPM" storageaddress="0x28D7A" />
+      <table name="CL Delay C - Inc MPH" storageaddress="0x28D82" />
+      <table name="CL Delay D - Dec MPH" storageaddress="0x28D8A" />
       <table name="IDLE - Min Speed Startup (AT)" storageaddress="0x29FAA" />
       <table name="IDLE - Min Speed Startup (MT)" storageaddress="0x29FB4" />
       <table name="IDLE - Min Speed A/C (AT)" storageaddress="0x29D9F" />
@@ -618,17 +713,13 @@
          <table type="Y Axis" storageaddress="0x2A78F" /> 
       </table>
 
-      <table name="BOOST - Compensation (Atmospheric Pressure)" storageaddress="0x2A774"> 
-         <table type="Y Axis" storageaddress="0x2A75D" /> 
-      </table>
+      <table name="BOOST - Compensation (Atmospheric Pressure)" storageaddress="0x2A774" /> 
 
       <table name="Wastegate Duty Compensation (Speed)" storageaddress="0x29A33"> 
          <table type="Y Axis" storageaddress="0x29A11" /> 
       </table>
 
-      <table name="Wastegate Duty Compensation (Atmospheric Pressure)" storageaddress="0x2A6D4"> 
-         <table type="Y Axis" storageaddress="0x2A6D9" /> 
-      </table>    
+      <table name="Wastegate Duty Compensation (Atmospheric Pressure)" storageaddress="0x2A6D4" /> 
 
       <table name="Wastegate Duty Compensation (Intake Temp)" storageaddress="0x2A6DE" />
 
@@ -637,7 +728,16 @@
       <table name="CEL - P0137" storageaddress="0x2C478" />
       <table name="CEL - P0138" storageaddress="0x2C490" />
       <table name="CEL - P0139" storageaddress="0x2C3F0" />
-      <table name="CEL - P0420" storageaddress="0x2C40C" /> 
+      <table name="CEL - P0420" storageaddress="0x2C40C" />
+      <table name="CEL - P0545" storageaddress="0x2C5E0" />
+      <table name="CEL - P0546" storageaddress="0x2C5E4" />
+      <table name="CEL - P1301" storageaddress="0x2C448" />
+      <table name="CEL - P1312" storageaddress="0x2C5E8" />
+      <table name="CEL - P1544" storageaddress="0x2C5EC" />
+
+      <table name="Front o2 Scaling" storageaddress="0x282AF">
+	<table type="Y Axis" storageaddress="0x28293" />
+	</table>
 
 </rom>
    
@@ -647,6 +747,15 @@
 		     <internalidaddress>200</internalidaddress>
 		     <internalidstring>A4TF800E</internalidstring>
 	    </romid>
+
+      <table name="EGT Limit" storageaddress="0x2AFFE">
+         <table type="X Axis" storageaddress="0x2AFF8" />
+         <table type="Y Axis" storageaddress="0x2AFF3" />
+      </table>
+
+      <table name="Boost Limit (CEL)" storageaddress="0x2AECE" />
+      <table name="CL Cruise AFR" storageaddress="0x1F2C4"/>
+
    </rom>
    
    <rom base="A4TF400E">
@@ -654,6 +763,7 @@
 	       <xmlid>A4TF300E</xmlid>
 		     <internalidaddress>200</internalidaddress>
 		     <internalidstring>A4TF300E</internalidstring>
+		<obsolete>true</obsolete>
 	    </romid>
    </rom>
    
@@ -662,13 +772,17 @@
 	       <xmlid>A4TF500F</xmlid>
     		 <internalidaddress>200</internalidaddress>
 		     <internalidstring>A4TF500F</internalidstring>
+		<obsolete>true</obsolete>
 	    </romid>
       
-	<table name="Boost Limit (CEL) ?" storageaddress="0x2AEE1">
-	<table type="Y Axis" storageaddress="0x2AEDD" />
-	</table>
+	<table name="Boost Limit (CEL)" storageaddress="0x2AEE1" />
+        <table name="CL Cruise AFR" storageaddress="0x0F3E2"/>
+        <table name="Coarse Ignition Range (Load)" storageaddress="0x29996" />
 
-      <table name="Coarse Ignition Range (Load)" storageaddress="0x29996" />
+      <table name="EGT Limit" storageaddress="0x2AFFA">
+         <table type="X Axis" storageaddress="0x2AFEF" />
+         <table type="Y Axis" storageaddress="0x2AFF4" />
+      </table>
 
    </rom>  
 
@@ -677,16 +791,15 @@
 	       <xmlid>A4TF510F</xmlid>
 		     <internalidaddress>200</internalidaddress>
 		     <internalidstring>A4TF510F</internalidstring>
+		<obsolete>true</obsolete>
 	    </romid>
-      <table name="EGT Limit" storageaddress="0x2B002">
-         <table type="X Axis" storageaddress="0x2AFFC" />
-         <table type="Y Axis" storageaddress="0x2AFF7" />
+      <table name="EGT Limit" storageaddress="0x2B004">
+         <table type="X Axis" storageaddress="0x2AFF9" />
+         <table type="Y Axis" storageaddress="0x2AFFE" />
       </table>
 
-	<table name="Boost Limit (CEL) ?" storageaddress="0x2AEE1">
-	<table type="Y Axis" storageaddress="0x2AEDD" />
-	</table>
-
+	<table name="Boost Limit (CEL)" storageaddress="0x2AEE1" />
+        <table name="CL Cruise AFR" storageaddress="0x0F22C"/>
    </rom>  
    
    <rom base="A4TF400E">
@@ -695,6 +808,27 @@
 		     <internalidaddress>200</internalidaddress>
 		     <internalidstring>A4TF800F</internalidstring>
 	    </romid>
+
+      <table name="EGT Limit" storageaddress="0x2AFFE">
+         <table type="X Axis" storageaddress="0x2AFF8" />
+         <table type="Y Axis" storageaddress="0x2AFF3" />
+      </table>
+
+      <table name="CL Cruise AFR" storageaddress="0x1F2C4"/>
+      <table name="Boost Limit (CEL)" storageaddress="0x2AECE" />
+
+      <table name="CEL - P0037" storageaddress="0x2C574" />
+      <table name="CEL - P0038" storageaddress="0x2C56C" />
+      <table name="CEL - P0137" storageaddress="0x2C538" />
+      <table name="CEL - P0138" storageaddress="0x2C550" />
+      <table name="CEL - P0139" storageaddress="0x2C4B0" />
+      <table name="CEL - P0420" storageaddress="0x2C4CC" />
+      <table name="CEL - P0545" storageaddress="0x2C6A0" />
+      <table name="CEL - P0546" storageaddress="0x2C6A4" />
+      <table name="CEL - P1301" storageaddress="0x2C508" />
+      <table name="CEL - P1312" storageaddress="0x2C6A8" />
+      <table name="CEL - P1544" storageaddress="0x2C6AC" /> 
+
    </rom>
    
  <rom base="WRXBASE">
@@ -741,13 +875,13 @@
          <table type="Y Axis" storageaddress="0x28EED" />
       </table>
       
-      <table name="EGT Limit" storageaddress="0x2B01C">
-         <table type="X Axis" storageaddress="0x2B016" />
-         <table type="Y Axis" storageaddress="0x2B011" />
+      <table name="EGT Limit" storageaddress="0x2B01E">
+         <table type="X Axis" storageaddress="0x2B013" />
+         <table type="Y Axis" storageaddress="0x2B018" />
       </table>
       
       <table name="Rev Limit" storageaddress="0x291C8" />
-      <table name="Rev Limit - IGN Retard" storageaddress="0x2971B" />
+      <table name="Rev Limit - IGN Retard" storageaddress="0x29735" />
       <table name="Knock Detection Range (RPM)" storageaddress="0x299E2" />
       <table name="Knock Detection - Min Load" storageaddress="0x299EA" />
       <table name="Knock Learning Range (RPM)" storageaddress="0x299FF" />
@@ -765,13 +899,9 @@
         <table type="Y Axis" storageaddress="0x28028" />
         </table>
 
-	<table name="Boost Limit (CEL) ?" storageaddress="0x2AEFB">
-	<table type="Y Axis" storageaddress="0x2AEF7" />
-	</table>
+      <table name="Boost Limit (CEL)" storageaddress="0x2AEFB" />
 
-     <table name="Boost Limit (Fuel Cut) ?" storageaddress="0x291F9">
-	<table type="Y Axis" storageaddress="0x291F5" />
-	</table>
+     <table name="Boost Limit (Fuel Cut)" storageaddress="0x291F9" />
 
       <table name="Tip-In Enrichment" storageaddress="0x29107">
 	<table type="Y Axis" storageaddress="0x290E5" />
@@ -782,6 +912,8 @@
       <table name="AM - Boost Disable" storageaddress="0x2A809" />
       <table name="AM - Fuel Map Switch Threshold" storageaddress="0x28DCC" />
       <table name="OL TPS Threshold" storageaddress="0x28D5A" />
+      <table name="CL TPS Min Enter" storageaddress="0x28A8E"/>
+      <table name="CL Cruise AFR" storageaddress="0x2F4EC"/>
       <table name="CL Min Coolant Temp" storageaddress="0x28D60" />
       <table name="CL Max EGT" storageaddress="0x28D68" /> 
       <table name="CL Max EGT - High Det" storageaddress="0x28D6A" />
@@ -791,10 +923,10 @@
       <table name="CL Max MPH Increasing" storageaddress="0x28D67" />
       <table name="CL Max MPH Trigger" storageaddress="0x28D6B" />
       <table name="CL Modified Load" storageaddress="0x28D5D" />
-      <table name="CL Delay A" storageaddress="0x28D72" />
-      <table name="CL Delay B" storageaddress="0x28D7A" />
-      <table name="CL Delay C" storageaddress="0x28D82" />
-      <table name="CL Delay D" storageaddress="0x28D8A" />
+      <table name="CL Delay A - Inc RPM" storageaddress="0x28D72" />
+      <table name="CL Delay B - Dec RPM" storageaddress="0x28D7A" />
+      <table name="CL Delay C - Inc MPH" storageaddress="0x28D82" />
+      <table name="CL Delay D - Dec MPH" storageaddress="0x28D8A" />
       <table name="IDLE - Min Speed Startup (AT)" storageaddress="0x29FC4" />
       <table name="IDLE - Min Speed Startup (MT)" storageaddress="0x29FCE" />
       <table name="IDLE - Min Speed A/C (AT)" storageaddress="0x29DB9" />
@@ -810,20 +942,31 @@
          <table type="Y Axis" storageaddress="0x2A7A9" /> 
       </table>
 
-      <table name="BOOST - Compensation (Atmospheric Pressure)" storageaddress="0x2A78E"> 
-         <table type="Y Axis" storageaddress="0x2A777" /> 
-      </table>
+      <table name="BOOST - Compensation (Atmospheric Pressure)" storageaddress="0x2A78E" /> 
 
       <table name="Wastegate Duty Compensation (Speed)" storageaddress="0x29A4D"> 
          <table type="Y Axis" storageaddress="0x29A2B" /> 
       </table>
 
-      <table name="Wastegate Duty Compensation (Atmospheric Pressure)" storageaddress="0x2A6ED"> 
-         <table type="Y Axis" storageaddress="0x2A6CB" /> 
-      </table>    
+      <table name="Wastegate Duty Compensation (Atmospheric Pressure)" storageaddress="0x2A6EE" /> 
 
-      <table name="Wastegate Duty Compensation (Intake Temp)" storageaddress="0x2A6F7" /> 
+      <table name="Wastegate Duty Compensation (Intake Temp)" storageaddress="0x2A6F7" />
 
+      <table name="CEL - P0037" storageaddress="0x2C534" />
+      <table name="CEL - P0038" storageaddress="0x2C52C" />
+      <table name="CEL - P0137" storageaddress="0x2C4F8" />
+      <table name="CEL - P0138" storageaddress="0x2C510" />
+      <table name="CEL - P0139" storageaddress="0x2C470" />
+      <table name="CEL - P0420" storageaddress="0x2C48C" />
+      <table name="CEL - P0545" storageaddress="0x2C660" />
+      <table name="CEL - P0546" storageaddress="0x2C664" />
+      <table name="CEL - P1301" storageaddress="0x2C4C8" />
+      <table name="CEL - P1312" storageaddress="0x2C668" />
+      <table name="CEL - P1544" storageaddress="0x2C66C" /> 
+
+      <table name="Front o2 Scaling" storageaddress="0x282AF">
+	<table type="Y Axis" storageaddress="0x28293" />
+	</table>
 </rom>
 
    <rom base="A4TF520F">
@@ -846,6 +989,7 @@
          <year>2002</year>
          <flashmethod>wrx02</flashmethod>
          <memmodel>unknown</memmodel>
+	 <obsolete>true</obsolete>
      </romid>      
 
       <table name="FUEL - Low Detonation" storageaddress="0x293A4" sizex="15">
@@ -887,15 +1031,11 @@
       <table name="Coarse Ignition Range (Load)" storageaddress="0x2A1F7" />      
       <table name="Boost Speed Limiting" storageaddress="0x2B522" />
       <table name="Fuel Speed Limiting" storageaddress="0x298D4" />
-      <table name="Boost Limit (CEL) ?" storageaddress="0x2BB80" />
-      <table name="Boost Limit (Fuel Cut) ?" storageaddress="0x298E3" />      
+      <table name="Boost Limit (CEL)" storageaddress="0x2BB80" />
+      <table name="Boost Limit (Fuel Cut)" storageaddress="0x298E3" />      
       <table name="CL Min Coolant Temp" storageaddress="0x292BB" />
       <table name="IAM - Initial" storageaddress="0x2A1EE" />
 
-      <table name="test" storageaddress="0x2DA8A" >
-         <table type="X Axis" storageaddress="0x2DB16" />
-         <table type="Y Axis" storageaddress="0x2DA5E" />
-      </table>      
    </rom>
    
    <rom base="A4SGC00C">
@@ -918,7 +1058,7 @@
          <year>2003</year>
          <flashmethod>wrx02</flashmethod>
          <memmodel>unknown</memmodel>
-		 <obsolete>true</obsolete>
+	 <obsolete>true</obsolete>
       </romid>   
  
      <table name="FUEL - Low Detonation" storageaddress="0x28E12" sizex="14" sizey="16">
@@ -946,9 +1086,9 @@
          <table type="Y Axis" storageaddress="0x2A711" />
       </table>
 
-      <table name="EGT Limit" storageaddress="0x2B0AF">
-         <table type="X Axis" storageaddress="0x2B0A9" />
-         <table type="Y Axis" storageaddress="0x2B0A4" />
+      <table name="EGT Limit" storageaddress="0x2B0B1">
+         <table type="X Axis" storageaddress="0x2B0A6" />
+         <table type="Y Axis" storageaddress="0x2B0AB" />
       </table>
    
       <table name="MAF Sensor Scaling" storageaddress="0x2808A">
@@ -961,8 +1101,8 @@
 	<table type="Y Axis" storageaddress="0x290EB" />
 	</table>
 
-      <table name="Boost Limit (CEL) ?" storageaddress="0x2AF6A" /> 
-      <table name="Boost Limit (Fuel Cut) ?" storageaddress="0x291FF" />            
+      <table name="Boost Limit (CEL)" storageaddress="0x2AF6A" /> 
+      <table name="Boost Limit (Fuel Cut)" storageaddress="0x291FF" />            
       <table name="Injector Flow Scaling" storageaddress="0x28699" />
       <table name="Injector Pulse Width" storageaddress="0x286A1" /> 
       <table name="Rev Limit" storageaddress="0x291CE" /> 
@@ -983,18 +1123,19 @@
       <table name="AM - Fuel Map Switch Threshold" storageaddress="0x28DD1" />
       <table name="OL TPS Threshold" storageaddress="0x28D43"/>
       <table name="CL Min Coolant Temp" storageaddress="0x28D39" />
+      <table name="CL TPS Min Enter" storageaddress="0x28A6C"/>
+      <table name="CL Cruise AFR" storageaddress="0x157E2"/>
       <table name="CL Max EGT" storageaddress="0x28D49" />
-      <table name="CL Max EGT - High Det" storageaddress="0x28D4B" /> 
       <table name="CL Max RPM Decreasing" storageaddress="0x28D3B" />
       <table name="CL Max RPM Increasing" storageaddress="0x28D3D" />
       <table name="CL Max MPH Decreasing" storageaddress="0x28D3F" />
       <table name="CL Max MPH Increasing" storageaddress="0x28D40" />
       <table name="CL Max MPH Trigger" storageaddress="0x28D44"/>
-      <table name="CL Modified Load" storageaddress="0x28D36" />
-      <table name="CL Delay A" storageaddress="0x28D51" />
-      <table name="CL Delay B" storageaddress="0x28D59" />
-      <table name="CL Delay C" storageaddress="0x28D61" />
-      <table name="CL Delay D" storageaddress="0x28D69" />
+      <table name="CL Modified Load - Bugeye" storageaddress="0x28D91" />
+      <table name="CL Delay A - Inc RPM" storageaddress="0x28D51" />
+      <table name="CL Delay B - Dec RPM" storageaddress="0x28D59" />
+      <table name="CL Delay C - Inc MPH" storageaddress="0x28D61" />
+      <table name="CL Delay D - Dec MPH" storageaddress="0x28D69" />
       <table name="IDLE - Min Speed Startup (AT)" storageaddress="0x29FAE" />
       <table name="IDLE - Min Speed Startup (MT)" storageaddress="0x29FB8" />
       <table name="IDLE - Min Speed A/C (AT)" storageaddress="0x29DA3" />
@@ -1010,19 +1151,31 @@
         <table type="Y Axis" storageaddress="0x2A79F" /> 
       </table>
 
-      <table name="BOOST - Compensation (Atmospheric Pressure)" storageaddress="0x2A784"> 
-         <table type="Y Axis" storageaddress="0x2A76D" /> 
-      </table>
+      <table name="BOOST - Compensation (Atmospheric Pressure)" storageaddress="0x2A784" /> 
 
       <table name="Wastegate Duty Compensation (Speed)" storageaddress="0x29A37"> 
          <table type="Y Axis" storageaddress="0x29A15" /> 
       </table>
 
-      <table name="Wastegate Duty Compensation (Atmospheric Pressure)" storageaddress="0x2A6E4"> 
-         <table type="Y Axis" storageaddress="0x2A6E9" /> 
-      </table>    
+      <table name="Wastegate Duty Compensation (Atmospheric Pressure)" storageaddress="0x2A6E4" /> 
 
-      <table name="Wastegate Duty Compensation (Intake Temp)" storageaddress="0x2A6F1" /> 
+      <table name="Wastegate Duty Compensation (Intake Temp)" storageaddress="0x2A6F1" />
+
+      <table name="CEL - P0037" storageaddress="0x2C9B4" />
+      <table name="CEL - P0038" storageaddress="0x2C9AC" />
+      <table name="CEL - P0137" storageaddress="0x2C978" />
+      <table name="CEL - P0138" storageaddress="0x2C990" />
+      <table name="CEL - P0139" storageaddress="0x2C8F0" />
+      <table name="CEL - P0420" storageaddress="0x2C90C" />
+      <table name="CEL - P0545" storageaddress="0x2CAE0" />
+      <table name="CEL - P0546" storageaddress="0x2CAE4" />
+      <table name="CEL - P1301" storageaddress="0x2C948" />
+      <table name="CEL - P1312" storageaddress="0x2CAE8" />
+      <table name="CEL - P1544" storageaddress="0x2CAEC" />
+
+      <table name="Front o2 Scaling" storageaddress="0x2828D">
+	<table type="Y Axis" storageaddress="0x28271" />
+	</table> 
  
    </rom>
    
@@ -1080,6 +1233,11 @@
          <table type="Y Axis" storageaddress="0x2B44B" />
       </table>
 
+      <table name="EGT Limit" storageaddress="0x2BC9E">
+         <table type="X Axis" storageaddress="0x2BC93" />
+         <table type="Y Axis" storageaddress="0x2BC98" />
+      </table>
+
       <table name="Rev Limit" storageaddress="0x298B4" />
       <table name="Rev Limit - IGN Retard" storageaddress="0x29F7B" />
       <table name="Boost Speed Limiting" storageaddress="0x2B522" />
@@ -1101,13 +1259,8 @@
 
       <table name="CEL - MAF Threshold" storageaddress="0x2B94B" />
 
-      <table name="Boost Limit (CEL) ?" storageaddress="0x2BB85">
-	<table type="Y Axis" storageaddress="0x2BB81" />
-	</table>
-
-      <table name="Boost Limit (Fuel Cut) ?" storageaddress="0x298E4">
-	<table type="Y Axis" storageaddress="0x298E0" />
-	</table>
+      <table name="Boost Limit (CEL)" storageaddress="0x2BB85" />
+      <table name="Boost Limit (Fuel Cut)" storageaddress="0x298E4" />
 
       <table name="Tip-In Enrichment" storageaddress="0x29796">
 	<table type="Y Axis" storageaddress="0x29774" />
@@ -1119,18 +1272,19 @@
       <table name="AM - Fuel Map Switch Threshold" storageaddress="0x29353" />
       <table name="OL TPS Threshold" storageaddress="0x292C5"/>
       <table name="CL Min Coolant Temp" storageaddress="0x292BB" />
+      <table name="CL TPS Min Enter" storageaddress="0x28F39"/>
+      <table name="CL Cruise AFR" storageaddress="0x15FEA"/>
       <table name="CL Max EGT" storageaddress="0x292CB" />
-      <table name="CL Max EGT - High Det" storageaddress="0x292CD" /> 
       <table name="CL Max RPM Decreasing" storageaddress="0x292BD" />
       <table name="CL Max RPM Increasing" storageaddress="0x292BF" />
       <table name="CL Max MPH Decreasing" storageaddress="0x292C1" />
       <table name="CL Max MPH Increasing" storageaddress="0x292C2" />
       <table name="CL Max MPH Trigger" storageaddress="0x292C6"/>
-      <table name="CL Modified Load" storageaddress="0x292B8" />
-      <table name="CL Delay A" storageaddress="0x292D3" />
-      <table name="CL Delay B" storageaddress="0x292DB" />
-      <table name="CL Delay C" storageaddress="0x292E3" />
-      <table name="CL Delay D" storageaddress="0x292EB" />
+      <table name="CL Modified Load - Bugeye" storageaddress="0x29313" />
+      <table name="CL Delay A - Inc RPM" storageaddress="0x292D3" />
+      <table name="CL Delay B - Dec RPM" storageaddress="0x292DB" />
+      <table name="CL Delay C - Inc MPH" storageaddress="0x292E3" />
+      <table name="CL Delay D - Dec MPH" storageaddress="0x292EB" />
       <table name="IDLE - Min Speed Startup (AT)" storageaddress="0x2AAFC" />
       <table name="IDLE - Min Speed Startup (MT)" storageaddress="0x2AB04" />
       <table name="IDLE - Min Speed A/C (AT)" storageaddress="0x2A8A2" />
@@ -1146,19 +1300,29 @@
          <table type="Y Axis" storageaddress="0x2B4D9" /> 
       </table>
 
-      <table name="BOOST - Compensation (Atmospheric Pressure)" storageaddress="0x2B4BE"> 
-         <table type="Y Axis" storageaddress="0x2B4A7" /> 
-      </table>
+      <table name="BOOST - Compensation (Atmospheric Pressure)" storageaddress="0x2B4BE" /> 
 
       <table name="Wastegate Duty Compensation (Speed)" storageaddress="0x2A2B8"> 
          <table type="Y Axis" storageaddress="0x2A296" /> 
       </table>
 
-      <table name="Wastegate Duty Compensation (Atmospheric Pressure)" storageaddress="0x2B3B1"> 
-         <table type="Y Axis" storageaddress="0x2B3B6" /> 
-      </table>    
+      <table name="Wastegate Duty Compensation (Atmospheric Pressure)" storageaddress="0x2B3B1" /> 
 
-      <table name="Wastegate Duty Compensation (Intake Temp)" storageaddress="0x2B3BE" /> 
+      <table name="Wastegate Duty Compensation (Intake Temp)" storageaddress="0x2B3BE" />
+
+      <table name="CEL - P0037" storageaddress="0x2DBB4" />
+      <table name="CEL - P0038" storageaddress="0x2DBAC" />
+      <table name="CEL - P0139" storageaddress="0x2DAF0" />
+      <table name="CEL - P0420" storageaddress="0x2DB0C" />
+      <table name="CEL - P0545" storageaddress="0x2DCE0" />
+      <table name="CEL - P0546" storageaddress="0x2DCE4" />
+      <table name="CEL - P1301" storageaddress="0x2DB48" />
+      <table name="CEL - P1312" storageaddress="0x2DCE8" />
+      <table name="CEL - P1544" storageaddress="0x2DCEC" />
+
+      <table name="Front o2 Scaling" storageaddress="0x2855F">
+	<table type="Y Axis" storageaddress="0x28543" />
+	</table> 
 
    </rom>   
    
@@ -1167,36 +1331,9 @@
          <xmlid>A4SG900C</xmlid>
          <internalidaddress>200</internalidaddress>
          <internalidstring>A4SG900C</internalidstring>
-         <caseid>?</caseid>
-         <ecuid>1</ecuid>
-         <market>?</market>
-         <transmission>?</transmission>
          <year>2002</year>
-         <flashmethod>wrx02</flashmethod>
-         <memmodel>unknown</memmodel>
+         <obsolete>true</obsolete>
       </romid>   
-      <table name="FUEL - Low Detonation" storageaddress="0x293A4" sizex="16" sizey="18">
-         <table type="X Axis" storageaddress="0x29382" />
-         <table type="Y Axis" storageaddress="0x2935D" />
-      </table>   
-      <table name="IGN - Base Timing" storageaddress="0x29BF7" sizey="18"> 
-         <table type="X Axis" storageaddress="0x29BD5" /> 
-         <table type="Y Axis" storageaddress="0x29BB0" /> 
-      </table>       
-      <table name="IGN - Correction" storageaddress="0x2A18C" sizex="16" sizey="18">
-         <table type="X Axis" storageaddress="0x2A16A" />
-         <table type="Y Axis" storageaddress="0x2A145" />
-      </table> 
-      <table name="BOOST - WG DC (MT)" storageaddress="0x2B39E">
-         <table type="X Axis" storageaddress="0x2B38C" />
-         <table type="Y Axis" storageaddress="0x2B37B" />
-      </table>
-      <table name="BOOST - Target PSI (MT)" storageaddress="0x2B499">
-         <table type="X Axis" storageaddress="0x2B487" />
-         <table type="Y Axis" storageaddress="0x2B474" />
-      </table>
-
-
    </rom>  
    
    <rom base="WRXBASE">
@@ -1212,6 +1349,7 @@
          <flashmethod>wrx02</flashmethod>
          <memmodel>unknown</memmodel>
          <filesize>160kb</filesize>
+         <obsolete>true</obsolete>
       </romid>   
       <table name="FUEL - Low Detonation" storageaddress="0x20CB7" sizex="16" sizey="16">
          <table type="X Axis" storageaddress="0x20C95" />

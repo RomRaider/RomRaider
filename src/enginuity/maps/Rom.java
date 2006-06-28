@@ -1,16 +1,12 @@
 package enginuity.maps;
 
-import enginuity.maps.RomID;
-import enginuity.maps.Table;
 import enginuity.ECUEditor;
+import enginuity.swing.JProgressPane;
 import enginuity.xml.TableNotFoundException;
-import java.awt.GridLayout;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Vector;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 //import Enginuity.
 
@@ -53,9 +49,14 @@ public class Rom implements Serializable {
         }        
     }
     
-    public void populateTables(byte[] binData) {
+    public void populateTables(byte[] binData, JProgressPane progress) {
         this.binData = binData;
         for (int i = 0; i < getTables().size(); i++) {
+
+            // update progress
+            int currProgress = (int)((double)i / (double)getTables().size() * 40);
+            progress.update("Populating " + tables.get(i).getName() + " table...", 40 + currProgress);
+            
             try {
                 // if storageaddress has not been set (or is set to 0) omit table
                 if (tables.get(i).getStorageAddress() != 0) {

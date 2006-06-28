@@ -3,17 +3,21 @@
 package enginuity.xml;
 
 import enginuity.maps.*;
+import enginuity.swing.JProgressPane;
 import javax.management.modelmbean.XMLParseException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class DOMRomUnmarshaller {
     
+    private JProgressPane progress;
+    
     public DOMRomUnmarshaller() { }
     
-    public Rom unmarshallXMLDefinition (Node rootNode, byte[] input) throws RomNotFoundException, XMLParseException, StackOverflowError, Exception {
+    public Rom unmarshallXMLDefinition (Node rootNode, byte[] input, JProgressPane progress) throws RomNotFoundException, XMLParseException, StackOverflowError, Exception {
         Node n;
         NodeList nodes = rootNode.getChildNodes();
+        this.progress = progress;
 
         for (int i = 0; i < nodes.getLength(); i++) { 
             n = nodes.item(i);
@@ -47,6 +51,8 @@ public class DOMRomUnmarshaller {
 	Node n;
 	NodeList nodes = rootNode.getChildNodes();
         
+        progress.update("Creating tables...", 15);
+        
         if (!unmarshallAttribute(rootNode, "base", "none").equalsIgnoreCase("none")) {
             rom = getBaseRom(rootNode.getParentNode(), unmarshallAttribute(rootNode, "base", "none"), rom);
             rom.getRomID().setObsolete(false);
@@ -54,6 +60,10 @@ public class DOMRomUnmarshaller {
 	
 	for (int i = 0; i < nodes.getLength(); i++) {
 	    n = nodes.item(i);
+            
+            // update progress
+            int currProgress = (int)((double)i / (double)nodes.getLength() * 40);
+            progress.update("Creating tables...", 10 + currProgress);
 
 	    if (n.getNodeType() == Node.ELEMENT_NODE) {              
 		if (n.getNodeName().equalsIgnoreCase("romid")) {

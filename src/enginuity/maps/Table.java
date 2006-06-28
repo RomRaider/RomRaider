@@ -12,6 +12,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -20,6 +21,8 @@ import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
@@ -66,6 +69,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected Table axisParent;   
     protected Color maxColor;
     protected Color minColor;
+    protected boolean isAxis = false;      
     
     public Table() {
         this.setLayout(borderLayout);
@@ -400,7 +404,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
     
     public void colorize() {
-        if (!isStatic) {
+        if (!isStatic && !isAxis) {
             int high = 0;
             int low  = 999999999;
             
@@ -429,7 +433,14 @@ public abstract class Table extends JPanel implements Serializable {
                     data[i].setBorder(new LineBorder(Color.BLACK, 1));
                 }
             }
-        }
+        } else { // is static/axis
+            for (int i = 0; i < getDataSize(); i++) {
+                data[i].setColor(axisParent.getRom().getContainer().getSettings().getAxisColor());
+                data[i].setOpaque(true);
+                data[i].setBorder(new LineBorder(Color.BLACK, 1));
+                data[i].setHorizontalAlignment(data[i].CENTER);
+            }
+        }  
     }
     
     public void setFrame(TableFrame frame) {
@@ -463,6 +474,7 @@ public abstract class Table extends JPanel implements Serializable {
                 if (data[i].isSelected()) data[i].setRealValue(realValue);
             }
         }
+        colorize();
     }
     
     public Rom getRom() {
@@ -733,13 +745,28 @@ public abstract class Table extends JPanel implements Serializable {
         parser.addVariable("x", toReal);
         parser.parseExpression(scale.getByteExpression());
         
-        if (parser.getValue() != 5 && container.getContainer().getSettings().isCalcConflictWarning()) {
-            new JOptionPane().showMessageDialog(container.getContainer(), 
-                    "The real value and byte value conversion expressions for\n" +
-                    "table " + name +
-                    " are invalid.\n\n" +
-                    "To real value: " + scale.getExpression() + "\n" +
-                    "To byte: " + scale.getByteExpression(), "Byte Conversion Error", JOptionPane.ERROR_MESSAGE);
+        if ((int)Math.round(parser.getValue()) != 5 && container.getContainer().getSettings().isCalcConflictWarning()) {
+            
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(3, 1));
+            panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
+            panel.add(new JLabel("To real value: " + scale.getExpression() + "\n" +
+                    "To byte: " + scale.getByteExpression()));            
+            
+            JCheckBox check = new JCheckBox("Always display this message", true);
+            check.setHorizontalAlignment(check.RIGHT);
+            panel.add(check);
+                        
+            check.addActionListener( 
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        getRom().getContainer().getSettings().setCalcConflictWarning(((JCheckBox)e.getSource()).isSelected());            
+                    }
+                } 
+            );            
+            
+            new JOptionPane().showMessageDialog(container.getContainer(), panel,
+                    "Warning", JOptionPane.ERROR_MESSAGE);
         }        
     }
 }

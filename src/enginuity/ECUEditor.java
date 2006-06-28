@@ -11,29 +11,31 @@ import enginuity.swing.RomTreeNode;
 import enginuity.swing.TableTreeNode;
 import enginuity.swing.TableFrame;
 import enginuity.net.URL;
+import enginuity.swing.JProgressPane;
 import enginuity.xml.DOMSettingsBuilder;
 import enginuity.xml.DOMSettingsUnmarshaller;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import java.util.Vector;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 public class ECUEditor extends JFrame implements WindowListener {
     
@@ -42,7 +44,7 @@ public class ECUEditor extends JFrame implements WindowListener {
     private RomTree      imageList           = new RomTree(imageRoot);
     private Vector<Rom>  images              = new Vector<Rom>();
     private Settings     settings            = new Settings();
-    private String       version             = new String("0.2.7 Beta");
+    private String       version             = new String("0.2.8 Beta");
     private String       versionDate         = new String("4/12/2006");
     private String       titleText           = new String("Enginuity v" + version);
     private MDIDesktopPane rightPanel        = new MDIDesktopPane();    
@@ -107,7 +109,10 @@ public class ECUEditor extends JFrame implements WindowListener {
         
         DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
-            builder.buildSettings(settings, new File("./settings.xml"));
+            JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");
+                
+            builder.buildSettings(settings, new File("./settings.xml"), progress);
+            
         } catch (IOException ex) { }
     }
     public void windowOpened(WindowEvent e) { }
@@ -150,11 +155,23 @@ public class ECUEditor extends JFrame implements WindowListener {
         
         if (input.getRomID().isObsolete() && settings.isObsoleteWarning()) {
             JPanel infoPanel = new JPanel();
-            infoPanel.setLayout(new GridLayout(4, 1));
-            infoPanel.add(new JLabel("A newer version of this ECU revision exists."));
-            infoPanel.add(new JLabel("Please visit the following link to download the latest revision:"));
-            infoPanel.add(new JLabel());            
-            infoPanel.add(new URL(getSettings().getRomRevisionURL()));            
+            infoPanel.setLayout(new GridLayout(3, 1));
+            infoPanel.add(new JLabel("A newer version of this ECU revision exists. " +
+                    "Please visit the following link to download the latest revision:"));
+            infoPanel.add(new URL(getSettings().getRomRevisionURL()));
+            
+            JCheckBox check = new JCheckBox("Always display this message", true);
+            check.setHorizontalAlignment(check.RIGHT);
+            
+            check.addActionListener( 
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        settings.setObsoleteWarning(((JCheckBox)e.getSource()).isSelected());            
+                    }
+                } 
+            );
+            
+            infoPanel.add(check);
             new JOptionPane().showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", JOptionPane.INFORMATION_MESSAGE);
         }   
         input.setContainer(this);     
@@ -204,9 +221,8 @@ public class ECUEditor extends JFrame implements WindowListener {
         while (imageRoot.getChildCount() > 0) {
             ((Rom)images.get(0)).closeImage();
             images.remove(0);
+            imageRoot.remove(0);
         }
-        images.removeAllElements();
-        imageRoot.removeAllChildren();
         imageList.updateUI();
         setLastSelectedRom(null);
         rightPanel.removeAll();
@@ -249,4 +265,9 @@ public class ECUEditor extends JFrame implements WindowListener {
             images.get(i).setContainer(this);
         }
     }
+    
+    public void repaintPanel() {
+        rightPanel.repaint();
+        rightPanel.update(rightPanel.getGraphics());
+    }          
 }

@@ -3,6 +3,7 @@ package enginuity.xml;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import enginuity.Settings;
+import enginuity.swing.JProgressPane;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,20 +11,27 @@ import javax.imageio.metadata.IIOMetadataNode;
 
 public class DOMSettingsBuilder {
     
-    public  void buildSettings (Settings settings, File output) throws IOException {
+    public  void buildSettings (Settings settings, File output, JProgressPane progress) throws IOException {
         
         IIOMetadataNode settingsNode = new IIOMetadataNode("settings");
         
         // create settings
+        progress.update("Saving window settings...", 15);
         settingsNode.appendChild(buildWindow(settings));
+        progress.update("Saving URL settings...", 30);
         settingsNode.appendChild(buildURLs(settings));     
+        progress.update("Saving file settings...", 45);
         settingsNode.appendChild(buildFiles(settings));   
+        progress.update("Saving options...", 60);
         settingsNode.appendChild(buildOptions(settings));
+        progress.update("Saving display settings...", 75);
         settingsNode.appendChild(buildTableDisplay(settings));
         
         OutputFormat of = new OutputFormat("XML","ISO-8859-1",true);
         of.setIndent(1);
         of.setIndenting(true);
+        
+        progress.update("Writing to file...", 90);
         
         FileOutputStream fos = new FileOutputStream(output);        
         XMLSerializer serializer = new XMLSerializer(fos,of);

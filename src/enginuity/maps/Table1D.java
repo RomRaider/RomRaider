@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 
 public class Table1D extends Table implements Serializable {
     
-    private boolean isAxis = false;  
     private Color axisColor = new Color(255, 255, 255);
     
     public Table1D() {
@@ -54,13 +53,7 @@ public class Table1D extends Table implements Serializable {
     }    
     
     public void colorize() {
-        if (!isAxis) {
-            super.colorize();
-        } else {
-            for (int i = 0; i < this.getDataSize(); i++) {
-                data[i].setColor(getAxisColor());
-            }
-        }
+        super.colorize();   
     }  
     
     public void cursorUp() { 

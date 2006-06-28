@@ -1,9 +1,5 @@
 package enginuity.swing;
 
-import enginuity.swing.DebugPanel;
-import enginuity.swing.ECUImageFilter;
-import enginuity.swing.RomPropertyPanel;
-import enginuity.definitionbuilder.DefinitionBuilder;
 import enginuity.xml.RomNotFoundException;
 import enginuity.maps.Rom;
 import enginuity.xml.DOMRomUnmarshaller;
@@ -34,7 +30,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem  closeAll   = new JMenuItem("Close All Images");
     private JMenuItem  exit       = new JMenuItem("Exit");
     private JMenu      editMenu   = new JMenu("Edit");
-    private JMenuItem  tableDef   = new JMenuItem("Table Definition Generator");
     private JMenuItem  settings   = new JMenuItem("Settings");
     private JMenu      viewMenu   = new JMenu("View");
     private JMenuItem  romProperties = new JMenuItem("ECU Image Properties");
@@ -67,16 +62,12 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         closeImage.addActionListener(this);
         closeAll.addActionListener(this);
         exit.addActionListener(this);   
-        tableDef.addActionListener(this);
         
         add(editMenu);
         editMenu.setMnemonic('E');
-        tableDef.setMnemonic('T');
         settings.setMnemonic('S');
-        editMenu.add(tableDef);
         editMenu.add(new JSeparator());
         editMenu.add(settings);
-        tableDef.addActionListener(this);
         settings.addActionListener(this);
         
         
@@ -120,6 +111,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 new JOptionPane().showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
+            
         } else if (e.getSource() == saveImage) {
             try {
                 this.saveImage(parent.getLastSelectedRom());
@@ -127,15 +119,20 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 new JOptionPane().showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
+            
         } else if (e.getSource() == closeImage) {
             this.closeImage();
+            
         } else if (e.getSource() == closeAll) {
             this.closeAllImages();
+            
         } else if (e.getSource() == exit) {
             System.exit(0);
+            
         } else if (e.getSource() == romProperties) {
             new JOptionPane().showMessageDialog(parent, (Object)(new RomPropertyPanel(parent.getLastSelectedRom())),
                     parent.getLastSelectedRom().getRomIDString() + " Properties", JOptionPane.INFORMATION_MESSAGE);
+            
         } else if (e.getSource() == refreshImage) {
             try {
                 refreshImage();
@@ -144,8 +141,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 new JOptionPane().showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
-        } else if (e.getSource() == tableDef) {
-            new DefinitionBuilder(parent.getLastSelectedRom(), parent.getSettings().getLastImageDir());
+            
         } else if (e.getSource() == settings) {
             SettingsForm form = new SettingsForm(parent);
             form.setLocationRelativeTo(parent);
@@ -205,6 +201,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     
     public void openImage(File inputFile) throws XMLParseException, Exception {            
         try {     
+            parent.repaintPanel();
+            JProgressPane progress = new JProgressPane(parent, "Opening file...", "Parsing ECU definitions...");
+            
             InputSource src = new InputSource(new FileInputStream(parent.getSettings().getEcuDefinitionFile()));                
             DOMRomUnmarshaller domUms = new DOMRomUnmarshaller();
             DOMParser parser = new DOMParser();                
@@ -214,14 +213,20 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             byte[] input = new byte[fis.available()];                
             fis.read(input);     
             fis.close();
-
-            Rom rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input);
-            rom.populateTables(input);
+                        
+            progress.update("Finding ECU definition...", 10);
+            
+            Rom rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, progress);
+            progress.update("Populating tables...", 50);
+            rom.populateTables(input, progress);
             rom.setFileName(inputFile.getName());
-
-            parent.addRom(rom);
-            rom.setFullFileName(inputFile);
-
+            
+            progress.update("Finalizing...", 90);     
+            parent.addRom(rom);                   
+            rom.setFullFileName(inputFile);            
+            
+            progress.dispose();
+            
         } catch (RomNotFoundException ex) {
             new JOptionPane().showMessageDialog(parent, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
         } catch (StackOverflowError ex) {

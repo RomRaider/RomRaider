@@ -326,6 +326,7 @@ public class Table3D extends Table implements Serializable {
         }
         xAxis.setRealValue(realValue);
         yAxis.setRealValue(realValue);
+        colorize();
     }
     
     public void addKeyListener(KeyListener listener) {

@@ -74,13 +74,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
         }
         this.updateDisplayValue();
-        /*if (binValue > getOriginalValue()) {
-            this.setBorder(new LineBorder(increaseBorder, 2));
-        } else if (binValue < getOriginalValue()) {
-            this.setBorder(new LineBorder(decreaseBorder, 2));
-        } else {
-            this.setBorder(new LineBorder(Color.BLACK, 1));
-        }*/
     }
     
     public int getBinValue() {
@@ -145,6 +138,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void increment(int increment) {
         if (table.getScale().getIncrement() < 0) increment = 0 - increment;
         this.setBinValue(binValue + increment);
+        table.colorize();
     }
     
     public void setTable(Table table) {

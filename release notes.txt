@@ -5,20 +5,36 @@ Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested 
 Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
 
 
-0.2.7.1b Release Notes (4/12/2006)
---------------------------------
-There were a few small bugs with settings not saving properly. Fixed.
+0.2.7.3b Release Notes (4/17/2006)
+----------------------------------
+The next release was supposed to include table comparing, but I found more changes I wanted to make than I originally anticipated. Once again, a number of minor bugs have been fixed as well as a couple small new features. The major issue with 0.2.7.2b was false byte conversion warnings being generated. This has been fixed. Table comparing will be available in the next release, hopefully in the next week.
 
-
-0.2.7b Release Notes (4/12/2006)
---------------------------------
-The main goal of this release was fixing known issues and adding a settings panel. The settings panel now allows you to choose the way tables are displayed, which warnings will be displayed and specify system files. Settings are now stored in settings.xml -- the old method caused settings to be lost whenever a new feature was introduced with a release. A message will appear the first time you run the new version telling you Enginuity is creating a new settings file.
-
-Bug fixes are listed in the changes below. A memory usage issue still exists in 0.2.7b which. Opening or refreshing several images will continue to result in increased memory usage, even after an image is closed. This bug will be looked in to and should be fixed for the next release.
 
 
 Changes:
 --------
+0.2.7.3b (4/17/2006)
+--------------------
+- Fix border colors not showing changes from keyboard
+- Add progress indicators
+- Remove table definition generator
+- Fix refresh button closing images with same filename
+- Fix border/background of static axiis
+- Fix rounding problems causing false conflicts for conversion expressions
+- Fix set value not updating borders
+- Reset default settings option
+- Fix cell border not saving 
+- Improve warning messages
+- Fix ECU definition file settings not saving
+- Fix last image directory resetting
+- Fix updated cell border not updating
+
+
+0.2.7.2b (4/12/2006)
+--------------------
+- Fixed close all images
+
+
 0.2.7.1b (4/12/2006)
 --------------------
 - Fixed ECU definitions not saving

@@ -21,8 +21,25 @@ public class SettingsForm extends JFrame implements MouseListener {
         this.parent = parent;        
         settings = parent.getSettings();   
         initComponents(); 
+        initSettings();
+
+        maxColor.addMouseListener(this);
+        minColor.addMouseListener(this);
+        highlightColor.addMouseListener(this);
+        axisColor.addMouseListener(this);
+        increaseColor.addMouseListener(this);
+        decreaseColor.addMouseListener(this);
         
-        // set field values
+        btnOk.addMouseListener(this);
+        btnApply.addMouseListener(this);
+        btnCancel.addMouseListener(this);
+        btnEcuDefinitionBrowse.addMouseListener(this);
+        btnChooseFont.addMouseListener(this);
+        reset.addMouseListener(this);
+    }
+    
+    private void initSettings() {
+        
         ecuDefinitionFile.setText(this.settings.getEcuDefinitionFile().getAbsolutePath());
         
         obsoleteWarning.setSelected(settings.isObsoleteWarning());
@@ -36,24 +53,12 @@ public class SettingsForm extends JFrame implements MouseListener {
         axisColor.setBackground(settings.getAxisColor());
         increaseColor.setBackground(settings.getIncreaseBorder());
         decreaseColor.setBackground(settings.getDecreaseBorder());
-        maxColor.addMouseListener(this);
-        minColor.addMouseListener(this);
-        highlightColor.addMouseListener(this);
-        axisColor.addMouseListener(this);
-        increaseColor.addMouseListener(this);
-        decreaseColor.addMouseListener(this);
         
         cellWidth.setText(((int)settings.getCellSize().getWidth())+"");
         cellHeight.setText(((int)settings.getCellSize().getHeight())+"");
         
         btnChooseFont.setFont(settings.getTableFont());
         btnChooseFont.setText(settings.getTableFont().getFontName());
-        
-        btnOk.addMouseListener(this);
-        btnApply.addMouseListener(this);
-        btnCancel.addMouseListener(this);
-        btnEcuDefinitionBrowse.addMouseListener(this);
-        btnChooseFont.addMouseListener(this);
     }
     
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
@@ -89,6 +94,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         singleTableView = new javax.swing.JCheckBox();
         lblFont = new javax.swing.JLabel();
         btnChooseFont = new javax.swing.JButton();
+        reset = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Enginuity Settings");
@@ -174,6 +180,8 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         btnChooseFont.setText("Choose");
 
+        reset.setText("Restore Defaults");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -200,36 +208,47 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                        .add(lblAxis)
-                                        .add(lblHighlight)
-                                        .add(lblMin))
-                                    .add(lblMax))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, maxColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, minColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, highlightColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, axisColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(57, 57, 57)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(layout.createSequentialGroup()
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(lblDecrease)
-                                            .add(layout.createSequentialGroup()
-                                                .add(3, 3, 3)
-                                                .add(lblIncrease)))
+                                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                                .add(lblAxis)
+                                                .add(lblHighlight)
+                                                .add(lblMin))
+                                            .add(lblMax))
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(increaseColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(decreaseColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                            .add(org.jdesktop.layout.GroupLayout.TRAILING, maxColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(org.jdesktop.layout.GroupLayout.TRAILING, minColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(org.jdesktop.layout.GroupLayout.TRAILING, highlightColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(org.jdesktop.layout.GroupLayout.TRAILING, axisColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                                     .add(layout.createSequentialGroup()
-                                        .add(47, 47, 47)
-                                        .add(lblBorders))))
+                                        .add(53, 53, 53)
+                                        .add(lblCellSize)))
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(layout.createSequentialGroup()
+                                        .add(57, 57, 57)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(layout.createSequentialGroup()
+                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                    .add(lblDecrease)
+                                                    .add(layout.createSequentialGroup()
+                                                        .add(3, 3, 3)
+                                                        .add(lblIncrease)))
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                    .add(increaseColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                    .add(decreaseColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                            .add(layout.createSequentialGroup()
+                                                .add(47, 47, 47)
+                                                .add(lblBorders))
+                                            .add(btnChooseFont, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)))
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(lblFont)
+                                        .add(65, 65, 65))))
                             .add(layout.createSequentialGroup()
                                 .add(47, 47, 47)
-                                .add(lblBackgrounds)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 222, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                                .add(lblBackgrounds))))
                     .add(layout.createSequentialGroup()
                         .add(20, 20, 20)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
@@ -237,29 +256,19 @@ public class SettingsForm extends JFrame implements MouseListener {
                             .add(lblCellHeight))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(lblCellSize)
-                                .add(layout.createSequentialGroup()
-                                    .add(10, 10, 10)
-                                    .add(cellWidth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                            .add(cellHeight, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
-                                .add(133, 133, 133)
-                                .add(lblFont)
-                                .add(23, 23, 23))
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(87, 87, 87)
-                                .add(btnChooseFont, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                                .add(18, 18, 18)))))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(157, Short.MAX_VALUE)
-                .add(btnApply)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnOk)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnCancel)
+                                .add(10, 10, 10)
+                                .add(cellWidth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(cellHeight, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(reset)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 34, Short.MAX_VALUE)
+                        .add(btnApply)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnOk)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnCancel)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -326,7 +335,8 @@ public class SettingsForm extends JFrame implements MouseListener {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnCancel)
                     .add(btnOk)
-                    .add(btnApply))
+                    .add(btnApply)
+                    .add(reset))
                 .addContainerGap())
         );
         pack();
@@ -407,6 +417,10 @@ public class SettingsForm extends JFrame implements MouseListener {
                 btnChooseFont.setText(fc.getFont().getFontName());
             }            
             
+        } else if (e.getSource() == reset) {
+            settings = new Settings();
+            initSettings();
+            
         }
     }
     
@@ -482,6 +496,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JLabel maxColor;
     private javax.swing.JLabel minColor;
     private javax.swing.JCheckBox obsoleteWarning;
+    private javax.swing.JButton reset;
     private javax.swing.JCheckBox singleTableView;
     // End of variables declaration//GEN-END:variables
     
