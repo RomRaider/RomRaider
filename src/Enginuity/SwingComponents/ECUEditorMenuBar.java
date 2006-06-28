@@ -1,6 +1,7 @@
 package Enginuity.SwingComponents;
 
 import Enginuity.*;
+import Enginuity.DefinitionBuilder.DefinitionBuilder;
 import Enginuity.XML.RomNotFoundException;
 import Enginuity.Maps.Rom;
 import Enginuity.XML.DOMRomUnmarshaller;
@@ -28,34 +29,55 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenu      fileMenu   = new JMenu("File");
     private JMenuItem  openImage  = new JMenuItem("Open Image");
     private JMenuItem  saveImage  = new JMenuItem("Save Image");
+    private JMenuItem  refreshImage = new JMenuItem("Refresh Image");
     private JMenuItem  closeImage = new JMenuItem("Close Image");
     private JMenuItem  closeAll   = new JMenuItem("Close All Images");
     private JMenuItem  exit       = new JMenuItem("Exit");
+    private JMenu      editMenu   = new JMenu("Edit");
+    private JMenuItem  tableDef   = new JMenuItem("Table Definition Generator");
+    private JMenu      viewMenu   = new JMenu("View");
+    private JMenuItem  romProperties = new JMenuItem("ECU Image Properties");
     private ECUEditor  parent;
     
     public ECUEditorMenuBar(ECUEditor parent) {
         this.parent = parent;
         
-        add(fileMenu);        
+        add(fileMenu);
         fileMenu.setMnemonic('F');            
         openImage.setMnemonic('O');
         saveImage.setMnemonic('S');
+        refreshImage.setMnemonic('R');
         closeImage.setMnemonic('C');
         closeAll.setMnemonic('A');
         exit.setMnemonic('X');
         
-        openImage.addActionListener(this);
-        saveImage.addActionListener(this);
-        closeImage.addActionListener(this);
-        closeAll.addActionListener(this);
-        exit.addActionListener(this);   
-        
         fileMenu.add(openImage);  
         fileMenu.add(saveImage);
+        fileMenu.add(refreshImage);
         fileMenu.add(closeImage);
         fileMenu.add(closeAll);
         fileMenu.add(new JSeparator());
         fileMenu.add(exit);  
+        
+        openImage.addActionListener(this);
+        saveImage.addActionListener(this);
+        refreshImage.addActionListener(this);
+        closeImage.addActionListener(this);
+        closeAll.addActionListener(this);
+        exit.addActionListener(this);   
+        tableDef.addActionListener(this);
+        
+        add(editMenu);
+        editMenu.setMnemonic('E');
+        tableDef.setMnemonic('T');
+        editMenu.add(tableDef);
+        editMenu.addActionListener(this);
+        
+        add(viewMenu);
+        viewMenu.setMnemonic('V');
+        romProperties.setMnemonic('P');
+        viewMenu.add(romProperties);
+        romProperties.addActionListener(this);
         
         this.updateMenu();          
     }
@@ -63,20 +85,24 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     public void updateMenu() {
         String file = "";
         try { 
-            file = " " + parent.getLastSelectedRom().getFileName();
+            file = " " + parent.getLastSelectedRom().getFileName() + " ";
         } catch (NullPointerException ex) { }
         if (file.equals("")) {
             saveImage.setEnabled(false);
             closeImage.setEnabled(false);
             closeAll.setEnabled(false);
+            romProperties.setEnabled(false);
         } else {
             saveImage.setEnabled(true);
             closeImage.setEnabled(true);
-            closeAll.setEnabled(true);            
+            closeAll.setEnabled(true);   
+            romProperties.setEnabled(true);         
         }
         
         saveImage.setText("Save" + file);
+        refreshImage.setText("Refresh" + file);
         closeImage.setText("Close" + file);
+        romProperties.setText(file + "Properties");
     }
 
     public void actionPerformed(ActionEvent e)  {
@@ -98,7 +124,28 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             this.closeAllImages();
         } else if (e.getSource() == exit) {
             System.exit(0);
+        } else if (e.getSource() == romProperties) {
+            new JOptionPane().showMessageDialog(parent, (Object)(new RomPropertyPanel(parent.getLastSelectedRom())),
+                    parent.getLastSelectedRom().getRomIDString() + " Properties", JOptionPane.INFORMATION_MESSAGE);
+        } else if (e.getSource() == refreshImage) {
+            refreshImage();
+        } else if (e.getSource() == tableDef) {
+            try {
+                new DefinitionBuilder(parent.getLastSelectedRom(), parent.getSettings().getLastImageDir());
+            } catch (NullPointerException ex) {
+                //new DefinitionBuilder();
+            }
         }
+    }
+    
+    public void refreshImage() {
+        File file = parent.getLastSelectedRom().getFullFileName();
+        parent.closeImage();
+        try {
+            openImage(file);
+        } catch (XMLParseException ex) {
+            ex.printStackTrace();
+        }           
     }
     
     public void closeImage() {
@@ -112,6 +159,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     public void saveImage(Rom input) throws XMLParseException {
         if (parent.getLastSelectedRom() != null) {
             JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
+            fc.setFileFilter(new ECUImageFilter());
 
             if (fc.showSaveDialog(parent) == fc.APPROVE_OPTION) {
                 boolean save = true;
@@ -141,6 +189,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     
     public void openImageDialog() throws XMLParseException {
         JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
+        fc.setFileFilter(new ECUImageFilter());        
+        
         if (fc.showOpenDialog(parent) == fc.APPROVE_OPTION) {
             openImage(fc.getSelectedFile());
         }
@@ -157,12 +207,18 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 FileInputStream fis = new FileInputStream(inputFile);
                 byte[] input = new byte[fis.available()];                
                 fis.read(input);     
+                fis.close();
                 
                 Rom rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input);
                 rom.populateTables(input);
                 rom.setFileName(inputFile.getName());
                 
+                if (rom.getRomID().isObsolete()) {
+                    // insert JOptionPane with link to ECU revision wiki here
+                }
+                
                 parent.addRom(rom);
+                rom.setFullFileName(inputFile);
                 
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();

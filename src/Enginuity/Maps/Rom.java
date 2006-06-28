@@ -4,6 +4,7 @@ package Enginuity.Maps;
 
 import Enginuity.ECUEditor;
 import Enginuity.XML.TableNotFoundException;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Vector;
 import javax.swing.JOptionPane;
@@ -14,6 +15,7 @@ public class Rom implements Serializable {
     
     private RomID romID = new RomID();
     private String fileName = "";
+    private File fullFileName = new File(".");
     private Vector<Table> tables = new Vector<Table>();
     private ECUEditor container;
     private byte[] binData;
@@ -124,5 +126,17 @@ public class Rom implements Serializable {
         for (int i = 0; i < tables.size(); i++) {
             tables.get(i).getFrame().dispose();
         }
+    }
+    
+    public int getRealFileSize() {
+        return binData.length;
+    }
+
+    public File getFullFileName() {
+        return fullFileName;
+    }
+
+    public void setFullFileName(File fullFileName) {
+        this.fullFileName = fullFileName;
     }
 }

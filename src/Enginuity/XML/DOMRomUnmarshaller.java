@@ -28,9 +28,9 @@ public class DOMRomUnmarshaller {
                         if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
 
                             RomID romID = unmarshallRomID(n2, new RomID());
-                            String ecuID = new String(input, romID.getInternalIdAddress(), romID.getXmlid().length());
+                            String ecuID = new String(input, romID.getInternalIdAddress(), romID.getInternalIdString().length());
                             
-                            if (romID.getXmlid().equalsIgnoreCase(ecuID)) {
+                            if (romID.getInternalIdString().equalsIgnoreCase(ecuID) && !ecuID.equalsIgnoreCase("")) {
                                 Rom output = unmarshallRom(n, new Rom());
                                 
                                 //set ram offset
@@ -55,6 +55,7 @@ public class DOMRomUnmarshaller {
         
         if (!unmarshallAttribute(rootNode, "base", "none").equalsIgnoreCase("none")) {
             rom = getBaseRom(rootNode.getParentNode(), unmarshallAttribute(rootNode, "base", "none"), rom);
+            rom.getRomID().setObsolete(false);
         }           
 	
 	for (int i = 0; i < nodes.getLength(); i++) {
@@ -153,6 +154,8 @@ public class DOMRomUnmarshaller {
 		    romID.setMemModel(unmarshallText(n));
 		} else if (n.getNodeName().equalsIgnoreCase("filesize")) {
 		    romID.setFileSize(RomAttributeParser.parseFileSize(unmarshallText(n)));
+		} else if (n.getNodeName().equalsIgnoreCase("obsolete")) {
+		    romID.setObsolete(Boolean.parseBoolean(unmarshallText(n)));
 		} else {
 		    // unexpected element in RomID (skip)
 		}

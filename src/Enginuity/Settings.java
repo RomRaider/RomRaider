@@ -9,7 +9,6 @@ public class Settings implements Serializable {
     private int[] windowSize = new int[2];
     private int[] windowLocation = new int[2];
     private File  ecuDefinitionFile = new File("./ecu_defs.xml");
-    private File  ecuBaseFile = new File("./ecu_base.xml");
     private File  lastImageDir = new File("./images");
     private boolean debug = true;
     

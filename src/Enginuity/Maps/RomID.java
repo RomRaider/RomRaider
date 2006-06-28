@@ -6,21 +6,22 @@ import java.io.Serializable;
 
 public class RomID implements Serializable {
     
-    private String xmlid;//ID stored in XML
-    private int    internalIdAddress;//address of ECU version in image
-    private String internalIdString;//ID stored in image
-    private String caseId;//ECU hardware firstion
-    private String ecuId;
-    private String make;//manufacturer
-    private String market;
-    private String model;
-    private String subModel;//trim, ie WRX
-    private String transmission;
-    private int    year;
-    private String flashMethod;//flash method string used for ecuflash
-    private String memModel;//model used for reflashing with ecuflash
-    private int    fileSize;
-    private int    ramOffset;
+    private String xmlid = "";//ID stored in XML
+    private int    internalIdAddress = 0;//address of ECU version in image
+    private String internalIdString = "";//ID stored in image
+    private String caseId = "";//ECU hardware version
+    private String ecuId = "";
+    private String make = "";//manufacturer
+    private String market = "";
+    private String model = "";
+    private String subModel = "";//trim, ie WRX
+    private String transmission = "";
+    private int    year = 0;
+    private String flashMethod = "";//flash method string used for ecuflash
+    private String memModel = "";//model used for reflashing with ecuflash
+    private int    fileSize = 0;
+    private int    ramOffset = 0;
+    private boolean obsolete = false; // whether a more recent revision exists
     
     public String toString() {
         return "\n   ---- RomID " + xmlid + " ----" +
@@ -160,5 +161,13 @@ public class RomID implements Serializable {
 
     public void setFileSize(int fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public boolean isObsolete() {
+        return obsolete;
+    }
+
+    public void setObsolete(boolean obsolete) {
+        this.obsolete = obsolete;
     }
 }

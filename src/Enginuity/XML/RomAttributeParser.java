@@ -110,4 +110,6 @@ public abstract class RomAttributeParser {
             throw new NumberFormatException();
         }
     }
+    
+    //public static boolean parseBoolean
 }

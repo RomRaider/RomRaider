@@ -30,6 +30,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected boolean    flip;
     protected DataCell[] data = new DataCell[0];
     protected boolean    isStatic = false;
+    protected boolean beforeRam = false;
+    protected int ramOffset = 0;
     protected BorderLayout borderLayout = new BorderLayout();
     protected GridLayout centerLayout = new GridLayout(1,1,1,1);
     protected JPanel     centerPanel = new JPanel(centerLayout);
@@ -45,8 +47,6 @@ public abstract class Table extends JPanel implements Serializable {
     protected int highlightY;
     protected boolean highlight = false;
     protected Table axisParent;
-    protected boolean beforeRam = false;
-    protected int ramOffset = 0;
     
     public Table() {
         this.setLayout(borderLayout);
@@ -80,11 +80,6 @@ public abstract class Table extends JPanel implements Serializable {
                     data[i].setOriginalValue(data[i].getBinValue());
                 }
             }
-        }
-        try {
-            this.add(new JLabel(name + " (" + scale.getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
-        } catch (NullPointerException e) {
-            //need to deal with this later
         }
         this.colorize();
     }
@@ -173,7 +168,7 @@ public abstract class Table extends JPanel implements Serializable {
         this.flip = flip;
     }
     public String toString() {
-        String output = "\n   ---- Table " + name + " ----" +
+        /*String output = "\n   ---- Table " + name + " ----" +
                 scale +
                 "\n   Category: " + category +
                 "\n   Type: " + type +
@@ -189,7 +184,8 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
         
-        return output;
+        return output;*/
+        return name;
     }
     
     public boolean isStatic() {
@@ -224,10 +220,9 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
             for (int i = 0; i < data.length; i++) {
-                int range = high - low;
-                if (range == 0) range = 1;
-                double scale = ((data[i].getBinValue() - low) / range);
+                double scale = (double)(data[i].getBinValue() - low) / (high - low);
                 int g = (int)(255 - (255 - 140) * scale);
+                if (g > 255) g = 255;
                 data[i].setColor(new Color(255, g, 125));
             }
         }

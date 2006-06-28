@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -22,7 +23,7 @@ public class TableToolBar extends JToolBar implements MouseListener {
     private JButton   setValue        = new JButton("Set Value");
     
     private JFormattedTextField incrementBy = new JFormattedTextField(new DecimalFormat("#"));
-    private JFormattedTextField setValueText = new JFormattedTextField(new DecimalFormat("#.#"));    
+    private JFormattedTextField setValueText = new JFormattedTextField(new DecimalFormat("#.####"));    
     
     private Table table;
     
@@ -45,10 +46,10 @@ public class TableToolBar extends JToolBar implements MouseListener {
         
         incrementBy.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
         incrementBy.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
-        incrementBy.setMaximumSize(new Dimension(35, 23));
+        incrementBy.setMaximumSize(new Dimension(45, 23));
         setValueText.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
         setValueText.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
-        setValueText.setMaximumSize(new Dimension(35, 23));
+        setValueText.setMaximumSize(new Dimension(45, 23));
         
         incrementFine.setToolTipText("Increment Value (Fine)");
         decrementFine.setToolTipText("Decrement Value (Fine)");
@@ -76,7 +77,8 @@ public class TableToolBar extends JToolBar implements MouseListener {
             if (table.getScale().getIncrement() > 0) table.increment(1);
             else table.increment(-1);
         } else if (e.getSource() == decrementFine) {
-            table.increment(1);       
+            if (table.getScale().getIncrement() > 0) table.increment(-1);
+            else table.increment(1);
         } else if (e.getSource() == setValue) {
             table.setRealValue(setValueText.getValue()+"");
         }
@@ -85,6 +87,9 @@ public class TableToolBar extends JToolBar implements MouseListener {
     
     public void setCoarseValue(int input) {
         incrementBy.setText(input+"");
+        try {
+            incrementBy.commitEdit();
+        } catch (ParseException ex) { }
     }
 
     public void mousePressed(MouseEvent e) { }

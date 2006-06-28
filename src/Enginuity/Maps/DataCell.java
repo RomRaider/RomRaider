@@ -74,8 +74,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
         }
         this.updateDisplayValue();
-        if (binValue != getOriginalValue()) {
+        if (binValue > getOriginalValue()) {
             this.setBorder(new LineBorder(Color.RED, 3));
+        } else if (binValue < getOriginalValue()) {
+            this.setBorder(new LineBorder(Color.BLUE, 3));
         } else {
             this.setBorder(new LineBorder(Color.BLACK, 1));
         }
@@ -97,10 +99,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.selected = selected;
         if (selected) {
             this.setBackground(highlightColor);
+            table.getFrame().getToolBar().setCoarseValue(Math.abs(table.getScale().getIncrement()));    
         } else {
             this.setBackground(scaledColor);
         }
-        table.getFrame().getToolBar().setCoarseValue(table.getScale().getIncrement());
     }
 
     public void setHighlighted(Boolean highlighted) {

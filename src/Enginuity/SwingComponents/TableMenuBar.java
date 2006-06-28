@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 
 public class TableMenuBar extends JMenuBar implements ActionListener {
@@ -20,6 +21,8 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem undoAll   = new JMenuItem("Undo All Changes");
     private JMenuItem revert    = new JMenuItem("Set Revert Point");
     private JMenuItem close     = new JMenuItem("Close Table");
+    private JMenu     viewMenu  = new JMenu("View");
+    private JMenuItem tableProperties = new JMenuItem("Table Properties");
     
     public TableMenuBar(Table table) {
         super();
@@ -36,6 +39,13 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(revert);
         fileMenu.add(new JSeparator());
         fileMenu.add(close);
+        
+        this.add(viewMenu);
+        viewMenu.add(tableProperties);
+        viewMenu.setMnemonic('V');
+        tableProperties.setMnemonic('P');
+        
+        tableProperties.addActionListener(this);
         
         compare.addActionListener(this);
         graph.addActionListener(this);
@@ -66,13 +76,15 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == undoAll) {
             table.undoAll();
-            System.out.println("undo");
         } else if (e.getSource() == revert) {
             table.setRevertPoint();
         } else if (e.getSource() == undoSel) {
             table.undoSelected();
         } else if (e.getSource() == close) {
             table.getFrame().setVisible(false);
+        } else if (e.getSource() == tableProperties) {
+            new JOptionPane().showMessageDialog(table, (Object)(new TablePropertyPanel(table)),
+                    table.getName() + " Table Properties", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

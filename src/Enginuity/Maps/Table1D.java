@@ -1,7 +1,9 @@
 package Enginuity.Maps;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.Serializable;
+import javax.swing.JLabel;
 
 public class Table1D extends Table implements Serializable {
     
@@ -24,11 +26,12 @@ public class Table1D extends Table implements Serializable {
         for (int i = 0; i < this.getDataSize(); i++) {
             centerPanel.add(this.getDataCell(i));
         }
+        this.add(new JLabel(name + " (" + scale.getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
         this.colorize();
     }
     
     public String toString() {
-        return super.toString() + "";
+        return super.toString() + " (1D)";
     }
 
     public boolean isIsAxis() {

@@ -125,12 +125,19 @@
          </table> 
       </table> 
       
-      <table type="2D" name="Wastegate Speed Compensation" storagetype="uint8" endian="big" sizey="16"> 
+      <table type="2D" name="Wastegate Duty Compensation (Speed)" storagetype="uint8" endian="big" sizey="16"> 
          <scaling units="%" expression="x/2.55" to_byte="x*2.55" format="#" increment="3" /> 
          <table type="Y Axis" name="Vehicle Speed" storagetype="uint16" endian="big" sizey="16"> 
             <scaling units="MPH" expression="x/1.609" to_byte="x*1.609" format="#" increment="1" /> 
          </table> 
-      </table>          
+      </table>  
+	  
+      <table type="2D" name="Turbo Dynamics (Burst)" category="Boost" storagetype="uint16" endian="big" sizey="9"> 
+         <scaling units="RPM" expression="x/256*50" to_byte="x/50*256" format="#" increment="256" /> 
+         <table type="Y Axis" name="Boost Error" storagetype="uint16" endian="big" sizey="15"> 
+            <scaling units="%" expression="(x-32768)/52.4" to_byte="x*52.4+32768" format="#.00" increment="1" /> 
+         </table> 
+      </table> 	  
       
       <table type="1D" name="Injector Flow Scaling" category="Fuel" storagetype="uint16" endian="big" sizey="1"> 
          <scaling units="cc" expression="2447960/x" to_byte="2447960/x" format="#.00" increment="-17" /> 
@@ -185,6 +192,11 @@
       <table type="1D" name="Tip-In Enrichment" storagetype="uint8" endian="big" sizey="18"> 
          <scaling units="?" format="#" increment="1" /> 
          <description>"Throttle delta fuel compensation (delta)."</description> 
+      </table>
+      
+      <table type="1D" name="Initial IAM" storagetype="uint8" endian="big" sizey="1"> 
+         <scaling units="IAM" format="#" increment="4" /> 
+         <description>"Initial ignition advance multiplier."</description> 
       </table>
    </rom>
    
@@ -352,6 +364,14 @@
       <table name="Injector Flow Scaling" storageaddress="0x28AE6" />
    </rom>
    
+   <rom base="A4SGC00C">
+      <romid>
+         <xmlid>A4SGA00C</xmlid>
+         <internalidaddress>200</internalidaddress>
+         <internalidstring>A4SGA00C</internalidstring>
+      </romid>     
+   </rom>
+   
    <rom base="WRXBASE">
       <romid>
          <xmlid>A4TC300L</xmlid>
@@ -364,11 +384,16 @@
          <year>2003</year>
          <flashmethod>wrx02</flashmethod>
          <memmodel>unknown</memmodel>
+		 <obsolete>true</obsolete>
       </romid>   
-      <table name="Fuel (Low Det)" storageaddress="0x28F35">
-         <table type="X Axis" storageaddress="0x28F17" />
-         <table type="Y Axis" storageaddress="0x28EF2" />
-      </table>   
+      <table name="Fuel (Low Det)" type="3D" storageaddress="0x28E12" sizex="14" sizey="16">
+         <table type="X Axis" storageaddress="0x28DF4" sizex="14" />
+         <table type="Y Axis" storageaddress="0x28DD3" sizey="16" />
+      </table>	  
+      <table name="Fuel (High Det)" type="3D" storageaddress="0x28F35" sizex="14" sizey="18">
+         <table type="X Axis" storageaddress="0x28F17" sizex="14" />
+         <table type="Y Axis" storageaddress="0x28EF2" sizey="18" />
+      </table>	  
       <table name="Main Ignition" storageaddress="0x293EF"> 
          <table type="X Axis" storageaddress="0x293CD" /> 
          <table type="Y Axis" storageaddress="0x293AE" /> 
@@ -377,14 +402,34 @@
          <table type="X Axis" storageaddress="0x298A5" />
          <table type="Y Axis" storageaddress="0x29884" />
       </table> 
-      <table name="Wastegate Duty Cycle" storageaddress="0x2A69E">
-         <table type="X Axis" storageaddress="0x2A68C" />
-         <table type="Y Axis" storageaddress="0x2A67B" />
+      <table name="Wastegate Duty Cycle (AT)" base="Wastegate Duty Cycle" storageaddress="0x2A69E">
+         <table type="X Axis" storageaddress="0x2A68C" sizex="8" />
+         <table type="Y Axis" storageaddress="0x2A67B" sizey="8" />
       </table>
       <table name="Boost Target" storageaddress="0x2A736">
          <table type="X Axis" storageaddress="0x2A724" />
          <table type="Y Axis" storageaddress="0x2A711" />
-      </table>
+      </table>   
+	  <table name="Turbo Dynamics (Burst)" storageaddress="0x2A7D9"> 
+         <table type="Y Axis" storageaddress="0x2A7C5" /> 
+      </table> 
+      <table name="Boost Limit (CEL) ?" storageaddress="0x2AF69" /> 
+      <table name="Boost Limit (Fuel Cut) ?" storageaddress="0x291FE" />            
+      <table name="Injector Flow Scaling" storageaddress="0x28699" /> 
+      <table name="Rev Limit" storageaddress="0x291CE" /> 
+      <table name="Initial IAM" storageaddress="0x29991" /> 
+      <table name="Coarse Ignition Range (RPM)" storageaddress="0x29992" /> 
+      <table name="Coarse Ignition Range (Load)" storageaddress="0x2999A" /> 
+      <table name="Boost Speed Limiting" storageaddress="0x2A7EC" /> 
+      <table name="Fuel Speed Limiting" storageaddress="0x291EF" /> 
+   </rom>
+   
+   <rom base="A4TC300L">
+      <romid>
+         <xmlid>A4TC400L</xmlid>
+         <internalidaddress>200</internalidaddress>
+         <internalidstring>A4TC400L</internalidstring>
+      </romid>  
    </rom>
    
    <rom base="WRXBASE">
@@ -489,6 +534,6 @@
          </table>
          <table type="Y Axis" storageaddress="0x22523" />
       </table>
-   </rom>   
+   </rom> 
        
 </roms>

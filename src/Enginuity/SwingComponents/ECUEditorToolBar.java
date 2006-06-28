@@ -13,6 +13,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     private ECUEditor parent;
     private JButton openImage  = new JButton("Open");
     private JButton saveImage  = new JButton("Save");
+    private JButton refreshImage  = new JButton("Refresh");
     private JButton closeImage = new JButton("Close");
     
     public ECUEditorToolBar(ECUEditor parent) {
@@ -22,12 +23,14 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         this.add(openImage);
         this.add(saveImage);
         this.add(closeImage);
+        this.add(refreshImage);
 
         updateButtons();
         
         openImage.addActionListener(this);
         saveImage.addActionListener(this);
         closeImage.addActionListener(this);
+        refreshImage.addActionListener(this);
     }
 
     public void updateButtons() {
@@ -38,13 +41,16 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         
         openImage.setToolTipText("Open Image");
         saveImage.setToolTipText("Save" + file);
+        refreshImage.setToolTipText("Refresh" + file + " from saved copy");
         closeImage.setToolTipText("Close" + file);
         
         if (file.equals("")) {
             saveImage.setEnabled(false);
+            refreshImage.setEnabled(false);
             closeImage.setEnabled(false);
         } else {
             saveImage.setEnabled(true);
+            refreshImage.setEnabled(true);
             closeImage.setEnabled(true);
         }
     }
@@ -64,6 +70,8 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
             }
         } else if (e.getSource() == closeImage) {
             ((ECUEditorMenuBar)parent.getJMenuBar()).closeImage();
+        } else if (e.getSource() == refreshImage) {
+            ((ECUEditorMenuBar)parent.getJMenuBar()).refreshImage();
         }
     }    
 }

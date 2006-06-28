@@ -22,7 +22,7 @@ public class Table3D extends Table implements Serializable {
     
     public Table3D() {
         super();
-        verticalOverhead += 31;
+        verticalOverhead += 39;
         horizontalOverhead += 5;
     }
 
@@ -149,7 +149,8 @@ public class Table3D extends Table implements Serializable {
                 for (int y = 0; y < data[0].length; y++) {
                     if (data[x][y].getBinValue() > high) {
                         high = data[x][y].getBinValue();
-                    } else if (data[x][y].getBinValue() < low) {
+                    } 
+                    if (data[x][y].getBinValue() < low) {
                         low = data[x][y].getBinValue();
                     }
                 }
@@ -177,14 +178,14 @@ public class Table3D extends Table implements Serializable {
     }
     
     public String toString() {
-        return super.toString() + 
+        return super.toString() + " (3D)";/* + 
                 "\n   Flip X: " + flipX +
                 "\n   Size X: " + data.length +
                 "\n   Flip Y: " + flipY +
                 "\n   Size Y: " + data[0].length +
                 "\n   Swap X/Y: " + swapXY +
                 xAxis + 
-                yAxis;
+                yAxis;*/
     }    
     
     public void increment(int increment) {

@@ -1,7 +1,9 @@
 package Enginuity.Maps;
 
 import Enginuity.SwingComponents.TableFrame;
+import java.awt.BorderLayout;
 import java.io.Serializable;
+import javax.swing.JLabel;
 
 public class Table2D extends Table implements Serializable {
     
@@ -9,6 +11,7 @@ public class Table2D extends Table implements Serializable {
     
     public Table2D() {
         super();
+        verticalOverhead += 15;
     }
 
     public Table1D getAxis() {
@@ -20,7 +23,7 @@ public class Table2D extends Table implements Serializable {
     }
     
     public String toString() {
-        return super.toString() + axis;
+        return super.toString() + " (2D)";// + axis;
     }
     
     public void colorize() {
@@ -43,6 +46,7 @@ public class Table2D extends Table implements Serializable {
         centerLayout.setColumns(this.getDataSize());
         
         try {
+            axis.setContainer(container);
             axis.populateTable(input);
             super.populateTable(input);
         } catch (ArrayIndexOutOfBoundsException ex) {
@@ -56,6 +60,8 @@ public class Table2D extends Table implements Serializable {
         for (int i = 0; i < this.getDataSize(); i++) {
             centerPanel.add(this.getDataCell(i));
         }   
+        this.add(new JLabel(axis.getName() + " (" + axis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
+        this.add(new JLabel(name + " (" + scale.getUnit() + ")", JLabel.CENTER), BorderLayout.SOUTH);
         this.colorize();     
     }
     
