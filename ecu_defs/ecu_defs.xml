@@ -50,4 +50,53 @@
       <table name="Rev Limit" storageaddress="0x291C8" />
       <table name="Injector Flow Scaling" storageaddress="0x286BB" />
    </rom>
+   
+   <rom base="A4TF400E">
+      <romid>
+	     <xmlid>A4TF800E</xmlid>
+		 <internalidaddress>200</internalidaddress>
+		 <internalidstring>A4TF800E</internalidstring>
+	  </romid>
+   </rom>
+   
+   <rom base="A4TF400E">
+      <romid>
+	     <xmlid>A4TF300E</xmlid>
+		 <internalidaddress>200</internalidaddress>
+		 <internalidstring>A4TF300E</internalidstring>
+	  </romid>
+   </rom>
+   
+   <rom base="A4TF400E">
+      <romid>
+	     <xmlid>A4TF500F</xmlid>
+		 <internalidaddress>200</internalidaddress>
+		 <internalidstring>A4TF500F</internalidstring>
+	  </romid>
+   </rom>  
+
+   <rom base="A4TF400E">
+      <romid>
+	     <xmlid>A4TF510F</xmlid>
+		 <internalidaddress>200</internalidaddress>
+		 <internalidstring>A4TF510F</internalidstring>
+	  </romid>
+   </rom>  
+   
+   <rom base="A4TF400E">
+      <romid>
+	     <xmlid>A4TF520F</xmlid>
+		 <internalidaddress>200</internalidaddress>
+		 <internalidstring>A4TF520F</internalidstring>
+	  </romid>
+   </rom>  
+
+   <rom base="A4TF400E">
+      <romid>
+	     <xmlid>A4TF800F</xmlid>
+		 <internalidaddress>200</internalidaddress>
+		 <internalidstring>A4TF800F</internalidstring>
+	  </romid>
+   </rom>       
+   
 </roms>

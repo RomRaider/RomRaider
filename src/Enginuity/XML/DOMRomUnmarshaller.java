@@ -2,8 +2,6 @@
 
 package Enginuity.XML;
 
-import Enginuity.XML.RomNotFoundException;
-import Enginuity.XML.TableNotFoundException;
 import Enginuity.Maps.*;
 import javax.management.modelmbean.XMLParseException;
 import org.w3c.dom.Node;
@@ -13,7 +11,7 @@ public class DOMRomUnmarshaller {
     
     public DOMRomUnmarshaller() { }
     
-    public Rom unmarshallXMLDefinition (Node rootNode, byte[] input) throws RomNotFoundException, XMLParseException {
+    public Rom unmarshallXMLDefinition (Node rootNode, byte[] input) throws RomNotFoundException, XMLParseException, StackOverflowError {
         try {
             Node n;
             NodeList nodes = rootNode.getChildNodes();
@@ -40,12 +38,13 @@ public class DOMRomUnmarshaller {
             }
         } catch (NullPointerException ex) {
             System.out.println(ex);            
+        } catch (StackOverflowError ex) { //endless loop in includes
+            throw new StackOverflowError();
         }
-        System.out.println("XMLDefinition");
         throw new RomNotFoundException();
     }                   
     
-    public Rom unmarshallRom (Node rootNode, Rom rom) throws XMLParseException, RomNotFoundException {
+    public Rom unmarshallRom (Node rootNode, Rom rom) throws XMLParseException, RomNotFoundException, StackOverflowError {
 	Node n;
 	NodeList nodes = rootNode.getChildNodes();
         
@@ -66,9 +65,13 @@ public class DOMRomUnmarshaller {
                         table = rom.getTable(unmarshallAttribute(n, "name", "unknown"));
                     } catch (TableNotFoundException e) { /* table does not already exist (do nothing) */ }                                  
                     
-                    table = unmarshallTable(n, table);  
-                    table.setContainer(rom);     
-                    rom.addTable(table);
+                    try {
+                        table = unmarshallTable(n, table);  
+                        table.setContainer(rom);     
+                        rom.addTable(table);
+                    } catch (TableIsOmittedException ex) { // table is not supported in inherited def (skip)
+                        rom.removeTable(table.getName());
+                    }
                     
                 } else { /* unexpected element in Rom (skip)*/ }
 	    } else { /* unexpected node-type in Rom (skip)*/ }
@@ -80,25 +83,29 @@ public class DOMRomUnmarshaller {
         Node n;
         NodeList nodes = rootNode.getChildNodes();  
         
-        for (int i = 0; i < nodes.getLength(); i++) { 
-            n = nodes.item(i);
+        try {
+            for (int i = 0; i < nodes.getLength(); i++) { 
+                n = nodes.item(i);
 
-            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {  
-                Node n2;
-                NodeList nodes2 = n.getChildNodes();
+                if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {  
+                    Node n2;
+                    NodeList nodes2 = n.getChildNodes();
 
-                for (int z = 0; z < nodes2.getLength(); z++) {
-                    n2 = nodes2.item(z);
-                    if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
+                    for (int z = 0; z < nodes2.getLength(); z++) {
+                        n2 = nodes2.item(z);
+                        if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
 
-                        RomID romID = unmarshallRomID(n2, new RomID());
-                        if (romID.getXmlid().equalsIgnoreCase(xmlID)) {
-                            Rom returnrom = unmarshallRom(n, rom);
-                            return returnrom;
+                            RomID romID = unmarshallRomID(n2, new RomID());
+                            if (romID.getXmlid().equalsIgnoreCase(xmlID)) {
+                                Rom returnrom = unmarshallRom(n, rom);
+                                return returnrom;
+                            }
                         }
                     }
                 }
-            }
+            }                 
+        } catch (StackOverflowError ex) {
+            throw new StackOverflowError();
         }
         throw new RomNotFoundException();
     }
@@ -149,7 +156,11 @@ public class DOMRomUnmarshaller {
 	return romID;
     }
    
-    private Table unmarshallTable(Node tableNode, Table table) throws XMLParseException {
+    private Table unmarshallTable(Node tableNode, Table table) throws XMLParseException, TableIsOmittedException {
+        
+        if (unmarshallAttribute(tableNode, "omit", "false").equalsIgnoreCase("true")) {
+            throw new TableIsOmittedException();
+        }
         
         try {
             if (table.getType() < 1) { }

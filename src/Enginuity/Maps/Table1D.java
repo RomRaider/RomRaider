@@ -59,5 +59,5 @@ public class Table1D extends Table {
                 data[i].setColor(Color.WHITE);
             }
         }
-    }
+    }      
 }

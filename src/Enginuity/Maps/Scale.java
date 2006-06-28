@@ -4,8 +4,8 @@ package Enginuity.Maps;
 
 public class Scale {
     
-    public static final int LINEAR  = 0;
-    public static final int INVERSE = 1;
+    public static final int LINEAR  = 1;
+    public static final int INVERSE = 2;
     
     private String unit;
     private String expression;
@@ -53,5 +53,14 @@ public class Scale {
 
     public void setIncrement(int increment) {
         this.increment = increment;
+    }
+    
+    public boolean isReady() {
+        if (unit == null) return false;
+        else if (expression == null) return false;
+        else if (format == null) return false;
+        else if (increment < 1) return false;
+        
+        return true;
     }
 }

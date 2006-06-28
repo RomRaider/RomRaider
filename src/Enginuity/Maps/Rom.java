@@ -21,18 +21,13 @@ public class Rom {
     }
     
     public void addTable(Table table) {
-        boolean tableExists = false;
         for (int i = 0; i < tables.size(); i++) {
             if (tables.get(i).getName().equalsIgnoreCase(table.getName())) {
                 tables.remove(i);
-                tables.add(table);
-                tableExists = true;
                 break;
             }
         }
-        if (!tableExists) {
-            tables.add(table);
-        }
+        tables.add(table);
     }
     
     public Table getTable(String tableName) throws TableNotFoundException {
@@ -42,6 +37,14 @@ public class Rom {
             }
         }
         throw new TableNotFoundException();
+    }
+    
+    public void removeTable(String tableName) {
+        for (int i = 0; i < tables.size(); i++) {
+            if (tables.get(i).getName().equalsIgnoreCase(tableName)) {
+                tables.remove(i);
+            }
+        }        
     }
     
     public void populateTables(byte[] binData) {

@@ -21,7 +21,8 @@ public abstract class RomAttributeParser {
     }   
     
     public static int parseHexString(String input) {
-        if (input.length() > 2 && input.substring(0,2).equalsIgnoreCase("0x")) {
+        if (input.equals("0")) return 0;
+        else if (input.length() > 2 && input.substring(0,2).equalsIgnoreCase("0x")) {
             return Integer.parseInt(input.substring(2), 16);
         } else {
             return Integer.parseInt(input, 16);

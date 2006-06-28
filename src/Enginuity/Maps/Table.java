@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 
 public abstract class Table extends JPanel {
     
-    public static final int ENDIAN_LITTLE= 0;
-    public static final int ENDIAN_BIG   = 1;
+    public static final int ENDIAN_LITTLE= 1;
+    public static final int ENDIAN_BIG   = 2;
     public static final int TABLE_1D     = 1;
     public static final int TABLE_2D     = 2;
     public static final int TABLE_3D     = 3;

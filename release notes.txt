@@ -6,23 +6,20 @@ Enginuity is currently in ALPHA TEST status, meaning it is untested and not inte
 
 Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
 
-0.2.2a Release Notes
+0.2.3a Release Notes
 --------------------
-This release was very rushed as I finally got includes to work but don't have the time to thoroughly test and handle exceptions. This was because I felt it would be better to get an extra day of testing in than waiting to fix the known issues. These issues will be listed below and should be worked around until 0.2.2.1a (or 0.2.3a?) is released, hopefully very soon. 0.2.2a has not been tested and should not be used to tune your car without verifying the data in a hex editor, period. If you don't know what that means, don't do it.
-
-Known issues:
--------------
-- No handling for "looped" includes in ECU definitions (example:)
-<xmlid>WRXBASE base="whatever"</xmlid>
-<xmlid>whatever base="WRXBASE"</xmlid>
-
-- Definitions must include all tables present in node being included (ie, if BASE has ignition, rev limit and injector scaling, you must provide the remaining information for all of these tables in any definition INCLUDing it.)
-
-- Nested includes have not been tested (including a node which includes another node). If you're intested in testing, this would be a good one to try.
+Yesterday's release (0.2.2a) was intended only as a very short term test release, and I got the fixes done about as quickly as I could have hoped. All known issues with current functionality have been dealt with and ECU definition include support is working quite well. We're now ready to move on to more fully developing the interface, which should make users happy. :)
 
 
 Changes:
 --------
+0.2.3a (2/27/2006)
+------------------
+- ECU definitions including each other (endless loop) is now handled
+- "Omit" attribute allows incomplete tables to be removed from inheriting definitions
+- Nested includes (includes more than 1 definition deep) tested and working properly
+
+
 0.2.2a (2/26/2006)
 ------------------
 - Include support in XML definitions (exception handling not yet implemented!)

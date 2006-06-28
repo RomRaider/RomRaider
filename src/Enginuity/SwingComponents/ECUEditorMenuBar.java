@@ -171,8 +171,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (RomNotFoundException ex) {
-                new JOptionPane().showMessageDialog(parent, "ECU Definition Not Found", inputFile.getName() + " - Error", JOptionPane.ERROR_MESSAGE);
-            }
-         
+                new JOptionPane().showMessageDialog(parent, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
+            } catch (StackOverflowError ex) {
+                new JOptionPane().showMessageDialog(parent, "Malformed \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
+            }         
     }       
 }
