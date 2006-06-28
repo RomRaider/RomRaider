@@ -4,24 +4,62 @@ Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested 
 
 Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
 
-0.2.6b Release Notes
---------------------
-This release should make Enginuity a lot more convenient to use. The main new features are keyboard navigation and map copying and pasting. Tables are now navigable using the following key commands:
 
-Arrow keys: move cursor
-+/-: Adjust values
-ctrl +/-: Adjust values (fine)
-ctrl up and down: Adjust values
-ctrl+c: copy selection
-ctrl+v: paste
+0.2.7.3b Release Notes (4/17/2006)
+----------------------------------
+The next release was supposed to include table comparing, but I found more changes I wanted to make than I originally anticipated. Once again, a number of minor bugs have been fixed as well as a couple small new features. The major issue with 0.2.7.2b was false byte conversion warnings being generated. This has been fixed. Table comparing will be available in the next release, hopefully in the next week.
 
-In addition, typing numbers when a cell is selected will automatically set focus to the "Set Value" field, and pressing enter will commit the change.
-
-Map copying is now supported. Pressing ctrl-c and ctrl-v will copy and paste a selection. To copy an entire table, select Edit->Copy Table on the table menu. Tables are copied to the clipboard in a tab-delimited string which can be pasted in Excel or other spreadsheet applications, or in a text editor. 
 
 
 Changes:
 --------
+0.2.7.3b (4/17/2006)
+--------------------
+- Fix border colors not showing changes from keyboard
+- Add progress indicators
+- Remove table definition generator
+- Fix refresh button closing images with same filename
+- Fix border/background of static axiis
+- Fix rounding problems causing false conflicts for conversion expressions
+- Fix set value not updating borders
+- Reset default settings option
+- Fix cell border not saving 
+- Improve warning messages
+- Fix ECU definition file settings not saving
+- Fix last image directory resetting
+- Fix updated cell border not updating
+
+
+0.2.7.2b (4/12/2006)
+--------------------
+- Fixed close all images
+
+
+0.2.7.1b (4/12/2006)
+--------------------
+- Fixed ECU definitions not saving
+- Fixed last image directory not saving
+- Fixed colors not saving
+- Fixed increased/decreased cell borders not updating
+
+
+0.2.7b (4/12/2006)
+------------------
+- Replace serialized settings object with XML
+- Settings panel
+- Custom sizes/fonts/colors for tables
+- Fix blue 2D table axiis
+- Fix exception when clicking on table list
+- Expression/to_byte conflict warning
+- Rename packages to conventional lowercase
+- Improve refresh method when saving
+- Improve exception reporting
+- Implement "obsolete" tag -- set up wiki with ROM revision info
+- Group tables by category
+- Fix descriptions not working
+- Fix 2D table navigation
+
+
 0.2.6b (4/5/2006)
 -----------------
 - Shortcut keys
