@@ -8,13 +8,13 @@ import javax.swing.filechooser.FileFilter;
 
 public class ECUImageFilter extends FileFilter {
 
-	private Hashtable filters = null;
+	private Hashtable<String, ECUImageFilter> filters = null;
 	private String description = null;
 	private String fullDescription = null;
 	private boolean useExtensionsInDescription = true;
 
 	public ECUImageFilter() {
-		this.filters = new Hashtable();
+		this.filters = new Hashtable<String, ECUImageFilter>();
 		this.addExtension("bin");
 		this.addExtension("hex");
 		this.setDescription("ECU Image Files");
@@ -47,9 +47,6 @@ public class ECUImageFilter extends FileFilter {
 	}
 
 	public void addExtension(String extension) {
-		if (filters == null) {
-			filters = new Hashtable(5);
-		}
 		filters.put(extension.toLowerCase(), this);
 		fullDescription = null;
 	}
