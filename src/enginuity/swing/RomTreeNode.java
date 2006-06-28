@@ -56,4 +56,12 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     public void setRom(Rom rom) {
         this.rom = rom;
     }
+    
+    public void finalize() {
+		try {
+			rom = null;
+			removeAllChildren();
+		}
+		catch (Throwable t) {}
+	}
 }
