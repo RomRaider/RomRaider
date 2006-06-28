@@ -1,8 +1,5 @@
 package enginuity.maps;
 
-import enginuity.Settings;
-import enginuity.xml.RomAttributeParser;
-import enginuity.swing.TableFrame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,6 +15,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.StringTokenizer;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -27,7 +25,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
+
 import org.nfunk.jep.JEP;
+
+import enginuity.Settings;
+import enginuity.swing.TableFrame;
+import enginuity.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
     
@@ -187,7 +190,7 @@ public abstract class Table extends JPanel implements Serializable {
         };   
         
         // set input mapping
-        InputMap im = getInputMap(this.WHEN_IN_FOCUSED_WINDOW);
+        InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         
         KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
         KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
@@ -258,7 +261,7 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
         
-        this.setInputMap(this.WHEN_FOCUSED, im);
+        this.setInputMap(WHEN_FOCUSED, im);
     }
     
     public DataCell[] getData() {
@@ -369,7 +372,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
     
     public void setFlip(boolean flipY) {
-        this.flip = flip;
+        this.flip = flipY;
     }
     public String toString() {
         /*String output = "\n   ---- Table " + name + " ----" +
@@ -438,7 +441,7 @@ public abstract class Table extends JPanel implements Serializable {
                     data[i].setColor(axisParent.getRom().getContainer().getSettings().getAxisColor());
                     data[i].setOpaque(true);
                     data[i].setBorder(new LineBorder(Color.BLACK, 1));
-                    data[i].setHorizontalAlignment(data[i].CENTER);
+                    data[i].setHorizontalAlignment(DataCell.CENTER);
                 }
             }  
             
@@ -641,7 +644,6 @@ public abstract class Table extends JPanel implements Serializable {
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
         for (int i = 0; i < data.length; i++) {
-            byte[] output = RomAttributeParser.parseIntegerValue(data[i].getBinValue(), endian, storageType);
             for (int z = 0; z < storageType; z++) {                    
                 data[i].addKeyListener(listener);
             }
@@ -832,7 +834,7 @@ public abstract class Table extends JPanel implements Serializable {
                     "To byte: " + scale.getByteExpression()));            
             
             JCheckBox check = new JCheckBox("Always display this message", true);
-            check.setHorizontalAlignment(check.RIGHT);
+            check.setHorizontalAlignment(JCheckBox.RIGHT);
             panel.add(check);
                         
             check.addActionListener( 
@@ -843,7 +845,7 @@ public abstract class Table extends JPanel implements Serializable {
                 } 
             );            
             
-            new JOptionPane().showMessageDialog(container.getContainer(), panel,
+            JOptionPane.showMessageDialog(container.getContainer(), panel,
                     "Warning", JOptionPane.ERROR_MESSAGE);
         }        
     }
@@ -852,7 +854,7 @@ public abstract class Table extends JPanel implements Serializable {
         this.compareType = compareType;
         
         for (int i = 0; i < getDataSize(); i++) {
-            if (compareType == this.COMPARE_ORIGINAL) data[i].setCompareValue(data[i].getOriginalValue()); 
+            if (compareType == COMPARE_ORIGINAL) data[i].setCompareValue(data[i].getOriginalValue()); 
             data[i].setCompareType(compareType);
             data[i].setCompareDisplay(compareDisplay);
             data[i].updateDisplayValue();
@@ -865,4 +867,16 @@ public abstract class Table extends JPanel implements Serializable {
         compare(compareType);
         colorize();
     }
+    
+    /**
+     * Help the GC clean things up.
+     */
+    public void finalize() {
+		try {
+			super.finalize();
+			data = null;
+			container = null;
+		}
+		catch (Throwable t) {}
+	}
 }
