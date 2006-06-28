@@ -4,6 +4,12 @@ Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested 
 
 Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
 
+
+0.2.7.1b Release Notes (4/12/2006)
+--------------------------------
+There were a few small bugs with settings not saving properly. Fixed.
+
+
 0.2.7b Release Notes (4/12/2006)
 --------------------------------
 The main goal of this release was fixing known issues and adding a settings panel. The settings panel now allows you to choose the way tables are displayed, which warnings will be displayed and specify system files. Settings are now stored in settings.xml -- the old method caused settings to be lost whenever a new feature was introduced with a release. A message will appear the first time you run the new version telling you Enginuity is creating a new settings file.
@@ -13,6 +19,14 @@ Bug fixes are listed in the changes below. A memory usage issue still exists in 
 
 Changes:
 --------
+0.2.7.1b (4/12/2006)
+--------------------
+- Fixed ECU definitions not saving
+- Fixed last image directory not saving
+- Fixed colors not saving
+- Fixed increased/decreased cell borders not updating
+
+
 0.2.7b (4/12/2006)
 ------------------
 - Replace serialized settings object with XML

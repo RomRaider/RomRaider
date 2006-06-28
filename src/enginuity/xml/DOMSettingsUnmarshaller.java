@@ -29,6 +29,8 @@ public class DOMSettingsUnmarshaller {
                 settings = unmarshallURLs(n, settings);
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("options")) {  
                 settings = unmarshallOptions(n, settings);
+            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("files")) {  
+                settings = unmarshallFiles(n, settings);
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tabledisplay")) {  
                 settings = unmarshallTableDisplay(n, settings);
             }
@@ -89,9 +91,9 @@ public class DOMSettingsUnmarshaller {
             n = nodes.item(i);
 
             if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("ecudefinitionfile")) {  
-                settings.addEcuDefinitionFile(new File(unmarshallText(n)));
+                settings.addEcuDefinitionFile(new File(unmarshallAttribute(n, "name", "ecu_defs.xml")));
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("image_dir")) {  
-                settings.setLastImageDir(new File(unmarshallText(n)));       
+                settings.setLastImageDir(new File(unmarshallAttribute(n, "path", "ecu_defs.xml")));
             } 
         }
         return settings;
@@ -133,7 +135,7 @@ public class DOMSettingsUnmarshaller {
                 settings.setCellSize(new Dimension(unmarshallAttribute(n, "x", 42),
                                                    unmarshallAttribute(n, "y", 18)));
                 
-            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("color")) {  
+            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("colors")) {  
                 settings = unmarshallColors(n, settings);         
                 
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("singletableview")) {  
@@ -158,10 +160,11 @@ public class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("highlight")) {  
                 settings.setHighlightColor(unmarshallColor(n));               
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("increaseborder")) {  
-                settings.setIncreaseBorder(unmarshallColor(n));               
+                settings.setIncreaseBorder(unmarshallColor(n));      
+                System.out.println(unmarshallColor(n));  
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("decreaseborder")) {  
                 settings.setDecreaseBorder(unmarshallColor(n));               
-            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("axiscolor")) {  
+            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("axis")) {  
                 settings.setAxisColor(unmarshallColor(n));               
             }
         }        

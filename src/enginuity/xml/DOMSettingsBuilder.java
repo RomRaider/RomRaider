@@ -158,7 +158,7 @@ public class DOMSettingsBuilder {
         decreaseBorder.setAttribute("b", settings.getDecreaseBorder().getBlue()+"");
         colors.appendChild(decreaseBorder);
         // axis cells
-        IIOMetadataNode axis = new IIOMetadataNode("decreaseborder");
+        IIOMetadataNode axis = new IIOMetadataNode("axis");
         axis.setAttribute("r", settings.getAxisColor().getRed()+"");
         axis.setAttribute("g", settings.getAxisColor().getGreen()+"");
         axis.setAttribute("b", settings.getAxisColor().getBlue()+"");

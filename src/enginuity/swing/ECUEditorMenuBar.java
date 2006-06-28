@@ -199,8 +199,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         
         if (fc.showOpenDialog(parent) == fc.APPROVE_OPTION) {
             openImage(fc.getSelectedFile());
+            parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
         }
-        parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
     }
     
     public void openImage(File inputFile) throws XMLParseException, Exception {            
@@ -218,10 +218,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             Rom rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input);
             rom.populateTables(input);
             rom.setFileName(inputFile.getName());
-           
-            if (rom.getRomID().isObsolete()) {
-                // insert JOptionPane with link to ECU revision wiki here
-            }
 
             parent.addRom(rom);
             rom.setFullFileName(inputFile);

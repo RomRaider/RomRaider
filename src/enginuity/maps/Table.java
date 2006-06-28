@@ -23,6 +23,7 @@ import javax.swing.InputMap;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.border.LineBorder;
 import org.nfunk.jep.JEP;
 
 public abstract class Table extends JPanel implements Serializable {
@@ -418,6 +419,15 @@ public abstract class Table extends JPanel implements Serializable {
                 int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
                 
                 data[i].setColor(new Color(r, g, b));
+                
+                // set border
+                if (data[i].getBinValue() > data[i].getOriginalValue()) {
+                    data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
+                    data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                } else {
+                    data[i].setBorder(new LineBorder(Color.BLACK, 1));
+                }
             }
         }
     }
@@ -563,7 +573,6 @@ public abstract class Table extends JPanel implements Serializable {
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
         for (int i = 0; i < data.length; i++) {
-            // need to deal with storage type (num bytes)
             byte[] output = RomAttributeParser.parseIntegerValue(data[i].getBinValue(), endian, storageType);
             for (int z = 0; z < storageType; z++) {                    
                 data[i].addKeyListener(listener);

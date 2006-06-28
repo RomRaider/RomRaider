@@ -21,7 +21,7 @@ public class Settings implements Serializable {
     private Vector<File> ecuDefinitionFiles = new Vector<File>();
     private File  lastImageDir              = new File("images");
     private boolean obsoleteWarning         = true;
-    private boolean calcConflictWarning     = true;    //////
+    private boolean calcConflictWarning     = true;
     private boolean debug                   = false;
     
     private Font tableFont                  = new Font("Arial", Font.BOLD, 12);

@@ -50,8 +50,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public double calcDisplayValue(int input, String expression) {
         JEP parser = new JEP();
         parser.initSymTab(); // clear the contents of the symbol table
-        /*parser.addStandardConstants();
-        parser.addComplex(); // among other things adds i to the symbol table*/
         parser.addVariable("x", input);
         parser.parseExpression(expression);
         return parser.getValue();
@@ -76,13 +74,13 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
         }
         this.updateDisplayValue();
-        if (binValue > getOriginalValue()) {
+        /*if (binValue > getOriginalValue()) {
             this.setBorder(new LineBorder(increaseBorder, 2));
         } else if (binValue < getOriginalValue()) {
             this.setBorder(new LineBorder(decreaseBorder, 2));
         } else {
             this.setBorder(new LineBorder(Color.BLACK, 1));
-        }
+        }*/
     }
     
     public int getBinValue() {

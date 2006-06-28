@@ -1,8 +1,5 @@
 package enginuity.maps;
 
-import enginuity.maps.DataCell;
-import enginuity.maps.Table;
-import enginuity.maps.Table1D;
 import enginuity.Settings;
 import enginuity.xml.RomAttributeParser;
 import enginuity.swing.TableFrame;
@@ -22,6 +19,7 @@ import java.io.Serializable;
 import java.util.StringTokenizer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 public class Table3D extends Table implements Serializable {
     
@@ -175,7 +173,16 @@ public class Table3D extends Table implements Serializable {
                     int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
                     int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
                     data[x][y].setColor(new Color(r, g, b));
-                }
+                    
+                    // set border
+                    if (data[x][y].getBinValue() > data[x][y].getOriginalValue()) {
+                        data[x][y].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                    } else if (data[x][y].getBinValue() < data[x][y].getOriginalValue()) {
+                        data[x][y].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                    } else {
+                        data[x][y].setBorder(new LineBorder(Color.BLACK, 1));
+                    }                       
+                }             
             }
         }
     }
