@@ -9,6 +9,7 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     private String type;
     private Rom    rom;
     private Table  table;
+    private String toolTip;
     
     public RomTreeNode(Rom rom) {
         super(rom.getFileName());
@@ -39,4 +40,12 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     public void setTable(Table table) {
         this.table = table;
     }    
+    
+    public void setToolTipText(String input) {
+        toolTip = input;
+    }
+    
+    public String getToolTipText() {
+        return toolTip;
+    }
 }

@@ -17,6 +17,10 @@ public class TableToolBar extends JToolBar implements MouseListener {
         this.setFloatable(false);
         this.add(increment);
         this.add(decrement);
+        
+        increment.setToolTipText("Increment Value (Coarse)");
+        decrement.setToolTipText("Decrement Value (Coarse)");
+        
         increment.addMouseListener(this);
         decrement.addMouseListener(this);
     }    

@@ -4,9 +4,6 @@ package Enginuity.Maps.XML;
 
 import Enginuity.Maps.Table;
 import Enginuity.Maps.Scale;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 
 public abstract class RomAttributeParser {
     
@@ -57,18 +54,22 @@ public abstract class RomAttributeParser {
         }
     }
     
-    public static int parseByteValue(byte[] input, int endian, int address, int length) {
-        int output = 0;
-        if (endian == Table.ENDIAN_LITTLE) {
-            for (int i = 0; i < length; i++) {
-                output += (input[address + i] & 0xff) << 8 * (length - i - 1);
+    public static int parseByteValue(byte[] input, int endian, int address, int length) throws ArrayIndexOutOfBoundsException {
+        try {
+            int output = 0;
+            if (endian == Table.ENDIAN_BIG) {
+                for (int i = 0; i < length; i++) {
+                    output += (input[address + i] & 0xff) << 8 * (length - i - 1);
+                }
+            } else { // little endian
+                for (int i = 0; i < length; i++) {
+                    output += (input[address + length - i - 1] & 0xff) << 8 * (length - i - 1);
+                }
             }
-        } else {
-            for (int i = 0; i < length; i++) {
-                output += (input[address + length - i - 1] & 0xff) << 8 * (length - i - 1);
-            }
+            return output;
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new ArrayIndexOutOfBoundsException();
         }
-        return output;
     }
     
     public static byte[] parseIntegerValue(int input, int endian, int length) {
@@ -82,10 +83,10 @@ public abstract class RomAttributeParser {
         byte[] output = new byte[length];
         
         for (int i = 0; i < length; i++) {
-            if (endian == Table.ENDIAN_LITTLE) {
+            if (endian == Table.ENDIAN_BIG) {
                 //output[i] = byteArray[i + length];
                 output[i] = byteArray[4 - length + i]; 
-            } else { // big endian
+            } else { // little endian
                 output[length - 1 - i] = byteArray[4 - length + i];
             }
         }

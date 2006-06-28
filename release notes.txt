@@ -6,12 +6,27 @@ Enginuity is currently in ALPHA TEST status, meaning it is untested and not inte
 
 Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
 
-.20a Release Notes
+0.2.1a Release Notes
 ------------------
 As of this version, Enginuity has been completely rewritten and has NOT been tested thoroughly. This release is intended ONLY AS AN ALPHA TEST RELEASE and to be used ONLY BY EXPERIENCED USERS WILLING TO ACCEPT THE RISK. PLEASE register and report any bugs encountered at www.enginuity.org. More information about Enginuity and how to help test is available at www.enginuity.org.
 
+Version .20a had very little error handling, which prevented it from executing properly under unexpected conditions and most of these issues have been resolved, which should help with testing. I've also included a more complete ECU definition file for revision A4TF400E.
+
+
 Changes:
 --------
+0.2.1a (2/13/2006)
+------------------
+- Handles storage addresses that are out of range
+- Fixed conflicting parent/child table sizes (done) 
+- Replaced "<Table Name>" menu with "Table" -- makes it more obviously a menu
+- Fixed 3D table sizing problem
+- Fixed colorizing exception
+- Fixed backwards endians
+- Fixed storage address out of range exception
+- Improved close image method
+
+
 .20a (2/11/2006)
 ----------------
 -Completely rewritten
@@ -32,7 +47,7 @@ Changes:
 -Improved axis cell modification
 -Axis cell changes can be saved
 
-Supported ECU Versions/Version Added
+Supported ECU Versions/Version Added - Deprecated as of version .20a. ECU versions are now defined in ecu_defs.xml.
 ----------------------
 2004/2005 USDM WRX:
 -A4TF300E .13a

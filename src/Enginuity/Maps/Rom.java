@@ -4,6 +4,9 @@ package Enginuity.Maps;
 
 import Enginuity.ECUEditor;
 import java.util.Vector;
+import javax.swing.JOptionPane;
+
+//import Enginuity.
 
 public class Rom {
     
@@ -17,14 +20,18 @@ public class Rom {
     }
     
     public void addTable(Table table) {
-        getTables().add(table);
+        tables.add(table);
     }
     
     public void populateTables(byte[] binData) {
         this.binData = binData;
         for (int i = 0; i < getTables().size(); i++) {
-            //System.out.println("Populating table " + tables.get(i).getName());
-            getTables().get(i).populateTable(binData);
+            try {
+                tables.get(i).populateTable(binData);
+            } catch (ArrayIndexOutOfBoundsException ex) {                
+                new JOptionPane().showMessageDialog(container, "Storage address for table \"" + tables.get(i).getName() + "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                tables.remove(i);
+            }
         }
     }
     
@@ -76,5 +83,11 @@ public class Rom {
             tables.get(i).saveFile(binData);
         }
         return binData;
+    }
+    
+    public void closeImage() {
+        for (int i = 0; i < tables.size(); i++) {
+            tables.get(i).getFrame().dispose();
+        }
     }
 }

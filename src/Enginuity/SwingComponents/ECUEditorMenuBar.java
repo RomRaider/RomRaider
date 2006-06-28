@@ -31,6 +31,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem  openImage  = new JMenuItem("Open Image");
     private JMenuItem  saveImage  = new JMenuItem("Save Image");
     private JMenuItem  closeImage = new JMenuItem("Close Image");
+    private JMenuItem  closeAll   = new JMenuItem("Close All Images");
     private JMenuItem  exit       = new JMenuItem("Exit");
     private ECUEditor  parent;
     
@@ -42,18 +43,42 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         openImage.setMnemonic('O');
         saveImage.setMnemonic('S');
         closeImage.setMnemonic('C');
+        closeAll.setMnemonic('A');
         exit.setMnemonic('X');
         
         openImage.addActionListener(this);
         saveImage.addActionListener(this);
         closeImage.addActionListener(this);
+        closeAll.addActionListener(this);
         exit.addActionListener(this);   
         
         fileMenu.add(openImage);  
         fileMenu.add(saveImage);
         fileMenu.add(closeImage);
+        fileMenu.add(closeAll);
         fileMenu.add(new JSeparator());
-        fileMenu.add(exit);            
+        fileMenu.add(exit);  
+        
+        this.updateMenu();          
+    }
+    
+    public void updateMenu() {
+        String file = "";
+        try { 
+            file = " " + parent.getLastSelectedRom().getFileName();
+        } catch (NullPointerException ex) { }
+        if (file.equals("")) {
+            saveImage.setEnabled(false);
+            closeImage.setEnabled(false);
+            closeAll.setEnabled(false);
+        } else {
+            saveImage.setEnabled(true);
+            closeImage.setEnabled(true);
+            closeAll.setEnabled(true);            
+        }
+        
+        saveImage.setText("Save" + file);
+        closeImage.setText("Close" + file);
     }
 
     public void actionPerformed(ActionEvent e)  {
@@ -61,16 +86,18 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             try {
                 this.openImageDialog();
             } catch (XMLParseException ex) {
-                new JOptionPane(ex, JOptionPane.ERROR_MESSAGE);
+                new JOptionPane().showMessageDialog(parent, ex, "XML Parse Exception", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == saveImage) {
             try {
                 this.saveImage(parent.getLastSelectedRom());
             } catch (XMLParseException ex) {
-                new JOptionPane(ex, JOptionPane.ERROR_MESSAGE);
+                new JOptionPane().showMessageDialog(parent, ex, "XML Parse Exception", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == closeImage) {
             this.closeImage();
+        } else if (e.getSource() == closeAll) {
+            this.closeAllImages();
         } else if (e.getSource() == exit) {
             System.exit(0);
         }
@@ -78,6 +105,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     
     public void closeImage() {
         parent.closeImage();
+    }
+    
+    public void closeAllImages() {
+        parent.closeAllImages();
     }
     
     public void saveImage(Rom input) throws XMLParseException {

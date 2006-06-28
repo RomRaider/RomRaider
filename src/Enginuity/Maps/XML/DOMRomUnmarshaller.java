@@ -160,7 +160,7 @@ public class DOMRomUnmarshaller {
 
 		if (n.getNodeName().equalsIgnoreCase("table")) {
 		    if (table.getType() == Table.TABLE_2D) {
-                        if ((unmarshallTable(n).getType() == Table.TABLE_Y_AXIS) ||
+                        if ((unmarshallTable(n).getType() == Table.TABLE_Y_AXIS) ||                            
                                 (unmarshallTable(n).getType() == Table.TABLE_X_AXIS)) {
                             Table tempTable = (Table1D)(unmarshallTable(n));
                             tempTable.setAxisParent(table);
@@ -169,11 +169,12 @@ public class DOMRomUnmarshaller {
                     }  else if (table.getType() == Table.TABLE_3D) {
                         if (unmarshallTable(n).getType() == Table.TABLE_X_AXIS) {
                             Table tempTable = (Table1D)(unmarshallTable(n));
-                            tempTable.setAxisParent(table);                            
+                            tempTable.setAxisParent(table);
+                            tempTable.setDataSize(((Table3D)table).getSizeX());
                             ((Table3D)table).setXAxis((Table1D)tempTable);
                         } else if (unmarshallTable(n).getType() == Table.TABLE_Y_AXIS) {
                             Table tempTable = (Table1D)(unmarshallTable(n));
-                            tempTable.setAxisParent(table);                              
+                            tempTable.setAxisParent(table);                         
                             ((Table3D)table).setYAxis((Table1D)tempTable);
                         }             
                     }
@@ -192,6 +193,14 @@ public class DOMRomUnmarshaller {
 		// unexpected node-type in Table (skip)
 	    }
 	}
+        
+        // set axis sizes
+        if (table.getType() == Table.TABLE_2D) {
+            if (((Table2D)table).getAxis().isStatic() == false) ((Table2D)table).getAxis().setDataSize(table.getDataSize());            
+        } else if (table.getType() == Table.TABLE_3D) {
+            if (((Table3D)table).getXAxis().isStatic() == false) ((Table3D)table).getXAxis().setDataSize(((Table3D)table).getSizeX());
+            if (((Table3D)table).getYAxis().isStatic() == false) ((Table3D)table).getYAxis().setDataSize(((Table3D)table).getSizeY());
+        }
 	return table;
     }   
     

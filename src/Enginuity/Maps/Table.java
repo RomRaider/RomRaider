@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public abstract class Table extends JPanel {
@@ -51,13 +52,17 @@ public abstract class Table extends JPanel {
         centerPanel.setVisible(true);
     }
     
-    public void populateTable(byte[] input) {
+    public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
         if (!isStatic) {
             for (int i = 0; i < data.length; i++) {
                 if (data[i] == null) {
                     data[i] = new DataCell(scale);
                     data[i].setTable(this);
-                    data[i].setBinValue(RomAttributeParser.parseByteValue(input, endian, storageAddress + i * storageType, storageType));
+                    try {
+                        data[i].setBinValue(RomAttributeParser.parseByteValue(input, endian, storageAddress + i * storageType, storageType));
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        throw new ArrayIndexOutOfBoundsException();
+                    }
                     centerPanel.add(data[i]);
                     data[i].setYCoord(i);
                     data[i].setOriginalValue(data[i].getBinValue());

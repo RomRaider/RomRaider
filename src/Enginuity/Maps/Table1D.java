@@ -10,10 +10,14 @@ public class Table1D extends Table {
         super();
     }
     
-    public void populateTable(byte[] input) {
+    public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
         centerLayout.setRows(1);
         centerLayout.setColumns(this.getDataSize());
-        super.populateTable(input);
+        try {
+            super.populateTable(input);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new ArrayIndexOutOfBoundsException();
+        }            
         
         // add to table
         for (int i = 0; i < this.getDataSize(); i++) {

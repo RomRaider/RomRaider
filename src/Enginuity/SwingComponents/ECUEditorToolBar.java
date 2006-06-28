@@ -22,12 +22,33 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         this.add(openImage);
         this.add(saveImage);
         this.add(closeImage);
+
+        updateButtons();
         
         openImage.addActionListener(this);
         saveImage.addActionListener(this);
         closeImage.addActionListener(this);
     }
 
+    public void updateButtons() {
+        String file = "";
+        try { 
+            file = " " + parent.getLastSelectedRom().getFileName();
+        } catch (NullPointerException ex) { }
+        
+        openImage.setToolTipText("Open Image");
+        saveImage.setToolTipText("Save" + file);
+        closeImage.setToolTipText("Close" + file);
+        
+        if (file.equals("")) {
+            saveImage.setEnabled(false);
+            closeImage.setEnabled(false);
+        } else {
+            saveImage.setEnabled(true);
+            closeImage.setEnabled(true);
+        }
+    }
+    
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == openImage) {
             try { 

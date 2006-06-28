@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Table3D extends Table {
@@ -21,7 +22,7 @@ public class Table3D extends Table {
     
     public Table3D() {
         super();
-        verticalOverhead += 2;
+        verticalOverhead += 31;
         horizontalOverhead += 5;
     }
 
@@ -83,17 +84,22 @@ public class Table3D extends Table {
         return data[0].length;
     }   
     
-    public void populateTable(byte[] input) throws NullPointerException {
+    public void populateTable(byte[] input) throws NullPointerException, ArrayIndexOutOfBoundsException {
         // fill first empty cell        
         centerPanel.add(new JLabel());
         
         // populate axiis
-        xAxis.populateTable(input);
-        yAxis.populateTable(input);
+        try {
+            xAxis.populateTable(input);
+            yAxis.populateTable(input);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+            
         for (int i = 0; i < xAxis.getDataSize(); i++) {
             centerPanel.add(xAxis.getDataCell(i));
         }  
-               
+        
         int offset = 0; 
         
         for (int x = 0; x < yAxis.getDataSize(); x++) {
@@ -101,11 +107,16 @@ public class Table3D extends Table {
             for (int y = 0; y < xAxis.getDataSize(); y++) {
                 data[y][x] = new DataCell(scale);
                 data[y][x].setTable(this);
-                data[y][x].setBinValue(
-                        RomAttributeParser.parseByteValue(input,
-                                                          endian, 
-                                                          storageAddress + offset * storageType,
-                                                          storageType)); 
+                try {
+                    data[y][x].setBinValue(
+                            RomAttributeParser.parseByteValue(input,
+                                                              endian, 
+                                                              storageAddress + offset * storageType,
+                                                              storageType)); 
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    throw new ArrayIndexOutOfBoundsException();
+                }
+                
                 centerPanel.add(data[y][x]);
                 data[y][x].setXCoord(y);
                 data[y][x].setYCoord(x);                
@@ -144,6 +155,7 @@ public class Table3D extends Table {
                 for (int y = 0; y < data[0].length; y++) {
                     double scale = (double)(data[x][y].getBinValue() - low) / (high - low);
                     int g = (int)(255 - (255 - 140) * scale);
+                    if (g > 255) g = 255;
                     data[x][y].setColor(new Color(255, g, 125));
                 }
             }

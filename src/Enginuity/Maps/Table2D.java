@@ -36,11 +36,16 @@ public class Table2D extends Table {
         frame.setSize(width, height);
     }
     
-    public void populateTable(byte[] input) {
+    public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
         centerLayout.setRows(2);
         centerLayout.setColumns(this.getDataSize());
-        axis.populateTable(input);
-        super.populateTable(input);
+        
+        try {
+            axis.populateTable(input);
+            super.populateTable(input);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
         
         // add to table
         for (int i = 0; i < this.getDataSize(); i++) {

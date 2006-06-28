@@ -25,7 +25,6 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         super();
         this.table = table;
         this.add(fileMenu);
-        fileMenu.setText(table.getName());
         close.setText("Close " + table.getName());
         fileMenu.add(compare);
         fileMenu.add(copy);
@@ -48,6 +47,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         close.addActionListener(this);
         
         fileMenu.setMnemonic('F');
+        fileMenu.setMnemonic('T');
         compare.setMnemonic('P');
         graph.setMnemonic('G');
         overlay.setMnemonic('L');

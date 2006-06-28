@@ -33,7 +33,7 @@ public class ECUEditor extends JFrame implements WindowListener {
     private RomTree      imageList           = new RomTree(imageRoot);
     private Vector<Rom>  images              = new Vector<Rom>();
     private Settings     settings            = new Settings();
-    private String       version             = new String(".20 Alpha");
+    private String       version             = new String("0.2.1 Alpha");
     private String       titleText           = new String("Enginuity v" + version);
     private JDesktopPane rightPanel          = new JDesktopPane();
     private Rom          lastSelectedRom     = null;
@@ -126,6 +126,7 @@ public class ECUEditor extends JFrame implements WindowListener {
         RomTreeNode[] tableNodes = new RomTreeNode[tables.size()];
         for (int i = 0; i < tables.size(); i++) {
             tableNodes[i] = new RomTreeNode(tables.get(i));
+            //tableNodes[i].set
             node.add(tableNodes[i]);
             
             TableFrame frame = new TableFrame(tables.get(i));
@@ -136,16 +137,23 @@ public class ECUEditor extends JFrame implements WindowListener {
         this.setLastSelectedRom(input);
     }
     
-    public void closeImage() {        
-        for (int i = 0; i < images.size(); i++) {
-            if (images.get(i) == lastSelectedRom) {
-                images.remove(i);
-            }                
-        }
+    public void closeImage() {
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
             if (((RomTreeNode)imageRoot.getChildAt(i)).getRom() == lastSelectedRom) {
+                ((Rom)images.get(i)).closeImage();
                 imageRoot.remove((DefaultMutableTreeNode)imageRoot.getChildAt(i));
+                images.remove(i);
             }
+        }
+        imageList.updateUI();
+        setLastSelectedRom(null);
+    }
+    
+    public void closeAllImages() {
+        while (imageRoot.getChildCount() > 0) {
+            ((Rom)images.get(0)).closeImage();
+            imageRoot.remove(0);
+            images.remove(0);
         }
         imageList.updateUI();
         setLastSelectedRom(null);
@@ -162,6 +170,8 @@ public class ECUEditor extends JFrame implements WindowListener {
         } else {
             this.setTitle(titleText + " - " + lastSelectedRom.getFileName());
         }
+        toolBar.updateButtons();
+        menuBar.updateMenu();
     }
 
     public ECUEditorToolBar getToolBar() {
