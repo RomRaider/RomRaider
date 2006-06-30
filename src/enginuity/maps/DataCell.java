@@ -1,21 +1,22 @@
 package enginuity.maps;
 
+import com.sun.corba.se.spi.activation._ActivatorImplBase;
+import enginuity.maps.Scale;
+import enginuity.maps.Table;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.text.DecimalFormat;
-
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
-
-import org.nfunk.jep.JEP;
+import org.nfunk.jep.*;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
     
-    private int     binValue       = 0;
-    private int     originalValue  = 0;
+    private double  binValue       = 0;
+    private double  originalValue  = 0;
     private Scale   scale          = new Scale();
     private String  displayValue   = "";
     private Color   scaledColor    = new Color(0,0,0);
@@ -27,7 +28,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private Table   table;
     private int     x = 0;
     private int     y = 0;
-    private int     compareValue   = 0;
+    private double  compareValue   = 0;
     private int     compareType    = Table.COMPARE_OFF;
     private int     compareDisplay = Table.COMPARE_ABSOLUTE;
     
@@ -66,7 +67,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         setText(displayValue);
     }
     
-    public double calcDisplayValue(int input, String expression) {
+    public double calcDisplayValue(double input, String expression) {
         JEP parser = new JEP();
         parser.initSymTab(); // clear the contents of the symbol table
         parser.addVariable("x", input);
@@ -84,18 +85,23 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.setText(displayValue);
     }
     
-    public void setBinValue(int binValue) {
+    public void setBinValue(double binValue) {
         this.binValue = binValue;
+        
         // make sure it's in range
-        if (binValue < 0) {
-            this.setBinValue(0);
-        } else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
-            this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
+        if (table.getStorageType() != table.STORAGE_TYPE_FLOAT) {
+            if (binValue < 0) {
+                this.setBinValue(0);
+            } else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
+                this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
+            }
+            binValue = Math.round(binValue);
         }
+        
         this.updateDisplayValue();
     }
     
-    public int getBinValue() {
+    public double getBinValue() {
         return binValue;
     }
     
@@ -154,7 +160,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void mouseClicked(MouseEvent e) { }
     public void mouseExited(MouseEvent e) { }
     
-    public void increment(int increment) {
+    public void increment(double increment) {
         if (table.getScale().getIncrement() < 0) increment = 0 - increment;
         this.setBinValue(binValue + increment);
         table.colorize();
@@ -172,11 +178,11 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.y = y;
     }
     
-    public int getOriginalValue() {
+    public double getOriginalValue() {
         return originalValue;
     }
     
-    public void setOriginalValue(int originalValue) {
+    public void setOriginalValue(double originalValue) {
         this.originalValue = originalValue;
         if (binValue != getOriginalValue()) {
             this.setBorder(new LineBorder(Color.RED, 3));
@@ -228,11 +234,11 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.decreaseBorder = decreaseBorder;
     }
 
-    public int getCompareValue() {
+    public double getCompareValue() {
         return compareValue;
     }
 
-    public void setCompareValue(int compareValue) {
+    public void setCompareValue(double compareValue) {
         this.compareValue = compareValue;
     }
 

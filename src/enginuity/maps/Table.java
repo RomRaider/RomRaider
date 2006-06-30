@@ -1,5 +1,8 @@
 package enginuity.maps;
 
+import enginuity.Settings;
+import enginuity.xml.RomAttributeParser;
+import enginuity.swing.TableFrame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,7 +18,6 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.StringTokenizer;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -25,12 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
-
 import org.nfunk.jep.JEP;
-
-import enginuity.Settings;
-import enginuity.swing.TableFrame;
-import enginuity.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
     
@@ -47,6 +44,8 @@ public abstract class Table extends JPanel implements Serializable {
     public static final int COMPARE_TABLE    = 2;
     public static final int COMPARE_PERCENT  = 0;
     public static final int COMPARE_ABSOLUTE = 1;
+    
+    public static final int STORAGE_TYPE_FLOAT = 99;
     
     protected String     name;
     protected int        type;
@@ -190,7 +189,7 @@ public abstract class Table extends JPanel implements Serializable {
         };   
         
         // set input mapping
-        InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
+        InputMap im = getInputMap(this.WHEN_IN_FOCUSED_WINDOW);
         
         KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
         KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
@@ -261,7 +260,7 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
         
-        this.setInputMap(WHEN_FOCUSED, im);
+        this.setInputMap(this.WHEN_FOCUSED, im);
     }
     
     public DataCell[] getData() {
@@ -280,7 +279,24 @@ public abstract class Table extends JPanel implements Serializable {
                 if (data[i] == null) {
                     data[i] = new DataCell(scale);
                     data[i].setTable(this);
-                    data[i].setBinValue(RomAttributeParser.parseByteValue(input, endian, storageAddress + i * storageType - ramOffset, storageType));
+                    
+                    // populate data cells
+                    if (storageType == STORAGE_TYPE_FLOAT) { //float storage type
+                        byte[] byteValue = new byte[4];
+                        byteValue[0] = input[storageAddress + i * 4 - ramOffset];
+                        byteValue[1] = input[storageAddress + i * 4 - ramOffset + 1];
+                        byteValue[2] = input[storageAddress + i * 4 - ramOffset + 2];
+                        byteValue[3] = input[storageAddress + i * 4 - ramOffset + 3];
+                        data[i].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
+                        
+                    } else { // integer storage type            
+                        data[i].setBinValue(
+                                RomAttributeParser.parseByteValue(input,
+                                                                  endian, 
+                                                                  storageAddress + i * storageType - ramOffset,
+                                                                  storageType)); 
+                    }
+                    
                     data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
                     centerPanel.add(data[i]);
                     data[i].setYCoord(i);
@@ -321,7 +337,7 @@ public abstract class Table extends JPanel implements Serializable {
     
     public String getDescription() {
         return description;
-    }
+   }
     
     public void setDescription(String description) {
         this.description = description;
@@ -417,8 +433,8 @@ public abstract class Table extends JPanel implements Serializable {
     public void colorize() {
         if (compareType == COMPARE_OFF) {
             if (!isStatic && !isAxis) {
-                int high = 0;
-                int low  = 999999999;
+                double high = -999999999;
+                double low  = 999999999;
 
                 for (int i = 0; i < getDataSize(); i++) {
                     if (data[i].getBinValue() > high) {
@@ -441,13 +457,13 @@ public abstract class Table extends JPanel implements Serializable {
                     data[i].setColor(axisParent.getRom().getContainer().getSettings().getAxisColor());
                     data[i].setOpaque(true);
                     data[i].setBorder(new LineBorder(Color.BLACK, 1));
-                    data[i].setHorizontalAlignment(DataCell.CENTER);
+                    data[i].setHorizontalAlignment(data[i].CENTER);
                 }
             }  
             
         } else { // comparing is on
             if (!isStatic) {
-                int high = 0;
+                double high = -999999999;
                 
                 // determine ratios
                 for (int i = 0; i < getDataSize(); i++) {
@@ -458,7 +474,7 @@ public abstract class Table extends JPanel implements Serializable {
                 
                 // colorize
                 for (int i = 0; i < getDataSize(); i++) {
-                    int cellDifference = Math.abs(data[i].getBinValue() - data[i].getOriginalValue());
+                    double cellDifference = Math.abs(data[i].getBinValue() - data[i].getOriginalValue());
                     double scale;
                     if (high == 0) scale = 0;
                     else scale = (double)cellDifference / (double)high;
@@ -614,6 +630,7 @@ public abstract class Table extends JPanel implements Serializable {
     public void undoSelected() {
         if (!isStatic) {
             for (int i = 0; i < data.length; i++) {
+                // reset current value to original value
                 if (data[i].isSelected()) data[i].setBinValue(data[i].getOriginalValue());
             }
         }
@@ -623,10 +640,22 @@ public abstract class Table extends JPanel implements Serializable {
     public byte[] saveFile(byte[] binData) {
         if (!isStatic) {
             for (int i = 0; i < data.length; i++) {
-                // need to deal with storage type (num bytes)
-                byte[] output = RomAttributeParser.parseIntegerValue(data[i].getBinValue(), endian, storageType);
-                for (int z = 0; z < storageType; z++) {                    
-                    binData[i * storageType + z + storageAddress - ramOffset] = output[z];
+                
+                // determine output byte values
+                byte[] output;
+                if (storageType != STORAGE_TYPE_FLOAT) {
+                    // calculate byte values
+                    output = RomAttributeParser.parseIntegerValue((int)data[i].getBinValue(), endian, storageType);
+                    for (int z = 0; z < storageType; z++) { // insert into file      
+                        binData[i * storageType + z + storageAddress - ramOffset] = output[z];
+                    }
+                    
+                } else { // float
+                    // calculate byte values
+                    output = RomAttributeParser.floatToByte((float)data[i].getBinValue(), endian);
+                    for (int z = 0; z < 4; z++) { // insert in to file
+                        binData[i * 4 + z + storageAddress - ramOffset] = output[z];
+                    }      
                 }
             }
         }              
@@ -644,6 +673,15 @@ public abstract class Table extends JPanel implements Serializable {
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
         for (int i = 0; i < data.length; i++) {
+            
+            // determine output byte values
+            byte[] output;
+            if (storageType != STORAGE_TYPE_FLOAT) {
+                output = RomAttributeParser.parseIntegerValue((int)data[i].getBinValue(), endian, storageType);
+            } else { // float
+                output = RomAttributeParser.floatToByte((float)data[i].getBinValue(), endian);
+            }
+            
             for (int z = 0; z < storageType; z++) {                    
                 data[i].addKeyListener(listener);
             }
@@ -854,7 +892,7 @@ public abstract class Table extends JPanel implements Serializable {
         this.compareType = compareType;
         
         for (int i = 0; i < getDataSize(); i++) {
-            if (compareType == COMPARE_ORIGINAL) data[i].setCompareValue(data[i].getOriginalValue()); 
+            if (compareType == COMPARE_ORIGINAL) data[i].setCompareValue(data[i].getOriginalValue());  
             data[i].setCompareType(compareType);
             data[i].setCompareDisplay(compareDisplay);
             data[i].updateDisplayValue();

@@ -162,12 +162,6 @@ public class DOMRomUnmarshaller {
 	}
 	return romID;
     }
-    
-	// Will this function be used? It is not used now and could be removed...
-   private Table copyTable(Table input) {
-        Table output = input;
-        return output;
-    }
    
     private Table unmarshallTable(Node tableNode, Table table, Rom rom) throws XMLParseException, TableIsOmittedException, Exception {
         
@@ -222,7 +216,7 @@ public class DOMRomUnmarshaller {
         table.setStorageType(RomAttributeParser.parseStorageType(unmarshallAttribute(tableNode, "storagetype", table.getStorageType())));
         table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(tableNode, "endian", table.getEndian())));
         table.setStorageAddress(RomAttributeParser.parseHexString(unmarshallAttribute(tableNode, "storageaddress", table.getStorageAddress())));
-        //table.setDescription(unmarshallAttribute(tableNode, "description", table.getDescription()));
+        table.setDescription(unmarshallAttribute(tableNode, "description", table.getDescription()));
         table.setDataSize(Integer.parseInt(unmarshallAttribute(tableNode, "sizey", unmarshallAttribute(tableNode, "sizex", table.getDataSize()))));
         table.setFlip(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipy", unmarshallAttribute(tableNode, "flipx", table.getFlip()+""))));
         

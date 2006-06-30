@@ -1,5 +1,19 @@
 package enginuity;
 
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+import enginuity.maps.Rom;
+import enginuity.maps.Table;
+import enginuity.swing.ECUEditorToolBar;
+import enginuity.swing.ECUEditorMenuBar;
+import enginuity.swing.MDIDesktopPane;
+import enginuity.swing.RomTree;
+import enginuity.swing.RomTreeNode;
+import enginuity.swing.TableTreeNode;
+import enginuity.swing.TableFrame;
+import enginuity.net.URL;
+import enginuity.swing.JProgressPane;
+import enginuity.xml.DOMSettingsBuilder;
+import enginuity.xml.DOMSettingsUnmarshaller;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -11,43 +25,27 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Vector;
-
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import java.util.Vector;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.tree.DefaultMutableTreeNode;
-
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-
-import enginuity.maps.Rom;
-import enginuity.maps.Table;
-import enginuity.net.URL;
-import enginuity.swing.ECUEditorMenuBar;
-import enginuity.swing.ECUEditorToolBar;
-import enginuity.swing.JProgressPane;
-import enginuity.swing.MDIDesktopPane;
-import enginuity.swing.RomTree;
-import enginuity.swing.RomTreeNode;
-import enginuity.swing.TableFrame;
-import enginuity.xml.DOMSettingsBuilder;
-import enginuity.xml.DOMSettingsUnmarshaller;
 
 public class ECUEditor extends JFrame implements WindowListener {
     
     private DefaultMutableTreeNode imageRoot = new DefaultMutableTreeNode("Open Images");
     private RomTree      imageList           = new RomTree(imageRoot);
+    private Vector<Rom>  images              = new Vector<Rom>();
     private Settings     settings            = new Settings();
-    private String       version             = new String("0.2.7.4 Beta");
-    private String       versionDate         = new String("5/09/2006");
+    private String       version             = new String("0.2.90 Pre-Release Alpha");
+    private String       versionDate         = new String("6/30/2006");
     private String       titleText           = new String("Enginuity v" + version);
     private MDIDesktopPane rightPanel        = new MDIDesktopPane();    
     private Rom          lastSelectedRom     = null;
@@ -137,7 +135,7 @@ public class ECUEditor extends JFrame implements WindowListener {
     }
     
     public void addRom(Rom input) {
-        // add to ecu image list pane
+		// add to ecu image list pane
         RomTreeNode romNode = new RomTreeNode(input);
         imageRoot.add(romNode);
         imageList.updateUI();

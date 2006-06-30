@@ -120,14 +120,22 @@ public class Table3D extends Table implements Serializable {
             for (int y = 0; y < xAxis.getDataSize(); y++) {
                 data[y][x] = new DataCell(scale);
                 data[y][x].setTable(this);
-                try {
+                
+                // populate data cells
+                if (storageType == STORAGE_TYPE_FLOAT) { //float storage type
+                    byte[] byteValue = new byte[4];
+                    byteValue[0] = input[storageAddress + offset * 4 - ramOffset];
+                    byteValue[1] = input[storageAddress + offset * 4 - ramOffset + 1];
+                    byteValue[2] = input[storageAddress + offset * 4 - ramOffset + 2];
+                    byteValue[3] = input[storageAddress + offset * 4 - ramOffset + 3];
+                    data[y][x].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
+                    
+                } else { // integer storage type
                     data[y][x].setBinValue(
                             RomAttributeParser.parseByteValue(input,
                                                               endian, 
                                                               storageAddress + offset * storageType - ramOffset,
                                                               storageType)); 
-                } catch (ArrayIndexOutOfBoundsException ex) {
-                    throw new ArrayIndexOutOfBoundsException();
                 }
                 
                 centerPanel.add(data[y][x]);
@@ -154,8 +162,8 @@ public class Table3D extends Table implements Serializable {
     public void colorize() {
         if (compareType == COMPARE_OFF) {
             if (!isStatic && !isAxis) {
-                int high = 0;
-                int low  = 999999999;
+                double high = -999999999;
+                double low  = 999999999;
                 for (int x = 0; x < data.length; x++) {
                     for (int y = 0; y < data[0].length; y++) {
                         if (data[x][y].getBinValue() > high) {
@@ -179,7 +187,7 @@ public class Table3D extends Table implements Serializable {
             }
         } else { // comparing is on
             if (!isStatic) {
-                int high = 0;
+                double high = -999999999;
                 
                 // determine ratios
                  for (int x = 0; x < data.length; x++) {
@@ -194,11 +202,11 @@ public class Table3D extends Table implements Serializable {
                 for (int x = 0; x < data.length; x++) {
                     for (int y = 0; y < data[0].length; y++) {
                         
-                        int cellDifference = Math.abs(data[x][y].getBinValue() - data[x][y].getOriginalValue());
+                        double cellDifference = Math.abs(data[x][y].getBinValue() - data[x][y].getOriginalValue());
                         
                         double scale;
                         if (high == 0) scale = 0;
-                        else scale = (double)cellDifference / (double)high;
+                        else scale = cellDifference / high;
 
                         int r = (int)((maxColor.getRed() - minColor.getRed()) * scale) + minColor.getRed();
                         int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
@@ -251,7 +259,7 @@ public class Table3D extends Table implements Serializable {
 
         for (int x = 0; x < data.length; x++) {
             for (int y = 0; y < data[0].length; y++) {
-                if (compareType == COMPARE_ORIGINAL) data[x][y].setCompareValue(data[x][y].getOriginalValue()); 
+                if (compareType == this.COMPARE_ORIGINAL) data[x][y].setCompareValue(data[x][y].getOriginalValue()); 
                 data[x][y].setCompareType(compareType);
                 data[x][y].setCompareDisplay(compareDisplay);
                 data[x][y].updateDisplayValue();
@@ -379,10 +387,22 @@ public class Table3D extends Table implements Serializable {
         
         for (int x = 0; x < yAxis.getDataSize(); x++) {
             for (int y = 0; y < xAxis.getDataSize(); y++) {
-                byte[] output = RomAttributeParser.parseIntegerValue(data[y][x].getBinValue(), endian, storageType);
-                for (int z = 0; z < storageType; z++) {
-                    binData[offset * storageType + z + storageAddress - ramOffset] = output[z];
+                
+                // determine output byte values
+                byte[] output;
+                if (storageType != STORAGE_TYPE_FLOAT) {
+                    output = RomAttributeParser.parseIntegerValue((int)data[y][x].getBinValue(), endian, storageType);
+                    for (int z = 0; z < storageType; z++) {
+                        binData[offset * storageType + z + storageAddress - ramOffset] = output[z];
+                    }                    
+                } else { // float
+                    output = RomAttributeParser.floatToByte((float)data[y][x].getBinValue(), endian);
+                    for (int z = 0; z < 4; z++) {
+                        binData[offset * 4 + z + storageAddress - ramOffset] = output[z];
+                    }                    
                 }
+                
+
                 offset++;
             }
         }
@@ -645,6 +665,7 @@ public class Table3D extends Table implements Serializable {
                 for (int x = startX; x < getSizeX(); x++) {
                     if (currentLine.hasMoreTokens()) {
                         String currentToken = currentLine.nextToken();
+
                         try {
                             if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
                                 data[x][y].setRealValue(currentToken);
@@ -678,6 +699,7 @@ public class Table3D extends Table implements Serializable {
                 for (int x = startX; x < getSizeX(); x++) {
                     if (currentLine.hasMoreTokens()) {
                         String currentToken = currentLine.nextToken();
+
                         try {
                             if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
                                 data[x][y].setCompareRealValue(currentToken);

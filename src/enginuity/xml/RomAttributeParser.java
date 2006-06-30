@@ -4,6 +4,7 @@ package enginuity.xml;
 
 import enginuity.maps.Table;
 import enginuity.maps.Scale;
+import java.nio.ByteBuffer;
 
 public abstract class RomAttributeParser {
     
@@ -30,11 +31,13 @@ public abstract class RomAttributeParser {
     }
     
     public static int parseStorageType(String input) {
-        try {
+        if (input.equalsIgnoreCase("float")) {
+            return Table.STORAGE_TYPE_FLOAT;                
+        } else if (input.length() > 4 && input.substring(0,4).equalsIgnoreCase("uint")) {
             return Integer.parseInt(input.substring(4)) / 8;
-        } catch (Exception ex) {
+        } else {
             return Integer.parseInt(input);
-        }        
+        }
     }
     
     public static int parseScaleType(String input) {
@@ -111,5 +114,37 @@ public abstract class RomAttributeParser {
         }
     }
     
-    //public static boolean parseBoolean
+    public static byte[] floatToByte(float f, int endian) { 
+        byte[] output = new byte[4]; 
+        int input = Float.floatToIntBits(f); 
+        
+        if (endian == Table.ENDIAN_LITTLE) {
+            output[0] = (byte)(input >> 24); 
+            output[1] = (byte)(input >> 16); 
+            output[2] = (byte)(input >> 8); 
+            output[3] = (byte)(input); 
+        } else { // big endian
+            output[3] = (byte)(input >> 24); 
+            output[2] = (byte)(input >> 16); 
+            output[1] = (byte)(input >> 8); 
+            output[0] = (byte)(input);             
+        }
+        return output; 
+    } 
+    
+    public static float byteToFloat(byte[] input, int endian) {
+        int i = 0;        
+        if (endian == Table.ENDIAN_LITTLE) {
+            i = input[3]; 
+            i = i | ((input[2] << 8) & 0xff00); 
+            i = i | ((input[1] << 16) & 0xff0000); 
+            i = i | ((input[0] << 24) & 0xff000000);   
+       } else { // big endian       
+            i = input[0];       
+            i = i | ((input[1] << 8) & 0xff00); 
+            i = i | ((input[2] << 16) & 0xff0000); 
+            i = i | ((input[3] << 24) & 0xff000000); 
+        }        
+        return Float.intBitsToFloat(i); 
+    }    
 }

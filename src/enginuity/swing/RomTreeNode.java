@@ -58,10 +58,10 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     }
     
     public void finalize() {
-		try {
-			rom = null;
-			removeAllChildren();
-		}
-		catch (Throwable t) {}
-	}
+        try {
+            rom = null;
+            removeAllChildren();
+        }
+        catch (Throwable t) {}
+    }    
 }

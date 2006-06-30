@@ -136,6 +136,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         } else if (e.getSource() == refreshImage) {
             try {
                 refreshImage();
+                
             } catch (Exception ex) {            
                 JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);

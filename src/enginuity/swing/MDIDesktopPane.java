@@ -1,17 +1,10 @@
 package enginuity.swing;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.Point;
-import java.beans.PropertyVetoException;
-
-import javax.swing.DefaultDesktopManager;
-import javax.swing.JComponent;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JViewport;
+import enginuity.swing.MDIDesktopPane;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.*;
 
 /**
  * An extension of WDesktopPane that supports often used MDI functionality. This
@@ -23,10 +16,10 @@ public class MDIDesktopPane extends JDesktopPane {
     private MDIDesktopManager manager;
 
     public MDIDesktopPane() {
-		manager = new MDIDesktopManager(this);
-		setDesktopManager(manager);
-		setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
-	}
+        manager=new MDIDesktopManager(this);
+        setDesktopManager(manager);
+        setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
+    }
 
     public void setBounds(int x, int y, int w, int h) {
         super.setBounds(x,y,w,h);
