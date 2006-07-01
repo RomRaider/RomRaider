@@ -15,10 +15,17 @@ As of version 0.2.92a, source files are no longer included with the binary distr
 
 0.2.92a fixes all issues found in 0.2.91a testing.
 
+0.2.93a Added checksum/CEL fixes, now available via table type "switch"
+
 
 
 Changes:
 --------
+0.2.93a Private Test Release (7/1/2006)
+----------------------------------------
+- Added "switch" table type
+
+
 0.2.92a Private Test Release (7/1/2006)
 ----------------------------------------
 - Fixed squares appearing instead of some float values
