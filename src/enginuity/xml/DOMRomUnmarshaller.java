@@ -171,12 +171,11 @@ public class DOMRomUnmarshaller {
    
     private Table unmarshallTable(Node tableNode, Table table, Rom rom) throws XMLParseException, TableIsOmittedException, Exception {
         
-        if (unmarshallAttribute(tableNode, "omit", "false").equalsIgnoreCase("true")) {
+        if (unmarshallAttribute(tableNode, "omit", "false").equalsIgnoreCase("true")) { // remove table if omitted
             throw new TableIsOmittedException();
         }
         
-        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase("none")) {
-            
+        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase("none")) { // copy base table for inheritance            
             try {
                 table = (Table)ObjectCloner.deepCopy((Object)rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
                 
@@ -212,7 +211,8 @@ public class DOMRomUnmarshaller {
                 throw new XMLParseException();
             }            
         }
-                    
+        
+        // unmarshall table attributes                    
         table.setName(unmarshallAttribute(tableNode, "name", table.getName()));
         table.setType(RomAttributeParser.parseTableType(unmarshallAttribute(tableNode, "type", table.getType())));
         if (unmarshallAttribute(tableNode, "beforeram", "false").equalsIgnoreCase("true")) table.setBeforeRam(true);
@@ -238,9 +238,9 @@ public class DOMRomUnmarshaller {
             ((Table3D)table).setFlipX(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipx", ((Table3D)table).getFlipX()+"")));
             ((Table3D)table).setFlipY(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipy", ((Table3D)table).getFlipY()+"")));  
             ((Table3D)table).setSizeX(Integer.parseInt(unmarshallAttribute(tableNode, "sizex", ((Table3D)table).getSizeX())));
-            ((Table3D)table).setSizeY(Integer.parseInt(unmarshallAttribute(tableNode, "sizey", ((Table3D)table).getSizeY())));          
+            ((Table3D)table).setSizeY(Integer.parseInt(unmarshallAttribute(tableNode, "sizey", ((Table3D)table).getSizeY()))); 
         }
-	
+        
 	Node n;
 	NodeList nodes = tableNode.getChildNodes();
 	
@@ -250,7 +250,7 @@ public class DOMRomUnmarshaller {
 	    if (n.getNodeType() == Node.ELEMENT_NODE) {
 		if (n.getNodeName().equalsIgnoreCase("table")) {
                     
-		    if (table.getType() == Table.TABLE_2D) {
+		    if (table.getType() == Table.TABLE_2D) { // if table is 2D, parse axis
                         
                         if (RomAttributeParser.parseTableType(unmarshallAttribute(n, "type", "unknown")) == Table.TABLE_Y_AXIS ||                            
                                 RomAttributeParser.parseTableType(unmarshallAttribute(n, "type", "unknown")) == Table.TABLE_X_AXIS) {                         
@@ -262,7 +262,7 @@ public class DOMRomUnmarshaller {
                             ((Table2D)table).setAxis(tempTable);                            
                             
                         }
-                    }  else if (table.getType() == Table.TABLE_3D) {
+                    }  else if (table.getType() == Table.TABLE_3D) { // if table is 3D, populate axiis
                         if (RomAttributeParser.parseTableType(unmarshallAttribute(n, "type", "unknown")) == Table.TABLE_X_AXIS) {  
                             
                             Table1D tempTable = (Table1D)unmarshallTable(n, ((Table3D)table).getXAxis(), rom);
@@ -271,25 +271,40 @@ public class DOMRomUnmarshaller {
                             tempTable.setAxisParent(table);
                             ((Table3D)table).setXAxis(tempTable);
                             
-                        } else if (RomAttributeParser.parseTableType(unmarshallAttribute(n, "type", "unknown")) == Table.TABLE_Y_AXIS) { 
+                        } else if (RomAttributeParser.parseTableType(unmarshallAttribute(n, "type", "unknown")) == Table.TABLE_Y_AXIS) {                             
                             
                             Table1D tempTable = (Table1D)unmarshallTable(n, ((Table3D)table).getYAxis(), rom);
                             if (tempTable.getDataSize() != ((Table3D)table).getSizeY()) tempTable.setDataSize(((Table3D)table).getSizeY());     
                             tempTable.setData(((Table3D)table).getYAxis().getData());                 
                             tempTable.setAxisParent(table);
                             ((Table3D)table).setYAxis(tempTable);                            
+                            
                         }         
                     }
+                    
                 } else if (n.getNodeName().equalsIgnoreCase("scaling")) {
                     table.setScale(unmarshallScale(n, table.getScale()));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("data")) {
                     // parse and add data to table
                     DataCell dataCell = new DataCell();
                     dataCell.setDisplayValue(unmarshallText(n));
                     dataCell.setTable(table);
                     ((Table1D)table).addStaticDataCell(dataCell);
+                    
                 } else if (n.getNodeName().equalsIgnoreCase("description")) {
                     table.setDescription(unmarshallText(n));
+                    
+                } else if (n.getNodeName().equalsIgnoreCase("state")) {
+                    // set on/off values for switch type
+                    if (this.unmarshallAttribute(n, "name", "").equalsIgnoreCase("on")) {
+                        ((TableSwitch)table).setOnValues(unmarshallAttribute(n, "data", "0"));
+                        
+                    } else if (this.unmarshallAttribute(n, "name", "").equalsIgnoreCase("off")) {                        
+                        ((TableSwitch)table).setOffValues(unmarshallAttribute(n, "data", "0"));
+                        
+                    }
+                    
                 } else { /*unexpected element in Table (skip) */ }
 	    } else { /* unexpected node-type in Table (skip) */ }
 	}
