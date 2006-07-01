@@ -3,6 +3,7 @@
 package enginuity.xml;
 
 import enginuity.maps.*;
+import enginuity.maps.TableSwitch;
 import enginuity.swing.JProgressPane;
 import javax.management.modelmbean.XMLParseException;
 import org.w3c.dom.Node;
@@ -162,6 +163,11 @@ public class DOMRomUnmarshaller {
 	}
 	return romID;
     }
+    
+    private Table copyTable(Table input) {
+        Table output = input;
+        return output;
+    }
    
     private Table unmarshallTable(Node tableNode, Table table, Rom rom) throws XMLParseException, TableIsOmittedException, Exception {
         
@@ -184,16 +190,24 @@ public class DOMRomUnmarshaller {
         } catch (NullPointerException ex) { // if type is null or less than 0, create new instance (otherwise it is inherited)
             if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("3D")) {
                 table = new Table3D();
+                
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("2D")) {
                 table = new Table2D();
+                
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("1D")) {
                 table = new Table1D();
+                
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("X Axis") ||
                        unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Y Axis")) {
                 table = new Table1D();
+                
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static Y Axis") ||
                        unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static X Axis")) {
                 table = new Table1D();
+                
+            } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Switch")) {
+                table = new TableSwitch();
+                
             } else {
                 throw new XMLParseException();
             }            

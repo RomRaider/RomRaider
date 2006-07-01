@@ -5,6 +5,7 @@ package enginuity.xml;
 import enginuity.maps.Table;
 import enginuity.maps.Scale;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public abstract class RomAttributeParser {
     
@@ -114,37 +115,17 @@ public abstract class RomAttributeParser {
         }
     }
     
-    public static byte[] floatToByte(float f, int endian) { 
+    public static byte[] floatToByte(float input, int endian) { 
         byte[] output = new byte[4]; 
-        int input = Float.floatToIntBits(f); 
-        
-        if (endian == Table.ENDIAN_LITTLE) {
-            output[0] = (byte)(input >> 24); 
-            output[1] = (byte)(input >> 16); 
-            output[2] = (byte)(input >> 8); 
-            output[3] = (byte)(input); 
-        } else { // big endian
-            output[3] = (byte)(input >> 24); 
-            output[2] = (byte)(input >> 16); 
-            output[1] = (byte)(input >> 8); 
-            output[0] = (byte)(input);             
-        }
-        return output; 
+        ByteBuffer bb = ByteBuffer.wrap(output, 0, 4); 
+        if (endian == Table.ENDIAN_LITTLE) bb.order(ByteOrder.BIG_ENDIAN);
+        bb.putFloat(input); 
+        return bb.array(); 
     } 
     
-    public static float byteToFloat(byte[] input, int endian) {
-        int i = 0;        
-        if (endian == Table.ENDIAN_LITTLE) {
-            i = input[3]; 
-            i = i | ((input[2] << 8) & 0xff00); 
-            i = i | ((input[1] << 16) & 0xff0000); 
-            i = i | ((input[0] << 24) & 0xff000000);   
-       } else { // big endian       
-            i = input[0];       
-            i = i | ((input[1] << 8) & 0xff00); 
-            i = i | ((input[2] << 16) & 0xff0000); 
-            i = i | ((input[3] << 24) & 0xff000000); 
-        }        
-        return Float.intBitsToFloat(i); 
-    }    
+    public static float byteToFloat(byte[] input, int endian) { 
+        ByteBuffer bb = ByteBuffer.wrap(input, 0, 4); 
+        if (endian == Table.ENDIAN_LITTLE) bb.order(ByteOrder.BIG_ENDIAN);
+        return bb.getFloat(); 
+    } 
 }
