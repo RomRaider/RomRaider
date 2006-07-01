@@ -206,7 +206,11 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             parser.initSymTab(); // clear the contents of the symbol table
             parser.addVariable("x", Double.parseDouble(input));
             parser.parseExpression(table.getScale().getByteExpression());
-            this.setBinValue((int)Math.round(parser.getValue()));
+            if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
+                this.setBinValue(parser.getValue());
+            } else {
+                this.setBinValue((int)Math.round(parser.getValue()));
+            }
         }
     }
     
