@@ -30,7 +30,7 @@ public class TableToolBar extends JToolBar implements MouseListener {
     private JButton   decrementCoarse = new JButton(new ImageIcon("./graphics/icon-deccoarse.png"));   
     private JButton   setValue        = new JButton("Set");
     
-    private JFormattedTextField incrementBy = new JFormattedTextField(new DecimalFormat("#"));
+    private JFormattedTextField incrementBy = new JFormattedTextField(new DecimalFormat("#.###"));
     private JFormattedTextField setValueText = new JFormattedTextField(new DecimalFormat("#.####"));    
     
     private Table table;
@@ -142,11 +142,11 @@ public class TableToolBar extends JToolBar implements MouseListener {
     }
     
     public void incrementCoarse() {
-        table.increment(Integer.parseInt(incrementBy.getValue()+""));        
+        table.increment(Double.parseDouble(incrementBy.getValue()+""));        
     }
     
     public void decrementCoarse() {
-        table.increment(0 - Integer.parseInt(incrementBy.getValue()+""));        
+        table.increment(0 - Double.parseDouble(incrementBy.getValue()+""));        
     }
     
     public void setCoarseValue(int input) {

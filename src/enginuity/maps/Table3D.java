@@ -294,7 +294,7 @@ public class Table3D extends Table implements Serializable {
                 yAxis;*/
     }    
     
-    public void increment(int increment) {
+    public void increment(double increment) {
         if (!isStatic) {
             for (int x = 0; x < this.getSizeX(); x++) {
                 for (int y = 0; y < this.getSizeY(); y++) {

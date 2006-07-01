@@ -535,7 +535,7 @@ public abstract class Table extends JPanel implements Serializable {
         return frame;
     }
     
-    public void increment(int increment) {
+    public void increment(double increment) {
         if (!isStatic) {
             for (int i = 0; i < data.length; i++) {
                 if (data[i].isSelected()) data[i].increment(increment);
