@@ -199,10 +199,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
     }
     
-    public void openImage(File inputFile) throws XMLParseException, Exception {            
+    public void openImage(File inputFile) throws XMLParseException, Exception {        
+        JProgressPane progress = new JProgressPane(parent, "Opening file...", "Parsing ECU definitions...");    
         try {     
             parent.repaintPanel();
-            JProgressPane progress = new JProgressPane(parent, "Opening file...", "Parsing ECU definitions...");
             progress.update("Parsing ECU definitions...", 0);
             
             InputSource src = new InputSource(new FileInputStream(parent.getSettings().getEcuDefinitionFile()));                
@@ -234,6 +234,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         } catch (StackOverflowError ex) {
             JOptionPane.showMessageDialog(parent, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
             
-        }         
+        } finally {
+            progress.dispose();
+        }
     }       
 }
