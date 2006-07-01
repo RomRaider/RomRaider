@@ -176,6 +176,11 @@ public abstract class Table extends JPanel implements Serializable {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('9');
             }
+        }; 
+        Action numPointAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                getFrame().getToolBar().focusSetValue('.');
+            }
         };      
         Action copyAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -211,6 +216,7 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke num7 = KeyStroke.getKeyStroke('7');
         KeyStroke num8 = KeyStroke.getKeyStroke('8');
         KeyStroke num9 = KeyStroke.getKeyStroke('9');
+        KeyStroke numPoint = KeyStroke.getKeyStroke('.');
         KeyStroke copy = KeyStroke.getKeyStroke("control C");
         KeyStroke paste = KeyStroke.getKeyStroke("control V");
         
@@ -234,6 +240,7 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(num7, "num7Action");
         im.put(num8, "num8Action");
         im.put(num9, "num9Action");
+        im.put(numPoint, "numPointAction");
         im.put(copy, "copyAction");
         im.put(paste, "pasteAction");
         
@@ -257,6 +264,7 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(num7), num7Action);
         getActionMap().put(im.get(num8), num8Action);
         getActionMap().put(im.get(num9), num9Action);
+        getActionMap().put(im.get(numPoint), numPointAction);
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
         
