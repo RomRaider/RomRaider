@@ -79,11 +79,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         compareMap.addActionListener(this);
         compareOff.addActionListener(this);
         comparePercent.addActionListener(this);
-        compareAbsolute.addActionListener(this);
-        
-        // FOR 0.2.7.4b ONLY!! DELETE FOR 0.2.8b!
-        compareMap.setEnabled(false);
-        
+        compareAbsolute.addActionListener(this);        
         
         this.add(editMenu);
         editMenu.add(undoSel);

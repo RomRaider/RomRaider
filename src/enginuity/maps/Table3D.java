@@ -611,14 +611,19 @@ public class Table3D extends Table implements Serializable {
         
         if (pasteType.equalsIgnoreCase("[Table3D]")) { // Paste table             
             String newline = System.getProperty("line.separator");
-            String xAxisValues = "[Table1D]" + newline + st.nextToken(newline);
+            String xAxisValues = "[Table1D]" + newline + st.nextToken(newline);           
+            StringBuffer yAxisValues = new StringBuffer("");
+            StringBuffer dataValues = new StringBuffer("");
             
-            // build y axis and data values
-            StringBuffer yAxisValues = new StringBuffer("[Table1D]" + newline + st.nextToken("\t"));
-            StringBuffer dataValues = new StringBuffer("[Table3D]" + newline + st.nextToken("\t") + st.nextToken(newline));
-            while (st.hasMoreTokens()) {
-                yAxisValues.append("\t" + st.nextToken("\t"));
-                dataValues.append(newline + st.nextToken("\t") + st.nextToken(newline));
+            while (st.hasMoreTokens()) {   
+                StringTokenizer currentLine = new StringTokenizer(st.nextToken(newline));
+                yAxisValues.append(currentLine.nextToken("\t") + "\t");
+                //dataValues.append(currentLine.nextToken(newline));                
+                
+                while (currentLine.hasMoreTokens()) {
+                    dataValues.append(currentLine.nextToken() + "\t");
+                }
+                dataValues.append(newline);
             }
             
             // put x axis in clipboard and paste
@@ -638,8 +643,31 @@ public class Table3D extends Table implements Serializable {
     
     
     
+    public void pasteCompareValues() {        
+        StringTokenizer st = new StringTokenizer("");
+        String newline = System.getProperty("line.separator");
+        try {
+            String input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            st = new StringTokenizer(input);
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
+        } catch (IOException ex) { }
+                 
+        // set values 
+        for (int y = 0; y < getSizeY(); y++) {
+            if (st.hasMoreTokens()) {
+                
+                for (int x = 0; x < getSizeX(); x++) {
+                    String currentToken = st.nextToken();
+                    data[x][y].setCompareRealValue(currentToken);
+                }             
+            }
+        }  
+    
+    }      
+    
     public void pasteValues() {        
         StringTokenizer st = new StringTokenizer("");
+        String newline = System.getProperty("line.separator");
         try {
             String input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);
@@ -658,41 +686,6 @@ public class Table3D extends Table implements Serializable {
         }
         
         // set values 
-        String newline = System.getProperty("line.separator");
-        for (int y = startY; y < getSizeY(); y++) {
-            if (st.hasMoreTokens()) {
-                StringTokenizer currentLine = new StringTokenizer(st.nextToken(newline));
-                for (int x = startX; x < getSizeX(); x++) {
-                    if (currentLine.hasMoreTokens()) {
-                        String currentToken = currentLine.nextToken();
-
-                        try {
-                            if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
-                                data[x][y].setRealValue(currentToken);
-                            }
-                        } catch (ArrayIndexOutOfBoundsException ex) { /* copied table is larger than current table*/ }
-                    }
-                }             
-            }
-        }        
-    }
-    
-    public void pasteCompareValues() {        
-        StringTokenizer st = new StringTokenizer("");
-        try {
-            String input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
-        } catch (IOException ex) { }
-         
-        String pasteType = st.nextToken();
-        
-        // figure paste start cell
-        int startX = 0;
-        int startY = 0;
-        
-        // set values 
-        String newline = System.getProperty("line.separator");
         for (int y = startY; y < getSizeY(); y++) {
             if (st.hasMoreTokens()) {
                 StringTokenizer currentLine = new StringTokenizer(st.nextToken(newline));
@@ -709,7 +702,7 @@ public class Table3D extends Table implements Serializable {
                 }             
             }
         }        
-    }    
+    }
     
     public void finalize(Settings settings) {    
         // apply settings to cells

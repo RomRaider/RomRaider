@@ -14,7 +14,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class JTableChooser extends JOptionPane {
 
     JPanel displayPanel = new JPanel();
-    DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Roms");
+    DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Open Images");
     JTree  displayTree  = new JTree(rootNode);
     
     public boolean showChooser(Vector<Rom> roms, Component parent, Table targetTable) {
@@ -44,12 +44,14 @@ public class JTableChooser extends JOptionPane {
                     categoryNode.add(tableNode);
                 }                
             }            
-        }      
+        }  
         
         displayPanel.setPreferredSize(new Dimension(350, 400));
+        displayPanel.setMinimumSize(new Dimension(350, 400));
+        displayTree.setPreferredSize(new Dimension(330, 400));
         displayTree.setMinimumSize(new Dimension(330, 400));
         
-        displayTree.setRootVisible(false);
+        displayTree.setRootVisible(true);
         displayTree.updateUI();
         displayPanel.add(new JScrollPane(displayTree));
         
