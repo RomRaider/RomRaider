@@ -2,6 +2,7 @@ package enginuity.maps;
 
 import enginuity.ECUEditor;
 import enginuity.swing.JProgressPane;
+import enginuity.swing.RomTreeNode;
 import enginuity.xml.TableNotFoundException;
 import java.io.File;
 import java.io.Serializable;
@@ -16,7 +17,6 @@ public class Rom implements Serializable {
     private Vector<Table> tables = new Vector<Table>();
     private ECUEditor container;
     private byte[] binData;
-    
     public Rom() {
     }
     

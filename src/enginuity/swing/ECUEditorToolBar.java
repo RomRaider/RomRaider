@@ -74,7 +74,8 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         if (e.getSource() == openImage) {
             try { 
                 ((ECUEditorMenuBar)parent.getJMenuBar()).openImageDialog();
-            } catch (Exception ex) {                
+            } catch (Exception ex) {        
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);   
             }

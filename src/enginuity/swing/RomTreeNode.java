@@ -2,15 +2,50 @@ package enginuity.swing;
 
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
+import java.util.Vector;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class RomTreeNode extends DefaultMutableTreeNode {
     
     private Rom rom = new Rom();
     
-    public RomTreeNode(Rom rom) {
+    public RomTreeNode(Rom rom, int userLevel) {
         super(rom.getFileName());
-        this.setRom(rom);
+        setRom(rom);
+        refresh(userLevel);
+    }
+    
+    public void refresh(int userLevel) {
+        removeAllChildren();
+        Vector<Table> tables = rom.getTables();
+        
+        for (int i = 0; i < tables.size(); i++) {
+            Table table = tables.get(i);
+            add(table);
+            
+            if (userLevel >= table.getUserLevel()) {
+                boolean categoryExists = false;
+
+                for (int j = 0; j < getChildCount(); j++) {
+                    if (getChildAt(j).toString().equals(table.getCategory())) {
+
+                        // add to appropriate category
+                        TableTreeNode tableNode = new TableTreeNode(table);                        
+                        getChildAt(j).add(tableNode);
+                        categoryExists = true;
+                        break;
+                    }
+                }         
+
+                if (!categoryExists) { // if category does not already exist, create it
+                    add(new CategoryTreeNode(table.getCategory(), table.getRom()));            
+                    TableTreeNode tableNode = new TableTreeNode(table);
+                    getLastChild().add(tableNode);           
+                }  
+            } else {
+                table.getFrame().setVisible(false);
+            }
+        }
     }
     
     public void updateFileName() {
@@ -18,27 +53,8 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     }
     
     public void add(Table table) {
-        boolean categoryExists = false;
-        for (int i = 0; i < this.getChildCount(); i++) {
-            if (this.getChildAt(i).toString().equals(table.getCategory())) {
-                
-                TableFrame frame = new TableFrame(table);
-                table.setFrame(frame); 
-                TableTreeNode tableNode = new TableTreeNode(table);
-                        
-                this.getChildAt(i).add(tableNode);
-                categoryExists = true;
-                break;
-            }
-        }         
-        if (!categoryExists) {
-            this.add(new CategoryTreeNode(table.getCategory(), table.getRom()));
-            
-            TableFrame frame = new TableFrame(table);
-            table.setFrame(frame); 
-            TableTreeNode tableNode = new TableTreeNode(table);
-            this.getLastChild().add(tableNode);           
-        }
+        TableFrame frame = new TableFrame(table);
+        table.setFrame(frame); 
     }
     
     public DefaultMutableTreeNode getChildAt(int i) {

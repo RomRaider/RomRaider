@@ -114,6 +114,11 @@ public class DOMSettingsBuilder {
         debug.setAttribute("value", settings.isDebug()+"");
         options.appendChild(debug);
         
+        // userlevel
+        IIOMetadataNode userLevel = new IIOMetadataNode("userlevel");
+        userLevel.setAttribute("value", settings.getUserLevel()+"");
+        options.appendChild(userLevel);
+        
         return options;
     }
     

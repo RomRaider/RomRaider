@@ -17,27 +17,37 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import enginuity.ECUEditor;
+import javax.swing.ButtonGroup;
+import javax.swing.JRadioButtonMenuItem;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     
-    private JMenu      fileMenu   = new JMenu("File");
-    private JMenuItem  openImage  = new JMenuItem("Open Image");
-    private JMenuItem  saveImage  = new JMenuItem("Save Image");
-    private JMenuItem  refreshImage = new JMenuItem("Refresh Image");
-    private JMenuItem  closeImage = new JMenuItem("Close Image");
-    private JMenuItem  closeAll   = new JMenuItem("Close All Images");
-    private JMenuItem  exit       = new JMenuItem("Exit");
-    private JMenu      editMenu   = new JMenu("Edit");
-    private JMenuItem  settings   = new JMenuItem("Settings");
-    private JMenu      viewMenu   = new JMenu("View");
-    private JMenuItem  romProperties = new JMenuItem("ECU Image Properties");
-    private ECUEditor  parent;
+    private JMenu       fileMenu        = new JMenu("File");
+    private JMenuItem   openImage       = new JMenuItem("Open Image");
+    private JMenuItem   saveImage       = new JMenuItem("Save Image");
+    private JMenuItem   refreshImage    = new JMenuItem("Refresh Image");
+    private JMenuItem   closeImage      = new JMenuItem("Close Image");
+    private JMenuItem   closeAll        = new JMenuItem("Close All Images");
+    private JMenuItem   exit            = new JMenuItem("Exit");
+    private JMenu       editMenu        = new JMenu("Edit");
+    private JMenuItem   settings        = new JMenuItem("Settings");
+    private JMenu       viewMenu        = new JMenu("View");
+    private JMenuItem   romProperties   = new JMenuItem("ECU Image Properties");
+    private ButtonGroup levelGroup      = new ButtonGroup();
+    private JMenu       levelMenu       = new JMenu("User Level");
+    private JRadioButtonMenuItem level1 = new JRadioButtonMenuItem("1 Beginner");
+    private JRadioButtonMenuItem level2 = new JRadioButtonMenuItem("2 Intermediate");
+    private JRadioButtonMenuItem level3 = new JRadioButtonMenuItem("3 Advanced");
+    private JRadioButtonMenuItem level4 = new JRadioButtonMenuItem("4 Highest");
+    private JRadioButtonMenuItem level5 = new JRadioButtonMenuItem("5 Debug Mode");
+    private ECUEditor   parent;
     
     public ECUEditorMenuBar(ECUEditor parent) {
         this.parent = parent;
         
+        // file menu items
         add(fileMenu);
         fileMenu.setMnemonic('F');            
         openImage.setMnemonic('O');
@@ -63,6 +73,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         closeAll.addActionListener(this);
         exit.addActionListener(this);   
         
+        // edit menu items
         add(editMenu);
         editMenu.setMnemonic('E');
         settings.setMnemonic('S');
@@ -70,12 +81,40 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         editMenu.add(settings);
         settings.addActionListener(this);
         
-        
+        // view menu items
         add(viewMenu);
         viewMenu.setMnemonic('V');
         romProperties.setMnemonic('P');
+        levelMenu.setMnemonic('U');
+        level1.setMnemonic('1');
+        level2.setMnemonic('2');
+        level3.setMnemonic('3');
+        level4.setMnemonic('4');
+        level5.setMnemonic('5');
         viewMenu.add(romProperties);
+        viewMenu.add(levelMenu);
+        levelMenu.add(level1);
+        levelMenu.add(level2);
+        levelMenu.add(level3);
+        levelMenu.add(level4);
+        levelMenu.add(level5);
         romProperties.addActionListener(this);
+        level1.addActionListener(this);
+        level2.addActionListener(this);
+        level3.addActionListener(this);
+        level4.addActionListener(this);
+        level5.addActionListener(this);
+        levelGroup.add(level1);
+        levelGroup.add(level2);
+        levelGroup.add(level3);
+        levelGroup.add(level4);
+        levelGroup.add(level5);
+        // select correct userlevel button
+        if      (parent.getSettings().getUserLevel() == 1) level1.setSelected(true);
+        else if (parent.getSettings().getUserLevel() == 2) level2.setSelected(true);
+        else if (parent.getSettings().getUserLevel() == 3) level3.setSelected(true);
+        else if (parent.getSettings().getUserLevel() == 4) level4.setSelected(true);
+        else if (parent.getSettings().getUserLevel() == 5) level5.setSelected(true);
         
         this.updateMenu();          
     }
@@ -146,6 +185,22 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             SettingsForm form = new SettingsForm(parent);
             form.setLocationRelativeTo(parent);
             form.setVisible(true);
+            
+        } else if (e.getSource() == level1) {
+            parent.setUserLevel(1);
+            
+        } else if (e.getSource() == level2) {
+            parent.setUserLevel(2);
+            
+        } else if (e.getSource() == level3) {
+            parent.setUserLevel(3);
+            
+        } else if (e.getSource() == level4) {
+            parent.setUserLevel(4);
+            
+        } else if (e.getSource() == level5) {
+            parent.setUserLevel(5);
+            
         }
     }
     
@@ -224,9 +279,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             
             progress.update("Finalizing...", 90);     
             parent.addRom(rom);                   
-            rom.setFullFileName(inputFile);            
-            
-            progress.dispose();
+            rom.setFullFileName(inputFile);
             
         } catch (RomNotFoundException ex) {
             JOptionPane.showMessageDialog(parent, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);

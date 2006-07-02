@@ -49,39 +49,40 @@ public abstract class Table extends JPanel implements Serializable {
     
     public static final int STORAGE_TYPE_FLOAT = 99;
     
-    protected String     name;
-    protected int        type;
-    protected String     category = "Other";
-    protected String     description = "";
-    protected Scale      scale = new Scale();
-    protected int        storageAddress;
-    protected int        storageType;//number of bytes per cell
-    protected int        endian;
-    protected boolean    flip;
-    protected DataCell[] data = new DataCell[0];
-    protected boolean    isStatic = false;
-    protected boolean beforeRam = false;
-    protected int ramOffset = 0;
+    protected String       name;
+    protected int          type;
+    protected String       category    = "Other";
+    protected String       description  = "";
+    protected Scale        scale        = new Scale();
+    protected int          storageAddress;
+    protected int          storageType;
+    protected int          endian;
+    protected boolean      flip;
+    protected DataCell[]   data         = new DataCell[0];
+    protected boolean      isStatic     = false;
+    protected boolean      beforeRam    = false;
+    protected int          ramOffset    = 0;
     protected BorderLayout borderLayout = new BorderLayout();
-    protected GridLayout centerLayout = new GridLayout(1,1,0,0);
-    protected JPanel     centerPanel = new JPanel(centerLayout);
-    protected TableFrame frame;
-    protected int verticalOverhead = 103;
-    protected int horizontalOverhead = 2;
-    protected int cellHeight = 18;
-    protected int cellWidth = 42;
-    protected int minHeight = 100;
-    protected int minWidth = 370;
-    protected Rom container;
-    protected int highlightX;
-    protected int highlightY;
-    protected boolean highlight = false;
-    protected Table axisParent;   
-    protected Color maxColor;
-    protected Color minColor;
-    protected boolean isAxis = false;    
-    protected int compareType = 0;
-    protected int compareDisplay = 1;
+    protected GridLayout   centerLayout = new GridLayout(1,1,0,0);
+    protected JPanel       centerPanel  = new JPanel(centerLayout);
+    protected TableFrame   frame;
+    protected int          verticalOverhead   = 103;
+    protected int          horizontalOverhead = 2;
+    protected int          cellHeight         = 18;
+    protected int          cellWidth          = 42;
+    protected int          minHeight          = 100;
+    protected int          minWidth           = 370;
+    protected Rom          container;
+    protected int          highlightX;
+    protected int          highlightY;
+    protected boolean      highlight = false;
+    protected Table        axisParent;   
+    protected Color        maxColor;
+    protected Color        minColor;
+    protected boolean      isAxis         = false;    
+    protected int          compareType    = 0;
+    protected int          compareDisplay = 1;
+    protected int          userLevel      = 0;
     
     public Table() {
         this.setLayout(borderLayout);
@@ -927,4 +928,14 @@ public abstract class Table extends JPanel implements Serializable {
 		}
 		catch (Throwable t) {}
 	}
+
+    public int getUserLevel() {
+        return userLevel;
+    }
+
+    public void setUserLevel(int userLevel) {
+        this.userLevel = userLevel;
+        if (userLevel > 5) userLevel = 5;
+        else if (userLevel < 1) userLevel = 1;
+    }
 }

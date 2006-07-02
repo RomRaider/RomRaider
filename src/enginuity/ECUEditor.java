@@ -8,6 +8,7 @@ import enginuity.swing.ECUEditorMenuBar;
 import enginuity.swing.MDIDesktopPane;
 import enginuity.swing.RomTree;
 import enginuity.swing.RomTreeNode;
+import enginuity.swing.RomTreeRootNode;
 import enginuity.swing.TableTreeNode;
 import enginuity.swing.TableFrame;
 import enginuity.net.URL;
@@ -40,16 +41,16 @@ import org.xml.sax.InputSource;
 
 public class ECUEditor extends JFrame implements WindowListener {
     
-    private DefaultMutableTreeNode imageRoot = new DefaultMutableTreeNode("Open Images");
-    private RomTree      imageList           = new RomTree(imageRoot);
-    private Vector<Rom>  images              = new Vector<Rom>();
-    private Settings     settings            = new Settings();
-    private String       version             = new String("0.3.0 Beta");
-    private String       versionDate         = new String("7/2/2006");
-    private String       titleText           = new String("Enginuity v" + version);
-    private MDIDesktopPane rightPanel        = new MDIDesktopPane();    
-    private Rom          lastSelectedRom     = null;
-    private JSplitPane   splitPane           = new JSplitPane();
+    private RomTreeRootNode  imageRoot       = new RomTreeRootNode("Open Images");
+    private RomTree          imageList       = new RomTree(imageRoot);
+    private Vector<Rom>      images          = new Vector<Rom>();
+    private Settings         settings        = new Settings();
+    private String           version         = new String("0.3.0 Beta");
+    private String           versionDate     = new String("7/2/2006");
+    private String           titleText       = new String("Enginuity v" + version);
+    private MDIDesktopPane   rightPanel      = new MDIDesktopPane();    
+    private Rom              lastSelectedRom = null;
+    private JSplitPane       splitPane       = new JSplitPane();
     private ECUEditorToolBar toolBar;
     private ECUEditorMenuBar menuBar;
     
@@ -135,19 +136,15 @@ public class ECUEditor extends JFrame implements WindowListener {
     }
     
     public void addRom(Rom input) {
-		// add to ecu image list pane
-        RomTreeNode romNode = new RomTreeNode(input);
+        // add to ecu image list pane
+        RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel());
         imageRoot.add(romNode);
-        imageList.updateUI();
-        
-        // add tables
-        Vector<Table> tables = input.getTables();
-        for (int i = 0; i < tables.size(); i++) {
-            romNode.add(tables.get(i));            
-        }
+        imageList.updateUI();    
+
         imageList.expandRow(imageList.getRowCount() - 1);
+        System.out.println(imageList.getRowCount());
         imageList.updateUI();
-        this.setLastSelectedRom(input);
+        setLastSelectedRom(input);
         
         if (input.getRomID().isObsolete() && settings.isObsoleteWarning()) {
             JPanel infoPanel = new JPanel();
@@ -170,7 +167,8 @@ public class ECUEditor extends JFrame implements WindowListener {
             infoPanel.add(check);
             JOptionPane.showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", JOptionPane.INFORMATION_MESSAGE);
         }   
-        input.setContainer(this);     
+        input.setContainer(this); 
+        imageList.updateUI();    
     }
     
     public void displayTable(TableFrame frame) {
@@ -270,14 +268,20 @@ public class ECUEditor extends JFrame implements WindowListener {
     public void repaintPanel() {
         rightPanel.repaint();
         rightPanel.update(rightPanel.getGraphics());
-    }          
+    }  
+    
+    public void setUserLevel(int userLevel) {
+        settings.setUserLevel(userLevel);
+        imageRoot.setUserLevel(userLevel);
+        imageList.updateUI();
+    }
 
     public Vector<Rom> getImages() {
-		Vector<Rom> images = new Vector<Rom>();
-		for (int i = 0; i < imageRoot.getChildCount(); i++) {
-			RomTreeNode rtn = (RomTreeNode)imageRoot.getChildAt(i);
-			images.add(rtn.getRom());
-		}
-		return images;
-	}
+        Vector<Rom> images = new Vector<Rom>();
+        for (int i = 0; i < imageRoot.getChildCount(); i++) {
+                RomTreeNode rtn = (RomTreeNode)imageRoot.getChildAt(i);
+                images.add(rtn.getRom());
+        }
+        return images;
+    }
 }

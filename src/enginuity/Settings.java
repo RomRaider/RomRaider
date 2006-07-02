@@ -23,6 +23,7 @@ public class Settings implements Serializable {
     private boolean obsoleteWarning         = true;
     private boolean calcConflictWarning     = true;
     private boolean debug                   = false;
+    private int userLevel                   = 5;
     
     private Font tableFont                  = new Font("Arial", Font.BOLD, 12);
     private Dimension cellSize              = new Dimension(42, 18);
@@ -32,7 +33,7 @@ public class Settings implements Serializable {
     private Color increaseBorder            = new Color(255, 0, 0);
     private Color decreaseBorder            = new Color(0, 0, 255);
     private Color axisColor                 = new Color(255, 255, 255);
-    private boolean singleTableView         = false; //////
+    private boolean singleTableView         = false; 
     
     public Settings() {
         //center window by default
@@ -202,5 +203,15 @@ public class Settings implements Serializable {
 
     public void setAxisColor(Color axisColor) {
         this.axisColor = axisColor;
+    }
+
+    public int getUserLevel() {
+        return userLevel;
+    }
+
+    public void setUserLevel(int userLevel) {
+        this.userLevel = userLevel;
+        if (userLevel > 5) userLevel = 5;
+        else if (userLevel < 1) userLevel = 1;
     }
 }

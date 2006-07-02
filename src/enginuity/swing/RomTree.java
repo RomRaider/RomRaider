@@ -12,8 +12,8 @@ public class RomTree extends JTree implements MouseListener {
     
     public RomTree (DefaultMutableTreeNode input) {
        super(input);
-       this.setRootVisible(false);
-       this.addMouseListener(this);
+       setRootVisible(false);
+       addMouseListener(this);
     }
 
     public ECUEditor getContainer() {

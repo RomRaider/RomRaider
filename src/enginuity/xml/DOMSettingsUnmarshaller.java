@@ -114,6 +114,9 @@ public class DOMSettingsUnmarshaller {
                 
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("calcconflictwarning")) {  
                 settings.setCalcConflictWarning(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
+                
+            }  else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("userlevel")) {  
+                settings.setUserLevel(unmarshallAttribute(n, "value", 4));
             } 
         }        
         return settings;

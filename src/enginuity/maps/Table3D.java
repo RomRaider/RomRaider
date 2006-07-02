@@ -723,6 +723,7 @@ public class Table3D extends Table implements Serializable {
         yAxis.finalize(settings);        
         cellHeight = (int)settings.getCellSize().getHeight();
         cellWidth = (int)settings.getCellSize().getWidth();
+        
         resize();
         colorize();    
     }
