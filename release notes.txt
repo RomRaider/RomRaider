@@ -1,28 +1,50 @@
-Enginuity is a full featured Engine Control Unit editing application for tuning SSP2 Subarus, meant to be used in conjuction with datalogging and ECU flash and dump utilities. Enginuity will give you full control over timing, fuel, boost and many other parameters in your ECU, competing with very expensive and proprietary software. Enginuity will remove your need for piggyback systems designed to control these functions, and, in most cases, work as well as any stand alone engine management. Reflashing your stock ECU also has the added benefit of a manufacturer tested base map, giving you top notch performance and saving time tuning idle and low throttle applications.
+Enginuity is a full featured Engine Control Unit editing application for tuning 
+virtually any manufacturer, meant to be used in conjuction with datalogging and 
+ECU flash and dump utilities. Enginuity will give you full control over timing, 
+fuel, boost and many other parameters in your ECU, competing with very expensive 
+and proprietary software. Enginuity will remove your need for piggyback systems 
+designed to control these functions, and, in most cases, work as well as or 
+better than any stand alone engine management. Reflashing your stock ECU also 
+has the added benefit of a manufacturer tested base map, giving you top notch 
+performance and saving time tuning idle and low throttle applications.
 
-Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested and not intended for use by inexperienced users. In addition to being incomplete and untested, only experienced tuners with the required tools (ie, wideband oxygen sensor) should modify an ECU image. As with any engine management, changes could result in severe engine damage. Use at your own risk.
+Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested 
+and not intended for use by inexperienced users. In addition to being incomplete 
+and untested, only experienced tuners with the required tools (ie, wideband 
+oxygen sensor) should modify an ECU image. As with any engine management, 
+changes could result in severe engine damage. Use at your own risk.
 
-Until Enginuity reaches a mature point, releases will be quite frequent and will usually contain significant changes. However, some times I may release a revision to add a single feature I'd like users to have, or maybe just to add a certain ECU version. Until more features are complete, version support will be quite limited. If you'd like your ECU version to be added, please visit openecu.org and post a message in the Technical Tuning Software forum, with your image attached.
+As of version 0.2.92a, source files are no longer included with the binary 
+distribution of Enginuity. The source is available at 
+http://sourceforge.net/projects/enginuity via Subversion.
 
-As of version 0.2.92a, source files are no longer included with the binary distribution of Enginuity. The source is available at http://sourceforge.net/projects/enginuity via Subversion.
 
+0.3.0b Notes (7/2/2006)
+-----------------------
+This is the first publicly released version of Enginuity with floating point 
+support, which means Subaru drive-by-wire ECUs are now supported. Map comparing, 
+introduced in 0.2.7.4b has been completed, and you can now fix check engine 
+lights and checksums via a checkbox rather than modifying meaningless values. 
+Currently, the team is working on ECU definitions for 32-bit ECUs and support is 
+somewhat limited. Please check the ECU definition forum on enginuity.org often 
+as these definitions are constantly being updated. 
 
-0.2.90a Test Release Notes (6/30/2006)
--------------------------------------
-!!! THIS IS A TEST RELEASE ONLY !!! Do NOT tune your car with this release. 32-bit ECU support with floating point values seems to be working.
-
-0.2.91a adds drees' optimizations and fixes.
-
-0.2.92a fixes all issues found in 0.2.91a testing.
-
-0.2.93a Added checksum/CEL fixes, now available via table type "switch"
-
+!! CAUTION !! 32-bit Subaru ECUs use a checksum method which, without being fixed, 
+will immobilise your car. These fixes will be available as the ECU definitions 
+are created. IF YOU MAKE CHANGES TO A TABLE, ENSURE THE CHECKSUM FIX FOR THAT 
+TABLE IS ENABLED, if one exists. Any issues should be reported to the ECU 
+definition forum on enginuity.org.
 
 
 Changes:
 --------
+0.3.0b Private Test Release (7/2/2006)
+---------------------------------------
+- Finish map comparing implementation
+
+
 0.2.93a Private Test Release (7/1/2006)
-----------------------------------------
+---------------------------------------
 - Added "switch" table type
 
 
@@ -33,7 +55,7 @@ Changes:
 - Fixed set value field being cast to integer instead of decimal
 - Fixed progress bar not closing on errors
 - Pressing "." now focuses set value field
-- Stopped including source files (available at http://sourceforge.net/projects/enginuity)
+- Stopped including source (now at http://sourceforge.net/projects/enginuity)
 
 
 0.2.91a Private Test Release (6/30/2006)
