@@ -142,7 +142,6 @@ public class ECUEditor extends JFrame implements WindowListener {
         imageList.updateUI();    
 
         imageList.expandRow(imageList.getRowCount() - 1);
-        System.out.println(imageList.getRowCount());
         imageList.updateUI();
         setLastSelectedRom(input);
         
