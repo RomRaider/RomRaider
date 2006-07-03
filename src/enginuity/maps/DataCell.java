@@ -162,7 +162,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     
     public void increment(double increment) {
         if (table.getScale().getIncrement() < 0) increment = 0 - increment;
-        this.setBinValue(binValue + increment);
+        //this.setBinValue(binValue + increment);
+        setRealValue((Double.parseDouble(displayValue) + increment) + "");
         table.colorize();
     }
     
