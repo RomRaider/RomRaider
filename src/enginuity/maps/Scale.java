@@ -9,11 +9,12 @@ public class Scale implements Serializable {
     public static final int LINEAR  = 1;
     public static final int INVERSE = 2;
     
-    private String unit;
-    private String expression = "x";
-    private String byteExpression = "x";
-    private String format;
-    private double increment;
+    private String unit            = "0x";
+    private String expression      = "x";
+    private String byteExpression  = "x";
+    private String format          = "#";
+    private double coarseIncrement = 2;
+    private double fineIncrement   = 1;
     
     public Scale() {
     }
@@ -50,19 +51,19 @@ public class Scale implements Serializable {
         this.expression = expression;
     }
 
-    public double getIncrement() {
-        return increment;
+    public double getCoarseIncrement() {
+        return coarseIncrement;
     }
 
-    public void setIncrement(double increment) {
-        this.increment = increment;
+    public void setCoarseIncrement(double increment) {
+        this.coarseIncrement = increment;
     }
     
     public boolean isReady() {
         if (unit == null) return false;
         else if (expression == null) return false;
         else if (format == null) return false;
-        else if (increment < 1) return false;
+        else if (coarseIncrement < 1) return false;
         
         return true;
     }
@@ -73,5 +74,13 @@ public class Scale implements Serializable {
 
     public void setByteExpression(String byteExpression) {
         this.byteExpression = byteExpression;
+    }
+
+    public double getFineIncrement() {
+        return fineIncrement;
+    }
+
+    public void setFineIncrement(double fineIncrement) {
+        this.fineIncrement = fineIncrement;
     }
 }

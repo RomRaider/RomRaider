@@ -117,7 +117,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.selected = selected;
         if (selected) {
             this.setBackground(getHighlightColor());
-            table.getFrame().getToolBar().setCoarseValue(Math.abs(table.getScale().getIncrement()));
+            table.getFrame().getToolBar().setCoarseValue(Math.abs(table.getScale().getCoarseIncrement()));
         } else {
             this.setBackground(scaledColor);
         }
@@ -161,7 +161,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void mouseExited(MouseEvent e) { }
     
     public void increment(double increment) {
-        if (table.getScale().getIncrement() < 0) increment = 0 - increment;
+        if (table.getScale().getCoarseIncrement() < 0) increment = 0 - increment;
         //this.setBinValue(binValue + increment);
         setRealValue((Double.parseDouble(displayValue) + increment) + "");
         table.colorize();

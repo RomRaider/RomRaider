@@ -84,7 +84,7 @@ public class TableToolBar extends JToolBar implements MouseListener {
         decrementCoarse.addMouseListener(this);
         setValue.addMouseListener(this);
         
-        incrementBy.setValue(Math.abs(table.getScale().getIncrement()));
+        incrementBy.setValue(Math.abs(table.getScale().getCoarseIncrement()));
         
         // key binding actions
         Action enterAction = new AbstractAction() {
@@ -132,13 +132,11 @@ public class TableToolBar extends JToolBar implements MouseListener {
         
     
     public void incrementFine() {
-        if (table.getScale().getIncrement() > 0) table.increment(1);
-        else table.increment(-1);        
+        table.increment(table.getScale().getFineIncrement());
     }
     
     public void decrementFine() {
-        if (table.getScale().getIncrement() > 0) table.increment(-1);
-        else table.increment(1);        
+        table.increment(0 - table.getScale().getFineIncrement());
     }
     
     public void incrementCoarse() {

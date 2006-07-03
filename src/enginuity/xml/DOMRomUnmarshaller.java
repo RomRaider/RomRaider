@@ -317,7 +317,11 @@ public class DOMRomUnmarshaller {
         scale.setExpression(unmarshallAttribute(scaleNode, "expression", scale.getExpression()));
         scale.setByteExpression(unmarshallAttribute(scaleNode, "to_byte", scale.getByteExpression()));
         scale.setFormat(unmarshallAttribute(scaleNode, "format", "#"));
-        scale.setIncrement(Double.parseDouble(unmarshallAttribute(scaleNode, "increment", scale.getIncrement()+"")));
+        // get coarse increment with new attribute name (coarseincrement), else look for old (increment)
+        scale.setCoarseIncrement(Double.parseDouble(unmarshallAttribute(scaleNode, "coarseincrement", 
+                unmarshallAttribute(scaleNode, "increment", scale.getCoarseIncrement()+"")+"")));
+        scale.setFineIncrement(Double.parseDouble(unmarshallAttribute(scaleNode,
+                "fineincrement", scale.getFineIncrement()+"")));
         
 	return scale;
     }  
