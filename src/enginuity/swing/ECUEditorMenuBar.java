@@ -17,6 +17,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import enginuity.ECUEditor;
+import enginuity.definitions.DefinitionEditor;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButtonMenuItem;
 import org.w3c.dom.Document;
@@ -33,6 +34,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem   exit            = new JMenuItem("Exit");
     private JMenu       editMenu        = new JMenu("Edit");
     private JMenuItem   settings        = new JMenuItem("Settings");
+    private JMenuItem   editDefinition  = new JMenuItem("Edit ECU Definitions");
     private JMenu       viewMenu        = new JMenu("View");
     private JMenuItem   romProperties   = new JMenuItem("ECU Image Properties");
     private ButtonGroup levelGroup      = new ButtonGroup();
@@ -77,9 +79,12 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         add(editMenu);
         editMenu.setMnemonic('E');
         settings.setMnemonic('S');
+        editDefinition.setMnemonic('E');
         editMenu.add(new JSeparator());
         editMenu.add(settings);
+        editMenu.add(editDefinition);
         settings.addActionListener(this);
+        editDefinition.addActionListener(this);
         
         // view menu items
         add(viewMenu);
@@ -200,6 +205,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             
         } else if (e.getSource() == level5) {
             parent.setUserLevel(5);
+            
+        } else if (e.getSource() == editDefinition) {
+            new DefinitionEditor(parent);
             
         }
     }
