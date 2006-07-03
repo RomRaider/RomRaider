@@ -13,7 +13,7 @@ public class Scale implements Serializable {
     private String expression = "x";
     private String byteExpression = "x";
     private String format;
-    private int    increment;
+    private double increment;
     
     public Scale() {
     }
@@ -50,11 +50,11 @@ public class Scale implements Serializable {
         this.expression = expression;
     }
 
-    public int getIncrement() {
+    public double getIncrement() {
         return increment;
     }
 
-    public void setIncrement(int increment) {
+    public void setIncrement(double increment) {
         this.increment = increment;
     }
     
