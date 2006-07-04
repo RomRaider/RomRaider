@@ -1,10 +1,9 @@
 package enginuity.swing;
 
 import enginuity.ECUEditor;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -18,6 +17,7 @@ public class RomTree extends JTree implements MouseListener {
        setRowHeight(0);
        addMouseListener(this);
        setCellRenderer(new RomCellRenderer());
+       setFont(new Font("Tahoma", Font.PLAIN, 11));
     }
 
     public ECUEditor getContainer() {
@@ -29,24 +29,28 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == container.getSettings().getTableClickCount()) {
-            try {
-                TableTreeNode node = (TableTreeNode)this.getLastSelectedPathComponent(); 
-                container.displayTable(node.getFrame());
-            } catch (ClassCastException ex) {
-            } catch (NullPointerException ex) { }
-        } if (e.getClickCount() == 1) {
+        if (e.getClickCount() == container.getSettings().getTableClickCount() &&
+                         getLastSelectedPathComponent() instanceof TableTreeNode) {
             
+            TableTreeNode node = (TableTreeNode)getLastSelectedPathComponent(); 
+            container.displayTable(node.getFrame());
             
+        }
+        
+        if (e.getClickCount() == 1) {
+                        
             if (getLastSelectedPathComponent() instanceof TableTreeNode) {                
-                TableTreeNode node = (TableTreeNode)this.getLastSelectedPathComponent();
+                TableTreeNode node = (TableTreeNode)getLastSelectedPathComponent();
                 container.setLastSelectedRom(node.getTable().getRom());
+                
             } else if (getLastSelectedPathComponent() instanceof CategoryTreeNode) {
-                CategoryTreeNode node = (CategoryTreeNode)this.getLastSelectedPathComponent();
+                CategoryTreeNode node = (CategoryTreeNode)getLastSelectedPathComponent();
                 container.setLastSelectedRom(node.getRom());
+                
             } else if (getLastSelectedPathComponent() instanceof RomTreeNode) {
-                RomTreeNode node = (RomTreeNode)this.getLastSelectedPathComponent();
+                RomTreeNode node = (RomTreeNode)getLastSelectedPathComponent();
                 container.setLastSelectedRom(node.getRom());
+                
             }
         }
     }

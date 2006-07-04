@@ -51,14 +51,6 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     }
     
     public void updateFileName() {
-        /*JPanel panel = new JPanel();
-        JLabel fileName = new JLabel(rom.getFileName());
-        JLabel info = new JLabel("info");
-        panel.add(fileName);
-        panel.add(info);
-        setUserObject(panel);*/
-        
-        //setUserObject(rom.getFileName());
         setUserObject(rom);
     }
     

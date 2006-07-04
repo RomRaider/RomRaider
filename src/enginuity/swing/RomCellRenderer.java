@@ -78,18 +78,17 @@ public class RomCellRenderer implements TreeCellRenderer {
             JPanel renderer = new JPanel(new GridLayout(1,1));
             renderer.setBorder(BorderFactory.createLineBorder(Color.WHITE));
             JLabel tableName = new JLabel("");
-            tableName.setFont(new Font("Tahoma", Font.PLAIN, 11));
-                renderer.setBackground(Color.WHITE);
+            renderer.setBackground(Color.WHITE);
             
             // display icon
             if (table.getType() == Table.TABLE_1D) {
-                tableName = new JLabel(table.getName(), new ImageIcon("./graphics/1d.gif"), JLabel.LEFT);
+                tableName = new JLabel(table.getName()+" ", new ImageIcon("./graphics/1d.gif"), JLabel.LEFT);
             } else if (table.getType() == Table.TABLE_2D) {
-                tableName = new JLabel(table.getName(), new ImageIcon("./graphics/2d.gif"), JLabel.LEFT);
+                tableName = new JLabel(table.getName()+" ", new ImageIcon("./graphics/2d.gif"), JLabel.LEFT);
             } else if (table.getType() == Table.TABLE_3D) {
-                tableName = new JLabel(table.getName(), new ImageIcon("./graphics/3d.gif"), JLabel.LEFT);
+                tableName = new JLabel(table.getName()+" ", new ImageIcon("./graphics/3d.gif"), JLabel.LEFT);
             } else if (table.getType() == Table.TABLE_SWITCH) {
-                tableName = new JLabel(table.getName(), new ImageIcon("./graphics/switch.gif"), JLabel.LEFT);        
+                tableName = new JLabel(table.getName()+" ", new ImageIcon("./graphics/switch.gif"), JLabel.LEFT);        
             }           
             
             // set color
@@ -97,6 +96,9 @@ public class RomCellRenderer implements TreeCellRenderer {
                 renderer.setBackground(new Color(220,220,255));
                 renderer.setBorder(BorderFactory.createLineBorder(new Color(0,0,225)));
             }
+            
+            renderer.setFont(new Font("Tahoma", Font.PLAIN, 11));
+            tableName.setFont(new Font("Tahoma", Font.PLAIN, 11));            
             
             renderer.add(tableName);
             returnValue = renderer;
