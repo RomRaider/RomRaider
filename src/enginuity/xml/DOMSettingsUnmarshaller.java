@@ -117,6 +117,10 @@ public class DOMSettingsUnmarshaller {
                 
             }  else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("userlevel")) {  
                 settings.setUserLevel(unmarshallAttribute(n, "value", 4));
+                
+            }  else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tableclickcount")) {  
+                settings.setTableClickCount(unmarshallAttribute(n, "value", 2));
+                
             } 
         }        
         return settings;
@@ -140,11 +144,7 @@ public class DOMSettingsUnmarshaller {
                 
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("colors")) {  
                 settings = unmarshallColors(n, settings);         
-                
-            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("singletableview")) {  
-                settings.setDebug(unmarshallAttribute(n, "value", true));
-                
-            } 
+            }
         }        
         return settings;
     }

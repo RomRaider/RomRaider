@@ -33,7 +33,7 @@ public class Settings implements Serializable {
     private Color increaseBorder            = new Color(255, 0, 0);
     private Color decreaseBorder            = new Color(0, 0, 255);
     private Color axisColor                 = new Color(255, 255, 255);
-    private boolean singleTableView         = false; 
+    private int   tableClickCount           = 2; // number of clicks to open table
     
     public Settings() {
         //center window by default
@@ -157,14 +157,6 @@ public class Settings implements Serializable {
         this.minColor = minColor;
     }
 
-    public boolean isSingleTableView() {
-        return singleTableView;
-    }
-
-    public void setSingleTableView(boolean singleTableView) {
-        this.singleTableView = singleTableView;
-    }
-
     public Color getHighlightColor() {
         return highlightColor;
     }
@@ -213,5 +205,13 @@ public class Settings implements Serializable {
         this.userLevel = userLevel;
         if (userLevel > 5) userLevel = 5;
         else if (userLevel < 1) userLevel = 1;
+    }
+
+    public int getTableClickCount() {
+        return tableClickCount;
+    }
+
+    public void setTableClickCount(int tableClickCount) {
+        this.tableClickCount = tableClickCount;
     }
 }

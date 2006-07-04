@@ -25,7 +25,7 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2) {
+        if (e.getClickCount() == container.getSettings().getTableClickCount()) {
             try {
                 TableTreeNode node = (TableTreeNode)this.getLastSelectedPathComponent(); 
                 container.displayTable(node.getFrame());

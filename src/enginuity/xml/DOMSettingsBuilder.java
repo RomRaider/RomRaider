@@ -119,6 +119,11 @@ public class DOMSettingsBuilder {
         userLevel.setAttribute("value", settings.getUserLevel()+"");
         options.appendChild(userLevel);
         
+        // table click count
+        IIOMetadataNode tableClickCount = new IIOMetadataNode("tableclickcount");
+        tableClickCount.setAttribute("value", settings.getTableClickCount()+"");
+        options.appendChild(tableClickCount);
+        
         return options;
     }
     
@@ -178,11 +183,6 @@ public class DOMSettingsBuilder {
         colors.appendChild(axis);
         
         tableDisplay.appendChild(colors);
-        
-        // single table view
-        IIOMetadataNode singleTable = new IIOMetadataNode("singletableview");
-        singleTable.setAttribute("value", settings.isSingleTableView()+"");
-        tableDisplay.appendChild(singleTable);        
         
         return tableDisplay;
     }
