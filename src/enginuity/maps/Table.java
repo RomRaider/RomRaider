@@ -869,18 +869,20 @@ public abstract class Table extends JPanel implements Serializable {
         parser.initSymTab(); // clear the contents of the symbol table
         parser.addVariable("x", 5);
         parser.parseExpression(scale.getExpression());
-        double toReal = parser.getValue();     
+        double toReal = parser.getValue(); // calculate real world value of "5"
         
         parser.addVariable("x", toReal);
         parser.parseExpression(scale.getByteExpression());
         
-        if ((int)Math.round(parser.getValue()) != 5 && container.getContainer().getSettings().isCalcConflictWarning()) {
-            
+        // if real to byte doesn't equal 5, report conflict
+        //if (parser.getValue() != 5 && container.getContainer().getSettings().isCalcConflictWarning()) {
+        if (Math.abs(parser.getValue() - 5) > .001) {
+                        
             JPanel panel = new JPanel();
-            panel.setLayout(new GridLayout(3, 1));
+            panel.setLayout(new GridLayout(4, 1));
             panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
-            panel.add(new JLabel("To real value: " + scale.getExpression() + "\n" +
-                    "To byte: " + scale.getByteExpression()));            
+            panel.add(new JLabel("To real value: " + scale.getExpression()));
+            panel.add(new JLabel("To byte: " + scale.getByteExpression()));
             
             JCheckBox check = new JCheckBox("Always display this message", true);
             check.setHorizontalAlignment(JCheckBox.RIGHT);

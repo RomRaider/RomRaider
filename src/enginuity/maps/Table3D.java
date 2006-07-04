@@ -724,6 +724,7 @@ public class Table3D extends Table implements Serializable {
         cellHeight = (int)settings.getCellSize().getHeight();
         cellWidth = (int)settings.getCellSize().getWidth();
         
+        validateScaling();
         resize();
         colorize();    
     }
