@@ -9,7 +9,6 @@ import enginuity.swing.MDIDesktopPane;
 import enginuity.swing.RomTree;
 import enginuity.swing.RomTreeNode;
 import enginuity.swing.RomTreeRootNode;
-import enginuity.swing.TableTreeNode;
 import enginuity.swing.TableFrame;
 import enginuity.net.URL;
 import enginuity.swing.JProgressPane;
@@ -22,6 +21,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,11 +36,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.tree.DefaultMutableTreeNode;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-public class ECUEditor extends JFrame implements WindowListener {
+public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
     
     private RomTreeRootNode  imageRoot       = new RomTreeRootNode("Open Images");
     private RomTree          imageList       = new RomTree(imageRoot);
@@ -78,9 +78,11 @@ public class ECUEditor extends JFrame implements WindowListener {
         JScrollPane leftScrollPane = new JScrollPane(imageList,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
-        splitPane.setDividerSize(4);
+        splitPane.setDividerSize(2);
         splitPane.setDividerLocation(getSettings().getSplitPaneLocation());
-        this.getContentPane().add(splitPane);
+        splitPane.addPropertyChangeListener(this);
+        
+        getContentPane().add(splitPane);
         rightPanel.setBackground(Color.BLACK);
         imageList.setScrollsOnExpand(true);
         imageList.setContainer(this);
@@ -143,9 +145,7 @@ public class ECUEditor extends JFrame implements WindowListener {
         
         imageList.expandRow(imageList.getRowCount() - 1);
         imageList.updateUI();
-        System.out.println(romNode);
         setLastSelectedRom(input);
-        System.out.println(romNode);
         
         if (input.getRomID().isObsolete() && settings.isObsoleteWarning()) {
             JPanel infoPanel = new JPanel();
@@ -283,5 +283,10 @@ public class ECUEditor extends JFrame implements WindowListener {
             images.add(rtn.getRom());
         }
         return images;
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+        imageList.updateUI();
+        imageList.repaint();
     }
 }

@@ -58,7 +58,8 @@ public class RomTreeNode extends DefaultMutableTreeNode {
         panel.add(info);
         setUserObject(panel);*/
         
-        setUserObject(rom.getFileName());
+        //setUserObject(rom.getFileName());
+        setUserObject(rom);
     }
     
     public void add(Table table) {
