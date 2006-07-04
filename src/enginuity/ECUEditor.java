@@ -45,10 +45,10 @@ public class ECUEditor extends JFrame implements WindowListener {
     private RomTree          imageList       = new RomTree(imageRoot);
     private Vector<Rom>      images          = new Vector<Rom>();
     private Settings         settings        = new Settings();
-    private String           version         = new String("0.3.0 Beta");
-    private String           versionDate     = new String("7/2/2006");
+    private String           version         = new String("0.3.1 Beta");
+    private String           versionDate     = new String("7/4/2006");
     private String           titleText       = new String("Enginuity v" + version);
-    private MDIDesktopPane   rightPanel      = new MDIDesktopPane();    
+    private MDIDesktopPane   rightPanel      = new MDIDesktopPane();
     private Rom              lastSelectedRom = null;
     private JSplitPane       splitPane       = new JSplitPane();
     private ECUEditorToolBar toolBar;
@@ -58,10 +58,10 @@ public class ECUEditor extends JFrame implements WindowListener {
         
         // get settings from xml
         try {
-            InputSource src = new InputSource(new FileInputStream(new File("./settings.xml")));                
+            InputSource src = new InputSource(new FileInputStream(new File("./settings.xml")));
             DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
-            DOMParser parser = new DOMParser();                
-            parser.parse(src);      
+            DOMParser parser = new DOMParser();
+            parser.parse(src);
             Document doc = parser.getDocument();
             settings = domUms.unmarshallSettings(doc.getDocumentElement());
         } catch (Exception ex) {
@@ -70,13 +70,13 @@ public class ECUEditor extends JFrame implements WindowListener {
         }
         
         setSize(getSettings().getWindowSize());
-        setLocation(getSettings().getWindowLocation()); 
+        setLocation(getSettings().getWindowLocation());
         if (getSettings().isWindowMaximized() == true) setExtendedState(JFrame.MAXIMIZED_BOTH);
         
-        JScrollPane rightScrollPane = new JScrollPane(rightPanel, 
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);   
+        JScrollPane rightScrollPane = new JScrollPane(rightPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane leftScrollPane = new JScrollPane(imageList,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);   
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
         splitPane.setDividerSize(4);
         splitPane.setDividerLocation(getSettings().getSplitPaneLocation());
@@ -87,10 +87,10 @@ public class ECUEditor extends JFrame implements WindowListener {
         
         //create menubar and toolbar
         menuBar = new ECUEditorMenuBar(this);
-        this.setJMenuBar(menuBar);    
+        this.setJMenuBar(menuBar);
         toolBar = new ECUEditorToolBar(this);
         this.add(toolBar, BorderLayout.NORTH);
-                
+        
         //set remaining window properties
         setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -98,20 +98,20 @@ public class ECUEditor extends JFrame implements WindowListener {
         setTitle(titleText);
         setVisible(true);
     }
-
+    
     public void windowClosing(WindowEvent e) {
         getSettings().setSplitPaneLocation(splitPane.getDividerLocation());
         if (getExtendedState() == JFrame.MAXIMIZED_BOTH) getSettings().setWindowMaximized(true);
         else {
             getSettings().setWindowMaximized(false);
-            getSettings().setWindowSize(getSize());   
-            getSettings().setWindowLocation(getLocation());         
+            getSettings().setWindowSize(getSize());
+            getSettings().setWindowLocation(getLocation());
         }
         
         DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
             JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");
-                
+            
             builder.buildSettings(settings, new File("./settings.xml"), progress);
             
         } catch (IOException ex) { }
@@ -125,12 +125,12 @@ public class ECUEditor extends JFrame implements WindowListener {
     
     public static void main(String args[]) {
         new ECUEditor();
-    }    
-
+    }
+    
     public String getVersion() {
         return version;
     }
-
+    
     public Settings getSettings() {
         return settings;
     }
@@ -139,11 +139,13 @@ public class ECUEditor extends JFrame implements WindowListener {
         // add to ecu image list pane
         RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel());
         imageRoot.add(romNode);
-        imageList.updateUI();    
-
+        imageList.updateUI();
+        
         imageList.expandRow(imageList.getRowCount() - 1);
         imageList.updateUI();
+        System.out.println(romNode);
         setLastSelectedRom(input);
+        System.out.println(romNode);
         
         if (input.getRomID().isObsolete() && settings.isObsoleteWarning()) {
             JPanel infoPanel = new JPanel();
@@ -155,19 +157,19 @@ public class ECUEditor extends JFrame implements WindowListener {
             JCheckBox check = new JCheckBox("Always display this message", true);
             check.setHorizontalAlignment(JCheckBox.RIGHT);
             
-            check.addActionListener( 
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        settings.setObsoleteWarning(((JCheckBox)e.getSource()).isSelected());            
-                    }
-                } 
+            check.addActionListener(
+                    new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    settings.setObsoleteWarning(((JCheckBox)e.getSource()).isSelected());
+                }
+            }
             );
             
             infoPanel.add(check);
             JOptionPane.showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", JOptionPane.INFORMATION_MESSAGE);
-        }   
-        input.setContainer(this); 
-        imageList.updateUI();    
+        }
+        input.setContainer(this);
+        imageList.updateUI();
     }
     
     public void displayTable(TableFrame frame) {
@@ -189,16 +191,16 @@ public class ECUEditor extends JFrame implements WindowListener {
     
     public void closeImage() {
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
-        	RomTreeNode romTreeNode = (RomTreeNode)imageRoot.getChildAt(i);
-        	Rom rom = romTreeNode.getRom();
+            RomTreeNode romTreeNode = (RomTreeNode)imageRoot.getChildAt(i);
+            Rom rom = romTreeNode.getRom();
             if (rom == lastSelectedRom) {
                 imageRoot.remove(romTreeNode);
-            	Vector<Table> romTables = rom.getTables();
-            	for (Iterator j = romTables.iterator(); j.hasNext();) {
-            		Table t = (Table)j.next();
-            		rightPanel.remove(t.getFrame());
-            		t.finalize();
-            	}
+                Vector<Table> romTables = rom.getTables();
+                for (Iterator j = romTables.iterator(); j.hasNext();) {
+                    Table t = (Table)j.next();
+                    rightPanel.remove(t.getFrame());
+                    t.finalize();
+                }
                 rom.finalize();
                 romTreeNode.finalize();
                 break;
@@ -206,12 +208,11 @@ public class ECUEditor extends JFrame implements WindowListener {
         }
         imageList.updateUI();
         if (imageRoot.getChildCount() > 0) {
-			setLastSelectedRom(((RomTreeNode)imageRoot.getChildAt(0)).getRom());
-		}
-		else {
-			// no other images open
-			setLastSelectedRom(null);
-		}
+            setLastSelectedRom(((RomTreeNode)imageRoot.getChildAt(0)).getRom());
+        } else {
+            // no other images open
+            setLastSelectedRom(null);
+        }
         rightPanel.repaint();
     }
     
@@ -225,17 +226,17 @@ public class ECUEditor extends JFrame implements WindowListener {
         rightPanel.removeAll();
         rightPanel.repaint();
     }
-
+    
     public Rom getLastSelectedRom() {
         return lastSelectedRom;
     }
-
+    
     public void setLastSelectedRom(Rom lastSelectedRom) {
         this.lastSelectedRom = lastSelectedRom;
         if (lastSelectedRom == null) {
-            this.setTitle(titleText);
+            setTitle(titleText);
         } else {
-            this.setTitle(titleText + " - " + lastSelectedRom.getFileName());
+            setTitle(titleText + " - " + lastSelectedRom.getFileName());
         }
         
         // update filenames
@@ -247,11 +248,11 @@ public class ECUEditor extends JFrame implements WindowListener {
         menuBar.updateMenu();
         imageList.updateUI();
     }
-
+    
     public ECUEditorToolBar getToolBar() {
         return toolBar;
     }
-
+    
     public void setToolBar(ECUEditorToolBar toolBar) {
         this.toolBar = toolBar;
     }
@@ -259,7 +260,7 @@ public class ECUEditor extends JFrame implements WindowListener {
     public void setSettings(Settings settings) {
         this.settings = settings;
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
-        	RomTreeNode rtn = (RomTreeNode)imageRoot.getChildAt(i);
+            RomTreeNode rtn = (RomTreeNode)imageRoot.getChildAt(i);
             rtn.getRom().setContainer(this);
         }
     }
@@ -267,19 +268,19 @@ public class ECUEditor extends JFrame implements WindowListener {
     public void repaintPanel() {
         rightPanel.repaint();
         rightPanel.update(rightPanel.getGraphics());
-    }  
+    }
     
     public void setUserLevel(int userLevel) {
         settings.setUserLevel(userLevel);
         imageRoot.setUserLevel(userLevel);
         imageList.updateUI();
     }
-
+    
     public Vector<Rom> getImages() {
         Vector<Rom> images = new Vector<Rom>();
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
-                RomTreeNode rtn = (RomTreeNode)imageRoot.getChildAt(i);
-                images.add(rtn.getRom());
+            RomTreeNode rtn = (RomTreeNode)imageRoot.getChildAt(i);
+            images.add(rtn.getRom());
         }
         return images;
     }

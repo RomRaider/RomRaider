@@ -2,7 +2,6 @@ package enginuity.maps;
 
 import enginuity.ECUEditor;
 import enginuity.swing.JProgressPane;
-import enginuity.swing.RomTreeNode;
 import enginuity.xml.TableNotFoundException;
 import java.io.File;
 import java.io.Serializable;

@@ -3,6 +3,8 @@ package enginuity.swing;
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
 import java.util.Vector;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class RomTreeNode extends DefaultMutableTreeNode {
@@ -10,11 +12,11 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     private Rom rom = new Rom();
     
     public RomTreeNode(Rom rom, int userLevel) {
-        super(rom.getFileName());
         setRom(rom);
         refresh(userLevel);
+        updateFileName();
     }
-    
+        
     public void refresh(int userLevel) {
         removeAllChildren();
         Vector<Table> tables = rom.getTables();
@@ -49,7 +51,14 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     }
     
     public void updateFileName() {
-        this.setUserObject(rom.getFileName());
+        /*JPanel panel = new JPanel();
+        JLabel fileName = new JLabel(rom.getFileName());
+        JLabel info = new JLabel("info");
+        panel.add(fileName);
+        panel.add(info);
+        setUserObject(panel);*/
+        
+        setUserObject(rom.getFileName());
     }
     
     public void add(Table table) {
@@ -68,7 +77,7 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     public Rom getRom() {
         return rom;
     }
-
+    
     public void setRom(Rom rom) {
         this.rom = rom;
     }
