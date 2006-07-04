@@ -566,7 +566,7 @@ public class Table3D extends Table implements Serializable {
         
         String pasteType = st.nextToken();
         
-        if (pasteType.equalsIgnoreCase("[Table3D]")) { // Paste table             
+        if (pasteType.equalsIgnoreCase("[Table3D]")) { // Paste table 
             String newline = System.getProperty("line.separator");
             String xAxisValues = "[Table1D]" + newline + st.nextToken(newline);
             
@@ -665,7 +665,7 @@ public class Table3D extends Table implements Serializable {
     
     }      
     
-    public void pasteValues() {        
+    public void pasteValues() {   
         StringTokenizer st = new StringTokenizer("");
         String newline = System.getProperty("line.separator");
         try {
@@ -695,7 +695,7 @@ public class Table3D extends Table implements Serializable {
 
                         try {
                             if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
-                                data[x][y].setCompareRealValue(currentToken);
+                                data[x][y].setRealValue(currentToken);
                             }
                         } catch (ArrayIndexOutOfBoundsException ex) { /* copied table is larger than current table*/ }
                     }
