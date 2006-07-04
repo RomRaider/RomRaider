@@ -875,7 +875,6 @@ public abstract class Table extends JPanel implements Serializable {
         parser.parseExpression(scale.getByteExpression());
         
         // if real to byte doesn't equal 5, report conflict
-        //if (parser.getValue() != 5 && container.getContainer().getSettings().isCalcConflictWarning()) {
         if (Math.abs(parser.getValue() - 5) > .001) {
                         
             JPanel panel = new JPanel();
