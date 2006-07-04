@@ -13,7 +13,8 @@ public class TableTreeNode extends DefaultMutableTreeNode {
     private TableFrame frame;
     
     public TableTreeNode(Table table) {
-        super(table.getName() + " (" + table.getType() + "D)");
+        //super(table.getName() + " (" + table.getType() + "D)");
+        super(table);
         this.table = table;
         this.frame = table.getFrame();
     }

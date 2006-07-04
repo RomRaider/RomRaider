@@ -32,7 +32,7 @@ public class RomTreeNode extends DefaultMutableTreeNode {
                     if (getChildAt(j).toString().equals(table.getCategory())) {
 
                         // add to appropriate category
-                        TableTreeNode tableNode = new TableTreeNode(table);                        
+                        TableTreeNode tableNode = new TableTreeNode(table);
                         getChildAt(j).add(tableNode);
                         categoryExists = true;
                         break;

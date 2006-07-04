@@ -32,13 +32,13 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         this.add(refreshImage);
         
         openImage.setMaximumSize(new Dimension(58,50));
-        openImage.setBorder(new LineBorder(new Color(150,150,150), 1));
+        openImage.setBorder(new LineBorder(new Color(150,150,150), 0));
         saveImage.setMaximumSize(new Dimension(50,50));
-        saveImage.setBorder(new LineBorder(new Color(150,150,150), 1));
+        saveImage.setBorder(new LineBorder(new Color(150,150,150), 0));
         closeImage.setMaximumSize(new Dimension(50,50));
-        closeImage.setBorder(new LineBorder(new Color(150,150,150), 1));
+        closeImage.setBorder(new LineBorder(new Color(150,150,150), 0));
         refreshImage.setMaximumSize(new Dimension(50,50));
-        refreshImage.setBorder(new LineBorder(new Color(150,150,150), 1));
+        refreshImage.setBorder(new LineBorder(new Color(150,150,150), 0));
 
         updateButtons();
         
