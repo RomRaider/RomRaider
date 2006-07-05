@@ -11,20 +11,18 @@ import javax.imageio.metadata.IIOMetadataNode;
 
 public class DOMSettingsBuilder {
     
-    public  void buildSettings (Settings settings, File output, JProgressPane progress) throws IOException {
+    public void buildSettings (Settings settings, File output, JProgressPane progress, String versionNumber) throws IOException {
         
         IIOMetadataNode settingsNode = new IIOMetadataNode("settings");
         
         // create settings
-        progress.update("Saving window settings...", 15);
+        progress.update("Saving window settings...", 20);
         settingsNode.appendChild(buildWindow(settings));
-        progress.update("Saving URL settings...", 30);
-        settingsNode.appendChild(buildURLs(settings));     
-        progress.update("Saving file settings...", 45);
+        progress.update("Saving file settings...", 40);
         settingsNode.appendChild(buildFiles(settings));   
         progress.update("Saving options...", 60);
-        settingsNode.appendChild(buildOptions(settings));
-        progress.update("Saving display settings...", 75);
+        settingsNode.appendChild(buildOptions(settings, versionNumber));
+        progress.update("Saving display settings...", 80);
         settingsNode.appendChild(buildTableDisplay(settings));
         
         OutputFormat of = new OutputFormat("XML","ISO-8859-1",true);
@@ -63,22 +61,6 @@ public class DOMSettingsBuilder {
         return windowSettings;
     }
     
-    public IIOMetadataNode buildURLs(Settings settings) {
-        IIOMetadataNode urls = new IIOMetadataNode("urls");
-        
-        // rom revision url
-        IIOMetadataNode romRevision = new IIOMetadataNode("romrevision");
-        romRevision.setAttribute("url", settings.getRomRevisionURL());
-        urls.appendChild(romRevision);
-        
-        // support url
-        IIOMetadataNode support = new IIOMetadataNode("support");
-        support.setAttribute("url", settings.getSupportURL());
-        urls.appendChild(support);
-        
-        return urls;
-    }
-    
     public IIOMetadataNode buildFiles(Settings settings) {
         IIOMetadataNode files = new IIOMetadataNode("files");
         
@@ -96,7 +78,7 @@ public class DOMSettingsBuilder {
         return files;
     }
     
-    public IIOMetadataNode buildOptions(Settings settings) {
+    public IIOMetadataNode buildOptions(Settings settings, String versionNumber) {
         IIOMetadataNode options = new IIOMetadataNode("options");
         
         // obsolete warning
@@ -123,6 +105,11 @@ public class DOMSettingsBuilder {
         IIOMetadataNode tableClickCount = new IIOMetadataNode("tableclickcount");
         tableClickCount.setAttribute("value", settings.getTableClickCount()+"");
         options.appendChild(tableClickCount);
+        
+        // last version used
+        IIOMetadataNode version = new IIOMetadataNode("version");
+        version.setAttribute("value", versionNumber);
+        options.appendChild(version);
         
         return options;
     }

@@ -32,9 +32,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem   closeImage      = new JMenuItem("Close Image");
     private JMenuItem   closeAll        = new JMenuItem("Close All Images");
     private JMenuItem   exit            = new JMenuItem("Exit");
+    
     private JMenu       editMenu        = new JMenu("Edit");
     private JMenuItem   settings        = new JMenuItem("Settings");
     private JMenuItem   editDefinition  = new JMenuItem("Edit ECU Definitions");
+    
     private JMenu       viewMenu        = new JMenu("View");
     private JMenuItem   romProperties   = new JMenuItem("ECU Image Properties");
     private ButtonGroup levelGroup      = new ButtonGroup();
@@ -44,6 +46,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JRadioButtonMenuItem level3 = new JRadioButtonMenuItem("3 Advanced");
     private JRadioButtonMenuItem level4 = new JRadioButtonMenuItem("4 Highest");
     private JRadioButtonMenuItem level5 = new JRadioButtonMenuItem("5 Debug Mode");
+    
+    private JMenu       helpMenu        = new JMenu("Help");
+    private JMenuItem   about           = new JMenuItem("About Enginuity");
+    
     private ECUEditor   parent;
     
     public ECUEditorMenuBar(ECUEditor parent) {
@@ -120,6 +126,13 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         else if (parent.getSettings().getUserLevel() == 3) level3.setSelected(true);
         else if (parent.getSettings().getUserLevel() == 4) level4.setSelected(true);
         else if (parent.getSettings().getUserLevel() == 5) level5.setSelected(true);
+        
+        // help menu stuff
+        add(helpMenu);
+        helpMenu.setMnemonic('H');
+        about.setMnemonic('A');
+        helpMenu.add(about);
+        about.addActionListener(this);               
         
         this.updateMenu();          
     }

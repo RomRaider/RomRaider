@@ -16,6 +16,8 @@ import enginuity.xml.DOMSettingsBuilder;
 import enginuity.xml.DOMSettingsUnmarshaller;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,8 +25,10 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
 import javax.swing.ImageIcon;
@@ -36,6 +40,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -45,7 +50,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private RomTree          imageList       = new RomTree(imageRoot);
     private Vector<Rom>      images          = new Vector<Rom>();
     private Settings         settings        = new Settings();
-    private String           version         = new String("0.3.1 Beta");
+    private String           version         = new String("0.3.1 build 1");
     private String           versionDate     = new String("7/4/2006");
     private String           titleText       = new String("Enginuity v" + version);
     private MDIDesktopPane   rightPanel      = new MDIDesktopPane();
@@ -64,6 +69,34 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             parser.parse(src);
             Document doc = parser.getDocument();
             settings = domUms.unmarshallSettings(doc.getDocumentElement());
+            
+            if (!settings.getRecentVersion().equalsIgnoreCase(version)) {
+                
+                // new version being used, display release notes
+                JTextArea releaseNotes = new JTextArea();
+                releaseNotes.setEditable(false);
+                releaseNotes.setWrapStyleWord(true);
+                releaseNotes.setLineWrap(true);
+                releaseNotes.setFont(new Font("Tahoma", Font.PLAIN, 12));
+                
+                JScrollPane scroller = new JScrollPane(releaseNotes, 
+                        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                scroller.setPreferredSize(new Dimension(600,500));
+                
+                BufferedReader br = new BufferedReader(new FileReader(settings.getReleaseNotes()));
+                StringBuffer sb = new StringBuffer();
+                while (br.ready()) {
+                    sb.append(br.readLine() + "\n");
+                }
+                
+                releaseNotes.setText(sb+"");
+                                
+                JOptionPane.showMessageDialog(this, scroller,
+                        "Enginuity " + version + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
+            
+            }
+            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Settings file not found.\n" +
                     "A new file will be created.", "Error Loading Settings", JOptionPane.INFORMATION_MESSAGE);
@@ -112,9 +145,8 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         
         DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
-            JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");
-            
-            builder.buildSettings(settings, new File("./settings.xml"), progress);
+            JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");            
+            builder.buildSettings(settings, new File("./settings.xml"), progress, version);
             
         } catch (IOException ex) { }
     }
@@ -157,12 +189,11 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             JCheckBox check = new JCheckBox("Always display this message", true);
             check.setHorizontalAlignment(JCheckBox.RIGHT);
             
-            check.addActionListener(
-                    new ActionListener() {
+            check.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     settings.setObsoleteWarning(((JCheckBox)e.getSource()).isSelected());
+                    }
                 }
-            }
             );
             
             infoPanel.add(check);

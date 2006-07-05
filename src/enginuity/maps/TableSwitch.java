@@ -1,9 +1,12 @@
 package enginuity.maps;
 
 import enginuity.xml.RomAttributeParser;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.StringTokenizer;
 import javax.swing.JCheckBox;
+import javax.swing.JTextArea;
 
 public class TableSwitch extends Table {
     
@@ -13,7 +16,9 @@ public class TableSwitch extends Table {
     
     public TableSwitch() {
         storageType = 1;
-        add(checkbox);
+        removeAll();
+        setLayout(new BorderLayout());
+        //add(checkbox);
     }
     
     public void setDataSize(int size) {
@@ -22,10 +27,7 @@ public class TableSwitch extends Table {
     }
     
     public void populateTable(byte[] input) {
-        System.out.println(on.length);
         for (int i = 0; i < on.length; i++) {
-            
-            System.out.println(on[i] + " " + input[storageAddress - ramOffset + 1]);
             
             // check each byte -- if it doesn't match "on", it's off
             if (on[i] != input[storageAddress - ramOffset + i]) {
@@ -33,6 +35,24 @@ public class TableSwitch extends Table {
                 break;
             }
         }
+    }
+    
+    public void setName(String name) {
+        super.setName(name);
+        checkbox.setText("Enable " + name);
+        
+        add(checkbox, BorderLayout.NORTH);
+    }
+    
+    public void setDescription(String description) {
+        super.setDescription(description);
+        JTextArea descriptionArea = new JTextArea(description);
+        descriptionArea.setOpaque(false);
+        descriptionArea.setEditable(false);
+        descriptionArea.setWrapStyleWord(true);
+        descriptionArea.setLineWrap(true);
+        
+        add(descriptionArea, BorderLayout.CENTER);
     }
     
     public byte[] saveFile(byte[] input) {
@@ -62,6 +82,15 @@ public class TableSwitch extends Table {
             off[i] = (byte)RomAttributeParser.parseHexString(tokens.nextToken());
         }
     }
+ 
+    public Dimension getFrameSize() {
+        int height = verticalOverhead + 75;
+        int width = horizontalOverhead;
+        if (height < minHeight) height = minHeight;
+        if (width < minWidth) width = minWidth;
+        
+        return new Dimension(width, height);
+    }    
     
     public void colorize() { }
     public void cursorUp() { }

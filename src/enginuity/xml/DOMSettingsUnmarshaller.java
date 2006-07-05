@@ -25,8 +25,6 @@ public class DOMSettingsUnmarshaller {
 
             if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("window")) {  
                 settings = unmarshallWindow(n, settings);
-            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("urls")) {  
-                settings = unmarshallURLs(n, settings);
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("options")) {  
                 settings = unmarshallOptions(n, settings);
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("files")) {  
@@ -64,24 +62,7 @@ public class DOMSettingsUnmarshaller {
             } 
         }
         return settings;
-    }    
-        
-    public Settings unmarshallURLs (Node urlNode, Settings settings) {   
-        Node n;
-        NodeList nodes = urlNode.getChildNodes();
-            
-        for (int i = 0; i < nodes.getLength(); i++) { 
-            n = nodes.item(i);
-
-            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("romrevision")) { 
-                settings.setRomRevisionURL(unmarshallAttribute(n, "url", 
-                        "http://www.scoobypedia.co.uk/index.php/Knowledge/ECUVersionCompatibilityList"));
-            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("support")) {  
-                settings.setSupportURL(unmarshallAttribute(n, "url", "http://www.enginuity.org"));
-            } 
-        }
-        return settings;
-    }    
+    }     
         
     public Settings unmarshallFiles (Node urlNode, Settings settings) {   
         Node n;
@@ -120,6 +101,9 @@ public class DOMSettingsUnmarshaller {
                 
             }  else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tableclickcount")) {  
                 settings.setTableClickCount(unmarshallAttribute(n, "value", 2));
+                
+            }   else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("version")) {  
+                settings.setRecentVersion(unmarshallAttribute(n, "value", ""));
                 
             } 
         }        

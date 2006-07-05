@@ -17,6 +17,8 @@ public class Settings implements Serializable {
     
     private String romRevisionURL           = "http://www.scoobypedia.co.uk/index.php/Knowledge/ECUVersionCompatibilityList";
     private String supportURL               = "http://www.enginuity.org";
+    private String releaseNotes             = "./release notes.txt";
+    private String recentVersion            = "";
     
     private Vector<File> ecuDefinitionFiles = new Vector<File>();
     private File  lastImageDir              = new File("images");
@@ -97,16 +99,8 @@ public class Settings implements Serializable {
         return romRevisionURL;
     }
     
-    public void setRomRevisionURL(String romRevisionURL) {
-        this.romRevisionURL = romRevisionURL;
-    }
-    
     public String getSupportURL() {
         return supportURL;
-    }
-    
-    public void setSupportURL(String supportURL) {
-        this.supportURL = supportURL;
     }
     
     public Font getTableFont() {
@@ -213,5 +207,17 @@ public class Settings implements Serializable {
 
     public void setTableClickCount(int tableClickCount) {
         this.tableClickCount = tableClickCount;
+    }
+
+    public String getRecentVersion() {
+        return recentVersion;
+    }
+
+    public void setRecentVersion(String recentVersion) {
+        this.recentVersion = recentVersion;
+    }
+
+    public String getReleaseNotes() {
+        return releaseNotes;
     }
 }

@@ -82,8 +82,13 @@ public class Table2D extends Table implements Serializable {
         for (int i = 0; i < this.getDataSize(); i++) {
             centerPanel.add(this.getDataCell(i));
         }   
-        this.add(new JLabel(axis.getName() + " (" + axis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
-        this.add(new JLabel(name + " (" + scale.getUnit() + ")", JLabel.CENTER), BorderLayout.SOUTH);
+        add(new JLabel(axis.getName() + " (" + axis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
+
+        if (axis.isStatic()) add(new JLabel(axis.getName(), JLabel.CENTER), BorderLayout.NORTH);
+        else add(new JLabel(axis.getName() + " (" + axis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
+        
+        add(new JLabel(scale.getUnit(), JLabel.CENTER), BorderLayout.SOUTH);
+        
         //this.colorize();     
     }
     
