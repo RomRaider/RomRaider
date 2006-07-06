@@ -920,15 +920,13 @@ public abstract class Table extends JPanel implements Serializable {
     }
     
     /**
-     * Help the GC clean things up.
+     * Call when closing to cleanup references and help GC.
      */
-    protected void finalize() {
-		try {
-			super.finalize();
-			data = null;
-			container = null;
-		}
-		catch (Throwable t) {}
+    public void cleanup() {
+		data = null;
+		container = null;
+		axisParent = null;
+		centerPanel = null;
 	}
 
     public int getUserLevel() {

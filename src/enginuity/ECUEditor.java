@@ -236,12 +236,14 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             RomTreeNode romTreeNode = (RomTreeNode)imageRoot.getChildAt(i);
             Rom rom = romTreeNode.getRom();
             if (rom == lastSelectedRom) {
-                imageRoot.remove(romTreeNode);
                 Vector<Table> romTables = rom.getTables();
                 for (Iterator j = romTables.iterator(); j.hasNext();) {
                     Table t = (Table)j.next();
                     rightPanel.remove(t.getFrame());
+                    t.cleanup();
                 }
+                imageRoot.remove(i);
+            	romTreeNode.cleanup();
                 break;
             }
         }
@@ -253,6 +255,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             setLastSelectedRom(null);
         }
         rightPanel.repaint();
+        System.gc();
     }
     
     public void closeAllImages() {
