@@ -48,7 +48,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     
     private RomTreeRootNode  imageRoot       = new RomTreeRootNode("Open Images");
     private RomTree          imageList       = new RomTree(imageRoot);
-    private Vector<Rom>      images          = new Vector<Rom>();
     private Settings         settings        = new Settings();
     private String           version         = "0.3.1 build 1";
     private String           versionDate     = "7/4/2006";
@@ -60,7 +59,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private ECUEditorMenuBar menuBar;
     
     public ECUEditor() {
-        
+        BufferedReader br = null;
         // get settings from xml
         try {
             InputSource src = new InputSource(new FileInputStream(new File("./settings.xml")));
@@ -84,7 +83,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                 scroller.setPreferredSize(new Dimension(600,500));
                 
-                BufferedReader br = new BufferedReader(new FileReader(settings.getReleaseNotes()));
+                br = new BufferedReader(new FileReader(settings.getReleaseNotes()));
                 StringBuffer sb = new StringBuffer();
                 while (br.ready()) {
                     sb.append(br.readLine() + "\n");
@@ -96,11 +95,23 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                         "Enginuity " + version + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
             
             }
-            
+        } catch (RuntimeException re) {
+        	// Catching RE specifially will prevent real bugs from being
+            // presented as a settings file not found exception
+			throw re;
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Settings file not found.\n" +
                     "A new file will be created.", "Error Loading Settings", JOptionPane.INFORMATION_MESSAGE);
         }
+        finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException ioe) {
+					/* Ignore */
+				}
+			}
+		}
         
         setSize(getSettings().getWindowSize());
         setLocation(getSettings().getWindowLocation());
@@ -230,10 +241,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                 for (Iterator j = romTables.iterator(); j.hasNext();) {
                     Table t = (Table)j.next();
                     rightPanel.remove(t.getFrame());
-                    t.finalize();
                 }
-                rom.finalize();
-                romTreeNode.finalize();
                 break;
             }
         }
@@ -249,7 +257,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     
     public void closeAllImages() {
         while (imageRoot.getChildCount() > 0) {
-            ((RomTreeNode)imageRoot.getChildAt(0)).finalize();
             imageRoot.remove(0);
         }
         imageList.updateUI();

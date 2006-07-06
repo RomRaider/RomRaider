@@ -1,11 +1,11 @@
 package enginuity.swing;
 
+import java.util.Vector;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
-import java.util.Vector;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 public class RomTreeNode extends DefaultMutableTreeNode {
     
@@ -75,7 +75,7 @@ public class RomTreeNode extends DefaultMutableTreeNode {
         this.rom = rom;
     }
     
-    public void finalize() {
+    protected void finalize() {
         try {
             rom = null;
             removeAllChildren();

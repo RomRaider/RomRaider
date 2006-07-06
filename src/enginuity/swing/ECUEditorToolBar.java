@@ -1,18 +1,17 @@
 package enginuity.swing;
 
-import enginuity.swing.DebugPanel;
-import enginuity.swing.ECUEditorMenuBar;
-import enginuity.ECUEditor;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.management.modelmbean.XMLParseException;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.border.LineBorder;
+
+import enginuity.ECUEditor;
 
 public class ECUEditorToolBar extends JToolBar implements ActionListener {
     

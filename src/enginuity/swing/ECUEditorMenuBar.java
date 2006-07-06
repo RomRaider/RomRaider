@@ -253,10 +253,16 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 }
                 if (save) {
                     byte[] output = parent.getLastSelectedRom().saveFile();
-                    FileOutputStream fos = new FileOutputStream(fc.getSelectedFile());
-                    fos.write(output);
-                    fos.close();
-                    fos = null;
+                    FileOutputStream fos = null;
+                    try {
+                    	fos = new FileOutputStream(fc.getSelectedFile());
+                        fos.write(output);
+                    }
+                    finally {
+                    	if (fos != null) {
+                    		fos.close();
+                    	}
+                    }
 
                     parent.getLastSelectedRom().setFullFileName(fc.getSelectedFile().getAbsoluteFile());
                     parent.setLastSelectedRom(parent.getLastSelectedRom());
@@ -276,7 +282,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     }
     
     public void openImage(File inputFile) throws XMLParseException, Exception {        
-        JProgressPane progress = new JProgressPane(parent, "Opening file...", "Parsing ECU definitions...");    
+        JProgressPane progress = new JProgressPane(parent, "Opening file...", "Parsing ECU definitions...");
+        FileInputStream fis = null;
         try {     
             parent.repaintPanel();
             progress.update("Parsing ECU definitions...", 0);
@@ -286,10 +293,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             DOMParser parser = new DOMParser();                
             parser.parse(src);      
             Document doc = parser.getDocument();
-            FileInputStream fis = new FileInputStream(inputFile);
+            fis = new FileInputStream(inputFile);
             byte[] input = new byte[fis.available()];                
             fis.read(input);     
-            fis.close();
                         
             progress.update("Finding ECU definition...", 10);
             
@@ -309,6 +315,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             JOptionPane.showMessageDialog(parent, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
             
         } finally {
+        	if (fis != null) {
+        		fis.close();
+        	}
             progress.dispose();
         }
     }       

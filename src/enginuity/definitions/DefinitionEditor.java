@@ -1,10 +1,11 @@
 package enginuity.definitions;
 
-import enginuity.ECUEditor;
 import java.awt.Dimension;
-import java.awt.Point;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+
+import enginuity.ECUEditor;
 
 public class DefinitionEditor extends JFrame {
     

@@ -117,7 +117,6 @@ public class Rom implements Serializable {
         this.container = container;
         // apply settings to tables
         for (int i = 0; i < tables.size(); i++) {           
-            tables.get(i).finalize(container.getSettings());
             tables.get(i).resize();
         }
     }
@@ -129,7 +128,7 @@ public class Rom implements Serializable {
         return binData;
     }
 
-    public void finalize() {
+    protected void finalize() {
 		try {
 			super.finalize();
 			for (int i = 0; i < tables.size(); i++) {

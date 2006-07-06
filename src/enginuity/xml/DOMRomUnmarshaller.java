@@ -2,16 +2,25 @@
 
 package enginuity.xml;
 
-import enginuity.maps.*;
-import enginuity.maps.TableSwitch;
-import enginuity.swing.JProgressPane;
 import javax.management.modelmbean.XMLParseException;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import enginuity.maps.DataCell;
+import enginuity.maps.Rom;
+import enginuity.maps.RomID;
+import enginuity.maps.Scale;
+import enginuity.maps.Table;
+import enginuity.maps.Table1D;
+import enginuity.maps.Table2D;
+import enginuity.maps.Table3D;
+import enginuity.maps.TableSwitch;
+import enginuity.swing.JProgressPane;
+
 public class DOMRomUnmarshaller {
     
-    private JProgressPane progress;
+    private JProgressPane progress = null;
     
     public DOMRomUnmarshaller() { }
     
@@ -80,8 +89,11 @@ public class DOMRomUnmarshaller {
                         table = unmarshallTable(n, table, rom);  
                         table.setRom(rom);     
                         rom.addTable(table);
-                    } catch (TableIsOmittedException ex) { // table is not supported in inherited def (skip)
-                        rom.removeTable(table.getName());
+                    } catch (TableIsOmittedException ex) {
+                    	// table is not supported in inherited def (skip)
+                        if (table != null) {    
+                        	rom.removeTable(table.getName());
+                        }
                     }
                     
                 } else { /* unexpected element in Rom (skip)*/ }
@@ -164,11 +176,6 @@ public class DOMRomUnmarshaller {
 	return romID;
     }
     
-    private Table copyTable(Table input) {
-        Table output = input;
-        return output;
-    }
-   
     private Table unmarshallTable(Node tableNode, Table table, Rom rom) throws XMLParseException, TableIsOmittedException, Exception {
         
         if (unmarshallAttribute(tableNode, "omit", "false").equalsIgnoreCase("true")) { // remove table if omitted

@@ -1,10 +1,17 @@
 package enginuity.swing;
 
-import enginuity.swing.MDIDesktopPane;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.beans.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Point;
+import java.beans.PropertyVetoException;
+
+import javax.swing.DefaultDesktopManager;
+import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 
 /**
  * An extension of WDesktopPane that supports often used MDI functionality. This
