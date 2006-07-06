@@ -1,27 +1,33 @@
 package enginuity.swing;
 
-import enginuity.xml.RomNotFoundException;
-import enginuity.maps.Rom;
-import enginuity.xml.DOMRomUnmarshaller;
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+
 import javax.management.modelmbean.XMLParseException;
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-import enginuity.ECUEditor;
-import enginuity.definitions.DefinitionEditor;
-import javax.swing.ButtonGroup;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
+
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+
+import enginuity.ECUEditor;
+import enginuity.definitions.DefinitionEditor;
+import enginuity.maps.Rom;
+import enginuity.xml.DOMRomUnmarshaller;
+import enginuity.xml.RomNotFoundException;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     
@@ -283,7 +289,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     
     public void openImage(File inputFile) throws XMLParseException, Exception {        
         JProgressPane progress = new JProgressPane(parent, "Opening file...", "Parsing ECU definitions...");
-        FileInputStream fis = null;
         try {     
             parent.repaintPanel();
             progress.update("Parsing ECU definitions...", 0);
@@ -293,9 +298,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             DOMParser parser = new DOMParser();                
             parser.parse(src);      
             Document doc = parser.getDocument();
-            fis = new FileInputStream(inputFile);
-            byte[] input = new byte[fis.available()];                
-            fis.read(input);     
+            byte[] input = readFile(inputFile);
                         
             progress.update("Finding ECU definition...", 10);
             
@@ -315,10 +318,25 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             JOptionPane.showMessageDialog(parent, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
             
         } finally {
-        	if (fis != null) {
-        		fis.close();
-        	}
             progress.dispose();
         }
-    }       
+    }
+    
+    private byte[] readFile(File inputFile) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(inputFile);
+			byte[] buf = new byte[8192];
+			int bytesRead = 0;
+			while ((bytesRead = fis.read(buf)) != -1) {
+				baos.write(buf, 0, bytesRead);
+			}
+		} finally {
+			if (fis != null) {
+				fis.close();
+			}
+		}
+		return baos.toByteArray();
+	}
 }
