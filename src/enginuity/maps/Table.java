@@ -692,6 +692,7 @@ public abstract class Table extends JPanel implements Serializable {
             } else { // float
                 output = RomAttributeParser.floatToByte((float)data[i].getBinValue(), endian);
             }
+            // Are we going to use the value output?
             
             for (int z = 0; z < storageType; z++) {                    
                 data[i].addKeyListener(listener);

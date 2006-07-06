@@ -20,7 +20,7 @@ public class BrowserControl {
                     if (exitCode != 0)
                     {
                         cmd = UNIX_PATH + " "  + url;
-                        p = Runtime.getRuntime().exec(cmd);
+                        Runtime.getRuntime().exec(cmd);
                     }
                 }
                 catch(InterruptedException x) {
