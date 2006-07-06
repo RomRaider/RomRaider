@@ -260,12 +260,8 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     
     public void closeAllImages() {
         while (imageRoot.getChildCount() > 0) {
-            imageRoot.remove(0);
+            closeImage();
         }
-        imageList.updateUI();
-        setLastSelectedRom(null);
-        rightPanel.removeAll();
-        rightPanel.repaint();
     }
     
     public Rom getLastSelectedRom() {
