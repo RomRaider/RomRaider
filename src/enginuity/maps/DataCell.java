@@ -85,20 +85,19 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
     
     public void setBinValue(double binValue) {
-        this.binValue = binValue;
-        
-        // make sure it's in range
-        if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
-            if (binValue < 0) {
-                this.setBinValue(0);
-            } else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
-                this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
-            }
-            binValue = Math.round(binValue);
-        }
-        
-        this.updateDisplayValue();
-    }
+		// make sure it's in range
+		if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
+			if (binValue < 0) {
+				this.setBinValue(0);
+			} else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
+				this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
+			}
+			binValue = Math.round(binValue);
+		}
+
+		this.binValue = binValue;
+		this.updateDisplayValue();
+	}
     
     public double getBinValue() {
         return binValue;
