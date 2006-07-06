@@ -1,9 +1,5 @@
 package enginuity.maps;
 
-import enginuity.maps.Table;
-import enginuity.maps.Table1D;
-import enginuity.Settings;
-import enginuity.swing.TableFrame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,11 +9,14 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyListener;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.StringTokenizer;
+
 import javax.swing.JLabel;
 
-public class Table2D extends Table implements Serializable {
+import enginuity.Settings;
+import enginuity.swing.TableFrame;
+
+public class Table2D extends Table {
     
     private Table1D axis = new Table1D();
     
@@ -57,10 +56,10 @@ public class Table2D extends Table implements Serializable {
         return new Dimension(width, height);        
     }
     
-    public void finalize(Settings settings) {
+    public void applyColorSettings(Settings settings) {
         this.setAxisColor(settings.getAxisColor());
-        axis.finalize(settings);
-        super.finalize(settings);
+        axis.applyColorSettings(settings);
+        super.applyColorSettings(settings);
     }
     
     public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {

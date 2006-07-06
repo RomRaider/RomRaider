@@ -1,13 +1,11 @@
 package enginuity.maps;
 
-import enginuity.maps.Table;
-import enginuity.maps.Table3D;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.io.Serializable;
+
 import javax.swing.JLabel;
 
-public class Table1D extends Table implements Serializable {
+public class Table1D extends Table {
     
     private Color axisColor = new Color(255, 255, 255);
     

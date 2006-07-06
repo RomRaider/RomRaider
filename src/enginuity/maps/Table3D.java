@@ -1,9 +1,5 @@
 package enginuity.maps;
 
-import enginuity.Settings;
-import enginuity.xml.RomAttributeParser;
-import enginuity.swing.TableFrame;
-import enginuity.swing.VTextIcon;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,13 +11,18 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyListener;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.StringTokenizer;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-public class Table3D extends Table implements Serializable {
+import enginuity.Settings;
+import enginuity.swing.TableFrame;
+import enginuity.swing.VTextIcon;
+import enginuity.xml.RomAttributeParser;
+
+public class Table3D extends Table {
     
     private Table1D      xAxis = new Table1D();
     private Table1D      yAxis = new Table1D();
@@ -701,7 +702,7 @@ public class Table3D extends Table implements Serializable {
         }        
     }
     
-    public void finalize(Settings settings) {    
+    public void applyColorSettings(Settings settings) {    
         // apply settings to cells
         for (int y = 0; y < getSizeY(); y++) {
             for (int x = 0; x < getSizeX(); x++) {        
@@ -716,8 +717,8 @@ public class Table3D extends Table implements Serializable {
             }
         }            
         this.setAxisColor(settings.getAxisColor());
-        xAxis.finalize(settings);
-        yAxis.finalize(settings);        
+        xAxis.applyColorSettings(settings);
+        yAxis.applyColorSettings(settings);        
         cellHeight = (int)settings.getCellSize().getHeight();
         cellWidth = (int)settings.getCellSize().getWidth();
         

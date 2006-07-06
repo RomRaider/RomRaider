@@ -825,7 +825,7 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
     
-    public void finalize(Settings settings) {
+    public void applyColorSettings(Settings settings) {
         // apply settings to cells
         for (int i = 0; i < getDataSize(); i++) {
             this.setMaxColor(settings.getMaxColor());
@@ -921,7 +921,7 @@ public abstract class Table extends JPanel implements Serializable {
     /**
      * Help the GC clean things up.
      */
-    public void finalize() {
+    protected void finalize() {
 		try {
 			super.finalize();
 			data = null;
