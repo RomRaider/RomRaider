@@ -1,17 +1,16 @@
 package enginuity.maps;
 
-import com.sun.corba.se.spi.activation._ActivatorImplBase;
-import enginuity.maps.Scale;
-import enginuity.maps.Table;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
-import org.nfunk.jep.*;
+
+import org.nfunk.jep.JEP;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
     
@@ -89,7 +88,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.binValue = binValue;
         
         // make sure it's in range
-        if (table.getStorageType() != table.STORAGE_TYPE_FLOAT) {
+        if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
             if (binValue < 0) {
                 this.setBinValue(0);
             } else if (binValue > Math.pow(256, table.getStorageType()) - 1) {

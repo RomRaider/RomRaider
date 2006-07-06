@@ -259,7 +259,7 @@ public class Table3D extends Table implements Serializable {
 
         for (int x = 0; x < data.length; x++) {
             for (int y = 0; y < data[0].length; y++) {
-                if (compareType == this.COMPARE_ORIGINAL) data[x][y].setCompareValue(data[x][y].getOriginalValue()); 
+                if (compareType == Table.COMPARE_ORIGINAL) data[x][y].setCompareValue(data[x][y].getOriginalValue()); 
                 data[x][y].setCompareType(compareType);
                 data[x][y].setCompareDisplay(compareDisplay);
                 data[x][y].updateDisplayValue();
@@ -641,11 +641,8 @@ public class Table3D extends Table implements Serializable {
         colorize();
     }    
     
-    
-    
     public void pasteCompareValues() {        
         StringTokenizer st = new StringTokenizer("");
-        String newline = System.getProperty("line.separator");
         try {
             String input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);

@@ -197,7 +197,7 @@ public abstract class Table extends JPanel implements Serializable {
         };   
         
         // set input mapping
-        InputMap im = getInputMap(this.WHEN_IN_FOCUSED_WINDOW);
+        InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
         
         KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
         KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
@@ -271,7 +271,7 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
         
-        this.setInputMap(this.WHEN_FOCUSED, im);
+        this.setInputMap(WHEN_FOCUSED, im);
     }
     
     public DataCell[] getData() {
@@ -468,7 +468,7 @@ public abstract class Table extends JPanel implements Serializable {
                     data[i].setColor(axisParent.getRom().getContainer().getSettings().getAxisColor());
                     data[i].setOpaque(true);
                     data[i].setBorder(new LineBorder(Color.BLACK, 1));
-                    data[i].setHorizontalAlignment(data[i].CENTER);
+                    data[i].setHorizontalAlignment(DataCell.CENTER);
                 }
             }  
             
