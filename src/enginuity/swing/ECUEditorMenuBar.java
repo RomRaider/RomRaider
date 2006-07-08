@@ -232,10 +232,12 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     }
     
     public void refreshImage() throws Exception {
-        File file = parent.getLastSelectedRom().getFullFileName();
-        parent.closeImage();
-        openImage(file);
-    }
+		if (parent.getLastSelectedRom() != null) {
+			File file = parent.getLastSelectedRom().getFullFileName();
+			parent.closeImage();
+			openImage(file);
+		}
+	}
     
     public void closeImage() {
         parent.closeImage();
