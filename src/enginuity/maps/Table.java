@@ -919,16 +919,6 @@ public abstract class Table extends JPanel implements Serializable {
         colorize();
     }
     
-    /**
-     * Call when closing to cleanup references and help GC.
-     */
-    public void cleanup() {
-		data = null;
-		container = null;
-		axisParent = null;
-		centerPanel = null;
-	}
-
     public int getUserLevel() {
         return userLevel;
     }

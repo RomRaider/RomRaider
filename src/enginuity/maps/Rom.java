@@ -128,22 +128,6 @@ public class Rom implements Serializable {
         return binData;
     }
 
-    public void cleanup() {
-		try {
-			container = null;
-			binData = null;
-			romID = null;
-			for (int i = 0; i < tables.size(); i++) {
-				tables.get(i).getFrame().dispose();
-			}
-			tables.clear();
-			tables = null;
-		}
-		catch (Throwable t) {
-			t.printStackTrace();
-		}
-	}
-    
     public int getRealFileSize() {
         return binData.length;
     }

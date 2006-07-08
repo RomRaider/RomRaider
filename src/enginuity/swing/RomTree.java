@@ -60,4 +60,7 @@ public class RomTree extends JTree implements MouseListener {
     public void mouseEntered(MouseEvent e) { }
     public void mouseExited(MouseEvent e) { }
 
+    public void cleanup() {
+    	clearToggledPaths();
+    }
 }

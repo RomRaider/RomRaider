@@ -232,22 +232,23 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     }
     
     public void closeImage() {
-        for (int i = 0; i < imageRoot.getChildCount(); i++) {
-            RomTreeNode romTreeNode = (RomTreeNode)imageRoot.getChildAt(i);
-            Rom rom = romTreeNode.getRom();
-            if (rom == lastSelectedRom) {
-                Vector<Table> romTables = rom.getTables();
-                for (Iterator j = romTables.iterator(); j.hasNext();) {
-                    Table t = (Table)j.next();
-                    rightPanel.remove(t.getFrame());
-                    t.cleanup();
-                }
-                imageRoot.remove(i);
-            	romTreeNode.cleanup();
-                break;
-            }
-        }
+		for (int i = 0; i < imageRoot.getChildCount(); i++) {
+			RomTreeNode romTreeNode = (RomTreeNode)imageRoot.getChildAt(i);
+			Rom rom = romTreeNode.getRom();
+			if (rom == lastSelectedRom) {
+				Vector<Table> romTables = rom.getTables();
+				for (Iterator j = romTables.iterator(); j.hasNext();) {
+					Table t = (Table)j.next();
+					rightPanel.remove(t.getFrame());
+				}
+				imageRoot.remove(i);
+				break;
+			}
+		}
+        
+		imageList.cleanup();
         imageList.updateUI();
+        
         if (imageRoot.getChildCount() > 0) {
             setLastSelectedRom(((RomTreeNode)imageRoot.getChildAt(0)).getRom());
         } else {
@@ -255,7 +256,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             setLastSelectedRom(null);
         }
         rightPanel.repaint();
-        System.gc();
     }
     
     public void closeAllImages() {

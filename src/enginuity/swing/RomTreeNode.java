@@ -75,20 +75,4 @@ public class RomTreeNode extends DefaultMutableTreeNode {
         this.rom = rom;
     }
     
-    public void cleanup() {
-        try {
-        	if (rom != null) {
-        		rom.cleanup();
-                rom = null;
-        	}
-            removeAllChildren();
-            removeFromParent();
-            userObject = null;
-            children.clear();
-            children = null;
-        }
-        catch (Throwable t) {
-        	t.printStackTrace();
-        }
-    }    
 }
