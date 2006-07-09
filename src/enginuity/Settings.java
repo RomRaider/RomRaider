@@ -26,6 +26,7 @@ public class Settings implements Serializable {
     private boolean calcConflictWarning     = true;
     private boolean debug                   = false;
     private int userLevel                   = 1;
+    private boolean saveDebugTables         = false;
     
     private Font tableFont                  = new Font("Arial", Font.BOLD, 12);
     private Dimension cellSize              = new Dimension(42, 18);
@@ -219,5 +220,13 @@ public class Settings implements Serializable {
 
     public String getReleaseNotes() {
         return releaseNotes;
+    }
+
+    public boolean isSaveDebugTables() {
+        return saveDebugTables;
+    }
+
+    public void setSaveDebugTables(boolean saveDebugTables) {
+        this.saveDebugTables = saveDebugTables;
     }
 }

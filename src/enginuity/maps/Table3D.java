@@ -382,29 +382,38 @@ public class Table3D extends Table {
     
     
     public byte[] saveFile(byte[] binData) {
-        binData = xAxis.saveFile(binData);
-        binData = yAxis.saveFile(binData);
-        int offset = 0; 
-        
-        for (int x = 0; x < yAxis.getDataSize(); x++) {
-            for (int y = 0; y < xAxis.getDataSize(); y++) {
-                
-                // determine output byte values
-                byte[] output;
-                if (storageType != STORAGE_TYPE_FLOAT) {
-                    output = RomAttributeParser.parseIntegerValue((int)data[y][x].getBinValue(), endian, storageType);
-                    for (int z = 0; z < storageType; z++) {
-                        binData[offset * storageType + z + storageAddress - ramOffset] = output[z];
-                    }                    
-                } else { // float
-                    output = RomAttributeParser.floatToByte((float)data[y][x].getBinValue(), endian);
-                    for (int z = 0; z < 4; z++) {
-                        binData[offset * 4 + z + storageAddress - ramOffset] = output[z];
-                    }                    
-                }
-                
+        if (!isStatic  // save if table is not static
+                        &&     // and user level is great enough
+                    userLevel <= container.getContainer().getSettings().getUserLevel() 
+                        &&     // and table is not in debug mode, unless saveDebugTables is true
+                    (userLevel < 5 
+                        ||
+                    container.getContainer().getSettings().isSaveDebugTables())) {
+            
+            binData = xAxis.saveFile(binData);
+            binData = yAxis.saveFile(binData);
+            int offset = 0; 
 
-                offset++;
+            for (int x = 0; x < yAxis.getDataSize(); x++) {
+                for (int y = 0; y < xAxis.getDataSize(); y++) {
+
+                    // determine output byte values
+                    byte[] output;
+                    if (storageType != STORAGE_TYPE_FLOAT) {
+                        output = RomAttributeParser.parseIntegerValue((int)data[y][x].getBinValue(), endian, storageType);
+                        for (int z = 0; z < storageType; z++) {
+                            binData[offset * storageType + z + storageAddress - ramOffset] = output[z];
+                        }                    
+                    } else { // float
+                        output = RomAttributeParser.floatToByte((float)data[y][x].getBinValue(), endian);
+                        for (int z = 0; z < 4; z++) {
+                            binData[offset * 4 + z + storageAddress - ramOffset] = output[z];
+                        }                    
+                    }
+
+
+                    offset++;
+                }
             }
         }
         return binData;

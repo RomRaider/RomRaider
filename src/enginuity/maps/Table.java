@@ -649,7 +649,14 @@ public abstract class Table extends JPanel implements Serializable {
     }
     
     public byte[] saveFile(byte[] binData) {
-        if (!isStatic) {
+        if (!isStatic  // save if table is not static
+                        &&     // and user level is great enough
+                    userLevel <= container.getContainer().getSettings().getUserLevel() 
+                        &&     // and table is not in debug mode, unless saveDebugTables is true
+                    (userLevel < 5 
+                        ||
+                    container.getContainer().getSettings().isSaveDebugTables())) {
+            
             for (int i = 0; i < data.length; i++) {
                 
                 // determine output byte values

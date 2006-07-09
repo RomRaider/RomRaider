@@ -111,6 +111,11 @@ public class DOMSettingsBuilder {
         version.setAttribute("value", versionNumber);
         options.appendChild(version);
         
+        // last version used
+        IIOMetadataNode saveDebugTables = new IIOMetadataNode("savedebugtables");
+        saveDebugTables.setAttribute("value", settings.isSaveDebugTables()+"");
+        options.appendChild(version);
+        
         return options;
     }
     
