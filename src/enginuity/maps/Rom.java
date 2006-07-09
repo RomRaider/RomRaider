@@ -116,7 +116,8 @@ public class Rom implements Serializable {
     public void setContainer(ECUEditor container) {
         this.container = container;
         // apply settings to tables
-        for (int i = 0; i < tables.size(); i++) {           
+        for (int i = 0; i < tables.size(); i++) {  
+            tables.get(i).applyColorSettings(container.getSettings());
             tables.get(i).resize();
         }
     }
