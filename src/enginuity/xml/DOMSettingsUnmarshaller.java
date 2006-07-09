@@ -92,7 +92,7 @@ public class DOMSettingsUnmarshaller {
                 settings.setCalcConflictWarning(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
                 
             }  else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("userlevel")) {  
-                settings.setUserLevel(unmarshallAttribute(n, "value", 4));
+                settings.setUserLevel(unmarshallAttribute(n, "value", 1));
                 
             }  else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tableclickcount")) {  
                 settings.setTableClickCount(unmarshallAttribute(n, "value", 2));

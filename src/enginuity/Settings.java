@@ -25,7 +25,7 @@ public class Settings implements Serializable {
     private boolean obsoleteWarning         = true;
     private boolean calcConflictWarning     = true;
     private boolean debug                   = false;
-    private int userLevel                   = 5;
+    private int userLevel                   = 1;
     
     private Font tableFont                  = new Font("Arial", Font.BOLD, 12);
     private Dimension cellSize              = new Dimension(42, 18);
