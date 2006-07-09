@@ -140,6 +140,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         helpMenu.add(about);
         about.addActionListener(this);               
         
+        // disable unused buttons! 0.3.1
+        about.setEnabled(false);
+        editDefinition.setEnabled(false);
+        
         this.updateMenu();          
     }
     
