@@ -21,7 +21,6 @@ public class RomCellRenderer implements TreeCellRenderer {
     JLabel fileName;
     JLabel carInfo;
     DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
-    Color background = new Color(255,210,210);
 
     public RomCellRenderer() {
         fileName = new JLabel(" ");
@@ -63,11 +62,18 @@ public class RomCellRenderer implements TreeCellRenderer {
                 JPanel renderer = new JPanel(new GridLayout(2,1));
                 renderer.add(fileName);
                 renderer.add(carInfo);        
-                renderer.setBorder(BorderFactory.createLineBorder(new Color(220,0,0)));
+                
+                if (selected) {
+                    renderer.setBackground(new Color(220,220,255));
+                    renderer.setBorder(BorderFactory.createLineBorder(new Color(0,0,225)));
+                    
+                } else {
+                    renderer.setBorder(BorderFactory.createLineBorder(new Color(220,0,0)));
+                    renderer.setBackground(new Color(255,210,210));
+                }
                 
                 renderer.setPreferredSize(new Dimension(tree.getParent().getWidth(), 30));
                 renderer.setMaximumSize(new Dimension(tree.getParent().getWidth(), 30));
-                renderer.setBackground(background);
                 renderer.setEnabled(tree.isEnabled());
                 returnValue = renderer;           
             }        
