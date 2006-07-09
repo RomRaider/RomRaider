@@ -18,7 +18,7 @@ public class Settings implements Serializable {
     private String romRevisionURL           = "http://www.scoobypedia.co.uk/index.php/Knowledge/ECUVersionCompatibilityList";
     private String supportURL               = "http://www.enginuity.org";
     private String releaseNotes             = "./release notes.txt";
-    private String recentVersion            = "";
+    private String recentVersion            = "x";
     
     private Vector<File> ecuDefinitionFiles = new Vector<File>();
     private File  lastImageDir              = new File("images");

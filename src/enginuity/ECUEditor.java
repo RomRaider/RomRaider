@@ -59,7 +59,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private ECUEditorMenuBar menuBar;
     
     public ECUEditor() {
-        BufferedReader br = null;
+        
         // get settings from xml
         try {
             InputSource src = new InputSource(new FileInputStream(new File("./settings.xml")));
@@ -69,32 +69,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             Document doc = parser.getDocument();
             settings = domUms.unmarshallSettings(doc.getDocumentElement());
             
-            if (!settings.getRecentVersion().equalsIgnoreCase(version)) {
-                
-                // new version being used, display release notes
-                JTextArea releaseNotes = new JTextArea();
-                releaseNotes.setEditable(false);
-                releaseNotes.setWrapStyleWord(true);
-                releaseNotes.setLineWrap(true);
-                releaseNotes.setFont(new Font("Tahoma", Font.PLAIN, 12));
-                
-                JScrollPane scroller = new JScrollPane(releaseNotes, 
-                        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
-                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-                scroller.setPreferredSize(new Dimension(600,500));
-                
-                br = new BufferedReader(new FileReader(settings.getReleaseNotes()));
-                StringBuffer sb = new StringBuffer();
-                while (br.ready()) {
-                    sb.append(br.readLine() + "\n");
-                }
-                
-                releaseNotes.setText(sb+"");
-                                
-                JOptionPane.showMessageDialog(this, scroller,
-                        "Enginuity " + version + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
-            
-            }
         } catch (RuntimeException re) {
         	// Catching RE specifially will prevent real bugs from being
             // presented as a settings file not found exception
@@ -104,6 +78,37 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                     "A new file will be created.", "Error Loading Settings", JOptionPane.INFORMATION_MESSAGE);
         }
         finally {
+            
+            BufferedReader br = null;
+            
+            if (!settings.getRecentVersion().equalsIgnoreCase(version)) {
+                
+                try {
+                    // new version being used, display release notes
+                    JTextArea releaseNotes = new JTextArea();
+                    releaseNotes.setEditable(false);
+                    releaseNotes.setWrapStyleWord(true);
+                    releaseNotes.setLineWrap(true);
+                    releaseNotes.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+                    JScrollPane scroller = new JScrollPane(releaseNotes, 
+                            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+                            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                    scroller.setPreferredSize(new Dimension(600,500));
+
+                    br = new BufferedReader(new FileReader(settings.getReleaseNotes()));
+                    StringBuffer sb = new StringBuffer();
+                    while (br.ready()) {
+                        sb.append(br.readLine() + "\n");
+                    }
+
+                    releaseNotes.setText(sb+"");
+
+                    JOptionPane.showMessageDialog(this, scroller,
+                            "Enginuity " + version + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) { }
+            
+            }            
 			if (br != null) {
 				try {
 					br.close();
