@@ -1,44 +1,46 @@
-Enginuity is a full featured Engine Control Unit editing application for tuning 
-virtually any manufacturer, meant to be used in conjuction with datalogging and 
-ECU flash and dump utilities. Enginuity will give you full control over timing, 
-fuel, boost and many other parameters in your ECU, competing with very expensive 
-and proprietary software. Enginuity will remove your need for piggyback systems 
-designed to control these functions, and, in most cases, work as well as or 
-better than any stand alone engine management. Reflashing your stock ECU also 
-has the added benefit of a manufacturer tested base map, giving you top notch 
-performance and saving time tuning idle and low throttle applications.
+Enginuity is a full featured Engine Control Unit editing application for tuning virtually any manufacturer, meant to be used in conjuction with datalogging and ECU flash and dump utilities. Enginuity will give you full control over timing, fuel, boost and many other parameters in your ECU, competing with very expensive and proprietary software. Enginuity will remove your need for piggyback systems designed to control these functions, and, in most cases, work as well as or better than any stand alone engine management. Reflashing your stock ECU also has the added benefit of a manufacturer tested base map, giving you top notch performance and saving time tuning idle and low throttle applications.
 
-Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested 
-and not intended for use by inexperienced users. In addition to being incomplete 
-and untested, only experienced tuners with the required tools (ie, wideband 
-oxygen sensor) should modify an ECU image. As with any engine management, 
-changes could result in severe engine damage. Use at your own risk.
+Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested and not intended for use by inexperienced users. In addition to being incomplete and untested, only experienced tuners with the required tools (ie, wideband oxygen sensor) should modify an ECU image. As with any engine management, changes could result in severe engine damage. Use at your own risk.
 
-As of version 0.2.92a, source files are no longer included with the binary 
-distribution of Enginuity. The source is available at 
-http://sourceforge.net/projects/enginuity via Subversion.
+As of version 0.2.92a, source files are no longer included with the binary distribution of Enginuity. The source is available at http://sourceforge.net/projects/enginuity via Subversion.
 
 
-0.3.0b Notes (7/2/2006)
+0.3.1 Notes (7/9/2006)
 -----------------------
-This is the first publicly released version of Enginuity with floating point 
-support, which means Subaru drive-by-wire ECUs are now supported. Map comparing, 
-introduced in 0.2.7.4b has been completed, and you can now fix check engine 
-lights and checksums via a checkbox rather than modifying meaningless values. 
-Currently, the team is working on ECU definitions for 32-bit ECUs and support is 
-somewhat limited. Please check the ECU definition forum on enginuity.org often 
-as these definitions are constantly being updated. 
-
-!! CAUTION !! 32-bit Subaru ECUs use a checksum method which, without being fixed, 
-will immobilise your car. These fixes will be available as the ECU definitions 
-are created. IF YOU MAKE CHANGES TO A TABLE, ENSURE THE CHECKSUM FIX FOR THAT 
-TABLE IS ENABLED, if one exists. Any issues should be reported to the ECU 
-definition forum on enginuity.org.
+This version is a moderate facelift over 0.3.0, includes an updated ECU definitions file, and fixes several minor bugs. No new major features are present, but many minor additions, listed in the changes below, are worth noticing. The most important new feature is userlevels, which will restrict access to certain tables you may feel uncomfortable modifying.
 
 
 Changes:
 --------
-0.3.0b Private Test Release (7/2/2006)
+0.3.1b (7/9/2006)
+-----------------
+- Update table property panel
+- Fix float values not incrementing properly in axiis
+- Fix values not incrementing if increment amount is less than LSB
+- Add option whether to display tables higher than userlevel
+- Add option whether to save changes made to debug tables
+- Fix clicking on ROM tree opening/closing wrong tables
+- Fix switch tables not compensating for RAM
+- Fix many memory leak problems
+- List tables above userlevel, but disabled
+- Color debug tables red
+- Add "version" tag to settings
+- Show release notes on first run
+- Remove unnecessary variables from settings XML
+- Add name and description to CEL/checksum fix tables
+- Fix "(null)" text on static 2D axiis
+- Remove table name from bottom of 2D table
+- Allow single clicking to open tables (via settings)
+- Add fine adjustment values to ECU definition
+- Fix map copy/paste
+- Increment affects real instead of binary value
+- User levels
+- Fix definition parser rounding incrementby values
+- Improve table properties display
+- Fix byte/real conversion validation
+
+
+0.3.0b (7/2/2006)
 ---------------------------------------
 - Finish map comparing implementation
 
