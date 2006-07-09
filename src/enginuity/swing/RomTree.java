@@ -4,8 +4,11 @@ import enginuity.ECUEditor;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Enumeration;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 public class RomTree extends JTree implements MouseListener {
     
@@ -45,15 +48,15 @@ public class RomTree extends JTree implements MouseListener {
 
             }
 
-            if (getLastSelectedPathComponent() instanceof TableTreeNode) {                
+            if (selectedRow instanceof TableTreeNode) {                
                 TableTreeNode node = (TableTreeNode)getLastSelectedPathComponent();
                 container.setLastSelectedRom(node.getTable().getRom());
 
-            } else if (getLastSelectedPathComponent() instanceof CategoryTreeNode) {
+            } else if (selectedRow instanceof CategoryTreeNode) {
                 CategoryTreeNode node = (CategoryTreeNode)getLastSelectedPathComponent();
                 container.setLastSelectedRom(node.getRom());
 
-            } else if (getLastSelectedPathComponent() instanceof RomTreeNode) {
+            } else if (selectedRow instanceof RomTreeNode) {
                 RomTreeNode node = (RomTreeNode)getLastSelectedPathComponent();
                 container.setLastSelectedRom(node.getRom());
             }
@@ -65,7 +68,7 @@ public class RomTree extends JTree implements MouseListener {
     public void mouseEntered(MouseEvent e) { }
     public void mouseExited(MouseEvent e) { }
 
-    public void cleanup() {
+    public void cleanup() {        
     	clearToggledPaths();
     }
 }
