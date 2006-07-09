@@ -29,28 +29,35 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() >= container.getSettings().getTableClickCount() &&
-                         getLastSelectedPathComponent() instanceof TableTreeNode) {
-            
-            TableTreeNode node = (TableTreeNode)getLastSelectedPathComponent(); 
-            if (!(node.getTable().getUserLevel() > container.getSettings().getUserLevel())) {
-                container.displayTable(node.getFrame());
-            }
-            
-        }
         
-        if (getLastSelectedPathComponent() instanceof TableTreeNode) {                
-            TableTreeNode node = (TableTreeNode)getLastSelectedPathComponent();
-            container.setLastSelectedRom(node.getTable().getRom());
+        try {
+        
+            Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
 
-        } else if (getLastSelectedPathComponent() instanceof CategoryTreeNode) {
-            CategoryTreeNode node = (CategoryTreeNode)getLastSelectedPathComponent();
-            container.setLastSelectedRom(node.getRom());
+            if (e.getClickCount() >= container.getSettings().getTableClickCount() &&
+                             selectedRow instanceof TableTreeNode) {
 
-        } else if (getLastSelectedPathComponent() instanceof RomTreeNode) {
-            RomTreeNode node = (RomTreeNode)getLastSelectedPathComponent();
-            container.setLastSelectedRom(node.getRom());
-        }
+                TableTreeNode node = (TableTreeNode)selectedRow;
+
+                if (!(node.getTable().getUserLevel() > container.getSettings().getUserLevel())) {
+                    container.displayTable(node.getFrame());
+                }
+
+            }
+
+            if (getLastSelectedPathComponent() instanceof TableTreeNode) {                
+                TableTreeNode node = (TableTreeNode)getLastSelectedPathComponent();
+                container.setLastSelectedRom(node.getTable().getRom());
+
+            } else if (getLastSelectedPathComponent() instanceof CategoryTreeNode) {
+                CategoryTreeNode node = (CategoryTreeNode)getLastSelectedPathComponent();
+                container.setLastSelectedRom(node.getRom());
+
+            } else if (getLastSelectedPathComponent() instanceof RomTreeNode) {
+                RomTreeNode node = (RomTreeNode)getLastSelectedPathComponent();
+                container.setLastSelectedRom(node.getRom());
+            }
+        } catch (NullPointerException ex) { }
     }
   
     public void mousePressed(MouseEvent e) { }
