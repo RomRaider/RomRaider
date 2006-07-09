@@ -18,7 +18,6 @@ public class TableSwitch extends Table {
         storageType = 1;
         removeAll();
         setLayout(new BorderLayout());
-        //add(checkbox);
     }
     
     public void setDataSize(int size) {
@@ -30,6 +29,8 @@ public class TableSwitch extends Table {
         for (int i = 0; i < on.length; i++) {
             
             // check each byte -- if it doesn't match "on", it's off
+            if (!beforeRam) ramOffset = container.getRomID().getRamOffset();
+            
             if (on[i] != input[storageAddress - ramOffset + i]) {
                 checkbox.setSelected(false);
                 break;
