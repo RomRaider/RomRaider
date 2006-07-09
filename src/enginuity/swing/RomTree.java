@@ -33,25 +33,23 @@ public class RomTree extends JTree implements MouseListener {
                          getLastSelectedPathComponent() instanceof TableTreeNode) {
             
             TableTreeNode node = (TableTreeNode)getLastSelectedPathComponent(); 
-            container.displayTable(node.getFrame());
+            if (!(node.getTable().getUserLevel() > container.getSettings().getUserLevel())) {
+                container.displayTable(node.getFrame());
+            }
             
         }
         
-        if (e.getClickCount() == 1) {
-                        
-            if (getLastSelectedPathComponent() instanceof TableTreeNode) {                
-                TableTreeNode node = (TableTreeNode)getLastSelectedPathComponent();
-                container.setLastSelectedRom(node.getTable().getRom());
-                
-            } else if (getLastSelectedPathComponent() instanceof CategoryTreeNode) {
-                CategoryTreeNode node = (CategoryTreeNode)getLastSelectedPathComponent();
-                container.setLastSelectedRom(node.getRom());
-                
-            } else if (getLastSelectedPathComponent() instanceof RomTreeNode) {
-                RomTreeNode node = (RomTreeNode)getLastSelectedPathComponent();
-                container.setLastSelectedRom(node.getRom());
-                
-            }
+        if (getLastSelectedPathComponent() instanceof TableTreeNode) {                
+            TableTreeNode node = (TableTreeNode)getLastSelectedPathComponent();
+            container.setLastSelectedRom(node.getTable().getRom());
+
+        } else if (getLastSelectedPathComponent() instanceof CategoryTreeNode) {
+            CategoryTreeNode node = (CategoryTreeNode)getLastSelectedPathComponent();
+            container.setLastSelectedRom(node.getRom());
+
+        } else if (getLastSelectedPathComponent() instanceof RomTreeNode) {
+            RomTreeNode node = (RomTreeNode)getLastSelectedPathComponent();
+            container.setLastSelectedRom(node.getRom());
         }
     }
   

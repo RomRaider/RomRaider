@@ -92,15 +92,24 @@ public class RomCellRenderer implements TreeCellRenderer {
             }           
             
             // set color
+            renderer.add(tableName);
+            tableName.setFont(new Font("Tahoma", Font.PLAIN, 11)); 
+            
             if (selected) {
                 renderer.setBackground(new Color(220,220,255));
                 renderer.setBorder(BorderFactory.createLineBorder(new Color(0,0,225)));
             }
             
-            renderer.setFont(new Font("Tahoma", Font.PLAIN, 11));
-            tableName.setFont(new Font("Tahoma", Font.PLAIN, 11));            
+            if (table.getUserLevel() == 5) {
+                tableName.setForeground(new Color(255,150,150));
+                tableName.setFont(new Font("Tahoma", Font.ITALIC, 11)); 
+                
+            } else if (table.getUserLevel() > table.getRom().getContainer().getSettings().getUserLevel()) {
+                tableName.setForeground(new Color(185,185,185));
+                tableName.setFont(new Font("Tahoma", Font.ITALIC, 11)); 
+                
+            }    
             
-            renderer.add(tableName);
             returnValue = renderer;
         }
 
