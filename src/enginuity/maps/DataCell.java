@@ -86,13 +86,16 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     
     public void setBinValue(double binValue) {
 		this.binValue = binValue;
+                
 		// make sure it's in range
 		if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
-			if (binValue < 0) {
-				this.setBinValue(0);
-			} else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
-				this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
-			}
+                    if (binValue < 0) {
+                        this.setBinValue(0);
+                        
+                    } else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
+                        this.setBinValue((int)(Math.pow(256, table.getStorageType()) - 1));
+                        
+                    }
 		}
 
 		this.updateDisplayValue();
@@ -114,6 +117,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.selected = selected;
         if (selected) {
             this.setBackground(getHighlightColor());
+            table.getFrame().getToolBar().setFineValue(Math.abs(table.getScale().getFineIncrement()));
             table.getFrame().getToolBar().setCoarseValue(Math.abs(table.getScale().getCoarseIncrement()));
         } else {
             this.setBackground(scaledColor);

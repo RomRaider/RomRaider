@@ -30,8 +30,9 @@ public class TableToolBar extends JToolBar implements MouseListener {
     private JButton   decrementCoarse = new JButton(new ImageIcon("./graphics/icon-deccoarse.png"));   
     private JButton   setValue        = new JButton("Set");
     
-    private JFormattedTextField incrementBy = new JFormattedTextField(new DecimalFormat("#.####"));
-    private JFormattedTextField setValueText = new JFormattedTextField(new DecimalFormat("#.####"));    
+    private JFormattedTextField incrementByFine   = new JFormattedTextField(new DecimalFormat("#.####"));
+    private JFormattedTextField incrementByCoarse = new JFormattedTextField(new DecimalFormat("#.####"));
+    private JFormattedTextField setValueText      = new JFormattedTextField(new DecimalFormat("#.####"));    
     
     private Table table;
     private TableFrame frame;
@@ -42,11 +43,12 @@ public class TableToolBar extends JToolBar implements MouseListener {
         this.setFloatable(false);
         this.add(incrementFine);
         this.add(decrementFine);
+        this.add(incrementByFine);
         this.add(new JLabel("    "));
         this.add(incrementCoarse);
         this.add(decrementCoarse);
         this.add(new JLabel(" "));
-        this.add(incrementBy);
+        this.add(incrementByCoarse);
         this.add(new JLabel("    "));
         this.add(setValueText);
         this.add(new JLabel(" "));
@@ -63,9 +65,12 @@ public class TableToolBar extends JToolBar implements MouseListener {
         setValue.setMaximumSize(new Dimension(33,23));
         setValue.setBorder(new LineBorder(new Color(150,150,150), 1));
         
-        incrementBy.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
-        incrementBy.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
-        incrementBy.setMaximumSize(new Dimension(45, 23));
+        incrementByFine.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
+        incrementByFine.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
+        incrementByFine.setMaximumSize(new Dimension(45, 23));
+        incrementByCoarse.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
+        incrementByCoarse.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
+        incrementByCoarse.setMaximumSize(new Dimension(45, 23));
         setValueText.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
         setValueText.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
         setValueText.setMaximumSize(new Dimension(45, 23));
@@ -76,7 +81,8 @@ public class TableToolBar extends JToolBar implements MouseListener {
         decrementCoarse.setToolTipText("Decrement Value (Coarse)");
         setValue.setToolTipText("Set Absolute Value");
         setValueText.setToolTipText("Set Absolute Value");
-        incrementBy.setToolTipText("Coarse Value Adjustment");
+        incrementByFine.setToolTipText("Fine Value Adjustment");
+        incrementByCoarse.setToolTipText("Coarse Value Adjustment");
         
         incrementFine.addMouseListener(this);
         decrementFine.addMouseListener(this);        
@@ -84,7 +90,8 @@ public class TableToolBar extends JToolBar implements MouseListener {
         decrementCoarse.addMouseListener(this);
         setValue.addMouseListener(this);
         
-        incrementBy.setValue(Math.abs(table.getScale().getCoarseIncrement()));
+        incrementByFine.setValue(Math.abs(table.getScale().getFineIncrement()));
+        incrementByCoarse.setValue(Math.abs(table.getScale().getCoarseIncrement()));
         
         // key binding actions
         Action enterAction = new AbstractAction() {
@@ -106,7 +113,8 @@ public class TableToolBar extends JToolBar implements MouseListener {
         decrementFine.getInputMap().put(enter, "enterAction");
         incrementCoarse.getInputMap().put(enter, "enterAction");
         decrementCoarse.getInputMap().put(enter, "enterAction");
-        incrementBy.getInputMap().put(enter, "enterAction");
+        incrementByFine.getInputMap().put(enter, "enterAction");
+        incrementByCoarse.getInputMap().put(enter, "enterAction");
         setValueText.getInputMap().put(enter, "enterAction");
         setValue.getInputMap().put(enter, "enterAction");
         incrementFine.getInputMap().put(enter, "enterAction");
@@ -132,25 +140,32 @@ public class TableToolBar extends JToolBar implements MouseListener {
         
     
     public void incrementFine() {
-        table.increment(table.getScale().getFineIncrement());
+        table.increment(Double.parseDouble(incrementByFine.getValue()+""));   
     }
     
     public void decrementFine() {
-        table.increment(0 - table.getScale().getFineIncrement());
+        table.increment(0 - Double.parseDouble(incrementByFine.getValue()+"")); 
     }
     
     public void incrementCoarse() {
-        table.increment(Double.parseDouble(incrementBy.getValue()+""));        
+        table.increment(Double.parseDouble(incrementByCoarse.getValue()+""));        
     }
     
     public void decrementCoarse() {
-        table.increment(0 - Double.parseDouble(incrementBy.getValue()+""));        
+        table.increment(0 - Double.parseDouble(incrementByCoarse.getValue()+""));        
     }
     
     public void setCoarseValue(double input) {
-        incrementBy.setText(input+"");
+        incrementByCoarse.setText(input+"");
         try {
-            incrementBy.commitEdit();
+            incrementByCoarse.commitEdit();
+        } catch (ParseException ex) { }
+    }
+    
+    public void setFineValue(double input) {
+        incrementByFine.setText(input+"");
+        try {
+            incrementByFine.commitEdit();
         } catch (ParseException ex) { }
     }
     
