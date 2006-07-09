@@ -103,6 +103,9 @@ public class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("savedebugtables")) {  
                 settings.setSaveDebugTables(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
                 
+            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("displayhightables")) {  
+                settings.setDisplayHighTables(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
+                
             } 
         }        
         return settings;

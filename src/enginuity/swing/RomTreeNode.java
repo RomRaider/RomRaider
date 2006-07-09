@@ -11,13 +11,14 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     
     private Rom rom = new Rom();
     
-    public RomTreeNode(Rom rom, int userLevel) {
+    public RomTreeNode(Rom rom, int userLevel, boolean isDisplayHighTables) {
         setRom(rom);
-        refresh(userLevel);
+        refresh(userLevel, isDisplayHighTables);
         updateFileName();
     }
         
-    public void refresh(int userLevel) {
+    public void refresh(int userLevel, boolean isDisplayHighTables) {
+        
         removeAllChildren();
         Vector<Table> tables = rom.getTables();
         
@@ -25,25 +26,28 @@ public class RomTreeNode extends DefaultMutableTreeNode {
             Table table = tables.get(i);
             add(table);
             
-            boolean categoryExists = false;
+            if (isDisplayHighTables || userLevel >= table.getUserLevel()) {
+                    
+                boolean categoryExists = false;
 
-            for (int j = 0; j < getChildCount(); j++) {
-                if (getChildAt(j).toString().equals(table.getCategory())) {
+                for (int j = 0; j < getChildCount(); j++) {
+                    if (getChildAt(j).toString().equals(table.getCategory())) {
 
-                    // add to appropriate category
+                        // add to appropriate category
+                        TableTreeNode tableNode = new TableTreeNode(table);
+                        getChildAt(j).add(tableNode);
+                        categoryExists = true;
+                        break;
+                    }
+                }         
+
+                if (!categoryExists) { // if category does not already exist, create it
+                    add(new CategoryTreeNode(table.getCategory(), table.getRom()));            
                     TableTreeNode tableNode = new TableTreeNode(table);
-                    getChildAt(j).add(tableNode);
-                    categoryExists = true;
-                    break;
-                }
-            }         
 
-            if (!categoryExists) { // if category does not already exist, create it
-                add(new CategoryTreeNode(table.getCategory(), table.getRom()));            
-                TableTreeNode tableNode = new TableTreeNode(table);
-
-                getLastChild().add(tableNode);           
-            }  
+                    getLastChild().add(tableNode);           
+                }  
+            }
         }
     }
     

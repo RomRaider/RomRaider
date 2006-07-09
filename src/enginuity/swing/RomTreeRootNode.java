@@ -8,9 +8,9 @@ public class RomTreeRootNode extends DefaultMutableTreeNode {
         super(name);
     }
     
-    public void setUserLevel(int userLevel) {
+    public void setUserLevel(int userLevel, boolean isDisplayHighTables) {
         for (int i = 0; i < getChildCount(); i++) {
-            ((RomTreeNode)getChildAt(i)).refresh(userLevel);
+            ((RomTreeNode)getChildAt(i)).refresh(userLevel, isDisplayHighTables);
         }
     }
 }

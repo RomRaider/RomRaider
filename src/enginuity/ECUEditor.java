@@ -182,7 +182,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     
     public void addRom(Rom input) {
         // add to ecu image list pane
-        RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel());
+        RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel(), settings.isDisplayHighTables());
         imageRoot.add(romNode);
         imageList.updateUI();
         
@@ -309,7 +309,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     
     public void setUserLevel(int userLevel) {
         settings.setUserLevel(userLevel);
-        imageRoot.setUserLevel(userLevel);
+        imageRoot.setUserLevel(userLevel, settings.isDisplayHighTables());
         imageList.updateUI();
     }
     

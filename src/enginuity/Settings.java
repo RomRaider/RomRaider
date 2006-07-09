@@ -27,6 +27,7 @@ public class Settings implements Serializable {
     private boolean debug                   = false;
     private int userLevel                   = 1;
     private boolean saveDebugTables         = false;
+    private boolean displayHighTables       = true;
     
     private Font tableFont                  = new Font("Arial", Font.BOLD, 12);
     private Dimension cellSize              = new Dimension(42, 18);
@@ -228,5 +229,13 @@ public class Settings implements Serializable {
 
     public void setSaveDebugTables(boolean saveDebugTables) {
         this.saveDebugTables = saveDebugTables;
+    }
+
+    public boolean isDisplayHighTables() {
+        return displayHighTables;
+    }
+
+    public void setDisplayHighTables(boolean displayHighTables) {
+        this.displayHighTables = displayHighTables;
     }
 }

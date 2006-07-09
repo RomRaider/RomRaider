@@ -111,10 +111,15 @@ public class DOMSettingsBuilder {
         version.setAttribute("value", versionNumber);
         options.appendChild(version);
         
-        // last version used
+        // save debug level tables
         IIOMetadataNode saveDebugTables = new IIOMetadataNode("savedebugtables");
         saveDebugTables.setAttribute("value", settings.isSaveDebugTables()+"");
         options.appendChild(saveDebugTables);
+
+        // display tables higher than userlevel
+        IIOMetadataNode displayHighTables = new IIOMetadataNode("displayhightables");
+        displayHighTables.setAttribute("value", settings.isDisplayHighTables()+"");
+        options.appendChild(displayHighTables);        
         
         return options;
     }
