@@ -47,6 +47,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         
         obsoleteWarning.setSelected(settings.isObsoleteWarning());
         calcConflictWarning.setSelected(settings.isCalcConflictWarning());
+        displayHighTables.setSelected(settings.isDisplayHighTables());
+        saveDebugTables.setSelected(settings.isSaveDebugTables());
         debug.setSelected(settings.isDebug());
         
         maxColor.setBackground(settings.getMaxColor());
@@ -104,6 +106,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         btnChooseFont = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         tableClickCount = new javax.swing.JComboBox();
+        displayHighTables = new javax.swing.JCheckBox();
+        saveDebugTables = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Enginuity Settings");
@@ -299,6 +303,14 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         tableClickCount.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Single", "Double" }));
 
+        displayHighTables.setText("List tables that are above my userlevel");
+        displayHighTables.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        displayHighTables.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
+        saveDebugTables.setText("Save changes made on tables in debug mode");
+        saveDebugTables.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        saveDebugTables.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -328,14 +340,22 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(calcConflictWarning)
                             .add(obsoleteWarning)
-                            .add(debug)
                             .add(layout.createSequentialGroup()
                                 .add(tableClickCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jLabel1))))
                     .add(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(lblEcuDef)))
+                        .add(lblEcuDef))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(displayHighTables))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(saveDebugTables))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(debug)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -356,8 +376,12 @@ public class SettingsForm extends JFrame implements MouseListener {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(calcConflictWarning)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(displayHighTables)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(saveDebugTables)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(debug)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(34, 34, 34)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -465,6 +489,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         
         settings.setObsoleteWarning(obsoleteWarning.isSelected());
         settings.setCalcConflictWarning(calcConflictWarning.isSelected());
+        settings.setDisplayHighTables(displayHighTables.isSelected());
+        settings.setSaveDebugTables(saveDebugTables.isSelected());
         settings.setDebug(debug.isSelected());
         
         settings.setMaxColor(maxColor.getBackground());
@@ -505,6 +531,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JTextField cellWidth;
     private javax.swing.JCheckBox debug;
     private javax.swing.JLabel decreaseColor;
+    private javax.swing.JCheckBox displayHighTables;
     private javax.swing.JTextField ecuDefinitionFile;
     private javax.swing.JLabel highlightColor;
     private javax.swing.JLabel increaseColor;
@@ -526,6 +553,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JLabel minColor;
     private javax.swing.JCheckBox obsoleteWarning;
     private javax.swing.JButton reset;
+    private javax.swing.JCheckBox saveDebugTables;
     private javax.swing.JComboBox tableClickCount;
     // End of variables declaration//GEN-END:variables
     
