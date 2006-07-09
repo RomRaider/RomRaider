@@ -15,10 +15,20 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         realToByte.setText(table.getScale().getByteExpression());
         storageSize.setText("uint" + (table.getStorageType() * 8));
         storageAddress.setText("0x" + Integer.toHexString(table.getStorageAddress()));
+        
         if (table.getEndian() == Table.ENDIAN_BIG) endian.setText("big");
         else endian.setText("little");
+        
         description.setText(table.getDescription());
-        System.out.println(table.getDescription());
+        fine.setText(table.getScale().getFineIncrement()+"");
+        coarse.setText(table.getScale().getCoarseIncrement()+"");
+        
+        if (table.getUserLevel() == 1) userLevel.setText("Beginner");
+        else if (table.getUserLevel() == 1) userLevel.setText("Intermediate");
+        else if (table.getUserLevel() == 1) userLevel.setText("Advanced");
+        else if (table.getUserLevel() == 1) userLevel.setText("All");
+        else if (table.getUserLevel() == 1) userLevel.setText("Debug");
+        
     }
     
     private TablePropertyPanel() { }
@@ -36,6 +46,10 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         byteToReal = new javax.swing.JLabel();
         realToByte = new javax.swing.JLabel();
         lblRealToByte = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        coarse = new javax.swing.JLabel();
+        fine = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         lblStorageAddress = new javax.swing.JLabel();
         lblStorageSize = new javax.swing.JLabel();
@@ -46,6 +60,8 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         description = new javax.swing.JTextArea();
+        jLabel5 = new javax.swing.JLabel();
+        userLevel = new javax.swing.JLabel();
 
         setAutoscrolls(true);
         setFont(new java.awt.Font("Tahoma", 0, 12));
@@ -81,6 +97,14 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         lblRealToByte.setText("Real to Byte:");
         lblRealToByte.setFocusable(false);
 
+        jLabel1.setText("Coarse adjust:");
+
+        jLabel2.setText("Fine adjust:");
+
+        coarse.setText("coarse");
+
+        fine.setText("fine");
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -88,37 +112,46 @@ public class TablePropertyPanel extends javax.swing.JPanel {
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(lblUnit)
+                    .add(lblByteToReal)
+                    .add(lblRealToByte)
+                    .add(jLabel1)
+                    .add(jLabel2))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 14, Short.MAX_VALUE)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel1Layout.createSequentialGroup()
-                        .add(lblUnit)
-                        .add(48, 48, 48)
+                        .add(2, 2, 2)
                         .add(unit))
-                    .add(jPanel1Layout.createSequentialGroup()
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblByteToReal)
-                            .add(lblRealToByte))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(byteToReal)
-                            .add(realToByte))))
-                .addContainerGap(43, Short.MAX_VALUE))
+                    .add(byteToReal)
+                    .add(realToByte)
+                    .add(coarse)
+                    .add(fine))
+                .add(27, 27, 27))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblUnit)
-                    .add(unit))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(jPanel1Layout.createSequentialGroup()
-                        .add(lblByteToReal)
+                        .add(unit)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(lblRealToByte))
-                    .add(jPanel1Layout.createSequentialGroup()
                         .add(byteToReal)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(realToByte)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(realToByte))
+                    .add(jPanel1Layout.createSequentialGroup()
+                        .add(lblUnit)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(lblByteToReal)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(lblRealToByte)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel1)
+                    .add(coarse))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel2)
+                    .add(fine)))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Storage"));
@@ -155,7 +188,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                     .add(endian)
                     .add(storageSize)
                     .add(storageAddress))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -172,7 +205,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblEndian)
                     .add(endian))
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Description"));
@@ -194,10 +227,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
-                .addContainerGap())
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -206,30 +236,35 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
+        jLabel5.setText("User Level:");
+
+        userLevel.setText("Beginner");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(layout.createSequentialGroup()
-                                .add(lblTable)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(tableName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)))
+                            .add(lblCategory)
+                            .add(lblTable))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
+                                .add(category)
+                                .add(110, 110, 110)
+                                .add(jLabel5)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .add(layout.createSequentialGroup()
-                                .add(29, 29, 29)
-                                .add(lblCategory)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(category)))))
+                                .add(userLevel))
+                            .add(tableName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)))
+                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -237,13 +272,17 @@ public class TablePropertyPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblTable)
                     .add(tableName)
+                    .add(lblTable))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblCategory)
-                    .add(category))
+                    .add(category)
+                    .add(jLabel5)
+                    .add(userLevel))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanel2, 0, 103, Short.MAX_VALUE)
+                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -254,8 +293,13 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel byteToReal;
     private javax.swing.JLabel category;
+    private javax.swing.JLabel coarse;
     private javax.swing.JTextArea description;
     private javax.swing.JLabel endian;
+    private javax.swing.JLabel fine;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -273,5 +317,6 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     private javax.swing.JLabel storageSize;
     private javax.swing.JLabel tableName;
     private javax.swing.JLabel unit;
+    private javax.swing.JLabel userLevel;
     // End of variables declaration//GEN-END:variables
 }
