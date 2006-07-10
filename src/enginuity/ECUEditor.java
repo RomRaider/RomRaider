@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -41,6 +42,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.tree.TreePath;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -237,21 +239,26 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     }
     
     public void closeImage() {
-		for (int i = 0; i < imageRoot.getChildCount(); i++) {
-			RomTreeNode romTreeNode = (RomTreeNode)imageRoot.getChildAt(i);
-			Rom rom = romTreeNode.getRom();
-			if (rom == lastSelectedRom) {
-				Vector<Table> romTables = rom.getTables();
-				for (Iterator j = romTables.iterator(); j.hasNext();) {
-					Table t = (Table)j.next();
-					rightPanel.remove(t.getFrame());
-				}
-				imageRoot.remove(i);
-				break;
-			}
-		}
-        
-		imageList.cleanup();
+        for (int i = 0; i < imageRoot.getChildCount(); i++) { 
+                RomTreeNode romTreeNode = (RomTreeNode)imageRoot.getChildAt(i); 
+                Rom rom = romTreeNode.getRom(); 
+                if (rom == lastSelectedRom) { 
+                        Vector<Table> romTables = rom.getTables(); 
+                        for (Iterator j = romTables.iterator(); j.hasNext();) { 
+                                Table t = (Table)j.next(); 
+                                rightPanel.remove(t.getFrame()); 
+
+                        } 
+
+                        Vector<TreePath> path = new Vector<TreePath>();                                        
+                        path.add(new TreePath(romTreeNode.getPath()));    
+                        imageRoot.remove(i); 
+                        imageList.removeDescendantToggledPaths((Enumeration<TreePath>)path.elements());  
+
+                        break; 
+                } 
+        } 
+
         imageList.updateUI();
         
         if (imageRoot.getChildCount() > 0) {
