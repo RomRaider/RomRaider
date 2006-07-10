@@ -39,7 +39,7 @@ public class TableToolBar extends JToolBar implements MouseListener {
     
     public TableToolBar(Table table, TableFrame frame) {
         this.table = table;
-        this.frame = frame;
+        this.setFrame(frame);
         this.setFloatable(false);
         this.add(incrementFine);
         this.add(decrementFine);
@@ -186,4 +186,12 @@ public class TableToolBar extends JToolBar implements MouseListener {
     public void mouseReleased(MouseEvent e) { }
     public void mouseEntered(MouseEvent e) { }
     public void mouseExited(MouseEvent e) { }
+
+    public TableFrame getFrame() {
+        return frame;
+    }
+
+    public void setFrame(TableFrame frame) {
+        this.frame = frame;
+    }
 }

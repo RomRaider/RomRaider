@@ -6,6 +6,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
+import java.util.Enumeration;
 
 public class RomTreeNode extends DefaultMutableTreeNode {
     
@@ -49,6 +50,24 @@ public class RomTreeNode extends DefaultMutableTreeNode {
                 }  
             }
         }
+    }
+    
+    public void removeAllChildren() {
+        
+        // close all table windows
+        // loop through categories first
+        for (int i = 0; i < getChildCount(); i++) { 
+            DefaultMutableTreeNode category = getChildAt(i);
+            
+            // loop through tables in each category
+            for (Enumeration j = category.children(); j.hasMoreElements();) {                 
+                ((TableTreeNode)j.nextElement()).getFrame().dispose();
+
+            }
+        }
+        
+        // removeAllChildren
+        super.removeAllChildren();
     }
     
     public void updateFileName() {
