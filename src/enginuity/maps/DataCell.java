@@ -18,6 +18,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private double  originalValue  = 0;
     private Scale   scale          = new Scale();
     private String  displayValue   = "";
+    private double  realValue      = 0;
     private Color   scaledColor    = new Color(0,0,0);
     private Color   highlightColor = new Color(155,155,255);
     private Color   increaseBorder = Color.RED;
@@ -165,12 +166,16 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         double oldValue = Double.parseDouble(getText());
         
         if (table.getScale().getCoarseIncrement() < 0) increment = 0 - increment;
-        setRealValue((Double.parseDouble(displayValue) + increment) + "");
+        
+            setRealValue((calcDisplayValue(binValue, 
+                    scale.getExpression()) + increment) + "");
         
         // make sure table is incremented if change isnt great enough
         if (oldValue == Double.parseDouble(getText()) && 
-                table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
+                    
+            table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
             setBinValue(binValue + (increment / Math.abs(increment)));
+            
         }
         
         table.colorize();
@@ -216,10 +221,13 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             parser.initSymTab(); // clear the contents of the symbol table
             parser.addVariable("x", Double.parseDouble(input));
             parser.parseExpression(table.getScale().getByteExpression());
+            
             if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
                 this.setBinValue(parser.getValue());
+                
             } else {
                 this.setBinValue((int)Math.round(parser.getValue()));
+                
             }
         }
     }
