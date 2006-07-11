@@ -16,7 +16,7 @@ public class RomID implements Serializable {
     private String model = "";
     private String subModel = "";//trim, ie WRX
     private String transmission = "";
-    private int    year = 0;
+    private String year = "Unknown";
     private String flashMethod = "";//flash method string used for ecuflash
     private String memModel = "";//model used for reflashing with ecuflash
     private int    fileSize = 0;
@@ -123,11 +123,11 @@ public class RomID implements Serializable {
         this.transmission = transmission;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 

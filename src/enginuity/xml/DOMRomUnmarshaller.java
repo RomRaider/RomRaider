@@ -141,35 +141,50 @@ public class DOMRomUnmarshaller {
                 
 		if (n.getNodeName().equalsIgnoreCase("xmlid")){
 		    romID.setXmlid(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("internalidaddress")) {
 		    romID.setInternalIdAddress(RomAttributeParser.parseHexString(unmarshallText(n)));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("internalidstring")) {
 		    romID.setInternalIdString(unmarshallText(n));
                     if (romID.getInternalIdString() == null) romID.setInternalIdString("");
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("caseid")) {
 		    romID.setCaseId(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("ecuid")) {
 		    romID.setEcuId(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("make")) {
 		    romID.setMake(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("market")) {
 		    romID.setMarket(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("model")) {
 		    romID.setModel(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("submodel")) {
 		    romID.setSubModel(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("transmission")) {
 		    romID.setTransmission(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("year")) {
-		    romID.setYear(Integer.parseInt(unmarshallText(n)));
+		    romID.setYear(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("flashmethod")) {
 		    romID.setFlashMethod(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("memmodel")) {
 		    romID.setMemModel(unmarshallText(n));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("filesize")) {
 		    romID.setFileSize(RomAttributeParser.parseFileSize(unmarshallText(n)));
+                    
 		} else if (n.getNodeName().equalsIgnoreCase("obsolete")) {
 		    romID.setObsolete(Boolean.parseBoolean(unmarshallText(n)));
+                    
 		} else { /* unexpected element in RomID (skip) */ }
 	    } else { /* unexpected node-type in RomID (skip) */ }
 	}
