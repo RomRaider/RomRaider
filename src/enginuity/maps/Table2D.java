@@ -91,7 +91,7 @@ public class Table2D extends Table {
         //this.colorize();     
     }
     
-    public void increment(int increment) {
+    public void increment(double increment) {
         super.increment(increment);
         axis.increment(increment);
     }
