@@ -5,15 +5,16 @@ Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested 
 As of version 0.2.92a, source files are no longer included with the binary distribution of Enginuity. The source is available at http://sourceforge.net/projects/enginuity via Subversion.
 
 
-0.3.1 Notes (7/10/2006)
+0.3.1 Notes (7/11/2006)
 -----------------------
 This version is a moderate facelift over 0.3.0, includes an updated ECU definitions file, and fixes several minor bugs. No new major features are present, but many minor additions, listed in the changes below, are worth noticing. The most important new feature is userlevels, which will restrict access to certain tables you may feel uncomfortable modifying. The default userlevel is 1, Beginner, which will restrict access to many tables. If you want to modify them, you must raise your userlevel by clicking on View->User Level->Options
 
 
 Changes:
 --------
-0.3.1b (7/9/2006)
+0.3.1b (7/11/2006)
 -----------------
+- Change year attribute to string from int
 - Fix incrementing in compare mode 
 - Fix refresh tables working improperly with multiple ROMs open 
 - Update table property panel
