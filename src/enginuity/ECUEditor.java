@@ -1,6 +1,7 @@
 package enginuity;
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
 import enginuity.swing.ECUEditorToolBar;
@@ -11,9 +12,12 @@ import enginuity.swing.RomTreeNode;
 import enginuity.swing.RomTreeRootNode;
 import enginuity.swing.TableFrame;
 import enginuity.net.URL;
+import enginuity.swing.ECUImageFilter;
 import enginuity.swing.JProgressPane;
+import enginuity.xml.DOMRomUnmarshaller;
 import enginuity.xml.DOMSettingsBuilder;
 import enginuity.xml.DOMSettingsUnmarshaller;
+import enginuity.xml.RomNotFoundException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -26,6 +30,7 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -38,6 +43,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import java.util.Vector;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -51,8 +57,8 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private RomTreeRootNode  imageRoot       = new RomTreeRootNode("Open Images");
     private RomTree          imageList       = new RomTree(imageRoot);
     private Settings         settings        = new Settings();
-    private String           version         = "0.3.1 build 4";
-    private String           versionDate     = "7/10/2006";
+    private String           version         = "0.3.2 build 1";
+    private String           versionDate     = "7/14/2006";
     private String           titleText       = "Enginuity v" + version;
     private MDIDesktopPane   rightPanel      = new MDIDesktopPane();
     private Rom              lastSelectedRom = null;
@@ -338,4 +344,71 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         imageList.updateUI();
         imageList.repaint();
     }
+    
+    public void openImage(File inputFile) throws XMLParseException, Exception {        
+        JProgressPane progress = new JProgressPane(this, "Opening file...", "Parsing ECU definitions...");
+        try {     
+            repaintPanel();
+            progress.update("Parsing ECU definitions...", 0);
+            
+            byte[] input = readFile(inputFile);
+            DOMRomUnmarshaller domUms = new DOMRomUnmarshaller();
+            DOMParser parser = new DOMParser();    
+            progress.update("Finding ECU definition...", 10);
+            Rom rom;
+                          
+            // parse ecu definition files until result found
+            for (int i = 0; i < getSettings().getEcuDefinitionFiles().size(); i++) {
+                InputSource src = new InputSource(new FileInputStream(getSettings().getEcuDefinitionFiles().get(i)));
+
+                parser.parse(src);
+                Document doc = parser.getDocument();                        
+                
+                try {
+                    rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, progress);
+                    progress.update("Populating tables...", 50);
+                    rom.populateTables(input, progress);
+                    rom.setFileName(inputFile.getName());
+
+                    progress.update("Finalizing...", 90);     
+                    addRom(rom);                   
+                    rom.setFullFileName(inputFile);   
+                    return;
+                    
+                } catch (RomNotFoundException ex) {
+                    // rom was not found in current file, skip to next
+                }
+            }
+            
+            // if code executes to this point, no ROM was found, report to user
+            JOptionPane.showMessageDialog(this, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
+            
+        } catch (StackOverflowError ex) {
+            // handles looped inheritance, which will use up all available memory
+            JOptionPane.showMessageDialog(this, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
+            
+        } finally {
+            // remove progress bar
+            progress.dispose();
+            
+        }
+    }    
+    
+    private byte[] readFile(File inputFile) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        FileInputStream fis = null;
+        try {
+                fis = new FileInputStream(inputFile);
+                byte[] buf = new byte[8192];
+                int bytesRead = 0;
+                while ((bytesRead = fis.read(buf)) != -1) {
+                        baos.write(buf, 0, bytesRead);
+                }
+        } finally {
+                if (fis != null) {
+                        fis.close();
+                }
+        }
+        return baos.toByteArray();
+    }    
 }

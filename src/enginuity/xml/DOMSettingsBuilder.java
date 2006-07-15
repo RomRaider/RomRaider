@@ -7,6 +7,7 @@ import enginuity.swing.JProgressPane;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Vector;
 import javax.imageio.metadata.IIOMetadataNode;
 
 public class DOMSettingsBuilder {
@@ -70,10 +71,13 @@ public class DOMSettingsBuilder {
         files.appendChild(imageDir);
         
         // ecu definition files
-        // need to code this again after allowing more
-        IIOMetadataNode ecuDef = new IIOMetadataNode("ecudefinitionfile");
-        ecuDef.setAttribute("name", settings.getEcuDefinitionFile().getAbsolutePath());
-        files.appendChild(ecuDef);
+        Vector<File> defFiles = settings.getEcuDefinitionFiles();
+        
+        for (int i = 0; i < defFiles.size(); i++) {
+            IIOMetadataNode ecuDef = new IIOMetadataNode("ecudefinitionfile");
+            ecuDef.setAttribute("name", defFiles.get(i).getAbsolutePath());
+            files.appendChild(ecuDef);
+        }
         
         return files;
     }

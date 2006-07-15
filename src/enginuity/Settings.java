@@ -39,9 +39,8 @@ public class Settings implements Serializable {
     private Color axisColor                 = new Color(255, 255, 255);
     private int   tableClickCount           = 2; // number of clicks to open table
     
-    public Settings() {
+    public Settings() {        
         //center window by default
-        addEcuDefinitionFile(new File("ecu_defs.xml"));
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         windowLocation.move(((int)(screenSize.getWidth() - windowSize.getWidth()) / 2),
                 ((int)(screenSize.getHeight() - windowSize.getHeight()) / 2));
@@ -63,14 +62,20 @@ public class Settings implements Serializable {
         windowLocation.setLocation(location);
     }
     
-    public File getEcuDefinitionFile() {
-        return ecuDefinitionFiles.elementAt(0);
+    public Vector<File> getEcuDefinitionFiles() {
+        if (ecuDefinitionFiles.size() == 0) {
+            // if no files defined, add default
+            ecuDefinitionFiles.add(new File("./ecu_defs.xml"));
+        }
+        return ecuDefinitionFiles;
     }
     
     public void addEcuDefinitionFile(File ecuDefinitionFile) {
-        if (ecuDefinitionFiles.size() == 0)
-            ecuDefinitionFiles.add(ecuDefinitionFile);
-        else ecuDefinitionFiles.set(0, ecuDefinitionFile);
+        ecuDefinitionFiles.add(ecuDefinitionFile);
+    }
+    
+    public void setEcuDefinitionFiles(Vector<File> ecuDefinitionFiles) {
+        this.ecuDefinitionFiles = ecuDefinitionFiles;
     }
     
     public File getLastImageDir() {

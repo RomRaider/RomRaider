@@ -40,6 +40,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem   exit            = new JMenuItem("Exit");
     
     private JMenu       editMenu        = new JMenu("Edit");
+    private JMenuItem   defManager      = new JMenuItem("ECU Definition Manager");
     private JMenuItem   settings        = new JMenuItem("Settings");
     private JMenuItem   editDefinition  = new JMenuItem("Edit ECU Definitions");
     
@@ -90,12 +91,15 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         // edit menu items
         add(editMenu);
         editMenu.setMnemonic('E');
+        defManager.setMnemonic('D');
         settings.setMnemonic('S');
         editDefinition.setMnemonic('E');
         editMenu.add(new JSeparator());
+        editMenu.add(defManager);
         editMenu.add(settings);
         editMenu.add(editDefinition);
         settings.addActionListener(this);
+        defManager.addActionListener(this);
         editDefinition.addActionListener(this);
         
         // view menu items
@@ -173,7 +177,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == openImage) {
             try {
-                this.openImageDialog();
+                openImageDialog();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
@@ -213,6 +217,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             SettingsForm form = new SettingsForm(parent);
             form.setLocationRelativeTo(parent);
             form.setVisible(true);
+
+        } else if (e.getSource() == defManager) {
+            DefinitionManager form = new DefinitionManager(parent);
+            form.setLocationRelativeTo(parent);
+            form.setVisible(true);
             
         } else if (e.getSource() == level1) {
             parent.setUserLevel(1);
@@ -239,9 +248,19 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 		if (parent.getLastSelectedRom() != null) {
 			File file = parent.getLastSelectedRom().getFullFileName();
 			parent.closeImage();
-			openImage(file);
+			parent.openImage(file);
 		}
 	}
+    
+    public void openImageDialog() throws XMLParseException, Exception {
+        JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
+        fc.setFileFilter(new ECUImageFilter());        
+        
+        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            parent.openImage(fc.getSelectedFile());
+            parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
+        }
+    }    
     
     public void closeImage() {
         parent.closeImage();
@@ -282,67 +301,4 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             }
         }
     }
-    
-    public void openImageDialog() throws XMLParseException, Exception {
-        JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
-        fc.setFileFilter(new ECUImageFilter());        
-        
-        if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
-            openImage(fc.getSelectedFile());
-            parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
-        }
-    }
-    
-    public void openImage(File inputFile) throws XMLParseException, Exception {        
-        JProgressPane progress = new JProgressPane(parent, "Opening file...", "Parsing ECU definitions...");
-        try {     
-            parent.repaintPanel();
-            progress.update("Parsing ECU definitions...", 0);
-            
-            InputSource src = new InputSource(new FileInputStream(parent.getSettings().getEcuDefinitionFile()));                
-            DOMRomUnmarshaller domUms = new DOMRomUnmarshaller();
-            DOMParser parser = new DOMParser();                
-            parser.parse(src);      
-            Document doc = parser.getDocument();
-            byte[] input = readFile(inputFile);
-                        
-            progress.update("Finding ECU definition...", 10);
-            
-            Rom rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, progress);
-            progress.update("Populating tables...", 50);
-            rom.populateTables(input, progress);
-            rom.setFileName(inputFile.getName());
-            
-            progress.update("Finalizing...", 90);     
-            parent.addRom(rom);                   
-            rom.setFullFileName(inputFile);
-            
-        } catch (RomNotFoundException ex) {
-            JOptionPane.showMessageDialog(parent, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
-            
-        } catch (StackOverflowError ex) {
-            JOptionPane.showMessageDialog(parent, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
-            
-        } finally {
-            progress.dispose();
-        }
-    }
-    
-    private byte[] readFile(File inputFile) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(inputFile);
-			byte[] buf = new byte[8192];
-			int bytesRead = 0;
-			while ((bytesRead = fis.read(buf)) != -1) {
-				baos.write(buf, 0, bytesRead);
-			}
-		} finally {
-			if (fis != null) {
-				fis.close();
-			}
-		}
-		return baos.toByteArray();
-	}
 }

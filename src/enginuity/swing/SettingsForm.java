@@ -43,7 +43,8 @@ public class SettingsForm extends JFrame implements MouseListener {
     
     private void initSettings() {
         
-        ecuDefinitionFile.setText(this.settings.getEcuDefinitionFile().getAbsolutePath());
+        // COMMENDED FOR DEF MANAGER TESTING< FIX LATER
+        //ecuDefinitionFile.setText(this.settings.getEcuDefinitionFile().getAbsolutePath());
         
         obsoleteWarning.setSelected(settings.isObsoleteWarning());
         calcConflictWarning.setSelected(settings.isCalcConflictWarning());
