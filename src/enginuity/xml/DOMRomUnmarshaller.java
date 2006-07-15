@@ -306,7 +306,13 @@ public class DOMRomUnmarshaller {
                     }
                     
                 } else if (n.getNodeName().equalsIgnoreCase("scaling")) {
-                    table.setScale(unmarshallScale(n, table.getScale()));
+                    // check whether scale already exists. if so, modify, else use new instance
+                    Scale baseScale = new Scale();
+                    try {
+                        baseScale = table.getScaleByName(unmarshallAttribute(n, "name", "x"));                    
+                    } catch (Exception ex) { }                    
+                    
+                    table.setScale(unmarshallScale(n, baseScale));                    
                     
 		} else if (n.getNodeName().equalsIgnoreCase("data")) {
                     // parse and add data to table
@@ -331,10 +337,12 @@ public class DOMRomUnmarshaller {
                 } else { /*unexpected element in Table (skip) */ }
 	    } else { /* unexpected node-type in Table (skip) */ }
 	}
+        
 	return table;
     }   
     
     private Scale unmarshallScale (Node scaleNode, Scale scale) {        
+        scale.setName(unmarshallAttribute(scaleNode, "name", scale.getName()));
         scale.setUnit(unmarshallAttribute(scaleNode, "units", scale.getUnit()));
         scale.setExpression(unmarshallAttribute(scaleNode, "expression", scale.getExpression()));
         scale.setByteExpression(unmarshallAttribute(scaleNode, "to_byte", scale.getByteExpression()));

@@ -119,7 +119,7 @@ public class Table3D extends Table {
         for (int x = 0; x < yAxis.getDataSize(); x++) {
             centerPanel.add(yAxis.getDataCell(x));
             for (int y = 0; y < xAxis.getDataSize(); y++) {
-                data[y][x] = new DataCell(scale);
+                data[y][x] = new DataCell(scales.get(scaleIndex));
                 data[y][x].setTable(this);
                 
                 // populate data cells
@@ -151,7 +151,7 @@ public class Table3D extends Table {
         GridLayout topLayout = new GridLayout(2,1);
         JPanel topPanel = new JPanel(topLayout);
         this.add(topPanel, BorderLayout.NORTH);
-        topPanel.add(new JLabel(name + " (" + scale.getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);            
+        topPanel.add(new JLabel(name + " (" + scales.get(scaleIndex).getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);            
         topPanel.add(new JLabel(xAxis.getName() + " (" + xAxis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
         JLabel yLabel = new JLabel();
         yLabel.setFont(new Font("Arial", Font.BOLD, 12));
@@ -745,5 +745,15 @@ public class Table3D extends Table {
         super.validateScaling();
         xAxis.validateScaling();
         yAxis.validateScaling();
-    }    
+    }
+    
+    public void refreshValues() {
+        if (!isStatic && !isAxis) {
+            for (int x = 0; x < data.length; x++) {
+                for (int y = 0; y < data[0].length; y++) {       
+                    data[x][y].refreshValue();
+                }
+            }
+        }
+    }
 }

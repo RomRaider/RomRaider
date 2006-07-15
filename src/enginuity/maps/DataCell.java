@@ -287,4 +287,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void setCompareDisplay(int compareDisplay) {
         this.compareDisplay = compareDisplay;
     }
+    
+    public void refreshValue() {
+        setBinValue(binValue);
+    }
 }

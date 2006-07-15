@@ -22,7 +22,7 @@ public class Table1D extends Table {
         for (int i = 0; i < this.getDataSize(); i++) {
             centerPanel.add(this.getDataCell(i));
         }
-        this.add(new JLabel(name + " (" + scale.getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
+        add(new JLabel(name + " (" + scales.get(scaleIndex).getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
     }
     
     public String toString() {

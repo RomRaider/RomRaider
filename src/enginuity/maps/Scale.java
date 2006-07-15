@@ -9,18 +9,22 @@ public class Scale implements Serializable {
     public static final int LINEAR  = 1;
     public static final int INVERSE = 2;
     
+    private String name            = "Default";
     private String unit            = "0x";
     private String expression      = "x";
     private String byteExpression  = "x";
     private String format          = "#";
     private double coarseIncrement = 2;
     private double fineIncrement   = 1;
+    private double min             = 0;
+    private double max             = 0;
     
     public Scale() {
     }
     
     public String toString() {
        return "\n      ---- Scale ----" +
+              "\n      Name: " + getName() +
               "\n      Expression: " + getExpression() +
               "\n      Unit: " + getUnit() +
               "\n      ---- End Scale ----";
@@ -82,5 +86,13 @@ public class Scale implements Serializable {
 
     public void setFineIncrement(double fineIncrement) {
         this.fineIncrement = fineIncrement;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

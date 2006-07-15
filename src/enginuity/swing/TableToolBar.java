@@ -1,20 +1,25 @@
 package enginuity.swing;
 
-import enginuity.swing.TableFrame;
+import enginuity.maps.Scale;
 import enginuity.maps.Table;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -22,7 +27,7 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
 
-public class TableToolBar extends JToolBar implements MouseListener {
+public class TableToolBar extends JToolBar implements MouseListener, ItemListener {
     
     private JButton   incrementFine   = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
     private JButton   decrementFine   = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
@@ -33,6 +38,8 @@ public class TableToolBar extends JToolBar implements MouseListener {
     private JFormattedTextField incrementByFine   = new JFormattedTextField(new DecimalFormat("#.####"));
     private JFormattedTextField incrementByCoarse = new JFormattedTextField(new DecimalFormat("#.####"));
     private JFormattedTextField setValueText      = new JFormattedTextField(new DecimalFormat("#.####"));    
+    
+    private JComboBox scaleSelection = new JComboBox();
     
     private Table table;
     private TableFrame frame;
@@ -53,6 +60,8 @@ public class TableToolBar extends JToolBar implements MouseListener {
         this.add(setValueText);
         this.add(new JLabel(" "));
         this.add(setValue);
+        this.add(new JLabel(" "));
+        this.add(scaleSelection);
                 
         incrementFine.setMaximumSize(new Dimension(33,33));
         incrementFine.setBorder(new LineBorder(new Color(150,150,150), 1));
@@ -64,6 +73,8 @@ public class TableToolBar extends JToolBar implements MouseListener {
         decrementCoarse.setBorder(new LineBorder(new Color(150,150,150), 1));
         setValue.setMaximumSize(new Dimension(33,23));
         setValue.setBorder(new LineBorder(new Color(150,150,150), 1));
+        scaleSelection.setMaximumSize(new Dimension(80,23));
+        scaleSelection.setFont(new Font("Tahoma", Font.PLAIN, 11));
         
         incrementByFine.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
         incrementByFine.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
@@ -89,9 +100,14 @@ public class TableToolBar extends JToolBar implements MouseListener {
         incrementCoarse.addMouseListener(this);
         decrementCoarse.addMouseListener(this);
         setValue.addMouseListener(this);
+        scaleSelection.addItemListener(this);
         
-        incrementByFine.setValue(Math.abs(table.getScale().getFineIncrement()));
-        incrementByCoarse.setValue(Math.abs(table.getScale().getCoarseIncrement()));
+        try {
+            incrementByFine.setValue(Math.abs(table.getScale().getFineIncrement()));
+            incrementByCoarse.setValue(Math.abs(table.getScale().getCoarseIncrement()));
+        } catch (Exception ex) {
+            // scaling units haven't been added yet -- no problem
+        }
         
         // key binding actions
         Action enterAction = new AbstractAction() {
@@ -118,10 +134,18 @@ public class TableToolBar extends JToolBar implements MouseListener {
         setValueText.getInputMap().put(enter, "enterAction");
         setValue.getInputMap().put(enter, "enterAction");
         incrementFine.getInputMap().put(enter, "enterAction");
+        
+        setScales(table.getScales());
     }    
     
     public Table getTable() {
         return table;
+    }
+    
+    public void setScales(Vector<Scale> scales) {
+        for (int i = 0; i < scales.size(); i++) {
+            scaleSelection.addItem(scales.get(i).getName());
+        }
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -194,4 +218,11 @@ public class TableToolBar extends JToolBar implements MouseListener {
     public void setFrame(TableFrame frame) {
         this.frame = frame;
     }
+    
+    public void itemStateChanged(ItemEvent e) {
+        // scale changed
+        if (e.getSource() == scaleSelection) {
+            table.setScaleIndex(scaleSelection.getSelectedIndex());
+        }
+    }    
 }

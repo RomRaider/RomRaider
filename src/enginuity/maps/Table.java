@@ -18,6 +18,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -49,41 +50,43 @@ public abstract class Table extends JPanel implements Serializable {
     
     public static final int STORAGE_TYPE_FLOAT = 99;
     
-    protected String       name;
-    protected int          type;
-    protected String       category    = "Other";
-    protected String       description  = "";
-    protected Scale        scale        = new Scale();
-    protected int          storageAddress;
-    protected int          storageType;
-    protected int          endian;
-    protected boolean      flip;
-    protected DataCell[]   data         = new DataCell[0];
-    protected boolean      isStatic     = false;
-    protected boolean      beforeRam    = false;
-    protected int          ramOffset    = 0;
-    protected BorderLayout borderLayout = new BorderLayout();
-    protected GridLayout   centerLayout = new GridLayout(1,1,0,0);
-    protected JPanel       centerPanel  = new JPanel(centerLayout);
-    protected TableFrame   frame;
-    protected int          verticalOverhead   = 103;
-    protected int          horizontalOverhead = 2;
-    protected int          cellHeight         = 18;
-    protected int          cellWidth          = 42;
-    protected int          minHeight          = 100;
-    protected int          minWidth           = 370;
-    protected Rom          container;
-    protected int          highlightX;
-    protected int          highlightY;
-    protected boolean      highlight = false;
-    protected Table        axisParent;   
-    protected Color        maxColor;
-    protected Color        minColor;
-    protected boolean      isAxis         = false;    
-    protected int          compareType    = 0;
-    protected int          compareDisplay = 1;
-    protected int          userLevel      = 0;
+    protected String        name;
+    protected int           type;
+    protected String        category    = "Other";
+    protected String        description = "";
+    protected Vector<Scale> scales      = new Vector<Scale>();
+    protected int           scaleIndex  = 0; // index of selected scale
     
+    protected int           storageAddress;
+    protected int           storageType;
+    protected int           endian;
+    protected boolean       flip;
+    protected DataCell[]    data         = new DataCell[0];
+    protected boolean       isStatic     = false;
+    protected boolean       beforeRam    = false;
+    protected int           ramOffset    = 0;
+    protected BorderLayout  borderLayout = new BorderLayout();
+    protected GridLayout    centerLayout = new GridLayout(1,1,0,0);
+    protected JPanel        centerPanel  = new JPanel(centerLayout);
+    protected TableFrame    frame;
+    protected int           verticalOverhead   = 103;
+    protected int           horizontalOverhead = 2;
+    protected int           cellHeight         = 18;
+    protected int           cellWidth          = 42;
+    protected int           minHeight          = 100;
+    protected int           minWidth           = 425;
+    protected Rom           container;
+    protected int           highlightX;
+    protected int           highlightY;
+    protected boolean       highlight = false;
+    protected Table         axisParent;   
+    protected Color         maxColor;
+    protected Color         minColor;
+    protected boolean       isAxis         = false;    
+    protected int           compareType    = 0;
+    protected int           compareDisplay = 1;
+    protected int           userLevel      = 0;
+     
     public Table() {
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
@@ -288,7 +291,7 @@ public abstract class Table extends JPanel implements Serializable {
             
             for (int i = 0; i < data.length; i++) {
                 if (data[i] == null) {
-                    data[i] = new DataCell(scale);
+                    data[i] = new DataCell(scales.get(scaleIndex));
                     data[i].setTable(this);
                     
                     // populate data cells
@@ -355,11 +358,32 @@ public abstract class Table extends JPanel implements Serializable {
     }
     
     public Scale getScale() {
-        return scale;
+        return scales.get(scaleIndex);
     }
     
-    public void setScale(Scale scale) {
-        this.scale = scale;
+    public Vector<Scale> getScales() {
+        return scales;
+    }
+    
+    public Scale getScaleByName(String inputName) throws Exception {
+        // look for scale, else throw exception
+        for (int i = 0; i < scales.size(); i++) {
+            if (scales.get(i).getName().equalsIgnoreCase(inputName)) {
+                return scales.get(i);
+            }
+        }
+        throw new Exception();
+    }
+    
+    public void setScale(Scale scale) {        
+        // look for scale, replace or add new
+        for (int i = 0; i < scales.size(); i++) {
+            if (scales.get(i).getName().equalsIgnoreCase(scale.getName())) {
+                scales.remove(i);
+                break;
+            }
+        }
+        scales.add(scale);
     }
     
     public int getStorageAddress() {
@@ -447,7 +471,9 @@ public abstract class Table extends JPanel implements Serializable {
                 double high = -999999999;
                 double low  = 999999999;
 
-                for (int i = 0; i < getDataSize(); i++) {
+
+                for (int i = 0; i < getDataSize(); i++) {   
+                    
                     if (data[i].getBinValue() > high) {
                         high = data[i].getBinValue();
                     } 
@@ -876,11 +902,11 @@ public abstract class Table extends JPanel implements Serializable {
         JEP parser = new JEP();
         parser.initSymTab(); // clear the contents of the symbol table
         parser.addVariable("x", 5);
-        parser.parseExpression(scale.getExpression());
+        parser.parseExpression(scales.get(scaleIndex).getExpression());
         double toReal = parser.getValue(); // calculate real world value of "5"
         
         parser.addVariable("x", toReal);
-        parser.parseExpression(scale.getByteExpression());
+        parser.parseExpression(scales.get(scaleIndex).getByteExpression());
         
         // if real to byte doesn't equal 5, report conflict
         if (Math.abs(parser.getValue() - 5) > .001) {
@@ -888,8 +914,8 @@ public abstract class Table extends JPanel implements Serializable {
             JPanel panel = new JPanel();
             panel.setLayout(new GridLayout(4, 1));
             panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
-            panel.add(new JLabel("To real value: " + scale.getExpression()));
-            panel.add(new JLabel("To byte: " + scale.getByteExpression()));
+            panel.add(new JLabel("To real value: " + scales.get(scaleIndex).getExpression()));
+            panel.add(new JLabel("To byte: " + scales.get(scaleIndex).getByteExpression()));
             
             JCheckBox check = new JCheckBox("Always display this message", true);
             check.setHorizontalAlignment(JCheckBox.RIGHT);
@@ -935,4 +961,19 @@ public abstract class Table extends JPanel implements Serializable {
         if (userLevel > 5) userLevel = 5;
         else if (userLevel < 1) userLevel = 1;
     }
+
+    public int getScaleIndex() {
+        return scaleIndex;
+    }
+
+    public void setScaleIndex(int scaleIndex) {
+        this.scaleIndex = scaleIndex;
+        refreshValues();
+    }
+    
+    public void refreshValues() {
+        if (!isStatic) {
+            for (int i = 0; i < getDataSize(); i++) data[i].refreshValue();
+        }
+    }    
 }
