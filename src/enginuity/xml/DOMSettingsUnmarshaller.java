@@ -23,12 +23,16 @@ public class DOMSettingsUnmarshaller {
 
             if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("window")) {  
                 settings = unmarshallWindow(n, settings);
+                
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("options")) {  
                 settings = unmarshallOptions(n, settings);
+                
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("files")) {  
                 settings = unmarshallFiles(n, settings);
+                
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tabledisplay")) {  
                 settings = unmarshallTableDisplay(n, settings);
+                
             }
         }        
         return settings;
@@ -68,8 +72,10 @@ public class DOMSettingsUnmarshaller {
 
             if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("ecudefinitionfile")) {  
                 settings.addEcuDefinitionFile(new File(unmarshallAttribute(n, "name", "ecu_defs.xml")));
+                
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("image_dir")) {  
                 settings.setLastImageDir(new File(unmarshallAttribute(n, "path", "ecu_defs.xml")));
+                
             } 
         }
         return settings;
