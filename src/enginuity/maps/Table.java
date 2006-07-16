@@ -286,6 +286,10 @@ public abstract class Table extends JPanel implements Serializable {
     }
     
     public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
+        if (scales.size() == 0) {
+            scales.add(new Scale());
+        }
+        
         if (!isStatic) {
             if (!beforeRam) ramOffset = container.getRomID().getRamOffset();
             
@@ -318,7 +322,6 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         }
-       //this.colorize();
     }
     
     public int getType() {
@@ -899,39 +902,45 @@ public abstract class Table extends JPanel implements Serializable {
     public abstract void setAxisColor(Color color);
     
     public void validateScaling() {
-        JEP parser = new JEP();
-        parser.initSymTab(); // clear the contents of the symbol table
-        parser.addVariable("x", 5);
-        parser.parseExpression(scales.get(scaleIndex).getExpression());
-        double toReal = parser.getValue(); // calculate real world value of "5"
-        
-        parser.addVariable("x", toReal);
-        parser.parseExpression(scales.get(scaleIndex).getByteExpression());
-        
-        // if real to byte doesn't equal 5, report conflict
-        if (Math.abs(parser.getValue() - 5) > .001) {
-                        
-            JPanel panel = new JPanel();
-            panel.setLayout(new GridLayout(4, 1));
-            panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
-            panel.add(new JLabel("To real value: " + scales.get(scaleIndex).getExpression()));
-            panel.add(new JLabel("To byte: " + scales.get(scaleIndex).getByteExpression()));
+        if (type != Table.TABLE_SWITCH && !isStatic) {
+            JEP parser = new JEP();
+            parser.initSymTab(); // clear the contents of the symbol table
+            parser.addVariable("x", 5);
             
-            JCheckBox check = new JCheckBox("Always display this message", true);
-            check.setHorizontalAlignment(JCheckBox.RIGHT);
-            panel.add(check);
-                        
-            check.addActionListener( 
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        getRom().getContainer().getSettings().setCalcConflictWarning(((JCheckBox)e.getSource()).isSelected());            
-                    }
-                } 
-            );            
+            // make sure a scale is present
+            if (scales.size() == 0) scales.add(new Scale());            
             
-            JOptionPane.showMessageDialog(container.getContainer(), panel,
-                    "Warning", JOptionPane.ERROR_MESSAGE);
-        }        
+            parser.parseExpression(scales.get(scaleIndex).getExpression());
+            double toReal = parser.getValue(); // calculate real world value of "5"
+
+            parser.addVariable("x", toReal);
+            parser.parseExpression(scales.get(scaleIndex).getByteExpression());
+
+            // if real to byte doesn't equal 5, report conflict
+            if (Math.abs(parser.getValue() - 5) > .001) {
+
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridLayout(4, 1));
+                panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
+                panel.add(new JLabel("To real value: " + scales.get(scaleIndex).getExpression()));
+                panel.add(new JLabel("To byte: " + scales.get(scaleIndex).getByteExpression()));
+
+                JCheckBox check = new JCheckBox("Always display this message", true);
+                check.setHorizontalAlignment(JCheckBox.RIGHT);
+                panel.add(check);
+
+                check.addActionListener( 
+                    new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            getRom().getContainer().getSettings().setCalcConflictWarning(((JCheckBox)e.getSource()).isSelected());            
+                        }
+                    } 
+                );            
+
+                JOptionPane.showMessageDialog(container.getContainer(), panel,
+                        "Warning", JOptionPane.ERROR_MESSAGE);
+            }        
+        }
     }
     
     public void compare(int compareType) {

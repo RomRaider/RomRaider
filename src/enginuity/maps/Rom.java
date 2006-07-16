@@ -57,16 +57,29 @@ public class Rom implements Serializable {
             try {
                 // if storageaddress has not been set (or is set to 0) omit table
                 if (tables.get(i).getStorageAddress() != 0) {
-                    tables.get(i).populateTable(binData);
+                    try {
+                        tables.get(i).populateTable(binData);                        
+
+                    } catch (ArrayIndexOutOfBoundsException ex) {  
+                        
+                        System.out.println(tables.get(i).getName() + 
+                                " type " + tables.get(i).getType() + " start " + 
+                                tables.get(i).getStorageAddress() + " " + binData.length + " filesize");
+                        
+                        // table storage address extends beyond end of file
+                        JOptionPane.showMessageDialog(container, "Storage address for table \"" + tables.get(i).getName() + 
+                                "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                        tables.removeElementAt(i);   
+                        i--;
+                        
+                    }   
+                        
                 } else {
                     tables.remove(i);
                     // decrement i because length of vector has changed
                     i--;
                 }
-            } catch (ArrayIndexOutOfBoundsException ex) {                
-                JOptionPane.showMessageDialog(container, "Storage address for table \"" + tables.get(i).getName() + 
-                        "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
-                tables.removeElementAt(i);
+
             } catch (NullPointerException ex) {
                 JOptionPane.showMessageDialog(container, "There was an error loading table " + tables.get(i).getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                 tables.removeElementAt(i);

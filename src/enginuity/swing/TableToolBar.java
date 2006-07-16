@@ -143,9 +143,16 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
     
     public void setScales(Vector<Scale> scales) {
+
+        // remove item listener to avoid null pointer exception when populating
+        scaleSelection.removeItemListener(this);        
+        
         for (int i = 0; i < scales.size(); i++) {
             scaleSelection.addItem(scales.get(i).getName());
         }
+        
+        // and put it back
+        scaleSelection.addItemListener(this);
     }
 
     public void mouseClicked(MouseEvent e) {
