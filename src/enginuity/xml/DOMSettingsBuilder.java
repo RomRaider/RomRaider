@@ -123,7 +123,12 @@ public class DOMSettingsBuilder {
         // display tables higher than userlevel
         IIOMetadataNode displayHighTables = new IIOMetadataNode("displayhightables");
         displayHighTables.setAttribute("value", settings.isDisplayHighTables()+"");
-        options.appendChild(displayHighTables);        
+        options.appendChild(displayHighTables);   
+
+        // warning when exceeding limits
+        IIOMetadataNode valueLimitWarning = new IIOMetadataNode("valuelimitwarning");
+        valueLimitWarning.setAttribute("value", settings.isValueLimitWarning()+"");
+        options.appendChild(valueLimitWarning);        
         
         return options;
     }
@@ -182,6 +187,12 @@ public class DOMSettingsBuilder {
         axis.setAttribute("g", settings.getAxisColor().getGreen()+"");
         axis.setAttribute("b", settings.getAxisColor().getBlue()+"");
         colors.appendChild(axis);
+        // warning cells
+        IIOMetadataNode warning = new IIOMetadataNode("warning");
+        warning.setAttribute("r", settings.getWarningColor().getRed()+"");
+        warning.setAttribute("g", settings.getWarningColor().getGreen()+"");
+        warning.setAttribute("b", settings.getWarningColor().getBlue()+"");
+        colors.appendChild(warning);        
         
         tableDisplay.appendChild(colors);
         

@@ -28,6 +28,7 @@ public class Settings implements Serializable {
     private int userLevel                   = 1;
     private boolean saveDebugTables         = false;
     private boolean displayHighTables       = true;
+    private boolean valueLimitWarning       = true;
     
     private Font tableFont                  = new Font("Arial", Font.BOLD, 12);
     private Dimension cellSize              = new Dimension(42, 18);
@@ -37,6 +38,7 @@ public class Settings implements Serializable {
     private Color increaseBorder            = new Color(255, 0, 0);
     private Color decreaseBorder            = new Color(0, 0, 255);
     private Color axisColor                 = new Color(255, 255, 255);
+    private Color warningColor              = new Color(255, 0, 0);
     private int   tableClickCount           = 2; // number of clicks to open table
     
     public Settings() {        
@@ -242,5 +244,21 @@ public class Settings implements Serializable {
 
     public void setDisplayHighTables(boolean displayHighTables) {
         this.displayHighTables = displayHighTables;
+    }
+
+    public boolean isValueLimitWarning() {
+        return valueLimitWarning;
+    }
+
+    public void setValueLimitWarning(boolean valueLimitWarning) {
+        this.valueLimitWarning = valueLimitWarning;
+    }
+
+    public Color getWarningColor() {
+        return warningColor;
+    }
+
+    public void setWarningColor(Color warningColor) {
+        this.warningColor = warningColor;
     }
 }

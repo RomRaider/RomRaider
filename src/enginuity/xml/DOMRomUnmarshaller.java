@@ -373,6 +373,8 @@ public class DOMRomUnmarshaller {
         scale.setExpression(unmarshallAttribute(scaleNode, "expression", scale.getExpression()));
         scale.setByteExpression(unmarshallAttribute(scaleNode, "to_byte", scale.getByteExpression()));
         scale.setFormat(unmarshallAttribute(scaleNode, "format", "#"));
+        scale.setMax(Double.parseDouble(unmarshallAttribute(scaleNode, "max", "0")));
+        scale.setMin(Double.parseDouble(unmarshallAttribute(scaleNode, "min", "0")));
         
         // get coarse increment with new attribute name (coarseincrement), else look for old (increment)
         scale.setCoarseIncrement(Double.parseDouble(unmarshallAttribute(scaleNode, "coarseincrement", 

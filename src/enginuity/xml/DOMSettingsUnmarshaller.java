@@ -112,6 +112,9 @@ public class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("displayhightables")) {  
                 settings.setDisplayHighTables(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
                 
+            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("valuelimitwarning")) {  
+                settings.setValueLimitWarning(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
+                
             } 
         }        
         return settings;
@@ -134,7 +137,8 @@ public class DOMSettingsUnmarshaller {
                                                    unmarshallAttribute(n, "y", 18)));
                 
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("colors")) {  
-                settings = unmarshallColors(n, settings);         
+                settings = unmarshallColors(n, settings);  
+                
             }
         }        
         return settings;
@@ -148,17 +152,26 @@ public class DOMSettingsUnmarshaller {
             n = nodes.item(i);
 
             if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("max")) {  
-                settings.setMaxColor(unmarshallColor(n));               
+                settings.setMaxColor(unmarshallColor(n));            
+                
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("min")) {  
-                settings.setMinColor(unmarshallColor(n));               
+                settings.setMinColor(unmarshallColor(n));    
+                
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("highlight")) {  
-                settings.setHighlightColor(unmarshallColor(n));               
+                settings.setHighlightColor(unmarshallColor(n)); 
+                
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("increaseborder")) {  
-                settings.setIncreaseBorder(unmarshallColor(n));     
+                settings.setIncreaseBorder(unmarshallColor(n));  
+                
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("decreaseborder")) {  
-                settings.setDecreaseBorder(unmarshallColor(n));               
+                settings.setDecreaseBorder(unmarshallColor(n));   
+                
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("axis")) {  
-                settings.setAxisColor(unmarshallColor(n));               
+                settings.setAxisColor(unmarshallColor(n));   
+                
+            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("warning")) {  
+                settings.setWarningColor(unmarshallColor(n));   
+                
             }
         }        
         return settings;        
