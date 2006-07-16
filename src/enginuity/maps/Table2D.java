@@ -245,4 +245,9 @@ public class Table2D extends Table {
         super.validateScaling();
         axis.validateScaling();
     }
+    
+    public void setScaleIndex(int scaleIndex) {
+        super.setScaleIndex(scaleIndex);
+        axis.setScaleByName(getScale().getName());
+    }    
 }

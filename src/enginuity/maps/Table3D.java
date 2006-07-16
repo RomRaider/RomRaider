@@ -756,4 +756,10 @@ public class Table3D extends Table {
             }
         }
     }
+    
+    public void setScaleIndex(int scaleIndex) {
+        super.setScaleIndex(scaleIndex);
+        xAxis.setScaleByName(getScale().getName());
+        yAxis.setScaleByName(getScale().getName());
+    }      
 }

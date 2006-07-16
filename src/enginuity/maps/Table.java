@@ -971,6 +971,13 @@ public abstract class Table extends JPanel implements Serializable {
         refreshValues();
     }
     
+    public void setScaleByName(String scaleName) {
+        for (int i = 0; i < scales.size(); i++) {
+            if (scales.get(i).getName().equalsIgnoreCase(scaleName))
+                setScaleIndex(i);
+        }
+    }    
+    
     public void refreshValues() {
         if (!isStatic) {
             for (int i = 0; i < getDataSize(); i++) data[i].refreshValue();
