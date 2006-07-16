@@ -17,18 +17,31 @@ import enginuity.maps.Table2D;
 import enginuity.maps.Table3D;
 import enginuity.maps.TableSwitch;
 import enginuity.swing.JProgressPane;
+import java.util.Vector;
 
 public class DOMRomUnmarshaller {
     
     private JProgressPane progress = null;
+    private Vector<Scale> scales   = new Vector<Scale>();
     
     public DOMRomUnmarshaller() { }
     
     public Rom unmarshallXMLDefinition (Node rootNode, byte[] input, JProgressPane progress) throws RomNotFoundException, XMLParseException, StackOverflowError, Exception {
+
+        this.progress = progress;
         Node n;
         NodeList nodes = rootNode.getChildNodes();
-        this.progress = progress;
+        
+        // unmarshall scales first
+        for (int i = 0; i < nodes.getLength(); i++) { 
+            n = nodes.item(i);
 
+            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scalingbase")) {  
+                scales.add(unmarshallScale(n, new Scale()));
+            }
+        }
+        
+        // now unmarshall roms
         for (int i = 0; i < nodes.getLength(); i++) { 
             n = nodes.item(i);
 
@@ -342,6 +355,19 @@ public class DOMRomUnmarshaller {
     }   
     
     private Scale unmarshallScale (Node scaleNode, Scale scale) {        
+        
+        // look for base scale first
+        String base = unmarshallAttribute(scaleNode, "base", "none");
+        if (!base.equalsIgnoreCase("none")) {
+            for (int i = 0; i < scales.size(); i++) {
+                
+                // check whether name matches base and set scale if so
+                if (scales.get(i).getName().equalsIgnoreCase(base))
+                    scale = scales.get(i);
+            }
+        }
+        
+        // set remaining attributes
         scale.setName(unmarshallAttribute(scaleNode, "name", scale.getName()));
         scale.setUnit(unmarshallAttribute(scaleNode, "units", scale.getUnit()));
         scale.setExpression(unmarshallAttribute(scaleNode, "expression", scale.getExpression()));
