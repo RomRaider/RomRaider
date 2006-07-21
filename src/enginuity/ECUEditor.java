@@ -158,22 +158,27 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         setVisible(true);
     }
     
-    public void windowClosing(WindowEvent e) {
-        getSettings().setSplitPaneLocation(splitPane.getDividerLocation());
-        if (getExtendedState() == JFrame.MAXIMIZED_BOTH) getSettings().setWindowMaximized(true);
-        else {
-            getSettings().setWindowMaximized(false);
-            getSettings().setWindowSize(getSize());
-            getSettings().setWindowLocation(getLocation());
-        }
+    public void handleExit() { 
+       getSettings().setSplitPaneLocation(splitPane.getDividerLocation()); 
+       if (getExtendedState() == JFrame.MAXIMIZED_BOTH)           
+       getSettings().setWindowMaximized(true); 
+       else { 
+          getSettings().setWindowMaximized(false); 
+          getSettings().setWindowSize(getSize()); 
+          getSettings().setWindowLocation(getLocation()); 
+       } 
         
-        DOMSettingsBuilder builder = new DOMSettingsBuilder();
-        try {
-            JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");            
-            builder.buildSettings(settings, new File("./settings.xml"), progress, version);
-            
-        } catch (IOException ex) { }
-    }
+       DOMSettingsBuilder builder = new DOMSettingsBuilder(); 
+       try { 
+          JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");            
+          builder.buildSettings(settings, new File("./settings.xml"), progress, version); 
+            } catch (IOException ex) { } 
+    } 
+    
+    public void windowClosing(WindowEvent e) { 
+       handleExit(); 
+    } 
+   
     public void windowOpened(WindowEvent e) { }
     public void windowClosed(WindowEvent e) { }
     public void windowIconified(WindowEvent e) { }
