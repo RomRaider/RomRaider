@@ -198,6 +198,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             this.closeAllImages();
             
         } else if (e.getSource() == exit) {
+            parent.handleExit();             
             System.exit(0);
             
         } else if (e.getSource() == romProperties) {
