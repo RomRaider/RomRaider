@@ -158,28 +158,51 @@ public class Table3D extends Table {
     public void colorize() {
         if (compareType == COMPARE_OFF) {
             if (!isStatic && !isAxis) {
-                double high = -999999999;
-                double low = 999999999;
-                for (DataCell[] column : data) {
-                    for (DataCell cell : column) {
-                        if (cell.getBinValue() > high) {
-                            high = cell.getBinValue();
-                        }
-                        if (cell.getBinValue() < low) {
-                            low = cell.getBinValue();
+                
+                double high = Double.MIN_VALUE;
+                double low  = Double.MAX_VALUE;
+                               
+                if (getScale().getMax() != 0 || getScale().getMin() != 0) {
+                    
+                    // set min and max values if they are set in scale
+                    high = getScale().getMax();
+                    low = getScale().getMin();
+                    
+                } else {
+                    // min/max not set in scale
+                    for (DataCell[] column : data) {
+                        for (DataCell cell : column) {
+                            if (Double.parseDouble(cell.getText()) > high) {
+                                high = Double.parseDouble(cell.getText());
+                            }
+                            if (Double.parseDouble(cell.getText()) < low) {
+                                low = Double.parseDouble(cell.getText());
+                            }
                         }
                     }
                 }
+                
+                
                 for (DataCell[] column : data) {
                     for (DataCell cell : column) {
-                        double scale = Math.abs((cell.getBinValue() - low) / (high - low));
-                        cell.setColor(getScaledColor(scale));
+                        
+                        if (Double.parseDouble(cell.getText()) > high ||
+                            Double.parseDouble(cell.getText()) < low) {
+
+                            // value exceeds limit
+                            cell.setColor(getRom().getContainer().getSettings().getWarningColor());
+
+                        } else {   
+                            
+                            double scale = Math.abs((Double.parseDouble(cell.getText()) - low) / (high - low));
+                            cell.setColor(getScaledColor(scale));
+                        }
                     }
                 }
             }
         } else { // comparing is on
             if (!isStatic) {
-                double high = -999999999;
+                double high = Double.MIN_VALUE;
 
                 // determine ratios
                 for (DataCell[] column : data) {

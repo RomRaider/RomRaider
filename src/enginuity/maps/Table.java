@@ -467,21 +467,42 @@ public abstract class Table extends JPanel implements Serializable {
     public void colorize() {
         if (compareType == COMPARE_OFF) {
             if (!isStatic && !isAxis) {
-                double high = -999999999;
-                double low = 999999999;
+                
+                double high = Double.MIN_VALUE;
+                double low = Double.MAX_VALUE;
+                
+                if (getScale().getMax() != 0 || getScale().getMin() != 0) {
 
+                    // set min and max values if they are set in scale                    
+                    high = getScale().getMax();
+                    low = getScale().getMin();
+                    
+                } else {
 
-                for (int i = 0; i < getDataSize(); i++) {
-                    if (data[i].getBinValue() > high) {
-                        high = data[i].getBinValue();
-                    }
-                    if (data[i].getBinValue() < low) {
-                        low = data[i].getBinValue();
+                    for (int i = 0; i < getDataSize(); i++) {
+
+                        if (Double.parseDouble(data[i].getText()) > high) {
+                            high = Double.parseDouble(data[i].getText());
+                        } 
+                        if (Double.parseDouble(data[i].getText()) < low) {
+                            low = Double.parseDouble(data[i].getText());
+                        }
                     }
                 }
+                
                 for (int i = 0; i < getDataSize(); i++) {
-                    double scale = (data[i].getBinValue() - low) / (high - low);
-                    data[i].setColor(getScaledColor(scale));
+                    
+                    if (Double.parseDouble(data[i].getText()) > high ||
+                            Double.parseDouble(data[i].getText()) < low) {
+                        
+                        // value exceeds limit
+                    	data[i].setColor(getRom().getContainer().getSettings().getWarningColor());
+                        
+                    } else {                       
+                        // limits not set, scale based on table values
+                        double scale = (Double.parseDouble(data[i].getText()) - low) / (high - low);
+                        data[i].setColor(getScaledColor(scale));
+                    }
                 }
             } else { // is static/axis
                 for (int i = 0; i < getDataSize(); i++) {
@@ -494,7 +515,7 @@ public abstract class Table extends JPanel implements Serializable {
 
         } else { // comparing is on
             if (!isStatic) {
-                double high = -999999999;
+                double high = Double.MIN_VALUE;
 
                 // determine ratios
                 for (int i = 0; i < getDataSize(); i++) {
