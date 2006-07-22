@@ -28,7 +28,7 @@ public class Table3D extends Table {
     public Table3D(Settings settings) {
         super(settings);
         verticalOverhead += 39;
-        horizontalOverhead += 5;
+        horizontalOverhead += 10;
     }
 
     public Table1D getXAxis() {
@@ -147,13 +147,16 @@ public class Table3D extends Table {
         GridLayout topLayout = new GridLayout(2, 1);
         JPanel topPanel = new JPanel(topLayout);
         this.add(topPanel, BorderLayout.NORTH);
-        topPanel.add(new JLabel(name + " (" + scales.get(scaleIndex).getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
+        topPanel.add(new JLabel(name, JLabel.CENTER), BorderLayout.NORTH);
         topPanel.add(new JLabel(xAxis.getName() + " (" + xAxis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
+        
         JLabel yLabel = new JLabel();
         yLabel.setFont(new Font("Arial", Font.BOLD, 12));
         VTextIcon icon = new VTextIcon(yLabel, yAxis.getName() + " (" + yAxis.getScale().getUnit() + ")", VTextIcon.ROTATE_LEFT);
         yLabel.setIcon(icon);
-        this.add(yLabel, BorderLayout.WEST);
+        add(yLabel, BorderLayout.WEST);
+        
+        add(new JLabel(getScale().getUnit(), JLabel.CENTER), BorderLayout.SOUTH);
     }
 
     public void colorize() {

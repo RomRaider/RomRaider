@@ -16,17 +16,17 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
     
     public TableFrame(Table table) {
         super(table.getRom().getFileName() + " - " + table.getName(), true, true);
-        this.setTable(table);
-        this.add(table);
-        this.setFrameIcon(null);
-        this.setBorder(BorderFactory.createBevelBorder(0));
-        this.setVisible(false);
+        setTable(table);
+        add(table);
+        setFrameIcon(null);
+        setBorder(BorderFactory.createBevelBorder(0));
+        setVisible(false);
         toolBar = new TableToolBar(table, this);
-        this.add(toolBar, BorderLayout.NORTH);
-        this.setJMenuBar(new TableMenuBar(table));
-        this.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        add(toolBar, BorderLayout.NORTH);
+        setJMenuBar(new TableMenuBar(table));
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         table.setFrame(this);
-        this.addInternalFrameListener(this);        
+        addInternalFrameListener(this);        
     }
     
     public TableToolBar getToolBar() {
