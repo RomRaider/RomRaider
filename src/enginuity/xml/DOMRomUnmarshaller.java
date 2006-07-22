@@ -2,6 +2,7 @@
 
 package enginuity.xml;
 
+import enginuity.Settings;
 import javax.management.modelmbean.XMLParseException;
 
 import org.w3c.dom.Node;
@@ -23,8 +24,11 @@ public class DOMRomUnmarshaller {
     
     private JProgressPane progress = null;
     private Vector<Scale> scales   = new Vector<Scale>();
+    private Settings settings;
     
-    public DOMRomUnmarshaller() { }
+    public DOMRomUnmarshaller(Settings settings) { 
+        this.settings = settings;
+    }
     
     public Rom unmarshallXMLDefinition (Node rootNode, byte[] input, JProgressPane progress) throws RomNotFoundException, XMLParseException, StackOverflowError, Exception {
 
@@ -223,24 +227,24 @@ public class DOMRomUnmarshaller {
             if (table.getType() < 1) { }
         } catch (NullPointerException ex) { // if type is null or less than 0, create new instance (otherwise it is inherited)
             if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("3D")) {
-                table = new Table3D();
+                table = new Table3D(settings);
                 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("2D")) {
-                table = new Table2D();
+                table = new Table2D(settings);
                 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("1D")) {
-                table = new Table1D();
+                table = new Table1D(settings);
                 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("X Axis") ||
                        unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Y Axis")) {
-                table = new Table1D();
+                table = new Table1D(settings);
                 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static Y Axis") ||
                        unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static X Axis")) {
-                table = new Table1D();
+                table = new Table1D(settings);
                 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Switch")) {
-                table = new TableSwitch();
+                table = new TableSwitch(settings);
                 
             } else {
                 throw new XMLParseException();

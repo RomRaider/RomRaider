@@ -18,10 +18,10 @@ import enginuity.swing.TableFrame;
 
 public class Table2D extends Table {
     
-    private Table1D axis = new Table1D();
+    private Table1D axis = new Table1D(new Settings());
     
-    public Table2D() {
-        super();
+    public Table2D(Settings settings) {
+        super(settings);
         verticalOverhead += 18;
     }
 

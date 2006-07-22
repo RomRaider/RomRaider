@@ -1,5 +1,6 @@
 package enginuity.maps;
 
+import enginuity.Settings;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
@@ -9,8 +10,8 @@ public class Table1D extends Table {
     
     private Color axisColor = new Color(255, 255, 255);
     
-    public Table1D() {
-        super();
+    public Table1D(Settings settings) {
+        super(settings);
     }
     
     public void populateTable(byte[] input) {

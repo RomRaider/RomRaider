@@ -18,14 +18,15 @@ import java.util.StringTokenizer;
 
 public class Table3D extends Table {
     
-    private Table1D      xAxis = new Table1D();
-    private Table1D      yAxis = new Table1D();
+    private Table1D      xAxis = new Table1D(new Settings());
+    private Table1D      yAxis = new Table1D(new Settings());
     private DataCell[][] data = new DataCell[1][1];
     private boolean      swapXY = false;
     private boolean      flipX = false;
     private boolean      flipY = false;
 
-    public Table3D() {
+    public Table3D(Settings settings) {
+        super(settings);
         verticalOverhead += 39;
         horizontalOverhead += 5;
     }
@@ -190,12 +191,20 @@ public class Table3D extends Table {
                             Double.parseDouble(cell.getText()) < low) {
 
                             // value exceeds limit
-                            cell.setColor(getRom().getContainer().getSettings().getWarningColor());
+                            cell.setColor(settings.getWarningColor());
 
                         } else {   
+                            // limits not set, scale based on table values
+                            double scale = 0;
+
+                            if (high - low == 0) {
+                                // if all values are the same, color will be middle value
+                                scale = .5;                            
+                            } else {
+                                scale = (Double.parseDouble(cell.getText()) - low) / (high - low);                            
+                            }                            
                             
-                            double scale = Math.abs((Double.parseDouble(cell.getText()) - low) / (high - low));
-                            cell.setColor(getScaledColor(scale));
+                            cell.setColor(getScaledColor(scale, settings));
                         }
                     }
                 }
@@ -229,14 +238,14 @@ public class Table3D extends Table {
                         if (scale == 0) {
                             cell.setColor(UNCHANGED_VALUE_COLOR);
                         } else {
-                            cell.setColor(getScaledColor(scale));
+                            cell.setColor(getScaledColor(scale, settings));
                         }
 
                         // set border
                         if (cell.getBinValue() > cell.getOriginalValue()) {
-                            cell.setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                            cell.setBorder(new LineBorder(settings.getIncreaseBorder()));
                         } else if (cell.getBinValue() < cell.getOriginalValue()) {
-                            cell.setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                            cell.setBorder(new LineBorder(settings.getDecreaseBorder()));
                         } else {
                             cell.setBorder(new LineBorder(Color.BLACK, 1));
                         }
@@ -254,9 +263,9 @@ public class Table3D extends Table {
                 for (DataCell cell : column) {
 
                     if (cell.getBinValue() > cell.getOriginalValue()) {
-                        cell.setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                        cell.setBorder(new LineBorder(settings.getIncreaseBorder()));
                     } else if (cell.getBinValue() < cell.getOriginalValue()) {
-                        cell.setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                        cell.setBorder(new LineBorder(settings.getDecreaseBorder()));
                     } else {
                         cell.setBorder(new LineBorder(Color.BLACK, 1));
                     }
@@ -404,11 +413,11 @@ public class Table3D extends Table {
     public byte[] saveFile(byte[] binData) {
         if (!isStatic  // save if table is not static
                 &&     // and user level is great enough
-                userLevel <= container.getContainer().getSettings().getUserLevel()
+                userLevel <= settings.getUserLevel()
                 &&     // and table is not in debug mode, unless saveDebugTables is true
                 (userLevel < 5
                         ||
-                        container.getContainer().getSettings().isSaveDebugTables())) {
+                        settings.isSaveDebugTables())) {
 
             binData = xAxis.saveFile(binData);
             binData = yAxis.saveFile(binData);
@@ -756,6 +765,8 @@ public class Table3D extends Table {
 
     public void applyColorSettings(Settings settings) {
         // apply settings to cells
+        this.settings = settings;
+        
         for (int y = 0; y < getSizeY(); y++) {
             for (int x = 0; x < getSizeX(); x++) {
 
@@ -768,6 +779,7 @@ public class Table3D extends Table {
                 data[x][y].repaint();
             }
         }
+        
         this.setAxisColor(settings.getAxisColor());
         xAxis.applyColorSettings(settings);
         yAxis.applyColorSettings(settings);

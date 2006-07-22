@@ -1,5 +1,6 @@
 package enginuity.maps;
 
+import enginuity.Settings;
 import enginuity.xml.RomAttributeParser;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,7 +15,8 @@ public class TableSwitch extends Table {
     private byte[]    off      = new byte[0];
     private JCheckBox checkbox = new JCheckBox("Enabled", true); // checkbox selected by default
     
-    public TableSwitch() {
+    public TableSwitch(Settings settings) {
+        super(settings);
         storageType = 1;
         removeAll();
         setLayout(new BorderLayout());

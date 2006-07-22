@@ -1,26 +1,37 @@
 package enginuity.util;
 
+import enginuity.Settings;
 import java.awt.*;
 
 public final class ColorScaler {
-    private static final int MAX_COLOR_INTENSITY = 200;
+    private static final int MAX_COLOR_INTENSITY = 255;
 
     private ColorScaler() {
     }
 
-    public static Color getScaledColor(double scale) {
-        int r = (int) ((Math.cos(Math.toRadians(180 + scale * 180)) + 1) * MAX_COLOR_INTENSITY / 2) + 30;
-        int g = (int) ((Math.cos(Math.toRadians(180 + scale * 360)) + 1) * MAX_COLOR_INTENSITY / 2) + 60;
-        int b = (int) ((Math.cos(Math.toRadians(scale * 180)) + 1) * MAX_COLOR_INTENSITY / 2) + 20;
+    public static Color getScaledColor(double scale, Settings settings) {
+        
+        Color minColor = settings.getMinColor();
+        Color maxColor = settings.getMaxColor();
+        
+        float[] minColorHSB = new float[3];
+        float[] maxColorHSB = new float[3];
+        
+        Color.RGBtoHSB(minColor.getRed(),
+                       minColor.getGreen(),
+                       minColor.getBlue(),
+                       minColorHSB);
+        
+        Color.RGBtoHSB(maxColor.getRed(),
+                       maxColor.getGreen(),
+                       maxColor.getBlue(),
+                       maxColorHSB);
+        
+        float h = minColorHSB[0] + (maxColorHSB[0] - minColorHSB[0]) * (float)scale;
+        float s = minColorHSB[1] + (maxColorHSB[1] - minColorHSB[1]) * (float)scale;
+        float b = minColorHSB[2] + (maxColorHSB[2] - minColorHSB[2]) * (float)scale;
+        
+        return Color.getHSBColor(h, s, b);
 
-        if (r > MAX_COLOR_INTENSITY) r = MAX_COLOR_INTENSITY;
-        if (g > MAX_COLOR_INTENSITY) g = MAX_COLOR_INTENSITY;
-        if (b > MAX_COLOR_INTENSITY) b = MAX_COLOR_INTENSITY;
-
-        if (r < 0) r = 0;
-        if (g < 0) g = 0;
-        if (b < 0) b = 0;
-
-        return new Color(r, g, b);
     }
 }

@@ -79,8 +79,10 @@ public abstract class Table extends JPanel implements Serializable {
     protected int           compareType    = 0;
     protected int           compareDisplay = 1;
     protected int           userLevel      = 0;
+    protected Settings      settings;
      
-    public Table() {
+    public Table(Settings settings) {
+        this.setSettings(settings);
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
         centerPanel.setVisible(true);
@@ -496,17 +498,25 @@ public abstract class Table extends JPanel implements Serializable {
                             Double.parseDouble(data[i].getText()) < low) {
                         
                         // value exceeds limit
-                    	data[i].setColor(getRom().getContainer().getSettings().getWarningColor());
+                    	data[i].setColor(getSettings().getWarningColor());
                         
                     } else {                       
                         // limits not set, scale based on table values
-                        double scale = (Double.parseDouble(data[i].getText()) - low) / (high - low);
-                        data[i].setColor(getScaledColor(scale));
+                        double scale = 0;
+                        
+                        if (high - low == 0) {
+                            // if all values are the same, color will be middle value
+                            scale = .5;                            
+                        } else {
+                            scale = (Double.parseDouble(data[i].getText()) - low) / (high - low);                            
+                        }
+                        
+                        data[i].setColor(getScaledColor(scale, getSettings()));
                     }
                 }
             } else { // is static/axis
                 for (int i = 0; i < getDataSize(); i++) {
-                    data[i].setColor(axisParent.getRom().getContainer().getSettings().getAxisColor());
+                    data[i].setColor(getSettings().getAxisColor());
                     data[i].setOpaque(true);
                     data[i].setBorder(new LineBorder(Color.BLACK, 1));
                     data[i].setHorizontalAlignment(DataCell.CENTER);
@@ -537,14 +547,14 @@ public abstract class Table extends JPanel implements Serializable {
                     if (scale == 0) {
                         data[i].setColor(UNCHANGED_VALUE_COLOR);
                     } else {
-                        data[i].setColor(getScaledColor(scale));
+                        data[i].setColor(getScaledColor(scale, getSettings()));
                     }
 
                     // set border
                     if (data[i].getBinValue() > data[i].getOriginalValue()) {
-                        data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                        data[i].setBorder(new LineBorder(getSettings().getIncreaseBorder()));
                     } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
-                        data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                        data[i].setBorder(new LineBorder(getSettings().getDecreaseBorder()));
                     } else {
                         data[i].setBorder(new LineBorder(Color.BLACK, 1));
                     }
@@ -556,9 +566,9 @@ public abstract class Table extends JPanel implements Serializable {
         if (!isStatic) {
             for (int i = 0; i < getDataSize(); i++) {
                 if (data[i].getBinValue() > data[i].getOriginalValue()) {
-                    data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                    data[i].setBorder(new LineBorder(getSettings().getIncreaseBorder()));
                 } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
-                    data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                    data[i].setBorder(new LineBorder(getSettings().getDecreaseBorder()));
                 } else {
                     data[i].setBorder(new LineBorder(Color.BLACK, 1));
                 }
@@ -701,11 +711,11 @@ public abstract class Table extends JPanel implements Serializable {
     public byte[] saveFile(byte[] binData) {
         if (!isStatic  // save if table is not static
                 &&     // and user level is great enough
-                userLevel <= container.getContainer().getSettings().getUserLevel()
+                userLevel <= getSettings().getUserLevel()
                 &&     // and table is not in debug mode, unless saveDebugTables is true
                 (userLevel < 5
                         ||
-                        container.getContainer().getSettings().isSaveDebugTables())) {
+                        getSettings().isSaveDebugTables())) {
 
             for (int i = 0; i < data.length; i++) {
 
@@ -905,6 +915,8 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void applyColorSettings(Settings settings) {
+        this.setSettings(settings);
+        
         // apply settings to cells
         for (int i = 0; i < getDataSize(); i++) {
             this.setMaxColor(settings.getMaxColor());
@@ -976,7 +988,7 @@ public abstract class Table extends JPanel implements Serializable {
                 check.addActionListener(
                         new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
-                                getRom().getContainer().getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
+                                getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
                             }
                         }
                 );
@@ -1043,5 +1055,13 @@ public abstract class Table extends JPanel implements Serializable {
                 data[i].refreshValue();
             }
         }
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 }
