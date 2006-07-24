@@ -1,9 +1,6 @@
 package enginuity;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Point;
+import java.awt.*;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Vector;
@@ -40,6 +37,8 @@ public class Settings implements Serializable {
     private Color axisColor                 = new Color(255, 255, 255);
     private Color warningColor              = new Color(255, 0, 0);
     private int   tableClickCount           = 2; // number of clicks to open table
+
+    private String loggerPort               = "COM3";
     
     public Settings() {        
         //center window by default
@@ -260,5 +259,13 @@ public class Settings implements Serializable {
 
     public void setWarningColor(Color warningColor) {
         this.warningColor = warningColor;
+    }
+
+    public String getLoggerPort() {
+        return loggerPort;
+    }
+
+    public void setLoggerPort(String loggerPort) {
+        this.loggerPort = loggerPort;
     }
 }
