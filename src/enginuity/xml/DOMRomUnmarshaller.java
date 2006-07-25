@@ -367,8 +367,13 @@ public class DOMRomUnmarshaller {
             for (int i = 0; i < scales.size(); i++) {
                 
                 // check whether name matches base and set scale if so
-                if (scales.get(i).getName().equalsIgnoreCase(base))
-                    scale = scales.get(i);
+                if (scales.get(i).getName().equalsIgnoreCase(base)) {
+                    try {
+                        scale = (Scale)ObjectCloner.deepCopy((Object)scales.get(i));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }                        
+                }
             }
         }
         
