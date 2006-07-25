@@ -223,7 +223,9 @@ public class DOMRomUnmarshaller {
             try {
                 table = (Table)ObjectCloner.deepCopy((Object)rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
                 
-            } catch (TableNotFoundException ex) { /* table not found */ } catch (NullPointerException ex) {
+            } catch (TableNotFoundException ex) { /* table not found, do nothing */
+            
+            } catch (NullPointerException ex) {
                 JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
 
