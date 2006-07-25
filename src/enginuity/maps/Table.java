@@ -308,7 +308,7 @@ public abstract class Table extends JPanel implements Serializable {
                         byteValue[2] = input[storageAddress + i * 4 - ramOffset + 2];
                         byteValue[3] = input[storageAddress + i * 4 - ramOffset + 3];
                         data[i].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
-
+                       
                     } else { // integer storage type
                         data[i].setBinValue(
                                 RomAttributeParser.parseByteValue(input,
@@ -321,6 +321,11 @@ public abstract class Table extends JPanel implements Serializable {
                     centerPanel.add(data[i]);
                     data[i].setYCoord(i);
                     data[i].setOriginalValue(data[i].getBinValue());
+                    
+                    // show locked cell
+                    if (tempLock) {
+                        data[i].setForeground(Color.GRAY);
+                    }                    
                 }
             }
         }

@@ -95,6 +95,10 @@ public class Table3D extends Table {
         if (!beforeRam) {
             ramOffset = container.getRomID().getRamOffset();
         }
+        
+        // temporarily remove lock
+        boolean tempLock = locked;
+        locked = false;        
 
         // populate axiis
         try {
@@ -134,6 +138,11 @@ public class Table3D extends Table {
                                     storageAddress + offset * storageType - ramOffset,
                                     storageType));
                 }
+                
+                // show locked cell
+                if (tempLock) {
+                    data[y][x].setForeground(Color.GRAY);
+                }                
 
                 centerPanel.add(data[y][x]);
                 data[y][x].setXCoord(y);
@@ -142,7 +151,9 @@ public class Table3D extends Table {
                 offset++;
             }
         }
-        //this.colorize();
+        
+        // reset locked status
+        locked = tempLock;        
 
         GridLayout topLayout = new GridLayout(2, 1);
         JPanel topPanel = new JPanel(topLayout);
