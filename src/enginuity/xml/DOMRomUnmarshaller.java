@@ -2,6 +2,7 @@
 
 package enginuity.xml;
 
+import enginuity.ECUEditor;
 import enginuity.Settings;
 import javax.management.modelmbean.XMLParseException;
 
@@ -17,17 +18,21 @@ import enginuity.maps.Table1D;
 import enginuity.maps.Table2D;
 import enginuity.maps.Table3D;
 import enginuity.maps.TableSwitch;
+import enginuity.swing.DebugPanel;
 import enginuity.swing.JProgressPane;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 
 public class DOMRomUnmarshaller {
     
     private JProgressPane progress = null;
     private Vector<Scale> scales   = new Vector<Scale>();
-    private Settings settings;
+    private Settings      settings;
+    private ECUEditor     parent;
     
-    public DOMRomUnmarshaller(Settings settings) { 
+    public DOMRomUnmarshaller(Settings settings, ECUEditor parent) { 
         this.settings = settings;
+        this.parent = parent;
     }
     
     public Rom unmarshallXMLDefinition (Node rootNode, byte[] input, JProgressPane progress) throws RomNotFoundException, XMLParseException, StackOverflowError, Exception {
@@ -219,7 +224,9 @@ public class DOMRomUnmarshaller {
                 table = (Table)ObjectCloner.deepCopy((Object)rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
                 
             } catch (TableNotFoundException ex) { /* table not found */ } catch (NullPointerException ex) {
-                ex.printStackTrace();
+                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
+                        parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+
             }
         }
         
@@ -370,8 +377,10 @@ public class DOMRomUnmarshaller {
                 if (scales.get(i).getName().equalsIgnoreCase(base)) {
                     try {
                         scale = (Scale)ObjectCloner.deepCopy((Object)scales.get(i));
+                        
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
+                                parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
                     }                        
                 }
             }

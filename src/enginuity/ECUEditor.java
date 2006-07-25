@@ -357,7 +357,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             progress.update("Parsing ECU definitions...", 0);
             
             byte[] input = readFile(inputFile);
-            DOMRomUnmarshaller domUms = new DOMRomUnmarshaller(settings);
+            DOMRomUnmarshaller domUms = new DOMRomUnmarshaller(settings, this);
             DOMParser parser = new DOMParser();    
             progress.update("Finding ECU definition...", 10);
             Rom rom;
