@@ -80,6 +80,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected int           compareDisplay = 1;
     protected int           userLevel      = 0;
     protected Settings      settings;
+    protected boolean       locked         = false;
      
     public Table(Settings settings) {
         this.setSettings(settings);
@@ -284,7 +285,11 @@ public abstract class Table extends JPanel implements Serializable {
         if (scales.isEmpty()) {
             scales.add(new Scale());
         }
-
+        
+        // temporarily remove lock
+        boolean tempLock = locked;
+        locked = false;
+        
         if (!isStatic) {
             if (!beforeRam) {
                 ramOffset = container.getRomID().getRamOffset();
@@ -319,6 +324,9 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         }
+        
+        // reset locked status
+        locked = tempLock;
     }
 
     public int getType() {
@@ -598,7 +606,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void increment(double increment) {
-        if (!isStatic) {
+        if (!isStatic && !locked) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.increment(increment);
@@ -607,8 +615,8 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public void setRealValue(String realValue) {
-        if (!isStatic) {
+    public void setRealValue(String realValue) {        
+        if (!isStatic && !locked) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.setRealValue(realValue);
@@ -1063,5 +1071,13 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setSettings(Settings settings) {
         this.settings = settings;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }

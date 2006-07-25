@@ -324,7 +324,7 @@ public class Table3D extends Table {
     }
 
     public void increment(double increment) {
-        if (!isStatic) {
+        if (!isStatic && !locked) {
             for (int x = 0; x < this.getSizeX(); x++) {
                 for (int y = 0; y < this.getSizeY(); y++) {
                     if (data[x][y].isSelected()) {
@@ -452,7 +452,7 @@ public class Table3D extends Table {
     }
 
     public void setRealValue(String realValue) {
-        if (!isStatic) {
+        if (!isStatic && !locked) {
             for (int x = 0; x < this.getSizeX(); x++) {
                 for (int y = 0; y < this.getSizeY(); y++) {
                     if (data[x][y].isSelected()) {

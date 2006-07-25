@@ -273,6 +273,7 @@ public class DOMRomUnmarshaller {
         table.setDataSize(Integer.parseInt(unmarshallAttribute(tableNode, "sizey", unmarshallAttribute(tableNode, "sizex", table.getDataSize()))));
         table.setFlip(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipy", unmarshallAttribute(tableNode, "flipx", table.getFlip()+""))));
         table.setUserLevel(Integer.parseInt(unmarshallAttribute(tableNode, "userlevel", table.getUserLevel())));
+        table.setLocked(Boolean.parseBoolean(unmarshallAttribute(tableNode, "locked", table.isLocked()+"")));
         
         if (table.getType() == Table.TABLE_3D) {
             ((Table3D)table).setFlipX(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipx", ((Table3D)table).getFlipX()+"")));
