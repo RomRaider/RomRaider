@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.TooManyListenersException;
 
-// TODO: Add a read timeout
-
 public final class DefaultSerialReader implements SerialReader, SerialPortEventListener {
 
     private static final int BUFFER_SIZE = 32;

@@ -5,6 +5,8 @@ import enginuity.logger.comms.SerialWriter;
 import enginuity.logger.exception.SerialCommunicationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 
+// TODO: Add a read timeout so doesn't wait forever?
+
 public final class DefaultQuery implements Query {
     private byte[] request;
 
@@ -17,13 +19,17 @@ public final class DefaultQuery implements Query {
         writer.write(request);
         byte[] response;
         while ((response = reader.read()).length == 0) {
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException e) {
-                throw new SerialCommunicationException(e);
-            }
+            waitForResponse();
         }
         return response;
+    }
+
+    private void waitForResponse() {
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            throw new SerialCommunicationException(e);
+        }
     }
 
 }
