@@ -39,8 +39,10 @@ public final class DefaultSerialReader implements SerialReader, SerialPortEventL
     }
 
     public byte[] read() {
-        // TODO: Probably should return a copy? System.arraycopy()
-        return readBuffer;
+        byte[] tmp = new byte[readBuffer.length];
+        System.arraycopy(readBuffer, 0, tmp, 0, readBuffer.length);
+        readBuffer = new byte[0];
+        return tmp;
     }
 
     public void close() {
@@ -62,7 +64,6 @@ public final class DefaultSerialReader implements SerialReader, SerialPortEventL
                     System.arraycopy(tmp, 0, tmp2, readBuffer.length, i);
                     readBuffer = tmp2;
                 }
-                System.out.println("Bytes read from port: " + new String(readBuffer));
             } catch (IOException e) {
                 throw new SerialCommunicationException(e);
             }

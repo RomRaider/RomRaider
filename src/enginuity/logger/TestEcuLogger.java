@@ -79,7 +79,7 @@ public final class TestEcuLogger {
     }
 
     private static void printResponse(byte[] value) {
-        System.out.println("Bytes read: " + String.valueOf(value));
+        System.out.println("Response: " + new String(value));
     }
 
     private static void sleep(long time) {

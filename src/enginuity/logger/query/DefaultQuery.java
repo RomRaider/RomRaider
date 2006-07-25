@@ -18,7 +18,7 @@ public final class DefaultQuery implements Query {
         byte[] response;
         while ((response = reader.read()).length == 0) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 throw new SerialCommunicationException(e);
             }

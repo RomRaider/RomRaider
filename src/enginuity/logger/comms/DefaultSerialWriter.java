@@ -29,7 +29,6 @@ public final class DefaultSerialWriter implements SerialWriter {
 
     public void write(byte[] bytes) {
         try {
-            System.out.println("Writing bytes: " + new String(bytes));
             port.getOutputStream().write(bytes);
         } catch (IOException e) {
             throw new SerialCommunicationException(e);

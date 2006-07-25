@@ -24,10 +24,12 @@ public final class DefaultQueryManager implements QueryManager {
     }
 
     public synchronized void removeQuery(String address) {
+        System.out.println("Removing address: " + address);
         removeList.add(address);
     }
 
     public void run() {
+        System.out.println("QueryManager started.");
         try {
             // TODO: Pass in actual app settings object!! Move TxMgr construction/initialization out to LoggerController
             txManager.start(new Settings());
@@ -42,6 +44,7 @@ public final class DefaultQueryManager implements QueryManager {
         } finally {
             txManager.stop();
         }
+        System.out.println("QueryManager stopped.");
     }
 
     public void stop() {
@@ -55,7 +58,6 @@ public final class DefaultQueryManager implements QueryManager {
 
     private void addQueries() {
         for (RegisteredQuery registeredQuery : addList) {
-            System.out.println("Adding address: " + registeredQuery.getAddress());
             queryMap.put(registeredQuery.getAddress(), registeredQuery);
         }
         addList.clear();
@@ -63,7 +65,6 @@ public final class DefaultQueryManager implements QueryManager {
 
     private void removeQueries() {
         for (String address : removeList) {
-            System.out.println("Removing address: " + address);
             queryMap.remove(address);
         }
         removeList.clear();
