@@ -12,7 +12,6 @@ import enginuity.swing.RomTreeNode;
 import enginuity.swing.RomTreeRootNode;
 import enginuity.swing.TableFrame;
 import enginuity.net.URL;
-import enginuity.swing.ECUImageFilter;
 import enginuity.swing.JProgressPane;
 import enginuity.xml.DOMRomUnmarshaller;
 import enginuity.xml.DOMSettingsBuilder;
@@ -35,6 +34,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Iterator;
 import javax.swing.ImageIcon;
@@ -43,7 +45,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import java.util.Vector;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -156,6 +157,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         addWindowListener(this);
         setTitle(titleText);
         setVisible(true);
+        
     }
     
     public void handleExit() { 
@@ -185,10 +187,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     public void windowDeiconified(WindowEvent e) { }
     public void windowActivated(WindowEvent e) { }
     public void windowDeactivated(WindowEvent e) { }
-    
-    public static void main(String args[]) {
-        new ECUEditor();
-    }
     
     public String getVersion() {
         return version;
@@ -415,5 +413,91 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                 }
         }
         return baos.toByteArray();
+    }    
+    
+    public static void main(String args[]) {
+        // try create socket listener for shell opening new files
+        ServerSocket   sock         = null; // original server socket
+        String         serverName   = "localhost";
+        Socket         clientSocket = null; // socket created by accept
+        PrintWriter    pw           = null; // socket output stream
+        BufferedReader br           = null; // socket input stream 
+        int            serverPort   = 8753;
+
+        try {
+            sock = new java.net.ServerSocket(serverPort);               // create socket and bind to port
+            sock.close();
+            
+        } catch (Exception ex) {
+            // instance already open, pass filename
+            System.out.println("instance found");
+            
+            // pass filename code here
+            try {
+                Socket socket = new java.net.Socket(serverName,serverPort);       // create socket and connect
+                pw   = new java.io.PrintWriter(socket.getOutputStream(), true);  // create reader and writer
+                br   = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
+                System.out.println("Connected to Server");
+
+                pw.println(args[0]);                      // send msg to the server
+                System.out.println("Sent message to server");
+                String answer = br.readLine();                              // get data from the server
+                System.out.println("Response from the server >" + answer);
+
+                pw.close();                                                 // close everything
+                br.close();
+                sock.close();
+
+            } catch (Throwable e) {
+                System.out.println("Error " + e.getMessage());
+                e.printStackTrace();
+            }            
+            // after sending filename, exit
+            System.exit(0);
+            
+        }
+        
+        // launch editor    
+        ECUEditor editor = new ECUEditor();
+        
+        // listen for files
+        try {
+            if (args.length > 0) {
+                editor.openImage(new File(args[0]));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        try {
+            
+            while (true) {
+
+                sock = new java.net.ServerSocket(serverPort);               // create socket and bind to port
+                System.out.println("waiting for client to connect");
+                clientSocket = sock.accept();                               // wait for client to connect
+                System.out.println("client has connected");
+
+                pw   = new java.io.PrintWriter(clientSocket.getOutputStream(),true);
+                br   = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(clientSocket.getInputStream()));
+                String msg = br.readLine();                                 // read msg from client
+                System.out.println("Message from the client >" + msg);
+
+                pw.println("Got it!");                                      // send msg to client
+                pw.close();                                                 // close everything
+
+                // open file from client
+                editor.openImage(new File(msg));
+                br.close();
+
+                clientSocket.close();
+                sock.close();
+            }
+
+        } catch (Throwable e) {
+            System.out.println("Error " + e.getMessage());
+            e.printStackTrace();
+        }           
     }    
 }
