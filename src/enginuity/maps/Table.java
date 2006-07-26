@@ -213,6 +213,8 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke increment2 = KeyStroke.getKeyStroke("control UP");
         KeyStroke decrement3 = KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, KeyEvent.CTRL_DOWN_MASK);
         KeyStroke increment3 = KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK);
+        KeyStroke decrement4 = KeyStroke.getKeyStroke("control shift DOWN");
+        KeyStroke increment4 = KeyStroke.getKeyStroke("control shift UP");
         KeyStroke num0 = KeyStroke.getKeyStroke('0');
         KeyStroke num1 = KeyStroke.getKeyStroke('1');
         KeyStroke num2 = KeyStroke.getKeyStroke('2');
@@ -224,6 +226,7 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke num8 = KeyStroke.getKeyStroke('8');
         KeyStroke num9 = KeyStroke.getKeyStroke('9');
         KeyStroke mulKey  = KeyStroke.getKeyStroke('*');
+        KeyStroke mulKeys = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_DOWN_MASK);
         KeyStroke numPoint = KeyStroke.getKeyStroke('.');
         KeyStroke copy = KeyStroke.getKeyStroke("control C");
         KeyStroke paste = KeyStroke.getKeyStroke("control V");
@@ -238,6 +241,8 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(decrement2, "decCoarseAction");
         im.put(increment3, "incFineAction");
         im.put(decrement3, "decFineAction");
+        im.put(increment4, "incFineAction");
+        im.put(decrement4, "decFineAction");
         im.put(num0, "num0Action");
         im.put(num1, "num1Action");
         im.put(num2, "num2Action");
@@ -252,6 +257,7 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(copy, "copyAction");
         im.put(paste, "pasteAction");
         im.put(mulKey, "mulAction");
+        im.put(mulKeys, "mulAction");
 
         getActionMap().put(im.get(right), rightAction);
         getActionMap().put(im.get(left), leftAction);
@@ -263,6 +269,8 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(decrement2), decCoarseAction);
         getActionMap().put(im.get(increment3), incFineAction);
         getActionMap().put(im.get(decrement3), decFineAction);
+        getActionMap().put(im.get(increment4), incFineAction);
+        getActionMap().put(im.get(decrement4), decFineAction);
         getActionMap().put(im.get(num0), num0Action);
         getActionMap().put(im.get(num1), num1Action);
         getActionMap().put(im.get(num2), num2Action);
@@ -275,6 +283,7 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(num9), num9Action);
         getActionMap().put(im.get(numPoint), numPointAction);
         getActionMap().put(im.get(mulKey), multiplyAction);
+        getActionMap().put(im.get(mulKeys), multiplyAction);
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
 
@@ -636,6 +645,7 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         }
+        colorize();
     }    
 
     public void setRealValue(String realValue) {        

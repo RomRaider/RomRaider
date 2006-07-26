@@ -360,6 +360,7 @@ public class Table3D extends Table {
         }
         xAxis.multiply(factor);
         yAxis.multiply(factor);
+        colorize();
     }    
 
     public void clearSelection() {
