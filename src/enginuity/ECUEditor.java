@@ -432,35 +432,39 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             // instance already open, pass filename
             System.out.println("instance found");
             
-            // pass filename code here
-            try {
-                Socket socket = new java.net.Socket(serverName,serverPort);       // create socket and connect
-                pw   = new java.io.PrintWriter(socket.getOutputStream(), true);  // create reader and writer
-                br   = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
-                System.out.println("Connected to Server");
+            
+            // pass filename if file present            
+            if (args.length > 0) {
+                
+                try {
+                    Socket socket = new java.net.Socket(serverName,serverPort);       // create socket and connect
+                    pw   = new java.io.PrintWriter(socket.getOutputStream(), true);  // create reader and writer
+                    br   = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
+                    System.out.println("Connected to Server");
 
-                pw.println(args[0]);                      // send msg to the server
-                System.out.println("Sent message to server");
-                String answer = br.readLine();                              // get data from the server
-                System.out.println("Response from the server >" + answer);
+                    pw.println(args[0]);                      // send msg to the server
+                    System.out.println("Sent message to server");
+                    String answer = br.readLine();                              // get data from the server
+                    System.out.println("Response from the server >" + answer);
 
-                pw.close();                                                 // close everything
-                br.close();
-                sock.close();
+                    pw.close();                                                 // close everything
+                    br.close();
+                    socket.close();
 
-            } catch (Throwable e) {
-                System.out.println("Error " + e.getMessage());
-                e.printStackTrace();
-            }            
-            // after sending filename, exit
-            System.exit(0);
+                } catch (Throwable e) {
+                    System.out.println("Error " + e.getMessage());
+                    e.printStackTrace();
+                }            
+                // after sending filename, exit
+                System.exit(0);
+            }
             
         }
         
         // launch editor    
         ECUEditor editor = new ECUEditor();
         
-        // listen for files
+        // open files, if passed
         try {
             if (args.length > 0) {
                 editor.openImage(new File(args[0]));
@@ -468,6 +472,8 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        
+        // listen for files
         
         try {
             
