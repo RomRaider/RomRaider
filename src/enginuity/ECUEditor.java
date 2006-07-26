@@ -436,7 +436,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                     Socket socket = new java.net.Socket(serverName,serverPort);       // create socket and connect
                     pw   = new java.io.PrintWriter(socket.getOutputStream(), true);  // create reader and writer
                     br   = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
-
                     pw.println(args[0]);                      // send msg to the server
                     String answer = br.readLine();                              // get data from the server
 
@@ -447,8 +446,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                 } catch (Throwable e) { e.printStackTrace(); }            
                 // after sending filename, exit
                 System.exit(0);
-            }
-            
+            }            
         }
         
         // launch editor    
@@ -461,14 +459,12 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             }
         } catch (Exception ex) { ex.printStackTrace(); }
         
-        // listen for files
-        
+        // listen for files        
         try {
             
             while (true) {
                 sock = new java.net.ServerSocket(serverPort); // create socket and bind to port
                 clientSocket = sock.accept(); // wait for client to connect
-
                 pw   = new java.io.PrintWriter(clientSocket.getOutputStream(),true);
                 br   = new java.io.BufferedReader(
                     new java.io.InputStreamReader(clientSocket.getInputStream()));
@@ -483,8 +479,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                 sock.close();
             }
 
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }           
+        } catch (Throwable e) { e.printStackTrace(); }           
     }    
 }
