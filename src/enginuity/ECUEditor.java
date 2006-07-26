@@ -429,10 +429,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             sock.close();
             
         } catch (Exception ex) {
-            // instance already open, pass filename
-            System.out.println("instance found");
-            
-            
             // pass filename if file present            
             if (args.length > 0) {
                 
@@ -440,21 +436,15 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                     Socket socket = new java.net.Socket(serverName,serverPort);       // create socket and connect
                     pw   = new java.io.PrintWriter(socket.getOutputStream(), true);  // create reader and writer
                     br   = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
-                    System.out.println("Connected to Server");
 
                     pw.println(args[0]);                      // send msg to the server
-                    System.out.println("Sent message to server");
                     String answer = br.readLine();                              // get data from the server
-                    System.out.println("Response from the server >" + answer);
 
                     pw.close();                                                 // close everything
                     br.close();
                     socket.close();
 
-                } catch (Throwable e) {
-                    System.out.println("Error " + e.getMessage());
-                    e.printStackTrace();
-                }            
+                } catch (Throwable e) { e.printStackTrace(); }            
                 // after sending filename, exit
                 System.exit(0);
             }
@@ -469,40 +459,31 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             if (args.length > 0) {
                 editor.openImage(new File(args[0]));
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        } catch (Exception ex) { ex.printStackTrace(); }
         
         // listen for files
         
         try {
             
             while (true) {
-
-                sock = new java.net.ServerSocket(serverPort);               // create socket and bind to port
-                System.out.println("waiting for client to connect");
-                clientSocket = sock.accept();                               // wait for client to connect
-                System.out.println("client has connected");
+                sock = new java.net.ServerSocket(serverPort); // create socket and bind to port
+                clientSocket = sock.accept(); // wait for client to connect
 
                 pw   = new java.io.PrintWriter(clientSocket.getOutputStream(),true);
                 br   = new java.io.BufferedReader(
                     new java.io.InputStreamReader(clientSocket.getInputStream()));
-                String msg = br.readLine();                                 // read msg from client
-                System.out.println("Message from the client >" + msg);
-
-                pw.println("Got it!");                                      // send msg to client
-                pw.close();                                                 // close everything
+                String msg = br.readLine(); // read msg from client
 
                 // open file from client
                 editor.openImage(new File(msg));
+                
+                pw.close();  // close everything
                 br.close();
-
                 clientSocket.close();
                 sock.close();
             }
 
         } catch (Throwable e) {
-            System.out.println("Error " + e.getMessage());
             e.printStackTrace();
         }           
     }    
