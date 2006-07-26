@@ -167,14 +167,18 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         if (table.getScale().getCoarseIncrement() < 0) increment = 0 - increment;
 
-            setRealValue((calcDisplayValue(binValue, 
-                    scale.getExpression()) + increment) + "");
+        setRealValue((calcDisplayValue(binValue, 
+                scale.getExpression()) + increment) + "");
 
         // make sure table is incremented if change isnt great enough
-        if (oldValue == Double.parseDouble(getText()) && 
-
-            table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
-            setBinValue(binValue + (increment / Math.abs(increment)));
+        int maxValue = (int)Math.pow(8, (double)table.getStorageType());
+                
+        if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT &&
+                oldValue == Double.parseDouble(getText()) && 
+                binValue > 0 &&
+                binValue < maxValue) {
+            System.out.println(maxValue + " " + binValue);
+            increment(increment * 2);
 
         }
 
