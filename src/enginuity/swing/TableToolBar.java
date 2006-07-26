@@ -34,6 +34,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private JButton   incrementCoarse = new JButton(new ImageIcon("./graphics/icon-inccoarse.png"));
     private JButton   decrementCoarse = new JButton(new ImageIcon("./graphics/icon-deccoarse.png"));   
     private JButton   setValue        = new JButton("Set");
+    private JButton   multiply        = new JButton("Mul");
     
     private JFormattedTextField incrementByFine   = new JFormattedTextField(new DecimalFormat("#.####"));
     private JFormattedTextField incrementByCoarse = new JFormattedTextField(new DecimalFormat("#.####"));
@@ -60,6 +61,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         this.add(setValueText);
         this.add(new JLabel(" "));
         this.add(setValue);
+        this.add(multiply);
         this.add(new JLabel(" "));
         this.add(scaleSelection);
                 
@@ -73,6 +75,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         decrementCoarse.setBorder(new LineBorder(new Color(150,150,150), 1));
         setValue.setMaximumSize(new Dimension(33,23));
         setValue.setBorder(new LineBorder(new Color(150,150,150), 1));
+        multiply.setMaximumSize(new Dimension(33,23));
+        multiply.setBorder(new LineBorder(new Color(150,150,150), 1));
         scaleSelection.setMaximumSize(new Dimension(80,23));
         scaleSelection.setFont(new Font("Tahoma", Font.PLAIN, 11));
         
@@ -94,12 +98,14 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         setValueText.setToolTipText("Set Absolute Value");
         incrementByFine.setToolTipText("Fine Value Adjustment");
         incrementByCoarse.setToolTipText("Coarse Value Adjustment");
+        multiply.setToolTipText("Multiply Value");
         
         incrementFine.addMouseListener(this);
         decrementFine.addMouseListener(this);        
         incrementCoarse.addMouseListener(this);
         decrementCoarse.addMouseListener(this);
         setValue.addMouseListener(this);
+        multiply.addMouseListener(this);
         scaleSelection.addItemListener(this);
         
         try {
@@ -160,6 +166,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         else if (e.getSource() == decrementCoarse) decrementCoarse();
         else if (e.getSource() == incrementFine) incrementFine();
         else if (e.getSource() == decrementFine) decrementFine();
+        else if (e.getSource() == multiply) multiply();
         else if (e.getSource() == setValue) setValue();
         
         table.colorize();
@@ -168,7 +175,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     public void setValue() {
         table.setRealValue(setValueText.getText()+"");
     }
-        
+    
+    public void multiply() {
+        table.multiply(Double.parseDouble(setValueText.getText()));
+    }   
     
     public void incrementFine() {
         table.increment(Double.parseDouble(incrementByFine.getValue()+""));   

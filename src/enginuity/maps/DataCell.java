@@ -292,4 +292,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void refreshValue() {
         setBinValue(binValue);
     }
+    
+    public void multiply(double factor) {
+        setRealValue(Double.parseDouble(getText()) * factor+"");   
+    }
 }

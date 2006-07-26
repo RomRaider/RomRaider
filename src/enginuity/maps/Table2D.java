@@ -96,6 +96,11 @@ public class Table2D extends Table {
         axis.increment(increment);
     }
     
+    public void multiply(double factor) {
+        super.multiply(factor);
+        axis.multiply(factor);
+    }    
+    
     public void clearSelection() {
         axis.clearSelection(true);
         for (int i = 0; i < data.length; i++) {

@@ -194,6 +194,11 @@ public abstract class Table extends JPanel implements Serializable {
                 paste();
             }
         };
+        Action multiplyAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                getFrame().getToolBar().multiply();
+            }
+        };
 
         // set input mapping
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -218,6 +223,7 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke num7 = KeyStroke.getKeyStroke('7');
         KeyStroke num8 = KeyStroke.getKeyStroke('8');
         KeyStroke num9 = KeyStroke.getKeyStroke('9');
+        KeyStroke mulKey  = KeyStroke.getKeyStroke('*');
         KeyStroke numPoint = KeyStroke.getKeyStroke('.');
         KeyStroke copy = KeyStroke.getKeyStroke("control C");
         KeyStroke paste = KeyStroke.getKeyStroke("control V");
@@ -245,6 +251,7 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(numPoint, "numPointAction");
         im.put(copy, "copyAction");
         im.put(paste, "pasteAction");
+        im.put(mulKey, "mulAction");
 
         getActionMap().put(im.get(right), rightAction);
         getActionMap().put(im.get(left), leftAction);
@@ -267,6 +274,7 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(num8), num8Action);
         getActionMap().put(im.get(num9), num9Action);
         getActionMap().put(im.get(numPoint), numPointAction);
+        getActionMap().put(im.get(mulKey), multiplyAction);
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
 
@@ -619,6 +627,16 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
     }
+    
+    public void multiply(double factor) {
+        if (!isStatic && !locked) {
+            for (DataCell cell : data) {
+                if (cell.isSelected()) {
+                    cell.multiply(factor);
+                }
+            }
+        }
+    }    
 
     public void setRealValue(String realValue) {        
         if (!isStatic && !locked) {
