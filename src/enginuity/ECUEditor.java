@@ -49,6 +49,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.tree.TreePath;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -68,6 +69,11 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private ECUEditorMenuBar menuBar;
     
     public ECUEditor() {
+        
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        } catch (Exception ex) { }
         
         // get settings from xml
         try {
