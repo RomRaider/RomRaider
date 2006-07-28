@@ -16,5 +16,5 @@ public final class UnsupportedProtocolException extends RuntimeException {
     public UnsupportedProtocolException(Throwable throwable) {
         super(throwable);
     }
-    
+
 }
