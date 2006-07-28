@@ -11,7 +11,7 @@ import static gnu.io.SerialPort.PARITY_NONE;
 import static gnu.io.SerialPort.STOPBITS_1;
 
 public final class DefaultTransmissionManager implements TransmissionManager {
-    private static final int BAUDRATE = 10400;
+    private static final int BAUDRATE = 4800;
     private static final int CONNECT_TIMEOUT = 2000;
     private final TwoWaySerialComm twoWaySerialComm = new DefaultTwoWaySerialComm();
     private SerialConnection serialConnection = null;
