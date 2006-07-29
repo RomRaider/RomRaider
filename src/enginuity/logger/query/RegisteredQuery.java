@@ -4,6 +4,8 @@ public interface RegisteredQuery {
 
     String getAddress();
 
+    byte[] getBytes();
+
     void setResponse(byte[] response);
 
 }

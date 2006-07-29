@@ -5,37 +5,44 @@ import enginuity.logger.comms.DefaultTwoWaySerialComm;
 import enginuity.logger.comms.SerialConnection;
 import enginuity.logger.comms.TwoWaySerialComm;
 import enginuity.logger.exception.NotConnectedException;
+import enginuity.logger.protocol.ConnectionProperties;
+import enginuity.logger.protocol.Protocol;
 import enginuity.logger.query.DefaultQuery;
-import static gnu.io.SerialPort.DATABITS_8;
-import static gnu.io.SerialPort.PARITY_NONE;
-import static gnu.io.SerialPort.STOPBITS_1;
+import static enginuity.util.ParamChecker.checkNotNull;
+import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class DefaultTransmissionManager implements TransmissionManager {
-    private static final int BAUDRATE = 4800;
     private static final int CONNECT_TIMEOUT = 2000;
+    private final Settings settings;
+    private final Protocol protocol;
+    private final ConnectionProperties connectionProperties;
     private final TwoWaySerialComm twoWaySerialComm = new DefaultTwoWaySerialComm();
     private SerialConnection serialConnection = null;
 
-    public void start(Settings settings) {
-        serialConnection = twoWaySerialComm.connect(settings.getLoggerPort(), BAUDRATE, DATABITS_8, STOPBITS_1, PARITY_NONE, CONNECT_TIMEOUT);
+    public DefaultTransmissionManager(Settings settings, Protocol protocol) {
+        checkNotNull(settings, protocol, protocol.getConnectionProperties());
+        this.settings = settings;
+        this.protocol = protocol;
+        this.connectionProperties = protocol.getConnectionProperties();
     }
 
-    public byte[] queryAddress(String address) {
+    public void start() {
+        serialConnection = twoWaySerialComm.connect(settings.getLoggerPort(), connectionProperties.getBaudRate(), connectionProperties.getDataBits(),
+                connectionProperties.getStopBits(), connectionProperties.getParity(), CONNECT_TIMEOUT);
+    }
+
+    public byte[] queryAddress(byte[] address) {
+        checkNotNullOrEmpty(address, "address");
         if (serialConnection != null) {
-            byte[] request = buildRequest(address);
-            return serialConnection.transmit(new DefaultQuery(request));
+            byte[] query = protocol.constructReadAddressRequest(address);
+            return serialConnection.transmit(new DefaultQuery(query));
         } else {
-            throw new NotConnectedException("TransmissionManager must be started before an address is queried!");
+            throw new NotConnectedException("TransmissionManager must be started before a query can be sent!");
         }
     }
 
     public void stop() {
         twoWaySerialComm.disconnect();
-    }
-
-    private byte[] buildRequest(String address) {
-        // TODO Implement this!! What is the correct message format??
-        return address.getBytes();
     }
 
 }

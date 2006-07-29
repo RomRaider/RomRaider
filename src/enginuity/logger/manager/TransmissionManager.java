@@ -1,12 +1,10 @@
 package enginuity.logger.manager;
 
-import enginuity.Settings;
-
 public interface TransmissionManager {
 
-    void start(Settings settings);
+    void start();
 
-    byte[] queryAddress(String address);
+    byte[] queryAddress(byte[] query);
 
     void stop();
 

@@ -1,9 +1,14 @@
 package enginuity.logger;
 
+import enginuity.Settings;
 import enginuity.logger.comms.DefaultSerialPortDiscoverer;
 import enginuity.logger.comms.SerialPortDiscoverer;
 import enginuity.logger.manager.DefaultQueryManager;
+import enginuity.logger.manager.DefaultTransmissionManager;
 import enginuity.logger.manager.QueryManager;
+import enginuity.logger.manager.TransmissionManager;
+import enginuity.logger.protocol.Protocol;
+import enginuity.logger.protocol.ProtocolFactory;
 import enginuity.logger.query.DefaultRegisteredQuery;
 import enginuity.logger.query.LoggerCallback;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -13,7 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class DefaultLoggerController implements LoggerController {
-    private final QueryManager queryManager = new DefaultQueryManager();
+    private final QueryManager queryManager;
+
+    public DefaultLoggerController(Settings settings) {
+        Protocol ssmProtocol = ProtocolFactory.getInstance().getProtocol("SSM");
+        TransmissionManager txManager = new DefaultTransmissionManager(settings, ssmProtocol);
+        queryManager = new DefaultQueryManager(txManager);
+    }
 
     public List<String> listSerialPorts() {
         SerialPortDiscoverer serialPortDiscoverer = new DefaultSerialPortDiscoverer();

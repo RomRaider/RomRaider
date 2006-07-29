@@ -1,5 +1,6 @@
 package enginuity.logger;
 
+import enginuity.Settings;
 import enginuity.logger.comms.DefaultSerialPortDiscoverer;
 import enginuity.logger.comms.DefaultTwoWaySerialComm;
 import enginuity.logger.comms.SerialConnection;
@@ -7,6 +8,7 @@ import enginuity.logger.comms.SerialPortDiscoverer;
 import enginuity.logger.comms.TwoWaySerialComm;
 import enginuity.logger.query.DefaultQuery;
 import enginuity.logger.query.LoggerCallback;
+import enginuity.util.HexUtil;
 import gnu.io.CommPortIdentifier;
 import static gnu.io.SerialPort.DATABITS_8;
 import static gnu.io.SerialPort.PARITY_NONE;
@@ -30,17 +32,17 @@ public final class TestEcuLogger {
     }
 
     private static void testLoggerController() {
-        LoggerController controller = new DefaultLoggerController();
+        LoggerController controller = new DefaultLoggerController(new Settings());
         try {
             controller.start();
-            addLogger(controller, "1");
-            addLogger(controller, "2");
-            addLogger(controller, "3");
+            addLogger(controller, "0x291C8");
+            addLogger(controller, "0x291F9");
+            addLogger(controller, "0x286BB");
             sleep(1000);
-            controller.removeLogger("2");
-            controller.removeLogger("1");
-            controller.removeLogger("3");
-            addLogger(controller, "4");
+            controller.removeLogger("0x291F9");
+            controller.removeLogger("0x291C8");
+            controller.removeLogger("0x286BB");
+            addLogger(controller, "0x299C8");
             sleep(1000);
         } finally {
             controller.stop();
@@ -79,7 +81,7 @@ public final class TestEcuLogger {
     }
 
     private static void printResponse(byte[] value) {
-        System.out.println("Response: " + new String(value));
+        System.out.println("Response: " + HexUtil.asHex(value));
     }
 
     private static void sleep(long time) {

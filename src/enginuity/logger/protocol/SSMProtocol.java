@@ -16,13 +16,13 @@ public final class SSMProtocol implements Protocol {
     public byte[] constructReadMemoryRequest(byte[] fromAddress, int numBytes) {
         checkNotNullOrEmpty(fromAddress, "fromAddress");
         checkGreaterThanZero(numBytes, "numBytes");
-        // 0x80 0x10 0xF0 data_length 0xA0 from_address num_bytes-1 checksum
+        // 0x80 0x10 0xF0 data_length 0xA0 padding from_address num_bytes-1 checksum
         return buildRequest(READ_MEMORY_COMMAND, true, fromAddress, new byte[]{asByte(numBytes - 1)});
     }
 
     public byte[] constructReadAddressRequest(byte[]... addresses) {
         checkNotNullOrEmpty(addresses, "addresses");
-        // 0x80 0x10 0xF0 data_length 0xA8 address1 address2 ... addressN checksum
+        // 0x80 0x10 0xF0 data_length 0xA8 padding address1 address2 ... addressN checksum
         return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }
 
@@ -34,6 +34,27 @@ public final class SSMProtocol implements Protocol {
     public byte[] extractResponseData(byte[] response) {
         //TODO: Implement data extraction from response!!
         throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    public ConnectionProperties getConnectionProperties() {
+        return new ConnectionProperties() {
+
+            public int getBaudRate() {
+                return 4800;
+            }
+
+            public int getDataBits() {
+                return 8;
+            }
+
+            public int getStopBits() {
+                return 1;
+            }
+
+            public int getParity() {
+                return 0;
+            }
+        };
     }
 
 

@@ -1,6 +1,5 @@
 package enginuity.logger.manager;
 
-import enginuity.Settings;
 import enginuity.logger.query.RegisteredQuery;
 import static enginuity.util.ParamChecker.checkNotNull;
 
@@ -11,11 +10,16 @@ import java.util.List;
 import java.util.Map;
 
 public final class DefaultQueryManager implements QueryManager {
-    private final TransmissionManager txManager = new DefaultTransmissionManager();
     private final Map<String, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<String, RegisteredQuery>());
     private final List<RegisteredQuery> addList = new ArrayList<RegisteredQuery>();
     private final List<String> removeList = new ArrayList<String>();
+    private final TransmissionManager txManager;
     private boolean stop = false;
+
+    public DefaultQueryManager(TransmissionManager txManager) {
+        checkNotNull(txManager, "txManager");
+        this.txManager = txManager;
+    }
 
     public synchronized void addQuery(RegisteredQuery registeredQuery) {
         checkNotNull(registeredQuery, "registeredQuery");
@@ -31,13 +35,12 @@ public final class DefaultQueryManager implements QueryManager {
     public void run() {
         System.out.println("QueryManager started.");
         try {
-            // TODO: Pass in actual app settings object!! Move TxMgr construction/initialization out to LoggerController
-            txManager.start(new Settings());
+            txManager.start();
             while (!stop) {
                 updateQueryList();
                 for (String address : queryMap.keySet()) {
                     RegisteredQuery registeredQuery = queryMap.get(address);
-                    byte[] response = txManager.queryAddress(address);
+                    byte[] response = txManager.queryAddress(registeredQuery.getBytes());
                     registeredQuery.setResponse(response);
                 }
             }
