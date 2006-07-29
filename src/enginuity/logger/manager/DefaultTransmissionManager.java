@@ -34,10 +34,10 @@ public final class DefaultTransmissionManager implements TransmissionManager {
     public byte[] queryAddress(byte[] address) {
         checkNotNullOrEmpty(address, "address");
         if (serialConnection != null) {
-            byte[] query = protocol.constructReadAddressRequest(address);
-            byte[] response = serialConnection.transmit(new DefaultQuery(query));
+            byte[] request = protocol.constructReadAddressRequest(address);
+            byte[] response = serialConnection.transmit(new DefaultQuery(request));
             //TODO: Enable this once extractResponseData() complete
-            //return protocol.extractResponseData(response);
+            //return protocol.extractResponseData(response, request);
             return response;
         } else {
             throw new NotConnectedException("TransmissionManager must be started before a query can be sent!");

@@ -6,7 +6,9 @@ import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class SSMProtocol implements Protocol {
-    private static final byte[] HEADER = {(byte) 0x80, (byte) 0x10, (byte) 0xF0};
+    private static final byte HEADER = (byte) 0x80;
+    private static final byte ECU_ID = (byte) 0x10;
+    private static final byte DIAGNOSTIC_TOOL_ID = (byte) 0xF0;
     private static final byte READ_PADDING = (byte) 0x00;
     private static final byte READ_MEMORY_COMMAND = (byte) 0xA0;
     private static final byte READ_ADDRESS_COMMAND = (byte) 0xA8;
@@ -31,9 +33,13 @@ public final class SSMProtocol implements Protocol {
         return buildRequest(ECU_INIT_COMMAND, false, new byte[0]);
     }
 
-    public byte[] extractResponseData(byte[] response) {
-        //TODO: Implement data extraction from response!!
-        throw new UnsupportedOperationException("Not yet implemented!");
+    public byte[] extractResponseData(byte[] response, byte[] request) {
+        // 0x80 0xF0 0x10 data_length response_data checksum
+        //TODO: Take possible echoed request into account when extracting response!!
+        validateResponse(response);
+        byte[] data = new byte[response.length - 5];
+        System.arraycopy(response, 4, data, 0, data.length);
+        return data;
     }
 
     public ConnectionProperties getConnectionProperties() {
@@ -58,6 +64,21 @@ public final class SSMProtocol implements Protocol {
     }
 
 
+    private void validateResponse(byte[] response) {
+        int i = 0;
+        assertEquals(HEADER, response[i++]);
+        assertEquals(DIAGNOSTIC_TOOL_ID, response[i++]);
+        assertEquals(ECU_ID, response[i++]);
+        assertEquals(asByte(response.length - 5), response[i]);
+        assertEquals(calculateChecksum(response), response[response.length - 1]);
+    }
+
+    private void assertEquals(byte expected, byte actual) {
+        if (actual != expected) {
+            throw new InvalidResponseException();
+        }
+    }
+
     //TODO: Clean up SSM request building... pretty ugly at the moment..
     private byte[] buildRequest(byte command, boolean padContent, byte[]... content) {
         byte[] data = new byte[0];
@@ -67,28 +88,31 @@ public final class SSMProtocol implements Protocol {
             System.arraycopy(tmp, 0, tmp2, data.length, tmp.length);
             data = tmp2;
         }
-        byte[] request = new byte[HEADER.length + data.length + (padContent ? 4 : 3)];
-        System.arraycopy(HEADER, 0, request, 0, HEADER.length);
+        byte[] request = new byte[data.length + (padContent ? 7 : 6)];
         int i = 0;
-        request[HEADER.length + i++] = asByte(data.length + (padContent ? 2 : 1));
-        request[HEADER.length + i++] = command;
+        request[i++] = HEADER;
+        request[i++] = ECU_ID;
+        request[i++] = DIAGNOSTIC_TOOL_ID;
+        request[i++] = asByte(data.length + (padContent ? 2 : 1));
+        request[i++] = command;
         if (padContent) {
-            request[HEADER.length + i++] = READ_PADDING;
+            request[i++] = READ_PADDING;
         }
-        System.arraycopy(data, 0, request, HEADER.length + i, data.length);
-        addChecksum(request);
+        System.arraycopy(data, 0, request, i, data.length);
+        request[request.length - 1] = calculateChecksum(request);
         return request;
     }
 
-    private void addChecksum(byte[] request) {
+    private byte calculateChecksum(byte[] request) {
         int total = 0;
         for (int i = 0; i < (request.length - 1); i++) {
             byte b = request[i];
             total += asInt(b);
         }
-        request[request.length - 1] = asByte(total - ((total >>> 16) << 16));
+        return asByte(total - ((total >>> 16) << 16));
     }
 
+    //TODO: Move these utility methods out to another class
     @SuppressWarnings({"UnnecessaryBoxing"})
     private byte asByte(int i) {
         return Integer.valueOf(i).byteValue();
@@ -121,6 +145,9 @@ public final class SSMProtocol implements Protocol {
 
         bytes = protocol.constructReadMemoryRequest(asBytes("0x200000"), 128);
         System.out.println("Read Memory (from 0x200000, 128 bytes) = " + asHex(bytes));
+
+        bytes = protocol.extractResponseData(asBytes("0x80F01003E87DB199"), asBytes("0x8010F008A80000000800001C54"));
+        System.out.println("Extract Response (0x80F01003E87DB199)  = " + asHex(bytes));
     }
 
 }

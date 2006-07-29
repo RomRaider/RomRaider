@@ -8,7 +8,7 @@ public interface Protocol {
 
     byte[] constructEcuInitRequest();
 
-    byte[] extractResponseData(byte[] response);
+    byte[] extractResponseData(byte[] response, byte[] request);
 
     ConnectionProperties getConnectionProperties();
 
