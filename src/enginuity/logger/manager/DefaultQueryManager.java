@@ -34,6 +34,10 @@ public final class DefaultQueryManager implements QueryManager {
 
     public void run() {
         System.out.println("QueryManager started.");
+        
+        long start = System.currentTimeMillis();
+        int count = 0;
+
         try {
             txManager.start();
             while (!stop) {
@@ -42,12 +46,19 @@ public final class DefaultQueryManager implements QueryManager {
                     RegisteredQuery registeredQuery = queryMap.get(address);
                     byte[] response = txManager.queryAddress(registeredQuery.getBytes());
                     registeredQuery.setResponse(response);
+                    count++;
                 }
             }
         } finally {
             txManager.stop();
         }
         System.out.println("QueryManager stopped.");
+
+        //TODO: this is not real nice - add some decent performance measurements later
+        System.out.println("Total queries sent  = " + count);
+        double duration = ((double) (System.currentTimeMillis() - start)) / 1000D;
+        System.out.println("Queries per second  = " + (((double) count) / duration));
+        System.out.println("Avg. Query Time (s) = " + (duration / ((double) count)));
     }
 
     public void stop() {

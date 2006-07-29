@@ -64,7 +64,7 @@ public final class TestEcuLogger {
         for (CommPortIdentifier commPortIdentifier : portIdentifiers) {
             TwoWaySerialComm twoWaySerialComm = new DefaultTwoWaySerialComm();
             try {
-                SerialConnection serialConnection = twoWaySerialComm.connect(commPortIdentifier.getName(), 10400, DATABITS_8,
+                SerialConnection serialConnection = twoWaySerialComm.connect(commPortIdentifier.getName(), 4800, DATABITS_8,
                         STOPBITS_1, PARITY_NONE, CONNECT_TIMEOUT);
                 executeQuery(serialConnection, "FooBar");
                 executeQuery(serialConnection, "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789");
