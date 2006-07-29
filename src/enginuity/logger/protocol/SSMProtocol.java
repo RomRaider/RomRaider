@@ -7,6 +7,7 @@ import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class SSMProtocol implements Protocol {
     private static final byte[] HEADER = {(byte) 0x80, (byte) 0x10, (byte) 0xF0};
+    private static final byte READ_PADDING = (byte) 0x00;
     private static final byte READ_MEMORY_COMMAND = (byte) 0xA0;
     private static final byte READ_ADDRESS_COMMAND = (byte) 0xA8;
     private static final byte ECU_INIT_COMMAND = (byte) 0xBF;
@@ -16,27 +17,28 @@ public final class SSMProtocol implements Protocol {
         checkNotNullOrEmpty(fromAddress, "fromAddress");
         checkGreaterThanZero(numBytes, "numBytes");
         // 0x80 0x10 0xF0 data_length 0xA0 from_address num_bytes-1 checksum
-        return buildRequest(READ_MEMORY_COMMAND, fromAddress, new byte[]{asByte(numBytes - 1)});
+        return buildRequest(READ_MEMORY_COMMAND, true, fromAddress, new byte[]{asByte(numBytes - 1)});
     }
 
     public byte[] constructReadAddressRequest(byte[]... addresses) {
         checkNotNullOrEmpty(addresses, "addresses");
         // 0x80 0x10 0xF0 data_length 0xA8 address1 address2 ... addressN checksum
-        return buildRequest(READ_ADDRESS_COMMAND, addresses);
+        return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }
 
     public byte[] constructEcuInitRequest() {
         // 0x80 0x10 0xF0 0x01 0xBF 0x40
-        return buildRequest(ECU_INIT_COMMAND, new byte[0]);
+        return buildRequest(ECU_INIT_COMMAND, false, new byte[0]);
     }
 
     public byte[] extractResponseData(byte[] response) {
-        //TODO: Finish this!!
+        //TODO: Implement data extraction from response!!
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
 
-    private byte[] buildRequest(byte command, byte[]... content) {
+    //TODO: Clean up SSM request building... pretty ugly at the moment..
+    private byte[] buildRequest(byte command, boolean padContent, byte[]... content) {
         byte[] data = new byte[0];
         for (byte[] tmp : content) {
             byte[] tmp2 = new byte[data.length + tmp.length];
@@ -44,11 +46,15 @@ public final class SSMProtocol implements Protocol {
             System.arraycopy(tmp, 0, tmp2, data.length, tmp.length);
             data = tmp2;
         }
-        byte[] request = new byte[HEADER.length + data.length + 3];
+        byte[] request = new byte[HEADER.length + data.length + (padContent ? 4 : 3)];
         System.arraycopy(HEADER, 0, request, 0, HEADER.length);
-        request[HEADER.length] = asByte(data.length + 1);
-        request[HEADER.length + 1] = command;
-        System.arraycopy(data, 0, request, HEADER.length + 2, data.length);
+        int i = 0;
+        request[HEADER.length + i++] = asByte(data.length + (padContent ? 2 : 1));
+        request[HEADER.length + i++] = command;
+        if (padContent) {
+            request[HEADER.length + i++] = READ_PADDING;
+        }
+        System.arraycopy(data, 0, request, HEADER.length + i, data.length);
         addChecksum(request);
         return request;
     }
@@ -87,10 +93,10 @@ public final class SSMProtocol implements Protocol {
         Protocol protocol = ProtocolFactory.getInstance().getProtocol("SSM");
 
         byte[] bytes = protocol.constructEcuInitRequest();
-        System.out.println("Ecu Init = " + asHex(bytes));
+        System.out.println("Ecu Init                               = " + asHex(bytes));
 
         bytes = protocol.constructReadAddressRequest(asBytes("0x000008"), asBytes("0x00001C"));
-        System.out.println("Read Address (0x000008 and 0x00001C) = " + asHex(bytes));
+        System.out.println("Read Address (0x000008 and 0x00001C)   = " + asHex(bytes));
 
         bytes = protocol.constructReadMemoryRequest(asBytes("0x200000"), 128);
         System.out.println("Read Memory (from 0x200000, 128 bytes) = " + asHex(bytes));
