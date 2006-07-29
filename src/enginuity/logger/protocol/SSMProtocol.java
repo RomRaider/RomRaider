@@ -34,6 +34,7 @@ public final class SSMProtocol implements Protocol {
     }
 
     public byte[] extractResponseData(byte[] response, byte[] request) {
+        checkNotNullOrEmpty(response, "response");
         // 0x80 0xF0 0x10 data_length response_data checksum
         //TODO: Take possible echoed request into account when extracting response!!
         validateResponse(response);
