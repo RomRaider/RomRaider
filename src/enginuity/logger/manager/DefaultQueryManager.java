@@ -40,6 +40,7 @@ public final class DefaultQueryManager implements QueryManager {
 
         try {
             txManager.start();
+            stop = false;
             while (!stop) {
                 updateQueryList();
                 for (String address : queryMap.keySet()) {

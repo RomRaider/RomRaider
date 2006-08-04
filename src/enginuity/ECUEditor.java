@@ -4,24 +4,25 @@ import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
-import enginuity.swing.ECUEditorToolBar;
+import enginuity.net.URL;
 import enginuity.swing.ECUEditorMenuBar;
+import enginuity.swing.ECUEditorToolBar;
+import enginuity.swing.JProgressPane;
 import enginuity.swing.MDIDesktopPane;
 import enginuity.swing.RomTree;
 import enginuity.swing.RomTreeNode;
 import enginuity.swing.RomTreeRootNode;
 import enginuity.swing.TableFrame;
-import enginuity.net.URL;
-import enginuity.swing.JProgressPane;
 import enginuity.xml.DOMRomUnmarshaller;
 import enginuity.xml.DOMSettingsBuilder;
 import enginuity.xml.DOMSettingsUnmarshaller;
 import enginuity.xml.RomNotFoundException;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import javax.swing.*;
+import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -39,20 +40,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Iterator;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import java.util.Vector;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import javax.swing.tree.TreePath;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
     
@@ -135,7 +123,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         
         setSize(getSettings().getWindowSize());
         setLocation(getSettings().getWindowLocation());
-        if (getSettings().isWindowMaximized() == true) setExtendedState(JFrame.MAXIMIZED_BOTH);
+        if (getSettings().isWindowMaximized()) setExtendedState(JFrame.MAXIMIZED_BOTH);
         
         JScrollPane rightScrollPane = new JScrollPane(rightPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
