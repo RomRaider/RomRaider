@@ -1,9 +1,16 @@
 package enginuity.logger.protocol;
 
+import enginuity.logger.query.DefaultRegisteredQuery;
+import enginuity.logger.query.LoggerCallback;
+import enginuity.logger.query.RegisteredQuery;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
+import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public final class SSMProtocol implements Protocol {
     private static final byte HEADER = (byte) 0x80;
@@ -13,19 +20,40 @@ public final class SSMProtocol implements Protocol {
     private static final byte READ_MEMORY_COMMAND = (byte) 0xA0;
     private static final byte READ_ADDRESS_COMMAND = (byte) 0xA8;
     private static final byte ECU_INIT_COMMAND = (byte) 0xBF;
+    private static final int ADDRESS_SIZE = 3;
+    private static final int DATA_SIZE = 1;
 
 
-    public byte[] constructReadMemoryRequest(byte[] fromAddress, int numBytes) {
-        checkNotNullOrEmpty(fromAddress, "fromAddress");
+    public byte[] constructReadMemoryRequest(RegisteredQuery query, int numBytes) {
+        checkNotNull(query, "query");
         checkGreaterThanZero(numBytes, "numBytes");
         // 0x80 0x10 0xF0 data_length 0xA0 padding from_address num_bytes-1 checksum
-        return buildRequest(READ_MEMORY_COMMAND, true, fromAddress, new byte[]{asByte(numBytes - 1)});
+        return buildRequest(READ_MEMORY_COMMAND, true, query.getBytes(), new byte[]{asByte(numBytes - 1)});
     }
 
-    public byte[] constructReadAddressRequest(byte[]... addresses) {
-        checkNotNullOrEmpty(addresses, "addresses");
+    public byte[] constructReadAddressRequest(Collection<RegisteredQuery> queries) {
+        checkNotNullOrEmpty(queries, "queries");
         // 0x80 0x10 0xF0 data_length 0xA8 padding address1 address2 ... addressN checksum
-        return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
+        return buildRequest(READ_ADDRESS_COMMAND, true, convertToByteAddresses(queries));
+    }
+
+    //TODO: Query responses are variable length!!
+    public byte[] constructReadAddressResponse(Collection<RegisteredQuery> queries) {
+        checkNotNullOrEmpty(queries, "queries");
+        return new byte[DATA_SIZE * queries.size() + 5];
+    }
+
+    public void setResponse(Collection<RegisteredQuery> queries, byte[] response) {
+        checkNotNullOrEmpty(queries, "queries");
+        checkNotNullOrEmpty(response, "response");
+        byte[] responseData = extractResponseData(response);
+        int i = 0;
+        for (RegisteredQuery query : queries) {
+            byte[] bytes = new byte[DATA_SIZE];
+            System.arraycopy(responseData, i, bytes, 0, DATA_SIZE);
+            query.setResponse(bytes);
+            i += DATA_SIZE;
+        }
     }
 
     public byte[] constructEcuInitRequest() {
@@ -33,7 +61,7 @@ public final class SSMProtocol implements Protocol {
         return buildRequest(ECU_INIT_COMMAND, false, new byte[0]);
     }
 
-    public byte[] extractResponseData(byte[] response, byte[] request) {
+    public byte[] extractResponseData(byte[] response) {
         checkNotNullOrEmpty(response, "response");
         // 0x80 0xF0 0x10 data_length response_data checksum
         //TODO: Take possible echoed request into account when extracting response!!
@@ -64,19 +92,29 @@ public final class SSMProtocol implements Protocol {
         };
     }
 
+    private byte[][] convertToByteAddresses(Collection<RegisteredQuery> queries) {
+        byte[][] addresses = new byte[queries.size()][ADDRESS_SIZE];
+        int i = 0;
+        for (RegisteredQuery query : queries) {
+            byte[] bytes = query.getBytes();
+            System.arraycopy(bytes, 0, addresses[i++], 0, ADDRESS_SIZE);
+        }
+        return addresses;
+    }
+
 
     private void validateResponse(byte[] response) {
         int i = 0;
-        assertEquals(HEADER, response[i++]);
-        assertEquals(DIAGNOSTIC_TOOL_ID, response[i++]);
-        assertEquals(ECU_ID, response[i++]);
-        assertEquals(asByte(response.length - 5), response[i]);
-        assertEquals(calculateChecksum(response), response[response.length - 1]);
+        assertEquals(HEADER, response[i++], "Invalid header");
+        assertEquals(DIAGNOSTIC_TOOL_ID, response[i++], "Invalid diagnostic tool id");
+        assertEquals(ECU_ID, response[i++], "Invalid ECU id");
+        assertEquals(asByte(response.length - 5), response[i], "Invalid response data length");
+        assertEquals(calculateChecksum(response), response[response.length - 1], "Invalid checksum");
     }
 
-    private void assertEquals(byte expected, byte actual) {
+    private void assertEquals(byte expected, byte actual, String msg) {
         if (actual != expected) {
-            throw new InvalidResponseException();
+            throw new InvalidResponseException(msg + ". Expected: " + asHex(new byte[]{expected}) + ". Actual: " + asHex(new byte[]{actual}) + ".");
         }
     }
 
@@ -141,14 +179,22 @@ public final class SSMProtocol implements Protocol {
         byte[] bytes = protocol.constructEcuInitRequest();
         System.out.println("Ecu Init                               = " + asHex(bytes));
 
-        bytes = protocol.constructReadAddressRequest(asBytes("0x000008"), asBytes("0x00001C"));
+        bytes = protocol.constructReadAddressRequest(constructRegisteredQueries("0x000008", "0x00001C"));
         System.out.println("Read Address (0x000008 and 0x00001C)   = " + asHex(bytes));
 
-        bytes = protocol.constructReadMemoryRequest(asBytes("0x200000"), 128);
-        System.out.println("Read Memory (from 0x200000, 128 bytes) = " + asHex(bytes));
-
-        bytes = protocol.extractResponseData(asBytes("0x80F01003E87DB199"), asBytes("0x8010F008A80000000800001C54"));
+        bytes = protocol.extractResponseData(asBytes("0x80F01003E87DB199"));
         System.out.println("Extract Response (0x80F01003E87DB199)  = " + asHex(bytes));
+    }
+
+    private static Collection<RegisteredQuery> constructRegisteredQueries(String... addresses) {
+        Collection<RegisteredQuery> queries = new ArrayList<RegisteredQuery>();
+        for (String address : addresses) {
+            queries.add(new DefaultRegisteredQuery(address, new LoggerCallback() {
+                public void callback(byte[] value) {
+                }
+            }));
+        }
+        return queries;
     }
 
 }

@@ -1,10 +1,16 @@
 package enginuity.logger.comms;
 
-import enginuity.logger.query.Query;
+import enginuity.logger.query.RegisteredQuery;
+
+import java.util.Collection;
 
 public interface SerialConnection {
 
-    byte[] transmit(Query query);
+    byte[] sendEcuInit();
+
+    byte[] send(byte[] bytes);
+
+    void sendAddressReads(Collection<RegisteredQuery> queries);
 
     void close();
 

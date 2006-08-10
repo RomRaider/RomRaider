@@ -1,14 +1,22 @@
 package enginuity.logger.protocol;
 
+import enginuity.logger.query.RegisteredQuery;
+
+import java.util.Collection;
+
 public interface Protocol {
-
-    byte[] constructReadMemoryRequest(byte[] fromAddress, int numBytes);
-
-    byte[] constructReadAddressRequest(byte[]... addresses);
 
     byte[] constructEcuInitRequest();
 
-    byte[] extractResponseData(byte[] response, byte[] request);
+    byte[] constructReadMemoryRequest(RegisteredQuery query, int numBytes);
+
+    byte[] constructReadAddressRequest(Collection<RegisteredQuery> queries);
+
+    byte[] constructReadAddressResponse(Collection<RegisteredQuery> queries);
+
+    void setResponse(Collection<RegisteredQuery> queries, byte[] response);
+
+    byte[] extractResponseData(byte[] response);
 
     ConnectionProperties getConnectionProperties();
 

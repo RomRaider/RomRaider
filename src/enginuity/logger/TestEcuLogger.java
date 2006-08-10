@@ -1,30 +1,16 @@
 package enginuity.logger;
 
 import enginuity.Settings;
-import enginuity.logger.comms.DefaultSerialPortDiscoverer;
-import enginuity.logger.comms.DefaultTwoWaySerialComm;
-import enginuity.logger.comms.SerialConnection;
-import enginuity.logger.comms.SerialPortDiscoverer;
-import enginuity.logger.comms.TwoWaySerialComm;
-import enginuity.logger.query.DefaultQuery;
 import enginuity.logger.query.LoggerCallback;
 import enginuity.util.HexUtil;
-import gnu.io.CommPortIdentifier;
-import static gnu.io.SerialPort.DATABITS_8;
-import static gnu.io.SerialPort.PARITY_NONE;
-import static gnu.io.SerialPort.STOPBITS_1;
-
-import java.util.List;
 
 public final class TestEcuLogger {
-    private static final int CONNECT_TIMEOUT = 2000;
 
     private TestEcuLogger() {
     }
 
     public static void main(String... args) {
         try {
-            //testTwoWaySerialComm();
             testLoggerController();
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,7 +24,7 @@ public final class TestEcuLogger {
             addLogger(controller, "0x291C8");
             addLogger(controller, "0x291F9");
             addLogger(controller, "0x286BB");
-            sleep(1000);
+            sleep(60000);
             controller.removeLogger("0x291F9");
             controller.removeLogger("0x291C8");
             controller.removeLogger("0x286BB");
@@ -56,28 +42,6 @@ public final class TestEcuLogger {
                 printResponse(value);
             }
         });
-    }
-
-    private static void testTwoWaySerialComm() {
-        SerialPortDiscoverer serialPortDiscoverer = new DefaultSerialPortDiscoverer();
-        List<CommPortIdentifier> portIdentifiers = serialPortDiscoverer.listPorts();
-        for (CommPortIdentifier commPortIdentifier : portIdentifiers) {
-            TwoWaySerialComm twoWaySerialComm = new DefaultTwoWaySerialComm();
-            try {
-                SerialConnection serialConnection = twoWaySerialComm.connect(commPortIdentifier.getName(), 4800, DATABITS_8,
-                        STOPBITS_1, PARITY_NONE, CONNECT_TIMEOUT);
-                executeQuery(serialConnection, "FooBar");
-                executeQuery(serialConnection, "AbCdEfGhIjKlMnOpQrStUvWxYz0123456789");
-                executeQuery(serialConnection, "HAZAA!!");
-            } finally {
-                twoWaySerialComm.disconnect();
-            }
-        }
-    }
-
-    private static void executeQuery(SerialConnection serialConnection, String queryString) {
-        byte[] response = serialConnection.transmit(new DefaultQuery(queryString.getBytes()));
-        printResponse(response);
     }
 
     private static void printResponse(byte[] value) {

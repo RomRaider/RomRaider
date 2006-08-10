@@ -7,8 +7,6 @@ import enginuity.logger.manager.DefaultQueryManager;
 import enginuity.logger.manager.DefaultTransmissionManager;
 import enginuity.logger.manager.QueryManager;
 import enginuity.logger.manager.TransmissionManager;
-import enginuity.logger.protocol.Protocol;
-import enginuity.logger.protocol.ProtocolFactory;
 import enginuity.logger.query.DefaultRegisteredQuery;
 import enginuity.logger.query.LoggerCallback;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -21,8 +19,7 @@ public final class DefaultLoggerController implements LoggerController {
     private final QueryManager queryManager;
 
     public DefaultLoggerController(Settings settings) {
-        Protocol ssmProtocol = ProtocolFactory.getInstance().getProtocol("SSM");
-        TransmissionManager txManager = new DefaultTransmissionManager(settings, ssmProtocol);
+        TransmissionManager txManager = new DefaultTransmissionManager(settings);
         queryManager = new DefaultQueryManager(txManager);
     }
 

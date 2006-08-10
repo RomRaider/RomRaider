@@ -1,6 +1,8 @@
 package enginuity.logger;
 
 import enginuity.Settings;
+import enginuity.logger.query.LoggerCallback;
+import static enginuity.util.HexUtil.asHex;
 
 import javax.swing.*;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
@@ -19,6 +21,8 @@ import java.util.List;
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener {
     private final Settings settings = new Settings();
     private final LoggerController CONTROLLER = new DefaultLoggerController(settings);
+    private final JTable dataTable = new JTable();
+    private final JTextArea dataTextArea = new JTextArea();
     private final JComboBox portsComboBox = new JComboBox();
 
     public EcuLogger(String title) {
@@ -34,6 +38,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
         //add to container
         getContentPane().add(splitPane);
+
+        // add dummy address to log (0x000008 = coolant temp)
+        CONTROLLER.addLogger("0x000008", new LoggerCallback() {
+            public void callback(byte[] value) {
+                dataTextArea.append("0x000008 => " + asHex(value));
+                dataTextArea.append("\n");
+            }
+        });
     }
 
     public static void main(String... args) {
@@ -95,12 +107,22 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JPanel buildControlToolbar() {
-        refreshPortsComboBox();
         JPanel controlPanel = new JPanel(new FlowLayout());
         controlPanel.add(buildStartButton());
         controlPanel.add(buildStopButton());
-        controlPanel.add(portsComboBox);
+        controlPanel.add(buildPortsComboBox());
         return controlPanel;
+    }
+
+    private JComboBox buildPortsComboBox() {
+        refreshPortsComboBox();
+        portsComboBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                settings.setLoggerPort((String) portsComboBox.getSelectedItem());
+                CONTROLLER.stop();
+            }
+        });
+        return portsComboBox;
     }
 
     private void refreshPortsComboBox() {
@@ -108,6 +130,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         for (String port : ports) {
             portsComboBox.addItem(port);
         }
+        settings.setLoggerPort((String) portsComboBox.getSelectedItem());
     }
 
     private JButton buildStartButton() {
@@ -140,8 +163,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildDataTab() {
-        JTable dataTable = new JTable();
-        return new JScrollPane(dataTable, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        //return new JScrollPane(dataTable, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        return new JScrollPane(dataTextArea, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
     }
 
     private JComponent buildGraphTab() {

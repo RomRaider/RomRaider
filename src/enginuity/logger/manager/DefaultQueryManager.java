@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//TODO: Allow transmission of multiple query objects at a time
+
 public final class DefaultQueryManager implements QueryManager {
     private final Map<String, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<String, RegisteredQuery>());
     private final List<RegisteredQuery> addList = new ArrayList<RegisteredQuery>();
@@ -34,7 +36,7 @@ public final class DefaultQueryManager implements QueryManager {
 
     public void run() {
         System.out.println("QueryManager started.");
-        
+
         long start = System.currentTimeMillis();
         int count = 0;
 
@@ -43,12 +45,8 @@ public final class DefaultQueryManager implements QueryManager {
             stop = false;
             while (!stop) {
                 updateQueryList();
-                for (String address : queryMap.keySet()) {
-                    RegisteredQuery registeredQuery = queryMap.get(address);
-                    byte[] response = txManager.queryAddress(registeredQuery.getBytes());
-                    registeredQuery.setResponse(response);
-                    count++;
-                }
+                txManager.sendQueries(queryMap.values());
+                count++;
             }
         } finally {
             txManager.stop();

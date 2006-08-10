@@ -1,5 +1,7 @@
 package enginuity.util;
 
+import java.util.Collection;
+
 public final class ParamChecker {
 
     private ParamChecker() {
@@ -25,6 +27,12 @@ public final class ParamChecker {
 
     public static void checkNotNullOrEmpty(Object[] param, String paramName) {
         if (param == null || param.length == 0) {
+            throw new IllegalArgumentException("Parameter " + paramName + " must not be null or empty");
+        }
+    }
+
+    public static void checkNotNullOrEmpty(Collection<?> param, String paramName) {
+        if (param == null || param.isEmpty()) {
             throw new IllegalArgumentException("Parameter " + paramName + " must not be null or empty");
         }
     }

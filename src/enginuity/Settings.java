@@ -38,9 +38,10 @@ public class Settings implements Serializable {
     private Color warningColor              = new Color(255, 0, 0);
     private int   tableClickCount           = 2; // number of clicks to open table
 
-    private String loggerPort               = "COM3";
-    
-    public Settings() {        
+    private String loggerPort               = "COM4";
+    private String loggerProtocol           = "SSM";
+
+    public Settings() {
         //center window by default
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         windowLocation.move(((int)(screenSize.getWidth() - windowSize.getWidth()) / 2),
@@ -64,7 +65,7 @@ public class Settings implements Serializable {
     }
     
     public Vector<File> getEcuDefinitionFiles() {
-        if (ecuDefinitionFiles.size() == 0) {
+        if (ecuDefinitionFiles.isEmpty()) {
             // if no files defined, add default
             ecuDefinitionFiles.add(new File("./ecu_defs.xml"));
         }
@@ -204,9 +205,13 @@ public class Settings implements Serializable {
     }
 
     public void setUserLevel(int userLevel) {
-        this.userLevel = userLevel;
-        if (userLevel > 5) userLevel = 5;
-        else if (userLevel < 1) userLevel = 1;
+        if (userLevel > 5) {
+            this.userLevel = 5;
+        } else if (userLevel < 1) {
+            this.userLevel = 1;
+        } else {
+            this.userLevel = userLevel;
+        }
     }
 
     public int getTableClickCount() {
@@ -267,5 +272,9 @@ public class Settings implements Serializable {
 
     public void setLoggerPort(String loggerPort) {
         this.loggerPort = loggerPort;
+    }
+
+    public String getLoggerProtocol() {
+        return loggerProtocol;
     }
 }
