@@ -27,5 +27,6 @@ public class DebugPanel extends JPanel {
         output.setAutoscrolls(true);
         output.setRows(10);
         output.setColumns(40);
+        ex.printStackTrace();
     }    
 }

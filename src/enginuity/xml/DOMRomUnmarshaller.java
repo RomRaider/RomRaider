@@ -63,9 +63,8 @@ public class DOMRomUnmarshaller {
                     if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
 
                         RomID romID = unmarshallRomID(n2, new RomID());
-                        String ecuID = new String(input, romID.getInternalIdAddress(), romID.getInternalIdString().length());
 
-                        if (romID.getInternalIdString().equalsIgnoreCase(ecuID) && !ecuID.equalsIgnoreCase("")) {
+                        if (romID.getInternalIdString().length() > 0 && foundMatch(romID, input)) {
                             Rom output = unmarshallRom(n, new Rom());
 
                             //set ram offset
@@ -77,7 +76,81 @@ public class DOMRomUnmarshaller {
             }
         }
         throw new RomNotFoundException();
-    }                   
+    }        
+    
+    public static boolean foundMatch(RomID romID, byte[] file) {
+        
+        String idString = romID.getInternalIdString();
+        
+        // romid is hex string
+        if (idString.length() > 2 && idString.substring(0,2).equalsIgnoreCase("0x")) {
+            
+            try {
+                // put romid in to byte array to check for match
+                idString = idString.substring(2); // remove "0x"
+                int[] romIDBytes = new int[idString.length() / 2];
+
+                for (int i = 0; i < romIDBytes.length; i++) {                
+                    // check to see if each byte matches
+                    
+                    if ((file[romID.getInternalIdAddress() + i] & 0xff) != 
+                            Integer.parseInt(idString.substring(i * 2, i * 2 + 2), 16)) {                    
+
+                        return false;                    
+                    }                
+                }
+                // if no mismatched bytes found, return true
+                return true;
+            } catch (Exception ex) {
+                // if any exception is encountered, names do not match
+                ex.printStackTrace();
+                return false;
+            }
+            
+        // else romid is NOT hex string
+        } else {
+            try {
+                String ecuID = new String(file, romID.getInternalIdAddress(), romID.getInternalIdString().length());
+                return foundMatchByString(romID, ecuID);
+            } catch (Exception ex) {
+                // if any exception is encountered, names do not match
+                return false;            
+            }
+        }
+    }    
+    
+    public static boolean foundMatchByString(RomID romID, String ecuID) {
+        
+        try {
+            if (ecuID.equalsIgnoreCase(romID.getInternalIdString())) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception ex) {
+            // if any exception is encountered, names do not match
+            return false;            
+        }
+    }
+    
+    public static void main(String args[]) {
+        DOMRomUnmarshaller um = new DOMRomUnmarshaller(new Settings(), new ECUEditor());
+        um.parent.dispose();        
+        RomID romID = new RomID();
+        romID.setInternalIdString("Asdfd");
+        
+        byte[] file = "Asdfd".getBytes();        
+        System.out.println(foundMatch(romID, file));        
+        
+        file[0] = 1;
+        file[1] = 1;
+        file[2] = 1;
+        file[3] = 1;        
+        System.out.println(foundMatch(romID, file));
+        
+        romID.setInternalIdString("0x010101");
+        System.out.println(foundMatch(romID, file));
+    }
     
     public Rom unmarshallRom (Node rootNode, Rom rom) throws XMLParseException, RomNotFoundException, StackOverflowError, Exception {
 	Node n;
@@ -116,7 +189,7 @@ public class DOMRomUnmarshaller {
                         if (table != null) {    
                         	rom.removeTable(table.getName());
                         }
-                    }
+                    } catch (XMLParseException ex) { ex.printStackTrace();}
                     
                 } else { /* unexpected element in Rom (skip)*/ }
 	    } else { /* unexpected node-type in Rom (skip)*/ }
@@ -256,7 +329,7 @@ public class DOMRomUnmarshaller {
                 table = new TableSwitch(settings);
                 
             } else {
-                throw new XMLParseException();
+                throw new XMLParseException("Error loading table.");
             }            
         }
         

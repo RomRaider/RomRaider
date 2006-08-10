@@ -257,7 +257,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());        
         
-        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             parent.openImage(fc.getSelectedFile());
             parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
         }
