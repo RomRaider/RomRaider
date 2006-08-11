@@ -37,7 +37,7 @@ public class JProgressPane extends JFrame {
     public void update(String status, int percent) {
         label.setText(status);
         progressBar.setValue(percent);
-        update(getGraphics());
-        requestFocus();
+        //update(getGraphics());
+        //requestFocus();
     }
 }
