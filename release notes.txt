@@ -23,10 +23,14 @@ severe engine damage. Use at your own risk.
 This release was intended to add more features than time permitted.
 Initial support for Mitsubishi ECUs has been added, along with a
 revamped table colorizing method. To take advantage of it, change
-the min/max value colors in Enginuity's settings. A new multiply
-values function is included, and table axiis can now be locked via
-the definition file, preventing users from changing values under
-certain circumstances.
+the min/max value colors in Enginuity's settings. 
+
+A new multiply values function is included. This will multiply
+selected values by the factor in the set value field. Click the "mul"
+button or press ctrl-enter to use this function.
+
+Table axiis can now be locked via the definition file, preventing
+users from changing values under certain circumstances.
 
 This version also includes an installer that will create shortcuts
 for Windows users. Linux has not been implemented yet but should be
