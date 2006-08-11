@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<installation version="1.0">
+
+    <!-- 
+        The info section.
+        The meaning of the tags should be natural ...
+    -->
+    <info>
+        <appname>Enginuity</appname>
+        <appversion>0.3.2 Beta</appversion>
+        <authors>
+            <author name="Jared Gould" email="jared.gould@enginuity.org"/>
+        </authors>
+        <url>http://www.enginuity.org</url>
+    </info>    
+    
+		<native type="izpack" name="ShellLink.dll"/>    
+    
+    <!-- 
+        The gui preferences indication.
+        Sets the installer window to 640x480. It will not be able to change the size.
+    -->
+    <guiprefs width="640" height="400" resizable="no"/>
+    
+    <!-- 
+        The locale section.
+        Asks here to include the English and French langpacks.
+    -->
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+    
+    <!-- 
+        The resources section.
+        The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+    -->
+    <resources>
+        <res id="LicencePanel.licence" src="license.txt"/>
+        <res id="InfoPanel.info" src="release notes.txt"/>
+				<res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
+    </resources>
+    
+    <!-- 
+        The panels section.
+        We indicate here which panels we want to use. The order will be respected.
+    -->
+    <panels>
+        <!-- <panel classname="HelloPanel"/> -->
+        <panel classname="InfoPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/> 
+        <panel classname="PacksPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+    
+    <!-- 
+        The packs section.
+        We specify here our packs.
+    -->
+    <packs>
+        <pack name="Base" required="yes">
+            <description>Enginuity binary files</description>
+            <file src="Enginuity.jar" targetdir="$INSTALL_PATH"/>
+            <file src="license.txt" targetdir="$INSTALL_PATH"/>
+            <file src="images" targetdir="$INSTALL_PATH"/>
+            <file src="graphics" targetdir="$INSTALL_PATH"/>
+            <file src="lib" targetdir="$INSTALL_PATH"/>
+        </pack>
+        <pack name="ECU Definitions" required="no">
+            <description>The latest official ECU definitions</description>
+            <file src="ecu_defs.xml" targetdir="$INSTALL_PATH"/>
+        </pack>
+        <pack name="Source Files" required="no">
+            <description>Enginuity Source Files</description>
+            <file src="src" targetdir="$INSTALL_PATH"/>
+        </pack>
+    </packs>
+    
+</installation>

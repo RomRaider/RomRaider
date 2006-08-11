@@ -1,0 +1,31 @@
+<shortcuts>
+	<skipIfNotSupported/>
+	<programGroup defaultName="Enginuity.org" location="applications||startMenu"/>
+	
+	<shortcut name="Enginuity" 
+					  target="$INSTALL_PATH\Enginuity.jar" 
+						workingDirectory="$INSTALL_PATH" 
+						iconFile="$INSTALL_PATH\graphics\enginuity-ico.ico"
+						programGroup="yes"
+						desktop="yes"
+						applications="no"
+						startMenu="no"
+						startup="no"/>
+	
+	<shortcut name="Enginuity License" 
+					  target="$INSTALL_PATH\license.txt" 
+						programGroup="yes"
+						desktop="no"
+						applications="no"
+						startMenu="no"
+						startup="no"/>
+						
+	<!-- <shortcut name="Release Notes" 
+					  target="$INSTALL_PATH\release notes.txt" 
+						programGroup="yes"
+						desktop="no"
+						applications="no"
+						startMenu="no"
+						startup="no"/> -->			
+	
+</shortcuts>
