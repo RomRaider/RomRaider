@@ -14,7 +14,7 @@ public class Settings implements Serializable {
     
     private String romRevisionURL           = "http://www.scoobypedia.co.uk/index.php/Knowledge/ECUVersionCompatibilityList";
     private String supportURL               = "http://www.enginuity.org";
-    private String releaseNotes             = "./release notes.txt";
+    private String releaseNotes             = "release notes.txt";
     private String recentVersion            = "x";
     
     private Vector<File> ecuDefinitionFiles = new Vector<File>();
@@ -67,7 +67,7 @@ public class Settings implements Serializable {
     public Vector<File> getEcuDefinitionFiles() {
         if (ecuDefinitionFiles.isEmpty()) {
             // if no files defined, add default
-            ecuDefinitionFiles.add(new File("./ecu_defs.xml"));
+            ecuDefinitionFiles.add(new File("ecu_defs.xml"));
         }
         return ecuDefinitionFiles;
     }
