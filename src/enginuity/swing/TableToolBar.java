@@ -63,7 +63,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         this.add(setValue);
         this.add(multiply);
         this.add(new JLabel(" "));
-        this.add(scaleSelection);
+        //this.add(scaleSelection);
                 
         incrementFine.setMaximumSize(new Dimension(33,33));
         incrementFine.setBorder(new LineBorder(new Color(150,150,150), 1));
