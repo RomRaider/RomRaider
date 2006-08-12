@@ -64,8 +64,12 @@
         <pack name="Base" required="yes">
             <description>Enginuity binary files</description>
             <file src="Enginuity.exe" targetdir="$INSTALL_PATH"/>
+            <file src="Enginuity.jar" targetdir="$INSTALL_PATH"/>
+            <file src="launcher.cfg" targetdir="$INSTALL_PATH"/>
             <file src="license.txt" targetdir="$INSTALL_PATH"/>
-            <file src="release notes.txt" targetdir="$INSTALL_PATH"/>
+            <!-- <file src="release notes.txt" targetdir="$INSTALL_PATH"/> -->
+            <!-- <parsable targetfile="${INSTALL_PATH}/hex.reg" type="javaprop" os="windows"/> -->
+            <!--<file src="hex.reg" targetdir="$INSTALL_PATH"/>-->
             <file src="images" targetdir="$INSTALL_PATH"/>
             <file src="graphics" targetdir="$INSTALL_PATH"/>
             <file src="lib" targetdir="$INSTALL_PATH"/>
@@ -78,6 +82,16 @@
             <description>Enginuity Source Files</description>
             <file src="src" targetdir="$INSTALL_PATH"/>
         </pack>
+        
+    		<!--pack name="Associate Hex Files" required="no" os="windows">
+          <description>Enginuity binary files</description>
+    			<executable targetfile="regedit.exe" stage="postinstall" keep="true">
+  					<args>
+							<arg value="\/s"/>
+							<arg value="$INSTALL_PATH\hex.reg"/>
+  					</args>
+					</executable>
+				</pack>-->
     </packs>
     
 </installation>
