@@ -9,16 +9,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO: Allow transmission of multiple query objects at a time
-
-public final class DefaultQueryManager implements QueryManager {
+@SuppressWarnings({"FieldCanBeLocal"})
+public final class QueryManagerImpl implements QueryManager {
     private final Map<String, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<String, RegisteredQuery>());
     private final List<RegisteredQuery> addList = new ArrayList<RegisteredQuery>();
     private final List<String> removeList = new ArrayList<String>();
     private final TransmissionManager txManager;
     private boolean stop = false;
 
-    public DefaultQueryManager(TransmissionManager txManager) {
+    public QueryManagerImpl(TransmissionManager txManager) {
         checkNotNull(txManager, "txManager");
         this.txManager = txManager;
     }

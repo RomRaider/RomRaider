@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-public final class DefaultSerialPortDiscoverer implements SerialPortDiscoverer {
+public final class SerialPortDiscovererImpl implements SerialPortDiscoverer {
 
     @SuppressWarnings({"unchecked"})
     public List<CommPortIdentifier> listPorts() {

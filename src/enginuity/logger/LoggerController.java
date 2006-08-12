@@ -1,5 +1,6 @@
 package enginuity.logger;
 
+import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.query.LoggerCallback;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface LoggerController {
 
     void start();
 
-    void addLogger(String address, LoggerCallback callback);
+    void addLogger(EcuParameter ecuParam, LoggerCallback callback);
 
     void removeLogger(String address);
 

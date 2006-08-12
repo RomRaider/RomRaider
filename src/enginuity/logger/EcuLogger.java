@@ -1,6 +1,11 @@
 package enginuity.logger;
 
 import enginuity.Settings;
+import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuParameterImpl;
+import enginuity.logger.definition.convertor.EcuParameterConvertor;
+import enginuity.logger.definition.convertor.GenericTemperatureConvertor;
+import enginuity.logger.definition.convertor.ThrottleOpeningAngleConvertor;
 import enginuity.logger.query.LoggerCallback;
 import static enginuity.util.HexUtil.asHex;
 
@@ -20,7 +25,7 @@ import java.util.List;
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener {
     private final Settings settings = new Settings();
-    private final LoggerController CONTROLLER = new DefaultLoggerController(settings);
+    private final LoggerController CONTROLLER = new LoggerControllerImpl(settings);
     private final JTable dataTable = new JTable();
     private final JTextArea dataTextArea = new JTextArea();
     private final JComboBox portsComboBox = new JComboBox();
@@ -39,11 +44,21 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         //add to container
         getContentPane().add(splitPane);
 
-        // add dummy address to log (0x000008 = coolant temp)
-        CONTROLLER.addLogger("0x000008", new LoggerCallback() {
-            public void callback(byte[] value) {
-                dataTextArea.append("0x000008 => " + asHex(value));
-                dataTextArea.append("\n");
+        // add test address to log (0x000008 = coolant temp, 8bit)
+        final EcuParameter ecuParam1 = new EcuParameterImpl("Coolant Temperature", "Coolant temperature in degrees C", "0x000008", new GenericTemperatureConvertor());
+        CONTROLLER.addLogger(ecuParam1, new LoggerCallback() {
+            public void callback(byte[] value, EcuParameterConvertor convertor) {
+                dataTextArea.append(ecuParam1.getName() + " (" + ecuParam1.getAddress() + ") => " + asHex(value) + " => " + convertor.convert(value)
+                        + " " + convertor.getUnits() + "\n");
+            }
+        });
+
+        // add test address to log (0x000015 = throttle opening, 8bit)
+        final EcuParameter ecuParam = new EcuParameterImpl("Throttle Opening", "Throttle opening angle in percent", "0x000015", new ThrottleOpeningAngleConvertor());
+        CONTROLLER.addLogger(ecuParam, new LoggerCallback() {
+            public void callback(byte[] value, EcuParameterConvertor convertor) {
+                dataTextArea.append(ecuParam.getName() + " (" + ecuParam.getAddress() + ") => " + asHex(value) + " => " + convertor.convert(value)
+                        + " " + convertor.getUnits() + "\n");
             }
         });
     }

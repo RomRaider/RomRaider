@@ -1,15 +1,13 @@
 package enginuity.logger.protocol;
 
-import enginuity.logger.query.DefaultRegisteredQuery;
-import enginuity.logger.query.LoggerCallback;
 import enginuity.logger.query.RegisteredQuery;
-import static enginuity.util.HexUtil.asBytes;
+import static enginuity.util.ByteUtil.asByte;
+import static enginuity.util.ByteUtil.asInt;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public final class SSMProtocol implements Protocol {
@@ -18,11 +16,14 @@ public final class SSMProtocol implements Protocol {
     private static final byte DIAGNOSTIC_TOOL_ID = (byte) 0xF0;
     private static final byte READ_PADDING = (byte) 0x00;
     private static final byte READ_MEMORY_COMMAND = (byte) 0xA0;
+    private static final byte READ_MEMORY_RESPONSE = (byte) 0xE0;
     private static final byte READ_ADDRESS_COMMAND = (byte) 0xA8;
+    private static final byte READ_ADDRESS_RESPONSE = (byte) 0xE8;
     private static final byte ECU_INIT_COMMAND = (byte) 0xBF;
+    private static final byte ECU_INIT_RESPONSE = (byte) 0xFF;
+    private static final int NON_DATA_BYTES = 6;
     private static final int ADDRESS_SIZE = 3;
     private static final int DATA_SIZE = 1;
-
 
     public byte[] constructReadMemoryRequest(RegisteredQuery query, int numBytes) {
         checkNotNull(query, "query");
@@ -37,22 +38,23 @@ public final class SSMProtocol implements Protocol {
         return buildRequest(READ_ADDRESS_COMMAND, true, convertToByteAddresses(queries));
     }
 
-    //TODO: Query responses are variable length!!
+    @SuppressWarnings({"PointlessArithmeticExpression"})
     public byte[] constructReadAddressResponse(Collection<RegisteredQuery> queries) {
         checkNotNullOrEmpty(queries, "queries");
-        return new byte[DATA_SIZE * queries.size() + 5];
+        return new byte[DATA_SIZE * queries.size() + NON_DATA_BYTES];
     }
 
+    @SuppressWarnings({"PointlessArithmeticExpression"})
     public void setResponse(Collection<RegisteredQuery> queries, byte[] response) {
         checkNotNullOrEmpty(queries, "queries");
         checkNotNullOrEmpty(response, "response");
         byte[] responseData = extractResponseData(response);
         int i = 0;
         for (RegisteredQuery query : queries) {
-            byte[] bytes = new byte[DATA_SIZE];
-            System.arraycopy(responseData, i, bytes, 0, DATA_SIZE);
+            byte[] bytes = new byte[DATA_SIZE * (query.getBytes().length / ADDRESS_SIZE)];
+            System.arraycopy(responseData, i, bytes, 0, bytes.length);
             query.setResponse(bytes);
-            i += DATA_SIZE;
+            i += bytes.length;
         }
     }
 
@@ -63,11 +65,11 @@ public final class SSMProtocol implements Protocol {
 
     public byte[] extractResponseData(byte[] response) {
         checkNotNullOrEmpty(response, "response");
-        // 0x80 0xF0 0x10 data_length response_data checksum
+        // 0x80 0xF0 0x10 data_length 0xE8 response_data checksum
         //TODO: Take possible echoed request into account when extracting response!!
         validateResponse(response);
-        byte[] data = new byte[response.length - 5];
-        System.arraycopy(response, 4, data, 0, data.length);
+        byte[] data = new byte[response.length - NON_DATA_BYTES];
+        System.arraycopy(response, (NON_DATA_BYTES - 1), data, 0, data.length);
         return data;
     }
 
@@ -108,7 +110,8 @@ public final class SSMProtocol implements Protocol {
         assertEquals(HEADER, response[i++], "Invalid header");
         assertEquals(DIAGNOSTIC_TOOL_ID, response[i++], "Invalid diagnostic tool id");
         assertEquals(ECU_ID, response[i++], "Invalid ECU id");
-        assertEquals(asByte(response.length - 5), response[i], "Invalid response data length");
+        assertEquals(asByte(response.length - NON_DATA_BYTES), response[i++], "Invalid response data length");
+        assertOneOf(new byte[]{READ_ADDRESS_RESPONSE, READ_MEMORY_RESPONSE, ECU_INIT_RESPONSE}, response[i], "Invalid response code");
         assertEquals(calculateChecksum(response), response[response.length - 1], "Invalid checksum");
     }
 
@@ -116,6 +119,22 @@ public final class SSMProtocol implements Protocol {
         if (actual != expected) {
             throw new InvalidResponseException(msg + ". Expected: " + asHex(new byte[]{expected}) + ". Actual: " + asHex(new byte[]{actual}) + ".");
         }
+    }
+
+    private void assertOneOf(byte[] validOptions, byte actual, String msg) {
+        for (byte option : validOptions) {
+            if (option == actual) {
+                return;
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < validOptions.length; i++) {
+            if (i > 0) {
+                builder.append(", ");
+            }
+            builder.append(asHex(new byte[]{validOptions[i]}));
+        }
+        throw new InvalidResponseException(msg + ". Expected one of [" + builder.toString() + "]. Actual: " + asHex(new byte[]{actual}) + ".");
     }
 
     //TODO: Clean up SSM request building... pretty ugly at the moment..
@@ -127,7 +146,7 @@ public final class SSMProtocol implements Protocol {
             System.arraycopy(tmp, 0, tmp2, data.length, tmp.length);
             data = tmp2;
         }
-        byte[] request = new byte[data.length + (padContent ? 7 : 6)];
+        byte[] request = new byte[data.length + (padContent ? 7 : NON_DATA_BYTES)];
         int i = 0;
         request[i++] = HEADER;
         request[i++] = ECU_ID;
@@ -149,52 +168,6 @@ public final class SSMProtocol implements Protocol {
             total += asInt(b);
         }
         return asByte(total - ((total >>> 16) << 16));
-    }
-
-    //TODO: Move these utility methods out to another class
-    @SuppressWarnings({"UnnecessaryBoxing"})
-    private byte asByte(int i) {
-        return Integer.valueOf(i).byteValue();
-    }
-
-    @SuppressWarnings({"UnnecessaryBoxing"})
-    private int asInt(byte b) {
-        return Byte.valueOf(b).intValue();
-    }
-
-    public byte[] asByteArray(int value) {
-        byte[] b = new byte[4];
-        for (int i = 0; i < 4; i++) {
-            int offset = (b.length - 1 - i) * 8;
-            b[i] = (byte) ((value >>> offset) & 0xFF);
-        }
-        return b;
-    }
-
-    //****************** Test stuff ***********************//
-
-    public static void main(String... args) {
-        Protocol protocol = ProtocolFactory.getInstance().getProtocol("SSM");
-
-        byte[] bytes = protocol.constructEcuInitRequest();
-        System.out.println("Ecu Init                               = " + asHex(bytes));
-
-        bytes = protocol.constructReadAddressRequest(constructRegisteredQueries("0x000008", "0x00001C"));
-        System.out.println("Read Address (0x000008 and 0x00001C)   = " + asHex(bytes));
-
-        bytes = protocol.extractResponseData(asBytes("0x80F01003E87DB199"));
-        System.out.println("Extract Response (0x80F01003E87DB199)  = " + asHex(bytes));
-    }
-
-    private static Collection<RegisteredQuery> constructRegisteredQueries(String... addresses) {
-        Collection<RegisteredQuery> queries = new ArrayList<RegisteredQuery>();
-        for (String address : addresses) {
-            queries.add(new DefaultRegisteredQuery(address, new LoggerCallback() {
-                public void callback(byte[] value) {
-                }
-            }));
-        }
-        return queries;
     }
 
 }

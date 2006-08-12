@@ -27,13 +27,13 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
-public final class DefaultSerialConnection implements SerialConnection {
+public final class SerialConnectionImpl implements SerialConnection {
     private Protocol protocol;
     private SerialPort serialPort;
     private OutputStream os;
     private InputStream is;
 
-    public DefaultSerialConnection(Protocol protocol, String portName, int connectTimeout) {
+    public SerialConnectionImpl(Protocol protocol, String portName, int connectTimeout) {
         checkNotNull(protocol, "protocol");
         checkNotNullOrEmpty(portName, "portName");
         checkGreaterThanZero(connectTimeout, "connectTimeout");
@@ -87,10 +87,10 @@ public final class DefaultSerialConnection implements SerialConnection {
             os.write(request, 0, request.length);
             os.flush();
             int timeout = 55;
-            while(is.available() < response.length) {
+            while (is.available() < response.length) {
                 TimeUnit.MILLISECONDS.sleep(5);
                 timeout -= 5;
-                if(timeout <= 0) {
+                if (timeout <= 0) {
                     byte[] badBytes = new byte[is.available()];
                     is.read(badBytes, 0, badBytes.length);
                     System.out.println("Bad response (read timeout): " + asHex(badBytes));
