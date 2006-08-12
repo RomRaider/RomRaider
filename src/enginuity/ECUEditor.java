@@ -55,6 +55,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private JSplitPane       splitPane       = new JSplitPane();
     private ECUEditorToolBar toolBar;
     private ECUEditorMenuBar menuBar;
+    private JProgressPane    statusPanel     = new JProgressPane();
     
     public ECUEditor() {
         
@@ -144,6 +145,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         this.setJMenuBar(menuBar);
         toolBar = new ECUEditorToolBar(this);
         this.add(toolBar, BorderLayout.NORTH);
+        this.add(statusPanel, BorderLayout.SOUTH);
         
         //set remaining window properties
         setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
@@ -166,9 +168,13 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         
        DOMSettingsBuilder builder = new DOMSettingsBuilder(); 
        try { 
-          JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");            
-          builder.buildSettings(settings, new File("./settings.xml"), progress, version); 
-            } catch (IOException ex) { } 
+          //JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");            
+          builder.buildSettings(settings, new File("./settings.xml"), statusPanel, version); 
+        } catch (IOException ex) { 
+        } finally {
+            statusPanel.update("Ready...", 0);
+            repaint();
+        }
     } 
     
     public void windowClosing(WindowEvent e) { 
@@ -317,11 +323,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         }
     }
     
-    public void repaintPanel() {
-        rightPanel.repaint();
-        rightPanel.update(rightPanel.getGraphics());
-    }
-    
     public void setUserLevel(int userLevel) {
         settings.setUserLevel(userLevel);
         imageRoot.setUserLevel(userLevel, settings.isDisplayHighTables());
@@ -343,15 +344,17 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     }
     
     public void openImage(File inputFile) throws XMLParseException, Exception {        
-        JProgressPane progress = new JProgressPane(this, "Opening file...", "Parsing ECU definitions...");
+        
         try {     
-            repaintPanel();
-            progress.update("Parsing ECU definitions...", 0);
+            update(getGraphics());
+            statusPanel.update("Parsing ECU definitions...", 0);
+            repaint();
             
             byte[] input = readFile(inputFile);
             DOMRomUnmarshaller domUms = new DOMRomUnmarshaller(settings, this);
             DOMParser parser = new DOMParser();    
-            progress.update("Finding ECU definition...", 10);
+            statusPanel.update("Finding ECU definition...", 10);
+            repaint();
             Rom rom;
                           
             // parse ecu definition files until result found
@@ -362,12 +365,14 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                 Document doc = parser.getDocument();                        
                 
                 try {
-                    rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, progress);
-                    progress.update("Populating tables...", 50);
-                    rom.populateTables(input, progress);
+                    rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, statusPanel);
+                    statusPanel.update("Populating tables...", 50);
+                    repaint();
+                    rom.populateTables(input, statusPanel);
                     rom.setFileName(inputFile.getName());
 
-                    progress.update("Finalizing...", 90);     
+                    statusPanel.update("Finalizing...", 90); 
+                    repaint();
                     addRom(rom);                   
                     rom.setFullFileName(inputFile);   
                     return;
@@ -386,7 +391,8 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             
         } finally {
             // remove progress bar
-            progress.dispose();
+            //progress.dispose();
+            statusPanel.update("Ready...", 0);
             
         }
     }    

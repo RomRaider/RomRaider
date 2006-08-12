@@ -52,7 +52,7 @@ public class Rom implements Serializable {
 
             // update progress
             int currProgress = (int)((double)i / (double)getTables().size() * 40);
-            progress.update("Populating " + tables.get(i).getName() + " table...", 40 + currProgress);
+            progress.update("Populating tables...", 40 + currProgress);
             
             try {
                 // if storageaddress has not been set (or is set to 0) omit table
