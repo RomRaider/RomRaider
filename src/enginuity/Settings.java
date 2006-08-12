@@ -29,9 +29,9 @@ public class Settings implements Serializable {
     
     private Font tableFont                  = new Font("Arial", Font.BOLD, 12);
     private Dimension cellSize              = new Dimension(42, 18);
-    private Color maxColor                  = new Color(255, 155, 155);
-    private Color minColor                  = new Color(255, 255, 155);
-    private Color highlightColor            = new Color(155, 155, 255);
+    private Color maxColor                  = new Color(255, 102, 102);
+    private Color minColor                  = new Color(153, 153, 255);
+    private Color highlightColor            = new Color(204, 204, 204);
     private Color increaseBorder            = new Color(255, 0, 0);
     private Color decreaseBorder            = new Color(0, 0, 255);
     private Color axisColor                 = new Color(255, 255, 255);
