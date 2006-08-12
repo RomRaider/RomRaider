@@ -41,7 +41,8 @@ public final class SSMProtocol implements Protocol {
     @SuppressWarnings({"PointlessArithmeticExpression"})
     public byte[] constructReadAddressResponse(Collection<RegisteredQuery> queries) {
         checkNotNullOrEmpty(queries, "queries");
-        return new byte[DATA_SIZE * queries.size() + NON_DATA_BYTES];
+        // 0x80 0xF0 0x10 data_length 0xE8 value1 value2 ... valueN checksum
+        return new byte[(DATA_SIZE * queries.size() + NON_DATA_BYTES) + (queries.size() * ADDRESS_SIZE + 7)];
     }
 
     @SuppressWarnings({"PointlessArithmeticExpression"})
@@ -110,7 +111,7 @@ public final class SSMProtocol implements Protocol {
         assertEquals(HEADER, response[i++], "Invalid header");
         assertEquals(DIAGNOSTIC_TOOL_ID, response[i++], "Invalid diagnostic tool id");
         assertEquals(ECU_ID, response[i++], "Invalid ECU id");
-        assertEquals(asByte(response.length - NON_DATA_BYTES), response[i++], "Invalid response data length");
+        assertEquals(asByte(response.length - NON_DATA_BYTES + 1), response[i++], "Invalid response data length");
         assertOneOf(new byte[]{READ_ADDRESS_RESPONSE, READ_MEMORY_RESPONSE, ECU_INIT_RESPONSE}, response[i], "Invalid response code");
         assertEquals(calculateChecksum(response), response[response.length - 1], "Invalid checksum");
     }

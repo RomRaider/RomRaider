@@ -3,7 +3,10 @@ package enginuity.logger;
 import enginuity.Settings;
 import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuParameterImpl;
+import enginuity.logger.definition.convertor.AcceleratorOpeningAngleConvertor;
+import enginuity.logger.definition.convertor.AirFuelRatioLambdaConvertor;
 import enginuity.logger.definition.convertor.EcuParameterConvertor;
+import enginuity.logger.definition.convertor.ExhaustGasTemperatureConvertor;
 import enginuity.logger.definition.convertor.GenericTemperatureConvertor;
 import enginuity.logger.definition.convertor.ThrottleOpeningAngleConvertor;
 import enginuity.logger.query.LoggerCallback;
@@ -53,14 +56,50 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         });
 
-        // add test address to log (0x000015 = throttle opening, 8bit)
-        final EcuParameter ecuParam = new EcuParameterImpl("Throttle Opening", "Throttle opening angle in percent", "0x000015", new ThrottleOpeningAngleConvertor());
-        CONTROLLER.addLogger(ecuParam, new LoggerCallback() {
+        // add test address to log (0x000106 = EGT, 8bit)
+        final EcuParameter ecuParam2 = new EcuParameterImpl("EGT", "Exhaust gas temperature in degrees C", "0x000106", new ExhaustGasTemperatureConvertor());
+        CONTROLLER.addLogger(ecuParam2, new LoggerCallback() {
             public void callback(byte[] value, EcuParameterConvertor convertor) {
-                dataTextArea.append(ecuParam.getName() + " (" + ecuParam.getAddress() + ") => " + asHex(value) + " => " + convertor.convert(value)
+                dataTextArea.append(ecuParam2.getName() + " (" + ecuParam2.getAddress() + ") => " + asHex(value) + " => " + convertor.convert(value)
                         + " " + convertor.getUnits() + "\n");
             }
         });
+
+        // add test address to log (0x000046 = air/fuel ratio, 8bit)
+        final EcuParameter ecuParam3 = new EcuParameterImpl("AFR", "Air/Fuel Ratio in Lambda", "0x000046", new AirFuelRatioLambdaConvertor());
+        CONTROLLER.addLogger(ecuParam3, new LoggerCallback() {
+            public void callback(byte[] value, EcuParameterConvertor convertor) {
+                dataTextArea.append(ecuParam3.getName() + " (" + ecuParam3.getAddress() + ") => " + asHex(value) + " => " + convertor.convert(value)
+                        + " " + convertor.getUnits() + "\n");
+            }
+        });
+
+        // add test address to log (0x000029 = accelerator opening angle, 8bit)
+        final EcuParameter ecuParam4 = new EcuParameterImpl("Accel Opening Angle", "Accelerator opening angle in %", "0x000029", new AcceleratorOpeningAngleConvertor());
+        CONTROLLER.addLogger(ecuParam4, new LoggerCallback() {
+            public void callback(byte[] value, EcuParameterConvertor convertor) {
+                dataTextArea.append(ecuParam4.getName() + " (" + ecuParam4.getAddress() + ") => " + asHex(value) + " => " + convertor.convert(value)
+                        + " " + convertor.getUnits() + "\n");
+            }
+        });
+
+        // add test address to log (0x000015 = accelerator opening angle, 8bit)
+        final EcuParameter ecuParam5 = new EcuParameterImpl("Throttle Opening Angle", "Throttle opening angle in %", "0x000015", new ThrottleOpeningAngleConvertor());
+        CONTROLLER.addLogger(ecuParam5, new LoggerCallback() {
+            public void callback(byte[] value, EcuParameterConvertor convertor) {
+                dataTextArea.append(ecuParam5.getName() + " (" + ecuParam5.getAddress() + ") => " + asHex(value) + " => " + convertor.convert(value)
+                        + " " + convertor.getUnits() + "\n");
+            }
+        });
+
+        // add test address to log (0x00000E 0x00000F = engine speed, 16bit)
+//        final EcuParameter ecuParam5 = new EcuParameterImpl("Engine Speed", "Engine speed in rpm", "0x00000E00000F", new EngineSpeedConvertor());
+//        CONTROLLER.addLogger(ecuParam5, new LoggerCallback() {
+//            public void callback(byte[] value, EcuParameterConvertor convertor) {
+//                dataTextArea.append(ecuParam5.getName() + " (" + ecuParam5.getAddress() + ") => " + asHex(value) + " => " + convertor.convert(value)
+//                        + " " + convertor.getUnits() + "\n");
+//            }
+//        });
     }
 
     public static void main(String... args) {
