@@ -36,7 +36,7 @@ public class Settings implements Serializable {
     private Color decreaseBorder            = new Color(0, 0, 255);
     private Color axisColor                 = new Color(255, 255, 255);
     private Color warningColor              = new Color(255, 0, 0);
-    private int   tableClickCount           = 2; // number of clicks to open table
+    private int   tableClickCount           = 1; // number of clicks to open table
 
     private String loggerPort               = "COM4";
     private String loggerProtocol           = "SSM";
