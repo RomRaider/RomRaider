@@ -1,3 +1,7 @@
+                      - Enginuity 0.3.2 Beta -
+            Open-Source ECU Tuning -- www.enginuity.org
+
+
 Enginuity is a full featured Engine Control Unit editing application 
 for tuning virtually any manufacturer, meant to be used in conjuction
 with datalogging and ECU flash and dump utilities. Enginuity will 
