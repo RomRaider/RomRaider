@@ -41,6 +41,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private final JPanel graphPanel = new JPanel();
     private final JComboBox portsComboBox = new JComboBox();
     private int loggerCount = 0;
+    private long loggerStartTime = 0;
 
     public EcuLogger(String title) {
         super(title);
@@ -106,11 +107,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 dataRow.updateValue(value);
 
                 // update graph
-                series.add(System.currentTimeMillis(), ecuParam.getConvertor().convert(value));
+                series.add((System.currentTimeMillis() - loggerStartTime), ecuParam.getConvertor().convert(value));
                 chartLabel.setIcon(new ImageIcon(chart.createBufferedImage(500, 300)));
 
                 // update dashboard
-                
+
             }
         });
     }
@@ -166,6 +167,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
+                loggerStartTime = System.currentTimeMillis();
                 CONTROLLER.start();
             }
         });
