@@ -1,14 +1,14 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>0</headerType>
-  <jar>Enginuity.jar</jar>
+  <jar>C:\Documents and Settings\Jared\Desktop\Enginuity-dist\Enginuity.jar</jar>
   <outfile>C:\Documents and Settings\Jared\Desktop\enginuity-installer\Enginuity.exe</outfile>
   <errTitle></errTitle>
   <jarArgs></jarArgs>
   <chdir>.</chdir>
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
-  <icon>C:\Documents and Settings\Jared\Desktop\enginuity-installer\graphics\enginuity-ico.ico</icon>
+  <icon>C:\Documents and Settings\Jared\Desktop\Enginuity-dist\graphics\enginuity-ico.ico</icon>
   <jre>
     <path></path>
     <minVersion>1.5.0</minVersion>
@@ -17,4 +17,16 @@
     <maxHeapSize>0</maxHeapSize>
     <args></args>
   </jre>
+  <versionInfo>
+    <fileVersion>0.3.2.0</fileVersion>
+    <txtFileVersion>0.3.2 Beta</txtFileVersion>
+    <fileDescription>Enginuity 0.3.2 Beta</fileDescription>
+    <copyright>Enginuity.org</copyright>
+    <productVersion>0.3.2.0</productVersion>
+    <txtProductVersion>0.3.2 Beta</txtProductVersion>
+    <productName>Enginuity</productName>
+    <companyName>Enginuity.org</companyName>
+    <internalName>Enginuity.jar</internalName>
+    <originalFilename>Enginuity.exe</originalFilename>
+  </versionInfo>
 </launch4jConfig>
