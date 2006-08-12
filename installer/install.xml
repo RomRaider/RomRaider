@@ -21,7 +21,7 @@
         The gui preferences indication.
         Sets the installer window to 640x480. It will not be able to change the size.
     -->
-    <guiprefs width="640" height="400" resizable="no"/>
+    <guiprefs width="640" height="480" resizable="no"/>
     
     <!-- 
         The locale section.
@@ -63,8 +63,9 @@
     <packs>
         <pack name="Base" required="yes">
             <description>Enginuity binary files</description>
-            <file src="Enginuity.jar" targetdir="$INSTALL_PATH"/>
+            <file src="Enginuity.exe" targetdir="$INSTALL_PATH"/>
             <file src="license.txt" targetdir="$INSTALL_PATH"/>
+            <file src="release notes.txt" targetdir="$INSTALL_PATH"/>
             <file src="images" targetdir="$INSTALL_PATH"/>
             <file src="graphics" targetdir="$INSTALL_PATH"/>
             <file src="lib" targetdir="$INSTALL_PATH"/>
