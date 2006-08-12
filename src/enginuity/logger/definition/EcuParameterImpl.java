@@ -33,11 +33,6 @@ public final class EcuParameterImpl implements EcuParameter {
         return address;
     }
 
-    //TODO: Is this required???
-    public String getValueLength() {
-        return null;
-    }
-
     public EcuParameterConvertor getConvertor() {
         return convertor;
     }

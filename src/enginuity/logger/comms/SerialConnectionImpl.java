@@ -86,7 +86,7 @@ public final class SerialConnectionImpl implements SerialConnection {
             serialPort.setRTS(false);
             os.write(request, 0, request.length);
             os.flush();
-            int timeout = 100;
+            int timeout = 1000;
             while (is.available() < response.length) {
                 TimeUnit.MILLISECONDS.sleep(5);
                 timeout -= 5;

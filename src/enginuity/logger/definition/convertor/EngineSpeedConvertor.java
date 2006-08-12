@@ -2,14 +2,20 @@ package enginuity.logger.definition.convertor;
 
 import static enginuity.util.ByteUtil.asInt;
 
-public final class EngineSpeedConvertor implements EcuParameterConvertor {
+import java.text.DecimalFormat;
 
-    public String convert(byte[] bytes) {
-        int rpm = asInt(bytes) / 4;
-        return String.valueOf(rpm);
+public final class EngineSpeedConvertor implements EcuParameterConvertor {
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0");
+
+    public double convert(byte[] bytes) {
+        return asInt(bytes) / 4;
     }
 
     public String getUnits() {
         return "rpm";
+    }
+
+    public String format(double value) {
+        return DECIMAL_FORMAT.format(value);
     }
 }

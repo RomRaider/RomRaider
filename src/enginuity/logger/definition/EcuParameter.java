@@ -10,8 +10,6 @@ public interface EcuParameter {
 
     String getAddress();
 
-    String getValueLength();
-
     EcuParameterConvertor getConvertor();
 
 }

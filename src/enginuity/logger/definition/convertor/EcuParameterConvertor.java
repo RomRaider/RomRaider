@@ -2,8 +2,10 @@ package enginuity.logger.definition.convertor;
 
 public interface EcuParameterConvertor {
 
-    String convert(byte[] bytes);
+    double convert(byte[] bytes);
 
     String getUnits();
+
+    String format(double value);
 
 }

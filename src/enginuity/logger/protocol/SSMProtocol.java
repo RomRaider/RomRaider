@@ -21,9 +21,10 @@ public final class SSMProtocol implements Protocol {
     private static final byte READ_ADDRESS_RESPONSE = (byte) 0xE8;
     private static final byte ECU_INIT_COMMAND = (byte) 0xBF;
     private static final byte ECU_INIT_RESPONSE = (byte) 0xFF;
-    private static final int NON_DATA_BYTES = 6;
+    private static final int RESPONSE_NON_DATA_BYTES = 6;
     private static final int ADDRESS_SIZE = 3;
     private static final int DATA_SIZE = 1;
+    private static final int REQUEST_NON_DATA_BYTES = 7;
 
     public byte[] constructReadMemoryRequest(RegisteredQuery query, int numBytes) {
         checkNotNull(query, "query");
@@ -42,7 +43,11 @@ public final class SSMProtocol implements Protocol {
     public byte[] constructReadAddressResponse(Collection<RegisteredQuery> queries) {
         checkNotNullOrEmpty(queries, "queries");
         // 0x80 0xF0 0x10 data_length 0xE8 value1 value2 ... valueN checksum
-        return new byte[(DATA_SIZE * queries.size() + NON_DATA_BYTES) + (queries.size() * ADDRESS_SIZE + 7)];
+        int numAddresses = 0;
+        for (RegisteredQuery query : queries) {
+            numAddresses += (query.getBytes().length / ADDRESS_SIZE);
+        }
+        return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES) + (numAddresses * ADDRESS_SIZE + REQUEST_NON_DATA_BYTES)];
     }
 
     @SuppressWarnings({"PointlessArithmeticExpression"})
@@ -67,10 +72,9 @@ public final class SSMProtocol implements Protocol {
     public byte[] extractResponseData(byte[] response) {
         checkNotNullOrEmpty(response, "response");
         // 0x80 0xF0 0x10 data_length 0xE8 response_data checksum
-        //TODO: Take possible echoed request into account when extracting response!!
         validateResponse(response);
-        byte[] data = new byte[response.length - NON_DATA_BYTES];
-        System.arraycopy(response, (NON_DATA_BYTES - 1), data, 0, data.length);
+        byte[] data = new byte[response.length - RESPONSE_NON_DATA_BYTES];
+        System.arraycopy(response, (RESPONSE_NON_DATA_BYTES - 1), data, 0, data.length);
         return data;
     }
 
@@ -111,7 +115,7 @@ public final class SSMProtocol implements Protocol {
         assertEquals(HEADER, response[i++], "Invalid header");
         assertEquals(DIAGNOSTIC_TOOL_ID, response[i++], "Invalid diagnostic tool id");
         assertEquals(ECU_ID, response[i++], "Invalid ECU id");
-        assertEquals(asByte(response.length - NON_DATA_BYTES + 1), response[i++], "Invalid response data length");
+        assertEquals(asByte(response.length - RESPONSE_NON_DATA_BYTES + 1), response[i++], "Invalid response data length");
         assertOneOf(new byte[]{READ_ADDRESS_RESPONSE, READ_MEMORY_RESPONSE, ECU_INIT_RESPONSE}, response[i], "Invalid response code");
         assertEquals(calculateChecksum(response), response[response.length - 1], "Invalid checksum");
     }
@@ -147,7 +151,7 @@ public final class SSMProtocol implements Protocol {
             System.arraycopy(tmp, 0, tmp2, data.length, tmp.length);
             data = tmp2;
         }
-        byte[] request = new byte[data.length + (padContent ? 7 : NON_DATA_BYTES)];
+        byte[] request = new byte[data.length + (padContent ? REQUEST_NON_DATA_BYTES : RESPONSE_NON_DATA_BYTES)];
         int i = 0;
         request[i++] = HEADER;
         request[i++] = ECU_ID;

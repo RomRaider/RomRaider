@@ -3,7 +3,6 @@ package enginuity.logger.manager;
 import enginuity.Settings;
 import enginuity.logger.comms.SerialConnection;
 import enginuity.logger.comms.SerialConnectionImpl;
-import enginuity.logger.definition.convertor.EcuParameterConvertor;
 import enginuity.logger.exception.NotConnectedException;
 import enginuity.logger.exception.SerialCommunicationException;
 import enginuity.logger.protocol.Protocol;
@@ -39,7 +38,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
 
     public void sendEcuInit(LoggerCallback callback) {
         if (serialConnection != null) {
-            callback.callback(serialConnection.sendEcuInit(), null);
+            callback.callback(serialConnection.sendEcuInit());
         } else {
             throw new NotConnectedException("TransmissionManager must be started before a query can be sent!");
         }
@@ -66,7 +65,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
         try {
             txManager.start();
             txManager.sendEcuInit(new LoggerCallback() {
-                public void callback(byte[] value, EcuParameterConvertor convertor) {
+                public void callback(byte[] value) {
                     System.out.println("ECU Init Response = " + HexUtil.asHex(value));
                 }
             });
