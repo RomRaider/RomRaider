@@ -18,7 +18,7 @@ ECU image. As with any engine management, changes could result in
 severe engine damage. Use at your own risk.
 
 
-0.3.2b Notes (8/11/2006)
+0.3.2b Notes (8/12/2006)
 -----------------------
 This release was intended to add more features than time permitted.
 Initial support for Mitsubishi ECUs has been added, along with a
@@ -39,9 +39,10 @@ by 0.3.3.
 
 Changes:
 --------
-0.3.2b (8/11/2006)
------------------
+0.3.2b (8/12/2006)
+------------------
 - Installer/Shortcuts
+- Add status bar
 - Add support for hex ID strings for Mitsubishi support
 - Fix goofy behavior of increase/decrease at limits
 - Add multiply values function
@@ -55,7 +56,7 @@ Changes:
 
 
 0.3.1b (7/11/2006)
------------------
+------------------
 - Change year attribute to string from int
 - Fix incrementing in compare mode 
 - Fix refresh tables working improperly with multiple ROMs open 
