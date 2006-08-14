@@ -10,6 +10,7 @@ public final class LoggerDataRow {
     private double minValue;
     private double maxValue;
     private double currentValue;
+    private boolean updated = false;
 
     public LoggerDataRow(EcuParameter ecuParam) {
         this.ecuParam = ecuParam;
@@ -37,13 +38,14 @@ public final class LoggerDataRow {
 
     public void updateValue(byte[] bytes) {
         currentValue = ecuParam.getConvertor().convert(bytes);
-        if (currentValue < minValue || minValue == 0.0) {
+        if (currentValue < minValue || !updated) {
             minValue = currentValue;
         }
-        if (currentValue > maxValue || maxValue == 0.0) {
+        if (currentValue > maxValue || !updated) {
             maxValue = currentValue;
         }
         parentTableModel.fireTableDataChanged();
+        updated = true;
     }
 
     public void setParentTableModel(AbstractTableModel parentTableModel) {

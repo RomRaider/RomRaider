@@ -5,7 +5,6 @@ import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuParameterImpl;
 import enginuity.logger.definition.convertor.AcceleratorOpeningAngleConvertor;
 import enginuity.logger.definition.convertor.AirFuelRatioLambdaConvertor;
-import enginuity.logger.definition.convertor.EngineSpeedConvertor;
 import enginuity.logger.definition.convertor.ExhaustGasTemperatureConvertor;
 import enginuity.logger.definition.convertor.GenericTemperatureConvertor;
 import enginuity.logger.definition.convertor.ThrottleOpeningAngleConvertor;
@@ -14,8 +13,9 @@ import enginuity.logger.ui.LoggerDataRow;
 import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.SpringUtilities;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
+import static org.jfree.chart.plot.PlotOrientation.VERTICAL;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -40,6 +40,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
     private final JPanel graphPanel = new JPanel();
     private final JComboBox portsComboBox = new JComboBox();
+    private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
     private int loggerCount = 0;
     private long loggerStartTime = 0;
 
@@ -78,8 +79,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         registerEcuParameterForLogging(ecuParam5);
 
         // add test address to log (0x00000E 0x00000F = engine speed, 16bit)
-        final EcuParameter ecuParam6 = new EcuParameterImpl("Engine Speed", "Engine speed in rpm", "0x00000E00000F", new EngineSpeedConvertor());
-        registerEcuParameterForLogging(ecuParam6);
+        //final EcuParameter ecuParam6 = new EcuParameterImpl("Engine Speed", "Engine speed in rpm", "0x00000E00000F", new EngineSpeedConvertor());
+        //registerEcuParameterForLogging(ecuParam6);
 
     }
 
@@ -92,10 +93,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         final XYSeries series = new XYSeries(ecuParam.getName());
         final XYDataset xyDataset = new XYSeriesCollection(series);
         final JFreeChart chart = ChartFactory.createXYLineChart(ecuParam.getName(), "Time (ms)", ecuParam.getName() + " (" + ecuParam.getConvertor().getUnits() + ")",
-                xyDataset, PlotOrientation.VERTICAL, true, true, false);
-        final JLabel chartLabel = new JLabel();
-        chartLabel.setIcon(new ImageIcon(chart.createBufferedImage(500, 300)));
-        graphPanel.add(chartLabel);
+                xyDataset, VERTICAL, false, true, false);
+        ChartPanel chartPanel = new ChartPanel(chart, false, true, true, true, true);
+        graphPanel.add(chartPanel);
         SpringUtilities.makeCompactGrid(graphPanel, ++loggerCount, 1, 10, 10, 20, 20);
 
         // add to dashboard
@@ -108,7 +108,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
                 // update graph
                 series.add((System.currentTimeMillis() - loggerStartTime), ecuParam.getConvertor().convert(value));
-                chartLabel.setIcon(new ImageIcon(chart.createBufferedImage(500, 300)));
 
                 // update dashboard
 
@@ -185,7 +184,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JTabbedPane buildTabbedDataPane() {
-        JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
         tabbedPane.add("Data", buildDataTab());
         tabbedPane.add("Graph", buildGraphTab());
         tabbedPane.add("Dashboard", buildDashboardTab());
