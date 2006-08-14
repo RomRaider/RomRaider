@@ -60,9 +60,19 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     public ECUEditor() {
         
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            String osName = System.getProperties().getProperty("os.name");
+            
+            
+            //Currently linux has issues with the gtk look and feel themes. If linux is detected, ignore UIManager detail.
+            //TODO Don't just ignore in the future, Tgui
+            if(!osName.equalsIgnoreCase("linux")){
+            	String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
+            	UIManager.setLookAndFeel(lookAndFeel);
+            }
 
-        } catch (Exception ex) { }
+        } catch (Exception ex) { 
+        	System.err.println("Error loading system look and feel.\n"+ ex);
+        }
         
         // get settings from xml
         try {
