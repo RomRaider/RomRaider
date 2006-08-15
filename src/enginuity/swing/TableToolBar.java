@@ -1,7 +1,10 @@
 package enginuity.swing;
 
+import enginuity.maps.DataCell;
 import enginuity.maps.Scale;
 import enginuity.maps.Table;
+import enginuity.maps.Table3D;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -11,6 +14,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Vector;
@@ -27,12 +31,16 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
 
+import com.ecm.graphics.Graph3d;
+
 public class TableToolBar extends JToolBar implements MouseListener, ItemListener {
     
     private JButton   incrementFine   = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
     private JButton   decrementFine   = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
     private JButton   incrementCoarse = new JButton(new ImageIcon("./graphics/icon-inccoarse.png"));
-    private JButton   decrementCoarse = new JButton(new ImageIcon("./graphics/icon-deccoarse.png"));   
+    private JButton   decrementCoarse = new JButton(new ImageIcon("./graphics/icon-deccoarse.png"));
+    private JButton   enable3d = new JButton(new ImageIcon("./graphics/3d_render.png"));
+    
     private JButton   setValue        = new JButton("Set");
     private JButton   multiply        = new JButton("Mul");
     
@@ -55,6 +63,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         this.add(new JLabel("    "));
         this.add(incrementCoarse);
         this.add(decrementCoarse);
+        
         this.add(new JLabel(" "));
         this.add(incrementByCoarse);
         this.add(new JLabel("    "));
@@ -62,6 +71,13 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         this.add(new JLabel(" "));
         this.add(setValue);
         this.add(multiply);
+        this.add(new JLabel("    "));
+        
+        //Only add the 3d button if table includes 3d data
+        if(table.getType() == Table.TABLE_3D){
+        	this.add(enable3d);
+        }
+        
         this.add(new JLabel(" "));
         //this.add(scaleSelection);
                 
@@ -73,6 +89,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         incrementCoarse.setBorder(new LineBorder(new Color(150,150,150), 1));
         decrementCoarse.setMaximumSize(new Dimension(33,33));
         decrementCoarse.setBorder(new LineBorder(new Color(150,150,150), 1));
+        enable3d.setMaximumSize(new Dimension(33,33));
+        enable3d.setBorder(new LineBorder(new Color(150,150,150), 1));
         setValue.setMaximumSize(new Dimension(33,23));
         setValue.setBorder(new LineBorder(new Color(150,150,150), 1));
         multiply.setMaximumSize(new Dimension(33,23));
@@ -94,6 +112,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         decrementFine.setToolTipText("Decrement Value (Fine)");
         incrementCoarse.setToolTipText("Increment Value (Coarse)");
         decrementCoarse.setToolTipText("Decrement Value (Coarse)");
+        enable3d.setToolTipText("Render data in 3d");
         setValue.setToolTipText("Set Absolute Value");
         setValueText.setToolTipText("Set Absolute Value");
         incrementByFine.setToolTipText("Fine Value Adjustment");
@@ -104,6 +123,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         decrementFine.addMouseListener(this);        
         incrementCoarse.addMouseListener(this);
         decrementCoarse.addMouseListener(this);
+        enable3d.addMouseListener(this);
         setValue.addMouseListener(this);
         multiply.addMouseListener(this);
         scaleSelection.addItemListener(this);
@@ -164,6 +184,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == incrementCoarse) incrementCoarse();
         else if (e.getSource() == decrementCoarse) decrementCoarse();
+        else if (e.getSource() == enable3d) enable3d();
         else if (e.getSource() == incrementFine) incrementFine();
         else if (e.getSource() == decrementFine) decrementFine();
         else if (e.getSource() == multiply) multiply();
@@ -194,6 +215,45 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     
     public void decrementCoarse() {
         table.increment(0 - Double.parseDouble(incrementByCoarse.getValue()+""));        
+    }
+    
+    public void enable3d() {
+    	System.out.println("Toggle 3d");
+    	int rowCount = 0;
+    	int valueCount = 0;
+        
+    	//Pull data into format 3d graph understands
+    	Vector graphValues = new Vector();
+    	if(table.getType() == Table.TABLE_3D){
+        	Table3D table3d = (Table3D)table;
+        	DataCell[][] tableData = table3d.get3dData();
+        	valueCount = tableData.length;
+        	DataCell[] dataRow = tableData[0];
+        	rowCount = dataRow.length;
+        	
+        	for(int j = (rowCount-1); j >= 0; j-- ){
+        		float[] rowValues = new float[valueCount];
+            	for(int i = 0; i < valueCount; i++){
+            		DataCell theCell = tableData[i][j];
+            		float theValue = (float)theCell.getValue();
+            		BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
+            		rowValues[i] = finalRoundedValue.floatValue();
+            	}
+            	graphValues.add(rowValues);
+        	}
+        	
+        	int[] testX = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000 };
+			int[] testZ = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 , 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40};
+
+			
+        	
+        	Graph3d graph3d = new Graph3d(graphValues, testX, testZ, "X Label", "Graph Title", "Z Label");
+        	graph3d.theFrame.setVisible(true);
+        }
+    	
+    	
+    	
+    	
     }
     
     public void setCoarseValue(double input) {

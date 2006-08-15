@@ -846,4 +846,8 @@ public class Table3D extends Table {
         xAxis.setScaleByName(getScale().getName());
         yAxis.setScaleByName(getScale().getName());
     }
+    
+    public DataCell[][] get3dData(){
+    	return data;
+    }
 }

@@ -300,4 +300,12 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void multiply(double factor) {
         setRealValue(Double.parseDouble(getText()) * factor+"");   
     }
+
+    /**
+     * Used by 3d graph renderer.
+     * @return
+     */
+	public double getValue() {
+		return calcDisplayValue(binValue, table.getScale().getExpression());
+	}
 }
