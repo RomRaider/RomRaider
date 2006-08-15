@@ -245,9 +245,13 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         	int[] testX = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000 };
 			int[] testZ = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 , 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40};
 
-			
+			//Define Labels for graph
+			String xLabel = ((Table3D)table).getXAxis().getName(); 
+			String zLabel = ((Table3D)table).getYAxis().getName();
+			String yLabel = ((Table3D)table).getCategory();
         	
-        	Graph3d graph3d = new Graph3d(graphValues, testX, testZ, "X Label", "Graph Title", "Z Label");
+			Graph3d graph3d = new Graph3d(graphValues, testX, testZ,xLabel, yLabel, zLabel);
+        	graph3d.theFrame.setTitle(table.getName());
         	graph3d.theFrame.setVisible(true);
         }
     	
