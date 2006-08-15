@@ -1,19 +1,22 @@
 package enginuity.logger.ui;
 
 import enginuity.logger.definition.EcuParameter;
-
-import javax.swing.table.AbstractTableModel;
+import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class LoggerDataRow {
-    private EcuParameter ecuParam;
-    private AbstractTableModel parentTableModel;
+    private final EcuParameter ecuParam;
     private double minValue;
     private double maxValue;
     private double currentValue;
     private boolean updated = false;
 
     public LoggerDataRow(EcuParameter ecuParam) {
+        checkNotNull(ecuParam, "ecuParam");
         this.ecuParam = ecuParam;
+    }
+
+    public EcuParameter getEcuParam() {
+        return ecuParam;
     }
 
     public String getName() {
@@ -44,11 +47,6 @@ public final class LoggerDataRow {
         if (currentValue > maxValue || !updated) {
             maxValue = currentValue;
         }
-        parentTableModel.fireTableDataChanged();
         updated = true;
-    }
-
-    public void setParentTableModel(AbstractTableModel parentTableModel) {
-        this.parentTableModel = parentTableModel;
     }
 }

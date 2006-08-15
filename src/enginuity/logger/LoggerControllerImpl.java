@@ -9,7 +9,6 @@ import enginuity.logger.manager.QueryManagerImpl;
 import enginuity.logger.manager.TransmissionManager;
 import enginuity.logger.manager.TransmissionManagerImpl;
 import enginuity.logger.query.LoggerCallback;
-import enginuity.logger.query.RegisteredQueryImpl;
 import static enginuity.util.ParamChecker.checkNotNull;
 import gnu.io.CommPortIdentifier;
 
@@ -34,18 +33,20 @@ public final class LoggerControllerImpl implements LoggerController {
         return portNames;
     }
 
-    public void start() {
-        new Thread(queryManager).start();
-    }
-
     public void addLogger(EcuParameter ecuParam, LoggerCallback callback) {
         checkNotNull(ecuParam, callback);
-        queryManager.addQuery(new RegisteredQueryImpl(ecuParam, callback));
+        System.out.println("Adding logger:   " + ecuParam.getName());
+        queryManager.addQuery(ecuParam, callback);
     }
 
-    public void removeLogger(String address) {
-        checkNotNull(address, "address");
-        queryManager.removeQuery(address);
+    public void removeLogger(EcuParameter ecuParam) {
+        checkNotNull(ecuParam, "ecuParam");
+        System.out.println("Removing logger: " + ecuParam.getName());
+        queryManager.removeQuery(ecuParam);
+    }
+
+    public void start() {
+        new Thread(queryManager).start();
     }
 
     public void stop() {

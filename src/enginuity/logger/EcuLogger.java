@@ -5,20 +5,14 @@ import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuParameterImpl;
 import enginuity.logger.definition.convertor.AcceleratorOpeningAngleConvertor;
 import enginuity.logger.definition.convertor.AirFuelRatioLambdaConvertor;
+import enginuity.logger.definition.convertor.EngineSpeedConvertor;
 import enginuity.logger.definition.convertor.ExhaustGasTemperatureConvertor;
 import enginuity.logger.definition.convertor.GenericTemperatureConvertor;
 import enginuity.logger.definition.convertor.ThrottleOpeningAngleConvertor;
-import enginuity.logger.query.LoggerCallback;
-import enginuity.logger.ui.LoggerDataRow;
 import enginuity.logger.ui.LoggerDataTableModel;
-import enginuity.logger.ui.SpringUtilities;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import static org.jfree.chart.plot.PlotOrientation.VERTICAL;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
+import enginuity.logger.ui.ParameterListTableModel;
+import enginuity.logger.ui.ParameterRegistrationBroker;
+import enginuity.logger.ui.ParameterRegistrationBrokerImpl;
 
 import javax.swing.*;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
@@ -36,13 +30,12 @@ import java.util.List;
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener {
     private final Settings settings = new Settings();
-    private final LoggerController CONTROLLER = new LoggerControllerImpl(settings);
+    private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
+    private final JComboBox portsComboBox = new JComboBox();
     private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
     private final JPanel graphPanel = new JPanel();
-    private final JComboBox portsComboBox = new JComboBox();
-    private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-    private int loggerCount = 0;
-    private long loggerStartTime = 0;
+    private final ParameterRegistrationBroker broker = new ParameterRegistrationBrokerImpl(settings, dataTableModel, graphPanel);
+    private final ParameterListTableModel paramListTableModel = new ParameterListTableModel(broker);
 
     public EcuLogger(String title) {
         super(title);
@@ -59,66 +52,35 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         getContentPane().add(splitPane);
 
         // add test address to log (0x000008 = coolant temp, 8bit)
-        final EcuParameter ecuParam1 = new EcuParameterImpl("Coolant Temperature", "Coolant temperature in degrees C", "0x000008", new GenericTemperatureConvertor());
-        registerEcuParameterForLogging(ecuParam1);
+        final EcuParameter ecuParam1 = new EcuParameterImpl("Coolant Temperature", "Coolant temperature in degrees C", new String[]{"0x000008"}, new GenericTemperatureConvertor());
+        paramListTableModel.addParam(ecuParam1);
 
         // add test address to log (0x000106 = EGT, 8bit)
-        final EcuParameter ecuParam2 = new EcuParameterImpl("EGT", "Exhaust gas temperature in degrees C", "0x000106", new ExhaustGasTemperatureConvertor());
-        registerEcuParameterForLogging(ecuParam2);
+        final EcuParameter ecuParam2 = new EcuParameterImpl("EGT", "Exhaust gas temperature in degrees C", new String[]{"0x000106"}, new ExhaustGasTemperatureConvertor());
+        paramListTableModel.addParam(ecuParam2);
 
         // add test address to log (0x000046 = air/fuel ratio, 8bit)
-        final EcuParameter ecuParam3 = new EcuParameterImpl("AFR", "Air/Fuel Ratio in Lambda", "0x000046", new AirFuelRatioLambdaConvertor());
-        registerEcuParameterForLogging(ecuParam3);
+        final EcuParameter ecuParam3 = new EcuParameterImpl("AFR", "Air/Fuel Ratio in Lambda", new String[]{"0x000046"}, new AirFuelRatioLambdaConvertor());
+        paramListTableModel.addParam(ecuParam3);
 
         // add test address to log (0x000029 = accelerator opening angle, 8bit)
-        final EcuParameter ecuParam4 = new EcuParameterImpl("Accel Opening Angle", "Accelerator opening angle in %", "0x000029", new AcceleratorOpeningAngleConvertor());
-        registerEcuParameterForLogging(ecuParam4);
+        final EcuParameter ecuParam4 = new EcuParameterImpl("Accel Opening Angle", "Accelerator opening angle in %", new String[]{"0x000029"}, new AcceleratorOpeningAngleConvertor());
+        paramListTableModel.addParam(ecuParam4);
 
         // add test address to log (0x000015 = accelerator opening angle, 8bit)
-        final EcuParameter ecuParam5 = new EcuParameterImpl("Throttle Opening Angle", "Throttle opening angle in %", "0x000015", new ThrottleOpeningAngleConvertor());
-        registerEcuParameterForLogging(ecuParam5);
+        final EcuParameter ecuParam5 = new EcuParameterImpl("Throttle Opening Angle", "Throttle opening angle in %", new String[]{"0x000015"}, new ThrottleOpeningAngleConvertor());
+        paramListTableModel.addParam(ecuParam5);
 
         // add test address to log (0x00000E 0x00000F = engine speed, 16bit)
-        //final EcuParameter ecuParam6 = new EcuParameterImpl("Engine Speed", "Engine speed in rpm", "0x00000E00000F", new EngineSpeedConvertor());
-        //registerEcuParameterForLogging(ecuParam6);
+        final EcuParameter ecuParam6 = new EcuParameterImpl("Engine Speed", "Engine speed in rpm", new String[]{"0x00000E", "0x00000F"}, new EngineSpeedConvertor());
+        paramListTableModel.addParam(ecuParam6);
 
-    }
-
-    private void registerEcuParameterForLogging(final EcuParameter ecuParam) {
-        // add to data table
-        final LoggerDataRow dataRow = new LoggerDataRow(ecuParam);
-        dataTableModel.addRow(dataRow);
-
-        // add to charts
-        final XYSeries series = new XYSeries(ecuParam.getName());
-        final XYDataset xyDataset = new XYSeriesCollection(series);
-        final JFreeChart chart = ChartFactory.createXYLineChart(ecuParam.getName(), "Time (ms)", ecuParam.getName() + " (" + ecuParam.getConvertor().getUnits() + ")",
-                xyDataset, VERTICAL, false, true, false);
-        ChartPanel chartPanel = new ChartPanel(chart, false, true, true, true, true);
-        graphPanel.add(chartPanel);
-        SpringUtilities.makeCompactGrid(graphPanel, ++loggerCount, 1, 10, 10, 20, 20);
-
-        // add to dashboard
-
-        // add logger and setup callback
-        CONTROLLER.addLogger(ecuParam, new LoggerCallback() {
-            public void callback(byte[] value) {
-                // update data table
-                dataRow.updateValue(value);
-
-                // update graph
-                series.add((System.currentTimeMillis() - loggerStartTime), ecuParam.getConvertor().convert(value));
-
-                // update dashboard
-
-            }
-        });
     }
 
     private JComponent buildLeftComponent() {
-        JTable parameterList = new JTable();
-        return new JScrollPane(parameterList, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        return new JScrollPane(new JTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
+
 
     private JComponent buildRightComponent() {
         JPanel rightPanel = new JPanel(new BorderLayout());
@@ -147,14 +109,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                CONTROLLER.stop();
+                broker.stop();
             }
         });
         return portsComboBox;
     }
 
     private void refreshPortsComboBox() {
-        List<String> ports = CONTROLLER.listSerialPorts();
+        List<String> ports = broker.listSerialPorts();
         for (String port : ports) {
             portsComboBox.addItem(port);
         }
@@ -166,8 +128,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                loggerStartTime = System.currentTimeMillis();
-                CONTROLLER.start();
+                broker.start();
             }
         });
         return startButton;
@@ -177,7 +138,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JButton stopButton = new JButton("Stop");
         stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                CONTROLLER.stop();
+                broker.stop();
             }
         });
         return stopButton;
@@ -208,7 +169,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void windowClosing(WindowEvent windowEvent) {
-        CONTROLLER.stop();
+        broker.stop();
     }
 
     public void windowClosed(WindowEvent windowEvent) {

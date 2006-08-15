@@ -7,17 +7,17 @@ import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 public final class EcuParameterImpl implements EcuParameter {
     private String name;
     private String description;
-    private String address;
+    private String[] addresses;
     private EcuParameterConvertor convertor;
 
-    public EcuParameterImpl(String name, String description, String address, EcuParameterConvertor convertor) {
+    public EcuParameterImpl(String name, String description, String[] address, EcuParameterConvertor convertor) {
         checkNotNullOrEmpty(name, "name");
         checkNotNullOrEmpty(description, "description");
-        checkNotNullOrEmpty(address, "address");
+        checkNotNullOrEmpty(address, "addresses");
         checkNotNull(convertor, "convertor");
         this.name = name;
         this.description = description;
-        this.address = address;
+        this.addresses = address;
         this.convertor = convertor;
     }
 
@@ -29,8 +29,8 @@ public final class EcuParameterImpl implements EcuParameter {
         return description;
     }
 
-    public String getAddress() {
-        return address;
+    public String[] getAddresses() {
+        return addresses;
     }
 
     public EcuParameterConvertor getConvertor() {

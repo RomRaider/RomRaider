@@ -1,13 +1,22 @@
 package enginuity.logger.ui;
 
+import enginuity.logger.definition.EcuParameter;
+
 import javax.swing.table.AbstractTableModel;
+import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public final class LoggerDataTableModel extends AbstractTableModel {
-    String[] columnNames = {"ECU Parameter", "Min Value", "Current Value", "Max Value", "Units"};
-    LoggerDataRow[] data = new LoggerDataRow[0];
+    private final String[] columnNames = {"ECU Parameter", "Min Value", "Current Value", "Max Value", "Units"};
+    private final List<EcuParameter> registeredEcuParams = synchronizedList(new LinkedList<EcuParameter>());
+    private final Map<EcuParameter, LoggerDataRow> dataRowMap = synchronizedMap(new LinkedHashMap<EcuParameter, LoggerDataRow>());
 
-    public int getRowCount() {
-        return data.length;
+    public synchronized int getRowCount() {
+        return dataRowMap.size();
     }
 
     public int getColumnCount() {
@@ -22,28 +31,45 @@ public final class LoggerDataTableModel extends AbstractTableModel {
         return false;
     }
 
-    public Object getValueAt(int row, int col) {
+    public synchronized Object getValueAt(int row, int col) {
+        LoggerDataRow dataRow = dataRowMap.get(registeredEcuParams.get(row));
         switch (col) {
             case 0:
-                return data[row].getName();
+                return dataRow.getName();
             case 1:
-                return data[row].getMinValue();
+                return dataRow.getMinValue();
             case 2:
-                return data[row].getCurrentValue();
+                return dataRow.getCurrentValue();
             case 3:
-                return data[row].getMaxValue();
+                return dataRow.getMaxValue();
             case 4:
-                return data[row].getUnits();
+                return dataRow.getUnits();
             default:
                 return "Error!";
         }
     }
 
-    public synchronized void addRow(LoggerDataRow newRow) {
-        newRow.setParentTableModel(this);
-        LoggerDataRow[] newData = new LoggerDataRow[data.length + 1];
-        System.arraycopy(data, 0, newData, 0, data.length);
-        newData[newData.length - 1] = newRow;
-        data = newData;
+    public synchronized void addParam(EcuParameter ecuParam) {
+        if (!registeredEcuParams.contains(ecuParam)) {
+            dataRowMap.put(ecuParam, new LoggerDataRow(ecuParam));
+            registeredEcuParams.add(ecuParam);
+            fireTableDataChanged();
+        }
     }
+
+    public synchronized void removeParam(EcuParameter ecuParam) {
+        registeredEcuParams.remove(ecuParam);
+        dataRowMap.remove(ecuParam);
+        fireTableDataChanged();
+    }
+
+    public synchronized void updateParam(EcuParameter ecuParam, byte[] bytes) {
+        LoggerDataRow dataRow = dataRowMap.get(ecuParam);
+        if (dataRow != null) {
+            dataRow.updateValue(bytes);
+            int index = registeredEcuParams.indexOf(ecuParam);
+            fireTableRowsUpdated(index, index);
+        }
+    }
+
 }

@@ -9,11 +9,11 @@ public interface LoggerController {
 
     List<String> listSerialPorts();
 
-    void start();
-
     void addLogger(EcuParameter ecuParam, LoggerCallback callback);
 
-    void removeLogger(String address);
+    void removeLogger(EcuParameter ecuParam);
+
+    void start();
 
     void stop();
 

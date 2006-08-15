@@ -8,7 +8,7 @@ public interface EcuParameter {
 
     String getDescription();
 
-    String getAddress();
+    String[] getAddresses();
 
     EcuParameterConvertor getConvertor();
 

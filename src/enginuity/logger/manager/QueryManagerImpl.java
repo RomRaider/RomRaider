@@ -1,6 +1,9 @@
 package enginuity.logger.manager;
 
+import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.query.LoggerCallback;
 import enginuity.logger.query.RegisteredQuery;
+import enginuity.logger.query.RegisteredQueryImpl;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import java.util.ArrayList;
@@ -11,9 +14,9 @@ import java.util.Map;
 
 @SuppressWarnings({"FieldCanBeLocal"})
 public final class QueryManagerImpl implements QueryManager {
-    private final Map<String, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<String, RegisteredQuery>());
+    private final Map<EcuParameter, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<EcuParameter, RegisteredQuery>());
     private final List<RegisteredQuery> addList = new ArrayList<RegisteredQuery>();
-    private final List<String> removeList = new ArrayList<String>();
+    private final List<EcuParameter> removeList = new ArrayList<EcuParameter>();
     private final TransmissionManager txManager;
     private boolean stop = false;
 
@@ -22,15 +25,13 @@ public final class QueryManagerImpl implements QueryManager {
         this.txManager = txManager;
     }
 
-    public synchronized void addQuery(RegisteredQuery registeredQuery) {
-        checkNotNull(registeredQuery, "registeredQuery");
-        System.out.println("Adding address: " + registeredQuery.getAddress());
-        addList.add(registeredQuery);
+    public synchronized void addQuery(EcuParameter ecuParam, LoggerCallback callback) {
+        checkNotNull(ecuParam, callback);
+        addList.add(new RegisteredQueryImpl(ecuParam, callback));
     }
 
-    public synchronized void removeQuery(String address) {
-        System.out.println("Removing address: " + address);
-        removeList.add(address);
+    public synchronized void removeQuery(EcuParameter ecuParam) {
+        removeList.add(ecuParam);
     }
 
     public void run() {
@@ -70,14 +71,14 @@ public final class QueryManagerImpl implements QueryManager {
 
     private void addQueries() {
         for (RegisteredQuery registeredQuery : addList) {
-            queryMap.put(registeredQuery.getAddress(), registeredQuery);
+            queryMap.put(registeredQuery.getEcuParam(), registeredQuery);
         }
         addList.clear();
     }
 
     private void removeQueries() {
-        for (String address : removeList) {
-            queryMap.remove(address);
+        for (EcuParameter ecuParam : removeList) {
+            queryMap.remove(ecuParam);
         }
         removeList.clear();
     }
