@@ -1,4 +1,4 @@
-package enginuity.logger.protocol;
+package enginuity.logger.io.serial.protocol;
 
 import enginuity.logger.query.RegisteredQuery;
 

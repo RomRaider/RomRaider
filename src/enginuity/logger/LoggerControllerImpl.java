@@ -1,8 +1,8 @@
 package enginuity.logger;
 
 import enginuity.Settings;
-import enginuity.logger.comms.SerialPortDiscoverer;
-import enginuity.logger.comms.SerialPortDiscovererImpl;
+import enginuity.logger.io.serial.SerialPortDiscoverer;
+import enginuity.logger.io.serial.SerialPortDiscovererImpl;
 import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.manager.QueryManager;
 import enginuity.logger.manager.QueryManagerImpl;

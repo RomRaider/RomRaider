@@ -1,12 +1,13 @@
-package enginuity.logger.comms;
+package enginuity.logger.io.serial;
 
 import enginuity.logger.exception.NotConnectedException;
 import enginuity.logger.exception.PortNotFoundException;
 import enginuity.logger.exception.SerialCommunicationException;
 import enginuity.logger.exception.UnsupportedPortTypeException;
-import enginuity.logger.protocol.ConnectionProperties;
-import enginuity.logger.protocol.Protocol;
+import enginuity.logger.io.serial.protocol.ConnectionProperties;
+import enginuity.logger.io.serial.protocol.Protocol;
 import enginuity.logger.query.RegisteredQuery;
+import enginuity.logger.io.serial.SerialConnection;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNull;

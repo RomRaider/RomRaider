@@ -1,6 +1,7 @@
-package enginuity.logger.protocol;
+package enginuity.logger.io.serial.protocol;
 
 import enginuity.logger.query.RegisteredQuery;
+import enginuity.logger.exception.InvalidResponseException;
 import static enginuity.util.ByteUtil.asByte;
 import static enginuity.util.ByteUtil.asInt;
 import static enginuity.util.HexUtil.asHex;
@@ -21,9 +22,9 @@ public final class SSMProtocol implements Protocol {
     private static final byte READ_ADDRESS_RESPONSE = (byte) 0xE8;
     private static final byte ECU_INIT_COMMAND = (byte) 0xBF;
     private static final byte ECU_INIT_RESPONSE = (byte) 0xFF;
-    private static final int RESPONSE_NON_DATA_BYTES = 6;
     private static final int ADDRESS_SIZE = 3;
     private static final int DATA_SIZE = 1;
+    private static final int RESPONSE_NON_DATA_BYTES = 6;
     private static final int REQUEST_NON_DATA_BYTES = 7;
 
     public byte[] constructReadMemoryRequest(RegisteredQuery query, int numBytes) {

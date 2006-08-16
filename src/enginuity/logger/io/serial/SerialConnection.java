@@ -1,4 +1,4 @@
-package enginuity.logger.comms;
+package enginuity.logger.io.serial;
 
 import enginuity.logger.query.RegisteredQuery;
 

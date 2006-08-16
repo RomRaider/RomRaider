@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<logger>
+    <protocols>
+        <protocol id="SSM">
+            <parameters>
+                <parameter id="Coolant Temperature" desc="Engine coolant temperature reading.">
+                    <address>
+                        <byte>0x000008</byte>
+                    </address>
+                    <convertor>enginuity.logger.definition.convertor.GenericTemperatureConvertor</convertor>
+                </parameter>
+                <parameter id="Engine Speed" desc="Engine speed in Revolutions Per Minute.">
+                    <address>
+                        <byte>0x00000E</byte>
+                        <byte>0x00000F</byte>
+                    </address>
+                    <convertor>enginuity.logger.definition.convertor.EngineSpeedConvertor</convertor>
+                </parameter>
+                <parameter id="Throttle Opening Angle" desc="Engine throttle opening angle.">
+                    <address>
+                        <byte>0x000015</byte>
+                    </address>
+                    <convertor>enginuity.logger.definition.convertor.ThrottleOpeningAngleConvertor</convertor>
+                </parameter>
+                <parameter id="Accelerator Opening Angle" desc="Accelerator pedal opening angle.">
+                    <address>
+                        <byte>0x000029</byte>
+                    </address>
+                    <convertor>enginuity.logger.definition.convertor.AcceleratorOpeningAngleConvertor</convertor>
+                </parameter>
+                <parameter id="EGT" desc="Exhaust gas temperature reading.">
+                    <address>
+                        <byte>0x000106</byte>
+                    </address>
+                    <convertor>enginuity.logger.definition.convertor.ExhaustGasTemperatureConvertor</convertor>
+                </parameter>
+
+                <!-- More to come!! -->
+
+            </parameters>
+        </protocol>
+    </protocols>
+</logger>

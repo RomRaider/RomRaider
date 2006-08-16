@@ -2,13 +2,7 @@ package enginuity.logger;
 
 import enginuity.Settings;
 import enginuity.logger.definition.EcuParameter;
-import enginuity.logger.definition.EcuParameterImpl;
-import enginuity.logger.definition.convertor.AcceleratorOpeningAngleConvertor;
-import enginuity.logger.definition.convertor.AirFuelRatioLambdaConvertor;
-import enginuity.logger.definition.convertor.EngineSpeedConvertor;
-import enginuity.logger.definition.convertor.ExhaustGasTemperatureConvertor;
-import enginuity.logger.definition.convertor.GenericTemperatureConvertor;
-import enginuity.logger.definition.convertor.ThrottleOpeningAngleConvertor;
+import enginuity.logger.definition.EcuParameterLoaderImpl;
 import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.ParameterListTableModel;
 import enginuity.logger.ui.ParameterRegistrationBroker;
@@ -51,29 +45,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         //add to container
         getContentPane().add(splitPane);
 
-        // add test address to log (0x000008 = coolant temp, 8bit)
-        final EcuParameter ecuParam1 = new EcuParameterImpl("Coolant Temperature", "Coolant temperature in degrees C", new String[]{"0x000008"}, new GenericTemperatureConvertor());
-        paramListTableModel.addParam(ecuParam1);
-
-        // add test address to log (0x000106 = EGT, 8bit)
-        final EcuParameter ecuParam2 = new EcuParameterImpl("EGT", "Exhaust gas temperature in degrees C", new String[]{"0x000106"}, new ExhaustGasTemperatureConvertor());
-        paramListTableModel.addParam(ecuParam2);
-
-        // add test address to log (0x000046 = air/fuel ratio, 8bit)
-        final EcuParameter ecuParam3 = new EcuParameterImpl("AFR", "Air/Fuel Ratio in Lambda", new String[]{"0x000046"}, new AirFuelRatioLambdaConvertor());
-        paramListTableModel.addParam(ecuParam3);
-
-        // add test address to log (0x000029 = accelerator opening angle, 8bit)
-        final EcuParameter ecuParam4 = new EcuParameterImpl("Accel Opening Angle", "Accelerator opening angle in %", new String[]{"0x000029"}, new AcceleratorOpeningAngleConvertor());
-        paramListTableModel.addParam(ecuParam4);
-
-        // add test address to log (0x000015 = accelerator opening angle, 8bit)
-        final EcuParameter ecuParam5 = new EcuParameterImpl("Throttle Opening Angle", "Throttle opening angle in %", new String[]{"0x000015"}, new ThrottleOpeningAngleConvertor());
-        paramListTableModel.addParam(ecuParam5);
-
-        // add test address to log (0x00000E 0x00000F = engine speed, 16bit)
-        final EcuParameter ecuParam6 = new EcuParameterImpl("Engine Speed", "Engine speed in rpm", new String[]{"0x00000E", "0x00000F"}, new EngineSpeedConvertor());
-        paramListTableModel.addParam(ecuParam6);
+        // load ecu params from logger config
+        loadEcuParamsFromConfig();
 
     }
 
@@ -163,6 +136,18 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JComponent buildDashboardTab() {
         JPanel dashboardPanel = new JPanel();
         return new JScrollPane(dashboardPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+    }
+
+    private void loadEcuParamsFromConfig() {
+        //TODO: get config file path from settings - handle errors here better too!
+        try {
+            List<EcuParameter> ecuParams = new EcuParameterLoaderImpl().loadFromXml("C:\\_user\\workspaces\\enginuity\\trunk\\src\\enginuity\\logger\\logger.xml");
+            for (EcuParameter ecuParam : ecuParams) {
+                paramListTableModel.addParam(ecuParam);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void windowOpened(WindowEvent windowEvent) {

@@ -1,4 +1,4 @@
-package enginuity.logger.comms;
+package enginuity.logger.io.serial;
 
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;
@@ -7,6 +7,8 @@ import static gnu.io.CommPortIdentifier.getPortIdentifiers;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
+import enginuity.logger.io.serial.SerialPortDiscoverer;
 
 public final class SerialPortDiscovererImpl implements SerialPortDiscoverer {
 

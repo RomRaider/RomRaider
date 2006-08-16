@@ -1,4 +1,4 @@
-package enginuity.logger.protocol;
+package enginuity.logger.exception;
 
 public final class InvalidResponseException extends RuntimeException {
 
