@@ -100,11 +100,17 @@ public final class SSMProtocol implements Protocol {
     }
 
     private byte[][] convertToByteAddresses(Collection<RegisteredQuery> queries) {
-        byte[][] addresses = new byte[queries.size()][ADDRESS_SIZE];
+        int byteCount = 0;
+        for (RegisteredQuery query : queries) {
+            byteCount += query.getAddresses().length;
+        }
+        byte[][] addresses = new byte[byteCount][ADDRESS_SIZE];
         int i = 0;
         for (RegisteredQuery query : queries) {
             byte[] bytes = query.getBytes();
-            System.arraycopy(bytes, 0, addresses[i++], 0, ADDRESS_SIZE);
+            for (int j = 0; j < bytes.length / ADDRESS_SIZE; j++) {
+                System.arraycopy(bytes, j * ADDRESS_SIZE, addresses[i++], 0, ADDRESS_SIZE);
+            }
         }
         return addresses;
     }
