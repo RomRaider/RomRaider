@@ -44,8 +44,10 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
 
             // add to charts
             final XYSeries series = new XYSeries(ecuParam.getName());
+            //TODO: Make chart max item count configurable via settings
+            series.setMaximumItemCount(2000);
             final XYDataset xyDataset = new XYSeriesCollection(series);
-            final JFreeChart chart = ChartFactory.createXYLineChart(ecuParam.getName(), "Time (ms)", ecuParam.getName() + " (" + ecuParam.getConvertor().getUnits() + ")",
+            final JFreeChart chart = ChartFactory.createXYLineChart(ecuParam.getName(), "Time (sec)", ecuParam.getName() + " (" + ecuParam.getConvertor().getUnits() + ")",
                     xyDataset, VERTICAL, false, true, false);
             ChartPanel chartPanel = new ChartPanel(chart, false, true, true, true, true);
             graphPanel.add(chartPanel);
@@ -63,7 +65,7 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
                     dataTableModel.updateParam(ecuParam, value);
 
                     // update graph
-                    series.add((System.currentTimeMillis() - loggerStartTime), ecuParam.getConvertor().convert(value));
+                    series.add((System.currentTimeMillis() - loggerStartTime) / 1000, ecuParam.getConvertor().convert(value));
 
                     // update dashboard
 
