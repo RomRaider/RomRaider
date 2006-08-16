@@ -37,6 +37,19 @@
 
                 <!-- More to come!! -->
 
+                <!-- New format -->
+                <!--
+                <parameter id="Coolant Temperature" desc="Engine coolant temperature reading.">
+                    <address>
+                        <byte>0x000008</byte>
+                    </address>
+                    <conversion>
+                        <metric units="C" expr=""/>
+                        <imperial units="F" expr=""/>
+                    </conversion>
+                </parameter>
+                -->
+
             </parameters>
         </protocol>
     </protocols>

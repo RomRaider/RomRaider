@@ -139,9 +139,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void loadEcuParamsFromConfig() {
-        //TODO: get config file path from settings - handle errors here better too!
+        //TODO: handle errors here better!
         try {
-            List<EcuParameter> ecuParams = new EcuParameterLoaderImpl().loadFromXml("C:\\_user\\workspaces\\enginuity\\trunk\\src\\enginuity\\logger\\logger.xml");
+            EcuParameterLoaderImpl parameterLoader = new EcuParameterLoaderImpl();
+            List<EcuParameter> ecuParams = parameterLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
             for (EcuParameter ecuParam : ecuParams) {
                 paramListTableModel.addParam(ecuParam);
             }

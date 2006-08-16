@@ -40,6 +40,7 @@ public class Settings implements Serializable {
 
     private String loggerPort               = "COM4";
     private String loggerProtocol           = "SSM";
+    private String loggerConfigFilePath     = "./logger.xml";
 
     public Settings() {
         //center window by default
@@ -276,5 +277,9 @@ public class Settings implements Serializable {
 
     public String getLoggerProtocol() {
         return loggerProtocol;
+    }
+
+    public String getLoggerConfigFilePath() {
+        return loggerConfigFilePath;
     }
 }

@@ -8,17 +8,18 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.InputStream;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.File;
 import java.util.List;
 
 public final class EcuParameterLoaderImpl implements EcuParameterLoader {
 
-    public List<EcuParameter> loadFromXml(String loggerXmlPath) {
-        checkNotNullOrEmpty(loggerXmlPath, "loggerXmlPath");
+    public List<EcuParameter> loadFromXml(String loggerConfigFilePath, String protocol) {
+        checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
         try {
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(loggerXmlPath));
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
             try {
                 SAXParser parser = getSaxParserFactory().newSAXParser();
-                LoggerDefinitionHandler handler = new LoggerDefinitionHandler();
+                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol);
                 parser.parse(inputStream, handler);
                 return handler.getEcuParameters();
             } finally {
