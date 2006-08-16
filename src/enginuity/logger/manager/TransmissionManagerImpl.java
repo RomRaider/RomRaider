@@ -1,10 +1,10 @@
 package enginuity.logger.manager;
 
 import enginuity.Settings;
-import enginuity.logger.io.serial.SerialConnection;
-import enginuity.logger.io.serial.SerialConnectionImpl;
 import enginuity.logger.exception.NotConnectedException;
 import enginuity.logger.exception.SerialCommunicationException;
+import enginuity.logger.io.serial.SerialConnection;
+import enginuity.logger.io.serial.SerialConnectionImpl;
 import enginuity.logger.io.serial.protocol.Protocol;
 import enginuity.logger.io.serial.protocol.ProtocolFactory;
 import enginuity.logger.query.LoggerCallback;

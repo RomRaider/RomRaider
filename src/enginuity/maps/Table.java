@@ -3,8 +3,8 @@ package enginuity.maps;
 import enginuity.Settings;
 import enginuity.swing.TableFrame;
 import static enginuity.util.ColorScaler.getScaledColor;
+import enginuity.util.JEPUtil;
 import enginuity.xml.RomAttributeParser;
-import org.nfunk.jep.JEP;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -22,66 +22,66 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 public abstract class Table extends JPanel implements Serializable {
-    
-    public static final int ENDIAN_LITTLE= 1;
-    public static final int ENDIAN_BIG   = 2;
-    
-    public static final int TABLE_1D     = 1;
-    public static final int TABLE_2D     = 2;
-    public static final int TABLE_3D     = 3;
+
+    public static final int ENDIAN_LITTLE = 1;
+    public static final int ENDIAN_BIG = 2;
+
+    public static final int TABLE_1D = 1;
+    public static final int TABLE_2D = 2;
+    public static final int TABLE_3D = 3;
     public static final int TABLE_X_AXIS = 4;
     public static final int TABLE_Y_AXIS = 5;
     public static final int TABLE_SWITCH = 6;
-    
-    public static final int COMPARE_OFF      = 0;
+
+    public static final int COMPARE_OFF = 0;
     public static final int COMPARE_ORIGINAL = 1;
-    public static final int COMPARE_TABLE    = 2;
-    public static final int COMPARE_PERCENT  = 0;
+    public static final int COMPARE_TABLE = 2;
+    public static final int COMPARE_PERCENT = 0;
     public static final int COMPARE_ABSOLUTE = 1;
-    
+
     public static final int STORAGE_TYPE_FLOAT = 99;
 
     protected static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
-    
-    protected String        name;
-    protected int           type;
-    protected String        category    = "Other";
-    protected String        description = "";
-    protected Vector<Scale> scales      = new Vector<Scale>();
-    protected int           scaleIndex  = 0; // index of selected scale
-    
-    protected int           storageAddress;
-    protected int           storageType;
-    protected int           endian;
-    protected boolean       flip;
-    protected DataCell[]    data         = new DataCell[0];
-    protected boolean       isStatic     = false;
-    protected boolean       beforeRam    = false;
-    protected int           ramOffset    = 0;
-    protected BorderLayout  borderLayout = new BorderLayout();
-    protected GridLayout    centerLayout = new GridLayout(1,1,0,0);
-    protected JPanel        centerPanel  = new JPanel(centerLayout);
-    protected TableFrame    frame;
-    protected int           verticalOverhead   = 103;
-    protected int           horizontalOverhead = 2;
-    protected int           cellHeight         = 18;
-    protected int           cellWidth          = 42;
-    protected int           minHeight          = 100;
-    protected int           minWidth           = 425;
-    protected Rom           container;
-    protected int           highlightX;
-    protected int           highlightY;
-    protected boolean       highlight = false;
-    protected Table         axisParent;   
-    protected Color         maxColor;
-    protected Color         minColor;
-    protected boolean       isAxis         = false;    
-    protected int           compareType    = 0;
-    protected int           compareDisplay = 1;
-    protected int           userLevel      = 0;
-    protected Settings      settings;
-    protected boolean       locked         = false;
-     
+
+    protected String name;
+    protected int type;
+    protected String category = "Other";
+    protected String description = "";
+    protected Vector<Scale> scales = new Vector<Scale>();
+    protected int scaleIndex = 0; // index of selected scale
+
+    protected int storageAddress;
+    protected int storageType;
+    protected int endian;
+    protected boolean flip;
+    protected DataCell[] data = new DataCell[0];
+    protected boolean isStatic = false;
+    protected boolean beforeRam = false;
+    protected int ramOffset = 0;
+    protected BorderLayout borderLayout = new BorderLayout();
+    protected GridLayout centerLayout = new GridLayout(1, 1, 0, 0);
+    protected JPanel centerPanel = new JPanel(centerLayout);
+    protected TableFrame frame;
+    protected int verticalOverhead = 103;
+    protected int horizontalOverhead = 2;
+    protected int cellHeight = 18;
+    protected int cellWidth = 42;
+    protected int minHeight = 100;
+    protected int minWidth = 425;
+    protected Rom container;
+    protected int highlightX;
+    protected int highlightY;
+    protected boolean highlight = false;
+    protected Table axisParent;
+    protected Color maxColor;
+    protected Color minColor;
+    protected boolean isAxis = false;
+    protected int compareType = 0;
+    protected int compareDisplay = 1;
+    protected int userLevel = 0;
+    protected Settings settings;
+    protected boolean locked = false;
+
     public Table(Settings settings) {
         this.setSettings(settings);
         this.setLayout(borderLayout);
@@ -225,7 +225,7 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke num7 = KeyStroke.getKeyStroke('7');
         KeyStroke num8 = KeyStroke.getKeyStroke('8');
         KeyStroke num9 = KeyStroke.getKeyStroke('9');
-        KeyStroke mulKey  = KeyStroke.getKeyStroke('*');
+        KeyStroke mulKey = KeyStroke.getKeyStroke('*');
         KeyStroke mulKeys = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_DOWN_MASK);
         KeyStroke numPoint = KeyStroke.getKeyStroke('.');
         KeyStroke copy = KeyStroke.getKeyStroke("control C");
@@ -302,11 +302,11 @@ public abstract class Table extends JPanel implements Serializable {
         if (scales.isEmpty()) {
             scales.add(new Scale());
         }
-        
+
         // temporarily remove lock
         boolean tempLock = locked;
         locked = false;
-        
+
         if (!isStatic) {
             if (!beforeRam) {
                 ramOffset = container.getRomID().getRamOffset();
@@ -325,7 +325,7 @@ public abstract class Table extends JPanel implements Serializable {
                         byteValue[2] = input[storageAddress + i * 4 - ramOffset + 2];
                         byteValue[3] = input[storageAddress + i * 4 - ramOffset + 3];
                         data[i].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
-                       
+
                     } else { // integer storage type
                         data[i].setBinValue(
                                 RomAttributeParser.parseByteValue(input,
@@ -338,15 +338,15 @@ public abstract class Table extends JPanel implements Serializable {
                     centerPanel.add(data[i]);
                     data[i].setYCoord(i);
                     data[i].setOriginalValue(data[i].getBinValue());
-                    
+
                     // show locked cell
                     if (tempLock) {
                         data[i].setForeground(Color.GRAY);
-                    }                    
+                    }
                 }
             }
         }
-        
+
         // reset locked status
         locked = tempLock;
     }
@@ -499,48 +499,47 @@ public abstract class Table extends JPanel implements Serializable {
     public void colorize() {
         if (compareType == COMPARE_OFF) {
             if (!isStatic && !isAxis) {
-                
+
                 double high = Double.MIN_VALUE;
                 double low = Double.MAX_VALUE;
-                
+
                 if (getScale().getMax() != 0 || getScale().getMin() != 0) {
 
                     // set min and max values if they are set in scale                    
                     high = getScale().getMax();
                     low = getScale().getMin();
-                    
+
                 } else {
 
                     for (int i = 0; i < getDataSize(); i++) {
 
                         if (Double.parseDouble(data[i].getText()) > high) {
                             high = Double.parseDouble(data[i].getText());
-                        } 
+                        }
                         if (Double.parseDouble(data[i].getText()) < low) {
                             low = Double.parseDouble(data[i].getText());
                         }
                     }
                 }
-                
+
                 for (int i = 0; i < getDataSize(); i++) {
-                    
+
                     if (Double.parseDouble(data[i].getText()) > high ||
                             Double.parseDouble(data[i].getText()) < low) {
-                        
+
                         // value exceeds limit
-                    	data[i].setColor(getSettings().getWarningColor());
-                        
-                    } else {                       
+                        data[i].setColor(getSettings().getWarningColor());
+
+                    } else {
                         // limits not set, scale based on table values
-                        double scale = 0;
-                        
+                        double scale;
                         if (high - low == 0) {
                             // if all values are the same, color will be middle value
-                            scale = .5;                            
+                            scale = .5;
                         } else {
-                            scale = (Double.parseDouble(data[i].getText()) - low) / (high - low);                            
+                            scale = (Double.parseDouble(data[i].getText()) - low) / (high - low);
                         }
-                        
+
                         data[i].setColor(getScaledColor(scale, getSettings()));
                     }
                 }
@@ -636,7 +635,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
     }
-    
+
     public void multiply(double factor) {
         if (!isStatic && !locked) {
             for (DataCell cell : data) {
@@ -646,9 +645,9 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
         colorize();
-    }    
+    }
 
-    public void setRealValue(String realValue) {        
+    public void setRealValue(String realValue) {
         if (!isStatic && !locked) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
@@ -957,7 +956,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void applyColorSettings(Settings settings) {
         this.setSettings(settings);
-        
+
         // apply settings to cells
         for (int i = 0; i < getDataSize(); i++) {
             this.setMaxColor(settings.getMaxColor());
@@ -998,23 +997,18 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void validateScaling() {
         if (type != Table.TABLE_SWITCH && !isStatic) {
-            JEP parser = new JEP();
-            parser.initSymTab(); // clear the contents of the symbol table
-            parser.addVariable("x", 5);
 
             // make sure a scale is present
             if (scales.isEmpty()) {
                 scales.add(new Scale());
             }
 
-            parser.parseExpression(scales.get(scaleIndex).getExpression());
-            double toReal = parser.getValue(); // calculate real world value of "5"
-
-            parser.addVariable("x", toReal);
-            parser.parseExpression(scales.get(scaleIndex).getByteExpression());
+            double startValue = 5;
+            double toReal = JEPUtil.evaluate(scales.get(scaleIndex).getExpression(), startValue); // calculate real world value of "5"
+            double endValue = JEPUtil.evaluate(scales.get(scaleIndex).getByteExpression(), toReal);
 
             // if real to byte doesn't equal 5, report conflict
-            if (Math.abs(parser.getValue() - 5) > .001) {
+            if (Math.abs(endValue - startValue) > .001) {
 
                 JPanel panel = new JPanel();
                 panel.setLayout(new GridLayout(4, 1));

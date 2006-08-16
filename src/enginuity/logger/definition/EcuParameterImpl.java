@@ -1,6 +1,5 @@
 package enginuity.logger.definition;
 
-import enginuity.logger.definition.convertor.EcuParameterConvertor;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 

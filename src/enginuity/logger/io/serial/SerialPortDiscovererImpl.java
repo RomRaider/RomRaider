@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import enginuity.logger.io.serial.SerialPortDiscoverer;
-
 public final class SerialPortDiscovererImpl implements SerialPortDiscoverer {
 
     @SuppressWarnings({"unchecked"})

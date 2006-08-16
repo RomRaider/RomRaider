@@ -1,7 +1,5 @@
 package enginuity.logger.definition;
 
-import enginuity.logger.definition.convertor.EcuParameterConvertor;
-import enginuity.logger.exception.ConfigurationException;
 import enginuity.util.ParamChecker;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -15,9 +13,13 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_PROTOCOL = "protocol";
     private static final String TAG_PARAMETER = "parameter";
     private static final String TAG_CONVERTOR = "convertor";
+    private static final String TAG_METRIC = "metric";
     private static final String TAG_BYTE = "byte";
     private static final String ATTR_ID = "id";
     private static final String ATTR_DESC = "desc";
+    private static final String ATTR_UNITS = "units";
+    private static final String ATTR_EXPRESSION = "expr";
+    private static final String ATTR_FORMAT = "format";
     private List<EcuParameter> params;
     private String paramName;
     private String paramDesc;
@@ -44,6 +46,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 paramName = attributes.getValue(ATTR_ID);
                 paramDesc = attributes.getValue(ATTR_DESC);
                 addressList = new ArrayList<String>();
+            } else if (TAG_METRIC.equals(qName)) {
+                convertor = new EcuParameterConvertorImpl(attributes.getValue(ATTR_UNITS), attributes.getValue(ATTR_EXPRESSION),
+                        attributes.getValue(ATTR_FORMAT));
             }
         }
         charBuffer = new StringBuilder();
@@ -61,12 +66,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         } else if (parseProtocol) {
             if (TAG_BYTE.equals(qName)) {
                 addressList.add(charBuffer.toString());
-            } else if (TAG_CONVERTOR.equals(qName)) {
-                try {
-                    convertor = (EcuParameterConvertor) Class.forName(charBuffer.toString().trim()).newInstance();
-                } catch (Exception e) {
-                    throw new ConfigurationException(e);
-                }
             } else if (TAG_PARAMETER.equals(qName)) {
                 String[] addresses = new String[addressList.size()];
                 addressList.toArray(addresses);

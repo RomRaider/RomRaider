@@ -1,7 +1,7 @@
 package enginuity.logger.io.serial.protocol;
 
-import enginuity.logger.query.RegisteredQuery;
 import enginuity.logger.exception.InvalidResponseException;
+import enginuity.logger.query.RegisteredQuery;
 import static enginuity.util.ByteUtil.asByte;
 import static enginuity.util.ByteUtil.asInt;
 import static enginuity.util.HexUtil.asHex;

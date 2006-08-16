@@ -5,10 +5,10 @@ import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.InputStream;
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 public final class EcuParameterLoaderImpl implements EcuParameterLoader {
