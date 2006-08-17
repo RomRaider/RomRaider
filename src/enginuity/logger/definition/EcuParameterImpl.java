@@ -11,7 +11,7 @@ public final class EcuParameterImpl implements EcuParameter {
 
     public EcuParameterImpl(String name, String description, String[] address, EcuParameterConvertor convertor) {
         checkNotNullOrEmpty(name, "name");
-        checkNotNullOrEmpty(description, "description");
+        checkNotNull(description, "description");
         checkNotNullOrEmpty(address, "addresses");
         checkNotNull(convertor, "convertor");
         this.name = name;

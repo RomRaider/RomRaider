@@ -4,12 +4,66 @@
         <protocol id="SSM">
             <parameters>
 
+                <parameter id="Engine Load" desc="Engine load reading.">
+                    <address>
+                        <byte>0x000007</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
                 <parameter id="Coolant Temperature" desc="Engine coolant temperature reading.">
                     <address>
                         <byte>0x000008</byte>
                     </address>
                     <conversion>
                         <metric units="C" expr="x-40" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Correction #1" desc="">
+                    <address>
+                        <byte>0x000009</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="(x-128)/1.28" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Learning #1" desc="">
+                    <address>
+                        <byte>0x00000A</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="(x-128)/1.28" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Correction #2" desc="">
+                    <address>
+                        <byte>0x00000B</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="(x-128)/1.28" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Learning #2" desc="">
+                    <address>
+                        <byte>0x00000C</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="(x-128)/1.28" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Manifold Absolute Pressure" desc="">
+                    <address>
+                        <byte>0x00000D</byte>
+                    </address>
+                    <conversion>
+                        <metric units="psi" expr="x*37/255" format="0.0"/>
                     </conversion>
                 </parameter>
 
@@ -23,12 +77,196 @@
                     </conversion>
                 </parameter>
 
+                <parameter id="Vehicle Speed" desc="">
+                    <address>
+                        <byte>0x000010</byte>
+                    </address>
+                    <conversion>
+                        <metric units="km/h" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Ignition Timing" desc="">
+                    <address>
+                        <byte>0x000011</byte>
+                    </address>
+                    <conversion>
+                        <metric units="degrees" expr="(x-128)/2" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Intake Air Temperature" desc="">
+                    <address>
+                        <byte>0x000012</byte>
+                    </address>
+                    <conversion>
+                        <metric units="C" expr="x-40" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Mass Air Flow" desc="">
+                    <address>
+                        <byte>0x000013</byte>
+                        <byte>0x000014</byte>
+                    </address>
+                    <conversion>
+                        <metric units="gram/s" expr="x/100" format="0.00"/>
+                    </conversion>
+                </parameter>
+
                 <parameter id="Throttle Opening Angle" desc="Engine throttle opening angle.">
                     <address>
                         <byte>0x000015</byte>
                     </address>
                     <conversion>
                         <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Front O2 Sensor #1" desc="">
+                    <address>
+                        <byte>0x000016</byte>
+                        <byte>0x000017</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/200" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Rear O2 Sensor" desc="">
+                    <address>
+                        <byte>0x000018</byte>
+                        <byte>0x000019</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/200" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Front O2 Sensor #2" desc="">
+                    <address>
+                        <byte>0x00001A</byte>
+                        <byte>0x00001B</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/200" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Battery Voltage" desc="">
+                    <address>
+                        <byte>0x00001C</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/12.5" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air Flow Sensor Voltage" desc="">
+                    <address>
+                        <byte>0x00001D</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Throttle Sensor Voltage" desc="">
+                    <address>
+                        <byte>0x00001E</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Differential Pressure Sensor Voltage" desc="">
+                    <address>
+                        <byte>0x00001F</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Fuel Injection #1 Pulse Width" desc="">
+                    <address>
+                        <byte>0x000020</byte>
+                    </address>
+                    <conversion>
+                        <metric units="ms" expr="x*0.256" format="0.00"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Fuel Injection #2 Pulse Width" desc="">
+                    <address>
+                        <byte>0x000021</byte>
+                    </address>
+                    <conversion>
+                        <metric units="ms" expr="x*0.256" format="0.00"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Knock Correction" desc="">
+                    <address>
+                        <byte>0x000022</byte>
+                    </address>
+                    <conversion>
+                        <metric units="degrees" expr="(x-128)/2" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Atmospheric Pressure" desc="">
+                    <address>
+                        <byte>0x000023</byte>
+                    </address>
+                    <conversion>
+                        <metric units="psi" expr="x*37/255" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Manifold Relative Pressure" desc="">
+                    <address>
+                        <byte>0x000024</byte>
+                    </address>
+                    <conversion>
+                        <metric units="psi" expr="(x-128)*37/255" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Pressure Differential Sensor" desc="">
+                    <address>
+                        <byte>0x000025</byte>
+                    </address>
+                    <conversion>
+                        <metric units="psi" expr="(x-128)*37/255" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Fuel Tank Pressure" desc="">
+                    <address>
+                        <byte>0x000026</byte>
+                    </address>
+                    <conversion>
+                        <metric units="psi" expr="(x-128)*0.0035" format="0.00"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="CO Adjustment" desc="">
+                    <address>
+                        <byte>0x000027</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Learned Ignition Timing" desc="">
+                    <address>
+                        <byte>0x000028</byte>
+                    </address>
+                    <conversion>
+                        <metric units="degrees" expr="(x-128)/2" format="0.0"/>
                     </conversion>
                 </parameter>
 
@@ -41,7 +279,250 @@
                     </conversion>
                 </parameter>
 
-                <parameter id="AFR" desc="Engine air/fuel ratio reading.">
+                <parameter id="Fuel Temperature" desc="">
+                    <address>
+                        <byte>0x00002A</byte>
+                    </address>
+                    <conversion>
+                        <metric units="C" expr="x-40" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Front O2 Heater Current #1" desc="">
+                    <address>
+                        <byte>0x00002B</byte>
+                    </address>
+                    <conversion>
+                        <metric units="A" expr="x*10.04/256" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Rear O2 Heater Current" desc="">
+                    <address>
+                        <byte>0x00002C</byte>
+                    </address>
+                    <conversion>
+                        <metric units="A" expr="x*10.04/256" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Front O2 Heater Current #2" desc="">
+                    <address>
+                        <byte>0x00002D</byte>
+                    </address>
+                    <conversion>
+                        <metric units="A" expr="x*10.04/256" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Fuel Level" desc="">
+                    <address>
+                        <byte>0x00002E</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Primary Wastegate Duty Cycle" desc="">
+                    <address>
+                        <byte>0x000030</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Secondary Wastegate Duty Cycle" desc="">
+                    <address>
+                        <byte>0x000031</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="CPC Valve Duty Ratio" desc="">
+                    <address>
+                        <byte>0x000032</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Tumble Valve Position Sensor Right" desc="">
+                    <address>
+                        <byte>0x000033</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Tumble Valve Position Sensor Left" desc="">
+                    <address>
+                        <byte>0x000034</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Idle Speed Control Valve Duty Ratio" desc="">
+                    <address>
+                        <byte>0x000035</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Lean Correction" desc="">
+                    <address>
+                        <byte>0x000036</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Heater Duty" desc="">
+                    <address>
+                        <byte>0x000037</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Idle Speed Control Valve Step" desc="">
+                    <address>
+                        <byte>0x000038</byte>
+                    </address>
+                    <conversion>
+                        <metric units="steps" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Number of Exh. Gas Recirc. Steps" desc="">
+                    <address>
+                        <byte>0x000039</byte>
+                    </address>
+                    <conversion>
+                        <metric units="steps" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Alternator Duty" desc="">
+                    <address>
+                        <byte>0x00003A</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Fuel Pump Duty" desc="">
+                    <address>
+                        <byte>0x00003B</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Intake VVT Advance Angle Right" desc="">
+                    <address>
+                        <byte>0x00003C</byte>
+                    </address>
+                    <conversion>
+                        <metric units="degrees" expr="x-50" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Intake VVT Advance Angle Left" desc="">
+                    <address>
+                        <byte>0x00003D</byte>
+                    </address>
+                    <conversion>
+                        <metric units="degrees" expr="x-50" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Intake OCV Duty Right" desc="">
+                    <address>
+                        <byte>0x00003E</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Intake OCV Duty Left" desc="">
+                    <address>
+                        <byte>0x00003F</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Intake OCV Current Right" desc="">
+                    <address>
+                        <byte>0x000040</byte>
+                    </address>
+                    <conversion>
+                        <metric units="mA" expr="x/32" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Intake OCV Current Left" desc="">
+                    <address>
+                        <byte>0x000041</byte>
+                    </address>
+                    <conversion>
+                        <metric units="mA" expr="x/32" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Sensor #1 Current" desc="">
+                    <address>
+                        <byte>0x000042</byte>
+                    </address>
+                    <conversion>
+                        <metric units="mA" expr="(x-128)/8" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Sensor #2 Current" desc="">
+                    <address>
+                        <byte>0x000043</byte>
+                    </address>
+                    <conversion>
+                        <metric units="mA" expr="(x-128)/8" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Sensor #1 Resistance" desc="">
+                    <address>
+                        <byte>0x000044</byte>
+                    </address>
+                    <conversion>
+                        <metric units="ohms" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Sensor #2 Resistance" desc="">
+                    <address>
+                        <byte>0x000045</byte>
+                    </address>
+                    <conversion>
+                        <metric units="ohms" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Sensor #1" desc="">
                     <address>
                         <byte>0x000046</byte>
                     </address>
@@ -50,7 +531,187 @@
                     </conversion>
                 </parameter>
 
-                <parameter id="EGT" desc="Exhaust gas temperature reading.">
+                <parameter id="Air/Fuel Sensor #2" desc="">
+                    <address>
+                        <byte>0x000047</byte>
+                    </address>
+                    <conversion>
+                        <metric units="Lambda" expr="x/128" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Gear Position" desc="">
+                    <address>
+                        <byte>0x00004A</byte>
+                    </address>
+                    <conversion>
+                        <metric units="gear" expr="x+1" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="A/F Sensor #1 Heater Current" desc="">
+                    <address>
+                        <byte>0x000053</byte>
+                    </address>
+                    <conversion>
+                        <metric units="A" expr="x/10" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="A/F Sensor #2 Heater Current" desc="">
+                    <address>
+                        <byte>0x000054</byte>
+                    </address>
+                    <conversion>
+                        <metric units="A" expr="x/10" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Roughness Monitor Cylinder #1" desc="">
+                    <address>
+                        <byte>0x0000CE</byte>
+                    </address>
+                    <conversion>
+                        <metric units="?" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Roughness Monitor Cylinder #2" desc="">
+                    <address>
+                        <byte>0x0000CF</byte>
+                    </address>
+                    <conversion>
+                        <metric units="?" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Correction #3" desc="">
+                    <address>
+                        <byte>0x0000D0</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="(x-128)/1.28" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Learning #3" desc="">
+                    <address>
+                        <byte>0x0000D1</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="(x-128)/1.28" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Rear O2 Heater Voltage" desc="">
+                    <address>
+                        <byte>0x0000D2</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Air/Fuel Adjustment Voltage" desc="">
+                    <address>
+                        <byte>0x0000D3</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Roughness Monitor Cylinder #3" desc="">
+                    <address>
+                        <byte>0x0000D8</byte>
+                    </address>
+                    <conversion>
+                        <metric units="?" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Roughness Monitor Cylinder #4" desc="">
+                    <address>
+                        <byte>0x0000D9</byte>
+                    </address>
+                    <conversion>
+                        <metric units="?" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Throttle Motor Duty" desc="">
+                    <address>
+                        <byte>0x0000FA</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="(x-128)/1.28" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Throttle Motor Voltage" desc="">
+                    <address>
+                        <byte>0x0000FB</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x*0.08" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Sub Throttle Sensor" desc="">
+                    <address>
+                        <byte>0x000100</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Main Throttle Sensor" desc="">
+                    <address>
+                        <byte>0x000101</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Sub Accelerator Sensor" desc="">
+                    <address>
+                        <byte>0x000102</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Main Accelerator Sensor" desc="">
+                    <address>
+                        <byte>0x000103</byte>
+                    </address>
+                    <conversion>
+                        <metric units="V" expr="x/50" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Brake Booster Pressure" desc="">
+                    <address>
+                        <byte>0x000104</byte>
+                    </address>
+                    <conversion>
+                        <metric units="psi" expr="x*37/255" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Fuel Pressure (High)" desc="">
+                    <address>
+                        <byte>0x000105</byte>
+                    </address>
+                    <conversion>
+                        <metric units="MPa" expr="x/25" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Exhaust Gas Temperature" desc="Exhaust gas temperature reading.">
                     <address>
                         <byte>0x000106</byte>
                     </address>
@@ -59,9 +720,179 @@
                     </conversion>
                 </parameter>
 
-                <!-- More to come!! -->
+                <parameter id="Cold Start Injector" desc="">
+                    <address>
+                        <byte>0x000108</byte>
+                    </address>
+                    <conversion>
+                        <metric units="ms" expr="x*0.256" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="SCV Step" desc="">
+                    <address>
+                        <byte>0x000109</byte>
+                    </address>
+                    <conversion>
+                        <metric units="steps" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Memorised Cruise Speed" desc="">
+                    <address>
+                        <byte>0x00010A</byte>
+                    </address>
+                    <conversion>
+                        <metric units="km/h" expr="x" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Exhaust VVT Advance Angle Right" desc="">
+                    <address>
+                        <byte>0x000118</byte>
+                    </address>
+                    <conversion>
+                        <metric units="degrees" expr="x-50" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Exhaust VVT Advance Angle Left" desc="">
+                    <address>
+                        <byte>0x000119</byte>
+                    </address>
+                    <conversion>
+                        <metric units="degrees" expr="x-50" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Exhaust OCV Duty Right" desc="">
+                    <address>
+                        <byte>0x00011A</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Exhaust OCV Duty Left" desc="">
+                    <address>
+                        <byte>0x00011B</byte>
+                    </address>
+                    <conversion>
+                        <metric units="%" expr="x/2.55" format="0.0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Exhaust OCV Current Right" desc="">
+                    <address>
+                        <byte>0x00011C</byte>
+                    </address>
+                    <conversion>
+                        <metric units="mA" expr="x*32" format="0"/>
+                    </conversion>
+                </parameter>
+
+                <parameter id="Exhaust OCV Current Left" desc="">
+                    <address>
+                        <byte>0x00011D</byte>
+                    </address>
+                    <conversion>
+                        <metric units="mA" expr="x*32" format="0"/>
+                    </conversion>
+                </parameter>
 
             </parameters>
+
+            <switches>
+
+                <switch id="AT Vehicle ID" desc="" byte="0x000061" bit="6"/>
+                <switch id="Test Mode Connector" desc="" byte="0x000061" bit="5"/>
+                <switch id="Read Memory Connector" desc="" byte="0x000061" bit="4"/>
+                <switch id="Neutral Position Switch" desc="" byte="0x000062" bit="7"/>
+                <switch id="Idle Switch" desc="" byte="0x000062" bit="6"/>
+                <switch id="Intercooler AutoWash Switch" desc="" byte="0x000062" bit="4"/>
+                <switch id="Ignition Switch" desc="" byte="0x000062" bit="3"/>
+                <switch id="Power Steering Switch" desc="" byte="0x000062" bit="2"/>
+                <switch id="Air Conditioning Switch" desc="" byte="0x000062" bit="1"/>
+                <switch id="Handle Switch" desc="" byte="0x000063" bit="7"/>
+                <switch id="Starter Switch" desc="" byte="0x000063" bit="6"/>
+                <switch id="Front O2 Rich Signal" desc="" byte="0x000063" bit="5"/>
+                <switch id="Rear O2 Rich Signal" desc="" byte="0x000063" bit="4"/>
+                <switch id="Front O2 #2 Rich Signal" desc="" byte="0x000063" bit="3"/>
+                <switch id="Knock Signal 1" desc="" byte="0x000063" bit="2"/>
+                <switch id="Knock Signal 2" desc="" byte="0x000063" bit="1"/>
+                <switch id="Electrical Load Signal" desc="" byte="0x000063" bit="0"/>
+                <switch id="Crank Position Sensor" desc="" byte="0x000064" bit="7"/>
+                <switch id="Cam Position Sensor" desc="" byte="0x000064" bit="6"/>
+                <switch id="Defogger Switch" desc="" byte="0x000064" bit="5"/>
+                <switch id="Blower Switch" desc="" byte="0x000064" bit="4"/>
+                <switch id="Interior Light Switch" desc="" byte="0x000064" bit="3"/>
+                <switch id="Wiper Switch" desc="" byte="0x000064" bit="2"/>
+                <switch id="Air-Con Lock Signal" desc="" byte="0x000064" bit="1"/>
+                <switch id="Air-Con Mid Pressure Switch" desc="" byte="0x000064" bit="0"/>
+
+<!--
+
+Switch P0x065
+7 Air-Con Compressor Signal
+6 Radiator Fan Relay #3
+5 Radiator Fan Relay #1
+4 Radiator Fan Relay #2
+3 Fuel Pump Relay
+2 Intercooler Auto-Wash Relay
+1 CPC Solenoid Valve
+0 Blow-By Leak Connector
+
+Switch P0x066
+7 PCV Solenoid Valve
+6 TGV Output
+5 TGV Drive
+4 Variable Intake Air Solenoid
+3 Pressure Sources Change
+2 Vent Solenoid Valve
+1 P/S Solenoid Valve
+0 Assist Air Solenoid Valve
+
+Switch P0x067
+7 Tank Sensor Control Valve
+6 Relief Valve Solenoid 1
+5 Relief Valve Solenoid 2
+4 TCS Relief Valve Solenoid
+3 Ex. Gas Positive Pressure
+2 Ex. Gas Negative Pressure
+1 Intake Air Solenoid
+0 Muffler Control
+
+Switch P0x068
+3 Retard Signal from AT
+2 Fuel Cut Signal from AT
+1 Ban of Torque Down
+0 Request Torque Down VDC
+
+Switch P0x069
+7 Torque Control Signal #1
+6 Torque Control Signal #2
+5 Torque Permission Signal
+4 EAM Signal
+3 AT coop. lock up signal
+2 AT coop. lean burn signal
+1 AT coop. rich spike signal
+0 AET Signal
+
+Switch P0x120
+6 ETC Motor Relay
+
+Switch P0x121
+7 Clutch Switch
+6 Stop Light Switch
+5 Set/Coast Switch
+4 Rsume/Accelerate Switch
+3 Brake Switch
+1 Accelerator Switch
+
+-->
+
+            </switches>
         </protocol>
     </protocols>
 </logger>

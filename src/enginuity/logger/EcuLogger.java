@@ -65,7 +65,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
         JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
         splitPane.setDividerSize(2);
-        splitPane.setDividerLocation(250);
+        splitPane.setDividerLocation(300);
         return splitPane;
     }
 
@@ -130,7 +130,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private JComponent buildGraphTab() {
         graphPanel.setLayout(new SpringLayout());
-        return new JScrollPane(graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        return new JScrollPane(graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
     private JComponent buildDashboardTab() {
