@@ -7,6 +7,12 @@ import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.ParameterListTableModel;
 import enginuity.logger.ui.ParameterRegistrationBroker;
 import enginuity.logger.ui.ParameterRegistrationBrokerImpl;
+import enginuity.logger.ui.handler.DashboardUpdateHandler;
+import enginuity.logger.ui.handler.FileUpdateHandler;
+import enginuity.logger.ui.handler.GraphUpdateHandler;
+import enginuity.logger.ui.handler.LiveDataUpdateHandler;
+import enginuity.logger.ui.handler.ParameterUpdateHandlerManager;
+import enginuity.logger.ui.handler.ParameterUpdateHandlerManagerImpl;
 
 import javax.swing.*;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
@@ -28,26 +34,55 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private final JComboBox portsComboBox = new JComboBox();
     private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
     private final JPanel graphPanel = new JPanel();
-    private final ParameterRegistrationBroker broker = new ParameterRegistrationBrokerImpl(settings, dataTableModel, graphPanel);
+    private final ParameterUpdateHandlerManager handlerManager = new ParameterUpdateHandlerManagerImpl();
+    private final ParameterRegistrationBroker broker = new ParameterRegistrationBrokerImpl(handlerManager, settings);
     private final ParameterListTableModel paramListTableModel = new ParameterListTableModel(broker);
 
     public EcuLogger(String title) {
         super(title);
 
-        //build left and right components of split pane
-        JComponent leftComponent = buildLeftComponent();
-        JComponent rightComponent = buildRightComponent();
+        // setup the user interface
+        initUserInterface();
 
-        //build split pane
-        JSplitPane splitPane = buildSplitPane(leftComponent, rightComponent);
-        splitPane.addPropertyChangeListener(this);
-
-        //add to container
-        getContentPane().add(splitPane);
+        // setup parameter update handlers
+        initParameterUpdateHandlers();
 
         // load ecu params from logger config
         loadEcuParamsFromConfig();
 
+    }
+
+    private void initUserInterface() {
+        // build left and right components of split pane
+        JComponent leftComponent = buildLeftComponent();
+        JComponent rightComponent = buildRightComponent();
+
+        // build split pane
+        JSplitPane splitPane = buildSplitPane(leftComponent, rightComponent);
+        splitPane.addPropertyChangeListener(this);
+
+        // add to container
+        getContentPane().add(splitPane);
+    }
+
+    private void loadEcuParamsFromConfig() {
+        //TODO: handle errors here better!
+        try {
+            EcuParameterLoaderImpl parameterLoader = new EcuParameterLoaderImpl();
+            List<EcuParameter> ecuParams = parameterLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
+            for (EcuParameter ecuParam : ecuParams) {
+                paramListTableModel.addParam(ecuParam);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initParameterUpdateHandlers() {
+        handlerManager.addHandler(new LiveDataUpdateHandler(dataTableModel));
+        handlerManager.addHandler(new GraphUpdateHandler(graphPanel));
+        handlerManager.addHandler(new DashboardUpdateHandler());
+        handlerManager.addHandler(new FileUpdateHandler(settings));
     }
 
     private JComponent buildLeftComponent() {
@@ -138,19 +173,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return new JScrollPane(dashboardPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
     }
 
-    private void loadEcuParamsFromConfig() {
-        //TODO: handle errors here better!
-        try {
-            EcuParameterLoaderImpl parameterLoader = new EcuParameterLoaderImpl();
-            List<EcuParameter> ecuParams = parameterLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
-            for (EcuParameter ecuParam : ecuParams) {
-                paramListTableModel.addParam(ecuParam);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void windowOpened(WindowEvent windowEvent) {
     }
 
@@ -175,6 +197,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
     }
+
+    //**********************************************************************
+
 
     public static void main(String... args) {
         SwingUtilities.invokeLater(new Runnable() {
