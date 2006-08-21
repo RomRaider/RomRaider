@@ -17,6 +17,7 @@ import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -31,9 +32,11 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
 
-import com.ecm.graphics.Graph3d;
+import com.ecm.graphics.Graph3dManager;
+import com.ecm.graphics.listeners.ModifiedDataListener;
+import com.ecm.graphics.listeners.TableData;
 
-public class TableToolBar extends JToolBar implements MouseListener, ItemListener {
+public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ModifiedDataListener {
     
     private JButton   incrementFine   = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
     private JButton   decrementFine   = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
@@ -250,9 +253,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 			String zLabel = ((Table3D)table).getYAxis().getName();
 			String yLabel = ((Table3D)table).getCategory();
         	
-			Graph3d graph3d = new Graph3d(graphValues, testX, testZ,xLabel, yLabel, zLabel);
-        	graph3d.theFrame.setTitle(table.getName());
-        	graph3d.theFrame.setVisible(true);
+			//TODO Implement JFrame Title once again
+			Graph3dManager.openGraph3dFrame(graphValues, testX, testZ,xLabel, yLabel, zLabel);
+			Graph3dManager.addListener(this);
         }
     	
     	
@@ -306,4 +309,22 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             table.setScaleIndex(scaleSelection.getSelectedIndex());
         }
     }    
+    
+    
+    // ******************************************
+    // Code for listening to graph3d data changes
+    // ******************************************
+	public void newGraphData(Vector data) {
+		
+		System.out.println("New data recieved at the client \n*********************");
+		
+		
+		Iterator modDataListenerIterator = data.iterator();
+		while(modDataListenerIterator.hasNext()){
+			TableData td = (TableData)modDataListenerIterator.next();
+			System.out.println("X:"+td.getX()+" Z:"+td.getZ()+" VALUE:"+td.getValue());
+		}
+		
+		System.out.println("*********************");
+	}
 }
