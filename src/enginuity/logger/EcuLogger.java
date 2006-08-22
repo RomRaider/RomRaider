@@ -21,7 +21,10 @@ import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import java.awt.*;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.NORTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -39,6 +42,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private final DataUpdateHandlerManager handlerManager = new DataUpdateHandlerManagerImpl();
     private final ParameterRegistrationBroker broker = new ParameterRegistrationBrokerImpl(handlerManager, settings);
     private final ParameterListTableModel paramListTableModel = new ParameterListTableModel(broker);
+    private final ParameterListTableModel switchListTableModel = new ParameterListTableModel(broker);
 
     public EcuLogger(String title) {
         super(title);
@@ -78,7 +82,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
             List<EcuSwitch> ecuSwitches = dataLoader.getEcuSwitches();
             for (EcuSwitch ecuSwitch : ecuSwitches) {
-                paramListTableModel.addParam(ecuSwitch);
+                switchListTableModel.addParam(ecuSwitch);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,14 +97,19 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildLeftComponent() {
-        return new JScrollPane(new JTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane paramList = new JScrollPane(new JTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane switchList = new JScrollPane(new JTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, paramList, switchList);
+        splitPane.setDividerSize(2);
+        splitPane.setDividerLocation(300);
+        return splitPane;
     }
 
 
     private JComponent buildRightComponent() {
         JPanel rightPanel = new JPanel(new BorderLayout());
-        rightPanel.add(buildControlToolbar(), BorderLayout.NORTH);
-        rightPanel.add(buildTabbedDataPane(), BorderLayout.CENTER);
+        rightPanel.add(buildControlToolbar(), NORTH);
+        rightPanel.add(buildTabbedDataPane(), CENTER);
         return rightPanel;
     }
 
