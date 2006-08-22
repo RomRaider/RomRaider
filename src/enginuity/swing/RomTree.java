@@ -12,7 +12,7 @@ import javax.swing.tree.TreePath;
 
 public class RomTree extends JTree implements MouseListener {
     
-    private ECUEditor container;
+    public static ECUEditor container;
     
     public RomTree (DefaultMutableTreeNode input) {
        super(input);

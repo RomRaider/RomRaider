@@ -6,8 +6,11 @@ import enginuity.maps.Table;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+
+import com.ecm.graphics.Graph3dJPanel;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener {
     
@@ -26,8 +29,19 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         setJMenuBar(new TableMenuBar(table));
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         table.setFrame(this);
+        addInternalFrameListener(this);
+    }
+    
+    public TableFrame(Graph3dJPanel graph3dJPanel) {
+        super("Test Title", true, true);
+        this.add(graph3dJPanel);
+        setFrameIcon(null);
+        setBorder(BorderFactory.createBevelBorder(0));
+        setVisible(false);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         addInternalFrameListener(this);        
     }
+    
     
     public TableToolBar getToolBar() {
         return toolBar;

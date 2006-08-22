@@ -50,7 +50,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private String           version         = "0.3.2 Beta";
     private String           versionDate     = "8/12/2006";
     private String           titleText       = "Enginuity v" + version;
-    private MDIDesktopPane   rightPanel      = new MDIDesktopPane();
+    public MDIDesktopPane   rightPanel      = new MDIDesktopPane();
     private Rom              lastSelectedRom = null;
     private JSplitPane       splitPane       = new JSplitPane();
     private ECUEditorToolBar toolBar;

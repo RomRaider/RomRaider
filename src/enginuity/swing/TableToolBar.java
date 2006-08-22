@@ -25,13 +25,16 @@ import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDesktopPane;
 import javax.swing.JFormattedTextField;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
 
+import com.ecm.graphics.Graph3dJPanel;
 import com.ecm.graphics.Graph3dManager;
 import com.ecm.graphics.listeners.ModifiedDataListener;
 import com.ecm.graphics.listeners.TableData;
@@ -253,9 +256,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 			String zLabel = ((Table3D)table).getYAxis().getName();
 			String yLabel = ((Table3D)table).getCategory();
         	
-			//TODO Implement JFrame Title once again
-			Graph3dManager.openGraph3dFrame(graphValues, testX, testZ,xLabel, yLabel, zLabel);
-			Graph3dManager.addListener(this);
+			Graph3dJPanel graph3dJPanel = new Graph3dJPanel(graphValues, testX, testZ,xLabel, yLabel, zLabel);
+			TableFrame frame = new TableFrame(graph3dJPanel);
+			RomTree.container.displayTable(frame);
         }
     	
     	
@@ -314,6 +317,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     // ******************************************
     // Code for listening to graph3d data changes
     // ******************************************
+    // TODO Tie into Enginuity 2d table values
 	public void newGraphData(Vector data) {
 		
 		System.out.println("New data recieved at the client \n*********************");
@@ -323,8 +327,26 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 		while(modDataListenerIterator.hasNext()){
 			TableData td = (TableData)modDataListenerIterator.next();
 			System.out.println("X:"+td.getX()+" Z:"+td.getZ()+" VALUE:"+td.getValue());
+			
+			Table3D table3d = (Table3D)table;
+			table3d.selectCellAt(td.getX(), table3d.getSizeY() - td.getZ() - 1);
+			
+			//Set the value
+			table.setRealValue(td.getValue()+"");
 		}
 		
 		System.out.println("*********************");
+	}
+	
+	public void cellSelected(int x, int z){
+		//Set cell to be selected
+		Table3D table3d = (Table3D)table;
+		table3d.selectCellAt(x, table3d.getSizeY() - z - 1);		
+	}
+	
+	public void cellDeSelected(int x, int z){
+		//Set cell de selected
+		Table3D table3d = (Table3D)table;
+		table3d.selectCellAt(x, table3d.getSizeY() - z - 1);
 	}
 }
