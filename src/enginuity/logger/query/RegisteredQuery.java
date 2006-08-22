@@ -1,6 +1,6 @@
 package enginuity.logger.query;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 
 public interface RegisteredQuery {
 
@@ -12,5 +12,5 @@ public interface RegisteredQuery {
 
     void setResponse(byte[] response);
 
-    EcuParameter getEcuParam();
+    EcuData getEcuData();
 }

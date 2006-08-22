@@ -1,11 +1,11 @@
 package enginuity.logger.definition;
 
-public interface EcuParameterConvertor {
+public interface EcuDataConvertor {
 
     double convert(byte[] bytes);
 
-    String getUnits();
-
     String format(double value);
+
+    String getUnits();
 
 }

@@ -1,6 +1,6 @@
 package enginuity.logger.manager;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 import enginuity.logger.query.LoggerCallback;
 import enginuity.logger.query.RegisteredQuery;
 import enginuity.logger.query.RegisteredQueryImpl;
@@ -14,9 +14,9 @@ import java.util.Map;
 
 @SuppressWarnings({"FieldCanBeLocal"})
 public final class QueryManagerImpl implements QueryManager {
-    private final Map<EcuParameter, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<EcuParameter, RegisteredQuery>());
+    private final Map<EcuData, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<EcuData, RegisteredQuery>());
     private final List<RegisteredQuery> addList = new ArrayList<RegisteredQuery>();
-    private final List<EcuParameter> removeList = new ArrayList<EcuParameter>();
+    private final List<EcuData> removeList = new ArrayList<EcuData>();
     private final TransmissionManager txManager;
     private boolean stop = false;
 
@@ -25,13 +25,13 @@ public final class QueryManagerImpl implements QueryManager {
         this.txManager = txManager;
     }
 
-    public synchronized void addQuery(EcuParameter ecuParam, LoggerCallback callback) {
-        checkNotNull(ecuParam, callback);
-        addList.add(new RegisteredQueryImpl(ecuParam, callback));
+    public synchronized void addQuery(EcuData ecuData, LoggerCallback callback) {
+        checkNotNull(ecuData, callback);
+        addList.add(new RegisteredQueryImpl(ecuData, callback));
     }
 
-    public synchronized void removeQuery(EcuParameter ecuParam) {
-        removeList.add(ecuParam);
+    public synchronized void removeQuery(EcuData ecuData) {
+        removeList.add(ecuData);
     }
 
     public void run() {
@@ -71,14 +71,14 @@ public final class QueryManagerImpl implements QueryManager {
 
     private void addQueries() {
         for (RegisteredQuery registeredQuery : addList) {
-            queryMap.put(registeredQuery.getEcuParam(), registeredQuery);
+            queryMap.put(registeredQuery.getEcuData(), registeredQuery);
         }
         addList.clear();
     }
 
     private void removeQueries() {
-        for (EcuParameter ecuParam : removeList) {
-            queryMap.remove(ecuParam);
+        for (EcuData ecuData : removeList) {
+            queryMap.remove(ecuData);
         }
         removeList.clear();
     }

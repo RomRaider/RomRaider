@@ -1,18 +1,20 @@
 package enginuity.logger;
 
 import enginuity.Settings;
+import enginuity.logger.definition.EcuDataLoader;
+import enginuity.logger.definition.EcuDataLoaderImpl;
 import enginuity.logger.definition.EcuParameter;
-import enginuity.logger.definition.EcuParameterLoaderImpl;
+import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.ParameterListTableModel;
 import enginuity.logger.ui.ParameterRegistrationBroker;
 import enginuity.logger.ui.ParameterRegistrationBrokerImpl;
 import enginuity.logger.ui.handler.DashboardUpdateHandler;
+import enginuity.logger.ui.handler.DataUpdateHandlerManager;
+import enginuity.logger.ui.handler.DataUpdateHandlerManagerImpl;
 import enginuity.logger.ui.handler.FileUpdateHandler;
 import enginuity.logger.ui.handler.GraphUpdateHandler;
 import enginuity.logger.ui.handler.LiveDataUpdateHandler;
-import enginuity.logger.ui.handler.ParameterUpdateHandlerManager;
-import enginuity.logger.ui.handler.ParameterUpdateHandlerManagerImpl;
 
 import javax.swing.*;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
@@ -34,7 +36,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private final JComboBox portsComboBox = new JComboBox();
     private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
     private final JPanel graphPanel = new JPanel();
-    private final ParameterUpdateHandlerManager handlerManager = new ParameterUpdateHandlerManagerImpl();
+    private final DataUpdateHandlerManager handlerManager = new DataUpdateHandlerManagerImpl();
     private final ParameterRegistrationBroker broker = new ParameterRegistrationBrokerImpl(handlerManager, settings);
     private final ParameterListTableModel paramListTableModel = new ParameterListTableModel(broker);
 
@@ -68,10 +70,15 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void loadEcuParamsFromConfig() {
         //TODO: handle errors here better!
         try {
-            EcuParameterLoaderImpl parameterLoader = new EcuParameterLoaderImpl();
-            List<EcuParameter> ecuParams = parameterLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
+            EcuDataLoader dataLoader = new EcuDataLoaderImpl();
+            dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
+            List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
             for (EcuParameter ecuParam : ecuParams) {
                 paramListTableModel.addParam(ecuParam);
+            }
+            List<EcuSwitch> ecuSwitches = dataLoader.getEcuSwitches();
+            for (EcuSwitch ecuSwitch : ecuSwitches) {
+                paramListTableModel.addParam(ecuSwitch);
             }
         } catch (Exception e) {
             e.printStackTrace();

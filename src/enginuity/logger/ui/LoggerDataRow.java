@@ -1,46 +1,46 @@
 package enginuity.logger.ui;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class LoggerDataRow {
-    private final EcuParameter ecuParam;
+    private final EcuData ecuData;
     private double minValue;
     private double maxValue;
     private double currentValue;
     private boolean updated = false;
 
-    public LoggerDataRow(EcuParameter ecuParam) {
-        checkNotNull(ecuParam, "ecuParam");
-        this.ecuParam = ecuParam;
+    public LoggerDataRow(EcuData ecuData) {
+        checkNotNull(ecuData, "ecuData");
+        this.ecuData = ecuData;
     }
 
-    public EcuParameter getEcuParam() {
-        return ecuParam;
+    public EcuData getEcuData() {
+        return ecuData;
     }
 
     public String getName() {
-        return ecuParam.getName();
+        return ecuData.getName();
     }
 
     public String getMinValue() {
-        return ecuParam.getConvertor().format(minValue);
+        return ecuData.getConvertor().format(minValue);
     }
 
     public String getMaxValue() {
-        return ecuParam.getConvertor().format(maxValue);
+        return ecuData.getConvertor().format(maxValue);
     }
 
     public String getCurrentValue() {
-        return ecuParam.getConvertor().format(currentValue);
+        return ecuData.getConvertor().format(currentValue);
     }
 
     public String getUnits() {
-        return ecuParam.getConvertor().getUnits();
+        return ecuData.getConvertor().getUnits();
     }
 
     public void updateValue(byte[] bytes) {
-        currentValue = ecuParam.getConvertor().convert(bytes);
+        currentValue = ecuData.getConvertor().convert(bytes);
         if (currentValue < minValue || !updated) {
             minValue = currentValue;
         }

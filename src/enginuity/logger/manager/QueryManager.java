@@ -1,13 +1,13 @@
 package enginuity.logger.manager;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 import enginuity.logger.query.LoggerCallback;
 
 public interface QueryManager extends Runnable {
 
-    void addQuery(EcuParameter ecuParam, LoggerCallback callback);
+    void addQuery(EcuData ecuData, LoggerCallback callback);
 
-    void removeQuery(EcuParameter ecuParam);
+    void removeQuery(EcuData ecuData);
 
     void stop();
 

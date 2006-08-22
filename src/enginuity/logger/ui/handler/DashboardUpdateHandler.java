@@ -1,16 +1,16 @@
 package enginuity.logger.ui.handler;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 
-public final class DashboardUpdateHandler implements ParameterUpdateHandler {
+public final class DashboardUpdateHandler implements DataUpdateHandler {
 
-    public void registerParam(EcuParameter ecuParam) {
+    public void registerData(EcuData ecuData) {
     }
 
-    public void handleParamUpdate(EcuParameter ecuParam, byte[] value, long timestamp) {
+    public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
     }
 
-    public void deregisterParam(EcuParameter ecuParam) {
+    public void deregisterData(EcuData ecuData) {
     }
-    
+
 }

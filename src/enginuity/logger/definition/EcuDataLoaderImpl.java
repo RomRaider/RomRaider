@@ -9,11 +9,14 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-public final class EcuParameterLoaderImpl implements EcuParameterLoader {
+public final class EcuDataLoaderImpl implements EcuDataLoader {
+    private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
+    private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
 
-    public List<EcuParameter> loadFromXml(String loggerConfigFilePath, String protocol) {
+    public void loadFromXml(String loggerConfigFilePath, String protocol) {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
@@ -21,13 +24,22 @@ public final class EcuParameterLoaderImpl implements EcuParameterLoader {
                 SAXParser parser = getSaxParserFactory().newSAXParser();
                 LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol);
                 parser.parse(inputStream, handler);
-                return handler.getEcuParameters();
+                ecuParameters = handler.getEcuParameters();
+                ecuSwitches = handler.getEcuSwitches();
             } finally {
                 inputStream.close();
             }
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
+    }
+
+    public List<EcuParameter> getEcuParameters() {
+        return ecuParameters;
+    }
+
+    public List<EcuSwitch> getEcuSwitches() {
+        return ecuSwitches;
     }
 
     private SAXParserFactory getSaxParserFactory() {

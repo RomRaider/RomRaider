@@ -1,6 +1,6 @@
 package enginuity.logger.ui;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 
 import javax.swing.table.AbstractTableModel;
 import static java.util.Collections.synchronizedList;
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public final class ParameterListTableModel extends AbstractTableModel {
-    private final String[] columnNames = {"Selected?", "ECU Parameter"};
-    private final List<EcuParameter> registeredEcuParams = synchronizedList(new LinkedList<EcuParameter>());
-    private final Map<EcuParameter, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<EcuParameter, ParameterRow>());
+    private final String[] columnNames = {"Selected?", "ECU Data"};
+    private final List<EcuData> registeredEcuData = synchronizedList(new LinkedList<EcuData>());
+    private final Map<EcuData, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<EcuData, ParameterRow>());
     private final ParameterRegistrationBroker broker;
 
     public ParameterListTableModel(ParameterRegistrationBroker broker) {
@@ -37,26 +37,26 @@ public final class ParameterListTableModel extends AbstractTableModel {
     }
 
     public synchronized Object getValueAt(int row, int col) {
-        ParameterRow paramRow = paramRowMap.get(registeredEcuParams.get(row));
+        ParameterRow paramRow = paramRowMap.get(registeredEcuData.get(row));
         switch (col) {
             case 0:
                 return paramRow.getSelected();
             case 1:
-                return paramRow.getEcuParam().getName();
+                return paramRow.getEcuData().getName();
             default:
                 return "Error!";
         }
     }
 
     public synchronized void setValueAt(Object value, int row, int col) {
-        ParameterRow paramRow = paramRowMap.get(registeredEcuParams.get(row));
+        ParameterRow paramRow = paramRowMap.get(registeredEcuData.get(row));
         if (col == 0 && paramRow != null) {
             Boolean selected = (Boolean) value;
             paramRow.setSelected(selected);
             if (selected) {
-                broker.registerEcuParameterForLogging(paramRow.getEcuParam());
+                broker.registerEcuParameterForLogging(paramRow.getEcuData());
             } else {
-                broker.deregisterEcuParameterFromLogging(paramRow.getEcuParam());
+                broker.deregisterEcuParameterFromLogging(paramRow.getEcuData());
             }
             fireTableRowsUpdated(row, row);
         }
@@ -66,10 +66,10 @@ public final class ParameterListTableModel extends AbstractTableModel {
         return getValueAt(0, col).getClass();
     }
 
-    public synchronized void addParam(EcuParameter ecuParam) {
-        if (!registeredEcuParams.contains(ecuParam)) {
-            paramRowMap.put(ecuParam, new ParameterRow(ecuParam));
-            registeredEcuParams.add(ecuParam);
+    public synchronized void addParam(EcuData ecuData) {
+        if (!registeredEcuData.contains(ecuData)) {
+            paramRowMap.put(ecuData, new ParameterRow(ecuData));
+            registeredEcuData.add(ecuData);
             fireTableDataChanged();
         }
     }

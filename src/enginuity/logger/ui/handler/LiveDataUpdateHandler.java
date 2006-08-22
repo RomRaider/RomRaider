@@ -1,28 +1,28 @@
 package enginuity.logger.ui.handler;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.LoggerDataTableModel;
 
-public final class LiveDataUpdateHandler implements ParameterUpdateHandler {
+public final class LiveDataUpdateHandler implements DataUpdateHandler {
     private final LoggerDataTableModel dataTableModel;
 
     public LiveDataUpdateHandler(LoggerDataTableModel dataTableModel) {
         this.dataTableModel = dataTableModel;
     }
 
-    public void registerParam(EcuParameter ecuParam) {
+    public void registerData(EcuData ecuData) {
         // add to datatable
-        dataTableModel.addParam(ecuParam);
+        dataTableModel.addParam(ecuData);
     }
 
-    public void handleParamUpdate(EcuParameter ecuParam, byte[] value, long timestamp) {
+    public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
         // update data table
-        dataTableModel.updateParam(ecuParam, value);
+        dataTableModel.updateParam(ecuData, value);
     }
 
-    public void deregisterParam(EcuParameter ecuParam) {
+    public void deregisterData(EcuData ecuData) {
         // remove from datatable
-        dataTableModel.removeParam(ecuParam);
+        dataTableModel.removeParam(ecuData);
     }
 
 }

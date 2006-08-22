@@ -1,6 +1,6 @@
 package enginuity.logger.definition;
 
-public interface EcuParameter extends EcuData {
+public interface EcuSwitch extends EcuData {
 
     EcuDataConvertor getConvertor();
 

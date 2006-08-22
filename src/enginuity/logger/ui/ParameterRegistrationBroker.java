@@ -1,13 +1,14 @@
 package enginuity.logger.ui;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 
 import java.util.List;
 
 public interface ParameterRegistrationBroker {
-    void registerEcuParameterForLogging(EcuParameter ecuParam);
 
-    void deregisterEcuParameterFromLogging(EcuParameter ecuParam);
+    void registerEcuParameterForLogging(EcuData ecuData);
+
+    void deregisterEcuParameterFromLogging(EcuData ecuData);
 
     List<String> listSerialPorts();
 

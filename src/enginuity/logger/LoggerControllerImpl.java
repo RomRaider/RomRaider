@@ -1,7 +1,7 @@
 package enginuity.logger;
 
 import enginuity.Settings;
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 import enginuity.logger.io.serial.SerialPortDiscoverer;
 import enginuity.logger.io.serial.SerialPortDiscovererImpl;
 import enginuity.logger.manager.QueryManager;
@@ -33,16 +33,16 @@ public final class LoggerControllerImpl implements LoggerController {
         return portNames;
     }
 
-    public void addLogger(EcuParameter ecuParam, LoggerCallback callback) {
-        checkNotNull(ecuParam, callback);
-        System.out.println("Adding logger:   " + ecuParam.getName());
-        queryManager.addQuery(ecuParam, callback);
+    public void addLogger(EcuData ecuData, LoggerCallback callback) {
+        checkNotNull(ecuData, callback);
+        System.out.println("Adding logger:   " + ecuData.getName());
+        queryManager.addQuery(ecuData, callback);
     }
 
-    public void removeLogger(EcuParameter ecuParam) {
-        checkNotNull(ecuParam, "ecuParam");
-        System.out.println("Removing logger: " + ecuParam.getName());
-        queryManager.removeQuery(ecuParam);
+    public void removeLogger(EcuData ecuData) {
+        checkNotNull(ecuData, "ecuParam");
+        System.out.println("Removing logger: " + ecuData.getName());
+        queryManager.removeQuery(ecuData);
     }
 
     public void start() {

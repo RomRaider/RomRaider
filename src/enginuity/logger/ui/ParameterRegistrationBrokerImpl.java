@@ -3,9 +3,9 @@ package enginuity.logger.ui;
 import enginuity.Settings;
 import enginuity.logger.LoggerController;
 import enginuity.logger.LoggerControllerImpl;
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 import enginuity.logger.query.LoggerCallback;
-import enginuity.logger.ui.handler.ParameterUpdateHandlerManager;
+import enginuity.logger.ui.handler.DataUpdateHandlerManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,43 +13,43 @@ import java.util.List;
 
 public final class ParameterRegistrationBrokerImpl implements ParameterRegistrationBroker {
     private final LoggerController controller;
-    private final ParameterUpdateHandlerManager handlerManager;
-    private final List<EcuParameter> registeredEcuParameters = Collections.synchronizedList(new ArrayList<EcuParameter>());
+    private final DataUpdateHandlerManager handlerManager;
+    private final List<EcuData> registeredEcuParameters = Collections.synchronizedList(new ArrayList<EcuData>());
     private long loggerStartTime = 0;
 
-    public ParameterRegistrationBrokerImpl(ParameterUpdateHandlerManager handlerManager, Settings settings) {
+    public ParameterRegistrationBrokerImpl(DataUpdateHandlerManager handlerManager, Settings settings) {
         this.handlerManager = handlerManager;
         this.controller = new LoggerControllerImpl(settings);
     }
 
-    public synchronized void registerEcuParameterForLogging(final EcuParameter ecuParam) {
-        if (!registeredEcuParameters.contains(ecuParam)) {
+    public synchronized void registerEcuParameterForLogging(final EcuData ecuData) {
+        if (!registeredEcuParameters.contains(ecuData)) {
             // register param with handlers
-            handlerManager.registerParam(ecuParam);
+            handlerManager.registerData(ecuData);
 
             // add logger and setup callback
-            controller.addLogger(ecuParam, new LoggerCallback() {
+            controller.addLogger(ecuData, new LoggerCallback() {
                 public void callback(byte[] value) {
                     // update handlers
-                    handlerManager.handleParamUpdate(ecuParam, value, System.currentTimeMillis() - loggerStartTime);
+                    handlerManager.handleDataUpdate(ecuData, value, System.currentTimeMillis() - loggerStartTime);
                 }
             });
 
             // add to registered parameters list
-            registeredEcuParameters.add(ecuParam);
+            registeredEcuParameters.add(ecuData);
         }
     }
 
-    public synchronized void deregisterEcuParameterFromLogging(EcuParameter ecuParam) {
-        if (registeredEcuParameters.contains(ecuParam)) {
+    public synchronized void deregisterEcuParameterFromLogging(EcuData ecuData) {
+        if (registeredEcuParameters.contains(ecuData)) {
             // remove logger
-            controller.removeLogger(ecuParam);
+            controller.removeLogger(ecuData);
 
             // deregister param from handlers
-            handlerManager.deregisterParam(ecuParam);
+            handlerManager.deregisterData(ecuData);
 
             // remove from registered list
-            registeredEcuParameters.remove(ecuParam);
+            registeredEcuParameters.remove(ecuData);
         }
 
     }

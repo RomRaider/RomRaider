@@ -1,6 +1,6 @@
 package enginuity.logger;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 import enginuity.logger.query.LoggerCallback;
 
 import java.util.List;
@@ -9,9 +9,9 @@ public interface LoggerController {
 
     List<String> listSerialPorts();
 
-    void addLogger(EcuParameter ecuParam, LoggerCallback callback);
+    void addLogger(EcuData ecuData, LoggerCallback callback);
 
-    void removeLogger(EcuParameter ecuParam);
+    void removeLogger(EcuData ecuData);
 
     void start();
 

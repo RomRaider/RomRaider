@@ -3,13 +3,13 @@ package enginuity.logger.definition;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
-public final class EcuParameterImpl implements EcuParameter {
+public final class EcuSwitchImpl implements EcuSwitch {
     private String name;
     private String description;
     private String[] addresses;
     private EcuDataConvertor convertor;
 
-    public EcuParameterImpl(String name, String description, String[] address, EcuDataConvertor convertor) {
+    public EcuSwitchImpl(String name, String description, String[] address, EcuDataConvertor convertor) {
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");
         checkNotNullOrEmpty(address, "addresses");

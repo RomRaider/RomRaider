@@ -1,6 +1,6 @@
 package enginuity.logger.ui.handler;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 import static enginuity.logger.ui.SpringUtilities.makeCompactGrid;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -15,42 +15,42 @@ import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class GraphUpdateHandler implements ParameterUpdateHandler {
+public final class GraphUpdateHandler implements DataUpdateHandler {
     private final JPanel graphPanel;
-    private final Map<EcuParameter, ChartPanel> chartMap = synchronizedMap(new HashMap<EcuParameter, ChartPanel>());
-    private final Map<EcuParameter, XYSeries> seriesMap = synchronizedMap(new HashMap<EcuParameter, XYSeries>());
+    private final Map<EcuData, ChartPanel> chartMap = synchronizedMap(new HashMap<EcuData, ChartPanel>());
+    private final Map<EcuData, XYSeries> seriesMap = synchronizedMap(new HashMap<EcuData, XYSeries>());
     private int loggerCount = 0;
 
     public GraphUpdateHandler(JPanel graphPanel) {
         this.graphPanel = graphPanel;
     }
 
-    public void registerParam(EcuParameter ecuParam) {
+    public void registerData(EcuData ecuData) {
         // add to charts
-        final XYSeries series = new XYSeries(ecuParam.getName());
+        final XYSeries series = new XYSeries(ecuData.getName());
         //TODO: Make chart max item count configurable via settings
-        series.setMaximumItemCount(1000);
+        series.setMaximumItemCount(100);
         final XYDataset xyDataset = new XYSeriesCollection(series);
-        final JFreeChart chart = ChartFactory.createXYLineChart(ecuParam.getName(), "Time (sec)", ecuParam.getName()
-                + " (" + ecuParam.getConvertor().getUnits() + ")", xyDataset, VERTICAL, false, true, false);
+        final JFreeChart chart = ChartFactory.createXYLineChart(ecuData.getName(), "Time (sec)", ecuData.getName()
+                + " (" + ecuData.getConvertor().getUnits() + ")", xyDataset, VERTICAL, false, true, false);
         ChartPanel chartPanel = new ChartPanel(chart, false, true, true, true, true);
         graphPanel.add(chartPanel);
-        seriesMap.put(ecuParam, series);
-        chartMap.put(ecuParam, chartPanel);
+        seriesMap.put(ecuData, series);
+        chartMap.put(ecuData, chartPanel);
         makeCompactGrid(graphPanel, ++loggerCount, 1, 10, 10, 20, 20);
         repaintGraphPanel(2);
     }
 
-    public void handleParamUpdate(EcuParameter ecuParam, byte[] value, long timestamp) {
+    public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
         // update chart
-        XYSeries series = seriesMap.get(ecuParam);
-        series.add(timestamp / 1000.0, ecuParam.getConvertor().convert(value));
+        XYSeries series = seriesMap.get(ecuData);
+        series.add(timestamp / 1000.0, ecuData.getConvertor().convert(value));
     }
 
-    public void deregisterParam(EcuParameter ecuParam) {
+    public void deregisterData(EcuData ecuData) {
         // remove from charts
-        graphPanel.remove(chartMap.get(ecuParam));
-        chartMap.remove(ecuParam);
+        graphPanel.remove(chartMap.get(ecuData));
+        chartMap.remove(ecuData);
         makeCompactGrid(graphPanel, --loggerCount, 1, 10, 10, 20, 20);
         repaintGraphPanel(1);
     }

@@ -6,7 +6,7 @@ import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 import java.text.DecimalFormat;
 
-public final class EcuParameterConvertorImpl implements EcuParameterConvertor {
+public final class EcuParameterConvertorImpl implements EcuDataConvertor {
     private final String units;
     private final String expression;
     private final DecimalFormat format;

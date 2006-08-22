@@ -1,28 +1,28 @@
 package enginuity.logger.query;
 
-import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuData;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class RegisteredQueryImpl implements RegisteredQuery {
-    private final EcuParameter ecuParam;
+    private final EcuData ecuData;
     private final LoggerCallback callback;
     private final byte[] bytes;
 
-    public RegisteredQueryImpl(EcuParameter ecuParam, LoggerCallback callback) {
-        checkNotNull(ecuParam, callback);
-        this.ecuParam = ecuParam;
+    public RegisteredQueryImpl(EcuData ecuData, LoggerCallback callback) {
+        checkNotNull(ecuData, callback);
+        this.ecuData = ecuData;
         this.callback = callback;
-        bytes = getAddressBytes(ecuParam);
+        bytes = getAddressBytes(ecuData);
     }
 
-    public EcuParameter getEcuParam() {
-        return ecuParam;
+    public EcuData getEcuData() {
+        return ecuData;
     }
 
     public String[] getAddresses() {
-        return ecuParam.getAddresses();
+        return ecuData.getAddresses();
     }
 
     public byte[] getBytes() {
@@ -37,8 +37,8 @@ public final class RegisteredQueryImpl implements RegisteredQuery {
         callback.callback(response);
     }
 
-    private byte[] getAddressBytes(EcuParameter ecuParam) {
-        String[] addresses = ecuParam.getAddresses();
+    private byte[] getAddressBytes(EcuData ecuData) {
+        String[] addresses = ecuData.getAddresses();
         byte[] bytes = new byte[0];
         for (String address : addresses) {
             byte[] tmp1 = asBytes(address);
