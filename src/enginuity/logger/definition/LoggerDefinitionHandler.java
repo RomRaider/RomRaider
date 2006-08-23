@@ -10,9 +10,9 @@ import java.util.List;
 //TODO: Add metric and imperial units and conversions to logger.xml and parse them out. This will need a generic EcuParameterConvertor class.
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
+    private static final String YES = "yes";
     private static final String TAG_PROTOCOL = "protocol";
     private static final String TAG_PARAMETER = "parameter";
-    private static final String TAG_CONVERTOR = "convertor";
     private static final String TAG_METRIC = "metric";
     private static final String TAG_BYTE = "byte";
     private static final String TAG_SWITCH = "switch";
@@ -23,12 +23,14 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_FORMAT = "format";
     private static final String ATTR_BYTE = "byte";
     private static final String ATTR_BIT = "bit";
+    private static final String ATTR_FILELOGCONTROLLER = "filelogcontroller";
     private List<EcuParameter> params;
     private List<EcuSwitch> switches;
     private String name;
     private String desc;
     private List<String> addressList;
     private int bit;
+    private boolean fileLogController;
     private EcuDataConvertor convertor;
     private StringBuilder charBuffer;
     private String protocol;
@@ -61,6 +63,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 addressList = new ArrayList<String>();
                 addressList.add(attributes.getValue(ATTR_BYTE));
                 bit = Integer.valueOf(attributes.getValue(ATTR_BIT));
+                fileLogController = YES.equals(attributes.getValue(ATTR_FILELOGCONTROLLER));
             }
         }
         charBuffer = new StringBuilder();
@@ -86,7 +89,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             } else if (TAG_SWITCH.equals(qName)) {
                 String[] addresses = new String[addressList.size()];
                 addressList.toArray(addresses);
-                EcuSwitch ecuSwitch = new EcuSwitchImpl(name, desc, addresses, new EcuSwitchConvertorImpl(bit));
+                EcuSwitch ecuSwitch = new EcuSwitchImpl(name, desc, addresses, new EcuSwitchConvertorImpl(bit), fileLogController);
                 switches.add(ecuSwitch);
             }
         }

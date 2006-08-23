@@ -1,5 +1,6 @@
 package enginuity.logger.definition;
 
+import static enginuity.logger.definition.EcuDataType.SWITCH;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -8,8 +9,9 @@ public final class EcuSwitchImpl implements EcuSwitch {
     private String description;
     private String[] addresses;
     private EcuDataConvertor convertor;
+    private boolean fileLogController;
 
-    public EcuSwitchImpl(String name, String description, String[] address, EcuDataConvertor convertor) {
+    public EcuSwitchImpl(String name, String description, String[] address, EcuDataConvertor convertor, boolean fileLogController) {
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");
         checkNotNullOrEmpty(address, "addresses");
@@ -18,6 +20,7 @@ public final class EcuSwitchImpl implements EcuSwitch {
         this.description = description;
         this.addresses = address;
         this.convertor = convertor;
+        this.fileLogController = fileLogController;
     }
 
     public String getName() {
@@ -34,5 +37,13 @@ public final class EcuSwitchImpl implements EcuSwitch {
 
     public EcuDataConvertor getConvertor() {
         return convertor;
+    }
+
+    public EcuDataType getDataType() {
+        return SWITCH;
+    }
+
+    public boolean isFileLogController() {
+        return fileLogController;
     }
 }

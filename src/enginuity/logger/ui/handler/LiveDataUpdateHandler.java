@@ -25,4 +25,7 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler {
         dataTableModel.removeParam(ecuData);
     }
 
+    public void cleanUp() {
+    }
+
 }

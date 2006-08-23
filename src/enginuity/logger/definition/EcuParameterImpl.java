@@ -1,5 +1,6 @@
 package enginuity.logger.definition;
 
+import static enginuity.logger.definition.EcuDataType.PARAMETER;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -34,5 +35,9 @@ public final class EcuParameterImpl implements EcuParameter {
 
     public EcuDataConvertor getConvertor() {
         return convertor;
+    }
+
+    public EcuDataType getDataType() {
+        return PARAMETER;
     }
 }

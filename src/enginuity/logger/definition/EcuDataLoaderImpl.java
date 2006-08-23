@@ -45,7 +45,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private SAXParserFactory getSaxParserFactory() {
         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         parserFactory.setNamespaceAware(false);
-        parserFactory.setValidating(false);
+        parserFactory.setValidating(true);
         parserFactory.setXIncludeAware(false);
         return parserFactory;
     }

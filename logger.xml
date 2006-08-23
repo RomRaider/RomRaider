@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE logger SYSTEM "logger.dtd">
+
 <logger>
     <protocols>
         <protocol id="SSM">
@@ -824,73 +826,55 @@
                 <switch id="Electrical Load Signal" desc="" byte="0x000063" bit="0"/>
                 <switch id="Crank Position Sensor" desc="" byte="0x000064" bit="7"/>
                 <switch id="Cam Position Sensor" desc="" byte="0x000064" bit="6"/>
-                <switch id="Defogger Switch" desc="" byte="0x000064" bit="5"/>
+                <switch id="Defogger Switch" desc="" byte="0x000064" bit="5" filelogcontroller="yes"/>
                 <switch id="Blower Switch" desc="" byte="0x000064" bit="4"/>
                 <switch id="Interior Light Switch" desc="" byte="0x000064" bit="3"/>
                 <switch id="Wiper Switch" desc="" byte="0x000064" bit="2"/>
                 <switch id="Air-Con Lock Signal" desc="" byte="0x000064" bit="1"/>
                 <switch id="Air-Con Mid Pressure Switch" desc="" byte="0x000064" bit="0"/>
-
-<!--
-
-Switch P0x065
-7 Air-Con Compressor Signal
-6 Radiator Fan Relay #3
-5 Radiator Fan Relay #1
-4 Radiator Fan Relay #2
-3 Fuel Pump Relay
-2 Intercooler Auto-Wash Relay
-1 CPC Solenoid Valve
-0 Blow-By Leak Connector
-
-Switch P0x066
-7 PCV Solenoid Valve
-6 TGV Output
-5 TGV Drive
-4 Variable Intake Air Solenoid
-3 Pressure Sources Change
-2 Vent Solenoid Valve
-1 P/S Solenoid Valve
-0 Assist Air Solenoid Valve
-
-Switch P0x067
-7 Tank Sensor Control Valve
-6 Relief Valve Solenoid 1
-5 Relief Valve Solenoid 2
-4 TCS Relief Valve Solenoid
-3 Ex. Gas Positive Pressure
-2 Ex. Gas Negative Pressure
-1 Intake Air Solenoid
-0 Muffler Control
-
-Switch P0x068
-3 Retard Signal from AT
-2 Fuel Cut Signal from AT
-1 Ban of Torque Down
-0 Request Torque Down VDC
-
-Switch P0x069
-7 Torque Control Signal #1
-6 Torque Control Signal #2
-5 Torque Permission Signal
-4 EAM Signal
-3 AT coop. lock up signal
-2 AT coop. lean burn signal
-1 AT coop. rich spike signal
-0 AET Signal
-
-Switch P0x120
-6 ETC Motor Relay
-
-Switch P0x121
-7 Clutch Switch
-6 Stop Light Switch
-5 Set/Coast Switch
-4 Rsume/Accelerate Switch
-3 Brake Switch
-1 Accelerator Switch
-
--->
+                <switch id="Air-Con Compressor Signal" desc="" byte="0x000065" bit="7"/>
+                <switch id="Radiator Fan Relay #3" desc="" byte="0x000065" bit="6"/>
+                <switch id="Radiator Fan Relay #1" desc="" byte="0x000065" bit="5"/>
+                <switch id="Radiator Fan Relay #2" desc="" byte="0x000065" bit="4"/>
+                <switch id="Fuel Pump Relay" desc="" byte="0x000065" bit="3"/>
+                <switch id="Intercooler Auto-Wash Relay" desc="" byte="0x000065" bit="2"/>
+                <switch id="CPC Solenoid Valve" desc="" byte="0x000065" bit="1"/>
+                <switch id="Blow-By Leak Connector" desc="" byte="0x000065" bit="0"/>
+                <switch id="PCV Solenoid Valve" desc="" byte="0x000066" bit="7"/>
+                <switch id="TGV Output" desc="" byte="0x000066" bit="6"/>
+                <switch id="TGV Drive" desc="" byte="0x000066" bit="5"/>
+                <switch id="Variable Intake Air Solenoid" desc="" byte="0x000066" bit="4"/>
+                <switch id="Pressure Sources Change" desc="" byte="0x000066" bit="3"/>
+                <switch id="Vent Solenoid Valve" desc="" byte="0x000066" bit="2"/>
+                <switch id="P/S Solenoid Valve" desc="" byte="0x000066" bit="1"/>
+                <switch id="Assist Air Solenoid Valve" desc="" byte="0x000066" bit="0"/>
+                <switch id="Tank Sensor Control Valve" desc="" byte="0x000067" bit="7"/>
+                <switch id="Relief Valve Solenoid 1" desc="" byte="0x000067" bit="6"/>
+                <switch id="Relief Valve Solenoid 2" desc="" byte="0x000067" bit="5"/>
+                <switch id="TCS Relief Valve Solenoid" desc="" byte="0x000067" bit="4"/>
+                <switch id="Ex. Gas Positive Pressure" desc="" byte="0x000067" bit="3"/>
+                <switch id="Ex. Gas Negative Pressure" desc="" byte="0x000067" bit="2"/>
+                <switch id="Intake Air Solenoid" desc="" byte="0x000067" bit="1"/>
+                <switch id="Muffler Control" desc="" byte="0x000067" bit="0"/>
+                <switch id="Retard Signal from AT" desc="" byte="0x000068" bit="3"/>
+                <switch id="Fuel Cut Signal from AT" desc="" byte="0x000068" bit="2"/>
+                <switch id="Ban of Torque Down" desc="" byte="0x000068" bit="1"/>
+                <switch id="Request Torque Down VDC" desc="" byte="0x000068" bit="0"/>
+                <switch id="Torque Control Signal #1" desc="" byte="0x000069" bit="7"/>
+                <switch id="Torque Control Signal #2" desc="" byte="0x000069" bit="6"/>
+                <switch id="Torque Permission Signal" desc="" byte="0x000069" bit="5"/>
+                <switch id="EAM Signal" desc="" byte="0x000069" bit="4"/>
+                <switch id="AT coop. lock up signal" desc="" byte="0x000069" bit="3"/>
+                <switch id="AT coop. lean burn signal" desc="" byte="0x000069" bit="2"/>
+                <switch id="AT coop. rich spike signal" desc="" byte="0x000069" bit="1"/>
+                <switch id="AET Signal" desc="" byte="0x000069" bit="0"/>
+                <switch id="ETC Motor Relay" desc="" byte="0x000120" bit="6"/>
+                <switch id="Clutch Switch" desc="" byte="0x000121" bit="7"/>
+                <switch id="Stop Light Switch" desc="" byte="0x000121" bit="6"/>
+                <switch id="Set/Coast Switch" desc="" byte="0x000121" bit="5"/>
+                <switch id="Resume/Accelerate Switch" desc="" byte="0x000121" bit="4"/>
+                <switch id="Brake Switch" desc="" byte="0x000121" bit="3"/>
+                <switch id="Accelerator Switch" desc="" byte="0x000121" bit="1"/>
 
             </switches>
         </protocol>

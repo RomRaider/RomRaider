@@ -11,13 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 public final class ParameterListTableModel extends AbstractTableModel {
-    private final String[] columnNames = {"Selected?", "ECU Data"};
+    private final String[] columnNames;
     private final List<EcuData> registeredEcuData = synchronizedList(new LinkedList<EcuData>());
     private final Map<EcuData, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<EcuData, ParameterRow>());
     private final ParameterRegistrationBroker broker;
 
-    public ParameterListTableModel(ParameterRegistrationBroker broker) {
+    public ParameterListTableModel(ParameterRegistrationBroker broker, String dataType) {
         this.broker = broker;
+        columnNames = new String[]{"Selected?", dataType};
     }
 
     public synchronized int getRowCount() {

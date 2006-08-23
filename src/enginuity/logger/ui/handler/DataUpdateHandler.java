@@ -10,4 +10,6 @@ public interface DataUpdateHandler {
 
     void deregisterData(EcuData ecuData);
 
+    void cleanUp();
+
 }

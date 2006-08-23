@@ -29,4 +29,10 @@ public final class DataUpdateHandlerManagerImpl implements DataUpdateHandlerMana
             handler.deregisterData(ecuData);
         }
     }
+
+    public synchronized void cleanUp() {
+        for (DataUpdateHandler handler : handlers) {
+            handler.cleanUp();
+        }
+    }
 }

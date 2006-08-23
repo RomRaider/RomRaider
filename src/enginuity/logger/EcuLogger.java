@@ -41,8 +41,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private final JPanel graphPanel = new JPanel();
     private final DataUpdateHandlerManager handlerManager = new DataUpdateHandlerManagerImpl();
     private final ParameterRegistrationBroker broker = new ParameterRegistrationBrokerImpl(handlerManager, settings);
-    private final ParameterListTableModel paramListTableModel = new ParameterListTableModel(broker);
-    private final ParameterListTableModel switchListTableModel = new ParameterListTableModel(broker);
+    private final ParameterListTableModel paramListTableModel = new ParameterListTableModel(broker, "Parameters");
+    private final ParameterListTableModel switchListTableModel = new ParameterListTableModel(broker, "Switches");
 
     public EcuLogger(String title) {
         super(title);
@@ -193,7 +193,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void windowClosing(WindowEvent windowEvent) {
-        broker.stop();
+        try {
+            broker.stop();
+        } finally {
+            handlerManager.cleanUp();
+        }
     }
 
     public void windowClosed(WindowEvent windowEvent) {

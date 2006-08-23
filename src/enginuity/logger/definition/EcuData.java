@@ -10,4 +10,6 @@ public interface EcuData {
 
     EcuDataConvertor getConvertor();
 
+    EcuDataType getDataType();
+
 }

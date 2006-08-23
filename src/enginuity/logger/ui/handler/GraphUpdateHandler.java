@@ -55,6 +55,9 @@ public final class GraphUpdateHandler implements DataUpdateHandler {
         repaintGraphPanel(1);
     }
 
+    public void cleanUp() {
+    }
+
     private void repaintGraphPanel(int parentRepaintLevel) {
         if (loggerCount < parentRepaintLevel) {
             graphPanel.doLayout();

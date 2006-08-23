@@ -13,4 +13,7 @@ public final class DashboardUpdateHandler implements DataUpdateHandler {
     public void deregisterData(EcuData ecuData) {
     }
 
+    public void cleanUp() {
+    }
+
 }
