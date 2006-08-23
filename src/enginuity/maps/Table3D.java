@@ -510,8 +510,21 @@ public class Table3D extends Table {
         }
     }
 
+    public void deSelectCellAt(int x, int y) {
+        clearSelection();
+        data[x][y].setSelected(false);
+        highlightX = x;
+        highlightY = y;
+    }
+    
     public void selectCellAt(int x, int y) {
         clearSelection();
+        data[x][y].setSelected(true);
+        highlightX = x;
+        highlightY = y;
+    }
+    
+    public void selectCellAtWithoutClear(int x, int y) {
         data[x][y].setSelected(true);
         highlightX = x;
         highlightY = y;

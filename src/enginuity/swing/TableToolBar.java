@@ -340,13 +340,13 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     // TODO Tie into Enginuity 2d table values
 	public void newGraphData(Vector data) {
 		
-		System.out.println("New data recieved at the client \n*********************");
+		//System.out.println("New data recieved at the client \n*********************");
 		
 		
 		Iterator modDataListenerIterator = data.iterator();
 		while(modDataListenerIterator.hasNext()){
 			TableData td = (TableData)modDataListenerIterator.next();
-			System.out.println("X:"+td.getX()+" Z:"+td.getZ()+" VALUE:"+td.getValue());
+			//System.out.println("X:"+td.getX()+" Z:"+td.getZ()+" VALUE:"+td.getValue());
 			
 			Table3D table3d = (Table3D)table;
 			table3d.selectCellAt(td.getX(), table3d.getSizeY() - td.getZ() - 1);
@@ -355,18 +355,24 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 			table.setRealValue(td.getValue()+"");
 		}
 		
-		System.out.println("*********************");
+		//System.out.println("*********************");
 	}
 	
 	public void cellSelected(int x, int z){
 		//Set cell to be selected
+		
+		System.out.println("Selected"+x+","+z);
+		
 		Table3D table3d = (Table3D)table;
-		table3d.selectCellAt(x, table3d.getSizeY() - z - 1);		
+		table3d.selectCellAtWithoutClear(x, table3d.getSizeY() - z - 1);		
 	}
 	
 	public void cellDeSelected(int x, int z){
 		//Set cell de selected
+		
+		System.out.println("De Selected"+x+","+z);
+		
 		Table3D table3d = (Table3D)table;
-		table3d.selectCellAt(x, table3d.getSizeY() - z - 1);
+		table3d.deSelectCellAt(x, table3d.getSizeY() - z - 1);
 	}
 }
