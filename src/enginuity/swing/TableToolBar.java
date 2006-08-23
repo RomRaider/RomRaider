@@ -228,7 +228,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
     
     public void enable3d() {
-    	System.out.println("Toggle 3d");
     	int rowCount = 0;
     	int valueCount = 0;
         
@@ -337,16 +336,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     // ******************************************
     // Code for listening to graph3d data changes
     // ******************************************
-    // TODO Tie into Enginuity 2d table values
 	public void newGraphData(Vector data) {
-		
-		//System.out.println("New data recieved at the client \n*********************");
-		
-		
 		Iterator modDataListenerIterator = data.iterator();
 		while(modDataListenerIterator.hasNext()){
 			TableData td = (TableData)modDataListenerIterator.next();
-			//System.out.println("X:"+td.getX()+" Z:"+td.getZ()+" VALUE:"+td.getValue());
 			
 			Table3D table3d = (Table3D)table;
 			table3d.selectCellAt(td.getX(), table3d.getSizeY() - td.getZ() - 1);
@@ -354,24 +347,14 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 			//Set the value
 			table.setRealValue(td.getValue()+"");
 		}
-		
-		//System.out.println("*********************");
 	}
 	
 	public void cellSelected(int x, int z){
-		//Set cell to be selected
-		
-		System.out.println("Selected"+x+","+z);
-		
 		Table3D table3d = (Table3D)table;
 		table3d.selectCellAtWithoutClear(x, table3d.getSizeY() - z - 1);		
 	}
 	
 	public void cellDeSelected(int x, int z){
-		//Set cell de selected
-		
-		System.out.println("De Selected"+x+","+z);
-		
 		Table3D table3d = (Table3D)table;
 		table3d.deSelectCellAt(x, table3d.getSizeY() - z - 1);
 	}
