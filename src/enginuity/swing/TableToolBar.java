@@ -1,10 +1,12 @@
 package enginuity.swing;
 
+import enginuity.ECUEditorManager;
 import enginuity.maps.DataCell;
 import enginuity.maps.Scale;
 import enginuity.maps.Table;
 import enginuity.maps.Table3D;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -21,12 +23,14 @@ import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -256,9 +260,25 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 			String zLabel = ((Table3D)table).getYAxis().getName();
 			String yLabel = ((Table3D)table).getCategory();
         	
+			//TODO Figure out mix between heavy weight and lightweight components
+			//Below is initial work on making graph3d a JInternal Frame
+			/*
 			Graph3dJPanel graph3dJPanel = new Graph3dJPanel(graphValues, testX, testZ,xLabel, yLabel, zLabel);
-			TableFrame frame = new TableFrame(graph3dJPanel);
-			RomTree.container.displayTable(frame);
+			graph3dJPanel.addModifiedDataListener(this);
+			JInternalFrame graphFrame = new JInternalFrame();
+			graphFrame.add(graph3dJPanel);
+			graphFrame.setSize(200, 200);
+			
+	        graphFrame.setFrameIcon(null);
+	        graphFrame.setBorder(BorderFactory.createBevelBorder(0));
+	        graphFrame.setVisible(true);
+	        graphFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+	        ECUEditorManager.getECUEditor().rightPanel.add(graphFrame);
+	        */
+	        
+			//TODO Remove this when above is working
+	        Graph3dManager.openGraph3dFrame(graphValues, testX, testZ,xLabel, yLabel, zLabel, table.getName());
+			Graph3dManager.addListener(this);
         }
     	
     	
