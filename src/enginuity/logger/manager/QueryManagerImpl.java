@@ -4,6 +4,7 @@ import enginuity.logger.definition.EcuData;
 import enginuity.logger.query.LoggerCallback;
 import enginuity.logger.query.RegisteredQuery;
 import enginuity.logger.query.RegisteredQueryImpl;
+import enginuity.logger.ui.MessageListener;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import java.util.ArrayList;
@@ -18,11 +19,13 @@ public final class QueryManagerImpl implements QueryManager {
     private final List<RegisteredQuery> addList = new ArrayList<RegisteredQuery>();
     private final List<EcuData> removeList = new ArrayList<EcuData>();
     private final TransmissionManager txManager;
+    private final MessageListener messageListener;
     private boolean stop = false;
 
-    public QueryManagerImpl(TransmissionManager txManager) {
-        checkNotNull(txManager, "txManager");
+    public QueryManagerImpl(TransmissionManager txManager, MessageListener messageListener) {
+        checkNotNull(txManager, messageListener);
         this.txManager = txManager;
+        this.messageListener = messageListener;
     }
 
     public synchronized void addQuery(EcuData ecuData, LoggerCallback callback) {
@@ -47,17 +50,16 @@ public final class QueryManagerImpl implements QueryManager {
                 updateQueryList();
                 txManager.sendQueries(queryMap.values());
                 count++;
+                messageListener.reportMessage(buildStatsMessage(start, count));
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            messageListener.reportError(e);
         } finally {
             txManager.stop();
+            messageListener.reportMessage("Logging stopped.");
         }
         System.out.println("QueryManager stopped.");
-
-        //TODO: this is not real nice - add some decent performance measurements later
-        System.out.println("Total queries sent  = " + count);
-        double duration = ((double) (System.currentTimeMillis() - start)) / 1000D;
-        System.out.println("Queries per second  = " + (((double) count) / duration));
-        System.out.println("Avg. Query Time (s) = " + (duration / ((double) count)));
     }
 
     public void stop() {
@@ -81,6 +83,12 @@ public final class QueryManagerImpl implements QueryManager {
             queryMap.remove(ecuData);
         }
         removeList.clear();
+    }
+
+    private String buildStatsMessage(long start, int count) {
+        double duration = ((double) (System.currentTimeMillis() - start)) / 1000D;
+        return "Logging [Total queries sent: " + count + ", Queries per second: " + (((double) count) / duration)
+                + ", Avg. Query Time: " + (duration / ((double) count)) + "s]";
     }
 
 }

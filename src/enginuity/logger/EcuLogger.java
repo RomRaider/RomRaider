@@ -6,6 +6,7 @@ import enginuity.logger.definition.EcuDataLoaderImpl;
 import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.ui.LoggerDataTableModel;
+import enginuity.logger.ui.MessageListener;
 import enginuity.logger.ui.ParameterListTableModel;
 import enginuity.logger.ui.ParameterRegistrationBroker;
 import enginuity.logger.ui.ParameterRegistrationBrokerImpl;
@@ -22,9 +23,12 @@ import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
+import javax.swing.border.BevelBorder;
+import static javax.swing.border.BevelBorder.LOWERED;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.SOUTH;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -33,14 +37,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener {
+public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
     private final Settings settings = new Settings();
+    private final JLabel statusBarLabel = new JLabel("Enginuity ECU Logger");
     private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
     private final JComboBox portsComboBox = new JComboBox();
     private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
     private final JPanel graphPanel = new JPanel();
     private final DataUpdateHandlerManager handlerManager = new DataUpdateHandlerManagerImpl();
-    private final ParameterRegistrationBroker broker = new ParameterRegistrationBrokerImpl(handlerManager, settings);
+    private final ParameterRegistrationBroker broker = new ParameterRegistrationBrokerImpl(handlerManager, settings, this);
     private final ParameterListTableModel paramListTableModel = new ParameterListTableModel(broker, "Parameters");
     private final ParameterListTableModel switchListTableModel = new ParameterListTableModel(broker, "Switches");
 
@@ -67,12 +72,20 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JSplitPane splitPane = buildSplitPane(leftComponent, rightComponent);
         splitPane.addPropertyChangeListener(this);
 
+        // build statusbar
+        JComponent statusBar = buildStatusBar();
+
+        // setup main panel
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(splitPane, CENTER);
+        mainPanel.add(statusBar, SOUTH);
+
         // add to container
-        getContentPane().add(splitPane);
+        getContentPane().add(mainPanel);
     }
 
     private void loadEcuParamsFromConfig() {
-        //TODO: handle errors here better!
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
@@ -86,6 +99,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         } catch (Exception e) {
             e.printStackTrace();
+            reportError(e);
         }
     }
 
@@ -94,6 +108,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         handlerManager.addHandler(new GraphUpdateHandler(graphPanel));
         handlerManager.addHandler(new DashboardUpdateHandler());
         handlerManager.addHandler(new FileUpdateHandler(settings));
+    }
+
+    private JComponent buildStatusBar() {
+        JPanel statusBar = new JPanel();
+        statusBar.setLayout(new BorderLayout());
+        statusBar.add(statusBarLabel, CENTER);
+        statusBar.setBorder(new BevelBorder(LOWERED));
+        return statusBar;
     }
 
     private JComponent buildLeftComponent() {
@@ -218,6 +240,29 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
     }
 
+    public void reportMessage(String message) {
+        if (message != null) {
+            statusBarLabel.setText(message);
+        }
+    }
+
+    public void reportError(String error) {
+        if (error != null) {
+            JOptionPane.showMessageDialog(null, error);
+        }
+    }
+
+    public void reportError(Exception e) {
+        if (e != null) {
+            String message = e.getMessage();
+            int i = message.indexOf(": ");
+            if (i >= 0) {
+                message = message.substring(i + 2);
+            }
+            reportError(message);
+        }
+    }
+
     //**********************************************************************
 
 
@@ -259,5 +304,4 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             e.printStackTrace();
         }
     }
-
 }

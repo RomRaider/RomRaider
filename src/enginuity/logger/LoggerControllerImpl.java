@@ -9,6 +9,7 @@ import enginuity.logger.manager.QueryManagerImpl;
 import enginuity.logger.manager.TransmissionManager;
 import enginuity.logger.manager.TransmissionManagerImpl;
 import enginuity.logger.query.LoggerCallback;
+import enginuity.logger.ui.MessageListener;
 import static enginuity.util.ParamChecker.checkNotNull;
 import gnu.io.CommPortIdentifier;
 
@@ -18,9 +19,9 @@ import java.util.List;
 public final class LoggerControllerImpl implements LoggerController {
     private final QueryManager queryManager;
 
-    public LoggerControllerImpl(Settings settings) {
+    public LoggerControllerImpl(Settings settings, MessageListener messageListener) {
         TransmissionManager txManager = new TransmissionManagerImpl(settings);
-        queryManager = new QueryManagerImpl(txManager);
+        queryManager = new QueryManagerImpl(txManager, messageListener);
     }
 
     public List<String> listSerialPorts() {
