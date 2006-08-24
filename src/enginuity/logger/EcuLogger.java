@@ -25,6 +25,7 @@ import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import javax.swing.border.BevelBorder;
 import static javax.swing.border.BevelBorder.LOWERED;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
@@ -37,17 +38,36 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+/*
+TODO: add better debug logging, preferably to a file and switchable (on/off)
+TODO: finish dashboard tab
+TODO: add configuration screen (log file destination, etc)
+TODO: add user definable addresses
+TODO: Clean up this class!
+*/
+
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
+    private static final String HEADING_PARAMETERS = "Parameters";
+    private static final String HEADING_SWITCHES = "Switches";
     private final Settings settings = new Settings();
+    private final LoggerController controller = new LoggerControllerImpl(settings, this);
     private final JLabel statusBarLabel = new JLabel("Enginuity ECU Logger");
     private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
     private final JComboBox portsComboBox = new JComboBox();
     private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
     private final JPanel graphPanel = new JPanel();
-    private final DataUpdateHandlerManager handlerManager = new DataUpdateHandlerManagerImpl();
-    private final ParameterRegistrationBroker broker = new ParameterRegistrationBrokerImpl(handlerManager, settings, this);
-    private final ParameterListTableModel paramListTableModel = new ParameterListTableModel(broker, "Parameters");
-    private final ParameterListTableModel switchListTableModel = new ParameterListTableModel(broker, "Switches");
+    private final DataUpdateHandlerManager dataHandlerManager = new DataUpdateHandlerManagerImpl();
+    private final ParameterRegistrationBroker dataTabBroker = new ParameterRegistrationBrokerImpl(controller, dataHandlerManager);
+    private final ParameterListTableModel dataTabParamListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_PARAMETERS);
+    private final ParameterListTableModel dataTabSwitchListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_SWITCHES);
+    private final DataUpdateHandlerManager graphHandlerManager = new DataUpdateHandlerManagerImpl();
+    private final ParameterRegistrationBroker graphTabBroker = new ParameterRegistrationBrokerImpl(controller, graphHandlerManager);
+    private final ParameterListTableModel graphTabParamListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_PARAMETERS);
+    private final ParameterListTableModel graphTabSwitchListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_SWITCHES);
+    private final DataUpdateHandlerManager dashboardHandlerManager = new DataUpdateHandlerManagerImpl();
+    private final ParameterRegistrationBroker dashboardTabBroker = new ParameterRegistrationBrokerImpl(controller, dashboardHandlerManager);
+    private final ParameterListTableModel dashboardTabParamListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_PARAMETERS);
+    private final ParameterListTableModel dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
 
     public EcuLogger(String title) {
         super(title);
@@ -64,22 +84,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void initUserInterface() {
-        // build left and right components of split pane
-        JComponent leftComponent = buildLeftComponent();
-        JComponent rightComponent = buildRightComponent();
-
-        // build split pane
-        JSplitPane splitPane = buildSplitPane(leftComponent, rightComponent);
-        splitPane.addPropertyChangeListener(this);
-
-        // build statusbar
-        JComponent statusBar = buildStatusBar();
-
         // setup main panel
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(splitPane, CENTER);
-        mainPanel.add(statusBar, SOUTH);
+        mainPanel.add(buildControlToolbar(), NORTH);
+        mainPanel.add(buildTabbedPane(), CENTER);
+        mainPanel.add(buildStatusBar(), SOUTH);
 
         // add to container
         getContentPane().add(mainPanel);
@@ -91,11 +101,15 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
             List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
             for (EcuParameter ecuParam : ecuParams) {
-                paramListTableModel.addParam(ecuParam);
+                dataTabParamListTableModel.addParam(ecuParam);
+                graphTabParamListTableModel.addParam(ecuParam);
+                dashboardTabParamListTableModel.addParam(ecuParam);
             }
             List<EcuSwitch> ecuSwitches = dataLoader.getEcuSwitches();
             for (EcuSwitch ecuSwitch : ecuSwitches) {
-                switchListTableModel.addParam(ecuSwitch);
+                dataTabSwitchListTableModel.addParam(ecuSwitch);
+                graphTabSwitchListTableModel.addParam(ecuSwitch);
+                dashboardTabSwitchListTableModel.addParam(ecuSwitch);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,10 +118,29 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void initParameterUpdateHandlers() {
-        handlerManager.addHandler(new LiveDataUpdateHandler(dataTableModel));
-        handlerManager.addHandler(new GraphUpdateHandler(graphPanel));
-        handlerManager.addHandler(new DashboardUpdateHandler());
-        handlerManager.addHandler(new FileUpdateHandler(settings));
+        FileUpdateHandler fileUpdateHandler = new FileUpdateHandler(settings);
+        dataHandlerManager.addHandler(new LiveDataUpdateHandler(dataTableModel));
+        dataHandlerManager.addHandler(fileUpdateHandler);
+        graphHandlerManager.addHandler(new GraphUpdateHandler(graphPanel));
+        graphHandlerManager.addHandler(fileUpdateHandler);
+        dashboardHandlerManager.addHandler(new DashboardUpdateHandler());
+        dashboardHandlerManager.addHandler(fileUpdateHandler);
+    }
+
+    private JComponent buildTabbedPane() {
+        tabbedPane.add("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel), buildDataTab()));
+        tabbedPane.add("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel), buildGraphTab()));
+        tabbedPane.add("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel), buildDashboardTab()));
+        return tabbedPane;
+    }
+
+    private JComponent buildParamListPane(TableModel paramListTableModel, TableModel switchListTableModel) {
+        JScrollPane paramList = new JScrollPane(new JTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane switchList = new JScrollPane(new JTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JSplitPane splitPane1 = new JSplitPane(VERTICAL_SPLIT, paramList, switchList);
+        splitPane1.setDividerSize(2);
+        splitPane1.setDividerLocation(300);
+        return splitPane1;
     }
 
     private JComponent buildStatusBar() {
@@ -118,27 +151,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return statusBar;
     }
 
-    private JComponent buildLeftComponent() {
-        JScrollPane paramList = new JScrollPane(new JTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JScrollPane switchList = new JScrollPane(new JTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, paramList, switchList);
-        splitPane.setDividerSize(2);
-        splitPane.setDividerLocation(300);
-        return splitPane;
-    }
-
-
-    private JComponent buildRightComponent() {
-        JPanel rightPanel = new JPanel(new BorderLayout());
-        rightPanel.add(buildControlToolbar(), NORTH);
-        rightPanel.add(buildTabbedDataPane(), CENTER);
-        return rightPanel;
-    }
 
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
         JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
         splitPane.setDividerSize(2);
         splitPane.setDividerLocation(300);
+        splitPane.addPropertyChangeListener(this);
         return splitPane;
     }
 
@@ -155,14 +173,16 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                broker.stop();
+                dataTabBroker.stop();
+                graphTabBroker.stop();
+                dashboardTabBroker.stop();
             }
         });
         return portsComboBox;
     }
 
     private void refreshPortsComboBox() {
-        List<String> ports = broker.listSerialPorts();
+        List<String> ports = controller.listSerialPorts();
         for (String port : ports) {
             portsComboBox.addItem(port);
         }
@@ -174,7 +194,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                broker.start();
+                dataTabBroker.start();
+                graphTabBroker.start();
+                dashboardTabBroker.start();
             }
         });
         return startButton;
@@ -184,17 +206,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JButton stopButton = new JButton("Stop");
         stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                broker.stop();
+                dataTabBroker.stop();
+                graphTabBroker.stop();
+                dashboardTabBroker.stop();
             }
         });
         return stopButton;
-    }
-
-    private JTabbedPane buildTabbedDataPane() {
-        tabbedPane.add("Data", buildDataTab());
-        tabbedPane.add("Graph", buildGraphTab());
-        tabbedPane.add("Dashboard", buildDashboardTab());
-        return tabbedPane;
     }
 
     private JComponent buildDataTab() {
@@ -216,9 +233,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void windowClosing(WindowEvent windowEvent) {
         try {
-            broker.stop();
+            dataTabBroker.stop();
+            graphTabBroker.stop();
+            dashboardTabBroker.stop();
         } finally {
-            handlerManager.cleanUp();
+            dataHandlerManager.cleanUp();
+            graphHandlerManager.cleanUp();
+            dashboardHandlerManager.cleanUp();
         }
     }
 

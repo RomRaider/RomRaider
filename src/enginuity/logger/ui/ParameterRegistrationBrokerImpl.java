@@ -1,8 +1,6 @@
 package enginuity.logger.ui;
 
-import enginuity.Settings;
 import enginuity.logger.LoggerController;
-import enginuity.logger.LoggerControllerImpl;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.query.LoggerCallback;
 import enginuity.logger.ui.handler.DataUpdateHandlerManager;
@@ -18,10 +16,10 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
     private final List<EcuData> registeredEcuParameters = Collections.synchronizedList(new ArrayList<EcuData>());
     private long loggerStartTime = 0;
 
-    public ParameterRegistrationBrokerImpl(DataUpdateHandlerManager handlerManager, Settings settings, MessageListener messageListener) {
-        checkNotNull(handlerManager, settings, messageListener);
+    public ParameterRegistrationBrokerImpl(LoggerController controller, DataUpdateHandlerManager handlerManager) {
+        checkNotNull(controller, handlerManager);
+        this.controller = controller;
         this.handlerManager = handlerManager;
-        this.controller = new LoggerControllerImpl(settings, messageListener);
     }
 
     public synchronized void registerEcuParameterForLogging(final EcuData ecuData) {
