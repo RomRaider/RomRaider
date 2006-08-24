@@ -4,6 +4,7 @@ import enginuity.ECUEditorManager;
 import enginuity.maps.DataCell;
 import enginuity.maps.Scale;
 import enginuity.maps.Table;
+import enginuity.maps.Table1D;
 import enginuity.maps.Table3D;
 
 import java.awt.BorderLayout;
@@ -227,6 +228,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         table.increment(0 - Double.parseDouble(incrementByCoarse.getValue()+""));        
     }
     
+    /**
+     * Method launches a 3d Frame.
+     *
+     */
     public void enable3d() {
     	int rowCount = 0;
     	int valueCount = 0;
@@ -251,9 +256,32 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             	graphValues.add(rowValues);
         	}
         	
-        	int[] testX = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000 };
-			int[] testZ = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 , 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40};
-
+        	Table1D xAxisTable1D = ((Table3D)table).getXAxis();
+        	Table1D yAxisTable1D = ((Table3D)table).getYAxis();
+        	
+        	
+        	//Gather x axis values
+        	DataCell[] dataCells = xAxisTable1D.getData();
+        	int length = dataCells.length;
+        	double[] xValues = new double[length];
+        	
+        	for(int i = 0; i < length; i++){
+        		double theValue = dataCells[i].getValue();
+        		BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
+        		xValues[i] = finalRoundedValue.doubleValue();
+        	}
+        	
+        	//Gather y/z axis values
+        	dataCells = yAxisTable1D.getData();
+        	length = dataCells.length;
+        	double[] yValues = new double[length];
+        	
+        	for(int i = 0; i < length; i++){
+        		double theValue = dataCells[i].getValue();
+        		BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
+        		yValues[i] = finalRoundedValue.doubleValue();
+        	}
+        	
 			//Define Labels for graph
 			String xLabel = ((Table3D)table).getXAxis().getName(); 
 			String zLabel = ((Table3D)table).getYAxis().getName();
@@ -276,13 +304,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 	        */
 	        
 			//TODO Remove this when above is working
-	        Graph3dManager.openGraph3dFrame(graphValues, testX, testZ,xLabel, yLabel, zLabel, table.getName());
+	        Graph3dManager.openGraph3dFrame(graphValues, xValues, yValues,xLabel, yLabel, zLabel, table.getName());
 			Graph3dManager.addListener(this);
         }
-    	
-    	
-    	
-    	
     }
     
     public void setCoarseValue(double input) {
