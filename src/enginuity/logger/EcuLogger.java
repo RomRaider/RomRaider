@@ -44,6 +44,7 @@ TODO: finish dashboard tab
 TODO: add configuration screen (log file destination, etc)
 TODO: add user definable addresses
 TODO: Clean up this class!
+TODO: Periodically refresh com port list
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
@@ -288,14 +289,18 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
 
     public static void main(String... args) {
+        startLogger(EXIT_ON_CLOSE);
+    }
+
+    public static void startLogger(final int defaultCloseOperation) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                createAndShowGUI(defaultCloseOperation);
             }
         });
     }
 
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI(int defaultCloseOperation) {
         //set look and feel
         setLookAndFeel();
 
@@ -309,7 +314,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         //set remaining window properties
         ecuLogger.setSize(new Dimension(1000, 600));
         ecuLogger.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
-        ecuLogger.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
         ecuLogger.addWindowListener(ecuLogger);
 
         //display the window
