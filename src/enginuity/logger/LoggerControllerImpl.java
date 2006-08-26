@@ -13,8 +13,9 @@ import enginuity.logger.ui.MessageListener;
 import static enginuity.util.ParamChecker.checkNotNull;
 import gnu.io.CommPortIdentifier;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public final class LoggerControllerImpl implements LoggerController {
     private final QueryManager queryManager;
@@ -24,12 +25,15 @@ public final class LoggerControllerImpl implements LoggerController {
         queryManager = new QueryManagerImpl(txManager, messageListener);
     }
 
-    public List<String> listSerialPorts() {
+    public Set<String> listSerialPorts() {
         SerialPortDiscoverer serialPortDiscoverer = new SerialPortDiscovererImpl();
         List<CommPortIdentifier> portIdentifiers = serialPortDiscoverer.listPorts();
-        List<String> portNames = new ArrayList<String>(portIdentifiers.size());
+        Set<String> portNames = new TreeSet<String>();
         for (CommPortIdentifier portIdentifier : portIdentifiers) {
-            portNames.add(portIdentifier.getName());
+            String portName = portIdentifier.getName();
+            if (!portNames.contains(portName)) {
+                portNames.add(portName);
+            }
         }
         return portNames;
     }

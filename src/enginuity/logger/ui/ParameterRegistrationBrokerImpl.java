@@ -54,11 +54,6 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
 
     }
 
-    public List<String> listSerialPorts() {
-        return controller.listSerialPorts();
-    }
-
-
     public synchronized void start() {
         loggerStartTime = System.currentTimeMillis();
         controller.start();

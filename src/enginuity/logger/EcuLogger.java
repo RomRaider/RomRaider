@@ -5,11 +5,13 @@ import enginuity.logger.definition.EcuDataLoader;
 import enginuity.logger.definition.EcuDataLoaderImpl;
 import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuSwitch;
+import enginuity.logger.io.serial.SerialPortRefresher;
 import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.MessageListener;
 import enginuity.logger.ui.ParameterListTableModel;
 import enginuity.logger.ui.ParameterRegistrationBroker;
 import enginuity.logger.ui.ParameterRegistrationBrokerImpl;
+import enginuity.logger.ui.SerialPortComboBox;
 import enginuity.logger.ui.handler.DashboardUpdateHandler;
 import enginuity.logger.ui.handler.DataUpdateHandlerManager;
 import enginuity.logger.ui.handler.DataUpdateHandlerManagerImpl;
@@ -44,7 +46,6 @@ TODO: finish dashboard tab
 TODO: add configuration screen (log file destination, etc)
 TODO: add user definable addresses
 TODO: Clean up this class!
-TODO: Periodically refresh com port list
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
@@ -54,7 +55,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private final LoggerController controller = new LoggerControllerImpl(settings, this);
     private final JLabel statusBarLabel = new JLabel("Enginuity ECU Logger");
     private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-    private final JComboBox portsComboBox = new JComboBox();
+    private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
     private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
     private final JPanel graphPanel = new JPanel();
     private final DataUpdateHandlerManager dataHandlerManager = new DataUpdateHandlerManagerImpl();
@@ -73,6 +74,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public EcuLogger(String title) {
         super(title);
 
+        // start port list refresher thread
+        startPortRefresherThread();
+
         // setup the user interface
         initUserInterface();
 
@@ -82,6 +86,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         // load ecu params from logger config
         loadEcuParamsFromConfig();
 
+    }
+
+    private void startPortRefresherThread() {
+        Thread portRefresherThread = new Thread(new SerialPortRefresher(portsComboBox, controller));
+        portRefresherThread.setDaemon(true);
+        portRefresherThread.start();
     }
 
     private void initUserInterface() {
@@ -170,7 +180,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComboBox buildPortsComboBox() {
-        refreshPortsComboBox();
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
@@ -180,14 +189,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         });
         return portsComboBox;
-    }
-
-    private void refreshPortsComboBox() {
-        List<String> ports = controller.listSerialPorts();
-        for (String port : ports) {
-            portsComboBox.addItem(port);
-        }
-        settings.setLoggerPort((String) portsComboBox.getSelectedItem());
     }
 
     private JButton buildStartButton() {

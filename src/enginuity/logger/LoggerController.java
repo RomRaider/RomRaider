@@ -3,11 +3,11 @@ package enginuity.logger;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.query.LoggerCallback;
 
-import java.util.List;
+import java.util.Set;
 
 public interface LoggerController {
 
-    List<String> listSerialPorts();
+    Set<String> listSerialPorts();
 
     void addLogger(EcuData ecuData, LoggerCallback callback);
 
