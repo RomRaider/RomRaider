@@ -58,6 +58,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
     private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
     private final JPanel graphPanel = new JPanel();
+    private final JPanel dashboardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     private final DataUpdateHandlerManager dataHandlerManager = new DataUpdateHandlerManagerImpl();
     private final ParameterRegistrationBroker dataTabBroker = new ParameterRegistrationBrokerImpl(controller, dataHandlerManager);
     private final ParameterListTableModel dataTabParamListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_PARAMETERS);
@@ -134,7 +135,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dataHandlerManager.addHandler(fileUpdateHandler);
         graphHandlerManager.addHandler(new GraphUpdateHandler(graphPanel));
         graphHandlerManager.addHandler(fileUpdateHandler);
-        dashboardHandlerManager.addHandler(new DashboardUpdateHandler());
+        dashboardHandlerManager.addHandler(new DashboardUpdateHandler(dashboardPanel));
         dashboardHandlerManager.addHandler(fileUpdateHandler);
     }
 
@@ -226,7 +227,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildDashboardTab() {
-        JPanel dashboardPanel = new JPanel();
         return new JScrollPane(dashboardPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
     }
 
