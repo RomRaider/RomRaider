@@ -41,10 +41,10 @@ import javax.swing.border.LineBorder;
 
 import com.ecm.graphics.Graph3dJPanel;
 import com.ecm.graphics.Graph3dManager;
-import com.ecm.graphics.listeners.ModifiedDataListener;
-import com.ecm.graphics.listeners.TableData;
+import com.ecm.graphics.data.GraphData;
+import com.ecm.graphics.data.GraphDataListener;
 
-public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ModifiedDataListener {
+public class TableToolBar extends JToolBar implements MouseListener, ItemListener, GraphDataListener {
     
     private JButton   incrementFine   = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
     private JButton   decrementFine   = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
@@ -305,7 +305,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 	        
 			//TODO Remove this when above is working
 	        Graph3dManager.openGraph3dFrame(graphValues, xValues, yValues,xLabel, yLabel, zLabel, table.getName());
-			Graph3dManager.addListener(this);
+	        GraphData.addGraphDataListener(this);
         }
     }
     
@@ -360,26 +360,21 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     // ******************************************
     // Code for listening to graph3d data changes
     // ******************************************
-	public void newGraphData(Vector data) {
-		Iterator modDataListenerIterator = data.iterator();
-		while(modDataListenerIterator.hasNext()){
-			TableData td = (TableData)modDataListenerIterator.next();
-			
+	public void newGraphData(int x, int z, float value) {
+		Table3D table3d = (Table3D)table;
+		table3d.selectCellAt(x, table3d.getSizeY() - z - 1);
+		
+		//Set the value
+		table.setRealValue(value+"");
+	}
+	
+	public void selectStateChange(int x, int z, boolean value){
+		if(value == true){
 			Table3D table3d = (Table3D)table;
-			table3d.selectCellAt(td.getX(), table3d.getSizeY() - td.getZ() - 1);
-			
-			//Set the value
-			table.setRealValue(td.getValue()+"");
+			table3d.selectCellAtWithoutClear(x, table3d.getSizeY() - z - 1);	
+		}else{
+			Table3D table3d = (Table3D)table;
+			table3d.deSelectCellAt(x, table3d.getSizeY() - z - 1);
 		}
-	}
-	
-	public void cellSelected(int x, int z){
-		Table3D table3d = (Table3D)table;
-		table3d.selectCellAtWithoutClear(x, table3d.getSizeY() - z - 1);		
-	}
-	
-	public void cellDeSelected(int x, int z){
-		Table3D table3d = (Table3D)table;
-		table3d.deSelectCellAt(x, table3d.getSizeY() - z - 1);
 	}
 }
