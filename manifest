@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Main-Class: enginuity.ECUExec
-Class-Path: libs/Graph3d.jar 
- libs/j3dcore.jar 
- libs/j3dutils.jar 
- libs/jep.jar 
- libs/JFontChooser.jar 
- libs/swing-layout-1.0.jar 
- libs/vecmath.jar 
+Class-Path: lib/Graph3d.jar 
+ lib/j3dcore.jar 
+ lib/j3dutils.jar 
+ lib/jep.jar 
+ lib/JFontChooser.jar 
+ lib/swing-layout-1.0.jar 
+ lib/vecmath.jar 
  
  
 
