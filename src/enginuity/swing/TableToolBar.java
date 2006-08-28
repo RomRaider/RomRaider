@@ -40,7 +40,7 @@ import javax.swing.KeyStroke;
 import javax.swing.border.LineBorder;
 
 import com.ecm.graphics.Graph3dJPanel;
-import com.ecm.graphics.Graph3dManager;
+import com.ecm.graphics.Graph3dFrameManager;
 import com.ecm.graphics.data.GraphData;
 import com.ecm.graphics.data.GraphDataListener;
 
@@ -304,7 +304,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 	        */
 	        
 			//TODO Remove this when above is working
-	        Graph3dManager.openGraph3dFrame(graphValues, xValues, yValues,xLabel, yLabel, zLabel, table.getName());
+	        Graph3dFrameManager.openGraph3dFrame(graphValues, xValues, yValues,xLabel, yLabel, zLabel, table.getName());
 	        GraphData.addGraphDataListener(this);
         }
     }
