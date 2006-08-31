@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public final class FileLoggerImpl implements FileLogger {
+    private static final String NEW_LINE = "\n";
     private final Settings settings;
     private boolean started = false;
     private OutputStream os = null;
@@ -52,6 +53,9 @@ public final class FileLoggerImpl implements FileLogger {
     public void writeLine(String line) {
         try {
             os.write(line.getBytes());
+            if (!line.endsWith(NEW_LINE)) {
+                os.write(NEW_LINE.getBytes());
+            }
         } catch (Exception e) {
             stop();
             throw new FileLoggerException(e);

@@ -7,6 +7,7 @@ import enginuity.logger.query.RegisteredQueryImpl;
 import enginuity.logger.ui.MessageListener;
 import static enginuity.util.ParamChecker.checkNotNull;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @SuppressWarnings({"FieldCanBeLocal"})
 public final class QueryManagerImpl implements QueryManager {
+    private final DecimalFormat format = new DecimalFormat("0.00");
     private final Map<EcuData, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<EcuData, RegisteredQuery>());
     private final List<RegisteredQuery> addList = new ArrayList<RegisteredQuery>();
     private final List<EcuData> removeList = new ArrayList<EcuData>();
@@ -87,8 +89,8 @@ public final class QueryManagerImpl implements QueryManager {
 
     private String buildStatsMessage(long start, int count) {
         double duration = ((double) (System.currentTimeMillis() - start)) / 1000D;
-        return "Logging [Total queries sent: " + count + ", Queries per second: " + (((double) count) / duration)
-                + ", Avg. Query Time: " + (duration / ((double) count)) + "s]";
+        return "Logging [Total queries sent: " + count + ", Queries per second: " + format.format(((double) count) / duration)
+                + ", Avg. Query Time: " + format.format(duration / ((double) count)) + "s]";
     }
 
 }
