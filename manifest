@@ -7,6 +7,8 @@ Class-Path: lib/Graph3d.jar
  lib/JFontChooser.jar 
  lib/swing-layout-1.0.jar 
  lib/vecmath.jar 
- 
+ lib/jcommon-1.0.0.jar 
+ lib/jfreechart-1.0.1.jar 
+ lib/RXTXcomm.jar 
  
 
