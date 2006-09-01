@@ -125,22 +125,28 @@ public final class SerialConnectionImpl implements SerialConnection {
 
     public void close() {
         if (os != null) {
+            System.out.print("Closing outputstream...");
             try {
                 os.close();
+                System.out.println("done.");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         if (is != null) {
+            System.out.print("Closing inputstream...");
             try {
                 is.close();
+                System.out.println("done.");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         if (serialPort != null) {
+            System.out.print("Closing serial port...");
             try {
                 serialPort.close();
+                System.out.println("done.");
             } catch (Exception e) {
                 e.printStackTrace();
             }

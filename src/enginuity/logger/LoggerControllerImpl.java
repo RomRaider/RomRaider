@@ -19,6 +19,7 @@ import java.util.TreeSet;
 
 public final class LoggerControllerImpl implements LoggerController {
     private final QueryManager queryManager;
+    private boolean started = false;
 
     public LoggerControllerImpl(Settings settings, MessageListener messageListener) {
         TransmissionManager txManager = new TransmissionManagerImpl(settings);
@@ -50,11 +51,15 @@ public final class LoggerControllerImpl implements LoggerController {
         queryManager.removeQuery(ecuData);
     }
 
-    public void start() {
-        new Thread(queryManager).start();
+    public synchronized void start() {
+        if (!started) {
+            new Thread(queryManager).start();
+            started = true;
+        }
     }
 
-    public void stop() {
+    public synchronized void stop() {
         queryManager.stop();
+        started = false;
     }
 }

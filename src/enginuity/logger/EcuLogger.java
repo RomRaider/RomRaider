@@ -184,9 +184,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                dataTabBroker.stop();
-                graphTabBroker.stop();
-                dashboardTabBroker.stop();
+                stopBrokers();
             }
         });
         return portsComboBox;
@@ -197,9 +195,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                dataTabBroker.start();
-                graphTabBroker.start();
-                dashboardTabBroker.start();
+                startBrokers();
             }
         });
         return startButton;
@@ -209,12 +205,28 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JButton stopButton = new JButton("Stop");
         stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                dataTabBroker.stop();
-                graphTabBroker.stop();
-                dashboardTabBroker.stop();
+                stopBrokers();
             }
         });
         return stopButton;
+    }
+
+    private synchronized void startBrokers() {
+        dataTabBroker.start();
+        graphTabBroker.start();
+        dashboardTabBroker.start();
+    }
+
+    private synchronized void stopBrokers() {
+        dataTabBroker.stop();
+        graphTabBroker.stop();
+        dashboardTabBroker.stop();
+    }
+
+    private synchronized void cleanUpBrokers() {
+        dataHandlerManager.cleanUp();
+        graphHandlerManager.cleanUp();
+        dashboardHandlerManager.cleanUp();
     }
 
     private JComponent buildDataTab() {
@@ -235,13 +247,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void windowClosing(WindowEvent windowEvent) {
         try {
-            dataTabBroker.stop();
-            graphTabBroker.stop();
-            dashboardTabBroker.stop();
+            stopBrokers();
         } finally {
-            dataHandlerManager.cleanUp();
-            graphHandlerManager.cleanUp();
-            dashboardHandlerManager.cleanUp();
+            cleanUpBrokers();
         }
     }
 
