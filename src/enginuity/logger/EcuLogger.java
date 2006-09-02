@@ -75,6 +75,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public EcuLogger(String title) {
         super(title);
 
+        // setup controller listeners
+        initControllerListeners();
+
         // start port list refresher thread
         startPortRefresherThread();
 
@@ -87,6 +90,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         // load ecu params from logger config
         loadEcuParamsFromConfig();
 
+    }
+
+    private void initControllerListeners() {
+        controller.addListener(dataTabBroker);
+        controller.addListener(graphTabBroker);
+        controller.addListener(dashboardTabBroker);
     }
 
     private void startPortRefresherThread() {
@@ -184,7 +193,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                stopBrokers();
+                controller.stop();
             }
         });
         return portsComboBox;
@@ -195,7 +204,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                startBrokers();
+                controller.start();
             }
         });
         return startButton;
@@ -205,28 +214,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JButton stopButton = new JButton("Stop");
         stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                stopBrokers();
+                controller.stop();
             }
         });
         return stopButton;
-    }
-
-    private synchronized void startBrokers() {
-        dataTabBroker.start();
-        graphTabBroker.start();
-        dashboardTabBroker.start();
-    }
-
-    private synchronized void stopBrokers() {
-        dataTabBroker.stop();
-        graphTabBroker.stop();
-        dashboardTabBroker.stop();
-    }
-
-    private synchronized void cleanUpBrokers() {
-        dataHandlerManager.cleanUp();
-        graphHandlerManager.cleanUp();
-        dashboardHandlerManager.cleanUp();
     }
 
     private JComponent buildDataTab() {
@@ -247,9 +238,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void windowClosing(WindowEvent windowEvent) {
         try {
-            stopBrokers();
+            controller.stop();
         } finally {
-            cleanUpBrokers();
+            cleanUpUpdateHandlers();
         }
     }
 
@@ -269,6 +260,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+    }
+
+    private synchronized void cleanUpUpdateHandlers() {
+        dataHandlerManager.cleanUp();
+        graphHandlerManager.cleanUp();
+        dashboardHandlerManager.cleanUp();
     }
 
     public void reportMessage(String message) {

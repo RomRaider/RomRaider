@@ -1,5 +1,6 @@
 package enginuity.logger.manager;
 
+import enginuity.logger.LoggerController;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.query.LoggerCallback;
 import enginuity.logger.query.RegisteredQuery;
@@ -17,26 +18,28 @@ import java.util.Map;
 @SuppressWarnings({"FieldCanBeLocal"})
 public final class QueryManagerImpl implements QueryManager {
     private final DecimalFormat format = new DecimalFormat("0.00");
-    private final Map<EcuData, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<EcuData, RegisteredQuery>());
-    private final List<RegisteredQuery> addList = new ArrayList<RegisteredQuery>();
-    private final List<EcuData> removeList = new ArrayList<EcuData>();
+    private final Map<String, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<String, RegisteredQuery>());
+    private final Map<String, RegisteredQuery> addList = new HashMap<String, RegisteredQuery>();
+    private final List<String> removeList = new ArrayList<String>();
     private final TransmissionManager txManager;
     private final MessageListener messageListener;
+    private final LoggerController controller;
     private boolean stop = false;
 
-    public QueryManagerImpl(TransmissionManager txManager, MessageListener messageListener) {
-        checkNotNull(txManager, messageListener);
+    public QueryManagerImpl(LoggerController controller, TransmissionManager txManager, MessageListener messageListener) {
+        checkNotNull(controller, txManager, messageListener);
+        this.controller = controller;
         this.txManager = txManager;
         this.messageListener = messageListener;
     }
 
-    public synchronized void addQuery(EcuData ecuData, LoggerCallback callback) {
+    public synchronized void addQuery(String callerId, EcuData ecuData, LoggerCallback callback) {
         checkNotNull(ecuData, callback);
-        addList.add(new RegisteredQueryImpl(ecuData, callback));
+        addList.put(buildQueryId(callerId, ecuData), new RegisteredQueryImpl(ecuData, callback));
     }
 
-    public synchronized void removeQuery(EcuData ecuData) {
-        removeList.add(ecuData);
+    public synchronized void removeQuery(String callerId, EcuData ecuData) {
+        removeList.add(buildQueryId(callerId, ecuData));
     }
 
     public void run() {
@@ -56,6 +59,7 @@ public final class QueryManagerImpl implements QueryManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            controller.stop();
             messageListener.reportError(e);
         } finally {
             txManager.stop();
@@ -68,21 +72,25 @@ public final class QueryManagerImpl implements QueryManager {
         stop = true;
     }
 
+    private String buildQueryId(String callerId, EcuData ecuData) {
+        return callerId + "_" + ecuData.getName();
+    }
+
     private synchronized void updateQueryList() {
         addQueries();
         removeQueries();
     }
 
     private void addQueries() {
-        for (RegisteredQuery registeredQuery : addList) {
-            queryMap.put(registeredQuery.getEcuData(), registeredQuery);
+        for (String queryId : addList.keySet()) {
+            queryMap.put(queryId, addList.get(queryId));
         }
         addList.clear();
     }
 
     private void removeQueries() {
-        for (EcuData ecuData : removeList) {
-            queryMap.remove(ecuData);
+        for (String queryId : removeList) {
+            queryMap.remove(queryId);
         }
         removeList.clear();
     }

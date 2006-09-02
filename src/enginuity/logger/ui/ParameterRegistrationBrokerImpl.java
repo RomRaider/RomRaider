@@ -13,6 +13,7 @@ import java.util.List;
 public final class ParameterRegistrationBrokerImpl implements ParameterRegistrationBroker {
     private final LoggerController controller;
     private final DataUpdateHandlerManager handlerManager;
+    private final String id;
     private final List<EcuData> registeredEcuParameters = Collections.synchronizedList(new ArrayList<EcuData>());
     private long loggerStartTime = 0;
 
@@ -20,6 +21,7 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
         checkNotNull(controller, handlerManager);
         this.controller = controller;
         this.handlerManager = handlerManager;
+        id = System.currentTimeMillis() + "_" + hashCode();
     }
 
     public synchronized void registerEcuParameterForLogging(final EcuData ecuData) {
@@ -28,7 +30,7 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
             handlerManager.registerData(ecuData);
 
             // add logger and setup callback
-            controller.addLogger(ecuData, new LoggerCallback() {
+            controller.addLogger(id, ecuData, new LoggerCallback() {
                 public void callback(byte[] value) {
                     // update handlers
                     handlerManager.handleDataUpdate(ecuData, value, System.currentTimeMillis() - loggerStartTime);
@@ -43,7 +45,7 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
     public synchronized void deregisterEcuParameterFromLogging(EcuData ecuData) {
         if (registeredEcuParameters.contains(ecuData)) {
             // remove logger
-            controller.removeLogger(ecuData);
+            controller.removeLogger(id, ecuData);
 
             // deregister param from handlers
             handlerManager.deregisterData(ecuData);
@@ -56,11 +58,9 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
 
     public synchronized void start() {
         loggerStartTime = System.currentTimeMillis();
-        controller.start();
     }
 
     public synchronized void stop() {
-        controller.stop();
     }
 
 }

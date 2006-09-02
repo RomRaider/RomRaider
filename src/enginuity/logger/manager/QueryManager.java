@@ -5,9 +5,9 @@ import enginuity.logger.query.LoggerCallback;
 
 public interface QueryManager extends Runnable {
 
-    void addQuery(EcuData ecuData, LoggerCallback callback);
+    void addQuery(String callerId, EcuData ecuData, LoggerCallback callback);
 
-    void removeQuery(EcuData ecuData);
+    void removeQuery(String callerId, EcuData ecuData);
 
     void stop();
 
