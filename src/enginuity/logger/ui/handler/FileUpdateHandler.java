@@ -8,6 +8,7 @@ import enginuity.logger.io.file.FileLogger;
 import enginuity.logger.io.file.FileLoggerImpl;
 import static enginuity.util.ParamChecker.checkNotNull;
 
+import static java.util.Collections.synchronizedList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 public final class FileUpdateHandler implements DataUpdateHandler {
     private final FileLogger fileLogger;
-    private final List<EcuData> ecuDatas = new LinkedList<EcuData>();
+    private final List<EcuData> ecuDatas = synchronizedList(new LinkedList<EcuData>());
     private Line currentLine = new Line(ecuDatas);
 
     public FileUpdateHandler(Settings settings) {
@@ -102,7 +103,7 @@ public final class FileUpdateHandler implements DataUpdateHandler {
 
         public String values() {
             StringBuilder buffer = new StringBuilder();
-            buffer.append(lastTimestamp);
+            buffer.append(lastTimestamp / 1000.0);
             for (EcuData ecuData : ecuDataValues.keySet()) {
                 String value = ecuDataValues.get(ecuData);
                 buffer.append(DELIMITER).append(value);

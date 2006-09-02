@@ -6,12 +6,13 @@ import enginuity.logger.definition.EcuDataConvertor;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
+import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class DashboardUpdateHandler implements DataUpdateHandler {
     private final JPanel dashboardPanel;
-    private final Map<EcuData, JLabel> gauges = new HashMap<EcuData, JLabel>();
+    private final Map<EcuData, JLabel> gauges = synchronizedMap(new HashMap<EcuData, JLabel>());
 
     public DashboardUpdateHandler(JPanel dashboardPanel) {
         this.dashboardPanel = dashboardPanel;

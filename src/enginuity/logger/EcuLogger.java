@@ -239,6 +239,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void windowClosing(WindowEvent windowEvent) {
         try {
             controller.stop();
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } finally {
             cleanUpUpdateHandlers();
         }
