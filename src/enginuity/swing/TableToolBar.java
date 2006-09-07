@@ -249,9 +249,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         		float[] rowValues = new float[valueCount];
             	for(int i = 0; i < valueCount; i++){
             		DataCell theCell = tableData[i][j];
-            		float theValue = (float)theCell.getValue();
-            		BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
-            		rowValues[i] = finalRoundedValue.floatValue();
+            		rowValues[i] = (float)theCell.getValue();
+            		//float theValue = (float)theCell.getValue();
+            		//BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
+            		//rowValues[i] = finalRoundedValue.floatValue();
             	}
             	graphValues.add(rowValues);
         	}
@@ -266,9 +267,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         	double[] xValues = new double[length];
         	
         	for(int i = 0; i < length; i++){
-        		double theValue = dataCells[i].getValue();
-        		BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
-        		xValues[i] = finalRoundedValue.doubleValue();
+        		xValues[i] = dataCells[i].getValue();
+        		//double theValue = dataCells[i].getValue();
+        		//BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
+        		//xValues[i] = finalRoundedValue.doubleValue();
         	}
         	
         	//Gather y/z axis values
@@ -302,9 +304,12 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 	        graphFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
 	        ECUEditorManager.getECUEditor().rightPanel.add(graphFrame);
 	        */
-	        
+			double maxV = ((Table3D)table).getScale().getMax();
+			double minV = ((Table3D)table).getScale().getMin();
 			//TODO Remove this when above is working
-	        Graph3dFrameManager.openGraph3dFrame(graphValues, xValues, yValues,xLabel, yLabel, zLabel, table.getName());
+			System.out.println("Scale: "+maxV+","+minV);
+			
+			Graph3dFrameManager.openGraph3dFrame(graphValues, 0.0, 13.01, xValues, yValues, xLabel, yLabel, zLabel, table.getName());
 	        GraphData.addGraphDataListener(this);
         }
     }
