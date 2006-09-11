@@ -1,32 +1,41 @@
-<!ELEMENT address ( byte+ ) >
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!ELEMENT byte ( #PCDATA ) >
 
-<!ELEMENT conversion ( metric ) >
+<!ELEMENT address ( byte+ ) >
 
-<!ELEMENT logger ( protocols ) >
+<!ELEMENT ref EMPTY >
+<!ATTLIST ref id IDREF #REQUIRED >
 
-<!ELEMENT metric EMPTY >
-<!ATTLIST metric expr CDATA #REQUIRED >
-<!ATTLIST metric format ( 0 | 0.0 | 0.00 ) #REQUIRED >
-<!ATTLIST metric units CDATA #REQUIRED >
+<!ELEMENT depends ( ref+ ) >
 
-<!ELEMENT parameter ( address, conversion ) >
+<!ELEMENT conversion EMPTY >
+<!ATTLIST conversion expr CDATA #REQUIRED >
+<!ATTLIST conversion format ( 0 | 0.0 | 0.00 ) #REQUIRED >
+<!ATTLIST conversion units CDATA #REQUIRED >
+
+<!ELEMENT conversions ( conversion+ ) >
+
+<!ELEMENT parameter ( ( address | depends ), conversions ) >
 <!ATTLIST parameter desc CDATA #REQUIRED >
-<!ATTLIST parameter id CDATA #REQUIRED >
+<!ATTLIST parameter name CDATA #REQUIRED >
+<!ATTLIST parameter id ID #REQUIRED >
 
 <!ELEMENT parameters ( parameter+ ) >
-
-<!ELEMENT protocol ( parameters*, switches* ) >
-<!ATTLIST protocol id CDATA #REQUIRED >
-
-<!ELEMENT protocols ( protocol+ ) >
 
 <!ELEMENT switch EMPTY >
 <!ATTLIST switch filelogcontroller ( yes | no ) #IMPLIED >
 <!ATTLIST switch bit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ) #REQUIRED >
 <!ATTLIST switch byte CDATA #REQUIRED >
 <!ATTLIST switch desc CDATA #REQUIRED >
-<!ATTLIST switch id CDATA #REQUIRED >
+<!ATTLIST switch name CDATA #REQUIRED >
+<!ATTLIST switch id ID #REQUIRED >
 
 <!ELEMENT switches ( switch+ ) >
+
+<!ELEMENT protocol ( parameters*, switches* ) >
+<!ATTLIST protocol id ID #REQUIRED >
+
+<!ELEMENT protocols ( protocol+ ) >
+
+<!ELEMENT logger ( protocols ) >

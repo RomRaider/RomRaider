@@ -5,22 +5,29 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class EcuSwitchImpl implements EcuSwitch {
-    private String name;
-    private String description;
-    private String[] addresses;
-    private EcuDataConvertor convertor;
-    private boolean fileLogController;
+    private final String id;
+    private final String name;
+    private final String description;
+    private final String[] addresses;
+    private final EcuDataConvertor convertor;
+    private final boolean fileLogController;
 
-    public EcuSwitchImpl(String name, String description, String[] address, EcuDataConvertor convertor, boolean fileLogController) {
+    public EcuSwitchImpl(String id, String name, String description, String[] address, EcuDataConvertor convertor, boolean fileLogController) {
+        checkNotNullOrEmpty(id, "id");
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");
         checkNotNullOrEmpty(address, "addresses");
         checkNotNull(convertor, "convertor");
+        this.id = id;
         this.name = name;
         this.description = description;
         this.addresses = address;
         this.convertor = convertor;
         this.fileLogController = fileLogController;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {

@@ -4,24 +4,25 @@ import static enginuity.logger.definition.EcuDataType.PARAMETER;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
-public final class EcuParameterImpl implements EcuParameter {
+public final class EcuDerivedParameterImpl implements EcuParameter {
     private final String id;
     private final String name;
     private final String description;
+    private final EcuDerivedParameterConvertor convertor;
     private final String[] addresses;
-    private final EcuDataConvertor convertor;
 
-    public EcuParameterImpl(String id, String name, String description, String[] address, EcuDataConvertor convertor) {
+    public EcuDerivedParameterImpl(String id, String name, String description, EcuData[] ecuDatas, EcuDerivedParameterConvertor convertor) {
         checkNotNullOrEmpty(name, "id");
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");
-        checkNotNullOrEmpty(address, "addresses");
+        checkNotNullOrEmpty(ecuDatas, "ecuDatas");
         checkNotNull(convertor, "convertor");
         this.id = id;
         this.name = name;
         this.description = description;
-        this.addresses = address;
         this.convertor = convertor;
+        this.convertor.setEcuDatas(ecuDatas);
+        addresses = setAddresses(ecuDatas);
     }
 
     public String getId() {
@@ -46,5 +47,17 @@ public final class EcuParameterImpl implements EcuParameter {
 
     public EcuDataType getDataType() {
         return PARAMETER;
+    }
+
+    private String[] setAddresses(EcuData[] ecuDatas) {
+        String[] addresses = new String[0];
+        for (EcuData ecuData : ecuDatas) {
+            String[] newAddresses = ecuData.getAddresses();
+            String[] tmp = new String[addresses.length + newAddresses.length];
+            System.arraycopy(addresses, 0, tmp, 0, addresses.length);
+            System.arraycopy(newAddresses, 0, tmp, addresses.length, newAddresses.length);
+            addresses = tmp;
+        }
+        return addresses;
     }
 }

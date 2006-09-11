@@ -22,7 +22,8 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
 
     public double convert(byte[] bytes) {
         double value = (double) asInt(bytes);
-        return evaluate(expression, value);
+        double result = evaluate(expression, value);
+        return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
     }
 
     public String getUnits() {

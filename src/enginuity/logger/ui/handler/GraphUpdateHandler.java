@@ -44,7 +44,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler {
     public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
         // update chart
         XYSeries series = seriesMap.get(ecuData);
-        series.add(timestamp / 1000.0, ecuData.getConvertor().convert(value));
+        series.add(timestamp, ecuData.getConvertor().convert(value));
     }
 
     public void deregisterData(EcuData ecuData) {

@@ -1,6 +1,7 @@
 package enginuity.logger.ui;
 
 import enginuity.logger.definition.EcuData;
+import static enginuity.util.ParamChecker.isNullOrEmpty;
 
 import javax.swing.table.AbstractTableModel;
 import static java.util.Collections.synchronizedList;
@@ -43,7 +44,9 @@ public final class ParameterListTableModel extends AbstractTableModel {
             case 0:
                 return paramRow.getSelected();
             case 1:
-                return paramRow.getEcuData().getName();
+                EcuData ecuData = paramRow.getEcuData();
+                String units = ecuData.getConvertor().getUnits();
+                return ecuData.getName() + (isNullOrEmpty(units) ? "" : " (" + units + ")");
             default:
                 return "Error!";
         }

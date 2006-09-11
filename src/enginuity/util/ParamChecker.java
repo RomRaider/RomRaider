@@ -20,7 +20,7 @@ public final class ParamChecker {
     }
 
     public static void checkNotNullOrEmpty(String param, String paramName) {
-        if (param == null || param.length() == 0) {
+        if (isNullOrEmpty(param)) {
             throw new IllegalArgumentException("Parameter " + paramName + " must not be null or empty");
         }
     }
@@ -47,5 +47,9 @@ public final class ParamChecker {
         if (param == null || param.length == 0) {
             throw new IllegalArgumentException("Parameter " + paramName + " must not be null or empty");
         }
+    }
+
+    public static boolean isNullOrEmpty(String param) {
+        return param == null || param.length() == 0;
     }
 }

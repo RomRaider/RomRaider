@@ -62,7 +62,9 @@ public final class LoggerControllerImpl implements LoggerController {
 
     public synchronized void start() {
         if (!started) {
-            new Thread(queryManager).start();
+            Thread queryManagerThread = new Thread(queryManager);
+            queryManagerThread.setDaemon(true);
+            queryManagerThread.start();
             startListeners();
             started = true;
         }

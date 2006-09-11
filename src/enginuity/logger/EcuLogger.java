@@ -27,6 +27,7 @@ import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import javax.swing.border.BevelBorder;
 import static javax.swing.border.BevelBorder.LOWERED;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
@@ -41,11 +42,13 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /*
+TODO: finish multi-conversion support for ecu params (already defined in xml)
 TODO: add better debug logging, preferably to a file and switchable (on/off)
 TODO: finish dashboard tab
 TODO: add configuration screen (log file destination, etc)
 TODO: add user definable addresses
 TODO: Clean up this class!
+So much to do, so little time....
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
@@ -156,12 +159,21 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildParamListPane(TableModel paramListTableModel, TableModel switchListTableModel) {
-        JScrollPane paramList = new JScrollPane(new JTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JScrollPane switchList = new JScrollPane(new JTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JSplitPane splitPane1 = new JSplitPane(VERTICAL_SPLIT, paramList, switchList);
-        splitPane1.setDividerSize(2);
-        splitPane1.setDividerLocation(300);
-        return splitPane1;
+        JScrollPane paramList = new JScrollPane(buildParamListTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, paramList, switchList);
+        splitPane.setDividerSize(2);
+        splitPane.setDividerLocation(300);
+        return splitPane;
+    }
+
+    private JTable buildParamListTable(TableModel tableModel) {
+        JTable paramListTable = new JTable(tableModel);
+        TableColumn checkBoxColumn = paramListTable.getColumnModel().getColumn(0);
+        checkBoxColumn.setMinWidth(20);
+        checkBoxColumn.setMaxWidth(55);
+        checkBoxColumn.setPreferredWidth(55);
+        return paramListTable;
     }
 
     private JComponent buildStatusBar() {
@@ -171,7 +183,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         statusBar.setBorder(new BevelBorder(LOWERED));
         return statusBar;
     }
-
 
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
         JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);

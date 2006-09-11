@@ -13,11 +13,12 @@ public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
     }
 
     public String getUnits() {
-        return "";
+        return "On/Off";
     }
 
     public String format(double value) {
-        return value > 0 ? "On" : "Off";
+        //return value > 0 ? "On" : "Off";
+        return value > 0 ? "1" : "0";
     }
 
     private void checkBit(int bit) {
