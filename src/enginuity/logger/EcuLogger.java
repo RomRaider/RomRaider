@@ -169,11 +169,16 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private JTable buildParamListTable(TableModel tableModel) {
         JTable paramListTable = new JTable(tableModel);
-        TableColumn checkBoxColumn = paramListTable.getColumnModel().getColumn(0);
-        checkBoxColumn.setMinWidth(20);
-        checkBoxColumn.setMaxWidth(55);
-        checkBoxColumn.setPreferredWidth(55);
+        changeColumnWidth(paramListTable, 0, 20, 55, 55);
+        changeColumnWidth(paramListTable, 2, 50, 60, 60);
         return paramListTable;
+    }
+
+    private void changeColumnWidth(JTable paramListTable, int colIndex, int minWidth, int maxWidth, int preferredWidth) {
+        TableColumn column = paramListTable.getColumnModel().getColumn(colIndex);
+        column.setMinWidth(minWidth);
+        column.setMaxWidth(maxWidth);
+        column.setPreferredWidth(preferredWidth);
     }
 
     private JComponent buildStatusBar() {

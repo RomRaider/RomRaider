@@ -24,23 +24,23 @@ public final class LoggerDataRow {
     }
 
     public String getMinValue() {
-        return ecuData.getConvertor().format(minValue);
+        return ecuData.getSelectedConvertor().format(minValue);
     }
 
     public String getMaxValue() {
-        return ecuData.getConvertor().format(maxValue);
+        return ecuData.getSelectedConvertor().format(maxValue);
     }
 
     public String getCurrentValue() {
-        return ecuData.getConvertor().format(currentValue);
+        return ecuData.getSelectedConvertor().format(currentValue);
     }
 
     public String getUnits() {
-        return ecuData.getConvertor().getUnits();
+        return ecuData.getSelectedConvertor().getUnits();
     }
 
     public void updateValue(byte[] bytes) {
-        currentValue = ecuData.getConvertor().convert(bytes);
+        currentValue = ecuData.getSelectedConvertor().convert(bytes);
         if (currentValue < minValue || !updated) {
             minValue = currentValue;
         }

@@ -8,21 +8,22 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
     private final String id;
     private final String name;
     private final String description;
-    private final EcuDerivedParameterConvertor convertor;
+    private final EcuDerivedParameterConvertor[] convertors;
     private final String[] addresses;
+    private int selectedConvertorIndex = 0;
 
-    public EcuDerivedParameterImpl(String id, String name, String description, EcuData[] ecuDatas, EcuDerivedParameterConvertor convertor) {
+    public EcuDerivedParameterImpl(String id, String name, String description, EcuData[] ecuDatas, EcuDerivedParameterConvertor[] convertors) {
         checkNotNullOrEmpty(name, "id");
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");
         checkNotNullOrEmpty(ecuDatas, "ecuDatas");
-        checkNotNull(convertor, "convertor");
+        checkNotNullOrEmpty(convertors, "convertors");
         this.id = id;
         this.name = name;
         this.description = description;
-        this.convertor = convertor;
-        this.convertor.setEcuDatas(ecuDatas);
+        this.convertors = convertors;
         addresses = setAddresses(ecuDatas);
+        setEcuDatas(ecuDatas);
     }
 
     public String getId() {
@@ -41,8 +42,22 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
         return addresses;
     }
 
-    public EcuDataConvertor getConvertor() {
-        return convertor;
+    public EcuDataConvertor getSelectedConvertor() {
+        return convertors[selectedConvertorIndex];
+    }
+
+    public EcuDataConvertor[] getConvertors() {
+        return convertors;
+    }
+
+    public void selectConvertor(int index) {
+        if (index < 0) {
+            selectedConvertorIndex = 0;
+        } else if (index >= convertors.length) {
+            selectedConvertorIndex = convertors.length - 1;
+        } else {
+            selectedConvertorIndex = index;
+        }
     }
 
     public EcuDataType getDataType() {
@@ -59,5 +74,11 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
             addresses = tmp;
         }
         return addresses;
+    }
+
+    private void setEcuDatas(EcuData[] ecuDatas) {
+        for (EcuDerivedParameterConvertor convertor : convertors) {
+            convertor.setEcuDatas(ecuDatas);
+        }
     }
 }

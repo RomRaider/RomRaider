@@ -29,7 +29,7 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
             int length = ecuData.getAddresses().length;
             byte[] tmp = new byte[length];
             System.arraycopy(bytes, index, tmp, 0, length);
-            valueMap.put(ecuData.getId(), ecuData.getConvertor().convert(tmp));
+            valueMap.put(ecuData.getId(), ecuData.getSelectedConvertor().convert(tmp));
             index += length;
         }
         System.out.println("valueMap = " + valueMap);

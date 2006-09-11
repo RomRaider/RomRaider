@@ -21,6 +21,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_ADDRESS = "address";
     private static final String TAG_DEPENDS = "depends";
     private static final String TAG_CONVERSION = "conversion";
+    private static final String TAG_CONVERSIONS = "conversions";
     private static final String TAG_BYTE = "byte";
     private static final String TAG_REF = "ref";
     private static final String TAG_SWITCH = "switch";
@@ -44,8 +45,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private boolean derived;
     private int bit;
     private boolean fileLogController;
-    private EcuDataConvertor convertor;
-    private EcuDerivedParameterConvertor derivedConvertor;
+    private Set<EcuDataConvertor> convertorList;
+    private Set<EcuDerivedParameterConvertor> derivedConvertorList;
     private StringBuilder charBuffer;
     private String protocol;
     private boolean parseProtocol;
@@ -77,13 +78,16 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 derived = true;
             } else if (TAG_REF.equals(qName)) {
                 dependsList.add(attributes.getValue(ATTR_ID));
+            } else if (TAG_CONVERSIONS.equals(qName)) {
+                convertorList = new LinkedHashSet<EcuDataConvertor>();
+                derivedConvertorList = new LinkedHashSet<EcuDerivedParameterConvertor>();
             } else if (TAG_CONVERSION.equals(qName)) {
                 if (derived) {
-                    derivedConvertor = new EcuDerivedParameterConvertorImpl(attributes.getValue(ATTR_UNITS), attributes.getValue(ATTR_EXPRESSION),
-                            attributes.getValue(ATTR_FORMAT));
+                    derivedConvertorList.add(new EcuDerivedParameterConvertorImpl(attributes.getValue(ATTR_UNITS), attributes.getValue(ATTR_EXPRESSION),
+                            attributes.getValue(ATTR_FORMAT)));
                 } else {
-                    convertor = new EcuParameterConvertorImpl(attributes.getValue(ATTR_UNITS), attributes.getValue(ATTR_EXPRESSION),
-                            attributes.getValue(ATTR_FORMAT));
+                    convertorList.add(new EcuParameterConvertorImpl(attributes.getValue(ATTR_UNITS), attributes.getValue(ATTR_EXPRESSION),
+                            attributes.getValue(ATTR_FORMAT)));
                 }
             } else if (TAG_SWITCH.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
@@ -117,18 +121,19 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     for (String refid : dependsList) {
                         dependencies.add(ecuDataMap.get(refid));
                     }
-                    param = new EcuDerivedParameterImpl(id, name, desc, dependencies.toArray(new EcuData[dependencies.size()]), derivedConvertor);
+                    param = new EcuDerivedParameterImpl(id, name, desc, dependencies.toArray(new EcuData[dependencies.size()]),
+                            derivedConvertorList.toArray(new EcuDerivedParameterConvertor[derivedConvertorList.size()]));
                 } else {
                     String[] addresses = new String[addressList.size()];
                     addressList.toArray(addresses);
-                    param = new EcuParameterImpl(id, name, desc, addresses, convertor);
+                    param = new EcuParameterImpl(id, name, desc, addresses, convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                 }
                 params.add(param);
                 ecuDataMap.put(param.getId(), param);
             } else if (TAG_SWITCH.equals(qName)) {
                 String[] addresses = new String[addressList.size()];
                 addressList.toArray(addresses);
-                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, addresses, new EcuSwitchConvertorImpl(bit), fileLogController);
+                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, addresses, new EcuDataConvertor[] {new EcuSwitchConvertorImpl(bit)}, fileLogController);
                 switches.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
             }

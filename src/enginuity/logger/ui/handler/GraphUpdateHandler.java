@@ -32,7 +32,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler {
         series.setMaximumItemCount(100);
         final XYDataset xyDataset = new XYSeriesCollection(series);
         final JFreeChart chart = ChartFactory.createXYLineChart(ecuData.getName(), "Time (sec)", ecuData.getName()
-                + " (" + ecuData.getConvertor().getUnits() + ")", xyDataset, VERTICAL, false, true, false);
+                + " (" + ecuData.getSelectedConvertor().getUnits() + ")", xyDataset, VERTICAL, false, true, false);
         ChartPanel chartPanel = new ChartPanel(chart, false, true, true, true, true);
         graphPanel.add(chartPanel);
         seriesMap.put(ecuData, series);
@@ -44,7 +44,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler {
     public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
         // update chart
         XYSeries series = seriesMap.get(ecuData);
-        series.add(timestamp, ecuData.getConvertor().convert(value));
+        series.add(timestamp, ecuData.getSelectedConvertor().convert(value));
     }
 
     public void deregisterData(EcuData ecuData) {

@@ -1,7 +1,6 @@
 package enginuity.logger.ui;
 
 import enginuity.logger.definition.EcuData;
-import static enginuity.util.ParamChecker.isNullOrEmpty;
 
 import javax.swing.table.AbstractTableModel;
 import static java.util.Collections.synchronizedList;
@@ -19,7 +18,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
 
     public ParameterListTableModel(ParameterRegistrationBroker broker, String dataType) {
         this.broker = broker;
-        columnNames = new String[]{"Selected?", dataType};
+        columnNames = new String[]{"Selected?", dataType, "Units"};
     }
 
     public synchronized int getRowCount() {
@@ -35,7 +34,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
     }
 
     public boolean isCellEditable(int row, int col) {
-        return col == 0;
+        return col == 0 || col == 2;
     }
 
     public synchronized Object getValueAt(int row, int col) {
@@ -44,9 +43,9 @@ public final class ParameterListTableModel extends AbstractTableModel {
             case 0:
                 return paramRow.getSelected();
             case 1:
-                EcuData ecuData = paramRow.getEcuData();
-                String units = ecuData.getConvertor().getUnits();
-                return ecuData.getName() + (isNullOrEmpty(units) ? "" : " (" + units + ")");
+                return paramRow.getEcuData().getName();
+            case 2:
+                return paramRow.getEcuData().getSelectedConvertor().getUnits();
             default:
                 return "Error!";
         }

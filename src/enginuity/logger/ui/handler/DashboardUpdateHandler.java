@@ -23,7 +23,7 @@ public final class DashboardUpdateHandler implements DataUpdateHandler {
         label.setPreferredSize(new Dimension(100, 100));
         label.setBorder(new BevelBorder(BevelBorder.LOWERED));
         label.setFont(label.getFont().deriveFont(Font.PLAIN, 50F));
-        label.setText(ecuData.getConvertor().format(0.0));
+        label.setText(ecuData.getSelectedConvertor().format(0.0));
         gauges.put(ecuData, label);
         dashboardPanel.add(label);
         repaintDashboardPanel();
@@ -31,7 +31,7 @@ public final class DashboardUpdateHandler implements DataUpdateHandler {
 
     public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
         JLabel label = gauges.get(ecuData);
-        EcuDataConvertor convertor = ecuData.getConvertor();
+        EcuDataConvertor convertor = ecuData.getSelectedConvertor();
         label.setText(convertor.format(convertor.convert(value)));
     }
 

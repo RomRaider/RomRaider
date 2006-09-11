@@ -10,7 +10,11 @@ public interface EcuData {
 
     String[] getAddresses();
 
-    EcuDataConvertor getConvertor();
+    EcuDataConvertor getSelectedConvertor();
+
+    EcuDataConvertor[] getConvertors();
+
+    void selectConvertor(int index);
 
     EcuDataType getDataType();
 
