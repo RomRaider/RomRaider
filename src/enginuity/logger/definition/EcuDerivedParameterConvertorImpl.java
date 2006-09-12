@@ -50,4 +50,8 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
         checkNotNullOrEmpty(ecuDatas, "ecuDatas");
         this.ecuDatas = ecuDatas;
     }
+
+    public String toString() {
+        return getUnits();
+    }
 }

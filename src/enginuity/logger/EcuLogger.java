@@ -8,6 +8,7 @@ import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.io.serial.SerialPortRefresher;
 import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.MessageListener;
+import enginuity.logger.ui.ParameterListTable;
 import enginuity.logger.ui.ParameterListTableModel;
 import enginuity.logger.ui.ParameterRegistrationBroker;
 import enginuity.logger.ui.ParameterRegistrationBrokerImpl;
@@ -168,9 +169,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JTable buildParamListTable(TableModel tableModel) {
-        JTable paramListTable = new JTable(tableModel);
+        JTable paramListTable = new ParameterListTable(tableModel);
         changeColumnWidth(paramListTable, 0, 20, 55, 55);
-        changeColumnWidth(paramListTable, 2, 50, 60, 60);
+        changeColumnWidth(paramListTable, 2, 50, 250, 80);
         return paramListTable;
     }
 

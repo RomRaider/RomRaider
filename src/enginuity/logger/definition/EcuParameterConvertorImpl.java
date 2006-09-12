@@ -34,4 +34,8 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
         return format.format(value);
     }
 
+    public String toString() {
+        return getUnits();
+    }
+
 }

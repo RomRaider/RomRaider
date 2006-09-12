@@ -45,7 +45,8 @@ public final class ParameterListTableModel extends AbstractTableModel {
             case 1:
                 return paramRow.getEcuData().getName();
             case 2:
-                return paramRow.getEcuData().getSelectedConvertor().getUnits();
+                EcuData ecuData = paramRow.getEcuData();
+                return ecuData.getConvertors().length > 1 ? ecuData : ecuData.getSelectedConvertor().getUnits();
             default:
                 return "Error!";
         }

@@ -21,6 +21,10 @@ public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
         return value > 0 ? "1" : "0";
     }
 
+    public String toString() {
+        return getUnits();
+    }
+
     private void checkBit(int bit) {
         if (bit < 0 || bit > 7) {
             throw new IllegalArgumentException("Bit must be between 0 and 7 inclusive.");

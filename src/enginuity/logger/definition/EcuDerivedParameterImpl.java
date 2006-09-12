@@ -50,13 +50,12 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
         return convertors;
     }
 
-    public void selectConvertor(int index) {
-        if (index < 0) {
-            selectedConvertorIndex = 0;
-        } else if (index >= convertors.length) {
-            selectedConvertorIndex = convertors.length - 1;
-        } else {
-            selectedConvertorIndex = index;
+    public void selectConvertor(EcuDataConvertor convertor) {
+        for (int i = 0; i < convertors.length; i++) {
+            EcuDerivedParameterConvertor parameterConvertor = convertors[i];
+            if (convertor == parameterConvertor) {
+                selectedConvertorIndex = i;
+            }
         }
     }
 

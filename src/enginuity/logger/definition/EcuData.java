@@ -14,7 +14,7 @@ public interface EcuData {
 
     EcuDataConvertor[] getConvertors();
 
-    void selectConvertor(int index);
+    void selectConvertor(EcuDataConvertor convertor);
 
     EcuDataType getDataType();
 
