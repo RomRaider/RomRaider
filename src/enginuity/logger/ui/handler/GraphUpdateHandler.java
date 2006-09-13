@@ -30,7 +30,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         // add to charts
         final XYSeries series = new XYSeries(ecuData.getName());
         //TODO: Make chart max item count configurable via settings
-        series.setMaximumItemCount(100);
+        series.setMaximumItemCount(200);
         final XYDataset xyDataset = new XYSeriesCollection(series);
         final JFreeChart chart = ChartFactory.createXYLineChart(ecuData.getName(), "Time (sec)", buildRangeAxisTitle(ecuData), xyDataset,
                 VERTICAL, false, true, false);
