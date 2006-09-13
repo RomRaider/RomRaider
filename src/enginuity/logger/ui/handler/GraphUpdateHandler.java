@@ -60,9 +60,11 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
     }
 
     public void notifyConvertorUpdate(EcuData updatedEcuData) {
-        seriesMap.get(updatedEcuData).clear();
-        JFreeChart chart = chartMap.get(updatedEcuData).getChart();
-        chart.getXYPlot().getRangeAxis().setLabel(buildRangeAxisTitle(updatedEcuData));
+        if (chartMap.containsKey(updatedEcuData)) {
+            seriesMap.get(updatedEcuData).clear();
+            JFreeChart chart = chartMap.get(updatedEcuData).getChart();
+            chart.getXYPlot().getRangeAxis().setLabel(buildRangeAxisTitle(updatedEcuData));
+        }
     }
 
     private String buildRangeAxisTitle(EcuData ecuData) {
