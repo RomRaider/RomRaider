@@ -1,9 +1,10 @@
 package enginuity.logger.ui.handler;
 
+import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.LoggerDataTableModel;
 
-public final class LiveDataUpdateHandler implements DataUpdateHandler {
+public final class LiveDataUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final LoggerDataTableModel dataTableModel;
 
     public LiveDataUpdateHandler(LoggerDataTableModel dataTableModel) {
@@ -28,4 +29,7 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler {
     public void cleanUp() {
     }
 
+    public void notifyConvertorUpdate(EcuData updatedEcuData) {
+        dataTableModel.fireTableDataChanged();
+    }
 }

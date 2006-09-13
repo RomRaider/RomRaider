@@ -1,5 +1,6 @@
 package enginuity.logger.ui.handler;
 
+import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataConvertor;
 
@@ -10,7 +11,7 @@ import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class DashboardUpdateHandler implements DataUpdateHandler {
+public final class DashboardUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final JPanel dashboardPanel;
     private final Map<EcuData, JLabel> gauges = synchronizedMap(new HashMap<EcuData, JLabel>());
 
@@ -42,6 +43,9 @@ public final class DashboardUpdateHandler implements DataUpdateHandler {
     }
 
     public void cleanUp() {
+    }
+
+    public void notifyConvertorUpdate(EcuData updatedEcuData) {
     }
 
     private void repaintDashboardPanel() {

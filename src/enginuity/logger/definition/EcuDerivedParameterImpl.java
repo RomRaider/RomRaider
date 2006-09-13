@@ -4,12 +4,16 @@ import static enginuity.logger.definition.EcuDataType.PARAMETER;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public final class EcuDerivedParameterImpl implements EcuParameter {
     private final String id;
     private final String name;
     private final String description;
     private final EcuDerivedParameterConvertor[] convertors;
     private final String[] addresses;
+    private final Set<ConvertorUpdateListener> listeners = new HashSet<ConvertorUpdateListener>();
     private int selectedConvertorIndex = 0;
 
     public EcuDerivedParameterImpl(String id, String name, String description, EcuData[] ecuDatas, EcuDerivedParameterConvertor[] convertors) {
@@ -51,16 +55,24 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
     }
 
     public void selectConvertor(EcuDataConvertor convertor) {
-        for (int i = 0; i < convertors.length; i++) {
-            EcuDerivedParameterConvertor parameterConvertor = convertors[i];
-            if (convertor == parameterConvertor) {
-                selectedConvertorIndex = i;
+        if (convertor != getSelectedConvertor()) {
+            for (int i = 0; i < convertors.length; i++) {
+                EcuDerivedParameterConvertor parameterConvertor = convertors[i];
+                if (convertor == parameterConvertor) {
+                    selectedConvertorIndex = i;
+                }
             }
+            notifyUpdateListeners();
         }
     }
 
     public EcuDataType getDataType() {
         return PARAMETER;
+    }
+
+    public void addConvertorUpdateListener(ConvertorUpdateListener listener) {
+        checkNotNull(listener, "listener");
+        listeners.add(listener);
     }
 
     private String[] setAddresses(EcuData[] ecuDatas) {
@@ -78,6 +90,12 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
     private void setEcuDatas(EcuData[] ecuDatas) {
         for (EcuDerivedParameterConvertor convertor : convertors) {
             convertor.setEcuDatas(ecuDatas);
+        }
+    }
+
+    private void notifyUpdateListeners() {
+        for (ConvertorUpdateListener listener : listeners) {
+            listener.notifyConvertorUpdate(this);
         }
     }
 }

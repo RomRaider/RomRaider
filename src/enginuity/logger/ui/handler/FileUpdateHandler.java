@@ -1,6 +1,7 @@
 package enginuity.logger.ui.handler;
 
 import enginuity.Settings;
+import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataConvertor;
 import enginuity.logger.definition.EcuSwitch;
@@ -14,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public final class FileUpdateHandler implements DataUpdateHandler {
+public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final FileLogger fileLogger;
     private final List<EcuData> ecuDatas = synchronizedList(new LinkedList<EcuData>());
     private Line currentLine = new Line(ecuDatas);
@@ -51,6 +52,9 @@ public final class FileUpdateHandler implements DataUpdateHandler {
 
     public void cleanUp() {
         fileLogger.stop();
+    }
+
+    public void notifyConvertorUpdate(EcuData updatedEcuData) {
     }
 
     private void checkStartStopFileLogging(EcuData ecuData, int value) {
@@ -103,7 +107,7 @@ public final class FileUpdateHandler implements DataUpdateHandler {
 
         public String values() {
             StringBuilder buffer = new StringBuilder();
-            buffer.append(lastTimestamp / 1000.0);
+            buffer.append(lastTimestamp);
             for (EcuData ecuData : ecuDataValues.keySet()) {
                 String value = ecuDataValues.get(ecuData);
                 buffer.append(DELIMITER).append(value);
@@ -113,9 +117,9 @@ public final class FileUpdateHandler implements DataUpdateHandler {
 
         public String headers() {
             StringBuilder buffer = new StringBuilder();
-            buffer.append("Timestamp");
+            buffer.append("Time");
             for (EcuData ecuData : ecuDataValues.keySet()) {
-                buffer.append(DELIMITER).append(ecuData.getName());
+                buffer.append(DELIMITER).append(ecuData.getName()).append(" (").append(ecuData.getSelectedConvertor().getUnits()).append(')');
             }
             return buffer.toString();
         }

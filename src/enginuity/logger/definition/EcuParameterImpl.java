@@ -4,12 +4,16 @@ import static enginuity.logger.definition.EcuDataType.PARAMETER;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public final class EcuParameterImpl implements EcuParameter {
     private final String id;
     private final String name;
     private final String description;
     private final String[] addresses;
     private final EcuDataConvertor[] convertors;
+    private final Set<ConvertorUpdateListener> listeners = new HashSet<ConvertorUpdateListener>();
     private int selectedConvertorIndex = 0;
 
     public EcuParameterImpl(String id, String name, String description, String[] address, EcuDataConvertor[] convertors) {
@@ -50,15 +54,30 @@ public final class EcuParameterImpl implements EcuParameter {
     }
 
     public void selectConvertor(EcuDataConvertor convertor) {
-        for (int i = 0; i < convertors.length; i++) {
-            EcuDataConvertor dataConvertor = convertors[i];
-            if (convertor == dataConvertor) {
-                selectedConvertorIndex = i;
+        if (convertor != getSelectedConvertor()) {
+            for (int i = 0; i < convertors.length; i++) {
+                EcuDataConvertor dataConvertor = convertors[i];
+                if (convertor == dataConvertor) {
+                    selectedConvertorIndex = i;
+                }
             }
+            notifyUpdateListeners();
         }
     }
 
     public EcuDataType getDataType() {
         return PARAMETER;
     }
+
+    public void addConvertorUpdateListener(ConvertorUpdateListener listener) {
+        checkNotNull(listener, "listener");
+        listeners.add(listener);
+    }
+
+    private void notifyUpdateListeners() {
+        for (ConvertorUpdateListener listener : listeners) {
+            listener.notifyConvertorUpdate(this);
+        }
+    }
+
 }

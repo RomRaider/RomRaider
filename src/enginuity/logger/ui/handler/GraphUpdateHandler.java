@@ -1,5 +1,6 @@
 package enginuity.logger.ui.handler;
 
+import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
 import static enginuity.logger.ui.SpringUtilities.makeCompactGrid;
 import org.jfree.chart.ChartFactory;
@@ -15,7 +16,7 @@ import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class GraphUpdateHandler implements DataUpdateHandler {
+public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final JPanel graphPanel;
     private final Map<EcuData, ChartPanel> chartMap = synchronizedMap(new HashMap<EcuData, ChartPanel>());
     private final Map<EcuData, XYSeries> seriesMap = synchronizedMap(new HashMap<EcuData, XYSeries>());
@@ -31,8 +32,8 @@ public final class GraphUpdateHandler implements DataUpdateHandler {
         //TODO: Make chart max item count configurable via settings
         series.setMaximumItemCount(100);
         final XYDataset xyDataset = new XYSeriesCollection(series);
-        final JFreeChart chart = ChartFactory.createXYLineChart(ecuData.getName(), "Time (sec)", ecuData.getName()
-                + " (" + ecuData.getSelectedConvertor().getUnits() + ")", xyDataset, VERTICAL, false, true, false);
+        final JFreeChart chart = ChartFactory.createXYLineChart(ecuData.getName(), "Time (sec)", buildRangeAxisTitle(ecuData), xyDataset,
+                VERTICAL, false, true, false);
         ChartPanel chartPanel = new ChartPanel(chart, false, true, true, true, true);
         graphPanel.add(chartPanel);
         seriesMap.put(ecuData, series);
@@ -58,6 +59,16 @@ public final class GraphUpdateHandler implements DataUpdateHandler {
     public void cleanUp() {
     }
 
+    public void notifyConvertorUpdate(EcuData updatedEcuData) {
+        seriesMap.get(updatedEcuData).clear();
+        JFreeChart chart = chartMap.get(updatedEcuData).getChart();
+        chart.getXYPlot().getRangeAxis().setLabel(buildRangeAxisTitle(updatedEcuData));
+    }
+
+    private String buildRangeAxisTitle(EcuData ecuData) {
+        return ecuData.getName() + " (" + ecuData.getSelectedConvertor().getUnits() + ")";
+    }
+
     private void repaintGraphPanel(int parentRepaintLevel) {
         if (loggerCount < parentRepaintLevel) {
             graphPanel.doLayout();
@@ -70,4 +81,5 @@ public final class GraphUpdateHandler implements DataUpdateHandler {
             graphPanel.getParent().repaint();
         }
     }
+
 }

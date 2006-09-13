@@ -96,7 +96,7 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private String buildStatsMessage(long start, int count) {
-        double duration = ((double) (System.currentTimeMillis() - start)) / 1000D;
+        double duration = ((double) (System.currentTimeMillis() - start)) / 1000.0;
         return "Logging [Total queries sent: " + count + ", Queries per second: " + format.format(((double) count) / duration)
                 + ", Avg. Query Time: " + format.format(duration / ((double) count)) + "s]";
     }

@@ -43,7 +43,6 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /*
-TODO: finish multi-conversion support for ecu params (already defined in xml)
 TODO: add better debug logging, preferably to a file and switchable (on/off)
 TODO: finish dashboard tab
 TODO: add configuration screen (log file destination, etc)
@@ -55,26 +54,39 @@ So much to do, so little time....
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
+
     private final Settings settings = new Settings();
     private final LoggerController controller = new LoggerControllerImpl(settings, this);
     private final JLabel statusBarLabel = new JLabel("Enginuity ECU Logger");
     private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
     private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
-    private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
-    private final JPanel graphPanel = new JPanel();
-    private final JPanel dashboardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
     private final DataUpdateHandlerManager dataHandlerManager = new DataUpdateHandlerManagerImpl();
+
     private final ParameterRegistrationBroker dataTabBroker = new ParameterRegistrationBrokerImpl(controller, dataHandlerManager);
     private final ParameterListTableModel dataTabParamListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_PARAMETERS);
     private final ParameterListTableModel dataTabSwitchListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_SWITCHES);
+
     private final DataUpdateHandlerManager graphHandlerManager = new DataUpdateHandlerManagerImpl();
     private final ParameterRegistrationBroker graphTabBroker = new ParameterRegistrationBrokerImpl(controller, graphHandlerManager);
     private final ParameterListTableModel graphTabParamListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_PARAMETERS);
     private final ParameterListTableModel graphTabSwitchListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_SWITCHES);
+
     private final DataUpdateHandlerManager dashboardHandlerManager = new DataUpdateHandlerManagerImpl();
     private final ParameterRegistrationBroker dashboardTabBroker = new ParameterRegistrationBrokerImpl(controller, dashboardHandlerManager);
     private final ParameterListTableModel dashboardTabParamListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_PARAMETERS);
     private final ParameterListTableModel dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
+
+    private final FileUpdateHandler fileUpdateHandler = new FileUpdateHandler(settings);
+
+    private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
+    private final LiveDataUpdateHandler liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
+
+    private final JPanel graphPanel = new JPanel();
+    private final GraphUpdateHandler graphUpdateHandler = new GraphUpdateHandler(graphPanel);
+
+    private final JPanel dashboardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    private final DashboardUpdateHandler dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
 
     public EcuLogger(String title) {
         super(title);
@@ -129,6 +141,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 dataTabParamListTableModel.addParam(ecuParam);
                 graphTabParamListTableModel.addParam(ecuParam);
                 dashboardTabParamListTableModel.addParam(ecuParam);
+                ecuParam.addConvertorUpdateListener(fileUpdateHandler);
+                ecuParam.addConvertorUpdateListener(liveDataUpdateHandler);
+                ecuParam.addConvertorUpdateListener(graphUpdateHandler);
+                ecuParam.addConvertorUpdateListener(dashboardUpdateHandler);
             }
             List<EcuSwitch> ecuSwitches = dataLoader.getEcuSwitches();
             for (EcuSwitch ecuSwitch : ecuSwitches) {
@@ -143,12 +159,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void initParameterUpdateHandlers() {
-        FileUpdateHandler fileUpdateHandler = new FileUpdateHandler(settings);
-        dataHandlerManager.addHandler(new LiveDataUpdateHandler(dataTableModel));
+        dataHandlerManager.addHandler(liveDataUpdateHandler);
         dataHandlerManager.addHandler(fileUpdateHandler);
-        graphHandlerManager.addHandler(new GraphUpdateHandler(graphPanel));
+        graphHandlerManager.addHandler(graphUpdateHandler);
         graphHandlerManager.addHandler(fileUpdateHandler);
-        dashboardHandlerManager.addHandler(new DashboardUpdateHandler(dashboardPanel));
+        dashboardHandlerManager.addHandler(dashboardUpdateHandler);
         dashboardHandlerManager.addHandler(fileUpdateHandler);
     }
 

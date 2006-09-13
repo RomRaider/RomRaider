@@ -2,6 +2,6 @@ package enginuity.logger.definition;
 
 public interface EcuParameter extends EcuData {
 
-    EcuDataConvertor getSelectedConvertor();
+    void addConvertorUpdateListener(ConvertorUpdateListener listener);
 
 }
