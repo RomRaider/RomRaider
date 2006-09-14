@@ -6,6 +6,7 @@ import enginuity.logger.definition.EcuDataLoaderImpl;
 import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.io.serial.SerialPortRefresher;
+import enginuity.logger.ui.EcuLoggerMenuBar;
 import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.MessageListener;
 import enginuity.logger.ui.ParameterListTable;
@@ -40,6 +41,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.List;
 
 /*
@@ -121,6 +123,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void initUserInterface() {
+        // add menubar to frame
+        setJMenuBar(buildMenubar());
+
         // setup main panel
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -213,6 +218,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return splitPane;
     }
 
+    private JMenuBar buildMenubar() {
+        return new EcuLoggerMenuBar(this);
+    }
+
     private JPanel buildControlToolbar() {
         JPanel controlPanel = new JPanel(new FlowLayout());
         controlPanel.add(buildStartButton());
@@ -225,7 +234,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                controller.stop();
+                stopLogging();
             }
         });
         return portsComboBox;
@@ -235,8 +244,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JButton startButton = new JButton("Start");
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                controller.start();
+                startLogging();
             }
         });
         return startButton;
@@ -246,7 +254,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JButton stopButton = new JButton("Stop");
         stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                controller.stop();
+                stopLogging();
             }
         });
         return stopButton;
@@ -269,16 +277,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void windowClosing(WindowEvent windowEvent) {
-        try {
-            controller.stop();
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } finally {
-            cleanUpUpdateHandlers();
-        }
+        handleExit();
     }
 
     public void windowClosed(WindowEvent windowEvent) {
@@ -299,10 +298,44 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
     }
 
-    private synchronized void cleanUpUpdateHandlers() {
+    public void loadProfile(File profileFile) {
+        //TODO: Finish profile loading from file!!
+    }
+
+    public void startLogging() {
+        settings.setLoggerPort((String) portsComboBox.getSelectedItem());
+        controller.start();
+    }
+
+    public void stopLogging() {
+        controller.stop();
+    }
+
+    public void handleExit() {
+        try {
+            try {
+                stopLogging();
+                try {
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } finally {
+                cleanUpUpdateHandlers();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void cleanUpUpdateHandlers() {
         dataHandlerManager.cleanUp();
         graphHandlerManager.cleanUp();
         dashboardHandlerManager.cleanUp();
+    }
+
+    public Settings getSettings() {
+        return settings;
     }
 
     public void reportMessage(String message) {

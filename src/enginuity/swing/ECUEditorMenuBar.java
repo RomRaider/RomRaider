@@ -79,15 +79,15 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         add(editMenu);
         editMenu.setMnemonic('E');
         defManager.setMnemonic('D');
-        settings.setMnemonic('S');
         editDefinition.setMnemonic('E');
-        editMenu.add(new JSeparator());
+        settings.setMnemonic('S');
         editMenu.add(defManager);
-        editMenu.add(settings);
         editMenu.add(editDefinition);
-        settings.addActionListener(this);
+        editMenu.add(new JSeparator());
+        editMenu.add(settings);
         defManager.addActionListener(this);
         editDefinition.addActionListener(this);
+        settings.addActionListener(this);
 
         // view menu items
         add(viewMenu);
@@ -203,7 +203,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             System.exit(0);
 
         } else if (e.getSource() == romProperties) {
-            JOptionPane.showMessageDialog(parent, (Object) (new RomPropertyPanel(parent.getLastSelectedRom())),
+            JOptionPane.showMessageDialog(parent, new RomPropertyPanel(parent.getLastSelectedRom()),
                     parent.getLastSelectedRom().getRomIDString() + " Properties", JOptionPane.INFORMATION_MESSAGE);
 
         } else if (e.getSource() == refreshImage) {
