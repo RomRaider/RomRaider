@@ -1,5 +1,6 @@
 package enginuity.util;
 
+@SuppressWarnings({"UnnecessaryBoxing"})
 public final class ByteUtil {
     
     private ByteUtil() {
@@ -16,12 +17,10 @@ public final class ByteUtil {
         return i;
     }
 
-    @SuppressWarnings({"UnnecessaryBoxing"})
     public static byte asByte(int i) {
         return Integer.valueOf(i).byteValue();
     }
 
-    @SuppressWarnings({"UnnecessaryBoxing"})
     public static int asInt(byte b) {
         return Byte.valueOf(b).intValue();
     }

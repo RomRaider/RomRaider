@@ -208,14 +208,14 @@ public class DOMSettingsUnmarshaller {
 	}  
     
     private Double unmarshallAttribute(Node node, String name, double defaultValue) {
-        return Double.parseDouble(unmarshallAttribute(node, name, defaultValue+""));
+        return Double.parseDouble(unmarshallAttribute(node, name, String.valueOf(defaultValue)));
     }   
     
     private int unmarshallAttribute(Node node, String name, int defaultValue) {
-        return Integer.parseInt(unmarshallAttribute(node, name, defaultValue+""));
+        return Integer.parseInt(unmarshallAttribute(node, name, String.valueOf(defaultValue)));
     }   
     
     private boolean unmarshallAttribute(Node node, String name, boolean defaultValue) {
-        return Boolean.parseBoolean(unmarshallAttribute(node, name, defaultValue+""));
+        return Boolean.parseBoolean(unmarshallAttribute(node, name, String.valueOf(defaultValue)));
     }    
  }
