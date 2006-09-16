@@ -27,7 +27,7 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
 
     public void registerData(EcuData ecuData) {
         ecuDatas.add(ecuData);
-        currentLine = new Line(ecuDatas);
+        resetLine();
         writeHeaders();
     }
 
@@ -39,14 +39,14 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
             currentLine.updateParamValue(ecuData, convertor.format(value), timestamp);
             if (currentLine.isFull()) {
                 fileLogger.writeLine(currentLine.values());
-                currentLine = new Line(ecuDatas);
+                resetLine();
             }
         }
     }
 
     public void deregisterData(EcuData ecuData) {
         ecuDatas.remove(ecuData);
-        currentLine = new Line(ecuDatas);
+        resetLine();
         writeHeaders();
     }
 
@@ -55,6 +55,12 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
     }
 
     public void notifyConvertorUpdate(EcuData updatedEcuData) {
+        resetLine();
+        writeHeaders();
+    }
+
+    private void resetLine() {
+        currentLine = new Line(ecuDatas);
     }
 
     private void checkStartStopFileLogging(EcuData ecuData, int value) {
