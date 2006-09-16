@@ -20,6 +20,7 @@ import enginuity.logger.ui.handler.DataUpdateHandlerManagerImpl;
 import enginuity.logger.ui.handler.FileUpdateHandler;
 import enginuity.logger.ui.handler.GraphUpdateHandler;
 import enginuity.logger.ui.handler.LiveDataUpdateHandler;
+import static enginuity.util.ParamChecker.checkNotNull;
 
 import javax.swing.*;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
@@ -56,58 +57,67 @@ So much to do, so little time....
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
+    private Settings settings;
+    private LoggerController controller;
+    private JLabel statusBarLabel;
+    private JTabbedPane tabbedPane;
+    private SerialPortComboBox portsComboBox;
+    private DataUpdateHandlerManager dataHandlerManager;
+    private ParameterRegistrationBroker dataTabBroker;
+    private ParameterListTableModel dataTabParamListTableModel;
+    private ParameterListTableModel dataTabSwitchListTableModel;
+    private DataUpdateHandlerManager graphHandlerManager;
+    private ParameterRegistrationBroker graphTabBroker;
+    private ParameterListTableModel graphTabParamListTableModel;
+    private ParameterListTableModel graphTabSwitchListTableModel;
+    private DataUpdateHandlerManager dashboardHandlerManager;
+    private ParameterRegistrationBroker dashboardTabBroker;
+    private ParameterListTableModel dashboardTabParamListTableModel;
+    private ParameterListTableModel dashboardTabSwitchListTableModel;
+    private FileUpdateHandler fileUpdateHandler;
+    private LoggerDataTableModel dataTableModel;
+    private LiveDataUpdateHandler liveDataUpdateHandler;
+    private JPanel graphPanel;
+    private GraphUpdateHandler graphUpdateHandler;
+    private JPanel dashboardPanel;
+    private DashboardUpdateHandler dashboardUpdateHandler;
 
-    private final Settings settings = new Settings();
-    private final LoggerController controller = new LoggerControllerImpl(settings, this);
-    private final JLabel statusBarLabel = new JLabel("Enginuity ECU Logger");
-    private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
-    private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
-
-    private final DataUpdateHandlerManager dataHandlerManager = new DataUpdateHandlerManagerImpl();
-
-    private final ParameterRegistrationBroker dataTabBroker = new ParameterRegistrationBrokerImpl(controller, dataHandlerManager);
-    private final ParameterListTableModel dataTabParamListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_PARAMETERS);
-    private final ParameterListTableModel dataTabSwitchListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_SWITCHES);
-
-    private final DataUpdateHandlerManager graphHandlerManager = new DataUpdateHandlerManagerImpl();
-    private final ParameterRegistrationBroker graphTabBroker = new ParameterRegistrationBrokerImpl(controller, graphHandlerManager);
-    private final ParameterListTableModel graphTabParamListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_PARAMETERS);
-    private final ParameterListTableModel graphTabSwitchListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_SWITCHES);
-
-    private final DataUpdateHandlerManager dashboardHandlerManager = new DataUpdateHandlerManagerImpl();
-    private final ParameterRegistrationBroker dashboardTabBroker = new ParameterRegistrationBrokerImpl(controller, dashboardHandlerManager);
-    private final ParameterListTableModel dashboardTabParamListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_PARAMETERS);
-    private final ParameterListTableModel dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
-
-    private final FileUpdateHandler fileUpdateHandler = new FileUpdateHandler(settings);
-
-    private final LoggerDataTableModel dataTableModel = new LoggerDataTableModel();
-    private final LiveDataUpdateHandler liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
-
-    private final JPanel graphPanel = new JPanel();
-    private final GraphUpdateHandler graphUpdateHandler = new GraphUpdateHandler(graphPanel);
-
-    private final JPanel dashboardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    private final DashboardUpdateHandler dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
-
-    public EcuLogger(String title) {
+    public EcuLogger(String title, Settings settings) {
         super(title);
-
-        // setup controller listeners
+        bootstrap(title, settings);
         initControllerListeners();
-
-        // start port list refresher thread
         startPortRefresherThread();
-
-        // setup the user interface
         initUserInterface();
-
-        // setup parameter update handlers
         initParameterUpdateHandlers();
-
-        // load ecu params from logger config
         loadEcuParamsFromConfig();
+    }
 
+    private void bootstrap(String title, Settings settings) {
+        checkNotNull(title, settings);
+        this.settings = settings;
+        controller = new LoggerControllerImpl(settings, this);
+        statusBarLabel = new JLabel(title);
+        tabbedPane = new JTabbedPane(JTabbedPane.BOTTOM);
+        portsComboBox = new SerialPortComboBox(settings);
+        dataHandlerManager = new DataUpdateHandlerManagerImpl();
+        dataTabBroker = new ParameterRegistrationBrokerImpl(controller, dataHandlerManager);
+        dataTabParamListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_PARAMETERS);
+        dataTabSwitchListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_SWITCHES);
+        graphHandlerManager = new DataUpdateHandlerManagerImpl();
+        graphTabBroker = new ParameterRegistrationBrokerImpl(controller, graphHandlerManager);
+        graphTabParamListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_PARAMETERS);
+        graphTabSwitchListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_SWITCHES);
+        dashboardHandlerManager = new DataUpdateHandlerManagerImpl();
+        dashboardTabBroker = new ParameterRegistrationBrokerImpl(controller, dashboardHandlerManager);
+        dashboardTabParamListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_PARAMETERS);
+        dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
+        fileUpdateHandler = new FileUpdateHandler(settings);
+        dataTableModel = new LoggerDataTableModel();
+        liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
+        graphPanel = new JPanel();
+        graphUpdateHandler = new GraphUpdateHandler(graphPanel);
+        dashboardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
     }
 
     private void initControllerListeners() {
@@ -365,18 +375,18 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
 
     public static void main(String... args) {
-        startLogger(EXIT_ON_CLOSE);
+        startLogger(EXIT_ON_CLOSE, new Settings());
     }
 
-    public static void startLogger(final int defaultCloseOperation) {
+    public static void startLogger(final int defaultCloseOperation, final Settings settings) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI(defaultCloseOperation);
+                createAndShowGUI(defaultCloseOperation, settings);
             }
         });
     }
 
-    private static void createAndShowGUI(int defaultCloseOperation) {
+    private static void createAndShowGUI(int defaultCloseOperation, Settings settings) {
         //set look and feel
         setLookAndFeel();
 
@@ -385,7 +395,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JDialog.setDefaultLookAndFeelDecorated(true);
 
         //instantiate the controlling class.
-        EcuLogger ecuLogger = new EcuLogger("Enginuity ECU Logger");
+        EcuLogger ecuLogger = new EcuLogger("Enginuity ECU Logger", settings);
 
         //set remaining window properties
         ecuLogger.setSize(new Dimension(1000, 600));

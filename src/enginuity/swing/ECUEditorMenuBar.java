@@ -244,7 +244,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             new DefinitionEditor(parent);
 
         } else if (e.getSource() == openLogger) {
-            EcuLogger.startLogger(DISPOSE_ON_CLOSE);
+            EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
 
         }
     }
