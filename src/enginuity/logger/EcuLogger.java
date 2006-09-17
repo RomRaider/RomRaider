@@ -6,6 +6,7 @@ import enginuity.logger.definition.EcuDataLoaderImpl;
 import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.io.serial.SerialPortRefresher;
+import enginuity.logger.ui.DashboardPanel;
 import enginuity.logger.ui.EcuLoggerMenuBar;
 import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.MessageListener;
@@ -114,9 +115,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         fileUpdateHandler = new FileUpdateHandler(settings);
         dataTableModel = new LoggerDataTableModel();
         liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
-        graphPanel = new JPanel();
+        graphPanel = new JPanel(new SpringLayout());
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
-        dashboardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        dashboardPanel = new DashboardPanel(new FlowLayout(FlowLayout.LEFT));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
     }
 
@@ -137,8 +138,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         setJMenuBar(buildMenubar());
 
         // setup main panel
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(buildControlToolbar(), NORTH);
         mainPanel.add(buildTabbedPane(), CENTER);
         mainPanel.add(buildStatusBar(), SOUTH);
@@ -213,8 +213,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildStatusBar() {
-        JPanel statusBar = new JPanel();
-        statusBar.setLayout(new BorderLayout());
+        JPanel statusBar = new JPanel(new BorderLayout());
         statusBar.add(statusBarLabel, CENTER);
         statusBar.setBorder(new BevelBorder(LOWERED));
         return statusBar;
@@ -275,7 +274,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildGraphTab() {
-        graphPanel.setLayout(new SpringLayout());
         return new JScrollPane(graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 

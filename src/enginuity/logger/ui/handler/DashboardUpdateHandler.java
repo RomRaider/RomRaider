@@ -2,10 +2,8 @@ package enginuity.logger.ui.handler;
 
 import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
-import enginuity.logger.definition.EcuDataConvertor;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
 import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
@@ -13,27 +11,21 @@ import java.util.Map;
 
 public final class DashboardUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final JPanel dashboardPanel;
-    private final Map<EcuData, JLabel> gauges = synchronizedMap(new HashMap<EcuData, JLabel>());
+    private final Map<EcuData, Gauge> gauges = synchronizedMap(new HashMap<EcuData, Gauge>());
 
     public DashboardUpdateHandler(JPanel dashboardPanel) {
         this.dashboardPanel = dashboardPanel;
     }
 
     public void registerData(EcuData ecuData) {
-        JLabel label = new JLabel();
-        label.setPreferredSize(new Dimension(100, 100));
-        label.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        label.setFont(label.getFont().deriveFont(Font.PLAIN, 50F));
-        label.setText(ecuData.getSelectedConvertor().format(0.0));
-        gauges.put(ecuData, label);
-        dashboardPanel.add(label);
+        Gauge gauge = new PlainGauge(ecuData);
+        gauges.put(ecuData, gauge);
+        dashboardPanel.add(gauge);
         repaintDashboardPanel();
     }
 
     public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
-        JLabel label = gauges.get(ecuData);
-        EcuDataConvertor convertor = ecuData.getSelectedConvertor();
-        label.setText(convertor.format(convertor.convert(value)));
+        gauges.get(ecuData).updateValue(value);
     }
 
     public void deregisterData(EcuData ecuData) {
@@ -46,10 +38,16 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
     }
 
     public void notifyConvertorUpdate(EcuData updatedEcuData) {
+        Gauge gauge = gauges.get(updatedEcuData);
+        gauge.resetValue();
+        gauge.refreshTitle();
     }
 
     private void repaintDashboardPanel() {
         dashboardPanel.doLayout();
+        for (Component component : dashboardPanel.getComponents()) {
+            component.doLayout();
+        }
         dashboardPanel.repaint();
     }
 
