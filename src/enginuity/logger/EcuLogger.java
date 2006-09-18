@@ -6,7 +6,6 @@ import enginuity.logger.definition.EcuDataLoaderImpl;
 import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.io.serial.SerialPortRefresher;
-import enginuity.logger.ui.DashboardPanel;
 import enginuity.logger.ui.EcuLoggerMenuBar;
 import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.MessageListener;
@@ -117,7 +116,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
         graphPanel = new JPanel(new SpringLayout());
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
-        dashboardPanel = new DashboardPanel(new FlowLayout(FlowLayout.LEFT));
+        dashboardPanel = new JPanel(new GridLayout(3, 3, 4, 4));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
     }
 
@@ -278,7 +277,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildDashboardTab() {
-        return new JScrollPane(dashboardPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        //return new JScrollPane(dashboardPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        return dashboardPanel;
     }
 
     public void windowOpened(WindowEvent windowEvent) {

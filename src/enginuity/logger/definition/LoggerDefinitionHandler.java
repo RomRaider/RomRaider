@@ -133,7 +133,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             } else if (TAG_SWITCH.equals(qName)) {
                 String[] addresses = new String[addressList.size()];
                 addressList.toArray(addresses);
-                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, addresses, new EcuDataConvertor[] {new EcuSwitchConvertorImpl(bit)}, fileLogController);
+                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, addresses, new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)}, fileLogController);
                 switches.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
             }

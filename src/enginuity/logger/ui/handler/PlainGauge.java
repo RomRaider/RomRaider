@@ -11,14 +11,16 @@ import static java.awt.BorderLayout.NORTH;
 
 public final class PlainGauge extends Gauge {
     private static final double ZERO = 0.0;
+    private static final String BLANK = "";
     private final EcuData ecuData;
-    private final JLabel data = new JLabel();
-    private final JLabel title = new JLabel();
+    private final JLabel data = new JLabel(BLANK, JLabel.CENTER);
+    private final JLabel title = new JLabel(BLANK, JLabel.CENTER);
 
     public PlainGauge(EcuData ecuData) {
         checkNotNull(ecuData, "ecuData");
         this.ecuData = ecuData;
-        initLabelLayout();
+        initTitleLayout();
+        initDataLayout();
         initGaugeLayout();
     }
 
@@ -34,10 +36,10 @@ public final class PlainGauge extends Gauge {
         refreshValue(ZERO);
     }
 
-    private void initLabelLayout() {
-        data.setMinimumSize(new Dimension(150, 100));
-        data.setMaximumSize(new Dimension(150, 100));
-        data.setPreferredSize(new Dimension(150, 100));
+    private void initTitleLayout() {
+    }
+
+    private void initDataLayout() {
         data.setBorder(new BevelBorder(BevelBorder.LOWERED));
         data.setFont(data.getFont().deriveFont(Font.PLAIN, 50F));
     }
@@ -46,7 +48,6 @@ public final class PlainGauge extends Gauge {
         refreshValue(ZERO);
         refreshTitle();
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(150, 150));
         setBackground(Color.GREEN);
         add(data, CENTER);
         add(title, NORTH);
