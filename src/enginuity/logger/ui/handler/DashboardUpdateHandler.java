@@ -25,7 +25,10 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
     }
 
     public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
-        gauges.get(ecuData).updateValue(value);
+        Gauge gauge = gauges.get(ecuData);
+        if (gauge != null) {
+            gauge.updateValue(value);
+        }
     }
 
     public void deregisterData(EcuData ecuData) {

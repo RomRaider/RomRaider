@@ -32,8 +32,6 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
             valueMap.put(ecuData.getId(), ecuData.getSelectedConvertor().convert(tmp));
             index += length;
         }
-        System.out.println("valueMap = " + valueMap);
-        System.out.println("expression = " + expression);
         double result = evaluate(expression, valueMap);
         return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
     }
