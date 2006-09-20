@@ -33,8 +33,8 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
 
     public void handleDataUpdate(EcuData ecuData, byte[] bytes, long timestamp) {
         EcuDataConvertor convertor = ecuData.getSelectedConvertor();
-        int value = (int) convertor.convert(bytes);
-        checkStartStopFileLogging(ecuData, value);
+        double value = convertor.convert(bytes);
+        checkStartStopFileLogging(ecuData, (int) value);
         if (fileLogger.isStarted()) {
             currentLine.updateParamValue(ecuData, convertor.format(value), timestamp);
             if (currentLine.isFull()) {
