@@ -80,7 +80,7 @@ public final class SerialConnectionImpl implements SerialConnection {
             byte[] request = protocol.constructReadAddressRequest(queries);
             byte[] response = protocol.constructReadAddressResponse(queries);
 
-            System.out.println("Raw request        = " + asHex(request));
+            //System.out.println("Raw request        = " + asHex(request));
 
             readStaleData();
             serialPort.setRTS(false);
@@ -99,16 +99,15 @@ public final class SerialConnectionImpl implements SerialConnection {
             }
             is.read(response, 0, response.length);
 
-            System.out.println("Raw response       = " + asHex(response));
+            //System.out.println("Raw response       = " + asHex(response));
 
             byte[] filteredResponse = new byte[response.length - request.length];
             System.arraycopy(response, request.length, filteredResponse, 0, filteredResponse.length);
 
-            System.out.println("Filtered response  = " + asHex(filteredResponse));
-            System.out.println();
+            //System.out.println("Filtered response  = " + asHex(filteredResponse));
+            //System.out.println();
 
             protocol.setResponse(queries, filteredResponse);
-            //markTime();
         } catch (Exception e) {
             close();
             throw new SerialCommunicationException(e);
