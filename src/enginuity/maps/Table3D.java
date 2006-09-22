@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 public class Table3D extends Table {
-    
-    private Table1D      xAxis = new Table1D(new Settings());
-    private Table1D      yAxis = new Table1D(new Settings());
+
+    private Table1D xAxis = new Table1D(new Settings());
+    private Table1D yAxis = new Table1D(new Settings());
     private DataCell[][] data = new DataCell[1][1];
-    private boolean      swapXY = false;
-    private boolean      flipX = false;
-    private boolean      flipY = false;
+    private boolean swapXY = false;
+    private boolean flipX = false;
+    private boolean flipY = false;
 
     public Table3D(Settings settings) {
         super(settings);
@@ -95,10 +95,10 @@ public class Table3D extends Table {
         if (!beforeRam) {
             ramOffset = container.getRomID().getRamOffset();
         }
-        
+
         // temporarily remove lock
         boolean tempLock = locked;
-        locked = false;        
+        locked = false;
 
         // populate axiis
         try {
@@ -138,11 +138,11 @@ public class Table3D extends Table {
                                     storageAddress + offset * storageType - ramOffset,
                                     storageType));
                 }
-                
+
                 // show locked cell
                 if (tempLock) {
                     data[y][x].setForeground(Color.GRAY);
-                }                
+                }
 
                 centerPanel.add(data[y][x]);
                 data[y][x].setXCoord(y);
@@ -151,38 +151,38 @@ public class Table3D extends Table {
                 offset++;
             }
         }
-        
+
         // reset locked status
-        locked = tempLock;        
+        locked = tempLock;
 
         GridLayout topLayout = new GridLayout(2, 1);
         JPanel topPanel = new JPanel(topLayout);
         this.add(topPanel, BorderLayout.NORTH);
         topPanel.add(new JLabel(name, JLabel.CENTER), BorderLayout.NORTH);
         topPanel.add(new JLabel(xAxis.getName() + " (" + xAxis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
-        
+
         JLabel yLabel = new JLabel();
         yLabel.setFont(new Font("Arial", Font.BOLD, 12));
         VTextIcon icon = new VTextIcon(yLabel, yAxis.getName() + " (" + yAxis.getScale().getUnit() + ")", VTextIcon.ROTATE_LEFT);
         yLabel.setIcon(icon);
         add(yLabel, BorderLayout.WEST);
-        
+
         add(new JLabel(getScale().getUnit(), JLabel.CENTER), BorderLayout.SOUTH);
     }
 
     public void colorize() {
         if (compareType == COMPARE_OFF) {
             if (!isStatic && !isAxis) {
-                
+
                 double high = Double.MIN_VALUE;
-                double low  = Double.MAX_VALUE;
-                               
+                double low = Double.MAX_VALUE;
+
                 if (getScale().getMax() != 0 || getScale().getMin() != 0) {
-                    
+
                     // set min and max values if they are set in scale
                     high = getScale().getMax();
                     low = getScale().getMin();
-                    
+
                 } else {
                     // min/max not set in scale
                     for (DataCell[] column : data) {
@@ -196,28 +196,28 @@ public class Table3D extends Table {
                         }
                     }
                 }
-                
-                
+
+
                 for (DataCell[] column : data) {
                     for (DataCell cell : column) {
-                        
+
                         if (Double.parseDouble(cell.getText()) > high ||
-                            Double.parseDouble(cell.getText()) < low) {
+                                Double.parseDouble(cell.getText()) < low) {
 
                             // value exceeds limit
                             cell.setColor(settings.getWarningColor());
 
-                        } else {   
+                        } else {
                             // limits not set, scale based on table values
                             double scale = 0;
 
                             if (high - low == 0) {
                                 // if all values are the same, color will be middle value
-                                scale = .5;                            
+                                scale = .5;
                             } else {
-                                scale = (Double.parseDouble(cell.getText()) - low) / (high - low);                            
-                            }                            
-                            
+                                scale = (Double.parseDouble(cell.getText()) - low) / (high - low);
+                            }
+
                             cell.setColor(getScaledColor(scale, settings));
                         }
                     }
@@ -347,7 +347,7 @@ public class Table3D extends Table {
         xAxis.increment(increment);
         yAxis.increment(increment);
     }
-    
+
     public void multiply(double factor) {
         if (!isStatic && !locked) {
             for (int x = 0; x < this.getSizeX(); x++) {
@@ -361,7 +361,7 @@ public class Table3D extends Table {
         xAxis.multiply(factor);
         yAxis.multiply(factor);
         colorize();
-    }    
+    }
 
     public void clearSelection() {
         xAxis.clearSelection(true);
@@ -516,14 +516,14 @@ public class Table3D extends Table {
         highlightX = x;
         highlightY = y;
     }
-    
+
     public void selectCellAt(int x, int y) {
         clearSelection();
         data[x][y].setSelected(true);
         highlightX = x;
         highlightY = y;
     }
-    
+
     public void selectCellAtWithoutClear(int x, int y) {
         data[x][y].setSelected(true);
         highlightX = x;
@@ -808,7 +808,7 @@ public class Table3D extends Table {
     public void applyColorSettings(Settings settings) {
         // apply settings to cells
         this.settings = settings;
-        
+
         for (int y = 0; y < getSizeY(); y++) {
             for (int x = 0; x < getSizeX(); x++) {
 
@@ -821,7 +821,7 @@ public class Table3D extends Table {
                 data[x][y].repaint();
             }
         }
-        
+
         this.setAxisColor(settings.getAxisColor());
         xAxis.applyColorSettings(settings);
         yAxis.applyColorSettings(settings);
@@ -859,8 +859,8 @@ public class Table3D extends Table {
         xAxis.setScaleByName(getScale().getName());
         yAxis.setScaleByName(getScale().getName());
     }
-    
-    public DataCell[][] get3dData(){
-    	return data;
+
+    public DataCell[][] get3dData() {
+        return data;
     }
 }

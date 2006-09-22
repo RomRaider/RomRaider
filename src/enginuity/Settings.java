@@ -6,66 +6,66 @@ import java.io.Serializable;
 import java.util.Vector;
 
 public class Settings implements Serializable {
-    
-    private Dimension windowSize            = new Dimension(800, 600);
-    private Point windowLocation            = new Point();
-    private int   splitPaneLocation         = 150;
-    private boolean windowMaximized         = false;
-    
-    private String romRevisionURL           = "http://www.scoobypedia.co.uk/index.php/Knowledge/ECUVersionCompatibilityList";
-    private String supportURL               = "http://www.enginuity.org";
-    private String releaseNotes             = "release notes.txt";
-    private String recentVersion            = "x";
-    
-    private Vector<File> ecuDefinitionFiles = new Vector<File>();
-    private File  lastImageDir              = new File("images");
-    private boolean obsoleteWarning         = true;
-    private boolean calcConflictWarning     = true;
-    private boolean debug                   = false;
-    private int userLevel                   = 1;
-    private boolean saveDebugTables         = false;
-    private boolean displayHighTables       = true;
-    private boolean valueLimitWarning       = true;
-    
-    private Font tableFont                  = new Font("Arial", Font.BOLD, 12);
-    private Dimension cellSize              = new Dimension(42, 18);
-    private Color maxColor                  = new Color(255, 102, 102);
-    private Color minColor                  = new Color(153, 153, 255);
-    private Color highlightColor            = new Color(204, 204, 204);
-    private Color increaseBorder            = new Color(255, 0, 0);
-    private Color decreaseBorder            = new Color(0, 0, 255);
-    private Color axisColor                 = new Color(255, 255, 255);
-    private Color warningColor              = new Color(255, 0, 0);
-    private int   tableClickCount           = 1; // number of clicks to open table
 
-    private String loggerPort               = "COM4";
-    private String loggerProtocol           = "SSM";
-    private String loggerConfigFilePath     = "./logger.xml";
-    private File loggerOutputDir            = new File(".");
+    private Dimension windowSize = new Dimension(800, 600);
+    private Point windowLocation = new Point();
+    private int splitPaneLocation = 150;
+    private boolean windowMaximized = false;
+
+    private String romRevisionURL = "http://www.scoobypedia.co.uk/index.php/Knowledge/ECUVersionCompatibilityList";
+    private String supportURL = "http://www.enginuity.org";
+    private String releaseNotes = "release notes.txt";
+    private String recentVersion = "x";
+
+    private Vector<File> ecuDefinitionFiles = new Vector<File>();
+    private File lastImageDir = new File("images");
+    private boolean obsoleteWarning = true;
+    private boolean calcConflictWarning = true;
+    private boolean debug = false;
+    private int userLevel = 1;
+    private boolean saveDebugTables = false;
+    private boolean displayHighTables = true;
+    private boolean valueLimitWarning = true;
+
+    private Font tableFont = new Font("Arial", Font.BOLD, 12);
+    private Dimension cellSize = new Dimension(42, 18);
+    private Color maxColor = new Color(255, 102, 102);
+    private Color minColor = new Color(153, 153, 255);
+    private Color highlightColor = new Color(204, 204, 204);
+    private Color increaseBorder = new Color(255, 0, 0);
+    private Color decreaseBorder = new Color(0, 0, 255);
+    private Color axisColor = new Color(255, 255, 255);
+    private Color warningColor = new Color(255, 0, 0);
+    private int tableClickCount = 1; // number of clicks to open table
+
+    private String loggerPort = "COM4";
+    private String loggerProtocol = "SSM";
+    private String loggerConfigFilePath = "./logger.xml";
+    private File loggerOutputDir = new File(".");
 
     public Settings() {
         //center window by default
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        windowLocation.move(((int)(screenSize.getWidth() - windowSize.getWidth()) / 2),
-                ((int)(screenSize.getHeight() - windowSize.getHeight()) / 2));
+        windowLocation.move(((int) (screenSize.getWidth() - windowSize.getWidth()) / 2),
+                ((int) (screenSize.getHeight() - windowSize.getHeight()) / 2));
     }
-    
+
     public Dimension getWindowSize() {
         return windowSize;
     }
-    
+
     public Point getWindowLocation() {
         return windowLocation;
     }
-    
+
     public void setWindowSize(Dimension size) {
         windowSize.setSize(size);
     }
-    
+
     public void setWindowLocation(Point location) {
         windowLocation.setLocation(location);
     }
-    
+
     public Vector<File> getEcuDefinitionFiles() {
         if (ecuDefinitionFiles.isEmpty()) {
             // if no files defined, add default
@@ -73,51 +73,51 @@ public class Settings implements Serializable {
         }
         return ecuDefinitionFiles;
     }
-    
+
     public void addEcuDefinitionFile(File ecuDefinitionFile) {
         ecuDefinitionFiles.add(ecuDefinitionFile);
     }
-    
+
     public void setEcuDefinitionFiles(Vector<File> ecuDefinitionFiles) {
         this.ecuDefinitionFiles = ecuDefinitionFiles;
     }
-    
+
     public File getLastImageDir() {
         return lastImageDir;
     }
-    
+
     public void setLastImageDir(File lastImageDir) {
         this.lastImageDir = lastImageDir;
     }
-    
+
     public int getSplitPaneLocation() {
         return splitPaneLocation;
     }
-    
+
     public void setSplitPaneLocation(int splitPaneLocation) {
         this.splitPaneLocation = splitPaneLocation;
     }
-    
+
     public boolean isWindowMaximized() {
         return windowMaximized;
     }
-    
+
     public void setWindowMaximized(boolean windowMaximized) {
         this.windowMaximized = windowMaximized;
     }
-    
+
     public String getRomRevisionURL() {
         return romRevisionURL;
     }
-    
+
     public String getSupportURL() {
         return supportURL;
     }
-    
+
     public Font getTableFont() {
         return tableFont;
     }
-    
+
     public void setTableFont(Font tableFont) {
         this.tableFont = tableFont;
     }

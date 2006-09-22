@@ -20,9 +20,9 @@ public final class ColorScaler {
         rgbToHsb(minColor, minColorHSB);
         rgbToHsb(maxColor, maxColorHSB);
 
-        float h = minColorHSB[0] + (maxColorHSB[0] - minColorHSB[0]) * (float)scale;
-        float s = minColorHSB[1] + (maxColorHSB[1] - minColorHSB[1]) * (float)scale;
-        float b = minColorHSB[2] + (maxColorHSB[2] - minColorHSB[2]) * (float)scale;
+        float h = minColorHSB[0] + (maxColorHSB[0] - minColorHSB[0]) * (float) scale;
+        float s = minColorHSB[1] + (maxColorHSB[1] - minColorHSB[1]) * (float) scale;
+        float b = minColorHSB[2] + (maxColorHSB[2] - minColorHSB[2]) * (float) scale;
 
         return Color.getHSBColor(h, s, b);
 

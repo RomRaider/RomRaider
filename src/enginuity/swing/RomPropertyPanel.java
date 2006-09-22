@@ -3,12 +3,12 @@ package enginuity.swing;
 import enginuity.maps.Rom;
 
 public class RomPropertyPanel extends javax.swing.JPanel {
-    
+
     Rom rom = new Rom();
-    
+
     public RomPropertyPanel(Rom rom) {
         initComponents();
-        
+
         // populate fields
         fileName.setText(rom.getFileName());
         xmlID.setText(rom.getRomID().getXmlid());
@@ -16,19 +16,21 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         fileSize.setText((rom.getRealFileSize() / 1024) + "kb");
         internalID.setText(rom.getRomID().getInternalIdString());
         storageAddress.setText("0x" + Integer.toHexString(rom.getRomID().getInternalIdAddress()));
-        
+
         make.setText(rom.getRomID().getMake());
         market.setText(rom.getRomID().getMarket());
-        year.setText(rom.getRomID().getYear()+"");
+        year.setText(rom.getRomID().getYear() + "");
         model.setText(rom.getRomID().getModel());
         submodel.setText(rom.getRomID().getSubModel());
         transmission.setText(rom.getRomID().getTransmission());
-        
+
         tableList.setListData(rom.getTables());
     }
-    
+
     //prevent bad constructor
-    private RomPropertyPanel() { }
+    private RomPropertyPanel() {
+    }
+
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         lblFilename = new javax.swing.JLabel();
@@ -108,9 +110,15 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         transmission.setText("Transmission");
 
         tableList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public Object getElementAt(int i) {
+                return strings[i];
+            }
         });
         jScrollPane1.setViewportView(tableList);
 
@@ -119,118 +127,118 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(lblFilename)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(fileName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 302, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(layout.createSequentialGroup()
+                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(layout.createSequentialGroup()
+                        .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(lblECURevision)
-                                    .add(lblEcuVersion)
-                                    .add(lblFilesize))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(fileSize)
-                                    .add(ecuVersion)
-                                    .add(xmlID)))
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(lblYear)
-                                    .add(lblModel)
-                                    .add(lblSubmodel)
-                                    .add(lblTransmission)
-                                    .add(lblMarket)
-                                    .add(lblMake))
-                                .add(7, 7, 7)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(make)
-                                    .add(market)
-                                    .add(year)
-                                    .add(layout.createSequentialGroup()
+                                .add(layout.createSequentialGroup()
+                                        .add(lblFilename)
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(fileName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 302, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(layout.createSequentialGroup()
+                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                        .add(lblECURevision)
+                                                        .add(lblEcuVersion)
+                                                        .add(lblFilesize))
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                .add(fileSize)
+                                                .add(ecuVersion)
+                                                .add(xmlID)))
+                                        .add(layout.createSequentialGroup()
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(transmission)
-                                            .add(submodel)))
-                                    .add(model))))
-                        .add(32, 32, 32)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
+                                                .add(lblYear)
+                                                .add(lblModel)
+                                                .add(lblSubmodel)
+                                                .add(lblTransmission)
+                                                .add(lblMarket)
+                                                .add(lblMake))
+                                        .add(7, 7, 7)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(make)
+                                        .add(market)
+                                        .add(year)
+                                        .add(layout.createSequentialGroup()
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                .add(transmission)
+                                                .add(submodel)))
+                                        .add(model))))
+                                .add(32, 32, 32)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(lblInternalId)
-                                    .add(lblStorageAddress))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 53, Short.MAX_VALUE)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(internalID)
-                                    .add(storageAddress))
-                                .add(36, 36, 36))
-                            .add(lblTables)
-                            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 226, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                                .add(layout.createSequentialGroup()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                .add(lblInternalId)
+                                                .add(lblStorageAddress))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 53, Short.MAX_VALUE)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                .add(internalID)
+                                                .add(storageAddress))
+                                        .add(36, 36, 36))
+                                .add(lblTables)
+                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 226, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(21, 21, 21)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(lblFilename)
-                        .add(fileName))
-                    .add(layout.createSequentialGroup()
-                        .add(40, 40, 40)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblECURevision)
-                            .add(xmlID)
-                            .add(lblInternalId)
-                            .add(internalID))
+                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(21, 21, 21)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(lblFilename)
+                                        .add(fileName))
+                                .add(layout.createSequentialGroup()
+                                .add(40, 40, 40)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(lblECURevision)
+                                        .add(xmlID)
+                                        .add(lblInternalId)
+                                        .add(internalID))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(ecuVersion)
+                                        .add(lblEcuVersion)
+                                        .add(storageAddress)
+                                        .add(lblStorageAddress))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                .add(lblFilesize)
+                                .add(fileSize))))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(ecuVersion)
-                            .add(lblEcuVersion)
-                            .add(storageAddress)
-                            .add(lblStorageAddress))
+                        .add(lblTables)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblFilesize)
-                            .add(fileSize))))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(lblTables)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblMake)
-                            .add(make))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblMarket)
-                            .add(market))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblYear)
-                            .add(year))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblModel)
-                            .add(model))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblSubmodel)
-                            .add(submodel))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(lblTransmission)
-                            .add(transmission)))
-                    .add(jScrollPane1, 0, 0, Short.MAX_VALUE))
-                .addContainerGap())
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(layout.createSequentialGroup()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                .add(lblMake)
+                                                .add(make))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                .add(lblMarket)
+                                                .add(market))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                .add(lblYear)
+                                                .add(year))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                .add(lblModel)
+                                                .add(model))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                .add(lblSubmodel)
+                                                .add(submodel))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(lblTransmission)
+                                        .add(transmission)))
+                                .add(jScrollPane1, 0, 0, Short.MAX_VALUE))
+                        .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-        
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ecuVersion;
     private javax.swing.JLabel fileName;
@@ -260,5 +268,5 @@ public class RomPropertyPanel extends javax.swing.JPanel {
     private javax.swing.JLabel xmlID;
     private javax.swing.JLabel year;
     // End of variables declaration//GEN-END:variables
-    
+
 }

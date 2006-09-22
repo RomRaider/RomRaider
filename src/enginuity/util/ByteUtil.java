@@ -2,7 +2,7 @@ package enginuity.util;
 
 @SuppressWarnings({"UnnecessaryBoxing"})
 public final class ByteUtil {
-    
+
     private ByteUtil() {
     }
 

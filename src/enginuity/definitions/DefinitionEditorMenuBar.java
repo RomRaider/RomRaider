@@ -1,10 +1,10 @@
 package enginuity.definitions;
 
-import javax.swing.JMenuBar;
+import javax.swing.*;
 
 public class DefinitionEditorMenuBar extends JMenuBar {
-    
+
     public DefinitionEditorMenuBar() {
     }
-    
+
 }

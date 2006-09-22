@@ -1,17 +1,8 @@
 package enginuity.swing;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyVetoException;
-
-import javax.swing.DefaultDesktopManager;
-import javax.swing.JComponent;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JViewport;
 
 /**
  * An extension of WDesktopPane that supports often used MDI functionality. This
@@ -19,17 +10,17 @@ import javax.swing.JViewport;
  * bottom, providing the MDIDesktopPane is in a ScrollPane.
  */
 public class MDIDesktopPane extends JDesktopPane {
-    private static int FRAME_OFFSET=20;
+    private static int FRAME_OFFSET = 20;
     private MDIDesktopManager manager;
 
     public MDIDesktopPane() {
-        manager=new MDIDesktopManager(this);
+        manager = new MDIDesktopManager(this);
         setDesktopManager(manager);
         setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
     }
 
     public void setBounds(int x, int y, int w, int h) {
-        super.setBounds(x,y,w,h);
+        super.setBounds(x, y, w, h);
         checkDesktopSize();
     }
 
@@ -39,22 +30,25 @@ public class MDIDesktopPane extends JDesktopPane {
         int w;
         int h;
 
-        Component retval=super.add(frame);
+        Component retval = super.add(frame);
         checkDesktopSize();
         if (array.length > 0) {
             p = array[0].getLocation();
             p.x = p.x + FRAME_OFFSET;
             p.y = p.y + FRAME_OFFSET;
-        }
-        else {
+        } else {
             p = new Point(0, 0);
         }
         frame.setLocation(p.x, p.y);
         if (frame.isResizable()) {
-            w = getWidth() - (getWidth()/3);
-            h = getHeight() - (getHeight()/3);
-            if (w < frame.getMinimumSize().getWidth()) w = (int)frame.getMinimumSize().getWidth();
-            if (h < frame.getMinimumSize().getHeight()) h = (int)frame.getMinimumSize().getHeight();
+            w = getWidth() - (getWidth() / 3);
+            h = getHeight() - (getHeight() / 3);
+            if (w < frame.getMinimumSize().getWidth()) {
+                w = (int) frame.getMinimumSize().getWidth();
+            }
+            if (h < frame.getMinimumSize().getHeight()) {
+                h = (int) frame.getMinimumSize().getHeight();
+            }
             frame.setSize(w, h);
         }
         moveToFront(frame);
@@ -84,8 +78,8 @@ public class MDIDesktopPane extends JDesktopPane {
         int frameHeight = (getBounds().height - 5) - allFrames.length * FRAME_OFFSET;
         int frameWidth = (getBounds().width - 5) - allFrames.length * FRAME_OFFSET;
         for (int i = allFrames.length - 1; i >= 0; i--) {
-            allFrames[i].setSize(frameWidth,frameHeight);
-            allFrames[i].setLocation(x,y);
+            allFrames[i].setSize(frameWidth, frameHeight);
+            allFrames[i].setLocation(x, y);
             x = x + FRAME_OFFSET;
             y = y + FRAME_OFFSET;
         }
@@ -97,11 +91,11 @@ public class MDIDesktopPane extends JDesktopPane {
     public void tileFrames() {
         java.awt.Component allFrames[] = getAllFrames();
         manager.setNormalSize();
-        int frameHeight = getBounds().height/allFrames.length;
+        int frameHeight = getBounds().height / allFrames.length;
         int y = 0;
         for (int i = 0; i < allFrames.length; i++) {
-            allFrames[i].setSize(getBounds().width,frameHeight);
-            allFrames[i].setLocation(0,y);
+            allFrames[i].setSize(getBounds().width, frameHeight);
+            allFrames[i].setLocation(0, y);
             y = y + frameHeight;
         }
     }
@@ -110,7 +104,7 @@ public class MDIDesktopPane extends JDesktopPane {
      * Sets all component size properties ( maximum, minimum, preferred)
      * to the given dimension.
      */
-    public void setAllSize(Dimension d){
+    public void setAllSize(Dimension d) {
         setMinimumSize(d);
         setMaximumSize(d);
         setPreferredSize(d);
@@ -120,12 +114,14 @@ public class MDIDesktopPane extends JDesktopPane {
      * Sets all component size properties ( maximum, minimum, preferred)
      * to the given width and height.
      */
-    public void setAllSize(int width, int height){
-        setAllSize(new Dimension(width,height));
+    public void setAllSize(int width, int height) {
+        setAllSize(new Dimension(width, height));
     }
 
     private void checkDesktopSize() {
-        if (getParent()!=null&&isVisible()) manager.resizeDesktop();
+        if (getParent() != null && isVisible()) {
+            manager.resizeDesktop();
+        }
     }
 }
 
@@ -151,7 +147,7 @@ class MDIDesktopManager extends DefaultDesktopManager {
     }
 
     public void setNormalSize() {
-        JScrollPane scrollPane=getScrollPane();
+        JScrollPane scrollPane = getScrollPane();
         int x = 0;
         int y = 0;
         Insets scrollInsets = getScrollPaneInsets();
@@ -159,28 +155,32 @@ class MDIDesktopManager extends DefaultDesktopManager {
         if (scrollPane != null) {
             Dimension d = scrollPane.getVisibleRect().getSize();
             if (scrollPane.getBorder() != null) {
-               d.setSize(d.getWidth() - scrollInsets.left - scrollInsets.right,
-                         d.getHeight() - scrollInsets.top - scrollInsets.bottom);
+                d.setSize(d.getWidth() - scrollInsets.left - scrollInsets.right,
+                        d.getHeight() - scrollInsets.top - scrollInsets.bottom);
             }
 
             d.setSize(d.getWidth() - 20, d.getHeight() - 20);
-            desktop.setAllSize(x,y);
+            desktop.setAllSize(x, y);
             scrollPane.invalidate();
             scrollPane.validate();
         }
     }
 
     private Insets getScrollPaneInsets() {
-        JScrollPane scrollPane=getScrollPane();
-        if (scrollPane==null) return new Insets(0,0,0,0);
-        else return getScrollPane().getBorder().getBorderInsets(scrollPane);
+        JScrollPane scrollPane = getScrollPane();
+        if (scrollPane == null) {
+            return new Insets(0, 0, 0, 0);
+        } else {
+            return getScrollPane().getBorder().getBorderInsets(scrollPane);
+        }
     }
 
     private JScrollPane getScrollPane() {
         if (desktop.getParent() instanceof JViewport) {
-            JViewport viewPort = (JViewport)desktop.getParent();
-            if (viewPort.getParent() instanceof JScrollPane)
-                return (JScrollPane)viewPort.getParent();
+            JViewport viewPort = (JViewport) desktop.getParent();
+            if (viewPort.getParent() instanceof JScrollPane) {
+                return (JScrollPane) viewPort.getParent();
+            }
         }
         return null;
     }
@@ -194,22 +194,26 @@ class MDIDesktopManager extends DefaultDesktopManager {
         if (scrollPane != null) {
             JInternalFrame allFrames[] = desktop.getAllFrames();
             for (int i = 0; i < allFrames.length; i++) {
-                if (allFrames[i].getX()+allFrames[i].getWidth()>x) {
+                if (allFrames[i].getX() + allFrames[i].getWidth() > x) {
                     x = allFrames[i].getX() + allFrames[i].getWidth();
                 }
-                if (allFrames[i].getY()+allFrames[i].getHeight()>y) {
+                if (allFrames[i].getY() + allFrames[i].getHeight() > y) {
                     y = allFrames[i].getY() + allFrames[i].getHeight();
                 }
             }
-            Dimension d=scrollPane.getVisibleRect().getSize();
+            Dimension d = scrollPane.getVisibleRect().getSize();
             if (scrollPane.getBorder() != null) {
-               d.setSize(d.getWidth() - scrollInsets.left - scrollInsets.right,
-                         d.getHeight() - scrollInsets.top - scrollInsets.bottom);
+                d.setSize(d.getWidth() - scrollInsets.left - scrollInsets.right,
+                        d.getHeight() - scrollInsets.top - scrollInsets.bottom);
             }
 
-            if (x <= d.getWidth()) x = ((int)d.getWidth()) - 20;
-            if (y <= d.getHeight()) y = ((int)d.getHeight()) - 20;
-            desktop.setAllSize(x,y);
+            if (x <= d.getWidth()) {
+                x = ((int) d.getWidth()) - 20;
+            }
+            if (y <= d.getHeight()) {
+                y = ((int) d.getHeight()) - 20;
+            }
+            desktop.setAllSize(x, y);
             scrollPane.invalidate();
             scrollPane.validate();
         }

@@ -122,7 +122,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         } else {
             this.setBackground(scaledColor);
         }
-        
+
         //TODO Uncomment if needed after further testing
         //Removed to test with 3d graph
         //requestFocus();
