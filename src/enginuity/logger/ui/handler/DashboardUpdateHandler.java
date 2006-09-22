@@ -42,8 +42,10 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
 
     public void notifyConvertorUpdate(EcuData updatedEcuData) {
         Gauge gauge = gauges.get(updatedEcuData);
-        gauge.resetValue();
-        gauge.refreshTitle();
+        if (gauge != null) {
+            gauge.resetValue();
+            gauge.refreshTitle();
+        }
     }
 
     private void repaintDashboardPanel() {
