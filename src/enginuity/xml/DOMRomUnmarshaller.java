@@ -359,13 +359,14 @@ public class DOMRomUnmarshaller {
         table.setStorageAddress(RomAttributeParser.parseHexString(unmarshallAttribute(tableNode, "storageaddress", table.getStorageAddress())));
         table.setDescription(unmarshallAttribute(tableNode, "description", table.getDescription()));
         table.setDataSize(Integer.parseInt(unmarshallAttribute(tableNode, "sizey", unmarshallAttribute(tableNode, "sizex", table.getDataSize()))));
-        table.setFlip(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipy", unmarshallAttribute(tableNode, "flipx", table.getFlip() + ""))));
+        table.setFlip(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipy", unmarshallAttribute(tableNode, "flipx", String.valueOf(table.getFlip())))));
         table.setUserLevel(Integer.parseInt(unmarshallAttribute(tableNode, "userlevel", table.getUserLevel())));
-        table.setLocked(Boolean.parseBoolean(unmarshallAttribute(tableNode, "locked", table.isLocked() + "")));
+        table.setLocked(Boolean.parseBoolean(unmarshallAttribute(tableNode, "locked", String.valueOf(table.isLocked()))));
+        table.setLogParam(unmarshallAttribute(tableNode, "logparam", table.getLogParam()));
 
         if (table.getType() == Table.TABLE_3D) {
-            ((Table3D) table).setFlipX(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipx", ((Table3D) table).getFlipX() + "")));
-            ((Table3D) table).setFlipY(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipy", ((Table3D) table).getFlipY() + "")));
+            ((Table3D) table).setFlipX(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipx", String.valueOf(((Table3D) table).getFlipX()))));
+            ((Table3D) table).setFlipY(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipy", String.valueOf(((Table3D) table).getFlipY()))));
             ((Table3D) table).setSizeX(Integer.parseInt(unmarshallAttribute(tableNode, "sizex", ((Table3D) table).getSizeX())));
             ((Table3D) table).setSizeY(Integer.parseInt(unmarshallAttribute(tableNode, "sizey", ((Table3D) table).getSizeY())));
         }
@@ -432,7 +433,7 @@ public class DOMRomUnmarshaller {
                     DataCell dataCell = new DataCell();
                     dataCell.setDisplayValue(unmarshallText(n));
                     dataCell.setTable(table);
-                    ((Table1D) table).addStaticDataCell(dataCell);
+                    table.addStaticDataCell(dataCell);
 
                 } else if (n.getNodeName().equalsIgnoreCase("description")) {
                     table.setDescription(unmarshallText(n));
@@ -464,7 +465,7 @@ public class DOMRomUnmarshaller {
                 // check whether name matches base and set scale if so
                 if (scales.get(i).getName().equalsIgnoreCase(base)) {
                     try {
-                        scale = (Scale) ObjectCloner.deepCopy((Object) scales.get(i));
+                        scale = (Scale) ObjectCloner.deepCopy(scales.get(i));
 
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
@@ -485,10 +486,10 @@ public class DOMRomUnmarshaller {
 
         // get coarse increment with new attribute name (coarseincrement), else look for old (increment)
         scale.setCoarseIncrement(Double.parseDouble(unmarshallAttribute(scaleNode, "coarseincrement",
-                unmarshallAttribute(scaleNode, "increment", scale.getCoarseIncrement() + "") + "")));
+                unmarshallAttribute(scaleNode, "increment", String.valueOf(scale.getCoarseIncrement())))));
 
         scale.setFineIncrement(Double.parseDouble(unmarshallAttribute(scaleNode,
-                "fineincrement", scale.getFineIncrement() + "")));
+                "fineincrement", String.valueOf(scale.getFineIncrement()))));
 
         return scale;
     }
@@ -517,6 +518,6 @@ public class DOMRomUnmarshaller {
     }
 
     private String unmarshallAttribute(Node node, String name, int defaultValue) {
-        return unmarshallAttribute(node, name, defaultValue + "");
+        return unmarshallAttribute(node, name, String.valueOf(defaultValue));
     }
 }

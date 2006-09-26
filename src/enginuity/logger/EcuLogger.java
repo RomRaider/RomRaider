@@ -20,6 +20,7 @@ import enginuity.logger.ui.handler.DataUpdateHandlerManagerImpl;
 import enginuity.logger.ui.handler.FileUpdateHandler;
 import enginuity.logger.ui.handler.GraphUpdateHandler;
 import enginuity.logger.ui.handler.LiveDataUpdateHandler;
+import enginuity.logger.ui.handler.TableUpdateHandler;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import javax.swing.*;
@@ -175,6 +176,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void initParameterUpdateHandlers() {
         dataHandlerManager.addHandler(liveDataUpdateHandler);
         dataHandlerManager.addHandler(fileUpdateHandler);
+        dataHandlerManager.addHandler(TableUpdateHandler.getInstance());
         graphHandlerManager.addHandler(graphUpdateHandler);
         graphHandlerManager.addHandler(fileUpdateHandler);
         dashboardHandlerManager.addHandler(dashboardUpdateHandler);

@@ -2,6 +2,8 @@ package enginuity.maps;
 
 import enginuity.Settings;
 import enginuity.swing.TableFrame;
+import enginuity.util.AxisRange;
+import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +15,7 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 public class Table2D extends Table {
-
+    private static final String NEW_LINE = System.getProperty("line.separator");
     private Table1D axis = new Table1D(new Settings());
 
     public Table2D(Settings settings) {
@@ -106,8 +108,8 @@ public class Table2D extends Table {
 
     public void clearSelection() {
         axis.clearSelection(true);
-        for (int i = 0; i < data.length; i++) {
-            data[i].setSelected(false);
+        for (DataCell aData : data) {
+            aData.setSelected(false);
         }
     }
 
@@ -184,12 +186,11 @@ public class Table2D extends Table {
 
     public void copyTable() {
         // create string
-        String newline = System.getProperty("line.separator");
-        StringBuffer output = new StringBuffer("[Table2D]" + newline);
-        output.append(axis.getTableAsString() + newline);
+        StringBuffer output = new StringBuffer("[Table2D]" + NEW_LINE);
+        output.append(axis.getTableAsString()).append(NEW_LINE);
         output.append(super.getTableAsString());
         //copy to clipboard
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output + ""), null);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
     }
 
     public void paste() {
@@ -205,18 +206,17 @@ public class Table2D extends Table {
         String pasteType = st.nextToken();
 
         if (pasteType.equalsIgnoreCase("[Table2D]")) { // Paste table             
-            String newline = System.getProperty("line.separator");
-            String axisValues = "[Table1D]" + newline + st.nextToken(newline);
-            String dataValues = "[Table1D]" + newline + st.nextToken(newline);
+            String axisValues = "[Table1D]" + NEW_LINE + st.nextToken(NEW_LINE);
+            String dataValues = "[Table1D]" + NEW_LINE + st.nextToken(NEW_LINE);
 
             // put axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues + ""), null);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues), null);
             axis.paste();
             // put datavalues in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues + ""), null);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues), null);
             super.paste();
             // reset clipboard            
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input + ""), null);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
 
         } else if (pasteType.equalsIgnoreCase("[Selection1D]")) { // paste selection            
             if (data[highlightY].isSelected()) {
@@ -240,18 +240,17 @@ public class Table2D extends Table {
         String pasteType = st.nextToken();
 
         if (pasteType.equalsIgnoreCase("[Table2D]")) { // Paste table             
-            String newline = System.getProperty("line.separator");
-            String axisValues = "[Table1D]" + newline + st.nextToken(newline);
-            String dataValues = "[Table1D]" + newline + st.nextToken(newline);
+            String axisValues = "[Table1D]" + NEW_LINE + st.nextToken(NEW_LINE);
+            String dataValues = "[Table1D]" + NEW_LINE + st.nextToken(NEW_LINE);
 
             // put axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues + ""), null);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues), null);
             axis.pasteCompare();
             // put datavalues in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues + ""), null);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues), null);
             super.pasteCompare();
             // reset clipboard            
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input + ""), null);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
 
         }
     }
@@ -268,5 +267,28 @@ public class Table2D extends Table {
     public void setScaleIndex(int scaleIndex) {
         super.setScaleIndex(scaleIndex);
         axis.setScaleByName(getScale().getName());
+    }
+
+    public void highlightLiveData() {
+        if (overlayLog) {
+            AxisRange range = getLiveDataRangeForAxis(axis);
+            clearSelection();
+            boolean first = true;
+            for (int i = range.getStartIndex(); i <= range.getEndIndex(); i++) {
+                int x = 0;
+                int y = i;
+                if (axis.getType() == TABLE_X_AXIS) {
+                    x = i;
+                    y = 0;
+                }
+                if (first) {
+                    startHighlight(x, y);
+                    first = false;
+                } else {
+                    highlight(x, y);
+                }
+            }
+            stopHighlight();
+        }
     }
 }

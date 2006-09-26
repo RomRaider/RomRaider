@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Table1D extends Table {
-
     private Color axisColor = new Color(255, 255, 255);
 
     public Table1D(Settings settings) {
@@ -149,5 +148,13 @@ public class Table1D extends Table {
 
     public void setAxisColor(Color axisColor) {
         this.axisColor = axisColor;
+    }
+
+    public void setLiveValue(double value) {
+        liveValue = value;
+        Table parent = getAxisParent();
+        if (parent != null) {
+            parent.highlightLiveData();
+        }
     }
 }

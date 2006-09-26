@@ -21,6 +21,7 @@
                     </address>
                     <conversions>
                         <conversion units="C" expr="x-40" format="0"/>
+                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
                     </conversions>
                 </parameter>
 
@@ -163,7 +164,7 @@
                         <byte>0x00001C</byte>
                     </address>
                     <conversions>
-                        <conversion units="V" expr="x*8/100" format="0.0"/>
+                        <conversion units="V" expr="x*8/100" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -172,7 +173,7 @@
                         <byte>0x00001D</byte>
                     </address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -181,7 +182,7 @@
                         <byte>0x00001E</byte>
                     </address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -190,7 +191,7 @@
                         <byte>0x00001F</byte>
                     </address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -620,7 +621,7 @@
                         <byte>0x0000D2</byte>
                     </address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -629,7 +630,7 @@
                         <byte>0x0000D3</byte>
                     </address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -665,7 +666,7 @@
                         <byte>0x0000FB</byte>
                     </address>
                     <conversions>
-                        <conversion units="V" expr="x*8/100" format="0.0"/>
+                        <conversion units="V" expr="x*8/100" format="0.00"/>
                     </conversions>
                 </parameter>
 

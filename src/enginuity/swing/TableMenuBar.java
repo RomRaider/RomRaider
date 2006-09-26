@@ -11,7 +11,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     private Table table;
     private JMenu fileMenu = new JMenu("Table");
     private JMenuItem graph = new JMenuItem("View Graph");
-    private JMenuItem overlay = new JMenuItem("Overlay Log");
+    private JRadioButtonMenuItem overlay = new JRadioButtonMenuItem("Overlay Log");
 
     private JMenu compareMenu = new JMenu("Compare");
     private JRadioButtonMenuItem compareOriginal = new JRadioButtonMenuItem("Show Changes");
@@ -116,7 +116,6 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         close.setMnemonic('X');
 
         graph.setEnabled(false);
-        overlay.setEnabled(false);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -133,7 +132,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             table.getFrame().dispose();
 
         } else if (e.getSource() == tableProperties) {
-            JOptionPane.showMessageDialog(table, (Object) (new TablePropertyPanel(table)),
+            JOptionPane.showMessageDialog(table, new TablePropertyPanel(table),
                     table.getName() + " Table Properties", JOptionPane.INFORMATION_MESSAGE);
 
         } else if (e.getSource() == copySel) {
@@ -163,6 +162,9 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == comparePercent) {
             table.setCompareDisplay(Table.COMPARE_PERCENT);
+
+        } else if (e.getSource() == overlay) {
+            table.setOverlayLog(overlay.isSelected());
 
         }
     }

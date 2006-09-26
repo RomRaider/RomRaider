@@ -1,6 +1,7 @@
 package enginuity.maps;
 
 import enginuity.Settings;
+import enginuity.logger.ui.handler.TableUpdateHandler;
 import enginuity.swing.TableFrame;
 import static enginuity.util.ColorScaler.getScaledColor;
 import enginuity.util.JEPUtil;
@@ -81,6 +82,10 @@ public abstract class Table extends JPanel implements Serializable {
     protected int userLevel = 0;
     protected Settings settings;
     protected boolean locked = false;
+
+    protected String logParam;
+    protected double liveValue = 0.0;
+    protected boolean overlayLog = false;
 
     public Table(Settings settings) {
         this.setSettings(settings);
@@ -454,6 +459,15 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setFlip(boolean flipY) {
         this.flip = flipY;
+    }
+
+    public void setLogParam(String logParam) {
+        this.logParam = logParam;
+        TableUpdateHandler.getInstance().registerTable(this);
+    }
+
+    public String getLogParam() {
+        return logParam;
     }
 
     public String toString() {
@@ -1107,4 +1121,20 @@ public abstract class Table extends JPanel implements Serializable {
     public void setLocked(boolean locked) {
         this.locked = locked;
     }
+
+    public void setOverlayLog(boolean overlayLog) {
+        this.overlayLog = overlayLog;
+    }
+
+    public void setLiveValue(double liveValue) {
+        this.liveValue = liveValue;
+    }
+
+    public double getLiveValue() {
+        return liveValue;
+    }
+
+    protected void highlightLiveData() {
+    }
+
 }

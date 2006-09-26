@@ -3,7 +3,9 @@ package enginuity.maps;
 import enginuity.Settings;
 import enginuity.swing.TableFrame;
 import enginuity.swing.VTextIcon;
+import enginuity.util.AxisRange;
 import static enginuity.util.ColorScaler.getScaledColor;
+import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 import enginuity.xml.RomAttributeParser;
 
 import javax.swing.*;
@@ -209,8 +211,7 @@ public class Table3D extends Table {
 
                         } else {
                             // limits not set, scale based on table values
-                            double scale = 0;
-
+                            double scale;
                             if (high - low == 0) {
                                 // if all values are the same, color will be middle value
                                 scale = .5;
@@ -851,6 +852,26 @@ public class Table3D extends Table {
                     cell.refreshValue();
                 }
             }
+        }
+    }
+
+    public void highlightLiveData() {
+        if (overlayLog) {
+            AxisRange rangeX = getLiveDataRangeForAxis(xAxis);
+            AxisRange rangeY = getLiveDataRangeForAxis(yAxis);
+            clearSelection();
+            boolean first = true;
+            for (int x = rangeX.getStartIndex(); x <= rangeX.getEndIndex(); x++) {
+                for (int y = rangeY.getStartIndex(); y <= rangeY.getEndIndex(); y++) {
+                    if (first) {
+                        startHighlight(x, y);
+                        first = false;
+                    } else {
+                        highlight(x, y);
+                    }
+                }
+            }
+            stopHighlight();
         }
     }
 
