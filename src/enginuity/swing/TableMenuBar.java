@@ -129,7 +129,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             table.undoSelected();
 
         } else if (e.getSource() == close) {
-            table.getFrame().dispose();
+            table.getRom().getContainer().removeDisplayTable(table.getFrame());
 
         } else if (e.getSource() == tableProperties) {
             JOptionPane.showMessageDialog(table, new TablePropertyPanel(table),

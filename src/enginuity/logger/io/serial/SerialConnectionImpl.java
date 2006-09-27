@@ -11,6 +11,7 @@ import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+import static enginuity.util.ThreadUtil.sleep;
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;
 import static gnu.io.CommPortIdentifier.getPortIdentifier;
@@ -88,8 +89,8 @@ public final class SerialConnectionImpl implements SerialConnection {
             os.flush();
             int timeout = 1000;
             while (is.available() < response.length) {
-                TimeUnit.MILLISECONDS.sleep(5);
-                timeout -= 5;
+                sleep(1);
+                timeout -= 1;
                 if (timeout <= 0) {
                     byte[] badBytes = new byte[is.available()];
                     is.read(badBytes, 0, badBytes.length);

@@ -35,12 +35,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Vector;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
 
+    private static final String NEW_LINE = "\n";
     private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private RomTree imageList = new RomTree(imageRoot);
     private Settings settings = new Settings();
@@ -109,10 +108,10 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                     br = new BufferedReader(new FileReader(settings.getReleaseNotes()));
                     StringBuffer sb = new StringBuffer();
                     while (br.ready()) {
-                        sb.append(br.readLine() + "\n");
+                        sb.append(br.readLine()).append(NEW_LINE);
                     }
 
-                    releaseNotes.setText(sb + "");
+                    releaseNotes.setText(sb.toString());
 
                     JOptionPane.showMessageDialog(this, scroller,
                             "Enginuity " + version + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
@@ -263,6 +262,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     }
 
     public void removeDisplayTable(TableFrame frame) {
+        frame.setVisible(false);
         rightPanel.remove(frame);
         rightPanel.repaint();
     }
@@ -273,16 +273,14 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             Rom rom = romTreeNode.getRom();
             if (rom == lastSelectedRom) {
                 Vector<Table> romTables = rom.getTables();
-                for (Iterator j = romTables.iterator(); j.hasNext();) {
-                    Table t = (Table) j.next();
+                for (Table t : romTables) {
                     rightPanel.remove(t.getFrame());
-
                 }
 
                 Vector<TreePath> path = new Vector<TreePath>();
                 path.add(new TreePath(romTreeNode.getPath()));
                 imageRoot.remove(i);
-                imageList.removeDescendantToggledPaths((Enumeration<TreePath>) path.elements());
+                imageList.removeDescendantToggledPaths(path.elements());
 
                 break;
             }
@@ -423,7 +421,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         try {
             fis = new FileInputStream(inputFile);
             byte[] buf = new byte[8192];
-            int bytesRead = 0;
+            int bytesRead;
             while ((bytesRead = fis.read(buf)) != -1) {
                 baos.write(buf, 0, bytesRead);
             }

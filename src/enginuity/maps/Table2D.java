@@ -270,7 +270,7 @@ public class Table2D extends Table {
     }
 
     public void highlightLiveData() {
-        if (overlayLog) {
+        if (overlayLog && frame.isVisible()) {
             AxisRange range = getLiveDataRangeForAxis(axis);
             clearSelection();
             boolean first = true;

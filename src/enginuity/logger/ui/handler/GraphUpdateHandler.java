@@ -42,10 +42,12 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         repaintGraphPanel(2);
     }
 
-    public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
+    public synchronized void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
         // update chart
         XYSeries series = seriesMap.get(ecuData);
-        series.add(timestamp, ecuData.getSelectedConvertor().convert(value));
+        if (series != null) {
+            series.add(timestamp, ecuData.getSelectedConvertor().convert(value));
+        }
     }
 
     public void deregisterData(EcuData ecuData) {
@@ -83,5 +85,5 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
             graphPanel.getParent().repaint();
         }
     }
-
 }
+

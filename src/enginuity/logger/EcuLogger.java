@@ -15,8 +15,10 @@ import enginuity.logger.ui.ParameterRegistrationBroker;
 import enginuity.logger.ui.ParameterRegistrationBrokerImpl;
 import enginuity.logger.ui.SerialPortComboBox;
 import enginuity.logger.ui.handler.DashboardUpdateHandler;
+import enginuity.logger.ui.handler.DataUpdateHandler;
 import enginuity.logger.ui.handler.DataUpdateHandlerManager;
 import enginuity.logger.ui.handler.DataUpdateHandlerManagerImpl;
+import enginuity.logger.ui.handler.DataUpdateHandlerThreadWrapper;
 import enginuity.logger.ui.handler.FileUpdateHandler;
 import enginuity.logger.ui.handler.GraphUpdateHandler;
 import enginuity.logger.ui.handler.LiveDataUpdateHandler;
@@ -174,13 +176,22 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void initParameterUpdateHandlers() {
-        dataHandlerManager.addHandler(liveDataUpdateHandler);
-        dataHandlerManager.addHandler(fileUpdateHandler);
-        dataHandlerManager.addHandler(TableUpdateHandler.getInstance());
-        graphHandlerManager.addHandler(graphUpdateHandler);
-        graphHandlerManager.addHandler(fileUpdateHandler);
-        dashboardHandlerManager.addHandler(dashboardUpdateHandler);
-        dashboardHandlerManager.addHandler(fileUpdateHandler);
+        DataUpdateHandler threadedFileUpdateHandler = startHandlerInThread(fileUpdateHandler);
+        dataHandlerManager.addHandler(startHandlerInThread(liveDataUpdateHandler));
+        dataHandlerManager.addHandler(threadedFileUpdateHandler);
+        dataHandlerManager.addHandler(startHandlerInThread(TableUpdateHandler.getInstance()));
+        graphHandlerManager.addHandler(startHandlerInThread(graphUpdateHandler));
+        graphHandlerManager.addHandler(threadedFileUpdateHandler);
+        dashboardHandlerManager.addHandler(startHandlerInThread(dashboardUpdateHandler));
+        dashboardHandlerManager.addHandler(threadedFileUpdateHandler);
+    }
+
+    private DataUpdateHandler startHandlerInThread(DataUpdateHandler handler) {
+        DataUpdateHandlerThreadWrapper runnableHandler = new DataUpdateHandlerThreadWrapper(handler);
+        Thread thread = new Thread(runnableHandler);
+        thread.setDaemon(true);
+        thread.start();
+        return runnableHandler;
     }
 
     private JComponent buildTabbedPane() {

@@ -856,7 +856,7 @@ public class Table3D extends Table {
     }
 
     public void highlightLiveData() {
-        if (overlayLog) {
+        if (overlayLog && frame.isVisible()) {
             AxisRange rangeX = getLiveDataRangeForAxis(xAxis);
             AxisRange rangeY = getLiveDataRangeForAxis(yAxis);
             clearSelection();
