@@ -168,7 +168,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P18" name="Air Flow Sensor Voltage" desc="">
+                <parameter id="P18" name="Mass Air Flow Sensor Voltage" desc="">
                     <address>
                         <byte>0x00001D</byte>
                     </address>
