@@ -6,6 +6,7 @@ import enginuity.logger.definition.EcuDataLoaderImpl;
 import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.io.serial.SerialPortRefresher;
+import enginuity.logger.ui.EcuDataComparator;
 import enginuity.logger.ui.EcuLoggerMenuBar;
 import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.MessageListener;
@@ -46,6 +47,7 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import static java.util.Collections.sort;
 import java.util.List;
 
 /*
@@ -153,25 +155,33 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
-            List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
-            for (EcuParameter ecuParam : ecuParams) {
-                dataTabParamListTableModel.addParam(ecuParam);
-                graphTabParamListTableModel.addParam(ecuParam);
-                dashboardTabParamListTableModel.addParam(ecuParam);
-                ecuParam.addConvertorUpdateListener(fileUpdateHandler);
-                ecuParam.addConvertorUpdateListener(liveDataUpdateHandler);
-                ecuParam.addConvertorUpdateListener(graphUpdateHandler);
-                ecuParam.addConvertorUpdateListener(dashboardUpdateHandler);
-            }
-            List<EcuSwitch> ecuSwitches = dataLoader.getEcuSwitches();
-            for (EcuSwitch ecuSwitch : ecuSwitches) {
-                dataTabSwitchListTableModel.addParam(ecuSwitch);
-                graphTabSwitchListTableModel.addParam(ecuSwitch);
-                dashboardTabSwitchListTableModel.addParam(ecuSwitch);
-            }
+            loadEcuParams(dataLoader.getEcuParameters());
+            loadEcuSwitches(dataLoader.getEcuSwitches());
         } catch (Exception e) {
             e.printStackTrace();
             reportError(e);
+        }
+    }
+
+    private void loadEcuParams(List<EcuParameter> ecuParams) {
+        sort(ecuParams, new EcuDataComparator());
+        for (EcuParameter ecuParam : ecuParams) {
+            dataTabParamListTableModel.addParam(ecuParam);
+            graphTabParamListTableModel.addParam(ecuParam);
+            dashboardTabParamListTableModel.addParam(ecuParam);
+            ecuParam.addConvertorUpdateListener(fileUpdateHandler);
+            ecuParam.addConvertorUpdateListener(liveDataUpdateHandler);
+            ecuParam.addConvertorUpdateListener(graphUpdateHandler);
+            ecuParam.addConvertorUpdateListener(dashboardUpdateHandler);
+        }
+    }
+
+    private void loadEcuSwitches(List<EcuSwitch> ecuSwitches) {
+        sort(ecuSwitches, new EcuDataComparator());
+        for (EcuSwitch ecuSwitch : ecuSwitches) {
+            dataTabSwitchListTableModel.addParam(ecuSwitch);
+            graphTabSwitchListTableModel.addParam(ecuSwitch);
+            dashboardTabSwitchListTableModel.addParam(ecuSwitch);
         }
     }
 

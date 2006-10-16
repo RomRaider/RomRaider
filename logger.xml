@@ -843,6 +843,17 @@
                     </conversions>
                 </parameter>
 
+                <parameter id="P91" name="Manifold Relative Pressure (Corrected)" desc="Difference between Manifold Absolute Pressure and Atmospheric Pressure">
+                    <depends>
+                        <ref id="P7"/>
+                        <ref id="P24"/>
+                    </depends>
+                    <conversions>
+                        <conversion units="psi" expr="[P7:psi]-[P24:psi]" format="0.00"/>
+                        <conversion units="bar" expr="[P7:bar]-[P24:bar]" format="0.00"/>
+                    </conversions>
+                </parameter>
+
             </parameters>
 
             <switches>

@@ -1,8 +1,5 @@
 package enginuity.logger.definition;
 
-//TODO: add addListener() method so parameters can notify listeners when the selected convertor is updated
-//TODO: create corresponding ConvertorUpdateListener interface (to be implemented by handlers?)
-
 public interface EcuData {
 
     String getId();

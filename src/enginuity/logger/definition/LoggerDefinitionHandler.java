@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-//TODO: Add support for parsing of multiple convertors (already in xml)
-
 public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String YES = "yes";
     private static final String TAG_PROTOCOL = "protocol";
