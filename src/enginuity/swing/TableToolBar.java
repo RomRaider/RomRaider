@@ -288,13 +288,23 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
                graphFrame.setVisible(true);
                graphFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                ECUEditorManager.getECUEditor().rightPanel.add(graphFrame);
-               */
+            */
+            
+            
+            
+            
             double maxV = table.getScale().getMax();
             double minV = table.getScale().getMin();
             //TODO Remove this when above is working
+            //***********
+            minV = 0.0;
+            maxV = 13.01;
             System.out.println("Scale: " + maxV + "," + minV);
-
-            Graph3dFrameManager.openGraph3dFrame(graphValues, 0.0, 13.01, xValues, yValues, xLabel, yLabel, zLabel, table.getName());
+            //***********
+            
+           
+            //Render 3d
+            Graph3dFrameManager.openGraph3dFrame(graphValues, minV, maxV, xValues, yValues, xLabel, yLabel, zLabel, table.getName());
             GraphData.addGraphDataListener(this);
         }
     }
