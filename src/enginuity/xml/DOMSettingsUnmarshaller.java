@@ -29,13 +29,16 @@ public class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tabledisplay")) {
                 settings = unmarshallTableDisplay(n, settings);
 
+            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("logger")) {
+                settings = unmarshallLogger(n, settings);
+
             }
         }
         return settings;
     }
 
 
-    public Settings unmarshallWindow(Node windowNode, Settings settings) {
+    private Settings unmarshallWindow(Node windowNode, Settings settings) {
         Node n;
         NodeList nodes = windowNode.getChildNodes();
 
@@ -59,7 +62,7 @@ public class DOMSettingsUnmarshaller {
         return settings;
     }
 
-    public Settings unmarshallFiles(Node urlNode, Settings settings) {
+    private Settings unmarshallFiles(Node urlNode, Settings settings) {
         Node n;
         NodeList nodes = urlNode.getChildNodes();
 
@@ -77,7 +80,7 @@ public class DOMSettingsUnmarshaller {
         return settings;
     }
 
-    public Settings unmarshallOptions(Node optionNode, Settings settings) {
+    private Settings unmarshallOptions(Node optionNode, Settings settings) {
         Node n;
         NodeList nodes = optionNode.getChildNodes();
 
@@ -116,7 +119,7 @@ public class DOMSettingsUnmarshaller {
         return settings;
     }
 
-    public Settings unmarshallTableDisplay(Node tableDisplayNode, Settings settings) {
+    private Settings unmarshallTableDisplay(Node tableDisplayNode, Settings settings) {
         Node n;
         NodeList nodes = tableDisplayNode.getChildNodes();
 
@@ -140,7 +143,7 @@ public class DOMSettingsUnmarshaller {
         return settings;
     }
 
-    public Settings unmarshallColors(Node colorNode, Settings settings) {
+    private Settings unmarshallColors(Node colorNode, Settings settings) {
         Node n;
         NodeList nodes = colorNode.getChildNodes();
 
@@ -173,7 +176,28 @@ public class DOMSettingsUnmarshaller {
         return settings;
     }
 
-    public Color unmarshallColor(Node colorNode) {
+
+    private Settings unmarshallLogger(Node windowNode, Settings settings) {
+        Node n;
+        NodeList nodes = windowNode.getChildNodes();
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            n = nodes.item(i);
+
+            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("size")) {
+                settings.setLoggerWindowSize(new Dimension(unmarshallAttribute(n, "y", 600),
+                        unmarshallAttribute(n, "x", 1000)));
+
+            } else if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("location")) {
+                settings.setLoggerWindowLocation(new Point(unmarshallAttribute(n, "x", 150),
+                        unmarshallAttribute(n, "y", 150)));
+
+            }
+        }
+        return settings;
+    }
+
+    private Color unmarshallColor(Node colorNode) {
         return new Color(unmarshallAttribute(colorNode, "r", 155),
                 unmarshallAttribute(colorNode, "g", 155),
                 unmarshallAttribute(colorNode, "b", 155));

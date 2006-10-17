@@ -417,18 +417,15 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
 
     private byte[] readFile(File inputFile) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        FileInputStream fis = null;
+        FileInputStream fis = new FileInputStream(inputFile);
         try {
-            fis = new FileInputStream(inputFile);
             byte[] buf = new byte[8192];
             int bytesRead;
             while ((bytesRead = fis.read(buf)) != -1) {
                 baos.write(buf, 0, bytesRead);
             }
         } finally {
-            if (fis != null) {
-                fis.close();
-            }
+            fis.close();
         }
         return baos.toByteArray();
     }

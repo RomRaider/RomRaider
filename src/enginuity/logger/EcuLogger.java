@@ -356,7 +356,15 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            rememberWindowProperties();
         }
+    }
+
+    private void rememberWindowProperties() {
+        settings.setLoggerWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
+        settings.setLoggerWindowSize(getSize());
+        settings.setLoggerWindowLocation(getLocation());
     }
 
     private void cleanUpUpdateHandlers() {
@@ -419,13 +427,16 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         EcuLogger ecuLogger = new EcuLogger("Enginuity ECU Logger", settings);
 
         //set remaining window properties
-        ecuLogger.setSize(new Dimension(1000, 600));
+        ecuLogger.setSize(settings.getLoggerWindowSize());
         ecuLogger.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
         ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
         ecuLogger.addWindowListener(ecuLogger);
 
         //display the window
-        ecuLogger.setLocationRelativeTo(null); //center it
+        ecuLogger.setLocation(settings.getLoggerWindowLocation());
+        if (settings.isWindowMaximized()) {
+            ecuLogger.setExtendedState(MAXIMIZED_BOTH);
+        }
         ecuLogger.setVisible(true);
     }
 

@@ -18,14 +18,16 @@ public class DOMSettingsBuilder {
         IIOMetadataNode settingsNode = new IIOMetadataNode("settings");
 
         // create settings
-        progress.update("Saving window settings...", 20);
+        progress.update("Saving window settings...", 15);
         settingsNode.appendChild(buildWindow(settings));
-        progress.update("Saving file settings...", 40);
+        progress.update("Saving file settings...", 30);
         settingsNode.appendChild(buildFiles(settings));
-        progress.update("Saving options...", 60);
+        progress.update("Saving options...", 45);
         settingsNode.appendChild(buildOptions(settings, versionNumber));
-        progress.update("Saving display settings...", 80);
+        progress.update("Saving display settings...", 60);
         settingsNode.appendChild(buildTableDisplay(settings));
+        progress.update("Saving logger settings...", 75);
+        settingsNode.appendChild(buildLogger(settings));
 
         OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
         of.setIndent(1);
@@ -34,13 +36,16 @@ public class DOMSettingsBuilder {
         progress.update("Writing to file...", 90);
 
         FileOutputStream fos = new FileOutputStream(output);
-        XMLSerializer serializer = new XMLSerializer(fos, of);
-        serializer.serialize(settingsNode);
-        fos.flush();
-        fos.close();
+        try {
+            XMLSerializer serializer = new XMLSerializer(fos, of);
+            serializer.serialize(settingsNode);
+            fos.flush();
+        } finally {
+            fos.close();
+        }
     }
 
-    public IIOMetadataNode buildWindow(Settings settings) {
+    private IIOMetadataNode buildWindow(Settings settings) {
         IIOMetadataNode windowSettings = new IIOMetadataNode("window");
 
         // window size
@@ -63,7 +68,7 @@ public class DOMSettingsBuilder {
         return windowSettings;
     }
 
-    public IIOMetadataNode buildFiles(Settings settings) {
+    private IIOMetadataNode buildFiles(Settings settings) {
         IIOMetadataNode files = new IIOMetadataNode("files");
 
         // image directory
@@ -83,7 +88,7 @@ public class DOMSettingsBuilder {
         return files;
     }
 
-    public IIOMetadataNode buildOptions(Settings settings, String versionNumber) {
+    private IIOMetadataNode buildOptions(Settings settings, String versionNumber) {
         IIOMetadataNode options = new IIOMetadataNode("options");
 
         // obsolete warning
@@ -134,7 +139,7 @@ public class DOMSettingsBuilder {
         return options;
     }
 
-    public IIOMetadataNode buildTableDisplay(Settings settings) {
+    private IIOMetadataNode buildTableDisplay(Settings settings) {
         IIOMetadataNode tableDisplay = new IIOMetadataNode("tabledisplay");
 
         // font
@@ -198,5 +203,23 @@ public class DOMSettingsBuilder {
         tableDisplay.appendChild(colors);
 
         return tableDisplay;
+    }
+
+    private IIOMetadataNode buildLogger(Settings settings) {
+        IIOMetadataNode loggerSettings = new IIOMetadataNode("logger");
+
+        // window size
+        IIOMetadataNode size = new IIOMetadataNode("size");
+        size.setAttribute("x", String.valueOf(((int) settings.getLoggerWindowSize().getHeight())));
+        size.setAttribute("y", String.valueOf(((int) settings.getLoggerWindowSize().getWidth())));
+        loggerSettings.appendChild(size);
+
+        // window location
+        IIOMetadataNode location = new IIOMetadataNode("location");
+        location.setAttribute("x", String.valueOf(((int) settings.getLoggerWindowLocation().getX())));
+        location.setAttribute("y", String.valueOf(((int) settings.getLoggerWindowLocation().getY())));
+        loggerSettings.appendChild(location);
+
+        return loggerSettings;
     }
 }

@@ -11,28 +11,33 @@ public class ObjectCloner {
     }
 
     // returns a deep copy of an object
-    public static Object deepCopy(Object oldObj) throws Exception {
-        ObjectOutputStream oos = null;
-        ObjectInputStream ois = null;
+    public static Object deepCopy(Object obj) throws Exception {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            oos = new ObjectOutputStream(bos);
-            // serialize and pass the object
-            oos.writeObject(oldObj);
-            oos.flush();
-            ByteArrayInputStream bin = new ByteArrayInputStream(bos
-                    .toByteArray());
-            ois = new ObjectInputStream(bin);
-            // return the new object
-            return ois.readObject();
-        }
-        finally {
-            if (oos != null) {
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            try {
+                ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray());
+                try {
+                    ObjectInputStream ois = new ObjectInputStream(bin);
+                    try {
+                        // serialize and pass the object
+                        oos.writeObject(obj);
+                        oos.flush();
+
+                        // return the new object
+                        return ois.readObject();
+
+                    } finally {
+                        ois.close();
+                    }
+                } finally {
+                    bin.close();
+                }
+            } finally {
                 oos.close();
             }
-            if (ois != null) {
-                ois.close();
-            }
+        } finally {
+            bos.close();
         }
     }
 }

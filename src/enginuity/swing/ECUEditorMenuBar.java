@@ -283,22 +283,18 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
                 boolean save = true;
                 if (fc.getSelectedFile().exists()) {
-                    if (JOptionPane.showConfirmDialog(parent, fc.getSelectedFile().getName() + " already exists! Overwrite?") == JOptionPane.CANCEL_OPTION)
-                    {
+                    if (JOptionPane.showConfirmDialog(parent,
+                            fc.getSelectedFile().getName() + " already exists! Overwrite?") == JOptionPane.CANCEL_OPTION) {
                         save = false;
                     }
                 }
                 if (save) {
                     byte[] output = parent.getLastSelectedRom().saveFile();
-                    FileOutputStream fos = null;
+                    FileOutputStream fos = new FileOutputStream(fc.getSelectedFile());
                     try {
-                        fos = new FileOutputStream(fc.getSelectedFile());
                         fos.write(output);
-                    }
-                    finally {
-                        if (fos != null) {
-                            fos.close();
-                        }
+                    } finally {
+                        fos.close();
                     }
 
                     parent.getLastSelectedRom().setFullFileName(fc.getSelectedFile().getAbsoluteFile());

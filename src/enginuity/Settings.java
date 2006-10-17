@@ -43,6 +43,12 @@ public class Settings implements Serializable {
     private String loggerConfigFilePath = "./logger.xml";
     private File loggerOutputDir = new File(".");
 
+    private Dimension loggerWindowSize = new Dimension(1000, 600);
+    private Point loggerWindowLocation = new Point();
+    private boolean loggerWindowMaximized = false;
+
+
+
     public Settings() {
         //center window by default
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -286,5 +292,29 @@ public class Settings implements Serializable {
 
     public File getLoggerOutputDir() {
         return loggerOutputDir;
+    }
+
+    public Point getLoggerWindowLocation() {
+        return loggerWindowLocation;
+    }
+
+    public void setLoggerWindowLocation(Point loggerWindowLocation) {
+        this.loggerWindowLocation = loggerWindowLocation;
+    }
+
+    public boolean isLoggerWindowMaximized() {
+        return loggerWindowMaximized;
+    }
+
+    public void setLoggerWindowMaximized(boolean loggerWindowMaximized) {
+        this.loggerWindowMaximized = loggerWindowMaximized;
+    }
+
+    public Dimension getLoggerWindowSize() {
+        return loggerWindowSize;
+    }
+
+    public void setLoggerWindowSize(Dimension loggerWindowSize) {
+        this.loggerWindowSize = loggerWindowSize;
     }
 }
