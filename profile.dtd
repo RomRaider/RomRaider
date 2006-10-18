@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT parameter EMPTY >
+<!ATTLIST parameter id ID #REQUIRED >
+
+<!ELEMENT parameters ( parameter+ ) >
+
+<!ELEMENT switch EMPTY >
+<!ATTLIST switch id ID #REQUIRED >
+
+<!ELEMENT switches ( switch+ ) >
+
+<!ELEMENT profile ( parameters*, switches* ) >

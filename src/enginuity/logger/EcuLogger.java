@@ -15,6 +15,9 @@ import enginuity.logger.ui.ParameterListTableModel;
 import enginuity.logger.ui.ParameterRegistrationBroker;
 import enginuity.logger.ui.ParameterRegistrationBrokerImpl;
 import enginuity.logger.ui.SerialPortComboBox;
+import enginuity.logger.ui.UserProfile;
+import enginuity.logger.ui.UserProfileLoader;
+import enginuity.logger.ui.UserProfileLoaderImpl;
 import enginuity.logger.ui.handler.DashboardUpdateHandler;
 import enginuity.logger.ui.handler.DataUpdateHandler;
 import enginuity.logger.ui.handler.DataUpdateHandlerManager;
@@ -93,8 +96,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         initControllerListeners();
         startPortRefresherThread();
         initUserInterface();
-        initParameterUpdateHandlers();
-        loadEcuParamsFromConfig();
+        initDataUpdateHandlers();
+        loadEcuDataFromConfig(loadUserProfile(settings));
     }
 
     private void bootstrap(String title, Settings settings) {
@@ -151,24 +154,31 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         getContentPane().add(mainPanel);
     }
 
-    private void loadEcuParamsFromConfig() {
+    private UserProfile loadUserProfile(Settings settings) {
+        UserProfileLoader profileLoader = new UserProfileLoaderImpl();
+        return profileLoader.loadProfile(settings.getLoggerProfileFilePath());
+    }
+
+    private void loadEcuDataFromConfig(UserProfile profile) {
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
-            loadEcuParams(dataLoader.getEcuParameters());
-            loadEcuSwitches(dataLoader.getEcuSwitches());
+            loadEcuData(dataLoader, profile);
         } catch (Exception e) {
             e.printStackTrace();
             reportError(e);
         }
     }
 
-    private void loadEcuParams(List<EcuParameter> ecuParams) {
-        sort(ecuParams, new EcuDataComparator());
+    private void loadEcuData(EcuDataLoader dataLoader, UserProfile profile) {
+        List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
+        addConvertorUpdateListeners(ecuParams);
+        loadEcuParams(ecuParams, profile);
+        loadEcuSwitches(dataLoader.getEcuSwitches(), profile);
+    }
+
+    private void addConvertorUpdateListeners(List<EcuParameter> ecuParams) {
         for (EcuParameter ecuParam : ecuParams) {
-            dataTabParamListTableModel.addParam(ecuParam);
-            graphTabParamListTableModel.addParam(ecuParam);
-            dashboardTabParamListTableModel.addParam(ecuParam);
             ecuParam.addConvertorUpdateListener(fileUpdateHandler);
             ecuParam.addConvertorUpdateListener(liveDataUpdateHandler);
             ecuParam.addConvertorUpdateListener(graphUpdateHandler);
@@ -176,16 +186,43 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
-    private void loadEcuSwitches(List<EcuSwitch> ecuSwitches) {
-        sort(ecuSwitches, new EcuDataComparator());
-        for (EcuSwitch ecuSwitch : ecuSwitches) {
-            dataTabSwitchListTableModel.addParam(ecuSwitch);
-            graphTabSwitchListTableModel.addParam(ecuSwitch);
-            dashboardTabSwitchListTableModel.addParam(ecuSwitch);
+    private void loadEcuParams(List<EcuParameter> ecuParams, UserProfile profile) {
+        clearParamTableModels();
+        sort(ecuParams, new EcuDataComparator());
+        for (EcuParameter ecuParam : ecuParams) {
+            if (profile.contains(ecuParam)) {
+                dataTabParamListTableModel.addParam(ecuParam);
+                graphTabParamListTableModel.addParam(ecuParam);
+                dashboardTabParamListTableModel.addParam(ecuParam);
+            }
         }
     }
 
-    private void initParameterUpdateHandlers() {
+    private void clearParamTableModels() {
+        dataTabParamListTableModel.clear();
+        graphTabParamListTableModel.clear();
+        dashboardTabParamListTableModel.clear();
+    }
+
+    private void loadEcuSwitches(List<EcuSwitch> ecuSwitches, UserProfile profile) {
+        clearSwitchTableModels();
+        sort(ecuSwitches, new EcuDataComparator());
+        for (EcuSwitch ecuSwitch : ecuSwitches) {
+            if (profile.contains(ecuSwitch)) {
+                dataTabSwitchListTableModel.addParam(ecuSwitch);
+                graphTabSwitchListTableModel.addParam(ecuSwitch);
+                dashboardTabSwitchListTableModel.addParam(ecuSwitch);
+            }
+        }
+    }
+
+    private void clearSwitchTableModels() {
+        dataTabSwitchListTableModel.clear();
+        graphTabSwitchListTableModel.clear();
+        dashboardTabSwitchListTableModel.clear();
+    }
+
+    private void initDataUpdateHandlers() {
         DataUpdateHandler threadedFileUpdateHandler = startHandlerInThread(fileUpdateHandler);
         dataHandlerManager.addHandler(startHandlerInThread(liveDataUpdateHandler));
         dataHandlerManager.addHandler(threadedFileUpdateHandler);

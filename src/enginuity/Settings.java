@@ -41,6 +41,7 @@ public class Settings implements Serializable {
     private String loggerPort = "COM4";
     private String loggerProtocol = "SSM";
     private String loggerConfigFilePath = "./logger.xml";
+    private String loggerProfileFilePath = "./profile.xml";
     private File loggerOutputDir = new File(".");
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
@@ -316,5 +317,13 @@ public class Settings implements Serializable {
 
     public void setLoggerWindowSize(Dimension loggerWindowSize) {
         this.loggerWindowSize = loggerWindowSize;
+    }
+
+    public String getLoggerProfileFilePath() {
+        return loggerProfileFilePath;
+    }
+
+    public void setLoggerProfileFilePath(String loggerProfileFilePath) {
+        this.loggerProfileFilePath = loggerProfileFilePath;
     }
 }

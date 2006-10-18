@@ -77,4 +77,10 @@ public final class ParameterListTableModel extends AbstractTableModel {
             fireTableDataChanged();
         }
     }
+
+    public synchronized void clear() {
+        paramRowMap.clear();
+        registeredEcuData.clear();
+        fireTableDataChanged();
+    }
 }

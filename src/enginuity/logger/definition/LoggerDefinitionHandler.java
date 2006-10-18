@@ -1,6 +1,6 @@
 package enginuity.logger.definition;
 
-import enginuity.util.ParamChecker;
+import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -50,7 +50,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private boolean parseProtocol;
 
     public LoggerDefinitionHandler(String protocol) {
-        ParamChecker.checkNotNullOrEmpty(protocol, "protocol");
+        checkNotNullOrEmpty(protocol, "protocol");
         this.protocol = protocol;
     }
 

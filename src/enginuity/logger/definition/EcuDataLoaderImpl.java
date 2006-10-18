@@ -1,10 +1,10 @@
 package enginuity.logger.definition;
 
 import enginuity.logger.exception.ConfigurationException;
+import static enginuity.logger.xml.SaxParserFactory.getSaxParser;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +21,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
             try {
-                SAXParser parser = getSaxParserFactory().newSAXParser();
+                SAXParser parser = getSaxParser();
                 LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol);
                 parser.parse(inputStream, handler);
                 ecuParameters = handler.getEcuParameters();
@@ -40,14 +40,6 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
 
     public List<EcuSwitch> getEcuSwitches() {
         return ecuSwitches;
-    }
-
-    private SAXParserFactory getSaxParserFactory() {
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        parserFactory.setNamespaceAware(false);
-        parserFactory.setValidating(true);
-        parserFactory.setXIncludeAware(false);
-        return parserFactory;
     }
 
 }
