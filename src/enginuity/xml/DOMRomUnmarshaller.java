@@ -18,16 +18,18 @@ import enginuity.swing.JProgressPane;
 import static enginuity.xml.DOMHelper.unmarshallAttribute;
 import static enginuity.xml.DOMHelper.unmarshallText;
 import org.w3c.dom.Node;
+import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.swing.*;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DOMRomUnmarshaller {
+public final class DOMRomUnmarshaller {
 
     private JProgressPane progress = null;
-    private Vector<Scale> scales = new Vector<Scale>();
+    private List<Scale> scales = new ArrayList<Scale>();
     private Settings settings;
     private ECUEditor parent;
 
@@ -46,7 +48,7 @@ public class DOMRomUnmarshaller {
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
-            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scalingbase")) {
+            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scalingbase")) {
                 scales.add(unmarshallScale(n, new Scale()));
             }
         }
@@ -55,13 +57,13 @@ public class DOMRomUnmarshaller {
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
-            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {
+            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {
                 Node n2;
                 NodeList nodes2 = n.getChildNodes();
 
                 for (int z = 0; z < nodes2.getLength(); z++) {
                     n2 = nodes2.item(z);
-                    if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
+                    if (n2.getNodeType() == ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
 
                         RomID romID = unmarshallRomID(n2, new RomID());
 
@@ -171,7 +173,7 @@ public class DOMRomUnmarshaller {
             int currProgress = (int) ((double) i / (double) nodes.getLength() * 40);
             progress.update("Creating tables...", 10 + currProgress);
 
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
+            if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("romid")) {
                     rom.setRomID(unmarshallRomID(n, rom.getRomID()));
 
@@ -207,13 +209,13 @@ public class DOMRomUnmarshaller {
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
-            if (n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {
+            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {
                 Node n2;
                 NodeList nodes2 = n.getChildNodes();
 
                 for (int z = 0; z < nodes2.getLength(); z++) {
                     n2 = nodes2.item(z);
-                    if (n2.getNodeType() == Node.ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
+                    if (n2.getNodeType() == ELEMENT_NODE && n2.getNodeName().equalsIgnoreCase("romid")) {
 
                         RomID romID = unmarshallRomID(n2, new RomID());
                         if (romID.getXmlid().equalsIgnoreCase(xmlID)) {
@@ -235,7 +237,7 @@ public class DOMRomUnmarshaller {
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
+            if (n.getNodeType() == ELEMENT_NODE) {
 
                 if (n.getNodeName().equalsIgnoreCase("xmlid")) {
                     romID.setXmlid(unmarshallText(n));
@@ -379,7 +381,7 @@ public class DOMRomUnmarshaller {
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
-            if (n.getNodeType() == Node.ELEMENT_NODE) {
+            if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("table")) {
 
                     if (table.getType() == Table.TABLE_2D) { // if table is 2D, parse axis

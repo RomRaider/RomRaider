@@ -9,7 +9,7 @@ import org.w3c.dom.NodeList;
 import java.awt.*;
 import java.io.File;
 
-public class DOMSettingsUnmarshaller {
+public final class DOMSettingsUnmarshaller {
 
     public Settings unmarshallSettings(Node rootNode) {
         Settings settings = new Settings();

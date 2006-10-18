@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Vector;
 
-public class DOMSettingsBuilder {
+public final class DOMSettingsBuilder {
 
     public void buildSettings(Settings settings, File output, JProgressPane progress, String versionNumber) throws IOException {
 

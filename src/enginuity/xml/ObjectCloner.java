@@ -5,8 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class ObjectCloner {
-    // so that nobody can accidentally create an ObjectCloner object
+public final class ObjectCloner {
+    
     private ObjectCloner() {
     }
 

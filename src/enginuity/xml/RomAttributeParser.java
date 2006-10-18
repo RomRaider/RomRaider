@@ -16,9 +16,9 @@ import static enginuity.maps.Table.TABLE_Y_AXIS;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public abstract class RomAttributeParser {
+public final class RomAttributeParser {
 
-    public RomAttributeParser() {
+    private RomAttributeParser() {
     }
 
     public static int parseEndian(String input) {
