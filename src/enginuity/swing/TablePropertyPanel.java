@@ -28,13 +28,13 @@ public class TablePropertyPanel extends javax.swing.JPanel {
 
         if (table.getUserLevel() == 1) {
             userLevel.setText("Beginner");
-        } else if (table.getUserLevel() == 1) {
+        } else if (table.getUserLevel() == 2) {
             userLevel.setText("Intermediate");
-        } else if (table.getUserLevel() == 1) {
+        } else if (table.getUserLevel() == 3) {
             userLevel.setText("Advanced");
-        } else if (table.getUserLevel() == 1) {
+        } else if (table.getUserLevel() == 4) {
             userLevel.setText("All");
-        } else if (table.getUserLevel() == 1) {
+        } else if (table.getUserLevel() == 5) {
             userLevel.setText("Debug");
         }
 

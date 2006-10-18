@@ -164,7 +164,6 @@ public class Table3D extends Table {
         topPanel.add(new JLabel(xAxis.getName() + " (" + xAxis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
 
         JLabel yLabel = new JLabel();
-        yLabel.setFont(new Font("Arial", Font.BOLD, 12));
         VTextIcon icon = new VTextIcon(yLabel, yAxis.getName() + " (" + yAxis.getScale().getUnit() + ")", VTextIcon.ROTATE_LEFT);
         yLabel.setIcon(icon);
         add(yLabel, BorderLayout.WEST);
@@ -884,4 +883,40 @@ public class Table3D extends Table {
     public DataCell[][] get3dData() {
         return data;
     }
+    
+    public double getMin() {
+        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
+            double low = Double.MAX_VALUE;
+            
+            for (DataCell[] column : data) {
+                for (DataCell cell : column) {
+                    if (Double.parseDouble(cell.getText()) < low) {
+                        low = Double.parseDouble(cell.getText());
+                    }
+                }
+            }   
+             
+            return low;                    
+        } else {
+            return getScale().getMin();
+        }
+    }
+    
+    public double getMax() {
+        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
+            double high = Double.MIN_VALUE;
+            
+            for (DataCell[] column : data) {
+                for (DataCell cell : column) {
+                    if (Double.parseDouble(cell.getText()) > high) {
+                        high = Double.parseDouble(cell.getText());
+                    }
+                }
+            }   
+            
+            return high;                    
+        } else {
+            return getScale().getMax();
+        }
+    }    
 }

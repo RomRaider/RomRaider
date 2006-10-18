@@ -1136,5 +1136,35 @@ public abstract class Table extends JPanel implements Serializable {
 
     protected void highlightLiveData() {
     }
+    
+    public double getMin() {
+        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
+            double low = Double.MAX_VALUE;
+            for (int i = 0; i < getDataSize(); i++) {
+
+                if (Double.parseDouble(data[i].getText()) < low) {
+                    low = Double.parseDouble(data[i].getText());
+                }
+            }    
+            return low;                    
+        } else {
+            return getScale().getMin();
+        }
+    }
+    
+    public double getMax() {
+        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
+            double high = Double.MIN_VALUE;
+            for (int i = 0; i < getDataSize(); i++) {
+
+                if (Double.parseDouble(data[i].getText()) > high) {
+                    high = Double.parseDouble(data[i].getText());
+                }
+            }    
+            return high;                    
+        } else {
+            return getScale().getMax();
+        }
+    }
 
 }

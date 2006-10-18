@@ -293,12 +293,12 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             
             
             
-            double maxV = table.getScale().getMax();
-            double minV = table.getScale().getMin();
+            double maxV = table.getMax();
+            double minV = table.getMin();
             //TODO Remove this when above is working
             //***********
-            minV = 0.0;
-            maxV = 13.01;
+            /*minV = 0.0;
+            maxV = 13.01;*/
             System.out.println("Scale: " + maxV + "," + minV);
             //***********
             
