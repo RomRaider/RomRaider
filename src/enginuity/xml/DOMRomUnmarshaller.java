@@ -15,6 +15,8 @@ import enginuity.maps.Table3D;
 import enginuity.maps.TableSwitch;
 import enginuity.swing.DebugPanel;
 import enginuity.swing.JProgressPane;
+import static enginuity.xml.DOMHelper.unmarshallAttribute;
+import static enginuity.xml.DOMHelper.unmarshallText;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -339,7 +341,7 @@ public class DOMRomUnmarshaller {
 
         // unmarshall table attributes                    
         table.setName(unmarshallAttribute(tableNode, "name", table.getName()));
-        table.setType(RomAttributeParser.parseTableType(unmarshallAttribute(tableNode, "type", table.getType())));
+        table.setType(RomAttributeParser.parseTableType(unmarshallAttribute(tableNode, "type", String.valueOf(table.getType()))));
         if (unmarshallAttribute(tableNode, "beforeram", "false").equalsIgnoreCase("true")) {
             table.setBeforeRam(true);
         }
@@ -354,21 +356,21 @@ public class DOMRomUnmarshaller {
         }
 
         table.setCategory(unmarshallAttribute(tableNode, "category", table.getCategory()));
-        table.setStorageType(RomAttributeParser.parseStorageType(unmarshallAttribute(tableNode, "storagetype", table.getStorageType())));
-        table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(tableNode, "endian", table.getEndian())));
-        table.setStorageAddress(RomAttributeParser.parseHexString(unmarshallAttribute(tableNode, "storageaddress", table.getStorageAddress())));
+        table.setStorageType(RomAttributeParser.parseStorageType(unmarshallAttribute(tableNode, "storagetype", String.valueOf(table.getStorageType()))));
+        table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(tableNode, "endian", String.valueOf(table.getEndian()))));
+        table.setStorageAddress(RomAttributeParser.parseHexString(unmarshallAttribute(tableNode, "storageaddress", String.valueOf(table.getStorageAddress()))));
         table.setDescription(unmarshallAttribute(tableNode, "description", table.getDescription()));
-        table.setDataSize(Integer.parseInt(unmarshallAttribute(tableNode, "sizey", unmarshallAttribute(tableNode, "sizex", table.getDataSize()))));
-        table.setFlip(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipy", unmarshallAttribute(tableNode, "flipx", String.valueOf(table.getFlip())))));
-        table.setUserLevel(Integer.parseInt(unmarshallAttribute(tableNode, "userlevel", table.getUserLevel())));
-        table.setLocked(Boolean.parseBoolean(unmarshallAttribute(tableNode, "locked", String.valueOf(table.isLocked()))));
+        table.setDataSize(unmarshallAttribute(tableNode, "sizey", unmarshallAttribute(tableNode, "sizex", table.getDataSize())));
+        table.setFlip(unmarshallAttribute(tableNode, "flipy", unmarshallAttribute(tableNode, "flipx", table.getFlip())));
+        table.setUserLevel(unmarshallAttribute(tableNode, "userlevel", table.getUserLevel()));
+        table.setLocked(unmarshallAttribute(tableNode, "locked", table.isLocked()));
         table.setLogParam(unmarshallAttribute(tableNode, "logparam", table.getLogParam()));
 
         if (table.getType() == Table.TABLE_3D) {
-            ((Table3D) table).setFlipX(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipx", String.valueOf(((Table3D) table).getFlipX()))));
-            ((Table3D) table).setFlipY(Boolean.parseBoolean(unmarshallAttribute(tableNode, "flipy", String.valueOf(((Table3D) table).getFlipY()))));
-            ((Table3D) table).setSizeX(Integer.parseInt(unmarshallAttribute(tableNode, "sizex", ((Table3D) table).getSizeX())));
-            ((Table3D) table).setSizeY(Integer.parseInt(unmarshallAttribute(tableNode, "sizey", ((Table3D) table).getSizeY())));
+            ((Table3D) table).setFlipX(unmarshallAttribute(tableNode, "flipx", ((Table3D) table).getFlipX()));
+            ((Table3D) table).setFlipY(unmarshallAttribute(tableNode, "flipy", ((Table3D) table).getFlipY()));
+            ((Table3D) table).setSizeX(unmarshallAttribute(tableNode, "sizex", ((Table3D) table).getSizeX()));
+            ((Table3D) table).setSizeY(unmarshallAttribute(tableNode, "sizey", ((Table3D) table).getSizeY()));
         }
 
         Node n;
@@ -440,10 +442,10 @@ public class DOMRomUnmarshaller {
 
                 } else if (n.getNodeName().equalsIgnoreCase("state")) {
                     // set on/off values for switch type
-                    if (this.unmarshallAttribute(n, "name", "").equalsIgnoreCase("on")) {
+                    if (unmarshallAttribute(n, "name", "").equalsIgnoreCase("on")) {
                         ((TableSwitch) table).setOnValues(unmarshallAttribute(n, "data", "0"));
 
-                    } else if (this.unmarshallAttribute(n, "name", "").equalsIgnoreCase("off")) {
+                    } else if (unmarshallAttribute(n, "name", "").equalsIgnoreCase("off")) {
                         ((TableSwitch) table).setOffValues(unmarshallAttribute(n, "data", "0"));
 
                     }
@@ -460,12 +462,12 @@ public class DOMRomUnmarshaller {
         // look for base scale first
         String base = unmarshallAttribute(scaleNode, "base", "none");
         if (!base.equalsIgnoreCase("none")) {
-            for (int i = 0; i < scales.size(); i++) {
+            for (Scale scaleItem : scales) {
 
                 // check whether name matches base and set scale if so
-                if (scales.get(i).getName().equalsIgnoreCase(base)) {
+                if (scaleItem.getName().equalsIgnoreCase(base)) {
                     try {
-                        scale = (Scale) ObjectCloner.deepCopy(scales.get(i));
+                        scale = (Scale) ObjectCloner.deepCopy(scaleItem);
 
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
@@ -481,43 +483,15 @@ public class DOMRomUnmarshaller {
         scale.setExpression(unmarshallAttribute(scaleNode, "expression", scale.getExpression()));
         scale.setByteExpression(unmarshallAttribute(scaleNode, "to_byte", scale.getByteExpression()));
         scale.setFormat(unmarshallAttribute(scaleNode, "format", "#"));
-        scale.setMax(Double.parseDouble(unmarshallAttribute(scaleNode, "max", "0")));
-        scale.setMin(Double.parseDouble(unmarshallAttribute(scaleNode, "min", "0")));
+        scale.setMax(unmarshallAttribute(scaleNode, "max", 0.0));
+        scale.setMin(unmarshallAttribute(scaleNode, "min", 0.0));
 
         // get coarse increment with new attribute name (coarseincrement), else look for old (increment)
-        scale.setCoarseIncrement(Double.parseDouble(unmarshallAttribute(scaleNode, "coarseincrement",
-                unmarshallAttribute(scaleNode, "increment", String.valueOf(scale.getCoarseIncrement())))));
+        scale.setCoarseIncrement(unmarshallAttribute(scaleNode, "coarseincrement",
+                unmarshallAttribute(scaleNode, "increment", scale.getCoarseIncrement())));
 
-        scale.setFineIncrement(Double.parseDouble(unmarshallAttribute(scaleNode,
-                "fineincrement", String.valueOf(scale.getFineIncrement()))));
+        scale.setFineIncrement(unmarshallAttribute(scaleNode, "fineincrement", scale.getFineIncrement()));
 
         return scale;
-    }
-
-    private String unmarshallText(Node textNode) {
-        StringBuffer buf = new StringBuffer();
-
-        Node n;
-        NodeList nodes = textNode.getChildNodes();
-
-        for (int i = 0; i < nodes.getLength(); i++) {
-            n = nodes.item(i);
-
-            if (n.getNodeType() == Node.TEXT_NODE) {
-                buf.append(n.getNodeValue());
-            } else {
-                // expected a text-only node (skip)
-            }
-        }
-        return buf.toString();
-    }
-
-    private String unmarshallAttribute(Node node, String name, String defaultValue) {
-        Node n = node.getAttributes().getNamedItem(name);
-        return (n != null) ? (n.getNodeValue()) : (defaultValue);
-    }
-
-    private String unmarshallAttribute(Node node, String name, int defaultValue) {
-        return unmarshallAttribute(node, name, String.valueOf(defaultValue));
     }
 }
