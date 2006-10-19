@@ -4,8 +4,10 @@ import enginuity.logger.EcuLogger;
 
 import javax.management.modelmbean.XMLParseException;
 import javax.swing.*;
+import static javax.swing.JFileChooser.APPROVE_OPTION;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 
@@ -71,9 +73,8 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         helpMenu.add(about);
         about.addActionListener(this);
 
-        // disable unused buttons! 0.3.1
+        // disable unimplemented buttons!
         about.setEnabled(false);
-        openProfile.setEnabled(false);
         saveProfile.setEnabled(false);
         profileManager.setEnabled(false);
         settings.setEnabled(false);
@@ -138,11 +139,18 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     }
 
     public void openProfileDialog() throws XMLParseException, Exception {
-        JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
+        File lastProfileFile = new File(parent.getSettings().getLoggerProfileFilePath());
+        JFileChooser fc;
+        if (lastProfileFile.exists() && lastProfileFile.isFile()) {
+            fc = new JFileChooser(lastProfileFile.getParentFile().getAbsolutePath());
+        } else {
+            fc = new JFileChooser();
+        }
         fc.setFileFilter(new LoggerProfileFileFilter());
-        if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
-            parent.loadProfile(fc.getSelectedFile());
-            parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
+        if (fc.showOpenDialog(parent) == APPROVE_OPTION) {
+            String profileFilePath = fc.getSelectedFile().getAbsolutePath();
+            parent.reloadUserProfile(profileFilePath);
+            parent.getSettings().setLoggerProfileFilePath(profileFilePath);
         }
     }
 

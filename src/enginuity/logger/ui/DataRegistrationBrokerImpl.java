@@ -7,25 +7,25 @@ import enginuity.logger.ui.handler.DataUpdateHandlerManager;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import static java.util.Collections.synchronizedList;
 import java.util.List;
 
-public final class ParameterRegistrationBrokerImpl implements ParameterRegistrationBroker {
+public final class DataRegistrationBrokerImpl implements DataRegistrationBroker {
     private final LoggerController controller;
     private final DataUpdateHandlerManager handlerManager;
     private final String id;
-    private final List<EcuData> registeredEcuParameters = Collections.synchronizedList(new ArrayList<EcuData>());
+    private final List<EcuData> registeredEcuData = synchronizedList(new ArrayList<EcuData>());
     private long loggerStartTime = 0;
 
-    public ParameterRegistrationBrokerImpl(LoggerController controller, DataUpdateHandlerManager handlerManager) {
+    public DataRegistrationBrokerImpl(LoggerController controller, DataUpdateHandlerManager handlerManager) {
         checkNotNull(controller, handlerManager);
         this.controller = controller;
         this.handlerManager = handlerManager;
         id = System.currentTimeMillis() + "_" + hashCode();
     }
 
-    public synchronized void registerEcuParameterForLogging(final EcuData ecuData) {
-        if (!registeredEcuParameters.contains(ecuData)) {
+    public synchronized void registerEcuDataForLogging(final EcuData ecuData) {
+        if (!registeredEcuData.contains(ecuData)) {
             // register param with handlers
             handlerManager.registerData(ecuData);
 
@@ -38,22 +38,26 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
             });
 
             // add to registered parameters list
-            registeredEcuParameters.add(ecuData);
+            registeredEcuData.add(ecuData);
         }
     }
 
-    public synchronized void deregisterEcuParameterFromLogging(EcuData ecuData) {
-        if (registeredEcuParameters.contains(ecuData)) {
-            // remove logger
-            controller.removeLogger(id, ecuData);
-
-            // deregister param from handlers
-            handlerManager.deregisterData(ecuData);
+    public synchronized void deregisterEcuDataFromLogging(EcuData ecuData) {
+        if (registeredEcuData.contains(ecuData)) {
+            // deregister from dependant objects
+            deregisterEcuDataFromDependants(ecuData);
 
             // remove from registered list
-            registeredEcuParameters.remove(ecuData);
+            registeredEcuData.remove(ecuData);
         }
 
+    }
+
+    public synchronized void clear() {
+        for (EcuData ecuData : registeredEcuData) {
+            deregisterEcuDataFromDependants(ecuData);
+        }
+        registeredEcuData.clear();
     }
 
     public synchronized void start() {
@@ -61,6 +65,14 @@ public final class ParameterRegistrationBrokerImpl implements ParameterRegistrat
     }
 
     public synchronized void stop() {
+    }
+
+    private void deregisterEcuDataFromDependants(EcuData ecuData) {
+        // remove logger
+        controller.removeLogger(id, ecuData);
+
+        // deregister param from handlers
+        handlerManager.deregisterData(ecuData);
     }
 
 }

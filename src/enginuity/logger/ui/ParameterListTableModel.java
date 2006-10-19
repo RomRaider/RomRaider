@@ -14,9 +14,9 @@ public final class ParameterListTableModel extends AbstractTableModel {
     private final String[] columnNames;
     private final List<EcuData> registeredEcuData = synchronizedList(new LinkedList<EcuData>());
     private final Map<EcuData, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<EcuData, ParameterRow>());
-    private final ParameterRegistrationBroker broker;
+    private final DataRegistrationBroker broker;
 
-    public ParameterListTableModel(ParameterRegistrationBroker broker, String dataType) {
+    public ParameterListTableModel(DataRegistrationBroker broker, String dataType) {
         this.broker = broker;
         columnNames = new String[]{"Selected?", dataType, "Units"};
     }
@@ -58,9 +58,9 @@ public final class ParameterListTableModel extends AbstractTableModel {
             Boolean selected = (Boolean) value;
             paramRow.setSelected(selected);
             if (selected) {
-                broker.registerEcuParameterForLogging(paramRow.getEcuData());
+                broker.registerEcuDataForLogging(paramRow.getEcuData());
             } else {
-                broker.deregisterEcuParameterFromLogging(paramRow.getEcuData());
+                broker.deregisterEcuDataFromLogging(paramRow.getEcuData());
             }
             fireTableRowsUpdated(row, row);
         }
@@ -79,6 +79,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
     }
 
     public synchronized void clear() {
+        broker.clear();
         paramRowMap.clear();
         registeredEcuData.clear();
         fireTableDataChanged();

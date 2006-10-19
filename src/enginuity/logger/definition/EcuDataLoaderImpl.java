@@ -4,7 +4,6 @@ import enginuity.logger.exception.ConfigurationException;
 import static enginuity.logger.xml.SaxParserFactory.getSaxParser;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
-import javax.xml.parsers.SAXParser;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,9 +20,8 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
             try {
-                SAXParser parser = getSaxParser();
                 LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol);
-                parser.parse(inputStream, handler);
+                getSaxParser().parse(inputStream, handler);
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();
             } finally {

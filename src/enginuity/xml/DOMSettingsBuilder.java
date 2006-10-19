@@ -220,6 +220,11 @@ public final class DOMSettingsBuilder {
         location.setAttribute("y", String.valueOf(((int) settings.getLoggerWindowLocation().getY())));
         loggerSettings.appendChild(location);
 
+        // profile path
+        IIOMetadataNode profile = new IIOMetadataNode("profile");
+        profile.setAttribute("path", settings.getLoggerProfileFilePath());
+        loggerSettings.appendChild(profile);
+
         return loggerSettings;
     }
 }

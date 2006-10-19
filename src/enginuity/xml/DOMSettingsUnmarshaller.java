@@ -7,6 +7,7 @@ import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
 
 import java.awt.*;
+import static java.awt.Font.BOLD;
 import java.io.File;
 
 public final class DOMSettingsUnmarshaller {
@@ -130,7 +131,7 @@ public final class DOMSettingsUnmarshaller {
 
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("font")) {
                 settings.setTableFont(new Font(unmarshallAttribute(n, "face", "Arial"),
-                        unmarshallAttribute(n, "decoration", Font.BOLD),
+                        unmarshallAttribute(n, "decoration", BOLD),
                         unmarshallAttribute(n, "size", 12)));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("cellsize")) {
@@ -193,6 +194,9 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("location")) {
                 settings.setLoggerWindowLocation(new Point(unmarshallAttribute(n, "x", 150),
                         unmarshallAttribute(n, "y", 150)));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("profile")) {
+                settings.setLoggerProfileFilePath(unmarshallAttribute(n, "path", ""));
 
             }
         }
