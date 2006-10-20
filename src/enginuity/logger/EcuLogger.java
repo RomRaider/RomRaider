@@ -1,6 +1,7 @@
 package enginuity.logger;
 
 import enginuity.Settings;
+import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataLoader;
 import enginuity.logger.definition.EcuDataLoaderImpl;
 import enginuity.logger.definition.EcuParameter;
@@ -171,6 +172,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         UserProfile profile = profileLoader.loadProfile(profileFilePath);
         List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
         addConvertorUpdateListeners(ecuParams);
+        clearParamTableModels();
+        clearSwitchTableModels();
         loadEcuParams(ecuParams, profile);
         loadEcuSwitches(dataLoader.getEcuSwitches(), profile);
     }
@@ -184,18 +187,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
-    private void loadEcuParams(List<EcuParameter> ecuParams, UserProfile profile) {
-        clearParamTableModels();
-        sort(ecuParams, new EcuDataComparator());
-        for (EcuParameter ecuParam : ecuParams) {
-            if (profile == null || profile.contains(ecuParam)) {
-                dataTabParamListTableModel.addParam(ecuParam);
-                graphTabParamListTableModel.addParam(ecuParam);
-                dashboardTabParamListTableModel.addParam(ecuParam);
-            }
-        }
-    }
-
     private void clearParamTableModels() {
         stopLogging();
         dataTabParamListTableModel.clear();
@@ -203,23 +194,45 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dashboardTabParamListTableModel.clear();
     }
 
-    private void loadEcuSwitches(List<EcuSwitch> ecuSwitches, UserProfile profile) {
-        clearSwitchTableModels();
-        sort(ecuSwitches, new EcuDataComparator());
-        for (EcuSwitch ecuSwitch : ecuSwitches) {
-            if (profile == null || profile.contains(ecuSwitch)) {
-                dataTabSwitchListTableModel.addParam(ecuSwitch);
-                graphTabSwitchListTableModel.addParam(ecuSwitch);
-                dashboardTabSwitchListTableModel.addParam(ecuSwitch);
-            }
-        }
-    }
-
     private void clearSwitchTableModels() {
         stopLogging();
         dataTabSwitchListTableModel.clear();
         graphTabSwitchListTableModel.clear();
         dashboardTabSwitchListTableModel.clear();
+    }
+
+    private void loadEcuParams(List<EcuParameter> ecuParams, UserProfile profile) {
+        sort(ecuParams, new EcuDataComparator());
+        for (EcuParameter ecuParam : ecuParams) {
+            if (profile == null || profile.contains(ecuParam)) {
+                dataTabParamListTableModel.addParam(ecuParam, isSelectedOnLiveDataTab(profile, ecuParam));
+                graphTabParamListTableModel.addParam(ecuParam, isSelectedOnGraphTab(profile, ecuParam));
+                dashboardTabParamListTableModel.addParam(ecuParam, isSelectedOnDashTab(profile, ecuParam));
+            }
+        }
+    }
+
+    private void loadEcuSwitches(List<EcuSwitch> ecuSwitches, UserProfile profile) {
+        sort(ecuSwitches, new EcuDataComparator());
+        for (EcuSwitch ecuSwitch : ecuSwitches) {
+            if (profile == null || profile.contains(ecuSwitch)) {
+                dataTabSwitchListTableModel.addParam(ecuSwitch, isSelectedOnLiveDataTab(profile, ecuSwitch));
+                graphTabSwitchListTableModel.addParam(ecuSwitch, isSelectedOnGraphTab(profile, ecuSwitch));
+                dashboardTabSwitchListTableModel.addParam(ecuSwitch, isSelectedOnDashTab(profile, ecuSwitch));
+            }
+        }
+    }
+
+    private boolean isSelectedOnLiveDataTab(UserProfile profile, EcuData ecuData) {
+        return profile != null && profile.isSelectedOnLiveDataTab(ecuData);
+    }
+
+    private boolean isSelectedOnGraphTab(UserProfile profile, EcuData ecuData) {
+        return profile != null && profile.isSelectedOnGraphTab(ecuData);
+    }
+
+    private boolean isSelectedOnDashTab(UserProfile profile, EcuData ecuData) {
+        return profile != null && profile.isSelectedOnDashTab(ecuData);
     }
 
     private void initDataUpdateHandlers() {

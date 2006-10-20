@@ -1,12 +1,15 @@
 package enginuity.logger.ui;
 
-import enginuity.logger.definition.EcuParameter;
-import enginuity.logger.definition.EcuSwitch;
+import enginuity.logger.definition.EcuData;
 
 public interface UserProfile {
 
-    boolean contains(EcuParameter ecuParam);
+    boolean contains(EcuData ecuData);
 
-    boolean contains(EcuSwitch ecuSwitch);
+    boolean isSelectedOnLiveDataTab(EcuData ecuData);
+
+    boolean isSelectedOnGraphTab(EcuData ecuData);
+
+    boolean isSelectedOnDashTab(EcuData ecuData);
 
 }

@@ -11,7 +11,7 @@
         <parameter id="P5"/>
         <parameter id="P6"/>
         <parameter id="P7"/>
-        <parameter id="P8"/>
+        <parameter id="P8" livedata="selected"/>
         <parameter id="P9"/>
         <parameter id="P10"/>
         <parameter id="P11"/>
@@ -117,7 +117,7 @@
         <switch id="S17"/>
         <switch id="S18"/>
         <switch id="S19"/>
-        <switch id="S20"/>
+        <switch id="S20" livedata="selected"/>
         <switch id="S21"/>
         <switch id="S22"/>
         <switch id="S23"/>

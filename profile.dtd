@@ -2,11 +2,17 @@
 
 <!ELEMENT parameter EMPTY >
 <!ATTLIST parameter id ID #REQUIRED >
+<!ATTLIST parameter livedata ( selected ) #IMPLIED >
+<!ATTLIST parameter graph ( selected ) #IMPLIED >
+<!ATTLIST parameter dash ( selected ) #IMPLIED >
 
 <!ELEMENT parameters ( parameter+ ) >
 
 <!ELEMENT switch EMPTY >
 <!ATTLIST switch id ID #REQUIRED >
+<!ATTLIST switch livedata ( selected ) #IMPLIED >
+<!ATTLIST switch graph ( selected ) #IMPLIED >
+<!ATTLIST switch dash ( selected ) #IMPLIED >
 
 <!ELEMENT switches ( switch+ ) >
 

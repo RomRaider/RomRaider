@@ -56,12 +56,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
         ParameterRow paramRow = paramRowMap.get(registeredEcuData.get(row));
         if (col == 0 && paramRow != null) {
             Boolean selected = (Boolean) value;
-            paramRow.setSelected(selected);
-            if (selected) {
-                broker.registerEcuDataForLogging(paramRow.getEcuData());
-            } else {
-                broker.deregisterEcuDataFromLogging(paramRow.getEcuData());
-            }
+            setSelected(paramRow, selected);
             fireTableRowsUpdated(row, row);
         }
     }
@@ -70,10 +65,12 @@ public final class ParameterListTableModel extends AbstractTableModel {
         return getValueAt(0, col).getClass();
     }
 
-    public synchronized void addParam(EcuData ecuData) {
+    public synchronized void addParam(EcuData ecuData, boolean selected) {
         if (!registeredEcuData.contains(ecuData)) {
-            paramRowMap.put(ecuData, new ParameterRow(ecuData));
+            ParameterRow paramRow = new ParameterRow(ecuData);
+            paramRowMap.put(ecuData, paramRow);
             registeredEcuData.add(ecuData);
+            setSelected(paramRow, selected);
             fireTableDataChanged();
         }
     }
@@ -83,5 +80,14 @@ public final class ParameterListTableModel extends AbstractTableModel {
         paramRowMap.clear();
         registeredEcuData.clear();
         fireTableDataChanged();
+    }
+
+    private void setSelected(ParameterRow paramRow, Boolean selected) {
+        paramRow.setSelected(selected);
+        if (selected) {
+            broker.registerEcuDataForLogging(paramRow.getEcuData());
+        } else {
+            broker.deregisterEcuDataFromLogging(paramRow.getEcuData());
+        }
     }
 }
