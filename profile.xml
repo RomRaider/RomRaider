@@ -28,7 +28,7 @@
         <parameter id="P22"/>
         <parameter id="P23"/>
         <parameter id="P24"/>
-        <parameter id="P25"/>
+        <parameter id="P25" livedata="selected" units="psi"/>
         <parameter id="P26"/>
         <parameter id="P27"/>
         <parameter id="P28"/>

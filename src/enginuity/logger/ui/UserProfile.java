@@ -1,6 +1,7 @@
 package enginuity.logger.ui;
 
 import enginuity.logger.definition.EcuData;
+import enginuity.logger.definition.EcuDataConvertor;
 
 public interface UserProfile {
 
@@ -12,4 +13,5 @@ public interface UserProfile {
 
     boolean isSelectedOnDashTab(EcuData ecuData);
 
+    EcuDataConvertor getSelectedConvertor(EcuData ecuData);
 }

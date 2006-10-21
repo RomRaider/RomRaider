@@ -5,6 +5,7 @@
 <!ATTLIST parameter livedata ( selected ) #IMPLIED >
 <!ATTLIST parameter graph ( selected ) #IMPLIED >
 <!ATTLIST parameter dash ( selected ) #IMPLIED >
+<!ATTLIST parameter units CDATA #IMPLIED >
 
 <!ELEMENT parameters ( parameter+ ) >
 

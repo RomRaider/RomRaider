@@ -205,6 +205,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         sort(ecuParams, new EcuDataComparator());
         for (EcuParameter ecuParam : ecuParams) {
             if (profile == null || profile.contains(ecuParam)) {
+                setDefaultUnits(profile, ecuParam);
                 dataTabParamListTableModel.addParam(ecuParam, isSelectedOnLiveDataTab(profile, ecuParam));
                 graphTabParamListTableModel.addParam(ecuParam, isSelectedOnGraphTab(profile, ecuParam));
                 dashboardTabParamListTableModel.addParam(ecuParam, isSelectedOnDashTab(profile, ecuParam));
@@ -219,6 +220,16 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 dataTabSwitchListTableModel.addParam(ecuSwitch, isSelectedOnLiveDataTab(profile, ecuSwitch));
                 graphTabSwitchListTableModel.addParam(ecuSwitch, isSelectedOnGraphTab(profile, ecuSwitch));
                 dashboardTabSwitchListTableModel.addParam(ecuSwitch, isSelectedOnDashTab(profile, ecuSwitch));
+            }
+        }
+    }
+
+    private void setDefaultUnits(UserProfile profile, EcuParameter ecuParam) {
+        if (profile != null) {
+            try {
+                ecuParam.selectConvertor(profile.getSelectedConvertor(ecuParam));
+            } catch (Exception e) {
+                reportError(e);
             }
         }
     }
