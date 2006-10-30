@@ -445,10 +445,10 @@ public final class DOMRomUnmarshaller {
                 } else if (n.getNodeName().equalsIgnoreCase("state")) {
                     // set on/off values for switch type
                     if (unmarshallAttribute(n, "name", "").equalsIgnoreCase("on")) {
-                        ((TableSwitch) table).setOnValues(unmarshallAttribute(n, "data", "0"));
+                        ((TableSwitch) table).setOnValues(unmarshallAttribute(n, "data", ((TableSwitch)table).getOnValues()));
 
                     } else if (unmarshallAttribute(n, "name", "").equalsIgnoreCase("off")) {
-                        ((TableSwitch) table).setOffValues(unmarshallAttribute(n, "data", "0"));
+                        ((TableSwitch) table).setOffValues(unmarshallAttribute(n, "data", ((TableSwitch)table).getOffValues()));
 
                     }
 
