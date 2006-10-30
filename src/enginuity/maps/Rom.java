@@ -22,13 +22,16 @@ public class Rom implements Serializable {
     }
 
     public void addTable(Table table) {
+        boolean found = false;
         for (int i = 0; i < tables.size(); i++) {
             if (tables.get(i).getName().equalsIgnoreCase(table.getName())) {
                 tables.remove(i);
+                tables.add(i, table);
+                found = true;
                 break;
             }
         }
-        tables.add(table);
+        if (!found) tables.add(table);
     }
 
     public Table getTable(String tableName) throws TableNotFoundException {
