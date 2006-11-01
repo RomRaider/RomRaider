@@ -21,8 +21,10 @@ public class TableSwitch extends Table {
     }
 
     public void setDataSize(int size) {
-        on = new byte[size];
-        off = new byte[size];
+        if (on.length == 0) {
+            on = new byte[size];
+            off = new byte[size];
+        }
     }
 
     public void populateTable(byte[] input) {
