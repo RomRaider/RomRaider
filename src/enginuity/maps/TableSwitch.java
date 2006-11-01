@@ -78,15 +78,6 @@ public class TableSwitch extends Table {
             on[i] = (byte) RomAttributeParser.parseHexString(tokens.nextToken());
         }
     }
-    
-    public String getOnValues() {
-        StringBuffer values = new StringBuffer();
-        for (int i = 0; i < on.length; i++) {
-            values.append(on[i]);
-            if (i < on.length) values.append(" ");
-        }
-        return values+"";
-    }
 
     public void setOffValues(String input) {
         StringTokenizer tokens = new StringTokenizer(input);
@@ -95,15 +86,6 @@ public class TableSwitch extends Table {
         }
     }
 
-    public String getOffValues() {
-        StringBuffer values = new StringBuffer();
-        for (int i = 0; i < off.length; i++) {
-            values.append(off[i]);
-            if (i < off.length) values.append(" ");
-        }
-        return values+"";
-    }
-    
     public Dimension getFrameSize() {
         int height = verticalOverhead + 75;
         int width = horizontalOverhead;
