@@ -8,9 +8,11 @@
 	<classpathentry kind="lib" path="lib/jep.jar"/>
 	<classpathentry kind="lib" path="lib/JFontChooser.jar"/>
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/Graph3d/windows/lib/j3dcore.jar"/>
-	<classpathentry kind="lib" path="lib/Graph3d/windows/Graph3d.jar"/>
-	<classpathentry kind="lib" path="lib/Graph3d/windows/lib/j3dutils.jar"/>
-	<classpathentry kind="lib" path="lib/Graph3d/windows/lib/vecmath.jar"/>
+	<classpathentry kind="lib" path="lib/Graph3d/linux/lib/j3dcore.jar"/>
+	<classpathentry kind="lib" path="lib/Graph3d/linux/lib/j3dutils.jar"/>
+	<classpathentry kind="lib" path="lib/Graph3d/linux/lib/vecmath.jar"/>
+	<classpathentry kind="lib" path="lib/Graph3d/linux/Graph3d.jar"/>
+	<classpathentry kind="lib" path="lib/Graph3d/jama-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/BareBonesBrowserLaunch.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
