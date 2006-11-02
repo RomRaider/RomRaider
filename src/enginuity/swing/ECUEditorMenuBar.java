@@ -1,5 +1,6 @@
 package enginuity.swing;
 
+import com.centerkey.utils.BareBonesBrowserLaunch;
 import enginuity.ECUEditor;
 import enginuity.definitions.DefinitionEditor;
 import enginuity.logger.EcuLogger;
@@ -23,10 +24,13 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem closeAll = new JMenuItem("Close All Images");
     private JMenuItem exit = new JMenuItem("Exit");
 
-    private JMenu editMenu = new JMenu("Edit");
+    private JMenu definitionMenu = new JMenu("ECU Definitions");
     private JMenuItem defManager = new JMenuItem("ECU Definition Manager");
-    private JMenuItem settings = new JMenuItem("Settings");
     private JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions");
+    private JMenuItem updateDefinition = new JMenuItem("Update ECU Definitions");
+    
+    private JMenu editMenu = new JMenu("Edit");
+    private JMenuItem settings = new JMenuItem("Enginuity Settings");
 
     private JMenu viewMenu = new JMenu("View");
     private JMenuItem romProperties = new JMenuItem("ECU Image Properties");
@@ -74,20 +78,26 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         closeImage.addActionListener(this);
         closeAll.addActionListener(this);
         exit.addActionListener(this);
-
+        
         // edit menu items
         add(editMenu);
         editMenu.setMnemonic('E');
+        editMenu.add(settings);
+        settings.addActionListener(this);
+        
+        // ecu def menu items
+        add(definitionMenu);
+        definitionMenu.setMnemonic('D');
         defManager.setMnemonic('D');
         editDefinition.setMnemonic('E');
+        updateDefinition.setMnemonic('U');
         settings.setMnemonic('S');
-        editMenu.add(defManager);
-        editMenu.add(editDefinition);
-        editMenu.add(new JSeparator());
-        editMenu.add(settings);
+        definitionMenu.add(defManager);
+        definitionMenu.add(editDefinition);
+        definitionMenu.add(updateDefinition);
         defManager.addActionListener(this);
         editDefinition.addActionListener(this);
-        settings.addActionListener(this);
+        updateDefinition.addActionListener(this);        
 
         // view menu items
         add(viewMenu);
@@ -246,6 +256,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         } else if (e.getSource() == openLogger) {
             EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
 
+        } else if (e.getSource() == updateDefinition) {
+            BareBonesBrowserLaunch.openURL(
+                    parent.getSettings().getEcuDefsURL());
+            
         }
     }
 
