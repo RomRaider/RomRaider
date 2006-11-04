@@ -44,7 +44,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private RomTree imageList = new RomTree(imageRoot);
     private Settings settings = new Settings();
     private String version = "0.4.0 Beta";
-    private String versionDate = "11/03/2006";
+    private String versionDate = "11/06/2006";
     private String titleText = "Enginuity v" + version;
     public MDIDesktopPane rightPanel = new MDIDesktopPane();
     private Rom lastSelectedRom = null;

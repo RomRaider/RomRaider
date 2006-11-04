@@ -641,33 +641,48 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void increment(double increment) {
-        if (!isStatic && !locked) {
+        if (!isStatic && !locked && !(userLevel > settings.getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.increment(increment);
                 }
             }
+        } else if (userLevel > settings.getUserLevel()) {
+            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" + 
+            		userLevel + " or greater. Click View->User Level to change your userlevel.", 
+            		"Table cannot be modified",
+                    JOptionPane.INFORMATION_MESSAGE);        	
         }
     }
 
     public void multiply(double factor) {
-        if (!isStatic && !locked) {
+        if (!isStatic && !locked && !(userLevel > settings.getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.multiply(factor);
                 }
             }
+        } else if (userLevel > settings.getUserLevel()) {
+            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" + 
+            		userLevel + " or greater. Click View->User Level to change your userlevel.", 
+            		"Table cannot be modified",
+                    JOptionPane.INFORMATION_MESSAGE);        	
         }
         colorize();
     }
 
     public void setRealValue(String realValue) {
-        if (!isStatic && !locked) {
+        if (!isStatic && !locked && !(userLevel > settings.getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.setRealValue(realValue);
                 }
             }
+        } else if (userLevel > settings.getUserLevel()) {
+            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" + 
+            		userLevel + " or greater. Click View->User Level to change your userlevel.", 
+            		"Table cannot be modified",
+                    JOptionPane.INFORMATION_MESSAGE);        	
         }
         colorize();
     }

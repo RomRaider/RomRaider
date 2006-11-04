@@ -42,9 +42,9 @@ public class RomTree extends JTree implements MouseListener {
 
                 TableTreeNode node = (TableTreeNode) selectedRow;
 
-                if (!(node.getTable().getUserLevel() > container.getSettings().getUserLevel())) {
+                //if (!(node.getTable().getUserLevel() > container.getSettings().getUserLevel())) {
                     container.displayTable(node.getFrame());
-                }
+                //}
 
             }
 
