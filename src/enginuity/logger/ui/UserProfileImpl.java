@@ -6,15 +6,15 @@ import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.checkNotNull;
+import static enginuity.util.ParamChecker.isNullOrEmpty;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public final class UserProfileImpl implements UserProfile {
-    private final HashMap<String, UserProfileItem> params;
-    private final HashMap<String, UserProfileItem> switches;
+    private final Map<String, UserProfileItem> params;
+    private final Map<String, UserProfileItem> switches;
 
-    public UserProfileImpl(HashMap<String, UserProfileItem> params, HashMap<String, UserProfileItem> switches) {
+    public UserProfileImpl(Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches) {
         checkNotNull(params, "params");
         checkNotNull(switches, "switches");
         this.params = params;
@@ -53,6 +53,49 @@ public final class UserProfileImpl implements UserProfile {
             throw new ConfigurationException("Unknown default units, '" + defaultUnits + "', specified for " + ecuData.getName());
         } else {
             return ecuData.getSelectedConvertor();
+        }
+    }
+
+    public byte[] getBytes() {
+        return buildXml().getBytes();
+    }
+
+    private String buildXml() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+        builder.append("<!DOCTYPE profile SYSTEM \"profile.dtd\">\n\n");
+        builder.append("<profile>\n");
+        if (!params.isEmpty()) {
+            builder.append("    <parameters>\n");
+            appendEcuDataElements(builder, "parameter", params, true);
+            builder.append("    </parameters>\n");
+        }
+        if (!switches.isEmpty()) {
+            builder.append("    <switches>\n");
+            appendEcuDataElements(builder, "switch", switches, false);
+            builder.append("    </switches>\n");
+        }
+        builder.append("</profile>\n");
+        return builder.toString();
+    }
+
+    private void appendEcuDataElements(StringBuilder builder, String dataType, Map<String, UserProfileItem> dataMap, boolean showUnits) {
+        for (String id : dataMap.keySet()) {
+            UserProfileItem item = dataMap.get(id);
+            builder.append("        <").append(dataType).append(" id=\"").append(id).append("\"");
+            if (item.isLiveDataSelected()) {
+                builder.append(" livedata=\"selected\"");
+            }
+            if (item.isGraphSelected()) {
+                builder.append(" graph=\"selected\"");
+            }
+            if (item.isLiveDataSelected()) {
+                builder.append(" dash=\"selected\"");
+            }
+            if (showUnits && !isNullOrEmpty(item.getUnits())) {
+                builder.append(" units=\"").append(item.getUnits()).append("\"");
+            }
+            builder.append("/>\n");
         }
     }
 

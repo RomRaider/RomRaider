@@ -14,4 +14,6 @@ public interface UserProfile {
     boolean isSelectedOnDashTab(EcuData ecuData);
 
     EcuDataConvertor getSelectedConvertor(EcuData ecuData);
+
+    byte[] getBytes();
 }

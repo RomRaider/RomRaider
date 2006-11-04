@@ -15,8 +15,12 @@ import enginuity.logger.ui.LoggerDataTableModel;
 import enginuity.logger.ui.MessageListener;
 import enginuity.logger.ui.ParameterListTable;
 import enginuity.logger.ui.ParameterListTableModel;
+import enginuity.logger.ui.ParameterRow;
 import enginuity.logger.ui.SerialPortComboBox;
 import enginuity.logger.ui.UserProfile;
+import enginuity.logger.ui.UserProfileImpl;
+import enginuity.logger.ui.UserProfileItem;
+import enginuity.logger.ui.UserProfileItemImpl;
 import enginuity.logger.ui.UserProfileLoader;
 import enginuity.logger.ui.UserProfileLoaderImpl;
 import enginuity.logger.ui.handler.DashboardUpdateHandler;
@@ -53,7 +57,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import static java.util.Collections.sort;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
 TODO: add better debug logging, preferably to a file and switchable (on/off)
@@ -244,6 +250,36 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private boolean isSelectedOnDashTab(UserProfile profile, EcuData ecuData) {
         return profile != null && profile.isSelectedOnDashTab(ecuData);
+    }
+
+    public UserProfile getCurrentProfile() {
+        Map<String, UserProfileItem> paramProfileItems = getProfileItems(dataTabParamListTableModel.getParameterRows(),
+                graphTabParamListTableModel.getParameterRows(), dashboardTabParamListTableModel.getParameterRows());
+        Map<String, UserProfileItem> switchProfileItems = getProfileItems(dataTabSwitchListTableModel.getParameterRows(),
+                graphTabSwitchListTableModel.getParameterRows(), dashboardTabSwitchListTableModel.getParameterRows());
+        return new UserProfileImpl(paramProfileItems, switchProfileItems);
+    }
+
+    private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows, List<ParameterRow> graphTabRows, List<ParameterRow> dashTabRows) {
+        Map<String, UserProfileItem> profileItems = new HashMap<String, UserProfileItem>();
+        for (ParameterRow dataTabRow : dataTabRows) {
+            String id = dataTabRow.getEcuData().getId();
+            String units = dataTabRow.getEcuData().getSelectedConvertor().getUnits();
+            boolean dataTabSelected = dataTabRow.getSelected();
+            boolean graphTabSelected = isEcuDataSelected(id, graphTabRows);
+            boolean dashTabSelected = isEcuDataSelected(id, dashTabRows);
+            profileItems.put(id, new UserProfileItemImpl(units, dataTabSelected, graphTabSelected, dashTabSelected));
+        }
+        return profileItems;
+    }
+
+    private boolean isEcuDataSelected(String id, List<ParameterRow> parameterRows) {
+        for (ParameterRow row : parameterRows) {
+            if (id.equals(row.getEcuData().getId())) {
+                return row.getSelected();
+            }
+        }
+        return false;
     }
 
     private void initDataUpdateHandlers() {
@@ -509,4 +545,5 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             e.printStackTrace();
         }
     }
+
 }

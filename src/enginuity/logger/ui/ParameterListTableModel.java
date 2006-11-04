@@ -3,6 +3,7 @@ package enginuity.logger.ui;
 import enginuity.logger.definition.EcuData;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
 import java.util.LinkedHashMap;
@@ -80,6 +81,10 @@ public final class ParameterListTableModel extends AbstractTableModel {
         paramRowMap.clear();
         registeredEcuData.clear();
         fireTableDataChanged();
+    }
+
+    public List<ParameterRow> getParameterRows() {
+        return new ArrayList<ParameterRow>(paramRowMap.values());
     }
 
     private void setSelected(ParameterRow paramRow, Boolean selected) {

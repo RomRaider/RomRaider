@@ -2,18 +2,22 @@ package enginuity.logger.ui;
 
 import enginuity.logger.EcuLogger;
 
-import javax.management.modelmbean.XMLParseException;
 import javax.swing.*;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
+import static javax.swing.JOptionPane.OK_OPTION;
+import static javax.swing.JOptionPane.showConfirmDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 
     private JMenu fileMenu = new JMenu("File");
-    private JMenuItem openProfile = new JMenuItem("Open Profile");
+    private JMenuItem openProfile = new JMenuItem("Open Profile...");
     private JMenuItem saveProfile = new JMenuItem("Save Profile");
+    private JMenuItem saveProfileAs = new JMenuItem("Save Profile As...");
     private JMenuItem exit = new JMenuItem("Exit");
 
     private JMenu editMenu = new JMenu("Edit");
@@ -37,13 +41,16 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         fileMenu.setMnemonic('F');
         openProfile.setMnemonic('O');
         saveProfile.setMnemonic('S');
+        saveProfileAs.setMnemonic('A');
         exit.setMnemonic('X');
         fileMenu.add(openProfile);
         fileMenu.add(saveProfile);
+        fileMenu.add(saveProfileAs);
         fileMenu.add(new JSeparator());
         fileMenu.add(exit);
         openProfile.addActionListener(this);
         saveProfile.addActionListener(this);
+        saveProfileAs.addActionListener(this);
         exit.addActionListener(this);
 
         // edit menu items
@@ -75,7 +82,6 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 
         // disable unimplemented buttons!
         about.setEnabled(false);
-        saveProfile.setEnabled(false);
         profileManager.setEnabled(false);
         settings.setEnabled(false);
         about.setEnabled(false);
@@ -93,6 +99,13 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         } else if (evt.getSource() == saveProfile) {
             try {
                 saveProfile();
+            } catch (Exception e) {
+                parent.reportError(e);
+            }
+
+        } else if (evt.getSource() == saveProfileAs) {
+            try {
+                saveProfileAs();
             } catch (Exception e) {
                 parent.reportError(e);
             }
@@ -138,8 +151,46 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 //        form.setVisible(true);
     }
 
-    public void openProfileDialog() throws XMLParseException, Exception {
+    private void openProfileDialog() throws Exception {
         File lastProfileFile = new File(parent.getSettings().getLoggerProfileFilePath());
+        JFileChooser fc = getProfileFileChooser(lastProfileFile);
+        if (fc.showOpenDialog(parent) == APPROVE_OPTION) {
+            String profileFilePath = fc.getSelectedFile().getAbsolutePath();
+            parent.reloadUserProfile(profileFilePath);
+            parent.getSettings().setLoggerProfileFilePath(profileFilePath);
+            parent.reportMessage("Profile succesfully loaded: " + profileFilePath);
+        }
+    }
+
+    private void saveProfile() throws Exception {
+        File lastProfileFile = new File(parent.getSettings().getLoggerProfileFilePath());
+        saveProfileToFile(lastProfileFile);
+    }
+
+    private void saveProfileAs() throws Exception {
+        File lastProfileFile = new File(parent.getSettings().getLoggerProfileFilePath());
+        JFileChooser fc = getProfileFileChooser(lastProfileFile);
+        if (fc.showSaveDialog(parent) == APPROVE_OPTION) {
+            File selectedFile = fc.getSelectedFile();
+            if (!selectedFile.exists()
+                    || showConfirmDialog(parent, selectedFile.getName() + " already exists! Overwrite?") == OK_OPTION) {
+                saveProfileToFile(selectedFile);
+                parent.getSettings().setLoggerProfileFilePath(selectedFile.getAbsolutePath());
+            }
+        }
+    }
+
+    private void saveProfileToFile(File destinationFile) throws IOException {
+        FileOutputStream fos = new FileOutputStream(destinationFile);
+        try {
+            fos.write(parent.getCurrentProfile().getBytes());
+        } finally {
+            fos.close();
+        }
+        parent.reportMessage("Profile succesfully saved to: " + destinationFile.getAbsolutePath());
+    }
+
+    private JFileChooser getProfileFileChooser(File lastProfileFile) {
         JFileChooser fc;
         if (lastProfileFile.exists() && lastProfileFile.isFile()) {
             fc = new JFileChooser(lastProfileFile.getParentFile().getAbsolutePath());
@@ -147,14 +198,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
             fc = new JFileChooser();
         }
         fc.setFileFilter(new LoggerProfileFileFilter());
-        if (fc.showOpenDialog(parent) == APPROVE_OPTION) {
-            String profileFilePath = fc.getSelectedFile().getAbsolutePath();
-            parent.reloadUserProfile(profileFilePath);
-            parent.getSettings().setLoggerProfileFilePath(profileFilePath);
-        }
+        return fc;
     }
 
-    public void saveProfile() {
-        //TODO: Finish profile saving option!
-    }
 }
