@@ -11,7 +11,5 @@ Class-Path: lib/Graph3d.jar
  lib/jfreechart-1.0.1.jar 
  lib/RXTXcomm.jar 
  lib/jama-1.0.2.jar 
- 
- 
- 
-
+ lib/BareBonesBrowserLaunch.jar 
+ lib/jdic/jdic.jar
