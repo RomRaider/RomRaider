@@ -107,7 +107,7 @@ public class RomCellRenderer implements TreeCellRenderer {
                 tableName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 
             } else if (table.getUserLevel() > table.getRom().getContainer().getSettings().getUserLevel()) {
-                tableName.setForeground(new Color(185, 185, 185));
+                //tableName.setForeground(new Color(185, 185, 185));
                 tableName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 
             }
