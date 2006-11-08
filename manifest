@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Main-Class: enginuity.ECUExec
-Class-Path: lib/Graph3d.jar 
+Class-Path: 
+ lib/Graph3d.jar 
  lib/j3dcore.jar 
  lib/j3dutils.jar 
  lib/jep.jar 
@@ -12,4 +13,4 @@ Class-Path: lib/Graph3d.jar
  lib/RXTXcomm.jar 
  lib/jama-1.0.2.jar 
  lib/BareBonesBrowserLaunch.jar 
- lib/jdic/jdic.jar
+ lib/jdic/jdic.jar 
