@@ -821,19 +821,19 @@
                 <!-- Derived parameters must be specified after standard parameters or parsing of xml will fail!! -->
                 <!-- Be careful of cyclic dependencies! -->
 
-                <parameter id="P89" name="Calculated Engine Load" desc="Engine load as calculated from MAF and RPM">
+                <parameter id="P200" name="Engine Load (Calculated)" desc="Engine load as calculated from MAF and RPM">
                     <depends>
                         <ref id="P8"/>
                         <ref id="P12"/>
                     </depends>
                     <conversions>
+                        <conversion units="2*grams/rev" expr="(P12*60)/P8*2" format="0.00"/>
                         <conversion units="grams/rev" expr="(P12*60)/P8" format="0.00"/>
                         <conversion units="grams/cyl" expr="(P12*60)/P8/2" format="0.00"/>
-                        <conversion units="grams/cycle" expr="(P12*60)/P8*2" format="0.00"/>
                     </conversions>
                 </parameter>
 
-                <parameter id="P90" name="Injector Duty Cycle" desc="">
+                <parameter id="P201" name="Injector Duty Cycle" desc="">
                     <depends>
                         <ref id="P8"/>
                         <ref id="P21"/>
@@ -843,7 +843,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P91" name="Manifold Relative Pressure (Corrected)" desc="Difference between Manifold Absolute Pressure and Atmospheric Pressure">
+                <parameter id="P202" name="Manifold Relative Pressure (Corrected)" desc="Difference between Manifold Absolute Pressure and Atmospheric Pressure">
                     <depends>
                         <ref id="P7"/>
                         <ref id="P24"/>
