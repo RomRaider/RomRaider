@@ -49,7 +49,7 @@ public class ECUExec {
         // open files, if passed
         try {
             if (args.length > 0) {
-                editor.openImage(new File(args[0]));
+                editor.openImage(new File(args[0]).getCanonicalFile());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
