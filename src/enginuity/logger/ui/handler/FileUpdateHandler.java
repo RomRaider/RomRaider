@@ -9,29 +9,32 @@ import enginuity.logger.io.file.FileLogger;
 import enginuity.logger.io.file.FileLoggerImpl;
 import static enginuity.util.ParamChecker.checkNotNull;
 
-import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final FileLogger fileLogger;
-    private final List<EcuData> ecuDatas = synchronizedList(new LinkedList<EcuData>());
-    private Line currentLine = new Line(ecuDatas);
+    private final Map<EcuData, Integer> ecuDatas = synchronizedMap(new LinkedHashMap<EcuData, Integer>());
+    private Line currentLine = new Line(ecuDatas.keySet());
 
     public FileUpdateHandler(Settings settings) {
         checkNotNull(settings);
         fileLogger = new FileLoggerImpl(settings);
     }
 
-    public void registerData(EcuData ecuData) {
-        ecuDatas.add(ecuData);
-        resetLine();
-        writeHeaders();
+    public synchronized void registerData(EcuData ecuData) {
+        if (ecuDatas.keySet().contains(ecuData)) {
+            ecuDatas.put(ecuData, ecuDatas.get(ecuData) + 1);
+        } else {
+            ecuDatas.put(ecuData, 1);
+            resetLine();
+            writeHeaders();
+        }
     }
 
-    public void handleDataUpdate(EcuData ecuData, byte[] bytes, long timestamp) {
+    public synchronized void handleDataUpdate(EcuData ecuData, byte[] bytes, long timestamp) {
         EcuDataConvertor convertor = ecuData.getSelectedConvertor();
         double value = convertor.convert(bytes);
         checkStartStopFileLogging(ecuData, (int) value);
@@ -44,10 +47,14 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
         }
     }
 
-    public void deregisterData(EcuData ecuData) {
-        ecuDatas.remove(ecuData);
-        resetLine();
-        writeHeaders();
+    public synchronized void deregisterData(EcuData ecuData) {
+        if (ecuDatas.keySet().contains(ecuData) && ecuDatas.get(ecuData) > 1) {
+            ecuDatas.put(ecuData, ecuDatas.get(ecuData) - 1);
+        } else {
+            ecuDatas.remove(ecuData);
+            resetLine();
+            writeHeaders();
+        }
     }
 
     public void cleanUp() {
@@ -60,7 +67,7 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
     }
 
     private void resetLine() {
-        currentLine = new Line(ecuDatas);
+        currentLine = new Line(ecuDatas.keySet());
     }
 
     private void checkStartStopFileLogging(EcuData ecuData, int value) {
@@ -88,7 +95,7 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
         private final Map<EcuData, String> ecuDataValues;
         private long lastTimestamp;
 
-        public Line(List<EcuData> ecuParams) {
+        public Line(Set<EcuData> ecuParams) {
             this.ecuDataValues = new LinkedHashMap<EcuData, String>();
             for (EcuData ecuParam : ecuParams) {
                 ecuDataValues.put(ecuParam, null);

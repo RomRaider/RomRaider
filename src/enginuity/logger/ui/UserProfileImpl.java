@@ -89,7 +89,7 @@ public final class UserProfileImpl implements UserProfile {
             if (item.isGraphSelected()) {
                 builder.append(" graph=\"selected\"");
             }
-            if (item.isLiveDataSelected()) {
+            if (item.isDashSelected()) {
                 builder.append(" dash=\"selected\"");
             }
             if (showUnits && !isNullOrEmpty(item.getUnits())) {
