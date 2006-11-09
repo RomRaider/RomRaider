@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.StringTokenizer;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 
@@ -40,6 +41,15 @@ public class SettingsForm extends JFrame implements MouseListener {
         btnRemoveAssocs.addMouseListener(this);
 
         tableClickCount.setBackground(Color.WHITE);
+        
+        // disable file assocation buttons if user is not in Windows        
+        StringTokenizer osName = new StringTokenizer(System.getProperties().getProperty("os.name"));
+        if (!osName.nextToken().equalsIgnoreCase("windows")) {
+            btnAddAssocs.setEnabled(false);
+            btnRemoveAssocs.setEnabled(false);
+            extensionHex.setEnabled(false);
+            extensionBin.setEnabled(false);
+        }
 
     }
 
