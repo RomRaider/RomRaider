@@ -1,16 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: enginuity.ECUExec
-Class-Path: 
- lib/Graph3d.jar 
- lib/j3dcore.jar 
- lib/j3dutils.jar 
- lib/jep.jar 
- lib/JFontChooser.jar 
- lib/swing-layout-1.0.jar 
- lib/vecmath.jar 
- lib/jcommon-1.0.0.jar 
- lib/jfreechart-1.0.1.jar 
- lib/RXTXcomm.jar 
- lib/jama-1.0.2.jar 
- lib/BareBonesBrowserLaunch.jar 
- lib/jdic/jdic.jar 
+X-COMMENT: Main-Class will be added automatically by build
+
