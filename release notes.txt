@@ -57,7 +57,7 @@ any problems you may find.
   - There are some problems with cell selection in 3d graphs
   - Numerical interpolation can take some time on slower machines
 - Logging
-  - Logger will not remember parameter selections
+  - Logger does not remember last selected COM port
   - Some parameters may display incorrectly. WE KNOW THIS and will
     work to improve it in later releases. You may check Enginuity.org
     for updated logger definition (xml) files.
