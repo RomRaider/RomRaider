@@ -27,7 +27,7 @@
         <panel classname="LicencePanel"/>
         <panel classname="TargetPanel"/> 
         <panel classname="PacksPanel"/>
-        <panel classname="ShortcutPanel"/>
+        <!-- <panel classname="ShortcutPanel"/> (Not supported (yet?)) -->
         <panel classname="InstallPanel"/>
         <panel classname="SimpleFinishPanel"/>
     </panels>    
