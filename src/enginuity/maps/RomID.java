@@ -5,9 +5,9 @@ package enginuity.maps;
 import java.io.Serializable;
 
 public class RomID implements Serializable {
-    
+
     private String xmlid = "";//ID stored in XML
-    private int    internalIdAddress = 0;//address of ECU version in image
+    private int internalIdAddress = 0;//address of ECU version in image
     private String internalIdString = "";//ID stored in image
     private String caseId = "";//ECU hardware version
     private String ecuId = "";
@@ -19,27 +19,27 @@ public class RomID implements Serializable {
     private String year = "Unknown";
     private String flashMethod = "";//flash method string used for ecuflash
     private String memModel = "";//model used for reflashing with ecuflash
-    private int    fileSize = 0;
-    private int    ramOffset = 0;
+    private int fileSize = 0;
+    private int ramOffset = 0;
     private boolean obsolete = false; // whether a more recent revision exists
-    
+
     public String toString() {
         return "\n   ---- RomID " + xmlid + " ----" +
-               "\n   Internal ID Address: " + internalIdAddress +
-               "\n   Internal ID String: " + internalIdString +
-               "\n   Case ID: " + caseId +
-               "\n   ECU ID: " + ecuId +
-               "\n   Make: " + make +
-               "\n   Market: " + market +
-               "\n   Model: " + model +
-               "\n   Submodel: " + subModel +
-               "\n   Transmission: " + transmission + 
-               "\n   Year: " + year +
-               "\n   Flash Method: " + flashMethod +
-               "\n   Memory Model: " + memModel +
-               "\n   ---- End RomID " + xmlid + " ----";
+                "\n   Internal ID Address: " + internalIdAddress +
+                "\n   Internal ID String: " + internalIdString +
+                "\n   Case ID: " + caseId +
+                "\n   ECU ID: " + ecuId +
+                "\n   Make: " + make +
+                "\n   Market: " + market +
+                "\n   Model: " + model +
+                "\n   Submodel: " + subModel +
+                "\n   Transmission: " + transmission +
+                "\n   Year: " + year +
+                "\n   Flash Method: " + flashMethod +
+                "\n   Memory Model: " + memModel +
+                "\n   ---- End RomID " + xmlid + " ----";
     }
-    
+
     public RomID() {
     }
 
@@ -145,7 +145,7 @@ public class RomID implements Serializable {
 
     public void setMemModel(String memModel) {
         this.memModel = memModel;
-    }   
+    }
 
     public int getRamOffset() {
         return ramOffset;

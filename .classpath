@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/logger/rxtx/RXTXcomm.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logger/jcommon-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logger/jfreechart-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jep.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/JFontChooser.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/swing-layout-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/Graph3d/linux/lib/j3dcore.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/Graph3d/linux/lib/j3dutils.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/Graph3d/linux/lib/vecmath.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/Graph3d/linux/Graph3d.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/Graph3d/jama-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/BareBonesBrowserLaunch.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jdic/jdic.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

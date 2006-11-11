@@ -1,4 +1,5 @@
 package enginuity.net;
+
 import java.io.IOException;
 
 public class BrowserControl {
@@ -11,26 +12,24 @@ public class BrowserControl {
                 // cmd = 'rundll32 url.dll,FileProtocolHandler http://...'
                 cmd = WIN_PATH + " " + WIN_FLAG + " " + url;
                 Runtime.getRuntime().exec(cmd);
-            }
-            else {
+            } else {
                 cmd = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
                 Process p = Runtime.getRuntime().exec(cmd);
                 try {
                     int exitCode = p.waitFor();
-                    if (exitCode != 0)
-                    {
-                        cmd = UNIX_PATH + " "  + url;
+                    if (exitCode != 0) {
+                        cmd = UNIX_PATH + " " + url;
                         Runtime.getRuntime().exec(cmd);
                     }
                 }
-                catch(InterruptedException x) {
+                catch (InterruptedException x) {
                     System.err.println("Error bringing up browser, cmd='" +
-                                       cmd + "'");
+                            cmd + "'");
                     System.err.println("Caught: " + x);
                 }
             }
         }
-        catch(IOException x) {
+        catch (IOException x) {
             // couldn't exec browser
             System.err.println("Could not invoke browser, command=" + cmd);
             System.err.println("Caught: " + x);
@@ -39,10 +38,11 @@ public class BrowserControl {
 
     public static boolean isWindowsPlatform() {
         String os = System.getProperty("os.name");
-        if ( os != null && os.startsWith(WIN_ID))
+        if (os != null && os.startsWith(WIN_ID)) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     private static final String WIN_ID = "Windows";

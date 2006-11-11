@@ -1,43 +1,32 @@
 package enginuity.swing;
 
-import java.awt.Component;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.border.LineBorder;
+public class JProgressPane extends JPanel {
 
-public class JProgressPane extends JFrame {
-    
-    JLabel       label       = new JLabel();
+    JLabel label = new JLabel();
     JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
-    
-    public JProgressPane(Component component, String title, String status) {
-        
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 1));
+
+    public JProgressPane() {
+
+        this.setPreferredSize(new Dimension(500, 18));
+        this.setLayout(new BorderLayout(1, 2));
         label.setHorizontalAlignment(JLabel.CENTER);
-        label.setText(status);
-        panel.add(label);
-        panel.add(progressBar);
-        panel.setBorder(new LineBorder(getBackground(), 12));       
-        
-        setSize(400,60);        
-        setLocationRelativeTo(component);
-        setTitle(title);       
-        setUndecorated(true);
-        getContentPane().add(panel);
-        
-        setVisible(true);
-        requestFocus();
-    }   
-    
+        label.setText(" Ready...");
+        label.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        label.setHorizontalAlignment(JLabel.LEFT);
+        progressBar.setMinimumSize(new Dimension(200, 50));
+
+        this.add(progressBar, BorderLayout.WEST);
+        this.add(label, BorderLayout.CENTER);
+
+    }
+
     public void update(String status, int percent) {
-        label.setText(status);
+        label.setText(" " + status);
         progressBar.setValue(percent);
-        update(getGraphics());
-        requestFocus();
+        repaint();
+        this.update(this.getGraphics());
     }
 }

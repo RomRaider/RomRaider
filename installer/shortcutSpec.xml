@@ -1,0 +1,24 @@
+<shortcuts>
+	<skipIfNotSupported/>
+	<programGroup defaultName="Enginuity.org" location="applications||startMenu"/>
+	
+	<shortcut name="Enginuity" 
+					  target="$INSTALL_PATH\Enginuity.exe" 
+						workingDirectory="$INSTALL_PATH" 
+						iconFile="$INSTALL_PATH\graphics\enginuity-ico.ico"
+						programGroup="yes"
+						desktop="yes"/>
+						
+  <shortcut name="Release Notes" 
+					  target="$INSTALL_PATH\release notes.txt" 
+						programGroup="yes"/>		
+	
+	<shortcut name="License Agreement" 
+					  target="$INSTALL_PATH\license.txt" 
+						programGroup="yes"/>	
+	
+	<shortcut name="Uninstall Enginuity" 
+					  target="$INSTALL_PATH\Uninstaller\uninstaller.jar" 
+						programGroup="yes"/>
+	
+</shortcuts>

@@ -1,107 +1,104 @@
 package enginuity.swing;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import javax.management.modelmbean.XMLParseException;
-import javax.swing.ButtonGroup;
-import javax.swing.JFileChooser;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-
+import com.centerkey.utils.BareBonesBrowserLaunch;
 import enginuity.ECUEditor;
 import enginuity.definitions.DefinitionEditor;
+import enginuity.logger.EcuLogger;
 import enginuity.maps.Rom;
-import enginuity.xml.DOMRomUnmarshaller;
-import enginuity.xml.RomNotFoundException;
+
+import javax.management.modelmbean.XMLParseException;
+import javax.swing.*;
+import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
+
+    private JMenu fileMenu = new JMenu("File");
+    private JMenuItem openImage = new JMenuItem("Open Image");
+    private JMenuItem saveImage = new JMenuItem("Save Image");
+    private JMenuItem refreshImage = new JMenuItem("Refresh Image");
+    private JMenuItem closeImage = new JMenuItem("Close Image");
+    private JMenuItem closeAll = new JMenuItem("Close All Images");
+    private JMenuItem exit = new JMenuItem("Exit");
+
+    private JMenu definitionMenu = new JMenu("ECU Definitions");
+    private JMenuItem defManager = new JMenuItem("ECU Definition Manager");
+    private JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions");
+    private JMenuItem updateDefinition = new JMenuItem("Update ECU Definitions");
     
-    private JMenu       fileMenu        = new JMenu("File");
-    private JMenuItem   openImage       = new JMenuItem("Open Image");
-    private JMenuItem   saveImage       = new JMenuItem("Save Image");
-    private JMenuItem   refreshImage    = new JMenuItem("Refresh Image");
-    private JMenuItem   closeImage      = new JMenuItem("Close Image");
-    private JMenuItem   closeAll        = new JMenuItem("Close All Images");
-    private JMenuItem   exit            = new JMenuItem("Exit");
-    
-    private JMenu       editMenu        = new JMenu("Edit");
-    private JMenuItem   defManager      = new JMenuItem("ECU Definition Manager");
-    private JMenuItem   settings        = new JMenuItem("Settings");
-    private JMenuItem   editDefinition  = new JMenuItem("Edit ECU Definitions");
-    
-    private JMenu       viewMenu        = new JMenu("View");
-    private JMenuItem   romProperties   = new JMenuItem("ECU Image Properties");
-    private ButtonGroup levelGroup      = new ButtonGroup();
-    private JMenu       levelMenu       = new JMenu("User Level");
+    private JMenu editMenu = new JMenu("Edit");
+    private JMenuItem settings = new JMenuItem("Enginuity Settings");
+
+    private JMenu viewMenu = new JMenu("View");
+    private JMenuItem romProperties = new JMenuItem("ECU Image Properties");
+    private ButtonGroup levelGroup = new ButtonGroup();
+    private JMenu levelMenu = new JMenu("User Level");
     private JRadioButtonMenuItem level1 = new JRadioButtonMenuItem("1 Beginner");
     private JRadioButtonMenuItem level2 = new JRadioButtonMenuItem("2 Intermediate");
     private JRadioButtonMenuItem level3 = new JRadioButtonMenuItem("3 Advanced");
     private JRadioButtonMenuItem level4 = new JRadioButtonMenuItem("4 Highest");
     private JRadioButtonMenuItem level5 = new JRadioButtonMenuItem("5 Debug Mode");
-    
-    private JMenu       helpMenu        = new JMenu("Help");
-    private JMenuItem   about           = new JMenuItem("About Enginuity");
-    
-    private ECUEditor   parent;
-    
+
+    private JMenu loggerMenu = new JMenu("Logger");
+    private JMenuItem openLogger = new JMenuItem("Open ECU Logger");
+
+    private JMenu helpMenu = new JMenu("Help");
+    private JMenuItem about = new JMenuItem("About Enginuity");
+
+    private ECUEditor parent;
+
     public ECUEditorMenuBar(ECUEditor parent) {
         this.parent = parent;
-        
+
         // file menu items
         add(fileMenu);
-        fileMenu.setMnemonic('F');            
+        fileMenu.setMnemonic('F');
         openImage.setMnemonic('O');
         saveImage.setMnemonic('S');
         refreshImage.setMnemonic('R');
         closeImage.setMnemonic('C');
         closeAll.setMnemonic('A');
         exit.setMnemonic('X');
-        
-        fileMenu.add(openImage);  
+
+        fileMenu.add(openImage);
         fileMenu.add(saveImage);
         fileMenu.add(refreshImage);
         fileMenu.add(new JSeparator());
         fileMenu.add(closeImage);
         fileMenu.add(closeAll);
         fileMenu.add(new JSeparator());
-        fileMenu.add(exit);  
-        
+        fileMenu.add(exit);
+
         openImage.addActionListener(this);
         saveImage.addActionListener(this);
         refreshImage.addActionListener(this);
         closeImage.addActionListener(this);
         closeAll.addActionListener(this);
-        exit.addActionListener(this);   
+        exit.addActionListener(this);
         
         // edit menu items
         add(editMenu);
         editMenu.setMnemonic('E');
-        defManager.setMnemonic('D');
-        settings.setMnemonic('S');
-        editDefinition.setMnemonic('E');
-        editMenu.add(new JSeparator());
-        editMenu.add(defManager);
         editMenu.add(settings);
-        editMenu.add(editDefinition);
         settings.addActionListener(this);
+        
+        // ecu def menu items
+        add(definitionMenu);
+        definitionMenu.setMnemonic('D');
+        defManager.setMnemonic('D');
+        editDefinition.setMnemonic('E');
+        updateDefinition.setMnemonic('U');
+        settings.setMnemonic('S');
+        definitionMenu.add(defManager);
+        definitionMenu.add(editDefinition);
+        definitionMenu.add(updateDefinition);
         defManager.addActionListener(this);
         editDefinition.addActionListener(this);
-        
+        updateDefinition.addActionListener(this);        
+
         // view menu items
         add(viewMenu);
         viewMenu.setMnemonic('V');
@@ -131,31 +128,45 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         levelGroup.add(level4);
         levelGroup.add(level5);
         // select correct userlevel button
-        if      (parent.getSettings().getUserLevel() == 1) level1.setSelected(true);
-        else if (parent.getSettings().getUserLevel() == 2) level2.setSelected(true);
-        else if (parent.getSettings().getUserLevel() == 3) level3.setSelected(true);
-        else if (parent.getSettings().getUserLevel() == 4) level4.setSelected(true);
-        else if (parent.getSettings().getUserLevel() == 5) level5.setSelected(true);
-        
+        if (parent.getSettings().getUserLevel() == 1) {
+            level1.setSelected(true);
+        } else if (parent.getSettings().getUserLevel() == 2) {
+            level2.setSelected(true);
+        } else if (parent.getSettings().getUserLevel() == 3) {
+            level3.setSelected(true);
+        } else if (parent.getSettings().getUserLevel() == 4) {
+            level4.setSelected(true);
+        } else if (parent.getSettings().getUserLevel() == 5) {
+            level5.setSelected(true);
+        }
+
+        // logger menu stuff
+        add(loggerMenu);
+        loggerMenu.setMnemonic('L');
+        openLogger.setMnemonic('O');
+        loggerMenu.add(openLogger);
+        openLogger.addActionListener(this);
+
         // help menu stuff
         add(helpMenu);
         helpMenu.setMnemonic('H');
         about.setMnemonic('A');
         helpMenu.add(about);
-        about.addActionListener(this);               
-        
+        about.addActionListener(this);
+
         // disable unused buttons! 0.3.1
         about.setEnabled(false);
         editDefinition.setEnabled(false);
-        
-        this.updateMenu();          
+
+        this.updateMenu();
     }
-    
+
     public void updateMenu() {
         String file = "";
-        try { 
+        try {
             file = " " + parent.getLastSelectedRom().getFileName() + " ";
-        } catch (NullPointerException ex) { }
+        } catch (NullPointerException ex) {
+        }
         if (file.equals("")) {
             saveImage.setEnabled(false);
             closeImage.setEnabled(false);
@@ -164,10 +175,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         } else {
             saveImage.setEnabled(true);
             closeImage.setEnabled(true);
-            closeAll.setEnabled(true);   
-            romProperties.setEnabled(true);         
+            closeAll.setEnabled(true);
+            romProperties.setEnabled(true);
         }
-        
+
         saveImage.setText("Save" + file);
         refreshImage.setText("Refresh" + file);
         closeImage.setText("Close" + file);
@@ -182,7 +193,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
-            
+
         } else if (e.getSource() == saveImage) {
             try {
                 this.saveImage(parent.getLastSelectedRom());
@@ -190,29 +201,30 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
-            
+
         } else if (e.getSource() == closeImage) {
             this.closeImage();
-            
+
         } else if (e.getSource() == closeAll) {
             this.closeAllImages();
-            
+
         } else if (e.getSource() == exit) {
+            parent.handleExit();
             System.exit(0);
-            
+
         } else if (e.getSource() == romProperties) {
-            JOptionPane.showMessageDialog(parent, (Object)(new RomPropertyPanel(parent.getLastSelectedRom())),
+            JOptionPane.showMessageDialog(parent, new RomPropertyPanel(parent.getLastSelectedRom()),
                     parent.getLastSelectedRom().getRomIDString() + " Properties", JOptionPane.INFORMATION_MESSAGE);
-            
+
         } else if (e.getSource() == refreshImage) {
             try {
                 refreshImage();
-                
-            } catch (Exception ex) {            
+
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
-            
+
         } else if (e.getSource() == settings) {
             SettingsForm form = new SettingsForm(parent);
             form.setLocationRelativeTo(parent);
@@ -222,54 +234,61 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             DefinitionManager form = new DefinitionManager(parent);
             form.setLocationRelativeTo(parent);
             form.setVisible(true);
-            
+
         } else if (e.getSource() == level1) {
             parent.setUserLevel(1);
-            
+
         } else if (e.getSource() == level2) {
             parent.setUserLevel(2);
-            
+
         } else if (e.getSource() == level3) {
             parent.setUserLevel(3);
-            
+
         } else if (e.getSource() == level4) {
             parent.setUserLevel(4);
-            
+
         } else if (e.getSource() == level5) {
             parent.setUserLevel(5);
-            
+
         } else if (e.getSource() == editDefinition) {
             new DefinitionEditor(parent);
+
+        } else if (e.getSource() == openLogger) {
+            EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
+
+        } else if (e.getSource() == updateDefinition) {
+            BareBonesBrowserLaunch.openURL(
+                    parent.getSettings().getEcuDefsURL());
             
         }
     }
-    
+
     public void refreshImage() throws Exception {
-		if (parent.getLastSelectedRom() != null) {
-			File file = parent.getLastSelectedRom().getFullFileName();
-			parent.closeImage();
-			parent.openImage(file);
-		}
-	}
-    
+        if (parent.getLastSelectedRom() != null) {
+            File file = parent.getLastSelectedRom().getFullFileName();
+            parent.closeImage();
+            parent.openImage(file);
+        }
+    }
+
     public void openImageDialog() throws XMLParseException, Exception {
         JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
-        fc.setFileFilter(new ECUImageFilter());        
-        
-        if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        fc.setFileFilter(new ECUImageFilter());
+
+        if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             parent.openImage(fc.getSelectedFile());
             parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
         }
-    }    
-    
+    }
+
     public void closeImage() {
         parent.closeImage();
     }
-    
+
     public void closeAllImages() {
         parent.closeAllImages();
     }
-    
+
     public void saveImage(Rom input) throws XMLParseException, Exception {
         if (parent.getLastSelectedRom() != null) {
             JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
@@ -278,21 +297,18 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
                 boolean save = true;
                 if (fc.getSelectedFile().exists()) {
-                    if (JOptionPane.showConfirmDialog(parent, fc.getSelectedFile().getName() + " already exists! Overwrite?") == JOptionPane.CANCEL_OPTION) {
+                    if (JOptionPane.showConfirmDialog(parent,
+                            fc.getSelectedFile().getName() + " already exists! Overwrite?") == JOptionPane.CANCEL_OPTION) {
                         save = false;
-                    }                 
+                    }
                 }
                 if (save) {
                     byte[] output = parent.getLastSelectedRom().saveFile();
-                    FileOutputStream fos = null;
+                    FileOutputStream fos = new FileOutputStream(fc.getSelectedFile());
                     try {
-                    	fos = new FileOutputStream(fc.getSelectedFile());
                         fos.write(output);
-                    }
-                    finally {
-                    	if (fos != null) {
-                    		fos.close();
-                    	}
+                    } finally {
+                        fos.close();
                     }
 
                     parent.getLastSelectedRom().setFullFileName(fc.getSelectedFile().getAbsoluteFile());

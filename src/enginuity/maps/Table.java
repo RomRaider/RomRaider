@@ -1,13 +1,15 @@
 package enginuity.maps;
 
 import enginuity.Settings;
-import enginuity.xml.RomAttributeParser;
+import enginuity.logger.ui.handler.TableUpdateHandler;
 import enginuity.swing.TableFrame;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import static enginuity.util.ColorScaler.getScaledColor;
+import enginuity.util.JEPUtil;
+import enginuity.xml.RomAttributeParser;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -18,187 +20,194 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.StringTokenizer;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.InputMap;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.border.LineBorder;
-import org.nfunk.jep.JEP;
+import java.util.Vector;
 
 public abstract class Table extends JPanel implements Serializable {
-    
-    public static final int ENDIAN_LITTLE= 1;
-    public static final int ENDIAN_BIG   = 2;
-    
-    public static final int TABLE_1D     = 1;
-    public static final int TABLE_2D     = 2;
-    public static final int TABLE_3D     = 3;
+
+    public static final int ENDIAN_LITTLE = 1;
+    public static final int ENDIAN_BIG = 2;
+
+    public static final int TABLE_1D = 1;
+    public static final int TABLE_2D = 2;
+    public static final int TABLE_3D = 3;
     public static final int TABLE_X_AXIS = 4;
     public static final int TABLE_Y_AXIS = 5;
     public static final int TABLE_SWITCH = 6;
-    
-    public static final int COMPARE_OFF      = 0;
+
+    public static final int COMPARE_OFF = 0;
     public static final int COMPARE_ORIGINAL = 1;
-    public static final int COMPARE_TABLE    = 2;
-    public static final int COMPARE_PERCENT  = 0;
+    public static final int COMPARE_TABLE = 2;
+    public static final int COMPARE_PERCENT = 0;
     public static final int COMPARE_ABSOLUTE = 1;
-    
+
     public static final int STORAGE_TYPE_FLOAT = 99;
-    
-    protected String       name;
-    protected int          type;
-    protected String       category    = "Other";
-    protected String       description  = "";
-    protected Scale        scale        = new Scale();
-    protected int          storageAddress;
-    protected int          storageType;
-    protected int          endian;
-    protected boolean      flip;
-    protected DataCell[]   data         = new DataCell[0];
-    protected boolean      isStatic     = false;
-    protected boolean      beforeRam    = false;
-    protected int          ramOffset    = 0;
+
+    protected static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
+
+    protected String name;
+    protected int type;
+    protected String category = "Other";
+    protected String description = "";
+    protected Vector<Scale> scales = new Vector<Scale>();
+    protected int scaleIndex = 0; // index of selected scale
+
+    protected int storageAddress;
+    protected int storageType;
+    protected int endian;
+    protected boolean flip;
+    protected DataCell[] data = new DataCell[0];
+    protected boolean isStatic = false;
+    protected boolean beforeRam = false;
+    protected int ramOffset = 0;
     protected BorderLayout borderLayout = new BorderLayout();
-    protected GridLayout   centerLayout = new GridLayout(1,1,0,0);
-    protected JPanel       centerPanel  = new JPanel(centerLayout);
-    protected TableFrame   frame;
-    protected int          verticalOverhead   = 103;
-    protected int          horizontalOverhead = 2;
-    protected int          cellHeight         = 18;
-    protected int          cellWidth          = 42;
-    protected int          minHeight          = 100;
-    protected int          minWidth           = 370;
-    protected Rom          container;
-    protected int          highlightX;
-    protected int          highlightY;
-    protected boolean      highlight = false;
-    protected Table        axisParent;   
-    protected Color        maxColor;
-    protected Color        minColor;
-    protected boolean      isAxis         = false;    
-    protected int          compareType    = 0;
-    protected int          compareDisplay = 1;
-    protected int          userLevel      = 0;
-    
-    public Table() {
+    protected GridLayout centerLayout = new GridLayout(1, 1, 0, 0);
+    protected JPanel centerPanel = new JPanel(centerLayout);
+    protected TableFrame frame;
+    protected int verticalOverhead = 103;
+    protected int horizontalOverhead = 2;
+    protected int cellHeight = 18;
+    protected int cellWidth = 42;
+    protected int minHeight = 100;
+    protected int minWidth = 425;
+    protected Rom container;
+    protected int highlightX;
+    protected int highlightY;
+    protected boolean highlight = false;
+    protected Table axisParent;
+    protected Color maxColor;
+    protected Color minColor;
+    protected boolean isAxis = false;
+    protected int compareType = 0;
+    protected int compareDisplay = 1;
+    protected int userLevel = 0;
+    protected Settings settings;
+    protected boolean locked = false;
+
+    protected String logParam;
+    protected double liveValue = 0.0;
+    protected boolean overlayLog = false;
+
+    public Table(Settings settings) {
+        this.setSettings(settings);
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
         centerPanel.setVisible(true);
-                
+
         // key binding actions
         Action rightAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 cursorRight();
             }
-        };            
+        };
         Action leftAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 cursorLeft();
             }
-        }; 
+        };
         Action downAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 cursorDown();
             }
-        };  
+        };
         Action upAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 cursorUp();
             }
-        };  
+        };
         Action incCoarseAction = new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {                
-                frame.getToolBar().incrementCoarse();                
+            public void actionPerformed(ActionEvent e) {
+                frame.getToolBar().incrementCoarse();
             }
-        };  
+        };
         Action decCoarseAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().decrementCoarse();
             }
-        }; 
+        };
         Action incFineAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().incrementFine();
             }
-        }; 
+        };
         Action decFineAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().decrementFine();
             }
-        };  
+        };
         Action num0Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('0');
             }
-        };  
+        };
         Action num1Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('1');
             }
-        };  
+        };
         Action num2Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('2');
             }
-        };  
+        };
         Action num3Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('3');
             }
-        };  
+        };
         Action num4Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('4');
             }
-        };  
+        };
         Action num5Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('5');
             }
-        };  
+        };
         Action num6Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('6');
             }
-        };  
+        };
         Action num7Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('7');
             }
-        };  
+        };
         Action num8Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('8');
             }
-        };  
+        };
         Action num9Action = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('9');
             }
-        }; 
+        };
         Action numPointAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('.');
             }
-        };      
+        };
         Action copyAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 copySelection();
             }
-        }; 
+        };
         Action pasteAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 paste();
             }
-        };   
-        
+        };
+        Action multiplyAction = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                getFrame().getToolBar().multiply();
+            }
+        };
+
         // set input mapping
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
-        
+
         KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
         KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
         KeyStroke up = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0);
@@ -209,6 +218,8 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke increment2 = KeyStroke.getKeyStroke("control UP");
         KeyStroke decrement3 = KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, KeyEvent.CTRL_DOWN_MASK);
         KeyStroke increment3 = KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK);
+        KeyStroke decrement4 = KeyStroke.getKeyStroke("control shift DOWN");
+        KeyStroke increment4 = KeyStroke.getKeyStroke("control shift UP");
         KeyStroke num0 = KeyStroke.getKeyStroke('0');
         KeyStroke num1 = KeyStroke.getKeyStroke('1');
         KeyStroke num2 = KeyStroke.getKeyStroke('2');
@@ -219,12 +230,14 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke num7 = KeyStroke.getKeyStroke('7');
         KeyStroke num8 = KeyStroke.getKeyStroke('8');
         KeyStroke num9 = KeyStroke.getKeyStroke('9');
+        KeyStroke mulKey = KeyStroke.getKeyStroke('*');
+        KeyStroke mulKeys = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.CTRL_DOWN_MASK);
         KeyStroke numPoint = KeyStroke.getKeyStroke('.');
         KeyStroke copy = KeyStroke.getKeyStroke("control C");
         KeyStroke paste = KeyStroke.getKeyStroke("control V");
-        
-        im.put(right, "right");     
-        im.put(left, "left"); 
+
+        im.put(right, "right");
+        im.put(left, "left");
         im.put(up, "up");
         im.put(down, "down");
         im.put(increment, "incCoarseAction");
@@ -233,6 +246,8 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(decrement2, "decCoarseAction");
         im.put(increment3, "incFineAction");
         im.put(decrement3, "decFineAction");
+        im.put(increment4, "incFineAction");
+        im.put(decrement4, "decFineAction");
         im.put(num0, "num0Action");
         im.put(num1, "num1Action");
         im.put(num2, "num2Action");
@@ -246,17 +261,21 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(numPoint, "numPointAction");
         im.put(copy, "copyAction");
         im.put(paste, "pasteAction");
-        
-        getActionMap().put(im.get(right), rightAction);     
-        getActionMap().put(im.get(left), leftAction);       
-        getActionMap().put(im.get(up), upAction);           
-        getActionMap().put(im.get(down), downAction); 
+        im.put(mulKey, "mulAction");
+        im.put(mulKeys, "mulAction");
+
+        getActionMap().put(im.get(right), rightAction);
+        getActionMap().put(im.get(left), leftAction);
+        getActionMap().put(im.get(up), upAction);
+        getActionMap().put(im.get(down), downAction);
         getActionMap().put(im.get(increment), incCoarseAction);
-        getActionMap().put(im.get(decrement), decCoarseAction); 
+        getActionMap().put(im.get(decrement), decCoarseAction);
         getActionMap().put(im.get(increment2), incCoarseAction);
-        getActionMap().put(im.get(decrement2), decCoarseAction);  
+        getActionMap().put(im.get(decrement2), decCoarseAction);
         getActionMap().put(im.get(increment3), incFineAction);
-        getActionMap().put(im.get(decrement3), decFineAction);       
+        getActionMap().put(im.get(decrement3), decFineAction);
+        getActionMap().put(im.get(increment4), incFineAction);
+        getActionMap().put(im.get(decrement4), decFineAction);
         getActionMap().put(im.get(num0), num0Action);
         getActionMap().put(im.get(num1), num1Action);
         getActionMap().put(im.get(num2), num2Action);
@@ -268,29 +287,41 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(num8), num8Action);
         getActionMap().put(im.get(num9), num9Action);
         getActionMap().put(im.get(numPoint), numPointAction);
+        getActionMap().put(im.get(mulKey), multiplyAction);
+        getActionMap().put(im.get(mulKeys), multiplyAction);
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
-        
+
         this.setInputMap(WHEN_FOCUSED, im);
     }
-    
+
     public DataCell[] getData() {
         return data;
     }
-    
+
     public void setData(DataCell[] data) {
         this.data = data;
     }
-    
+
     public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
+        if (scales.isEmpty()) {
+            scales.add(new Scale());
+        }
+
+        // temporarily remove lock
+        boolean tempLock = locked;
+        locked = false;
+
         if (!isStatic) {
-            if (!beforeRam) ramOffset = container.getRomID().getRamOffset();
-            
+            if (!beforeRam) {
+                ramOffset = container.getRomID().getRamOffset();
+            }
+
             for (int i = 0; i < data.length; i++) {
                 if (data[i] == null) {
-                    data[i] = new DataCell(scale);
+                    data[i] = new DataCell(scales.get(scaleIndex));
                     data[i].setTable(this);
-                    
+
                     // populate data cells
                     if (storageType == STORAGE_TYPE_FLOAT) { //float storage type
                         byte[] byteValue = new byte[4];
@@ -299,108 +330,146 @@ public abstract class Table extends JPanel implements Serializable {
                         byteValue[2] = input[storageAddress + i * 4 - ramOffset + 2];
                         byteValue[3] = input[storageAddress + i * 4 - ramOffset + 3];
                         data[i].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
-                        
-                    } else { // integer storage type            
+
+                    } else { // integer storage type
                         data[i].setBinValue(
                                 RomAttributeParser.parseByteValue(input,
-                                                                  endian, 
-                                                                  storageAddress + i * storageType - ramOffset,
-                                                                  storageType)); 
+                                        endian,
+                                        storageAddress + i * storageType - ramOffset,
+                                        storageType));
                     }
-                    
+
                     data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
                     centerPanel.add(data[i]);
                     data[i].setYCoord(i);
                     data[i].setOriginalValue(data[i].getBinValue());
+
+                    // show locked cell
+                    if (tempLock) {
+                        data[i].setForeground(Color.GRAY);
+                    }
                 }
             }
         }
-       //this.colorize();
+
+        // reset locked status
+        locked = tempLock;
     }
-    
+
     public int getType() {
         return type;
     }
-    
+
     public DataCell getDataCell(int location) {
         return data[location];
     }
-    
+
     public void setType(int type) {
         this.type = type;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getCategory() {
         return category;
     }
-    
+
     public void setCategory(String category) {
         this.category = category;
     }
-    
+
     public String getDescription() {
         return description;
-   }
-    
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public Scale getScale() {
-        return scale;
+        return scales.get(scaleIndex);
     }
-    
+
+    public Vector<Scale> getScales() {
+        return scales;
+    }
+
+    public Scale getScaleByName(String inputName) throws Exception {
+        // look for scale, else throw exception
+        for (Scale scale : scales) {
+            if (scale.getName().equalsIgnoreCase(inputName)) {
+                return scale;
+            }
+        }
+        throw new Exception();
+    }
+
     public void setScale(Scale scale) {
-        this.scale = scale;
+        // look for scale, replace or add new
+        for (int i = 0; i < scales.size(); i++) {
+            if (scales.get(i).getName().equalsIgnoreCase(scale.getName())) {
+                scales.remove(i);
+                break;
+            }
+        }
+        scales.add(scale);
     }
-    
+
     public int getStorageAddress() {
         return storageAddress;
     }
-    
+
     public void setStorageAddress(int storageAddress) {
         this.storageAddress = storageAddress;
     }
-    
+
     public int getStorageType() {
         return storageType;
     }
-    
+
     public void setStorageType(int storageType) {
         this.storageType = storageType;
     }
-    
+
     public int getEndian() {
         return endian;
     }
-    
+
     public void setEndian(int endian) {
         this.endian = endian;
     }
-    
+
     public void setDataSize(int size) {
         data = new DataCell[size];
     }
-    
+
     public int getDataSize() {
         return data.length;
     }
-    
+
     public boolean getFlip() {
         return flip;
     }
-    
+
     public void setFlip(boolean flipY) {
         this.flip = flipY;
     }
+
+    public void setLogParam(String logParam) {
+        this.logParam = logParam;
+        TableUpdateHandler.getInstance().registerTable(this);
+    }
+
+    public String getLogParam() {
+        return logParam;
+    }
+
     public String toString() {
         /*String output = "\n   ---- Table " + name + " ----" +
                 scale +
@@ -417,19 +486,19 @@ public abstract class Table extends JPanel implements Serializable {
                 output = output + "\nData: " + data[i];
             }
         }
-        
+
         return output;*/
         return name;
     }
-    
+
     public boolean isStatic() {
         return isStatic;
     }
-    
+
     public void setIsStatic(boolean isStatic) {
         this.isStatic = isStatic;
     }
-    
+
     public void addStaticDataCell(DataCell input) {
         if (isStatic) {
             for (int i = 0; i < data.length; i++) {
@@ -440,150 +509,205 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
     }
-    
+
     public void colorize() {
         if (compareType == COMPARE_OFF) {
             if (!isStatic && !isAxis) {
-                double high = -999999999;
-                double low  = 999999999;
 
-                for (int i = 0; i < getDataSize(); i++) {
-                    if (data[i].getBinValue() > high) {
-                        high = data[i].getBinValue();
-                    } 
-                    if (data[i].getBinValue() < low) {
-                        low = data[i].getBinValue();
+                double high = Double.MIN_VALUE;
+                double low = Double.MAX_VALUE;
+
+                if (getScale().getMax() != 0 || getScale().getMin() != 0) {
+
+                    // set min and max values if they are set in scale                    
+                    high = getScale().getMax();
+                    low = getScale().getMin();
+
+                } else {
+
+                    for (int i = 0; i < getDataSize(); i++) {
+
+                        if (Double.parseDouble(data[i].getText()) > high) {
+                            high = Double.parseDouble(data[i].getText());
+                        }
+                        if (Double.parseDouble(data[i].getText()) < low) {
+                            low = Double.parseDouble(data[i].getText());
+                        }
                     }
                 }
-                for (int i = 0; i < getDataSize(); i++) {
-                    double scale = (double)(data[i].getBinValue() - low) / (high - low);
-                    int r = (int)((maxColor.getRed() - minColor.getRed()) * scale) + minColor.getRed();
-                    int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
-                    int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
 
-                    data[i].setColor(new Color(r, g, b));
+                for (int i = 0; i < getDataSize(); i++) {
+
+                    if (Double.parseDouble(data[i].getText()) > high ||
+                            Double.parseDouble(data[i].getText()) < low) {
+
+                        // value exceeds limit
+                        data[i].setColor(getSettings().getWarningColor());
+
+                    } else {
+                        // limits not set, scale based on table values
+                        double scale;
+                        if (high - low == 0) {
+                            // if all values are the same, color will be middle value
+                            scale = .5;
+                        } else {
+                            scale = (Double.parseDouble(data[i].getText()) - low) / (high - low);
+                        }
+
+                        data[i].setColor(getScaledColor(scale, getSettings()));
+                    }
                 }
             } else { // is static/axis
                 for (int i = 0; i < getDataSize(); i++) {
-                    data[i].setColor(axisParent.getRom().getContainer().getSettings().getAxisColor());
+                    data[i].setColor(getSettings().getAxisColor());
                     data[i].setOpaque(true);
                     data[i].setBorder(new LineBorder(Color.BLACK, 1));
                     data[i].setHorizontalAlignment(DataCell.CENTER);
                 }
-            }  
-            
+            }
+
         } else { // comparing is on
             if (!isStatic) {
-                double high = -999999999;
-                
+                double high = Double.MIN_VALUE;
+
                 // determine ratios
                 for (int i = 0; i < getDataSize(); i++) {
                     if (Math.abs(data[i].getBinValue() - data[i].getOriginalValue()) > high) {
                         high = Math.abs(data[i].getBinValue() - data[i].getOriginalValue());
-                    } 
+                    }
                 }
-                
+
                 // colorize
                 for (int i = 0; i < getDataSize(); i++) {
                     double cellDifference = Math.abs(data[i].getBinValue() - data[i].getOriginalValue());
                     double scale;
-                    if (high == 0) scale = 0;
-                    else scale = (double)cellDifference / (double)high;
-                    
-                    int r = (int)((maxColor.getRed() - minColor.getRed()) * scale) + minColor.getRed();
-                    int g = (int)((maxColor.getGreen() - minColor.getGreen()) * scale) + minColor.getGreen();
-                    int b = (int)((maxColor.getBlue() - minColor.getBlue()) * scale) + minColor.getBlue();
-                    if (r > 255) r = 255;
-                    if (g > 255) g = 255;
-                    if (b > 255) b = 255;
-                    if (r < 0) r = 0;
-                    if (g < 0) g = 0;
-                    if (b < 0) b = 0;
+                    if (high == 0) {
+                        scale = 0;
+                    } else {
+                        scale = cellDifference / high;
+                    }
 
-                    if (scale != 0) data[i].setColor(new Color(r, g, b));
-                    else data[i].setColor(new Color(160,160,160));
+                    if (scale == 0) {
+                        data[i].setColor(UNCHANGED_VALUE_COLOR);
+                    } else {
+                        data[i].setColor(getScaledColor(scale, getSettings()));
+                    }
 
                     // set border
                     if (data[i].getBinValue() > data[i].getOriginalValue()) {
-                        data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                        data[i].setBorder(new LineBorder(getSettings().getIncreaseBorder()));
                     } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
-                        data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                        data[i].setBorder(new LineBorder(getSettings().getDecreaseBorder()));
                     } else {
                         data[i].setBorder(new LineBorder(Color.BLACK, 1));
                     }
-                }    
+                }
             }
-        }  
-        
+        }
+
         // colorize border
         if (!isStatic) {
             for (int i = 0; i < getDataSize(); i++) {
                 if (data[i].getBinValue() > data[i].getOriginalValue()) {
-                    data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getIncreaseBorder()));
+                    data[i].setBorder(new LineBorder(getSettings().getIncreaseBorder()));
                 } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
-                    data[i].setBorder(new LineBorder(getRom().getContainer().getSettings().getDecreaseBorder()));
+                    data[i].setBorder(new LineBorder(getSettings().getDecreaseBorder()));
                 } else {
                     data[i].setBorder(new LineBorder(Color.BLACK, 1));
-                }        
+                }
             }
         }
     }
-    
+
     public void setFrame(TableFrame frame) {
         this.frame = frame;
         frame.setSize(getFrameSize());
     }
-    
+
     public Dimension getFrameSize() {
         int height = verticalOverhead + cellHeight;
         int width = horizontalOverhead + data.length * cellWidth;
-        if (height < minHeight) height = minHeight;
-        if (width < minWidth) width = minWidth;
+        if (height < minHeight) {
+            height = minHeight;
+        }
+        if (width < minWidth) {
+            width = minWidth;
+        }
         return new Dimension(width, height);
     }
-    
+
     public TableFrame getFrame() {
         return frame;
     }
-    
+
     public void increment(double increment) {
-        if (!isStatic) {
-            for (int i = 0; i < data.length; i++) {
-                if (data[i].isSelected()) data[i].increment(increment);
+        if (!isStatic && !locked && !(userLevel > settings.getUserLevel())) {
+            for (DataCell cell : data) {
+                if (cell.isSelected()) {
+                    cell.increment(increment);
+                }
             }
+        } else if (userLevel > settings.getUserLevel()) {
+            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" + 
+            		userLevel + " or greater. Click View->User Level to change your userlevel.", 
+            		"Table cannot be modified",
+                    JOptionPane.INFORMATION_MESSAGE);        	
         }
     }
-       
-    public void setRealValue(String realValue) {
-        if (!isStatic) {
-            for (int i = 0; i < data.length; i++) {
-                if (data[i].isSelected()) data[i].setRealValue(realValue);
+
+    public void multiply(double factor) {
+        if (!isStatic && !locked && !(userLevel > settings.getUserLevel())) {
+            for (DataCell cell : data) {
+                if (cell.isSelected()) {
+                    cell.multiply(factor);
+                }
             }
+        } else if (userLevel > settings.getUserLevel()) {
+            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" + 
+            		userLevel + " or greater. Click View->User Level to change your userlevel.", 
+            		"Table cannot be modified",
+                    JOptionPane.INFORMATION_MESSAGE);        	
         }
         colorize();
     }
-    
+
+    public void setRealValue(String realValue) {
+        if (!isStatic && !locked && !(userLevel > settings.getUserLevel())) {
+            for (DataCell cell : data) {
+                if (cell.isSelected()) {
+                    cell.setRealValue(realValue);
+                }
+            }
+        } else if (userLevel > settings.getUserLevel()) {
+            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" + 
+            		userLevel + " or greater. Click View->User Level to change your userlevel.", 
+            		"Table cannot be modified",
+                    JOptionPane.INFORMATION_MESSAGE);        	
+        }
+        colorize();
+    }
+
     public Rom getRom() {
         return container;
     }
-    
+
     public void setRom(Rom container) {
         this.container = container;
     }
-    
+
     public void clearSelection() {
-        for (int i = 0; i < data.length; i++) {
-            data[i].setSelected(false);
+        for (DataCell cell : data) {
+            cell.setSelected(false);
         }
     }
-    
+
     public void startHighlight(int x, int y) {
         this.highlightY = y;
         this.highlightX = x;
         highlight = true;
         highlight(x, y);
     }
-    
+
     public void highlight(int x, int y) {
         if (highlight) {
             for (int i = 0; i < data.length; i++) {
@@ -595,23 +719,26 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
     }
-    
+
     public void stopHighlight() {
         highlight = false;
         // loop through, selected and un-highlight
-        for (int i = 0; i < data.length; i++) {
-            if (data[i].isHighlighted()) {
-                data[i].setSelected(true);
-                data[i].setHighlighted(false);
+        for (DataCell cell : data) {
+            if (cell.isHighlighted()) {
+                cell.setSelected(true);
+                cell.setHighlighted(false);
             }
         }
     }
-    
+
     public abstract void cursorUp();
-    public abstract void cursorDown();    
-    public abstract void cursorLeft();    
+
+    public abstract void cursorDown();
+
+    public abstract void cursorLeft();
+
     public abstract void cursorRight();
-    
+
     public Table getAxisParent() {
         return axisParent;
     }
@@ -619,64 +746,66 @@ public abstract class Table extends JPanel implements Serializable {
     public void setAxisParent(Table axisParent) {
         this.axisParent = axisParent;
     }
-    
+
     public void setRevertPoint() {
         if (!isStatic) {
-            for (int i = 0; i < data.length; i++) {
-                data[i].setOriginalValue(data[i].getBinValue());
+            for (DataCell cell : data) {
+                cell.setOriginalValue(cell.getBinValue());
             }
         }
         colorize();
     }
-    
+
     public void undoAll() {
         if (!isStatic) {
-            for (int i = 0; i < data.length; i++) {
-                data[i].setBinValue(data[i].getOriginalValue());
+            for (DataCell cell : data) {
+                cell.setBinValue(cell.getOriginalValue());
             }
         }
         colorize();
     }
-    
+
     public void undoSelected() {
         if (!isStatic) {
-            for (int i = 0; i < data.length; i++) {
+            for (DataCell cell : data) {
                 // reset current value to original value
-                if (data[i].isSelected()) data[i].setBinValue(data[i].getOriginalValue());
+                if (cell.isSelected()) {
+                    cell.setBinValue(cell.getOriginalValue());
+                }
             }
         }
         colorize();
     }
-    
+
     public byte[] saveFile(byte[] binData) {
         if (!isStatic  // save if table is not static
-                        &&     // and user level is great enough
-                    userLevel <= container.getContainer().getSettings().getUserLevel() 
-                        &&     // and table is not in debug mode, unless saveDebugTables is true
-                    (userLevel < 5 
+                &&     // and user level is great enough
+                userLevel <= getSettings().getUserLevel()
+                &&     // and table is not in debug mode, unless saveDebugTables is true
+                (userLevel < 5
                         ||
-                    container.getContainer().getSettings().isSaveDebugTables())) {
-            
+                        getSettings().isSaveDebugTables())) {
+
             for (int i = 0; i < data.length; i++) {
-                
+
                 // determine output byte values
                 byte[] output;
                 if (storageType != STORAGE_TYPE_FLOAT) {
                     // calculate byte values
-                    output = RomAttributeParser.parseIntegerValue((int)data[i].getBinValue(), endian, storageType);
-                    for (int z = 0; z < storageType; z++) { // insert into file      
+                    output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
+                    for (int z = 0; z < storageType; z++) { // insert into file
                         binData[i * storageType + z + storageAddress - ramOffset] = output[z];
                     }
-                    
+
                 } else { // float
                     // calculate byte values
-                    output = RomAttributeParser.floatToByte((float)data[i].getBinValue(), endian);
+                    output = RomAttributeParser.floatToByte((float) data[i].getBinValue(), endian);
                     for (int z = 0; z < 4; z++) { // insert in to file
                         binData[i * 4 + z + storageAddress - ramOffset] = output[z];
-                    }      
+                    }
                 }
             }
-        }              
+        }
         return binData;
     }
 
@@ -687,42 +816,46 @@ public abstract class Table extends JPanel implements Serializable {
     public void setBeforeRam(boolean beforeRam) {
         this.beforeRam = beforeRam;
     }
-   
+
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
-        for (int i = 0; i < data.length; i++) {
-            
+        for (DataCell cell : data) {
+
             // determine output byte values
             byte[] output;
             if (storageType != STORAGE_TYPE_FLOAT) {
-                output = RomAttributeParser.parseIntegerValue((int)data[i].getBinValue(), endian, storageType);
+                output = RomAttributeParser.parseIntegerValue((int) cell.getBinValue(), endian, storageType);
             } else { // float
-                output = RomAttributeParser.floatToByte((float)data[i].getBinValue(), endian);
+                output = RomAttributeParser.floatToByte((float) cell.getBinValue(), endian);
             }
+
             // Are we going to use the value output?
-            
-            for (int z = 0; z < storageType; z++) {                    
-                data[i].addKeyListener(listener);
+
+            for (int z = 0; z < storageType; z++) {
+                cell.addKeyListener(listener);
             }
-        }        
-    }    
-    
+        }
+    }
+
     public void selectCellAt(int y) {
-        if (type == TABLE_X_AXIS || type == TABLE_Y_AXIS) axisParent.clearSelection();
-        else clearSelection();
+        if (type == TABLE_X_AXIS || type == TABLE_Y_AXIS) {
+            axisParent.clearSelection();
+        } else {
+            clearSelection();
+        }
         data[y].setSelected(true);
         highlightY = y;
-    }   
-    
-    public void copySelection() { 
+    }
+
+    public void copySelection() {
         // find bounds of selection
         // coords[0] = x min, y min, x max, y max
         String newline = System.getProperty("line.separator");
-        String output ="[Selection1D]" + newline;
+        String output = "[Selection1D]" + newline;
         boolean copy = false;
         int[] coords = new int[2];
         coords[0] = this.getDataSize();
-        
+
         for (int i = 0; i < this.getDataSize(); i++) {
             if (data[i].isSelected()) {
                 if (i < coords[0]) {
@@ -730,110 +863,129 @@ public abstract class Table extends JPanel implements Serializable {
                     copy = true;
                 }
                 if (i > coords[1]) {
-                    coords[1] = i;                        
+                    coords[1] = i;
                     copy = true;
                 }
             }
-        }        
+        }
         //make a string of the selection
         for (int i = coords[0]; i <= coords[1]; i++) {
-            if (data[i].isSelected()) output = output + data[i].getText();
-            else output = output + "x"; // x represents non-selected cell
-            if (i < coords[1]) output = output + "\t";
+            if (data[i].isSelected()) {
+                output = output + data[i].getText();
+            } else {
+                output = output + "x"; // x represents non-selected cell
+            }
+            if (i < coords[1]) {
+                output = output + "\t";
+            }
         }
         //copy to clipboard
-        if (copy) Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output), null);        
+        if (copy) {
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output), null);
+        }
     }
-    
+
     public StringBuffer getTableAsString() {
         //make a string of the selection
         StringBuffer output = new StringBuffer("");
         for (int i = 0; i < getDataSize(); i++) {
             output.append(data[i].getText());
-            if (i < getDataSize() - 1) output.append("\t");
-        }      
+            if (i < getDataSize() - 1) {
+                output.append("\t");
+            }
+        }
         return output;
     }
-    
+
     public void copyTable() {
         String newline = System.getProperty("line.separator");
         StringBuffer output = new StringBuffer("[Table1D]" + newline);
         for (int i = 0; i < getDataSize(); i++) {
             output.append(data[i].getText());
-            if (i < getDataSize() - 1) output.append("\t");
+            if (i < getDataSize() - 1) {
+                output.append("\t");
+            }
         }
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output+""), null);    
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
     }
-    
+
     public String getCellAsString(int index) {
         return data[index].getText();
     }
-    
+
     public void pasteValues(String[] input) {
         //set real values
-        for (int i = 0; i < input.length; i++) {            
+        for (int i = 0; i < input.length; i++) {
             try {
                 Double.parseDouble(input[i]);
                 data[i].setRealValue(input[i]);
-            } catch (NumberFormatException ex) { /* not a number, do nothing */ } 
+            } catch (NumberFormatException ex) { /* not a number, do nothing */ }
         }
     }
-    
+
     public void paste() {
         StringTokenizer st = new StringTokenizer("");
         try {
-            String input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
-        } catch (IOException ex) { }
-        
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
+        } catch (IOException ex) {
+        }
+
         String pasteType = st.nextToken();
 
-        if (pasteType.equalsIgnoreCase("[Table1D]")) { // copied entire table
+        if ("[Table1D]".equalsIgnoreCase(pasteType)) { // copied entire table
             int i = 0;
             while (st.hasMoreTokens()) {
                 String currentToken = st.nextToken();
                 try {
-                    if (!data[i].getText().equalsIgnoreCase(currentToken)) data[i].setRealValue(currentToken);
+                    if (!data[i].getText().equalsIgnoreCase(currentToken)) {
+                        data[i].setRealValue(currentToken);
+                    }
                 } catch (ArrayIndexOutOfBoundsException ex) { /* table larger than target, ignore*/ }
-                i++; 
-            }            
-        } else if (pasteType.equalsIgnoreCase("[Selection1D]")) { // copied selection
+                i++;
+            }
+        } else if ("[Selection1D]".equalsIgnoreCase(pasteType)) { // copied selection
             if (data[highlightY].isSelected()) {
                 int i = 0;
-                while (st.hasMoreTokens()) {  
+                while (st.hasMoreTokens()) {
                     try {
                         data[highlightY + i].setRealValue(st.nextToken());
                     } catch (ArrayIndexOutOfBoundsException ex) { /* paste larger than target, ignore */ }
                     i++;
-                }            
+                }
             }
-        }         
-    }   
-    
+        }
+    }
+
     public void pasteCompare() {
         StringTokenizer st = new StringTokenizer("");
         try {
-            String input = (String)Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+            String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */ 
-        } catch (IOException ex) { }
-        
+        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
+        } catch (IOException ex) {
+        }
+
         String pasteType = st.nextToken();
 
-        if (pasteType.equalsIgnoreCase("[Table1D]")) { // copied entire table
+        if ("[Table1D]".equalsIgnoreCase(pasteType)) { // copied entire table
             int i = 0;
             while (st.hasMoreTokens()) {
                 String currentToken = st.nextToken();
                 try {
-                    if (!data[i].getText().equalsIgnoreCase(currentToken)) data[i].setCompareRealValue(currentToken);
+                    if (!data[i].getText().equalsIgnoreCase(currentToken)) {
+                        data[i].setCompareRealValue(currentToken);
+                    }
                 } catch (ArrayIndexOutOfBoundsException ex) { /* table larger than target, ignore*/ }
-                i++; 
-            }        
+                i++;
+            }
         }
     }
-    
+
     public void applyColorSettings(Settings settings) {
+        this.setSettings(settings);
+
         // apply settings to cells
         for (int i = 0; i < getDataSize(); i++) {
             this.setMaxColor(settings.getMaxColor());
@@ -844,14 +996,14 @@ public abstract class Table extends JPanel implements Serializable {
             data[i].setFont(settings.getTableFont());
             data[i].repaint();
         }
-        cellHeight = (int)settings.getCellSize().getHeight();
-        cellWidth = (int)settings.getCellSize().getWidth();
+        cellHeight = (int) settings.getCellSize().getHeight();
+        cellWidth = (int) settings.getCellSize().getWidth();
         colorize();
         validateScaling();
     }
-    
+
     public void resize() {
-        frame.setSize(getFrameSize());        
+        frame.setSize(getFrameSize());
     }
 
     public Color getMaxColor() {
@@ -869,54 +1021,59 @@ public abstract class Table extends JPanel implements Serializable {
     public void setMinColor(Color minColor) {
         this.minColor = minColor;
     }
-    
+
     public abstract void setAxisColor(Color color);
-    
+
     public void validateScaling() {
-        JEP parser = new JEP();
-        parser.initSymTab(); // clear the contents of the symbol table
-        parser.addVariable("x", 5);
-        parser.parseExpression(scale.getExpression());
-        double toReal = parser.getValue(); // calculate real world value of "5"
-        
-        parser.addVariable("x", toReal);
-        parser.parseExpression(scale.getByteExpression());
-        
-        // if real to byte doesn't equal 5, report conflict
-        if (Math.abs(parser.getValue() - 5) > .001) {
-                        
-            JPanel panel = new JPanel();
-            panel.setLayout(new GridLayout(4, 1));
-            panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
-            panel.add(new JLabel("To real value: " + scale.getExpression()));
-            panel.add(new JLabel("To byte: " + scale.getByteExpression()));
-            
-            JCheckBox check = new JCheckBox("Always display this message", true);
-            check.setHorizontalAlignment(JCheckBox.RIGHT);
-            panel.add(check);
-                        
-            check.addActionListener( 
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        getRom().getContainer().getSettings().setCalcConflictWarning(((JCheckBox)e.getSource()).isSelected());            
-                    }
-                } 
-            );            
-            
-            JOptionPane.showMessageDialog(container.getContainer(), panel,
-                    "Warning", JOptionPane.ERROR_MESSAGE);
-        }        
+        if (type != Table.TABLE_SWITCH && !isStatic) {
+
+            // make sure a scale is present
+            if (scales.isEmpty()) {
+                scales.add(new Scale());
+            }
+
+            double startValue = 5;
+            double toReal = JEPUtil.evaluate(scales.get(scaleIndex).getExpression(), startValue); // calculate real world value of "5"
+            double endValue = JEPUtil.evaluate(scales.get(scaleIndex).getByteExpression(), toReal);
+
+            // if real to byte doesn't equal 5, report conflict
+            if (Math.abs(endValue - startValue) > .001) {
+
+                JPanel panel = new JPanel();
+                panel.setLayout(new GridLayout(4, 1));
+                panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
+                panel.add(new JLabel("To real value: " + scales.get(scaleIndex).getExpression()));
+                panel.add(new JLabel("To byte: " + scales.get(scaleIndex).getByteExpression()));
+
+                JCheckBox check = new JCheckBox("Always display this message", true);
+                check.setHorizontalAlignment(JCheckBox.RIGHT);
+                panel.add(check);
+
+                check.addActionListener(
+                        new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
+                            }
+                        }
+                );
+
+                JOptionPane.showMessageDialog(container.getContainer(), panel,
+                        "Warning", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
-    
+
     public void compare(int compareType) {
         this.compareType = compareType;
-        
+
         for (int i = 0; i < getDataSize(); i++) {
-            if (compareType == COMPARE_ORIGINAL) data[i].setCompareValue(data[i].getOriginalValue());  
+            if (compareType == COMPARE_ORIGINAL) {
+                data[i].setCompareValue(data[i].getOriginalValue());
+            }
             data[i].setCompareType(compareType);
             data[i].setCompareDisplay(compareDisplay);
             data[i].updateDisplayValue();
-        }       
+        }
         colorize();
     }
 
@@ -925,14 +1082,104 @@ public abstract class Table extends JPanel implements Serializable {
         compare(compareType);
         colorize();
     }
-    
+
     public int getUserLevel() {
         return userLevel;
     }
 
     public void setUserLevel(int userLevel) {
         this.userLevel = userLevel;
-        if (userLevel > 5) userLevel = 5;
-        else if (userLevel < 1) userLevel = 1;
+        if (userLevel > 5) {
+            userLevel = 5;
+        } else if (userLevel < 1) {
+            userLevel = 1;
+        }
     }
+
+    public int getScaleIndex() {
+        return scaleIndex;
+    }
+
+    public void setScaleIndex(int scaleIndex) {
+        this.scaleIndex = scaleIndex;
+        refreshValues();
+    }
+
+    public void setScaleByName(String scaleName) {
+        for (int i = 0; i < scales.size(); i++) {
+            if (scales.get(i).getName().equalsIgnoreCase(scaleName)) {
+                setScaleIndex(i);
+            }
+        }
+    }
+
+    public void refreshValues() {
+        if (!isStatic) {
+            for (int i = 0; i < getDataSize(); i++) {
+                data[i].refreshValue();
+            }
+        }
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public void setOverlayLog(boolean overlayLog) {
+        this.overlayLog = overlayLog;
+    }
+
+    public void setLiveValue(double liveValue) {
+        this.liveValue = liveValue;
+    }
+
+    public double getLiveValue() {
+        return liveValue;
+    }
+
+    protected void highlightLiveData() {
+    }
+    
+    public double getMin() {
+        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
+            double low = Double.MAX_VALUE;
+            for (int i = 0; i < getDataSize(); i++) {
+
+                if (Double.parseDouble(data[i].getText()) < low) {
+                    low = Double.parseDouble(data[i].getText());
+                }
+            }    
+            return low;                    
+        } else {
+            return getScale().getMin();
+        }
+    }
+    
+    public double getMax() {
+        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
+            double high = Double.MIN_VALUE;
+            for (int i = 0; i < getDataSize(); i++) {
+
+                if (Double.parseDouble(data[i].getText()) > high) {
+                    high = Double.parseDouble(data[i].getText());
+                }
+            }    
+            return high;                    
+        } else {
+            return getScale().getMax();
+        }
+    }
+
 }

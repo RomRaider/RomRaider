@@ -1,19 +1,121 @@
-Enginuity is a full featured Engine Control Unit editing application for tuning virtually any manufacturer, meant to be used in conjuction with datalogging and ECU flash and dump utilities. Enginuity will give you full control over timing, fuel, boost and many other parameters in your ECU, competing with very expensive and proprietary software. Enginuity will remove your need for piggyback systems designed to control these functions, and, in most cases, work as well as or better than any stand alone engine management. Reflashing your stock ECU also has the added benefit of a manufacturer tested base map, giving you top notch performance and saving time tuning idle and low throttle applications.
-
-Enginuity is currently in BETA TEST status, meaning it is not thoroughly tested and not intended for use by inexperienced users. In addition to being incomplete and untested, only experienced tuners with the required tools (ie, wideband oxygen sensor) should modify an ECU image. As with any engine management, changes could result in severe engine damage. Use at your own risk.
-
-As of version 0.2.92a, source files are no longer included with the binary distribution of Enginuity. The source is available at http://sourceforge.net/projects/enginuity via Subversion.
+                      - Enginuity 0.4.0 Beta -
+            Open-Source ECU Tuning -- www.enginuity.org
 
 
-0.3.1 Notes (7/11/2006)
+PLEASE MAKE SURE TO READ RELEASE _NOTES.TXT_ EACH TIME YOU DOWNLOAD
+A NEW VERSION OF ENGINUITY. IMPORTANT NOTICES, KNOWN ISSUES AND
+NEW FEATURES WILL BE DISCUSSED.
+
+Enginuity is a full featured Engine Control Unit editing application 
+for tuning virtually any manufacturer, meant to be used in conjuction
+with ECU flash and dump utilities. Enginuity will give you full 
+control over timing, fuel, boost and many other parameters in your 
+ECU, competing with very expensive and proprietary software. Enginuity 
+will remove your need for piggyback systems designed to control these 
+functions, and, in most cases, work as well as or better than any 
+stand alone engine management. Reflashing your stock ECU also has the 
+added benefit of a manufacturer tested base map, giving you top notch 
+performance and saving time tuning idle and low throttle applications
+while retaining all of the benefit of the research and development
+manufacturer's spend millions of dollars on.
+
+Enginuity is currently in BETA TEST status, meaning it is not 
+thoroughly tested and not intended for use by inexperienced users. In 
+addition to being incomplete and untested, only experienced tuners 
+with the required tools (ie, wideband oxygen sensor) should modify an 
+ECU image. As with any engine management, changes could result in 
+severe engine damage. Use at your own risk.
+
+Documentation is available at http://wiki.enginuity.org and the
+official Enginuity FAQ can be found at
+http://www.enginuity.org/about444.html. Please be aware that as 
+Enginuity is still in beta status and changing frequently, 
+documentation may be incomplete or out of date.
+
+
+
+-----------------------------
+- 0.4.0b Notes (11/10/2006) -
+-----------------------------
+We've been very busy in the last few months and have added some major
+new features, including data logging via Subaru Select Protocol and
+3D graphing of table data. Please be aware that these new features 
+are considered alpha quality and are expected to have some bugs.
+Please check the Bug Reporting forum on Enginuity.org before reporting
+any problems you may find.
+
+
+
 -----------------------
-This version is a moderate facelift over 0.3.0, includes an updated ECU definitions file, and fixes several minor bugs. No new major features are present, but many minor additions, listed in the changes below, are worth noticing. The most important new feature is userlevels, which will restrict access to certain tables you may feel uncomfortable modifying. The default userlevel is 1, Beginner, which will restrict access to many tables. If you want to modify them, you must raise your userlevel by clicking on View->User Level->Options
+- 0.4.0b Known Issues -
+-----------------------
+- 3d graph
+  - Java3d over most VNC implementations will show a blank JFrame
+  - You MUST have up to date graphics drivers that support OpenGL 1.2 
+  - Expect ~200 megs of usage when using 3d graphing
+  - Expect possible memory leaks when using 3d graphing
+  - There are some problems with cell selection in 3d graphs
+  - Numerical interpolation can take some time on slower machines
+- Logging
+  - Logger does not remember last selected COM port
+  - Some parameters may display incorrectly. WE KNOW THIS and will
+    work to improve it in later releases. You may check Enginuity.org
+    for updated logger definition (xml) files.
+- Other
+  - File associations will work only in Windows systems
 
 
-Changes:
---------
+
+------------------------
+- Future Release Notes -
+------------------------
+The next release, 0.4.1b, will include an overhauled XML definition
+parser and significant changes to the XML schema. Current definition
+files will become obsolete. The release will include a new definition
+file, but if you have created your own custom definitions you will
+need to convert them. We MAY include an automatic converter with
+the release. You can follow our discussion on the new format in this
+thread:
+http://www.enginuity.org/viewtopic.php?t=822
+
+
+
+-----------
+- Changes -
+-----------
+
+0.4.0b (11/10/2006)
+-------------------
+- Add file associations
+- Ability to view (but not modify) tables above userlevel
+- Add link to latest ECU definitions
+- Fix switch (CEL fix) inheritance
+- Fix table ordering in child ROMs
+- Fix table level display in property panel
+- Fix label fonts on 3D tables
+- Logging
+- 3D graphing
+- Interpolating (map smoothing)
+
+
+0.3.2b (8/12/2006)
+------------------
+- Installer/Shortcuts
+- Add status bar
+- Add support for hex ID strings for Mitsubishi support
+- Fix goofy behavior of increase/decrease at limits
+- Add multiply values function
+- Improve exception handling in XML parser
+- Add lockable tables via ECU definitions
+- Rearrange 3D table labels
+- Improve datacell colorize method
+- Add limits to table values in XML
+- Fix exiting through menu not saving settings
+- Add ECU Definition Manager
+
+
 0.3.1b (7/11/2006)
------------------
+------------------
 - Change year attribute to string from int
 - Fix incrementing in compare mode 
 - Fix refresh tables working improperly with multiple ROMs open 
@@ -60,7 +162,6 @@ Changes:
 - Fixed set value field being cast to integer instead of decimal
 - Fixed progress bar not closing on errors
 - Pressing "." now focuses set value field
-- Stopped including source (now at http://sourceforge.net/projects/enginuity)
 
 
 0.2.91a Private Test Release (6/30/2006)
