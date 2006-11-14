@@ -16,6 +16,7 @@ public class TableSwitch extends Table {
     public TableSwitch(Settings settings) {
         super(settings);
         storageType = 1;
+        type = TABLE_SWITCH;
         removeAll();
         setLayout(new BorderLayout());
     }
@@ -47,6 +48,10 @@ public class TableSwitch extends Table {
         checkbox.setText("Enable " + name);
 
         add(checkbox, BorderLayout.NORTH);
+    }
+    
+    public int getType() {
+        return TABLE_SWITCH;
     }
 
     public void setDescription(String description) {
