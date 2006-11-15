@@ -35,6 +35,7 @@ import enginuity.logger.ui.handler.TableUpdateHandler;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import javax.swing.*;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
@@ -482,18 +483,22 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportError(String error) {
         if (error != null) {
-            JOptionPane.showMessageDialog(null, error);
+            showMessageDialog(null, error);
         }
     }
 
     public void reportError(Exception e) {
         if (e != null) {
             String message = e.getMessage();
-            int i = message.indexOf(": ");
-            if (i >= 0) {
-                message = message.substring(i + 2);
+            if (message != null) {
+                int i = message.indexOf(": ");
+                if (i >= 0) {
+                    message = message.substring(i + 2);
+                }
+                reportError(message);
+            } else {
+                reportError(e.toString());
             }
-            reportError(message);
         }
     }
 

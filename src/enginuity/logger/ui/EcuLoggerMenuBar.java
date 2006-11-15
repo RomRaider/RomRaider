@@ -112,7 +112,9 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 
         } else if (evt.getSource() == exit) {
             parent.handleExit();
-            System.exit(0);
+            parent.dispose();
+            parent.setVisible(false);
+            //System.exit(0);
 
         } else if (evt.getSource() == profileManager) {
             try {
@@ -175,24 +177,30 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
             if (!selectedFile.exists()
                     || showConfirmDialog(parent, selectedFile.getName() + " already exists! Overwrite?") == OK_OPTION) {
                 saveProfileToFile(selectedFile);
-                parent.getSettings().setLoggerProfileFilePath(selectedFile.getAbsolutePath());
             }
         }
     }
 
     private void saveProfileToFile(File destinationFile) throws IOException {
+        String profileFilePath = destinationFile.getAbsolutePath();
+        if (!profileFilePath.endsWith(".xml")) {
+            profileFilePath += ".xml";
+            destinationFile = new File(profileFilePath);
+        }
         FileOutputStream fos = new FileOutputStream(destinationFile);
         try {
             fos.write(parent.getCurrentProfile().getBytes());
         } finally {
             fos.close();
         }
-        parent.reportMessage("Profile succesfully saved to: " + destinationFile.getAbsolutePath());
+
+        parent.getSettings().setLoggerProfileFilePath(profileFilePath);
+        parent.reportMessage("Profile succesfully saved to: " + profileFilePath);
     }
 
     private JFileChooser getProfileFileChooser(File lastProfileFile) {
         JFileChooser fc;
-        if (lastProfileFile.exists() && lastProfileFile.isFile()) {
+        if (lastProfileFile.exists() && lastProfileFile.isFile() && lastProfileFile.getParentFile() != null) {
             fc = new JFileChooser(lastProfileFile.getParentFile().getAbsolutePath());
         } else {
             fc = new JFileChooser();
