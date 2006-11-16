@@ -63,4 +63,14 @@ public final class HexUtil {
             out[off + i / 2] = (byte) (b1 << 4 | b2);
         }
     }
+    
+    public static int hexToInt(String input) {
+        if (input.equals("0")) {
+            return 0;
+        } else if (input.length() > 2 && input.substring(0, 2).equalsIgnoreCase("0x")) {
+            return Integer.parseInt(input.substring(2), 16);
+        } else {
+            return Integer.parseInt(input, 16);
+        }
+    }    
 }
