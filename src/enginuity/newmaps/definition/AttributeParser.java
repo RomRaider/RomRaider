@@ -1,6 +1,9 @@
 package enginuity.newmaps.definition;
 
 import enginuity.newmaps.ecudata.Scale;
+import enginuity.newmaps.ecudata.Unit;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 public final class AttributeParser {
     
@@ -25,6 +28,21 @@ public final class AttributeParser {
         } else {
             return Scale.STORAGE_TYPE_CHAR;
         }
+    }
+    
+    public static String[] parseValueString(String s, String delim) {
+        StringTokenizer t = new StringTokenizer(s, delim);
+        Vector<String> values = new Vector<String>();
+        while (t.hasMoreTokens()) {
+            values.add(t.nextToken());
+        }
+        return (String[])values.toArray();
+    }   
+    
+    public static int parseUnitSystem(String s) {
+        if (s.equalsIgnoreCase("metric")) return Unit.SYSTEM_METRIC;
+        else if (s.equalsIgnoreCase("standard")) return Unit.SYSTEM_STANDARD;
+        else return Unit.SYSTEM_UNIVERSAL;
     }
 
 }

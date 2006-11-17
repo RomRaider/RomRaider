@@ -1,9 +1,12 @@
 package enginuity.util;
 
 import enginuity.util.exception.NameableNotFoundException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
-public class NamedSet {
+public class NamedSet<E> implements Set<E> {
     
     Vector<Nameable> objects = new Vector<Nameable>();
     
@@ -50,4 +53,57 @@ public class NamedSet {
         // Name not found, throw exception
         throw new NameableNotFoundException();
     }    
+
+    public boolean isEmpty() {
+        return objects.isEmpty();
+    }
+
+    public boolean contains(Object o) {
+        return objects.contains(o);
+    }
+
+    public Iterator<E> iterator() {
+        return (Iterator<E>)objects.iterator();
+    }
+
+    public Object[] toArray() {
+        return objects.toArray();
+    }
+
+    public boolean add(E o) {
+        add((E) o);
+        return true;
+    }
+
+    public boolean remove(Object o) {
+        return objects.remove(o);
+    }
+
+    public boolean containsAll(Collection<?> c) {
+        return objects.containsAll(c);
+    }
+
+    public boolean addAll(Collection<? extends E> c) {
+        Iterator it = c.iterator();
+        while (it.hasNext()) {
+            add((E)it.next());
+        }
+        return true;
+    }
+
+    public boolean retainAll(Collection<?> c) {
+        return objects.retainAll(c);
+    }
+
+    public boolean removeAll(Collection<?> c) {
+        return objects.removeAll(c);
+    }
+
+    public void clear() {
+        objects.clear();
+    }
+
+    public <T> T[] toArray(T[] a) {
+        return null;
+    }
 }

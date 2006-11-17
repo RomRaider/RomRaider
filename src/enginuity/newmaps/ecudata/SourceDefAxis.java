@@ -1,5 +1,7 @@
 package enginuity.newmaps.ecudata;
 
+import static enginuity.newmaps.definition.AttributeParser.parseValueString;
+
 public class SourceDefAxis extends Axis {
     
     private String[] values;
@@ -12,8 +14,8 @@ public class SourceDefAxis extends Axis {
         return values;
     }
 
-    public void setValues(String[] values) {
-        this.values = values;
+    public void setValues(String s, String delim) {
+        values = parseValueString(s, delim);
     }
     
 }
