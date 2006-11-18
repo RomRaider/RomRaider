@@ -18,7 +18,7 @@ public class NamedSet<E> implements Set<E> {
                 return;
             }
         }
-        add(n);
+        objects.add(n);
     }
     
     public Nameable get(String name) throws NameableNotFoundException {
@@ -71,7 +71,7 @@ public class NamedSet<E> implements Set<E> {
     }
 
     public boolean add(E o) {
-        add((E) o);
+        add((Nameable) o);
         return true;
     }
 

@@ -1,5 +1,6 @@
 package enginuity.newmaps.definition;
 
+import enginuity.logger.exception.ConfigurationException;
 import enginuity.newmaps.Rom;
 import enginuity.newmaps.ecudata.ECUData;
 import enginuity.newmaps.ecudata.Parameter;
@@ -18,7 +19,12 @@ import static java.lang.Integer.parseInt;
 import static enginuity.newmaps.definition.AttributeParser.*;
 import enginuity.newmaps.ecudata.Axis;
 import enginuity.newmaps.ecudata.Category;
+import enginuity.newmaps.xml.SaxParserFactory;
 import enginuity.util.exception.NameableNotFoundException;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Stack;
 
 public class RomDefinitionHandler extends DefaultHandler {
@@ -73,17 +79,17 @@ public class RomDefinitionHandler extends DefaultHandler {
     private RomTreeBuilder roms;
     
     private Rom rom;
-    private Category category;
+    private Category category; // Category currently being created
+    private Stack<Category> categoryStack; // Stack used for higher levels in tree
+    private Category categories; // Category tree that will be returned
     private ECUData table;
     private Scale scale;
     private Axis axis;
     private Unit unit;
     private String dataValues;
-    private Stack<Category> categoryStack;
-    private Category categories;
-    private NamedSet<ECUData> tables;
-    private NamedSet<Scale> scales;
-    private NamedSet<Unit> units;
+    private NamedSet<ECUData> tables = new NamedSet<ECUData>();
+    private NamedSet<Scale> scales = new NamedSet<Scale>();
+    private NamedSet<Unit> units = new NamedSet<Unit>();
     
     
     public RomDefinitionHandler(RomTreeBuilder roms) {
@@ -91,11 +97,11 @@ public class RomDefinitionHandler extends DefaultHandler {
         
         // These lines may cause some problems down the line.. I can't think through it right now
         categoryStack = new Stack<Category>();
-        category = new Category("Root");
-        categoryStack.add(category);         
+        categories = new Category("Root");
+        categoryStack.add(category);    
     }
     
-    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+    public void startElement(String uri, String localName, String qName, Attributes attr) {
         
         if (TAG_ROM.equalsIgnoreCase(qName)) {  
             
@@ -103,23 +109,33 @@ public class RomDefinitionHandler extends DefaultHandler {
                 //
                 // If "base" attribute is set, find base rom in collection
                 //
-                String name = attributes.getValue(ATTR_NAME);
-                if (attributes.getValue(ATTR_BASE).length() > 0) {
-                    rom = (Rom)roms.get(attributes.getValue(ATTR_NAME));    
+                String name = attr.getValue(ATTR_NAME);
+                if (attr.getIndex(ATTR_BASE) > -1 &&
+                    attr.getValue(ATTR_BASE).length() > 0) {
+                    
+                    rom = (Rom)roms.get(attr.getValue(ATTR_NAME));    
                 } else {                
                     rom = new Rom(name);
                 }
 
                 // Set all other attributes
-                rom.setName(attributes.getValue(ATTR_NAME));
-                rom.setIdAddress(hexToInt(attributes.getValue(ATTR_ID_ADDRESS)));
-                rom.setIdString(attributes.getValue(ATTR_ID_STRING));
-                rom.setDescription(attributes.getValue(ATTR_DESCRIPTION));
-                rom.setMemmodel(attributes.getValue(ATTR_MEMMODEL));
-                rom.setFlashmethod(attributes.getValue(ATTR_FLASH_METHOD));
-                rom.setCaseid(attributes.getValue(ATTR_CASE_ID));
-                rom.setObsolete(parseBoolean(attributes.getValue(ATTR_OBSOLETE)));            
-                rom.setAbstract(parseBoolean(attributes.getValue(ATTR_ABSTRACT)));
+                rom.setName(attr.getValue(ATTR_NAME));
+                if (attr.getIndex(ATTR_ID_ADDRESS) > -1)
+                    rom.setIdAddress(hexToInt(attr.getValue(ATTR_ID_ADDRESS)));
+                if (attr.getIndex(ATTR_ID_STRING) > -1)
+                    rom.setIdString(attr.getValue(ATTR_ID_STRING));
+                if (attr.getIndex(ATTR_DESCRIPTION) > -1)
+                    rom.setDescription(attr.getValue(ATTR_DESCRIPTION));
+                if (attr.getIndex(ATTR_MEMMODEL) > -1)
+                    rom.setMemmodel(attr.getValue(ATTR_MEMMODEL));
+                if (attr.getIndex(ATTR_FLASH_METHOD) > -1)
+                    rom.setFlashmethod(attr.getValue(ATTR_FLASH_METHOD));
+                if (attr.getIndex(ATTR_CASE_ID) > -1)
+                    rom.setCaseid(attr.getValue(ATTR_CASE_ID));
+                if (attr.getIndex(ATTR_OBSOLETE) > -1)
+                    rom.setObsolete(parseBoolean(attr.getValue(ATTR_OBSOLETE)));            
+                if (attr.getIndex(ATTR_ABSTRACT) > -1)
+                    rom.setAbstract(parseBoolean(attr.getValue(ATTR_ABSTRACT)));
                 
             } catch (NameableNotFoundException ex) {
                 // uhh.. do something
@@ -128,10 +144,15 @@ public class RomDefinitionHandler extends DefaultHandler {
                         
         } else if (TAG_CATEGORY.equalsIgnoreCase(qName)) {
             
-            category = new Category(attributes.getValue(ATTR_NAME));
+            category = new Category(attr.getValue(ATTR_NAME));
             
             // Set all other attributes
-            category.setDescription(attributes.getValue(ATTR_DESCRIPTION));
+            category.setDescription(attr.getValue(ATTR_DESCRIPTION));
+            
+            // Add to stack and tree
+            Category parentCategory = categoryStack.peek();
+            parentCategory.add(category);
+            categoryStack.add(category);
             
         } else if (TAG_TABLE3D.equalsIgnoreCase(qName)) {
             
@@ -140,17 +161,18 @@ public class RomDefinitionHandler extends DefaultHandler {
             //
             Table3D table;
             try {
-                table = (Table3D)tables.get(attributes.getValue(ATTR_NAME));
+                table = (Table3D)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                table = new Table3D(attributes.getValue(ATTR_NAME));
+                table = new Table3D(attr.getValue(ATTR_NAME));
             }
             
             // Set all other attributes
-            table.setUserLevel(parseInt(attributes.getValue(ATTR_USER_LEVEL)));            
-            table.setAddress(hexToInt(attributes.getValue(ATTR_NAME)));
+            if (attr.getIndex(ATTR_USER_LEVEL) > -1)
+                table.setUserLevel(parseInt(attr.getValue(ATTR_USER_LEVEL)));            
+            if (attr.getIndex(ATTR_ADDRESS) > -1)
+                table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             
             // TODO: Deal with scale
-            //table(attributes.getValue(ATTR_NAME));
             
             // TODO: Deal with axis addresses
             
@@ -162,15 +184,18 @@ public class RomDefinitionHandler extends DefaultHandler {
             //
             Table2D table;
             try {
-                table = (Table2D)tables.get(attributes.getValue(ATTR_NAME));
+                table = (Table2D)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                table = new Table2D(attributes.getValue(ATTR_NAME));
+                table = new Table2D(attr.getValue(ATTR_NAME));
             }            
             
             // Set all other attributes
-            table.setUserLevel(parseInt(attributes.getValue(ATTR_USER_LEVEL)));            
-            table.setAddress(hexToInt(attributes.getValue(ATTR_NAME)));
-            table.setSize(parseInt(attributes.getValue(ATTR_SIZE)));   
+            if (attr.getIndex(ATTR_USER_LEVEL) > -1)
+                table.setUserLevel(parseInt(attr.getValue(ATTR_USER_LEVEL)));            
+            if (attr.getIndex(ATTR_ADDRESS) > -1)
+                table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
+            if (attr.getIndex(ATTR_SIZE) > -1)
+                table.setSize(parseInt(attr.getValue(ATTR_SIZE)));   
             
             // TODO: Deal with scale
             //table(attributes.getValue(ATTR_NAME));
@@ -185,14 +210,16 @@ public class RomDefinitionHandler extends DefaultHandler {
             //
             Parameter table;
             try {
-                table = (Parameter)tables.get(attributes.getValue(ATTR_NAME));
+                table = (Parameter)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                table = new Parameter(attributes.getValue(ATTR_NAME));
+                table = new Parameter(attr.getValue(ATTR_NAME));
             }            
             
             // Set all other attributes
-            table.setUserLevel(parseInt(attributes.getValue(ATTR_USER_LEVEL)));            
-            table.setAddress(hexToInt(attributes.getValue(ATTR_NAME)));
+            if (attr.getIndex(ATTR_USER_LEVEL) > -1)
+                table.setUserLevel(parseInt(attr.getValue(ATTR_USER_LEVEL)));            
+            if (attr.getIndex(ATTR_ADDRESS) > -1)
+                table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             
             // TODO: Deal with scale      
             
@@ -204,15 +231,18 @@ public class RomDefinitionHandler extends DefaultHandler {
             //
             Switch table;
             try {
-                table = (Switch)tables.get(attributes.getValue(ATTR_NAME));
+                table = (Switch)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                table = new Switch(attributes.getValue(ATTR_NAME));
+                table = new Switch(attr.getValue(ATTR_NAME));
             }            
             
             // Set all other attributes
-            table.setUserLevel(parseInt(attributes.getValue(ATTR_USER_LEVEL)));            
-            table.setAddress(hexToInt(attributes.getValue(ATTR_NAME)));
-            table.setSize(parseInt(attributes.getValue(ATTR_SIZE)));   
+            if (attr.getIndex(ATTR_USER_LEVEL) > -1)
+                table.setUserLevel(parseInt(attr.getValue(ATTR_USER_LEVEL)));            
+            if (attr.getIndex(ATTR_ADDRESS) > -1)
+                table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
+            if (attr.getIndex(ATTR_SIZE) > -1)
+                table.setSize(parseInt(attr.getValue(ATTR_SIZE)));   
             
             // TODO: Deal with scale
             
@@ -222,26 +252,31 @@ public class RomDefinitionHandler extends DefaultHandler {
             //
             // Look for scale in scale set
             //
-            Scale scale;
             try {
-                scale = (Scale)tables.get(attributes.getValue(ATTR_NAME));
+                scale = (Scale)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                scale = new Scale(attributes.getValue(ATTR_NAME));
+                scale = new Scale(attr.getValue(ATTR_NAME));
             }  
             
             // Set all other attributes
-            scale.setEndian(parseEndian(attributes.getValue(ATTR_ENDIAN)));   
-            scale.setStorageType(parseStorageType(attributes.getValue(ATTR_STORAGE_TYPE)));
-            scale.setLogParam(attributes.getValue(ATTR_LOG_PARAM));
+            if (attr.getIndex(ATTR_ENDIAN) > -1)
+                scale.setEndian(parseEndian(attr.getValue(ATTR_ENDIAN)));   
+            if (attr.getIndex(ATTR_STORAGE_TYPE) > -1)
+                scale.setStorageType(parseStorageType(attr.getValue(ATTR_STORAGE_TYPE)));
+            if (attr.getIndex(ATTR_LOG_PARAM) > -1)
+                scale.setLogParam(attr.getValue(ATTR_LOG_PARAM));
                         
         } else if (TAG_AXIS.equalsIgnoreCase(qName) ||
                    TAG_X_AXIS.equalsIgnoreCase(qName) ||
                    TAG_Y_AXIS.equalsIgnoreCase(qName)) {
-            Axis axis = new Axis(attributes.getValue(ATTR_NAME));
+            
+            Axis axis = new Axis(attr.getValue(ATTR_NAME));
             
             // Set all other attributes
-            axis.setSize(parseInt(attributes.getValue(ATTR_SIZE)));
-            axis.setAddress(hexToInt(attributes.getValue(ATTR_ADDRESS)));
+            if (attr.getIndex(ATTR_SIZE) > -1)
+                axis.setSize(parseInt(attr.getValue(ATTR_SIZE)));
+            if (attr.getIndex(ATTR_ADDRESS) > -1)
+                axis.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             
             // TODO: Deal with scales
             
@@ -252,15 +287,21 @@ public class RomDefinitionHandler extends DefaultHandler {
             
             
         } else if (TAG_UNIT.equalsIgnoreCase(qName)) {
-            Unit unit = new Unit(attributes.getValue(ATTR_NAME));
+            unit = new Unit(attr.getValue(ATTR_NAME));
             
             // Set all other attributes
-            unit.setSystem(parseUnitSystem(attributes.getValue(ATTR_SYSTEM)));      
-            unit.setTo_byte(attributes.getValue(ATTR_TO_BYTE));
-            unit.setTo_real(attributes.getValue(ATTR_TO_REAL));
-            unit.setFormat(attributes.getValue(ATTR_FORMAT));
-            unit.setCoarseIncrement(parseFloat(attributes.getValue(ATTR_COARSE_INCREMENT)));
-            unit.setFineIncrement(parseFloat(attributes.getValue(ATTR_FINE_INCREMENT)));
+            if (attr.getIndex(ATTR_SYSTEM) > -1)
+                unit.setSystem(parseUnitSystem(attr.getValue(ATTR_SYSTEM)));      
+            if (attr.getIndex(ATTR_TO_BYTE) > -1)
+                unit.setTo_byte(attr.getValue(ATTR_TO_BYTE));
+            if (attr.getIndex(ATTR_TO_REAL) > -1)
+                unit.setTo_real(attr.getValue(ATTR_TO_REAL));
+            if (attr.getIndex(ATTR_FORMAT) > -1)
+                unit.setFormat(attr.getValue(ATTR_FORMAT));
+            if (attr.getIndex(ATTR_COARSE_INCREMENT) > -1)
+                unit.setCoarseIncrement(parseFloat(attr.getValue(ATTR_COARSE_INCREMENT)));
+            if (attr.getIndex(ATTR_FINE_INCREMENT) > -1)
+                unit.setFineIncrement(parseFloat(attr.getValue(ATTR_FINE_INCREMENT)));
             
             
         } else if (TAG_STATE.equalsIgnoreCase(qName)) {
@@ -269,6 +310,9 @@ public class RomDefinitionHandler extends DefaultHandler {
         
     }
 
+    
+    
+    
     public void endElement(String uri, String localName, String qName) {
         
         if (TAG_SCALE.equalsIgnoreCase(qName)) {
@@ -287,9 +331,9 @@ public class RomDefinitionHandler extends DefaultHandler {
 
         } else if (TAG_CATEGORY.equalsIgnoreCase(qName)) {
             
-            // Ugh.. I think I'm at least along the right lines
-            categoryStack.pop().add(category);
-            // But I know it's not quite right. Very confusing.
+            // Remove current category from stack
+            categoryStack.pop();    
+            category = null;
             
             
         } else if (TAG_TABLE3D.equalsIgnoreCase(qName) ||
@@ -330,6 +374,21 @@ public class RomDefinitionHandler extends DefaultHandler {
             
         }
         
+    }
+    
+    public static void main(String[] args) {
+        try {
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(new File("/ecu_defs/subaru/wrx/16BITBASE.xml")));
+            try {
+                RomDefinitionHandler handler = new RomDefinitionHandler(new RomTreeBuilder());
+                SaxParserFactory.getSaxParser().parse(inputStream, handler);
+                
+            } finally {
+                inputStream.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
 }

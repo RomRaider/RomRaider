@@ -1,6 +1,8 @@
 package enginuity.newmaps.ecudata;
 
-public class Unit {
+import enginuity.util.Nameable;
+
+public class Unit implements Nameable {
     
     public static final int SYSTEM_STANDARD = 0;
     public static final int SYSTEM_METRIC = 1;
