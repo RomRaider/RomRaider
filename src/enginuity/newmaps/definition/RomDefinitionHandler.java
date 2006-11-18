@@ -1,7 +1,7 @@
 package enginuity.newmaps.definition;
 
 import enginuity.logger.exception.ConfigurationException;
-import enginuity.newmaps.Rom;
+import enginuity.newmaps.ecudata.Rom;
 import enginuity.newmaps.ecudata.ECUData;
 import enginuity.newmaps.ecudata.Parameter;
 import enginuity.newmaps.ecudata.Scale;
@@ -98,7 +98,7 @@ public class RomDefinitionHandler extends DefaultHandler {
         // These lines may cause some problems down the line.. I can't think through it right now
         categoryStack = new Stack<Category>();
         categories = new Category("Root");
-        categoryStack.add(category);    
+        categoryStack.add(categories);    
     }
     
     public void startElement(String uri, String localName, String qName, Attributes attr) {
@@ -159,7 +159,6 @@ public class RomDefinitionHandler extends DefaultHandler {
             //
             // Look for table in table set
             //
-            Table3D table;
             try {
                 table = (Table3D)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
@@ -182,7 +181,6 @@ public class RomDefinitionHandler extends DefaultHandler {
             //
             // Look for table in table set
             //
-            Table2D table;
             try {
                 table = (Table2D)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
@@ -195,7 +193,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_ADDRESS) > -1)
                 table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             if (attr.getIndex(ATTR_SIZE) > -1)
-                table.setSize(parseInt(attr.getValue(ATTR_SIZE)));   
+                ((Table2D)table).setSize(parseInt(attr.getValue(ATTR_SIZE)));   
             
             // TODO: Deal with scale
             //table(attributes.getValue(ATTR_NAME));
@@ -208,7 +206,6 @@ public class RomDefinitionHandler extends DefaultHandler {
             //
             // Look for table in table set
             //
-            Parameter table;
             try {
                 table = (Parameter)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
@@ -229,7 +226,6 @@ public class RomDefinitionHandler extends DefaultHandler {
             //
             // Look for table in table set
             //
-            Switch table;
             try {
                 table = (Switch)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
@@ -242,7 +238,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_ADDRESS) > -1)
                 table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             if (attr.getIndex(ATTR_SIZE) > -1)
-                table.setSize(parseInt(attr.getValue(ATTR_SIZE)));   
+                ((Switch)table).setSize(parseInt(attr.getValue(ATTR_SIZE)));   
             
             // TODO: Deal with scale
             
@@ -270,7 +266,7 @@ public class RomDefinitionHandler extends DefaultHandler {
                    TAG_X_AXIS.equalsIgnoreCase(qName) ||
                    TAG_Y_AXIS.equalsIgnoreCase(qName)) {
             
-            Axis axis = new Axis(attr.getValue(ATTR_NAME));
+            axis = new Axis(attr.getValue(ATTR_NAME));
             
             // Set all other attributes
             if (attr.getIndex(ATTR_SIZE) > -1)
@@ -380,8 +376,11 @@ public class RomDefinitionHandler extends DefaultHandler {
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File("/ecu_defs/subaru/wrx/16BITBASE.xml")));
             try {
-                RomDefinitionHandler handler = new RomDefinitionHandler(new RomTreeBuilder());
+                RomTreeBuilder builder = new RomTreeBuilder();
+                RomDefinitionHandler handler = new RomDefinitionHandler(builder);
                 SaxParserFactory.getSaxParser().parse(inputStream, handler);
+                
+                System.out.println(builder.get(0));
                 
             } finally {
                 inputStream.close();

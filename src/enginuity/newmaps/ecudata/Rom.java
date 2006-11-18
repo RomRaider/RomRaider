@@ -1,7 +1,6 @@
-package enginuity.newmaps;
+package enginuity.newmaps.ecudata;
 
 import enginuity.maps.Scale;
-import enginuity.newmaps.ecudata.ECUData;
 import enginuity.util.Nameable;
 
 public class Rom implements Nameable {
@@ -111,6 +110,10 @@ public class Rom implements Nameable {
 
     public void setAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
+    }
+    
+    public String toString() {
+        return name;
     }
     
 }

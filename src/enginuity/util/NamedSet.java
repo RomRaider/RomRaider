@@ -21,6 +21,10 @@ public class NamedSet<E> implements Set<E> {
         objects.add(n);
     }
     
+    public Nameable get(int i) {
+        return objects.get(i);
+    }
+    
     public Nameable get(String name) throws NameableNotFoundException {
         for (int i = 0; i < objects.size(); i++) {
             if (objects.get(i).getName().equalsIgnoreCase(name)) {
