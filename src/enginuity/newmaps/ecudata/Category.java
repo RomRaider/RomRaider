@@ -2,12 +2,13 @@ package enginuity.newmaps.ecudata;
 
 import enginuity.util.Nameable;
 import enginuity.util.NamedSet;
+import java.util.Iterator;
 
 public class Category extends NamedSet implements Nameable {
     
     private String name;
     private String description;
-    private NamedSet<Category> subcats;
+    private Category subcats;
     private ECUData[] tables;
     
     private Category() { }
@@ -40,5 +41,16 @@ public class Category extends NamedSet implements Nameable {
         this.tables = tables;
     }
     
+    public String toString() {
+        StringBuffer output = new StringBuffer();
+        output.append(" - CATEGORY: " + name + " -\n");
+        Iterator it = subcats.iterator();
+        
+        while (it.hasNext()) {
+            output.append("  " + it.next().toString() + "\n");
+        }   
+        
+        return output + "";
+    }
     
 }

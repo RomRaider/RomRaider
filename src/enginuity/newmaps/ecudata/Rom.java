@@ -18,6 +18,7 @@ public class Rom implements Nameable {
     
     private NamedSet<Scale> scales;
     private NamedSet<ECUData> tables;
+    private Category categories;
     
     private Rom() { }
     
@@ -108,7 +109,8 @@ public class Rom implements Nameable {
                         "\n - Obsolete: " + obsolete +
                         "\n - Abstract: " + isAbstract +
                         "\n   --- SCALES ---\n" + scales +
-                        "\n   --- TABLES ---\n" + tables;
+                        "\n   --- TABLES ---\n" + tables +
+                        "\n   --- CATEGORIES ---\n" + categories;
                 
         return output;
     }
@@ -128,5 +130,13 @@ public class Rom implements Nameable {
     public void setTables(NamedSet<ECUData> tables) {
         this.tables = tables;
     }
+    public Category getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Category categories) {
+        this.categories = categories;
+    }
+
     
 }

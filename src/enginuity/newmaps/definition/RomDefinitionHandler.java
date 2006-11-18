@@ -78,6 +78,8 @@ public class RomDefinitionHandler extends DefaultHandler {
     private Axis axis;
     private Unit unit;
     private String dataValues;
+    private int xAddress;
+    private int yAddress;
     private NamedSet<ECUData> tables = new NamedSet<ECUData>();
     private NamedSet<Scale> scales = new NamedSet<Scale>();
     private NamedSet<Unit> units = new NamedSet<Unit>();
@@ -145,6 +147,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             parentCategory.add(category);
             categoryStack.add(category);
             
+            
         } else if (TAG_TABLE3D.equalsIgnoreCase(qName)) {
             
             //
@@ -162,6 +165,12 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_ADDRESS) > -1)
                 table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             
+            // Store axis addresses
+            if (attr.getIndex(ATTR_X_ADDRESS) > -1)
+                xAddress = parseInt(attr.getValue(ATTR_X_ADDRESS));
+            if (attr.getIndex(ATTR_Y_ADDRESS) > -1)
+                yAddress = parseInt(attr.getValue(ATTR_Y_ADDRESS));
+            
             // Add scale
             try {
                 if (attr.getIndex(ATTR_SCALE) > -1)
@@ -169,8 +178,6 @@ public class RomDefinitionHandler extends DefaultHandler {
             } catch (NameableNotFoundException ex) {
                 // TODO: Handle exception
             }
-            
-            // TODO: Deal with axis addresses
             
             
         } else if (TAG_TABLE2D.equalsIgnoreCase(qName)) {
@@ -192,6 +199,10 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_SIZE) > -1)
                 ((Table2D)table).setSize(parseInt(attr.getValue(ATTR_SIZE)));   
             
+            // Store axis addresses
+            if (attr.getIndex(ATTR_AXIS_ADDRESS) > -1)
+                yAddress = parseInt(attr.getValue(ATTR_AXIS_ADDRESS));
+            
             // Add scale
             try {
                 if (attr.getIndex(ATTR_SCALE) > -1)
@@ -199,9 +210,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             } catch (NameableNotFoundException ex) {
                 // TODO: Handle exception
             }
-            
-            // TODO: Deal with axis address
-            
+                       
             
         } else if (TAG_PARAMETER.equalsIgnoreCase(qName)) {
             
@@ -281,6 +290,12 @@ public class RomDefinitionHandler extends DefaultHandler {
                    TAG_Y_AXIS.equalsIgnoreCase(qName)) {
             
             axis = new Axis(attr.getValue(ATTR_NAME));
+            
+            if (TAG_X_AXIS.equalsIgnoreCase(qName)) {
+                if (xAddress > 0) axis.setAddress(xAddress);
+            } else {
+                 if (yAddress > 0) axis.setAddress(yAddress);
+            }
             
             // Set all other attributes
             if (attr.getIndex(ATTR_SIZE) > -1)
@@ -380,6 +395,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             
             rom.setTables(tables);
             rom.setScales(scales);
+            rom.setCategories(categories);
             
             roms.add(rom);
             
