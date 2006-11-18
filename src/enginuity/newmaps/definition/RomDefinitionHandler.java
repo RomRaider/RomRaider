@@ -284,18 +284,54 @@ public class RomDefinitionHandler extends DefaultHandler {
                 scale.setStorageType(parseStorageType(attr.getValue(ATTR_STORAGE_TYPE)));
             if (attr.getIndex(ATTR_LOG_PARAM) > -1)
                 scale.setLogParam(attr.getValue(ATTR_LOG_PARAM));
+            
                         
-        } else if (TAG_AXIS.equalsIgnoreCase(qName) ||
-                   TAG_X_AXIS.equalsIgnoreCase(qName) ||
-                   TAG_Y_AXIS.equalsIgnoreCase(qName)) {
+        } else if (TAG_X_AXIS.equalsIgnoreCase(qName)) {
             
-            axis = new Axis(attr.getValue(ATTR_NAME));
-            
-            if (TAG_X_AXIS.equalsIgnoreCase(qName)) {
-                if (xAddress > 0) axis.setAddress(xAddress);
-            } else {
-                 if (yAddress > 0) axis.setAddress(yAddress);
+            try { 
+                axis = ((Table3D)table).getXaxis();
+                axis.getName();
+            } catch (NullPointerException ex) {
+                axis = new Axis(attr.getValue(ATTR_NAME));
             }
+            
+            if (xAddress > 0) axis.setAddress(xAddress);
+            
+            // Set all other attributes
+            if (attr.getIndex(ATTR_SIZE) > -1)
+                axis.setSize(parseInt(attr.getValue(ATTR_SIZE)));
+            if (attr.getIndex(ATTR_ADDRESS) > -1)
+                axis.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
+            
+                        
+        } else if (TAG_Y_AXIS.equalsIgnoreCase(qName)) {
+            
+            try { 
+                axis = ((Table3D)table).getYaxis();
+                axis.getName();
+            } catch (NullPointerException ex) {
+                axis = new Axis(attr.getValue(ATTR_NAME));
+            }
+            
+            if (xAddress > 0) axis.setAddress(xAddress);
+            
+            // Set all other attributes
+            if (attr.getIndex(ATTR_SIZE) > -1)
+                axis.setSize(parseInt(attr.getValue(ATTR_SIZE)));
+            if (attr.getIndex(ATTR_ADDRESS) > -1)
+                axis.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
+            
+                        
+        } else if (TAG_AXIS.equalsIgnoreCase(qName)) {
+            
+            try { 
+                axis = ((Table2D)table).getAxis();
+                axis.getName();
+            } catch (NullPointerException ex) {
+                axis = new Axis(attr.getValue(ATTR_NAME));
+            }
+            
+            if (yAddress > 0) axis.setAddress(xAddress);
             
             // Set all other attributes
             if (attr.getIndex(ATTR_SIZE) > -1)
