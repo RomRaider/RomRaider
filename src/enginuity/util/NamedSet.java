@@ -110,4 +110,13 @@ public class NamedSet<E> implements Set<E> {
     public <T> T[] toArray(T[] a) {
         return null;
     }
+    
+    public String toString() {
+        StringBuffer output = new StringBuffer();
+        Iterator it = objects.iterator();
+        while (it.hasNext()) {
+            output.append(it.next().toString() + "\n");
+        }
+        return output+"";
+    }
 }

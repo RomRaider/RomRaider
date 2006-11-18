@@ -1,14 +1,6 @@
 package enginuity.newmaps.definition;
 
-import enginuity.logger.exception.ConfigurationException;
-import enginuity.newmaps.ecudata.Rom;
-import enginuity.newmaps.ecudata.ECUData;
-import enginuity.newmaps.ecudata.Parameter;
-import enginuity.newmaps.ecudata.Scale;
-import enginuity.newmaps.ecudata.Switch;
-import enginuity.newmaps.ecudata.Table2D;
-import enginuity.newmaps.ecudata.Table3D;
-import enginuity.newmaps.ecudata.Unit;
+import enginuity.newmaps.ecudata.*;
 import enginuity.util.NamedSet;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -17,14 +9,13 @@ import static java.lang.Float.parseFloat;
 import static enginuity.util.HexUtil.hexToInt;
 import static java.lang.Integer.parseInt;
 import static enginuity.newmaps.definition.AttributeParser.*;
-import enginuity.newmaps.ecudata.Axis;
-import enginuity.newmaps.ecudata.Category;
 import enginuity.newmaps.xml.SaxParserFactory;
 import enginuity.util.exception.NameableNotFoundException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Stack;
 
 public class RomDefinitionHandler extends DefaultHandler {
@@ -171,7 +162,13 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_ADDRESS) > -1)
                 table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             
-            // TODO: Deal with scale
+            // Add scale
+            try {
+                if (attr.getIndex(ATTR_SCALE) > -1)
+                    table.setScale((Scale)scales.get(attr.getValue(ATTR_SCALE)));
+            } catch (NameableNotFoundException ex) {
+                // TODO: Handle exception
+            }
             
             // TODO: Deal with axis addresses
             
@@ -195,8 +192,13 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_SIZE) > -1)
                 ((Table2D)table).setSize(parseInt(attr.getValue(ATTR_SIZE)));   
             
-            // TODO: Deal with scale
-            //table(attributes.getValue(ATTR_NAME));
+            // Add scale
+            try {
+                if (attr.getIndex(ATTR_SCALE) > -1)
+                    table.setScale((Scale)scales.get(attr.getValue(ATTR_SCALE)));
+            } catch (NameableNotFoundException ex) {
+                // TODO: Handle exception
+            }
             
             // TODO: Deal with axis address
             
@@ -218,7 +220,13 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_ADDRESS) > -1)
                 table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             
-            // TODO: Deal with scale      
+            // Add scale
+            try {
+                if (attr.getIndex(ATTR_SCALE) > -1)
+                    table.setScale((Scale)scales.get(attr.getValue(ATTR_SCALE)));
+            } catch (NameableNotFoundException ex) {
+                // TODO: Handle exception
+            }   
             
             
         } else if (TAG_SWITCH.equalsIgnoreCase(qName)) {
@@ -240,7 +248,13 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_SIZE) > -1)
                 ((Switch)table).setSize(parseInt(attr.getValue(ATTR_SIZE)));   
             
-            // TODO: Deal with scale
+            // Add scale
+            try {
+                if (attr.getIndex(ATTR_SCALE) > -1)
+                    table.setScale((Scale)scales.get(attr.getValue(ATTR_SCALE)));
+            } catch (NameableNotFoundException ex) {
+                // TODO: Handle exception
+            }
             
             
         } else if (TAG_SCALE.equalsIgnoreCase(qName)) {
@@ -273,8 +287,6 @@ public class RomDefinitionHandler extends DefaultHandler {
                 axis.setSize(parseInt(attr.getValue(ATTR_SIZE)));
             if (attr.getIndex(ATTR_ADDRESS) > -1)
                 axis.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
-            
-            // TODO: Deal with scales
             
                         
         } else if (TAG_DATA.equalsIgnoreCase(qName)) {
@@ -365,8 +377,11 @@ public class RomDefinitionHandler extends DefaultHandler {
             
             
         } else if (TAG_ROM.equalsIgnoreCase(qName)) {
-            roms.add(rom);
             
+            rom.setTables(tables);
+            rom.setScales(scales);
+            
+            roms.add(rom);
             
         }
         

@@ -76,4 +76,22 @@ public abstract class ECUData implements Nameable {
         this.isAbstract = isAbstract;
     }
     
+    public String toString() {
+        String scaleName = "";
+        
+        try {
+            scaleName = scale.getName();
+        } catch (NullPointerException ex) {
+            scaleName = "Not found";
+        }
+        
+        String output = "     --- Table: " + name + " ---" +
+                "\n      - Description: " + description +
+                "\n      - Scale: " + scaleName +
+                "\n      - Address: " + address +
+                "\n      - Userlevel: " + userLevel;
+                
+        return output;
+    }
+    
 }

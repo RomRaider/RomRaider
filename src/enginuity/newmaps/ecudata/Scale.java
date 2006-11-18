@@ -82,4 +82,13 @@ public class Scale implements Nameable {
         return name;
     }
     
+    public String toString() {
+        String output = "     --- SCALE: " + name + " ---" +
+                "\n      - Description: " + description +
+                "\n      - Storage Type: " + storageType +
+                "\n      - Endian: " + endian + 
+                "\n      - Log Param: " + logParam;
+        return output;
+    }
+    
 }

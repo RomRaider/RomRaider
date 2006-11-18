@@ -1,22 +1,23 @@
 package enginuity.newmaps.ecudata;
 
-import enginuity.maps.Scale;
 import enginuity.util.Nameable;
+import enginuity.util.NamedSet;
+import enginuity.newmaps.ecudata.*;
 
 public class Rom implements Nameable {
 
-    protected String name;
-    protected int idAddress;
-    protected String idString;    
-    protected String description;    
-    protected String memmodel;
-    protected String flashmethod;
-    protected String caseid;
-    protected boolean obsolete;
-    protected boolean isAbstract;
+    private String name;
+    private int idAddress;
+    private String idString;    
+    private String description;    
+    private String memmodel;
+    private String flashmethod;
+    private String caseid;
+    private boolean obsolete;
+    private boolean isAbstract;
     
-    protected Scale[] scales;
-    protected ECUData[] tables;
+    private NamedSet<Scale> scales;
+    private NamedSet<ECUData> tables;
     
     private Rom() { }
     
@@ -80,22 +81,6 @@ public class Rom implements Nameable {
         this.obsolete = obsolete;
     }      
 
-    public Scale[] getScales() {
-        return scales;
-    }
-
-    public void setScales(Scale[] scales) {
-        this.scales = scales;
-    }
-
-    public ECUData[] getTables() {
-        return tables;
-    }
-
-    public void setTables(ECUData[] tables) {
-        this.tables = tables;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -113,7 +98,35 @@ public class Rom implements Nameable {
     }
     
     public String toString() {
-        return name;
+        String output = "--- ROM: " + name + " ---" +
+                        "\n - ID Address: " + idAddress +
+                        "\n - ID String: " + idString +
+                        "\n - Descrption: " + description +
+                        "\n - Memmodel: " + memmodel +
+                        "\n - Flash Method: " + flashmethod +
+                        "\n - CaseID: " + caseid +
+                        "\n - Obsolete: " + obsolete +
+                        "\n - Abstract: " + isAbstract +
+                        "\n   --- SCALES ---\n" + scales +
+                        "\n   --- TABLES ---\n" + tables;
+                
+        return output;
+    }
+
+    public NamedSet<Scale> getScales() {
+        return scales;
+    }
+
+    public void setScales(NamedSet<Scale> scales) {
+        this.scales = scales;
+    }
+
+    public NamedSet<ECUData> getTables() {
+        return tables;
+    }
+
+    public void setTables(NamedSet<ECUData> tables) {
+        this.tables = tables;
     }
     
 }
