@@ -109,7 +109,7 @@ public class Rom implements Nameable {
                         "\n - Obsolete: " + obsolete +
                         "\n - Abstract: " + isAbstract +
                         "\n   --- SCALES ---\n" + scales +
-                        "\n   --- TABLES ---\n" + tables +
+                        //"\n   --- TABLES ---\n" + tables +
                         "\n   --- CATEGORIES ---\n" + categories;
                 
         return output;

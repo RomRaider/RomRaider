@@ -8,8 +8,7 @@ public class Category extends NamedSet implements Nameable {
     
     private String name;
     private String description;
-    private Category subcats;
-    private ECUData[] tables;
+    private NamedSet<ECUData> tables = new NamedSet<ECUData>();
     
     private Category() { }
     
@@ -32,25 +31,39 @@ public class Category extends NamedSet implements Nameable {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public ECUData[] getEcuData() {
-        return tables;
-    }
-
-    public void setEcuData(ECUData[] ecuData) {
-        this.tables = tables;
-    }
     
     public String toString() {
         StringBuffer output = new StringBuffer();
         output.append(" - CATEGORY: " + name + " -\n");
-        Iterator it = subcats.iterator();
         
+        Iterator it = tables.iterator();
+        while (it.hasNext()) {
+            output.append(it.next().toString() + "\n");
+        }                
+                
+        it = iterator();        
         while (it.hasNext()) {
             output.append("  " + it.next().toString() + "\n");
         }   
         
         return output + "";
+    }
+
+    public void addTable(ECUData table) {
+        tables.add(table);
+    }
+    
+    public void removeTable(ECUData table) {
+        try {
+            tables.remove(table);
+        } catch (Exception ex) {
+            
+        } finally {
+            Iterator it = iterator();
+            while (it.hasNext()) {
+                ((Category)it.next()).removeTable(table);
+            }
+        }
     }
     
 }

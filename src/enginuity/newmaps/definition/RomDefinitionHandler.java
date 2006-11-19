@@ -11,11 +11,11 @@ import static java.lang.Integer.parseInt;
 import static enginuity.newmaps.definition.AttributeParser.*;
 import enginuity.newmaps.xml.SaxParserFactory;
 import enginuity.util.exception.NameableNotFoundException;
+import enginuity.xml.ObjectCloner;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Stack;
 
 public class RomDefinitionHandler extends DefaultHandler {
@@ -27,6 +27,7 @@ public class RomDefinitionHandler extends DefaultHandler {
     private static final String TAG_TABLE2D = "table2d";
     private static final String TAG_PARAMETER = "parameter";
     private static final String TAG_SWITCH = "switch";
+    private static final String TAG_DESCRIPTION = "description";
     private static final String TAG_SCALES = "scales";
     private static final String TAG_SCALE = "scale";
     private static final String TAG_AXIS = "axis";
@@ -83,6 +84,7 @@ public class RomDefinitionHandler extends DefaultHandler {
     private NamedSet<ECUData> tables = new NamedSet<ECUData>();
     private NamedSet<Scale> scales = new NamedSet<Scale>();
     private NamedSet<Unit> units = new NamedSet<Unit>();
+    private StringBuilder charBuffer;
     
     
     public RomDefinitionHandler(RomTreeBuilder roms) {
@@ -95,7 +97,7 @@ public class RomDefinitionHandler extends DefaultHandler {
     }
     
     public void startElement(String uri, String localName, String qName, Attributes attr) {
-        
+                
         if (TAG_ROM.equalsIgnoreCase(qName)) {  
             
             try {
@@ -106,7 +108,9 @@ public class RomDefinitionHandler extends DefaultHandler {
                 if (attr.getIndex(ATTR_BASE) > -1 &&
                     attr.getValue(ATTR_BASE).length() > 0) {
                     
-                    rom = (Rom)roms.get(attr.getValue(ATTR_NAME));    
+                    rom = (Rom)ObjectCloner.deepCopy(roms.get(attr.getValue(ATTR_NAME))); 
+                    rom.setName(attr.getValue(name));
+                    
                 } else {                
                     rom = new Rom(name);
                 }
@@ -131,7 +135,11 @@ public class RomDefinitionHandler extends DefaultHandler {
                     rom.setAbstract(parseBoolean(attr.getValue(ATTR_ABSTRACT)));
                 
             } catch (NameableNotFoundException ex) {
-                // uhh.. do something
+                // TODO: Deal with rom not found
+                
+            } catch (Exception ex) {
+                // TODO: Deal with clone and other exceptions
+                
             }
             
                         
@@ -167,9 +175,9 @@ public class RomDefinitionHandler extends DefaultHandler {
             
             // Store axis addresses
             if (attr.getIndex(ATTR_X_ADDRESS) > -1)
-                xAddress = parseInt(attr.getValue(ATTR_X_ADDRESS));
+                xAddress = hexToInt(attr.getValue(ATTR_X_ADDRESS));
             if (attr.getIndex(ATTR_Y_ADDRESS) > -1)
-                yAddress = parseInt(attr.getValue(ATTR_Y_ADDRESS));
+                yAddress = hexToInt(attr.getValue(ATTR_Y_ADDRESS));
             
             // Add scale
             try {
@@ -201,7 +209,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             
             // Store axis addresses
             if (attr.getIndex(ATTR_AXIS_ADDRESS) > -1)
-                yAddress = parseInt(attr.getValue(ATTR_AXIS_ADDRESS));
+                yAddress = hexToInt(attr.getValue(ATTR_AXIS_ADDRESS));
             
             // Add scale
             try {
@@ -264,7 +272,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             } catch (NameableNotFoundException ex) {
                 // TODO: Handle exception
             }
-            
+                    
             
         } else if (TAG_SCALE.equalsIgnoreCase(qName)) {
                     
@@ -367,6 +375,8 @@ public class RomDefinitionHandler extends DefaultHandler {
             
         }
         
+        charBuffer = new StringBuilder();
+        
     }
 
     
@@ -392,7 +402,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             
             // Remove current category from stack
             categoryStack.pop();    
-            category = null;
+            //category = null;
             
             
         } else if (TAG_TABLE3D.equalsIgnoreCase(qName) ||
@@ -401,6 +411,7 @@ public class RomDefinitionHandler extends DefaultHandler {
                    TAG_SWITCH.equalsIgnoreCase(qName)) {
             
             tables.add(table);
+            category.addTable(table);
             
             // Clear object for next element
             table = null;
@@ -427,6 +438,11 @@ public class RomDefinitionHandler extends DefaultHandler {
             axis = null;
             
             
+        } else if (TAG_DESCRIPTION.equalsIgnoreCase(qName)) {
+            
+            table.setDescription(charBuffer.toString());
+            
+            
         } else if (TAG_ROM.equalsIgnoreCase(qName)) {
             
             rom.setTables(tables);
@@ -438,19 +454,26 @@ public class RomDefinitionHandler extends DefaultHandler {
         }
         
     }
+
+    public void characters(char[] ch, int start, int length) {
+        charBuffer.append(ch, start, length);
+    }    
     
     public static void main(String[] args) {
         try {
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(new File("/ecu_defs/subaru/wrx/16BITBASE.xml")));
+            InputStream inputStream1 = new BufferedInputStream(new FileInputStream(new File("/ecu_defs/subaru/wrx/16BITBASE.xml")));
+            InputStream inputStream2 = new BufferedInputStream(new FileInputStream(new File("/ecu_defs/subaru/wrx/A4SG900C.xml")));
             try {
                 RomTreeBuilder builder = new RomTreeBuilder();
                 RomDefinitionHandler handler = new RomDefinitionHandler(builder);
-                SaxParserFactory.getSaxParser().parse(inputStream, handler);
+                SaxParserFactory.getSaxParser().parse(inputStream1, handler);
+                SaxParserFactory.getSaxParser().parse(inputStream2, handler);
                 
                 System.out.println(builder.get(0));
                 
             } finally {
-                inputStream.close();
+                inputStream1.close();
+                inputStream2.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
