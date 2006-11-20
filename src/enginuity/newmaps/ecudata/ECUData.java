@@ -1,15 +1,15 @@
 package enginuity.newmaps.ecudata;
 
 import enginuity.util.Nameable;
+import java.io.Serializable;
 
-public abstract class ECUData implements Nameable {
+public abstract class ECUData implements Nameable, Serializable {
        
     protected String name;
     protected Scale scale;
     protected int address;
     protected int userLevel;
     protected String description;
-    private boolean isStatic;
     private boolean isAbstract;
     
     public ECUData() { }
@@ -60,14 +60,6 @@ public abstract class ECUData implements Nameable {
         this.description = description;
     }
 
-    public boolean isIsStatic() {
-        return isStatic;
-    }
-
-    public void setIsStatic(boolean isStatic) {
-        this.isStatic = isStatic;
-    }
-
     public boolean isIsAbstract() {
         return isAbstract;
     }
@@ -85,7 +77,7 @@ public abstract class ECUData implements Nameable {
             scaleName = "Not found";
         }
         
-        String output = "     --- Table: " + name + " ---" +
+        String output = "      --- Table: " + name + " ---" +
                 "\n      - Description: " + description +
                 "\n      - Scale: " + scaleName +
                 "\n      - Address: " + address +

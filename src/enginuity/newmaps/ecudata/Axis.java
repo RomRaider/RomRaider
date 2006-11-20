@@ -1,9 +1,8 @@
 package enginuity.newmaps.ecudata;
 
-import java.util.Iterator;
-import java.util.Vector;
+import java.io.Serializable;
 
-public class Axis extends ECUData {
+public class Axis extends ECUData implements Serializable {
     
     protected int size;
 
@@ -17,6 +16,24 @@ public class Axis extends ECUData {
 
     public void setSize(int size) {
         this.size = size;
+    }
+    
+    public String toString() { 
+        String scaleName = "";
+        
+        try {
+            scaleName = scale.getName();
+        } catch (NullPointerException ex) {
+            scaleName = "Not found";
+        }
+        
+        String output = "         --- Axis: " + name + " ---" +
+                "\n         - Scale: " + scaleName +
+                "\n         - Address: " + address;
+                
+        
+        return output;
+                       
     }
  
 }

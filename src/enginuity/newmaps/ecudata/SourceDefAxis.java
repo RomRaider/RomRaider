@@ -1,8 +1,9 @@
 package enginuity.newmaps.ecudata;
 
 import static enginuity.newmaps.definition.AttributeParser.parseValueString;
+import java.io.Serializable;
 
-public class SourceDefAxis extends Axis {
+public class SourceDefAxis extends Axis implements Serializable {
     
     private String[] values;
     

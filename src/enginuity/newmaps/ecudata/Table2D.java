@@ -1,6 +1,8 @@
 package enginuity.newmaps.ecudata;
 
-public class Table2D extends Axis {
+import java.io.Serializable;
+
+public class Table2D extends Axis implements Serializable {
     
     protected Axis axis;
     
@@ -14,6 +16,26 @@ public class Table2D extends Axis {
 
     public void setAxis(Axis axis) {
         this.axis = axis;
+    }
+    
+    public String toString() {
+        String scaleName = "";
+        
+        try {
+            scaleName = scale.getName();
+        } catch (NullPointerException ex) {
+            scaleName = "Not found";
+        }
+        
+        String output = "      --- Table: " + name + " ---" +
+                "\n      - Description: " + description +
+                "\n      - Scale: " + scaleName +
+                "\n      - Address: " + address +
+                "\n      - Userlevel: " + userLevel +
+                "\n" + axis;
+                
+                
+        return output;
     }
 
 }

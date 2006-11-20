@@ -1,8 +1,9 @@
 package enginuity.newmaps.ecudata;
 
 import enginuity.util.Nameable;
+import java.io.Serializable;
 
-public class Unit implements Nameable {
+public class Unit implements Nameable, Serializable {
     
     public static final int SYSTEM_STANDARD = 0;
     public static final int SYSTEM_METRIC = 1;

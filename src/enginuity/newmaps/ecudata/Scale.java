@@ -1,8 +1,9 @@
 package enginuity.newmaps.ecudata;
 
 import enginuity.util.Nameable;
+import java.io.Serializable;
 
-public class Scale implements Nameable {
+public class Scale implements Nameable, Serializable {
     
     public static final int ENDIAN_BIG = 0;
     public static final int ENDIAN_LITTLE = 1;
@@ -83,7 +84,7 @@ public class Scale implements Nameable {
     }
     
     public String toString() {
-        String output = "     --- SCALE: " + name + " ---" +
+        String output = "      --- SCALE: " + name + " ---" +
                 "\n      - Description: " + description +
                 "\n      - Storage Type: " + storageType +
                 "\n      - Endian: " + endian + 

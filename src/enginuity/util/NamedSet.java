@@ -1,12 +1,13 @@
 package enginuity.util;
 
 import enginuity.util.exception.NameableNotFoundException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
-public class NamedSet<E> implements Set<E> {
+public class NamedSet<E> implements Set<E>, Serializable {
     
     Vector<Nameable> objects = new Vector<Nameable>();
     

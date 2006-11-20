@@ -1,6 +1,8 @@
 package enginuity.newmaps.ecudata;
 
-public class Table3D extends ECUData {
+import java.io.Serializable;
+
+public class Table3D extends ECUData implements Serializable {
     
     protected Axis xaxis;
     protected Axis yaxis;
@@ -24,6 +26,12 @@ public class Table3D extends ECUData {
 
     public void setYaxis(Axis yaxis) {
         this.yaxis = yaxis;
+    }
+    
+    public String toString() {
+        return super.toString() + 
+                "\n" + xaxis + 
+                "\n" + yaxis;
     }
     
 }

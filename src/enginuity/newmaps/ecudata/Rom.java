@@ -2,9 +2,9 @@ package enginuity.newmaps.ecudata;
 
 import enginuity.util.Nameable;
 import enginuity.util.NamedSet;
-import enginuity.newmaps.ecudata.*;
+import java.io.Serializable;
 
-public class Rom implements Nameable {
+public class Rom implements Nameable, Serializable {
 
     private String name;
     private int idAddress;
@@ -99,7 +99,7 @@ public class Rom implements Nameable {
     }
     
     public String toString() {
-        String output = "--- ROM: " + name + " ---" +
+        String output = " --- ROM: " + name + " ---" +
                         "\n - ID Address: " + idAddress +
                         "\n - ID String: " + idString +
                         "\n - Descrption: " + description +

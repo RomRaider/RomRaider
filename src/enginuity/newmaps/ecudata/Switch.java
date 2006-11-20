@@ -1,6 +1,8 @@
 package enginuity.newmaps.ecudata;
 
-public class Switch extends ECUData {
+import java.io.Serializable;
+
+public class Switch extends ECUData implements Serializable {
     
     protected byte[] stateOn = new byte[1];
     protected byte[] stateOff = new byte[1];
@@ -34,4 +36,22 @@ public class Switch extends ECUData {
         this.stateOff = stateOff;
     }
     
+    public String toString() { 
+        String scaleName = "";
+        
+        try {
+            scaleName = scale.getName();
+        } catch (NullPointerException ex) {
+            scaleName = "Not found";
+        }
+        
+        String output = "      --- Switch: " + name + " ---" +
+                "\n      - Description: " + description +
+                "\n      - Address: " + address +
+                "\n      - Userlevel: " + userLevel;
+                
+        
+        return output;
+                       
+    }    
 }
