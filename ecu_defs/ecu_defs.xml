@@ -1,6 +1,6 @@
 <roms>
 
-<!-- ENGINUITY STANDARD UNITS ECU DEFINITION FILE (VERSION .781b 11-10-06) -->
+<!-- ENGINUITY STANDARD UNITS ECU DEFINITION FILE (VERSION .782b 11-20-06) -->
 
    <rom>
       <romid>
@@ -491,7 +491,7 @@
 </table>
 
  <table type="3D" name="Base Ignition Timing" category="Timing" subcategory="Base" storagetype="uint8" endian="big" sizex="16" sizey="15" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="16" logparam="P200"> 
     <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -502,7 +502,7 @@
  </table>
 
  <table type="3D" name="Base Ignition Timing A" category="Timing" subcategory="Base" storagetype="uint8" endian="big" sizex="16" sizey="15" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="16" logparam="P200"> 
     <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -513,7 +513,7 @@
  </table>
 
  <table type="3D" name="Base Ignition Timing B" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="15" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="16" logparam="P200"> 
     <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -524,7 +524,7 @@
  </table> 
 
  <table type="3D" name="Ignition Correction" category="Timing" storagetype="uint8" endian="big" sizex="13" sizey="16" userlevel="1"> 
-     <scaling units="Timing (degrees BTDC)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
+     <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
      <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="13" logparam="P200"> 
      <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" /> 
      </table> 
@@ -535,7 +535,7 @@
  </table>
       
  <table type="3D" name="Ignition Correction A" category="Timing" storagetype="uint8" endian="big" sizex="13" sizey="16" userlevel="1"> 
-     <scaling units="Timing (degrees BTDC)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
+     <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
      <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="13" logparam="P200"> 
      <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" /> 
      </table> 
@@ -546,7 +546,7 @@
  </table>
 
  <table type="3D" name="Ignition Correction B" category="Timing" storagetype="uint8" endian="big" sizex="13" sizey="16" userlevel="1"> 
-     <scaling units="Timing (degrees BTDC)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
+     <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
      <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="13" logparam="P200"> 
      <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" /> 
      </table> 
@@ -568,7 +568,7 @@
  </table>
 
 <table type="2D" name="Timing Compensation (Intake Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="4"> 
-	<scaling units="Ignition Timing Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
       <table type="Static Y Axis" name="Intake Temperature (F)" endian="big" sizey="16" logparam="P11">
 	<data>-40</data>
 	<data>-22</data>
@@ -587,7 +587,7 @@
 	<data>212</data>
 	<data>230</data>
       </table>
-	<description>This is the percent change of actual ignition timing based on input from the air intake temperature sensor.</description> 
+	<description>This is the change in degrees of ignition timing based on input from the air intake temperature sensor.</description> 
 </table>
 
 <table type="1D" name="Timing Comp Min Load (Intake Temp)" category="Timing" storagetype="uint16" endian="big" sizey="1" userlevel="4"> 
@@ -596,7 +596,7 @@
 </table>
 
 <table type="2D" name="Timing Compensation (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="4"> 
-	<scaling units="Ignition Timing Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
       <table type="Static Y Axis" name="Coolant Temperature (F)" endian="big" sizey="16" logparam="P2">
 	<data>-40</data>
 	<data>-22</data>
@@ -615,11 +615,11 @@
 	<data>212</data>
 	<data>230</data>
       </table>
-	<description>This is the percent change of actual ignition timing based on input from the coolant temp sensor.</description> 
+	<description>This is the change in degrees of ignition timing based on input from the coolant temp sensor.</description> 
 </table>
 
 <table type="2D" name="Timing Compensation Idle (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="4"> 
-	<scaling units="Ignition Timing Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
       <table type="Static Y Axis" name="Coolant Temperature (F)" endian="big" sizey="16" logparam="P2">
 	<data>-40</data>
 	<data>-22</data>
@@ -638,11 +638,11 @@
 	<data>212</data>
 	<data>230</data>
       </table>
-	<description>This is the percent change of actual ignition timing at idle based on input from the coolant temp sensor.</description> 
+	<description>This is the change in degrees of ignition timing at idle based on input from the coolant temp sensor.</description> 
 </table>
 
 <table type="2D" name="Timing Compensation Idle A (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="4"> 
-	<scaling units="Ignition Timing Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
       <table type="Static Y Axis" name="Coolant Temperature (F)" endian="big" sizey="16" logparam="P2">
 	<data>-40</data>
 	<data>-22</data>
@@ -661,20 +661,20 @@
 	<data>212</data>
 	<data>230</data>
       </table>
-	<description>This is the percent change of actual ignition timing at idle based on input from the coolant temp sensor.</description> 
+	<description>This is the change in degrees of ignition timing at idle based on input from the coolant temp sensor.</description> 
 </table>
 
 <table type="2D" name="Timing Compensation Idle A (Coolant Temp) " category="Timing" storagetype="uint8" endian="big" sizey="2" userlevel="4"> 
-	<scaling units="Ignition Timing Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
       <table type="Static Y Axis" name="Coolant Temperature (F)" endian="big" sizey="2" logparam="P2">
 	<data>-40</data>
 	<data>104</data>
       </table>
-	<description>This is the percent change of actual ignition timing at idle based on input from the coolant temp sensor.</description> 
+	<description>This is the change in degrees of ignition timing at idle based on input from the coolant temp sensor.</description> 
 </table>
 
 <table type="2D" name="Timing Compensation Idle B (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="4"> 
-	<scaling units="Ignition Timing Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
       <table type="Static Y Axis" name="Coolant Temperature (F)" endian="big" sizey="16" logparam="P2">
 	<data>-40</data>
 	<data>-22</data>
@@ -693,7 +693,7 @@
 	<data>212</data>
 	<data>230</data>
       </table>
-	<description>This is the percent change of actual ignition timing at idle based on input from the coolant temp sensor.</description> 
+	<description>This is the change in degrees of ignition timing at idle based on input from the coolant temp sensor.</description> 
 </table>
 
 <table type="1D" name="Advance Multiplier (Initial)" category="Timing" storagetype="uint8" endian="big" sizey="1" userlevel="3"> 
@@ -813,7 +813,7 @@
 </table>
 
 <table type="1D" name="Fine Correction Magnitude (Increasing)" category="Knock" storagetype="uint8" endian="big" sizey="1" userlevel="4">
-	<scaling units="degrees BTDC of correction" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="degrees of correction" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
 	<description>The step value for each fine correction advance event.</description>
 </table>
 
@@ -873,7 +873,7 @@
  </table>
 
  <table type="1D" name="Rev Limit (Ign Retard)" category="Misc" storagetype="uint8" endian="big" sizey="1" userlevel="4">
-	<scaling units="degrees BTDC" expression="x*.3515625" to_byte="x/.3515625" format="#.00" fineincrement=".2" coarseincrement="1" />
+	<scaling units="degrees" expression="x*.3515625" to_byte="x/.3515625" format="#.00" fineincrement=".2" coarseincrement="1" />
 	<description>Degrees of ignition timing to retard when hitting the rev limiter.</description>
  </table>
 
@@ -3114,6 +3114,21 @@
       <table name="(P1700) TPS CIRCUIT MALFUNCTION (AT)" storageaddress="0x2C885"/>
       <table name="(P1711) ENGINE TORQUE SIGNAL #1 MALFUNCTION" storageaddress="0x2C9ED"/>
       <table name="(P1712) ENGINE TORQUE SIGNAL #2 MALFUNCTION" storageaddress="0x2C9F1"/>
+
+</rom>
+
+<rom base="A4TC300L">
+      <romid>
+         <xmlid>A4TC300K</xmlid>
+         <internalidaddress>200</internalidaddress>
+         <internalidstring>A4TC300K</internalidstring>
+         <year>03</year>
+         <transmission>AT</transmission>
+	   <caseid>AJ041</caseid>
+         <obsolete>false</obsolete>
+      </romid>
+
+      <table name="Misfire DTC Threshold" storageaddress="0x2BC3C" />
 
 </rom>
 
@@ -11482,7 +11497,7 @@
 </table>
 
  <table type="3D" name="Base Ignition Timing A" category="Timing" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200"> 
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -11493,7 +11508,7 @@
  </table>
 
  <table type="3D" name="Base Ignition Timing B" category="Timing" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200"> 
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -11504,7 +11519,7 @@
  </table>
 
  <table type="3D" name="Base Ignition Timing C" category="Timing" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200"> 
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -11515,7 +11530,7 @@
  </table>
 
  <table type="3D" name="Base Ignition Timing D" category="Timing" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200"> 
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -11526,7 +11541,7 @@
  </table>
 
  <table type="3D" name="Base Ignition Timing E" category="Timing" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200"> 
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -11537,7 +11552,7 @@
  </table>
 
  <table type="3D" name="Base Ignition Timing F" category="Timing" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200"> 
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -11548,7 +11563,7 @@
  </table>
 
  <table type="3D" name="Base Ignition Timing G" category="Timing" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1"> 
-    <scaling units="Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
+    <scaling units="Timing (degrees)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" increment="1" /> 
     <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200"> 
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
     </table> 
@@ -11559,7 +11574,7 @@
  </table>
 
  <table type="3D" name="Ignition Correction A" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1"> 
-     <scaling units="Timing (degrees BTDC)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" /> 
+     <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" /> 
      <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="16" logparam="P200"> 
      <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
      </table> 
@@ -11570,7 +11585,7 @@
  </table>
 
  <table type="3D" name="Ignition Correction B" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1"> 
-     <scaling units="Timing (degrees BTDC)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" /> 
+     <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" /> 
      <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="16" logparam="P200"> 
      <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
      </table> 
@@ -11581,7 +11596,7 @@
  </table>
 
  <table type="3D" name="Ignition Correction C" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1"> 
-     <scaling units="Timing (degrees BTDC)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" /> 
+     <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" /> 
      <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="16" logparam="P200"> 
      <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
      </table> 
@@ -11592,7 +11607,7 @@
  </table>
 
  <table type="3D" name="Ignition Correction D" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1"> 
-     <scaling units="Timing (degrees BTDC)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" /> 
+     <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" /> 
      <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="16" logparam="P200"> 
      <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" /> 
      </table> 
@@ -11666,11 +11681,11 @@
 </table>
 
 <table type="2D" name="Timing Compensation (Intake Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="4"> 
-	<scaling units="Ignition Timing Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
 	<table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" sizey="16" logparam="P11"> 
       <scaling units="F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" /> 
       </table>
-	<description>This is the percent change of ignition timing based on input from the air intake temperature sensor.</description> 
+	<description>This is the change in degrees of ignition timing based on input from the air intake temperature sensor.</description> 
 </table>
 
 <table type="1D" name="Timing Comp Min Load (Intake Temp)" category="Timing" storagetype="float" endian="little" sizey="1" userlevel="4"> 
@@ -11679,11 +11694,11 @@
 </table>
 
 <table type="2D" name="Timing Compensation (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="4"> 
-	<scaling units="Ignition Timing Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".1" coarseincrement="1" />
 	<table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" sizey="16" logparam="P2"> 
       <scaling units="F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" /> 
       </table>
-	<description>This is the percent change of ignition timing based on input from the coolant temperature sensor.</description> 
+	<description>This is the change in degrees of ignition timing based on input from the coolant temperature sensor.</description> 
 </table>
 
  <table type="2D" name="Knock Detection Range (RPM)" category="Knock" storagetype="float" endian="little" sizey="4" userlevel="4"> 
@@ -11771,7 +11786,7 @@
 </table>
 	
 <table type="1D" name="Fine Correction Magnitude (Increasing)" category="Knock" storagetype="float" endian="little" sizey="1" userlevel="4">
-	<scaling units="degrees BTDC of correction" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
+	<scaling units="degrees of correction" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
 	<description>The step value for each fine correction advance event. This table impacts the active ignition timing performed by your ecu. Do not modify unless you fully understand this process.</description>
 </table>
 
@@ -20638,130 +20653,130 @@
           <state name="off" data="00 00 00 00 00 00 00 00 5A A5 A5 5A" />	
 	</table>
 
-	<table name="Fuel A" storageaddress="0xC99DC" sizex="11" sizey="20">
+	<table name="Fuel A" storageaddress="0xC99DC" sizex="11" sizey="20" userlevel="5">
          <table type="X Axis" storageaddress="0xC9960" />
          <table type="Y Axis" storageaddress="0xC998C" />
       </table>
       
-      <table name="Fuel B" storageaddress="0xC9B34" sizex="11" sizey="20"> 
+      <table name="Fuel B" storageaddress="0xC9B34" sizex="11" sizey="20" userlevel="5"> 
          <table type="X Axis" storageaddress="0xC9AB8" />
          <table type="Y Axis" storageaddress="0xC9AE4" />
       </table>
 
-      <table name="Throttle Enrichment (Tip-in) A" storageaddress="0xC8D1C">
+      <table name="Throttle Enrichment (Tip-in) A" storageaddress="0xC8D1C" userlevel="5">
 	<table type="Y Axis" storageaddress="0xC8CD4" />
 	</table>
 
-      <table name="Throttle Enrichment (Tip-in) B" storageaddress="0xC8D88">
+      <table name="Throttle Enrichment (Tip-in) B" storageaddress="0xC8D88" userlevel="5">
 	<table type="Y Axis" storageaddress="0xC8D40" />
 	</table>
 
-	<table name="Base Ignition Timing A" storageaddress="0xCBA84" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing A" storageaddress="0xCBA84" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCBA00" /> 
          <table type="Y Axis" storageaddress="0xCBA38" /> 
       </table>  
 
-	<table name="Base Ignition Timing B" storageaddress="0xCBB8E" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing B" storageaddress="0xCBB8E" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCACFC" /> 
          <table type="Y Axis" storageaddress="0xCAD34" /> 
       </table>  
 
-	<table name="Base Ignition Timing C" storageaddress="0xCBC98" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing C" storageaddress="0xCBC98" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCACFC" /> 
          <table type="Y Axis" storageaddress="0xCAD34" /> 
       </table>  
 
-	<table name="Base Ignition Timing D" storageaddress="0xCBDA2" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing D" storageaddress="0xCBDA2" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCACFC" /> 
          <table type="Y Axis" storageaddress="0xCAD34" /> 
       </table>  
 
-	<table name="Base Ignition Timing E" storageaddress="0xCBEAC" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing E" storageaddress="0xCBEAC" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCACFC" /> 
          <table type="Y Axis" storageaddress="0xCAD34" /> 
       </table>  
 
-	<table name="Base Ignition Timing F" storageaddress="0xCBFB6" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing F" storageaddress="0xCBFB6" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCACFC" /> 
          <table type="Y Axis" storageaddress="0xCAD34" /> 
       </table>  
 
-	<table name="Base Ignition Timing G" storageaddress="0xCC0C0" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing G" storageaddress="0xCC0C0" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCACFC" /> 
          <table type="Y Axis" storageaddress="0xCAD34" /> 
       </table>  
            
-      <table name="Ignition Correction A" storageaddress="0xCC51C" sizex="14" sizey="19">
+      <table name="Ignition Correction A" storageaddress="0xCC51C" sizex="14" sizey="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCC498" />
          <table type="Y Axis" storageaddress="0xCC4D0" />
       </table>
 	
-      <table name="Ignition Correction B" storageaddress="0xCC6AC" sizex="14" sizey="19">
+      <table name="Ignition Correction B" storageaddress="0xCC6AC" sizex="14" sizey="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCC628" />
          <table type="Y Axis" storageaddress="0xCC660" />
       </table>
 
-	<table name="Timing Compensation (Intake Temp)" storageaddress="0xCB1A4">
+	<table name="Timing Compensation (Intake Temp)" storageaddress="0xCB1A4" userlevel="5">
         <table type="Y Axis" storageaddress="0xCB164" />
       </table>
 
-      <table name="MAF Sensor Scaling (1)" storageaddress="0xC10C0" sizey="16" >
+      <table name="MAF Sensor Scaling (1)" storageaddress="0xC10C0" sizey="16" userlevel="5">
          <table type="Y Axis" storageaddress="0xC1000" />
       </table>
 
-      <table name="MAF Sensor Scaling (2)" storageaddress="0xC1100" sizey="16" >
+      <table name="MAF Sensor Scaling (2)" storageaddress="0xC1100" sizey="16" userlevel="5">
          <table type="Y Axis" storageaddress="0xC1040" />
       </table>
 
-      <table name="MAF Sensor Scaling (3)" storageaddress="0xC1140" sizey="16" >
+      <table name="MAF Sensor Scaling (3)" storageaddress="0xC1140" sizey="16" userlevel="5">
          <table type="Y Axis" storageaddress="0xC1080" />
       </table>
 
-      <table name="Idle Speed A (Coolant Temp)" storageaddress="0xCD400" >
+      <table name="Idle Speed A (Coolant Temp)" storageaddress="0xCD400" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-      <table name="Idle Speed B (Coolant Temp)" storageaddress="0xCD420" >
+      <table name="Idle Speed B (Coolant Temp)" storageaddress="0xCD420" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-      <table name="Idle Speed C (Coolant Temp)" storageaddress="0xCD440" >
+      <table name="Idle Speed C (Coolant Temp)" storageaddress="0xCD440" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-      <table name="Idle Speed D (Coolant Temp)" storageaddress="0xCD460" >
+      <table name="Idle Speed D (Coolant Temp)" storageaddress="0xCD460" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-      <table name="Idle Speed E (Coolant Temp)" storageaddress="0xCD480" >
+      <table name="Idle Speed E (Coolant Temp)" storageaddress="0xCD480" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-      <table name="Idle Speed F (Coolant Temp)" storageaddress="0xCD4A0" >
+      <table name="Idle Speed F (Coolant Temp)" storageaddress="0xCD4A0" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-      <table name="Idle Speed G (Coolant Temp)" storageaddress="0xCD4C0" >
+      <table name="Idle Speed G (Coolant Temp)" storageaddress="0xCD4C0" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-      <table name="Idle Speed H (Coolant Temp)" storageaddress="0xCD4E0" >
+      <table name="Idle Speed H (Coolant Temp)" storageaddress="0xCD4E0" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-      <table name="Idle Speed I (Coolant Temp)" storageaddress="0xCD500" >
+      <table name="Idle Speed I (Coolant Temp)" storageaddress="0xCD500" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-      <table name="Idle Speed J (Coolant Temp)" storageaddress="0xCD520" >
+      <table name="Idle Speed J (Coolant Temp)" storageaddress="0xCD520" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCCD0C" />
 	</table>
 
-	<table name="Closed Loop Calculated Load" storageaddress="0xC8AD4" >
+	<table name="Closed Loop Calculated Load" storageaddress="0xC8AD4" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xC8A94" />
 	</table>
 
-      <table name="Closed Loop Throttle (Primary)" storageaddress="0xC7CF8">
+      <table name="Closed Loop Throttle (Primary)" storageaddress="0xC7CF8" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xC7CB8" />
 	</table>
 
@@ -20973,148 +20988,148 @@
           <state name="off" data="00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A" />	
 	</table>
 
-	<table name="Fuel A" storageaddress="0xC9B54" sizex="11" sizey="20">
+	<table name="Fuel A" storageaddress="0xC9B54" sizex="11" sizey="20" userlevel="5">
          <table type="X Axis" storageaddress="0xC9AD8" />
          <table type="Y Axis" storageaddress="0xC9B04" />
       </table>
       
-      <table name="Fuel B" storageaddress="0xC9CAC" sizex="11" sizey="20"> 
+      <table name="Fuel B" storageaddress="0xC9CAC" sizex="11" sizey="20" userlevel="5"> 
          <table type="X Axis" storageaddress="0xC9C30" />
          <table type="Y Axis" storageaddress="0xC9C5C" />
       </table>
 
-      <table name="Throttle Enrichment (Tip-in) A" storageaddress="0xC9110">
+      <table name="Throttle Enrichment (Tip-in) A" storageaddress="0xC9110" userlevel="5">
 	<table type="Y Axis" storageaddress="0xC90C8" />
 	</table>
 
-      <table name="Throttle Enrichment (Tip-in) B" storageaddress="0xC917C">
+      <table name="Throttle Enrichment (Tip-in) B" storageaddress="0xC917C" userlevel="5">
 	<table type="Y Axis" storageaddress="0xC9134" />
 	</table>
 
-	<table name="Base Ignition Timing A" storageaddress="0xCC6B0" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing A" storageaddress="0xCC6B0" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCB5E0" /> 
          <table type="Y Axis" storageaddress="0xCB618" /> 
       </table>  
 
-	<table name="Base Ignition Timing B" storageaddress="0xCC7BA" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing B" storageaddress="0xCC7BA" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCB5E0" /> 
          <table type="Y Axis" storageaddress="0xCB618" /> 
       </table>  
 
-	<table name="Base Ignition Timing C" storageaddress="0xCC8C4" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing C" storageaddress="0xCC8C4" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCB5E0" /> 
          <table type="Y Axis" storageaddress="0xCB618" /> 
       </table>  
 
-	<table name="Base Ignition Timing D" storageaddress="0xCC9CE" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing D" storageaddress="0xCC9CE" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCB5E0" /> 
          <table type="Y Axis" storageaddress="0xCB618" /> 
       </table>  
 
-	<table name="Base Ignition Timing E" storageaddress="0xCCAD8" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing E" storageaddress="0xCCAD8" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCB5E0" /> 
          <table type="Y Axis" storageaddress="0xCB618" /> 
       </table>  
 
-	<table name="Base Ignition Timing F" storageaddress="0xCCBE2" sizex="14" sizey="19"> 
+	<table name="Base Ignition Timing F" storageaddress="0xCCBE2" sizex="14" sizey="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCB5E0" /> 
          <table type="Y Axis" storageaddress="0xCB618" /> 
       </table>  
            
-      <table name="Ignition Correction A" storageaddress="0xCD03C" sizex="14" sizey="19">
+      <table name="Ignition Correction A" storageaddress="0xCD03C" sizex="14" sizey="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCCFB8" />
          <table type="Y Axis" storageaddress="0xCCFF0" />
       </table>
 	
-      <table name="Ignition Correction B" storageaddress="0xCD1CC" sizex="14" sizey="19">
+      <table name="Ignition Correction B" storageaddress="0xCD1CC" sizex="14" sizey="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCD148" />
          <table type="Y Axis" storageaddress="0xCD180" />
       </table>
 
-	<table name="Timing Compensation (Intake Temp)" storageaddress="0xCBAB8">
+	<table name="Timing Compensation (Intake Temp)" storageaddress="0xCBAB8" userlevel="5">
         <table type="Y Axis" storageaddress="0xCBA78" />
       </table>
 
-      <table name="MAF Sensor Scaling (1)" storageaddress="0xCF728" sizey="16" >
+      <table name="MAF Sensor Scaling (1)" storageaddress="0xCF728" sizey="16" userlevel="5">
          <table type="Y Axis" storageaddress="0xCF668" />
       </table>
 
-      <table name="MAF Sensor Scaling (2)" storageaddress="0xCF768" sizey="16" >
+      <table name="MAF Sensor Scaling (2)" storageaddress="0xCF768" sizey="16" userlevel="5">
          <table type="Y Axis" storageaddress="0xCF6A8" />
       </table>
 
-      <table name="MAF Sensor Scaling (3)" storageaddress="0xCF7A8" sizey="16" >
+      <table name="MAF Sensor Scaling (3)" storageaddress="0xCF7A8" sizey="16" userlevel="5">
          <table type="Y Axis" storageaddress="0xCF6E8" />
       </table>
 
-	<table name="Throttle Actuator Duty A" storageaddress="0xDE2B4" sizex="17" sizey="22">
+	<table name="Throttle Actuator Duty A" storageaddress="0xDE2B4" sizex="17" sizey="22" userlevel="5">
          <table type="X Axis" storageaddress="0xDE218" />
          <table type="Y Axis" storageaddress="0xDE25C" />
       </table>
 
-	<table name="Throttle Actuator Duty B" storageaddress="0xDE63C" sizex="17" sizey="22">
+	<table name="Throttle Actuator Duty B" storageaddress="0xDE63C" sizex="17" sizey="22" userlevel="5">
          <table type="X Axis" storageaddress="0xDE5A0" />
          <table type="Y Axis" storageaddress="0xDE5E4" />
       </table>
 
-	<table name="Throttle Actuator Duty C" storageaddress="0xDE9C4" sizex="17" sizey="22">
+	<table name="Throttle Actuator Duty C" storageaddress="0xDE9C4" sizex="17" sizey="22" userlevel="5">
          <table type="X Axis" storageaddress="0xDE928" />
          <table type="Y Axis" storageaddress="0xDE96C" />
       </table>
 
-      <table name="Idle Speed A (Coolant Temp)" storageaddress="0xCDDA4" >
+      <table name="Idle Speed A (Coolant Temp)" storageaddress="0xCDDA4" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed B (Coolant Temp)" storageaddress="0xCDDC4" >
+      <table name="Idle Speed B (Coolant Temp)" storageaddress="0xCDDC4" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed C (Coolant Temp)" storageaddress="0xCDDE4" >
+      <table name="Idle Speed C (Coolant Temp)" storageaddress="0xCDDE4" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed D (Coolant Temp)" storageaddress="0xCDE04" >
+      <table name="Idle Speed D (Coolant Temp)" storageaddress="0xCDE04" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed E (Coolant Temp)" storageaddress="0xCDE24" >
+      <table name="Idle Speed E (Coolant Temp)" storageaddress="0xCDE24" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed F (Coolant Temp)" storageaddress="0xCDE44" >
+      <table name="Idle Speed F (Coolant Temp)" storageaddress="0xCDE44" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed G (Coolant Temp)" storageaddress="0xCDE64" >
+      <table name="Idle Speed G (Coolant Temp)" storageaddress="0xCDE64" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed H (Coolant Temp)" storageaddress="0xCDE84" >
+      <table name="Idle Speed H (Coolant Temp)" storageaddress="0xCDE84" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed I (Coolant Temp)" storageaddress="0xCDEA4" >
+      <table name="Idle Speed I (Coolant Temp)" storageaddress="0xCDEA4" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed J (Coolant Temp)" storageaddress="0xCDEC4" >
+      <table name="Idle Speed J (Coolant Temp)" storageaddress="0xCDEC4" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed K (Coolant Temp)" storageaddress="0xCDEE4" >
+      <table name="Idle Speed K (Coolant Temp)" storageaddress="0xCDEE4" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-      <table name="Idle Speed L (Coolant Temp)" storageaddress="0xCDF04" >
+      <table name="Idle Speed L (Coolant Temp)" storageaddress="0xCDF04" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCD800" />
 	</table>
 
-	<table name="Closed Loop Calculated Load" storageaddress="0xC8A90" >
+	<table name="Closed Loop Calculated Load" storageaddress="0xC8A90" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xC8A50" />
 	</table>
 
-      <table name="Closed Loop Throttle (Primary)" storageaddress="0xC7728">
+      <table name="Closed Loop Throttle (Primary)" storageaddress="0xC7728" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xC76E8" />
 	</table>
 
@@ -23270,356 +23285,356 @@
           <state name="off" data="00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A 00 00 00 00 00 00 00 00 5A A5 A5 5A" />	
 	</table>
 
-      <table name="Target Boost A" storageaddress="0xC0E34" sizey="14">
+      <table name="Target Boost A" storageaddress="0xC0E34" sizey="14" userlevel="5">
          <table type="X Axis" storageaddress="0xC0DDC" />
          <table type="Y Axis" storageaddress="0xC0DFC" />
       </table>
 
-	<table name="Target Boost B" storageaddress="0xC0F24" sizex="2" sizey="2"  userlevel="4">
+	<table name="Target Boost B" storageaddress="0xC0F24" sizex="2" sizey="2" userlevel="5">
          <table type="X Axis" storageaddress="0xC0F14" />
          <table type="Y Axis" storageaddress="0xC0F1C" />
       </table>
 
-	<table name="Target Boost C" storageaddress="0xC0F84" sizey="14">
+	<table name="Target Boost C" storageaddress="0xC0F84" sizey="14" userlevel="5">
          <table type="X Axis" storageaddress="0xC0F2C" />
          <table type="Y Axis" storageaddress="0xC0F4C" />
       </table>
 
-	<table name="Target Boost D" storageaddress="0xC1074" sizex="2" sizey="2"  userlevel="4">
+	<table name="Target Boost D" storageaddress="0xC1074" sizex="2" sizey="2" userlevel="5">
          <table type="X Axis" storageaddress="0xC1064" />
          <table type="Y Axis" storageaddress="0xC106C" />
       </table>
 
-	<table name="Target Boost E" storageaddress="0xC108C" sizex="2" sizey="2"  userlevel="4">
+	<table name="Target Boost E" storageaddress="0xC108C" sizex="2" sizey="2" userlevel="5">
          <table type="X Axis" storageaddress="0xC107C" />
          <table type="Y Axis" storageaddress="0xC1084" />
       </table>
 
-	<table name="Target Boost F" storageaddress="0xC10EC" sizey="14">
+	<table name="Target Boost F" storageaddress="0xC10EC" sizey="14" userlevel="5">
          <table type="X Axis" storageaddress="0xC1094" />
          <table type="Y Axis" storageaddress="0xC10B4" />
       </table>
 
-      <table name="Boost Limit (Fuel Cut)" storageaddress="0xCA300" >
+      <table name="Boost Limit (Fuel Cut)" storageaddress="0xCA300" userlevel="5">
  	   <table type="Y Axis" storageaddress="0xCA2E8" />
       </table>
 
-      <table name="Low Speed Boost Compensation" storageaddress="0xC063C" />
-      <table name="Low Speed Boost (Maximum Speed)" storageaddress="0xC0638" />
+      <table name="Low Speed Boost Compensation" storageaddress="0xC063C" userlevel="5"/>
+      <table name="Low Speed Boost (Maximum Speed)" storageaddress="0xC0638" userlevel="5"/>
 
-	<table name="Boost Compensation A (Coolant Temp)" storageaddress="0xC07DC" >
+	<table name="Boost Compensation A (Coolant Temp)" storageaddress="0xC07DC" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xC0644" />
 	</table>
 
-	<table name="Boost Compensation B (Coolant Temp)" storageaddress="0xC07EC" >
+	<table name="Boost Compensation B (Coolant Temp)" storageaddress="0xC07EC" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xC0644" />
 	</table>
 
-	<table name="Initial Wastegate Duty A" storageaddress="0xC0AEC" sizex="2" sizey="2"  userlevel="4">
+	<table name="Initial Wastegate Duty A" storageaddress="0xC0AEC" sizex="2" sizey="2" userlevel="5">
          <table type="X Axis" storageaddress="0xC0ADC" />
          <table type="Y Axis" storageaddress="0xC0AE4" />
       </table>
 
-	<table name="Initial Wastegate Duty B" storageaddress="0xC0B3C" sizey="10">
+	<table name="Initial Wastegate Duty B" storageaddress="0xC0B3C" sizey="10" userlevel="5">
          <table type="X Axis" storageaddress="0xC0AF4" />
          <table type="Y Axis" storageaddress="0xC0B14" />
       </table>
 
-	<table name="Initial Wastegate Duty C" storageaddress="0xC0BEC" sizex="2" sizey="2"  userlevel="4">
+	<table name="Initial Wastegate Duty C" storageaddress="0xC0BEC" sizex="2" sizey="2" userlevel="5">
          <table type="X Axis" storageaddress="0xC0BDC" />
          <table type="Y Axis" storageaddress="0xC0BE4" />
       </table>
 
-	<table name="Initial Wastegate Duty D" storageaddress="0xC0C3C" sizey="10">
+	<table name="Initial Wastegate Duty D" storageaddress="0xC0C3C" sizey="10" userlevel="5">
          <table type="X Axis" storageaddress="0xC0BF4" />
          <table type="Y Axis" storageaddress="0xC0C14" />
       </table>
 
-	<table name="Initial Wastegate Duty E" storageaddress="0xC0CEC" sizex="2" sizey="2"  userlevel="4">
+	<table name="Initial Wastegate Duty E" storageaddress="0xC0CEC" sizex="2" sizey="2" userlevel="5">
          <table type="X Axis" storageaddress="0xC0CDC" />
          <table type="Y Axis" storageaddress="0xC0CE4" />
       </table>
 
-	<table name="Initial Wastegate Duty F" storageaddress="0xC0D3C" sizey="10">
+	<table name="Initial Wastegate Duty F" storageaddress="0xC0D3C" sizey="10" userlevel="5">
          <table type="X Axis" storageaddress="0xC0CF4" />
          <table type="Y Axis" storageaddress="0xC0D14" />
       </table>
 
-	<table name="Max Wastegate Duty A" storageaddress="0xC09EC" sizex="2" sizey="2"  userlevel="4">
+	<table name="Max Wastegate Duty A" storageaddress="0xC09EC" sizex="2" sizey="2" userlevel="5">
          <table type="X Axis" storageaddress="0xC09DC" />
          <table type="Y Axis" storageaddress="0xC09E4" />
       </table>
 
-	<table name="Max Wastegate Duty B" storageaddress="0xC0A3C" sizey="10">
+	<table name="Max Wastegate Duty B" storageaddress="0xC0A3C" sizey="10" userlevel="5">
          <table type="X Axis" storageaddress="0xC09F4" />
          <table type="Y Axis" storageaddress="0xC0A14" />
       </table>
 
-      <table name="Wastegate Duty A (RPM)" storageaddress="0xC0924" >
+      <table name="Wastegate Duty A (RPM)" storageaddress="0xC0924" userlevel="5">
          <table type="Y Axis" storageaddress="0xC0910" /> 
       </table>
 
-      <table name="Wastegate Duty B (RPM)" storageaddress="0xC094C" >
+      <table name="Wastegate Duty B (RPM)" storageaddress="0xC094C" userlevel="5">
          <table type="Y Axis" storageaddress="0xC0938" /> 
       </table>
 
-      <table name="Wastegate Duty C (RPM)" storageaddress="0xC0974" >
+      <table name="Wastegate Duty C (RPM)" storageaddress="0xC0974" userlevel="5">
          <table type="Y Axis" storageaddress="0xC0960" /> 
       </table>
 
-      <table name="Turbo Dynamics (Integral Positive)" storageaddress="0xC08FC"> 
+      <table name="Turbo Dynamics (Integral Positive)" storageaddress="0xC08FC" userlevel="5"> 
          <table type="Y Axis" storageaddress="0xC08D8" /> 
       </table>
 
-      <table name="Turbo Dynamics (Integral Negative)" storageaddress="0xC08C4"> 
+      <table name="Turbo Dynamics (Integral Negative)" storageaddress="0xC08C4" userlevel="5"> 
          <table type="Y Axis" storageaddress="0xC08A0" /> 
       </table>
 
-      <table name="Turbo Dynamics (Proportional Gain)" storageaddress="0xC088C"> 
+      <table name="Turbo Dynamics (Proportional Gain)" storageaddress="0xC088C" userlevel="5"> 
          <table type="Y Axis" storageaddress="0xC0868" /> 
       </table>
 
-      <table name="Wastegate Compensation A (Intake Temp)" storageaddress="0xC068C" sizey="2" >
+      <table name="Wastegate Compensation A (Intake Temp)" storageaddress="0xC068C" sizey="2" userlevel="5" >
          <table type="Y Axis" storageaddress="0xC0684" /> 
       </table>
 
-      <table name="Wastegate Compensation B (Intake Temp)" storageaddress="0xC06D0" >
+      <table name="Wastegate Compensation B (Intake Temp)" storageaddress="0xC06D0" userlevel="5" >
          <table type="Y Axis" storageaddress="0xC0690" /> 
       </table>
 
-      <table name="Wastegate Compensation C (Intake Temp)" storageaddress="0xC0720" >
+      <table name="Wastegate Compensation C (Intake Temp)" storageaddress="0xC0720" userlevel="5">
          <table type="Y Axis" storageaddress="0xC06E0" /> 
       </table>
 
-      <table name="Wastegate Compensation D (Intake Temp)" storageaddress="0xC0770" >
+      <table name="Wastegate Compensation D (Intake Temp)" storageaddress="0xC0770" userlevel="5">
          <table type="Y Axis" storageaddress="0xC0730" /> 
       </table>
 
-	<table name="Wastegate Compensation A (Coolant Temp)" storageaddress="0xC0780" >
+	<table name="Wastegate Compensation A (Coolant Temp)" storageaddress="0xC0780" userlevel="5">
          <table type="Y Axis" storageaddress="0xC0644" /> 
       </table>
 
-	<table name="Wastegate Compensation B (Coolant Temp)" storageaddress="0xC0790" >
+	<table name="Wastegate Compensation B (Coolant Temp)" storageaddress="0xC0790" userlevel="5">
          <table type="Y Axis" storageaddress="0xC0644" /> 
       </table>
 
-	<table name="Wastegate Compensation A (Atmosphere)" storageaddress="0xC0998" sizex="2" sizey="2"  userlevel="4"> 
+	<table name="Wastegate Compensation A (Atmosphere)" storageaddress="0xC0998" sizex="2" sizey="2" userlevel="5"> 
          <table type="X Axis" storageaddress="0xC0988" /> 
          <table type="Y Axis" storageaddress="0xC0990" /> 
       </table>
   
-	<table name="Wastegate Compensation B (Atmosphere)" storageaddress="0xC09C4"> 
+	<table name="Wastegate Compensation B (Atmosphere)" storageaddress="0xC09C4" userlevel="5"> 
          <table type="X Axis" storageaddress="0xC099C" /> 
          <table type="Y Axis" storageaddress="0xC09B4" /> 
       </table>
 
-      <table name="Low Detonation Fuel A" storageaddress="0xCA98C" sizex="19">
+      <table name="Low Detonation Fuel A" storageaddress="0xCA98C" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCA8F8" />
          <table type="Y Axis" storageaddress="0xCA944" />
       </table>
 
-	<table name="Low Detonation Fuel B" storageaddress="0xCAB78" sizex="19">
+	<table name="Low Detonation Fuel B" storageaddress="0xCAB78" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCAAE4" />
          <table type="Y Axis" storageaddress="0xCAB30" />
       </table>
 
-	<table name="Low Detonation Fuel C" storageaddress="0xCB13C" sizex="19">
+	<table name="Low Detonation Fuel C" storageaddress="0xCB13C" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCB0A8" />
          <table type="Y Axis" storageaddress="0xCB0F4" />
       </table>
       
-      <table name="High Detonation Fuel A" storageaddress="0xCAD64" sizex="19"> 
+      <table name="High Detonation Fuel A" storageaddress="0xCAD64" sizex="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCACD0" />
          <table type="Y Axis" storageaddress="0xCAD1C" />
       </table>
 
-      <table name="High Detonation Fuel B" storageaddress="0xCAF50" sizex="19"> 
+      <table name="High Detonation Fuel B" storageaddress="0xCAF50" sizex="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCAEBC" />
          <table type="Y Axis" storageaddress="0xCAF08" />
       </table>
 
-      <table name="High Detonation Fuel C" storageaddress="0xCB328" sizex="19"> 
+      <table name="High Detonation Fuel C" storageaddress="0xCB328" sizex="19" userlevel="5"> 
          <table type="X Axis" storageaddress="0xCB294" />
          <table type="Y Axis" storageaddress="0xCB2E0" />
       </table>
 
-      <table name="Injector Latency" storageaddress="0xC9524">
+      <table name="Injector Latency" storageaddress="0xC9524" userlevel="5">
         <table type="Y Axis" storageaddress="0xC9510" />
       </table>
 
-      <table name="Injector Flow Scaling" storageaddress="0xC87FC" />
+      <table name="Injector Flow Scaling" storageaddress="0xC87FC" userlevel="5"/>
 
-      <table name="Throttle Enrichment (Tip-in)" storageaddress="0xCA254">
+      <table name="Throttle Enrichment (Tip-in)" storageaddress="0xCA254" userlevel="5">
   	  <table type="Y Axis" storageaddress="0xCA20C" />
 	</table>
 
-      <table name="Throttle Enrichment Compensation (Boost Error)" storageaddress="0xC9324">
+      <table name="Throttle Enrichment Compensation (Boost Error)" storageaddress="0xC9324" userlevel="5">
          <table type="Y Axis" storageaddress="0xC9300" />
 	</table>
 
-      <table name="Throttle Enrichment Compensation (Coolant Temp)" storageaddress="0xCA278">
+      <table name="Throttle Enrichment Compensation (Coolant Temp)" storageaddress="0xCA278" userlevel="5">
          <table type="Y Axis" storageaddress="0xC8E1C" />
 	</table>
 
-      <table name="Warm-up Enrichment (Coolant Temp)" storageaddress="0xC9D14">
+      <table name="Warm-up Enrichment (Coolant Temp)" storageaddress="0xC9D14" userlevel="5">
          <table type="Y Axis" storageaddress="0xC8E1C" />
 	</table>
 
-	<table name="Base Ignition Timing A" storageaddress="0xCDBD0" sizex="6" sizey="3">
+	<table name="Base Ignition Timing A" storageaddress="0xCDBD0" sizex="6" sizey="3" userlevel="5">
          <table type="X Axis" storageaddress="0xCDBAC" /> 
          <table type="Y Axis" storageaddress="0xCDBC4" /> 
       </table>  
 
-	<table name="Base Ignition Timing B" storageaddress="0xCDC78" sizex="19">
+	<table name="Base Ignition Timing B" storageaddress="0xCDC78" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCDBE4" /> 
          <table type="Y Axis" storageaddress="0xCDC30" /> 
       </table>  
 
-	<table name="Base Ignition Timing C" storageaddress="0xCDE64" sizex="19">
+	<table name="Base Ignition Timing C" storageaddress="0xCDE64" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCDDD0" /> 
          <table type="Y Axis" storageaddress="0xCDE1C" /> 
       </table>  
 
-	<table name="Base Ignition Timing D" storageaddress="0xCE050" sizex="19">
+	<table name="Base Ignition Timing D" storageaddress="0xCE050" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCDFBC" /> 
          <table type="Y Axis" storageaddress="0xCE008" /> 
       </table>  
 
-	<table name="Base Ignition Timing E" storageaddress="0xCE23C" sizex="19">
+	<table name="Base Ignition Timing E" storageaddress="0xCE23C" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCE1A8" /> 
          <table type="Y Axis" storageaddress="0xCE1F4" /> 
       </table>  
            
-      <table name="Ignition Correction A" storageaddress="0xCE8C8" sizex="19">
+      <table name="Ignition Correction A" storageaddress="0xCE8C8" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCE834"/>
          <table type="Y Axis" storageaddress="0xCE880"/>
       </table>
 
-      <table name="Ignition Correction B" storageaddress="0xCEAB4" sizex="19">
+      <table name="Ignition Correction B" storageaddress="0xCEAB4" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCEA20"/>
          <table type="Y Axis" storageaddress="0xCEA6C"/>
       </table>
 	
-      <table name="Ignition Correction C" storageaddress="0xCECA0" sizex="19">
+      <table name="Ignition Correction C" storageaddress="0xCECA0" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCEC0C"/>
          <table type="Y Axis" storageaddress="0xCEC58"/>
       </table>
 
-      <table name="Ignition Correction D" storageaddress="0xCEE8C" sizex="19">
+      <table name="Ignition Correction D" storageaddress="0xCEE8C" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xCEDF8"/>
          <table type="Y Axis" storageaddress="0xCEE44"/>
       </table>
 
-	<table name="Intake Cam Advance Angle A (AVCS)" storageaddress="0xD3094" sizex="19">
+	<table name="Intake Cam Advance Angle A (AVCS)" storageaddress="0xD3094" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xD3000" />
          <table type="Y Axis" storageaddress="0xD304C" />
       </table>
 
-	<table name="Intake Cam Advance Angle B (AVCS)" storageaddress="0xD33D4" sizex="19">
+	<table name="Intake Cam Advance Angle B (AVCS)" storageaddress="0xD33D4" sizex="19" userlevel="5">
          <table type="X Axis" storageaddress="0xD3340" />
          <table type="Y Axis" storageaddress="0xD338C" />
       </table>
 
-      <table name="Advance Multiplier (Initial)" storageaddress="0xCCF58" />
-      <table name="Advance Multiplier (Boost Control)" storageaddress="0xC062C" />
-      <table name="Advance Multiplier (Fuel Map Switch)" storageaddress="0xC8A34" />
+      <table name="Advance Multiplier (Initial)" storageaddress="0xCCF58" userlevel="5"/>
+      <table name="Advance Multiplier (Boost Control)" storageaddress="0xC062C" userlevel="5"/>
+      <table name="Advance Multiplier (Fuel Map Switch)" storageaddress="0xC8A34" userlevel="5"/>
 
-	<table name="Timing Compensation (Intake Temp)" storageaddress="0xCD280">
+	<table name="Timing Compensation (Intake Temp)" storageaddress="0xCD280" userlevel="5">
          <table type="Y Axis" storageaddress="0xCD240" />
       </table>
 
-	<table name="Timing Compensation (Coolant Temp)" storageaddress="0xCD22D">
+	<table name="Timing Compensation (Coolant Temp)" storageaddress="0xCD22D" userlevel="5">
          <table type="Y Axis" storageaddress="0xCD00C" />
       </table>
 
-      <table name="Knock Detection Range (RPM)" storageaddress="0xCCF14" />
-      <table name="Rough Correction Range (RPM)" storageaddress="0xCCF34" />
-      <table name="Rough Correction Range (Load)" storageaddress="0xCCF44" />
-      <table name="Fine Correction Range (Load)" storageaddress="0xCCFD0" />
-      <table name="Fine Correction Rows (RPM)" storageaddress="0xCCF94" />
-      <table name="Fine Correction Columns (Load)" storageaddress="0xCCF84" />
-      <table name="Fine Correction Magnitude (Increasing)" storageaddress="0xCCFBC"/>
+      <table name="Knock Detection Range (RPM)" storageaddress="0xCCF14" userlevel="5"/>
+      <table name="Rough Correction Range (RPM)" storageaddress="0xCCF34" userlevel="5"/>
+      <table name="Rough Correction Range (Load)" storageaddress="0xCCF44" userlevel="5"/>
+      <table name="Fine Correction Range (Load)" storageaddress="0xCCFD0" userlevel="5"/>
+      <table name="Fine Correction Rows (RPM)" storageaddress="0xCCF94" userlevel="5"/>
+      <table name="Fine Correction Columns (Load)" storageaddress="0xCCF84" userlevel="5"/>
+      <table name="Fine Correction Magnitude (Increasing)" storageaddress="0xCCFBC" userlevel="5"/>
 
-      <table name="MAF Sensor Scaling (1)" storageaddress="0xD1484">
+      <table name="MAF Sensor Scaling (1)" storageaddress="0xD1484" userlevel="5">
          <table type="Y Axis" storageaddress="0xD13A8" />
       </table>
 
-      <table name="MAF Sensor Scaling (2)" storageaddress="0xD14CC">
+      <table name="MAF Sensor Scaling (2)" storageaddress="0xD14CC" userlevel="5">
          <table type="Y Axis" storageaddress="0xD13F0" />
       </table>
 
-      <table name="MAF Sensor Scaling (3)" storageaddress="0xD1514" sizey="19">
+      <table name="MAF Sensor Scaling (3)" storageaddress="0xD1514" sizey="19" userlevel="5">
          <table type="Y Axis" storageaddress="0xD1438" />
       </table>
 
-	<table name="Rev Limit" storageaddress="0xC8CF0" />
+	<table name="Rev Limit" storageaddress="0xC8CF0" userlevel="5"/>
 
-	<table name="Speed Limiting 1 " storageaddress="0xC8D3C" />
-	<table name="Speed Limiting 2 " storageaddress="0xC8D48" />
-	<table name="Speed Limiting 3" storageaddress="0xDB840" />
-	<table name="Speed Limiting 4" storageaddress="0xDB84C" />
-	<table name="Speed Limiting 5" storageaddress="0xDB858" />
+	<table name="Speed Limiting 1 " storageaddress="0xC8D3C" userlevel="5"/>
+	<table name="Speed Limiting 2 " storageaddress="0xC8D48" userlevel="5"/>
+	<table name="Speed Limiting 3" storageaddress="0xDB840" userlevel="5"/>
+	<table name="Speed Limiting 4" storageaddress="0xDB84C" userlevel="5"/>
+	<table name="Speed Limiting 5" storageaddress="0xDB858" userlevel="5"/>
 
-	<table name="Throttle Actuator Duty A" storageaddress="0xDC684" sizey="18">
+	<table name="Throttle Actuator Duty A" storageaddress="0xDC684" sizey="18" userlevel="5">
          <table type="X Axis" storageaddress="0xDC600" />
          <table type="Y Axis" storageaddress="0xDC63C" />
       </table>
 
-	<table name="Throttle Actuator Duty B" storageaddress="0xDC924" sizey="18">
+	<table name="Throttle Actuator Duty B" storageaddress="0xDC924" sizey="18" userlevel="5">
          <table type="X Axis" storageaddress="0xDC8A0" />
          <table type="Y Axis" storageaddress="0xDC8DC" />
       </table>
 
-	<table name="Throttle Actuator Duty C" storageaddress="0xDCBC4" sizey="18">
+	<table name="Throttle Actuator Duty C" storageaddress="0xDCBC4" sizey="18" userlevel="5">
          <table type="X Axis" storageaddress="0xDCB40" />
          <table type="Y Axis" storageaddress="0xDCB7C" />
       </table>
 
-      <table name="Idle Speed A (Coolant Temp)" storageaddress="0xCFB80" >
+      <table name="Idle Speed A (Coolant Temp)" storageaddress="0xCFB80" userlevel="5">
  	   <table type="Y Axis" storageaddress="0xCF69C" />
 	</table>
 
-      <table name="Idle Speed B (Coolant Temp)" storageaddress="0xCFBA0" >
+      <table name="Idle Speed B (Coolant Temp)" storageaddress="0xCFBA0" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCF69C" />
 	</table>
 
-      <table name="Idle Speed C (Coolant Temp)" storageaddress="0xCFBC0" >
+      <table name="Idle Speed C (Coolant Temp)" storageaddress="0xCFBC0" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCF69C" />
 	</table>
 
-      <table name="Idle Speed D (Coolant Temp)" storageaddress="0xCFBE0" >
+      <table name="Idle Speed D (Coolant Temp)" storageaddress="0xCFBE0" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCF69C" />
 	</table>
 
-      <table name="Idle Speed E (Coolant Temp)" storageaddress="0xCFC00" >
+      <table name="Idle Speed E (Coolant Temp)" storageaddress="0xCFC00" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCF69C" />
 	</table>
 
-      <table name="Idle Speed F (Coolant Temp)" storageaddress="0xCFC20" >
+      <table name="Idle Speed F (Coolant Temp)" storageaddress="0xCFC20" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xCF69C" />
 	</table>
 
-      <table name="Closed Loop EGT" storageaddress="0xC8AC4" /> 
-      <table name="Closed Loop Delays" storageaddress="0xC86F2" sizey="2" />
-      <table name="Closed Loop Coolant Temp" storageaddress="0xC8A44" />
-      <table name="Closed Loop Vehicle Speed" storageaddress="0xC8ABC" />
+      <table name="Closed Loop EGT" storageaddress="0xC8AC4" userlevel="5"/> 
+      <table name="Closed Loop Delays" storageaddress="0xC86F2" sizey="2" userlevel="5"/>
+      <table name="Closed Loop Coolant Temp" storageaddress="0xC8A44" userlevel="5"/>
+      <table name="Closed Loop Vehicle Speed" storageaddress="0xC8ABC" userlevel="5"/>
 
-	<table name="Closed Loop Calculated Load" storageaddress="0xC9C40" >
+	<table name="Closed Loop Calculated Load" storageaddress="0xC9C40" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xC9C00" />
 	</table>
 
-      <table name="Closed Loop RPM A (by Gear)" storageaddress="0xC8A48" />
-      <table name="Closed Loop RPM B (by Gear)" storageaddress="0xC8A70" />
-      <table name="Closed Loop RPM C" storageaddress="0xC8A98" />
+      <table name="Closed Loop RPM A (by Gear)" storageaddress="0xC8A48" userlevel="5"/>
+      <table name="Closed Loop RPM B (by Gear)" storageaddress="0xC8A70" userlevel="5"/>
+      <table name="Closed Loop RPM C" storageaddress="0xC8A98" userlevel="5"/>
 
-      <table name="Closed Loop Throttle (Primary)" storageaddress="0xC91CC">
+      <table name="Closed Loop Throttle (Primary)" storageaddress="0xC91CC" userlevel="5">
 	   <table type="Y Axis" storageaddress="0xC918C" />
 	</table>
 
-	<table name="Closed Loop Throttle 1" storageaddress="0xC8AB0" />
-	<table name="Closed Loop Throttle 2" storageaddress="0xC8AA8" />
-	<table name="Closed Loop Throttle 3" storageaddress="0xC8AB8" />
-	<table name="Closed Loop Atmospheric Pressure" storageaddress="0xC8AA0" />
+	<table name="Closed Loop Throttle 1" storageaddress="0xC8AB0" userlevel="5"/>
+	<table name="Closed Loop Throttle 2" storageaddress="0xC8AA8" userlevel="5"/>
+	<table name="Closed Loop Throttle 3" storageaddress="0xC8AB8" userlevel="5"/>
+	<table name="Closed Loop Atmospheric Pressure" storageaddress="0xC8AA0" userlevel="5"/>
 
       <table name="(P0000) PASS CODE (NO DTC DETECTED)" storageaddress="0x84C55"/>
       <table name="(P0000) PASS CODE (NO DTC DETECTED) " storageaddress="0x84C56"/>
@@ -25010,182 +25025,184 @@
 	<table name="Closed Loop Throttle 3" storageaddress="0xC75E4" />
 	<table name="Closed Loop Atmospheric Pressure" storageaddress="0xC75CC" />
 
-      <table name="(P0000) PASS CODE (NO DTC DETECTED)" storageaddress="0x76073"/>
-      <table name="(P0000) PASS CODE (NO DTC DETECTED) " storageaddress="0x76074"/>
-      <table name="(P0011) CAMSHAFT POS. - TIMING OVER-ADVANCED 1" storageaddress="0x76059"/>
-      <table name="(P0016) CRANKSHAFT/CAMSHAFT CORRELATION 1A" storageaddress="0x760D8"/>
-      <table name="(P0018) CRANKSHAFT/CAMSHAFT CORRELATION 2A" storageaddress="0x760D7"/>
-      <table name="(P0021) CAMSHAFT POS. - TIMING OVER-ADVANCED 2" storageaddress="0x7605A"/>
-      <table name="(P0030) FRONT O2 SENSOR RANGE/PERF" storageaddress="0x76098"/>
-      <table name="(P0031) FRONT O2 SENSOR LOW INPUT" storageaddress="0x7607F"/>
-      <table name="(P0032) FRONT O2 SENSOR HIGH INPUT" storageaddress="0x7607D"/>
-      <table name="(P0037) REAR O2 SENSOR LOW INPUT" storageaddress="0x7607E"/>
-      <table name="(P0038) REAR O2 SENSOR HIGH INPUT" storageaddress="0x7607C"/>
-      <table name="(P0068) MAP SENSOR RANGE/PERF" storageaddress="0x76094"/>
-      <table name="(P0101) MAF SENSOR RANGE/PERF" storageaddress="0x76096"/>
-      <table name="(P0102) MAF SENSOR LOW INPUT" storageaddress="0x76035"/>
-      <table name="(P0103) MAF SENSOR HIGH INPUT" storageaddress="0x76036"/>
-      <table name="(P0107) MAP SENSOR LOW INPUT" storageaddress="0x76080"/>
-      <table name="(P0108) MAP SENSOR HIGH INPUT" storageaddress="0x76081"/>
-      <table name="(P0111) IAT SENSOR RANGE/PERF" storageaddress="0x7607B"/>
-      <table name="(P0112) IAT SENSOR LOW INPUT" storageaddress="0x76079"/>
-      <table name="(P0113) IAT SENSOR HIGH INPUT" storageaddress="0x7607A"/>
-      <table name="(P0117) COOLANT TEMP SENSOR LOW INPUT" storageaddress="0x7603D"/>
-      <table name="(P0118) COOLANT TEMP SENSOR HIGH INPUT" storageaddress="0x7603E"/>
-      <table name="(P0121) TPS RANGE/PERF" storageaddress="0x7603C"/>
-      <table name="(P0122) TPS A LOW INPUT" storageaddress="0x7603A"/>
-      <table name="(P0123) TPS A HIGH INPUT" storageaddress="0x7603B"/>
-      <table name="(P0125) INSUFFICIENT COOLANT TEMP (FUELING)" storageaddress="0x76040"/>
-      <table name="(P0126) INSUFFICIENT COOLANT TEMP (OPERATION)" storageaddress="0x760C1"/>
-      <table name="(P0128) THERMOSTAT MALFUNCTION" storageaddress="0x76082"/>
-      <table name="(P0131) FRONT O2 SENSOR LOW INPUT" storageaddress="0x76076"/>
-      <table name="(P0132) FRONT O2 SENSOR HIGH INPUT" storageaddress="0x76077"/>
-      <table name="(P0133) FRONT O2 SENSOR SLOW RESPONSE" storageaddress="0x76064"/>
-      <table name="(P0134) FRONT O2 SENSOR NO ACTIVITY" storageaddress="0x76097"/>
-      <table name="(P0137) REAR O2 SENSOR LOW VOLTAGE" storageaddress="0x76075"/>
-      <table name="(P0138) REAR O2 SENSOR HIGH VOLTAGE" storageaddress="0x76078"/>
-      <table name="(P0139) REAR O2 SENSOR SLOW RESPONSE" storageaddress="0x76065"/>
-      <table name="(P0140) REAR O2 SENSOR NO ACTIVITY" storageaddress="0x760D4"/>
-      <table name="(P0171) SYSTEM TOO LEAN" storageaddress="0x7606B"/>
-      <table name="(P0172) SYSTEM TOO RICH" storageaddress="0x7606C"/>
-      <table name="(P0181) FUEL TEMP SENSOR A RANGE/PERF" storageaddress="0x7604D"/>
-      <table name="(P0182) FUEL TEMP SENSOR A LOW INPUT" storageaddress="0x7604B"/>
-      <table name="(P0183) FUEL TEMP SENSOR A HIGH INPUT" storageaddress="0x7604C"/>
-      <table name="(P0222) TPS B LOW INPUT" storageaddress="0x7609B"/>
-      <table name="(P0223) TPS B HIGH INPUT" storageaddress="0x7609C"/>
-      <table name="(P0230) FUEL PUMP PRIMARY CIRCUIT" storageaddress="0x76093"/>
-      <table name="(P0244) WASTEGATE SOLENOID A RANGE/PERF" storageaddress="0x76089"/>
-      <table name="(P0245) WASTEGATE SOLENOID A LOW" storageaddress="0x76087"/>
-      <table name="(P0246) WASTEGATE SOLENOID A HIGH" storageaddress="0x76088"/>
-      <table name="(P0261) FUEL INJECTOR #1 CIRCUIT LOW" storageaddress="0x7608A"/>
-      <table name="(P0264) FUEL INJECTOR #2 CIRCUIT LOW" storageaddress="0x7608B"/>
-      <table name="(P0267) FUEL INJECTOR #3 CIRCUIT LOW" storageaddress="0x7608C"/>
-      <table name="(P0270) FUEL INJECTOR #4 CIRCUIT LOW" storageaddress="0x7608D"/>
-      <table name="(P0301) MISFIRE CYLINDER 1" storageaddress="0x7606D"/>
-      <table name="(P0302) MISFIRE CYLINDER 2" storageaddress="0x7606E"/>
-      <table name="(P0303) MISFIRE CYLINDER 3" storageaddress="0x7606F"/>
-      <table name="(P0304) MISFIRE CYLINDER 4" storageaddress="0x76070"/>
-      <table name="(P0327) KNOCK SENSOR 1 LOW INPUT" storageaddress="0x76038"/>
-      <table name="(P0328) KNOCK SENSOR 1 HIGH INPUT" storageaddress="0x76039"/>
-      <table name="(P0335) CRANKSHAFT POS. SENSOR A MALFUNCTION" storageaddress="0x76030"/>
-      <table name="(P0336) CRANKSHAFT POS. SENSOR A RANGE/PERF" storageaddress="0x76031"/>
-      <table name="(P0340) CAMSHAFT POS. SENSOR A MALFUNCTION" storageaddress="0x76033"/>
-      <table name="(P0340) CAMSHAFT POS. SENSOR A MALFUNCTION " storageaddress="0x760AF"/>
-      <table name="(P0341) CAMSHAFT POS. SENSOR A RANGE/PERF" storageaddress="0x76032"/>
-      <table name="(P0345) CAMSHAFT POS. SENSOR A BANK 2" storageaddress="0x760AE"/>
-      <table name="(P0350) IGNITION COIL PRIMARY/SECONDARY" storageaddress="0x76044"/>
-      <table name="(P0365) CAMSHAFT POS. SENSOR B BANK 1" storageaddress="0x76057"/>
-      <table name="(P0365) CAMSHAFT POS. SENSOR B BANK 1 " storageaddress="0x760AD"/>
-      <table name="(P0390) CAMSHAFT POS. SENSOR B BANK 2" storageaddress="0x76058"/>
-      <table name="(P0390) CAMSHAFT POS. SENSOR B BANK 2 " storageaddress="0x760AC"/>
-      <table name="(P0410) SECONDARY AIR PUMP SYSTEM" storageaddress="0x760CE"/>
-      <table name="(P0411) SECONDARY AIR PUMP INCORRECT FLOW" storageaddress="0x760CD"/>
-      <table name="(P0413) SECONDARY AIR PUMP A OPEN" storageaddress="0x760D2"/>
-      <table name="(P0414) SECONDARY AIR PUMP A SHORTED" storageaddress="0x760D5"/>
-      <table name="(P0416) SECONDARY AIR PUMP B OPEN" storageaddress="0x760DF"/>
-      <table name="(P0417) SECONDARY AIR PUMP B SHORTED" storageaddress="0x760DE"/>
-      <table name="(P0418) SECONDARY AIR PUMP RELAY A" storageaddress="0x760D3"/>
-      <table name="(P0420) CAT EFFICIENCY BELOW THRESHOLD" storageaddress="0x76068"/>
-      <table name="(P0442) EVAP LEAK DETECTED (SMALL)" storageaddress="0x76069"/>
-      <table name="(P0447) EVAP VENT CONTROL CIRCUIT OPEN" storageaddress="0x76062"/>
-      <table name="(P0448) EVAP VENT CONTROL CIRCUIT SHORTED" storageaddress="0x76063"/>
-      <table name="(P0451) EVAP PRESSURE SENSOR RANGE/PERF" storageaddress="0x76049"/>
-      <table name="(P0452) EVAP PRESSURE SENSOR LOW INPUT" storageaddress="0x76047"/>
-      <table name="(P0453) EVAP PRESSURE SENSOR HIGH INPUT" storageaddress="0x76048"/>
-      <table name="(P0456) EVAP LEAK DETECTED (VERY SMALL)" storageaddress="0x7606A"/>
-      <table name="(P0457) EVAP LEAK DETECTED (FUEL CAP)" storageaddress="0x76072"/>
-      <table name="(P0458) EVAP PURGE VALVE CIRCUIT LOW" storageaddress="0x7605D"/>
-      <table name="(P0459) EVAP PURGE VALVE CIRCUIT HIGH" storageaddress="0x7605E"/>
-      <table name="(P0461) FUEL LEVEL SENSOR RANGE/PERF" storageaddress="0x76043"/>
-      <table name="(P0462) FUEL LEVEL SENSOR LOW INPUT" storageaddress="0x76041"/>
-      <table name="(P0463) FUEL LEVEL SENSOR HIGH INPUT" storageaddress="0x76042"/>
-      <table name="(P0464) FUEL LEVEL SENSOR INTERMITTENT" storageaddress="0x7603F"/>
-      <table name="(P0483) RADIATOR FAN RATIONALITY CHECK" storageaddress="0x76055"/>
-      <table name="(P0500) VEHICLE SPEED SENSOR A" storageaddress="0x76037"/>
-      <table name="(P0502) VEHICLE SPEED SENSOR LOW INPUT" storageaddress="0x76092"/>
-      <table name="(P0503) VEHICLE SPEED SENSOR INTERMITTENT" storageaddress="0x76099"/>
-      <table name="(P0506) IDLE CONTROL RPM LOWER THAN EXPECTED" storageaddress="0x76051"/>
-      <table name="(P0507) IDLE CONTROL RPM HIGH THAN EXPECTED" storageaddress="0x76052"/>
-      <table name="(P0508) IDLE CONTROL CIRCUIT LOW" storageaddress="0x7604F"/>
-      <table name="(P0509) IDLE CONTROL CIRCUIT HIGH" storageaddress="0x76050"/>
-      <table name="(P0512) STARTER REQUEST CIRCUIT" storageaddress="0x76046"/>
-      <table name="(P0519) IDLE CONTROL MALFUNCTION (FAIL-SAFE)" storageaddress="0x76095"/>
-      <table name="(P0545) EGT SENSOR CIRCUIT LOW" storageaddress="0x7608E"/>
-      <table name="(P0546) EGT SENSOR CIRCUIT HIGH" storageaddress="0x7608F"/>
-      <table name="(P0562) SYSTEM VOLTAGE LOW" storageaddress="0x76085"/>
-      <table name="(P0563) SYSTEM VOLTAGE HIGH" storageaddress="0x76086"/>
-      <table name="(P0600) SERIAL COMMUNICATION LINK" storageaddress="0x760AB"/>
-      <table name="(P0604) CONTROL MODULE RAM ERROR" storageaddress="0x76034"/>
-      <table name="(P0605) CONTROL MODULE ROM ERROR" storageaddress="0x760B0"/>
-      <table name="(P0607) CONTROL MODULE PERFORMANCE" storageaddress="0x760A3"/>
-      <table name="(P0638) THROTTLE ACTUATOR RANGE/PERF" storageaddress="0x760A2"/>
-      <table name="(P0691) RADIATOR FAN CIRCUIT LOW" storageaddress="0x76053"/>
-      <table name="(P0692) RADIATOR FAN CIRCUIT HIGH" storageaddress="0x76054"/>
-      <table name="(P0700) TRANSMISSION CONTROL SYSTEM" storageaddress="0x760B9"/>
-      <table name="(P0851) NEUTRAL SWITCH INPUT LOW" storageaddress="0x7604A"/>
-      <table name="(P0852) NEUTRAL SWITCH INPUT HIGH" storageaddress="0x7604E"/>
-      <table name="(P0864) TCM COMMUNICATION RANGE/PERF" storageaddress="0x76056"/>
-      <table name="(P0865) TCM COMMUNICATION CIRCUIT LOW" storageaddress="0x7605F"/>
-      <table name="(P0866) TCM COMMUNICATION CIRCUIT HIGH" storageaddress="0x76060"/>
-      <table name="(P1152) FRONT O2 SENSOR RANGE/PERF LOW B1 S1" storageaddress="0x76066"/>
-      <table name="(P1153) FRONT O2 SENSOR RANGE/PERF HIGH B1 S1" storageaddress="0x76067"/>
-      <table name="(P1160) ABNORMAL RETURN SPRING" storageaddress="0x7609D"/>
-      <table name="(P1301) MISFIRE (HIGH TEMP EXHAUST GAS)" storageaddress="0x76071"/>
-      <table name="(P1312) EGT SENSOR MALFUNCTION" storageaddress="0x76090"/>
-      <table name="(P1400) FUEL TANK PRESSURE SOL. LOW" storageaddress="0x7605B"/>
-      <table name="(P1410) FUEL TANK PRESSURE SYSTEM MALFUNCTION" storageaddress="0x760D9"/>
-      <table name="(P1418) FUEL LEVEL SENSOR SIGNAL HIGH" storageaddress="0x760D6"/>
-      <table name="(P1420) FUEL TANK PRESSURE SOL. HIGH INPUT" storageaddress="0x7605C"/>
-      <table name="(P1443) VENT CONTROL SOLENOID FUNCTION PROBLEM" storageaddress="0x76061"/>
-      <table name="(P1491) PCV (BLOWBY) FUNCTION PROBLEM" storageaddress="0x76083"/>
-      <table name="(P1518) STARTER SWITCH LOW INPUT" storageaddress="0x76045"/>
-      <table name="(P1544) EGT TOO HIGH" storageaddress="0x76091"/>
-      <table name="(P1560) BACK-UP VOLTAGE MALFUNCTION" storageaddress="0x76084"/>
-      <table name="(P2004) TGV - INTAKE MANIFOLD RUNNER 1 STUCK OPEN" storageaddress="0x760BC"/>
-      <table name="(P2005) TGV - INTAKE MANIFOLD RUNNER 2 STUCK OPEN" storageaddress="0x760BE"/>
-      <table name="(P2006) TGV - INTAKE MANIFOLD RUNNER 1 STUCK CLOSED" storageaddress="0x760BD"/>
-      <table name="(P2007) TGV - INTAKE MANIFOLD RUNNER 2 STUCK CLOSED" storageaddress="0x760BF"/>
-      <table name="(P2008) TGV - INTAKE MANIFOLD RUNNER 1 CIRCUIT OPEN" storageaddress="0x760CA"/>
-      <table name="(P2009) TGV - INTAKE MANIFOLD RUNNER 1 CIRCUIT LOW" storageaddress="0x760C8"/>
-      <table name="(P2011) TGV - INTAKE MANIFOLD RUNNER 2 CIRCUIT OPEN" storageaddress="0x760CB"/>
-      <table name="(P2012) TGV - INTAKE MANIFOLD RUNNER 2 CIRCUIT LOW" storageaddress="0x760C9"/>
-      <table name="(P2016) TGV - INTAKE MANIFOLD RUNNER 1 POS. SENSOR LOW" storageaddress="0x760C4"/>
-      <table name="(P2017) TGV - INTAKE MANIFOLD RUNNER 1 POS. SENSOR HIGH" storageaddress="0x760C5"/>
-      <table name="(P2021) TGV - INTAKE MANIFOLD RUNNER 2 POS. SENSOR LOW" storageaddress="0x760C6"/>
-      <table name="(P2022) TGV - INTAKE MANIFOLD RUNNER 2 POS. SENSOR HIGH" storageaddress="0x760C7"/>
-      <table name="(P2088) OCV SOLENOID A1 CIRCUIT OPEN" storageaddress="0x760B8"/>
-      <table name="(P2089) OCV SOLENOID A1 CIRCUIT SHORT" storageaddress="0x760B7"/>
-      <table name="(P2090) OCV SOLENOID B1 CIRCUIT OPEN" storageaddress="0x760B4"/>
-      <table name="(P2091) OCV SOLENOID B1 CIRCUIT SHORT" storageaddress="0x760B3"/>
-      <table name="(P2092) OCV SOLENOID A2 CIRCUIT OPEN" storageaddress="0x760B6"/>
-      <table name="(P2093) OCV SOLENOID A2 CIRCUIT SHORT" storageaddress="0x760B5"/>
-      <table name="(P2094) OCV SOLENOID B2 CIRCUIT OPEN" storageaddress="0x760B2"/>
-      <table name="(P2095) OCV SOLENOID B2 CIRCUIT SHORT" storageaddress="0x760B1"/>
-      <table name="(P2096) POST CATALYST TOO LEAN B1" storageaddress="0x760A1"/>
-      <table name="(P2097) POST CATALYST TOO RICH B1" storageaddress="0x760AA"/>
-      <table name="(P2101) THROTTLE ACTUATOR CIRCUIT RANGE/PERF" storageaddress="0x760A0"/>
-      <table name="(P2102) THROTTLE ACTUATOR CIRCUIT LOW" storageaddress="0x7609E"/>
-      <table name="(P2103) THROTTLE ACTUATOR CIRCUIT HIGH" storageaddress="0x7609F"/>
-      <table name="(P2109) TPS A MINIMUM STOP PERF" storageaddress="0x7609A"/>
-      <table name="(P2122) TPS D CIRCUIT LOW INPUT" storageaddress="0x760A7"/>
-      <table name="(P2123) TPS D CIRCUIT HIGH INPUT" storageaddress="0x760A8"/>
-      <table name="(P2127) TPS E CIRCUIT LOW INPUT" storageaddress="0x760A5"/>
-      <table name="(P2128) TPS E CIRCUIT HIGH INPUT" storageaddress="0x760A6"/>
-      <table name="(P2135) TPS A/B VOLTAGE" storageaddress="0x760A9"/>
-      <table name="(P2138) TPS D/E VOLTAGE" storageaddress="0x760A4"/>
-      <table name="(P2227) BARO. PRESSURE CIRCUIT RANGE/PERF" storageaddress="0x760C0"/>
-      <table name="(P2228) BARO. PRESSURE CIRCUIT LOW INPUT" storageaddress="0x760C3"/>
-      <table name="(P2229) BARO. PRESSURE CIRCUIT HIGH INPUT" storageaddress="0x760C2"/>
-      <table name="(P2431) SECONDARY AIR PUMP CIRCUIT RANGE/PERF" storageaddress="0x760CF"/>
-      <table name="(P2432) SECONDARY AIR PUMP CIRCUIT LOW" storageaddress="0x760D1"/>
-      <table name="(P2433) SECONDARY AIR PUMP CIRCUIT HIGH" storageaddress="0x760D0"/>
-      <table name="(P2440) SECONDARY AIR PUMP VALVE 1 STUCK OPEN" storageaddress="0x760DD"/>
-      <table name="(P2441) SECONDARY AIR PUMP VALVE 1 STUCK CLOSED" storageaddress="0x760DC"/>
-      <table name="(P2442) SECONDARY AIR PUMP VALVE 2 STUCK OPEN" storageaddress="0x760DB"/>
-      <table name="(P2443) SECONDARY AIR PUMP 2 STUCK CLOSED" storageaddress="0x760DA"/>
-      <table name="(P2444) SECONDARY AIR PUMP 1 STUCK ON B1" storageaddress="0x760CC"/>
-      <table name="(P2503) CHARGING SYSTEM VOLTAGE LOW" storageaddress="0x760BB"/>
-      <table name="(P2504) CHARGING SYSTEM VOLTAGE HIGH" storageaddress="0x760BA"/>
+      <table name="(P0000) PASS CODE (NO DTC DETECTED)" storageaddress="0x7606F"/>
+      <table name="(P0000) PASS CODE (NO DTC DETECTED) " storageaddress="0x76070"/>
+      <table name="(P0011) CAMSHAFT POS. - TIMING OVER-ADVANCED 1" storageaddress="0x76055"/>
+      <table name="(P0016) CRANKSHAFT/CAMSHAFT CORRELATION 1A" storageaddress="0x760D4"/>
+      <table name="(P0018) CRANKSHAFT/CAMSHAFT CORRELATION 2A" storageaddress="0x760D3"/>
+      <table name="(P0021) CAMSHAFT POS. - TIMING OVER-ADVANCED 2" storageaddress="0x76056"/>
+      <table name="(P0030) FRONT O2 SENSOR RANGE/PERF" storageaddress="0x76094"/>
+      <table name="(P0031) FRONT O2 SENSOR LOW INPUT" storageaddress="0x7607B"/>
+      <table name="(P0032) FRONT O2 SENSOR HIGH INPUT" storageaddress="0x76079"/>
+      <table name="(P0037) REAR O2 SENSOR LOW INPUT" storageaddress="0x7607A"/>
+      <table name="(P0038) REAR O2 SENSOR HIGH INPUT" storageaddress="0x76078"/>
+      <table name="(P0068) MAP SENSOR RANGE/PERF" storageaddress="0x76090"/>
+      <table name="(P0101) MAF SENSOR RANGE/PERF" storageaddress="0x76092"/>
+      <table name="(P0102) MAF SENSOR LOW INPUT" storageaddress="0x76031"/>
+      <table name="(P0103) MAF SENSOR HIGH INPUT" storageaddress="0x76032"/>
+      <table name="(P0107) MAP SENSOR LOW INPUT" storageaddress="0x7607C"/>
+      <table name="(P0108) MAP SENSOR HIGH INPUT" storageaddress="0x7607D"/>
+      <table name="(P0111) IAT SENSOR RANGE/PERF" storageaddress="0x76077"/>
+      <table name="(P0112) IAT SENSOR LOW INPUT" storageaddress="0x76075"/>
+      <table name="(P0113) IAT SENSOR HIGH INPUT" storageaddress="0x76076"/>
+      <table name="(P0117) COOLANT TEMP SENSOR LOW INPUT" storageaddress="0x76039"/>
+      <table name="(P0118) COOLANT TEMP SENSOR HIGH INPUT" storageaddress="0x7603A"/>
+      <table name="(P0121) TPS RANGE/PERF" storageaddress="0x76038"/>
+      <table name="(P0122) TPS A LOW INPUT" storageaddress="0x76036"/>
+      <table name="(P0123) TPS A HIGH INPUT" storageaddress="0x76037"/>
+      <table name="(P0125) INSUFFICIENT COOLANT TEMP (FUELING)" storageaddress="0x7603C"/>
+      <table name="(P0126) INSUFFICIENT COOLANT TEMP (OPERATION)" storageaddress="0x760BD"/>
+      <table name="(P0128) THERMOSTAT MALFUNCTION" storageaddress="0x7607E"/>
+      <table name="(P0131) FRONT O2 SENSOR LOW INPUT" storageaddress="0x76072"/>
+      <table name="(P0132) FRONT O2 SENSOR HIGH INPUT" storageaddress="0x76073"/>
+      <table name="(P0133) FRONT O2 SENSOR SLOW RESPONSE" storageaddress="0x76060"/>
+      <table name="(P0134) FRONT O2 SENSOR NO ACTIVITY" storageaddress="0x76093"/>
+      <table name="(P0137) REAR O2 SENSOR LOW VOLTAGE" storageaddress="0x76071"/>
+      <table name="(P0138) REAR O2 SENSOR HIGH VOLTAGE" storageaddress="0x76074"/>
+      <table name="(P0139) REAR O2 SENSOR SLOW RESPONSE" storageaddress="0x76061"/>
+      <table name="(P0140) REAR O2 SENSOR NO ACTIVITY" storageaddress="0x760D0"/>
+      <table name="(P0171) SYSTEM TOO LEAN" storageaddress="0x76067"/>
+      <table name="(P0172) SYSTEM TOO RICH" storageaddress="0x76068"/>
+      <table name="(P0181) FUEL TEMP SENSOR A RANGE/PERF" storageaddress="0x76049"/>
+      <table name="(P0182) FUEL TEMP SENSOR A LOW INPUT" storageaddress="0x76047"/>
+      <table name="(P0183) FUEL TEMP SENSOR A HIGH INPUT" storageaddress="0x76048"/>
+      <table name="(P0222) TPS B LOW INPUT" storageaddress="0x76097"/>
+      <table name="(P0223) TPS B HIGH INPUT" storageaddress="0x76098"/>
+      <table name="(P0230) FUEL PUMP PRIMARY CIRCUIT" storageaddress="0x7608F"/>
+      <table name="(P0244) WASTEGATE SOLENOID A RANGE/PERF" storageaddress="0x76085"/>
+      <table name="(P0245) WASTEGATE SOLENOID A LOW" storageaddress="0x76083"/>
+      <table name="(P0246) WASTEGATE SOLENOID A HIGH" storageaddress="0x76084"/>
+      <table name="(P0261) FUEL INJECTOR #1 CIRCUIT LOW" storageaddress="0x76086"/>
+      <table name="(P0264) FUEL INJECTOR #2 CIRCUIT LOW" storageaddress="0x76087"/>
+      <table name="(P0267) FUEL INJECTOR #3 CIRCUIT LOW" storageaddress="0x76088"/>
+      <table name="(P0270) FUEL INJECTOR #4 CIRCUIT LOW" storageaddress="0x76089"/>
+      <table name="(P0301) MISFIRE CYLINDER 1" storageaddress="0x76069"/>
+      <table name="(P0302) MISFIRE CYLINDER 2" storageaddress="0x7606A"/>
+      <table name="(P0303) MISFIRE CYLINDER 3" storageaddress="0x7606B"/>
+      <table name="(P0304) MISFIRE CYLINDER 4" storageaddress="0x7606C"/>
+      <table name="(P0327) KNOCK SENSOR 1 LOW INPUT" storageaddress="0x76034"/>
+      <table name="(P0328) KNOCK SENSOR 1 HIGH INPUT" storageaddress="0x76035"/>
+      <table name="(P0335) CRANKSHAFT POS. SENSOR A MALFUNCTION" storageaddress="0x7602C"/>
+      <table name="(P0336) CRANKSHAFT POS. SENSOR A RANGE/PERF" storageaddress="0x7602D"/>
+      <table name="(P0340) CAMSHAFT POS. SENSOR A MALFUNCTION" storageaddress="0x7602F"/>
+      <table name="(P0340) CAMSHAFT POS. SENSOR A MALFUNCTION " storageaddress="0x760AB"/>
+      <table name="(P0341) CAMSHAFT POS. SENSOR A RANGE/PERF" storageaddress="0x7602E"/>
+      <table name="(P0345) CAMSHAFT POS. SENSOR A BANK 2" storageaddress="0x760AA"/>
+      <table name="(P0350) IGNITION COIL PRIMARY/SECONDARY" storageaddress="0x76040"/>
+      <table name="(P0365) CAMSHAFT POS. SENSOR B BANK 1" storageaddress="0x76053"/>
+      <table name="(P0365) CAMSHAFT POS. SENSOR B BANK 1 " storageaddress="0x760A9"/>
+      <table name="(P0390) CAMSHAFT POS. SENSOR B BANK 2" storageaddress="0x76054"/>
+      <table name="(P0390) CAMSHAFT POS. SENSOR B BANK 2 " storageaddress="0x760A8"/>
+      <table name="(P0410) SECONDARY AIR PUMP SYSTEM" storageaddress="0x760CA"/>
+      <table name="(P0411) SECONDARY AIR PUMP INCORRECT FLOW" storageaddress="0x760C9"/>
+      <table name="(P0413) SECONDARY AIR PUMP A OPEN" storageaddress="0x760CE"/>
+      <table name="(P0414) SECONDARY AIR PUMP A SHORTED" storageaddress="0x760D1"/>
+      <table name="(P0416) SECONDARY AIR PUMP B OPEN" storageaddress="0x760DB"/>
+      <table name="(P0417) SECONDARY AIR PUMP B SHORTED" storageaddress="0x760DA"/>
+      <table name="(P0418) SECONDARY AIR PUMP RELAY A" storageaddress="0x760CF"/>
+      <table name="(P0420) CAT EFFICIENCY BELOW THRESHOLD" storageaddress="0x76064"/>
+      <table name="(P0442) EVAP LEAK DETECTED (SMALL)" storageaddress="0x76065"/>
+      <table name="(P0447) EVAP VENT CONTROL CIRCUIT OPEN" storageaddress="0x7605E"/>
+      <table name="(P0448) EVAP VENT CONTROL CIRCUIT SHORTED" storageaddress="0x7605F"/>
+      <table name="(P0451) EVAP PRESSURE SENSOR RANGE/PERF" storageaddress="0x76045"/>
+      <table name="(P0452) EVAP PRESSURE SENSOR LOW INPUT" storageaddress="0x76043"/>
+      <table name="(P0453) EVAP PRESSURE SENSOR HIGH INPUT" storageaddress="0x76044"/>
+      <table name="(P0456) EVAP LEAK DETECTED (VERY SMALL)" storageaddress="0x76066"/>
+      <table name="(P0457) EVAP LEAK DETECTED (FUEL CAP)" storageaddress="0x7606E"/>
+      <table name="(P0458) EVAP PURGE VALVE CIRCUIT LOW" storageaddress="0x76059"/>
+      <table name="(P0459) EVAP PURGE VALVE CIRCUIT HIGH" storageaddress="0x7605A"/>
+      <table name="(P0461) FUEL LEVEL SENSOR RANGE/PERF" storageaddress="0x7603F"/>
+      <table name="(P0462) FUEL LEVEL SENSOR LOW INPUT" storageaddress="0x7603D"/>
+      <table name="(P0463) FUEL LEVEL SENSOR HIGH INPUT" storageaddress="0x7603E"/>
+      <table name="(P0464) FUEL LEVEL SENSOR INTERMITTENT" storageaddress="0x7603B"/>
+      <table name="(P0483) RADIATOR FAN RATIONALITY CHECK" storageaddress="0x76051"/>
+      <table name="(P0500) VEHICLE SPEED SENSOR A" storageaddress="0x76033"/>
+      <table name="(P0502) VEHICLE SPEED SENSOR LOW INPUT" storageaddress="0x7608E"/>
+      <table name="(P0503) VEHICLE SPEED SENSOR INTERMITTENT" storageaddress="0x76095"/>
+      <table name="(P0506) IDLE CONTROL RPM LOWER THAN EXPECTED" storageaddress="0x7604D"/>
+      <table name="(P0507) IDLE CONTROL RPM HIGH THAN EXPECTED" storageaddress="0x7604E"/>
+      <table name="(P0508) IDLE CONTROL CIRCUIT LOW" storageaddress="0x7604B"/>
+      <table name="(P0509) IDLE CONTROL CIRCUIT HIGH" storageaddress="0x7604C"/>
+      <table name="(P0512) STARTER REQUEST CIRCUIT" storageaddress="0x76042"/>
+      <table name="(P0519) IDLE CONTROL MALFUNCTION (FAIL-SAFE)" storageaddress="0x76091"/>
+      <table name="(P0545) EGT SENSOR CIRCUIT LOW" storageaddress="0x7608A"/>
+      <table name="(P0546) EGT SENSOR CIRCUIT HIGH" storageaddress="0x7608B"/>
+      <table name="(P0562) SYSTEM VOLTAGE LOW" storageaddress="0x76081"/>
+      <table name="(P0563) SYSTEM VOLTAGE HIGH" storageaddress="0x76082"/>
+      <table name="(P0600) SERIAL COMMUNICATION LINK" storageaddress="0x760A7"/>
+      <table name="(P0604) CONTROL MODULE RAM ERROR" storageaddress="0x76030"/>
+      <table name="(P0605) CONTROL MODULE ROM ERROR" storageaddress="0x760AC"/>
+      <table name="(P0607) CONTROL MODULE PERFORMANCE" storageaddress="0x7609F"/>
+      <table name="(P0638) THROTTLE ACTUATOR RANGE/PERF" storageaddress="0x7609E"/>
+      <table name="(P0691) RADIATOR FAN CIRCUIT LOW" storageaddress="0x7604F"/>
+      <table name="(P0692) RADIATOR FAN CIRCUIT HIGH" storageaddress="0x76050"/>
+      <table name="(P0700) TRANSMISSION CONTROL SYSTEM" storageaddress="0x760B5"/>
+      <table name="(P0851) NEUTRAL SWITCH INPUT LOW" storageaddress="0x76046"/>
+      <table name="(P0852) NEUTRAL SWITCH INPUT HIGH" storageaddress="0x7604A"/>
+      <table name="(P0864) TCM COMMUNICATION RANGE/PERF" storageaddress="0x76052"/>
+      <table name="(P0865) TCM COMMUNICATION CIRCUIT LOW" storageaddress="0x7605B"/>
+      <table name="(P0866) TCM COMMUNICATION CIRCUIT HIGH" storageaddress="0x7605C"/>
+      <table name="(P1152) FRONT O2 SENSOR RANGE/PERF LOW B1 S1" storageaddress="0x76062"/>
+      <table name="(P1153) FRONT O2 SENSOR RANGE/PERF HIGH B1 S1" storageaddress="0x76063"/>
+      <table name="(P1160) ABNORMAL RETURN SPRING" storageaddress="0x76099"/>
+      <table name="(P1301) MISFIRE (HIGH TEMP EXHAUST GAS)" storageaddress="0x7606D"/>
+      <table name="(P1312) EGT SENSOR MALFUNCTION" storageaddress="0x7608C"/>
+      <table name="(P1400) FUEL TANK PRESSURE SOL. LOW" storageaddress="0x76057"/>
+      <table name="(P1410) FUEL TANK PRESSURE SYSTEM MALFUNCTION" storageaddress="0x760D5"/>
+      <table name="(P1418) FUEL LEVEL SENSOR SIGNAL HIGH" storageaddress="0x760D2"/>
+      <table name="(P1420) FUEL TANK PRESSURE SOL. HIGH INPUT" storageaddress="0x76058"/>
+      <table name="(P1443) VENT CONTROL SOLENOID FUNCTION PROBLEM" storageaddress="0x7605D"/>
+      <table name="(P1491) PCV (BLOWBY) FUNCTION PROBLEM" storageaddress="0x7607F"/>
+      <table name="(P1518) STARTER SWITCH LOW INPUT" storageaddress="0x76041"/>
+      <table name="(P1544) EGT TOO HIGH" storageaddress="0x7608D"/>
+      <table name="(P1560) BACK-UP VOLTAGE MALFUNCTION" storageaddress="0x76080"/>
+      <table name="(P2004) TGV - INTAKE MANIFOLD RUNNER 1 STUCK OPEN" storageaddress="0x760B8"/>
+      <table name="(P2005) TGV - INTAKE MANIFOLD RUNNER 2 STUCK OPEN" storageaddress="0x760BA"/>
+      <table name="(P2006) TGV - INTAKE MANIFOLD RUNNER 1 STUCK CLOSED" storageaddress="0x760B9"/>
+      <table name="(P2007) TGV - INTAKE MANIFOLD RUNNER 2 STUCK CLOSED" storageaddress="0x760BB"/>
+      <table name="(P2008) TGV - INTAKE MANIFOLD RUNNER 1 CIRCUIT OPEN" storageaddress="0x760C6"/>
+      <table name="(P2009) TGV - INTAKE MANIFOLD RUNNER 1 CIRCUIT LOW" storageaddress="0x760C4"/>
+      <table name="(P2011) TGV - INTAKE MANIFOLD RUNNER 2 CIRCUIT OPEN" storageaddress="0x760C7"/>
+      <table name="(P2012) TGV - INTAKE MANIFOLD RUNNER 2 CIRCUIT LOW" storageaddress="0x760C5"/>
+      <table name="(P2016) TGV - INTAKE MANIFOLD RUNNER 1 POS. SENSOR LOW" storageaddress="0x760C0"/>
+      <table name="(P2017) TGV - INTAKE MANIFOLD RUNNER 1 POS. SENSOR HIGH" storageaddress="0x760C1"/>
+      <table name="(P2021) TGV - INTAKE MANIFOLD RUNNER 2 POS. SENSOR LOW" storageaddress="0x760C2"/>
+      <table name="(P2022) TGV - INTAKE MANIFOLD RUNNER 2 POS. SENSOR HIGH" storageaddress="0x760C3"/>
+      <table name="(P2088) OCV SOLENOID A1 CIRCUIT OPEN" storageaddress="0x760B4"/>
+      <table name="(P2089) OCV SOLENOID A1 CIRCUIT SHORT" storageaddress="0x760B3"/>
+      <table name="(P2090) OCV SOLENOID B1 CIRCUIT OPEN" storageaddress="0x760B0"/>
+      <table name="(P2091) OCV SOLENOID B1 CIRCUIT SHORT" storageaddress="0x760AF"/>
+      <table name="(P2092) OCV SOLENOID A2 CIRCUIT OPEN" storageaddress="0x760B2"/>
+      <table name="(P2093) OCV SOLENOID A2 CIRCUIT SHORT" storageaddress="0x760B1"/>
+      <table name="(P2094) OCV SOLENOID B2 CIRCUIT OPEN" storageaddress="0x760AE"/>
+      <table name="(P2095) OCV SOLENOID B2 CIRCUIT SHORT" storageaddress="0x760AD"/>
+      <table name="(P2096) POST CATALYST TOO LEAN B1" storageaddress="0x7609D"/>
+      <table name="(P2097) POST CATALYST TOO RICH B1" storageaddress="0x760A6"/>
+      <table name="(P2101) THROTTLE ACTUATOR CIRCUIT RANGE/PERF" storageaddress="0x7609C"/>
+      <table name="(P2102) THROTTLE ACTUATOR CIRCUIT LOW" storageaddress="0x7609A"/>
+      <table name="(P2103) THROTTLE ACTUATOR CIRCUIT HIGH" storageaddress="0x7609B"/>
+      <table name="(P2109) TPS A MINIMUM STOP PERF" storageaddress="0x76096"/>
+      <table name="(P2122) TPS D CIRCUIT LOW INPUT" storageaddress="0x760A3"/>
+      <table name="(P2123) TPS D CIRCUIT HIGH INPUT" storageaddress="0x760A4"/>
+      <table name="(P2127) TPS E CIRCUIT LOW INPUT" storageaddress="0x760A1"/>
+      <table name="(P2128) TPS E CIRCUIT HIGH INPUT" storageaddress="0x760A2"/>
+      <table name="(P2135) TPS A/B VOLTAGE" storageaddress="0x760A5"/>
+      <table name="(P2138) TPS D/E VOLTAGE" storageaddress="0x760A0"/>
+      <table name="(P2227) BARO. PRESSURE CIRCUIT RANGE/PERF" storageaddress="0x760BC"/>
+      <table name="(P2228) BARO. PRESSURE CIRCUIT LOW INPUT" storageaddress="0x760BF"/>
+      <table name="(P2229) BARO. PRESSURE CIRCUIT HIGH INPUT" storageaddress="0x760BE"/>
+      <table name="(P2431) SECONDARY AIR PUMP CIRCUIT RANGE/PERF" storageaddress="0x760CB"/>
+      <table name="(P2432) SECONDARY AIR PUMP CIRCUIT LOW" storageaddress="0x760CD"/>
+      <table name="(P2433) SECONDARY AIR PUMP CIRCUIT HIGH" storageaddress="0x760CC"/>
+      <table name="(P2440) SECONDARY AIR PUMP VALVE 1 STUCK OPEN" storageaddress="0x760D9"/>
+      <table name="(P2441) SECONDARY AIR PUMP VALVE 1 STUCK CLOSED" storageaddress="0x760D8"/>
+      <table name="(P2442) SECONDARY AIR PUMP VALVE 2 STUCK OPEN" storageaddress="0x760D7"/>
+      <table name="(P2443) SECONDARY AIR PUMP 2 STUCK CLOSED" storageaddress="0x760D6"/>
+      <table name="(P2444) SECONDARY AIR PUMP 1 STUCK ON B1" storageaddress="0x760C8"/>
+      <table name="(P2503) CHARGING SYSTEM VOLTAGE LOW" storageaddress="0x760B7"/>
+      <table name="(P2504) CHARGING SYSTEM VOLTAGE HIGH" storageaddress="0x760B6"/>
+
+      <table type="Switch" name="DEFINITION ERROR FIX" storageaddress="0x760DD" category="Diagnostic Trouble Codes" sizey="3"><description>An error present in previous definition files resulted in a value in this rom being incorrectly changed. Fix will be applied when the rom is saved.</description><state name="on" data="FF FF FF"/><state name="off" data="FF FF FF"/></table>
 
 </rom>
 
@@ -27390,164 +27407,166 @@
 	<table name="Closed Loop Throttle (High Altitude)" storageaddress="0x53368" />
 	<table name="Closed Loop Atmospheric Pressure" storageaddress="0x5338C" />
 
-      <table name="(P0000) PASS CODE (NO DTC DETECTED)" storageaddress="0x3D79C"/>
-      <table name="(P0000) PASS CODE (NO DTC DETECTED) " storageaddress="0x3D79D"/>
-      <table name="(P0011) CAMSHAFT POS. - TIMING OVER-ADVANCED 1" storageaddress="0x3D782"/>
-      <table name="(P0021) CAMSHAFT POS. - TIMING OVER-ADVANCED 2" storageaddress="0x3D783"/>
-      <table name="(P0030) FRONT O2 SENSOR RANGE/PERF" storageaddress="0x3D7C2"/>
-      <table name="(P0031) FRONT O2 SENSOR LOW INPUT" storageaddress="0x3D7A8"/>
-      <table name="(P0032) FRONT O2 SENSOR HIGH INPUT" storageaddress="0x3D7A6"/>
-      <table name="(P0037) REAR O2 SENSOR LOW INPUT" storageaddress="0x3D7A7"/>
-      <table name="(P0038) REAR O2 SENSOR HIGH INPUT" storageaddress="0x3D7A5"/>
-      <table name="(P0068) MAP SENSOR RANGE/PERF" storageaddress="0x3D7BD"/>
-      <table name="(P0101) MAF SENSOR RANGE/PERF" storageaddress="0x3D7C0"/>
-      <table name="(P0102) MAF SENSOR LOW INPUT" storageaddress="0x3D75B"/>
-      <table name="(P0103) MAF SENSOR HIGH INPUT" storageaddress="0x3D75C"/>
-      <table name="(P0107) MAP SENSOR LOW INPUT" storageaddress="0x3D7A9"/>
-      <table name="(P0108) MAP SENSOR HIGH INPUT" storageaddress="0x3D7AA"/>
-      <table name="(P0111) IAT SENSOR RANGE/PERF" storageaddress="0x3D7A4"/>
-      <table name="(P0112) IAT SENSOR LOW INPUT" storageaddress="0x3D7A2"/>
-      <table name="(P0113) IAT SENSOR HIGH INPUT" storageaddress="0x3D7A3"/>
-      <table name="(P0117) COOLANT TEMP SENSOR LOW INPUT" storageaddress="0x3D763"/>
-      <table name="(P0118) COOLANT TEMP SENSOR HIGH INPUT" storageaddress="0x3D764"/>
-      <table name="(P0121) TPS RANGE/PERF" storageaddress="0x3D762"/>
-      <table name="(P0122) TPS A LOW INPUT" storageaddress="0x3D760"/>
-      <table name="(P0123) TPS A HIGH INPUT" storageaddress="0x3D761"/>
-      <table name="(P0125) INSUFFICIENT COOLANT TEMP (FUELING)" storageaddress="0x3D766"/>
-      <table name="(P0128) THERMOSTAT MALFUNCTION" storageaddress="0x3D7AB"/>
-      <table name="(P0129) ATMOS. PRESSURE SENSOR RANGE/PERF" storageaddress="0x3D7BE"/>
-      <table name="(P0131) FRONT O2 SENSOR LOW INPUT" storageaddress="0x3D79F"/>
-      <table name="(P0132) FRONT O2 SENSOR HIGH INPUT" storageaddress="0x3D7A0"/>
-      <table name="(P0133) FRONT O2 SENSOR SLOW RESPONSE" storageaddress="0x3D78D"/>
-      <table name="(P0134) FRONT O2 SENSOR NO ACTIVITY" storageaddress="0x3D7C1"/>
-      <table name="(P0137) REAR O2 SENSOR LOW VOLTAGE" storageaddress="0x3D79E"/>
-      <table name="(P0138) REAR O2 SENSOR HIGH VOLTAGE" storageaddress="0x3D7A1"/>
-      <table name="(P0139) REAR O2 SENSOR SLOW RESPONSE" storageaddress="0x3D78E"/>
-      <table name="(P0171) SYSTEM TOO LEAN" storageaddress="0x3D794"/>
-      <table name="(P0172) SYSTEM TOO RICH" storageaddress="0x3D795"/>
-      <table name="(P0181) FUEL TEMP SENSOR A RANGE/PERF" storageaddress="0x3D773"/>
-      <table name="(P0182) FUEL TEMP SENSOR A LOW INPUT" storageaddress="0x3D771"/>
-      <table name="(P0183) FUEL TEMP SENSOR A HIGH INPUT" storageaddress="0x3D772"/>
-      <table name="(P0222) TPS B LOW INPUT" storageaddress="0x3D7C5"/>
-      <table name="(P0223) TPS B HIGH INPUT" storageaddress="0x3D7C6"/>
-      <table name="(P0230) FUEL PUMP PRIMARY CIRCUIT" storageaddress="0x3D7BC"/>
-      <table name="(P0244) WASTEGATE SOLENOID A RANGE/PERF" storageaddress="0x3D7B2"/>
-      <table name="(P0245) WASTEGATE SOLENOID A LOW" storageaddress="0x3D7B0"/>
-      <table name="(P0246) WASTEGATE SOLENOID A HIGH" storageaddress="0x3D7B1"/>
-      <table name="(P0261) FUEL INJECTOR #1 CIRCUIT LOW" storageaddress="0x3D7B3"/>
-      <table name="(P0264) FUEL INJECTOR #2 CIRCUIT LOW" storageaddress="0x3D7B4"/>
-      <table name="(P0267) FUEL INJECTOR #3 CIRCUIT LOW" storageaddress="0x3D7B5"/>
-      <table name="(P0270) FUEL INJECTOR #4 CIRCUIT LOW" storageaddress="0x3D7B6"/>
-      <table name="(P0301) MISFIRE CYLINDER 1" storageaddress="0x3D796"/>
-      <table name="(P0302) MISFIRE CYLINDER 2" storageaddress="0x3D797"/>
-      <table name="(P0303) MISFIRE CYLINDER 3" storageaddress="0x3D798"/>
-      <table name="(P0304) MISFIRE CYLINDER 4" storageaddress="0x3D799"/>
-      <table name="(P0327) KNOCK SENSOR 1 LOW INPUT" storageaddress="0x3D75E"/>
-      <table name="(P0328) KNOCK SENSOR 1 HIGH INPUT" storageaddress="0x3D75F"/>
-      <table name="(P0335) CRANKSHAFT POS. SENSOR A MALFUNCTION" storageaddress="0x3D756"/>
-      <table name="(P0336) CRANKSHAFT POS. SENSOR A RANGE/PERF" storageaddress="0x3D757"/>
-      <table name="(P0340) CAMSHAFT POS. SENSOR A MALFUNCTION" storageaddress="0x3D759"/>
-      <table name="(P0340) CAMSHAFT POS. SENSOR A MALFUNCTION " storageaddress="0x3D7D9"/>
-      <table name="(P0341) CAMSHAFT POS. SENSOR A RANGE/PERF" storageaddress="0x3D758"/>
-      <table name="(P0345) CAMSHAFT POS. SENSOR A BANK 2" storageaddress="0x3D7D8"/>
-      <table name="(P0350) IGNITION COIL PRIMARY/SECONDARY" storageaddress="0x3D76A"/>
-      <table name="(P0365) CAMSHAFT POS. SENSOR B BANK 1" storageaddress="0x3D780"/>
-      <table name="(P0365) CAMSHAFT POS. SENSOR B BANK 1 " storageaddress="0x3D7D7"/>
-      <table name="(P0390) CAMSHAFT POS. SENSOR B BANK 2" storageaddress="0x3D781"/>
-      <table name="(P0390) CAMSHAFT POS. SENSOR B BANK 2 " storageaddress="0x3D7D6"/>
-      <table name="(P0420) CAT EFFICIENCY BELOW THRESHOLD" storageaddress="0x3D791"/>
-      <table name="(P0442) EVAP LEAK DETECTED (SMALL)" storageaddress="0x3D792"/>
-      <table name="(P0447) EVAP VENT CONTROL CIRCUIT OPEN" storageaddress="0x3D78B"/>
-      <table name="(P0448) EVAP VENT CONTROL CIRCUIT SHORTED" storageaddress="0x3D78C"/>
-      <table name="(P0451) EVAP PRESSURE SENSOR RANGE/PERF" storageaddress="0x3D76F"/>
-      <table name="(P0452) EVAP PRESSURE SENSOR LOW INPUT" storageaddress="0x3D76D"/>
-      <table name="(P0453) EVAP PRESSURE SENSOR HIGH INPUT" storageaddress="0x3D76E"/>
-      <table name="(P0456) EVAP LEAK DETECTED (VERY SMALL)" storageaddress="0x3D793"/>
-      <table name="(P0457) EVAP LEAK DETECTED (FUEL CAP)" storageaddress="0x3D79B"/>
-      <table name="(P0458) EVAP PURGE VALVE CIRCUIT LOW" storageaddress="0x3D786"/>
-      <table name="(P0459) EVAP PURGE VALVE CIRCUIT HIGH" storageaddress="0x3D787"/>
-      <table name="(P0461) FUEL LEVEL SENSOR RANGE/PERF" storageaddress="0x3D769"/>
-      <table name="(P0462) FUEL LEVEL SENSOR LOW INPUT" storageaddress="0x3D767"/>
-      <table name="(P0463) FUEL LEVEL SENSOR HIGH INPUT" storageaddress="0x3D768"/>
-      <table name="(P0464) FUEL LEVEL SENSOR INTERMITTENT" storageaddress="0x3D765"/>
-      <table name="(P0483) RADIATOR FAN RATIONALITY CHECK" storageaddress="0x3D77E"/>
-      <table name="(P0500) VEHICLE SPEED SENSOR A" storageaddress="0x3D75D"/>
-      <table name="(P0502) VEHICLE SPEED SENSOR LOW INPUT" storageaddress="0x3D7BB"/>
-      <table name="(P0503) VEHICLE SPEED SENSOR INTERMITTENT" storageaddress="0x3D7C3"/>
-      <table name="(P0506) IDLE CONTROL RPM LOWER THAN EXPECTED" storageaddress="0x3D779"/>
-      <table name="(P0507) IDLE CONTROL RPM HIGH THAN EXPECTED" storageaddress="0x3D77A"/>
-      <table name="(P0508) IDLE CONTROL CIRCUIT LOW" storageaddress="0x3D777"/>
-      <table name="(P0509) IDLE CONTROL CIRCUIT HIGH" storageaddress="0x3D778"/>
-      <table name="(P0512) STARTER REQUEST CIRCUIT" storageaddress="0x3D76C"/>
-      <table name="(P0519) IDLE CONTROL MALFUNCTION (FAIL-SAFE)" storageaddress="0x3D7BF"/>
-      <table name="(P0545) EGT SENSOR CIRCUIT LOW" storageaddress="0x3D7B7"/>
-      <table name="(P0546) EGT SENSOR CIRCUIT HIGH" storageaddress="0x3D7B8"/>
-      <table name="(P0562) SYSTEM VOLTAGE LOW" storageaddress="0x3D7AE"/>
-      <table name="(P0563) SYSTEM VOLTAGE HIGH" storageaddress="0x3D7AF"/>
-      <table name="(P0600) SERIAL COMMUNICATION LINK" storageaddress="0x3D7D5"/>
-      <table name="(P0604) CONTROL MODULE RAM ERROR" storageaddress="0x3D75A"/>
-      <table name="(P0605) CONTROL MODULE ROM ERROR" storageaddress="0x3D7DA"/>
-      <table name="(P0607) CONTROL MODULE PERFORMANCE" storageaddress="0x3D7CD"/>
-      <table name="(P0638) THROTTLE ACTUATOR RANGE/PERF" storageaddress="0x3D7CC"/>
-      <table name="(P0691) RADIATOR FAN CIRCUIT LOW" storageaddress="0x3D77C"/>
-      <table name="(P0692) RADIATOR FAN CIRCUIT HIGH" storageaddress="0x3D77D"/>
-      <table name="(P0700) TRANSMISSION CONTROL SYSTEM" storageaddress="0x3D7E3"/>
-      <table name="(P0851) NEUTRAL SWITCH INPUT LOW" storageaddress="0x3D770"/>
-      <table name="(P0852) NEUTRAL SWITCH INPUT HIGH" storageaddress="0x3D774"/>
-      <table name="(P0864) TCM COMMUNICATION RANGE/PERF" storageaddress="0x3D77F"/>
-      <table name="(P0865) TCM COMMUNICATION CIRCUIT LOW" storageaddress="0x3D788"/>
-      <table name="(P0866) TCM COMMUNICATION CIRCUIT HIGH" storageaddress="0x3D789"/>
-      <table name="(P1152) FRONT O2 SENSOR RANGE/PERF LOW B1 S1" storageaddress="0x3D78F"/>
-      <table name="(P1153) FRONT O2 SENSOR RANGE/PERF HIGH B1 S1" storageaddress="0x3D790"/>
-      <table name="(P1160) ABNORMAL RETURN SPRING" storageaddress="0x3D7C7"/>
-      <table name="(P1301) MISFIRE (HIGH TEMP EXHAUST GAS)" storageaddress="0x3D79A"/>
-      <table name="(P1312) EGT SENSOR MALFUNCTION" storageaddress="0x3D7B9"/>
-      <table name="(P1400) FUEL TANK PRESSURE SOL. LOW" storageaddress="0x3D784"/>
-      <table name="(P1420) FUEL TANK PRESSURE SOL. HIGH INPUT" storageaddress="0x3D785"/>
-      <table name="(P1443) VENT CONTROL SOLENOID FUNCTION PROBLEM" storageaddress="0x3D78A"/>
-      <table name="(P1446) FUEL TANK SENSOR CONTROL CIRCUIT LOW" storageaddress="0x3D775"/>
-      <table name="(P1447) FUEL TANK SENSOR CONTROL CIRCUIT HIGH" storageaddress="0x3D776"/>
-      <table name="(P1448) FUEL TANK SENSOR CONTROL RANGE/PERF" storageaddress="0x3D77B"/>
-      <table name="(P1491) PCV (BLOWBY) FUNCTION PROBLEM" storageaddress="0x3D7AC"/>
-      <table name="(P1518) STARTER SWITCH LOW INPUT" storageaddress="0x3D76B"/>
-      <table name="(P1544) EGT TOO HIGH" storageaddress="0x3D7BA"/>
-      <table name="(P1560) BACK-UP VOLTAGE MALFUNCTION" storageaddress="0x3D7AD"/>
-      <table name="(P2004) TGV - INTAKE MANIFOLD RUNNER 1 STUCK OPEN" storageaddress="0x3D7E6"/>
-      <table name="(P2005) TGV - INTAKE MANIFOLD RUNNER 2 STUCK OPEN" storageaddress="0x3D7E8"/>
-      <table name="(P2006) TGV - INTAKE MANIFOLD RUNNER 1 STUCK CLOSED" storageaddress="0x3D7E7"/>
-      <table name="(P2007) TGV - INTAKE MANIFOLD RUNNER 2 STUCK CLOSED" storageaddress="0x3D7E9"/>
-      <table name="(P2008) TGV - INTAKE MANIFOLD RUNNER 1 CIRCUIT OPEN" storageaddress="0x3D7F2"/>
-      <table name="(P2009) TGV - INTAKE MANIFOLD RUNNER 1 CIRCUIT LOW" storageaddress="0x3D7F0"/>
-      <table name="(P2011) TGV - INTAKE MANIFOLD RUNNER 2 CIRCUIT OPEN" storageaddress="0x3D7F3"/>
-      <table name="(P2012) TGV - INTAKE MANIFOLD RUNNER 2 CIRCUIT LOW" storageaddress="0x3D7F1"/>
-      <table name="(P2016) TGV - INTAKE MANIFOLD RUNNER 1 POS. SENSOR LOW" storageaddress="0x3D7EC"/>
-      <table name="(P2017) TGV - INTAKE MANIFOLD RUNNER 1 POS. SENSOR HIGH" storageaddress="0x3D7ED"/>
-      <table name="(P2021) TGV - INTAKE MANIFOLD RUNNER 2 POS. SENSOR LOW" storageaddress="0x3D7EE"/>
-      <table name="(P2022) TGV - INTAKE MANIFOLD RUNNER 2 POS. SENSOR HIGH" storageaddress="0x3D7EF"/>
-      <table name="(P2088) OCV SOLENOID A1 CIRCUIT OPEN" storageaddress="0x3D7E2"/>
-      <table name="(P2089) OCV SOLENOID A1 CIRCUIT SHORT" storageaddress="0x3D7E1"/>
-      <table name="(P2090) OCV SOLENOID B1 CIRCUIT OPEN" storageaddress="0x3D7DE"/>
-      <table name="(P2091) OCV SOLENOID B1 CIRCUIT SHORT" storageaddress="0x3D7DD"/>
-      <table name="(P2092) OCV SOLENOID A2 CIRCUIT OPEN" storageaddress="0x3D7E0"/>
-      <table name="(P2093) OCV SOLENOID A2 CIRCUIT SHORT" storageaddress="0x3D7DF"/>
-      <table name="(P2094) OCV SOLENOID B2 CIRCUIT OPEN" storageaddress="0x3D7DC"/>
-      <table name="(P2095) OCV SOLENOID B2 CIRCUIT SHORT" storageaddress="0x3D7DB"/>
-      <table name="(P2096) POST CATALYST TOO LEAN B1" storageaddress="0x3D7CB"/>
-      <table name="(P2097) POST CATALYST TOO RICH B1" storageaddress="0x3D7D4"/>
-      <table name="(P2101) THROTTLE ACTUATOR CIRCUIT RANGE/PERF" storageaddress="0x3D7CA"/>
-      <table name="(P2102) THROTTLE ACTUATOR CIRCUIT LOW" storageaddress="0x3D7C8"/>
-      <table name="(P2103) THROTTLE ACTUATOR CIRCUIT HIGH" storageaddress="0x3D7C9"/>
-      <table name="(P2109) TPS A MINIMUM STOP PERF" storageaddress="0x3D7C4"/>
-      <table name="(P2122) TPS D CIRCUIT LOW INPUT" storageaddress="0x3D7D1"/>
-      <table name="(P2123) TPS D CIRCUIT HIGH INPUT" storageaddress="0x3D7D2"/>
-      <table name="(P2127) TPS E CIRCUIT LOW INPUT" storageaddress="0x3D7CF"/>
-      <table name="(P2128) TPS E CIRCUIT HIGH INPUT" storageaddress="0x3D7D0"/>
-      <table name="(P2135) TPS A/B VOLTAGE" storageaddress="0x3D7D3"/>
-      <table name="(P2138) TPS D/E VOLTAGE" storageaddress="0x3D7CE"/>
-      <table name="(P2228) BARO. PRESSURE CIRCUIT LOW INPUT" storageaddress="0x3D7EB"/>
-      <table name="(P2229) BARO. PRESSURE CIRCUIT HIGH INPUT" storageaddress="0x3D7EA"/>
-      <table name="(P2503) CHARGING SYSTEM VOLTAGE LOW" storageaddress="0x3D7E5"/>
-      <table name="(P2504) CHARGING SYSTEM VOLTAGE HIGH" storageaddress="0x3D7E4"/>
+      <table name="(P0000) PASS CODE (NO DTC DETECTED)" storageaddress="0x3D7A2"/>
+      <table name="(P0000) PASS CODE (NO DTC DETECTED) " storageaddress="0x3D7A3"/>
+      <table name="(P0011) CAMSHAFT POS. - TIMING OVER-ADVANCED 1" storageaddress="0x3D788"/>
+      <table name="(P0021) CAMSHAFT POS. - TIMING OVER-ADVANCED 2" storageaddress="0x3D789"/>
+      <table name="(P0030) FRONT O2 SENSOR RANGE/PERF" storageaddress="0x3D7C8"/>
+      <table name="(P0031) FRONT O2 SENSOR LOW INPUT" storageaddress="0x3D7AE"/>
+      <table name="(P0032) FRONT O2 SENSOR HIGH INPUT" storageaddress="0x3D7AC"/>
+      <table name="(P0037) REAR O2 SENSOR LOW INPUT" storageaddress="0x3D7AD"/>
+      <table name="(P0038) REAR O2 SENSOR HIGH INPUT" storageaddress="0x3D7AB"/>
+      <table name="(P0068) MAP SENSOR RANGE/PERF" storageaddress="0x3D7C3"/>
+      <table name="(P0101) MAF SENSOR RANGE/PERF" storageaddress="0x3D7C6"/>
+      <table name="(P0102) MAF SENSOR LOW INPUT" storageaddress="0x3D761"/>
+      <table name="(P0103) MAF SENSOR HIGH INPUT" storageaddress="0x3D762"/>
+      <table name="(P0107) MAP SENSOR LOW INPUT" storageaddress="0x3D7AF"/>
+      <table name="(P0108) MAP SENSOR HIGH INPUT" storageaddress="0x3D7B0"/>
+      <table name="(P0111) IAT SENSOR RANGE/PERF" storageaddress="0x3D7AA"/>
+      <table name="(P0112) IAT SENSOR LOW INPUT" storageaddress="0x3D7A8"/>
+      <table name="(P0113) IAT SENSOR HIGH INPUT" storageaddress="0x3D7A9"/>
+      <table name="(P0117) COOLANT TEMP SENSOR LOW INPUT" storageaddress="0x3D769"/>
+      <table name="(P0118) COOLANT TEMP SENSOR HIGH INPUT" storageaddress="0x3D76A"/>
+      <table name="(P0121) TPS RANGE/PERF" storageaddress="0x3D768"/>
+      <table name="(P0122) TPS A LOW INPUT" storageaddress="0x3D766"/>
+      <table name="(P0123) TPS A HIGH INPUT" storageaddress="0x3D767"/>
+      <table name="(P0125) INSUFFICIENT COOLANT TEMP (FUELING)" storageaddress="0x3D76C"/>
+      <table name="(P0128) THERMOSTAT MALFUNCTION" storageaddress="0x3D7B1"/>
+      <table name="(P0129) ATMOS. PRESSURE SENSOR RANGE/PERF" storageaddress="0x3D7C4"/>
+      <table name="(P0131) FRONT O2 SENSOR LOW INPUT" storageaddress="0x3D7A5"/>
+      <table name="(P0132) FRONT O2 SENSOR HIGH INPUT" storageaddress="0x3D7A6"/>
+      <table name="(P0133) FRONT O2 SENSOR SLOW RESPONSE" storageaddress="0x3D793"/>
+      <table name="(P0134) FRONT O2 SENSOR NO ACTIVITY" storageaddress="0x3D7C7"/>
+      <table name="(P0137) REAR O2 SENSOR LOW VOLTAGE" storageaddress="0x3D7A4"/>
+      <table name="(P0138) REAR O2 SENSOR HIGH VOLTAGE" storageaddress="0x3D7A7"/>
+      <table name="(P0139) REAR O2 SENSOR SLOW RESPONSE" storageaddress="0x3D794"/>
+      <table name="(P0171) SYSTEM TOO LEAN" storageaddress="0x3D79A"/>
+      <table name="(P0172) SYSTEM TOO RICH" storageaddress="0x3D79B"/>
+      <table name="(P0181) FUEL TEMP SENSOR A RANGE/PERF" storageaddress="0x3D779"/>
+      <table name="(P0182) FUEL TEMP SENSOR A LOW INPUT" storageaddress="0x3D777"/>
+      <table name="(P0183) FUEL TEMP SENSOR A HIGH INPUT" storageaddress="0x3D778"/>
+      <table name="(P0222) TPS B LOW INPUT" storageaddress="0x3D7CB"/>
+      <table name="(P0223) TPS B HIGH INPUT" storageaddress="0x3D7CC"/>
+      <table name="(P0230) FUEL PUMP PRIMARY CIRCUIT" storageaddress="0x3D7C2"/>
+      <table name="(P0244) WASTEGATE SOLENOID A RANGE/PERF" storageaddress="0x3D7B8"/>
+      <table name="(P0245) WASTEGATE SOLENOID A LOW" storageaddress="0x3D7B6"/>
+      <table name="(P0246) WASTEGATE SOLENOID A HIGH" storageaddress="0x3D7B7"/>
+      <table name="(P0261) FUEL INJECTOR #1 CIRCUIT LOW" storageaddress="0x3D7B9"/>
+      <table name="(P0264) FUEL INJECTOR #2 CIRCUIT LOW" storageaddress="0x3D7BA"/>
+      <table name="(P0267) FUEL INJECTOR #3 CIRCUIT LOW" storageaddress="0x3D7BB"/>
+      <table name="(P0270) FUEL INJECTOR #4 CIRCUIT LOW" storageaddress="0x3D7BC"/>
+      <table name="(P0301) MISFIRE CYLINDER 1" storageaddress="0x3D79C"/>
+      <table name="(P0302) MISFIRE CYLINDER 2" storageaddress="0x3D79D"/>
+      <table name="(P0303) MISFIRE CYLINDER 3" storageaddress="0x3D79E"/>
+      <table name="(P0304) MISFIRE CYLINDER 4" storageaddress="0x3D79F"/>
+      <table name="(P0327) KNOCK SENSOR 1 LOW INPUT" storageaddress="0x3D764"/>
+      <table name="(P0328) KNOCK SENSOR 1 HIGH INPUT" storageaddress="0x3D765"/>
+      <table name="(P0335) CRANKSHAFT POS. SENSOR A MALFUNCTION" storageaddress="0x3D75C"/>
+      <table name="(P0336) CRANKSHAFT POS. SENSOR A RANGE/PERF" storageaddress="0x3D75D"/>
+      <table name="(P0340) CAMSHAFT POS. SENSOR A MALFUNCTION" storageaddress="0x3D75F"/>
+      <table name="(P0340) CAMSHAFT POS. SENSOR A MALFUNCTION " storageaddress="0x3D7DF"/>
+      <table name="(P0341) CAMSHAFT POS. SENSOR A RANGE/PERF" storageaddress="0x3D75E"/>
+      <table name="(P0345) CAMSHAFT POS. SENSOR A BANK 2" storageaddress="0x3D7DE"/>
+      <table name="(P0350) IGNITION COIL PRIMARY/SECONDARY" storageaddress="0x3D770"/>
+      <table name="(P0365) CAMSHAFT POS. SENSOR B BANK 1" storageaddress="0x3D786"/>
+      <table name="(P0365) CAMSHAFT POS. SENSOR B BANK 1 " storageaddress="0x3D7DD"/>
+      <table name="(P0390) CAMSHAFT POS. SENSOR B BANK 2" storageaddress="0x3D787"/>
+      <table name="(P0390) CAMSHAFT POS. SENSOR B BANK 2 " storageaddress="0x3D7DC"/>
+      <table name="(P0420) CAT EFFICIENCY BELOW THRESHOLD" storageaddress="0x3D797"/>
+      <table name="(P0442) EVAP LEAK DETECTED (SMALL)" storageaddress="0x3D798"/>
+      <table name="(P0447) EVAP VENT CONTROL CIRCUIT OPEN" storageaddress="0x3D791"/>
+      <table name="(P0448) EVAP VENT CONTROL CIRCUIT SHORTED" storageaddress="0x3D792"/>
+      <table name="(P0451) EVAP PRESSURE SENSOR RANGE/PERF" storageaddress="0x3D775"/>
+      <table name="(P0452) EVAP PRESSURE SENSOR LOW INPUT" storageaddress="0x3D773"/>
+      <table name="(P0453) EVAP PRESSURE SENSOR HIGH INPUT" storageaddress="0x3D774"/>
+      <table name="(P0456) EVAP LEAK DETECTED (VERY SMALL)" storageaddress="0x3D799"/>
+      <table name="(P0457) EVAP LEAK DETECTED (FUEL CAP)" storageaddress="0x3D7A1"/>
+      <table name="(P0458) EVAP PURGE VALVE CIRCUIT LOW" storageaddress="0x3D78C"/>
+      <table name="(P0459) EVAP PURGE VALVE CIRCUIT HIGH" storageaddress="0x3D78D"/>
+      <table name="(P0461) FUEL LEVEL SENSOR RANGE/PERF" storageaddress="0x3D76F"/>
+      <table name="(P0462) FUEL LEVEL SENSOR LOW INPUT" storageaddress="0x3D76D"/>
+      <table name="(P0463) FUEL LEVEL SENSOR HIGH INPUT" storageaddress="0x3D76E"/>
+      <table name="(P0464) FUEL LEVEL SENSOR INTERMITTENT" storageaddress="0x3D76B"/>
+      <table name="(P0483) RADIATOR FAN RATIONALITY CHECK" storageaddress="0x3D784"/>
+      <table name="(P0500) VEHICLE SPEED SENSOR A" storageaddress="0x3D763"/>
+      <table name="(P0502) VEHICLE SPEED SENSOR LOW INPUT" storageaddress="0x3D7C1"/>
+      <table name="(P0503) VEHICLE SPEED SENSOR INTERMITTENT" storageaddress="0x3D7C9"/>
+      <table name="(P0506) IDLE CONTROL RPM LOWER THAN EXPECTED" storageaddress="0x3D77F"/>
+      <table name="(P0507) IDLE CONTROL RPM HIGH THAN EXPECTED" storageaddress="0x3D780"/>
+      <table name="(P0508) IDLE CONTROL CIRCUIT LOW" storageaddress="0x3D77D"/>
+      <table name="(P0509) IDLE CONTROL CIRCUIT HIGH" storageaddress="0x3D77E"/>
+      <table name="(P0512) STARTER REQUEST CIRCUIT" storageaddress="0x3D772"/>
+      <table name="(P0519) IDLE CONTROL MALFUNCTION (FAIL-SAFE)" storageaddress="0x3D7C5"/>
+      <table name="(P0545) EGT SENSOR CIRCUIT LOW" storageaddress="0x3D7BD"/>
+      <table name="(P0546) EGT SENSOR CIRCUIT HIGH" storageaddress="0x3D7BE"/>
+      <table name="(P0562) SYSTEM VOLTAGE LOW" storageaddress="0x3D7B4"/>
+      <table name="(P0563) SYSTEM VOLTAGE HIGH" storageaddress="0x3D7B5"/>
+      <table name="(P0600) SERIAL COMMUNICATION LINK" storageaddress="0x3D7DB"/>
+      <table name="(P0604) CONTROL MODULE RAM ERROR" storageaddress="0x3D760"/>
+      <table name="(P0605) CONTROL MODULE ROM ERROR" storageaddress="0x3D7E0"/>
+      <table name="(P0607) CONTROL MODULE PERFORMANCE" storageaddress="0x3D7D3"/>
+      <table name="(P0638) THROTTLE ACTUATOR RANGE/PERF" storageaddress="0x3D7D2"/>
+      <table name="(P0691) RADIATOR FAN CIRCUIT LOW" storageaddress="0x3D782"/>
+      <table name="(P0692) RADIATOR FAN CIRCUIT HIGH" storageaddress="0x3D783"/>
+      <table name="(P0700) TRANSMISSION CONTROL SYSTEM" storageaddress="0x3D7E9"/>
+      <table name="(P0851) NEUTRAL SWITCH INPUT LOW" storageaddress="0x3D776"/>
+      <table name="(P0852) NEUTRAL SWITCH INPUT HIGH" storageaddress="0x3D77A"/>
+      <table name="(P0864) TCM COMMUNICATION RANGE/PERF" storageaddress="0x3D785"/>
+      <table name="(P0865) TCM COMMUNICATION CIRCUIT LOW" storageaddress="0x3D78E"/>
+      <table name="(P0866) TCM COMMUNICATION CIRCUIT HIGH" storageaddress="0x3D78F"/>
+      <table name="(P1152) FRONT O2 SENSOR RANGE/PERF LOW B1 S1" storageaddress="0x3D795"/>
+      <table name="(P1153) FRONT O2 SENSOR RANGE/PERF HIGH B1 S1" storageaddress="0x3D796"/>
+      <table name="(P1160) ABNORMAL RETURN SPRING" storageaddress="0x3D7CD"/>
+      <table name="(P1301) MISFIRE (HIGH TEMP EXHAUST GAS)" storageaddress="0x3D7A0"/>
+      <table name="(P1312) EGT SENSOR MALFUNCTION" storageaddress="0x3D7BF"/>
+      <table name="(P1400) FUEL TANK PRESSURE SOL. LOW" storageaddress="0x3D78A"/>
+      <table name="(P1420) FUEL TANK PRESSURE SOL. HIGH INPUT" storageaddress="0x3D78B"/>
+      <table name="(P1443) VENT CONTROL SOLENOID FUNCTION PROBLEM" storageaddress="0x3D790"/>
+      <table name="(P1446) FUEL TANK SENSOR CONTROL CIRCUIT LOW" storageaddress="0x3D77B"/>
+      <table name="(P1447) FUEL TANK SENSOR CONTROL CIRCUIT HIGH" storageaddress="0x3D77C"/>
+      <table name="(P1448) FUEL TANK SENSOR CONTROL RANGE/PERF" storageaddress="0x3D781"/>
+      <table name="(P1491) PCV (BLOWBY) FUNCTION PROBLEM" storageaddress="0x3D7B2"/>
+      <table name="(P1518) STARTER SWITCH LOW INPUT" storageaddress="0x3D771"/>
+      <table name="(P1544) EGT TOO HIGH" storageaddress="0x3D7C0"/>
+      <table name="(P1560) BACK-UP VOLTAGE MALFUNCTION" storageaddress="0x3D7B3"/>
+      <table name="(P2004) TGV - INTAKE MANIFOLD RUNNER 1 STUCK OPEN" storageaddress="0x3D7EC"/>
+      <table name="(P2005) TGV - INTAKE MANIFOLD RUNNER 2 STUCK OPEN" storageaddress="0x3D7EE"/>
+      <table name="(P2006) TGV - INTAKE MANIFOLD RUNNER 1 STUCK CLOSED" storageaddress="0x3D7ED"/>
+      <table name="(P2007) TGV - INTAKE MANIFOLD RUNNER 2 STUCK CLOSED" storageaddress="0x3D7EF"/>
+      <table name="(P2008) TGV - INTAKE MANIFOLD RUNNER 1 CIRCUIT OPEN" storageaddress="0x3D7F8"/>
+      <table name="(P2009) TGV - INTAKE MANIFOLD RUNNER 1 CIRCUIT LOW" storageaddress="0x3D7F6"/>
+      <table name="(P2011) TGV - INTAKE MANIFOLD RUNNER 2 CIRCUIT OPEN" storageaddress="0x3D7F9"/>
+      <table name="(P2012) TGV - INTAKE MANIFOLD RUNNER 2 CIRCUIT LOW" storageaddress="0x3D7F7"/>
+      <table name="(P2016) TGV - INTAKE MANIFOLD RUNNER 1 POS. SENSOR LOW" storageaddress="0x3D7F2"/>
+      <table name="(P2017) TGV - INTAKE MANIFOLD RUNNER 1 POS. SENSOR HIGH" storageaddress="0x3D7F3"/>
+      <table name="(P2021) TGV - INTAKE MANIFOLD RUNNER 2 POS. SENSOR LOW" storageaddress="0x3D7F4"/>
+      <table name="(P2022) TGV - INTAKE MANIFOLD RUNNER 2 POS. SENSOR HIGH" storageaddress="0x3D7F5"/>
+      <table name="(P2088) OCV SOLENOID A1 CIRCUIT OPEN" storageaddress="0x3D7E8"/>
+      <table name="(P2089) OCV SOLENOID A1 CIRCUIT SHORT" storageaddress="0x3D7E7"/>
+      <table name="(P2090) OCV SOLENOID B1 CIRCUIT OPEN" storageaddress="0x3D7E4"/>
+      <table name="(P2091) OCV SOLENOID B1 CIRCUIT SHORT" storageaddress="0x3D7E3"/>
+      <table name="(P2092) OCV SOLENOID A2 CIRCUIT OPEN" storageaddress="0x3D7E6"/>
+      <table name="(P2093) OCV SOLENOID A2 CIRCUIT SHORT" storageaddress="0x3D7E5"/>
+      <table name="(P2094) OCV SOLENOID B2 CIRCUIT OPEN" storageaddress="0x3D7E2"/>
+      <table name="(P2095) OCV SOLENOID B2 CIRCUIT SHORT" storageaddress="0x3D7E1"/>
+      <table name="(P2096) POST CATALYST TOO LEAN B1" storageaddress="0x3D7D1"/>
+      <table name="(P2097) POST CATALYST TOO RICH B1" storageaddress="0x3D7DA"/>
+      <table name="(P2101) THROTTLE ACTUATOR CIRCUIT RANGE/PERF" storageaddress="0x3D7D0"/>
+      <table name="(P2102) THROTTLE ACTUATOR CIRCUIT LOW" storageaddress="0x3D7CE"/>
+      <table name="(P2103) THROTTLE ACTUATOR CIRCUIT HIGH" storageaddress="0x3D7CF"/>
+      <table name="(P2109) TPS A MINIMUM STOP PERF" storageaddress="0x3D7CA"/>
+      <table name="(P2122) TPS D CIRCUIT LOW INPUT" storageaddress="0x3D7D7"/>
+      <table name="(P2123) TPS D CIRCUIT HIGH INPUT" storageaddress="0x3D7D8"/>
+      <table name="(P2127) TPS E CIRCUIT LOW INPUT" storageaddress="0x3D7D5"/>
+      <table name="(P2128) TPS E CIRCUIT HIGH INPUT" storageaddress="0x3D7D6"/>
+      <table name="(P2135) TPS A/B VOLTAGE" storageaddress="0x3D7D9"/>
+      <table name="(P2138) TPS D/E VOLTAGE" storageaddress="0x3D7D4"/>
+      <table name="(P2228) BARO. PRESSURE CIRCUIT LOW INPUT" storageaddress="0x3D7F1"/>
+      <table name="(P2229) BARO. PRESSURE CIRCUIT HIGH INPUT" storageaddress="0x3D7F0"/>
+      <table name="(P2503) CHARGING SYSTEM VOLTAGE LOW" storageaddress="0x3D7EB"/>
+      <table name="(P2504) CHARGING SYSTEM VOLTAGE HIGH" storageaddress="0x3D7EA"/>
+
+      <table type="Switch" name="DEFINITION ERROR FIX" storageaddress="0x3D759" category="Diagnostic Trouble Codes" sizey="3"><description>An error present in previous definition files resulted in a value in this rom being incorrectly changed. Fix will be applied when the rom is saved.</description><state name="on" data="03 D0 20"/><state name="off" data="03 D0 20"/></table>
 
 </rom>
 
