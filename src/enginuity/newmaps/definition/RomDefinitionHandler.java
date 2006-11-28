@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Stack;
+import javax.swing.JFrame;
 
 public class RomDefinitionHandler extends DefaultHandler {
 
@@ -478,25 +479,6 @@ public class RomDefinitionHandler extends DefaultHandler {
     }    
     
     
-    /*public Rom parseECUDefinition(String ecuid) {
-        
-        try {
-            InputStream is = new BufferedInputStream(new FileInputStream(lookupDefinition(ecuid)));
-        } catch (Exception ex) { 
-            ex.printStackTrace();
-        }
-        return new Rom("asdf");
-        
-    }
-    
-    private File lookupDefinition(String ecuid) {
-        
-        // This will look up the definition in the index
-        // For now it'll just do what I want
-        // Param WILL be byte[] file
-        return new File("/ecu_defs/subaru/wrx/16BITBASE.xml");
-    }*/
-    
     public static void main(String[] args) {
         try {
             InputStream inputStream1 = new BufferedInputStream(new FileInputStream(new File("/ecu_defs/subaru/wrx/16BITBASE.xml")));
@@ -508,7 +490,7 @@ public class RomDefinitionHandler extends DefaultHandler {
                 SaxParserFactory.getSaxParser().parse(inputStream2, handler);
                 
                 System.out.println(builder.get(0));
-                                
+                                                
                 
             } finally {
                 inputStream1.close();
@@ -516,7 +498,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }     
     }
     
 }
