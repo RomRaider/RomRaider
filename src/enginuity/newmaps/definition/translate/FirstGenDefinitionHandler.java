@@ -14,7 +14,7 @@ import enginuity.maps.Table3D;
 import enginuity.maps.TableSwitch;
 import static enginuity.xml.DOMHelper.unmarshallAttribute;
 import static enginuity.xml.DOMHelper.unmarshallText;
-import enginuity.xml.ObjectCloner;
+import enginuity.util.ObjectCloner;
 import enginuity.xml.RomAttributeParser;
 import enginuity.xml.TableIsOmittedException;
 import org.w3c.dom.Node;

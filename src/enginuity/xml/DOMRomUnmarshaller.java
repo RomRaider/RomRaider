@@ -15,6 +15,7 @@ import enginuity.maps.Table3D;
 import enginuity.maps.TableSwitch;
 import enginuity.swing.DebugPanel;
 import enginuity.swing.JProgressPane;
+import enginuity.util.ObjectCloner;
 import static enginuity.xml.DOMHelper.unmarshallAttribute;
 import static enginuity.xml.DOMHelper.unmarshallText;
 import org.w3c.dom.Node;

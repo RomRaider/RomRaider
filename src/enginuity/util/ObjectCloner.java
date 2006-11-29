@@ -1,4 +1,4 @@
-package enginuity.xml;
+package enginuity.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

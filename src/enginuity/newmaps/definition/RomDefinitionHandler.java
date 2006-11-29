@@ -11,7 +11,7 @@ import static java.lang.Integer.parseInt;
 import static enginuity.newmaps.definition.AttributeParser.*;
 import enginuity.newmaps.xml.SaxParserFactory;
 import enginuity.util.exception.NameableNotFoundException;
-import enginuity.xml.ObjectCloner;
+import enginuity.util.ObjectCloner;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
