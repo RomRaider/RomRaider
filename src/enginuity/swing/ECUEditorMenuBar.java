@@ -2,7 +2,6 @@ package enginuity.swing;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import enginuity.ECUEditor;
-import enginuity.definitions.DefinitionEditor;
 import enginuity.logger.EcuLogger;
 import enginuity.maps.Rom;
 
@@ -249,9 +248,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == level5) {
             parent.setUserLevel(5);
-
-        } else if (e.getSource() == editDefinition) {
-            new DefinitionEditor(parent);
 
         } else if (e.getSource() == openLogger) {
             EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
