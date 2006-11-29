@@ -17,6 +17,7 @@ public class Rom implements Serializable {
     private Vector<Table> tables = new Vector<Table>();
     private ECUEditor container;
     private byte[] binData;
+    private String parent = "";
 
     public Rom() {
     }
@@ -158,5 +159,13 @@ public class Rom implements Serializable {
     public void setFullFileName(File fullFileName) {
         this.fullFileName = fullFileName;
         this.setFileName(fullFileName.getName());
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 }

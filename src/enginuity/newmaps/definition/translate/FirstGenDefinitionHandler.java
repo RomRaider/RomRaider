@@ -122,6 +122,7 @@ public final class FirstGenDefinitionHandler {
             if (!unmarshallAttribute(rootNode, "base", "none").equalsIgnoreCase("none")) {
                 rom = get(unmarshallAttribute(rootNode, "base", "none"));
                 rom.getRomID().setObsolete(false);
+                rom.setParent(unmarshallAttribute(rootNode, "base", ""));
             }
 
 
