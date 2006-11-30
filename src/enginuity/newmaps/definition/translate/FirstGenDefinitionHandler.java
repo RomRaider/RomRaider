@@ -124,6 +124,8 @@ public final class FirstGenDefinitionHandler {
                 rom.getRomID().setObsolete(false);
                 rom.setParent(unmarshallAttribute(rootNode, "base", ""));
             }
+            
+        rom.setAbstract(Boolean.parseBoolean(unmarshallAttribute(rootNode, "abstract", "false")));
 
 
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -366,6 +368,7 @@ public final class FirstGenDefinitionHandler {
                     }
 
                     table.setScale(unmarshallScale(n, baseScale));
+                    table.getScale().setTable(table);
 
                 } else if (n.getNodeName().equalsIgnoreCase("data")) {
                     // parse and add data to table

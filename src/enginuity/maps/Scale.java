@@ -18,6 +18,7 @@ public class Scale implements Serializable {
     private double fineIncrement = 1;
     private double min = 0;
     private double max = 0;
+    private Table table;
 
     public Scale() {
     }
@@ -115,5 +116,13 @@ public class Scale implements Serializable {
 
     public void setMax(double max) {
         this.max = max;
+    }
+
+    public Table getTable() {
+        return table;
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
     }
 }

@@ -83,7 +83,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected Settings settings;
     protected boolean locked = false;
 
-    protected String logParam;
+    protected String logParam = "";
     protected double liveValue = 0.0;
     protected boolean overlayLog = false;
 

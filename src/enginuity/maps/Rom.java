@@ -18,6 +18,7 @@ public class Rom implements Serializable {
     private ECUEditor container;
     private byte[] binData;
     private String parent = "";
+    private boolean isAbstract = false;
 
     public Rom() {
     }
@@ -167,5 +168,13 @@ public class Rom implements Serializable {
 
     public void setParent(String parent) {
         this.parent = parent;
+    }
+
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+    public void setAbstract(boolean isAbstract) {
+        this.isAbstract = isAbstract;
     }
 }
