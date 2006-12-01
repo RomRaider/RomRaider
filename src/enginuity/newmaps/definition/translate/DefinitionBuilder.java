@@ -8,6 +8,7 @@ import enginuity.maps.Scale;
 import enginuity.maps.Table;
 import enginuity.maps.Table2D;
 import enginuity.maps.Table3D;
+import enginuity.util.HexUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Iterator;
@@ -46,7 +47,11 @@ public class DefinitionBuilder {
             
             while (tableit.hasNext()) {
                 Table table = (Table)tableit.next();
-                tablesNode.appendChild(buildTable(table));
+                try {
+                    tablesNode.appendChild(buildTable(table));
+                } catch (Exception ex) {
+                    // Table address not defined)
+                }
             }
             
             
@@ -112,7 +117,7 @@ public class DefinitionBuilder {
         if (buildDescription(rom.getRomID()).length() > 0 && (!child || !buildDescription(rom.getRomID()).equalsIgnoreCase(buildDescription(parentRom.getRomID())))) 
             node.setAttribute("description", buildDescription(rom.getRomID()));        
         if (rom.getRomID().getInternalIdAddress() > 0 && (!child || rom.getRomID().getInternalIdAddress() != parentRom.getRomID().getInternalIdAddress())) 
-            node.setAttribute("idaddress", rom.getRomID().getInternalIdAddress()+"");        
+            node.setAttribute("idaddress", HexUtil.intToHexString(rom.getRomID().getInternalIdAddress()));
         if (rom.getRomID().getInternalIdString().length() > 0 && (!child || !rom.getRomID().getInternalIdString().equalsIgnoreCase(parentRom.getRomID().getInternalIdString()))) 
             node.setAttribute("idstring", rom.getRomID().getInternalIdString());        
         if (rom.getRomID().getMemModel().length() > 0 && (!child || !rom.getRomID().getMemModel().equalsIgnoreCase(parentRom.getRomID().getMemModel()))) 
@@ -133,7 +138,9 @@ public class DefinitionBuilder {
     }
     
     
-    private IIOMetadataNode buildTable(Table table) {
+    private IIOMetadataNode buildTable(Table table) throws Exception {
+        
+        if (table.getStorageAddress() < 1 && !parentRom.isAbstract()) throw new Exception();
         
         IIOMetadataNode node = new IIOMetadataNode("table");
         Table parentTable = null;
@@ -188,12 +195,11 @@ public class DefinitionBuilder {
         //        
         node.setAttribute("name", table.getName());    
        
-        //if (table.getUserLevel() > 0 && (parentTable == null || parentTable.getUserLevel() != table.getUserLevel()))
         if (table.getRom().isAbstract())
             node.setAttribute("userlevel", table.getUserLevel()+"");
         if (table.getStorageAddress() > 0 && (parentTable == null || parentTable.getStorageAddress() != table.getStorageAddress() && table.getStorageAddress() > 0)) 
-            node.setAttribute("address", table.getStorageAddress()+"");
-        
+            node.setAttribute("address", HexUtil.intToHexString(table.getStorageAddress()));
+                
         try {
             table.getScale().setName(table.getScale().getUnit());
         
@@ -211,7 +217,7 @@ public class DefinitionBuilder {
                         break;
                     }
                 } catch (Exception ex) {
-                    // scale wasnt found
+                    // scale was found
                     addScale = false;
                 }
             }
@@ -229,6 +235,79 @@ public class DefinitionBuilder {
     
     private IIOMetadataNode buildAxis(Table axis) {
         IIOMetadataNode node = new IIOMetadataNode("axis");
+        Table parentAxis = null;
+        try {
+            if (axis.getRom() != null && axis.getRom().getTable(axis.getAxisParent().getName()) != null)
+                parentAxis = axis.getRom().getTable(axis.getAxisParent().getName());
+        } catch (Exception ex) { }
+        
+        boolean noOverride = true;
+        
+        if (axis.getType() == Table.TABLE_X_AXIS) 
+            node = new IIOMetadataNode("xaxis");           
+        else if (axis.getType() == Table.TABLE_Y_AXIS && axis.getAxisParent().getType() == Table.TABLE_3D) 
+            node = new IIOMetadataNode("yaxis");
+           
+        node.setAttribute("name", axis.getName()); 
+        
+        if (axis.isStatic() && (parentAxis == null || axis.isStatic() != parentAxis.isStatic()))
+            node.setAttribute("static", "true");
+        if (axis.getDescription().length() > 0 && (parentAxis == null || !axis.getDescription().equalsIgnoreCase(parentAxis.getDescription())))
+            node.setAttribute("description", axis.getDescription());    
+        if (parentAxis == null || axis.getDataSize() != parentAxis.getDataSize())
+            node.setAttribute("size", axis.getDataSize()+"");
+        if (parentAxis == null || axis.getStorageAddress() != parentAxis.getStorageAddress()) {
+            node.setAttribute("storageaddress", HexUtil.intToHexString(axis.getStorageAddress()));
+        }
+        
+        try {
+            axis.getScale().setName(axis.getScale().getUnit());
+        
+            // add scale to list if it doesnt already exist
+            Iterator scalesit = scales.iterator();
+            boolean addScale = true;
+            while (scalesit.hasNext()) {
+                Scale tempScale = (Scale)scalesit.next();
+                try {
+                    
+                    if (axis.getRom().isAbstract()) node.setAttribute("scale", axis.getScale().getUnit());
+                    
+                    if (axis.getScale().getName().equalsIgnoreCase(tempScale.getName())) {
+                        addScale = false;
+                        break;
+                    }
+                } catch (Exception ex) {
+                    // scale was found
+                    addScale = false;
+                }
+            }
+            if (addScale) {
+                scales.add(axis.getScale());                
+            }
+            
+        } catch (Exception ex) {
+            // Table has no scale, ignore
+        }        
+        
+        if (axis.isStatic()) {
+            // add static data
+            node.appendChild(buildStaticData(axis));
+            
+        }
+        
+        return node;
+    }
+    
+    private IIOMetadataNode buildStaticData(Table axis) {
+        IIOMetadataNode node = new IIOMetadataNode("data");        
+        StringBuffer sb = new StringBuffer();
+        
+        for (int i = 0; i < axis.getData().length; i++) {
+            sb.append(axis.getData()[i].getValue()+"");
+            if (i < axis.getData().length - 1) sb.append("|");
+        }
+        
+        node.setNodeValue(sb+"");
         
         return node;
     }

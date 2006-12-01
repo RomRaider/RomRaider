@@ -73,4 +73,8 @@ public final class HexUtil {
             return Integer.parseInt(input, 16);
         }
     }    
+    
+    public static String intToHexString(int input) {
+        return "0x" + Integer.toHexString(input).toUpperCase();
+    }
 }
