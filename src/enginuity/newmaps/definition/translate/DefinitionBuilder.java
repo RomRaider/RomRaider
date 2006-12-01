@@ -140,7 +140,7 @@ public class DefinitionBuilder {
     
     private IIOMetadataNode buildTable(Table table) throws Exception {
         
-        if (table.getStorageAddress() < 1 && !parentRom.isAbstract()) throw new Exception();
+        if (table.getStorageAddress() == 0 && !table.getRom().isAbstract()) throw new Exception();
         
         IIOMetadataNode node = new IIOMetadataNode("table");
         Table parentTable = null;
@@ -256,7 +256,7 @@ public class DefinitionBuilder {
             node.setAttribute("description", axis.getDescription());    
         if (parentAxis == null || axis.getDataSize() != parentAxis.getDataSize())
             node.setAttribute("size", axis.getDataSize()+"");
-        if (parentAxis == null || axis.getStorageAddress() != parentAxis.getStorageAddress()) {
+        if (axis.getStorageAddress() > 0 && (parentAxis == null || axis.getStorageAddress() != parentAxis.getStorageAddress())) {
             node.setAttribute("storageaddress", HexUtil.intToHexString(axis.getStorageAddress()));
         }
         
@@ -270,7 +270,9 @@ public class DefinitionBuilder {
                 Scale tempScale = (Scale)scalesit.next();
                 try {
                     
-                    if (axis.getRom().isAbstract()) node.setAttribute("scale", axis.getScale().getUnit());
+                    //if (axis.getRom().isAbstract()) node.setAttribute("scale", axis.getScale().getUnit());
+                    if (parentAxis == null || !axis.getScale().getUnit().equalsIgnoreCase(parentAxis.getScale().getUnit())) 
+                        node.setAttribute("scale", axis.getScale().getUnit());
                     
                     if (axis.getScale().getName().equalsIgnoreCase(tempScale.getName())) {
                         addScale = false;
