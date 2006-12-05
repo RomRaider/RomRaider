@@ -92,6 +92,14 @@ public class TableSwitch extends Table {
             off[i] = (byte) RomAttributeParser.parseHexString(tokens.nextToken());
         }
     }
+    
+    public byte[] getOnValues() {
+        return on;
+    }
+    
+    public byte[] getOffValues() {
+        return off;
+    }
 
     public Dimension getFrameSize() {
         int height = verticalOverhead + 75;

@@ -15,7 +15,9 @@ public class FirstGenTranslator {
     
     public static void main(String args[]) {
         FirstGenDefinitionHandler handler = new FirstGenDefinitionHandler();
-        File inputFile = new File("ecu_defs.xml");        
+        //File inputFile = new File("ecu_defs/ecu_defs.xml");        
+        File inputFile = new File("ecu_defs/ecu_defs2.xml");        
+        //File inputFile = new File("ecu_defs.xml");        
         File outputFolder = new File("/newdefs/");
         
         try {

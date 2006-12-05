@@ -269,6 +269,7 @@ public final class FirstGenDefinitionHandler {
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static Y Axis") ||
                     unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static X Axis")) {
                 table = new Table1D(settings);
+                table.setIsStatic(true);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Switch")) {
                 table = new TableSwitch(settings);
@@ -375,6 +376,7 @@ public final class FirstGenDefinitionHandler {
                     DataCell dataCell = new DataCell();
                     dataCell.setDisplayValue(unmarshallText(n));
                     dataCell.setTable(table);
+                    table.setIsStatic(true);
                     table.addStaticDataCell(dataCell);
 
                 } else if (n.getNodeName().equalsIgnoreCase("description")) {
