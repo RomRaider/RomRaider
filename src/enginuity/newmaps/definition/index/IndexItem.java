@@ -2,18 +2,17 @@ package enginuity.newmaps.definition.index;
 
 import enginuity.util.Nameable;
 import java.io.File;
+import java.io.Serializable;
 
-public class IndexItem implements Nameable {
+public class IndexItem implements Nameable, Serializable {
     
-    private String name;
-    private String base;
-    private File file;
-    private int idAddress;
-    private String idString;
+    private String name = "";
+    private String base = "";
+    private File file = new File("");
+    private int idAddress = 0;
+    private String idString = "";
+    private boolean isAbstract = false;
     
-    public IndexItem(String name) {
-        this.name = name;
-    }
 
     public String getName() {
         return name;
@@ -53,6 +52,23 @@ public class IndexItem implements Nameable {
 
     public void setIdString(String idString) {
         this.idString = idString;
+    }
+
+    public boolean isAbstract() {
+        return isAbstract;
+    }
+
+    public void setAbstract(boolean isAbstract) {
+        this.isAbstract = isAbstract;
+    }
+    
+    public String toString() {
+        return "Name: " + name +
+                "Base: " + base + 
+                "File: " + file +
+                "Address: " + idAddress +
+                "ID: " + idString + 
+                "Abstract: " + isAbstract;
     }
     
 }
