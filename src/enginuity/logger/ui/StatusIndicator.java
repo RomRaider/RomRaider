@@ -6,7 +6,7 @@ import static java.awt.BorderLayout.WEST;
 
 public final class StatusIndicator extends JPanel implements ControllerListener, FileLoggerListener {
     private final JLabel statusLabel = new JLabel();
-    private static final String TEXT_LOGGING = "Logging...";
+    private static final String TEXT_LOGGING = "Reading data...";
     private static final String TEXT_STOPPED = "Stopped.";
     private static final String TEXT_FILE_LOGGING = "Logging to file...";
     private static final ImageIcon ICON_FILE_LOGGING = new ImageIcon("./graphics/logger_green.png");
