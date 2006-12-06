@@ -7,6 +7,7 @@ import enginuity.logger.definition.EcuDataLoaderImpl;
 import enginuity.logger.definition.EcuParameter;
 import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.io.serial.SerialPortRefresher;
+import enginuity.logger.ui.ControllerButton;
 import enginuity.logger.ui.DataRegistrationBroker;
 import enginuity.logger.ui.DataRegistrationBrokerImpl;
 import enginuity.logger.ui.EcuDataComparator;
@@ -17,6 +18,7 @@ import enginuity.logger.ui.ParameterListTable;
 import enginuity.logger.ui.ParameterListTableModel;
 import enginuity.logger.ui.ParameterRow;
 import enginuity.logger.ui.SerialPortComboBox;
+import enginuity.logger.ui.StatusIndicator;
 import enginuity.logger.ui.UserProfile;
 import enginuity.logger.ui.UserProfileImpl;
 import enginuity.logger.ui.UserProfileItem;
@@ -354,41 +356,60 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JPanel buildControlToolbar() {
-        JPanel controlPanel = new JPanel(new FlowLayout());
-        controlPanel.add(buildStartButton());
-        controlPanel.add(buildStopButton());
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
         controlPanel.add(buildPortsComboBox());
+        controlPanel.add(buildStartStopButtons());
+        controlPanel.add(buildStatusIndicator());
         return controlPanel;
     }
 
-    private JComboBox buildPortsComboBox() {
+    private JPanel buildPortsComboBox() {
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
                 stopLogging();
             }
         });
-        return portsComboBox;
+        JPanel comboBoxPanel = new JPanel(new FlowLayout());
+        comboBoxPanel.add(new JLabel("Select COM Port:"));
+        comboBoxPanel.add(portsComboBox);
+        return comboBoxPanel;
     }
 
-    private JButton buildStartButton() {
-        JButton startButton = new JButton("Start");
+    private JPanel buildStartStopButtons() {
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(buildStartButton());
+        buttonPanel.add(buildStopButton());
+        return buttonPanel;
+    }
+
+    private ControllerButton buildStartButton() {
+        ControllerButton startButton = new ControllerButton("Start", true);
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 startLogging();
             }
         });
+        controller.addListener(startButton);
         return startButton;
     }
 
-    private JButton buildStopButton() {
-        JButton stopButton = new JButton("Stop");
+    private ControllerButton buildStopButton() {
+        ControllerButton stopButton = new ControllerButton("Stop", false);
         stopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 stopLogging();
             }
         });
+        controller.addListener(stopButton);
         return stopButton;
+    }
+
+    private StatusIndicator buildStatusIndicator() {
+        StatusIndicator statusIndicator = new StatusIndicator();
+        controller.addListener(statusIndicator);
+        fileUpdateHandler.addListener(statusIndicator);
+        return statusIndicator;
     }
 
     private JComponent buildDataTab() {
@@ -400,7 +421,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildDashboardTab() {
-        //return new JScrollPane(dashboardPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
         return dashboardPanel;
     }
 

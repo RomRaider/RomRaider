@@ -22,7 +22,7 @@ import java.util.TreeSet;
 
 public final class LoggerControllerImpl implements LoggerController {
     private final QueryManager queryManager;
-    private List<ControllerListener> listeners = Collections.synchronizedList(new ArrayList<ControllerListener>());
+    private final List<ControllerListener> listeners = Collections.synchronizedList(new ArrayList<ControllerListener>());
     private boolean started = false;
 
     public LoggerControllerImpl(Settings settings, MessageListener messageListener) {

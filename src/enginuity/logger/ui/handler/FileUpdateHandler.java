@@ -7,21 +7,31 @@ import enginuity.logger.definition.EcuDataConvertor;
 import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.io.file.FileLogger;
 import enginuity.logger.io.file.FileLoggerImpl;
+import enginuity.logger.ui.FileLoggerListener;
 import static enginuity.util.ParamChecker.checkNotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import static java.util.Collections.synchronizedMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final FileLogger fileLogger;
     private final Map<EcuData, Integer> ecuDatas = synchronizedMap(new LinkedHashMap<EcuData, Integer>());
+    private final List<FileLoggerListener> listeners = Collections.synchronizedList(new ArrayList<FileLoggerListener>());
     private Line currentLine = new Line(ecuDatas.keySet());
 
     public FileUpdateHandler(Settings settings) {
         checkNotNull(settings);
         fileLogger = new FileLoggerImpl(settings);
+    }
+
+    public void addListener(FileLoggerListener listener) {
+        checkNotNull(listener, "listener");
+        listeners.add(listener);
     }
 
     public synchronized void registerData(EcuData ecuData) {
@@ -76,9 +86,11 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
             if (ecuSwitch.isFileLogController()) {
                 if (value == 1 && !fileLogger.isStarted()) {
                     fileLogger.start();
+                    notifyListeners(true);
                     writeHeaders();
                 } else if (value == 0 && fileLogger.isStarted()) {
                     fileLogger.stop();
+                    notifyListeners(false);
                 }
             }
         }
@@ -87,6 +99,12 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
     private void writeHeaders() {
         if (fileLogger.isStarted()) {
             fileLogger.writeLine(currentLine.headers());
+        }
+    }
+
+    private void notifyListeners(boolean loggingToFile) {
+        for (FileLoggerListener listener : listeners) {
+            listener.setLoggingToFile(loggingToFile);
         }
     }
 
