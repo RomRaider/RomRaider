@@ -49,7 +49,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
         if (serialConnection != null) {
             serialConnection.sendAddressReads(queries);
         } else {
-            throw new NotConnectedException("TransmissionManager must be started before a queries can be sent!");
+            throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
         }
     }
 

@@ -195,7 +195,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         }
 
         parent.getSettings().setLoggerProfileFilePath(profileFilePath);
-        parent.reportMessage("Profile succesfully saved to: " + profileFilePath);
+        parent.reportMessage("Profile succesfully saved: " + profileFilePath);
     }
 
     private JFileChooser getProfileFileChooser(File lastProfileFile) {

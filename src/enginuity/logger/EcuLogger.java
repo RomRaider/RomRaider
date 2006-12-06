@@ -72,6 +72,7 @@ So much to do, so little time....
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
+    private static final String ENGINUITY_ECU_LOGGER_TITLE = "Enginuity ECU Logger";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private Settings settings;
@@ -99,9 +100,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JPanel dashboardPanel;
     private DashboardUpdateHandler dashboardUpdateHandler;
 
-    public EcuLogger(String title, Settings settings) {
-        super(title);
-        bootstrap(title, settings);
+    public EcuLogger(Settings settings) {
+        super(ENGINUITY_ECU_LOGGER_TITLE);
+        bootstrap(settings);
         initControllerListeners();
         startPortRefresherThread();
         initUserInterface();
@@ -109,11 +110,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         reloadUserProfile(settings.getLoggerProfileFilePath());
     }
 
-    private void bootstrap(String title, Settings settings) {
-        checkNotNull(title, settings);
+    private void bootstrap(Settings settings) {
+        checkNotNull(settings);
         this.settings = settings;
         controller = new LoggerControllerImpl(settings, this);
-        statusBarLabel = new JLabel(title);
+        statusBarLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
         tabbedPane = new JTabbedPane(BOTTOM);
         portsComboBox = new SerialPortComboBox(settings);
         dataHandlerManager = new DataUpdateHandlerManagerImpl();
@@ -168,6 +169,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
             loadEcuData(dataLoader, profileFilePath);
+            setTitle("Profile: " + profileFilePath);
         } catch (Exception e) {
             e.printStackTrace();
             reportError(e);
@@ -502,6 +504,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
+    public void setTitle(String title) {
+        if (!title.startsWith(ENGINUITY_ECU_LOGGER_TITLE)) {
+            title = ENGINUITY_ECU_LOGGER_TITLE + (title.length() == 0 ? "" : " - " + title);
+        }
+        super.setTitle(title);
+    }
+
     //**********************************************************************
 
 
@@ -526,7 +535,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JDialog.setDefaultLookAndFeelDecorated(true);
 
         //instantiate the controlling class.
-        EcuLogger ecuLogger = new EcuLogger("Enginuity ECU Logger", settings);
+        EcuLogger ecuLogger = new EcuLogger(settings);
 
         //set remaining window properties
         ecuLogger.setSize(settings.getLoggerWindowSize());
