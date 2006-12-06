@@ -1,6 +1,7 @@
 package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.xml.SaxParserFactory;
+import enginuity.util.MD5Checksum;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,10 +9,11 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
+import static enginuity.util.MD5Checksum.getMD5Checksum;
 
 public class IndexBuilder {
         
-    private static final String INDEX_FILE_NAME = "index.xml";
+    public static final String INDEX_FILE_NAME = "index.xml";
     
     private File file;
     private Index index = new Index();
@@ -21,30 +23,14 @@ public class IndexBuilder {
         // Process all definition files
         traverse(file);        
         // Output index
-        save();
+        save(index, file);
         
     }
     
-    private void save() {
-        //
-        // Inherit storage addresses where necessary
-        //
-        Iterator it1 = index.iterator();
-        while (it1.hasNext()) {
-            IndexItem item = (IndexItem)it1.next();
-            
-            if (!item.isAbstract() && item.getIdAddress() == 0) {
-                Iterator it2 = index.iterator();
-                while (it2.hasNext()) {
-                    IndexItem parentItem = (IndexItem)it2.next();
-                    if (parentItem.getName().equalsIgnoreCase(item.getBase())) {
-                        item.setIdAddress(parentItem.getIdAddress());
-                        break;
-                    }
-                }
-            }
-        }
-        
+    private static void save(Index index, File file) {
+
+        System.out.println("finalize");
+        index.fixInheritance();
         //System.out.println(index);
         
         try {           
@@ -55,11 +41,11 @@ public class IndexBuilder {
             oos.flush();
             oos.close();
             
-            /* Open stuff
+            // Open stuff
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file.getAbsoluteFile() + "/" + INDEX_FILE_NAME));
-            System.out.println((Index)ois.readObject());
+            //System.out.println((Index)ois.readObject());
             ois.close();
-            */
+            
              
         } catch (Exception ex) {
             // TODO: Exception handling
@@ -85,6 +71,7 @@ public class IndexBuilder {
                 SaxParserFactory.getSaxParser().parse(new BufferedInputStream(new FileInputStream(file)), handler); 
                 IndexItem item = handler.getItem();
                 item.setFile(file);
+                item.setChecksum(getMD5Checksum(file.getAbsolutePath()));
                 index.add(item);
                 
             } catch (Exception ex) {

@@ -12,6 +12,7 @@ public class IndexItem implements Nameable, Serializable {
     private int idAddress = 0;
     private String idString = "";
     private boolean isAbstract = false;
+    private String checksum = "";
     
 
     public String getName() {
@@ -64,11 +65,20 @@ public class IndexItem implements Nameable, Serializable {
     
     public String toString() {
         return "Name: " + name +
-                "Base: " + base + 
-                "File: " + file +
-                "Address: " + idAddress +
-                "ID: " + idString + 
-                "Abstract: " + isAbstract;
+                "\tBase: " + base + 
+                "\tFile: " + file +
+                "\tAddress: " + idAddress +
+                "\tID: " + idString + 
+                "\tAbstract: " + isAbstract +
+                "\tChecksum: " + checksum;
+    }
+
+    public String getChecksum() {
+        return checksum;
+    }
+
+    public void setChecksum(String checksum) {
+        this.checksum = checksum;
     }
     
 }
