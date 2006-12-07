@@ -1,22 +1,21 @@
 package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.definition.RomDefinitionHandler;
-import enginuity.newmaps.definition.RomTreeBuilder;
 import enginuity.newmaps.xml.SaxParserFactory;
+import static enginuity.util.MD5Checksum.getMD5Checksum;
+
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.Iterator;
-import static enginuity.util.MD5Checksum.getMD5Checksum;
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import javax.swing.JFrame;
 
 
 public abstract class IndexUtil {
-    
-    public static void validateChecksums(File dir) { 
+
+    public static void validateChecksums(File dir) {
         Index index = null;
         try {
             index = getIndex(dir);
@@ -24,12 +23,12 @@ public abstract class IndexUtil {
             // Index file not found, create new
             new IndexBuilder(dir, index);
             return;
-        }       
-        
+        }
+
         // If no exceptions, iterate through index checking checksums
         Iterator it = index.iterator();
         while (it.hasNext()) {
-            IndexItem item = (IndexItem)it.next();
+            IndexItem item = (IndexItem) it.next();
             try {
                 if (!item.getChecksum().equalsIgnoreCase(getMD5Checksum(item.getFile().getAbsolutePath()))) {
 
@@ -40,22 +39,21 @@ public abstract class IndexUtil {
             }
         }
     }
-    
-    
-    
+
+
     public static Index getIndex(File dir) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(dir.getAbsoluteFile() + "/" + IndexBuilder.INDEX_FILE_NAME));
-        return (Index)ois.readObject();
+        return (Index) ois.readObject();
     }
-    
-    
+
+
     public static void testMemUsage() {
         try {
             File dir = new File("/newdefs");
             Index index = getIndex(dir);
-            RomTreeBuilder builder = new RomTreeBuilder();
+            //RomTreeBuilder builder = new RomTreeBuilder();
             RomDefinitionHandler handler = new RomDefinitionHandler(index);
-            
+
             /*Iterator it = index.iterator();
             int i = 0;
             long time = 0;
@@ -68,26 +66,26 @@ public abstract class IndexUtil {
                 time += (System.currentTimeMillis() - start);
                 
             }*/
-            
+
             long start = System.currentTimeMillis();
-            IndexItem item = (IndexItem)index.get(10);
+            IndexItem item = (IndexItem) index.get(10);
             //System.out.println("Adding " + item.getFile() + " (#" + ++i + ")");
             InputStream inputStream1 = new BufferedInputStream(new FileInputStream(item.getFile()));
-            SaxParserFactory.getSaxParser().parse(inputStream1, handler);            
-            
+            SaxParserFactory.getSaxParser().parse(inputStream1, handler);
+
             System.out.println(System.currentTimeMillis() - start);
-            
+
             /*JFrame frame = new JFrame();
             frame.setVisible(true);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);*/
-            
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-    
+
     public static void main(String[] args) {
         testMemUsage();
     }
-    
+
 }
