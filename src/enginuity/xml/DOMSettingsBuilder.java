@@ -225,6 +225,11 @@ public final class DOMSettingsBuilder {
         profile.setAttribute("path", settings.getLoggerProfileFilePath());
         loggerSettings.appendChild(profile);
 
+        // log file output path
+        IIOMetadataNode outputDir = new IIOMetadataNode("outputdir");
+        outputDir.setAttribute("path", settings.getLoggerOutputDirPath());
+        loggerSettings.appendChild(outputDir);
+
         return loggerSettings;
     }
 }

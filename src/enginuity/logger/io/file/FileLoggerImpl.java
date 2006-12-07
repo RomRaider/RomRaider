@@ -67,7 +67,7 @@ public final class FileLoggerImpl implements FileLogger {
     }
 
     private String buildFilePath() {
-        String logDir = settings.getLoggerOutputDir().getAbsolutePath();
+        String logDir = settings.getLoggerOutputDirPath();
         if (!logDir.endsWith(File.separator)) {
             logDir += File.separator;
         }

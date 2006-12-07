@@ -43,7 +43,7 @@ public class Settings implements Serializable {
     private String loggerProtocol = "SSM";
     private String loggerConfigFilePath = "logger.xml";
     private String loggerProfileFilePath = "profile.xml";
-    private File loggerOutputDir = new File(".");
+    private String loggerOutputDirPath = "";
     
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();
@@ -292,8 +292,8 @@ public class Settings implements Serializable {
         return loggerConfigFilePath;
     }
     
-    public File getLoggerOutputDir() {
-        return loggerOutputDir;
+    public String getLoggerOutputDirPath() {
+        return loggerOutputDirPath;
     }
     
     public Point getLoggerWindowLocation() {
@@ -326,6 +326,10 @@ public class Settings implements Serializable {
     
     public void setLoggerProfileFilePath(String loggerProfileFilePath) {
         this.loggerProfileFilePath = loggerProfileFilePath;
+    }
+
+    public void setLoggerOutputDirPath(String loggerOutputDirPath) {
+        this.loggerOutputDirPath = loggerOutputDirPath;
     }
 
     public String getEcuDefsURL() {

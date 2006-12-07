@@ -198,6 +198,9 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("profile")) {
                 settings.setLoggerProfileFilePath(unmarshallAttribute(n, "path", ""));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("outputdir")) {
+                settings.setLoggerOutputDirPath(unmarshallAttribute(n, "path", ""));
+
             }
         }
         return settings;

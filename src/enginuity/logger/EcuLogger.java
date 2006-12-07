@@ -171,7 +171,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
             loadEcuData(dataLoader, profileFilePath);
-            setTitle("Profile: " + profileFilePath);
+            File profileFile = new File(profileFilePath);
+            if (profileFile.exists()) {
+                setTitle("Profile: " + profileFile.getAbsolutePath());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             reportError(e);
