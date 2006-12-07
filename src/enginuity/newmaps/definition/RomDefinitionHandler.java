@@ -1,5 +1,6 @@
 package enginuity.newmaps.definition;
 
+import enginuity.newmaps.definition.index.Index;
 import enginuity.newmaps.ecudata.*;
 import enginuity.util.NamedSet;
 import org.xml.sax.Attributes;
@@ -9,15 +10,13 @@ import static java.lang.Float.parseFloat;
 import static enginuity.util.HexUtil.hexToInt;
 import static java.lang.Integer.parseInt;
 import static enginuity.newmaps.definition.AttributeParser.*;
+import enginuity.newmaps.definition.index.IndexItem;
 import enginuity.newmaps.xml.SaxParserFactory;
 import enginuity.util.exception.NameableNotFoundException;
-import enginuity.util.ObjectCloner;
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Stack;
-import javax.swing.JFrame;
 
 public class RomDefinitionHandler extends DefaultHandler {
 
@@ -69,8 +68,6 @@ public class RomDefinitionHandler extends DefaultHandler {
     private static final String ATTR_COARSE_INCREMENT = "coarseincrement";
     private static final String ATTR_FINE_INCREMENT = "fineincrement";  
      
-    private RomTreeBuilder roms;
-    
     private Rom rom;
     private Category category; // Category currently being created
     private Stack<Category> categoryStack; // Stack used for higher levels in tree
@@ -83,16 +80,15 @@ public class RomDefinitionHandler extends DefaultHandler {
     private NamedSet<ECUData> tables = new NamedSet<ECUData>();
     private NamedSet<Scale> scales = new NamedSet<Scale>();
     private NamedSet<Unit> units = new NamedSet<Unit>();
+    private NamedSet<Rom> roms = new NamedSet<Rom>();
     private StringBuilder charBuffer;
-    
-    // Whether a base map has been loaded and current map is inheriting 
-    // (to avoid modifying original maps' data)    
+    private Index index;  
     private boolean inheriting = false; 
     
     
-    public RomDefinitionHandler(RomTreeBuilder roms) {
-        
-        this.roms = roms;        
+    public RomDefinitionHandler(Index index) {
+               
+        this.index = index;
         categoryStack = new Stack<Category>();
         categories = new Category("Root");
         categoryStack.add(categories);  
@@ -103,51 +99,62 @@ public class RomDefinitionHandler extends DefaultHandler {
                 
         if (TAG_ROM.equalsIgnoreCase(qName)) {  
             
-            try {
-                //
-                // If "base" attribute is set, find base rom in collection
-                //
-                if (attr.getIndex(ATTR_BASE) > -1 &&
-                    attr.getValue(ATTR_BASE).length() > 0) {
-                    
-                    // Try to find ROM in existing definitions
-                    rom = (Rom)ObjectCloner.deepCopy(roms.get(attr.getValue(ATTR_BASE))); 
+            //
+            // If "base" attribute is set, find base rom in collection
+            //
+            rom = null;
+            
+            if (attr.getIndex(ATTR_BASE) > -1 &&
+                attr.getValue(ATTR_BASE).length() > 0) {
 
-                    // If found, set handler variables
-                    inheriting = true;
-                    rom.setName(attr.getValue(ATTR_NAME));
-                    tables = rom.getTables();
-                    categories = rom.getCategories();
-                    scales = rom.getScales();
-
-                } else {                
-                    rom = new Rom(attr.getValue(ATTR_NAME));
+                // Try to find ROM in existing definitions
+                try {
+                    // Look through parsed roms first
+                    rom = (Rom)roms.get(attr.getValue(ATTR_BASE));
+                        System.out.println(rom.getName() + "(" + attr.getValue(ATTR_BASE) + ") found in parsed");
+                } catch (NameableNotFoundException ex) {
+                    // Or try opening the file
+                    try {
+                        rom = (Rom)getParentRom((IndexItem)index.get(attr.getValue(ATTR_BASE)));
+                        System.out.println(rom.getName() + "(" + attr.getValue(ATTR_BASE) + ") found in unparsed");
+                    } catch (NameableNotFoundException ex2) {
+                        // No base definition found, cannot continue
+                        return;
+                    } catch (Exception ex2) {
+                        ex2.printStackTrace();
+                    }
                 }
+                
+                // If found, set handler variables
+                inheriting = true;
+                rom.setName(attr.getValue(ATTR_NAME));
+                tables = rom.getTables();
+                categories = rom.getCategories();
+                scales = rom.getScales();
 
-                // Set all other attributes
-                if (attr.getIndex(ATTR_ID_ADDRESS) > -1)
-                    rom.setIdAddress(hexToInt(attr.getValue(ATTR_ID_ADDRESS)));
-                if (attr.getIndex(ATTR_ID_STRING) > -1)
-                    rom.setIdString(attr.getValue(ATTR_ID_STRING));
-                if (attr.getIndex(ATTR_DESCRIPTION) > -1)
-                    rom.setDescription(attr.getValue(ATTR_DESCRIPTION));
-                if (attr.getIndex(ATTR_MEMMODEL) > -1)
-                    rom.setMemmodel(attr.getValue(ATTR_MEMMODEL));
-                if (attr.getIndex(ATTR_FLASH_METHOD) > -1)
-                    rom.setFlashmethod(attr.getValue(ATTR_FLASH_METHOD));
-                if (attr.getIndex(ATTR_CASE_ID) > -1)
-                    rom.setCaseid(attr.getValue(ATTR_CASE_ID));
-                if (attr.getIndex(ATTR_OBSOLETE) > -1)
-                    rom.setObsolete(parseBoolean(attr.getValue(ATTR_OBSOLETE)));            
-                if (attr.getIndex(ATTR_ABSTRACT) > -1)
-                    rom.setAbstract(parseBoolean(attr.getValue(ATTR_ABSTRACT)));
+            } else {                
+                rom = new Rom(attr.getValue(ATTR_NAME));
+            }
+
+            // Set all other attributes
+            if (attr.getIndex(ATTR_ID_ADDRESS) > -1)
+                rom.setIdAddress(hexToInt(attr.getValue(ATTR_ID_ADDRESS)));
+            if (attr.getIndex(ATTR_ID_STRING) > -1)
+                rom.setIdString(attr.getValue(ATTR_ID_STRING));
+            if (attr.getIndex(ATTR_DESCRIPTION) > -1)
+                rom.setDescription(attr.getValue(ATTR_DESCRIPTION));
+            if (attr.getIndex(ATTR_MEMMODEL) > -1)
+                rom.setMemmodel(attr.getValue(ATTR_MEMMODEL));
+            if (attr.getIndex(ATTR_FLASH_METHOD) > -1)
+                rom.setFlashmethod(attr.getValue(ATTR_FLASH_METHOD));
+            if (attr.getIndex(ATTR_CASE_ID) > -1)
+                rom.setCaseid(attr.getValue(ATTR_CASE_ID));
+            if (attr.getIndex(ATTR_OBSOLETE) > -1)
+                rom.setObsolete(parseBoolean(attr.getValue(ATTR_OBSOLETE)));            
+            if (attr.getIndex(ATTR_ABSTRACT) > -1)
+                rom.setAbstract(parseBoolean(attr.getValue(ATTR_ABSTRACT)));
              
                 
-            } catch (Exception ex) {
-                // TODO: Deal with clone and other exceptions
-                ex.printStackTrace();
-                
-            }
             
                         
         } else if (TAG_CATEGORY.equalsIgnoreCase(qName)) {
@@ -181,7 +188,7 @@ public class RomDefinitionHandler extends DefaultHandler {
                 table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             
             // Store axis addresses
-            if (attr.getIndex(ATTR_X_ADDRESS) > -1)
+            if (attr.getIndex(ATTR_X_ADDRESS) > -1)                
                 ((Table3D) table).getXaxis().setAddress(hexToInt(attr.getValue(ATTR_X_ADDRESS)));
             if (attr.getIndex(ATTR_Y_ADDRESS) > -1)
                 ((Table3D) table).getYaxis().setAddress(hexToInt(attr.getValue(ATTR_Y_ADDRESS)));
@@ -462,11 +469,10 @@ public class RomDefinitionHandler extends DefaultHandler {
             rom.setTables(tables);
             rom.setScales(scales);
             rom.setCategories(categories);
-            
             roms.add(rom);
             
             // Clear all temp variables
-            rom = null;
+            //rom = null;
             tables = new NamedSet<ECUData>();
             scales = new NamedSet<Scale>();
             units = new NamedSet<Unit>();
@@ -479,26 +485,18 @@ public class RomDefinitionHandler extends DefaultHandler {
     }    
     
     
-    public static void main(String[] args) {
-        try {
-            InputStream inputStream1 = new BufferedInputStream(new FileInputStream(new File("/ecu_defs/subaru/wrx/16BITBASE.xml")));
-            InputStream inputStream2 = new BufferedInputStream(new FileInputStream(new File("/ecu_defs/subaru/wrx/A4SG900C.xml")));
-            try {
-                RomTreeBuilder builder = new RomTreeBuilder();
-                RomDefinitionHandler handler = new RomDefinitionHandler(builder);
-                SaxParserFactory.getSaxParser().parse(inputStream1, handler);
-                SaxParserFactory.getSaxParser().parse(inputStream2, handler);
-                
-                System.out.println(builder.get(0));
-                                                
-                
-            } finally {
-                inputStream1.close();
-                inputStream2.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }     
+    public Rom getRom() {
+        return rom;
+    }
+    
+    
+    private Rom getParentRom(IndexItem parent) throws Exception {
+        
+            InputStream is = new BufferedInputStream(new FileInputStream(parent.getFile()));
+            RomDefinitionHandler handler = new RomDefinitionHandler(index);
+            SaxParserFactory.getSaxParser().parse(is, handler);  
+            return handler.getRom();  
+            
     }
     
 }

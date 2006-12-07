@@ -33,7 +33,7 @@ public class NamedSet<E> implements Set<E>, Serializable {
             }
         }    
         // Name not found, throw exception
-        throw new NameableNotFoundException();
+        throw new NameableNotFoundException(name);
     }
     
     public Nameable get(Nameable n) throws NameableNotFoundException {
@@ -56,7 +56,7 @@ public class NamedSet<E> implements Set<E>, Serializable {
             }
         }            
         // Name not found, throw exception
-        throw new NameableNotFoundException();
+        throw new NameableNotFoundException(name);
     }    
 
     public boolean isEmpty() {
@@ -119,5 +119,19 @@ public class NamedSet<E> implements Set<E>, Serializable {
             output.append(it.next().toString() + "\n");
         }
         return output+"";
+    }
+    
+    public void move(int src, int dest) {
+        Nameable obj = (Nameable)objects.get(src);
+        objects.remove(obj);
+        objects.insertElementAt(obj, dest);
+    }    
+    
+    public void moveBefore(Nameable moving, Nameable anchor) {
+        move(objects.indexOf(moving), objects.indexOf(anchor) - 1);        
+    }
+    
+    public int indexOf(Nameable obj) {
+        return objects.indexOf(obj);
     }
 }

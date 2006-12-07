@@ -2,7 +2,11 @@ package enginuity.util.exception;
 
 public class NameableNotFoundException extends Exception {
     
-    public NameableNotFoundException() {
+    private String name;
+    
+    public NameableNotFoundException(String name) {
+        super(name);
+        this.name = name;
     }
     
 }

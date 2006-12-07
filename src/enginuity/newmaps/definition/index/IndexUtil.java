@@ -22,7 +22,7 @@ public abstract class IndexUtil {
             index = getIndex(dir);
         } catch (Exception ex) {
             // Index file not found, create new
-            new IndexBuilder(dir);
+            new IndexBuilder(dir, index);
             return;
         }       
         
@@ -54,21 +54,32 @@ public abstract class IndexUtil {
             File dir = new File("/newdefs");
             Index index = getIndex(dir);
             RomTreeBuilder builder = new RomTreeBuilder();
-            RomDefinitionHandler handler = new RomDefinitionHandler(builder);
+            RomDefinitionHandler handler = new RomDefinitionHandler(index);
             
-            Iterator it = index.iterator();
+            /*Iterator it = index.iterator();
             int i = 0;
+            long time = 0;
             while (it.hasNext()) {
                 IndexItem item = (IndexItem)it.next();
-                System.out.println("Adding " + item.getFile() + " (#" + ++i + ")");
+                //System.out.println("Adding " + item.getFile() + " (#" + ++i + ")");
                 InputStream inputStream1 = new BufferedInputStream(new FileInputStream(item.getFile()));
+                long start = System.currentTimeMillis();
                 SaxParserFactory.getSaxParser().parse(inputStream1, handler);
+                time += (System.currentTimeMillis() - start);
                 
-            }
+            }*/
             
-            JFrame frame = new JFrame();
+            long start = System.currentTimeMillis();
+            IndexItem item = (IndexItem)index.get(10);
+            //System.out.println("Adding " + item.getFile() + " (#" + ++i + ")");
+            InputStream inputStream1 = new BufferedInputStream(new FileInputStream(item.getFile()));
+            SaxParserFactory.getSaxParser().parse(inputStream1, handler);            
+            
+            System.out.println(System.currentTimeMillis() - start);
+            
+            /*JFrame frame = new JFrame();
             frame.setVisible(true);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);*/
             
         } catch (Exception ex) {
             ex.printStackTrace();

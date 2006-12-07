@@ -1,27 +1,29 @@
 package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.xml.SaxParserFactory;
-import enginuity.util.MD5Checksum;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Iterator;
 import static enginuity.util.MD5Checksum.getMD5Checksum;
 
 public class IndexBuilder {
         
     public static final String INDEX_FILE_NAME = "index.xml";
+    public static final String MEMMODEL_FILE_NAME = "memmodels.xml";
     
     private File file;
-    private Index index = new Index();
+    private Index index;
     
-    public IndexBuilder(File file) {
-        this.file = file;           
+    public IndexBuilder(File file, Index index) {
+        this.file = file;          
+        this.index = index;
+        
         // Process all definition files
-        traverse(file);        
+        traverse(file);      
+        
         // Output index
         save(index, file);
         
@@ -29,9 +31,7 @@ public class IndexBuilder {
     
     private static void save(Index index, File file) {
 
-        System.out.println("finalize");
         index.fixInheritance();
-        //System.out.println(index);
         
         try {           
             
@@ -43,7 +43,7 @@ public class IndexBuilder {
             
             // Open stuff
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file.getAbsoluteFile() + "/" + INDEX_FILE_NAME));
-            //System.out.println((Index)ois.readObject());
+            System.out.println((Index)ois.readObject());
             ois.close();
             
              
@@ -54,18 +54,21 @@ public class IndexBuilder {
     }
     
     private void traverse(File file) {
-        processFile(file);
         if (file.isDirectory()) {
             String[] children = file.list();
             for (int i=0; i<children.length; i++) {
                 traverse(new File(file, children[i]));
             }
+        } else {            
+            processFile(file);
         }
     }
     
     
     private void processFile(File file) {
-        if (file.isFile() && !file.getName().equalsIgnoreCase(INDEX_FILE_NAME)) {
+        if (!file.getName().equalsIgnoreCase(INDEX_FILE_NAME) && 
+            !file.getName().equalsIgnoreCase(MEMMODEL_FILE_NAME) && 
+            !index.fileCurrent(file)) {
             try {
                 IndexHandler handler = new IndexHandler();
                 SaxParserFactory.getSaxParser().parse(new BufferedInputStream(new FileInputStream(file)), handler); 
@@ -84,7 +87,7 @@ public class IndexBuilder {
 
     
     public static void main(String[] args) {
-        IndexBuilder b = new IndexBuilder(new File("/newdefs"));
+        IndexBuilder b = new IndexBuilder(new File("/newdefs"), new Index());
         
     } 
 }
