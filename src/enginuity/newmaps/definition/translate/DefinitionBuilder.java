@@ -129,9 +129,7 @@ public class DefinitionBuilder {
                 StringBuffer path = new StringBuffer(folder.getAbsolutePath()+"/");
                 path.append(rom.getRomID().getMake()+"/");             
                 new File(path+"").mkdir();
-                path.append(rom.getRomID().getModel()+"/");             
-                new File(path+"").mkdir();
-                path.append(rom.getRomID().getSubModel()+"/");              
+                path.append(rom.getRomID().getMemModel()+"/");
                 new File(path+"").mkdir();
                 
                 path.append(rom.getRomIDString() + ".xml");
@@ -381,6 +379,11 @@ public class DefinitionBuilder {
             node.setAttribute("static", "true");
             noOverride = false;
         }
+        // TODO: Test this..
+        if (axis.isLocked() && (parentAxis == null || !parentAxis.isLocked())) {
+            node.setAttribute("static", "true");
+            noOverride = false;
+        }        
         if (axis.getDescription().length() > 0 && (parentAxis == null || !axis.getDescription().equalsIgnoreCase(parentAxis.getDescription()))) {
             //desc.appendChild(doc.createTextNode(axis.getDescription()));
             //noOverride = false;
@@ -458,7 +461,7 @@ public class DefinitionBuilder {
         
         for (int i = 0; i < values.length; i++) {
             sb.append(values[i]+"");
-            if (i < values.length - 1) sb.append("|");
+            if (i < values.length - 1) sb.append(" ");
         }
         
         node.setAttribute("data", sb+"");

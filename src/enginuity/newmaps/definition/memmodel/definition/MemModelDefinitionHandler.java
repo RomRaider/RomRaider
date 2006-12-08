@@ -1,4 +1,4 @@
-package enginuity.newmaps.memmodel.definition;
+package enginuity.newmaps.definition.memmodel.definition;
 
 import org.xml.sax.helpers.DefaultHandler;
 

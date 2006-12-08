@@ -3,6 +3,7 @@ package enginuity.newmaps.definition.index;
 import enginuity.util.Nameable;
 import java.io.File;
 import java.io.Serializable;
+import static enginuity.util.MD5Checksum.getMD5Checksum;
 
 public class IndexItem implements Nameable, Serializable {
     
@@ -37,6 +38,11 @@ public class IndexItem implements Nameable, Serializable {
 
     public void setFile(File file) {
         this.file = file;
+        //System.out.println(file.getAbsolutePath());
+        try {
+            this.checksum = getMD5Checksum(file.getAbsolutePath());
+            //System.out.println(checksum);
+        } catch (Exception ex) { }
     }
 
     public int getIdAddress() {

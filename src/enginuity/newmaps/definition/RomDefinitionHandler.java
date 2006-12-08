@@ -1,17 +1,18 @@
 package enginuity.newmaps.definition;
 
-import enginuity.newmaps.definition.index.Index;
-import enginuity.newmaps.ecudata.*;
-import enginuity.util.NamedSet;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.Float.parseFloat;
 import static enginuity.util.HexUtil.hexToInt;
 import static java.lang.Integer.parseInt;
 import static enginuity.newmaps.definition.AttributeParser.*;
+
+import enginuity.newmaps.definition.index.Index;
+import enginuity.newmaps.ecudata.*;
+import enginuity.util.NamedSet;
 import enginuity.newmaps.definition.index.IndexItem;
 import enginuity.newmaps.xml.SaxParserFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
 import enginuity.util.exception.NameableNotFoundException;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -111,12 +112,12 @@ public class RomDefinitionHandler extends DefaultHandler {
                 try {
                     // Look through parsed roms first
                     rom = (Rom)roms.get(attr.getValue(ATTR_BASE));
-                        System.out.println(rom.getName() + "(" + attr.getValue(ATTR_BASE) + ") found in parsed");
+                    
                 } catch (NameableNotFoundException ex) {
                     // Or try opening the file
                     try {
                         rom = (Rom)getParentRom((IndexItem)index.get(attr.getValue(ATTR_BASE)));
-                        System.out.println(rom.getName() + "(" + attr.getValue(ATTR_BASE) + ") found in unparsed");
+                        
                     } catch (NameableNotFoundException ex2) {
                         // No base definition found, cannot continue
                         return;
@@ -153,8 +154,6 @@ public class RomDefinitionHandler extends DefaultHandler {
                 rom.setObsolete(parseBoolean(attr.getValue(ATTR_OBSOLETE)));            
             if (attr.getIndex(ATTR_ABSTRACT) > -1)
                 rom.setAbstract(parseBoolean(attr.getValue(ATTR_ABSTRACT)));
-             
-                
             
                         
         } else if (TAG_CATEGORY.equalsIgnoreCase(qName)) {
@@ -476,7 +475,15 @@ public class RomDefinitionHandler extends DefaultHandler {
             tables = new NamedSet<ECUData>();
             scales = new NamedSet<Scale>();
             units = new NamedSet<Unit>();
-        }
+            
+            
+        } else if (TAG_DATA.equalsIgnoreCase(qName)) {
+            
+            // Set static axis values
+            if (axis instanceof SourceDefAxis) {
+                ((SourceDefAxis)axis).setValues(charBuffer+"", " ");
+            }            
+        }              
         
     }
 

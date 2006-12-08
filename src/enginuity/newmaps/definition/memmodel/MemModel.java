@@ -1,4 +1,4 @@
-package enginuity.newmaps.memmodel;
+package enginuity.newmaps.definition.memmodel;
 
 import enginuity.util.NamedSet;
 
