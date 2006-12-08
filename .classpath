@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/logger/rxtx/RXTXcomm.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/logger/jcommon-1.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/logger/jfreechart-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logger/jcommon-1.0.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logger/jfreechart-1.0.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jep.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/JFontChooser.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/swing-layout-1.0.jar"/>
