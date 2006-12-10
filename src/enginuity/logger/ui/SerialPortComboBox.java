@@ -1,7 +1,7 @@
 package enginuity.logger.ui;
 
 import enginuity.Settings;
-import enginuity.logger.io.serial.SerialPortRefreshListener;
+import enginuity.logger.comms.io.serial.port.SerialPortRefreshListener;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import javax.swing.*;

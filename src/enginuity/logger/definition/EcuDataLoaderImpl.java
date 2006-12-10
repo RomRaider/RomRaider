@@ -1,8 +1,9 @@
 package enginuity.logger.definition;
 
+import enginuity.logger.definition.xml.LoggerDefinitionHandler;
 import enginuity.logger.exception.ConfigurationException;
-import static enginuity.logger.xml.SaxParserFactory.getSaxParser;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+import static enginuity.util.SaxParserFactory.getSaxParser;
 
 import java.io.BufferedInputStream;
 import java.io.File;

@@ -1,8 +1,8 @@
 package enginuity.logger.ui;
 
-import enginuity.logger.LoggerController;
+import enginuity.logger.comms.controller.LoggerController;
+import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
-import enginuity.logger.query.LoggerCallback;
 import enginuity.logger.ui.handler.DataUpdateHandlerManager;
 import static enginuity.util.ParamChecker.checkNotNull;
 

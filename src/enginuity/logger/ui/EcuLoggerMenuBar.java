@@ -1,6 +1,7 @@
 package enginuity.logger.ui;
 
 import enginuity.logger.EcuLogger;
+import enginuity.logger.profile.UserProfileFileFilter;
 
 import javax.swing.*;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
@@ -190,7 +191,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         } else {
             fc = new JFileChooser();
         }
-        fc.setFileFilter(new LoggerProfileFileFilter());
+        fc.setFileFilter(new UserProfileFileFilter());
         return fc;
     }
 

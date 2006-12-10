@@ -1,5 +1,7 @@
 package enginuity.logger.ui;
 
+import enginuity.logger.ui.handler.file.FileLoggerListener;
+
 import javax.swing.*;
 import java.awt.*;
 import static java.awt.BorderLayout.WEST;

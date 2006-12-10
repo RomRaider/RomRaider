@@ -1,7 +1,7 @@
 package enginuity.maps;
 
 import enginuity.Settings;
-import enginuity.logger.ui.handler.TableUpdateHandler;
+import enginuity.logger.ui.handler.table.TableUpdateHandler;
 import enginuity.swing.TableFrame;
 import static enginuity.util.ColorScaler.getScaledColor;
 import enginuity.util.JEPUtil;
