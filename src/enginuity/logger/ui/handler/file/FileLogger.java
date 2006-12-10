@@ -1,4 +1,4 @@
-package enginuity.logger.comms.io.file;
+package enginuity.logger.ui.handler.file;
 
 public interface FileLogger {
     void start();

@@ -1,4 +1,4 @@
-package enginuity.logger.comms.io.file;
+package enginuity.logger.ui.handler.file;
 
 import enginuity.Settings;
 import enginuity.logger.exception.FileLoggerException;
@@ -13,10 +13,10 @@ import java.util.Date;
 
 public final class FileLoggerImpl implements FileLogger {
     private static final String NEW_LINE = "\n";
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
     private final Settings settings;
     private boolean started = false;
     private OutputStream os = null;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
     public FileLoggerImpl(Settings settings) {
         checkNotNull(settings);

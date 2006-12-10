@@ -1,8 +1,6 @@
 package enginuity.logger.ui.handler.file;
 
 import enginuity.Settings;
-import enginuity.logger.comms.io.file.FileLogger;
-import enginuity.logger.comms.io.file.FileLoggerImpl;
 import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataConvertor;
