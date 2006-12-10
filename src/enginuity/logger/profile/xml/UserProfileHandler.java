@@ -1,5 +1,9 @@
-package enginuity.logger.profile;
+package enginuity.logger.profile.xml;
 
+import enginuity.logger.profile.UserProfile;
+import enginuity.logger.profile.UserProfileImpl;
+import enginuity.logger.profile.UserProfileItem;
+import enginuity.logger.profile.UserProfileItemImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -7,25 +11,28 @@ import java.util.HashMap;
 
 public final class UserProfileHandler extends DefaultHandler {
     private static final String SELECTED = "selected";
+    private static final String TAG_SERIAL = "serial";
     private static final String TAG_PARAMETER = "parameter";
     private static final String TAG_SWITCH = "switch";
+    private static final String ATTR_PORT = "port";
     private static final String ATTR_ID = "id";
     private static final String ATTR_UNITS = "units";
     private static final String ATTR_LIVE_DATA = "livedata";
     private static final String ATTR_GRAPH = "graph";
     private static final String ATTR_DASH = "dash";
-    private UserProfile profile;
+    private String serialPort = null;
     private HashMap<String, UserProfileItem> params;
     private HashMap<String, UserProfileItem> switches;
 
     public void startDocument() {
         params = new HashMap<String, UserProfileItem>();
         switches = new HashMap<String, UserProfileItem>();
-        profile = new UserProfileImpl(params, switches);
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if (TAG_PARAMETER.equals(qName)) {
+        if (TAG_SERIAL.equals(qName)) {
+            serialPort = attributes.getValue(ATTR_PORT);
+        } else if (TAG_PARAMETER.equals(qName)) {
             params.put(attributes.getValue(ATTR_ID), getUserProfileItem(attributes));
         } else if (TAG_SWITCH.equals(qName)) {
             switches.put(attributes.getValue(ATTR_ID), getUserProfileItem(attributes));
@@ -33,7 +40,7 @@ public final class UserProfileHandler extends DefaultHandler {
     }
 
     public UserProfile getUserProfile() {
-        return profile;
+        return new UserProfileImpl(serialPort, params, switches);
     }
 
     private UserProfileItem getUserProfileItem(Attributes attributes) {

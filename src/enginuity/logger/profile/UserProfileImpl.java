@@ -13,12 +13,18 @@ import java.util.Map;
 public final class UserProfileImpl implements UserProfile {
     private final Map<String, UserProfileItem> params;
     private final Map<String, UserProfileItem> switches;
+    private final String serialPort;
 
-    public UserProfileImpl(Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches) {
+    public UserProfileImpl(String serialPort, Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches) {
         checkNotNull(params, "params");
         checkNotNull(switches, "switches");
+        this.serialPort = serialPort;
         this.params = params;
         this.switches = switches;
+    }
+
+    public String getSerialPort() {
+        return serialPort;
     }
 
     public boolean contains(EcuData ecuData) {
@@ -65,6 +71,9 @@ public final class UserProfileImpl implements UserProfile {
         builder.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
         builder.append("<!DOCTYPE profile SYSTEM \"profile.dtd\">\n\n");
         builder.append("<profile>\n");
+        if (serialPort != null && serialPort.length() > 0) {
+            builder.append("    <serial port=\"").append(serialPort).append("\"/>\n");
+        }
         if (!params.isEmpty()) {
             builder.append("    <parameters>\n");
             appendEcuDataElements(builder, "parameter", params, true);

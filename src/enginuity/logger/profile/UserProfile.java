@@ -5,6 +5,8 @@ import enginuity.logger.definition.EcuDataConvertor;
 
 public interface UserProfile {
 
+    String getSerialPort();
+
     boolean contains(EcuData ecuData);
 
     boolean isSelectedOnLiveDataTab(EcuData ecuData);

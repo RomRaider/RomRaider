@@ -1,5 +1,6 @@
 package enginuity.logger.profile;
 
+import enginuity.logger.profile.xml.UserProfileHandler;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.SaxParserFactory.getSaxParser;
 

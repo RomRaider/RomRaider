@@ -172,7 +172,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol());
-            loadEcuData(dataLoader, profileFilePath);
+            loadUserProfile(dataLoader, profileFilePath);
             File profileFile = new File(profileFilePath);
             if (profileFile.exists()) {
                 setTitle("Profile: " + profileFile.getAbsolutePath());
@@ -183,15 +183,25 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
-    private void loadEcuData(EcuDataLoader dataLoader, String profileFilePath) {
+    private void loadUserProfile(EcuDataLoader dataLoader, String profileFilePath) {
         UserProfileLoader profileLoader = new UserProfileLoaderImpl();
         UserProfile profile = profileLoader.loadProfile(profileFilePath);
+        setSelectedPort(profile);
         List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
         addConvertorUpdateListeners(ecuParams);
         clearParamTableModels();
         clearSwitchTableModels();
         loadEcuParams(ecuParams, profile);
         loadEcuSwitches(dataLoader.getEcuSwitches(), profile);
+    }
+
+    private void setSelectedPort(UserProfile profile) {
+        if (profile != null) {
+            String serialPort = profile.getSerialPort();
+            if (serialPort != null && serialPort.length() > 0) {
+                portsComboBox.setSelectedItem(serialPort);
+            }
+        }
     }
 
     private void addConvertorUpdateListeners(List<EcuParameter> ecuParams) {
@@ -267,7 +277,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 graphTabParamListTableModel.getParameterRows(), dashboardTabParamListTableModel.getParameterRows());
         Map<String, UserProfileItem> switchProfileItems = getProfileItems(dataTabSwitchListTableModel.getParameterRows(),
                 graphTabSwitchListTableModel.getParameterRows(), dashboardTabSwitchListTableModel.getParameterRows());
-        return new UserProfileImpl(paramProfileItems, switchProfileItems);
+        return new UserProfileImpl((String) portsComboBox.getSelectedItem(), paramProfileItems, switchProfileItems);
     }
 
     private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows, List<ParameterRow> graphTabRows, List<ParameterRow> dashTabRows) {

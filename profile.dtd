@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!ELEMENT serial EMPTY >
+<!ATTLIST serial port CDATA #REQUIRED >
+
 <!ELEMENT parameter EMPTY >
 <!ATTLIST parameter id ID #REQUIRED >
 <!ATTLIST parameter livedata ( selected ) #IMPLIED >
@@ -17,4 +20,4 @@
 
 <!ELEMENT switches ( switch+ ) >
 
-<!ELEMENT profile ( parameters*, switches* ) >
+<!ELEMENT profile ( serial?, parameters*, switches* ) >
