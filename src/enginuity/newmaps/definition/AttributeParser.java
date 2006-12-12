@@ -2,6 +2,7 @@ package enginuity.newmaps.definition;
 
 import enginuity.newmaps.ecudata.Scale;
 import enginuity.newmaps.ecudata.Unit;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -30,7 +31,8 @@ public final class AttributeParser {
         }
     }
     
-    public static String[] parseValueString(String s, String delim) {
+    
+    public static String[] stringToStringArray(String s, String delim) {
         StringTokenizer t = new StringTokenizer(s, delim);
         Vector<String> values = new Vector<String>();
         while (t.hasMoreTokens()) {
@@ -38,6 +40,25 @@ public final class AttributeParser {
         }
         return (String[])values.toArray();
     }   
+    
+    
+    public static byte[] stringToByteArray(String s, String delim) {
+        StringTokenizer t = new StringTokenizer(s, delim);
+        Vector<Byte> values = new Vector<Byte>();
+        
+        while (t.hasMoreTokens()) {
+            values.add(Byte.parseByte(t.nextToken()));
+        }
+        
+        byte[] bytes = new byte[values.size()];
+     
+        for (int i = 0; i < values.size(); i++) {            
+            bytes[i] = values.get(i);
+        }
+        
+        return bytes;
+    }   
+    
     
     public static int parseUnitSystem(String s) {
         if (s.equalsIgnoreCase("metric")) return Unit.SYSTEM_METRIC;

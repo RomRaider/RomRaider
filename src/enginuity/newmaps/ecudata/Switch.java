@@ -1,12 +1,16 @@
 package enginuity.newmaps.ecudata;
 
 import java.io.Serializable;
+import static enginuity.newmaps.definition.AttributeParser.stringToByteArray;
 
 public class Switch extends ECUData implements Serializable {
     
     protected byte[] stateOn = new byte[1];
     protected byte[] stateOff = new byte[1];
     protected int size;
+    
+    private int defaultValue = SwitchGroup.DEFAULT_NONE;
+    boolean hidden = false;
     
     public Switch(String name) {
         super(name);
@@ -24,17 +28,39 @@ public class Switch extends ECUData implements Serializable {
         return stateOn;
     }
 
-    public void setStateOn(byte[] stateOn) {
-        this.stateOn = stateOn;
+    public void setStateOn(String values) {
+        this.stateOn = stringToByteArray(values, " ");
     }
 
     public byte[] getStateOff() {
         return stateOff;
     }
 
-    public void setStateOff(byte[] stateOff) {
-        this.stateOff = stateOff;
+    public void setStateOff(String values) {
+        this.stateOff = stringToByteArray(values, " ");
     }
+    
+    public void setDefaultValue(int defaultVal) {
+        this.defaultValue = defaultValue;
+    }
+    
+    public int getDefaultValue() {
+        return defaultValue;
+    }
+    
+    public void setDefaultValue(String value) {
+        if (value.equalsIgnoreCase("on")) defaultValue = SwitchGroup.DEFAULT_ON;
+        else if (value.equalsIgnoreCase("off")) defaultValue = SwitchGroup.DEFAULT_OFF;
+        else defaultValue = SwitchGroup.DEFAULT_NONE;       
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }    
     
     public String toString() { 
         String scaleName = "";

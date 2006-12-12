@@ -40,6 +40,8 @@ public class RomDefinitionHandler extends DefaultHandler {
     
     private static final String VAL_TRUE = "true";
     private static final String VAL_FALSE = "false";
+    private static final String VAL_ON = "on";
+    private static final String VAL_OFF = "off";
     
     private static final String ATTR_NAME = "name";
     private static final String ATTR_ABSTRACT = "abstract";    
@@ -65,6 +67,8 @@ public class RomDefinitionHandler extends DefaultHandler {
     private static final String ATTR_TO_REAL = "to_real";
     private static final String ATTR_TO_BYTE = "to_byte";
     private static final String ATTR_SYSTEM = "system";
+    private static final String ATTR_DEFAULT = "default";
+    private static final String ATTR_HIDDEN = "hidden";
     private static final String ATTR_FORMAT = "format";
     private static final String ATTR_COARSE_INCREMENT = "coarseincrement";
     private static final String ATTR_FINE_INCREMENT = "fineincrement";  
@@ -378,11 +382,6 @@ public class RomDefinitionHandler extends DefaultHandler {
                 // TODO: Handle exception
             }
             
-                        
-        } else if (TAG_DATA.equalsIgnoreCase(qName)) {
-            
-            // TODO: Deal with data
-            
             
         } else if (TAG_UNIT.equalsIgnoreCase(qName)) {
             unit = new Unit(attr.getValue(ATTR_NAME));
@@ -404,8 +403,14 @@ public class RomDefinitionHandler extends DefaultHandler {
             
         } else if (TAG_STATE.equalsIgnoreCase(qName)) {
             
-            // TODO: Deal with states
-            
+            // Determine state and values and apply to table
+            if (attr.getValue(ATTR_NAME).equalsIgnoreCase(VAL_ON)) {
+                ((Switch)table).setStateOn(attr.getValue("values"));
+                
+            } else if (attr.getValue(ATTR_NAME).equalsIgnoreCase(VAL_OFF)) {
+                ((Switch)table).setStateOff(attr.getValue("values"));                
+                
+            }            
             
         }
         
@@ -484,6 +489,7 @@ public class RomDefinitionHandler extends DefaultHandler {
                 ((SourceDefAxis)axis).setValues(charBuffer+"", " ");
             }            
         }              
+        
         
     }
 

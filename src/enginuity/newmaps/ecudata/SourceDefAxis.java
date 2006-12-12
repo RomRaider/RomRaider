@@ -1,6 +1,6 @@
 package enginuity.newmaps.ecudata;
 
-import static enginuity.newmaps.definition.AttributeParser.parseValueString;
+import static enginuity.newmaps.definition.AttributeParser.stringToStringArray;
 import java.io.Serializable;
 
 public class SourceDefAxis extends Axis implements Serializable {
@@ -16,7 +16,7 @@ public class SourceDefAxis extends Axis implements Serializable {
     }
 
     public void setValues(String s, String delim) {
-        values = parseValueString(s, delim);
+        values = stringToStringArray(s, delim);
     }
     
 }
