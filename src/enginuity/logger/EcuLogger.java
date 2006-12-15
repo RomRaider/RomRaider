@@ -1,9 +1,9 @@
 package enginuity.logger;
 
 import enginuity.Settings;
+import enginuity.io.port.SerialPortRefresher;
 import enginuity.logger.comms.controller.LoggerController;
 import enginuity.logger.comms.controller.LoggerControllerImpl;
-import enginuity.logger.comms.io.serial.port.SerialPortRefresher;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataLoader;
 import enginuity.logger.definition.EcuDataLoaderImpl;
@@ -39,6 +39,7 @@ import enginuity.logger.ui.paramlist.ParameterRow;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import javax.swing.*;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
@@ -520,7 +521,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportError(String error) {
         if (error != null) {
-            showMessageDialog(null, error);
+            showMessageDialog(null, error, "Alert", ERROR_MESSAGE);
         }
     }
 

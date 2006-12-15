@@ -1,4 +1,4 @@
-package enginuity.logger.comms.io.serial.protocol;
+package enginuity.io.connection;
 
 public interface ConnectionProperties {
 
@@ -10,4 +10,7 @@ public interface ConnectionProperties {
 
     int getParity();
 
+    int getConnectTimeout();
+
+    int getSendTimeout();
 }

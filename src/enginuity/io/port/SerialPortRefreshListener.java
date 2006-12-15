@@ -1,4 +1,4 @@
-package enginuity.logger.comms.io.serial.port;
+package enginuity.io.port;
 
 import java.util.Set;
 

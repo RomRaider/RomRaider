@@ -1,14 +1,10 @@
-package enginuity.logger.comms.io.serial;
+package enginuity.logger.comms.io.connection;
 
 import enginuity.logger.comms.query.RegisteredQuery;
 
 import java.util.Collection;
 
-public interface SerialConnection {
-
-    byte[] sendEcuInit();
-
-    byte[] send(byte[] bytes);
+public interface LoggerConnection {
 
     void sendAddressReads(Collection<RegisteredQuery> queries);
 

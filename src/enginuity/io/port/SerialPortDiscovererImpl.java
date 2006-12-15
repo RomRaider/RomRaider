@@ -1,4 +1,4 @@
-package enginuity.logger.comms.io.serial.port;
+package enginuity.io.port;
 
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;

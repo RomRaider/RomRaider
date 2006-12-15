@@ -1,4 +1,4 @@
-package enginuity.logger.comms.io.serial.port;
+package enginuity.io.port;
 
 import enginuity.logger.comms.controller.LoggerController;
 import static enginuity.util.ParamChecker.checkNotNull;
