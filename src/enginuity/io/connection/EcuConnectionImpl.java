@@ -1,18 +1,15 @@
-package enginuity.rt.io;
+package enginuity.io.connection;
 
-import enginuity.io.connection.ConnectionProperties;
-import enginuity.io.connection.SerialConnection;
-import enginuity.io.connection.SerialConnectionImpl;
 import enginuity.logger.exception.SerialCommunicationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
 
-public final class RTConnectionImpl implements RTConnection {
+public final class EcuConnectionImpl implements EcuConnection {
     private final long sendTimeout;
     private final SerialConnection serialConnection;
 
-    public RTConnectionImpl(ConnectionProperties connectionProperties, String portName) {
+    public EcuConnectionImpl(ConnectionProperties connectionProperties, String portName) {
         checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
         serialConnection = new SerialConnectionImpl(connectionProperties, portName);
