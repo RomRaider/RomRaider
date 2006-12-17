@@ -9,12 +9,14 @@ public final class RegisteredQueryImpl implements RegisteredQuery {
     private final EcuData ecuData;
     private final LoggerCallback callback;
     private final byte[] bytes;
+    private final String hex;
 
     public RegisteredQueryImpl(EcuData ecuData, LoggerCallback callback) {
         checkNotNull(ecuData, callback);
         this.ecuData = ecuData;
         this.callback = callback;
         bytes = getAddressBytes(ecuData);
+        hex = asHex(bytes);
     }
 
     public EcuData getEcuData() {
@@ -30,11 +32,26 @@ public final class RegisteredQueryImpl implements RegisteredQuery {
     }
 
     public String getHex() {
-        return asHex(bytes);
+        return hex;
     }
 
     public void setResponse(byte[] response) {
         callback.callback(response);
+    }
+
+    public boolean equals(Object object) {
+        if (object instanceof RegisteredQueryImpl) {
+            return getHex().equals(((RegisteredQueryImpl) object).getHex());
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        return getHex().hashCode();
+    }
+
+    public String toString() {
+        return "0x" + getHex();
     }
 
     private byte[] getAddressBytes(EcuData ecuData) {
