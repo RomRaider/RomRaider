@@ -1,3 +1,24 @@
+/*
+ *
+ * Enginuity Open-Source Tuning, Logging and Reflashing
+ * Copyright (C) 2006 Enginuity.org
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+
 package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.xml.SaxParserFactory;
@@ -5,10 +26,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import static enginuity.util.MD5Checksum.getMD5Checksum;
 import enginuity.util.exception.NameableNotFoundException;
+import org.xml.sax.SAXParseException;
 
 public class IndexBuilder {
         
@@ -45,7 +66,8 @@ public class IndexBuilder {
     
     private void processFile(File file) {
         if (!file.getName().equalsIgnoreCase(INDEX_FILE_NAME) && 
-            !file.getName().equalsIgnoreCase(MEMMODEL_FILE_NAME)) {
+            !file.getName().equalsIgnoreCase(MEMMODEL_FILE_NAME) &&
+            file.getName().length() > 3 && file.getName().endsWith(".xml")) {
             
             IndexItem idxItem = null;            
             try {
@@ -63,6 +85,9 @@ public class IndexBuilder {
                     IndexItem item = handler.getItem();
                     item.setFile(file);
                     index.add(item);
+                    
+                } catch (SAXParseException ex) {
+                    // Skip file, not valid xml
 
                 } catch (Exception ex) {
                     // TODO: Handle exceptions
@@ -91,7 +116,7 @@ public class IndexBuilder {
     
     public static void main(String[] args) {
         try {
-            File file = new File("/newdefs");
+            File file = new File("/netbeans/enginuity/xmltest");
             IndexBuilder b = new IndexBuilder(file, IndexUtil.getIndex(file));
         } catch (Exception ex) {
             ex.printStackTrace();

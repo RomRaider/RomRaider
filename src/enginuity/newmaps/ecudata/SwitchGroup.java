@@ -1,6 +1,29 @@
+/*
+ *
+ * Enginuity Open-Source Tuning, Logging and Reflashing
+ * Copyright (C) 2006 Enginuity.org
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+
 package enginuity.newmaps.ecudata;
 
 import enginuity.util.NamedSet;
+import enginuity.util.exception.NameableNotFoundException;
+import java.util.Iterator;
 
 public class SwitchGroup extends ECUData {
     
@@ -37,6 +60,28 @@ public class SwitchGroup extends ECUData {
 
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+    
+    public Switch get(String name) throws NameableNotFoundException {
+        return (Switch)switches.get(name);
+    }
+    
+    public void add(Switch input) {
+        switches.add(input);
+    }
+    
+    public String toString() {
+        StringBuffer output = new StringBuffer();
+        output.append("      --- Table: " + name + " ---" +
+                "\n      - Description: " + description +
+                "\n      - Userlevel: " + userLevel);
+        
+        Iterator it = switches.iterator();
+        while (it.hasNext()) {
+            output.append(it.next());
+        }
+                
+        return output+"";
     }
     
 }

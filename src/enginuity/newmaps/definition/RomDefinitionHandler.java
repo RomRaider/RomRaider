@@ -1,3 +1,24 @@
+/*
+ *
+ * Enginuity Open-Source Tuning, Logging and Reflashing
+ * Copyright (C) 2006 Enginuity.org
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+
 package enginuity.newmaps.definition;
 
 import static java.lang.Boolean.parseBoolean;
@@ -27,6 +48,7 @@ public class RomDefinitionHandler extends DefaultHandler {
     private static final String TAG_TABLE3D = "table3d";
     private static final String TAG_TABLE2D = "table2d";
     private static final String TAG_PARAMETER = "parameter";
+    private static final String TAG_SWITCHGROUP = "switchgroup";
     private static final String TAG_SWITCH = "switch";
     private static final String TAG_DESCRIPTION = "description";
     private static final String TAG_SCALES = "scales";
@@ -74,7 +96,7 @@ public class RomDefinitionHandler extends DefaultHandler {
     private static final String ATTR_FINE_INCREMENT = "fineincrement";  
      
     private Rom rom;
-    private Category category; // Category currently being created
+    private Category category = new Category("Root"); // Category currently being created
     private Stack<Category> categoryStack; // Stack used for higher levels in tree
     private Category categories; // Category tree that will be returned
     private ECUData table;
@@ -82,6 +104,7 @@ public class RomDefinitionHandler extends DefaultHandler {
     private Axis axis;
     private Unit unit;
     private String dataValues;
+    private SwitchGroup switchGroup;
     private NamedSet<ECUData> tables = new NamedSet<ECUData>();
     private NamedSet<Scale> scales = new NamedSet<Scale>();
     private NamedSet<Unit> units = new NamedSet<Unit>();
@@ -99,6 +122,7 @@ public class RomDefinitionHandler extends DefaultHandler {
         categoryStack.add(categories);  
         
     }
+    
     
     public void startElement(String uri, String localName, String qName, Attributes attr) {
                 
@@ -159,6 +183,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_ABSTRACT) > -1)
                 rom.setAbstract(parseBoolean(attr.getValue(ATTR_ABSTRACT)));
             
+            
                         
         } else if (TAG_CATEGORY.equalsIgnoreCase(qName)) {
             
@@ -171,6 +196,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             Category parentCategory = categoryStack.peek();
             parentCategory.add(category);
             categoryStack.add(category);
+            
             
             
         } else if (TAG_TABLE3D.equalsIgnoreCase(qName)) {
@@ -205,6 +231,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             }
             
             
+            
         } else if (TAG_TABLE2D.equalsIgnoreCase(qName)) {
             
             //
@@ -235,6 +262,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             } catch (NameableNotFoundException ex) {
                 // TODO: Handle exception
             }
+            
                        
             
         } else if (TAG_PARAMETER.equalsIgnoreCase(qName)) {
@@ -263,16 +291,27 @@ public class RomDefinitionHandler extends DefaultHandler {
             }   
             
             
+            
         } else if (TAG_SWITCH.equalsIgnoreCase(qName)) {
             
             //
-            // Look for table in table set
+            // Look for switch in switch group, then in parsed tables
             //
-            try {
-                table = (Switch)tables.get(attr.getValue(ATTR_NAME));
-            } catch (NameableNotFoundException ex) {
-                table = new Switch(attr.getValue(ATTR_NAME));
-            }            
+            boolean found = false;
+            if (switchGroup != null) {
+                try {
+                    table = (Switch)switchGroup.get(attr.getValue(ATTR_NAME));
+                    found = true;
+                } catch (NameableNotFoundException ex) { }                    
+            }
+            
+            if (!found) {
+                try {
+                    table = (Switch)tables.get(attr.getValue(ATTR_NAME));
+                } catch (NameableNotFoundException ex) {
+                    table = new Switch(attr.getValue(ATTR_NAME));
+                }            
+            }
             
             // Set all other attributes
             if (attr.getIndex(ATTR_USER_LEVEL) > -1)
@@ -289,7 +328,25 @@ public class RomDefinitionHandler extends DefaultHandler {
             } catch (NameableNotFoundException ex) {
                 // TODO: Handle exception
             }
-                    
+            
+            
+            
+        } else if (TAG_SWITCHGROUP.equalsIgnoreCase(qName)) {
+            
+            //
+            // Look for table in table set
+            //
+            try {
+                table = (SwitchGroup)tables.get(attr.getValue(ATTR_NAME));
+            } catch (NameableNotFoundException ex) {
+                table = new SwitchGroup(attr.getValue(ATTR_NAME));
+            }            
+            
+            // Set all other attributes
+            if (attr.getIndex(ATTR_USER_LEVEL) > -1)
+                table.setUserLevel(parseInt(attr.getValue(ATTR_USER_LEVEL))); 
+            
+            
             
         } else if (TAG_SCALE.equalsIgnoreCase(qName)) {
                     
@@ -309,6 +366,7 @@ public class RomDefinitionHandler extends DefaultHandler {
                 scale.setStorageType(parseStorageType(attr.getValue(ATTR_STORAGE_TYPE)));
             if (attr.getIndex(ATTR_LOG_PARAM) > -1)
                 scale.setLogParam(attr.getValue(ATTR_LOG_PARAM));
+            
             
                         
         } else if (TAG_X_AXIS.equalsIgnoreCase(qName)) {
@@ -334,7 +392,8 @@ public class RomDefinitionHandler extends DefaultHandler {
                 // TODO: Handle exception
             }
             
-                        
+              
+            
         } else if (TAG_Y_AXIS.equalsIgnoreCase(qName)) {
             
             try { 
@@ -357,6 +416,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             } catch (NameableNotFoundException ex) {
                 // TODO: Handle exception
             }
+            
             
                         
         } else if (TAG_AXIS.equalsIgnoreCase(qName)) {
@@ -383,6 +443,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             }
             
             
+            
         } else if (TAG_UNIT.equalsIgnoreCase(qName)) {
             unit = new Unit(attr.getValue(ATTR_NAME));
             
@@ -399,6 +460,7 @@ public class RomDefinitionHandler extends DefaultHandler {
                 unit.setCoarseIncrement(parseFloat(attr.getValue(ATTR_COARSE_INCREMENT)));
             if (attr.getIndex(ATTR_FINE_INCREMENT) > -1)
                 unit.setFineIncrement(parseFloat(attr.getValue(ATTR_FINE_INCREMENT)));
+            
             
             
         } else if (TAG_STATE.equalsIgnoreCase(qName)) {
@@ -427,15 +489,18 @@ public class RomDefinitionHandler extends DefaultHandler {
             scale = null;
             
             
+            
         } else if (TAG_UNIT.equalsIgnoreCase(qName)) {
             units.add(unit);
             unit = null;
+            
             
 
         } else if (TAG_CATEGORY.equalsIgnoreCase(qName)) {
             
             // Remove current category from stack
             categoryStack.pop();    
+            
             
             
         } else if (TAG_TABLE3D.equalsIgnoreCase(qName) ||
@@ -448,9 +513,11 @@ public class RomDefinitionHandler extends DefaultHandler {
             table = null;
             
             
+            
         } else if (TAG_AXIS.equalsIgnoreCase(qName)) {
             ((Table2D)table).setAxis(axis);
             axis = null;
+            
             
             
         } else if (TAG_X_AXIS.equalsIgnoreCase(qName)) {
@@ -458,14 +525,17 @@ public class RomDefinitionHandler extends DefaultHandler {
             axis = null;
             
             
+            
         } else if (TAG_Y_AXIS.equalsIgnoreCase(qName)) {
             ((Table3D)table).setYaxis(axis);
             axis = null;
             
             
+            
         } else if (TAG_DESCRIPTION.equalsIgnoreCase(qName)) {
             
             table.setDescription(charBuffer.toString());
+            
             
             
         } else if (TAG_ROM.equalsIgnoreCase(qName)) {
@@ -482,14 +552,23 @@ public class RomDefinitionHandler extends DefaultHandler {
             units = new NamedSet<Unit>();
             
             
+            
         } else if (TAG_DATA.equalsIgnoreCase(qName)) {
             
             // Set static axis values
             if (axis instanceof SourceDefAxis) {
                 ((SourceDefAxis)axis).setValues(charBuffer+"", " ");
-            }            
-        }              
-        
+            }   
+            
+            
+            
+        } else if (TAG_SWITCHGROUP.equalsIgnoreCase(qName)) {
+            
+            // Set static axis values
+            tables.add(switchGroup);
+            switchGroup = null;
+            
+        }        
         
     }
 
