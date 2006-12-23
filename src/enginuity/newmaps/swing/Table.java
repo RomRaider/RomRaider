@@ -21,8 +21,7 @@
 
 package enginuity.newmaps.swing;
 
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 
 public class Table extends JTable implements ListSelectionModel {

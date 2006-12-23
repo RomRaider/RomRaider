@@ -23,6 +23,7 @@ package enginuity.newmaps.ecudata;
 
 import enginuity.util.Nameable;
 import enginuity.util.NamedSet;
+
 import java.io.Serializable;
 import java.util.Iterator;
 

@@ -23,11 +23,12 @@ package enginuity.newmaps.definition.translate;
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import enginuity.maps.Rom;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Vector;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 public class FirstGenTranslator {
         

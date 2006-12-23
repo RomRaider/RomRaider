@@ -19,18 +19,26 @@
  *
  */
 
-package enginuity.logger.ui;
+package enginuity.io.protocol;
 
-import enginuity.logger.definition.EcuData;
+import enginuity.logger.exception.UnsupportedProtocolException;
 
-import java.util.Comparator;
+public final class ProtocolFactory {
+    private static final ProtocolFactory INSTANCE = new ProtocolFactory();
 
-public final class EcuDataComparator implements Comparator {
-
-    public int compare(Object o1, Object o2) {
-        EcuData ecuData1 = (EcuData) o1;
-        EcuData ecuData2 = (EcuData) o2;
-        return ecuData1.getName().compareTo(ecuData2.getName());
+    public static ProtocolFactory getInstance() {
+        return INSTANCE;
     }
 
+    private ProtocolFactory() {
+    }
+
+    public Protocol getProtocol(String protocolName) {
+        try {
+            Class<?> cls = Class.forName(this.getClass().getPackage().getName() + "." + protocolName + "Protocol");
+            return (Protocol) cls.newInstance();
+        } catch (Exception e) {
+            throw new UnsupportedProtocolException("'" + protocolName + "' is not a supported protocol", e);
+        }
+    }
 }

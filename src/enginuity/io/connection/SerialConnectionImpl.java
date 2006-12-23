@@ -128,7 +128,6 @@ public final class SerialConnectionImpl implements SerialConnection {
         }
     }
 
-
     private SerialPort connect(ConnectionProperties connectionProperties, String portName) {
         CommPortIdentifier portIdentifier = resolvePortIdentifier(portName);
         SerialPort serialPort = openPort(portIdentifier, connectionProperties.getConnectTimeout());

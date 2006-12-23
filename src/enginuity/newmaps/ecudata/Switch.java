@@ -21,8 +21,9 @@
 
 package enginuity.newmaps.ecudata;
 
-import java.io.Serializable;
 import static enginuity.newmaps.definition.AttributeParser.stringToByteArray;
+
+import java.io.Serializable;
 
 public class Switch extends ECUData implements Serializable {
     

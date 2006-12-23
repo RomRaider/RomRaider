@@ -22,6 +22,7 @@
 package enginuity.newmaps.ecudata;
 
 import enginuity.util.Nameable;
+
 import java.io.Serializable;
 
 public class Unit implements Nameable, Serializable {

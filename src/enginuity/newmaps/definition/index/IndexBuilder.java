@@ -22,14 +22,14 @@
 package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.xml.SaxParserFactory;
+import enginuity.util.exception.NameableNotFoundException;
+import org.xml.sax.SAXParseException;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-import static enginuity.util.MD5Checksum.getMD5Checksum;
-import enginuity.util.exception.NameableNotFoundException;
-import org.xml.sax.SAXParseException;
 
 public class IndexBuilder {
         

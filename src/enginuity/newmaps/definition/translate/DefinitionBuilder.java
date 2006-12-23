@@ -32,13 +32,14 @@ import enginuity.maps.Table3D;
 import enginuity.maps.TableSwitch;
 import enginuity.newmaps.xml.XmlHelper;
 import enginuity.util.HexUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.Vector;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 public class DefinitionBuilder {
         

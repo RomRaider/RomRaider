@@ -21,13 +21,14 @@
 
 package enginuity.newmaps.definition.index;
 
-import enginuity.util.NamedSet;
-import java.io.Serializable;
-import java.util.Iterator;
 import static enginuity.util.MD5Checksum.getMD5Checksum;
 import enginuity.util.Nameable;
+import enginuity.util.NamedSet;
 import enginuity.util.exception.NameableNotFoundException;
+
 import java.io.File;
+import java.io.Serializable;
+import java.util.Iterator;
 
 public class Index extends NamedSet<IndexItem> implements Serializable {  
         

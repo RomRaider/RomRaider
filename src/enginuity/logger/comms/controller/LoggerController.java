@@ -25,11 +25,7 @@ import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.ControllerListener;
 
-import java.util.Set;
-
 public interface LoggerController {
-
-    Set<String> listSerialPorts();
 
     void addLogger(String callerId, EcuData ecuData, LoggerCallback callback);
 
@@ -40,4 +36,5 @@ public interface LoggerController {
     void stop();
 
     void addListener(ControllerListener listener);
+
 }

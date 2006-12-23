@@ -23,15 +23,14 @@ package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.definition.RomDefinitionHandler;
 import enginuity.newmaps.xml.SaxParserFactory;
+import static enginuity.util.MD5Checksum.getMD5Checksum;
+
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.Iterator;
-import static enginuity.util.MD5Checksum.getMD5Checksum;
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 public abstract class IndexUtil {
     

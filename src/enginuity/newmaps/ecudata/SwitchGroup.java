@@ -23,6 +23,7 @@ package enginuity.newmaps.ecudata;
 
 import enginuity.util.NamedSet;
 import enginuity.util.exception.NameableNotFoundException;
+
 import java.util.Iterator;
 
 public class SwitchGroup extends ECUData {

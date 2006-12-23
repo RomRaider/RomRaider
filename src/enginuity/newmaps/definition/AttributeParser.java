@@ -23,7 +23,7 @@ package enginuity.newmaps.definition;
 
 import enginuity.newmaps.ecudata.Scale;
 import enginuity.newmaps.ecudata.Unit;
-import java.util.Iterator;
+
 import java.util.StringTokenizer;
 import java.util.Vector;
 

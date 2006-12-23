@@ -33,6 +33,8 @@ public interface Protocol {
 
     byte calculateChecksum(byte[] bytes);
 
+    boolean isValidEcuInitResponse(byte[] bytes);
+
     ConnectionProperties getConnectionProperties();
 
 }

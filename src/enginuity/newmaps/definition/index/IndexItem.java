@@ -21,10 +21,11 @@
 
 package enginuity.newmaps.definition.index;
 
+import static enginuity.util.MD5Checksum.getMD5Checksum;
 import enginuity.util.Nameable;
+
 import java.io.File;
 import java.io.Serializable;
-import static enginuity.util.MD5Checksum.getMD5Checksum;
 
 public class IndexItem implements Nameable, Serializable {
     

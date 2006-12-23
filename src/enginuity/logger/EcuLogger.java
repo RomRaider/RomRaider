@@ -25,6 +25,7 @@ import enginuity.Settings;
 import enginuity.io.port.SerialPortRefresher;
 import enginuity.logger.comms.controller.LoggerController;
 import enginuity.logger.comms.controller.LoggerControllerImpl;
+import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataLoader;
 import enginuity.logger.definition.EcuDataLoaderImpl;
@@ -36,7 +37,6 @@ import enginuity.logger.profile.UserProfileItem;
 import enginuity.logger.profile.UserProfileItemImpl;
 import enginuity.logger.profile.UserProfileLoader;
 import enginuity.logger.profile.UserProfileLoaderImpl;
-import enginuity.logger.ui.ControllerButton;
 import enginuity.logger.ui.DataRegistrationBroker;
 import enginuity.logger.ui.DataRegistrationBrokerImpl;
 import enginuity.logger.ui.EcuDataComparator;
@@ -57,11 +57,11 @@ import enginuity.logger.ui.handler.table.TableUpdateHandler;
 import enginuity.logger.ui.paramlist.ParameterListTable;
 import enginuity.logger.ui.paramlist.ParameterListTableModel;
 import enginuity.logger.ui.paramlist.ParameterRow;
+import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
+import enginuity.util.ThreadUtil;
 
 import javax.swing.*;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
@@ -90,11 +90,13 @@ import java.util.Map;
 
 /*
 TODO: add better debug logging, preferably to a file and switchable (on/off)
-TODO: finish dashboard tab
-TODO: add configuration screen (log file destination, etc)
 TODO: add user definable addresses
 TODO: Clean up this class!
 So much to do, so little time....
+
+Autoconnect Stuff:
+TODO: Add reconnect/refresh connection button/menu item.
+TODO: Finish ecu init callback - parse it, etc
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
@@ -134,12 +136,21 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         initUserInterface();
         initDataUpdateHandlers();
         reloadUserProfile(settings.getLoggerProfileFilePath());
+        restartLogging();
     }
 
     private void bootstrap(Settings settings) {
         checkNotNull(settings);
         this.settings = settings;
-        controller = new LoggerControllerImpl(settings, this);
+
+        // TODO: Do something useful with this!!
+        LoggerCallback ecuInitCallback = new LoggerCallback() {
+            public void callback(byte[] value) {
+                System.out.println("Ecu Init response = " + asHex(value));
+            }
+        };
+
+        controller = new LoggerControllerImpl(settings, ecuInitCallback, this);
         statusBarLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
         tabbedPane = new JTabbedPane(BOTTOM);
         portsComboBox = new SerialPortComboBox(settings);
@@ -171,7 +182,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void startPortRefresherThread() {
-        Thread portRefresherThread = new Thread(new SerialPortRefresher(portsComboBox, controller));
+        Thread portRefresherThread = new Thread(new SerialPortRefresher(portsComboBox));
         portRefresherThread.setDaemon(true);
         portRefresherThread.start();
     }
@@ -236,14 +247,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void clearParamTableModels() {
-        stopLogging();
         dataTabParamListTableModel.clear();
         graphTabParamListTableModel.clear();
         dashboardTabParamListTableModel.clear();
     }
 
     private void clearSwitchTableModels() {
-        stopLogging();
         dataTabSwitchListTableModel.clear();
         graphTabSwitchListTableModel.clear();
         dashboardTabSwitchListTableModel.clear();
@@ -395,7 +404,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JPanel buildControlToolbar() {
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
         controlPanel.add(buildPortsComboBox());
-        controlPanel.add(buildStartStopButtons());
+        controlPanel.add(buildReconnectButton());
         controlPanel.add(buildStatusIndicator());
         return controlPanel;
     }
@@ -404,7 +413,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                stopLogging();
             }
         });
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
@@ -413,33 +421,19 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return comboBoxPanel;
     }
 
-    private JPanel buildStartStopButtons() {
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.add(buildStartButton());
-        buttonPanel.add(buildStopButton());
-        return buttonPanel;
-    }
-
-    private ControllerButton buildStartButton() {
-        ControllerButton startButton = new ControllerButton("Start", true);
-        startButton.addActionListener(new ActionListener() {
+    private JButton buildReconnectButton() {
+        JButton reconnectButton = new JButton("Reconnect");
+        reconnectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                startLogging();
+                restartLogging();
             }
         });
-        controller.addListener(startButton);
-        return startButton;
+        return reconnectButton;
     }
 
-    private ControllerButton buildStopButton() {
-        ControllerButton stopButton = new ControllerButton("Stop", false);
-        stopButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                stopLogging();
-            }
-        });
-        controller.addListener(stopButton);
-        return stopButton;
+    public void restartLogging() {
+        stopLogging();
+        startLogging();
     }
 
     private StatusIndicator buildStatusIndicator() {
@@ -486,10 +480,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
     }
 
-    public void loadProfile(File profileFile) {
-        //TODO: Finish profile loading from file!!
-    }
-
     public void startLogging() {
         settings.setLoggerPort((String) portsComboBox.getSelectedItem());
         controller.start();
@@ -497,17 +487,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void stopLogging() {
         controller.stop();
+        ThreadUtil.sleep(1000L);
     }
 
     public void handleExit() {
         try {
             try {
                 stopLogging();
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             } finally {
                 cleanUpUpdateHandlers();
             }
@@ -542,7 +528,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportError(String error) {
         if (error != null) {
-            showMessageDialog(null, error, "Alert", ERROR_MESSAGE);
+            statusBarLabel.setText("Error: " + error);
         }
     }
 

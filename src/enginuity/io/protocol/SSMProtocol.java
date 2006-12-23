@@ -70,6 +70,11 @@ public final class SSMProtocol implements Protocol {
         return asByte(total - ((total >>> 16) << 16));
     }
 
+    public boolean isValidEcuInitResponse(byte[] bytes) {
+        //TODO: Implement this!!
+        return bytes != null && bytes.length > 0;
+    }
+
     public ConnectionProperties getConnectionProperties() {
         return new ConnectionProperties() {
 

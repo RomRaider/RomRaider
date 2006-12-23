@@ -21,28 +21,40 @@
 
 package enginuity.io.port;
 
-import enginuity.logger.comms.controller.LoggerController;
 import static enginuity.util.ParamChecker.checkNotNull;
+import enginuity.util.ThreadUtil;
+import gnu.io.CommPortIdentifier;
+
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public final class SerialPortRefresher implements Runnable {
+    private static final long PORT_REFRESH_INTERVAL = 15000L;
+    private final SerialPortDiscoverer serialPortDiscoverer = new SerialPortDiscovererImpl();
     private SerialPortRefreshListener listener;
-    private LoggerController controller;
 
-    public SerialPortRefresher(SerialPortRefreshListener listener, LoggerController controller) {
-        checkNotNull(listener, controller);
+    public SerialPortRefresher(SerialPortRefreshListener listener) {
+        checkNotNull(listener);
         this.listener = listener;
-        this.controller = controller;
     }
 
     public void run() {
         while (true) {
-            listener.refreshPortList(controller.listSerialPorts());
-            try {
-                Thread.sleep(15000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                break;
+            listener.refreshPortList(listSerialPorts());
+            ThreadUtil.sleep(PORT_REFRESH_INTERVAL);
+        }
+    }
+
+    private Set<String> listSerialPorts() {
+        List<CommPortIdentifier> portIdentifiers = serialPortDiscoverer.listPorts();
+        Set<String> portNames = new TreeSet<String>();
+        for (CommPortIdentifier portIdentifier : portIdentifiers) {
+            String portName = portIdentifier.getName();
+            if (!portNames.contains(portName)) {
+                portNames.add(portName);
             }
         }
+        return portNames;
     }
 }

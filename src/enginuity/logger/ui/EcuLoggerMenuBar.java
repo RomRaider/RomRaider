@@ -1,3 +1,24 @@
+/*
+ *
+ * Enginuity Open-Source Tuning, Logging and Reflashing
+ * Copyright (C) 2006 Enginuity.org
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+
 package enginuity.logger.ui;
 
 import enginuity.logger.EcuLogger;
@@ -25,6 +46,9 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     private JMenu settingsMenu = new JMenu("Settings");
     private JMenuItem profileManager = new JMenuItem("Profile Manager");
     private JMenuItem logFileLocation = new JMenuItem("Log File Output Location...");
+
+    private JMenu connectionMenu = new JMenu("Connection");
+    private JMenuItem reconnect = new JMenuItem("Reconnect...");
 
     private JMenu helpMenu = new JMenu("Help");
     private JMenuItem about = new JMenuItem("About Enginuity ECU Logger");
@@ -61,6 +85,13 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         settingsMenu.add(logFileLocation);
         profileManager.addActionListener(this);
         logFileLocation.addActionListener(this);
+
+        // connection menu items
+        add(connectionMenu);
+        connectionMenu.setMnemonic('C');
+        reconnect.setMnemonic('R');
+        connectionMenu.add(reconnect);
+        reconnect.addActionListener(this);
 
         // help menu stuff
         add(helpMenu);
@@ -114,6 +145,13 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         } else if (evt.getSource() == logFileLocation) {
             try {
                 setLogFileLocationDialog();
+            } catch (Exception e) {
+                parent.reportError(e);
+            }
+
+        } else if (evt.getSource() == reconnect) {
+            try {
+                parent.restartLogging();
             } catch (Exception e) {
                 parent.reportError(e);
             }

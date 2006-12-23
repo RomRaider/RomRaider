@@ -25,14 +25,13 @@ import ZoeloeSoft.projects.JFontChooser.JFontChooser;
 import enginuity.ECUEditor;
 import enginuity.Settings;
 import enginuity.util.FileAssociator;
-import java.awt.Color;
-import java.awt.Dimension;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.StringTokenizer;
-import javax.swing.JColorChooser;
-import javax.swing.JFrame;
 
 public class SettingsForm extends JFrame implements MouseListener {
 

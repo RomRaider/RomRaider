@@ -33,14 +33,15 @@ import enginuity.maps.Table1D;
 import enginuity.maps.Table2D;
 import enginuity.maps.Table3D;
 import enginuity.maps.TableSwitch;
+import enginuity.util.ObjectCloner;
 import static enginuity.xml.DOMHelper.unmarshallAttribute;
 import static enginuity.xml.DOMHelper.unmarshallText;
-import enginuity.util.ObjectCloner;
 import enginuity.xml.RomAttributeParser;
 import enginuity.xml.TableIsOmittedException;
 import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
+
 import javax.management.modelmbean.XMLParseException;
 import java.util.ArrayList;
 import java.util.Iterator;

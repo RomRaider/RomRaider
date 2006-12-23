@@ -21,11 +21,8 @@
 
 package enginuity.newmaps.swing;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
+import java.awt.*;
 
 class TableFrame extends JFrame {
     // Instance attributes used in this example

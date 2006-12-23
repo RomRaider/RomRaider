@@ -21,23 +21,36 @@
 
 package enginuity.newmaps.definition;
 
-import static java.lang.Boolean.parseBoolean;
-import static java.lang.Float.parseFloat;
-import static enginuity.util.HexUtil.hexToInt;
-import static java.lang.Integer.parseInt;
-import static enginuity.newmaps.definition.AttributeParser.*;
-
+import static enginuity.newmaps.definition.AttributeParser.parseEndian;
+import static enginuity.newmaps.definition.AttributeParser.parseStorageType;
+import static enginuity.newmaps.definition.AttributeParser.parseUnitSystem;
 import enginuity.newmaps.definition.index.Index;
-import enginuity.newmaps.ecudata.*;
-import enginuity.util.NamedSet;
 import enginuity.newmaps.definition.index.IndexItem;
+import enginuity.newmaps.ecudata.Axis;
+import enginuity.newmaps.ecudata.Category;
+import enginuity.newmaps.ecudata.ECUData;
+import enginuity.newmaps.ecudata.Parameter;
+import enginuity.newmaps.ecudata.Rom;
+import enginuity.newmaps.ecudata.Scale;
+import enginuity.newmaps.ecudata.SourceDefAxis;
+import enginuity.newmaps.ecudata.Switch;
+import enginuity.newmaps.ecudata.SwitchGroup;
+import enginuity.newmaps.ecudata.Table2D;
+import enginuity.newmaps.ecudata.Table3D;
+import enginuity.newmaps.ecudata.Unit;
 import enginuity.newmaps.xml.SaxParserFactory;
+import static enginuity.util.HexUtil.hexToInt;
+import enginuity.util.NamedSet;
+import enginuity.util.exception.NameableNotFoundException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-import enginuity.util.exception.NameableNotFoundException;
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import static java.lang.Boolean.parseBoolean;
+import static java.lang.Float.parseFloat;
+import static java.lang.Integer.parseInt;
 import java.util.Stack;
 
 public class RomDefinitionHandler extends DefaultHandler {
