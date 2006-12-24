@@ -22,8 +22,14 @@
 package enginuity.io.protocol;
 
 import enginuity.io.connection.ConnectionProperties;
+import static enginuity.io.protocol.SSMChecksumCalculator.calculateChecksum;
+import static enginuity.io.protocol.SSMResponseProcessor.extractResponseData;
+import static enginuity.io.protocol.SSMResponseProcessor.filterRequestFromResponse;
+import static enginuity.io.protocol.SSMResponseProcessor.validateResponse;
+import enginuity.logger.comms.query.EcuInit;
+import enginuity.logger.comms.query.SSMEcuInit;
+import enginuity.logger.exception.InvalidResponseException;
 import static enginuity.util.ByteUtil.asByte;
-import static enginuity.util.ByteUtil.asInt;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -61,18 +67,27 @@ public final class SSMProtocol implements Protocol {
         return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }
 
-    public byte calculateChecksum(byte[] bytes) {
-        int total = 0;
-        for (int i = 0; i < (bytes.length - 1); i++) {
-            byte b = bytes[i];
-            total += asInt(b);
+    // TODO: This is not real nice/efficient...
+    public boolean isValidEcuInitResponse(byte[] response) {
+        // request responseHeader ecu_id readable_params_switches... checksum
+        // 8010F001BF40 80F01039FF A210113152 58400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000 59
+        checkNotNullOrEmpty(response, "response");
+        byte[] filteredResponse = filterRequestFromResponse(constructEcuInitRequest(), response);
+        try {
+            validateResponse(filteredResponse);
+            return filteredResponse[4] == ECU_INIT_RESPONSE;
+        } catch (InvalidResponseException e) {
+            System.out.println("ECU Init validation error: " + e.getMessage());
+            return false;
         }
-        return asByte(total - ((total >>> 16) << 16));
     }
 
-    public boolean isValidEcuInitResponse(byte[] bytes) {
-        //TODO: Implement this!!
-        return bytes != null && bytes.length > 0;
+    public EcuInit parseEcuInitResponse(byte[] response) {
+        checkNotNullOrEmpty(response, "response");
+        byte[] responseData = extractResponseData(filterRequestFromResponse(constructEcuInitRequest(), response));
+        byte[] ecuIdBytes = new byte[5];
+        System.arraycopy(responseData, 0, ecuIdBytes, 0, 5);
+        return new SSMEcuInit(ecuIdBytes);
     }
 
     public ConnectionProperties getConnectionProperties() {

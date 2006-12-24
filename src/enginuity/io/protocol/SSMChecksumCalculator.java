@@ -19,35 +19,21 @@
  *
  */
 
-package enginuity.logger.profile;
+package enginuity.io.protocol;
 
-public final class UserProfileItemImpl implements UserProfileItem {
-    private final String units;
-    private final boolean liveDataSelected;
-    private final boolean graphSelected;
-    private final boolean dashSelected;
+import static enginuity.util.ByteUtil.asByte;
+import static enginuity.util.ByteUtil.asInt;
 
-    public UserProfileItemImpl(String units, boolean liveDataSelected, boolean graphSelected, boolean dashSelected) {
-        this.units = units;
-        this.liveDataSelected = liveDataSelected;
-        this.graphSelected = graphSelected;
-        this.dashSelected = dashSelected;
+public final class SSMChecksumCalculator {
+    private SSMChecksumCalculator() {
     }
 
-    public boolean isDashSelected() {
-        return dashSelected;
+    public static byte calculateChecksum(byte[] bytes) {
+        int total = 0;
+        for (int i = 0; i < (bytes.length - 1); i++) {
+            byte b = bytes[i];
+            total += asInt(b);
+        }
+        return asByte(total - ((total >>> 16) << 16));
     }
-
-    public boolean isGraphSelected() {
-        return graphSelected;
-    }
-
-    public boolean isLiveDataSelected() {
-        return liveDataSelected;
-    }
-
-    public String getUnits() {
-        return units;
-    }
-
 }

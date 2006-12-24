@@ -19,24 +19,12 @@
  *
  */
 
-package enginuity.logger.profile;
+package enginuity.logger.comms.query;
 
-import enginuity.logger.definition.EcuData;
-import enginuity.logger.definition.EcuDataConvertor;
+public interface EcuInit {
 
-public interface UserProfile {
+    String getEcuId();
 
-    String getSerialPort();
+    byte[] getEcuIdBytes();
 
-    boolean contains(EcuData ecuData);
-
-    boolean isSelectedOnLiveDataTab(EcuData ecuData);
-
-    boolean isSelectedOnGraphTab(EcuData ecuData);
-
-    boolean isSelectedOnDashTab(EcuData ecuData);
-
-    EcuDataConvertor getSelectedConvertor(EcuData ecuData);
-
-    byte[] getBytes();
 }

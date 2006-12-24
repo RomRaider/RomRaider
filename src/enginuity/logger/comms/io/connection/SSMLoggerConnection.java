@@ -23,6 +23,7 @@ package enginuity.logger.comms.io.connection;
 
 import enginuity.io.connection.SerialConnection;
 import enginuity.io.connection.SerialConnectionImpl;
+import static enginuity.io.protocol.SSMResponseProcessor.filterRequestFromResponse;
 import enginuity.logger.comms.io.protocol.LoggerProtocol;
 import enginuity.logger.comms.io.protocol.SSMLoggerProtocol;
 import enginuity.logger.comms.query.RegisteredQuery;
@@ -46,8 +47,6 @@ public final class SSMLoggerConnection implements LoggerConnection {
             byte[] request = protocol.constructReadAddressRequest(queries);
             byte[] response = protocol.constructReadAddressResponse(queries);
 
-            //System.out.println("Raw request        = " + asHex(request));
-
             serialConnection.readStaleData();
             serialConnection.write(request);
             int timeout = 1000;
@@ -63,15 +62,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
             }
             serialConnection.read(response);
 
-            //System.out.println("Raw response       = " + asHex(response));
-
-            byte[] filteredResponse = new byte[response.length - request.length];
-            System.arraycopy(response, request.length, filteredResponse, 0, filteredResponse.length);
-
-            //System.out.println("Filtered response  = " + asHex(filteredResponse));
-            //System.out.println();
-
-            protocol.processReadAddressResponses(queries, filteredResponse);
+            protocol.processReadAddressResponses(queries, filterRequestFromResponse(request, response));
         } catch (Exception e) {
             close();
             throw new SerialCommunicationException(e);

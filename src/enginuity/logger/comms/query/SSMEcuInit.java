@@ -19,35 +19,27 @@
  *
  */
 
-package enginuity.logger.profile;
+package enginuity.logger.comms.query;
 
-public final class UserProfileItemImpl implements UserProfileItem {
-    private final String units;
-    private final boolean liveDataSelected;
-    private final boolean graphSelected;
-    private final boolean dashSelected;
+import static enginuity.util.HexUtil.asHex;
+import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
-    public UserProfileItemImpl(String units, boolean liveDataSelected, boolean graphSelected, boolean dashSelected) {
-        this.units = units;
-        this.liveDataSelected = liveDataSelected;
-        this.graphSelected = graphSelected;
-        this.dashSelected = dashSelected;
+public final class SSMEcuInit implements EcuInit {
+    private byte[] ecuIdBytes;
+    private String ecuId;
+
+    public SSMEcuInit(byte[] ecuIdBytes) {
+        checkNotNullOrEmpty(ecuIdBytes, "ecuIdBytes");
+        this.ecuIdBytes = ecuIdBytes;
+        ecuId = asHex(ecuIdBytes);
     }
 
-    public boolean isDashSelected() {
-        return dashSelected;
+    public String getEcuId() {
+        return ecuId;
     }
 
-    public boolean isGraphSelected() {
-        return graphSelected;
-    }
-
-    public boolean isLiveDataSelected() {
-        return liveDataSelected;
-    }
-
-    public String getUnits() {
-        return units;
+    public byte[] getEcuIdBytes() {
+        return ecuIdBytes;
     }
 
 }

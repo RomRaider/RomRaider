@@ -25,7 +25,8 @@ import enginuity.Settings;
 import enginuity.io.port.SerialPortRefresher;
 import enginuity.logger.comms.controller.LoggerController;
 import enginuity.logger.comms.controller.LoggerControllerImpl;
-import enginuity.logger.comms.query.LoggerCallback;
+import enginuity.logger.comms.query.EcuInit;
+import enginuity.logger.comms.query.EcuInitCallback;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataLoader;
 import enginuity.logger.definition.EcuDataLoaderImpl;
@@ -57,7 +58,6 @@ import enginuity.logger.ui.handler.table.TableUpdateHandler;
 import enginuity.logger.ui.paramlist.ParameterListTable;
 import enginuity.logger.ui.paramlist.ParameterListTableModel;
 import enginuity.logger.ui.paramlist.ParameterRow;
-import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import enginuity.util.ThreadUtil;
 
@@ -144,9 +144,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         this.settings = settings;
 
         // TODO: Do something useful with this!!
-        LoggerCallback ecuInitCallback = new LoggerCallback() {
-            public void callback(byte[] value) {
-                System.out.println("Ecu Init response = " + asHex(value));
+        EcuInitCallback ecuInitCallback = new EcuInitCallback() {
+            public void callback(EcuInit ecuInit) {
+                System.out.println("ECU ID = " + ecuInit.getEcuId());
             }
         };
 

@@ -26,12 +26,13 @@ import enginuity.io.connection.EcuConnection;
 import enginuity.io.connection.EcuConnectionImpl;
 import enginuity.io.protocol.Protocol;
 import enginuity.io.protocol.ProtocolFactory;
-import enginuity.logger.comms.controller.LoggerController;
+import enginuity.logger.comms.query.EcuInitCallback;
 import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.comms.query.RegisteredQuery;
 import enginuity.logger.comms.query.RegisteredQueryImpl;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.MessageListener;
+import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import enginuity.util.ThreadUtil;
 
@@ -47,16 +48,14 @@ public final class QueryManagerImpl implements QueryManager {
     private final Map<String, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<String, RegisteredQuery>());
     private final Map<String, RegisteredQuery> addList = new HashMap<String, RegisteredQuery>();
     private final List<String> removeList = new ArrayList<String>();
-    private final LoggerController controller;
     private final Settings settings;
-    private final LoggerCallback ecuInitCallback;
+    private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
     private boolean stop = false;
     private Thread queryManagerThread = null;
 
-    public QueryManagerImpl(LoggerController controller, Settings settings, LoggerCallback ecuInitCallback, MessageListener messageListener) {
-        checkNotNull(controller, settings, ecuInitCallback, messageListener);
-        this.controller = controller;
+    public QueryManagerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener) {
+        checkNotNull(settings, ecuInitCallback, messageListener);
         this.settings = settings;
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
@@ -92,8 +91,9 @@ public final class QueryManagerImpl implements QueryManager {
         try {
             messageListener.reportMessage("Sending ECU Init...");
             byte[] response = ecuConnection.send(protocol.constructEcuInitRequest());
+            System.out.println("Ecu Init response = " + asHex(response));
             if (protocol.isValidEcuInitResponse(response)) {
-                ecuInitCallback.callback(response);
+                ecuInitCallback.callback(protocol.parseEcuInitResponse(response));
                 messageListener.reportMessage("Sending ECU Init...done.");
                 return true;
             } else {
@@ -128,7 +128,6 @@ public final class QueryManagerImpl implements QueryManager {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            controller.stop();
             messageListener.reportError(e);
         } finally {
             txManager.stop();

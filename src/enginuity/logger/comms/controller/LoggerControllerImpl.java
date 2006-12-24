@@ -24,6 +24,7 @@ package enginuity.logger.comms.controller;
 import enginuity.Settings;
 import enginuity.logger.comms.manager.QueryManager;
 import enginuity.logger.comms.manager.QueryManagerImpl;
+import enginuity.logger.comms.query.EcuInitCallback;
 import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.ControllerListener;
@@ -39,9 +40,9 @@ public final class LoggerControllerImpl implements LoggerController {
     private final List<ControllerListener> listeners = synchronizedList(new ArrayList<ControllerListener>());
     private boolean started = false;
 
-    public LoggerControllerImpl(Settings settings, LoggerCallback ecuInitCallback, MessageListener messageListener) {
+    public LoggerControllerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener) {
         checkNotNull(settings, ecuInitCallback, messageListener);
-        queryManager = new QueryManagerImpl(this, settings, ecuInitCallback, messageListener);
+        queryManager = new QueryManagerImpl(settings, ecuInitCallback, messageListener);
     }
 
     public synchronized void addListener(ControllerListener listener) {

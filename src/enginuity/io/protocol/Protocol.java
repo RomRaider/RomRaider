@@ -22,6 +22,7 @@
 package enginuity.io.protocol;
 
 import enginuity.io.connection.ConnectionProperties;
+import enginuity.logger.comms.query.EcuInit;
 
 public interface Protocol {
 
@@ -31,9 +32,9 @@ public interface Protocol {
 
     byte[] constructReadAddressRequest(byte[][] addresses);
 
-    byte calculateChecksum(byte[] bytes);
-
     boolean isValidEcuInitResponse(byte[] bytes);
+
+    EcuInit parseEcuInitResponse(byte[] response);
 
     ConnectionProperties getConnectionProperties();
 
