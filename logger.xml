@@ -817,11 +817,40 @@
                     </conversions>
                 </parameter>
 
+                <!-- JDM STI specific - START -->
+                <parameter id="P89" name="Ign. Corr. AK (Neg. Knock Comp.)" desc="Removes Ignition timing when pinging and knocking occurs.">
+                    <address>
+                        <byte>0x020C60</byte>
+                    </address>
+                    <conversions>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
+                    </conversions>
+                </parameter>
+
+                <parameter id="P90" name="Ign. Corr. AT (Coarse Correc.)" desc="Ignition Correction table variables, affected by the IAM and AK.">
+                    <address>
+                        <byte>0x020C61</byte>
+                    </address>
+                    <conversions>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
+                    </conversions>
+                </parameter>
+
+                <parameter id="P91" name="Ign. Corr. AP (Learnt Correc.)" desc="Ignition learnt over a period of time. The ECU adds a bit to the knock correction if the car is working well with already high ignition correction values.">
+                    <address>
+                        <byte>0x020C65</byte>
+                    </address>
+                    <conversions>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
+                    </conversions>
+                </parameter>
+                <!-- JDM STI specific - END -->
+
 
                 <!-- Derived parameters must be specified after standard parameters or parsing of xml will fail!! -->
                 <!-- Be careful of cyclic dependencies! -->
 
-                <parameter id="P200" name="Engine Load (Calculated)" desc="Engine load as calculated from MAF and RPM">
+                <parameter id="P200" name="Engine Load (Calculated)" desc="Engine load as calculated from MAF and RPM.">
                     <depends>
                         <ref id="P8"/>
                         <ref id="P12"/>
@@ -843,7 +872,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P202" name="Manifold Relative Pressure (Corrected)" desc="Difference between Manifold Absolute Pressure and Atmospheric Pressure">
+                <parameter id="P202" name="Manifold Relative Pressure (Corrected)" desc="Difference between Manifold Absolute Pressure and Atmospheric Pressure.">
                     <depends>
                         <ref id="P7"/>
                         <ref id="P24"/>

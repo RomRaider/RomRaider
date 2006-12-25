@@ -69,8 +69,8 @@ public final class SSMProtocol implements Protocol {
 
     // TODO: This is not real nice/efficient...
     public boolean isValidEcuInitResponse(byte[] response) {
-        // request responseHeader ecu_id readable_params_switches... checksum
-        // 8010F001BF40 80F01039FF A210113152 58400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000 59
+        // request response_header 3_unknown_bytes 5_ecu_id_bytes readable_params_switches... checksum
+        // 8010F001BF40 80F01039FF A21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000 59
         checkNotNullOrEmpty(response, "response");
         byte[] filteredResponse = filterRequestFromResponse(constructEcuInitRequest(), response);
         try {
@@ -86,7 +86,7 @@ public final class SSMProtocol implements Protocol {
         checkNotNullOrEmpty(response, "response");
         byte[] responseData = extractResponseData(filterRequestFromResponse(constructEcuInitRequest(), response));
         byte[] ecuIdBytes = new byte[5];
-        System.arraycopy(responseData, 0, ecuIdBytes, 0, 5);
+        System.arraycopy(responseData, 3, ecuIdBytes, 0, 5);
         return new SSMEcuInit(ecuIdBytes);
     }
 
