@@ -22,6 +22,7 @@
 package enginuity.util;
 
 import java.util.Collection;
+import java.util.Map;
 
 public final class ParamChecker {
 
@@ -58,6 +59,12 @@ public final class ParamChecker {
         }
     }
 
+    public static void checkNotNullOrEmpty(Map<?, ?> param, String paramName) {
+        if (param == null || param.isEmpty()) {
+            throw new IllegalArgumentException("Parameter " + paramName + " must not be null or empty");
+        }
+    }
+
     public static void checkGreaterThanZero(int param, String paramName) {
         if (param <= 0) {
             throw new IllegalArgumentException("Parameter " + paramName + " must be > 0");
@@ -73,4 +80,5 @@ public final class ParamChecker {
     public static boolean isNullOrEmpty(String param) {
         return param == null || param.length() == 0;
     }
+
 }

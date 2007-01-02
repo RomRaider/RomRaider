@@ -37,12 +37,13 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
 
-    public void loadFromXml(String loggerConfigFilePath, String protocol) {
+    public void loadFromXml(String loggerConfigFilePath, String protocol, String ecuId) {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
+        checkNotNullOrEmpty(protocol, "protocol");
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
             try {
-                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol);
+                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol, ecuId);
                 getSaxParser().parse(inputStream, handler);
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();

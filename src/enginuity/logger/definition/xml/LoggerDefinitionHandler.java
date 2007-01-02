@@ -55,6 +55,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_BYTE = "byte";
     private static final String TAG_REF = "ref";
     private static final String TAG_SWITCH = "switch";
+    private static final String TAG_ECUPARAM = "ecuparam";
+    private static final String TAG_ECU = "ecu";
     private static final String ATTR_ID = "id";
     private static final String ATTR_NAME = "name";
     private static final String ATTR_DESC = "desc";
@@ -63,27 +65,32 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_FORMAT = "format";
     private static final String ATTR_BYTE = "byte";
     private static final String ATTR_BIT = "bit";
+    private static final String ATTR_PARAMETER = "parameter";
     private static final String ATTR_FILELOGCONTROLLER = "filelogcontroller";
+    private final String protocol;
+    private final String ecuId;
     private List<EcuParameter> params;
     private List<EcuSwitch> switches;
     private Map<String, EcuData> ecuDataMap;
     private String id;
     private String name;
     private String desc;
+    private String ecuIds;
     private Set<String> addressList;
     private Set<String> dependsList;
+    private Map<String, String[]> ecuAddressMap;
     private boolean derived;
     private int bit;
     private boolean fileLogController;
     private Set<EcuDataConvertor> convertorList;
     private Set<EcuDerivedParameterConvertor> derivedConvertorList;
     private StringBuilder charBuffer;
-    private String protocol;
     private boolean parseProtocol;
 
-    public LoggerDefinitionHandler(String protocol) {
+    public LoggerDefinitionHandler(String protocol, String ecuId) {
         checkNotNullOrEmpty(protocol, "protocol");
         this.protocol = protocol;
+        this.ecuId = ecuId;
     }
 
     public void startDocument() {
@@ -102,12 +109,13 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 desc = attributes.getValue(ATTR_DESC);
             } else if (TAG_ADDRESS.equals(qName)) {
                 addressList = new LinkedHashSet<String>();
+                ecuAddressMap = new HashMap<String, String[]>();
                 derived = false;
             } else if (TAG_DEPENDS.equals(qName)) {
                 dependsList = new LinkedHashSet<String>();
                 derived = true;
             } else if (TAG_REF.equals(qName)) {
-                dependsList.add(attributes.getValue(ATTR_ID));
+                dependsList.add(attributes.getValue(ATTR_PARAMETER));
             } else if (TAG_CONVERSIONS.equals(qName)) {
                 convertorList = new LinkedHashSet<EcuDataConvertor>();
                 derivedConvertorList = new LinkedHashSet<EcuDerivedParameterConvertor>();
@@ -127,6 +135,13 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 addressList.add(attributes.getValue(ATTR_BYTE));
                 bit = Integer.valueOf(attributes.getValue(ATTR_BIT));
                 fileLogController = YES.equals(attributes.getValue(ATTR_FILELOGCONTROLLER));
+            } else if (TAG_ECUPARAM.equals(qName)) {
+                id = attributes.getValue(ATTR_ID);
+                name = attributes.getValue(ATTR_NAME);
+                desc = attributes.getValue(ATTR_DESC);
+            } else if (TAG_ECU.equals(qName)) {
+                ecuIds = attributes.getValue(ATTR_ID);
+                addressList = new LinkedHashSet<String>();
             }
         }
         charBuffer = new StringBuilder();
@@ -154,18 +169,26 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     param = new EcuDerivedParameterImpl(id, name, desc, dependencies.toArray(new EcuData[dependencies.size()]),
                             derivedConvertorList.toArray(new EcuDerivedParameterConvertor[derivedConvertorList.size()]));
                 } else {
-                    String[] addresses = new String[addressList.size()];
-                    addressList.toArray(addresses);
+                    String[] addresses = toArray(addressList);
                     param = new EcuParameterImpl(id, name, desc, addresses, convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                 }
                 params.add(param);
                 ecuDataMap.put(param.getId(), param);
             } else if (TAG_SWITCH.equals(qName)) {
-                String[] addresses = new String[addressList.size()];
-                addressList.toArray(addresses);
-                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, addresses, new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)}, fileLogController);
+                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList), new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)}, fileLogController);
                 switches.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
+            } else if (TAG_ECUPARAM.equals(qName)) {
+                if (ecuId != null && ecuAddressMap.containsKey(ecuId)) {
+                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuId), convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+                    params.add(param);
+                    ecuDataMap.put(param.getId(), param);
+                }
+            } else if (TAG_ECU.equals(qName)) {
+                String[] addresses = toArray(addressList);
+                for (String ecuId : ecuIds.split(",")) {
+                    ecuAddressMap.put(ecuId, addresses);
+                }
             }
         }
     }
@@ -177,4 +200,11 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     public List<EcuSwitch> getEcuSwitches() {
         return switches;
     }
+
+    private String[] toArray(Set<String> set) {
+        String[] addresses = new String[set.size()];
+        set.toArray(addresses);
+        return addresses;
+    }
+
 }

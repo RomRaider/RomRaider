@@ -2,10 +2,14 @@
 
 <!ELEMENT byte ( #PCDATA ) >
 
-<!ELEMENT address ( byte+ ) >
+<!ELEMENT ecu ( byte+ ) >
+<!ATTLIST ecu id CDATA #REQUIRED >
+
+<!ELEMENT address ( ecu+ | byte+ ) >
 
 <!ELEMENT ref EMPTY >
-<!ATTLIST ref id IDREF #REQUIRED >
+<!ATTLIST ref ecuparam CDATA #IMPLIED >
+<!ATTLIST ref parameter IDREF #IMPLIED >
 
 <!ELEMENT depends ( ref+ ) >
 
@@ -33,7 +37,14 @@
 
 <!ELEMENT switches ( switch+ ) >
 
-<!ELEMENT protocol ( parameters*, switches* ) >
+<!ELEMENT ecuparam ( address, conversions ) >
+<!ATTLIST ecuparam desc CDATA #REQUIRED >
+<!ATTLIST ecuparam name CDATA #REQUIRED >
+<!ATTLIST ecuparam id ID #REQUIRED >
+
+<!ELEMENT ecuparams ( ecuparam+ ) >
+
+<!ELEMENT protocol ( parameters?, switches?, ecuparams? ) >
 <!ATTLIST protocol id ID #REQUIRED >
 
 <!ELEMENT protocols ( protocol+ ) >
