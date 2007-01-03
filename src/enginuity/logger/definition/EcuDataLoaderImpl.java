@@ -21,6 +21,7 @@
 
 package enginuity.logger.definition;
 
+import enginuity.logger.comms.query.EcuInit;
 import enginuity.logger.definition.xml.LoggerDefinitionHandler;
 import enginuity.logger.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
@@ -37,13 +38,13 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
 
-    public void loadFromXml(String loggerConfigFilePath, String protocol, String ecuId) {
+    public void loadFromXml(String loggerConfigFilePath, String protocol, EcuInit ecuInit) {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
         checkNotNullOrEmpty(protocol, "protocol");
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
             try {
-                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol, ecuId);
+                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol, ecuInit);
                 getSaxParser().parse(inputStream, handler);
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();

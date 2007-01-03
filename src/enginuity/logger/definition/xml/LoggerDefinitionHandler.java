@@ -21,6 +21,7 @@
 
 package enginuity.logger.definition.xml;
 
+import enginuity.logger.comms.query.EcuInit;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataConvertor;
 import enginuity.logger.definition.EcuDerivedParameterConvertor;
@@ -68,7 +69,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_PARAMETER = "parameter";
     private static final String ATTR_FILELOGCONTROLLER = "filelogcontroller";
     private final String protocol;
-    private final String ecuId;
+    private final EcuInit ecuInit;
     private List<EcuParameter> params;
     private List<EcuSwitch> switches;
     private Map<String, EcuData> ecuDataMap;
@@ -87,10 +88,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private StringBuilder charBuffer;
     private boolean parseProtocol;
 
-    public LoggerDefinitionHandler(String protocol, String ecuId) {
+    public LoggerDefinitionHandler(String protocol, EcuInit ecuInit) {
         checkNotNullOrEmpty(protocol, "protocol");
         this.protocol = protocol;
-        this.ecuId = ecuId;
+        this.ecuInit = ecuInit;
     }
 
     public void startDocument() {
@@ -179,8 +180,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 switches.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
             } else if (TAG_ECUPARAM.equals(qName)) {
-                if (ecuId != null && ecuAddressMap.containsKey(ecuId)) {
-                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuId), convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+                if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
+                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()), convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                     params.add(param);
                     ecuDataMap.put(param.getId(), param);
                 }

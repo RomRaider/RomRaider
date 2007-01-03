@@ -90,14 +90,14 @@ import java.util.Map;
 
 /*
 TODO: add better debug logging, preferably to a file and switchable (on/off)
-TODO: add user definable addresses
 TODO: Clean up this class!
 So much to do, so little time....
 
 Autoconnect Stuff:
-TODO: Finish ecu init callback
 TODO: Add extra ecu init parsing & only display parameters supported by ecu, or all if unknown ecu.
-TODO: Finish ecu specific parameters (IAM, Engine Load)
+TODO: Finish ecu specific parameters (IAM, Engine Load) config in logger.xml
+TODO: Add ecu id and calid to ecu_defs
+TODO: Fix status indicator - better messages required
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
@@ -105,7 +105,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private Settings settings;
-    private String ecuId;
     private LoggerController controller;
     private JLabel statusBarLabel;
     private JTabbedPane tabbedPane;
@@ -129,6 +128,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private GraphUpdateHandler graphUpdateHandler;
     private JPanel dashboardPanel;
     private DashboardUpdateHandler dashboardUpdateHandler;
+    private EcuInit ecuInit;
 
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
@@ -141,15 +141,19 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         restartLogging();
     }
 
-    private void bootstrap(Settings settings) {
+    private void bootstrap(final Settings settings) {
         checkNotNull(settings);
         this.settings = settings;
 
-        // TODO: Do something useful with this!!
         EcuInitCallback ecuInitCallback = new EcuInitCallback() {
-            public void callback(EcuInit ecuInit) {
-                ecuId = ecuInit.getEcuId();
-                System.out.println("ECU ID = " + ecuId);
+            public void callback(EcuInit newEcuInit) {
+                System.out.println("ECU ID = " + newEcuInit.getEcuId());
+                if (ecuInit == null || !ecuInit.getEcuId().equals(newEcuInit.getEcuId())) {
+                    System.out.print("Reloading user profile for new ECU...");
+                    ecuInit = newEcuInit;
+                    reloadUserProfile(settings.getLoggerProfileFilePath());
+                    System.out.println("done.");
+                }
             }
         };
 
@@ -207,7 +211,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void reloadUserProfile(String profileFilePath) {
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-            dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(), ecuId);
+            dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(), ecuInit);
             loadUserProfile(dataLoader, profileFilePath);
             File profileFile = new File(profileFilePath);
             if (profileFile.exists()) {

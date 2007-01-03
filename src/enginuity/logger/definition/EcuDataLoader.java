@@ -21,11 +21,13 @@
 
 package enginuity.logger.definition;
 
+import enginuity.logger.comms.query.EcuInit;
+
 import java.util.List;
 
 public interface EcuDataLoader {
 
-    void loadFromXml(String loggerConfigFilePath, String protocol, String ecuId);
+    void loadFromXml(String loggerConfigFilePath, String protocol, EcuInit ecuInit);
 
     List<EcuParameter> getEcuParameters();
 
