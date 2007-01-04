@@ -7,7 +7,7 @@
 
             <parameters>
 
-                <parameter id="P1" name="Engine Load" desc="">
+                <parameter id="P1" name="Engine Load" desc="" ecubyteindex="8" ecubit="7">
                     <address>
                         <byte>0x000007</byte>
                     </address>
@@ -16,7 +16,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P2" name="Coolant Temperature" desc="">
+                <parameter id="P2" name="Coolant Temperature" desc="" ecubyteindex="8" ecubit="6">
                     <address>
                         <byte>0x000008</byte>
                     </address>
@@ -26,7 +26,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P3" name="Air/Fuel Correction #1" desc="">
+                <parameter id="P3" name="Air/Fuel Correction #1" desc="" ecubyteindex="8" ecubit="5">
                     <address>
                         <byte>0x000009</byte>
                     </address>
@@ -35,7 +35,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P4" name="Air/Fuel Learning #1" desc="">
+                <parameter id="P4" name="Air/Fuel Learning #1" desc="" ecubyteindex="8" ecubit="4">
                     <address>
                         <byte>0x00000A</byte>
                     </address>
@@ -44,7 +44,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P5" name="Air/Fuel Correction #2" desc="">
+                <parameter id="P5" name="Air/Fuel Correction #2" desc="" ecubyteindex="8" ecubit="3">
                     <address>
                         <byte>0x00000B</byte>
                     </address>
@@ -53,7 +53,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P6" name="Air/Fuel Learning #2" desc="">
+                <parameter id="P6" name="Air/Fuel Learning #2" desc="" ecubyteindex="8" ecubit="2">
                     <address>
                         <byte>0x00000C</byte>
                     </address>
@@ -62,7 +62,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P7" name="Manifold Absolute Pressure" desc="">
+                <parameter id="P7" name="Manifold Absolute Pressure" desc="" ecubyteindex="8" ecubit="1">
                     <address>
                         <byte>0x00000D</byte>
                     </address>
@@ -72,7 +72,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P8" name="Engine Speed" desc="">
+                <parameter id="P8" name="Engine Speed" desc="" ecubyteindex="8" ecubit="0">
                     <address>
                         <byte>0x00000E</byte>
                         <byte>0x00000F</byte>
@@ -82,7 +82,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P9" name="Vehicle Speed" desc="">
+                <parameter id="P9" name="Vehicle Speed" desc="" ecubyteindex="9" ecubit="7">
                     <address>
                         <byte>0x000010</byte>
                     </address>
@@ -92,7 +92,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P10" name="Ignition Timing" desc="">
+                <parameter id="P10" name="Ignition Timing" desc="" ecubyteindex="9" ecubit="6">
                     <address>
                         <byte>0x000011</byte>
                     </address>
@@ -101,7 +101,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P11" name="Intake Air Temperature" desc="">
+                <parameter id="P11" name="Intake Air Temperature" desc="" ecubyteindex="9" ecubit="5">
                     <address>
                         <byte>0x000012</byte>
                     </address>
@@ -111,7 +111,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P12" name="Mass Air Flow" desc="">
+                <parameter id="P12" name="Mass Air Flow" desc="" ecubyteindex="9" ecubit="4">
                     <address>
                         <byte>0x000013</byte>
                         <byte>0x000014</byte>
@@ -121,7 +121,8 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P13" name="Throttle Opening Angle" desc="Engine throttle opening angle.">
+                <parameter id="P13" name="Throttle Opening Angle" desc="Engine throttle opening angle." ecubyteindex="9"
+                           ecubit="3">
                     <address>
                         <byte>0x000015</byte>
                     </address>
@@ -130,7 +131,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P14" name="Front O2 Sensor #1" desc="">
+                <parameter id="P14" name="Front O2 Sensor #1" desc="" ecubyteindex="9" ecubit="2">
                     <address>
                         <byte>0x000016</byte>
                         <byte>0x000017</byte>
@@ -140,7 +141,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P15" name="Rear O2 Sensor" desc="">
+                <parameter id="P15" name="Rear O2 Sensor" desc="" ecubyteindex="9" ecubit="1">
                     <address>
                         <byte>0x000018</byte>
                         <byte>0x000019</byte>
@@ -150,7 +151,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P16" name="Front O2 Sensor #2" desc="">
+                <parameter id="P16" name="Front O2 Sensor #2" desc="" ecubyteindex="9" ecubit="0">
                     <address>
                         <byte>0x00001A</byte>
                         <byte>0x00001B</byte>
@@ -160,7 +161,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P17" name="Battery Voltage" desc="">
+                <parameter id="P17" name="Battery Voltage" desc="" ecubyteindex="10" ecubit="7">
                     <address>
                         <byte>0x00001C</byte>
                     </address>
@@ -169,7 +170,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P18" name="Mass Air Flow Sensor Voltage" desc="">
+                <parameter id="P18" name="Mass Air Flow Sensor Voltage" desc="" ecubyteindex="10" ecubit="6">
                     <address>
                         <byte>0x00001D</byte>
                     </address>
@@ -178,7 +179,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P19" name="Throttle Sensor Voltage" desc="">
+                <parameter id="P19" name="Throttle Sensor Voltage" desc="" ecubyteindex="10" ecubit="5">
                     <address>
                         <byte>0x00001E</byte>
                     </address>
@@ -187,7 +188,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P20" name="Differential Pressure Sensor Voltage" desc="">
+                <parameter id="P20" name="Differential Pressure Sensor Voltage" desc="" ecubyteindex="10" ecubit="4">
                     <address>
                         <byte>0x00001F</byte>
                     </address>
@@ -196,7 +197,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P21" name="Fuel Injector #1 Pulse Width" desc="">
+                <parameter id="P21" name="Fuel Injector #1 Pulse Width" desc="" ecubyteindex="10" ecubit="3">
                     <address>
                         <byte>0x000020</byte>
                     </address>
@@ -205,7 +206,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P22" name="Fuel Injector #2 Pulse Width" desc="">
+                <parameter id="P22" name="Fuel Injector #2 Pulse Width" desc="" ecubyteindex="10" ecubit="2">
                     <address>
                         <byte>0x000021</byte>
                     </address>
@@ -214,7 +215,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P23" name="Knock Correction" desc="">
+                <parameter id="P23" name="Knock Correction" desc="" ecubyteindex="10" ecubit="1">
                     <address>
                         <byte>0x000022</byte>
                     </address>
@@ -223,7 +224,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P24" name="Atmospheric Pressure" desc="">
+                <parameter id="P24" name="Atmospheric Pressure" desc="" ecubyteindex="10" ecubit="0">
                     <address>
                         <byte>0x000023</byte>
                     </address>
@@ -233,7 +234,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P25" name="Manifold Relative Pressure" desc="">
+                <parameter id="P25" name="Manifold Relative Pressure" desc="" ecubyteindex="11" ecubit="7">
                     <address>
                         <byte>0x000024</byte>
                     </address>
@@ -243,7 +244,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P26" name="Pressure Differential Sensor" desc="">
+                <parameter id="P26" name="Pressure Differential Sensor" desc="" ecubyteindex="11" ecubit="6">
                     <address>
                         <byte>0x000025</byte>
                     </address>
@@ -253,7 +254,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P27" name="Fuel Tank Pressure" desc="">
+                <parameter id="P27" name="Fuel Tank Pressure" desc="" ecubyteindex="11" ecubit="5">
                     <address>
                         <byte>0x000026</byte>
                     </address>
@@ -263,7 +264,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P28" name="CO Adjustment" desc="">
+                <parameter id="P28" name="CO Adjustment" desc="" ecubyteindex="11" ecubit="4">
                     <address>
                         <byte>0x000027</byte>
                     </address>
@@ -272,7 +273,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P29" name="Learned Ignition Timing" desc="">
+                <parameter id="P29" name="Learned Ignition Timing" desc="" ecubyteindex="11" ecubit="3">
                     <address>
                         <byte>0x000028</byte>
                     </address>
@@ -281,7 +282,8 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P30" name="Accelerator Pedal Angle" desc="Accelerator pedal angle.">
+                <parameter id="P30" name="Accelerator Pedal Angle" desc="Accelerator pedal angle." ecubyteindex="11"
+                           ecubit="2">
                     <address>
                         <byte>0x000029</byte>
                     </address>
@@ -290,7 +292,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P31" name="Fuel Temperature" desc="">
+                <parameter id="P31" name="Fuel Temperature" desc="" ecubyteindex="11" ecubit="1">
                     <address>
                         <byte>0x00002A</byte>
                     </address>
@@ -300,7 +302,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P32" name="Front O2 Heater Current #1" desc="">
+                <parameter id="P32" name="Front O2 Heater Current #1" desc="" ecubyteindex="11" ecubit="0">
                     <address>
                         <byte>0x00002B</byte>
                     </address>
@@ -309,7 +311,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P33" name="Rear O2 Heater Current" desc="">
+                <parameter id="P33" name="Rear O2 Heater Current" desc="" ecubyteindex="12" ecubit="7">
                     <address>
                         <byte>0x00002C</byte>
                     </address>
@@ -318,7 +320,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P34" name="Front O2 Heater Current #2" desc="">
+                <parameter id="P34" name="Front O2 Heater Current #2" desc="" ecubyteindex="12" ecubit="6">
                     <address>
                         <byte>0x00002D</byte>
                     </address>
@@ -327,7 +329,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P35" name="Fuel Level" desc="">
+                <parameter id="P35" name="Fuel Level" desc="" ecubyteindex="12" ecubit="5">
                     <address>
                         <byte>0x00002E</byte>
                     </address>
@@ -336,7 +338,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P36" name="Primary Wastegate Duty Cycle" desc="">
+                <parameter id="P36" name="Primary Wastegate Duty Cycle" desc="" ecubyteindex="12" ecubit="3">
                     <address>
                         <byte>0x000030</byte>
                     </address>
@@ -345,7 +347,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P37" name="Secondary Wastegate Duty Cycle" desc="">
+                <parameter id="P37" name="Secondary Wastegate Duty Cycle" desc="" ecubyteindex="12" ecubit="2">
                     <address>
                         <byte>0x000031</byte>
                     </address>
@@ -354,7 +356,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P38" name="CPC Valve Duty Ratio" desc="">
+                <parameter id="P38" name="CPC Valve Duty Ratio" desc="" ecubyteindex="12" ecubit="1">
                     <address>
                         <byte>0x000032</byte>
                     </address>
@@ -363,7 +365,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P39" name="Tumble Valve Position Sensor Right" desc="">
+                <parameter id="P39" name="Tumble Valve Position Sensor Right" desc="" ecubyteindex="12" ecubit="0">
                     <address>
                         <byte>0x000033</byte>
                     </address>
@@ -372,7 +374,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P40" name="Tumble Valve Position Sensor Left" desc="">
+                <parameter id="P40" name="Tumble Valve Position Sensor Left" desc="" ecubyteindex="13" ecubit="7">
                     <address>
                         <byte>0x000034</byte>
                     </address>
@@ -381,7 +383,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P41" name="Idle Speed Control Valve Duty Ratio" desc="">
+                <parameter id="P41" name="Idle Speed Control Valve Duty Ratio" desc="" ecubyteindex="13" ecubit="6">
                     <address>
                         <byte>0x000035</byte>
                     </address>
@@ -390,7 +392,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P42" name="Air/Fuel Lean Correction" desc="">
+                <parameter id="P42" name="Air/Fuel Lean Correction" desc="" ecubyteindex="13" ecubit="5">
                     <address>
                         <byte>0x000036</byte>
                     </address>
@@ -399,7 +401,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P43" name="Air/Fuel Heater Duty" desc="">
+                <parameter id="P43" name="Air/Fuel Heater Duty" desc="" ecubyteindex="13" ecubit="4">
                     <address>
                         <byte>0x000037</byte>
                     </address>
@@ -408,7 +410,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P44" name="Idle Speed Control Valve Step" desc="">
+                <parameter id="P44" name="Idle Speed Control Valve Step" desc="" ecubyteindex="13" ecubit="3">
                     <address>
                         <byte>0x000038</byte>
                     </address>
@@ -417,7 +419,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P45" name="Number of Exh. Gas Recirc. Steps" desc="">
+                <parameter id="P45" name="Number of Exh. Gas Recirc. Steps" desc="" ecubyteindex="13" ecubit="2">
                     <address>
                         <byte>0x000039</byte>
                     </address>
@@ -426,7 +428,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P46" name="Alternator Duty" desc="">
+                <parameter id="P46" name="Alternator Duty" desc="" ecubyteindex="13" ecubit="1">
                     <address>
                         <byte>0x00003A</byte>
                     </address>
@@ -435,7 +437,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P47" name="Fuel Pump Duty" desc="">
+                <parameter id="P47" name="Fuel Pump Duty" desc="" ecubyteindex="13" ecubit="0">
                     <address>
                         <byte>0x00003B</byte>
                     </address>
@@ -444,7 +446,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P48" name="Intake VVT Advance Angle Right" desc="">
+                <parameter id="P48" name="Intake VVT Advance Angle Right" desc="" ecubyteindex="14" ecubit="7">
                     <address>
                         <byte>0x00003C</byte>
                     </address>
@@ -453,7 +455,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P49" name="Intake VVT Advance Angle Left" desc="">
+                <parameter id="P49" name="Intake VVT Advance Angle Left" desc="" ecubyteindex="14" ecubit="6">
                     <address>
                         <byte>0x00003D</byte>
                     </address>
@@ -462,7 +464,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P50" name="Intake OCV Duty Right" desc="">
+                <parameter id="P50" name="Intake OCV Duty Right" desc="" ecubyteindex="14" ecubit="5">
                     <address>
                         <byte>0x00003E</byte>
                     </address>
@@ -471,7 +473,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P51" name="Intake OCV Duty Left" desc="">
+                <parameter id="P51" name="Intake OCV Duty Left" desc="" ecubyteindex="14" ecubit="4">
                     <address>
                         <byte>0x00003F</byte>
                     </address>
@@ -480,7 +482,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P52" name="Intake OCV Current Right" desc="">
+                <parameter id="P52" name="Intake OCV Current Right" desc="" ecubyteindex="14" ecubit="3">
                     <address>
                         <byte>0x000040</byte>
                     </address>
@@ -489,7 +491,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P53" name="Intake OCV Current Left" desc="">
+                <parameter id="P53" name="Intake OCV Current Left" desc="" ecubyteindex="14" ecubit="2">
                     <address>
                         <byte>0x000041</byte>
                     </address>
@@ -498,7 +500,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P54" name="Air/Fuel Sensor #1 Current" desc="">
+                <parameter id="P54" name="Air/Fuel Sensor #1 Current" desc="" ecubyteindex="14" ecubit="1">
                     <address>
                         <byte>0x000042</byte>
                     </address>
@@ -507,7 +509,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P55" name="Air/Fuel Sensor #2 Current" desc="">
+                <parameter id="P55" name="Air/Fuel Sensor #2 Current" desc="" ecubyteindex="14" ecubit="0">
                     <address>
                         <byte>0x000043</byte>
                     </address>
@@ -516,7 +518,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P56" name="Air/Fuel Sensor #1 Resistance" desc="">
+                <parameter id="P56" name="Air/Fuel Sensor #1 Resistance" desc="" ecubyteindex="15" ecubit="7">
                     <address>
                         <byte>0x000044</byte>
                     </address>
@@ -525,7 +527,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P57" name="Air/Fuel Sensor #2 Resistance" desc="">
+                <parameter id="P57" name="Air/Fuel Sensor #2 Resistance" desc="" ecubyteindex="15" ecubit="6">
                     <address>
                         <byte>0x000045</byte>
                     </address>
@@ -534,7 +536,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P58" name="Air/Fuel Sensor #1" desc="">
+                <parameter id="P58" name="Air/Fuel Sensor #1" desc="" ecubyteindex="15" ecubit="5">
                     <address>
                         <byte>0x000046</byte>
                     </address>
@@ -544,7 +546,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P59" name="Air/Fuel Sensor #2" desc="">
+                <parameter id="P59" name="Air/Fuel Sensor #2" desc="" ecubyteindex="15" ecubit="4">
                     <address>
                         <byte>0x000047</byte>
                     </address>
@@ -554,7 +556,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P60" name="Gear Position" desc="">
+                <parameter id="P60" name="Gear Position" desc="" ecubyteindex="16" ecubit="5">
                     <address>
                         <byte>0x00004A</byte>
                     </address>
@@ -563,7 +565,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P61" name="A/F Sensor #1 Heater Current" desc="">
+                <parameter id="P61" name="A/F Sensor #1 Heater Current" desc="" ecubyteindex="17" ecubit="4">
                     <address>
                         <byte>0x000053</byte>
                     </address>
@@ -572,7 +574,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P62" name="A/F Sensor #2 Heater Current" desc="">
+                <parameter id="P62" name="A/F Sensor #2 Heater Current" desc="" ecubyteindex="17" ecubit="3">
                     <address>
                         <byte>0x000054</byte>
                     </address>
@@ -581,7 +583,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P63" name="Roughness Monitor Cylinder #1" desc="">
+                <parameter id="P63" name="Roughness Monitor Cylinder #1" desc="" ecubyteindex="55" ecubit="7">
                     <address>
                         <byte>0x0000CE</byte>
                     </address>
@@ -590,7 +592,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P64" name="Roughness Monitor Cylinder #2" desc="">
+                <parameter id="P64" name="Roughness Monitor Cylinder #2" desc="" ecubyteindex="55" ecubit="6">
                     <address>
                         <byte>0x0000CF</byte>
                     </address>
@@ -599,7 +601,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P65" name="Air/Fuel Correction #3" desc="">
+                <parameter id="P65" name="Air/Fuel Correction #3" desc="" ecubyteindex="15" ecubit="3">
                     <address>
                         <byte>0x0000D0</byte>
                     </address>
@@ -608,7 +610,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P66" name="Air/Fuel Learning #3" desc="">
+                <parameter id="P66" name="Air/Fuel Learning #3" desc="" ecubyteindex="15" ecubit="2">
                     <address>
                         <byte>0x0000D1</byte>
                     </address>
@@ -617,7 +619,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P67" name="Rear O2 Heater Voltage" desc="">
+                <parameter id="P67" name="Rear O2 Heater Voltage" desc="" ecubyteindex="15" ecubit="1">
                     <address>
                         <byte>0x0000D2</byte>
                     </address>
@@ -626,7 +628,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P68" name="Air/Fuel Adjustment Voltage" desc="">
+                <parameter id="P68" name="Air/Fuel Adjustment Voltage" desc="" ecubyteindex="15" ecubit="0">
                     <address>
                         <byte>0x0000D3</byte>
                     </address>
@@ -635,7 +637,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P69" name="Roughness Monitor Cylinder #3" desc="">
+                <parameter id="P69" name="Roughness Monitor Cylinder #3" desc="" ecubyteindex="55" ecubit="5">
                     <address>
                         <byte>0x0000D8</byte>
                     </address>
@@ -644,7 +646,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P70" name="Roughness Monitor Cylinder #4" desc="">
+                <parameter id="P70" name="Roughness Monitor Cylinder #4" desc="" ecubyteindex="55" ecubit="4">
                     <address>
                         <byte>0x0000D9</byte>
                     </address>
@@ -653,7 +655,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P71" name="Throttle Motor Duty" desc="">
+                <parameter id="P71" name="Throttle Motor Duty" desc="" ecubyteindex="38" ecubit="5">
                     <address>
                         <byte>0x0000FA</byte>
                     </address>
@@ -662,7 +664,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P72" name="Throttle Motor Voltage" desc="">
+                <parameter id="P72" name="Throttle Motor Voltage" desc="" ecubyteindex="38" ecubit="4">
                     <address>
                         <byte>0x0000FB</byte>
                     </address>
@@ -671,7 +673,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P73" name="Sub Throttle Sensor" desc="">
+                <parameter id="P73" name="Sub Throttle Sensor" desc="" ecubyteindex="40" ecubit="7">
                     <address>
                         <byte>0x000100</byte>
                     </address>
@@ -680,7 +682,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P74" name="Main Throttle Sensor" desc="">
+                <parameter id="P74" name="Main Throttle Sensor" desc="" ecubyteindex="40" ecubit="6">
                     <address>
                         <byte>0x000101</byte>
                     </address>
@@ -689,7 +691,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P75" name="Sub Accelerator Sensor" desc="">
+                <parameter id="P75" name="Sub Accelerator Sensor" desc="" ecubyteindex="40" ecubit="5">
                     <address>
                         <byte>0x000102</byte>
                     </address>
@@ -698,7 +700,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P76" name="Main Accelerator Sensor" desc="">
+                <parameter id="P76" name="Main Accelerator Sensor" desc="" ecubyteindex="40" ecubit="4">
                     <address>
                         <byte>0x000103</byte>
                     </address>
@@ -707,7 +709,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P77" name="Brake Booster Pressure" desc="">
+                <parameter id="P77" name="Brake Booster Pressure" desc="" ecubyteindex="40" ecubit="3">
                     <address>
                         <byte>0x000104</byte>
                     </address>
@@ -717,7 +719,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P78" name="Fuel Pressure (High)" desc="">
+                <parameter id="P78" name="Fuel Pressure (High)" desc="" ecubyteindex="40" ecubit="2">
                     <address>
                         <byte>0x000105</byte>
                     </address>
@@ -726,7 +728,9 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P79" name="Exhaust Gas Temperature" desc="Exhaust gas temperature reading.">
+                <parameter id="P79" name="Exhaust Gas Temperature" desc="Exhaust gas temperature reading."
+                           ecubyteindex="40"
+                           ecubit="1">
                     <address>
                         <byte>0x000106</byte>
                     </address>
@@ -736,7 +740,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P80" name="Cold Start Injector" desc="">
+                <parameter id="P80" name="Cold Start Injector" desc="" ecubyteindex="41" ecubit="7">
                     <address>
                         <byte>0x000108</byte>
                     </address>
@@ -745,7 +749,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P81" name="SCV Step" desc="">
+                <parameter id="P81" name="SCV Step" desc="" ecubyteindex="41" ecubit="6">
                     <address>
                         <byte>0x000109</byte>
                     </address>
@@ -754,7 +758,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P82" name="Memorised Cruise Speed" desc="">
+                <parameter id="P82" name="Memorised Cruise Speed" desc="" ecubyteindex="41" ecubit="5">
                     <address>
                         <byte>0x00010A</byte>
                     </address>
@@ -764,7 +768,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P83" name="Exhaust VVT Advance Angle Right" desc="">
+                <parameter id="P83" name="Exhaust VVT Advance Angle Right" desc="" ecubyteindex="43" ecubit="7">
                     <address>
                         <byte>0x000118</byte>
                     </address>
@@ -773,7 +777,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P84" name="Exhaust VVT Advance Angle Left" desc="">
+                <parameter id="P84" name="Exhaust VVT Advance Angle Left" desc="" ecubyteindex="43" ecubit="6">
                     <address>
                         <byte>0x000119</byte>
                     </address>
@@ -782,7 +786,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P85" name="Exhaust OCV Duty Right" desc="">
+                <parameter id="P85" name="Exhaust OCV Duty Right" desc="" ecubyteindex="43" ecubit="5">
                     <address>
                         <byte>0x00011A</byte>
                     </address>
@@ -791,7 +795,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P86" name="Exhaust OCV Duty Left" desc="">
+                <parameter id="P86" name="Exhaust OCV Duty Left" desc="" ecubyteindex="43" ecubit="4">
                     <address>
                         <byte>0x00011B</byte>
                     </address>
@@ -800,7 +804,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P87" name="Exhaust OCV Current Right" desc="">
+                <parameter id="P87" name="Exhaust OCV Current Right" desc="" ecubyteindex="43" ecubit="3">
                     <address>
                         <byte>0x00011C</byte>
                     </address>
@@ -809,7 +813,7 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P88" name="Exhaust OCV Current Left" desc="">
+                <parameter id="P88" name="Exhaust OCV Current Left" desc="" ecubyteindex="43" ecubit="2">
                     <address>
                         <byte>0x00011D</byte>
                     </address>
@@ -819,7 +823,8 @@
                 </parameter>
 
                 <!-- JDM STI specific - START -->
-                <parameter id="P150" name="Ign. Corr. AK (Neg. Knock Comp.)" desc="Removes Ignition timing when pinging and knocking occurs.">
+                <parameter id="P150" name="Ign. Corr. AK (Neg. Knock Comp.)"
+                           desc="Removes Ignition timing when pinging and knocking occurs.">
                     <address>
                         <byte>0x020C60</byte>
                     </address>
@@ -828,7 +833,8 @@
                     </conversions>
                 </parameter>
 
-                <parameter id="P151" name="Ign. Corr. AT (Coarse Correc.)" desc="Ignition Correction table variables, affected by the IAM and AK.">
+                <parameter id="P151" name="Ign. Corr. AT (Coarse Correc.)"
+                           desc="Ignition Correction table variables, affected by the IAM and AK.">
                     <address>
                         <byte>0x020C61</byte>
                     </address>
@@ -847,7 +853,6 @@
                     </conversions>
                 </parameter>
                 <!-- JDM STI specific - END -->
-
 
                 <!-- Derived parameters must be specified after standard parameters or parsing of xml will fail!! -->
                 <!-- Be careful of cyclic dependencies! -->
@@ -887,7 +892,6 @@
                 </parameter>
 
             </parameters>
-
 
             <switches>
 
@@ -961,7 +965,6 @@
                 <switch id="S68" name="Accelerator Switch" desc="" byte="0x000121" bit="1"/>
 
             </switches>
-
 
             <ecuparams>
 

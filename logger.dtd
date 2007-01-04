@@ -21,6 +21,8 @@
 <!ELEMENT conversions ( conversion+ ) >
 
 <!ELEMENT parameter ( ( address | depends ), conversions ) >
+<!ATTLIST parameter ecubit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ) #IMPLIED >
+<!ATTLIST parameter ecubyteindex CDATA #IMPLIED >
 <!ATTLIST parameter desc CDATA #REQUIRED >
 <!ATTLIST parameter name CDATA #REQUIRED >
 <!ATTLIST parameter id ID #REQUIRED >

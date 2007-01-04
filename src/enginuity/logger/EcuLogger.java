@@ -112,7 +112,6 @@ Autoconnect Stuff:
 TODO: Add extra ecu init parsing & only display parameters supported by ecu, or all if unknown ecu.
 TODO: Finish ecu specific parameters (IAM, Engine Load) config in logger.xml
 TODO: Add ecu id and calid to ecu_defs
-TODO: Fix status indicator - better messages required
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
@@ -144,6 +143,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JPanel dashboardPanel;
     private DashboardUpdateHandler dashboardUpdateHandler;
     private EcuInit ecuInit;
+//    private EcuInit ecuInit = new SSMEcuInit(HexUtil.hexToBytes("A21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000"));
 
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);

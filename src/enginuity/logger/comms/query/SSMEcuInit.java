@@ -25,12 +25,14 @@ import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class SSMEcuInit implements EcuInit {
-    private byte[] ecuIdBytes;
+    private byte[] ecuInitBytes;
     private String ecuId;
 
-    public SSMEcuInit(byte[] ecuIdBytes) {
-        checkNotNullOrEmpty(ecuIdBytes, "ecuIdBytes");
-        this.ecuIdBytes = ecuIdBytes;
+    public SSMEcuInit(byte[] ecuInitBytes) {
+        checkNotNullOrEmpty(ecuInitBytes, "ecuInitBytes");
+        this.ecuInitBytes = ecuInitBytes;
+        byte[] ecuIdBytes = new byte[5];
+        System.arraycopy(ecuInitBytes, 3, ecuIdBytes, 0, 5);
         ecuId = asHex(ecuIdBytes);
     }
 
@@ -38,8 +40,8 @@ public final class SSMEcuInit implements EcuInit {
         return ecuId;
     }
 
-    public byte[] getEcuIdBytes() {
-        return ecuIdBytes;
+    public byte[] getEcuInitBytes() {
+        return ecuInitBytes;
     }
 
 }

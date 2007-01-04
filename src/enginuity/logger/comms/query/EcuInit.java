@@ -25,6 +25,6 @@ public interface EcuInit {
 
     String getEcuId();
 
-    byte[] getEcuIdBytes();
+    byte[] getEcuInitBytes();
 
 }

@@ -85,9 +85,7 @@ public final class SSMProtocol implements Protocol {
     public EcuInit parseEcuInitResponse(byte[] response) {
         checkNotNullOrEmpty(response, "response");
         byte[] responseData = extractResponseData(filterRequestFromResponse(constructEcuInitRequest(), response));
-        byte[] ecuIdBytes = new byte[5];
-        System.arraycopy(responseData, 3, ecuIdBytes, 0, 5);
-        return new SSMEcuInit(ecuIdBytes);
+        return new SSMEcuInit(responseData);
     }
 
     public ConnectionProperties getConnectionProperties() {

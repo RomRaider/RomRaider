@@ -61,6 +61,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_ID = "id";
     private static final String ATTR_NAME = "name";
     private static final String ATTR_DESC = "desc";
+    private static final String ATTR_ECUBYTEINDEX = "ecubyteindex";
+    private static final String ATTR_ECUBIT = "ecubit";
     private static final String ATTR_UNITS = "units";
     private static final String ATTR_EXPRESSION = "expr";
     private static final String ATTR_FORMAT = "format";
@@ -76,6 +78,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String id;
     private String name;
     private String desc;
+    private String ecuByteIndex;
+    private String ecuBit;
     private String ecuIds;
     private Set<String> addressList;
     private Set<String> dependsList;
@@ -108,6 +112,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);
                 desc = attributes.getValue(ATTR_DESC);
+                ecuByteIndex = attributes.getValue(ATTR_ECUBYTEINDEX);
+                ecuBit = attributes.getValue(ATTR_ECUBIT);
             } else if (TAG_ADDRESS.equals(qName)) {
                 addressList = new LinkedHashSet<String>();
                 ecuAddressMap = new HashMap<String, String[]>();
@@ -161,20 +167,26 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             if (TAG_BYTE.equals(qName)) {
                 addressList.add(charBuffer.toString());
             } else if (TAG_PARAMETER.equals(qName)) {
-                EcuParameter param;
                 if (derived) {
                     Set<EcuData> dependencies = new HashSet<EcuData>();
                     for (String refid : dependsList) {
-                        dependencies.add(ecuDataMap.get(refid));
+                        if (ecuDataMap.containsKey(refid)) {
+                            dependencies.add(ecuDataMap.get(refid));
+                        }
                     }
-                    param = new EcuDerivedParameterImpl(id, name, desc, dependencies.toArray(new EcuData[dependencies.size()]),
-                            derivedConvertorList.toArray(new EcuDerivedParameterConvertor[derivedConvertorList.size()]));
+                    if (dependsList.size() == dependencies.size()) {
+                        EcuParameter param = new EcuDerivedParameterImpl(id, name, desc, dependencies.toArray(new EcuData[dependencies.size()]),
+                                derivedConvertorList.toArray(new EcuDerivedParameterConvertor[derivedConvertorList.size()]));
+                        params.add(param);
+                        ecuDataMap.put(param.getId(), param);
+                    }
                 } else {
-                    String[] addresses = toArray(addressList);
-                    param = new EcuParameterImpl(id, name, desc, addresses, convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+                    if (ecuByteIndex == null || ecuBit == null || isSupportedParameter(ecuByteIndex, ecuBit)) {
+                        EcuParameter param = new EcuParameterImpl(id, name, desc, toArray(addressList), convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+                        params.add(param);
+                        ecuDataMap.put(param.getId(), param);
+                    }
                 }
-                params.add(param);
-                ecuDataMap.put(param.getId(), param);
             } else if (TAG_SWITCH.equals(qName)) {
                 EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList), new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)}, fileLogController);
                 switches.add(ecuSwitch);
@@ -192,6 +204,12 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 }
             }
         }
+    }
+
+    private boolean isSupportedParameter(final String ecuByteIndex, final String ecuBit) {
+        byte[] bytes = new byte[1];
+        System.arraycopy(ecuInit.getEcuInitBytes(), Integer.parseInt(ecuByteIndex), bytes, 0, 1);
+        return (bytes[0] & 1 << Integer.parseInt(ecuBit)) > 0;
     }
 
     public List<EcuParameter> getEcuParameters() {
