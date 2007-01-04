@@ -181,7 +181,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         ecuDataMap.put(param.getId(), param);
                     }
                 } else {
-                    if (ecuByteIndex == null || ecuBit == null || isSupportedParameter(ecuByteIndex, ecuBit)) {
+                    if (ecuByteIndex == null || ecuBit == null || ecuInit == null || isSupportedParameter(ecuInit, ecuByteIndex, ecuBit)) {
                         EcuParameter param = new EcuParameterImpl(id, name, desc, toArray(addressList), convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                         params.add(param);
                         ecuDataMap.put(param.getId(), param);
@@ -206,7 +206,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         }
     }
 
-    private boolean isSupportedParameter(final String ecuByteIndex, final String ecuBit) {
+    private boolean isSupportedParameter(final EcuInit ecuInit, final String ecuByteIndex, final String ecuBit) {
         byte[] bytes = new byte[1];
         System.arraycopy(ecuInit.getEcuInitBytes(), Integer.parseInt(ecuByteIndex), bytes, 0, 1);
         return (bytes[0] & 1 << Integer.parseInt(ecuBit)) > 0;
