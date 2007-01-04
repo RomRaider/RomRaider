@@ -19,9 +19,15 @@
  *
  */
 
-package enginuity.logger.ui.handler.file;
+package enginuity.logger.ui;
 
-public interface FileLoggerListener {
+public interface StatusChangeListener {
 
-    void setLoggingToFile(boolean loggingToFile);
+    void connecting();
+
+    void readingData();
+
+    void loggingData();
+
+    void stopped();
 }

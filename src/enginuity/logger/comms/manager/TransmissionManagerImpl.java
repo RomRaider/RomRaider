@@ -33,7 +33,7 @@ import java.util.Collection;
 
 public final class TransmissionManagerImpl implements TransmissionManager {
     private final Settings settings;
-    private LoggerConnection connection = null;
+    private LoggerConnection connection;
 
     public TransmissionManagerImpl(Settings settings) {
         checkNotNull(settings, "settings");

@@ -27,27 +27,22 @@ import enginuity.logger.comms.manager.QueryManagerImpl;
 import enginuity.logger.comms.query.EcuInitCallback;
 import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
-import enginuity.logger.ui.ControllerListener;
 import enginuity.logger.ui.MessageListener;
+import enginuity.logger.ui.StatusChangeListener;
 import static enginuity.util.ParamChecker.checkNotNull;
-
-import java.util.ArrayList;
-import static java.util.Collections.synchronizedList;
-import java.util.List;
 
 public final class LoggerControllerImpl implements LoggerController {
     private final QueryManager queryManager;
-    private final List<ControllerListener> listeners = synchronizedList(new ArrayList<ControllerListener>());
-    private boolean started = false;
+    private boolean started;
 
     public LoggerControllerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener) {
         checkNotNull(settings, ecuInitCallback, messageListener);
         queryManager = new QueryManagerImpl(settings, ecuInitCallback, messageListener);
     }
 
-    public synchronized void addListener(ControllerListener listener) {
+    public synchronized void addListener(StatusChangeListener listener) {
         checkNotNull(listener, "listener");
-        listeners.add(listener);
+        queryManager.addListener(listener);
     }
 
     public void addLogger(String callerId, EcuData ecuData, LoggerCallback callback) {
@@ -68,7 +63,6 @@ public final class LoggerControllerImpl implements LoggerController {
             queryManagerThread.setDaemon(true);
             queryManagerThread.start();
             started = true;
-            startListeners();
         }
     }
 
@@ -76,19 +70,6 @@ public final class LoggerControllerImpl implements LoggerController {
         if (started) {
             queryManager.stop();
             started = false;
-            stopListeners();
-        }
-    }
-
-    private void startListeners() {
-        for (ControllerListener listener : listeners) {
-            listener.start();
-        }
-    }
-
-    private void stopListeners() {
-        for (ControllerListener listener : listeners) {
-            listener.stop();
         }
     }
 

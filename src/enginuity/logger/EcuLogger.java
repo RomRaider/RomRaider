@@ -21,6 +21,7 @@
 
 package enginuity.logger;
 
+import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 import enginuity.Settings;
 import enginuity.io.port.SerialPortRefresher;
 import enginuity.logger.comms.controller.LoggerController;
@@ -61,21 +62,37 @@ import enginuity.logger.ui.paramlist.ParameterRow;
 import static enginuity.util.ParamChecker.checkNotNull;
 import enginuity.util.ThreadUtil;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
+import javax.swing.JSplitPane;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
+import javax.swing.JTabbedPane;
 import static javax.swing.JTabbedPane.BOTTOM;
+import javax.swing.JTable;
+import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.BevelBorder;
 import static javax.swing.border.BevelBorder.LOWERED;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -543,10 +560,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         if (e != null) {
             String message = e.getMessage();
             if (message != null) {
-                int i = message.indexOf(": ");
-                if (i >= 0) {
-                    message = message.substring(i + 2);
-                }
                 reportError(message);
             } else {
                 reportError(e.toString());
@@ -577,23 +590,23 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private static void createAndShowGUI(int defaultCloseOperation, Settings settings) {
-        //set look and feel
+        // set look and feel
         setLookAndFeel();
 
-        //make sure we have nice window decorations.
+        // make sure we have nice window decorations.
         setDefaultLookAndFeelDecorated(true);
         JDialog.setDefaultLookAndFeelDecorated(true);
 
-        //instantiate the controlling class.
+        // instantiate the controlling class.
         EcuLogger ecuLogger = new EcuLogger(settings);
 
-        //set remaining window properties
+        // set remaining window properties
         ecuLogger.setSize(settings.getLoggerWindowSize());
         ecuLogger.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
         ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
         ecuLogger.addWindowListener(ecuLogger);
 
-        //display the window
+        // display the window
         ecuLogger.setLocation(settings.getLoggerWindowLocation());
         if (settings.isWindowMaximized()) {
             ecuLogger.setExtendedState(MAXIMIZED_BOTH);
@@ -603,8 +616,23 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private static void setLookAndFeel() {
         try {
-            //use the system look and feel.
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            // use the system look and feel.
+            // Windows only
+//            UIManager.setLookAndFeel(WindowsLookAndFeel.class.getName());
+//            UIManager.setLookAndFeel(WindowsClassicLookAndFeel.class.getName());
+
+            // MacOSX only
+//            UIManager.setLookAndFeel(AquaLookAndFeel.class.getName());
+
+            // Any platform
+//            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            UIManager.setLookAndFeel(GTKLookAndFeel.class.getName());
+//            UIManager.setLookAndFeel(MetalLookAndFeel.class.getName());
+//            UIManager.setLookAndFeel(MotifLookAndFeel.class.getName()); // yuck!!
+
+            // Platform default
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
         } catch (Exception e) {
             e.printStackTrace();
         }

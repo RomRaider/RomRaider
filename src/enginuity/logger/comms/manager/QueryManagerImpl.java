@@ -32,33 +32,41 @@ import enginuity.logger.comms.query.RegisteredQuery;
 import enginuity.logger.comms.query.RegisteredQueryImpl;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.MessageListener;
+import enginuity.logger.ui.StatusChangeListener;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import enginuity.util.ThreadUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class QueryManagerImpl implements QueryManager {
     private final DecimalFormat format = new DecimalFormat("0.00");
-    private final Map<String, RegisteredQuery> queryMap = Collections.synchronizedMap(new HashMap<String, RegisteredQuery>());
+    private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
+    private final Map<String, RegisteredQuery> queryMap = synchronizedMap(new HashMap<String, RegisteredQuery>());
     private final Map<String, RegisteredQuery> addList = new HashMap<String, RegisteredQuery>();
     private final List<String> removeList = new ArrayList<String>();
     private final Settings settings;
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
-    private boolean stop = false;
-    private Thread queryManagerThread = null;
+    private Thread queryManagerThread;
+    private boolean stop;
 
     public QueryManagerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener) {
         checkNotNull(settings, ecuInitCallback, messageListener);
         this.settings = settings;
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
+    }
+
+    public synchronized void addListener(StatusChangeListener listener) {
+        checkNotNull(listener, "listener");
+        listeners.add(listener);
     }
 
     public synchronized void addQuery(String callerId, EcuData ecuData, LoggerCallback callback) {
@@ -74,21 +82,30 @@ public final class QueryManagerImpl implements QueryManager {
     public void run() {
         queryManagerThread = Thread.currentThread();
         System.out.println("QueryManager started.");
-        stop = false;
-        while (!stop) {
-            if (doEcuInit()) {
-                runLogger();
-            } else {
-                ThreadUtil.sleep(5000L);
+        try {
+            stop = false;
+            while (!stop) {
+                if (doEcuInit()) {
+                    runLogger();
+                } else {
+                    ThreadUtil.sleep(5000L);
+                }
             }
+        } catch (Exception e) {
+            messageListener.reportError(e);
+            e.printStackTrace();
+        } finally {
+            notifyStopped();
+            System.out.println("QueryManager stopped.");
         }
-        System.out.println("QueryManager stopped.");
     }
 
     private boolean doEcuInit() {
+        notifyConnecting();
         Protocol protocol = ProtocolFactory.getInstance().getProtocol(settings.getLoggerProtocol());
         EcuConnection ecuConnection = new EcuConnectionImpl(protocol.getConnectionProperties(), settings.getLoggerPort());
         try {
+            notifyReading();
             messageListener.reportMessage("Sending ECU Init...");
             byte[] response = ecuConnection.send(protocol.constructEcuInitRequest());
             System.out.println("Ecu Init response = " + asHex(response));
@@ -110,11 +127,13 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private void runLogger() {
+        notifyConnecting();
         TransmissionManager txManager = new TransmissionManagerImpl(settings);
         long start = System.currentTimeMillis();
         int count = 0;
         try {
             txManager.start();
+            notifyReading();
             while (!stop) {
                 updateQueryList();
                 if (queryMap.isEmpty()) {
@@ -168,6 +187,24 @@ public final class QueryManagerImpl implements QueryManager {
         double duration = ((double) (System.currentTimeMillis() - start)) / 1000.0;
         return "Logging [Total queries sent: " + count + ", Queries per second: " + format.format(((double) count) / duration)
                 + ", Avg. Query Time: " + format.format(duration / ((double) count)) + "s]";
+    }
+
+    private void notifyConnecting() {
+        for (StatusChangeListener listener : listeners) {
+            listener.connecting();
+        }
+    }
+
+    private void notifyReading() {
+        for (StatusChangeListener listener : listeners) {
+            listener.readingData();
+        }
+    }
+
+    private void notifyStopped() {
+        for (StatusChangeListener listener : listeners) {
+            listener.stopped();
+        }
     }
 
 }

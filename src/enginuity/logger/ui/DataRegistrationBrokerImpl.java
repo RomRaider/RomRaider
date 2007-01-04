@@ -81,11 +81,17 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
         registeredEcuData.clear();
     }
 
-    public synchronized void start() {
+    public synchronized void connecting() {
+    }
+
+    public synchronized void readingData() {
         loggerStartTime = System.currentTimeMillis();
     }
 
-    public synchronized void stop() {
+    public synchronized void loggingData() {
+    }
+
+    public synchronized void stopped() {
     }
 
     private void deregisterEcuDataFromDependants(EcuData ecuData) {

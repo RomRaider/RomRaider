@@ -23,6 +23,7 @@ package enginuity.logger.comms.manager;
 
 import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
+import enginuity.logger.ui.StatusChangeListener;
 
 public interface QueryManager extends Runnable {
 
@@ -31,5 +32,7 @@ public interface QueryManager extends Runnable {
     void removeQuery(String callerId, EcuData ecuData);
 
     void stop();
+
+    void addListener(StatusChangeListener listener);
 
 }

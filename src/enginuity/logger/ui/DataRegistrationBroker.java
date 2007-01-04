@@ -23,7 +23,7 @@ package enginuity.logger.ui;
 
 import enginuity.logger.definition.EcuData;
 
-public interface DataRegistrationBroker extends ControllerListener {
+public interface DataRegistrationBroker extends StatusChangeListener {
 
     void registerEcuDataForLogging(EcuData ecuData);
 

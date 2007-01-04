@@ -26,6 +26,7 @@ import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataConvertor;
 import enginuity.logger.definition.EcuSwitch;
+import enginuity.logger.ui.StatusChangeListener;
 import enginuity.logger.ui.handler.DataUpdateHandler;
 import static enginuity.util.ParamChecker.checkNotNull;
 
@@ -40,7 +41,7 @@ import java.util.Set;
 public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final FileLogger fileLogger;
     private final Map<EcuData, Integer> ecuDatas = synchronizedMap(new LinkedHashMap<EcuData, Integer>());
-    private final List<FileLoggerListener> listeners = Collections.synchronizedList(new ArrayList<FileLoggerListener>());
+    private final List<StatusChangeListener> listeners = Collections.synchronizedList(new ArrayList<StatusChangeListener>());
     private Line currentLine = new Line(ecuDatas.keySet());
 
     public FileUpdateHandler(Settings settings) {
@@ -48,7 +49,7 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
         fileLogger = new FileLoggerImpl(settings);
     }
 
-    public void addListener(FileLoggerListener listener) {
+    public void addListener(StatusChangeListener listener) {
         checkNotNull(listener, "listener");
         listeners.add(listener);
     }
@@ -122,8 +123,12 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
     }
 
     private void notifyListeners(boolean loggingToFile) {
-        for (FileLoggerListener listener : listeners) {
-            listener.setLoggingToFile(loggingToFile);
+        for (StatusChangeListener listener : listeners) {
+            if (loggingToFile) {
+                listener.loggingData();
+            } else {
+                listener.readingData();
+            }
         }
     }
 

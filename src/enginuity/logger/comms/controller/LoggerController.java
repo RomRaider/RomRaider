@@ -23,7 +23,7 @@ package enginuity.logger.comms.controller;
 
 import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
-import enginuity.logger.ui.ControllerListener;
+import enginuity.logger.ui.StatusChangeListener;
 
 public interface LoggerController {
 
@@ -35,6 +35,6 @@ public interface LoggerController {
 
     void stop();
 
-    void addListener(ControllerListener listener);
+    void addListener(StatusChangeListener listener);
 
 }
