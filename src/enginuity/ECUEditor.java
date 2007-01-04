@@ -29,6 +29,7 @@ import enginuity.net.URL;
 import enginuity.swing.ECUEditorMenuBar;
 import enginuity.swing.ECUEditorToolBar;
 import enginuity.swing.JProgressPane;
+import enginuity.swing.LookAndFeelManager;
 import enginuity.swing.MDIDesktopPane;
 import enginuity.swing.RomTree;
 import enginuity.swing.RomTreeNode;
@@ -41,9 +42,21 @@ import enginuity.xml.RomNotFoundException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.tree.TreePath;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -75,20 +88,8 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private JProgressPane statusPanel = new JProgressPane();
 
     public ECUEditor() {
-
-        try {
-            String osName = System.getProperties().getProperty("os.name");
-
-            //Currently linux has issues with the gtk look and feel themes. If linux is detected, ignore UIManager detail.
-            //TODO Don't just ignore in the future, Tgui
-            if (!osName.equalsIgnoreCase("linux")) {
-                String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
-                UIManager.setLookAndFeel(lookAndFeel);
-            }
-
-        } catch (Exception ex) {
-            System.err.println("Error loading system look and feel.\n" + ex);
-        }
+        // set look and feel
+        LookAndFeelManager.initLookAndFeel();
 
         // get settings from xml
         try {

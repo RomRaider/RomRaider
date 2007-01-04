@@ -27,8 +27,15 @@ import enginuity.logger.EcuLogger;
 import enginuity.maps.Rom;
 
 import javax.management.modelmbean.XMLParseException;
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -48,7 +55,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem defManager = new JMenuItem("ECU Definition Manager");
     private JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions");
     private JMenuItem updateDefinition = new JMenuItem("Update ECU Definitions");
-    
+
     private JMenu editMenu = new JMenu("Edit");
     private JMenuItem settings = new JMenuItem("Enginuity Settings");
 
@@ -98,13 +105,13 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         closeImage.addActionListener(this);
         closeAll.addActionListener(this);
         exit.addActionListener(this);
-        
+
         // edit menu items
         add(editMenu);
         editMenu.setMnemonic('E');
         editMenu.add(settings);
         settings.addActionListener(this);
-        
+
         // ecu def menu items
         add(definitionMenu);
         definitionMenu.setMnemonic('D');
@@ -117,7 +124,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         definitionMenu.add(updateDefinition);
         defManager.addActionListener(this);
         editDefinition.addActionListener(this);
-        updateDefinition.addActionListener(this);        
+        updateDefinition.addActionListener(this);
 
         // view menu items
         add(viewMenu);
@@ -276,7 +283,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         } else if (e.getSource() == updateDefinition) {
             BareBonesBrowserLaunch.openURL(
                     parent.getSettings().getEcuDefsURL());
-            
+
         }
     }
 
@@ -288,7 +295,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
     }
 
-    public void openImageDialog() throws XMLParseException, Exception {
+    public void openImageDialog() throws Exception {
         JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());
 
