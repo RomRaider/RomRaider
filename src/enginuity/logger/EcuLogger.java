@@ -109,7 +109,6 @@ TODO: Clean up this class!
 So much to do, so little time....
 
 Autoconnect Stuff:
-TODO: Add extra ecu init parsing & only display parameters supported by ecu, or all if unknown ecu.
 TODO: Finish ecu specific parameters (IAM, Engine Load) config in logger.xml
 TODO: Add ecu id and calid to ecu_defs
 */
