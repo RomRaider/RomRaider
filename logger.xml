@@ -823,7 +823,7 @@
                 </parameter>
 
                 <!-- JDM STI specific - START -->
-                <parameter id="P150" name="Ign. Corr. AK (Neg. Knock Comp.)"
+                <!--<parameter id="P150" name="Ign. Corr. AK (Neg. Knock Comp.)"
                            desc="Removes Ignition timing when pinging and knocking occurs.">
                     <address>
                         <byte>0x020C60</byte>
@@ -851,9 +851,10 @@
                     <conversions>
                         <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
                     </conversions>
-                </parameter>
+                </parameter>-->
                 <!-- JDM STI specific - END -->
 
+                
                 <!-- Derived parameters must be specified after standard parameters or parsing of xml will fail!! -->
                 <!-- Be careful of cyclic dependencies! -->
 
