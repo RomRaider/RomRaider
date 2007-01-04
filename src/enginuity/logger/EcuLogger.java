@@ -62,35 +62,21 @@ import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.ParamChecker.checkNotNull;
 import enginuity.util.ThreadUtil;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-import javax.swing.JSplitPane;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
-import javax.swing.JTabbedPane;
 import static javax.swing.JTabbedPane.BOTTOM;
-import javax.swing.JTable;
-import javax.swing.SpringLayout;
-import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import static javax.swing.border.BevelBorder.LOWERED;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import java.awt.BorderLayout;
+import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -163,10 +149,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             public void callback(EcuInit newEcuInit) {
                 System.out.println("ECU ID = " + newEcuInit.getEcuId());
                 if (ecuInit == null || !ecuInit.getEcuId().equals(newEcuInit.getEcuId())) {
-                    System.out.print("Reloading user profile for new ECU...");
+                    System.out.println("Reloading user profile for new ECU...");
                     ecuInit = newEcuInit;
                     reloadUserProfile(settings.getLoggerProfileFilePath());
-                    System.out.println("done.");
                 }
             }
         };
