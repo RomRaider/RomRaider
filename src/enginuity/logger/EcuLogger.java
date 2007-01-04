@@ -558,9 +558,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportError(Exception e) {
         if (e != null) {
-            String message = e.getMessage();
-            if (message != null) {
-                reportError(message);
+            String error = e.getMessage();
+            if (error != null) {
+                reportError(error);
             } else {
                 reportError(e.toString());
             }
