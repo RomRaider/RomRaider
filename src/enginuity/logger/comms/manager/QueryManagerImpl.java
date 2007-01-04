@@ -85,7 +85,9 @@ public final class QueryManagerImpl implements QueryManager {
         try {
             stop = false;
             while (!stop) {
+                notifyConnecting();
                 if (doEcuInit()) {
+                    notifyReading();
                     runLogger();
                 } else {
                     ThreadUtil.sleep(5000L);
@@ -101,11 +103,9 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private boolean doEcuInit() {
-        notifyConnecting();
         Protocol protocol = ProtocolFactory.getInstance().getProtocol(settings.getLoggerProtocol());
         EcuConnection ecuConnection = new EcuConnectionImpl(protocol.getConnectionProperties(), settings.getLoggerPort());
         try {
-            notifyReading();
             messageListener.reportMessage("Sending ECU Init...");
             byte[] response = ecuConnection.send(protocol.constructEcuInitRequest());
             System.out.println("Ecu Init response = " + asHex(response));
@@ -127,13 +127,11 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private void runLogger() {
-        notifyConnecting();
         TransmissionManager txManager = new TransmissionManagerImpl(settings);
         long start = System.currentTimeMillis();
         int count = 0;
         try {
             txManager.start();
-            notifyReading();
             while (!stop) {
                 updateQueryList();
                 if (queryMap.isEmpty()) {
