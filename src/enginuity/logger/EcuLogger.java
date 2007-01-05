@@ -128,17 +128,16 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JPanel dashboardPanel;
     private DashboardUpdateHandler dashboardUpdateHandler;
     private EcuInit ecuInit;
-//    private EcuInit ecuInit = new SSMEcuInit(HexUtil.hexToBytes("A21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000"));
 
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
         bootstrap(settings);
-        initControllerListeners();
         startPortRefresherThread();
+        initControllerListeners();
         initUserInterface();
         initDataUpdateHandlers();
         reloadUserProfile(settings.getLoggerProfileFilePath());
-        restartLogging();
+        if (!isLogging()) startLogging();
     }
 
     private void bootstrap(final Settings settings) {
@@ -484,6 +483,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+    }
+
+    public boolean isLogging() {
+        return controller.isStarted();
     }
 
     public void startLogging() {

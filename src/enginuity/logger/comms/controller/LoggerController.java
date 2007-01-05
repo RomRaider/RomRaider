@@ -31,6 +31,8 @@ public interface LoggerController {
 
     void removeLogger(String callerId, EcuData ecuData);
 
+    boolean isStarted();
+
     void start();
 
     void stop();

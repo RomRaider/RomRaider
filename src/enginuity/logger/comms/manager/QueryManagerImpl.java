@@ -79,6 +79,10 @@ public final class QueryManagerImpl implements QueryManager {
         removeList.add(buildQueryId(callerId, ecuData));
     }
 
+    public boolean isRunning() {
+        return !stop;
+    }
+
     public void run() {
         queryManagerThread = Thread.currentThread();
         System.out.println("QueryManager started.");

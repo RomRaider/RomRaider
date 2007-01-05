@@ -31,6 +31,8 @@ public interface QueryManager extends Runnable {
 
     void removeQuery(String callerId, EcuData ecuData);
 
+    boolean isRunning();
+
     void stop();
 
     void addListener(StatusChangeListener listener);

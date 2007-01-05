@@ -33,7 +33,6 @@ import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class LoggerControllerImpl implements LoggerController {
     private final QueryManager queryManager;
-    private boolean started;
 
     public LoggerControllerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener) {
         checkNotNull(settings, ecuInitCallback, messageListener);
@@ -57,19 +56,21 @@ public final class LoggerControllerImpl implements LoggerController {
         queryManager.removeQuery(callerId, ecuData);
     }
 
+    public synchronized boolean isStarted() {
+        return queryManager.isRunning();
+    }
+
     public synchronized void start() {
-        if (!started) {
+        if (!isStarted()) {
             Thread queryManagerThread = new Thread(queryManager);
             queryManagerThread.setDaemon(true);
             queryManagerThread.start();
-            started = true;
         }
     }
 
     public synchronized void stop() {
-        if (started) {
+        if (isStarted()) {
             queryManager.stop();
-            started = false;
         }
     }
 
