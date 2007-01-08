@@ -137,7 +137,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         initDataUpdateHandlers();
         reloadUserProfile(settings.getLoggerProfileFilePath());
         startPortRefresherThread();
-        if (!isLogging()) startLogging();
+        if (!isLogging()) {
+            startLogging();
+        }
     }
 
     private void bootstrap(final Settings settings) {

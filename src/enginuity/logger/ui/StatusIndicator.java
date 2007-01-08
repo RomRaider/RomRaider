@@ -21,10 +21,8 @@
 
 package enginuity.logger.ui;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
+import javax.swing.*;
+import java.awt.*;
 import static java.awt.BorderLayout.WEST;
 
 public final class StatusIndicator extends JPanel implements StatusChangeListener {
