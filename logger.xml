@@ -972,10 +972,7 @@
                 <ecuparam id="E1" name="IAM" desc="Ignition Advance Multiplier">
                     <address>
                         <ecu id="3152584006">
-                            <byte>0xFFFFFF</byte>
-                        </ecu>
-                        <ecu id="3152584007,3152584008">
-                            <byte>0xEEEEEE</byte>
+                            <byte>0x008228</byte>
                         </ecu>
                     </address>
                     <conversions>
@@ -983,30 +980,22 @@
                     </conversions>
                 </ecuparam>
 
-                <ecuparam id="E2" name="Engine Load (16bit)" desc="Engine Load (16bit)">
+                <!--<ecuparam id="E2" name="Engine Load (16bit)" desc="Engine Load (16bit)">
                     <address>
-                        <ecu id="1234567890,0123654789">
+                        <ecu id="1234567890">
                             <byte>0xFFFFFF</byte>
                         </ecu>
                     </address>
                     <conversions>
                         <conversion units="grams" expr="x/32" format="0.00"/>
                     </conversions>
-                </ecuparam>
+                </ecuparam>-->
 
                 <ecuparam id="E3" name="Engine Load (32bit)" desc="Engine Load (32bit)">
                     <address>
                         <ecu id="3152584006">
-                            <byte>0xFFFFFE</byte>
-                            <byte>0xFFFFFF</byte>
-                        </ecu>
-                        <ecu id="3152584007">
-                            <byte>0xFFFFFE</byte>
-                            <byte>0xFFFFFF</byte>
-                        </ecu>
-                        <ecu id="3152584008,3152584009">
-                            <byte>0xFFFFFE</byte>
-                            <byte>0xFFFFFF</byte>
+                            <byte>0x00A6FC</byte>
+                            <byte>0x00A6FD</byte>
                         </ecu>
                     </address>
                     <conversions>

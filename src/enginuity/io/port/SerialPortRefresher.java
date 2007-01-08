@@ -33,17 +33,23 @@ public final class SerialPortRefresher implements Runnable {
     private static final long PORT_REFRESH_INTERVAL = 15000L;
     private final SerialPortDiscoverer serialPortDiscoverer = new SerialPortDiscovererImpl();
     private SerialPortRefreshListener listener;
+    private final String defaultLoggerPort;
 
-    public SerialPortRefresher(SerialPortRefreshListener listener) {
+    public SerialPortRefresher(SerialPortRefreshListener listener, String defaultLoggerPort) {
         checkNotNull(listener);
         this.listener = listener;
+        this.defaultLoggerPort = defaultLoggerPort;
     }
 
     public void run() {
         while (true) {
-            listener.refreshPortList(listSerialPorts());
+            refreshPortList();
             ThreadUtil.sleep(PORT_REFRESH_INTERVAL);
         }
+    }
+
+    private void refreshPortList() {
+        listener.refreshPortList(listSerialPorts(), defaultLoggerPort);
     }
 
     private Set<String> listSerialPorts() {

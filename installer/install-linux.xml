@@ -22,7 +22,8 @@
     </resources>    
     
     <panels>
-        <!-- <panel classname="HelloPanel"/> -->
+        <!-- <panel classname="HelloPanel"/>
+ -->
         <panel classname="InfoPanel"/>
         <panel classname="LicencePanel"/>
         <panel classname="TargetPanel"/> 
@@ -45,7 +46,6 @@
             <file src="logger.xml"        targetdir="$INSTALL_PATH" />
             <file src="logger.dtd"        targetdir="$INSTALL_PATH" />
             <!-- Removed until 0.4.1b
-            <file src="profile.xml" targetdir="$INSTALL_PATH" />            
             <file src="profile.dtd" targetdir="$INSTALL_PATH" />
             -->
 

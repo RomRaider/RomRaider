@@ -132,11 +132,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
         bootstrap(settings);
-        startPortRefresherThread();
         initControllerListeners();
         initUserInterface();
         initDataUpdateHandlers();
         reloadUserProfile(settings.getLoggerProfileFilePath());
+        startPortRefresherThread();
         if (!isLogging()) startLogging();
     }
 
@@ -187,7 +187,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void startPortRefresherThread() {
-        Thread portRefresherThread = new Thread(new SerialPortRefresher(portsComboBox));
+        Thread portRefresherThread = new Thread(new SerialPortRefresher(portsComboBox, settings.getLoggerPort()));
         portRefresherThread.setDaemon(true);
         portRefresherThread.start();
     }
@@ -224,7 +224,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void loadUserProfile(EcuDataLoader dataLoader, String profileFilePath) {
         UserProfileLoader profileLoader = new UserProfileLoaderImpl();
         UserProfile profile = profileLoader.loadProfile(profileFilePath);
-        setSelectedPort(profile);
+        initSelectedPort(profile);
         List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
         addConvertorUpdateListeners(ecuParams);
         clearParamTableModels();
@@ -233,12 +233,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         loadEcuSwitches(dataLoader.getEcuSwitches(), profile);
     }
 
-    private void setSelectedPort(UserProfile profile) {
+    private void initSelectedPort(UserProfile profile) {
         if (profile != null) {
-            String serialPort = profile.getSerialPort();
-            if (serialPort != null && serialPort.length() > 0) {
-                portsComboBox.setSelectedItem(serialPort);
-            }
+            settings.setLoggerPort(profile.getSerialPort());
         }
     }
 

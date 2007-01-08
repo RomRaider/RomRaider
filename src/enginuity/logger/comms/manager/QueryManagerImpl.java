@@ -55,6 +55,7 @@ public final class QueryManagerImpl implements QueryManager {
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
     private Thread queryManagerThread;
+    private boolean started;
     private boolean stop;
 
     public QueryManagerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener) {
@@ -80,10 +81,11 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     public boolean isRunning() {
-        return !stop;
+        return started && !stop;
     }
 
     public void run() {
+        started = true;
         queryManagerThread = Thread.currentThread();
         System.out.println("QueryManager started.");
         try {

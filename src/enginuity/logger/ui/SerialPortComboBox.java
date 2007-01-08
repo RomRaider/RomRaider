@@ -37,7 +37,7 @@ public final class SerialPortComboBox extends JComboBox implements SerialPortRef
         this.settings = settings;
     }
 
-    public void refreshPortList(Set<String> ports) {
+    public void refreshPortList(Set<String> ports, String defaultSelectedPort) {
         checkNotNull(ports);
         boolean changeDetected = ports.isEmpty() || ports.size() != getItemCount();
         if (!changeDetected) {
@@ -63,6 +63,9 @@ public final class SerialPortComboBox extends JComboBox implements SerialPortRef
         }
         if (changeDetected) {
             String selectedPort = (String) getSelectedItem();
+            if (selectedPort == null) {
+                selectedPort = defaultSelectedPort;
+            }
             removeAllItems();
             if (!ports.isEmpty()) {
                 for (String port : ports) {

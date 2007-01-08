@@ -25,6 +25,6 @@ import java.util.Set;
 
 public interface SerialPortRefreshListener {
 
-    void refreshPortList(Set<String> ports);
+    void refreshPortList(Set<String> ports, String defaultSelectedPort);
 
 }
