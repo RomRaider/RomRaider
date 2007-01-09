@@ -21,37 +21,6 @@
 
 package enginuity;
 
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
-import enginuity.maps.Rom;
-import enginuity.maps.Table;
-import enginuity.net.URL;
-import enginuity.swing.ECUEditorMenuBar;
-import enginuity.swing.ECUEditorToolBar;
-import enginuity.swing.JProgressPane;
-import enginuity.swing.LookAndFeelManager;
-import enginuity.swing.MDIDesktopPane;
-import enginuity.swing.RomTree;
-import enginuity.swing.RomTreeNode;
-import enginuity.swing.RomTreeRootNode;
-import enginuity.swing.TableFrame;
-import enginuity.xml.DOMRomUnmarshaller;
-import enginuity.xml.DOMSettingsBuilder;
-import enginuity.xml.DOMSettingsUnmarshaller;
-import enginuity.xml.RomNotFoundException;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -70,6 +39,35 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.tree.TreePath;
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
+import enginuity.maps.Rom;
+import enginuity.maps.Table;
+import enginuity.net.URL;
+import enginuity.swing.ECUEditorMenuBar;
+import enginuity.swing.ECUEditorToolBar;
+import enginuity.swing.JProgressPane;
+import enginuity.swing.MDIDesktopPane;
+import enginuity.swing.RomTree;
+import enginuity.swing.RomTreeNode;
+import enginuity.swing.RomTreeRootNode;
+import enginuity.swing.TableFrame;
+import enginuity.xml.DOMRomUnmarshaller;
+import enginuity.xml.DOMSettingsBuilder;
+import enginuity.xml.DOMSettingsUnmarshaller;
+import enginuity.xml.RomNotFoundException;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
 
@@ -88,8 +86,6 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private JProgressPane statusPanel = new JProgressPane();
 
     public ECUEditor() {
-        // set look and feel
-        LookAndFeelManager.initLookAndFeel();
 
         // get settings from xml
         try {

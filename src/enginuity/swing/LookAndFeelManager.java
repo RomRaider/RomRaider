@@ -39,13 +39,16 @@ public final class LookAndFeelManager {
     public static void initLookAndFeel() {
         try {
             if (isPlatform(MAC_OS_X)) {
-                // Mac OSX default look and feel looks crap, so use windows instead.
-                setRestrictedPlatformLookAndFeel("Windows", "5.1");
-            } else {
-                // Linux has issues with the gtk look and feel themes. If linux is detected, ignore UIManager detail.
-                if (!isPlatform(LINUX)) {
-                    setLookAndFeel(getSystemLookAndFeelClassName());
-                }
+                System.setProperty("apple.laf.useScreenMenuBar", "true");
+                System.setProperty("apple.awt.rendering", "true");
+                System.setProperty("apple.awt.window.position.forceSafeCreation", "true");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Enginuity");
+//                setRestrictedPlatformLookAndFeel("Windows", "5.1");
+            }
+            
+            // Linux has issues with the gtk look and feel themes. If linux is detected, ignore UIManager detail.
+            if (!isPlatform(LINUX)) {
+                setLookAndFeel(getSystemLookAndFeelClassName());
             }
 
             // make sure we have nice window decorations.

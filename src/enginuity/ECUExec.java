@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import enginuity.swing.LookAndFeelManager;
 
 public class ECUExec {
     public static void main(String args[]) {
@@ -63,6 +64,9 @@ public class ECUExec {
                 System.exit(0);
             }
         }
+
+        // set look and feel
+        LookAndFeelManager.initLookAndFeel();
 
         // launch editor
         ECUEditor editor = ECUEditorManager.getECUEditor();
