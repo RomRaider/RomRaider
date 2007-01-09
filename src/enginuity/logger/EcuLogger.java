@@ -21,6 +21,46 @@
 
 package enginuity.logger;
 
+import java.awt.BorderLayout;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.SOUTH;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import static java.util.Collections.sort;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
+import javax.swing.JSplitPane;
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+import static javax.swing.JSplitPane.VERTICAL_SPLIT;
+import javax.swing.JTabbedPane;
+import static javax.swing.JTabbedPane.BOTTOM;
+import javax.swing.JTable;
+import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import static javax.swing.border.BevelBorder.LOWERED;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import enginuity.Settings;
 import enginuity.io.port.SerialPortRefresher;
 import enginuity.logger.comms.controller.LoggerController;
@@ -61,33 +101,6 @@ import enginuity.logger.ui.paramlist.ParameterRow;
 import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.ParamChecker.checkNotNull;
 import enginuity.util.ThreadUtil;
-
-import javax.swing.*;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
-import static javax.swing.JSplitPane.VERTICAL_SPLIT;
-import static javax.swing.JTabbedPane.BOTTOM;
-import javax.swing.border.BevelBorder;
-import static javax.swing.border.BevelBorder.LOWERED;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.*;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.BorderLayout.SOUTH;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import static java.util.Collections.sort;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /*
 TODO: add better debug logging, preferably to a file and switchable (on/off)
@@ -141,9 +154,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         initDataUpdateHandlers();
         reloadUserProfile(settings.getLoggerProfileFilePath());
         startPortRefresherThread();
-        if (!isLogging()) {
-            startLogging();
-        }
+//        if (!isLogging()) {
+//            startLogging();
+//        }
     }
 
     private void bootstrap(final Settings settings) {
