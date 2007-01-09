@@ -26,9 +26,12 @@ import static enginuity.util.ParamChecker.checkNotNull;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import static javax.swing.border.BevelBorder.LOWERED;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
+import static java.awt.Color.GREEN;
+import static java.awt.Font.PLAIN;
 
 public final class PlainGauge extends Gauge {
     private static final double ZERO = 0.0;
@@ -61,15 +64,15 @@ public final class PlainGauge extends Gauge {
     }
 
     private void initDataLayout() {
-        data.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        data.setFont(data.getFont().deriveFont(Font.PLAIN, 50F));
+        data.setBorder(new BevelBorder(LOWERED));
+        data.setFont(data.getFont().deriveFont(PLAIN, 50F));
     }
 
     private void initGaugeLayout() {
         refreshValue(ZERO);
         refreshTitle();
         setLayout(new BorderLayout());
-        setBackground(Color.GREEN);
+        setBackground(GREEN);
         add(data, CENTER);
         add(title, NORTH);
     }

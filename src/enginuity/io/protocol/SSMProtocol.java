@@ -76,7 +76,7 @@ public final class SSMProtocol implements Protocol {
         validateResponse(filteredResponse);
         byte responseType = filteredResponse[4];
         if (responseType != ECU_INIT_RESPONSE) {
-            throw new InvalidResponseException("Unexpected ECU Init response type: " + asHex(new byte[] {responseType}));
+            throw new InvalidResponseException("Unexpected ECU Init response type: " + asHex(new byte[]{responseType}));
         }
     }
 

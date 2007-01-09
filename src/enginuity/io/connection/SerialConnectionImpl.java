@@ -166,7 +166,7 @@ public final class SerialConnectionImpl implements SerialConnection {
         try {
             return getPortIdentifier(portName);
         } catch (NoSuchPortException e) {
-            throw new PortNotFoundException(e);
+            throw new PortNotFoundException("Unable to resolve port: " + portName);
         }
     }
 

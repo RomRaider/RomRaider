@@ -35,7 +35,7 @@ import enginuity.logger.ui.MessageListener;
 import enginuity.logger.ui.StatusChangeListener;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
-import enginuity.util.ThreadUtil;
+import static enginuity.util.ThreadUtil.sleep;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public final class QueryManagerImpl implements QueryManager {
                     notifyReading();
                     runLogger();
                 } else {
-                    ThreadUtil.sleep(5000L);
+                    sleep(5000L);
                 }
             }
         } catch (Exception e) {
@@ -120,7 +120,7 @@ public final class QueryManagerImpl implements QueryManager {
             messageListener.reportMessage("Sending ECU Init...done.");
             return true;
         } catch (Exception e) {
-            messageListener.reportMessage("Error sending ECU init - check correct serial port has been selected.");
+            messageListener.reportMessage("Unable to send ECU init - check correct serial port has been selected, cable is connected and ignition is on.");
             e.printStackTrace();
             return false;
         } finally {
@@ -138,7 +138,7 @@ public final class QueryManagerImpl implements QueryManager {
                 updateQueryList();
                 if (queryMap.isEmpty()) {
                     messageListener.reportMessage("Select parameters to be logged...");
-                    ThreadUtil.sleep(2000L);
+                    sleep(2000L);
                 } else {
                     txManager.sendQueries(queryMap.values());
                     count++;

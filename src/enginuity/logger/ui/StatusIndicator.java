@@ -24,6 +24,7 @@ package enginuity.logger.ui;
 import javax.swing.*;
 import java.awt.*;
 import static java.awt.BorderLayout.WEST;
+import static java.awt.Font.BOLD;
 
 public final class StatusIndicator extends JPanel implements StatusChangeListener {
     private final JLabel statusLabel = new JLabel();
@@ -38,6 +39,7 @@ public final class StatusIndicator extends JPanel implements StatusChangeListene
 
     public StatusIndicator() {
         setLayout(new BorderLayout());
+        statusLabel.setFont(getFont().deriveFont(BOLD));
         add(statusLabel, WEST);
         stopped();
     }

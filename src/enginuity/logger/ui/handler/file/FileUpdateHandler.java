@@ -31,7 +31,7 @@ import enginuity.logger.ui.handler.DataUpdateHandler;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,7 +41,7 @@ import java.util.Set;
 public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final FileLogger fileLogger;
     private final Map<EcuData, Integer> ecuDatas = synchronizedMap(new LinkedHashMap<EcuData, Integer>());
-    private final List<StatusChangeListener> listeners = Collections.synchronizedList(new ArrayList<StatusChangeListener>());
+    private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
     private Line currentLine = new Line(ecuDatas.keySet());
 
     public FileUpdateHandler(Settings settings) {
@@ -101,19 +101,20 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
     }
 
     private void checkStartStopFileLogging(EcuData ecuData, int value) {
-        if (ecuData instanceof EcuSwitch) {
-            EcuSwitch ecuSwitch = (EcuSwitch) ecuData;
-            if (ecuSwitch.isFileLogController()) {
-                if (value == 1 && !fileLogger.isStarted()) {
-                    fileLogger.start();
-                    notifyListeners(true);
-                    writeHeaders();
-                } else if (value == 0 && fileLogger.isStarted()) {
-                    fileLogger.stop();
-                    notifyListeners(false);
-                }
+        if (isFileLogController(ecuData)) {
+            if (value == 1 && !fileLogger.isStarted()) {
+                fileLogger.start();
+                notifyListeners(true);
+                writeHeaders();
+            } else if (value == 0 && fileLogger.isStarted()) {
+                fileLogger.stop();
+                notifyListeners(false);
             }
         }
+    }
+
+    private boolean isFileLogController(EcuData ecuData) {
+        return ecuData instanceof EcuSwitch && ((EcuSwitch) ecuData).isFileLogController();
     }
 
     private void writeHeaders() {
@@ -132,7 +133,7 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
         }
     }
 
-    private static final class Line {
+    private final class Line {
         private static final char DELIMITER = ',';
         private final Map<EcuData, String> ecuDataValues;
         private long lastTimestamp;
@@ -160,24 +161,29 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
             return true;
         }
 
-        public String values() {
-            StringBuilder buffer = new StringBuilder();
-            buffer.append(lastTimestamp);
-            for (EcuData ecuData : ecuDataValues.keySet()) {
-                String value = ecuDataValues.get(ecuData);
-                buffer.append(DELIMITER).append(value);
-            }
-            return buffer.toString();
-        }
-
         public String headers() {
             StringBuilder buffer = new StringBuilder();
             buffer.append("Time");
             for (EcuData ecuData : ecuDataValues.keySet()) {
-                buffer.append(DELIMITER).append(ecuData.getName()).append(" (").append(ecuData.getSelectedConvertor().getUnits()).append(')');
+                if (!isFileLogController(ecuData)) {
+                    buffer.append(DELIMITER).append(ecuData.getName()).append(" (").append(ecuData.getSelectedConvertor().getUnits()).append(')');
+                }
             }
             return buffer.toString();
         }
+
+        public String values() {
+            StringBuilder buffer = new StringBuilder();
+            buffer.append(lastTimestamp);
+            for (EcuData ecuData : ecuDataValues.keySet()) {
+                if (!isFileLogController(ecuData)) {
+                    String value = ecuDataValues.get(ecuData);
+                    buffer.append(DELIMITER).append(value);
+                }
+            }
+            return buffer.toString();
+        }
+
     }
 
 }

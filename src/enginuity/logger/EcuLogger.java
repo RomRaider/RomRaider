@@ -75,8 +75,12 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
+import static java.awt.BorderLayout.WEST;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.RED;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -377,7 +381,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, paramList, switchList);
         splitPane.setDividerSize(2);
-        splitPane.setDividerLocation(300);
+        splitPane.setDividerLocation(400);
         return splitPane;
     }
 
@@ -397,8 +401,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private JComponent buildStatusBar() {
         JPanel statusBar = new JPanel(new BorderLayout());
-        statusBar.add(statusBarLabel, CENTER);
         statusBar.setBorder(new BevelBorder(LOWERED));
+        statusBar.add(statusBarLabel, CENTER);
         return statusBar;
     }
 
@@ -415,10 +419,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JPanel buildControlToolbar() {
-        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
-        controlPanel.add(buildPortsComboBox());
-        controlPanel.add(buildReconnectButton());
-        controlPanel.add(buildStatusIndicator());
+        JPanel controlPanel = new JPanel(new BorderLayout());
+        controlPanel.add(buildPortsComboBox(), WEST);
+        controlPanel.add(buildStatusIndicator(), EAST);
         return controlPanel;
     }
 
@@ -433,19 +436,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         });
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
-        comboBoxPanel.add(new JLabel("Select COM Port:"));
+        comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
         return comboBoxPanel;
-    }
-
-    private JButton buildReconnectButton() {
-        JButton reconnectButton = new JButton("Reconnect");
-        reconnectButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                restartLogging();
-            }
-        });
-        return reconnectButton;
     }
 
     public void restartLogging() {
@@ -544,12 +537,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void reportMessage(String message) {
         if (message != null) {
             statusBarLabel.setText(message);
+            statusBarLabel.setForeground(BLACK);
         }
     }
 
     public void reportError(String error) {
         if (error != null) {
             statusBarLabel.setText("Error: " + error);
+            statusBarLabel.setForeground(RED);
         }
     }
 

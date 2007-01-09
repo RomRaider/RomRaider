@@ -48,7 +48,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem logFileLocation = new JMenuItem("Log File Output Location...");
 
     private JMenu connectionMenu = new JMenu("Connection");
-    private JMenuItem reconnect = new JMenuItem("Reconnect...");
+    private JMenuItem resetConnection = new JMenuItem("Reset Connection to ECU...");
 
     private JMenu helpMenu = new JMenu("Help");
     private JMenuItem about = new JMenuItem("About Enginuity ECU Logger");
@@ -89,9 +89,9 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         // connection menu items
         add(connectionMenu);
         connectionMenu.setMnemonic('C');
-        reconnect.setMnemonic('R');
-        connectionMenu.add(reconnect);
-        reconnect.addActionListener(this);
+        resetConnection.setMnemonic('R');
+        connectionMenu.add(resetConnection);
+        resetConnection.addActionListener(this);
 
         // help menu stuff
         add(helpMenu);
@@ -149,7 +149,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
                 parent.reportError(e);
             }
 
-        } else if (evt.getSource() == reconnect) {
+        } else if (evt.getSource() == resetConnection) {
             try {
                 parent.restartLogging();
             } catch (Exception e) {
