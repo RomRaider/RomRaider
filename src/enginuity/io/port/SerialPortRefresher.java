@@ -22,7 +22,7 @@
 package enginuity.io.port;
 
 import static enginuity.util.ParamChecker.checkNotNull;
-import enginuity.util.ThreadUtil;
+import static enginuity.util.ThreadUtil.sleep;
 import gnu.io.CommPortIdentifier;
 
 import java.util.List;
@@ -32,8 +32,9 @@ import java.util.TreeSet;
 public final class SerialPortRefresher implements Runnable {
     private static final long PORT_REFRESH_INTERVAL = 15000L;
     private final SerialPortDiscoverer serialPortDiscoverer = new SerialPortDiscovererImpl();
-    private SerialPortRefreshListener listener;
+    private final SerialPortRefreshListener listener;
     private final String defaultLoggerPort;
+    private boolean started;
 
     public SerialPortRefresher(SerialPortRefreshListener listener, String defaultLoggerPort) {
         checkNotNull(listener);
@@ -42,10 +43,16 @@ public final class SerialPortRefresher implements Runnable {
     }
 
     public void run() {
+        refreshPortList();
+        started = true;
         while (true) {
+            sleep(PORT_REFRESH_INTERVAL);
             refreshPortList();
-            ThreadUtil.sleep(PORT_REFRESH_INTERVAL);
         }
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 
     private void refreshPortList() {
@@ -63,4 +70,5 @@ public final class SerialPortRefresher implements Runnable {
         }
         return portNames;
     }
+
 }
