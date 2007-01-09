@@ -426,6 +426,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 settings.setLoggerPort((String) portsComboBox.getSelectedItem());
+                // this is a hack...
+                if (!actionEvent.paramString().endsWith("modifiers=")) {
+                    restartLogging();
+                }
             }
         });
         JPanel comboBoxPanel = new JPanel(new FlowLayout());

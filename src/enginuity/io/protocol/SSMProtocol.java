@@ -30,6 +30,7 @@ import enginuity.logger.comms.query.EcuInit;
 import enginuity.logger.comms.query.SSMEcuInit;
 import enginuity.logger.exception.InvalidResponseException;
 import static enginuity.util.ByteUtil.asByte;
+import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -67,18 +68,15 @@ public final class SSMProtocol implements Protocol {
         return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }
 
-    // TODO: This is not real nice/efficient...
-    public boolean isValidEcuInitResponse(byte[] response) {
+    public void checkValidEcuInitResponse(byte[] response) throws InvalidResponseException {
         // request response_header 3_unknown_bytes 5_ecu_id_bytes readable_params_switches... checksum
         // 8010F001BF40 80F01039FF A21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000 59
         checkNotNullOrEmpty(response, "response");
         byte[] filteredResponse = filterRequestFromResponse(constructEcuInitRequest(), response);
-        try {
-            validateResponse(filteredResponse);
-            return filteredResponse[4] == ECU_INIT_RESPONSE;
-        } catch (InvalidResponseException e) {
-            System.out.println("ECU Init validation error: " + e.getMessage());
-            return false;
+        validateResponse(filteredResponse);
+        byte responseType = filteredResponse[4];
+        if (responseType != ECU_INIT_RESPONSE) {
+            throw new InvalidResponseException("Unexpected ECU Init response type: " + asHex(new byte[] {responseType}));
         }
     }
 

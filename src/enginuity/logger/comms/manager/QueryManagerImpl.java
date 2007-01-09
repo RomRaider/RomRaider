@@ -115,14 +115,10 @@ public final class QueryManagerImpl implements QueryManager {
             messageListener.reportMessage("Sending ECU Init...");
             byte[] response = ecuConnection.send(protocol.constructEcuInitRequest());
             System.out.println("Ecu Init response = " + asHex(response));
-            if (protocol.isValidEcuInitResponse(response)) {
-                ecuInitCallback.callback(protocol.parseEcuInitResponse(response));
-                messageListener.reportMessage("Sending ECU Init...done.");
-                return true;
-            } else {
-                messageListener.reportMessage("Waiting for ECU connection...");
-                return false;
-            }
+            protocol.checkValidEcuInitResponse(response);
+            ecuInitCallback.callback(protocol.parseEcuInitResponse(response));
+            messageListener.reportMessage("Sending ECU Init...done.");
+            return true;
         } catch (Exception e) {
             messageListener.reportMessage("Error sending ECU init - check correct serial port has been selected.");
             e.printStackTrace();
