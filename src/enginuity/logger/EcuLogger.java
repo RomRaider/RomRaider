@@ -239,7 +239,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void loadUserProfile(EcuDataLoader dataLoader, String profileFilePath) {
         UserProfileLoader profileLoader = new UserProfileLoaderImpl();
         UserProfile profile = profileLoader.loadProfile(profileFilePath);
-        initSelectedPort(profile);
+        setSelectedPort(profile);
         List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
         addConvertorUpdateListeners(ecuParams);
         clearParamTableModels();
@@ -248,9 +248,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         loadEcuSwitches(dataLoader.getEcuSwitches(), profile);
     }
 
-    private void initSelectedPort(UserProfile profile) {
+    private void setSelectedPort(UserProfile profile) {
         if (profile != null) {
             settings.setLoggerPort(profile.getSerialPort());
+            portsComboBox.setSelectedItem(profile.getSerialPort());
         }
     }
 
@@ -570,6 +571,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
 
     public static void main(String... args) {
+        System.out.println(System.getProperty("user.dir"));
         startLogger(EXIT_ON_CLOSE, new Settings());
     }
 

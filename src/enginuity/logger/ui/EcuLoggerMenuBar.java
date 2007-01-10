@@ -39,6 +39,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 
     private JMenu fileMenu = new JMenu("File");
     private JMenuItem loadProfile = new JMenuItem("Load Profile...");
+    private JMenuItem reloadProfile = new JMenuItem("Reload Profile");
     private JMenuItem saveProfile = new JMenuItem("Save Profile");
     private JMenuItem saveProfileAs = new JMenuItem("Save Profile As...");
     private JMenuItem exit = new JMenuItem("Exit");
@@ -62,15 +63,18 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         add(fileMenu);
         fileMenu.setMnemonic('F');
         loadProfile.setMnemonic('O');
+        reloadProfile.setMnemonic('R');
         saveProfile.setMnemonic('S');
         saveProfileAs.setMnemonic('A');
         exit.setMnemonic('X');
         fileMenu.add(loadProfile);
+        fileMenu.add(reloadProfile);
         fileMenu.add(saveProfile);
         fileMenu.add(saveProfileAs);
         fileMenu.add(new JSeparator());
         fileMenu.add(exit);
         loadProfile.addActionListener(this);
+        reloadProfile.addActionListener(this);
         saveProfile.addActionListener(this);
         saveProfileAs.addActionListener(this);
         exit.addActionListener(this);
@@ -111,6 +115,13 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         if (evt.getSource() == loadProfile) {
             try {
                 loadProfileDialog();
+            } catch (Exception e) {
+                parent.reportError(e);
+            }
+
+        } else if (evt.getSource() == reloadProfile) {
+            try {
+                parent.reloadUserProfile(parent.getSettings().getLoggerProfileFilePath());
             } catch (Exception e) {
                 parent.reportError(e);
             }
