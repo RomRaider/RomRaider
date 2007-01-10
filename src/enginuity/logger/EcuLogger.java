@@ -571,7 +571,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
 
     public static void main(String... args) {
-        System.out.println(System.getProperty("user.dir"));
         startLogger(EXIT_ON_CLOSE, new Settings());
     }
 
