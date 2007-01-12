@@ -33,7 +33,7 @@ public final class TestSSMConnectionImpl implements SerialConnection {
     }
 
     public void write(byte[] bytes) {
-        System.out.println("*** TEST *** Write bytes = " + asHex(bytes));
+        //System.out.println("*** TEST *** Write bytes = " + asHex(bytes));
         request = bytes;
     }
 
@@ -66,7 +66,7 @@ public final class TestSSMConnectionImpl implements SerialConnection {
         } else {
             throw new SerialCommunicationException("*** TEST *** Unsupported request: " + asHex(request));
         }
-        System.out.println("*** TEST *** Read bytes  = " + asHex(bytes));
+        //System.out.println("*** TEST *** Read bytes  = " + asHex(bytes));
         sleep(50);
     }
 
