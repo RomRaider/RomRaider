@@ -16,6 +16,7 @@ import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+import static enginuity.util.ThreadUtil.sleep;
 
 import java.util.Random;
 
@@ -66,6 +67,7 @@ public final class TestSSMConnectionImpl implements SerialConnection {
             throw new SerialCommunicationException("*** TEST *** Unsupported request: " + asHex(request));
         }
         System.out.println("*** TEST *** Read bytes  = " + asHex(bytes));
+        sleep(50);
     }
 
     public byte[] readAvailable() {
