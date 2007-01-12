@@ -132,6 +132,7 @@ public class RomDefinitionHandler extends DefaultHandler {
         this.index = index;
         categoryStack = new Stack<Category>();
         categories = new Category("Root");
+        category = categories;
         categoryStack.add(categories);  
         
     }
@@ -315,10 +316,12 @@ public class RomDefinitionHandler extends DefaultHandler {
                 try {
                     table = (Switch)switchGroup.get(attr.getValue(ATTR_NAME));
                     found = true;
-                } catch (NameableNotFoundException ex) { }                    
-            }
-            
-            if (!found) {
+                } catch (NameableNotFoundException ex) { 
+                    table = new Switch(attr.getValue(ATTR_NAME));
+                }                                    
+                
+            } else {
+                
                 try {
                     table = (Switch)tables.get(attr.getValue(ATTR_NAME));
                 } catch (NameableNotFoundException ex) {
@@ -350,14 +353,14 @@ public class RomDefinitionHandler extends DefaultHandler {
             // Look for table in table set
             //
             try {
-                table = (SwitchGroup)tables.get(attr.getValue(ATTR_NAME));
+                switchGroup = (SwitchGroup)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                table = new SwitchGroup(attr.getValue(ATTR_NAME));
+                switchGroup = new SwitchGroup(attr.getValue(ATTR_NAME));
             }            
             
             // Set all other attributes
             if (attr.getIndex(ATTR_USER_LEVEL) > -1)
-                table.setUserLevel(parseInt(attr.getValue(ATTR_USER_LEVEL))); 
+                switchGroup.setUserLevel(parseInt(attr.getValue(ATTR_USER_LEVEL))); 
             
             
             
@@ -518,8 +521,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             
         } else if (TAG_TABLE3D.equalsIgnoreCase(qName) ||
                    TAG_TABLE2D.equalsIgnoreCase(qName) ||
-                   TAG_PARAMETER.equalsIgnoreCase(qName) ||
-                   TAG_SWITCH.equalsIgnoreCase(qName)) {
+                   TAG_PARAMETER.equalsIgnoreCase(qName)) {
             
             tables.add(table);
             if (!inheriting) category.addTable(table);
@@ -547,7 +549,8 @@ public class RomDefinitionHandler extends DefaultHandler {
             
         } else if (TAG_DESCRIPTION.equalsIgnoreCase(qName)) {
             
-            table.setDescription(charBuffer.toString());
+            if (table == null && switchGroup != null) switchGroup.setDescription(charBuffer.toString());
+            else table.setDescription(charBuffer.toString());
             
             
             
@@ -559,7 +562,6 @@ public class RomDefinitionHandler extends DefaultHandler {
             roms.add(rom);
             
             // Clear all temp variables
-            //rom = null;
             tables = new NamedSet<ECUData>();
             scales = new NamedSet<Scale>();
             units = new NamedSet<Unit>();
@@ -577,12 +579,25 @@ public class RomDefinitionHandler extends DefaultHandler {
             
         } else if (TAG_SWITCHGROUP.equalsIgnoreCase(qName)) {
             
-            // Set static axis values
             tables.add(switchGroup);
+            if (!inheriting) category.addTable(switchGroup);
             switchGroup = null;
-            
-        }        
+    
         
+            
+        }  else if (TAG_SWITCH.equalsIgnoreCase(qName)) {
+            
+            // Add switch to list of tables OR to switchgroup
+            if (switchGroup == null) {                    
+                tables.add(table);
+                if (!inheriting) category.addTable(table);
+                
+            } else {                
+                switchGroup.add((Switch)table);                
+            }            
+            
+            table = null;            
+        }        
     }
 
     public void characters(char[] ch, int start, int length) {

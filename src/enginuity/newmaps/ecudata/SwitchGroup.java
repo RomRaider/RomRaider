@@ -79,7 +79,7 @@ public class SwitchGroup extends ECUData {
         
         Iterator it = switches.iterator();
         while (it.hasNext()) {
-            output.append(it.next());
+            output.append("\n" + it.next());
         }
                 
         return output+"";
