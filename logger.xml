@@ -969,7 +969,7 @@
 
             <ecuparams>
 
-                <ecuparam id="E1" name="IAM (16bit)" desc="Ignition Advance Multiplier (16bit)">
+                <ecuparam id="E1" name="IAM" desc="Ignition Advance Multiplier (16bit)">
                     <address>
                         <ecu id="1234567890">
                             <byte>0xFFFFFF</byte>
@@ -980,7 +980,7 @@
                     </conversions>
                 </ecuparam>
 
-                <ecuparam id="E2" name="IAM (32bit)" desc="Ignition Advance Multiplier (32bit)">
+                <ecuparam id="E2" name="IAM" desc="Ignition Advance Multiplier (32bit)">
                     <address>
                         <ecu id="3152584006">
                             <byte>0xFF8228</byte>
@@ -991,7 +991,7 @@
                     </conversions>
                 </ecuparam>
 
-                <ecuparam id="E3" name="Engine Load (16bit)" desc="Engine Load (16bit)">
+                <ecuparam id="E3" name="Engine Load (RAM)" desc="Engine Load (RAM) for 16bit ecus">
                     <address>
                         <ecu id="1234567890">
                             <byte>0xFFFFFF</byte>
@@ -1002,7 +1002,7 @@
                     </conversions>
                 </ecuparam>
 
-                <ecuparam id="E4" name="Engine Load (32bit)" desc="Engine Load (32bit)">
+                <ecuparam id="E4" name="Engine Load (RAM)" desc="Engine Load (RAM) for 32 bit ecus">
                     <address>
                         <ecu id="3152584006">
                             <byte>0xFFA6FC</byte>
