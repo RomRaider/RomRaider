@@ -34,6 +34,7 @@ public final class EcuConnectionImpl implements EcuConnection {
         checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
         serialConnection = new SerialConnectionImpl(connectionProperties, portName);
+        //serialConnection = new TestSSMConnectionImpl(connectionProperties, portName);
         this.sendTimeout = connectionProperties.getSendTimeout();
     }
 

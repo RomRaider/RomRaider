@@ -26,6 +26,7 @@ import enginuity.logger.exception.PortNotFoundException;
 import enginuity.logger.exception.SerialCommunicationException;
 import enginuity.logger.exception.UnsupportedPortTypeException;
 import static enginuity.util.HexUtil.asHex;
+import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;
@@ -47,6 +48,7 @@ public final class SerialConnectionImpl implements SerialConnection {
     private final InputStream is;
 
     public SerialConnectionImpl(ConnectionProperties connectionProperties, String portName) {
+        checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
         serialPort = connect(connectionProperties, portName);
         os = initOutputStream();

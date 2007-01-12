@@ -40,6 +40,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
     public SSMLoggerConnection(String portName) {
         protocol = new SSMLoggerProtocol();
         serialConnection = new SerialConnectionImpl(protocol.getConnectionProperties(), portName);
+        //serialConnection = new TestSSMConnectionImpl(protocol.getConnectionProperties(), portName);
     }
 
     public void sendAddressReads(Collection<RegisteredQuery> queries) {

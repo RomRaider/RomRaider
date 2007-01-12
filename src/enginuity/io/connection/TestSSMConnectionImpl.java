@@ -1,0 +1,109 @@
+package enginuity.io.connection;
+
+import static enginuity.io.protocol.SSMChecksumCalculator.calculateChecksum;
+import static enginuity.io.protocol.SSMProtocol.ADDRESS_SIZE;
+import static enginuity.io.protocol.SSMProtocol.DATA_SIZE;
+import static enginuity.io.protocol.SSMProtocol.DIAGNOSTIC_TOOL_ID;
+import static enginuity.io.protocol.SSMProtocol.ECU_ID;
+import static enginuity.io.protocol.SSMProtocol.ECU_INIT_COMMAND;
+import static enginuity.io.protocol.SSMProtocol.HEADER;
+import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_COMMAND;
+import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_RESPONSE;
+import static enginuity.io.protocol.SSMProtocol.REQUEST_NON_DATA_BYTES;
+import static enginuity.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
+import enginuity.logger.exception.SerialCommunicationException;
+import static enginuity.util.HexUtil.asBytes;
+import static enginuity.util.HexUtil.asHex;
+import static enginuity.util.ParamChecker.checkNotNull;
+import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+
+import java.util.Random;
+
+@SuppressWarnings({"PointlessArithmeticExpression"})
+public final class TestSSMConnectionImpl implements SerialConnection {
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
+    private static final String ECU_INIT_RESPONSE = "8010F001BF4080F01039FFA21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E1000000000000000059";
+    private byte[] request = new byte[0];
+
+    public TestSSMConnectionImpl(ConnectionProperties connectionProperties, String portName) {
+        checkNotNull(connectionProperties, "connectionProperties");
+        checkNotNullOrEmpty(portName, "portName");
+        System.out.println("*** TEST *** Opening connection: " + portName);
+    }
+
+    public void write(byte[] bytes) {
+        System.out.println("*** TEST *** Write bytes = " + asHex(bytes));
+        request = bytes;
+    }
+
+    public int available() {
+        if (isEcuInitRequest()) {
+            return asBytes(ECU_INIT_RESPONSE).length;
+        } else if (isReadAddressRequest()) {
+            return request.length + (RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes());
+        } else {
+            throw new SerialCommunicationException("*** TEST *** Unsupported request: " + asHex(request));
+        }
+    }
+
+    public void read(byte[] bytes) {
+        if (isEcuInitRequest()) {
+            System.arraycopy(asBytes(ECU_INIT_RESPONSE), 0, bytes, 0, bytes.length);
+        } else if (isReadAddressRequest()) {
+            byte[] responseData = generateResponseData();
+            int i = 0;
+            byte[] response = new byte[RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes()];
+            response[i++] = HEADER;
+            response[i++] = DIAGNOSTIC_TOOL_ID;
+            response[i++] = ECU_ID;
+            response[i++] = (byte) (1 + responseData.length);
+            response[i++] = READ_ADDRESS_RESPONSE;
+            System.arraycopy(responseData, 0, response, i, responseData.length);
+            response[i += responseData.length] = calculateChecksum(response);
+            System.arraycopy(request, 0, bytes, 0, request.length);
+            System.arraycopy(response, 0, bytes, request.length, response.length);
+        } else {
+            throw new SerialCommunicationException("*** TEST *** Unsupported request: " + asHex(request));
+        }
+        System.out.println("*** TEST *** Read bytes  = " + asHex(bytes));
+    }
+
+    public byte[] readAvailable() {
+        byte[] response = new byte[available()];
+        read(response);
+        return response;
+    }
+
+    public void readStaleData() {
+    }
+
+    public void close() {
+        System.out.println("*** TEST *** Connection closed.");
+    }
+
+    private int calculateNumResponseDataBytes() {
+        return ((request.length - REQUEST_NON_DATA_BYTES) / ADDRESS_SIZE) * DATA_SIZE;
+    }
+
+    private byte[] generateResponseData() {
+        byte[] responseData = new byte[calculateNumResponseDataBytes()];
+        for (int i = 0; i < responseData.length; i++) {
+            responseData[i] = (byte) RANDOM.nextInt(255);
+        }
+        return responseData;
+    }
+
+    private boolean isEcuInitRequest() {
+        byte command = ECU_INIT_COMMAND;
+        return isCommand(command);
+    }
+
+    private boolean isReadAddressRequest() {
+        return isCommand(READ_ADDRESS_COMMAND);
+    }
+
+    private boolean isCommand(byte command) {
+        return request[4] == command;
+    }
+
+}
