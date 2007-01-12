@@ -23,6 +23,7 @@ package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.definition.RomDefinitionHandler;
 import enginuity.newmaps.xml.SaxParserFactory;
+import static enginuity.util.MD5Checksum.getMD5Checksum;
 import enginuity.util.exception.NameableNotFoundException;
 import org.xml.sax.SAXParseException;
 
@@ -30,72 +31,66 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-<<<<<<< .mine
-import static enginuity.util.MD5Checksum.getMD5Checksum;
-import enginuity.util.exception.NameableNotFoundException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
-import org.xml.sax.SAXParseException;
-=======
->>>>>>> .r417
 
 public class IndexBuilder {
-        
+
     public static final String INDEX_FILE_NAME = "index.dat";
     public static final String MEMMODEL_FILE_NAME = "memmodels.xml";
-    
+
     private File dir;
     private Index index;
-    
+
     public IndexBuilder(File dir, Index index) {
-        this.dir = dir;          
+        this.dir = dir;
         this.index = index;
-        
+
         // Clean up existing defs
         index.cleanup();
-        
+
         // Process all definition files
-        traverse(dir);      
-        
+        traverse(dir);
+
         // Output index
-        save(index, dir);        
+        save(index, dir);
     }
-    
+
     private void traverse(File file) {
         if (file.isDirectory()) {
             String[] children = file.list();
-            for (int i=0; i<children.length; i++) {
+            for (int i = 0; i < children.length; i++) {
                 traverse(new File(file, children[i]));
             }
-        } else {          
+        } else {
             processFile(file);
         }
     }
-    
+
     private void processFile(File file) {
-        if (!file.getName().equalsIgnoreCase(INDEX_FILE_NAME) && 
-            !file.getName().equalsIgnoreCase(MEMMODEL_FILE_NAME) &&
-            file.getName().length() > 3 && file.getName().endsWith(".xml")) {
-            
-            IndexItem idxItem = null;            
+        if (!file.getName().equalsIgnoreCase(INDEX_FILE_NAME) &&
+                !file.getName().equalsIgnoreCase(MEMMODEL_FILE_NAME) &&
+                file.getName().length() > 3 && file.getName().endsWith(".xml")) {
+
+            IndexItem idxItem = null;
             try {
                 idxItem = index.get(file);
             } catch (NameableNotFoundException ex) {
                 idxItem = new IndexItem();
             }
-            
+
             if (!index.fileCurrent(file, idxItem)) {
-                
-                try {               
+
+                try {
 
                     IndexHandler handler = new IndexHandler();
-                    SaxParserFactory.getSaxParser().parse(new BufferedInputStream(new FileInputStream(file)), handler); 
+                    SaxParserFactory.getSaxParser().parse(new BufferedInputStream(new FileInputStream(file)), handler);
                     IndexItem item = handler.getItem();
                     item.setFile(file);
                     index.add(item);
-                    
+
                 } catch (SAXParseException ex) {
                     // Skip file, not valid xml
 
@@ -104,27 +99,27 @@ public class IndexBuilder {
                     ex.printStackTrace();
                 }
             }
-        }        
-    }    
-    
+        }
+    }
+
     private static void save(Index index, File file) {
 
-        index.fixInheritance();        
-        try {                       
+        index.fixInheritance();
+        try {
             FileOutputStream fos = new FileOutputStream(file + "/" + INDEX_FILE_NAME);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(index);
             oos.flush();
             oos.close();
-            
+
         } catch (Exception ex) {
             // TODO: Exception handling
             ex.printStackTrace();
         }
     }
-    
-    
-    public static void validateChecksums(File dir) { 
+
+
+    public static void validateChecksums(File dir) {
         Index index = null;
         try {
             index = getIndex(dir);
@@ -132,13 +127,13 @@ public class IndexBuilder {
             // Index file not found, create new
             new IndexBuilder(dir, index);
             return;
-        }       
-        
+        }
+
         // If no exceptions, iterate through index checking checksums
         Iterator it = index.iterator();
         while (it.hasNext()) {
-            IndexItem item = (IndexItem)it.next();
-            
+            IndexItem item = (IndexItem) it.next();
+
             try {
                 if (!item.getChecksum().equalsIgnoreCase(getMD5Checksum(item.getFile().getAbsolutePath()))) {
 
@@ -148,47 +143,47 @@ public class IndexBuilder {
                 ex.printStackTrace();
             }
         }
-    }    
-    
-    
+    }
+
+
     public static Index getIndex(File dir) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(dir.getAbsoluteFile() + "/" + IndexBuilder.INDEX_FILE_NAME));
-            return (Index)ois.readObject();
+            return (Index) ois.readObject();
         } catch (Exception ex) {
             return new Index();
         }
     }
-    
-    
+
+
     public static void testMemUsage() {
         try {
             File dir = new File("/newdefs");
             //File dir = new File("/netbeans/enginuity/xmltest");
             Index index = getIndex(dir);
             RomDefinitionHandler handler = new RomDefinitionHandler(index);
-            
+
             Iterator it = index.iterator();
             int i = 0;
             long time = 0;
             while (it.hasNext()) {
-                IndexItem item = (IndexItem)it.next();
+                IndexItem item = (IndexItem) it.next();
                 System.out.println("Adding " + item.getFile() + " (#" + ++i + ")");
                 InputStream inputStream1 = new BufferedInputStream(new FileInputStream(item.getFile()));
                 long start = System.currentTimeMillis();
                 SaxParserFactory.getSaxParser().parse(inputStream1, handler);
                 time += (System.currentTimeMillis() - start);
-                
+
             }
-            
+
             System.out.println(handler.getRom());
-            
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }    
-    
-    
+    }
+
+
     public static void main(String[] args) {
         /*try {
             File file = new File("/netbeans/enginuity/xmltest");
@@ -197,5 +192,5 @@ public class IndexBuilder {
             ex.printStackTrace();
         } */
         testMemUsage();
-    } 
+    }
 }
