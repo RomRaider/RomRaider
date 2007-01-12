@@ -24,7 +24,6 @@ package enginuity.logger.ui.handler.file;
 import enginuity.Settings;
 import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
-import enginuity.logger.definition.EcuDataConvertor;
 import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.ui.StatusChangeListener;
 import enginuity.logger.ui.handler.DataUpdateHandler;
@@ -64,12 +63,10 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
         }
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, byte[] bytes, long timestamp) {
-        EcuDataConvertor convertor = ecuData.getSelectedConvertor();
-        double value = convertor.convert(bytes);
+    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
         checkStartStopFileLogging(ecuData, (int) value);
         if (fileLogger.isStarted()) {
-            currentLine.updateParamValue(ecuData, convertor.format(value), timestamp);
+            currentLine.updateParamValue(ecuData, ecuData.getSelectedConvertor().format(value), timestamp);
             if (currentLine.isFull()) {
                 fileLogger.writeLine(currentLine.values());
                 resetLine();

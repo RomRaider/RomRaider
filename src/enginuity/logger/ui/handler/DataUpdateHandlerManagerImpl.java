@@ -39,7 +39,7 @@ public final class DataUpdateHandlerManagerImpl implements DataUpdateHandlerMana
         }
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
+    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
         for (DataUpdateHandler handler : handlers) {
             handler.handleDataUpdate(ecuData, value, timestamp);
         }

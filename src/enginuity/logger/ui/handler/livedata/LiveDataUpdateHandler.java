@@ -37,7 +37,7 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler, Convertor
         dataTableModel.addParam(ecuData);
     }
 
-    public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
+    public void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
         // update data table
         dataTableModel.updateParam(ecuData, value);
     }

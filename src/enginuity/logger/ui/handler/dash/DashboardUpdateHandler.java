@@ -46,7 +46,7 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
         repaintDashboardPanel();
     }
 
-    public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
+    public void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
         Gauge gauge = gauges.get(ecuData);
         if (gauge != null) {
             gauge.updateValue(value);

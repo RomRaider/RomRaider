@@ -41,12 +41,11 @@ public final class TableUpdateHandler implements DataUpdateHandler {
     public void registerData(EcuData ecuData) {
     }
 
-    public void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
+    public void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
         List<Table> tables = tableMap.get(ecuData.getId());
         if (tables != null && !tables.isEmpty()) {
-            double liveValue = ecuData.getSelectedConvertor().convert(value);
             for (Table table : tables) {
-                table.setLiveValue(liveValue);
+                table.setLiveValue(value);
             }
         }
     }

@@ -60,8 +60,8 @@ public final class LiveDataRow {
         return ecuData.getSelectedConvertor().getUnits();
     }
 
-    public void updateValue(byte[] bytes) {
-        currentValue = ecuData.getSelectedConvertor().convert(bytes);
+    public void updateValue(double value) {
+        currentValue = value;
         if (currentValue < minValue || !updated) {
             minValue = currentValue;
         }

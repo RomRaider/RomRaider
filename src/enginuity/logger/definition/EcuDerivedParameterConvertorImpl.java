@@ -48,6 +48,7 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
 
     public double convert(byte[] bytes) {
         Map<String, Double> valueMap = new HashMap<String, Double>();
+        String exp = expression;
         int index = 0;
         for (EcuData ecuData : ecuDatas) {
             int length = ecuData.getAddresses().length;
@@ -55,9 +56,10 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
             System.arraycopy(bytes, index, tmp, 0, length);
             ExpressionInfo expressionInfo = expressionInfoMap.get(ecuData.getId());
             valueMap.put(expressionInfo.getReplacementKey(), expressionInfo.getConvertor().convert(tmp));
+            exp = exp.replace(buildParameterKey(expressionInfo), expressionInfo.getReplacementKey());
             index += length;
         }
-        double result = evaluate(expression, valueMap);
+        double result = evaluate(exp, valueMap);
         return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
     }
 
@@ -102,6 +104,10 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
         }
     }
 
+    private String buildParameterKey(ExpressionInfo expressionInfo) {
+        return '[' + expressionInfo.getEcuDataId() + ':' + expressionInfo.getConvertor().getUnits() + ']';
+    }
+
     private static final class ExpressionInfo {
         private final String ecuDataId;
         private final EcuDataConvertor convertor;
@@ -130,7 +136,7 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
             if (convertorUnits == null || convertorUnits.length() == 0) {
                 return ecuDataId;
             } else {
-                return '[' + ecuDataId + ':' + convertorUnits + ']';
+                return '_' + ecuDataId + '_' + convertorUnits + '_';
             }
         }
     }

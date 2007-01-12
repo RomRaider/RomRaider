@@ -42,7 +42,7 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
         wrappee.registerData(ecuData);
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp) {
+    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
         updateList.add(new DataUpdate(ecuData, value, timestamp));
     }
 
@@ -75,10 +75,10 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
 
     private static final class DataUpdate {
         private final EcuData ecuData;
-        private final byte[] value;
+        private final double value;
         private final long timestamp;
 
-        public DataUpdate(EcuData ecuData, byte[] value, long timestamp) {
+        public DataUpdate(EcuData ecuData, double value, long timestamp) {
             this.ecuData = ecuData;
             this.value = value;
             this.timestamp = timestamp;
@@ -92,7 +92,7 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
             return timestamp;
         }
 
-        public byte[] getValue() {
+        public double getValue() {
             return value;
         }
 

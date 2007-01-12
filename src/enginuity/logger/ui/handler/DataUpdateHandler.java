@@ -27,7 +27,7 @@ public interface DataUpdateHandler {
 
     void registerData(EcuData ecuData);
 
-    void handleDataUpdate(EcuData ecuData, byte[] value, long timestamp);
+    void handleDataUpdate(EcuData ecuData, double value, long timestamp);
 
     void deregisterData(EcuData ecuData);
 

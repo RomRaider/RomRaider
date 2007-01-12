@@ -52,8 +52,9 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
 
             // add logger and setup callback
             controller.addLogger(id, ecuData, new LoggerCallback() {
-                public void callback(byte[] value) {
+                public void callback(byte[] bytes) {
                     // update handlers
+                    double value = ecuData.getSelectedConvertor().convert(bytes);
                     handlerManager.handleDataUpdate(ecuData, value, System.currentTimeMillis() - loggerStartTime);
                 }
             });

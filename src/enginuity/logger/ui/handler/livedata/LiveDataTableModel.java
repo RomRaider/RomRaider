@@ -84,10 +84,10 @@ public final class LiveDataTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public synchronized void updateParam(EcuData ecuData, byte[] bytes) {
+    public synchronized void updateParam(EcuData ecuData, double value) {
         LiveDataRow dataRow = dataRowMap.get(ecuData);
         if (dataRow != null) {
-            dataRow.updateValue(bytes);
+            dataRow.updateValue(value);
             int index = registeredEcuData.indexOf(ecuData);
             fireTableRowsUpdated(index, index);
         }

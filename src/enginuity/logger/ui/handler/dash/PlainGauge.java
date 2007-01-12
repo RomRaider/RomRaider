@@ -52,8 +52,8 @@ public final class PlainGauge extends Gauge {
         title.setText(ecuData.getName() + " (" + ecuData.getSelectedConvertor().getUnits() + ')');
     }
 
-    public void updateValue(byte[] value) {
-        refreshValue(ecuData.getSelectedConvertor().convert(value));
+    public void updateValue(double value) {
+        refreshValue(value);
     }
 
     public void resetValue() {
