@@ -96,7 +96,7 @@ public final class QueryManagerImpl implements QueryManager {
                     notifyReading();
                     runLogger();
                 } else {
-                    sleep(5000L);
+                    sleep(1000L);
                 }
             }
         } catch (Exception e) {
@@ -138,7 +138,7 @@ public final class QueryManagerImpl implements QueryManager {
                 updateQueryList();
                 if (queryMap.isEmpty()) {
                     messageListener.reportMessage("Select parameters to be logged...");
-                    sleep(2000L);
+                    sleep(1000L);
                 } else {
                     txManager.sendQueries(queryMap.values());
                     count++;
