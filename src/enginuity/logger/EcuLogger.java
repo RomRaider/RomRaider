@@ -143,7 +143,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         initControllerListeners();
         initUserInterface();
         initDataUpdateHandlers();
-        reloadUserProfile(settings.getLoggerProfileFilePath());
         startPortRefresherThread();
         if (!isLogging()) {
             startLogging();
@@ -158,9 +157,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             public void callback(EcuInit newEcuInit) {
                 System.out.println("ECU ID = " + newEcuInit.getEcuId());
                 if (ecuInit == null || !ecuInit.getEcuId().equals(newEcuInit.getEcuId())) {
-                    System.out.println("Reloading user profile for new ECU...");
+                    System.out.println("Loading logger config for new ECU...");
                     ecuInit = newEcuInit;
-                    reloadUserProfile(settings.getLoggerProfileFilePath());
+                    loadLoggerConfig();
                 }
             }
         };
@@ -221,11 +220,26 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         getContentPane().add(mainPanel);
     }
 
-    public void reloadUserProfile(String profileFilePath) {
+    public void loadLoggerConfig() {
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(), ecuInit);
-            loadUserProfile(dataLoader, profileFilePath);
+            List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
+            addConvertorUpdateListeners(ecuParams);
+            loadEcuParams(ecuParams, null);
+            loadEcuSwitches(dataLoader.getEcuSwitches(), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            reportError(e);
+        }
+    }
+
+    public void loadUserProfile(String profileFilePath) {
+        try {
+            UserProfileLoader profileLoader = new UserProfileLoaderImpl();
+            UserProfile profile = profileLoader.loadProfile(profileFilePath);
+            setSelectedPort(profile);
+            applyUserProfile(profile);
             File profileFile = new File(profileFilePath);
             if (profileFile.exists()) {
                 setTitle("Profile: " + profileFile.getAbsolutePath());
@@ -236,16 +250,39 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
-    private void loadUserProfile(EcuDataLoader dataLoader, String profileFilePath) {
-        UserProfileLoader profileLoader = new UserProfileLoaderImpl();
-        UserProfile profile = profileLoader.loadProfile(profileFilePath);
-        setSelectedPort(profile);
-        List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
-        addConvertorUpdateListeners(ecuParams);
-        clearParamTableModels();
-        clearSwitchTableModels();
-        loadEcuParams(ecuParams, profile);
-        loadEcuSwitches(dataLoader.getEcuSwitches(), profile);
+    private void applyUserProfile(UserProfile profile) {
+        if (profile != null) {
+            applyUserProfileToLiveDataTabParameters(dataTabParamListTableModel, profile);
+            applyUserProfileToLiveDataTabParameters(dataTabSwitchListTableModel, profile);
+            applyUserProfileToGraphTabParameters(graphTabParamListTableModel, profile);
+            applyUserProfileToGraphTabParameters(graphTabSwitchListTableModel, profile);
+            applyUserProfileToDashTabParameters(dashboardTabParamListTableModel, profile);
+            applyUserProfileToDashTabParameters(dashboardTabSwitchListTableModel, profile);
+        }
+    }
+
+    private void applyUserProfileToLiveDataTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
+        List<ParameterRow> rows = paramListTableModel.getParameterRows();
+        for (ParameterRow row : rows) {
+            EcuData ecuData = row.getEcuData();
+            paramListTableModel.selectParam(ecuData, isSelectedOnLiveDataTab(profile, ecuData));
+        }
+    }
+
+    private void applyUserProfileToGraphTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
+        List<ParameterRow> rows = paramListTableModel.getParameterRows();
+        for (ParameterRow row : rows) {
+            EcuData ecuData = row.getEcuData();
+            paramListTableModel.selectParam(ecuData, isSelectedOnGraphTab(profile, ecuData));
+        }
+    }
+
+    private void applyUserProfileToDashTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
+        List<ParameterRow> rows = paramListTableModel.getParameterRows();
+        for (ParameterRow row : rows) {
+            EcuData ecuData = row.getEcuData();
+            paramListTableModel.selectParam(ecuData, isSelectedOnDashTab(profile, ecuData));
+        }
     }
 
     private void setSelectedPort(UserProfile profile) {
@@ -277,6 +314,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void loadEcuParams(List<EcuParameter> ecuParams, UserProfile profile) {
+        clearParamTableModels();
         sort(ecuParams, new EcuDataComparator());
         for (EcuParameter ecuParam : ecuParams) {
             if (profile == null || profile.contains(ecuParam)) {
@@ -289,6 +327,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void loadEcuSwitches(List<EcuSwitch> ecuSwitches, UserProfile profile) {
+        clearSwitchTableModels();
         sort(ecuSwitches, new EcuDataComparator());
         for (EcuSwitch ecuSwitch : ecuSwitches) {
             if (profile == null || profile.contains(ecuSwitch)) {

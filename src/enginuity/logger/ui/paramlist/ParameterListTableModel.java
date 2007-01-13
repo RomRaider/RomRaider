@@ -98,6 +98,13 @@ public final class ParameterListTableModel extends AbstractTableModel {
         }
     }
 
+    public synchronized void selectParam(EcuData ecuData, boolean selected) {
+        if (registeredEcuData.contains(ecuData)) {
+            setSelected(paramRowMap.get(ecuData), selected);
+            fireTableDataChanged();
+        }
+    }
+
     public synchronized void clear() {
         broker.clear();
         paramRowMap.clear();

@@ -121,7 +121,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 
         } else if (evt.getSource() == reloadProfile) {
             try {
-                parent.reloadUserProfile(parent.getSettings().getLoggerProfileFilePath());
+                parent.loadUserProfile(parent.getSettings().getLoggerProfileFilePath());
             } catch (Exception e) {
                 parent.reportError(e);
             }
@@ -192,7 +192,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         JFileChooser fc = getProfileFileChooser(lastProfileFile);
         if (fc.showOpenDialog(parent) == APPROVE_OPTION) {
             String profileFilePath = fc.getSelectedFile().getAbsolutePath();
-            parent.reloadUserProfile(profileFilePath);
+            parent.loadUserProfile(profileFilePath);
             parent.getSettings().setLoggerProfileFilePath(profileFilePath);
             parent.setTitle("Profile: " + profileFilePath);
             parent.reportMessage("Profile succesfully loaded: " + profileFilePath);

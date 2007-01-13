@@ -55,32 +55,33 @@ public final class UserProfileImpl implements UserProfile {
 
     public boolean isSelectedOnLiveDataTab(EcuData ecuData) {
         checkNotNull(ecuData, "ecuData");
-        return getUserProfileItem(ecuData).isLiveDataSelected();
+        return contains(ecuData) && getUserProfileItem(ecuData).isLiveDataSelected();
     }
 
     public boolean isSelectedOnGraphTab(EcuData ecuData) {
         checkNotNull(ecuData, "ecuData");
-        return getUserProfileItem(ecuData).isGraphSelected();
+        return contains(ecuData) && getUserProfileItem(ecuData).isGraphSelected();
     }
 
     public boolean isSelectedOnDashTab(EcuData ecuData) {
         checkNotNull(ecuData, "ecuData");
-        return getUserProfileItem(ecuData).isDashSelected();
+        return contains(ecuData) && getUserProfileItem(ecuData).isDashSelected();
     }
 
     public EcuDataConvertor getSelectedConvertor(EcuData ecuData) {
         checkNotNull(ecuData, "ecuData");
-        String defaultUnits = getUserProfileItem(ecuData).getUnits();
-        if (defaultUnits != null && ecuData.getConvertors().length > 1) {
-            for (EcuDataConvertor convertor : ecuData.getConvertors()) {
-                if (defaultUnits.equals(convertor.getUnits())) {
-                    return convertor;
+        if (contains(ecuData)) {
+            String defaultUnits = getUserProfileItem(ecuData).getUnits();
+            if (defaultUnits != null && ecuData.getConvertors().length > 1) {
+                for (EcuDataConvertor convertor : ecuData.getConvertors()) {
+                    if (defaultUnits.equals(convertor.getUnits())) {
+                        return convertor;
+                    }
                 }
+                throw new ConfigurationException("Unknown default units, '" + defaultUnits + "', specified for " + ecuData.getName());
             }
-            throw new ConfigurationException("Unknown default units, '" + defaultUnits + "', specified for " + ecuData.getName());
-        } else {
-            return ecuData.getSelectedConvertor();
         }
+        return ecuData.getSelectedConvertor();
     }
 
     public byte[] getBytes() {
