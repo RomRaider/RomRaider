@@ -103,7 +103,6 @@ Autoconnect Stuff:
 TODO: Finish ecu specific parameters (IAM, Engine Load) config in logger.xml
 TODO: Add ecu id and calid to ecu_defs
 TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
-TODO: Check/fix MRP corrected
 TODO: Autoselect rear defogger switch for file logging - add checkbox to toolbar (toolbar checkbox enables/disables file logging, switch list checkbox enables/disables logging of rear defogger switch)
 TODO: Add settings screen for setting warning levels etc per parameter/switch
 */
