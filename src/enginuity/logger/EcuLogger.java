@@ -63,6 +63,7 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.sleep;
 
 import javax.swing.*;
+import static javax.swing.JLabel.RIGHT;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
@@ -113,7 +114,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private static final String HEADING_SWITCHES = "Switches";
     private Settings settings;
     private LoggerController controller;
-    private JLabel statusBarLabel;
+    private JLabel messageLabel;
+    private JLabel statsLabel;
     private JTabbedPane tabbedPane;
     private SerialPortComboBox portsComboBox;
     private DataUpdateHandlerManager dataHandlerManager;
@@ -165,7 +167,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         };
 
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this);
-        statusBarLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
+        messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
+        statsLabel = buildStatsLabel();
         tabbedPane = new JTabbedPane(BOTTOM);
         portsComboBox = new SerialPortComboBox(settings);
         dataHandlerManager = new DataUpdateHandlerManagerImpl();
@@ -442,7 +445,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JComponent buildStatusBar() {
         JPanel statusBar = new JPanel(new BorderLayout());
         statusBar.setBorder(new BevelBorder(LOWERED));
-        statusBar.add(statusBarLabel, CENTER);
+        statusBar.add(messageLabel, WEST);
+        statusBar.add(statsLabel, EAST);
         return statusBar;
     }
 
@@ -576,15 +580,28 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportMessage(String message) {
         if (message != null) {
-            statusBarLabel.setText(message);
-            statusBarLabel.setForeground(BLACK);
+            messageLabel.setText(message);
+            messageLabel.setForeground(BLACK);
         }
+    }
+
+    public void reportStats(String message) {
+        if (message != null) {
+            statsLabel.setText(message);
+        }
+    }
+
+    private JLabel buildStatsLabel() {
+        JLabel label = new JLabel();
+        label.setForeground(BLACK);
+        label.setHorizontalTextPosition(RIGHT);
+        return label;
     }
 
     public void reportError(String error) {
         if (error != null) {
-            statusBarLabel.setText("Error: " + error);
-            statusBarLabel.setForeground(RED);
+            messageLabel.setText("Error: " + error);
+            messageLabel.setForeground(RED);
         }
     }
 

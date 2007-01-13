@@ -137,12 +137,15 @@ public final class QueryManagerImpl implements QueryManager {
             while (!stop) {
                 updateQueryList();
                 if (queryMap.isEmpty()) {
+                    start = System.currentTimeMillis();
+                    count = 0;
                     messageListener.reportMessage("Select parameters to be logged...");
                     sleep(1000L);
                 } else {
                     txManager.sendQueries(queryMap.values());
                     count++;
-                    messageListener.reportMessage(buildStatsMessage(start, count));
+                    messageListener.reportMessage("Querying ECU...");
+                    messageListener.reportStats(buildStatsMessage(start, count));
                 }
             }
         } catch (Exception e) {
@@ -185,8 +188,7 @@ public final class QueryManagerImpl implements QueryManager {
 
     private String buildStatsMessage(long start, int count) {
         double duration = ((double) (System.currentTimeMillis() - start)) / 1000.0;
-        return "Logging [Total queries sent: " + count + ", Queries per second: " + format.format(((double) count) / duration)
-                + ", Avg. Query Time: " + format.format(duration / ((double) count)) + "s]";
+        return "[ " + format.format(((double) count) / duration) + " queries/sec, " + format.format(duration / ((double) count)) + " sec/query ]";
     }
 
     private void notifyConnecting() {

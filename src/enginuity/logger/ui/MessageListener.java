@@ -23,6 +23,8 @@ package enginuity.logger.ui;
 
 public interface MessageListener {
 
+    void reportStats(String message);
+
     void reportMessage(String message);
 
     void reportError(String error);

@@ -45,7 +45,6 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem exit = new JMenuItem("Exit");
 
     private JMenu settingsMenu = new JMenu("Settings");
-    private JMenuItem profileManager = new JMenuItem("Profile Manager");
     private JMenuItem logFileLocation = new JMenuItem("Log File Output Location...");
 
     private JMenu connectionMenu = new JMenu("Connection");
@@ -82,12 +81,9 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         // settings menu items
         add(settingsMenu);
         settingsMenu.setMnemonic('E');
-        profileManager.setMnemonic('P');
         logFileLocation.setMnemonic('F');
-        settingsMenu.add(profileManager);
         settingsMenu.add(new JSeparator());
         settingsMenu.add(logFileLocation);
-        profileManager.addActionListener(this);
         logFileLocation.addActionListener(this);
 
         // connection menu items
@@ -105,8 +101,6 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         about.addActionListener(this);
 
         // disable unimplemented buttons!
-        about.setEnabled(false);
-        profileManager.setEnabled(false);
         about.setEnabled(false);
 
     }
@@ -146,13 +140,6 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
             parent.setVisible(false);
             //System.exit(0);
 
-        } else if (evt.getSource() == profileManager) {
-            try {
-                openProfileManager();
-            } catch (Exception e) {
-                parent.reportError(e);
-            }
-
         } else if (evt.getSource() == logFileLocation) {
             try {
                 setLogFileLocationDialog();
@@ -168,13 +155,6 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
             }
 
         }
-    }
-
-    private void openProfileManager() {
-        //TODO: Finish profile manager!!
-//        DefinitionManager form = new DefinitionManager(parent);
-//        form.setLocationRelativeTo(parent);
-//        form.setVisible(true);
     }
 
     private void setLogFileLocationDialog() throws Exception {
