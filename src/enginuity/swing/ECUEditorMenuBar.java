@@ -27,15 +27,8 @@ import enginuity.logger.EcuLogger;
 import enginuity.maps.Rom;
 
 import javax.management.modelmbean.XMLParseException;
-import javax.swing.ButtonGroup;
-import javax.swing.JFileChooser;
+import javax.swing.*;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -189,12 +182,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     }
 
     public void updateMenu() {
-        String file = "";
-        try {
-            file = " " + parent.getLastSelectedRom().getFileName() + " ";
-        } catch (NullPointerException ex) {
-        }
-        if (file.equals("")) {
+        String file = getLastSelectedRomFileName();
+
+        if ("".equals(file)) {
             saveImage.setEnabled(false);
             closeImage.setEnabled(false);
             closeAll.setEnabled(false);
@@ -206,9 +196,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             romProperties.setEnabled(true);
         }
 
-        saveImage.setText("Save" + file);
-        refreshImage.setText("Refresh" + file);
-        closeImage.setText("Close" + file);
+        saveImage.setText("Save " + file);
+        refreshImage.setText("Refresh " + file);
+        closeImage.setText("Close " + file);
         romProperties.setText(file + "Properties");
     }
 
@@ -340,5 +330,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 }
             }
         }
+    }
+
+    private String getLastSelectedRomFileName() {
+        Rom lastSelectedRom = parent.getLastSelectedRom();
+        return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
     }
 }

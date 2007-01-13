@@ -22,6 +22,7 @@
 package enginuity.swing;
 
 import enginuity.ECUEditor;
+import enginuity.maps.Rom;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -38,7 +39,6 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     private JButton closeImage = new JButton(new ImageIcon("./graphics/icon-close.png"));
 
     public ECUEditorToolBar(ECUEditor parent) {
-        super();
         this.parent = parent;
         this.setFloatable(false);
         this.add(openImage);
@@ -64,18 +64,14 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     }
 
     public void updateButtons() {
-        String file = "";
-        try {
-            file = " " + parent.getLastSelectedRom().getFileName();
-        } catch (NullPointerException ex) {
-        }
+        String file = getLastSelectedRomFileName();
 
         openImage.setToolTipText("Open Image");
-        saveImage.setToolTipText("Save" + file);
-        refreshImage.setToolTipText("Refresh" + file + " from saved copy");
-        closeImage.setToolTipText("Close" + file);
+        saveImage.setToolTipText("Save " + file);
+        refreshImage.setToolTipText("Refresh " + file + " from saved copy");
+        closeImage.setToolTipText("Close " + file);
 
-        if (file.equals("")) {
+        if ("".equals(file)) {
             saveImage.setEnabled(false);
             refreshImage.setEnabled(false);
             closeImage.setEnabled(false);
@@ -111,5 +107,10 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
                         parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+
+    private String getLastSelectedRomFileName() {
+        Rom lastSelectedRom = parent.getLastSelectedRom();
+        return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
     }
 }
