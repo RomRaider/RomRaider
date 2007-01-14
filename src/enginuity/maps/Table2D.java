@@ -24,6 +24,7 @@ package enginuity.maps;
 import enginuity.Settings;
 import enginuity.swing.TableFrame;
 import enginuity.util.AxisRange;
+import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 
 import javax.swing.*;
@@ -73,6 +74,7 @@ public class Table2D extends Table {
         if (height < minHeight) {
             height = minHeight;
         }
+        int minWidth = isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
         if (width < minWidth) {
             width = minWidth;
         }
@@ -290,7 +292,11 @@ public class Table2D extends Table {
         axis.setScaleByName(getScale().getName());
     }
 
-    public void highlightLiveData() {
+    public boolean isLiveDataSupported() {
+        return !isNullOrEmpty(axis.getLogParam());
+    }
+
+    protected void highlightLiveData() {
         if (overlayLog && frame.isVisible()) {
             AxisRange range = getLiveDataRangeForAxis(axis);
             clearSelection();
@@ -308,8 +314,15 @@ public class Table2D extends Table {
                 } else {
                     highlight(x, y);
                 }
+                data[i].setLiveDataTrace(true);
             }
             stopHighlight();
+        }
+    }
+
+    public void clearLiveDataTrace() {
+        for (DataCell cell : data) {
+            cell.setLiveDataTrace(false);
         }
     }
 }

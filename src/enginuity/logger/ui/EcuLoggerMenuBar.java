@@ -82,7 +82,6 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         add(settingsMenu);
         settingsMenu.setMnemonic('E');
         logFileLocation.setMnemonic('F');
-        settingsMenu.add(new JSeparator());
         settingsMenu.add(logFileLocation);
         logFileLocation.addActionListener(this);
 

@@ -89,7 +89,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected int cellHeight = 18;
     protected int cellWidth = 42;
     protected int minHeight = 100;
-    protected int minWidth = 425;
+    protected int minWidthNoOverlay = 465;
+    protected int minWidthOverlay = 640;
     protected Rom container;
     protected int highlightX;
     protected int highlightY;
@@ -651,6 +652,7 @@ public abstract class Table extends JPanel implements Serializable {
         if (height < minHeight) {
             height = minHeight;
         }
+        int minWidth = isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
         if (width < minWidth) {
             width = minWidth;
         }
@@ -669,10 +671,10 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         } else if (userLevel > settings.getUserLevel()) {
-            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" + 
-            		userLevel + " or greater. Click View->User Level to change your userlevel.", 
-            		"Table cannot be modified",
-                    JOptionPane.INFORMATION_MESSAGE);        	
+            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
+                    userLevel + " or greater. Click View->User Level to change your userlevel.",
+                    "Table cannot be modified",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -684,10 +686,10 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         } else if (userLevel > settings.getUserLevel()) {
-            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" + 
-            		userLevel + " or greater. Click View->User Level to change your userlevel.", 
-            		"Table cannot be modified",
-                    JOptionPane.INFORMATION_MESSAGE);        	
+            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
+                    userLevel + " or greater. Click View->User Level to change your userlevel.",
+                    "Table cannot be modified",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
         colorize();
     }
@@ -700,10 +702,10 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         } else if (userLevel > settings.getUserLevel()) {
-            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" + 
-            		userLevel + " or greater. Click View->User Level to change your userlevel.", 
-            		"Table cannot be modified",
-                    JOptionPane.INFORMATION_MESSAGE);        	
+            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
+                    userLevel + " or greater. Click View->User Level to change your userlevel.",
+                    "Table cannot be modified",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
         colorize();
     }
@@ -1160,6 +1162,9 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setOverlayLog(boolean overlayLog) {
         this.overlayLog = overlayLog;
+        if (overlayLog) {
+            clearLiveDataTrace();
+        }
     }
 
     public void setLiveValue(double liveValue) {
@@ -1170,9 +1175,14 @@ public abstract class Table extends JPanel implements Serializable {
         return liveValue;
     }
 
+    public abstract boolean isLiveDataSupported();
+
     protected void highlightLiveData() {
     }
-    
+
+    public void clearLiveDataTrace() {
+    }
+
     public double getMin() {
         if (getScale().getMin() == 0 && getScale().getMax() == 0) {
             double low = Double.MAX_VALUE;
@@ -1181,13 +1191,13 @@ public abstract class Table extends JPanel implements Serializable {
                 if (Double.parseDouble(data[i].getText()) < low) {
                     low = Double.parseDouble(data[i].getText());
                 }
-            }    
-            return low;                    
+            }
+            return low;
         } else {
             return getScale().getMin();
         }
     }
-    
+
     public double getMax() {
         if (getScale().getMin() == 0 && getScale().getMax() == 0) {
             double high = Double.MIN_VALUE;
@@ -1196,8 +1206,8 @@ public abstract class Table extends JPanel implements Serializable {
                 if (Double.parseDouble(data[i].getText()) > high) {
                     high = Double.parseDouble(data[i].getText());
                 }
-            }    
-            return high;                    
+            }
+            return high;
         } else {
             return getScale().getMax();
         }

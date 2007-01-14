@@ -40,9 +40,9 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         setFrameIcon(null);
         setBorder(BorderFactory.createBevelBorder(0));
         setVisible(false);
+        setJMenuBar(new TableMenuBar(table));
         toolBar = new TableToolBar(table, this);
         add(toolBar, BorderLayout.NORTH);
-        setJMenuBar(new TableMenuBar(table));
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         table.setFrame(this);
         addInternalFrameListener(this);

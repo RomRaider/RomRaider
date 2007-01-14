@@ -178,4 +178,8 @@ public class Table1D extends Table {
             parent.highlightLiveData();
         }
     }
+
+    public boolean isLiveDataSupported() {
+        return false;
+    }
 }

@@ -70,7 +70,7 @@ public class TableSwitch extends Table {
 
         add(checkbox, BorderLayout.NORTH);
     }
-    
+
     public int getType() {
         return TABLE_SWITCH;
     }
@@ -113,11 +113,11 @@ public class TableSwitch extends Table {
             off[i] = (byte) RomAttributeParser.parseHexString(tokens.nextToken());
         }
     }
-    
+
     public byte[] getOnValues() {
         return on;
     }
-    
+
     public byte[] getOffValues() {
         return off;
     }
@@ -128,10 +128,10 @@ public class TableSwitch extends Table {
         if (height < minHeight) {
             height = minHeight;
         }
+        int minWidth = isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
         if (width < minWidth) {
             width = minWidth;
         }
-
         return new Dimension(width, height);
     }
 
@@ -151,5 +151,9 @@ public class TableSwitch extends Table {
     }
 
     public void setAxisColor(Color color) {
+    }
+
+    public boolean isLiveDataSupported() {
+        return false;
     }
 }

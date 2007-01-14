@@ -32,7 +32,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     private Table table;
     private JMenu fileMenu = new JMenu("Table");
     private JMenuItem graph = new JMenuItem("View Graph");
-    private JRadioButtonMenuItem overlay = new JRadioButtonMenuItem("Overlay Log");
+    //private JRadioButtonMenuItem overlay = new JRadioButtonMenuItem("Overlay Log");
 
     private JMenu compareMenu = new JMenu("Compare");
     private JRadioButtonMenuItem compareOriginal = new JRadioButtonMenuItem("Show Changes");
@@ -57,11 +57,9 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     private ButtonGroup compareDisplayGroup = new ButtonGroup();
 
     public TableMenuBar(Table table) {
-        super();
         this.table = table;
         this.add(fileMenu);
         fileMenu.add(graph);
-        fileMenu.add(overlay);
         fileMenu.add(compareMenu);
         compareMenu.add(compareOriginal);
         compareMenu.add(compareMap);
@@ -121,7 +119,6 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         tableProperties.addActionListener(this);
 
         graph.addActionListener(this);
-        overlay.addActionListener(this);
         undoSel.addActionListener(this);
         undoAll.addActionListener(this);
         revert.addActionListener(this);
@@ -130,7 +127,6 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         fileMenu.setMnemonic('F');
         fileMenu.setMnemonic('T');
         graph.setMnemonic('G');
-        overlay.setMnemonic('L');
         undoSel.setMnemonic('U');
         undoAll.setMnemonic('A');
         revert.setMnemonic('R');
@@ -173,7 +169,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == compareMap) {
             JTableChooser chooser = new JTableChooser();
-            if (chooser.showChooser(table.getRom().getContainer().getImages(), table.getRom().getContainer(), table) == true) {
+            if (chooser.showChooser(table.getRom().getContainer().getImages(), table.getRom().getContainer(), table)) {
                 table.pasteCompare();
                 table.compare(Table.COMPARE_TABLE);
             }
@@ -183,9 +179,6 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == comparePercent) {
             table.setCompareDisplay(Table.COMPARE_PERCENT);
-
-        } else if (e.getSource() == overlay) {
-            table.setOverlayLog(overlay.isSelected());
 
         }
     }

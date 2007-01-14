@@ -26,6 +26,7 @@ import enginuity.swing.TableFrame;
 import enginuity.swing.VTextIcon;
 import enginuity.util.AxisRange;
 import static enginuity.util.ColorScaler.getScaledColor;
+import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 import enginuity.xml.RomAttributeParser;
 
@@ -338,6 +339,7 @@ public class Table3D extends Table {
         if (height < minHeight) {
             height = minHeight;
         }
+        int minWidth = isLiveDataSupported() ? minWidthOverlay : minWidthNoOverlay;
         if (width < minWidth) {
             width = minWidth;
         }
@@ -875,7 +877,11 @@ public class Table3D extends Table {
         }
     }
 
-    public void highlightLiveData() {
+    public boolean isLiveDataSupported() {
+        return !isNullOrEmpty(xAxis.getLogParam()) && !isNullOrEmpty(yAxis.getLogParam());
+    }
+
+    protected void highlightLiveData() {
         if (overlayLog && frame.isVisible()) {
             AxisRange rangeX = getLiveDataRangeForAxis(xAxis);
             AxisRange rangeY = getLiveDataRangeForAxis(yAxis);
@@ -889,9 +895,18 @@ public class Table3D extends Table {
                     } else {
                         highlight(x, y);
                     }
+                    data[x][y].setLiveDataTrace(true);
                 }
             }
             stopHighlight();
+        }
+    }
+
+    public void clearLiveDataTrace() {
+        for (int x = 0; x < getSizeX(); x++) {
+            for (int y = 0; y < getSizeY(); y++) {
+                data[x][y].setLiveDataTrace(false);
+            }
         }
     }
 
@@ -904,40 +919,40 @@ public class Table3D extends Table {
     public DataCell[][] get3dData() {
         return data;
     }
-    
+
     public double getMin() {
         if (getScale().getMin() == 0 && getScale().getMax() == 0) {
             double low = Double.MAX_VALUE;
-            
+
             for (DataCell[] column : data) {
                 for (DataCell cell : column) {
                     if (Double.parseDouble(cell.getText()) < low) {
                         low = Double.parseDouble(cell.getText());
                     }
                 }
-            }   
-             
-            return low;                    
+            }
+
+            return low;
         } else {
             return getScale().getMin();
         }
     }
-    
+
     public double getMax() {
         if (getScale().getMin() == 0 && getScale().getMax() == 0) {
             double high = Double.MIN_VALUE;
-            
+
             for (DataCell[] column : data) {
                 for (DataCell cell : column) {
                     if (Double.parseDouble(cell.getText()) > high) {
                         high = Double.parseDouble(cell.getText());
                     }
                 }
-            }   
-            
-            return high;                    
+            }
+
+            return high;
         } else {
             return getScale().getMax();
         }
-    }    
+    }
 }

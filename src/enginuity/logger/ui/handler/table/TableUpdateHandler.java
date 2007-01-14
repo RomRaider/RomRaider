@@ -26,14 +26,14 @@ import enginuity.logger.ui.handler.DataUpdateHandler;
 import enginuity.maps.Table;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class TableUpdateHandler implements DataUpdateHandler {
     private static final TableUpdateHandler INSTANCE = new TableUpdateHandler();
-    private final Map<String, List<Table>> tableMap = Collections.synchronizedMap(new HashMap<String, List<Table>>());
+    private final Map<String, List<Table>> tableMap = synchronizedMap(new HashMap<String, List<Table>>());
 
     private TableUpdateHandler() {
     }

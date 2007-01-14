@@ -34,6 +34,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -44,7 +45,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Vector;
 
-public class TableToolBar extends JToolBar implements MouseListener, ItemListener, GraphDataListener {
+public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ActionListener, GraphDataListener {
 
     private JButton incrementFine = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
     private JButton decrementFine = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
@@ -61,6 +62,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     private JComboBox scaleSelection = new JComboBox();
 
+    private JCheckBox overlayLog = new JCheckBox("Overlay Log");
+    private JButton clearOverlay = new JButton("Clear Overlay");
+
     private Table table;
     private TableFrame frame;
 
@@ -68,56 +72,68 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         this.table = table;
         this.setFrame(frame);
         this.setFloatable(false);
-        this.add(incrementFine);
-        this.add(decrementFine);
-        this.add(incrementByFine);
-        this.add(new JLabel("    "));
-        this.add(incrementCoarse);
-        this.add(decrementCoarse);
+        this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        this.add(new JLabel(" "));
-        this.add(incrementByCoarse);
-        this.add(new JLabel("    "));
-        this.add(setValueText);
-        this.add(new JLabel(" "));
-        this.add(setValue);
-        this.add(multiply);
-        this.add(new JLabel("    "));
+        JPanel finePanel = new JPanel();
+        finePanel.add(incrementFine);
+        finePanel.add(decrementFine);
+        finePanel.add(incrementByFine);
+        this.add(finePanel);
+
+        JPanel coarsePanel = new JPanel();
+        coarsePanel.add(incrementCoarse);
+        coarsePanel.add(decrementCoarse);
+        coarsePanel.add(incrementByCoarse);
+        this.add(coarsePanel);
+
+        JPanel setValuePanel = new JPanel();
+        setValuePanel.add(setValueText);
+        setValuePanel.add(setValue);
+        setValuePanel.add(multiply);
+        this.add(setValuePanel);
 
         //Only add the 3d button if table includes 3d data
         if (table.getType() == Table.TABLE_3D) {
             this.add(enable3d);
         }
 
-        this.add(new JLabel(" "));
         //this.add(scaleSelection);
 
-        incrementFine.setMaximumSize(new Dimension(33, 33));
+        if (table.isLiveDataSupported()) {
+            JPanel liveDataPanel = new JPanel();
+            liveDataPanel.add(overlayLog);
+            liveDataPanel.add(clearOverlay);
+            this.add(liveDataPanel);
+        }
+
+        incrementFine.setPreferredSize(new Dimension(33, 33));
         incrementFine.setBorder(new LineBorder(new Color(150, 150, 150), 1));
-        decrementFine.setMaximumSize(new Dimension(33, 33));
+        decrementFine.setPreferredSize(new Dimension(33, 33));
         decrementFine.setBorder(new LineBorder(new Color(150, 150, 150), 1));
-        incrementCoarse.setMaximumSize(new Dimension(33, 33));
+        incrementCoarse.setPreferredSize(new Dimension(33, 33));
         incrementCoarse.setBorder(new LineBorder(new Color(150, 150, 150), 1));
-        decrementCoarse.setMaximumSize(new Dimension(33, 33));
+        decrementCoarse.setPreferredSize(new Dimension(33, 33));
         decrementCoarse.setBorder(new LineBorder(new Color(150, 150, 150), 1));
-        enable3d.setMaximumSize(new Dimension(33, 33));
+        enable3d.setPreferredSize(new Dimension(33, 33));
         enable3d.setBorder(new LineBorder(new Color(150, 150, 150), 1));
-        setValue.setMaximumSize(new Dimension(33, 23));
+        setValue.setPreferredSize(new Dimension(33, 23));
         setValue.setBorder(new LineBorder(new Color(150, 150, 150), 1));
-        multiply.setMaximumSize(new Dimension(33, 23));
+        multiply.setPreferredSize(new Dimension(33, 23));
         multiply.setBorder(new LineBorder(new Color(150, 150, 150), 1));
-        scaleSelection.setMaximumSize(new Dimension(80, 23));
+        scaleSelection.setPreferredSize(new Dimension(80, 23));
         scaleSelection.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        clearOverlay.setPreferredSize(new Dimension(75, 23));
+        clearOverlay.setBorder(new LineBorder(new Color(150, 150, 150), 1));
 
         incrementByFine.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
         incrementByFine.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
-        incrementByFine.setMaximumSize(new Dimension(45, 23));
+        incrementByFine.setPreferredSize(new Dimension(45, 23));
         incrementByCoarse.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
         incrementByCoarse.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
-        incrementByCoarse.setMaximumSize(new Dimension(45, 23));
+        incrementByCoarse.setPreferredSize(new Dimension(45, 23));
         setValueText.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
         setValueText.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
-        setValueText.setMaximumSize(new Dimension(45, 23));
+        setValueText.setPreferredSize(new Dimension(45, 23));
 
         incrementFine.setToolTipText("Increment Value (Fine)");
         decrementFine.setToolTipText("Decrement Value (Fine)");
@@ -129,6 +145,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         incrementByFine.setToolTipText("Fine Value Adjustment");
         incrementByCoarse.setToolTipText("Coarse Value Adjustment");
         multiply.setToolTipText("Multiply Value");
+        overlayLog.setToolTipText("Enable Overlay Of Real Time Log Data");
+        clearOverlay.setToolTipText("Clear Log Data Overlay Highlights");
 
         incrementFine.addMouseListener(this);
         decrementFine.addMouseListener(this);
@@ -138,6 +156,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         setValue.addMouseListener(this);
         multiply.addMouseListener(this);
         scaleSelection.addItemListener(this);
+        overlayLog.addItemListener(this);
+        clearOverlay.addActionListener(this);
 
         try {
             incrementByFine.setValue(Math.abs(table.getScale().getFineIncrement()));
@@ -310,10 +330,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
                graphFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                ECUEditorManager.getECUEditor().rightPanel.add(graphFrame);
             */
-            
-            
-            
-            
+
+
+
+
             double maxV = table.getMax();
             double minV = table.getMin();
             //TODO Remove this when above is working
@@ -322,8 +342,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             maxV = 13.01;*/
             System.out.println("Scale: " + maxV + "," + minV);
             //***********
-            
-           
+
             //Render 3d
             Graph3dFrameManager.openGraph3dFrame(graphValues, minV, maxV, xValues, yValues, xLabel, yLabel, zLabel, table.getName());
             GraphData.addGraphDataListener(this);
@@ -380,9 +399,19 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void itemStateChanged(ItemEvent e) {
-        // scale changed
         if (e.getSource() == scaleSelection) {
+            // scale changed
             table.setScaleIndex(scaleSelection.getSelectedIndex());
+        } else if (e.getSource() == overlayLog) {
+            // enable/disable log overlay and live data display
+            table.setOverlayLog(overlayLog.isSelected());
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == clearOverlay) {
+            // clear log overlay
+            table.clearLiveDataTrace();
         }
     }
 

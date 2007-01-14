@@ -24,6 +24,8 @@ package enginuity.maps;
 import enginuity.util.JEPUtil;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -49,6 +51,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private double compareValue = 0;
     private int compareType = Table.COMPARE_OFF;
     private int compareDisplay = Table.COMPARE_ABSOLUTE;
+    private Border defaultBorder = new LineBorder(Color.BLACK, 1);
+    private Font defaultFont = new Font("Arial", Font.BOLD, 12);
+    private Border liveDataTraceBorder = new BevelBorder(BevelBorder.RAISED);
 
     public DataCell() {
     }
@@ -57,8 +62,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.scale = scale;
         this.setHorizontalAlignment(CENTER);
         this.setVerticalAlignment(CENTER);
-        this.setFont(new Font("Arial", Font.BOLD, 12));
-        this.setBorder(new LineBorder(Color.BLACK, 1));
+        this.setFont(defaultFont);
+        this.setBorder(defaultBorder);
         this.setOpaque(true);
         this.setVisible(true);
         this.addMouseListener(this);
@@ -238,7 +243,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         if (binValue != getOriginalValue()) {
             this.setBorder(new LineBorder(Color.RED, 3));
         } else {
-            this.setBorder(new LineBorder(Color.BLACK, 1));
+            this.setBorder(defaultBorder);
         }
     }
 
@@ -331,5 +336,15 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
      */
     public double getValue() {
         return calcDisplayValue(binValue, table.getScale().getExpression());
+    }
+
+    public void setLiveDataTrace(boolean trace) {
+        if (trace) {
+            setBorder(liveDataTraceBorder);
+            setForeground(Color.RED);
+        } else {
+            setBorder(defaultBorder);
+            setForeground(Color.BLACK);
+        }
     }
 }
