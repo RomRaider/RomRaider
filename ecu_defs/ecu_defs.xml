@@ -2,7 +2,7 @@
 
 <!-- ENGINUITY STANDARD UNITS ECU DEFINITION FILE (VERSION .782b 11-20-06) -->
 
-   <rom>
+   <rom abstract="true">
       <romid>
          <xmlid>16BITBASE</xmlid>
          <make>Subaru</make>
@@ -11023,7 +11023,7 @@
 
 </rom>
 
-   <rom>
+   <rom abstract="true">
       <romid>
          <xmlid>32BITBASE</xmlid>
          <make>Subaru</make>
