@@ -1,24 +1,3 @@
-/*
- *
- * Enginuity Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006 Enginuity.org
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- */
-
 package enginuity.newmaps.definition.translate;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
@@ -32,14 +11,13 @@ import enginuity.maps.Table3D;
 import enginuity.maps.TableSwitch;
 import enginuity.newmaps.xml.XmlHelper;
 import enginuity.util.HexUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.Vector;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 public class DefinitionBuilder {
         
@@ -151,7 +129,7 @@ public class DefinitionBuilder {
                 StringBuffer path = new StringBuffer(folder.getAbsolutePath()+"/");
                 path.append(rom.getRomID().getMake()+"/");             
                 new File(path+"").mkdir();
-                path.append(rom.getRomID().getMemModel()+"/");
+                path.append(rom.getRomID().getMemModel()+"/");             
                 new File(path+"").mkdir();
                 
                 path.append(rom.getRomIDString() + ".xml");
@@ -401,11 +379,6 @@ public class DefinitionBuilder {
             node.setAttribute("static", "true");
             noOverride = false;
         }
-        // TODO: Test this..
-        if (axis.isLocked() && (parentAxis == null || !parentAxis.isLocked())) {
-            node.setAttribute("static", "true");
-            noOverride = false;
-        }        
         if (axis.getDescription().length() > 0 && (parentAxis == null || !axis.getDescription().equalsIgnoreCase(parentAxis.getDescription()))) {
             //desc.appendChild(doc.createTextNode(axis.getDescription()));
             //noOverride = false;
@@ -483,7 +456,7 @@ public class DefinitionBuilder {
         
         for (int i = 0; i < values.length; i++) {
             sb.append(values[i]+"");
-            if (i < values.length - 1) sb.append(" ");
+            if (i < values.length - 1) sb.append("|");
         }
         
         node.setAttribute("data", sb+"");
