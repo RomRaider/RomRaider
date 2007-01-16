@@ -33,11 +33,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public final class FileLoggerImpl implements FileLogger {
-    private static final String NEW_LINE = "\n";
+    private static final String NEW_LINE = System.getProperty("line.separator");
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
     private final Settings settings;
-    private boolean started = false;
-    private OutputStream os = null;
+    private boolean started;
+    private OutputStream os;
 
     public FileLoggerImpl(Settings settings) {
         checkNotNull(settings);

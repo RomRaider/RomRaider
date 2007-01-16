@@ -48,7 +48,7 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
         fileLogger = new FileLoggerImpl(settings);
     }
 
-    public void addListener(StatusChangeListener listener) {
+    public synchronized void addListener(StatusChangeListener listener) {
         checkNotNull(listener, "listener");
         listeners.add(listener);
     }
@@ -84,11 +84,13 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
         }
     }
 
-    public void cleanUp() {
-        fileLogger.stop();
+    public synchronized void cleanUp() {
+        if (fileLogger.isStarted()) {
+            fileLogger.stop();
+        }
     }
 
-    public void notifyConvertorUpdate(EcuData updatedEcuData) {
+    public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
         resetLine();
         writeHeaders();
     }
@@ -142,14 +144,14 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
             }
         }
 
-        public void updateParamValue(EcuData ecuData, String value, long timestamp) {
+        public synchronized void updateParamValue(EcuData ecuData, String value, long timestamp) {
             if (ecuDataValues.containsKey(ecuData)) {
                 ecuDataValues.put(ecuData, value);
                 lastTimestamp = timestamp;
             }
         }
 
-        public boolean isFull() {
+        public synchronized boolean isFull() {
             for (EcuData ecuData : ecuDataValues.keySet()) {
                 if (ecuDataValues.get(ecuData) == null) {
                     return false;
@@ -158,18 +160,19 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
             return true;
         }
 
-        public String headers() {
+        public synchronized String headers() {
             StringBuilder buffer = new StringBuilder();
             buffer.append("Time");
             for (EcuData ecuData : ecuDataValues.keySet()) {
                 if (!isFileLogController(ecuData)) {
-                    buffer.append(DELIMITER).append(ecuData.getName()).append(" (").append(ecuData.getSelectedConvertor().getUnits()).append(')');
+                    buffer.append(DELIMITER).append(ecuData.getName()).append(" (")
+                            .append(ecuData.getSelectedConvertor().getUnits()).append(')');
                 }
             }
             return buffer.toString();
         }
 
-        public String values() {
+        public synchronized String values() {
             StringBuilder buffer = new StringBuilder();
             buffer.append(lastTimestamp);
             for (EcuData ecuData : ecuDataValues.keySet()) {

@@ -71,7 +71,7 @@ import org.xml.sax.InputSource;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
 
-    private static final String NEW_LINE = "\n";
+    private static final String NEW_LINE = System.getProperty("line.separator");
     private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private RomTree imageList = new RomTree(imageRoot);
     private Settings settings = new Settings();

@@ -32,6 +32,7 @@ import static enginuity.util.ParamChecker.isNullOrEmpty;
 import java.util.Map;
 
 public final class UserProfileImpl implements UserProfile {
+    private static final String NEW_LINE = System.getProperty("line.separator");
     private final Map<String, UserProfileItem> params;
     private final Map<String, UserProfileItem> switches;
     private final String serialPort;
@@ -90,23 +91,23 @@ public final class UserProfileImpl implements UserProfile {
 
     private String buildXml() {
         StringBuilder builder = new StringBuilder();
-        builder.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
-        builder.append("<!DOCTYPE profile SYSTEM \"profile.dtd\">\n\n");
-        builder.append("<profile>\n");
+        builder.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>").append(NEW_LINE);
+        builder.append("<!DOCTYPE profile SYSTEM \"profile.dtd\">").append(NEW_LINE).append(NEW_LINE);
+        builder.append("<profile>").append(NEW_LINE);
         if (serialPort != null && serialPort.length() > 0) {
-            builder.append("    <serial port=\"").append(serialPort).append("\"/>\n");
+            builder.append("    <serial port=\"").append(serialPort).append("\"/>").append(NEW_LINE);
         }
         if (!params.isEmpty()) {
-            builder.append("    <parameters>\n");
+            builder.append("    <parameters>").append(NEW_LINE);
             appendEcuDataElements(builder, "parameter", params, true);
-            builder.append("    </parameters>\n");
+            builder.append("    </parameters>").append(NEW_LINE);
         }
         if (!switches.isEmpty()) {
-            builder.append("    <switches>\n");
+            builder.append("    <switches>").append(NEW_LINE);
             appendEcuDataElements(builder, "switch", switches, false);
-            builder.append("    </switches>\n");
+            builder.append("    </switches>").append(NEW_LINE);
         }
-        builder.append("</profile>\n");
+        builder.append("</profile>").append(NEW_LINE);
         return builder.toString();
     }
 
@@ -126,7 +127,7 @@ public final class UserProfileImpl implements UserProfile {
             if (showUnits && !isNullOrEmpty(item.getUnits())) {
                 builder.append(" units=\"").append(item.getUnits()).append("\"");
             }
-            builder.append("/>\n");
+            builder.append("/>").append(NEW_LINE);
         }
     }
 
