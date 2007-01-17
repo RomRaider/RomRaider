@@ -356,9 +356,10 @@ public class RomDefinitionHandler extends DefaultHandler {
                 switchGroup = (SwitchGroup)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
                 switchGroup = new SwitchGroup(attr.getValue(ATTR_NAME));
-            }            
+            }   
             
             // Set all other attributes
+            System.out.println(attr.getValue(ATTR_USER_LEVEL));
             if (attr.getIndex(ATTR_USER_LEVEL) > -1)
                 switchGroup.setUserLevel(parseInt(attr.getValue(ATTR_USER_LEVEL))); 
             

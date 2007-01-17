@@ -22,6 +22,7 @@
 package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.definition.RomDefinitionHandler;
+import enginuity.newmaps.ecudata.Rom;
 import enginuity.newmaps.xml.SaxParserFactory;
 import static enginuity.util.MD5Checksum.getMD5Checksum;
 import enginuity.util.exception.NameableNotFoundException;
@@ -30,7 +31,9 @@ import org.xml.sax.SAXParseException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -158,8 +161,8 @@ public class IndexBuilder {
 
     public static void testMemUsage() {
         try {
-            File dir = new File("/newdefs");
-            //File dir = new File("/netbeans/enginuity/xmltest");
+            File dir = new File("/newdefs");            
+            //File dir = new File("./xmltest");
             Index index = getIndex(dir);
             RomDefinitionHandler handler = new RomDefinitionHandler(index);
 
@@ -172,25 +175,50 @@ public class IndexBuilder {
                 InputStream inputStream1 = new BufferedInputStream(new FileInputStream(item.getFile()));
                 long start = System.currentTimeMillis();
                 SaxParserFactory.getSaxParser().parse(inputStream1, handler);
+                //System.out.println(handler.getRom());
                 time += (System.currentTimeMillis() - start);
+                
+                saveDef(handler.getRom());
 
             }
-
-            System.out.println(handler.getRom());
+            
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+            
+    }
+    
+    
+    public static void saveDef(Rom rom) {
+        
+        try {
+            FileOutputStream fileOut = new FileOutputStream("/sizetest/" + rom.getName() + ".dat");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+            System.out.println("Writing Hashtable Object...");
+            out.writeObject(rom);
+
+            System.out.println("Closing all output streams...\n");
+            out.close();
+            fileOut.close();  
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }                   
     }
 
 
     public static void main(String[] args) {
         /*try {
-            File file = new File("/netbeans/enginuity/xmltest");
-            IndexBuilder b = new IndexBuilder(file, IndexUtil.getIndex(file));
+            //File file = new File("/newdefs");
+            File file = new File("./xmltest");
+            IndexBuilder b = new IndexBuilder(file, getIndex(file));
         } catch (Exception ex) {
             ex.printStackTrace();
         } */
+        
         testMemUsage();
     }
 }

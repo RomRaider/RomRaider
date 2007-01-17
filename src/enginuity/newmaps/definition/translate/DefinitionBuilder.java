@@ -12,7 +12,10 @@ import enginuity.maps.TableSwitch;
 import enginuity.newmaps.xml.XmlHelper;
 import enginuity.util.HexUtil;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.Vector;
 import org.w3c.dom.Document;
@@ -27,6 +30,24 @@ public class DefinitionBuilder {
     Document doc;
     int num = 0;
     
+    public void saveRom(Rom rom) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream("/sizetest/" + rom.getRomIDString() + ".dat");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+            System.out.println("Writing Hashtable Object...");
+            out.writeObject(rom);
+
+            System.out.println("Closing all output streams...\n");
+            out.close();
+            fileOut.close();  
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+    }
+    
     public DefinitionBuilder(Vector<Rom> roms, File folder) {
         this.roms = roms;
         OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
@@ -40,9 +61,15 @@ public class DefinitionBuilder {
         // Iterate through ROMs for processing
         //
         Iterator it = roms.iterator();
-        while (it.hasNext()) {
+        while (it.hasNext()) {            
+            
             Rom rom = (Rom)it.next();
             Vector<Table> tables = rom.getTables();
+            
+            //
+            /* MEMORY USAGE TEST -- REMOVE LATER! */
+            //
+            saveRom(rom);
             
             // Build rom info
             parentRom = null;
