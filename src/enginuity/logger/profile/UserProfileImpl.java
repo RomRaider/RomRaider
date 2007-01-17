@@ -36,17 +36,23 @@ public final class UserProfileImpl implements UserProfile {
     private final Map<String, UserProfileItem> params;
     private final Map<String, UserProfileItem> switches;
     private final String serialPort;
+    private final String loggerOutputDir;
 
-    public UserProfileImpl(String serialPort, Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches) {
+    public UserProfileImpl(String serialPort, String loggerOutputDir, Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches) {
         checkNotNull(params, "params");
         checkNotNull(switches, "switches");
         this.serialPort = serialPort;
+        this.loggerOutputDir = loggerOutputDir;
         this.params = params;
         this.switches = switches;
     }
 
     public String getSerialPort() {
         return serialPort;
+    }
+
+    public String getLoggerOutputDir() {
+        return loggerOutputDir;
     }
 
     public boolean contains(EcuData ecuData) {
@@ -94,8 +100,11 @@ public final class UserProfileImpl implements UserProfile {
         builder.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>").append(NEW_LINE);
         builder.append("<!DOCTYPE profile SYSTEM \"profile.dtd\">").append(NEW_LINE).append(NEW_LINE);
         builder.append("<profile>").append(NEW_LINE);
-        if (serialPort != null && serialPort.length() > 0) {
+        if (!isNullOrEmpty(serialPort)) {
             builder.append("    <serial port=\"").append(serialPort).append("\"/>").append(NEW_LINE);
+        }
+        if (!isNullOrEmpty(loggerOutputDir)) {
+            builder.append("    <logfilelocation dir=\"").append(loggerOutputDir).append("\"/>").append(NEW_LINE);
         }
         if (!params.isEmpty()) {
             builder.append("    <parameters>").append(NEW_LINE);

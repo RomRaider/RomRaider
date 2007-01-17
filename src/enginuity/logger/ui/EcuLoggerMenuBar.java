@@ -54,6 +54,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem about = new JMenuItem("About Enginuity ECU Logger");
 
     private EcuLogger parent;
+    private static final String USER_HOME_DIR = System.getProperty("user.home");
 
     public EcuLoggerMenuBar(EcuLogger parent) {
         this.parent = parent;
@@ -157,7 +158,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     }
 
     private void setLogFileLocationDialog() throws Exception {
-        File lastLoggerOutputDir = new File(parent.getSettings().getLoggerOutputDirPath());
+        File lastLoggerOutputDir = getFile(parent.getSettings().getLoggerOutputDirPath());
         JFileChooser fc = getLoggerOutputDirFileChooser(lastLoggerOutputDir);
         if (fc.showOpenDialog(parent) == APPROVE_OPTION) {
             String loggerOutputDirPath = fc.getSelectedFile().getAbsolutePath();
@@ -167,7 +168,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     }
 
     private void loadProfileDialog() throws Exception {
-        File lastProfileFile = new File(parent.getSettings().getLoggerProfileFilePath());
+        File lastProfileFile = getFile(parent.getSettings().getLoggerProfileFilePath());
         JFileChooser fc = getProfileFileChooser(lastProfileFile);
         if (fc.showOpenDialog(parent) == APPROVE_OPTION) {
             String profileFilePath = fc.getSelectedFile().getAbsolutePath();
@@ -178,13 +179,17 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         }
     }
 
+    private File getFile(String filePath) {
+        return filePath == null ? new File(USER_HOME_DIR) : new File(filePath);
+    }
+
     private void saveProfile() throws Exception {
         File lastProfileFile = new File(parent.getSettings().getLoggerProfileFilePath());
         saveProfileToFile(lastProfileFile);
     }
 
     private void saveProfileAs() throws Exception {
-        File lastProfileFile = new File(parent.getSettings().getLoggerProfileFilePath());
+        File lastProfileFile = getFile(parent.getSettings().getLoggerProfileFilePath());
         JFileChooser fc = getProfileFileChooser(lastProfileFile);
         if (fc.showSaveDialog(parent) == APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();

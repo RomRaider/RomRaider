@@ -3,6 +3,9 @@
 <!ELEMENT serial EMPTY >
 <!ATTLIST serial port CDATA #REQUIRED >
 
+<!ELEMENT logfilelocation EMPTY >
+<!ATTLIST logfilelocation dir CDATA #REQUIRED >
+
 <!ELEMENT parameter EMPTY >
 <!ATTLIST parameter id ID #REQUIRED >
 <!ATTLIST parameter livedata ( selected ) #IMPLIED >
@@ -20,4 +23,4 @@
 
 <!ELEMENT switches ( switch+ ) >
 
-<!ELEMENT profile ( serial?, parameters*, switches* ) >
+<!ELEMENT profile ( serial?, logfilelocation?, parameters*, switches* ) >

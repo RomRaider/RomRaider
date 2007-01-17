@@ -241,6 +241,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             UserProfileLoader profileLoader = new UserProfileLoaderImpl();
             UserProfile profile = profileLoader.loadProfile(profileFilePath);
             setSelectedPort(profile);
+            setLoggerOutputDir(profile);
             applyUserProfile(profile);
             File profileFile = new File(profileFilePath);
             if (profileFile.exists()) {
@@ -291,6 +292,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         if (profile != null) {
             settings.setLoggerPort(profile.getSerialPort());
             portsComboBox.setSelectedItem(profile.getSerialPort());
+        }
+    }
+
+    private void setLoggerOutputDir(UserProfile profile) {
+        if (profile != null) {
+            settings.setLoggerOutputDirPath(profile.getLoggerOutputDir());
         }
     }
 
@@ -367,7 +374,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 graphTabParamListTableModel.getParameterRows(), dashboardTabParamListTableModel.getParameterRows());
         Map<String, UserProfileItem> switchProfileItems = getProfileItems(dataTabSwitchListTableModel.getParameterRows(),
                 graphTabSwitchListTableModel.getParameterRows(), dashboardTabSwitchListTableModel.getParameterRows());
-        return new UserProfileImpl((String) portsComboBox.getSelectedItem(), paramProfileItems, switchProfileItems);
+        return new UserProfileImpl((String) portsComboBox.getSelectedItem(), settings.getLoggerOutputDirPath(), paramProfileItems, switchProfileItems);
     }
 
     private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows, List<ParameterRow> graphTabRows, List<ParameterRow> dashTabRows) {
@@ -606,6 +613,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportError(Exception e) {
         if (e != null) {
+            e.printStackTrace();
             String error = e.getMessage();
             if (error != null) {
                 reportError(error);
