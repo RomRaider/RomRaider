@@ -21,19 +21,18 @@
 
 package enginuity.logger.ui;
 
-import enginuity.logger.EcuLogger;
-import enginuity.logger.profile.UserProfileFileFilter;
-
-import javax.swing.*;
-import static javax.swing.JFileChooser.APPROVE_OPTION;
-import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
-import static javax.swing.JOptionPane.OK_OPTION;
-import static javax.swing.JOptionPane.showConfirmDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import javax.swing.*;
+import static javax.swing.JFileChooser.APPROVE_OPTION;
+import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
+import static javax.swing.JOptionPane.OK_OPTION;
+import static javax.swing.JOptionPane.showConfirmDialog;
+import enginuity.logger.EcuLogger;
+import enginuity.logger.profile.UserProfileFileFilter;
 
 public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 
@@ -46,6 +45,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 
     private JMenu settingsMenu = new JMenu("Settings");
     private JMenuItem logFileLocation = new JMenuItem("Log File Output Location...");
+    private JMenuItem logFileControllerSwitch = new JRadioButtonMenuItem("Control File Logging With Defogger Switch");
 
     private JMenu connectionMenu = new JMenu("Connection");
     private JMenuItem resetConnection = new JMenuItem("Reset Connection to ECU...");
@@ -83,8 +83,13 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         add(settingsMenu);
         settingsMenu.setMnemonic('E');
         logFileLocation.setMnemonic('F');
+        logFileControllerSwitch.setMnemonic('C');
         settingsMenu.add(logFileLocation);
+        settingsMenu.add(new JSeparator());
+        settingsMenu.add(logFileControllerSwitch);
         logFileLocation.addActionListener(this);
+        logFileControllerSwitch.addActionListener(this);
+        logFileControllerSwitch.setSelected(parent.getSettings().isFileLoggingControllerSwitchActive());
 
         // connection menu items
         add(connectionMenu);
@@ -138,11 +143,18 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
             parent.handleExit();
             parent.dispose();
             parent.setVisible(false);
-            //System.exit(0);
 
         } else if (evt.getSource() == logFileLocation) {
             try {
                 setLogFileLocationDialog();
+            } catch (Exception e) {
+                parent.reportError(e);
+            }
+
+        } else if (evt.getSource() == logFileControllerSwitch) {
+            try {
+                parent.getSettings().setFileLoggingControllerSwitchActive(logFileControllerSwitch.isSelected());
+
             } catch (Exception e) {
                 parent.reportError(e);
             }
@@ -174,13 +186,9 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
             String profileFilePath = fc.getSelectedFile().getAbsolutePath();
             parent.loadUserProfile(profileFilePath);
             parent.getSettings().setLoggerProfileFilePath(profileFilePath);
-            parent.setTitle("Profile: " + profileFilePath);
+            parent.reportMessageInTitleBar("Profile: " + profileFilePath);
             parent.reportMessage("Profile succesfully loaded: " + profileFilePath);
         }
-    }
-
-    private File getFile(String filePath) {
-        return filePath == null ? new File(USER_HOME_DIR) : new File(filePath);
     }
 
     private void saveProfile() throws Exception {
@@ -213,7 +221,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
             fos.close();
         }
         parent.getSettings().setLoggerProfileFilePath(profileFilePath);
-        parent.setTitle("Profile: " + profileFilePath);
+        parent.reportMessageInTitleBar("Profile: " + profileFilePath);
         parent.reportMessage("Profile succesfully saved: " + profileFilePath);
     }
 
@@ -237,6 +245,10 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         }
         fc.setFileSelectionMode(DIRECTORIES_ONLY);
         return fc;
+    }
+
+    private File getFile(String filePath) {
+        return filePath == null ? new File(USER_HOME_DIR) : new File(filePath);
     }
 
 }

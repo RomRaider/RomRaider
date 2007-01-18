@@ -21,16 +21,16 @@
 
 package enginuity.logger.ui.handler.file;
 
-import enginuity.Settings;
-import enginuity.logger.exception.FileLoggerException;
-import static enginuity.util.ParamChecker.checkNotNull;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import enginuity.Settings;
+import enginuity.logger.exception.FileLoggerException;
+import enginuity.logger.ui.MessageListener;
+import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class FileLoggerImpl implements FileLogger {
     private static final String NEW_LINE = System.getProperty("line.separator");
@@ -38,10 +38,12 @@ public final class FileLoggerImpl implements FileLogger {
     private final Settings settings;
     private boolean started;
     private OutputStream os;
+    private final MessageListener messageListener;
 
-    public FileLoggerImpl(Settings settings) {
-        checkNotNull(settings);
+    public FileLoggerImpl(Settings settings, MessageListener messageListener) {
+        checkNotNull(settings, messageListener);
         this.settings = settings;
+        this.messageListener = messageListener;
     }
 
     public void start() {
@@ -50,7 +52,7 @@ public final class FileLoggerImpl implements FileLogger {
             try {
                 String filePath = buildFilePath();
                 os = new BufferedOutputStream(new FileOutputStream(filePath));
-                System.out.println("Started logging to file: " + filePath);
+                messageListener.reportMessageInTitleBar("Started logging to file: " + filePath);
             } catch (Exception e) {
                 stop();
                 throw new FileLoggerException(e);
@@ -63,7 +65,7 @@ public final class FileLoggerImpl implements FileLogger {
         if (os != null) {
             try {
                 os.close();
-                System.out.println("Stopped logging to file.");
+                messageListener.reportMessageInTitleBar("Stopped logging to file.");
             } catch (Exception e) {
                 throw new FileLoggerException(e);
             }

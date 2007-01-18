@@ -21,6 +21,7 @@
 
 package enginuity.logger.profile;
 
+import java.util.Map;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataConvertor;
 import enginuity.logger.definition.EcuParameter;
@@ -29,30 +30,22 @@ import enginuity.logger.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 
-import java.util.Map;
-
 public final class UserProfileImpl implements UserProfile {
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final Map<String, UserProfileItem> params;
     private final Map<String, UserProfileItem> switches;
     private final String serialPort;
-    private final String loggerOutputDir;
 
-    public UserProfileImpl(String serialPort, String loggerOutputDir, Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches) {
+    public UserProfileImpl(String serialPort, Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches) {
         checkNotNull(params, "params");
         checkNotNull(switches, "switches");
         this.serialPort = serialPort;
-        this.loggerOutputDir = loggerOutputDir;
         this.params = params;
         this.switches = switches;
     }
 
     public String getSerialPort() {
         return serialPort;
-    }
-
-    public String getLoggerOutputDir() {
-        return loggerOutputDir;
     }
 
     public boolean contains(EcuData ecuData) {
@@ -102,9 +95,6 @@ public final class UserProfileImpl implements UserProfile {
         builder.append("<profile>").append(NEW_LINE);
         if (!isNullOrEmpty(serialPort)) {
             builder.append("    <serial port=\"").append(serialPort).append("\"/>").append(NEW_LINE);
-        }
-        if (!isNullOrEmpty(loggerOutputDir)) {
-            builder.append("    <logfilelocation dir=\"").append(loggerOutputDir).append("\"/>").append(NEW_LINE);
         }
         if (!params.isEmpty()) {
             builder.append("    <parameters>").append(NEW_LINE);

@@ -28,8 +28,6 @@ public interface UserProfile {
 
     String getSerialPort();
 
-    String getLoggerOutputDir();
-
     boolean contains(EcuData ecuData);
 
     boolean isSelectedOnLiveDataTab(EcuData ecuData);

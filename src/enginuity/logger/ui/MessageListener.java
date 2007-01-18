@@ -27,6 +27,8 @@ public interface MessageListener {
 
     void reportMessage(String message);
 
+    void reportMessageInTitleBar(String message);
+
     void reportError(String error);
 
     void reportError(Exception e);

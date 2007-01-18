@@ -21,30 +21,41 @@
 
 package enginuity.logger;
 
+import java.awt.*;
+import static java.awt.BorderLayout.*;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.RED;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import static java.util.Collections.sort;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.*;
+import static javax.swing.JLabel.RIGHT;
+import static javax.swing.JScrollPane.*;
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+import static javax.swing.JSplitPane.VERTICAL_SPLIT;
+import static javax.swing.JTabbedPane.BOTTOM;
+import javax.swing.border.BevelBorder;
+import static javax.swing.border.BevelBorder.LOWERED;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import enginuity.Settings;
 import enginuity.io.port.SerialPortRefresher;
 import enginuity.logger.comms.controller.LoggerController;
 import enginuity.logger.comms.controller.LoggerControllerImpl;
 import enginuity.logger.comms.query.EcuInit;
 import enginuity.logger.comms.query.EcuInitCallback;
-import enginuity.logger.definition.EcuData;
-import enginuity.logger.definition.EcuDataLoader;
-import enginuity.logger.definition.EcuDataLoaderImpl;
-import enginuity.logger.definition.EcuParameter;
-import enginuity.logger.definition.EcuSwitch;
-import enginuity.logger.profile.UserProfile;
-import enginuity.logger.profile.UserProfileImpl;
-import enginuity.logger.profile.UserProfileItem;
-import enginuity.logger.profile.UserProfileItemImpl;
-import enginuity.logger.profile.UserProfileLoader;
-import enginuity.logger.profile.UserProfileLoaderImpl;
-import enginuity.logger.ui.DataRegistrationBroker;
-import enginuity.logger.ui.DataRegistrationBrokerImpl;
-import enginuity.logger.ui.EcuDataComparator;
-import enginuity.logger.ui.EcuLoggerMenuBar;
-import enginuity.logger.ui.MessageListener;
-import enginuity.logger.ui.SerialPortComboBox;
-import enginuity.logger.ui.StatusIndicator;
+import enginuity.logger.comms.query.LoggerCallback;
+import enginuity.logger.definition.*;
+import enginuity.logger.profile.*;
+import enginuity.logger.ui.*;
 import enginuity.logger.ui.handler.DataUpdateHandler;
 import enginuity.logger.ui.handler.DataUpdateHandlerManager;
 import enginuity.logger.ui.handler.DataUpdateHandlerManagerImpl;
@@ -60,39 +71,8 @@ import enginuity.logger.ui.paramlist.ParameterListTableModel;
 import enginuity.logger.ui.paramlist.ParameterRow;
 import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.ParamChecker.checkNotNull;
+import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
-
-import javax.swing.*;
-import static javax.swing.JLabel.RIGHT;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
-import static javax.swing.JSplitPane.VERTICAL_SPLIT;
-import static javax.swing.JTabbedPane.BOTTOM;
-import javax.swing.border.BevelBorder;
-import static javax.swing.border.BevelBorder.LOWERED;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.*;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.EAST;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.BorderLayout.SOUTH;
-import static java.awt.BorderLayout.WEST;
-import static java.awt.Color.BLACK;
-import static java.awt.Color.RED;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import static java.util.Collections.sort;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /*
 TODO: add better debug logging, preferably to a file and switchable (on/off)
@@ -111,6 +91,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private static final String ENGINUITY_ECU_LOGGER_TITLE = "Enginuity ECU Logger";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
+    private final String id;
     private Settings settings;
     private LoggerController controller;
     private JLabel messageLabel;
@@ -140,6 +121,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
+        id = System.currentTimeMillis() + "_" + hashCode();
         bootstrap(settings);
         initControllerListeners();
         initUserInterface();
@@ -153,7 +135,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void bootstrap(final Settings settings) {
         checkNotNull(settings);
         this.settings = settings;
-
         EcuInitCallback ecuInitCallback = new EcuInitCallback() {
             public void callback(EcuInit newEcuInit) {
                 System.out.println("ECU ID = " + newEcuInit.getEcuId());
@@ -164,7 +145,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 }
             }
         };
-
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this);
         messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
         statsLabel = buildStatsLabel();
@@ -182,7 +162,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dashboardTabBroker = new DataRegistrationBrokerImpl(controller, dashboardHandlerManager);
         dashboardTabParamListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_PARAMETERS);
         dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
-        fileUpdateHandler = new FileUpdateHandler(settings);
+        fileUpdateHandler = new FileUpdateHandler(settings, this);
         dataTableModel = new LiveDataTableModel();
         liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
         graphPanel = new JPanel(new SpringLayout());
@@ -225,11 +205,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void loadLoggerConfig() {
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-            dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(), ecuInit);
+            dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(),
+                    settings.getFileLoggingControllerSwitchId(), ecuInit);
             List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
             addConvertorUpdateListeners(ecuParams);
             loadEcuParams(ecuParams, null);
             loadEcuSwitches(dataLoader.getEcuSwitches(), null);
+            initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
         } catch (Exception e) {
             e.printStackTrace();
             reportError(e);
@@ -241,16 +223,29 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             UserProfileLoader profileLoader = new UserProfileLoaderImpl();
             UserProfile profile = profileLoader.loadProfile(profileFilePath);
             setSelectedPort(profile);
-            setLoggerOutputDir(profile);
             applyUserProfile(profile);
             File profileFile = new File(profileFilePath);
             if (profileFile.exists()) {
-                setTitle("Profile: " + profileFile.getAbsolutePath());
+                reportMessageInTitleBar("Profile: " + profileFile.getAbsolutePath());
             }
         } catch (Exception e) {
             e.printStackTrace();
             reportError(e);
         }
+    }
+
+    private void initFileLoggingController(final EcuSwitch fileLoggingControllerSwitch) {
+        // add logger and setup callback
+        controller.addLogger(id, fileLoggingControllerSwitch, new LoggerCallback() {
+            public void callback(byte[] bytes) {
+                // update handlers
+                if ((int) fileLoggingControllerSwitch.getSelectedConvertor().convert(bytes) == 1) {
+                    fileUpdateHandler.start();
+                } else {
+                    fileUpdateHandler.stop();
+                }
+            }
+        });
     }
 
     private void applyUserProfile(UserProfile profile) {
@@ -264,7 +259,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
-    private void applyUserProfileToLiveDataTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
+    private void applyUserProfileToLiveDataTabParameters(ParameterListTableModel paramListTableModel,
+                                                         UserProfile profile) {
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
             EcuData ecuData = row.getEcuData();
@@ -272,7 +268,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
-    private void applyUserProfileToGraphTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
+    private void applyUserProfileToGraphTabParameters(ParameterListTableModel paramListTableModel,
+                                                      UserProfile profile) {
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
             EcuData ecuData = row.getEcuData();
@@ -292,12 +289,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         if (profile != null) {
             settings.setLoggerPort(profile.getSerialPort());
             portsComboBox.setSelectedItem(profile.getSerialPort());
-        }
-    }
-
-    private void setLoggerOutputDir(UserProfile profile) {
-        if (profile != null) {
-            settings.setLoggerOutputDirPath(profile.getLoggerOutputDir());
         }
     }
 
@@ -372,12 +363,15 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public UserProfile getCurrentProfile() {
         Map<String, UserProfileItem> paramProfileItems = getProfileItems(dataTabParamListTableModel.getParameterRows(),
                 graphTabParamListTableModel.getParameterRows(), dashboardTabParamListTableModel.getParameterRows());
-        Map<String, UserProfileItem> switchProfileItems = getProfileItems(dataTabSwitchListTableModel.getParameterRows(),
+        Map<String, UserProfileItem> switchProfileItems = getProfileItems(
+                dataTabSwitchListTableModel.getParameterRows(),
                 graphTabSwitchListTableModel.getParameterRows(), dashboardTabSwitchListTableModel.getParameterRows());
-        return new UserProfileImpl((String) portsComboBox.getSelectedItem(), settings.getLoggerOutputDirPath(), paramProfileItems, switchProfileItems);
+        return new UserProfileImpl((String) portsComboBox.getSelectedItem(), paramProfileItems, switchProfileItems);
     }
 
-    private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows, List<ParameterRow> graphTabRows, List<ParameterRow> dashTabRows) {
+    private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows,
+                                                         List<ParameterRow> graphTabRows,
+                                                         List<ParameterRow> dashTabRows) {
         Map<String, UserProfileItem> profileItems = new HashMap<String, UserProfileItem>();
         for (ParameterRow dataTabRow : dataTabRows) {
             String id = dataTabRow.getEcuData().getId();
@@ -419,15 +413,21 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildTabbedPane() {
-        tabbedPane.add("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel), buildDataTab()));
-        tabbedPane.add("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel), buildGraphTab()));
-        tabbedPane.add("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel), buildDashboardTab()));
+        tabbedPane.add("Data", buildSplitPane(
+                buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel), buildDataTab()));
+        tabbedPane.add("Graph", buildSplitPane(
+                buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel), buildGraphTab()));
+        tabbedPane.add("Dashboard", buildSplitPane(
+                buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel),
+                buildDashboardTab()));
         return tabbedPane;
     }
 
     private JComponent buildParamListPane(TableModel paramListTableModel, TableModel switchListTableModel) {
-        JScrollPane paramList = new JScrollPane(buildParamListTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane paramList = new JScrollPane(buildParamListTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED,
+                HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel),
+                VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, paramList, switchList);
         splitPane.setDividerSize(2);
         splitPane.setDividerLocation(400);
@@ -441,7 +441,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return paramListTable;
     }
 
-    private void changeColumnWidth(JTable paramListTable, int colIndex, int minWidth, int maxWidth, int preferredWidth) {
+    private void changeColumnWidth(JTable paramListTable, int colIndex, int minWidth, int maxWidth,
+                                   int preferredWidth) {
         TableColumn column = paramListTable.getColumnModel().getColumn(colIndex);
         column.setMinWidth(minWidth);
         column.setMaxWidth(maxWidth);
@@ -591,8 +592,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
+    public void reportMessageInTitleBar(String message) {
+        if (!isNullOrEmpty(message)) {
+            setTitle(message);
+        }
+    }
+
     public void reportStats(String message) {
-        if (message != null) {
+        if (!isNullOrEmpty(message)) {
             statsLabel.setText(message);
         }
     }
@@ -605,7 +612,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void reportError(String error) {
-        if (error != null) {
+        if (!isNullOrEmpty(error)) {
             messageLabel.setText("Error: " + error);
             messageLabel.setForeground(RED);
         }
@@ -615,7 +622,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         if (e != null) {
             e.printStackTrace();
             String error = e.getMessage();
-            if (error != null) {
+            if (!isNullOrEmpty(error)) {
                 reportError(error);
             } else {
                 reportError(e.toString());
@@ -624,10 +631,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void setTitle(String title) {
-        if (!title.startsWith(ENGINUITY_ECU_LOGGER_TITLE)) {
-            title = ENGINUITY_ECU_LOGGER_TITLE + (title.length() == 0 ? "" : " - " + title);
+        if (title != null) {
+            if (!title.startsWith(ENGINUITY_ECU_LOGGER_TITLE)) {
+                title = ENGINUITY_ECU_LOGGER_TITLE + (title.length() == 0 ? "" : " - " + title);
+            }
+            super.setTitle(title);
         }
-        super.setTitle(title);
     }
 
     //**********************************************************************

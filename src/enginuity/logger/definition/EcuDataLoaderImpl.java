@@ -21,33 +21,36 @@
 
 package enginuity.logger.definition;
 
-import enginuity.logger.comms.query.EcuInit;
-import enginuity.logger.definition.xml.LoggerDefinitionHandler;
-import enginuity.logger.exception.ConfigurationException;
-import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
-import static enginuity.util.SaxParserFactory.getSaxParser;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import enginuity.logger.comms.query.EcuInit;
+import enginuity.logger.definition.xml.LoggerDefinitionHandler;
+import enginuity.logger.exception.ConfigurationException;
+import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+import static enginuity.util.SaxParserFactory.getSaxParser;
 
 public final class EcuDataLoaderImpl implements EcuDataLoader {
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
+    private EcuSwitch fileLoggingControllerSwitch;
 
-    public void loadFromXml(String loggerConfigFilePath, String protocol, EcuInit ecuInit) {
+    public void loadFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId,
+                            EcuInit ecuInit) {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
         checkNotNullOrEmpty(protocol, "protocol");
+        checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
             try {
-                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol, ecuInit);
+                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol, fileLoggingControllerSwitchId, ecuInit);
                 getSaxParser().parse(inputStream, handler);
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();
+                fileLoggingControllerSwitch = handler.getFileLoggingControllerSwitch();
             } finally {
                 inputStream.close();
             }
@@ -64,4 +67,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         return ecuSwitches;
     }
 
+    public EcuSwitch getFileLoggingControllerSwitch() {
+        return fileLoggingControllerSwitch;
+    }
 }

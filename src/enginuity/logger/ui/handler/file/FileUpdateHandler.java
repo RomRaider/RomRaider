@@ -21,31 +21,28 @@
 
 package enginuity.logger.ui.handler.file;
 
+import java.util.*;
+import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
 import enginuity.Settings;
 import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
-import enginuity.logger.definition.EcuSwitch;
+import enginuity.logger.ui.MessageListener;
 import enginuity.logger.ui.StatusChangeListener;
 import enginuity.logger.ui.handler.DataUpdateHandler;
 import static enginuity.util.ParamChecker.checkNotNull;
 
-import java.util.ArrayList;
-import static java.util.Collections.synchronizedList;
-import static java.util.Collections.synchronizedMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
+    private final Settings settings;
     private final FileLogger fileLogger;
     private final Map<EcuData, Integer> ecuDatas = synchronizedMap(new LinkedHashMap<EcuData, Integer>());
     private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
     private Line currentLine = new Line(ecuDatas.keySet());
 
-    public FileUpdateHandler(Settings settings) {
+    public FileUpdateHandler(Settings settings, MessageListener messageListener) {
         checkNotNull(settings);
-        fileLogger = new FileLoggerImpl(settings);
+        this.settings = settings;
+        fileLogger = new FileLoggerImpl(settings, messageListener);
     }
 
     public synchronized void addListener(StatusChangeListener listener) {
@@ -64,7 +61,6 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
     }
 
     public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
-        checkStartStopFileLogging(ecuData, (int) value);
         if (fileLogger.isStarted()) {
             currentLine.updateParamValue(ecuData, ecuData.getSelectedConvertor().format(value), timestamp);
             if (currentLine.isFull()) {
@@ -95,25 +91,23 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
         writeHeaders();
     }
 
-    private void resetLine() {
-        currentLine = new Line(ecuDatas.keySet());
-    }
-
-    private void checkStartStopFileLogging(EcuData ecuData, int value) {
-        if (isFileLogController(ecuData)) {
-            if (value == 1 && !fileLogger.isStarted()) {
-                fileLogger.start();
-                notifyListeners(true);
-                writeHeaders();
-            } else if (value == 0 && fileLogger.isStarted()) {
-                fileLogger.stop();
-                notifyListeners(false);
-            }
+    public synchronized void start() {
+        if (settings.isFileLoggingControllerSwitchActive() && !fileLogger.isStarted()) {
+            fileLogger.start();
+            notifyListeners(true);
+            writeHeaders();
         }
     }
 
-    private boolean isFileLogController(EcuData ecuData) {
-        return ecuData instanceof EcuSwitch && ((EcuSwitch) ecuData).isFileLogController();
+    public synchronized void stop() {
+        if (fileLogger.isStarted()) {
+            fileLogger.stop();
+            notifyListeners(false);
+        }
+    }
+
+    private void resetLine() {
+        currentLine = new Line(ecuDatas.keySet());
     }
 
     private void writeHeaders() {
@@ -164,10 +158,8 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
             StringBuilder buffer = new StringBuilder();
             buffer.append("Time");
             for (EcuData ecuData : ecuDataValues.keySet()) {
-                if (!isFileLogController(ecuData)) {
-                    buffer.append(DELIMITER).append(ecuData.getName()).append(" (")
-                            .append(ecuData.getSelectedConvertor().getUnits()).append(')');
-                }
+                buffer.append(DELIMITER).append(ecuData.getName()).append(" (")
+                        .append(ecuData.getSelectedConvertor().getUnits()).append(')');
             }
             return buffer.toString();
         }
@@ -176,10 +168,8 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
             StringBuilder buffer = new StringBuilder();
             buffer.append(lastTimestamp);
             for (EcuData ecuData : ecuDataValues.keySet()) {
-                if (!isFileLogController(ecuData)) {
-                    String value = ecuDataValues.get(ecuData);
-                    buffer.append(DELIMITER).append(value);
-                }
+                String value = ecuDataValues.get(ecuData);
+                buffer.append(DELIMITER).append(value);
             }
             return buffer.toString();
         }

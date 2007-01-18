@@ -854,7 +854,7 @@
                 </parameter>-->
                 <!-- JDM STI specific - END -->
 
-                
+
                 <!-- Derived parameters must be specified after standard parameters or parsing of xml will fail!! -->
                 <!-- Be careful of cyclic dependencies! -->
 
@@ -915,7 +915,7 @@
                 <switch id="S17" name="Electrical Load Signal" desc="" byte="0x000063" bit="0"/>
                 <switch id="S18" name="Crank Position Sensor" desc="" byte="0x000064" bit="7"/>
                 <switch id="S19" name="Cam Position Sensor" desc="" byte="0x000064" bit="6"/>
-                <switch id="S20" name="Defogger Switch" desc="" byte="0x000064" bit="5" filelogcontroller="yes"/>
+                <switch id="S20" name="Defogger Switch" desc="" byte="0x000064" bit="5"/>
                 <switch id="S21" name="Blower Switch" desc="" byte="0x000064" bit="4"/>
                 <switch id="S22" name="Interior Light Switch" desc="" byte="0x000064" bit="3"/>
                 <switch id="S23" name="Wiper Switch" desc="" byte="0x000064" bit="2"/>

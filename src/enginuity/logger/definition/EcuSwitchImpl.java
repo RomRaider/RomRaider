@@ -31,10 +31,10 @@ public final class EcuSwitchImpl implements EcuSwitch {
     private final String description;
     private final String[] addresses;
     private final EcuDataConvertor[] convertors;
-    private final boolean fileLogController;
     private int selectedConvertorIndex = 0;
+    private boolean fileLogController;
 
-    public EcuSwitchImpl(String id, String name, String description, String[] address, EcuDataConvertor[] convertors, boolean fileLogController) {
+    public EcuSwitchImpl(String id, String name, String description, String[] address, EcuDataConvertor[] convertors) {
         checkNotNullOrEmpty(id, "id");
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");
@@ -45,7 +45,6 @@ public final class EcuSwitchImpl implements EcuSwitch {
         this.description = description;
         this.addresses = address;
         this.convertors = convertors;
-        this.fileLogController = fileLogController;
     }
 
     public String getId() {
@@ -83,6 +82,10 @@ public final class EcuSwitchImpl implements EcuSwitch {
 
     public EcuDataType getDataType() {
         return SWITCH;
+    }
+
+    public void setFileLogController(boolean fileLogController) {
+        this.fileLogController = fileLogController;
     }
 
     public boolean isFileLogController() {

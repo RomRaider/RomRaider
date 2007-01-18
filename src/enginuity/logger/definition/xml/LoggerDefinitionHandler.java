@@ -21,32 +21,14 @@
 
 package enginuity.logger.definition.xml;
 
+import java.util.*;
 import enginuity.logger.comms.query.EcuInit;
-import enginuity.logger.definition.EcuData;
-import enginuity.logger.definition.EcuDataConvertor;
-import enginuity.logger.definition.EcuDerivedParameterConvertor;
-import enginuity.logger.definition.EcuDerivedParameterConvertorImpl;
-import enginuity.logger.definition.EcuDerivedParameterImpl;
-import enginuity.logger.definition.EcuParameter;
-import enginuity.logger.definition.EcuParameterConvertorImpl;
-import enginuity.logger.definition.EcuParameterImpl;
-import enginuity.logger.definition.EcuSwitch;
-import enginuity.logger.definition.EcuSwitchConvertorImpl;
-import enginuity.logger.definition.EcuSwitchImpl;
+import enginuity.logger.definition.*;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public final class LoggerDefinitionHandler extends DefaultHandler {
-    private static final String YES = "yes";
     private static final String TAG_PROTOCOL = "protocol";
     private static final String TAG_PARAMETER = "parameter";
     private static final String TAG_ADDRESS = "address";
@@ -69,11 +51,12 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_BYTE = "byte";
     private static final String ATTR_BIT = "bit";
     private static final String ATTR_PARAMETER = "parameter";
-    private static final String ATTR_FILELOGCONTROLLER = "filelogcontroller";
     private final String protocol;
+    private final String fileLoggingControllerSwitchId;
     private final EcuInit ecuInit;
     private List<EcuParameter> params;
     private List<EcuSwitch> switches;
+    private EcuSwitch fileLoggingControllerSwitch;
     private Map<String, EcuData> ecuDataMap;
     private String id;
     private String name;
@@ -86,15 +69,16 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private Map<String, String[]> ecuAddressMap;
     private boolean derived;
     private int bit;
-    private boolean fileLogController;
     private Set<EcuDataConvertor> convertorList;
     private Set<EcuDerivedParameterConvertor> derivedConvertorList;
     private StringBuilder charBuffer;
     private boolean parseProtocol;
 
-    public LoggerDefinitionHandler(String protocol, EcuInit ecuInit) {
+    public LoggerDefinitionHandler(String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(protocol, "protocol");
+        checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
         this.protocol = protocol;
+        this.fileLoggingControllerSwitchId = fileLoggingControllerSwitchId;
         this.ecuInit = ecuInit;
     }
 
@@ -128,10 +112,12 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 derivedConvertorList = new LinkedHashSet<EcuDerivedParameterConvertor>();
             } else if (TAG_CONVERSION.equals(qName)) {
                 if (derived) {
-                    derivedConvertorList.add(new EcuDerivedParameterConvertorImpl(attributes.getValue(ATTR_UNITS), attributes.getValue(ATTR_EXPRESSION),
+                    derivedConvertorList.add(new EcuDerivedParameterConvertorImpl(attributes.getValue(ATTR_UNITS),
+                            attributes.getValue(ATTR_EXPRESSION),
                             attributes.getValue(ATTR_FORMAT)));
                 } else {
-                    convertorList.add(new EcuParameterConvertorImpl(attributes.getValue(ATTR_UNITS), attributes.getValue(ATTR_EXPRESSION),
+                    convertorList.add(new EcuParameterConvertorImpl(attributes.getValue(ATTR_UNITS),
+                            attributes.getValue(ATTR_EXPRESSION),
                             attributes.getValue(ATTR_FORMAT)));
                 }
             } else if (TAG_SWITCH.equals(qName)) {
@@ -141,7 +127,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 addressList = new HashSet<String>();
                 addressList.add(attributes.getValue(ATTR_BYTE));
                 bit = Integer.valueOf(attributes.getValue(ATTR_BIT));
-                fileLogController = YES.equals(attributes.getValue(ATTR_FILELOGCONTROLLER));
             } else if (TAG_ECUPARAM.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);
@@ -175,25 +160,35 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         }
                     }
                     if (dependsList.size() == dependencies.size()) {
-                        EcuParameter param = new EcuDerivedParameterImpl(id, name, desc, dependencies.toArray(new EcuData[dependencies.size()]),
-                                derivedConvertorList.toArray(new EcuDerivedParameterConvertor[derivedConvertorList.size()]));
+                        EcuParameter param = new EcuDerivedParameterImpl(id, name, desc,
+                                dependencies.toArray(new EcuData[dependencies.size()]),
+                                derivedConvertorList.toArray(
+                                        new EcuDerivedParameterConvertor[derivedConvertorList.size()]));
                         params.add(param);
                         ecuDataMap.put(param.getId(), param);
                     }
                 } else {
-                    if (ecuByteIndex == null || ecuBit == null || ecuInit == null || isSupportedParameter(ecuInit, ecuByteIndex, ecuBit)) {
-                        EcuParameter param = new EcuParameterImpl(id, name, desc, toArray(addressList), convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+                    if (ecuByteIndex == null || ecuBit == null || ecuInit == null || isSupportedParameter(ecuInit,
+                            ecuByteIndex, ecuBit)) {
+                        EcuParameter param = new EcuParameterImpl(id, name, desc, toArray(addressList),
+                                convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                         params.add(param);
                         ecuDataMap.put(param.getId(), param);
                     }
                 }
             } else if (TAG_SWITCH.equals(qName)) {
-                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList), new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)}, fileLogController);
+                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList),
+                        new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)});
                 switches.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
+                if (id.equalsIgnoreCase(fileLoggingControllerSwitchId)) {
+                    fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList),
+                            new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)});
+                }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
-                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()), convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
+                            convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                     params.add(param);
                     ecuDataMap.put(param.getId(), param);
                 }
@@ -220,10 +215,13 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         return switches;
     }
 
+    public EcuSwitch getFileLoggingControllerSwitch() {
+        return fileLoggingControllerSwitch;
+    }
+
     private String[] toArray(Set<String> set) {
         String[] addresses = new String[set.size()];
         set.toArray(addresses);
         return addresses;
     }
-
 }

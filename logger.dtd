@@ -30,7 +30,6 @@
 <!ELEMENT parameters ( parameter+ ) >
 
 <!ELEMENT switch EMPTY >
-<!ATTLIST switch filelogcontroller ( yes | no ) #IMPLIED >
 <!ATTLIST switch bit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ) #REQUIRED >
 <!ATTLIST switch byte CDATA #REQUIRED >
 <!ATTLIST switch desc CDATA #REQUIRED >

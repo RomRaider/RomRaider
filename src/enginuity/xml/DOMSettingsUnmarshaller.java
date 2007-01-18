@@ -1,14 +1,13 @@
 package enginuity.xml;
 
+import java.awt.*;
+import static java.awt.Font.BOLD;
+import java.io.File;
 import enginuity.Settings;
 import static enginuity.xml.DOMHelper.unmarshallAttribute;
 import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
-
-import java.awt.*;
-import static java.awt.Font.BOLD;
-import java.io.File;
 
 public final class DOMSettingsUnmarshaller {
 
@@ -198,8 +197,10 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("profile")) {
                 settings.setLoggerProfileFilePath(unmarshallAttribute(n, "path", ""));
 
-            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("outputdir")) {
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("filelogging")) {
                 settings.setLoggerOutputDirPath(unmarshallAttribute(n, "path", ""));
+                settings.setFileLoggingControllerSwitchId(unmarshallAttribute(n, "switchid", settings.getFileLoggingControllerSwitchId()));
+                settings.setFileLoggingControllerSwitchActive(unmarshallAttribute(n, "active", true));
 
             }
         }

@@ -21,6 +21,8 @@
 
 package enginuity.logger.profile.xml;
 
+import java.util.HashMap;
+import java.util.Map;
 import enginuity.logger.profile.UserProfile;
 import enginuity.logger.profile.UserProfileImpl;
 import enginuity.logger.profile.UserProfileItem;
@@ -28,25 +30,20 @@ import enginuity.logger.profile.UserProfileItemImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.HashMap;
-
 public final class UserProfileHandler extends DefaultHandler {
     private static final String SELECTED = "selected";
     private static final String TAG_SERIAL = "serial";
-    private static final String TAG_LOGFILELOCATION = "logfilelocation";
     private static final String TAG_PARAMETER = "parameter";
     private static final String TAG_SWITCH = "switch";
     private static final String ATTR_PORT = "port";
-    private static final String ATTR_DIR = "dir";
     private static final String ATTR_ID = "id";
     private static final String ATTR_UNITS = "units";
     private static final String ATTR_LIVE_DATA = "livedata";
     private static final String ATTR_GRAPH = "graph";
     private static final String ATTR_DASH = "dash";
-    private String serialPort = null;
-    private String logFileLocation = null;
-    private HashMap<String, UserProfileItem> params;
-    private HashMap<String, UserProfileItem> switches;
+    private String serialPort;
+    private Map<String, UserProfileItem> params;
+    private Map<String, UserProfileItem> switches;
 
     public void startDocument() {
         params = new HashMap<String, UserProfileItem>();
@@ -56,8 +53,6 @@ public final class UserProfileHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if (TAG_SERIAL.equals(qName)) {
             serialPort = attributes.getValue(ATTR_PORT);
-        } else if (TAG_LOGFILELOCATION.equals(qName)) {
-            logFileLocation = attributes.getValue(ATTR_DIR);
         } else if (TAG_PARAMETER.equals(qName)) {
             params.put(attributes.getValue(ATTR_ID), getUserProfileItem(attributes));
         } else if (TAG_SWITCH.equals(qName)) {
@@ -66,7 +61,7 @@ public final class UserProfileHandler extends DefaultHandler {
     }
 
     public UserProfile getUserProfile() {
-        return new UserProfileImpl(serialPort, logFileLocation, params, switches);
+        return new UserProfileImpl(serialPort, params, switches);
     }
 
     private UserProfileItem getUserProfileItem(Attributes attributes) {

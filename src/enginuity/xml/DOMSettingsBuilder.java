@@ -1,15 +1,14 @@
 package enginuity.xml;
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import enginuity.Settings;
-import enginuity.swing.JProgressPane;
-
-import javax.imageio.metadata.IIOMetadataNode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Vector;
+import javax.imageio.metadata.IIOMetadataNode;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import enginuity.Settings;
+import enginuity.swing.JProgressPane;
 
 public final class DOMSettingsBuilder {
 
@@ -225,10 +224,12 @@ public final class DOMSettingsBuilder {
         profile.setAttribute("path", settings.getLoggerProfileFilePath());
         loggerSettings.appendChild(profile);
 
-        // log file output path
-        IIOMetadataNode outputDir = new IIOMetadataNode("outputdir");
-        outputDir.setAttribute("path", settings.getLoggerOutputDirPath());
-        loggerSettings.appendChild(outputDir);
+        // file logging
+        IIOMetadataNode filelogging = new IIOMetadataNode("filelogging");
+        filelogging.setAttribute("path", settings.getLoggerOutputDirPath());
+        filelogging.setAttribute("switchid", settings.getFileLoggingControllerSwitchId());
+        filelogging.setAttribute("active", String.valueOf(settings.isFileLoggingControllerSwitchActive()));
+        loggerSettings.appendChild(filelogging);
 
         return loggerSettings;
     }
