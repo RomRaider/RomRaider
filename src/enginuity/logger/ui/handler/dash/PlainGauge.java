@@ -21,30 +21,30 @@
 
 package enginuity.logger.ui.handler.dash;
 
-import enginuity.logger.definition.EcuData;
-import static enginuity.util.ParamChecker.checkNotNull;
-
+import java.awt.*;
+import static java.awt.BorderLayout.*;
+import static java.awt.Font.PLAIN;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import static javax.swing.border.BevelBorder.LOWERED;
-import java.awt.*;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.Color.GREEN;
-import static java.awt.Font.PLAIN;
+import enginuity.logger.definition.EcuData;
+import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class PlainGauge extends Gauge {
-    private static final double ZERO = 0.0;
     private static final String BLANK = "";
+    private final String zeroText;
     private final EcuData ecuData;
-    private final JLabel data = new JLabel(BLANK, JLabel.CENTER);
+    private final JLabel currentLabel = new JLabel(BLANK, JLabel.CENTER);
+    private final JLabel maxLabel = new JLabel(BLANK, JLabel.CENTER);
+    private final JLabel minLabel = new JLabel(BLANK, JLabel.CENTER);
     private final JLabel title = new JLabel(BLANK, JLabel.CENTER);
+    private double max = Double.MIN_VALUE;
+    private double min = Double.MAX_VALUE;
 
     public PlainGauge(EcuData ecuData) {
         checkNotNull(ecuData, "ecuData");
         this.ecuData = ecuData;
-        initTitleLayout();
-        initDataLayout();
+        zeroText = format(0.0);
         initGaugeLayout();
     }
 
@@ -57,28 +57,74 @@ public final class PlainGauge extends Gauge {
     }
 
     public void resetValue() {
-        refreshValue(ZERO);
-    }
-
-    private void initTitleLayout() {
-    }
-
-    private void initDataLayout() {
-        data.setBorder(new BevelBorder(LOWERED));
-        data.setFont(data.getFont().deriveFont(PLAIN, 50F));
+        currentLabel.setText(zeroText);
+        max = Double.MIN_VALUE;
+        maxLabel.setText(zeroText);
+        min = Double.MAX_VALUE;
+        minLabel.setText(zeroText);
     }
 
     private void initGaugeLayout() {
-        refreshValue(ZERO);
         refreshTitle();
-        setLayout(new BorderLayout());
-        setBackground(GREEN);
-        add(data, CENTER);
+        resetValue();
+        setPreferredSize(new Dimension(60, 40));
+        setBackground(Color.GREEN);
+        setLayout(new BorderLayout(3, 3));
+
+        // title
         add(title, NORTH);
+
+        // data panel
+        JPanel data = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
+        data.setBackground(Color.YELLOW);
+        data.setBorder(new BevelBorder(LOWERED));
+        currentLabel.setFont(data.getFont().deriveFont(PLAIN, 40F));
+        JPanel currentPanel = new JPanel(new BorderLayout());
+        currentPanel.setPreferredSize(new Dimension(140, 80));
+        currentPanel.add(currentLabel, CENTER);
+        data.add(currentPanel);
+
+        // max/min panel
+        JPanel maxMinPanel = new JPanel(new BorderLayout(2, 2));
+        maxMinPanel.setBackground(Color.YELLOW);
+        JPanel maxPanel = buildMaxMinPanel("max", maxLabel, data.getFont());
+        JPanel minPanel = buildMaxMinPanel("min", minLabel, data.getFont());
+        maxMinPanel.add(maxPanel, NORTH);
+        maxMinPanel.add(minPanel, SOUTH);
+        data.add(maxMinPanel);
+        add(data, CENTER);
+    }
+
+    private JPanel buildMaxMinPanel(String title, JLabel label, Font font) {
+        label.setFont(font.deriveFont(PLAIN, 12F));
+        JPanel panel = new JPanel(new BorderLayout(1, 1));
+        panel.setPreferredSize(new Dimension(60, 38));
+        panel.setBackground(Color.CYAN);
+        JLabel titleLabel = new JLabel(title, JLabel.CENTER);
+        titleLabel.setFont(font.deriveFont(Font.BOLD, 12F));
+        JPanel dataPanel = new JPanel(new BorderLayout());
+        dataPanel.setBackground(Color.PINK);
+        dataPanel.add(label, CENTER);
+        panel.add(titleLabel, NORTH);
+        panel.add(dataPanel, CENTER);
+        return panel;
     }
 
     private void refreshValue(double value) {
-        data.setText(ecuData.getSelectedConvertor().format(value));
+        String text = format(value);
+        if (value > max) {
+            max = value;
+            maxLabel.setText(text);
+        }
+        if (value < min) {
+            min = value;
+            minLabel.setText(text);
+        }
+        currentLabel.setText(text);
+    }
+
+    private String format(double value) {
+        return ecuData.getSelectedConvertor().format(value);
     }
 
 }
