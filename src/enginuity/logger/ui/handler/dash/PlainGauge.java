@@ -23,6 +23,7 @@ package enginuity.logger.ui.handler.dash;
 
 import java.awt.*;
 import static java.awt.BorderLayout.*;
+import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -38,6 +39,7 @@ public final class PlainGauge extends Gauge {
     private final JLabel maxLabel = new JLabel(BLANK, JLabel.CENTER);
     private final JLabel minLabel = new JLabel(BLANK, JLabel.CENTER);
     private final JLabel title = new JLabel(BLANK, JLabel.CENTER);
+    private final JProgressBar progressBar = new JProgressBar(JProgressBar.VERTICAL);
     private double max = Double.MIN_VALUE;
     private double min = Double.MAX_VALUE;
 
@@ -62,6 +64,9 @@ public final class PlainGauge extends Gauge {
         maxLabel.setText(zeroText);
         min = Double.MAX_VALUE;
         minLabel.setText(zeroText);
+        progressBar.setMinimum(scaleForProgressBar(min));
+        progressBar.setMaximum(scaleForProgressBar(max));
+        progressBar.setValue(scaleForProgressBar(min));
     }
 
     private void initGaugeLayout() {
@@ -72,13 +77,14 @@ public final class PlainGauge extends Gauge {
         setLayout(new BorderLayout(3, 3));
 
         // title
+        title.setFont(getFont().deriveFont(BOLD, 12F));
         add(title, NORTH);
 
         // data panel
         JPanel data = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
         data.setBackground(Color.YELLOW);
         data.setBorder(new BevelBorder(LOWERED));
-        currentLabel.setFont(data.getFont().deriveFont(PLAIN, 40F));
+        currentLabel.setFont(getFont().deriveFont(PLAIN, 40F));
         JPanel currentPanel = new JPanel(new BorderLayout());
         currentPanel.setPreferredSize(new Dimension(140, 80));
         currentPanel.add(currentLabel, CENTER);
@@ -87,21 +93,27 @@ public final class PlainGauge extends Gauge {
         // max/min panel
         JPanel maxMinPanel = new JPanel(new BorderLayout(2, 2));
         maxMinPanel.setBackground(Color.YELLOW);
-        JPanel maxPanel = buildMaxMinPanel("max", maxLabel, data.getFont());
-        JPanel minPanel = buildMaxMinPanel("min", minLabel, data.getFont());
+        JPanel maxPanel = buildMaxMinPanel("max", maxLabel);
+        JPanel minPanel = buildMaxMinPanel("min", minLabel);
         maxMinPanel.add(maxPanel, NORTH);
         maxMinPanel.add(minPanel, SOUTH);
         data.add(maxMinPanel);
+
+        // progress bar
+        progressBar.setStringPainted(false);
+        progressBar.setIndeterminate(false);
+        progressBar.setPreferredSize(new Dimension(20, 82));
+        data.add(progressBar);
         add(data, CENTER);
     }
 
-    private JPanel buildMaxMinPanel(String title, JLabel label, Font font) {
-        label.setFont(font.deriveFont(PLAIN, 12F));
+    private JPanel buildMaxMinPanel(String title, JLabel label) {
+        label.setFont(getFont().deriveFont(PLAIN, 12F));
         JPanel panel = new JPanel(new BorderLayout(1, 1));
         panel.setPreferredSize(new Dimension(60, 38));
         panel.setBackground(Color.CYAN);
         JLabel titleLabel = new JLabel(title, JLabel.CENTER);
-        titleLabel.setFont(font.deriveFont(Font.BOLD, 12F));
+        titleLabel.setFont(getFont().deriveFont(BOLD, 12F));
         JPanel dataPanel = new JPanel(new BorderLayout());
         dataPanel.setBackground(Color.PINK);
         dataPanel.add(label, CENTER);
@@ -112,19 +124,27 @@ public final class PlainGauge extends Gauge {
 
     private void refreshValue(double value) {
         String text = format(value);
+        int scaledValue = scaleForProgressBar(value);
         if (value > max) {
             max = value;
             maxLabel.setText(text);
+            progressBar.setMaximum(scaledValue);
         }
         if (value < min) {
             min = value;
             minLabel.setText(text);
+            progressBar.setMinimum(scaledValue);
         }
         currentLabel.setText(text);
+        progressBar.setValue(scaledValue);
     }
 
     private String format(double value) {
         return ecuData.getSelectedConvertor().format(value);
+    }
+
+    private int scaleForProgressBar(double value) {
+        return (int) (value * 1000.0);
     }
 
 }
