@@ -49,9 +49,14 @@ public final class ByteUtil {
     public static byte[] asBytes(int i) {
         byte[] b = new byte[4];
         for (int j = 0; j < 4; j++) {
-            int offset = (b.length - 1 - j) * 8;
+            int offset = (b.length - 1 - j) << 3;
             b[j] = (byte) ((i >>> offset) & 0xFF);
         }
         return b;
     }
+
+    public static float asFloat(byte[] bytes) {
+        return Float.intBitsToFloat(asInt(bytes));
+    }
+
 }
