@@ -21,6 +21,13 @@
 
 package enginuity.logger.ui.handler.graph;
 
+import java.awt.*;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.WHITE;
+import static java.util.Collections.synchronizedMap;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.*;
 import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.handler.DataUpdateHandler;
@@ -29,16 +36,15 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import static org.jfree.chart.plot.PlotOrientation.VERTICAL;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import javax.swing.*;
-import static java.util.Collections.synchronizedMap;
-import java.util.HashMap;
-import java.util.Map;
-
 public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
+    private static final Color RED = new Color(190, 30, 30);
+    private static final Color DARK_GREY = new Color(56, 56, 56);
+    private static final Color LIGHT_GREY = new Color(99, 99, 99);
     private final JPanel graphPanel;
     private final Map<EcuData, ChartPanel> chartMap = synchronizedMap(new HashMap<EcuData, ChartPanel>());
     private final Map<EcuData, XYSeries> seriesMap = synchronizedMap(new HashMap<EcuData, XYSeries>());
@@ -53,10 +59,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         final XYSeries series = new XYSeries(ecuData.getName());
         //TODO: Make chart max item count configurable via settings
         series.setMaximumItemCount(200);
-        final XYDataset xyDataset = new XYSeriesCollection(series);
-        final JFreeChart chart = ChartFactory.createXYLineChart(ecuData.getName(), "Time (sec)", buildRangeAxisTitle(ecuData), xyDataset,
-                VERTICAL, false, true, false);
-        ChartPanel chartPanel = new ChartPanel(chart, false, true, true, true, true);
+        ChartPanel chartPanel = new ChartPanel(createXYLineChart(series, ecuData), false, true, true, true, true);
         graphPanel.add(chartPanel);
         seriesMap.put(ecuData, series);
         chartMap.put(ecuData, chartPanel);
@@ -89,6 +92,25 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
             JFreeChart chart = chartMap.get(updatedEcuData).getChart();
             chart.getXYPlot().getRangeAxis().setLabel(buildRangeAxisTitle(updatedEcuData));
         }
+    }
+
+    private JFreeChart createXYLineChart(XYSeries series, EcuData ecuData) {
+        final XYDataset xyDataset = new XYSeriesCollection(series);
+        final JFreeChart chart = ChartFactory.createXYLineChart(ecuData.getName(), "Time (sec)", buildRangeAxisTitle(ecuData), xyDataset,
+                        VERTICAL, false, true, false);
+        chart.setBackgroundPaint(BLACK);
+        chart.getTitle().setPaint(WHITE);
+        final XYPlot plot = chart.getXYPlot();
+        plot.setBackgroundPaint(BLACK);
+        plot.getRenderer().setPaint(RED);
+        plot.setDomainGridlinePaint(DARK_GREY);
+        plot.setRangeGridlinePaint(DARK_GREY);
+        plot.setOutlinePaint(DARK_GREY);
+        plot.getDomainAxis().setLabelPaint(WHITE);
+        plot.getRangeAxis().setLabelPaint(WHITE);
+        plot.getDomainAxis().setTickLabelPaint(LIGHT_GREY);
+        plot.getRangeAxis().setTickLabelPaint(LIGHT_GREY);
+        return chart;
     }
 
     private String buildRangeAxisTitle(EcuData ecuData) {

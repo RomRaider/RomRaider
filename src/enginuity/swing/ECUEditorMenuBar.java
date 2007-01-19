@@ -21,36 +21,35 @@
 
 package enginuity.swing;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import javax.management.modelmbean.XMLParseException;
+import javax.swing.*;
+import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import enginuity.ECUEditor;
 import enginuity.logger.EcuLogger;
 import enginuity.maps.Rom;
 
-import javax.management.modelmbean.XMLParseException;
-import javax.swing.*;
-import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
-
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private JMenu fileMenu = new JMenu("File");
-    private JMenuItem openImage = new JMenuItem("Open Image");
-    private JMenuItem saveImage = new JMenuItem("Save Image");
+    private JMenuItem openImage = new JMenuItem("Open Image...");
+    private JMenuItem saveImage = new JMenuItem("Save Image...");
     private JMenuItem refreshImage = new JMenuItem("Refresh Image");
     private JMenuItem closeImage = new JMenuItem("Close Image");
     private JMenuItem closeAll = new JMenuItem("Close All Images");
     private JMenuItem exit = new JMenuItem("Exit");
 
     private JMenu definitionMenu = new JMenu("ECU Definitions");
-    private JMenuItem defManager = new JMenuItem("ECU Definition Manager");
-    private JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions");
-    private JMenuItem updateDefinition = new JMenuItem("Update ECU Definitions");
+    private JMenuItem defManager = new JMenuItem("ECU Definition Manager...");
+    private JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions...");
+    private JMenuItem updateDefinition = new JMenuItem("Update ECU Definitions...");
 
     private JMenu editMenu = new JMenu("Edit");
-    private JMenuItem settings = new JMenuItem("Enginuity Settings");
+    private JMenuItem settings = new JMenuItem("Enginuity Settings...");
 
     private JMenu viewMenu = new JMenu("View");
     private JMenuItem romProperties = new JMenuItem("ECU Image Properties");
@@ -63,7 +62,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JRadioButtonMenuItem level5 = new JRadioButtonMenuItem("5 Debug Mode");
 
     private JMenu loggerMenu = new JMenu("Logger");
-    private JMenuItem openLogger = new JMenuItem("Open ECU Logger");
+    private JMenuItem openLogger = new JMenuItem("Launch ECU Logger...");
 
     private JMenu helpMenu = new JMenu("Help");
     private JMenuItem about = new JMenuItem("About Enginuity");
@@ -189,14 +188,15 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             closeImage.setEnabled(false);
             closeAll.setEnabled(false);
             romProperties.setEnabled(false);
+            saveImage.setText("Save...");
         } else {
             saveImage.setEnabled(true);
             closeImage.setEnabled(true);
             closeAll.setEnabled(true);
             romProperties.setEnabled(true);
+            saveImage.setText("Save " + file + "...");
         }
 
-        saveImage.setText("Save " + file);
         refreshImage.setText("Refresh " + file);
         closeImage.setText("Close " + file);
         romProperties.setText(file + "Properties");
