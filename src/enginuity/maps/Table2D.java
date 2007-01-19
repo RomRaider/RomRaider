@@ -21,6 +21,13 @@
 
 package enginuity.maps;
 
+import enginuity.Settings;
+import enginuity.swing.TableFrame;
+import enginuity.util.AxisRange;
+import static enginuity.util.ParamChecker.isNullOrEmpty;
+import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -28,12 +35,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.StringTokenizer;
-import javax.swing.*;
-import enginuity.Settings;
-import enginuity.swing.TableFrame;
-import enginuity.util.AxisRange;
-import static enginuity.util.ParamChecker.isNullOrEmpty;
-import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 
 public class Table2D extends Table {
     private static final String NEW_LINE = System.getProperty("line.separator");
@@ -313,7 +314,9 @@ public class Table2D extends Table {
                 } else {
                     highlight(x, y);
                 }
-                data[i].setLiveDataTrace(true);
+                DataCell cell = data[i];
+                cell.setLiveDataTrace(true);
+                cell.setDisplayValue(cell.getRealValue() + ':' + liveValue);
             }
             stopHighlight();
             frame.getToolBar().setLiveDataValue(liveValue);
@@ -323,6 +326,7 @@ public class Table2D extends Table {
     public void clearLiveDataTrace() {
         for (DataCell cell : data) {
             cell.setLiveDataTrace(false);
+            cell.updateDisplayValue();
         }
     }
 }

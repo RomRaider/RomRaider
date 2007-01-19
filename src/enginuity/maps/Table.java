@@ -21,6 +21,15 @@
 
 package enginuity.maps;
 
+import enginuity.Settings;
+import enginuity.logger.ui.handler.table.TableUpdateHandler;
+import enginuity.swing.TableFrame;
+import static enginuity.util.ColorScaler.getScaledColor;
+import enginuity.util.JEPUtil;
+import enginuity.xml.RomAttributeParser;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -33,16 +42,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import enginuity.Settings;
-import enginuity.logger.ui.handler.table.TableUpdateHandler;
-import enginuity.swing.TableFrame;
-import static enginuity.util.ColorScaler.getScaledColor;
-import enginuity.util.JEPUtil;
-import enginuity.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
+    private static final String BLANK = "";
 
     public static final int ENDIAN_LITTLE = 1;
     public static final int ENDIAN_BIG = 2;
@@ -67,7 +69,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected String name;
     protected int type;
     protected String category = "Other";
-    protected String description = "";
+    protected String description = BLANK;
     protected Vector<Scale> scales = new Vector<Scale>();
     protected int scaleIndex = 0; // index of selected scale
 
@@ -104,8 +106,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected Settings settings;
     protected boolean locked = false;
 
-    protected String logParam = "";
-    protected String liveValue = "";
+    protected String logParam = BLANK;
+    protected String liveValue = BLANK;
     protected boolean overlayLog = false;
 
     public Table(Settings settings) {
@@ -547,20 +549,19 @@ public abstract class Table extends JPanel implements Serializable {
                 } else {
 
                     for (int i = 0; i < getDataSize(); i++) {
-
-                        if (Double.parseDouble(data[i].getText()) > high) {
-                            high = Double.parseDouble(data[i].getText());
+                        double value = data[i].getValue();
+                        if (value > high) {
+                            high = value;
                         }
-                        if (Double.parseDouble(data[i].getText()) < low) {
-                            low = Double.parseDouble(data[i].getText());
+                        if (value < low) {
+                            low = value;
                         }
                     }
                 }
 
                 for (int i = 0; i < getDataSize(); i++) {
-
-                    if (Double.parseDouble(data[i].getText()) > high ||
-                            Double.parseDouble(data[i].getText()) < low) {
+                    double value = data[i].getValue();
+                    if (value > high || value < low) {
 
                         // value exceeds limit
                         data[i].setColor(getSettings().getWarningColor());
@@ -572,7 +573,7 @@ public abstract class Table extends JPanel implements Serializable {
                             // if all values are the same, color will be middle value
                             scale = .5;
                         } else {
-                            scale = (Double.parseDouble(data[i].getText()) - low) / (high - low);
+                            scale = (value - low) / (high - low);
                         }
 
                         data[i].setColor(getScaledColor(scale, getSettings()));
@@ -779,6 +780,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void undoAll() {
+        clearLiveDataTrace();
         if (!isStatic) {
             for (DataCell cell : data) {
                 cell.setBinValue(cell.getOriginalValue());
@@ -788,6 +790,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void undoSelected() {
+        clearLiveDataTrace();
         if (!isStatic) {
             for (DataCell cell : data) {
                 // reset current value to original value
@@ -909,7 +912,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     public StringBuffer getTableAsString() {
         //make a string of the selection
-        StringBuffer output = new StringBuffer("");
+        StringBuffer output = new StringBuffer(BLANK);
         for (int i = 0; i < getDataSize(); i++) {
             output.append(data[i].getText());
             if (i < getDataSize() - 1) {
@@ -946,7 +949,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void paste() {
-        StringTokenizer st = new StringTokenizer("");
+        StringTokenizer st = new StringTokenizer(BLANK);
         try {
             String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);
@@ -981,7 +984,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void pasteCompare() {
-        StringTokenizer st = new StringTokenizer("");
+        StringTokenizer st = new StringTokenizer(BLANK);
         try {
             String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);
@@ -1086,6 +1089,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void compare(int compareType) {
+        clearLiveDataTrace();
         this.compareType = compareType;
 
         for (int i = 0; i < getDataSize(); i++) {
@@ -1184,15 +1188,16 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void clearLiveDataTrace() {
+        liveValue = BLANK;
     }
 
     public double getMin() {
         if (getScale().getMin() == 0 && getScale().getMax() == 0) {
             double low = Double.MAX_VALUE;
             for (int i = 0; i < getDataSize(); i++) {
-
-                if (Double.parseDouble(data[i].getText()) < low) {
-                    low = Double.parseDouble(data[i].getText());
+                double value = data[i].getValue();
+                if (value < low) {
+                    low = value;
                 }
             }
             return low;
@@ -1205,9 +1210,9 @@ public abstract class Table extends JPanel implements Serializable {
         if (getScale().getMin() == 0 && getScale().getMax() == 0) {
             double high = Double.MIN_VALUE;
             for (int i = 0; i < getDataSize(); i++) {
-
-                if (Double.parseDouble(data[i].getText()) > high) {
-                    high = Double.parseDouble(data[i].getText());
+                double value = data[i].getValue();
+                if (value > high) {
+                    high = value;
                 }
             }
             return high;

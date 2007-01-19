@@ -24,10 +24,12 @@ package enginuity.maps;
 import enginuity.util.JEPUtil;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.BLUE;
+import static java.awt.Color.RED;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
@@ -41,8 +43,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private String displayValue = "";
     private Color scaledColor = new Color(0, 0, 0);
     private Color highlightColor = new Color(155, 155, 255);
-    private Color increaseBorder = Color.RED;
-    private Color decreaseBorder = Color.BLUE;
+    private Color increaseBorder = RED;
+    private Color decreaseBorder = BLUE;
     private Boolean selected = false;
     private Boolean highlighted = false;
     private Table table;
@@ -51,9 +53,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private double compareValue = 0;
     private int compareType = Table.COMPARE_OFF;
     private int compareDisplay = Table.COMPARE_ABSOLUTE;
-    private Border defaultBorder = new LineBorder(Color.BLACK, 1);
+    private Border defaultBorder = new LineBorder(BLACK, 1);
     private Font defaultFont = new Font("Arial", Font.BOLD, 12);
-    private Border liveDataTraceBorder = new BevelBorder(BevelBorder.RAISED);
 
     public DataCell() {
     }
@@ -73,7 +74,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         DecimalFormat formatter = new DecimalFormat(scale.getFormat());
 
         if (getCompareType() == Table.COMPARE_OFF) {
-            displayValue = formatter.format(calcDisplayValue(binValue, table.getScale().getExpression()));
+            displayValue = getRealValue();
 
         } else {
             if (getCompareDisplay() == Table.COMPARE_ABSOLUTE) {
@@ -198,6 +199,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void increment(double increment) {
+        updateDisplayValue();
+
         double oldValue = Double.parseDouble(getText());
 
         if (table.getScale().getCoarseIncrement() < 0) {
@@ -241,7 +244,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void setOriginalValue(double originalValue) {
         this.originalValue = originalValue;
         if (binValue != getOriginalValue()) {
-            this.setBorder(new LineBorder(Color.RED, 3));
+            this.setBorder(new LineBorder(RED, 3));
         } else {
             this.setBorder(defaultBorder);
         }
@@ -253,6 +256,14 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setRevertPoint() {
         this.setOriginalValue(binValue);
+    }
+
+    public double getValue() {
+        return calcDisplayValue(binValue, table.getScale().getExpression());
+    }
+
+    public String getRealValue() {
+        return new DecimalFormat(scale.getFormat()).format(getValue());
     }
 
     public void setRealValue(String input) {
@@ -328,23 +339,17 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void multiply(double factor) {
+        updateDisplayValue();
         setRealValue(String.valueOf(Double.parseDouble(getText()) * factor));
-    }
-
-    /**
-     * Used by 3d graph renderer.
-     */
-    public double getValue() {
-        return calcDisplayValue(binValue, table.getScale().getExpression());
     }
 
     public void setLiveDataTrace(boolean trace) {
         if (trace) {
-            setBorder(liveDataTraceBorder);
-            setForeground(Color.RED);
+            //setBorder(liveDataTraceBorder);
+            setForeground(RED);
         } else {
-            setBorder(defaultBorder);
-            setForeground(Color.BLACK);
+            //setBorder(defaultBorder);
+            setForeground(BLACK);
         }
     }
 }

@@ -21,15 +21,6 @@
 
 package enginuity.maps;
 
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.util.StringTokenizer;
-import javax.swing.*;
-import javax.swing.border.LineBorder;
 import enginuity.Settings;
 import enginuity.swing.TableFrame;
 import enginuity.swing.VTextIcon;
@@ -38,6 +29,16 @@ import static enginuity.util.ColorScaler.getScaledColor;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 import enginuity.xml.RomAttributeParser;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.util.StringTokenizer;
 
 public class Table3D extends Table {
 
@@ -209,11 +210,12 @@ public class Table3D extends Table {
                     // min/max not set in scale
                     for (DataCell[] column : data) {
                         for (DataCell cell : column) {
-                            if (Double.parseDouble(cell.getText()) > high) {
-                                high = Double.parseDouble(cell.getText());
+                            double value = cell.getValue();
+                            if (value > high) {
+                                high = value;
                             }
-                            if (Double.parseDouble(cell.getText()) < low) {
-                                low = Double.parseDouble(cell.getText());
+                            if (value < low) {
+                                low = value;
                             }
                         }
                     }
@@ -222,9 +224,8 @@ public class Table3D extends Table {
 
                 for (DataCell[] column : data) {
                     for (DataCell cell : column) {
-
-                        if (Double.parseDouble(cell.getText()) > high ||
-                                Double.parseDouble(cell.getText()) < low) {
+                        double value = cell.getValue();
+                        if (value > high || value < low) {
 
                             // value exceeds limit
                             cell.setColor(settings.getWarningColor());
@@ -236,7 +237,7 @@ public class Table3D extends Table {
                                 // if all values are the same, color will be middle value
                                 scale = .5;
                             } else {
-                                scale = (Double.parseDouble(cell.getText()) - low) / (high - low);
+                                scale = (value - low) / (high - low);
                             }
 
                             cell.setColor(getScaledColor(scale, settings));
@@ -437,6 +438,7 @@ public class Table3D extends Table {
     }
 
     public void undoAll() {
+        clearLiveDataTrace();
         for (int x = 0; x < this.getSizeX(); x++) {
             for (int y = 0; y < this.getSizeY(); y++) {
                 data[x][y].setBinValue(data[x][y].getOriginalValue());
@@ -448,6 +450,7 @@ public class Table3D extends Table {
     }
 
     public void undoSelected() {
+        clearLiveDataTrace();
         for (int x = 0; x < this.getSizeX(); x++) {
             for (int y = 0; y < this.getSizeY(); y++) {
                 if (data[x][y].isSelected()) {
@@ -894,7 +897,9 @@ public class Table3D extends Table {
                     } else {
                         highlight(x, y);
                     }
-                    data[x][y].setLiveDataTrace(true);
+                    DataCell cell = data[x][y];
+                    cell.setLiveDataTrace(true);
+                    cell.setDisplayValue(cell.getRealValue() + ':' + liveValue);
                 }
             }
             stopHighlight();
@@ -906,6 +911,7 @@ public class Table3D extends Table {
         for (int x = 0; x < getSizeX(); x++) {
             for (int y = 0; y < getSizeY(); y++) {
                 data[x][y].setLiveDataTrace(false);
+                data[x][y].updateDisplayValue();
             }
         }
     }
@@ -926,8 +932,9 @@ public class Table3D extends Table {
 
             for (DataCell[] column : data) {
                 for (DataCell cell : column) {
-                    if (Double.parseDouble(cell.getText()) < low) {
-                        low = Double.parseDouble(cell.getText());
+                    double value = cell.getValue();
+                    if (value < low) {
+                        low = value;
                     }
                 }
             }
@@ -944,8 +951,9 @@ public class Table3D extends Table {
 
             for (DataCell[] column : data) {
                 for (DataCell cell : column) {
-                    if (Double.parseDouble(cell.getText()) > high) {
-                        high = Double.parseDouble(cell.getText());
+                    double value = cell.getValue();
+                    if (value > high) {
+                        high = value;
                     }
                 }
             }
