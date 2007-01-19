@@ -82,7 +82,8 @@ Autoconnect Stuff:
 TODO: Finish ecu specific parameters (IAM, Engine Load) config in logger.xml
 TODO: Add ecu id and calid to ecu_defs
 TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
-TODO: Add settings screen for setting warning levels etc per parameter/switch
+TODO: Add custom graph tab (eg. engine speed vs. boost, etc.)
+TODO: Add live data display to map overlays
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
