@@ -166,7 +166,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
         graphPanel = new JPanel(new SpringLayout());
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
-        dashboardPanel = new JPanel(new GridLayout(4, 3, 4, 4));
+        dashboardPanel = new JPanel(new GridLayout(3, 3, 4, 4));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
     }
 
