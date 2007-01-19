@@ -21,29 +21,18 @@
 
 package enginuity.swing;
 
-import com.ecm.graphics.Graph3dFrameManager;
-import com.ecm.graphics.data.GraphData;
-import com.ecm.graphics.data.GraphDataListener;
-import enginuity.maps.DataCell;
-import enginuity.maps.Scale;
-import enginuity.maps.Table;
-import enginuity.maps.Table1D;
-import enginuity.maps.Table3D;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Vector;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import com.ecm.graphics.Graph3dFrameManager;
+import com.ecm.graphics.data.GraphData;
+import com.ecm.graphics.data.GraphDataListener;
+import enginuity.maps.*;
 
 public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ActionListener, GraphDataListener {
 
@@ -64,6 +53,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     private JCheckBox overlayLog = new JCheckBox("Overlay Log");
     private JButton clearOverlay = new JButton("Clear Overlay");
+    private JLabel liveDataValue = new JLabel();
 
     private Table table;
     private TableFrame frame;
@@ -103,6 +93,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             JPanel liveDataPanel = new JPanel();
             liveDataPanel.add(overlayLog);
             liveDataPanel.add(clearOverlay);
+            liveDataPanel.add(liveDataValue);
             this.add(liveDataPanel);
         }
 
@@ -408,11 +399,16 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         }
     }
 
+
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == clearOverlay) {
             // clear log overlay
             table.clearLiveDataTrace();
         }
+    }
+
+    public void setLiveDataValue(String value) {
+        liveDataValue.setText(value);
     }
 
 

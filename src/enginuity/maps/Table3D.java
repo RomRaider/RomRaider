@@ -21,6 +21,15 @@
 
 package enginuity.maps;
 
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.util.StringTokenizer;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
 import enginuity.Settings;
 import enginuity.swing.TableFrame;
 import enginuity.swing.VTextIcon;
@@ -29,16 +38,6 @@ import static enginuity.util.ColorScaler.getScaledColor;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 import enginuity.xml.RomAttributeParser;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.util.StringTokenizer;
 
 public class Table3D extends Table {
 
@@ -899,6 +898,7 @@ public class Table3D extends Table {
                 }
             }
             stopHighlight();
+            frame.getToolBar().setLiveDataValue(liveValue);
         }
     }
 

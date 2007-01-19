@@ -21,10 +21,9 @@
 
 package enginuity.maps;
 
-import enginuity.Settings;
-
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import enginuity.Settings;
 
 public class Table1D extends Table {
     private Color axisColor = new Color(255, 255, 255);
@@ -59,7 +58,7 @@ public class Table1D extends Table {
 
     public void clearSelection() {
         super.clearSelection();
-        //if (isAxis) axisParent.clearSelection();                
+        //if (isAxis) axisParent.clearSelection();
     }
 
     public void clearSelection(boolean calledByParent) {
@@ -171,7 +170,7 @@ public class Table1D extends Table {
         this.axisColor = axisColor;
     }
 
-    public void setLiveValue(double value) {
+    public void setLiveValue(String value) {
         liveValue = value;
         Table parent = getAxisParent();
         if (parent != null) {

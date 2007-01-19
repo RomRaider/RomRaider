@@ -21,15 +21,6 @@
 
 package enginuity.maps;
 
-import enginuity.Settings;
-import enginuity.logger.ui.handler.table.TableUpdateHandler;
-import enginuity.swing.TableFrame;
-import static enginuity.util.ColorScaler.getScaledColor;
-import enginuity.util.JEPUtil;
-import enginuity.xml.RomAttributeParser;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -42,6 +33,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import enginuity.Settings;
+import enginuity.logger.ui.handler.table.TableUpdateHandler;
+import enginuity.swing.TableFrame;
+import static enginuity.util.ColorScaler.getScaledColor;
+import enginuity.util.JEPUtil;
+import enginuity.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
 
@@ -90,7 +89,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected int cellWidth = 42;
     protected int minHeight = 100;
     protected int minWidthNoOverlay = 465;
-    protected int minWidthOverlay = 640;
+    protected int minWidthOverlay = 700;
     protected Rom container;
     protected int highlightX;
     protected int highlightY;
@@ -106,7 +105,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected boolean locked = false;
 
     protected String logParam = "";
-    protected double liveValue = 0.0;
+    protected String liveValue = "";
     protected boolean overlayLog = false;
 
     public Table(Settings settings) {
@@ -541,7 +540,7 @@ public abstract class Table extends JPanel implements Serializable {
 
                 if (getScale().getMax() != 0 || getScale().getMin() != 0) {
 
-                    // set min and max values if they are set in scale                    
+                    // set min and max values if they are set in scale
                     high = getScale().getMax();
                     low = getScale().getMin();
 
@@ -1167,12 +1166,16 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public void setLiveValue(double liveValue) {
+    public void setLiveValue(String liveValue) {
         this.liveValue = liveValue;
     }
 
     public double getLiveValue() {
-        return liveValue;
+        try {
+            return Double.parseDouble(liveValue);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
     }
 
     public abstract boolean isLiveDataSupported();
