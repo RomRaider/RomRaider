@@ -495,7 +495,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildGraphTab() {
-        return new JScrollPane(graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scrollPane = new JScrollPane(graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(40);
+        return scrollPane;
     }
 
     private JComponent buildDashboardTab() {
