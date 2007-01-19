@@ -79,6 +79,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         // remove from charts
         graphPanel.remove(chartMap.get(ecuData));
         chartMap.remove(ecuData);
+        seriesMap.remove(ecuData);
         makeCompactGrid(graphPanel, --loggerCount, 1, 10, 10, 20, 20);
         repaintGraphPanel(1);
     }
