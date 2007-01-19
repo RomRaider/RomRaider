@@ -21,20 +21,23 @@
 
 package enginuity.logger.ui.handler.dash;
 
+import enginuity.logger.definition.EcuData;
+import static enginuity.util.ParamChecker.checkNotNull;
+
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import static javax.swing.border.BevelBorder.LOWERED;
+import javax.swing.border.LineBorder;
 import java.awt.*;
-import static java.awt.BorderLayout.*;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.SOUTH;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.WHITE;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import static javax.swing.border.BevelBorder.LOWERED;
-import javax.swing.border.LineBorder;
-import enginuity.logger.definition.EcuData;
-import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class PlainGauge extends Gauge implements ActionListener {
     private static final Color RED = new Color(190, 30, 30);
@@ -54,7 +57,7 @@ public final class PlainGauge extends Gauge implements ActionListener {
     private final JLabel title = new JLabel(BLANK, JLabel.CENTER);
     private final JProgressBar progressBar = new JProgressBar(JProgressBar.VERTICAL);
     private final JCheckBox warnCheckBox = new JCheckBox("Warn");
-    private final JComboBox warnType = new JComboBox(new Object[] {ABOVE, BELOW});
+    private final JComboBox warnType = new JComboBox(new Object[]{ABOVE, BELOW});
     private final JTextField warnTextField = new JTextField();
     private double max = Double.MIN_VALUE;
     private double min = Double.MAX_VALUE;

@@ -1,14 +1,24 @@
 package enginuity.io.connection;
 
-import java.util.Random;
 import static enginuity.io.protocol.SSMChecksumCalculator.calculateChecksum;
-import static enginuity.io.protocol.SSMProtocol.*;
+import static enginuity.io.protocol.SSMProtocol.ADDRESS_SIZE;
+import static enginuity.io.protocol.SSMProtocol.DATA_SIZE;
+import static enginuity.io.protocol.SSMProtocol.DIAGNOSTIC_TOOL_ID;
+import static enginuity.io.protocol.SSMProtocol.ECU_ID;
+import static enginuity.io.protocol.SSMProtocol.ECU_INIT_COMMAND;
+import static enginuity.io.protocol.SSMProtocol.HEADER;
+import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_COMMAND;
+import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_RESPONSE;
+import static enginuity.io.protocol.SSMProtocol.REQUEST_NON_DATA_BYTES;
+import static enginuity.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import enginuity.logger.exception.SerialCommunicationException;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
+
+import java.util.Random;
 
 @SuppressWarnings({"PointlessArithmeticExpression"})
 public final class TestSSMConnectionImpl implements SerialConnection {

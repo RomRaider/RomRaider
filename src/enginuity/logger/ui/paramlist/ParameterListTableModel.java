@@ -64,7 +64,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
         ParameterRow paramRow = paramRowMap.get(registeredEcuData.get(row));
         switch (col) {
             case 0:
-                return paramRow.getSelected();
+                return paramRow.isSelected();
             case 1:
                 return paramRow.getEcuData().getName();
             case 2:

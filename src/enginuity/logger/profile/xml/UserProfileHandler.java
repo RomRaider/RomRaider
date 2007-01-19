@@ -21,14 +21,15 @@
 
 package enginuity.logger.profile.xml;
 
-import java.util.HashMap;
-import java.util.Map;
 import enginuity.logger.profile.UserProfile;
 import enginuity.logger.profile.UserProfileImpl;
 import enginuity.logger.profile.UserProfileItem;
 import enginuity.logger.profile.UserProfileItemImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public final class UserProfileHandler extends DefaultHandler {
     private static final String SELECTED = "selected";

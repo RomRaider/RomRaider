@@ -21,12 +21,29 @@
 
 package enginuity.logger.definition.xml;
 
-import java.util.*;
 import enginuity.logger.comms.query.EcuInit;
-import enginuity.logger.definition.*;
+import enginuity.logger.definition.EcuData;
+import enginuity.logger.definition.EcuDataConvertor;
+import enginuity.logger.definition.EcuDerivedParameterConvertor;
+import enginuity.logger.definition.EcuDerivedParameterConvertorImpl;
+import enginuity.logger.definition.EcuDerivedParameterImpl;
+import enginuity.logger.definition.EcuParameter;
+import enginuity.logger.definition.EcuParameterConvertorImpl;
+import enginuity.logger.definition.EcuParameterImpl;
+import enginuity.logger.definition.EcuSwitch;
+import enginuity.logger.definition.EcuSwitchConvertorImpl;
+import enginuity.logger.definition.EcuSwitchImpl;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_PROTOCOL = "protocol";

@@ -21,14 +21,15 @@
 
 package enginuity.logger.ui.handler.table;
 
+import enginuity.logger.definition.EcuData;
+import enginuity.logger.ui.handler.DataUpdateHandler;
+import enginuity.maps.Table;
+
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import enginuity.logger.definition.EcuData;
-import enginuity.logger.ui.handler.DataUpdateHandler;
-import enginuity.maps.Table;
 
 public final class TableUpdateHandler implements DataUpdateHandler {
     private static final TableUpdateHandler INSTANCE = new TableUpdateHandler();

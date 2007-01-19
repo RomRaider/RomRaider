@@ -21,16 +21,17 @@
 
 package enginuity.logger.ui.handler.file;
 
+import enginuity.Settings;
+import enginuity.logger.exception.FileLoggerException;
+import enginuity.logger.ui.MessageListener;
+import static enginuity.util.ParamChecker.checkNotNull;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import enginuity.Settings;
-import enginuity.logger.exception.FileLoggerException;
-import enginuity.logger.ui.MessageListener;
-import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class FileLoggerImpl implements FileLogger {
     private static final String NEW_LINE = System.getProperty("line.separator");

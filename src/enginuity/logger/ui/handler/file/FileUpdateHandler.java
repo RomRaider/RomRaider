@@ -21,9 +21,6 @@
 
 package enginuity.logger.ui.handler.file;
 
-import java.util.*;
-import static java.util.Collections.synchronizedList;
-import static java.util.Collections.synchronizedMap;
 import enginuity.Settings;
 import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
@@ -31,6 +28,14 @@ import enginuity.logger.ui.MessageListener;
 import enginuity.logger.ui.StatusChangeListener;
 import enginuity.logger.ui.handler.DataUpdateHandler;
 import static enginuity.util.ParamChecker.checkNotNull;
+
+import java.util.ArrayList;
+import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final Settings settings;

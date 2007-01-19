@@ -21,17 +21,18 @@
 
 package enginuity.logger.definition;
 
+import enginuity.logger.comms.query.EcuInit;
+import enginuity.logger.definition.xml.LoggerDefinitionHandler;
+import enginuity.logger.exception.ConfigurationException;
+import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+import static enginuity.util.SaxParserFactory.getSaxParser;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import enginuity.logger.comms.query.EcuInit;
-import enginuity.logger.definition.xml.LoggerDefinitionHandler;
-import enginuity.logger.exception.ConfigurationException;
-import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
-import static enginuity.util.SaxParserFactory.getSaxParser;
 
 public final class EcuDataLoaderImpl implements EcuDataLoader {
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();

@@ -37,7 +37,7 @@ public final class ParameterRow {
         return ecuData;
     }
 
-    public Boolean getSelected() {
+    public Boolean isSelected() {
         return selected;
     }
 

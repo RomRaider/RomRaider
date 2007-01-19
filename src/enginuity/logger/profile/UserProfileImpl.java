@@ -21,7 +21,6 @@
 
 package enginuity.logger.profile;
 
-import java.util.Map;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataConvertor;
 import enginuity.logger.definition.EcuParameter;
@@ -29,6 +28,8 @@ import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
+
+import java.util.Map;
 
 public final class UserProfileImpl implements UserProfile {
     private static final String NEW_LINE = System.getProperty("line.separator");

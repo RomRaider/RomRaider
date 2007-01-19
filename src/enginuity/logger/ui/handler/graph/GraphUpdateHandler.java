@@ -21,13 +21,6 @@
 
 package enginuity.logger.ui.handler.graph;
 
-import java.awt.*;
-import static java.awt.Color.BLACK;
-import static java.awt.Color.WHITE;
-import static java.util.Collections.synchronizedMap;
-import java.util.HashMap;
-import java.util.Map;
-import javax.swing.*;
 import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.handler.DataUpdateHandler;
@@ -40,6 +33,14 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
+import javax.swing.*;
+import java.awt.*;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.WHITE;
+import static java.util.Collections.synchronizedMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private static final Color RED = new Color(190, 30, 30);
@@ -71,7 +72,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         // update chart
         XYSeries series = seriesMap.get(ecuData);
         if (series != null) {
-            series.add(timestamp/1000.0, value);
+            series.add(timestamp / 1000.0, value);
         }
     }
 
@@ -98,7 +99,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
     private JFreeChart createXYLineChart(XYSeries series, EcuData ecuData) {
         final XYDataset xyDataset = new XYSeriesCollection(series);
         final JFreeChart chart = ChartFactory.createXYLineChart(ecuData.getName(), "Time (sec)", buildRangeAxisTitle(ecuData), xyDataset,
-                        VERTICAL, false, true, false);
+                VERTICAL, false, true, false);
         chart.setBackgroundPaint(BLACK);
         chart.getTitle().setPaint(WHITE);
         final XYPlot plot = chart.getXYPlot();

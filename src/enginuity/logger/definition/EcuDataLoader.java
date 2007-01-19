@@ -21,8 +21,9 @@
 
 package enginuity.logger.definition;
 
-import java.util.List;
 import enginuity.logger.comms.query.EcuInit;
+
+import java.util.List;
 
 public interface EcuDataLoader {
 

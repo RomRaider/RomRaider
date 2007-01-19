@@ -21,18 +21,19 @@
 
 package enginuity.logger.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import enginuity.logger.EcuLogger;
+import enginuity.logger.profile.UserProfileFileFilter;
+
 import javax.swing.*;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
 import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
-import enginuity.logger.EcuLogger;
-import enginuity.logger.profile.UserProfileFileFilter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
 
