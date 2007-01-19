@@ -21,8 +21,7 @@
 
 package enginuity.swing;
 
-import javax.swing.JDialog;
-import javax.swing.JFrame;
+import javax.swing.*;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
 import static javax.swing.UIManager.setLookAndFeel;
 
@@ -43,9 +42,10 @@ public final class LookAndFeelManager {
                 System.setProperty("apple.awt.rendering", "true");
                 System.setProperty("apple.awt.window.position.forceSafeCreation", "true");
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Enginuity");
+                System.setProperty("apple.awt.brushMetalLook", "true");
 //                setRestrictedPlatformLookAndFeel("Windows", "5.1");
             }
-            
+
             // Linux has issues with the gtk look and feel themes. If linux is detected, ignore UIManager detail.
             if (!isPlatform(LINUX)) {
                 setLookAndFeel(getSystemLookAndFeelClassName());
