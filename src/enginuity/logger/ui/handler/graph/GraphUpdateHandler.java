@@ -71,7 +71,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         // update chart
         XYSeries series = seriesMap.get(ecuData);
         if (series != null) {
-            series.add(timestamp, value);
+            series.add(timestamp/1000.0, value);
         }
     }
 
