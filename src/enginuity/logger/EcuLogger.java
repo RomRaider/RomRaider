@@ -84,6 +84,7 @@ TODO: Add ecu id and calid to ecu_defs
 TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
 TODO: Add custom graph tab (eg. engine speed vs. boost, etc.)
 TODO: Add live data display to map overlays
+TODO: Add log analysis tab (or maybe new window?), including log playback, custom graphs, map compare, etc
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
