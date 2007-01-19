@@ -30,6 +30,7 @@ public final class LookAndFeelManager {
     private static final String OS_VERSION = "os.version";
     private static final String MAC_OS_X = "Mac OS X";
     private static final String LINUX = "Linux";
+    private static final boolean USE_RESTRICTED_PLATFORM_ON_MAC = false; // dev. setting only
 
     private LookAndFeelManager() {
         throw new UnsupportedOperationException();
@@ -43,7 +44,9 @@ public final class LookAndFeelManager {
                 System.setProperty("apple.awt.window.position.forceSafeCreation", "true");
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Enginuity");
                 System.setProperty("apple.awt.brushMetalLook", "true");
-//                setRestrictedPlatformLookAndFeel("Windows", "5.1");
+                if (USE_RESTRICTED_PLATFORM_ON_MAC) {
+                    setRestrictedPlatformLookAndFeel("Windows", "5.1");
+                }
             }
 
             // Linux has issues with the gtk look and feel themes. If linux is detected, ignore UIManager detail.
@@ -65,12 +68,8 @@ public final class LookAndFeelManager {
     }
 
     private static void setRestrictedPlatformLookAndFeel(final String osName, final String osVersion) throws Exception {
-        String originalOsName = System.getProperties().getProperty(OS_NAME);
-        String originalOsVersion = System.getProperties().getProperty(OS_VERSION);
         System.setProperty(OS_NAME, osName);
         System.setProperty(OS_VERSION, osVersion);
         setLookAndFeel(getSystemLookAndFeelClassName());
-        System.setProperty(OS_NAME, originalOsName);
-        System.setProperty(OS_VERSION, originalOsVersion);
     }
 }
