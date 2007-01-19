@@ -25,7 +25,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
-import javax.management.modelmbean.XMLParseException;
 import javax.swing.*;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
 import static javax.swing.JOptionPane.*;
@@ -297,7 +296,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         parent.closeAllImages();
     }
 
-    public void saveImage(Rom input) throws XMLParseException, Exception {
+    public void saveImage(Rom input) throws Exception {
         if (parent.getLastSelectedRom() != null) {
             JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
             fc.setFileFilter(new ECUImageFilter());
