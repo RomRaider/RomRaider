@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import javax.management.modelmbean.XMLParseException;
 import javax.swing.*;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
+import static javax.swing.JOptionPane.*;
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import enginuity.ECUEditor;
 import enginuity.logger.EcuLogger;
@@ -81,7 +82,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         closeImage.setMnemonic('C');
         closeAll.setMnemonic('A');
         exit.setMnemonic('X');
-
         fileMenu.add(openImage);
         fileMenu.add(saveImage);
         fileMenu.add(refreshImage);
@@ -90,7 +90,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         fileMenu.add(closeAll);
         fileMenu.add(new JSeparator());
         fileMenu.add(exit);
-
         openImage.addActionListener(this);
         saveImage.addActionListener(this);
         refreshImage.addActionListener(this);
@@ -176,13 +175,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         // disable unused buttons! 0.3.1
         about.setEnabled(false);
         editDefinition.setEnabled(false);
-
         this.updateMenu();
     }
 
     public void updateMenu() {
         String file = getLastSelectedRomFileName();
-
         if ("".equals(file)) {
             saveImage.setEnabled(false);
             closeImage.setEnabled(false);
@@ -196,7 +193,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             romProperties.setEnabled(true);
             saveImage.setText("Save " + file + "...");
         }
-
         refreshImage.setText("Refresh " + file);
         closeImage.setText("Close " + file);
         romProperties.setText(file + "Properties");
@@ -207,16 +203,16 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             try {
                 openImageDialog();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
-                        parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                showMessageDialog(parent,
+                        new DebugPanel(ex, parent.getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
             }
 
         } else if (e.getSource() == saveImage) {
             try {
                 this.saveImage(parent.getLastSelectedRom());
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
-                        parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                showMessageDialog(parent,
+                        new DebugPanel(ex, parent.getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
             }
 
         } else if (e.getSource() == closeImage) {
@@ -230,16 +226,16 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             System.exit(0);
 
         } else if (e.getSource() == romProperties) {
-            JOptionPane.showMessageDialog(parent, new RomPropertyPanel(parent.getLastSelectedRom()),
-                    parent.getLastSelectedRom().getRomIDString() + " Properties", JOptionPane.INFORMATION_MESSAGE);
+            showMessageDialog(parent, new RomPropertyPanel(parent.getLastSelectedRom()),
+                    parent.getLastSelectedRom().getRomIDString() + " Properties", INFORMATION_MESSAGE);
 
         } else if (e.getSource() == refreshImage) {
             try {
                 refreshImage();
 
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
-                        parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                showMessageDialog(parent, new DebugPanel(ex,
+                        parent.getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
             }
 
         } else if (e.getSource() == settings) {
@@ -271,8 +267,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
 
         } else if (e.getSource() == updateDefinition) {
-            BareBonesBrowserLaunch.openURL(
-                    parent.getSettings().getEcuDefsURL());
+            BareBonesBrowserLaunch.openURL(parent.getSettings().getEcuDefsURL());
 
         }
     }
@@ -288,7 +283,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     public void openImageDialog() throws Exception {
         JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());
-
         if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             parent.openImage(fc.getSelectedFile());
             parent.getSettings().setLastImageDir(fc.getCurrentDirectory());
@@ -307,12 +301,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         if (parent.getLastSelectedRom() != null) {
             JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
             fc.setFileFilter(new ECUImageFilter());
-
             if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
                 boolean save = true;
                 if (fc.getSelectedFile().exists()) {
-                    if (JOptionPane.showConfirmDialog(parent,
-                            fc.getSelectedFile().getName() + " already exists! Overwrite?") == JOptionPane.CANCEL_OPTION) {
+                    if (showConfirmDialog(parent, fc.getSelectedFile().getName() + " already exists! Overwrite?") == CANCEL_OPTION) {
                         save = false;
                     }
                 }
@@ -324,7 +316,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                     } finally {
                         fos.close();
                     }
-
                     parent.getLastSelectedRom().setFullFileName(fc.getSelectedFile().getAbsoluteFile());
                     parent.setLastSelectedRom(parent.getLastSelectedRom());
                 }
