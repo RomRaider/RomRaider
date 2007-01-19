@@ -43,8 +43,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private static final Color RED = new Color(190, 30, 30);
-    private static final Color DARK_GREY = new Color(56, 56, 56);
-    private static final Color LIGHT_GREY = new Color(99, 99, 99);
+    private static final Color DARK_GREY = new Color(80, 80, 80);
+    private static final Color LIGHT_GREY = new Color(110, 110, 110);
     private final JPanel graphPanel;
     private final Map<EcuData, ChartPanel> chartMap = synchronizedMap(new HashMap<EcuData, ChartPanel>());
     private final Map<EcuData, XYSeries> seriesMap = synchronizedMap(new HashMap<EcuData, XYSeries>());
@@ -103,13 +103,13 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         final XYPlot plot = chart.getXYPlot();
         plot.setBackgroundPaint(BLACK);
         plot.getRenderer().setPaint(RED);
-        plot.setDomainGridlinePaint(DARK_GREY);
-        plot.setRangeGridlinePaint(DARK_GREY);
-        plot.setOutlinePaint(DARK_GREY);
         plot.getDomainAxis().setLabelPaint(WHITE);
         plot.getRangeAxis().setLabelPaint(WHITE);
         plot.getDomainAxis().setTickLabelPaint(LIGHT_GREY);
         plot.getRangeAxis().setTickLabelPaint(LIGHT_GREY);
+        plot.setDomainGridlinePaint(DARK_GREY);
+        plot.setRangeGridlinePaint(DARK_GREY);
+        plot.setOutlinePaint(DARK_GREY);
         return chart;
     }
 
