@@ -69,7 +69,6 @@ import enginuity.logger.ui.handler.table.TableUpdateHandler;
 import enginuity.logger.ui.paramlist.ParameterListTable;
 import enginuity.logger.ui.paramlist.ParameterListTableModel;
 import enginuity.logger.ui.paramlist.ParameterRow;
-import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
@@ -627,12 +626,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
+
     //**********************************************************************
 
-
-    public static void main(String... args) {
-        startLogger(EXIT_ON_CLOSE, new Settings());
-    }
 
     public static void startLogger(final int defaultCloseOperation, final Settings settings) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -643,9 +639,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private static void createAndShowGUI(int defaultCloseOperation, Settings settings) {
-        // set look and feel
-        LookAndFeelManager.initLookAndFeel();
-
         // instantiate the controlling class.
         EcuLogger ecuLogger = new EcuLogger(settings);
 
