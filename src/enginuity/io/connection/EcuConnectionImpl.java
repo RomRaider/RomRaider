@@ -33,9 +33,11 @@ public final class EcuConnectionImpl implements EcuConnection {
     public EcuConnectionImpl(ConnectionProperties connectionProperties, String portName) {
         checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
-        serialConnection = new SerialConnectionImpl(connectionProperties, portName);
-        //serialConnection = new TestSSMConnectionImpl(connectionProperties, portName);
         this.sendTimeout = connectionProperties.getSendTimeout();
+
+        // Use TestSSMConnectionImpl for testing!!
+      serialConnection = new SerialConnectionImpl(connectionProperties, portName);
+//      serialConnection = new TestSSMConnectionImpl(connectionProperties, portName);
     }
 
     public byte[] send(byte[] bytes) {
