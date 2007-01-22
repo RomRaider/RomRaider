@@ -27,7 +27,7 @@ public final class ByteUtil {
     private ByteUtil() {
     }
 
-    public static int asInt(byte[] bytes) {
+    public static int asUnsignedInt(byte[] bytes) {
         int i = 0;
         for (int j = 0; j < bytes.length; j++) {
             if (j > 0) {
@@ -46,7 +46,7 @@ public final class ByteUtil {
         return Byte.valueOf(b).intValue();
     }
 
-    public static byte[] asBytes(int i) {
+    public static byte[] asUnsignedBytes(int i) {
         byte[] b = new byte[4];
         for (int j = 0; j < 4; j++) {
             int offset = (b.length - 1 - j) << 3;
@@ -56,7 +56,7 @@ public final class ByteUtil {
     }
 
     public static float asFloat(byte[] bytes) {
-        return Float.intBitsToFloat(asInt(bytes));
+        return Float.intBitsToFloat(asUnsignedInt(bytes));
     }
 
 }

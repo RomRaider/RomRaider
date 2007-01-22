@@ -21,7 +21,7 @@
 
 package enginuity.logger.definition;
 
-import static enginuity.util.ByteUtil.asInt;
+import static enginuity.util.ByteUtil.asUnsignedInt;
 import static enginuity.util.JEPUtil.evaluate;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -49,7 +49,7 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
     }
 
     public double convert(byte[] bytes) {
-        double value = (double) (isFloat ? intBitsToFloat(asInt(bytes)) : asInt(bytes));
+        double value = (double) (isFloat ? intBitsToFloat(asUnsignedInt(bytes)) : asUnsignedInt(bytes));
         double result = evaluate(expression, value);
         return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
     }
