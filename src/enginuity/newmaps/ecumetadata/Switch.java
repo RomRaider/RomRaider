@@ -19,13 +19,13 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.ecumetadata;
 
 import static enginuity.newmaps.definition.AttributeParser.stringToByteArray;
 
 import java.io.Serializable;
 
-public class Switch extends ECUData implements Serializable {
+public class Switch extends TableMetadata implements Serializable {
     
     protected byte[] stateOn = new byte[1];
     protected byte[] stateOff = new byte[1];

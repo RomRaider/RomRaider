@@ -19,26 +19,16 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.gui;
 
-import static enginuity.newmaps.definition.AttributeParser.stringToStringArray;
+import enginuity.newmaps.ecumetadata.TableMetadata;
+import javax.swing.JFrame;
 
-import java.io.Serializable;
-
-public class SourceDefAxis extends Axis implements Serializable {
-    
-    private String[] values;
-    
-    public SourceDefAxis(String name) {
-        super(name);
-    }
-
-    public String[] getValues() {
-        return values;
-    }
-
-    public void setValues(String s, String delim) {
-        values = stringToStringArray(s, delim);
-    }
+public abstract class EnginuityFrame extends JFrame {
+        
+        public EnginuityFrame(byte[] data, TableMetadata metadata) {
+            
+            
+        }
     
 }

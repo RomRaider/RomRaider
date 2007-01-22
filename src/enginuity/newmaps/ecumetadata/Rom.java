@@ -19,7 +19,7 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.ecumetadata;
 
 import enginuity.util.Nameable;
 import enginuity.util.NamedSet;
@@ -39,7 +39,7 @@ public class Rom implements Nameable, Serializable {
     private boolean isAbstract;
     
     private NamedSet<Scale> scales;
-    private NamedSet<ECUData> tables;
+    private NamedSet<TableMetadata> tables;
     private Category categories;
     
     private Rom() { }
@@ -145,11 +145,11 @@ public class Rom implements Nameable, Serializable {
         this.scales = scales;
     }
 
-    public NamedSet<ECUData> getTables() {
+    public NamedSet<TableMetadata> getTables() {
         return tables;
     }
 
-    public void setTables(NamedSet<ECUData> tables) {
+    public void setTables(NamedSet<TableMetadata> tables) {
         this.tables = tables;
     }
     public Category getCategories() {

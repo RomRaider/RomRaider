@@ -19,14 +19,40 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.ecumetadata;
 
 import java.io.Serializable;
 
-public class Parameter extends ECUData implements Serializable {
+public class Table3D extends TableMetadata implements Serializable {
     
-    public Parameter(String name) {
+    protected Axis xaxis;
+    protected Axis yaxis;
+    
+    
+    public Table3D(String name) {
         super(name);
+    }
+
+    public Axis getXaxis() {
+        return xaxis;
+    }
+
+    public void setXaxis(Axis xaxis) {
+        this.xaxis = xaxis;
+    }
+
+    public Axis getYaxis() {
+        return yaxis;
+    }
+
+    public void setYaxis(Axis yaxis) {
+        this.yaxis = yaxis;
+    }
+    
+    public String toString() {
+        return super.toString() + 
+                "\n" + xaxis + 
+                "\n" + yaxis;
     }
     
 }

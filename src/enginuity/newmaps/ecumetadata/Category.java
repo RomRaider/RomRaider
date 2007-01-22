@@ -19,7 +19,7 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.ecumetadata;
 
 import enginuity.util.Nameable;
 import enginuity.util.NamedSet;
@@ -31,7 +31,7 @@ public class Category extends NamedSet implements Nameable, Serializable {
     
     private String name;
     private String description;
-    private NamedSet<ECUData> tables = new NamedSet<ECUData>();
+    private NamedSet<TableMetadata> tables = new NamedSet<TableMetadata>();
     
     private Category() { }
     
@@ -72,11 +72,11 @@ public class Category extends NamedSet implements Nameable, Serializable {
         return output + " --- END CATEGORY: " + name + " ---\n";
     }
 
-    public void addTable(ECUData table) {
+    public void addTable(TableMetadata table) {
         tables.add(table);
     }
     
-    public void removeTable(ECUData table) {
+    public void removeTable(TableMetadata table) {
         try {
             tables.remove(table);
         } catch (Exception ex) {

@@ -19,40 +19,26 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.ecumetadata;
+
+import static enginuity.newmaps.definition.AttributeParser.stringToStringArray;
 
 import java.io.Serializable;
 
-public class Table3D extends ECUData implements Serializable {
+public class SourceDefAxis extends Axis implements Serializable {
     
-    protected Axis xaxis;
-    protected Axis yaxis;
+    private String[] values;
     
-    
-    public Table3D(String name) {
+    public SourceDefAxis(String name) {
         super(name);
     }
 
-    public Axis getXaxis() {
-        return xaxis;
+    public String[] getValues() {
+        return values;
     }
 
-    public void setXaxis(Axis xaxis) {
-        this.xaxis = xaxis;
-    }
-
-    public Axis getYaxis() {
-        return yaxis;
-    }
-
-    public void setYaxis(Axis yaxis) {
-        this.yaxis = yaxis;
-    }
-    
-    public String toString() {
-        return super.toString() + 
-                "\n" + xaxis + 
-                "\n" + yaxis;
+    public void setValues(String s, String delim) {
+        values = stringToStringArray(s, delim);
     }
     
 }

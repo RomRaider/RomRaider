@@ -19,13 +19,13 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.ecumetadata;
 
 import enginuity.util.Nameable;
 
 import java.io.Serializable;
 
-public abstract class ECUData implements Nameable, Serializable {
+public abstract class TableMetadata implements Nameable, Serializable {
        
     protected String name;
     protected Scale scale;
@@ -34,9 +34,9 @@ public abstract class ECUData implements Nameable, Serializable {
     protected String description;
     private boolean isAbstract;
     
-    public ECUData() { }
+    public TableMetadata() { }
 
-    public ECUData(String name) {
+    public TableMetadata(String name) {
         this.name = name;
     }
     

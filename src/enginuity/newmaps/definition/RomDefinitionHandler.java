@@ -26,18 +26,18 @@ import static enginuity.newmaps.definition.AttributeParser.parseStorageType;
 import static enginuity.newmaps.definition.AttributeParser.parseUnitSystem;
 import enginuity.newmaps.definition.index.Index;
 import enginuity.newmaps.definition.index.IndexItem;
-import enginuity.newmaps.ecudata.Axis;
-import enginuity.newmaps.ecudata.Category;
-import enginuity.newmaps.ecudata.ECUData;
-import enginuity.newmaps.ecudata.Parameter;
-import enginuity.newmaps.ecudata.Rom;
-import enginuity.newmaps.ecudata.Scale;
-import enginuity.newmaps.ecudata.SourceDefAxis;
-import enginuity.newmaps.ecudata.Switch;
-import enginuity.newmaps.ecudata.SwitchGroup;
-import enginuity.newmaps.ecudata.Table2D;
-import enginuity.newmaps.ecudata.Table3D;
-import enginuity.newmaps.ecudata.Unit;
+import enginuity.newmaps.ecumetadata.Axis;
+import enginuity.newmaps.ecumetadata.Category;
+import enginuity.newmaps.ecumetadata.TableMetadata;
+import enginuity.newmaps.ecumetadata.Parameter;
+import enginuity.newmaps.ecumetadata.Rom;
+import enginuity.newmaps.ecumetadata.Scale;
+import enginuity.newmaps.ecumetadata.SourceDefAxis;
+import enginuity.newmaps.ecumetadata.Switch;
+import enginuity.newmaps.ecumetadata.SwitchGroup;
+import enginuity.newmaps.ecumetadata.Table2D;
+import enginuity.newmaps.ecumetadata.Table3D;
+import enginuity.newmaps.ecumetadata.Unit;
 import enginuity.newmaps.xml.SaxParserFactory;
 import static enginuity.util.HexUtil.hexToInt;
 import enginuity.util.NamedSet;
@@ -112,13 +112,13 @@ public class RomDefinitionHandler extends DefaultHandler {
     private Category category = new Category("Root"); // Category currently being created
     private Stack<Category> categoryStack; // Stack used for higher levels in tree
     private Category categories; // Category tree that will be returned
-    private ECUData table;
+    private TableMetadata table;
     private Scale scale;
     private Axis axis;
     private Unit unit;
     private String dataValues;
     private SwitchGroup switchGroup;
-    private NamedSet<ECUData> tables = new NamedSet<ECUData>();
+    private NamedSet<TableMetadata> tables = new NamedSet<TableMetadata>();
     private NamedSet<Scale> scales = new NamedSet<Scale>();
     private NamedSet<Unit> units = new NamedSet<Unit>();
     private NamedSet<Rom> roms = new NamedSet<Rom>();
@@ -563,7 +563,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             roms.add(rom);
             
             // Clear all temp variables
-            tables = new NamedSet<ECUData>();
+            tables = new NamedSet<TableMetadata>();
             scales = new NamedSet<Scale>();
             units = new NamedSet<Unit>();
             

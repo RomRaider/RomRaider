@@ -19,7 +19,7 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.ecumetadata;
 
 import java.io.Serializable;
 

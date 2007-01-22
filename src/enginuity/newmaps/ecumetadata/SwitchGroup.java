@@ -19,14 +19,14 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.ecumetadata;
 
 import enginuity.util.NamedSet;
 import enginuity.util.exception.NameableNotFoundException;
 
 import java.util.Iterator;
 
-public class SwitchGroup extends ECUData {
+public class SwitchGroup extends TableMetadata {
     
     public static final int DEFAULT_ON = 0;
     public static final int DEFAULT_OFF = 1;

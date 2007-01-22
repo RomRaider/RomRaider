@@ -21,8 +21,8 @@
 
 package enginuity.newmaps.definition;
 
-import enginuity.newmaps.ecudata.Scale;
-import enginuity.newmaps.ecudata.Unit;
+import enginuity.newmaps.ecumetadata.Scale;
+import enginuity.newmaps.ecumetadata.Unit;
 
 import java.util.StringTokenizer;
 import java.util.Vector;

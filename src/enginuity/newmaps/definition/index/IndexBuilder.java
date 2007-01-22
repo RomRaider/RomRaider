@@ -22,7 +22,7 @@
 package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.definition.RomDefinitionHandler;
-import enginuity.newmaps.ecudata.Rom;
+import enginuity.newmaps.ecumetadata.Rom;
 import enginuity.newmaps.xml.SaxParserFactory;
 import static enginuity.util.MD5Checksum.getMD5Checksum;
 import enginuity.util.exception.NameableNotFoundException;
