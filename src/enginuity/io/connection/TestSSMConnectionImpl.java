@@ -50,7 +50,14 @@ public final class TestSSMConnectionImpl implements SerialConnection {
     public void read(byte[] bytes) {
         if (isEcuInitRequest()) {
             System.arraycopy(asBytes(ECU_INIT_RESPONSE), 0, bytes, 0, bytes.length);
+        } else if (isIamRequest()) {
+            byte[] response = asBytes("0x80F01006E83F600000000D");
+            System.arraycopy(response, 0, bytes, request.length, response.length);
+        } else if (isEngineLoadRequest()) {
+            byte[] response = asBytes("0x80F01006E83EC74A760033");
+            System.arraycopy(response, 0, bytes, request.length, response.length);
         } else if (isReadAddressRequest()) {
+
             byte[] responseData = generateResponseData();
             int i = 0;
             byte[] response = new byte[RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes()];
@@ -85,6 +92,17 @@ public final class TestSSMConnectionImpl implements SerialConnection {
 
     private int calculateNumResponseDataBytes() {
         return ((request.length - REQUEST_NON_DATA_BYTES) / ADDRESS_SIZE) * DATA_SIZE;
+    }
+
+    private boolean isIamRequest() {
+        String hex = asHex(request);
+        System.out.println("request = " + hex);
+        return hex.startsWith("8010F011A8") && hex.contains("FF8228FF8229FF822AFF822B");
+    }
+
+    private boolean isEngineLoadRequest() {
+        String hex = asHex(request);
+        return hex.startsWith("8010F011A8") && hex.contains("FFA6FCFFA6FDFFA6FEFFA6FF");
     }
 
     private byte[] generateResponseData() {

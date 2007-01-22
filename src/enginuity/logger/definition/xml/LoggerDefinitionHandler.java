@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Set;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
+    private static final String FLOAT = "float";
     private static final String TAG_PROTOCOL = "protocol";
     private static final String TAG_PARAMETER = "parameter";
     private static final String TAG_ADDRESS = "address";
@@ -68,6 +69,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_BYTE = "byte";
     private static final String ATTR_BIT = "bit";
     private static final String ATTR_PARAMETER = "parameter";
+    private static final String ATTR_STORAGETYPE = "storagetype";
     private final String protocol;
     private final String fileLoggingControllerSwitchId;
     private final EcuInit ecuInit;
@@ -130,12 +132,11 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             } else if (TAG_CONVERSION.equals(qName)) {
                 if (derived) {
                     derivedConvertorList.add(new EcuDerivedParameterConvertorImpl(attributes.getValue(ATTR_UNITS),
-                            attributes.getValue(ATTR_EXPRESSION),
-                            attributes.getValue(ATTR_FORMAT)));
+                            attributes.getValue(ATTR_EXPRESSION), attributes.getValue(ATTR_FORMAT)));
                 } else {
                     convertorList.add(new EcuParameterConvertorImpl(attributes.getValue(ATTR_UNITS),
-                            attributes.getValue(ATTR_EXPRESSION),
-                            attributes.getValue(ATTR_FORMAT)));
+                            attributes.getValue(ATTR_EXPRESSION), attributes.getValue(ATTR_FORMAT),
+                            FLOAT.equalsIgnoreCase(attributes.getValue(ATTR_STORAGETYPE))));
                 }
             } else if (TAG_SWITCH.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);

@@ -984,10 +984,13 @@
                     <address>
                         <ecu id="3152584006">
                             <byte>0xFF8228</byte>
+                            <byte>0xFF8229</byte>
+                            <byte>0xFF822A</byte>
+                            <byte>0xFF822B</byte>
                         </ecu>
                     </address>
                     <conversions>
-                        <conversion units="IAM" expr="x" format="0.00"/>
+                        <conversion units="IAM" storagetype="float" expr="x" format="0.00"/>
                     </conversions>
                 </ecuparam>
 
@@ -1007,10 +1010,12 @@
                         <ecu id="3152584006">
                             <byte>0xFFA6FC</byte>
                             <byte>0xFFA6FD</byte>
+                            <byte>0xFFA6FE</byte>
+                            <byte>0xFFA6FF</byte>
                         </ecu>
                     </address>
                     <conversions>
-                        <conversion units="grams" expr="x" format="0.00"/>
+                        <conversion units="grams" storagetype="float" expr="x" format="0.00"/>
                     </conversions>
                 </ecuparam>
 

@@ -16,6 +16,7 @@
 <!ELEMENT conversion EMPTY >
 <!ATTLIST conversion expr CDATA #REQUIRED >
 <!ATTLIST conversion format ( 0 | 0.0 | 0.00 ) #REQUIRED >
+<!ATTLIST conversion storagetype ( uint8 | uint16 | float ) #IMPLIED >
 <!ATTLIST conversion units CDATA #REQUIRED >
 
 <!ELEMENT conversions ( conversion+ ) >

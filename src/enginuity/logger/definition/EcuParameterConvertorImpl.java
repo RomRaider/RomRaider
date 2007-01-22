@@ -25,24 +25,31 @@ import static enginuity.util.ByteUtil.asInt;
 import static enginuity.util.JEPUtil.evaluate;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
+import static java.lang.Float.intBitsToFloat;
 import java.text.DecimalFormat;
 
 public final class EcuParameterConvertorImpl implements EcuDataConvertor {
     private final String units;
     private final String expression;
     private final DecimalFormat format;
+    private final boolean isFloat;
 
     public EcuParameterConvertorImpl(String units, String expression, String format) {
+        this(units, expression, format, false);
+    }
+
+    public EcuParameterConvertorImpl(String units, String expression, String format, boolean isFloat) {
         checkNotNullOrEmpty(units, "units");
         checkNotNullOrEmpty(expression, "expression");
         checkNotNullOrEmpty(format, "format");
         this.units = units;
         this.expression = expression;
         this.format = new DecimalFormat(format);
+        this.isFloat = isFloat;
     }
 
     public double convert(byte[] bytes) {
-        double value = (double) asInt(bytes);
+        double value = (double) (isFloat ? intBitsToFloat(asInt(bytes)) : asInt(bytes));
         double result = evaluate(expression, value);
         return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
     }
