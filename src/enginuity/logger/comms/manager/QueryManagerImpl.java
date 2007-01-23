@@ -113,10 +113,13 @@ public final class QueryManagerImpl implements QueryManager {
         EcuConnection ecuConnection = new EcuConnectionImpl(protocol.getConnectionProperties(), settings.getLoggerPort());
         try {
             messageListener.reportMessage("Sending ECU Init...");
-            byte[] response = ecuConnection.send(protocol.constructEcuInitRequest());
-            System.out.println("Ecu Init response = " + asHex(response));
-            protocol.checkValidEcuInitResponse(response);
-            ecuInitCallback.callback(protocol.parseEcuInitResponse(response));
+            byte[] request = protocol.constructEcuInitRequest();
+            System.out.println("Ecu Init Request  ---> " + asHex(request));
+            byte[] response = ecuConnection.send(request);
+            byte[] processedResponse = protocol.preprocessResponse(request, response);
+            protocol.checkValidEcuInitResponse(processedResponse);
+            System.out.println("Ecu Init Response <--- " + asHex(processedResponse));
+            ecuInitCallback.callback(protocol.parseEcuInitResponse(processedResponse));
             messageListener.reportMessage("Sending ECU Init...done.");
             return true;
         } catch (Exception e) {

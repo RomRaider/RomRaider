@@ -68,13 +68,16 @@ public final class SSMProtocol implements Protocol {
         return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }
 
+    public byte[] preprocessResponse(byte[] request, byte[] response) {
+        return filterRequestFromResponse(request, response);
+    }
+
     public void checkValidEcuInitResponse(byte[] response) throws InvalidResponseException {
-        // request response_header 3_unknown_bytes 5_ecu_id_bytes readable_params_switches... checksum
-        // 8010F001BF40 80F01039FF A21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000 59
+        // response_header 3_unknown_bytes 5_ecu_id_bytes readable_params_switches... checksum
+        // 80F01039FF A21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000 59
         checkNotNullOrEmpty(response, "response");
-        byte[] filteredResponse = filterRequestFromResponse(constructEcuInitRequest(), response);
-        validateResponse(filteredResponse);
-        byte responseType = filteredResponse[4];
+        validateResponse(response);
+        byte responseType = response[4];
         if (responseType != ECU_INIT_RESPONSE) {
             throw new InvalidResponseException("Unexpected ECU Init response type: " + asHex(new byte[]{responseType}));
         }
@@ -82,7 +85,7 @@ public final class SSMProtocol implements Protocol {
 
     public EcuInit parseEcuInitResponse(byte[] response) {
         checkNotNullOrEmpty(response, "response");
-        byte[] responseData = extractResponseData(filterRequestFromResponse(constructEcuInitRequest(), response));
+        byte[] responseData = extractResponseData(response);
         return new SSMEcuInit(responseData);
     }
 

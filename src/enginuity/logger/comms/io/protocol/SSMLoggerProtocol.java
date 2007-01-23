@@ -29,6 +29,7 @@ import static enginuity.io.protocol.SSMProtocol.DATA_SIZE;
 import static enginuity.io.protocol.SSMProtocol.REQUEST_NON_DATA_BYTES;
 import static enginuity.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static enginuity.io.protocol.SSMResponseProcessor.extractResponseData;
+import static enginuity.io.protocol.SSMResponseProcessor.filterRequestFromResponse;
 import enginuity.logger.comms.query.RegisteredQuery;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -55,6 +56,10 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
             numAddresses += (registeredQuery.getBytes().length / ADDRESS_SIZE);
         }
         return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES) + (numAddresses * ADDRESS_SIZE + REQUEST_NON_DATA_BYTES)];
+    }
+
+    public byte[] preprocessResponse(byte[] request, byte[] response) {
+        return filterRequestFromResponse(request, response);
     }
 
     // processes the response bytes and sets individual responses on corresponding query objects

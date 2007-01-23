@@ -260,7 +260,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         controller.addLogger(id, fileLoggingControllerSwitch, new LoggerCallback() {
             public void callback(byte[] bytes) {
                 // update handlers
-                if ((int) fileLoggingControllerSwitch.getSelectedConvertor().convert(bytes) == 1) {
+                double value = fileLoggingControllerSwitch.getSelectedConvertor().convert(bytes);
+                if ((int) value == 1) {
                     fileUpdateHandler.start();
                 } else {
                     fileUpdateHandler.stop();

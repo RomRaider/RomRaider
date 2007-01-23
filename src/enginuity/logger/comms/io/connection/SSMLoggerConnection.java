@@ -22,8 +22,7 @@
 package enginuity.logger.comms.io.connection;
 
 import enginuity.io.connection.SerialConnection;
-import enginuity.io.connection.TestSSMConnectionImpl;
-import static enginuity.io.protocol.SSMResponseProcessor.filterRequestFromResponse;
+import enginuity.io.connection.SerialConnectionImpl;
 import enginuity.logger.comms.io.protocol.LoggerProtocol;
 import enginuity.logger.comms.io.protocol.SSMLoggerProtocol;
 import enginuity.logger.comms.query.RegisteredQuery;
@@ -41,8 +40,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
         protocol = new SSMLoggerProtocol();
 
         // Use TestSSMConnectionImpl for testing!!
-        //serialConnection = new SerialConnectionImpl(protocol.getConnectionProperties(), portName);
-        serialConnection = new TestSSMConnectionImpl(protocol.getConnectionProperties(), portName);
+        serialConnection = new SerialConnectionImpl(protocol.getConnectionProperties(), portName);
+//        serialConnection = new TestSSMConnectionImpl(protocol.getConnectionProperties(), portName);
     }
 
     public void sendAddressReads(Collection<RegisteredQuery> queries) {
@@ -65,7 +64,12 @@ public final class SSMLoggerConnection implements LoggerConnection {
             }
             serialConnection.read(response);
 
-            protocol.processReadAddressResponses(queries, filterRequestFromResponse(request, response));
+            byte[] processedResponse = protocol.preprocessResponse(request, response);
+
+            System.out.println("Request  ---> " + asHex(request));
+            System.out.println("Response <--- " + asHex(processedResponse));
+
+            protocol.processReadAddressResponses(queries, processedResponse);
         } catch (Exception e) {
             close();
             throw new SerialCommunicationException(e);

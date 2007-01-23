@@ -32,8 +32,9 @@ public interface LoggerProtocol {
 
     byte[] constructReadAddressResponse(Collection<RegisteredQuery> queries);
 
+    byte[] preprocessResponse(byte[] request, byte[] response);
+
     void processReadAddressResponses(Collection<RegisteredQuery> queries, byte[] response);
 
     ConnectionProperties getConnectionProperties();
-
 }

@@ -33,6 +33,8 @@ public interface Protocol {
 
     byte[] constructReadAddressRequest(byte[][] addresses);
 
+    byte[] preprocessResponse(byte[] request, byte[] response);
+
     void checkValidEcuInitResponse(byte[] bytes) throws InvalidResponseException;
 
     EcuInit parseEcuInitResponse(byte[] response);

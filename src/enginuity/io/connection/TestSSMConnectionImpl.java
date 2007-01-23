@@ -96,7 +96,6 @@ public final class TestSSMConnectionImpl implements SerialConnection {
 
     private boolean isIamRequest() {
         String hex = asHex(request);
-        System.out.println("request = " + hex);
         return hex.startsWith("8010F011A8") && hex.contains("FF8228FF8229FF822AFF822B");
     }
 
