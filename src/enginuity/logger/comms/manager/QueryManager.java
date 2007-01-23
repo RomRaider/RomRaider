@@ -23,9 +23,12 @@ package enginuity.logger.comms.manager;
 
 import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
+import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.ui.StatusChangeListener;
 
 public interface QueryManager extends Runnable {
+
+    void setFileLoggerQuery(EcuSwitch ecuSwitch, LoggerCallback callback);
 
     void addQuery(String callerId, EcuData ecuData, LoggerCallback callback);
 
@@ -36,5 +39,4 @@ public interface QueryManager extends Runnable {
     void stop();
 
     void addListener(StatusChangeListener listener);
-
 }

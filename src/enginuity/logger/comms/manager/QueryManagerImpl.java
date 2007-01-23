@@ -31,6 +31,7 @@ import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.comms.query.RegisteredQuery;
 import enginuity.logger.comms.query.RegisteredQueryImpl;
 import enginuity.logger.definition.EcuData;
+import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.ui.MessageListener;
 import enginuity.logger.ui.StatusChangeListener;
 import static enginuity.util.HexUtil.asHex;
@@ -54,6 +55,7 @@ public final class QueryManagerImpl implements QueryManager {
     private final Settings settings;
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
+    private RegisteredQuery fileLoggerQuery;
     private Thread queryManagerThread;
     private boolean started;
     private boolean stop;
@@ -68,6 +70,11 @@ public final class QueryManagerImpl implements QueryManager {
     public synchronized void addListener(StatusChangeListener listener) {
         checkNotNull(listener, "listener");
         listeners.add(listener);
+    }
+
+    public void setFileLoggerQuery(EcuSwitch ecuSwitch, LoggerCallback callback) {
+        checkNotNull(ecuSwitch, callback);
+        fileLoggerQuery = new RegisteredQueryImpl(ecuSwitch, callback);
     }
 
     public synchronized void addQuery(String callerId, EcuData ecuData, LoggerCallback callback) {
@@ -145,7 +152,11 @@ public final class QueryManagerImpl implements QueryManager {
                     messageListener.reportMessage("Select parameters to be logged...");
                     sleep(1000L);
                 } else {
-                    txManager.sendQueries(queryMap.values());
+                    List<RegisteredQuery> queries = new ArrayList<RegisteredQuery>(queryMap.values());
+                    if (fileLoggerQuery != null) {
+                        queries.add(fileLoggerQuery);
+                    }
+                    txManager.sendQueries(queries);
                     count++;
                     messageListener.reportMessage("Querying ECU...");
                     messageListener.reportStats(buildStatsMessage(start, count));

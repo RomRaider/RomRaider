@@ -27,6 +27,7 @@ import enginuity.logger.comms.manager.QueryManagerImpl;
 import enginuity.logger.comms.query.EcuInitCallback;
 import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
+import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.ui.MessageListener;
 import enginuity.logger.ui.StatusChangeListener;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -42,6 +43,12 @@ public final class LoggerControllerImpl implements LoggerController {
     public synchronized void addListener(StatusChangeListener listener) {
         checkNotNull(listener, "listener");
         queryManager.addListener(listener);
+    }
+
+    public void setFileLoggerSwitch(EcuSwitch ecuSwitch, LoggerCallback callback) {
+        checkNotNull(ecuSwitch, callback);
+        System.out.println("Setting file logger switch:   " + ecuSwitch.getName());
+        queryManager.setFileLoggerQuery(ecuSwitch, callback);
     }
 
     public void addLogger(String callerId, EcuData ecuData, LoggerCallback callback) {

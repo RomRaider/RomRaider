@@ -23,9 +23,12 @@ package enginuity.logger.comms.controller;
 
 import enginuity.logger.comms.query.LoggerCallback;
 import enginuity.logger.definition.EcuData;
+import enginuity.logger.definition.EcuSwitch;
 import enginuity.logger.ui.StatusChangeListener;
 
 public interface LoggerController {
+
+    void setFileLoggerSwitch(EcuSwitch ecuSwitch, LoggerCallback callback);
 
     void addLogger(String callerId, EcuData ecuData, LoggerCallback callback);
 

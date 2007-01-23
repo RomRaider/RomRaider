@@ -113,7 +113,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private static final String ENGINUITY_ECU_LOGGER_TITLE = "Enginuity ECU Logger";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
-    private final String id;
     private Settings settings;
     private LoggerController controller;
     private JLabel messageLabel;
@@ -143,7 +142,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
-        id = System.currentTimeMillis() + "_" + hashCode();
         bootstrap(settings);
         initControllerListeners();
         initUserInterface();
@@ -257,7 +255,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private void initFileLoggingController(final EcuSwitch fileLoggingControllerSwitch) {
         // add logger and setup callback
-        controller.addLogger(id, fileLoggingControllerSwitch, new LoggerCallback() {
+        controller.setFileLoggerSwitch(fileLoggingControllerSwitch, new LoggerCallback() {
             public void callback(byte[] bytes) {
                 // update handlers
                 double value = fileLoggingControllerSwitch.getSelectedConvertor().convert(bytes);
