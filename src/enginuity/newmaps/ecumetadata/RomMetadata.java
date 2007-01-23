@@ -26,7 +26,7 @@ import enginuity.util.NamedSet;
 
 import java.io.Serializable;
 
-public class Rom implements Nameable, Serializable {
+public class RomMetadata implements Nameable, Serializable {
 
     private String name;
     private int idAddress;
@@ -42,9 +42,9 @@ public class Rom implements Nameable, Serializable {
     private NamedSet<TableMetadata> tables;
     private Category categories;
     
-    private Rom() { }
+    private RomMetadata() { }
     
-    public Rom(String name) {
+    public RomMetadata(String name) {
         this.name = name;
     }
 

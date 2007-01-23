@@ -26,17 +26,17 @@ import static enginuity.newmaps.definition.AttributeParser.parseStorageType;
 import static enginuity.newmaps.definition.AttributeParser.parseUnitSystem;
 import enginuity.newmaps.definition.index.Index;
 import enginuity.newmaps.definition.index.IndexItem;
-import enginuity.newmaps.ecumetadata.Axis;
+import enginuity.newmaps.ecumetadata.AxisMetadata;
 import enginuity.newmaps.ecumetadata.Category;
 import enginuity.newmaps.ecumetadata.TableMetadata;
-import enginuity.newmaps.ecumetadata.Parameter;
-import enginuity.newmaps.ecumetadata.Rom;
+import enginuity.newmaps.ecumetadata.ParameterMetadata;
+import enginuity.newmaps.ecumetadata.RomMetadata;
 import enginuity.newmaps.ecumetadata.Scale;
-import enginuity.newmaps.ecumetadata.SourceDefAxis;
-import enginuity.newmaps.ecumetadata.Switch;
-import enginuity.newmaps.ecumetadata.SwitchGroup;
-import enginuity.newmaps.ecumetadata.Table2D;
-import enginuity.newmaps.ecumetadata.Table3D;
+import enginuity.newmaps.ecumetadata.SourceDefAxisMetadata;
+import enginuity.newmaps.ecumetadata.SwitchMetadata;
+import enginuity.newmaps.ecumetadata.SwitchGroupMetadata;
+import enginuity.newmaps.ecumetadata.Table2DMetadata;
+import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.ecumetadata.Unit;
 import enginuity.newmaps.xml.SaxParserFactory;
 import static enginuity.util.HexUtil.hexToInt;
@@ -108,20 +108,20 @@ public class RomDefinitionHandler extends DefaultHandler {
     private static final String ATTR_COARSE_INCREMENT = "coarseincrement";
     private static final String ATTR_FINE_INCREMENT = "fineincrement";  
      
-    private Rom rom;
+    private RomMetadata rom;
     private Category category = new Category("Root"); // Category currently being created
     private Stack<Category> categoryStack; // Stack used for higher levels in tree
     private Category categories; // Category tree that will be returned
     private TableMetadata table;
     private Scale scale;
-    private Axis axis;
+    private AxisMetadata axis;
     private Unit unit;
     private String dataValues;
-    private SwitchGroup switchGroup;
+    private SwitchGroupMetadata switchGroup;
     private NamedSet<TableMetadata> tables = new NamedSet<TableMetadata>();
     private NamedSet<Scale> scales = new NamedSet<Scale>();
     private NamedSet<Unit> units = new NamedSet<Unit>();
-    private NamedSet<Rom> roms = new NamedSet<Rom>();
+    private NamedSet<RomMetadata> roms = new NamedSet<RomMetadata>();
     private StringBuilder charBuffer;
     private Index index;  
     private boolean inheriting = false; 
@@ -153,12 +153,12 @@ public class RomDefinitionHandler extends DefaultHandler {
                 // Try to find ROM in existing definitions
                 try {
                     // Look through parsed roms first
-                    rom = (Rom)roms.get(attr.getValue(ATTR_BASE));
+                    rom = (RomMetadata)roms.get(attr.getValue(ATTR_BASE));
                     
                 } catch (NameableNotFoundException ex) {
                     // Or try opening the file
                     try {
-                        rom = (Rom)getParentRom((IndexItem)index.get(attr.getValue(ATTR_BASE)));
+                        rom = (RomMetadata)getParentRom((IndexItem)index.get(attr.getValue(ATTR_BASE)));
                         
                     } catch (NameableNotFoundException ex2) {
                         // No base definition found, cannot continue
@@ -176,7 +176,7 @@ public class RomDefinitionHandler extends DefaultHandler {
                 scales = rom.getScales();
 
             } else {                
-                rom = new Rom(attr.getValue(ATTR_NAME));
+                rom = new RomMetadata(attr.getValue(ATTR_NAME));
             }
 
             // Set all other attributes
@@ -219,9 +219,9 @@ public class RomDefinitionHandler extends DefaultHandler {
             // Look for table in table set
             //
             try {
-                table = (Table3D)tables.get(attr.getValue(ATTR_NAME));
+                table = (Table3DMetadata)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                table = new Table3D(attr.getValue(ATTR_NAME));
+                table = new Table3DMetadata(attr.getValue(ATTR_NAME));
             }
             
             // Set all other attributes
@@ -232,9 +232,9 @@ public class RomDefinitionHandler extends DefaultHandler {
             
             // Store axis addresses
             if (attr.getIndex(ATTR_X_ADDRESS) > -1)                
-                ((Table3D) table).getXaxis().setAddress(hexToInt(attr.getValue(ATTR_X_ADDRESS)));
+                ((Table3DMetadata) table).getXaxis().setAddress(hexToInt(attr.getValue(ATTR_X_ADDRESS)));
             if (attr.getIndex(ATTR_Y_ADDRESS) > -1)
-                ((Table3D) table).getYaxis().setAddress(hexToInt(attr.getValue(ATTR_Y_ADDRESS)));
+                ((Table3DMetadata) table).getYaxis().setAddress(hexToInt(attr.getValue(ATTR_Y_ADDRESS)));
             
             // Add scale
             try {
@@ -252,9 +252,9 @@ public class RomDefinitionHandler extends DefaultHandler {
             // Look for table in table set
             //
             try {
-                table = (Table2D)tables.get(attr.getValue(ATTR_NAME));
+                table = (Table2DMetadata)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                table = new Table2D(attr.getValue(ATTR_NAME));
+                table = new Table2DMetadata(attr.getValue(ATTR_NAME));
             }            
             
             // Set all other attributes
@@ -263,11 +263,11 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_ADDRESS) > -1)
                 table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             if (attr.getIndex(ATTR_SIZE) > -1)
-                ((Table2D)table).setSize(parseInt(attr.getValue(ATTR_SIZE)));   
+                ((Table2DMetadata)table).setSize(parseInt(attr.getValue(ATTR_SIZE)));   
             
             // Store axis addresses
             if (attr.getIndex(ATTR_AXIS_ADDRESS) > -1)
-                ((Table2D) table).getAxis().setAddress(hexToInt(attr.getValue(ATTR_AXIS_ADDRESS)));
+                ((Table2DMetadata) table).getAxis().setAddress(hexToInt(attr.getValue(ATTR_AXIS_ADDRESS)));
             
             // Add scale
             try {
@@ -285,9 +285,9 @@ public class RomDefinitionHandler extends DefaultHandler {
             // Look for table in table set
             //
             try {
-                table = (Parameter)tables.get(attr.getValue(ATTR_NAME));
+                table = (ParameterMetadata)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                table = new Parameter(attr.getValue(ATTR_NAME));
+                table = new ParameterMetadata(attr.getValue(ATTR_NAME));
             }            
             
             // Set all other attributes
@@ -314,18 +314,18 @@ public class RomDefinitionHandler extends DefaultHandler {
             boolean found = false;
             if (switchGroup != null) {
                 try {
-                    table = (Switch)switchGroup.get(attr.getValue(ATTR_NAME));
+                    table = (SwitchMetadata)switchGroup.get(attr.getValue(ATTR_NAME));
                     found = true;
                 } catch (NameableNotFoundException ex) { 
-                    table = new Switch(attr.getValue(ATTR_NAME));
+                    table = new SwitchMetadata(attr.getValue(ATTR_NAME));
                 }                                    
                 
             } else {
                 
                 try {
-                    table = (Switch)tables.get(attr.getValue(ATTR_NAME));
+                    table = (SwitchMetadata)tables.get(attr.getValue(ATTR_NAME));
                 } catch (NameableNotFoundException ex) {
-                    table = new Switch(attr.getValue(ATTR_NAME));
+                    table = new SwitchMetadata(attr.getValue(ATTR_NAME));
                 }            
             }
             
@@ -335,7 +335,7 @@ public class RomDefinitionHandler extends DefaultHandler {
             if (attr.getIndex(ATTR_ADDRESS) > -1)
                 table.setAddress(hexToInt(attr.getValue(ATTR_ADDRESS)));
             if (attr.getIndex(ATTR_SIZE) > -1)
-                ((Switch)table).setSize(parseInt(attr.getValue(ATTR_SIZE)));   
+                ((SwitchMetadata)table).setSize(parseInt(attr.getValue(ATTR_SIZE)));   
             
             // Add scale
             try {
@@ -353,9 +353,9 @@ public class RomDefinitionHandler extends DefaultHandler {
             // Look for table in table set
             //
             try {
-                switchGroup = (SwitchGroup)tables.get(attr.getValue(ATTR_NAME));
+                switchGroup = (SwitchGroupMetadata)tables.get(attr.getValue(ATTR_NAME));
             } catch (NameableNotFoundException ex) {
-                switchGroup = new SwitchGroup(attr.getValue(ATTR_NAME));
+                switchGroup = new SwitchGroupMetadata(attr.getValue(ATTR_NAME));
             }   
             
             // Set all other attributes
@@ -389,10 +389,10 @@ public class RomDefinitionHandler extends DefaultHandler {
         } else if (TAG_X_AXIS.equalsIgnoreCase(qName)) {
             
             try { 
-                axis = ((Table3D)table).getXaxis();
+                axis = ((Table3DMetadata)table).getXaxis();
                 axis.getName();
             } catch (NullPointerException ex) {
-                axis = new Axis(attr.getValue(ATTR_NAME));
+                axis = new AxisMetadata(attr.getValue(ATTR_NAME));
             }
                         
             // Set all other attributes
@@ -414,10 +414,10 @@ public class RomDefinitionHandler extends DefaultHandler {
         } else if (TAG_Y_AXIS.equalsIgnoreCase(qName)) {
             
             try { 
-                axis = ((Table3D)table).getYaxis();
+                axis = ((Table3DMetadata)table).getYaxis();
                 axis.getName();
             } catch (NullPointerException ex) {
-                axis = new Axis(attr.getValue(ATTR_NAME));
+                axis = new AxisMetadata(attr.getValue(ATTR_NAME));
             }
             
             // Set all other attributes
@@ -439,10 +439,10 @@ public class RomDefinitionHandler extends DefaultHandler {
         } else if (TAG_AXIS.equalsIgnoreCase(qName)) {
             
             try { 
-                axis = ((Table2D)table).getAxis();
+                axis = ((Table2DMetadata)table).getAxis();
                 axis.getName();
             } catch (NullPointerException ex) {
-                axis = new Axis(attr.getValue(ATTR_NAME));
+                axis = new AxisMetadata(attr.getValue(ATTR_NAME));
             }
             
             // Set all other attributes
@@ -484,10 +484,10 @@ public class RomDefinitionHandler extends DefaultHandler {
             
             // Determine state and values and apply to table
             if (attr.getValue(ATTR_NAME).equalsIgnoreCase(VAL_ON)) {
-                ((Switch)table).setStateOn(attr.getValue("values"));
+                ((SwitchMetadata)table).setStateOn(attr.getValue("values"));
                 
             } else if (attr.getValue(ATTR_NAME).equalsIgnoreCase(VAL_OFF)) {
-                ((Switch)table).setStateOff(attr.getValue("values"));                
+                ((SwitchMetadata)table).setStateOff(attr.getValue("values"));                
                 
             }            
             
@@ -531,19 +531,19 @@ public class RomDefinitionHandler extends DefaultHandler {
             
             
         } else if (TAG_AXIS.equalsIgnoreCase(qName)) {
-            ((Table2D)table).setAxis(axis);
+            ((Table2DMetadata)table).setAxis(axis);
             axis = null;
             
             
             
         } else if (TAG_X_AXIS.equalsIgnoreCase(qName)) {
-            ((Table3D)table).setXaxis(axis);
+            ((Table3DMetadata)table).setXaxis(axis);
             axis = null;
             
             
             
         } else if (TAG_Y_AXIS.equalsIgnoreCase(qName)) {
-            ((Table3D)table).setYaxis(axis);
+            ((Table3DMetadata)table).setYaxis(axis);
             axis = null;
             
             
@@ -572,8 +572,8 @@ public class RomDefinitionHandler extends DefaultHandler {
         } else if (TAG_DATA.equalsIgnoreCase(qName)) {
             
             // Set static axis values
-            if (axis instanceof SourceDefAxis) {
-                ((SourceDefAxis)axis).setValues(charBuffer+"", " ");
+            if (axis instanceof SourceDefAxisMetadata) {
+                ((SourceDefAxisMetadata)axis).setValues(charBuffer+"", " ");
             }   
             
             
@@ -594,7 +594,7 @@ public class RomDefinitionHandler extends DefaultHandler {
                 if (!inheriting) category.addTable(table);
                 
             } else {                
-                switchGroup.add((Switch)table);                
+                switchGroup.add((SwitchMetadata)table);                
             }            
             
             table = null;            
@@ -606,12 +606,12 @@ public class RomDefinitionHandler extends DefaultHandler {
     }    
     
     
-    public Rom getRom() {
+    public RomMetadata getRom() {
         return rom;
     }
     
     
-    private Rom getParentRom(IndexItem parent) throws Exception {
+    private RomMetadata getParentRom(IndexItem parent) throws Exception {
         
             InputStream is = new BufferedInputStream(new FileInputStream(parent.getFile()));
             RomDefinitionHandler handler = new RomDefinitionHandler(index);

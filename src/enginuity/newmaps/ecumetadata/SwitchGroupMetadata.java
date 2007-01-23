@@ -26,7 +26,7 @@ import enginuity.util.exception.NameableNotFoundException;
 
 import java.util.Iterator;
 
-public class SwitchGroup extends TableMetadata {
+public class SwitchGroupMetadata extends TableMetadata {
     
     public static final int DEFAULT_ON = 0;
     public static final int DEFAULT_OFF = 1;
@@ -35,9 +35,9 @@ public class SwitchGroup extends TableMetadata {
     private int defaultValue = DEFAULT_NONE;
     private boolean hidden = false;
     
-    NamedSet<Switch> switches = new NamedSet<Switch>();    
+    NamedSet<SwitchMetadata> switches = new NamedSet<SwitchMetadata>();    
     
-    public SwitchGroup(String name) {
+    public SwitchGroupMetadata(String name) {
         super(name);
     }
     
@@ -58,16 +58,20 @@ public class SwitchGroup extends TableMetadata {
     public boolean isHidden() {
         return hidden;
     }
+    
+    public int getSize() {
+        return 0;
+    }
 
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
     }
     
-    public Switch get(String name) throws NameableNotFoundException {
-        return (Switch)switches.get(name);
+    public SwitchMetadata get(String name) throws NameableNotFoundException {
+        return (SwitchMetadata)switches.get(name);
     }
     
-    public void add(Switch input) {
+    public void add(SwitchMetadata input) {
         switches.add(input);
     }
     

@@ -21,42 +21,28 @@
 
 package enginuity.newmaps.ecumetadata;
 
+import static enginuity.newmaps.definition.AttributeParser.stringToStringArray;
+
 import java.io.Serializable;
 
-public class Table2D extends Axis implements Serializable {
+public class SourceDefAxisMetadata extends AxisMetadata implements Serializable {
     
-    protected Axis axis;
+    private String[] values;
     
-    public Table2D(String name) {
+    public SourceDefAxisMetadata(String name) {
         super(name);
-    }    
-
-    public Axis getAxis() {
-        return axis;
     }
 
-    public void setAxis(Axis axis) {
-        this.axis = axis;
+    public String[] getValues() {
+        return values;
+    }
+
+    public void setValues(String s, String delim) {
+        values = stringToStringArray(s, delim);
     }
     
-    public String toString() {
-        String scaleName = "";
-        
-        try {
-            scaleName = scale.getName();
-        } catch (NullPointerException ex) {
-            scaleName = "Not found";
-        }
-        
-        String output = "      --- Table: " + name + " ---" +
-                "\n      - Description: " + description +
-                "\n      - Scale: " + scaleName +
-                "\n      - Address: " + address +
-                "\n      - Userlevel: " + userLevel +
-                "\n" + axis;
-                
-                
-        return output;
+    public int getSize() {
+        return 0;
     }
-
+    
 }

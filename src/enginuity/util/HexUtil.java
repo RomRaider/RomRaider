@@ -22,7 +22,7 @@
 package enginuity.util;
 
 public final class HexUtil {
-
+    
     private HexUtil() {
     }
 

@@ -25,16 +25,16 @@ import static enginuity.newmaps.definition.AttributeParser.stringToByteArray;
 
 import java.io.Serializable;
 
-public class Switch extends TableMetadata implements Serializable {
+public class SwitchMetadata extends TableMetadata implements Serializable {
     
     protected byte[] stateOn = new byte[1];
     protected byte[] stateOff = new byte[1];
     protected int size;
     
-    private int defaultValue = SwitchGroup.DEFAULT_NONE;
+    private int defaultValue = SwitchGroupMetadata.DEFAULT_NONE;
     boolean hidden = false;
     
-    public Switch(String name) {
+    public SwitchMetadata(String name) {
         super(name);
     } 
     
@@ -71,9 +71,9 @@ public class Switch extends TableMetadata implements Serializable {
     }
     
     public void setDefaultValue(String value) {
-        if (value.equalsIgnoreCase("on")) defaultValue = SwitchGroup.DEFAULT_ON;
-        else if (value.equalsIgnoreCase("off")) defaultValue = SwitchGroup.DEFAULT_OFF;
-        else defaultValue = SwitchGroup.DEFAULT_NONE;       
+        if (value.equalsIgnoreCase("on")) defaultValue = SwitchGroupMetadata.DEFAULT_ON;
+        else if (value.equalsIgnoreCase("off")) defaultValue = SwitchGroupMetadata.DEFAULT_OFF;
+        else defaultValue = SwitchGroupMetadata.DEFAULT_NONE;       
     }
 
     public boolean isHidden() {

@@ -21,6 +21,9 @@
 
 package enginuity.util;
 
+import enginuity.newmaps.ecumetadata.Scale;
+import enginuity.newmaps.ecumetadata.TableMetadata;
+
 @SuppressWarnings({"UnnecessaryBoxing"})
 public final class ByteUtil {
 
@@ -37,6 +40,22 @@ public final class ByteUtil {
         }
         return i;
     }
+    
+    private int getCellLengthInBytes(TableMetadata metadata) {        
+        int type = metadata.getScale().getStorageType();
+        
+        if (type == Scale.STORAGE_TYPE_CHAR) return 1;
+        else if (type == Scale.STORAGE_TYPE_FLOAT) return 4;
+        else if (type == Scale.STORAGE_TYPE_HEX) return 1;
+        else if (type == Scale.STORAGE_TYPE_INT16) return 2;
+        else if (type == Scale.STORAGE_TYPE_INT8) return 1;
+        else if (type == Scale.STORAGE_TYPE_UINT16) return 2;
+        else if (type == Scale.STORAGE_TYPE_UINT8) return 1;
+        else if (type == Scale.STORAGE_TYPE_UINT32) return 4;
+        else if (type == Scale.STORAGE_TYPE_INT32) return 4;       
+        
+        else return 0; 
+    }    
 
     public static byte asByte(int i) {
         return Integer.valueOf(i).byteValue();

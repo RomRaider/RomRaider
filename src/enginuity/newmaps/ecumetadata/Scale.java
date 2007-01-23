@@ -36,7 +36,9 @@ public class Scale implements Nameable, Serializable {
     public static final int STORAGE_TYPE_UINT16 = 3;
     public static final int STORAGE_TYPE_FLOAT = 4;
     public static final int STORAGE_TYPE_HEX = 5;
-    public static final int STORAGE_TYPE_CHAR = 6;
+    public static final int STORAGE_TYPE_CHAR = 6;;
+    public static final int STORAGE_TYPE_INT32 = 7;
+    public static final int STORAGE_TYPE_UINT32 = 8;
     
     protected String description;
     protected Unit[] units;    

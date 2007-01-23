@@ -19,14 +19,14 @@
  *
  */
 
-package enginuity.newmaps.ecumetadata;
+package enginuity.newmaps.ecudata;
 
-import java.io.Serializable;
-
-public class Parameter extends TableMetadata implements Serializable {
+public class ECUData {
     
-    public Parameter(String name) {
-        super(name);
+    byte[] data;
+    
+    public ECUData(byte[] data) {
+        this.data = data;
     }
     
 }

@@ -21,10 +21,10 @@
 
 package enginuity.newmaps.gui;
 
-import enginuity.newmaps.ecumetadata.Axis;
+import enginuity.newmaps.ecumetadata.AxisMetadata;
 import enginuity.newmaps.ecumetadata.Scale;
 import enginuity.newmaps.ecumetadata.TableMetadata;
-import enginuity.newmaps.ecumetadata.Table3D;
+import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.ecumetadata.Unit;
 import javax.swing.JScrollPane;
 
@@ -35,7 +35,7 @@ public class Frame3D extends EnginuityFrame {
     EnginuityJTable yAxisTable;
     EnginuityJTable table;
     
-    public Frame3D(byte[] data, Table3D metadata) {
+    public Frame3D(byte[] data, Table3DMetadata metadata) {
         
         super(data, (TableMetadata)metadata);
         
@@ -78,15 +78,15 @@ public class Frame3D extends EnginuityFrame {
         //
         // Create table and axis
         //
-        Table3D table = new Table3D("Test");
+        Table3DMetadata table = new Table3DMetadata("Test");
         table.setDescription("This is the table");
         table.setAddress(75);
-        Axis xAxis = new Axis("X Axis");
+        AxisMetadata xAxis = new AxisMetadata("X Axis");
         xAxis.setDescription("This is the X Axis");
         xAxis.setAddress(0);
         xAxis.setSize(5);
         table.setXaxis(xAxis);
-        Axis yAxis = new Axis("Y Axis");
+        AxisMetadata yAxis = new AxisMetadata("Y Axis");
         yAxis.setDescription("This is the Y Axis");
         yAxis.setAddress(25);
         yAxis.setSize(5);

@@ -44,6 +44,8 @@ public abstract class TableMetadata implements Nameable, Serializable {
         this.name = name;
     }
     
+    public abstract int getSize();
+    
     public final String getName() {
         return name;
     }

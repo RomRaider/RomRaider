@@ -22,7 +22,7 @@
 package enginuity.newmaps.definition.index;
 
 import enginuity.newmaps.definition.RomDefinitionHandler;
-import enginuity.newmaps.ecumetadata.Rom;
+import enginuity.newmaps.ecumetadata.RomMetadata;
 import enginuity.newmaps.xml.SaxParserFactory;
 import static enginuity.util.MD5Checksum.getMD5Checksum;
 import enginuity.util.exception.NameableNotFoundException;
@@ -190,7 +190,7 @@ public class IndexBuilder {
     }
     
     
-    public static void saveDef(Rom rom) {
+    public static void saveDef(RomMetadata rom) {
         
         try {
             FileOutputStream fileOut = new FileOutputStream("/sizetest/" + rom.getName() + ".dat");
