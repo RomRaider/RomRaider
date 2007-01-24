@@ -111,6 +111,7 @@ public final class QueryManagerImpl implements QueryManager {
             e.printStackTrace();
         } finally {
             notifyStopped();
+            messageListener.reportMessage("Disconnected.");
             System.out.println("QueryManager stopped.");
         }
     }

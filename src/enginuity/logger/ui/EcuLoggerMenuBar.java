@@ -49,7 +49,8 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem logFileControllerSwitch = new JRadioButtonMenuItem("Control File Logging With Defogger Switch");
 
     private JMenu connectionMenu = new JMenu("Connection");
-    private JMenuItem resetConnection = new JMenuItem("Reset Connection to ECU...");
+    private JMenuItem resetConnection = new JMenuItem("Reset");
+    private JMenuItem disconnect = new JMenuItem("Disconnect");
 
     private JMenu helpMenu = new JMenu("Help");
     private JMenuItem about = new JMenuItem("About Enginuity ECU Logger");
@@ -96,8 +97,11 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         add(connectionMenu);
         connectionMenu.setMnemonic('C');
         resetConnection.setMnemonic('R');
+        disconnect.setMnemonic('D');
         connectionMenu.add(resetConnection);
+        connectionMenu.add(disconnect);
         resetConnection.addActionListener(this);
+        disconnect.addActionListener(this);
 
         // help menu stuff
         add(helpMenu);
@@ -163,6 +167,13 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         } else if (evt.getSource() == resetConnection) {
             try {
                 parent.restartLogging();
+            } catch (Exception e) {
+                parent.reportError(e);
+            }
+
+        } else if (evt.getSource() == disconnect) {
+            try {
+                parent.stopLogging();
             } catch (Exception e) {
                 parent.reportError(e);
             }
