@@ -19,22 +19,12 @@
  *
  */
 
-package enginuity.newmaps.ecudata;
+package enginuity.newmaps.exception;
 
-import enginuity.newmaps.ecumetadata.TableMetadata;
-
-public class SwitchData extends TableData {
+public class DataPopulationException extends Exception {
     
-    public SwitchData() {
-    }
-    
-    public boolean populate(byte[] data) {
-        return true;
-    }
-    
-    public byte[] returnValues() {
-        // TODO: Find return values (using ECUDataUtil)
-        return null;
+    public DataPopulationException(String msg) {
+        super(msg);
     }
     
 }

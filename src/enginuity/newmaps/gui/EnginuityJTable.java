@@ -1,24 +1,3 @@
-/*
- *
- * Enginuity Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006 Enginuity.org
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- */
-
 package enginuity.newmaps.gui;
 
 import java.awt.Color;
@@ -27,20 +6,21 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
 
 public class EnginuityJTable extends JTable
 {
 
 	
-    HashSet cellSelection = new HashSet();
-    HashSet currentSelection = new HashSet();
-    HashSet clipBoard = new HashSet();
+    HashSet<Point> cellSelection = new HashSet<Point>();
+    HashSet<Point> currentSelection = new HashSet<Point>();
+    HashSet<Cell> clipBoard = new HashSet<Cell>();
     Point lastSelectedCell = null;
     Point currentSelectedCell = null;
     
@@ -57,15 +37,21 @@ public class EnginuityJTable extends JTable
     
     private int action;
 	
-    public EnginuityJTable(int rows, int columns) {
-        super (rows, columns);
-        this.addKeyListener( new EventKeyHandler(this)  );        
-
-        this.setCellSelectionEnabled( true );
-        this.setSelectionBackground( Color.blue );
-        this.setCutSelectionColour(Color.green);
-        this.setCopySelectionColour(Color.cyan);        
-    }
+	public EnginuityJTable(int rows, int columns)
+	{
+		super (rows, columns);
+		MouseMotionListener[] cls = (MouseMotionListener[])(this.getListeners(MouseMotionListener.class));
+		for ( int i = 0; i < cls.length; i++)
+		{			
+			if (i == 2)
+				this.removeMouseMotionListener( cls[i] );
+		}
+		
+		this.addKeyListener( new EventKeyHandler(this)  );
+		this.addMouseMotionListener( new MouseMotionH(this) );
+                this.setCellSelectionEnabled( true );
+                this.setSelectionBackground( Color.blue );                
+	}
 	
     
     public void changeSelection(
@@ -216,7 +202,7 @@ public class EnginuityJTable extends JTable
 		return cellSelection;
 	}
 
-	public void setCellSelection( HashSet cellSelection )
+	public void setCellSelection( HashSet<Point> cellSelection )
 	{
 		this.cellSelection = cellSelection;
 	}
@@ -241,7 +227,7 @@ public class EnginuityJTable extends JTable
 	public void toClipBoard( int cut )
 	{
 		Point cell = null;		
-		HashSet clipBoardHS = new HashSet();
+		HashSet<Point> clipBoardHS = new HashSet<Point>();
 		
 		this.clipBoard.clear();
 		clipBoardHS.addAll( cellSelection );
@@ -252,16 +238,16 @@ public class EnginuityJTable extends JTable
 			cell = (Point)iter.next();		
 			clipBoard.add( new Cell(cell, this.getValueAt((int)cell.getX(), (int)cell.getY())) );
 			
-			if (cut == this.CUT)
+			if (cut == EnginuityJTable.CUT)
 			{				
 				setSelectionBackground(this.cutSelectionColour);
-				setAction( this.CUT);
+				setAction( EnginuityJTable.CUT);
 			}
 			else 			
-				if (cut == this.COPY)	
+				if (cut == EnginuityJTable.COPY)	
 				{
 					setSelectionBackground(this.copySelectionColour);
-					setAction( this.COPY);
+					setAction( EnginuityJTable.COPY);
 				}
 			repaint();
 		}
@@ -272,7 +258,7 @@ public class EnginuityJTable extends JTable
 	public void moveToClipBoard(  ) 
 	{
 		Point cell = null;
-		HashSet clipBoardHS = new HashSet();
+		HashSet<Point> clipBoardHS = new HashSet<Point>();
 		
 		this.clipBoard.clear();
 		clipBoardHS.addAll( cellSelection );
@@ -301,15 +287,15 @@ public class EnginuityJTable extends JTable
 		
 		//sort by X Coordinate
 		Object[] cells = clipboard.toArray();
-		Arrays.sort(cells, new XComparator());
+		Arrays.sort(cells, new XComparator<Object>());
 
 		//sort by Y Coordinate
-		Arrays.sort(cells, new YComparator());
+		Arrays.sort((Object[])cells, new YComparator<Object>());
 		//System.out.println("orderedByY: " + (Cell)cells[0]);
 		Cell minY = (Cell)cells[0];
 				
 		//sort again by X coordinate
-		Arrays.sort(cells, new XComparator());
+		Arrays.sort((Object[])cells, new XComparator<Object>());
 		Cell minX = (Cell)cells[0];
 		//System.out.println("orderedByX: " + (Cell)cells[0]);
 		
@@ -321,6 +307,31 @@ public class EnginuityJTable extends JTable
 	}
     
     
+	class MouseMotionH implements MouseMotionListener
+	{
+		private EnginuityJTable myJTable = null;
+    	public MouseMotionH(EnginuityJTable myJTable)
+    	{
+    		super();
+    		this.myJTable = myJTable;
+    	}
+		public void mouseDragged( MouseEvent e )
+		{
+
+            Point p = e.getPoint();
+            
+            int row = myJTable.rowAtPoint(p);
+            int column = myJTable.columnAtPoint(p);            
+            myJTable.changeSelection(row, column, false, true);
+		}
+		public void mouseMoved( MouseEvent e )
+		{
+			//System.out.println("move");
+			
+		}
+
+	}
+	
     class EventKeyHandler extends KeyAdapter{
     	private EnginuityJTable myJTable = null;
     	    	
@@ -337,7 +348,7 @@ public class EnginuityJTable extends JTable
         	//System.out.println(e.getModifiers());
         	if ((e.isControlDown() && e.getKeyCode() == 67 ))
         	{
-        		myJTable.toClipBoard(myJTable.COPY); 
+        		myJTable.toClipBoard(EnginuityJTable.COPY); 
         		return;
         	}
         	else
@@ -386,7 +397,7 @@ public class EnginuityJTable extends JTable
         	/*Cut*/
         	if ((e.isControlDown() && e.getKeyCode() == 88 ))
         	{
-        		myJTable.toClipBoard(myJTable.CUT); 
+        		myJTable.toClipBoard(EnginuityJTable.CUT); 
         		return;
         	}
         	else
@@ -488,10 +499,10 @@ public class EnginuityJTable extends JTable
      * @author fane
      *
      */
-    private class XComparator implements Comparator
+    private class XComparator<T> implements Comparator<T>
     {
 
-		public int compare(Object o1, Object o2) {
+		public int compare(T o1, T o2) {
 			return ((Cell)o1).getX() - ((Cell)o2).getX(); 
 		}
     	
@@ -502,9 +513,9 @@ public class EnginuityJTable extends JTable
      * @author fane
      *
      */
-    private class YComparator implements Comparator
+    private class YComparator<T> implements Comparator<T>
     {
-		public int compare(Object o1, Object o2) {
+		public int compare(T o1, T o2) {
 			return ((Cell)o1).getY() - ((Cell)o2).getY();
 		}
     	

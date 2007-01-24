@@ -21,14 +21,38 @@
 
 package enginuity.newmaps.ecudata;
 
-public class Table3DData {
+import enginuity.newmaps.ecumetadata.Table3DMetadata;
+import enginuity.newmaps.exception.DataPopulationException;
+
+public class Table3DData extends TableData {
     
-    public Table3DData() {
+    private float[][] values;
+    private AxisData xAxis;
+    private AxisData yAxis;
+    
+    public Table3DData(byte[] data, Table3DMetadata metadata) throws DataPopulationException {
+        this.metadata = metadata;
+        populate(data);
+    }
+    
+    public float[][] getValues() {
+        return values;
+    }
+    
+    public float getValueAt(int x, int y) throws IndexOutOfBoundsException {
+        return values[x][y];
     }
     
     public byte[] returnValues() {
+        // Returns updated byte values to ECUData
+        
         // TODO: Find return values (using ECUDataUtil)
         return null;
+    }
+    
+    public boolean populate(byte[] data) {
+        Table3DMetadata meta = (Table3DMetadata)metadata;
+        return true;
     }
     
 }

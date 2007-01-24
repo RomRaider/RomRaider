@@ -21,9 +21,15 @@
 
 package enginuity.newmaps.ecudata;
 
+import enginuity.newmaps.ecumetadata.TableMetadata;
+
 public class ParameterData extends TableData {
     
     public ParameterData() {
+    }
+    
+    public boolean populate(byte[] data) {
+        return true;
     }
     
     public byte[] returnValues() {

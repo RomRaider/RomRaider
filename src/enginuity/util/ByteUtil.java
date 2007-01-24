@@ -41,6 +41,17 @@ public final class ByteUtil {
         return i;
     }
     
+    public static int asSignedInt(byte[] bytes) {
+        int i = 0;
+        for (int j = 0; j < bytes.length; j++) {
+            if (j > 0) {
+                i <<= 8;
+            }
+            i |= bytes[j];
+        }
+        return i;
+    }    
+    
     private int getCellLengthInBytes(TableMetadata metadata) {        
         int type = metadata.getScale().getStorageType();
         
@@ -73,6 +84,23 @@ public final class ByteUtil {
         }
         return b;
     }
+    
+    public static byte[] reverseEndian(byte[] data) {
+        byte[] newData = new byte[data.length];
+        for (int i = 0; i < data.length; i++) {
+            newData[data.length - 1 - i] = data[i];
+        }
+        return newData;
+    }
+    
+    public static byte[] asSignedBytes(int i) {
+        byte[] b = new byte[4];
+        for (int j = 0; j < 4; j++) {
+            int offset = (b.length - 1 - j) << 3;
+            b[j] = (byte) (i >>> offset);
+        }
+        return b;
+    }    
 
     public static float asFloat(byte[] bytes) {
         return Float.intBitsToFloat(asUnsignedInt(bytes));
