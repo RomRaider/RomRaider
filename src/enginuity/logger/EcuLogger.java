@@ -232,8 +232,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(), settings.getFileLoggingControllerSwitchId(), ecuInit);
             List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
             addConvertorUpdateListeners(ecuParams);
-            loadEcuParams(ecuParams, null);
-            loadEcuSwitches(dataLoader.getEcuSwitches(), null);
+            loadEcuParams(ecuParams);
+            loadEcuSwitches(dataLoader.getEcuSwitches());
             initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
         } catch (Exception e) {
             e.printStackTrace();
@@ -287,6 +287,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
             EcuData ecuData = row.getEcuData();
+            setDefaultUnits(profile, ecuData);
             paramListTableModel.selectParam(ecuData, isSelectedOnLiveDataTab(profile, ecuData));
         }
     }
@@ -295,6 +296,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
             EcuData ecuData = row.getEcuData();
+            setDefaultUnits(profile, ecuData);
             paramListTableModel.selectParam(ecuData, isSelectedOnGraphTab(profile, ecuData));
         }
     }
@@ -303,6 +305,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
             EcuData ecuData = row.getEcuData();
+            setDefaultUnits(profile, ecuData);
             paramListTableModel.selectParam(ecuData, isSelectedOnDashTab(profile, ecuData));
         }
     }
@@ -335,35 +338,30 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dashboardTabSwitchListTableModel.clear();
     }
 
-    private void loadEcuParams(List<EcuParameter> ecuParams, UserProfile profile) {
+    private void loadEcuParams(List<EcuParameter> ecuParams) {
         clearParamTableModels();
         sort(ecuParams, new EcuDataComparator());
         for (EcuParameter ecuParam : ecuParams) {
-            if (profile == null || profile.contains(ecuParam)) {
-                setDefaultUnits(profile, ecuParam);
-                dataTabParamListTableModel.addParam(ecuParam, isSelectedOnLiveDataTab(profile, ecuParam));
-                graphTabParamListTableModel.addParam(ecuParam, isSelectedOnGraphTab(profile, ecuParam));
-                dashboardTabParamListTableModel.addParam(ecuParam, isSelectedOnDashTab(profile, ecuParam));
-            }
+            dataTabParamListTableModel.addParam(ecuParam, false);
+            graphTabParamListTableModel.addParam(ecuParam, false);
+            dashboardTabParamListTableModel.addParam(ecuParam, false);
         }
     }
 
-    private void loadEcuSwitches(List<EcuSwitch> ecuSwitches, UserProfile profile) {
+    private void loadEcuSwitches(List<EcuSwitch> ecuSwitches) {
         clearSwitchTableModels();
         sort(ecuSwitches, new EcuDataComparator());
         for (EcuSwitch ecuSwitch : ecuSwitches) {
-            if (profile == null || profile.contains(ecuSwitch)) {
-                dataTabSwitchListTableModel.addParam(ecuSwitch, isSelectedOnLiveDataTab(profile, ecuSwitch));
-                graphTabSwitchListTableModel.addParam(ecuSwitch, isSelectedOnGraphTab(profile, ecuSwitch));
-                dashboardTabSwitchListTableModel.addParam(ecuSwitch, isSelectedOnDashTab(profile, ecuSwitch));
-            }
+            dataTabSwitchListTableModel.addParam(ecuSwitch, false);
+            graphTabSwitchListTableModel.addParam(ecuSwitch, false);
+            dashboardTabSwitchListTableModel.addParam(ecuSwitch, false);
         }
     }
 
-    private void setDefaultUnits(UserProfile profile, EcuParameter ecuParam) {
+    private void setDefaultUnits(UserProfile profile, EcuData ecuData) {
         if (profile != null) {
             try {
-                ecuParam.selectConvertor(profile.getSelectedConvertor(ecuParam));
+                ecuData.selectConvertor(profile.getSelectedConvertor(ecuData));
             } catch (Exception e) {
                 reportError(e);
             }
