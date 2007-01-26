@@ -107,8 +107,7 @@ TODO: Add custom graph tab (eg. engine speed vs. boost, etc.)
 TODO: Add log analysis tab (or maybe new window?), including log playback, custom graphs, map compare, etc
 TODO: display ecu id in UI
 TODO: remove duplicate addresses from queries (and resolve response values back to original requests)
-TODO: add 'Disconnect' to connection menu
-TODO: rename 'Reset Ecu Connection' to 'Reset'
+TODO: add data reset button to each tab (resets max/min values, and clears graph data)
 TODO: GC optimization - mark and sweep
 TODO: Add ecu id and calid to ecu_defs
 */
