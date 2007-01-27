@@ -119,6 +119,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private Settings settings;
     private LoggerController controller;
     private JLabel messageLabel;
+    private JLabel ecuIdLabel;
     private JLabel statsLabel;
     private JTabbedPane tabbedPane;
     private SerialPortComboBox portsComboBox;
@@ -162,14 +163,16 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             public void callback(EcuInit newEcuInit) {
                 System.out.println("ECU ID = " + newEcuInit.getEcuId());
                 if (ecuInit == null || !ecuInit.getEcuId().equals(newEcuInit.getEcuId())) {
-                    System.out.println("Loading logger config for new ECU...");
                     ecuInit = newEcuInit;
+                    ecuIdLabel.setText(buildEcuIdLabelText(ecuInit.getEcuId()));
+                    System.out.println("Loading logger config for new ECU (" + ecuInit.getEcuId() + ")...");
                     loadLoggerConfig();
                 }
             }
         };
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this);
         messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
+        ecuIdLabel = new JLabel(buildEcuIdLabelText());
         statsLabel = buildStatsLabel();
         tabbedPane = new JTabbedPane(BOTTOM);
         portsComboBox = new SerialPortComboBox(settings);
@@ -480,7 +483,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
         JPanel ecuIdPanel = new JPanel(new FlowLayout());
         ecuIdPanel.setBorder(new BevelBorder(LOWERED));
-        JLabel ecuIdLabel = new JLabel("Ecu ID: xxxxxxxxxxx");
         ecuIdPanel.add(ecuIdLabel);
         constraints.gridx = 2;
         constraints.gridy = 0;
@@ -502,6 +504,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         statusBar.add(statsPanel);
 
         return statusBar;
+    }
+
+    private String buildEcuIdLabelText() {
+        return buildEcuIdLabelText(null);
+    }
+
+    private String buildEcuIdLabelText(String ecuId) {
+        return "ECU ID: " + (isNullOrEmpty(ecuId) ? "Unknown" : ecuId);
     }
 
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
