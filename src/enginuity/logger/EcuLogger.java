@@ -552,7 +552,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         resetConnectionButton.setToolTipText("Reset ECU Connection");
         resetConnectionButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                restartLogging();
+                try {
+                    restartLogging();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    reportError(e);
+                }
             }
         });
         comboBoxPanel.add(resetConnectionButton);
@@ -561,7 +566,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         disconnectButton.setToolTipText("Disconnect from ECU");
         disconnectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                stopLogging();
+                try {
+                    stopLogging();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    reportError(e);
+                }
             }
         });
         comboBoxPanel.add(resetConnectionButton);
