@@ -26,7 +26,6 @@ import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.handler.DataUpdateHandler;
 
 import javax.swing.*;
-import java.awt.*;
 import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,8 +77,9 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
 
     private void repaintDashboardPanel() {
         dashboardPanel.doLayout();
-        for (Component component : dashboardPanel.getComponents()) {
-            component.doLayout();
+        for (Gauge gauge : gauges.values()) {
+            gauge.doLayout();
+            gauge.repaint();
         }
         dashboardPanel.repaint();
     }

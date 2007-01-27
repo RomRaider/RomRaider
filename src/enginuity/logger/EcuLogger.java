@@ -99,7 +99,6 @@ TODO: add better debug logging, preferably to a file and switchable (on/off)
 TODO: Clean up this class!
 So much to do, so little time....
 
-TODO: add data reset button to each tab (resets max/min values, and clears graph data)
 TODO: add length attribute to <byte> tags in logger.xml
 TODO: remove duplicate addresses from queries (and resolve response values back to original requests)
 TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
@@ -192,7 +191,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
         graphPanel = new JPanel(new SpringLayout());
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
-        dashboardPanel = new JPanel(new GridLayout(4, 4, 3, 3));
+        dashboardPanel = new JPanel(new GridLayout(3, 3, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
     }
 
