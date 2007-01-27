@@ -100,16 +100,16 @@ TODO: add better debug logging, preferably to a file and switchable (on/off)
 TODO: Clean up this class!
 So much to do, so little time....
 
-TODO: Finish ecu specific parameters (IAM, Engine Load) config in logger.xml
+TODO: add length attribute to <byte> tags in logger.xml
+TODO: add data reset button to each tab (resets max/min values, and clears graph data)
+TODO: remove duplicate addresses from queries (and resolve response values back to original requests)
 TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
+TODO: Add ecu id and calid to ecu_defs
+TODO: parse ecu info from ecu defs (old and new formats) based on ecu id and display in UI
+TODO: Rewrite user profile application and saving to allow tab specific settings (eg. warn levels on dash tab)
 TODO: Add live data display to map overlays and param ids to ecu_defs
 TODO: Add custom graph tab (eg. engine speed vs. boost, etc.)
 TODO: Add log analysis tab (or maybe new window?), including log playback, custom graphs, map compare, etc
-TODO: display ecu id in UI
-TODO: remove duplicate addresses from queries (and resolve response values back to original requests)
-TODO: add data reset button to each tab (resets max/min values, and clears graph data)
-TODO: Add ecu id and calid to ecu_defs
-TODO: Rewrite user profile application and saving to allow tab specific settings (eg. warn levels on dash tab)
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
