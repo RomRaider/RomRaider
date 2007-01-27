@@ -104,7 +104,7 @@ public final class PlainGauge extends Gauge implements ActionListener {
     private void initGaugeLayout() {
         refreshTitle();
         resetValue();
-        setPreferredSize(new Dimension(236, 144));
+        setPreferredSize(new Dimension(270, 145));
         setBackground(LIGHT_GREY);
         setLayout(new BorderLayout(3, 0));
 
