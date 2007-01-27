@@ -101,6 +101,7 @@ TODO: Clean up this class!
 So much to do, so little time....
 
 TODO: add length attribute to <byte> tags in logger.xml
+TODO: add reset/disconnect buttons to interface
 TODO: add data reset button to each tab (resets max/min values, and clears graph data)
 TODO: remove duplicate addresses from queries (and resolve response values back to original requests)
 TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
@@ -546,6 +547,25 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
+        JButton resetConnectionButton = new JButton(new ImageIcon("./graphics/reload-20x20.png"));
+        resetConnectionButton.setPreferredSize(new Dimension(25, 25));
+        resetConnectionButton.setToolTipText("Reset ECU Connection");
+        resetConnectionButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                restartLogging();
+            }
+        });
+        comboBoxPanel.add(resetConnectionButton);
+        JButton disconnectButton = new JButton(new ImageIcon("./graphics/stop-20x20.png"));
+        disconnectButton.setPreferredSize(new Dimension(25, 25));
+        disconnectButton.setToolTipText("Disconnect from ECU");
+        disconnectButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                stopLogging();
+            }
+        });
+        comboBoxPanel.add(resetConnectionButton);
+        comboBoxPanel.add(disconnectButton);
         return comboBoxPanel;
     }
 
