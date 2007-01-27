@@ -108,8 +108,8 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 TODO: display ecu id in UI
 TODO: remove duplicate addresses from queries (and resolve response values back to original requests)
 TODO: add data reset button to each tab (resets max/min values, and clears graph data)
-TODO: GC optimization - mark and sweep
 TODO: Add ecu id and calid to ecu_defs
+TODO: Rewrite user profile application and saving to allow tab specific settings (eg. warn levels on dash tab)
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
@@ -459,10 +459,48 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildStatusBar() {
-        JPanel statusBar = new JPanel(new BorderLayout());
-        statusBar.setBorder(new BevelBorder(LOWERED));
-        statusBar.add(messageLabel, WEST);
-        statusBar.add(statsLabel, EAST);
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        JPanel statusBar = new JPanel(gridBagLayout);
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.fill = GridBagConstraints.BOTH;
+
+        JPanel messagePanel = new JPanel(new BorderLayout());
+        messagePanel.setBorder(new BevelBorder(LOWERED));
+        messagePanel.add(messageLabel, WEST);
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 2;
+        constraints.gridheight = 1;
+        constraints.weightx = 10;
+        constraints.weighty = 1;
+        gridBagLayout.setConstraints(messagePanel, constraints);
+        statusBar.add(messagePanel);
+
+        JPanel ecuIdPanel = new JPanel(new FlowLayout());
+        ecuIdPanel.setBorder(new BevelBorder(LOWERED));
+        JLabel ecuIdLabel = new JLabel("Ecu ID: xxxxxxxxxxx");
+        ecuIdPanel.add(ecuIdLabel);
+        constraints.gridx = 2;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.weightx = 1;
+        gridBagLayout.setConstraints(ecuIdPanel, constraints);
+        statusBar.add(ecuIdPanel);
+
+        JPanel statsPanel = new JPanel(new FlowLayout());
+        statsPanel.setBorder(new BevelBorder(LOWERED));
+        statsPanel.add(statsLabel);
+        constraints.gridx = 3;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.weightx = 1;
+        gridBagLayout.setConstraints(statsPanel, constraints);
+        statusBar.add(statsPanel);
+
         return statusBar;
     }
 
@@ -616,7 +654,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JLabel buildStatsLabel() {
-        JLabel label = new JLabel();
+        JLabel label = new JLabel(" ");
         label.setForeground(BLACK);
         label.setHorizontalTextPosition(RIGHT);
         return label;
