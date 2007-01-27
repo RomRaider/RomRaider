@@ -66,8 +66,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
 
             byte[] processedResponse = protocol.preprocessResponse(request, response);
 
-            System.out.println("Request  ---> " + asHex(request));
-            System.out.println("Response <--- " + asHex(processedResponse));
+//            System.out.println("Request  ---> " + asHex(request));
+//            System.out.println("Response <--- " + asHex(processedResponse));
 
             protocol.processReadAddressResponses(queries, processedResponse);
         } catch (Exception e) {
