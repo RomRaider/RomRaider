@@ -191,7 +191,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
         graphPanel = new JPanel(new SpringLayout());
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
-        dashboardPanel = new JPanel(new GridLayout(3, 3, 3, 3));
+        dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
     }
 
@@ -589,44 +589,44 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildDataTab() {
-        JPanel dataPanel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout());
         JButton resetButton = new JButton("Reset Data");
         resetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 liveDataUpdateHandler.reset();
             }
         });
-        dataPanel.add(resetButton, NORTH);
-        dataPanel.add(new JScrollPane(new JTable(dataTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), CENTER);
-        return dataPanel;
+        panel.add(resetButton, NORTH);
+        panel.add(new JScrollPane(new JTable(dataTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), CENTER);
+        return panel;
     }
 
     private JComponent buildGraphTab() {
-        JPanel graphPanel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout());
         JButton resetButton = new JButton("Reset Data");
         resetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 graphUpdateHandler.reset();
             }
         });
-        graphPanel.add(resetButton, NORTH);
-        JScrollPane scrollPane = new JScrollPane(this.graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        panel.add(resetButton, NORTH);
+        JScrollPane scrollPane = new JScrollPane(graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.getVerticalScrollBar().setUnitIncrement(40);
-        graphPanel.add(scrollPane, CENTER);
-        return graphPanel;
+        panel.add(scrollPane, CENTER);
+        return panel;
     }
 
     private JComponent buildDashboardTab() {
-        JPanel dashPanel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout());
         JButton resetButton = new JButton("Reset Data");
         resetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 dashboardUpdateHandler.reset();
             }
         });
-        dashPanel.add(resetButton, NORTH);
-        dashPanel.add(dashboardPanel, CENTER);
-        return dashPanel;
+        panel.add(resetButton, NORTH);
+        panel.add(dashboardPanel, CENTER);
+        return panel;
     }
 
     public void windowOpened(WindowEvent windowEvent) {

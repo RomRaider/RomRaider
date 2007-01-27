@@ -93,10 +93,18 @@ public final class PlainGauge extends Gauge implements ActionListener {
         progressBar.setValue(scaleForProgressBar(min));
     }
 
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == warnCheckBox) {
+            if (!warnCheckBox.isSelected()) {
+                setWarning(false);
+            }
+        }
+    }
+
     private void initGaugeLayout() {
         refreshTitle();
         resetValue();
-        setPreferredSize(new Dimension(230, 200));
+        setPreferredSize(new Dimension(236, 144));
         setBackground(LIGHT_GREY);
         setLayout(new BorderLayout(3, 0));
 
@@ -227,13 +235,5 @@ public final class PlainGauge extends Gauge implements ActionListener {
 
     private int scaleForProgressBar(double value) {
         return (int) (value * 1000.0);
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == warnCheckBox) {
-            if (!warnCheckBox.isSelected()) {
-                setWarning(false);
-            }
-        }
     }
 }
