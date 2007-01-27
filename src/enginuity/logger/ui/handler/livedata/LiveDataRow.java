@@ -25,6 +25,7 @@ import enginuity.logger.definition.EcuData;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class LiveDataRow {
+    private static final double ZERO = 0.0;
     private final EcuData ecuData;
     private double minValue;
     private double maxValue;
@@ -69,5 +70,12 @@ public final class LiveDataRow {
             maxValue = currentValue;
         }
         updated = true;
+    }
+
+    public void reset() {
+        minValue = ZERO;
+        maxValue = ZERO;
+        currentValue = ZERO;
+        updated = false;
     }
 }

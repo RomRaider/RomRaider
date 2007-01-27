@@ -23,9 +23,9 @@ package enginuity.maps;
 
 import enginuity.util.JEPUtil;
 
+import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.BLUE;
@@ -37,6 +37,9 @@ import java.text.DecimalFormat;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
 
+    private final Border defaultBorder = createLineBorder(BLACK, 1);
+    private final Border modifiedBorder = createLineBorder(RED, 3);
+    private final Font defaultFont = new Font("Arial", Font.BOLD, 12);
     private double binValue = 0;
     private double originalValue = 0;
     private Scale scale = new Scale();
@@ -53,8 +56,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private double compareValue = 0;
     private int compareType = Table.COMPARE_OFF;
     private int compareDisplay = Table.COMPARE_ABSOLUTE;
-    private Border defaultBorder = new LineBorder(BLACK, 1);
-    private Font defaultFont = new Font("Arial", Font.BOLD, 12);
 
     public DataCell() {
     }
@@ -244,7 +245,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void setOriginalValue(double originalValue) {
         this.originalValue = originalValue;
         if (binValue != getOriginalValue()) {
-            this.setBorder(new LineBorder(RED, 3));
+            this.setBorder(modifiedBorder);
         } else {
             this.setBorder(defaultBorder);
         }

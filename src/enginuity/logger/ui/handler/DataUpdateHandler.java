@@ -33,4 +33,6 @@ public interface DataUpdateHandler {
 
     void cleanUp();
 
+    void reset();
+
 }

@@ -32,25 +32,29 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler, Convertor
         this.dataTableModel = dataTableModel;
     }
 
-    public void registerData(EcuData ecuData) {
+    public synchronized void registerData(EcuData ecuData) {
         // add to datatable
         dataTableModel.addParam(ecuData);
     }
 
-    public void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
+    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
         // update data table
         dataTableModel.updateParam(ecuData, value);
     }
 
-    public void deregisterData(EcuData ecuData) {
+    public synchronized void deregisterData(EcuData ecuData) {
         // remove from datatable
         dataTableModel.removeParam(ecuData);
     }
 
-    public void cleanUp() {
+    public synchronized void cleanUp() {
     }
 
-    public void notifyConvertorUpdate(EcuData updatedEcuData) {
+    public synchronized void reset() {
+        dataTableModel.reset();
+    }
+
+    public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
         dataTableModel.fireTableDataChanged();
     }
 }

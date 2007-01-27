@@ -30,8 +30,8 @@ import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 import enginuity.xml.RomAttributeParser;
 
+import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -279,11 +279,11 @@ public class Table3D extends Table {
 
                         // set border
                         if (cell.getBinValue() > cell.getOriginalValue()) {
-                            cell.setBorder(new LineBorder(settings.getIncreaseBorder()));
+                            cell.setBorder(createLineBorder(settings.getIncreaseBorder()));
                         } else if (cell.getBinValue() < cell.getOriginalValue()) {
-                            cell.setBorder(new LineBorder(settings.getDecreaseBorder()));
+                            cell.setBorder(createLineBorder(settings.getDecreaseBorder()));
                         } else {
-                            cell.setBorder(new LineBorder(Color.BLACK, 1));
+                            cell.setBorder(createLineBorder(Color.BLACK, 1));
                         }
 
                     }
@@ -299,11 +299,11 @@ public class Table3D extends Table {
                 for (DataCell cell : column) {
 
                     if (cell.getBinValue() > cell.getOriginalValue()) {
-                        cell.setBorder(new LineBorder(settings.getIncreaseBorder()));
+                        cell.setBorder(createLineBorder(settings.getIncreaseBorder()));
                     } else if (cell.getBinValue() < cell.getOriginalValue()) {
-                        cell.setBorder(new LineBorder(settings.getDecreaseBorder()));
+                        cell.setBorder(createLineBorder(settings.getDecreaseBorder()));
                     } else {
-                        cell.setBorder(new LineBorder(Color.BLACK, 1));
+                        cell.setBorder(createLineBorder(Color.BLACK, 1));
                     }
                 }
             }

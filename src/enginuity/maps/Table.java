@@ -29,7 +29,7 @@ import enginuity.util.JEPUtil;
 import enginuity.xml.RomAttributeParser;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
+import static javax.swing.BorderFactory.createLineBorder;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -583,7 +583,7 @@ public abstract class Table extends JPanel implements Serializable {
                 for (int i = 0; i < getDataSize(); i++) {
                     data[i].setColor(getSettings().getAxisColor());
                     data[i].setOpaque(true);
-                    data[i].setBorder(new LineBorder(Color.BLACK, 1));
+                    data[i].setBorder(createLineBorder(Color.BLACK, 1));
                     data[i].setHorizontalAlignment(DataCell.CENTER);
                 }
             }
@@ -617,11 +617,11 @@ public abstract class Table extends JPanel implements Serializable {
 
                     // set border
                     if (data[i].getBinValue() > data[i].getOriginalValue()) {
-                        data[i].setBorder(new LineBorder(getSettings().getIncreaseBorder()));
+                        data[i].setBorder(createLineBorder(getSettings().getIncreaseBorder()));
                     } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
-                        data[i].setBorder(new LineBorder(getSettings().getDecreaseBorder()));
+                        data[i].setBorder(createLineBorder(getSettings().getDecreaseBorder()));
                     } else {
-                        data[i].setBorder(new LineBorder(Color.BLACK, 1));
+                        data[i].setBorder(createLineBorder(Color.BLACK, 1));
                     }
                 }
             }
@@ -631,11 +631,11 @@ public abstract class Table extends JPanel implements Serializable {
         if (!isStatic) {
             for (int i = 0; i < getDataSize(); i++) {
                 if (data[i].getBinValue() > data[i].getOriginalValue()) {
-                    data[i].setBorder(new LineBorder(getSettings().getIncreaseBorder()));
+                    data[i].setBorder(createLineBorder(getSettings().getIncreaseBorder()));
                 } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
-                    data[i].setBorder(new LineBorder(getSettings().getDecreaseBorder()));
+                    data[i].setBorder(createLineBorder(getSettings().getDecreaseBorder()));
                 } else {
-                    data[i].setBorder(new LineBorder(Color.BLACK, 1));
+                    data[i].setBorder(createLineBorder(Color.BLACK, 1));
                 }
             }
         }

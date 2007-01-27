@@ -24,10 +24,8 @@ package enginuity.logger.ui.handler.dash;
 import enginuity.logger.definition.EcuData;
 import static enginuity.util.ParamChecker.checkNotNull;
 
+import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import static javax.swing.border.BevelBorder.LOWERED;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
@@ -98,21 +96,17 @@ public final class PlainGauge extends Gauge implements ActionListener {
     private void initGaugeLayout() {
         refreshTitle();
         resetValue();
-        setPreferredSize(new Dimension(60, 40));
+        setPreferredSize(new Dimension(230, 200));
         setBackground(LIGHT_GREY);
-        setLayout(new BorderLayout(3, 3));
+        setLayout(new BorderLayout(3, 0));
 
         // title
         title.setFont(getFont().deriveFont(BOLD, 12F));
         title.setForeground(WHITE);
         add(title, NORTH);
 
-        JPanel dataAndWarnPanel = new JPanel(new BorderLayout());
-        dataAndWarnPanel.setBackground(BLACK);
-        dataAndWarnPanel.setBorder(new BevelBorder(LOWERED));
-
         // data panel
-        JPanel data = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
+        JPanel data = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 1));
         data.setBackground(BLACK);
         liveValueLabel.setFont(getFont().deriveFont(PLAIN, 40F));
         liveValueLabel.setForeground(WHITE);
@@ -142,14 +136,15 @@ public final class PlainGauge extends Gauge implements ActionListener {
         JPanel warnPanel = new JPanel();
         warnPanel.setBackground(BLACK);
         JPanel warnFormPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        warnFormPanel.setPreferredSize(new Dimension(222, 34));
+        warnFormPanel.setPreferredSize(new Dimension(226, 34));
         warnFormPanel.setBackground(BLACK);
-        warnFormPanel.setBorder(new LineBorder(LIGHT_GREY, 1));
+        warnFormPanel.setBorder(createLineBorder(LIGHT_GREY, 1));
         warnCheckBox.setFont(getFont().deriveFont(PLAIN, 10F));
         warnCheckBox.setBackground(BLACK);
         warnCheckBox.setForeground(LIGHTER_GREY);
         warnCheckBox.setSelected(false);
         warnCheckBox.addActionListener(this);
+        warnType.setPreferredSize(new Dimension(60, 20));
         warnType.setFont(getFont().deriveFont(PLAIN, 10F));
         warnType.setBackground(BLACK);
         warnType.setForeground(LIGHTER_GREY);
@@ -163,9 +158,8 @@ public final class PlainGauge extends Gauge implements ActionListener {
         warnPanel.add(warnFormPanel);
 
         // add panels
-        dataAndWarnPanel.add(data, NORTH);
-        dataAndWarnPanel.add(warnPanel, CENTER);
-        add(dataAndWarnPanel, CENTER);
+        add(data, CENTER);
+        add(warnPanel, SOUTH);
     }
 
     private JPanel buildMaxMinPanel(String title, JLabel label) {

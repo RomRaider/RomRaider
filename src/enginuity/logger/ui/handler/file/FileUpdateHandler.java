@@ -91,6 +91,9 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
         }
     }
 
+    public synchronized void reset() {
+    }
+
     public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
         resetLine();
         writeHeaders();

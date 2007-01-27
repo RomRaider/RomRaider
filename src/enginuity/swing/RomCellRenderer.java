@@ -24,6 +24,7 @@ package enginuity.swing;
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
 
+import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -82,10 +83,10 @@ public class RomCellRenderer implements TreeCellRenderer {
 
                 if (selected) {
                     renderer.setBackground(new Color(220, 220, 255));
-                    renderer.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 225)));
+                    renderer.setBorder(createLineBorder(new Color(0, 0, 225)));
 
                 } else {
-                    renderer.setBorder(BorderFactory.createLineBorder(new Color(220, 0, 0)));
+                    renderer.setBorder(createLineBorder(new Color(220, 0, 0)));
                     renderer.setBackground(new Color(255, 210, 210));
                 }
 
@@ -99,7 +100,7 @@ public class RomCellRenderer implements TreeCellRenderer {
 
             Table table = (Table) ((DefaultMutableTreeNode) value).getUserObject();
             JPanel renderer = new JPanel(new GridLayout(1, 1));
-            renderer.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            renderer.setBorder(createLineBorder(Color.WHITE));
             JLabel tableName = new JLabel("");
             renderer.setBackground(Color.WHITE);
 
@@ -120,7 +121,7 @@ public class RomCellRenderer implements TreeCellRenderer {
 
             if (selected) {
                 renderer.setBackground(new Color(220, 220, 255));
-                renderer.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 225)));
+                renderer.setBorder(createLineBorder(new Color(0, 0, 225)));
             }
 
             if (table.getUserLevel() == 5) {

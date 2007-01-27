@@ -57,4 +57,10 @@ public final class DataUpdateHandlerManagerImpl implements DataUpdateHandlerMana
         }
     }
 
+    public synchronized void reset() {
+        for (DataUpdateHandler handler : handlers) {
+            handler.reset();
+        }
+    }
+
 }

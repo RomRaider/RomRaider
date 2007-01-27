@@ -57,6 +57,9 @@ public final class TableUpdateHandler implements DataUpdateHandler {
     public void cleanUp() {
     }
 
+    public void reset() {
+    }
+
     public void registerTable(Table table) {
         String logParam = table.getLogParam();
         if (!tableMap.containsKey(logParam)) {

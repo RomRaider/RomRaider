@@ -21,18 +21,29 @@
 
 package enginuity.swing;
 
+import com.ecm.graphics.Graph3dFrameManager;
+import com.ecm.graphics.data.GraphData;
+import com.ecm.graphics.data.GraphDataListener;
+import enginuity.maps.DataCell;
+import enginuity.maps.Scale;
+import enginuity.maps.Table;
+import enginuity.maps.Table1D;
+import enginuity.maps.Table3D;
+
+import javax.swing.*;
+import static javax.swing.BorderFactory.createLineBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Vector;
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import com.ecm.graphics.Graph3dFrameManager;
-import com.ecm.graphics.data.GraphData;
-import com.ecm.graphics.data.GraphDataListener;
-import enginuity.maps.*;
 
 public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ActionListener, GraphDataListener {
 
@@ -98,23 +109,23 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         }
 
         incrementFine.setPreferredSize(new Dimension(33, 33));
-        incrementFine.setBorder(new LineBorder(new Color(150, 150, 150), 1));
+        incrementFine.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         decrementFine.setPreferredSize(new Dimension(33, 33));
-        decrementFine.setBorder(new LineBorder(new Color(150, 150, 150), 1));
+        decrementFine.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         incrementCoarse.setPreferredSize(new Dimension(33, 33));
-        incrementCoarse.setBorder(new LineBorder(new Color(150, 150, 150), 1));
+        incrementCoarse.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         decrementCoarse.setPreferredSize(new Dimension(33, 33));
-        decrementCoarse.setBorder(new LineBorder(new Color(150, 150, 150), 1));
+        decrementCoarse.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         enable3d.setPreferredSize(new Dimension(33, 33));
-        enable3d.setBorder(new LineBorder(new Color(150, 150, 150), 1));
+        enable3d.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         setValue.setPreferredSize(new Dimension(33, 23));
-        setValue.setBorder(new LineBorder(new Color(150, 150, 150), 1));
+        setValue.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         multiply.setPreferredSize(new Dimension(33, 23));
-        multiply.setBorder(new LineBorder(new Color(150, 150, 150), 1));
+        multiply.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         scaleSelection.setPreferredSize(new Dimension(80, 23));
         scaleSelection.setFont(new Font("Tahoma", Font.PLAIN, 11));
         clearOverlay.setPreferredSize(new Dimension(75, 23));
-        clearOverlay.setBorder(new LineBorder(new Color(150, 150, 150), 1));
+        clearOverlay.setBorder(createLineBorder(new Color(150, 150, 150), 1));
 
         incrementByFine.setAlignmentX(JTextArea.CENTER_ALIGNMENT);
         incrementByFine.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
@@ -321,8 +332,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
                graphFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                ECUEditorManager.getECUEditor().rightPanel.add(graphFrame);
             */
-
-
 
 
             double maxV = table.getMax();

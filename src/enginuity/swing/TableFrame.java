@@ -23,6 +23,7 @@ package enginuity.swing;
 
 import enginuity.maps.Table;
 
+import static javax.swing.BorderFactory.createBevelBorder;
 import javax.swing.*;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -38,7 +39,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         setTable(table);
         add(table);
         setFrameIcon(null);
-        setBorder(BorderFactory.createBevelBorder(0));
+        setBorder(createBevelBorder(0));
         setVisible(false);
         setJMenuBar(new TableMenuBar(table));
         toolBar = new TableToolBar(table, this);

@@ -24,8 +24,8 @@ package enginuity.swing;
 import enginuity.ECUEditor;
 import enginuity.maps.Rom;
 
+import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,13 +47,13 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         this.add(refreshImage);
 
         openImage.setMaximumSize(new Dimension(58, 50));
-        openImage.setBorder(new LineBorder(new Color(150, 150, 150), 0));
+        openImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
         saveImage.setMaximumSize(new Dimension(50, 50));
-        saveImage.setBorder(new LineBorder(new Color(150, 150, 150), 0));
+        saveImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
         closeImage.setMaximumSize(new Dimension(50, 50));
-        closeImage.setBorder(new LineBorder(new Color(150, 150, 150), 0));
+        closeImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
         refreshImage.setMaximumSize(new Dimension(50, 50));
-        refreshImage.setBorder(new LineBorder(new Color(150, 150, 150), 0));
+        refreshImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
 
         updateButtons();
 

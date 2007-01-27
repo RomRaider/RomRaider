@@ -63,6 +63,7 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
 
+import static javax.swing.BorderFactory.createLoweredBevelBorder;
 import javax.swing.*;
 import static javax.swing.JLabel.RIGHT;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
@@ -71,8 +72,6 @@ import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import static javax.swing.JTabbedPane.BOTTOM;
-import javax.swing.border.BevelBorder;
-import static javax.swing.border.BevelBorder.LOWERED;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
@@ -100,9 +99,8 @@ TODO: add better debug logging, preferably to a file and switchable (on/off)
 TODO: Clean up this class!
 So much to do, so little time....
 
-TODO: add length attribute to <byte> tags in logger.xml
-TODO: add reset/disconnect buttons to interface
 TODO: add data reset button to each tab (resets max/min values, and clears graph data)
+TODO: add length attribute to <byte> tags in logger.xml
 TODO: remove duplicate addresses from queries (and resolve response values back to original requests)
 TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
 TODO: Add ecu id and calid to ecu_defs
@@ -194,7 +192,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
         graphPanel = new JPanel(new SpringLayout());
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
-        dashboardPanel = new JPanel(new GridLayout(3, 3, 4, 4));
+        dashboardPanel = new JPanel(new GridLayout(4, 4, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
     }
 
@@ -471,7 +469,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         constraints.fill = GridBagConstraints.BOTH;
 
         JPanel messagePanel = new JPanel(new BorderLayout());
-        messagePanel.setBorder(new BevelBorder(LOWERED));
+        messagePanel.setBorder(createLoweredBevelBorder());
         messagePanel.add(messageLabel, WEST);
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -483,7 +481,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         statusBar.add(messagePanel);
 
         JPanel ecuIdPanel = new JPanel(new FlowLayout());
-        ecuIdPanel.setBorder(new BevelBorder(LOWERED));
+        ecuIdPanel.setBorder(createLoweredBevelBorder());
         ecuIdPanel.add(ecuIdLabel);
         constraints.gridx = 2;
         constraints.gridy = 0;
@@ -494,7 +492,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         statusBar.add(ecuIdPanel);
 
         JPanel statsPanel = new JPanel(new FlowLayout());
-        statsPanel.setBorder(new BevelBorder(LOWERED));
+        statsPanel.setBorder(createLoweredBevelBorder());
         statsPanel.add(statsLabel);
         constraints.gridx = 3;
         constraints.gridy = 0;
@@ -592,17 +590,44 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildDataTab() {
-        return new JScrollPane(new JTable(dataTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        JPanel dataPanel = new JPanel(new BorderLayout());
+        JButton resetButton = new JButton("Reset Data");
+        resetButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                liveDataUpdateHandler.reset();
+            }
+        });
+        dataPanel.add(resetButton, NORTH);
+        dataPanel.add(new JScrollPane(new JTable(dataTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), CENTER);
+        return dataPanel;
     }
 
     private JComponent buildGraphTab() {
-        JScrollPane scrollPane = new JScrollPane(graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JPanel graphPanel = new JPanel(new BorderLayout());
+        JButton resetButton = new JButton("Reset Data");
+        resetButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                graphUpdateHandler.reset();
+            }
+        });
+        graphPanel.add(resetButton, NORTH);
+        JScrollPane scrollPane = new JScrollPane(this.graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.getVerticalScrollBar().setUnitIncrement(40);
-        return scrollPane;
+        graphPanel.add(scrollPane, CENTER);
+        return graphPanel;
     }
 
     private JComponent buildDashboardTab() {
-        return dashboardPanel;
+        JPanel dashPanel = new JPanel(new BorderLayout());
+        JButton resetButton = new JButton("Reset Data");
+        resetButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                dashboardUpdateHandler.reset();
+            }
+        });
+        dashPanel.add(resetButton, NORTH);
+        dashPanel.add(dashboardPanel, CENTER);
+        return dashPanel;
     }
 
     public void windowOpened(WindowEvent windowEvent) {

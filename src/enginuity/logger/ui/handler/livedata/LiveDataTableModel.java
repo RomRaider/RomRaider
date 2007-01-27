@@ -93,4 +93,10 @@ public final class LiveDataTableModel extends AbstractTableModel {
         }
     }
 
+    public synchronized void reset() {
+        for (LiveDataRow liveDataRow : dataRowMap.values()) {
+            liveDataRow.reset();
+        }
+        fireTableDataChanged();
+    }
 }

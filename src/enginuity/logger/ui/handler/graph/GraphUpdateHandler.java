@@ -55,7 +55,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         this.graphPanel = graphPanel;
     }
 
-    public void registerData(EcuData ecuData) {
+    public synchronized void registerData(EcuData ecuData) {
         // add to charts
         final XYSeries series = new XYSeries(ecuData.getName());
         //TODO: Make chart max item count configurable via settings
@@ -76,7 +76,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         }
     }
 
-    public void deregisterData(EcuData ecuData) {
+    public synchronized void deregisterData(EcuData ecuData) {
         // remove from charts
         graphPanel.remove(chartMap.get(ecuData));
         chartMap.remove(ecuData);
@@ -85,10 +85,16 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         repaintGraphPanel(1);
     }
 
-    public void cleanUp() {
+    public synchronized void cleanUp() {
     }
 
-    public void notifyConvertorUpdate(EcuData updatedEcuData) {
+    public synchronized void reset() {
+        for (XYSeries series : seriesMap.values()) {
+            series.clear();
+        }
+    }
+
+    public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
         if (chartMap.containsKey(updatedEcuData)) {
             seriesMap.get(updatedEcuData).clear();
             JFreeChart chart = chartMap.get(updatedEcuData).getChart();

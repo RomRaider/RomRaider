@@ -55,6 +55,10 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
         wrappee.cleanUp();
     }
 
+    public void reset() {
+        wrappee.reset();
+    }
+
     public void run() {
         while (!stop) {
             updateWorkingList();

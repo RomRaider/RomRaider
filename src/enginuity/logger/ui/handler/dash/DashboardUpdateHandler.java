@@ -39,30 +39,36 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
         this.dashboardPanel = dashboardPanel;
     }
 
-    public void registerData(EcuData ecuData) {
+    public synchronized void registerData(EcuData ecuData) {
         Gauge gauge = new PlainGauge(ecuData);
         gauges.put(ecuData, gauge);
         dashboardPanel.add(gauge);
         repaintDashboardPanel();
     }
 
-    public void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
+    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
         Gauge gauge = gauges.get(ecuData);
         if (gauge != null) {
             gauge.updateValue(value);
         }
     }
 
-    public void deregisterData(EcuData ecuData) {
+    public synchronized void deregisterData(EcuData ecuData) {
         dashboardPanel.remove(gauges.get(ecuData));
         gauges.remove(ecuData);
         repaintDashboardPanel();
     }
 
-    public void cleanUp() {
+    public synchronized void cleanUp() {
     }
 
-    public void notifyConvertorUpdate(EcuData updatedEcuData) {
+    public synchronized void reset() {
+        for (Gauge gauge : gauges.values()) {
+            gauge.resetValue();
+        }
+    }
+
+    public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
         Gauge gauge = gauges.get(updatedEcuData);
         if (gauge != null) {
             gauge.resetValue();
