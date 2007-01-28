@@ -25,6 +25,7 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.sleep;
 import gnu.io.CommPortIdentifier;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -56,7 +57,11 @@ public final class SerialPortRefresher implements Runnable {
     }
 
     private void refreshPortList() {
-        listener.refreshPortList(listSerialPorts(), defaultLoggerPort);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                listener.refreshPortList(listSerialPorts(), defaultLoggerPort);
+            }
+        });
     }
 
     private Set<String> listSerialPorts() {
