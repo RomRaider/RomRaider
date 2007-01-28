@@ -35,7 +35,7 @@ public final class EcuLoggerExec {
     public static void main(String... args) {
 
         // check for dodgy threading - dev only
-        //RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+//        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));
 
         // set look and feel
         LookAndFeelManager.initLookAndFeel();
