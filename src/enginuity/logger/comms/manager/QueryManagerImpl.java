@@ -38,6 +38,7 @@ import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.sleep;
 
+import javax.swing.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;
@@ -117,25 +118,27 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private boolean doEcuInit() {
-        Protocol protocol = ProtocolFactory.getInstance().getProtocol(settings.getLoggerProtocol());
-        EcuConnection ecuConnection = new EcuConnectionImpl(protocol.getConnectionProperties(), settings.getLoggerPort());
         try {
-            messageListener.reportMessage("Sending ECU Init...");
-            byte[] request = protocol.constructEcuInitRequest();
-            System.out.println("Ecu Init Request  ---> " + asHex(request));
-            byte[] response = ecuConnection.send(request);
-            byte[] processedResponse = protocol.preprocessResponse(request, response);
-            protocol.checkValidEcuInitResponse(processedResponse);
-            System.out.println("Ecu Init Response <--- " + asHex(processedResponse));
-            ecuInitCallback.callback(protocol.parseEcuInitResponse(processedResponse));
-            messageListener.reportMessage("Sending ECU Init...done.");
-            return true;
+            Protocol protocol = ProtocolFactory.getInstance().getProtocol(settings.getLoggerProtocol());
+            EcuConnection ecuConnection = new EcuConnectionImpl(protocol.getConnectionProperties(), settings.getLoggerPort());
+            try {
+                messageListener.reportMessage("Sending ECU Init...");
+                byte[] request = protocol.constructEcuInitRequest();
+                System.out.println("Ecu Init Request  ---> " + asHex(request));
+                byte[] response = ecuConnection.send(request);
+                byte[] processedResponse = protocol.preprocessResponse(request, response);
+                protocol.checkValidEcuInitResponse(processedResponse);
+                System.out.println("Ecu Init Response <--- " + asHex(processedResponse));
+                ecuInitCallback.callback(protocol.parseEcuInitResponse(processedResponse));
+                messageListener.reportMessage("Sending ECU Init...done.");
+                return true;
+            } finally {
+                ecuConnection.close();
+            }
         } catch (Exception e) {
             messageListener.reportMessage("Unable to send ECU init - check correct serial port has been selected, cable is connected and ignition is on.");
             e.printStackTrace();
             return false;
-        } finally {
-            ecuConnection.close();
         }
     }
 
@@ -207,21 +210,33 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private void notifyConnecting() {
-        for (StatusChangeListener listener : listeners) {
-            listener.connecting();
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (StatusChangeListener listener : listeners) {
+                    listener.connecting();
+                }
+            }
+        });
     }
 
     private void notifyReading() {
-        for (StatusChangeListener listener : listeners) {
-            listener.readingData();
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (StatusChangeListener listener : listeners) {
+                    listener.readingData();
+                }
+            }
+        });
     }
 
     private void notifyStopped() {
-        for (StatusChangeListener listener : listeners) {
-            listener.stopped();
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (StatusChangeListener listener : listeners) {
+                    listener.stopped();
+                }
+            }
+        });
     }
 
 }
