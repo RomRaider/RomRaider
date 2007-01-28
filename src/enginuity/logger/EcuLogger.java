@@ -544,7 +544,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
-        JButton resetConnectionButton = new JButton(new ImageIcon("./graphics/reload-20x20.png"));
+        JButton resetConnectionButton = new JButton(new ImageIcon("./graphics/logger_restart.png"));
         resetConnectionButton.setPreferredSize(new Dimension(25, 25));
         resetConnectionButton.setToolTipText("Reset ECU Connection");
         resetConnectionButton.addActionListener(new ActionListener() {
@@ -558,7 +558,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         });
         comboBoxPanel.add(resetConnectionButton);
-        JButton disconnectButton = new JButton(new ImageIcon("./graphics/stop-20x20.png"));
+        JButton disconnectButton = new JButton(new ImageIcon("./graphics/logger_stop.png"));
         disconnectButton.setPreferredSize(new Dimension(25, 25));
         disconnectButton.setToolTipText("Disconnect from ECU");
         disconnectButton.addActionListener(new ActionListener() {
