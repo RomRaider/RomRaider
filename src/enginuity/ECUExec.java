@@ -38,7 +38,7 @@ public class ECUExec {
     public static void main(String args[]) {
 
         // check for dodgy threading - dev only
-        //RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+//        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));
 
         // try create socket listener for shell opening new files
         ServerSocket sock = null; // original server socket
