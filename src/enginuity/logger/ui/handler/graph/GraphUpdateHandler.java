@@ -125,17 +125,25 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         return ecuData.getName() + " (" + ecuData.getSelectedConvertor().getUnits() + ")";
     }
 
-    private void repaintGraphPanel(int parentRepaintLevel) {
-        if (loggerCount < parentRepaintLevel) {
-            graphPanel.doLayout();
-            graphPanel.repaint();
-        } else {
-            if (loggerCount == 1) {
-                graphPanel.doLayout();
+    private void repaintGraphPanel(final int parentRepaintLevel) {
+        new Thread(new Runnable() {
+            public void run() {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        if (loggerCount < parentRepaintLevel) {
+                            graphPanel.doLayout();
+                            graphPanel.repaint();
+                        } else {
+                            if (loggerCount == 1) {
+                                graphPanel.doLayout();
+                            }
+                            graphPanel.getParent().doLayout();
+                            graphPanel.getParent().repaint();
+                        }
+                    }
+                });
             }
-            graphPanel.getParent().doLayout();
-            graphPanel.getParent().repaint();
-        }
+        }).start();
     }
 }
 

@@ -76,12 +76,20 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
     }
 
     private void repaintDashboardPanel() {
-        dashboardPanel.doLayout();
-        for (Gauge gauge : gauges.values()) {
-            gauge.doLayout();
-            gauge.repaint();
-        }
-        dashboardPanel.repaint();
+        new Thread(new Runnable() {
+            public void run() {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        dashboardPanel.doLayout();
+                        for (Gauge gauge : gauges.values()) {
+                            gauge.doLayout();
+                            gauge.repaint();
+                        }
+                        dashboardPanel.repaint();
+                    }
+                });
+            }
+        }).start();
     }
 
 }
