@@ -24,6 +24,7 @@ package enginuity.logger.ui.handler;
 import enginuity.logger.definition.EcuData;
 import static enginuity.util.ThreadUtil.sleep;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;
 import java.util.List;
@@ -62,8 +63,12 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
     public void run() {
         while (!stop) {
             updateWorkingList();
-            for (DataUpdate dataUpdate : workingList) {
-                wrappee.handleDataUpdate(dataUpdate.getEcuData(), dataUpdate.getValue(), dataUpdate.getTimestamp());
+            for (final DataUpdate dataUpdate : workingList) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        wrappee.handleDataUpdate(dataUpdate.getEcuData(), dataUpdate.getValue(), dataUpdate.getTimestamp());
+                    }
+                });
             }
             sleep(3);
         }

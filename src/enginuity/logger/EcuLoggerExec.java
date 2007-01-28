@@ -28,7 +28,15 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public final class EcuLoggerExec {
 
+    private EcuLoggerExec() {
+        throw new UnsupportedOperationException();
+    }
+
     public static void main(String... args) {
+
+        // check for dodgy threading - dev only
+        //RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+
         // set look and feel
         LookAndFeelManager.initLookAndFeel();
 

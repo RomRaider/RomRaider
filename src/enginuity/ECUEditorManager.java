@@ -21,12 +21,22 @@
 
 package enginuity;
 
+import javax.swing.*;
+
 public class ECUEditorManager {
     private static ECUEditor editor = null;
 
+    private ECUEditorManager() {
+        throw new UnsupportedOperationException();
+    }
+
     public static ECUEditor getECUEditor() {
         if (editor == null) {
-            editor = new ECUEditor();
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    editor = new ECUEditor();
+                }
+            });
         }
 
         return editor;

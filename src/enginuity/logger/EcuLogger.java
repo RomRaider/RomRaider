@@ -162,9 +162,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 System.out.println("ECU ID = " + newEcuInit.getEcuId());
                 if (ecuInit == null || !ecuInit.getEcuId().equals(newEcuInit.getEcuId())) {
                     ecuInit = newEcuInit;
-                    ecuIdLabel.setText(buildEcuIdLabelText(ecuInit.getEcuId()));
-                    System.out.println("Loading logger config for new ECU (" + ecuInit.getEcuId() + ")...");
-                    loadLoggerConfig();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            ecuIdLabel.setText(buildEcuIdLabelText(ecuInit.getEcuId()));
+                            System.out.println("Loading logger config for new ECU (" + ecuInit.getEcuId() + ")...");
+                            loadLoggerConfig();
+                        }
+                    });
                 }
             }
         };
@@ -698,10 +702,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return settings;
     }
 
-    public void reportMessage(String message) {
+    public void reportMessage(final String message) {
         if (message != null) {
-            messageLabel.setText(message);
-            messageLabel.setForeground(BLACK);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    messageLabel.setText(message);
+                    messageLabel.setForeground(BLACK);
+                }
+            });
         }
     }
 
@@ -711,9 +719,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
-    public void reportStats(String message) {
+    public void reportStats(final String message) {
         if (!isNullOrEmpty(message)) {
-            statsLabel.setText(message);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    statsLabel.setText(message);
+                }
+            });
         }
     }
 
@@ -724,10 +736,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return label;
     }
 
-    public void reportError(String error) {
+    public void reportError(final String error) {
         if (!isNullOrEmpty(error)) {
-            messageLabel.setText("Error: " + error);
-            messageLabel.setForeground(RED);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    messageLabel.setText("Error: " + error);
+                    messageLabel.setForeground(RED);
+                }
+            });
         }
     }
 

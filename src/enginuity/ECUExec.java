@@ -21,15 +21,25 @@
 
 package enginuity;
 
+import enginuity.swing.LookAndFeelManager;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import enginuity.swing.LookAndFeelManager;
 
 public class ECUExec {
+
+    private ECUExec() {
+        throw new UnsupportedOperationException();
+    }
+
     public static void main(String args[]) {
+
+        // check for dodgy threading - dev only
+        //RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+
         // try create socket listener for shell opening new files
         ServerSocket sock = null; // original server socket
         String serverName = "localhost";
