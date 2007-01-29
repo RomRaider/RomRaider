@@ -22,7 +22,8 @@
 package enginuity.util;
 
 import enginuity.newmaps.ecumetadata.Scale;
-import enginuity.newmaps.ecumetadata.TableMetadata;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 @SuppressWarnings({"UnnecessaryBoxing"})
 public final class ByteUtil {
@@ -52,8 +53,7 @@ public final class ByteUtil {
         return i;
     }    
     
-    private int getCellLengthInBytes(TableMetadata metadata) {        
-        int type = metadata.getScale().getStorageType();
+    public static int getLengthInBytes(int type) {        
         
         if (type == Scale.STORAGE_TYPE_CHAR) return 1;
         else if (type == Scale.STORAGE_TYPE_FLOAT) return 4;
@@ -104,6 +104,13 @@ public final class ByteUtil {
 
     public static float asFloat(byte[] bytes) {
         return Float.intBitsToFloat(asUnsignedInt(bytes));
+    }
+    
+    public static byte[] asBytes(float f) {
+        byte[] output = new byte[4];
+        ByteBuffer bb = ByteBuffer.wrap(output, 0, 4);        
+        bb.putFloat(f);
+        return bb.array();
     }
 
 }

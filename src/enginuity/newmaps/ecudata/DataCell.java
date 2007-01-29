@@ -21,28 +21,13 @@
 
 package enginuity.newmaps.ecudata;
 
-import enginuity.newmaps.ecumetadata.AxisMetadata;
-import enginuity.newmaps.ecumetadata.Scale;
-import enginuity.newmaps.util.ECUDataUtil;
-
-public class AxisData extends TableData {
+public class DataCell {
     
-    public AxisData(byte[] data, AxisMetadata metadata) {
-        this.metadata = metadata;
-        populate(data);
-    }
+    byte[] bytes;
+    String displayValue;
     
-    public boolean populate(byte[] data) {
-        Scale scale = metadata.getScale();        
-        /*float values[] = ECUDataUtil.calcRealValues(data, scale.getStorageType(),
-                                    metadata.getAddress(), metadata.getSize(), 
-                                    scale.getEndian(), scale.getUnit().getTo_real());*/
-        return true;
-    }
-    
-    public byte[] returnValues() {
-        
-        return null;
+    public DataCell(byte[] bytes, int storageType) {
+        this.bytes = bytes;
     }
     
 }
