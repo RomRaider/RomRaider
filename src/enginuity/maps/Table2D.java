@@ -316,7 +316,7 @@ public class Table2D extends Table {
                 }
                 DataCell cell = data[i];
                 cell.setLiveDataTrace(true);
-                cell.setDisplayValue(cell.getRealValue() + ':' + liveValue);
+                cell.setDisplayValue(cell.getRealValue() + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue)));
             }
             stopHighlight();
             frame.getToolBar().setLiveDataValue(liveValue);

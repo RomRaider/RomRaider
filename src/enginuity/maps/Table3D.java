@@ -899,7 +899,7 @@ public class Table3D extends Table {
                     }
                     DataCell cell = data[x][y];
                     cell.setLiveDataTrace(true);
-                    cell.setDisplayValue(cell.getRealValue() + ':' + liveValue);
+                    cell.setDisplayValue(cell.getRealValue() + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue)));
                 }
             }
             stopHighlight();
