@@ -109,7 +109,6 @@ public final class QueryManagerImpl implements QueryManager {
             }
         } catch (Exception e) {
             messageListener.reportError(e);
-            e.printStackTrace();
         } finally {
             notifyStopped();
             messageListener.reportMessage("Disconnected.");
@@ -167,7 +166,6 @@ public final class QueryManagerImpl implements QueryManager {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
             messageListener.reportError(e);
         } finally {
             txManager.stop();

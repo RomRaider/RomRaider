@@ -238,7 +238,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             loadEcuSwitches(dataLoader.getEcuSwitches());
             initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
         } catch (Exception e) {
-            e.printStackTrace();
             reportError(e);
         }
     }
@@ -254,7 +253,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 reportMessageInTitleBar("Profile: " + profileFile.getAbsolutePath());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             reportError(e);
         }
     }
@@ -554,7 +552,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 try {
                     restartLogging();
                 } catch (Exception e) {
-                    e.printStackTrace();
                     reportError(e);
                 }
             }
@@ -568,7 +565,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 try {
                     stopLogging();
                 } catch (Exception e) {
-                    e.printStackTrace();
                     reportError(e);
                 }
             }
