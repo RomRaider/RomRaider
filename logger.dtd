@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!ELEMENT byte ( #PCDATA ) >
+<!ELEMENT address ( #PCDATA ) >
+<!ATTLIST address length CDATA #IMPLIED >
 
-<!ELEMENT ecu ( byte+ ) >
+<!ELEMENT ecu ( address+ ) >
 <!ATTLIST ecu id CDATA #REQUIRED >
-
-<!ELEMENT address ( ecu+ | byte+ ) >
 
 <!ELEMENT ref EMPTY >
 <!ATTLIST ref ecuparam CDATA #IMPLIED >
@@ -39,7 +38,7 @@
 
 <!ELEMENT switches ( switch+ ) >
 
-<!ELEMENT ecuparam ( address, conversions ) >
+<!ELEMENT ecuparam ( ecu+, conversions ) >
 <!ATTLIST ecuparam desc CDATA #REQUIRED >
 <!ATTLIST ecuparam name CDATA #REQUIRED >
 <!ATTLIST ecuparam id ID #REQUIRED >
