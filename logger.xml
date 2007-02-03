@@ -779,11 +779,10 @@
 
             <ecuparams>
 
-                <!-- 16 bit ecus - IAM and Engine Load - uncomment and insert correct ecu id and address values -->
-                <!--
+                <!-- 16 bit ecus - IAM and Engine Load -->
                 <ecuparam id="E1" name="IAM" desc="Ignition Advance Multiplier (16bit ecus)">
-                    <ecu id="put your ecu id here">
-                        <address>put your IAM address here</address>
+                    <ecu id="3D54593005">
+                        <address>0x020124</address>
                     </ecu>
                     <conversions>
                         <conversion units="IAM" expr="x" format="0"/>
@@ -791,14 +790,13 @@
                 </ecuparam>
 
                 <ecuparam id="E3" name="Engine Load (RAM)" desc="Engine Load (RAM) for 16bit ecus">
-                    <ecu id="put your ecu id here">
-                        <address>put your engine load address here</address>
+                    <ecu id="3D54593005">
+                        <address>0x0200D8</address>
                     </ecu>
                     <conversions>
                         <conversion units="grams" expr="x/32" format="0.00"/>
                     </conversions>
                 </ecuparam>
-                -->
 
                 <!-- 32 bit ecus - IAM and Engine Load -->
                 <ecuparam id="E2" name="IAM" desc="Ignition Advance Multiplier (32bit ecus)">
