@@ -32,11 +32,10 @@ import static java.util.Collections.synchronizedList;
 import java.util.List;
 
 public final class DataRegistrationBrokerImpl implements DataRegistrationBroker {
+    private final List<EcuData> registeredEcuData = synchronizedList(new ArrayList<EcuData>());
     private final LoggerController controller;
     private final DataUpdateHandlerManager handlerManager;
     private final String id;
-    private final List<EcuData> registeredEcuData = synchronizedList(new ArrayList<EcuData>());
-    private long loggerStartTime = 0;
 
     public DataRegistrationBrokerImpl(LoggerController controller, DataUpdateHandlerManager handlerManager) {
         checkNotNull(controller, handlerManager);
@@ -55,7 +54,7 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
                 public void callback(byte[] bytes) {
                     // update handlers
                     double value = ecuData.getSelectedConvertor().convert(bytes);
-                    handlerManager.handleDataUpdate(ecuData, value, System.currentTimeMillis() - loggerStartTime);
+                    handlerManager.handleDataUpdate(ecuData, value, System.currentTimeMillis());
                 }
             });
 
@@ -86,7 +85,6 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
     }
 
     public synchronized void readingData() {
-        loggerStartTime = System.currentTimeMillis();
     }
 
     public synchronized void loggingData() {

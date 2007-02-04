@@ -24,15 +24,14 @@ package enginuity.logger.ui.handler;
 import enginuity.logger.definition.EcuData;
 import static enginuity.util.ThreadUtil.sleep;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;
 import java.util.List;
 
 public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, Runnable {
-    private final DataUpdateHandler wrappee;
     private final List<DataUpdate> updateList = synchronizedList(new ArrayList<DataUpdate>());
     private final List<DataUpdate> workingList = synchronizedList(new ArrayList<DataUpdate>());
+    private final DataUpdateHandler wrappee;
     private boolean stop = false;
 
     public DataUpdateHandlerThreadWrapper(DataUpdateHandler wrappee) {
@@ -64,11 +63,7 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
         while (!stop) {
             updateWorkingList();
             for (final DataUpdate dataUpdate : workingList) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        wrappee.handleDataUpdate(dataUpdate.getEcuData(), dataUpdate.getValue(), dataUpdate.getTimestamp());
-                    }
-                });
+                wrappee.handleDataUpdate(dataUpdate.getEcuData(), dataUpdate.getValue(), dataUpdate.getTimestamp());
             }
             sleep(3);
         }

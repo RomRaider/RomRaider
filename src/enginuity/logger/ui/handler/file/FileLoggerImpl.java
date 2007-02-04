@@ -36,10 +36,13 @@ import java.util.Date;
 public final class FileLoggerImpl implements FileLogger {
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+    private final SimpleDateFormat timestampFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private final Settings settings;
+    private final MessageListener messageListener;
     private boolean started;
     private OutputStream os;
-    private final MessageListener messageListener;
+    private long startTimestamp;
+    private boolean zero;
 
     public FileLoggerImpl(Settings settings, MessageListener messageListener) {
         checkNotNull(settings, messageListener);
@@ -54,6 +57,7 @@ public final class FileLoggerImpl implements FileLogger {
                 String filePath = buildFilePath();
                 os = new BufferedOutputStream(new FileOutputStream(filePath));
                 messageListener.reportMessageInTitleBar("Started logging to file: " + filePath);
+                zero = true;
             } catch (Exception e) {
                 stop();
                 throw new FileLoggerException(e);
@@ -74,10 +78,22 @@ public final class FileLoggerImpl implements FileLogger {
         started = false;
     }
 
-    public void writeLine(String line) {
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void writeHeaders(String headers) {
+        writeText("Time" + headers);
+    }
+
+    public void writeLine(String line, long timestamp) {
+        writeText(prependTimestamp(line, timestamp));
+    }
+
+    private void writeText(String text) {
         try {
-            os.write(line.getBytes());
-            if (!line.endsWith(NEW_LINE)) {
+            os.write(text.getBytes());
+            if (!text.endsWith(NEW_LINE)) {
                 os.write(NEW_LINE.getBytes());
             }
         } catch (Exception e) {
@@ -86,8 +102,20 @@ public final class FileLoggerImpl implements FileLogger {
         }
     }
 
-    public boolean isStarted() {
-        return started;
+    private String prependTimestamp(String line, long timestamp) {
+        String formattedTimestamp;
+        if (settings.isFileLoggingAbsoluteTimestamp()) {
+            formattedTimestamp = timestampFormat.format(new Date(timestamp));
+        } else {
+            if (zero) {
+                formattedTimestamp = "0";
+                startTimestamp = System.currentTimeMillis();
+                zero = false;
+            } else {
+                formattedTimestamp = String.valueOf(System.currentTimeMillis() - startTimestamp);
+            }
+        }
+        return new StringBuilder(formattedTimestamp).append(line).toString();
     }
 
     private String buildFilePath() {

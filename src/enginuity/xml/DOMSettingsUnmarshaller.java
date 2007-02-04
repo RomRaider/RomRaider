@@ -1,13 +1,14 @@
 package enginuity.xml;
 
-import java.awt.*;
-import static java.awt.Font.BOLD;
-import java.io.File;
 import enginuity.Settings;
 import static enginuity.xml.DOMHelper.unmarshallAttribute;
 import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
+
+import java.awt.*;
+import static java.awt.Font.BOLD;
+import java.io.File;
 
 public final class DOMSettingsUnmarshaller {
 
@@ -201,6 +202,7 @@ public final class DOMSettingsUnmarshaller {
                 settings.setLoggerOutputDirPath(unmarshallAttribute(n, "path", ""));
                 settings.setFileLoggingControllerSwitchId(unmarshallAttribute(n, "switchid", settings.getFileLoggingControllerSwitchId()));
                 settings.setFileLoggingControllerSwitchActive(unmarshallAttribute(n, "active", true));
+                settings.setFileLoggingAbsoluteTimestamp(unmarshallAttribute(n, "absolutetimestamp", false));
 
             }
         }

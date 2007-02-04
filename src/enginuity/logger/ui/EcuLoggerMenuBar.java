@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
+    private static final String USER_HOME_DIR = System.getProperty("user.home");
 
     private JMenu fileMenu = new JMenu("File");
     private JMenuItem loadProfile = new JMenuItem("Load Profile...");
@@ -47,6 +48,7 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     private JMenu settingsMenu = new JMenu("Settings");
     private JMenuItem logFileLocation = new JMenuItem("Log File Output Location...");
     private JMenuItem logFileControllerSwitch = new JRadioButtonMenuItem("Control File Logging With Defogger Switch");
+    private JMenuItem logFileAbsoluteTimestamp = new JRadioButtonMenuItem("Use Absolute Timestamp In Log File");
 
     private JMenu connectionMenu = new JMenu("Connection");
     private JMenuItem resetConnection = new JMenuItem("Reset");
@@ -56,7 +58,6 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem about = new JMenuItem("About Enginuity ECU Logger");
 
     private EcuLogger parent;
-    private static final String USER_HOME_DIR = System.getProperty("user.home");
 
     public EcuLoggerMenuBar(EcuLogger parent) {
         this.parent = parent;
@@ -86,12 +87,16 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         settingsMenu.setMnemonic('E');
         logFileLocation.setMnemonic('F');
         logFileControllerSwitch.setMnemonic('C');
+        logFileAbsoluteTimestamp.setMnemonic('A');
         settingsMenu.add(logFileLocation);
         settingsMenu.add(new JSeparator());
         settingsMenu.add(logFileControllerSwitch);
+        settingsMenu.add(logFileAbsoluteTimestamp);
         logFileLocation.addActionListener(this);
         logFileControllerSwitch.addActionListener(this);
+        logFileAbsoluteTimestamp.addActionListener(this);
         logFileControllerSwitch.setSelected(parent.getSettings().isFileLoggingControllerSwitchActive());
+        logFileAbsoluteTimestamp.setSelected(parent.getSettings().isFileLoggingAbsoluteTimestamp());
 
         // connection menu items
         add(connectionMenu);
@@ -159,7 +164,13 @@ public class EcuLoggerMenuBar extends JMenuBar implements ActionListener {
         } else if (evt.getSource() == logFileControllerSwitch) {
             try {
                 parent.getSettings().setFileLoggingControllerSwitchActive(logFileControllerSwitch.isSelected());
+            } catch (Exception e) {
+                parent.reportError(e);
+            }
 
+        } else if (evt.getSource() == logFileAbsoluteTimestamp) {
+            try {
+                parent.getSettings().setFileLoggingAbsoluteTimestamp(logFileAbsoluteTimestamp.isSelected());
             } catch (Exception e) {
                 parent.reportError(e);
             }

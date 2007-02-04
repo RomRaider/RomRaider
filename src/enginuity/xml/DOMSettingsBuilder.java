@@ -1,14 +1,15 @@
 package enginuity.xml;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Vector;
-import javax.imageio.metadata.IIOMetadataNode;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import enginuity.Settings;
 import enginuity.swing.JProgressPane;
+
+import javax.imageio.metadata.IIOMetadataNode;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Vector;
 
 public final class DOMSettingsBuilder {
 
@@ -229,6 +230,7 @@ public final class DOMSettingsBuilder {
         filelogging.setAttribute("path", settings.getLoggerOutputDirPath());
         filelogging.setAttribute("switchid", settings.getFileLoggingControllerSwitchId());
         filelogging.setAttribute("active", String.valueOf(settings.isFileLoggingControllerSwitchActive()));
+        filelogging.setAttribute("absolutetimestamp", String.valueOf(settings.isFileLoggingAbsoluteTimestamp()));
         loggerSettings.appendChild(filelogging);
 
         return loggerSettings;

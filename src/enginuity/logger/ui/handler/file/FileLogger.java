@@ -26,7 +26,9 @@ public interface FileLogger {
 
     void stop();
 
-    void writeLine(String line);
+    void writeHeaders(String headers);
+
+    void writeLine(String line, long timestamp);
 
     boolean isStarted();
 }

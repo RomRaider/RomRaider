@@ -21,11 +21,12 @@
 
 package enginuity;
 
+import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+
 import java.awt.*;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Vector;
-import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public class Settings implements Serializable {
 
@@ -68,6 +69,7 @@ public class Settings implements Serializable {
     private String loggerOutputDirPath = System.getProperty("user.home");
     private String fileLoggingControllerSwitchId = "S20"; // defogger switch by default
     private boolean fileLoggingControllerSwitchActive = false;
+    private boolean fileLoggingAbsoluteTimestamp = false;
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();
@@ -378,6 +380,14 @@ public class Settings implements Serializable {
 
     public void setFileLoggingControllerSwitchActive(boolean fileLoggingControllerSwitchActive) {
         this.fileLoggingControllerSwitchActive = fileLoggingControllerSwitchActive;
+    }
+
+    public boolean isFileLoggingAbsoluteTimestamp() {
+        return fileLoggingAbsoluteTimestamp;
+    }
+
+    public void setFileLoggingAbsoluteTimestamp(boolean fileLoggingAbsoluteTimestamp) {
+        this.fileLoggingAbsoluteTimestamp = fileLoggingAbsoluteTimestamp;
     }
 
 }

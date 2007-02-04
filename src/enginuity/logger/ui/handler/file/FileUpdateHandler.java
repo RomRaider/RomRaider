@@ -38,10 +38,10 @@ import java.util.Map;
 import java.util.Set;
 
 public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
-    private final Settings settings;
-    private final FileLogger fileLogger;
     private final Map<EcuData, Integer> ecuDatas = synchronizedMap(new LinkedHashMap<EcuData, Integer>());
     private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
+    private final Settings settings;
+    private final FileLogger fileLogger;
     private Line currentLine = new Line(ecuDatas.keySet());
 
     public FileUpdateHandler(Settings settings, MessageListener messageListener) {
@@ -67,9 +67,9 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
 
     public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
         if (fileLogger.isStarted()) {
-            currentLine.updateParamValue(ecuData, ecuData.getSelectedConvertor().format(value), timestamp);
+            currentLine.updateParamValue(ecuData, ecuData.getSelectedConvertor().format(value));
             if (currentLine.isFull()) {
-                fileLogger.writeLine(currentLine.values());
+                fileLogger.writeLine(currentLine.values(), timestamp);
                 resetLine();
             }
         }
@@ -120,7 +120,7 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
 
     private void writeHeaders() {
         if (fileLogger.isStarted()) {
-            fileLogger.writeLine(currentLine.headers());
+            fileLogger.writeHeaders(currentLine.headers());
         }
     }
 
@@ -137,7 +137,6 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
     private final class Line {
         private static final char DELIMITER = ',';
         private final Map<EcuData, String> ecuDataValues;
-        private long lastTimestamp;
 
         public Line(Set<EcuData> ecuParams) {
             this.ecuDataValues = new LinkedHashMap<EcuData, String>();
@@ -146,10 +145,9 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
             }
         }
 
-        public synchronized void updateParamValue(EcuData ecuData, String value, long timestamp) {
+        public synchronized void updateParamValue(EcuData ecuData, String value) {
             if (ecuDataValues.containsKey(ecuData)) {
                 ecuDataValues.put(ecuData, value);
-                lastTimestamp = timestamp;
             }
         }
 
@@ -164,7 +162,6 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
 
         public synchronized String headers() {
             StringBuilder buffer = new StringBuilder();
-            buffer.append("Time");
             for (EcuData ecuData : ecuDataValues.keySet()) {
                 buffer.append(DELIMITER).append(ecuData.getName()).append(" (")
                         .append(ecuData.getSelectedConvertor().getUnits()).append(')');
@@ -174,7 +171,6 @@ public final class FileUpdateHandler implements DataUpdateHandler, ConvertorUpda
 
         public synchronized String values() {
             StringBuilder buffer = new StringBuilder();
-            buffer.append(lastTimestamp);
             for (EcuData ecuData : ecuDataValues.keySet()) {
                 String value = ecuDataValues.get(ecuData);
                 buffer.append(DELIMITER).append(value);
