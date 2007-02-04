@@ -46,9 +46,10 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
     private static final Color RED = new Color(190, 30, 30);
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
-    private final JPanel graphPanel;
     private final Map<EcuData, ChartPanel> chartMap = synchronizedMap(new HashMap<EcuData, ChartPanel>());
     private final Map<EcuData, XYSeries> seriesMap = synchronizedMap(new HashMap<EcuData, XYSeries>());
+    private final long startTime = System.currentTimeMillis();
+    private final JPanel graphPanel;
     private int loggerCount = 0;
 
     public GraphUpdateHandler(JPanel graphPanel) {
@@ -74,7 +75,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         if (series != null) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    series.add(timestamp / 1000.0, value);
+                    series.add((timestamp - startTime) / 1000.0, value);
                 }
             });
         }
