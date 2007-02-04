@@ -68,11 +68,15 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         repaintGraphPanel(2);
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
+    public synchronized void handleDataUpdate(EcuData ecuData, final double value, final long timestamp) {
         // update chart
-        XYSeries series = seriesMap.get(ecuData);
+        final XYSeries series = seriesMap.get(ecuData);
         if (series != null) {
-            series.add(timestamp/1000.0, value);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    series.add(timestamp / 1000.0, value);
+                }
+            });
         }
     }
 

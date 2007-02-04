@@ -187,21 +187,25 @@ public final class PlainGauge extends Gauge implements ActionListener {
         return panel;
     }
 
-    private void refreshValue(double value) {
-        String text = format(value);
-        int scaledValue = scaleForProgressBar(value);
-        if (value > max) {
-            max = value;
-            maxLabel.setText(text);
-            progressBar.setMaximum(scaledValue);
-        }
-        if (value < min) {
-            min = value;
-            minLabel.setText(text);
-            progressBar.setMinimum(scaledValue);
-        }
-        liveValueLabel.setText(text);
-        progressBar.setValue(scaledValue);
+    private void refreshValue(final double value) {
+        final String text = format(value);
+        final int scaledValue = scaleForProgressBar(value);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if (value > max) {
+                    max = value;
+                    maxLabel.setText(text);
+                    progressBar.setMaximum(scaledValue);
+                }
+                if (value < min) {
+                    min = value;
+                    minLabel.setText(text);
+                    progressBar.setMinimum(scaledValue);
+                }
+                liveValueLabel.setText(text);
+                progressBar.setValue(scaledValue);
+            }
+        });
     }
 
     private boolean isValidWarnThreshold() {
@@ -217,16 +221,20 @@ public final class PlainGauge extends Gauge implements ActionListener {
         return Double.parseDouble(warnTextField.getText());
     }
 
-    private void setWarning(boolean enabled) {
-        if (enabled) {
-            setBackground(RED);
-            liveValuePanel.setBackground(RED);
-            progressBar.setForeground(RED);
-        } else {
-            setBackground(LIGHT_GREY);
-            liveValuePanel.setBackground(LIGHT_GREY);
-            progressBar.setForeground(GREEN);
-        }
+    private void setWarning(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if (enabled) {
+                    setBackground(RED);
+                    liveValuePanel.setBackground(RED);
+                    progressBar.setForeground(RED);
+                } else {
+                    setBackground(LIGHT_GREY);
+                    liveValuePanel.setBackground(LIGHT_GREY);
+                    progressBar.setForeground(GREEN);
+                }
+            }
+        });
     }
 
     private String format(double value) {

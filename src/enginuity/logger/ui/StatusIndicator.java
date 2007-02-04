@@ -45,22 +45,27 @@ public final class StatusIndicator extends JPanel implements StatusChangeListene
     }
 
     public void connecting() {
-        statusLabel.setText(TEXT_CONNECTING);
-        statusLabel.setIcon(ICON_CONNECTING);
+        updateStatusLabel(TEXT_CONNECTING, ICON_CONNECTING);
     }
 
     public void readingData() {
-        statusLabel.setText(TEXT_READING);
-        statusLabel.setIcon(ICON_READING);
+        updateStatusLabel(TEXT_READING, ICON_READING);
     }
 
     public void loggingData() {
-        statusLabel.setText(TEXT_LOGGING);
-        statusLabel.setIcon(ICON_LOGGING);
+        updateStatusLabel(TEXT_LOGGING, ICON_LOGGING);
     }
 
     public void stopped() {
-        statusLabel.setText(TEXT_STOPPED);
-        statusLabel.setIcon(ICON_STOPPED);
+        updateStatusLabel(TEXT_STOPPED, ICON_STOPPED);
+    }
+
+    private void updateStatusLabel(final String text, final ImageIcon icon) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                statusLabel.setText(text);
+                statusLabel.setIcon(icon);
+            }
+        });
     }
 }

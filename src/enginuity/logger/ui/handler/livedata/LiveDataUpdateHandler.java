@@ -25,6 +25,8 @@ import enginuity.logger.definition.ConvertorUpdateListener;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.ui.handler.DataUpdateHandler;
 
+import javax.swing.*;
+
 public final class LiveDataUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final LiveDataTableModel dataTableModel;
 
@@ -37,9 +39,13 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler, Convertor
         dataTableModel.addParam(ecuData);
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
-        // update data table
-        dataTableModel.updateParam(ecuData, value);
+    public synchronized void handleDataUpdate(final EcuData ecuData, final double value, long timestamp) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                // update data table
+                dataTableModel.updateParam(ecuData, value);
+            }
+        });
     }
 
     public synchronized void deregisterData(EcuData ecuData) {
