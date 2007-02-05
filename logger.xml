@@ -68,7 +68,7 @@
                 <parameter id="P9" name="Vehicle Speed" desc="" ecubyteindex="9" ecubit="7">
                     <address>0x000010</address>
                     <conversions>
-                        <conversion units="km/h" expr="x" format="0.0"/>
+                        <conversion units="kph" expr="x" format="0.0"/>
                         <conversion units="mph" expr="x*0.621371192" format="0.0"/>
                     </conversions>
                 </parameter>
@@ -590,7 +590,7 @@
                 <parameter id="P82" name="Memorised Cruise Speed" desc="" ecubyteindex="41" ecubit="5">
                     <address>0x00010A</address>
                     <conversions>
-                        <conversion units="km/h" expr="x" format="0"/>
+                        <conversion units="kph" expr="x" format="0"/>
                         <conversion units="mph" expr="x*0.621371192" format="0"/>
                     </conversions>
                 </parameter>
@@ -670,8 +670,8 @@
 
                 <parameter id="P200" name="Engine Load (Calculated)" desc="Engine load as calculated from MAF and RPM.">
                     <depends>
-                        <ref parameter="P8"/>
-                        <ref parameter="P12"/>
+                        <ref parameter="P8"/> <!-- Engine Speed -->
+                        <ref parameter="P12"/> <!-- MAF -->
                     </depends>
                     <conversions>
                         <conversion units="2*grams/rev" expr="(P12*60)/P8*2" format="0.00"/>
@@ -682,8 +682,8 @@
 
                 <parameter id="P201" name="Injector Duty Cycle" desc="">
                     <depends>
-                        <ref parameter="P8"/>
-                        <ref parameter="P21"/>
+                        <ref parameter="P8"/> <!-- Engine Speed -->
+                        <ref parameter="P21"/> <!-- Fuel Inj. #1 Pulse Width -->
                     </depends>
                     <conversions>
                         <conversion units="%" expr="(P8*P21)/1200" format="0.00"/>
@@ -693,12 +693,27 @@
                 <parameter id="P202" name="Manifold Relative Pressure (Corrected)"
                            desc="Difference between Manifold Absolute Pressure and Atmospheric Pressure.">
                     <depends>
-                        <ref parameter="P7"/>
-                        <ref parameter="P24"/>
+                        <ref parameter="P7"/> <!-- MAP -->
+                        <ref parameter="P24"/> <!-- Atmos. Pressure -->
                     </depends>
                     <conversions>
                         <conversion units="psi" expr="[P7:psi]-[P24:psi]" format="0.00"/>
                         <conversion units="bar" expr="[P7:bar]-[P24:bar]" format="0.00"/>
+                    </conversions>
+                </parameter>
+
+                <parameter id="P203" name="Fuel Consumption (Est.)"
+                           desc="Estimated fuel consumption based on MAF, AFR and vehicle speed.">
+                    <depends>
+                        <ref parameter="P9"/> <!-- Vehicle Speed -->
+                        <ref parameter="P12"/> <!-- MAF-->
+                        <ref parameter="P58"/> <!-- AFR-->
+                    </depends>
+                    <conversions>
+                        <conversion units="mpg (US)" expr="([P9:mph]/3600)/((P12/[P58:AFR])/2880)" format="0.00"/>
+                        <conversion units="mpg (UK)" expr="([P9:mph]/3600)/((P12/[P58:AFR])/3459)" format="0.00"/>
+                        <conversion units="km/l" expr="([P9:kph]/3600)/((P12/[P58:AFR])/761)" format="0.00"/>
+                        <conversion units="l/100km" expr="(3600/[P9:kph])*((P12/[P58:AFR])/761)*100" format="0.00"/>
                     </conversions>
                 </parameter>
 

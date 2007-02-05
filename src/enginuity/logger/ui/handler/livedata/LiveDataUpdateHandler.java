@@ -61,6 +61,6 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler, Convertor
     }
 
     public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
-        dataTableModel.fireTableDataChanged();
+        dataTableModel.resetRow(updatedEcuData);
     }
 }

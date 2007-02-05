@@ -99,4 +99,12 @@ public final class LiveDataTableModel extends AbstractTableModel {
         }
         fireTableDataChanged();
     }
+
+    public synchronized void resetRow(EcuData ecuData) {
+        LiveDataRow liveDataRow = dataRowMap.get(ecuData);
+        if (liveDataRow != null) {
+            liveDataRow.reset();
+            fireTableDataChanged();
+        }
+    }
 }
