@@ -1,1 +1,1 @@
-..\IzPack\bin\compile install-linux.xml -b . -o Enginuity0.4.0b-linux.jar -k standard
+..\IzPack\bin\compile install-linux.xml -b . -o Enginuity0.4.1-492-linux.jar -k standard

@@ -4,7 +4,7 @@
 
     <info>
         <appname>Enginuity</appname>
-        <appversion>0.4.0 Beta</appversion>
+        <appversion>0.4.1 Beta</appversion>
         <authors>
             <author name="Jared Gould" email="jared.gould@enginuity.org"/>
         </authors>
@@ -22,8 +22,7 @@
     </resources>    
     
     <panels>
-        <!-- <panel classname="HelloPanel"/>
- -->
+        <!-- <panel classname="HelloPanel"/> -->
         <panel classname="InfoPanel"/>
         <panel classname="LicencePanel"/>
         <panel classname="TargetPanel"/> 
@@ -46,9 +45,7 @@
             <!-- Logger files -->
             <file src="logger.xml"        targetdir="$INSTALL_PATH" />
             <file src="logger.dtd"        targetdir="$INSTALL_PATH" />
-            <!-- Removed until 0.4.1b
             <file src="profile.dtd" targetdir="$INSTALL_PATH" />
-            -->
 
         		<file src="lib/BareBonesBrowserLaunch.jar" targetdir="$INSTALL_PATH/lib" />
         		<file src="lib/jep.jar" targetdir="$INSTALL_PATH/lib" />
@@ -70,8 +67,8 @@
         				<file src="lib/jdic/windows/x86/MozEmbed.exe" targetdir="$INSTALL_PATH/lib" os="windows" />        				      				
         				<file src="lib/jdic/windows/x86/tray.dll" targetdir="$INSTALL_PATH/lib" os="windows" />    			
         				
-        		<file src="lib/logger/jcommon-1.0.0.jar" targetdir="$INSTALL_PATH/lib" />
-        		<file src="lib/logger/jfreechart-1.0.1.jar" targetdir="$INSTALL_PATH/lib" />
+        		<file src="lib/logger/jcommon-1.0.7.jar" targetdir="$INSTALL_PATH/lib" />
+        		<file src="lib/logger/jfreechart-1.0.3.jar" targetdir="$INSTALL_PATH/lib" />
         		<file src="lib/logger/rxtx/INSTALL" targetdir="$INSTALL_PATH/lib" />
         		<file src="lib/logger/rxtx/RXTXcomm.jar" targetdir="$INSTALL_PATH/lib" />
         		<file src="lib/logger/rxtx/rxtxSerial.dll" targetdir="$INSTALL_PATH/lib" />
