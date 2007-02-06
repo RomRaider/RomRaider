@@ -35,19 +35,15 @@ documentation may be incomplete or out of date.
 
 
 -----------------------------
-- 0.4.0b Notes (11/10/2006) -
+- 0.4.1b Notes (2/8/2007) -
 -----------------------------
-We've been very busy in the last few months and have added some major
-new features, including data logging via Subaru Select Protocol and
-3D graphing of table data. Please be aware that these new features 
-are considered alpha quality and are expected to have some bugs.
-Please check the Bug Reporting forum on Enginuity.org before reporting
-any problems you may find.
+This release includes a couple minor fixes to the tuning interface and
+major enhancements to the datalogger.
 
 
 
 -----------------------
-- 0.4.0b Known Issues -
+- 0.4.1b Known Issues -
 -----------------------
 - 3d graph
   - Java3d over most VNC implementations will show a blank JFrame
@@ -56,33 +52,45 @@ any problems you may find.
   - Expect possible memory leaks when using 3d graphing
   - There are some problems with cell selection in 3d graphs
   - Numerical interpolation can take some time on slower machines
-- Logging
-  - Logger does not remember last selected COM port
-  - Some parameters may display incorrectly. WE KNOW THIS and will
-    work to improve it in later releases. You may check Enginuity.org
-    for updated logger definition (xml) files.
 - Other
   - File associations will work only in Windows systems
 
 
 
-------------------------
-- Future Release Notes -
-------------------------
-The next release, 0.4.1b, will include an overhauled XML definition
-parser and significant changes to the XML schema. Current definition
-files will become obsolete. The release will include a new definition
-file, but if you have created your own custom definitions you will
-need to convert them. We MAY include an automatic converter with
-the release. You can follow our discussion on the new format in this
-thread:
-http://www.enginuity.org/viewtopic.php?t=822
+--------------
+- Change Log -
+--------------
 
+0.4.1b (2/8/2007)
+-----------------
 
+--- Tuning ---
+- Fix frame sizes too small on 2d tables 
+- Fix switch tables displaying wrong icon in table tree 
 
------------
-- Changes -
------------
+--- Datalogging ---
+- Autoconnect 
+- Reset, disconnect buttons 
+- Reset data buttons per tab 
+- Updated dash tab with warning levels (not currently saved to profile) 
+- Fixed manifold relative pressure (corrected)
+- Fixed profile save/load problems
+- ECU id display in status bar 
+- Updated address format in logger.xml (length attribute added to
+  replace multiple <byte> tags. length defauilts to 1 if not -pecified) 
+- Autodetection of ecu specific parameters via new <ecuparam> tags in
+  logger.xml (IAM, engine load)
+- ECU connection status indicator added to interface (stopped, 
+  connecting, reading data, logging to file) 
+- Auto filtering of parameter list based on ECU init response (should 
+  only display now what your car says it supports) 
+- Enable defogger switch based file logging via menu bar (don't need to 
+  select it in switch list anymore) 
+- Defogger switch is only logged to file when explicitly enabled
+- Graph tab color scheme updated 
+- Enhancements to the map overlay feature, including display of the live 
+  data and overlay of the live data values on the map cells.
+
 
 0.4.0b (11/10/2006)
 -------------------
