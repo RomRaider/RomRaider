@@ -143,7 +143,7 @@ public class Table3D extends Table {
         for (int x = 0; x < yAxis.getDataSize(); x++) {
             centerPanel.add(yAxis.getDataCell(x));
             for (int y = 0; y < xAxis.getDataSize(); y++) {
-                data[y][x] = new DataCell(scales.get(scaleIndex));
+                data[y][x] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
                 data[y][x].setTable(this);
 
                 // populate data cells
@@ -330,7 +330,8 @@ public class Table3D extends Table {
         this.frame = frame;
         xAxis.setFrame(frame);
         yAxis.setFrame(frame);
-        frame.setSize(getFrameSize());
+        //frame.setSize(getFrameSize());
+        frame.pack();
     }
 
     public Dimension getFrameSize() {

@@ -275,7 +275,8 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             // table is already open, so set focus
             frame.requestFocus();
         }
-        frame.setSize(frame.getTable().getFrameSize());
+        //frame.setSize(frame.getTable().getFrameSize());
+        frame.pack();
         rightPanel.repaint();
     }
 

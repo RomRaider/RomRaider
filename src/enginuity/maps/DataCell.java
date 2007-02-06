@@ -60,7 +60,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public DataCell() {
     }
 
-    public DataCell(Scale scale) {
+    public DataCell(Scale scale, Dimension size) {
         this.scale = scale;
         this.setHorizontalAlignment(CENTER);
         this.setVerticalAlignment(CENTER);
@@ -69,6 +69,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.setOpaque(true);
         this.setVisible(true);
         this.addMouseListener(this);
+        this.setPreferredSize(size);
     }
 
     public void updateDisplayValue() {

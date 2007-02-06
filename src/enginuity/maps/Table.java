@@ -342,7 +342,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             for (int i = 0; i < data.length; i++) {
                 if (data[i] == null) {
-                    data[i] = new DataCell(scales.get(scaleIndex));
+                    data[i] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
                     data[i].setTable(this);
 
                     // populate data cells
@@ -643,7 +643,8 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setFrame(TableFrame frame) {
         this.frame = frame;
-        frame.setSize(getFrameSize());
+        //frame.setSize(getFrameSize());
+        frame.pack();
     }
 
     public Dimension getFrameSize() {
@@ -1028,7 +1029,8 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void resize() {
-        frame.setSize(getFrameSize());
+        //frame.setSize(getFrameSize());
+        frame.pack();
     }
 
     public Color getMaxColor() {
