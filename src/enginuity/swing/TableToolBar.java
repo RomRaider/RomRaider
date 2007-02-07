@@ -104,7 +104,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             JPanel liveDataPanel = new JPanel();
             liveDataPanel.add(overlayLog);
             liveDataPanel.add(clearOverlay);
-            liveDataPanel.add(liveDataValue);
+            //liveDataPanel.add(liveDataValue);
             this.add(liveDataPanel);
         }
 
