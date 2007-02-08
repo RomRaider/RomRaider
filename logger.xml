@@ -68,15 +68,15 @@
                 <parameter id="P9" name="Vehicle Speed" desc="" ecubyteindex="9" ecubit="7">
                     <address>0x000010</address>
                     <conversions>
-                        <conversion units="kph" expr="x" format="0.0"/>
-                        <conversion units="mph" expr="x*0.621371192" format="0.0"/>
+                        <conversion units="kph" expr="x" format="0"/>
+                        <conversion units="mph" expr="x*0.621371192" format="0"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P10" name="Ignition Timing" desc="" ecubyteindex="9" ecubit="6">
                     <address>0x000011</address>
                     <conversions>
-                        <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -91,35 +91,35 @@
                 <parameter id="P12" name="Mass Air Flow" desc="" ecubyteindex="9" ecubit="4">
                     <address length="2">0x000013</address>
                     <conversions>
-                        <conversion units="gram/s" expr="x/100" format="0.00"/>
+                        <conversion units="g/s" expr="x/100" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P13" name="Throttle Opening Angle" desc="Engine throttle opening angle." ecubyteindex="9" ecubit="3">
                     <address>0x000015</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P14" name="Front O2 Sensor #1" desc="" ecubyteindex="9" ecubit="2">
                     <address length="2">0x000016</address>
                     <conversions>
-                        <conversion units="V" expr="x/200" format="0.0"/>
+                        <conversion units="V" expr="x/200" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P15" name="Rear O2 Sensor" desc="" ecubyteindex="9" ecubit="1">
                     <address length="2">0x000018</address>
                     <conversions>
-                        <conversion units="V" expr="x/200" format="0.0"/>
+                        <conversion units="V" expr="x/200" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P16" name="Front O2 Sensor #2" desc="" ecubyteindex="9" ecubit="0">
                     <address length="2">0x00001A</address>
                     <conversions>
-                        <conversion units="V" expr="x/200" format="0.0"/>
+                        <conversion units="V" expr="x/200" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -168,7 +168,7 @@
                 <parameter id="P23" name="Knock Correction" desc="" ecubyteindex="10" ecubit="1">
                     <address>0x000022</address>
                     <conversions>
-                        <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -207,21 +207,21 @@
                 <parameter id="P28" name="CO Adjustment" desc="" ecubyteindex="11" ecubit="4">
                     <address>0x000027</address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P29" name="Learned Ignition Timing" desc="" ecubyteindex="11" ecubit="3">
                     <address>0x000028</address>
                     <conversions>
-                        <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P30" name="Accelerator Pedal Angle" desc="Accelerator pedal angle." ecubyteindex="11" ecubit="2">
                     <address>0x000029</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -236,84 +236,84 @@
                 <parameter id="P32" name="Front O2 Heater Current #1" desc="" ecubyteindex="11" ecubit="0">
                     <address>0x00002B</address>
                     <conversions>
-                        <conversion units="A" expr="x*1004/25600" format="0.0"/>
+                        <conversion units="A" expr="x*1004/25600" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P33" name="Rear O2 Heater Current" desc="" ecubyteindex="12" ecubit="7">
                     <address>0x00002C</address>
                     <conversions>
-                        <conversion units="A" expr="x*1004/25600" format="0.0"/>
+                        <conversion units="A" expr="x*1004/25600" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P34" name="Front O2 Heater Current #2" desc="" ecubyteindex="12" ecubit="6">
                     <address>0x00002D</address>
                     <conversions>
-                        <conversion units="A" expr="x*1004/25600" format="0.0"/>
+                        <conversion units="A" expr="x*1004/25600" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P35" name="Fuel Level" desc="" ecubyteindex="12" ecubit="5">
                     <address>0x00002E</address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P36" name="Primary Wastegate Duty Cycle" desc="" ecubyteindex="12" ecubit="3">
                     <address>0x000030</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P37" name="Secondary Wastegate Duty Cycle" desc="" ecubyteindex="12" ecubit="2">
                     <address>0x000031</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P38" name="CPC Valve Duty Ratio" desc="" ecubyteindex="12" ecubit="1">
                     <address>0x000032</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P39" name="Tumble Valve Position Sensor Right" desc="" ecubyteindex="12" ecubit="0">
                     <address>0x000033</address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P40" name="Tumble Valve Position Sensor Left" desc="" ecubyteindex="13" ecubit="7">
                     <address>0x000034</address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P41" name="Idle Speed Control Valve Duty Ratio" desc="" ecubyteindex="13" ecubit="6">
                     <address>0x000035</address>
                     <conversions>
-                        <conversion units="%" expr="x/2" format="0.0"/>
+                        <conversion units="%" expr="x/2" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P42" name="Air/Fuel Lean Correction" desc="" ecubyteindex="13" ecubit="5">
                     <address>0x000036</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P43" name="Air/Fuel Heater Duty" desc="" ecubyteindex="13" ecubit="4">
                     <address>0x000037</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -334,70 +334,70 @@
                 <parameter id="P46" name="Alternator Duty" desc="" ecubyteindex="13" ecubit="1">
                     <address>0x00003A</address>
                     <conversions>
-                        <conversion units="%" expr="x" format="0"/>
+                        <conversion units="%" expr="x" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P47" name="Fuel Pump Duty" desc="" ecubyteindex="13" ecubit="0">
                     <address>0x00003B</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P48" name="Intake VVT Advance Angle Right" desc="" ecubyteindex="14" ecubit="7">
                     <address>0x00003C</address>
                     <conversions>
-                        <conversion units="degrees" expr="x-50" format="0"/>
+                        <conversion units="degrees" expr="x-50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P49" name="Intake VVT Advance Angle Left" desc="" ecubyteindex="14" ecubit="6">
                     <address>0x00003D</address>
                     <conversions>
-                        <conversion units="degrees" expr="x-50" format="0"/>
+                        <conversion units="degrees" expr="x-50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P50" name="Intake OCV Duty Right" desc="" ecubyteindex="14" ecubit="5">
                     <address>0x00003E</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P51" name="Intake OCV Duty Left" desc="" ecubyteindex="14" ecubit="4">
                     <address>0x00003F</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P52" name="Intake OCV Current Right" desc="" ecubyteindex="14" ecubit="3">
                     <address>0x000040</address>
                     <conversions>
-                        <conversion units="mA" expr="x/32" format="0.0"/>
+                        <conversion units="mA" expr="x/32" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P53" name="Intake OCV Current Left" desc="" ecubyteindex="14" ecubit="2">
                     <address>0x000041</address>
                     <conversions>
-                        <conversion units="mA" expr="x/32" format="0.0"/>
+                        <conversion units="mA" expr="x/32" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P54" name="Air/Fuel Sensor #1 Current" desc="" ecubyteindex="14" ecubit="1">
                     <address>0x000042</address>
                     <conversions>
-                        <conversion units="mA" expr="(x-128)/8" format="0.0"/>
+                        <conversion units="mA" expr="(x-128)/8" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P55" name="Air/Fuel Sensor #2 Current" desc="" ecubyteindex="14" ecubit="0">
                     <address>0x000043</address>
                     <conversions>
-                        <conversion units="mA" expr="(x-128)/8" format="0.0"/>
+                        <conversion units="mA" expr="(x-128)/8" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -441,14 +441,14 @@
                 <parameter id="P61" name="A/F Sensor #1 Heater Current" desc="" ecubyteindex="17" ecubit="4">
                     <address>0x000053</address>
                     <conversions>
-                        <conversion units="A" expr="x/10" format="0.0"/>
+                        <conversion units="A" expr="x/10" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P62" name="A/F Sensor #2 Heater Current" desc="" ecubyteindex="17" ecubit="3">
                     <address>0x000054</address>
                     <conversions>
-                        <conversion units="A" expr="x/10" format="0.0"/>
+                        <conversion units="A" expr="x/10" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -469,14 +469,14 @@
                 <parameter id="P65" name="Air/Fuel Correction #3" desc="" ecubyteindex="15" ecubit="3">
                     <address>0x0000D0</address>
                     <conversions>
-                        <conversion units="%" expr="(x-128)*100/128" format="0.0"/>
+                        <conversion units="%" expr="(x-128)*100/128" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P66" name="Air/Fuel Learning #3" desc="" ecubyteindex="15" ecubit="2">
                     <address>0x0000D1</address>
                     <conversions>
-                        <conversion units="%" expr="(x-128)*100/128" format="0.0"/>
+                        <conversion units="%" expr="(x-128)*100/128" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -511,7 +511,7 @@
                 <parameter id="P71" name="Throttle Motor Duty" desc="" ecubyteindex="38" ecubit="5">
                     <address>0x0000FA</address>
                     <conversions>
-                        <conversion units="%" expr="(x-128)*100/128" format="0.0"/>
+                        <conversion units="%" expr="(x-128)*100/128" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -525,28 +525,28 @@
                 <parameter id="P73" name="Sub Throttle Sensor" desc="" ecubyteindex="40" ecubit="7">
                     <address>0x000100</address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P74" name="Main Throttle Sensor" desc="" ecubyteindex="40" ecubit="6">
                     <address>0x000101</address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P75" name="Sub Accelerator Sensor" desc="" ecubyteindex="40" ecubit="5">
                     <address>0x000102</address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P76" name="Main Accelerator Sensor" desc="" ecubyteindex="40" ecubit="4">
                     <address>0x000103</address>
                     <conversions>
-                        <conversion units="V" expr="x/50" format="0.0"/>
+                        <conversion units="V" expr="x/50" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -561,7 +561,9 @@
                 <parameter id="P78" name="Fuel Pressure (High)" desc="" ecubyteindex="40" ecubit="2">
                     <address>0x000105</address>
                     <conversions>
-                        <conversion units="MPa" expr="x/25" format="0.0"/>
+                        <conversion units="psi" expr="x/25*145.0377" format="0.00"/>
+                        <conversion units="bar" expr="x/25*10" format="0.00"/>
+                        <conversion units="MPa" expr="x/25" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -576,7 +578,7 @@
                 <parameter id="P80" name="Cold Start Injector" desc="" ecubyteindex="41" ecubit="7">
                     <address>0x000108</address>
                     <conversions>
-                        <conversion units="ms" expr="x*256/1000" format="0.0"/>
+                        <conversion units="ms" expr="x*256/1000" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -598,42 +600,42 @@
                 <parameter id="P83" name="Exhaust VVT Advance Angle Right" desc="" ecubyteindex="43" ecubit="7">
                     <address>0x000118</address>
                     <conversions>
-                        <conversion units="degrees" expr="x-50" format="0"/>
+                        <conversion units="degrees" expr="x-50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P84" name="Exhaust VVT Advance Angle Left" desc="" ecubyteindex="43" ecubit="6">
                     <address>0x000119</address>
                     <conversions>
-                        <conversion units="degrees" expr="x-50" format="0"/>
+                        <conversion units="degrees" expr="x-50" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P85" name="Exhaust OCV Duty Right" desc="" ecubyteindex="43" ecubit="5">
                     <address>0x00011A</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P86" name="Exhaust OCV Duty Left" desc="" ecubyteindex="43" ecubit="4">
                     <address>0x00011B</address>
                     <conversions>
-                        <conversion units="%" expr="x*100/255" format="0.0"/>
+                        <conversion units="%" expr="x*100/255" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P87" name="Exhaust OCV Current Right" desc="" ecubyteindex="43" ecubit="3">
                     <address>0x00011C</address>
                     <conversions>
-                        <conversion units="mA" expr="x*32" format="0"/>
+                        <conversion units="mA" expr="x*32" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P88" name="Exhaust OCV Current Left" desc="" ecubyteindex="43" ecubit="2">
                     <address>0x00011D</address>
                     <conversions>
-                        <conversion units="mA" expr="x*32" format="0"/>
+                        <conversion units="mA" expr="x*32" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -643,14 +645,14 @@
                 <parameter id="P150" name="Ign. Corr. AK (Neg. Knock Comp.)" desc="Removes Ignition timing when pinging and knocking occurs.">
                     <address>0x020C60</address>
                     <conversions>
-                        <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.00"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P151" name="Ign. Corr. AT (Coarse Correc.)" desc="Ignition Correction table variables, affected by the IAM and AK.">
                     <address>0x020C61</address>
                     <conversions>
-                        <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -658,7 +660,7 @@
                            desc="Ignition learnt over a period of time. The ECU adds a bit to the knock correction if the car is working well with already high ignition correction values.">
                     <address>0x020C65</address>
                     <conversions>
-                        <conversion units="degrees" expr="(x-128)/2" format="0.0"/>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.00"/>
                     </conversions>
                 </parameter>
                 -->
@@ -674,9 +676,9 @@
                         <ref parameter="P12"/> <!-- MAF -->
                     </depends>
                     <conversions>
-                        <conversion units="2*grams/rev" expr="(P12*60)/P8*2" format="0.00"/>
-                        <conversion units="grams/rev" expr="(P12*60)/P8" format="0.00"/>
-                        <conversion units="grams/cyl" expr="(P12*60)/P8/2" format="0.00"/>
+                        <conversion units="2*g/rev" expr="(P12*60)/P8*2" format="0.00"/>
+                        <conversion units="g/rev" expr="(P12*60)/P8" format="0.00"/>
+                        <conversion units="g/cyl" expr="(P12*60)/P8/2" format="0.00"/>
                     </conversions>
                 </parameter>
 
@@ -796,39 +798,265 @@
 
                 <!-- 16 bit ecus - IAM and Engine Load -->
                 <ecuparam id="E1" name="IAM" desc="Ignition Advance Multiplier (16bit ecus)">
-                    <ecu id="3D54593005">
-                        <address>0x020124</address>
-                    </ecu>
+                    <ecu id="1B04400605"> <address>0x020118</address> </ecu>
+                    <ecu id="1B04490605"> <address>0x020118</address> </ecu>
+                    <ecu id="1B04490805"> <address>0x020118</address> </ecu>
+                    <ecu id="1B14400305"> <address>0x020124</address> </ecu>
+                    <ecu id="1B14400405"> <address>0x020124</address> </ecu>
+                    <ecu id="1B14400505"> <address>0x020124</address> </ecu>
+                    <ecu id="1B14400605"> <address>0x020124</address> </ecu>
+                    <ecu id="1B14400805"> <address>0x020124</address> </ecu>
+                    <ecu id="1B44580405"> <address>0x020124</address> </ecu>
+                    <ecu id="1B44580505"> <address>0x020124</address> </ecu>
+                    <ecu id="1B54500405"> <address>0x020124</address> </ecu>
+                    <ecu id="1B54500505"> <address>0x020124</address> </ecu>
+                    <ecu id="2354500405"> <address>0x020124</address> </ecu>
+                    <ecu id="2904485005"> <address>0x020118</address> </ecu>
+                    <ecu id="2904495005"> <address>0x020118</address> </ecu>
+                    <ecu id="2904497105"> <address>0x020118</address> </ecu>
+                    <ecu id="29044A4105"> <address>0x020124</address> </ecu>
+                    <ecu id="29046B6005"> <address>0x020124</address> </ecu>
+                    <ecu id="2944594105"> <address>0x020124</address> </ecu>
+                    <ecu id="2944596105"> <address>0x020124</address> </ecu>
+                    <ecu id="2954594105"> <address>0x020124</address> </ecu>
+                    <ecu id="2E04404005"> <address>0x020120</address> </ecu>
+                    <ecu id="2E04494005"> <address>0x020120</address> </ecu>
+                    <ecu id="2E04496005"> <address>0x020120</address> </ecu>
+                    <ecu id="2E044A6005"> <address>0x020120</address> </ecu>
+                    <ecu id="2E14446006"> <address>0x020120</address> </ecu>
+                    <ecu id="2E14446106"> <address>0x020120</address> </ecu>
+                    <ecu id="2E14486006"> <address>0x020120</address> </ecu>
+                    <ecu id="2E14486106"> <address>0x020120</address> </ecu>
+                    <ecu id="2E14486206"> <address>0x020120</address> </ecu>
+                    <ecu id="2E14486306"> <address>0x020120</address> </ecu>
+                    <ecu id="2E44584105"> <address>0x020120</address> </ecu>
+                    <ecu id="2E44586005"> <address>0x020120</address> </ecu>
+                    <ecu id="2E44594105"> <address>0x020124</address> </ecu>
+                    <ecu id="2E44596105"> <address>0x020124</address> </ecu>
+                    <ecu id="2E54504105"> <address>0x020120</address> </ecu>
+                    <ecu id="2E54594105"> <address>0x020124</address> </ecu>
+                    <ecu id="3614446205"> <address>0x020120</address> </ecu>
+                    <ecu id="3614486105"> <address>0x020120</address> </ecu>
+                    <ecu id="3614486205"> <address>0x020120</address> </ecu>
+                    <ecu id="3614486305"> <address>0x020120</address> </ecu>
+                    <ecu id="3A54504005"> <address>0x020120</address> </ecu>
+                    <ecu id="3A54584005"> <address>0x020120</address> </ecu>
+                    <ecu id="3D04403005"> <address>0x020120</address> </ecu>
+                    <ecu id="3D045B4005"> <address>0x020120</address> </ecu>
+                    <ecu id="3D44583005"> <address>0x020120</address> </ecu>
+                    <ecu id="3D44593005"> <address>0x020124</address> </ecu>
+                    <ecu id="3D54583005"> <address>0x020120</address> </ecu>
+                    <ecu id="3D54593005"> <address>0x020124</address> </ecu>
+                    <ecu id="3DA4583005"> <address>0x020124</address> </ecu>
+                    <ecu id="3E14444006"> <address>0x020168</address> </ecu>
+                    <ecu id="3E14483006"> <address>0x020156</address> </ecu>
+                    <ecu id="3E14484006"> <address>0x020168</address> </ecu>
+                    <ecu id="4304594005"> <address>0x020120</address> </ecu>
+                    <ecu id="43045A4005"> <address>0x020120</address> </ecu>
                     <conversions>
                         <conversion units="IAM" expr="x" format="0"/>
                     </conversions>
                 </ecuparam>
 
                 <ecuparam id="E3" name="Engine Load (RAM)" desc="Engine Load (RAM) for 16bit ecus">
-                    <ecu id="3D54593005">
-                        <address>0x0200D8</address>
-                    </ecu>
+                    <ecu id="1B04400605"> <address length="2">0x021847</address> </ecu>
+                    <ecu id="1B04490605"> <address length="2">0x021847</address> </ecu>
+                    <ecu id="1B04490805"> <address length="2">0x021847</address> </ecu>
+                    <ecu id="1B14400305"> <address length="2">0x0219BD</address> </ecu>
+                    <ecu id="1B14400405"> <address length="2">0x0219BD</address> </ecu>
+                    <ecu id="1B14400505"> <address length="2">0x0219BD</address> </ecu>
+                    <ecu id="1B14400605"> <address length="2">0x0219BD</address> </ecu>
+                    <ecu id="1B14400805"> <address length="2">0x0219BD</address> </ecu>
+                    <ecu id="1B44580405"> <address length="2">0x021975</address> </ecu>
+                    <ecu id="1B44580505"> <address length="2">0x021975</address> </ecu>
+                    <ecu id="1B54500405"> <address length="2">0x021975</address> </ecu>
+                    <ecu id="1B54500505"> <address length="2">0x021975</address> </ecu>
+                    <ecu id="2354500405"> <address length="2">0x021975</address> </ecu>
+                    <ecu id="2904485005"> <address length="2">0x021847</address> </ecu>
+                    <ecu id="2904495005"> <address length="2">0x021847</address> </ecu>
+                    <ecu id="2904497105"> <address length="2">0x021847</address> </ecu>
+                    <ecu id="29044A4105"> <address length="2">0x02009A</address> </ecu>
+                    <ecu id="29046B6005"> <address length="2">0x02009A</address> </ecu>
+                    <ecu id="2944594105"> <address length="2">0x02009A</address> </ecu>
+                    <ecu id="2944596105"> <address length="2">0x0200B4</address> </ecu>
+                    <ecu id="2954594105"> <address length="2">0x02009A</address> </ecu>
+                    <ecu id="2E04404005"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E04494005"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E04496005"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E044A6005"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E14446006"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E14446106"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E14486006"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E14486106"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E14486206"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E14486306"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E44584105"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E44586005"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E44594105"> <address length="2">0x0200B4</address> </ecu>
+                    <ecu id="2E44596105"> <address length="2">0x0200B4</address> </ecu>
+                    <ecu id="2E54504105"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="2E54594105"> <address length="2">0x0200B4</address> </ecu>
+                    <ecu id="3614446205"> <address length="2">0x0200BE</address> </ecu>
+                    <ecu id="3614486105"> <address length="2">0x0200BE</address> </ecu>
+                    <ecu id="3614486205"> <address length="2">0x0200BE</address> </ecu>
+                    <ecu id="3614486305"> <address length="2">0x0200BE</address> </ecu>
+                    <ecu id="3A54504005"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="3A54584005"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="3D04403005"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="3D045B4005"> <address length="2">0x0200F2</address> </ecu>
+                    <ecu id="3D44583005"> <address length="2">0x0200F4</address> </ecu>
+                    <ecu id="3D44593005"> <address length="2">0x0200D8</address> </ecu>
+                    <ecu id="3D54583005"> <address length="2">0x0200EE</address> </ecu>
+                    <ecu id="3D54593005"> <address length="2">0x0200D8</address> </ecu>
+                    <ecu id="3DA4583005"> <address length="2">0x0200D8</address> </ecu>
+                    <ecu id="3E14444006"> <address length="2">0x0200F4</address> </ecu>
+                    <ecu id="3E14483006"> <address length="2">0x0200F4</address> </ecu>
+                    <ecu id="3E14484006"> <address length="2">0x0200F4</address> </ecu>
+                    <ecu id="4304594005"> <address length="2">0x0200F2</address> </ecu>
+                    <ecu id="43045A4005"> <address length="2">0x0200F2</address> </ecu>
                     <conversions>
-                        <conversion units="grams" expr="x/32" format="0.00"/>
+                        <conversion units="2*g/rev" expr="x*.0001220703125" format="0.00"/>
                     </conversions>
                 </ecuparam>
 
                 <!-- 32 bit ecus - IAM and Engine Load -->
                 <ecuparam id="E2" name="IAM" desc="Ignition Advance Multiplier (32bit ecus)">
-                    <ecu id="3152584006">
-                        <address length="4">0xFF8228</address>
-                    </ecu>
+                    <ecu id="2E12495106"> <address length="4">0xFF854C</address> </ecu>
+                    <ecu id="2E12495206"> <address length="4">0xFF854C</address> </ecu>
+                    <ecu id="2E12495306"> <address length="4">0xFF854C</address> </ecu>
+                    <ecu id="2F04505106"> <address length="4">0xFF822C</address> </ecu>
+                    <ecu id="2F04785006"> <address length="4">0xFF822C</address> </ecu>
+                    <ecu id="2F04785306"> <address length="4">0xFF822C</address> </ecu>
+                    <ecu id="2F12505106"> <address length="4">0xFF2688</address> </ecu>
+                    <ecu id="2F12505206"> <address length="4">0xFF267C</address> </ecu>
+                    <ecu id="2F12505506"> <address length="4">0xFF267C</address> </ecu>
+                    <ecu id="2F12515306"> <address length="4">0xFF267C</address> </ecu>
+                    <ecu id="2F12515506"> <address length="4">0xFF267C</address> </ecu>
+                    <ecu id="2F12785106"> <address length="4">0xFF2688</address> </ecu>
+                    <ecu id="2F12785206"> <address length="4">0xFF267C</address> </ecu>
+                    <ecu id="2F12785306"> <address length="4">0xFF267C</address> </ecu>
+                    <ecu id="2F12785506"> <address length="4">0xFF267C</address> </ecu>
+                    <ecu id="2F12785606"> <address length="4">0xFF267C</address> </ecu>
+                    <ecu id="2F54505006"> <address length="4">0xFF822C</address> </ecu>
+                    <ecu id="2F54505106"> <address length="4">0xFF822C</address> </ecu>
+                    <ecu id="2F54505406"> <address length="4">0xFF822C</address> </ecu>
+                    <ecu id="3112405106"> <address length="4">0xFF8550</address> </ecu>
+                    <ecu id="3112485106"> <address length="4">0xFF8550</address> </ecu>
+                    <ecu id="3144504006"> <address length="4">0xFF83CC</address> </ecu>
+                    <ecu id="3152504006"> <address length="4">0xFF8228</address> </ecu>
+                    <ecu id="3152584006"> <address length="4">0xFF8228</address> </ecu>
+                    <ecu id="3B02594316"> <address length="4">0xFF822C</address> </ecu>
+                    <ecu id="3B12584006"> <address length="4">0xFF2688</address> </ecu>
+                    <ecu id="3B12584106"> <address length="4">0xFF267C</address> </ecu>
+                    <ecu id="3B42584116"> <address length="4">0xFF850C</address> </ecu>
+                    <ecu id="3B44503006"> <address length="4">0xFF83AC</address> </ecu>
+                    <ecu id="3B44503116"> <address length="4">0xFF83AC</address> </ecu>
+                    <ecu id="3B52583006"> <address length="4">0xFF8260</address> </ecu>
+                    <ecu id="3B52583116"> <address length="4">0xFF8260</address> </ecu>
+                    <ecu id="3C04504106"> <address length="4">0xFF824C</address> </ecu>
+                    <ecu id="3C04504216"> <address length="4">0xFF824C</address> </ecu>
+                    <ecu id="3C04504316"> <address length="4">0xFF824C</address> </ecu>
+                    <ecu id="3C04784216"> <address length="4">0xFF824C</address> </ecu>
+                    <ecu id="3C54504216"> <address length="4">0xFF824C</address> </ecu>
+                    <ecu id="3C54504316"> <address length="4">0xFF824C</address> </ecu>
+                    <ecu id="3C54784206"> <address length="4">0xFF824C</address> </ecu>
+                    <ecu id="3C54784216"> <address length="4">0xFF824C</address> </ecu>
+                    <ecu id="3D12594006"> <address length="4">0xFF2588</address> </ecu>
+                    <ecu id="3D12594106"> <address length="4">0xFF2588</address> </ecu>
+                    <ecu id="3F12484106"> <address length="4">0xFF2664</address> </ecu>
+                    <ecu id="3F12484206"> <address length="4">0xFF2664</address> </ecu>
+                    <ecu id="4212505106"> <address length="4">0xFF2B3C</address> </ecu>
+                    <ecu id="4212585006"> <address length="4">0xFF2B3C</address> </ecu>
+                    <ecu id="4242504106"> <address length="4">0xFF2914</address> </ecu>
+                    <ecu id="4252504106"> <address length="4">0xFF2914</address> </ecu>
+                    <ecu id="4312504006"> <address length="4">0xFF2B3C</address> </ecu>
+                    <ecu id="4312584006"> <address length="4">0xFF2B3C</address> </ecu>
+                    <ecu id="4312584106"> <address length="4">0xFF2B3C</address> </ecu>
+                    <ecu id="4312594006"> <address length="4">0xFF2570</address> </ecu>
+                    <ecu id="4342584006"> <address length="4">0xFF28F4</address> </ecu>
+                    <ecu id="4342592006"> <address length="4">0xFF28F4</address> </ecu>
+                    <ecu id="4342594006"> <address length="4">0xFF28F4</address> </ecu>
+                    <ecu id="4352584006"> <address length="4">0xFF2910</address> </ecu>
+                    <ecu id="4352594006"> <address length="4">0xFF2910</address> </ecu>
+                    <ecu id="4512503106"> <address length="4">0xFF2698</address> </ecu>
+                    <ecu id="4512513106"> <address length="4">0xFF2698</address> </ecu>
+                    <ecu id="4512783106"> <address length="4">0xFF2698</address> </ecu>
+                    <ecu id="4D12584006"> <address length="4">0xFF2E38</address> </ecu>
+                    <ecu id="4D12784006"> <address length="4">0xFF2E30</address> </ecu>
+                    <ecu id="4D52584006"> <address length="4">0xFF2B08</address> </ecu>
+                    <ecu id="4D52594006"> <address length="4">0xFF2B08</address> </ecu>
                     <conversions>
                         <conversion units="IAM" storagetype="float" expr="x" format="0.00"/>
                     </conversions>
                 </ecuparam>
 
                 <ecuparam id="E4" name="Engine Load (RAM)" desc="Engine Load (RAM) for 32 bit ecus">
-                    <ecu id="3152584006">
-                        <address length="4">0xFFA6FC</address>
-                    </ecu>
+                    <ecu id="2E12495106"> <address length="4">0xFFA648</address> </ecu>
+                    <ecu id="2E12495206"> <address length="4">0xFFA648</address> </ecu>
+                    <ecu id="2E12495306"> <address length="4">0xFFA664</address> </ecu>
+                    <ecu id="2F04505106"> <address length="4">0xFFA750</address> </ecu>
+                    <ecu id="2F04785006"> <address length="4">0xFFA750</address> </ecu>
+                    <ecu id="2F04785306"> <address length="4">0xFFA770</address> </ecu>
+                    <ecu id="2F12505106"> <address length="4">0xFF50B0</address> </ecu>
+                    <ecu id="2F12505206"> <address length="4">0xFF50B0</address> </ecu>
+                    <ecu id="2F12505506"> <address length="4">0xFF50C0</address> </ecu>
+                    <ecu id="2F12515306"> <address length="4">0xFF50B0</address> </ecu>
+                    <ecu id="2F12515506"> <address length="4">0xFF50C0</address> </ecu>
+                    <ecu id="2F12785106"> <address length="4">0xFF50B0</address> </ecu>
+                    <ecu id="2F12785206"> <address length="4">0xFF50B0</address> </ecu>
+                    <ecu id="2F12785306"> <address length="4">0xFF50B0</address> </ecu>
+                    <ecu id="2F12785506"> <address length="4">0xFF50C0</address> </ecu>
+                    <ecu id="2F12785606"> <address length="4">0xFF50C0</address> </ecu>
+                    <ecu id="2F54505006"> <address length="4">0xFFA750</address> </ecu>
+                    <ecu id="2F54505106"> <address length="4">0xFFA770</address> </ecu>
+                    <ecu id="2F54505406"> <address length="4">0xFFA770</address> </ecu>
+                    <ecu id="3112405106"> <address length="4">0xFFA6AC</address> </ecu>
+                    <ecu id="3112485106"> <address length="4">0xFFA6AC</address> </ecu>
+                    <ecu id="3144504006"> <address length="4">0xFFA41C</address> </ecu>
+                    <ecu id="3152504006"> <address length="4">0xFFA6FC</address> </ecu>
+                    <ecu id="3152584006"> <address length="4">0xFFA6FC</address> </ecu>
+                    <ecu id="3B02594316"> <address length="4">0xFFB0E0</address> </ecu>
+                    <ecu id="3B12584006"> <address length="4">0xFF5030</address> </ecu>
+                    <ecu id="3B12584106"> <address length="4">0xFF5030</address> </ecu>
+                    <ecu id="3B42584116"> <address length="4">0xFFB2C4</address> </ecu>
+                    <ecu id="3B44503006"> <address length="4">0xFFA41C</address> </ecu>
+                    <ecu id="3B44503116"> <address length="4">0xFFA41C</address> </ecu>
+                    <ecu id="3B52583006"> <address length="4">0xFFB358</address> </ecu>
+                    <ecu id="3B52583116"> <address length="4">0xFFB358</address> </ecu>
+                    <ecu id="3C04504106"> <address length="4">0xFFB3D0</address> </ecu>
+                    <ecu id="3C04504216"> <address length="4">0xFFB3D0</address> </ecu>
+                    <ecu id="3C04504316"> <address length="4">0xFFB3D0</address> </ecu>
+                    <ecu id="3C04784216"> <address length="4">0xFFB3D0</address> </ecu>
+                    <ecu id="3C54504216"> <address length="4">0xFFB3D0</address> </ecu>
+                    <ecu id="3C54504316"> <address length="4">0xFFB3D0</address> </ecu>
+                    <ecu id="3C54784206"> <address length="4">0xFFB3D0</address> </ecu>
+                    <ecu id="3C54784216"> <address length="4">0xFFB3D0</address> </ecu>
+                    <ecu id="3D12594006"> <address length="4">0xFF4F48</address> </ecu>
+                    <ecu id="3D12594106"> <address length="4">0xFF4F48</address> </ecu>
+                    <ecu id="3F12484106"> <address length="4">0xFF5034</address> </ecu>
+                    <ecu id="3F12484206"> <address length="4">0xFF5034</address> </ecu>
+                    <ecu id="4212505106"> <address length="4">0xFF684C</address> </ecu>
+                    <ecu id="4212585006"> <address length="4">0xFF684C</address> </ecu>
+                    <ecu id="4242504106"> <address length="4">0xFF689C</address> </ecu>
+                    <ecu id="4252504106"> <address length="4">0xFF689C</address> </ecu>
+                    <ecu id="4312504006"> <address length="4">0xFF6848</address> </ecu>
+                    <ecu id="4312584006"> <address length="4">0xFF6848</address> </ecu>
+                    <ecu id="4312584106"> <address length="4">0xFF6848</address> </ecu>
+                    <ecu id="4312594006"> <address length="4">0xFF4F58</address> </ecu>
+                    <ecu id="4342584006"> <address length="4">0xFF660C</address> </ecu>
+                    <ecu id="4342592006"> <address length="4">0xFF660C</address> </ecu>
+                    <ecu id="4342594006"> <address length="4">0xFF660C</address> </ecu>
+                    <ecu id="4352584006"> <address length="4">0xFF67CC</address> </ecu>
+                    <ecu id="4352594006"> <address length="4">0xFF67CC</address> </ecu>
+                    <ecu id="4512503106"> <address length="4">0xFF50CC</address> </ecu>
+                    <ecu id="4512513106"> <address length="4">0xFF50CC</address> </ecu>
+                    <ecu id="4512783106"> <address length="4">0xFF50CC</address> </ecu>
+                    <ecu id="4D12584006"> <address length="4">0xFF68CC</address> </ecu>
+                    <ecu id="4D12784006"> <address length="4">0xFF687C</address> </ecu>
+                    <ecu id="4D52584006"> <address length="4">0xFF6844</address> </ecu>
+                    <ecu id="4D52594006"> <address length="4">0xFF6844</address> </ecu>
                     <conversions>
-                        <conversion units="grams" storagetype="float" expr="x" format="0.00"/>
+                        <conversion units="g/rev" storagetype="float" expr="x" format="0.00"/>
                     </conversions>
                 </ecuparam>
 

@@ -72,12 +72,13 @@ major enhancements to the datalogger.
 - Autoconnect 
 - Reset, disconnect buttons 
 - Reset data buttons per tab 
-- Updated dash tab with warning levels (not currently saved to profile) 
-- Fixed manifold relative pressure (corrected)
+- Updated dash tab with warning levels (warning levels not currently
+  saved to profile) 
+- Fixed "Manifold Relative Pressure (Corrected)" parameter
 - Fixed profile save/load problems
 - ECU id display in status bar 
 - Updated address format in logger.xml (length attribute added to
-  replace multiple <byte> tags. length defauilts to 1 if not -pecified) 
+  replace multiple <byte> tags. length defauilts to 1 if not specified) 
 - Autodetection of ecu specific parameters via new <ecuparam> tags in
   logger.xml (IAM, engine load)
 - ECU connection status indicator added to interface (stopped, 
@@ -87,6 +88,9 @@ major enhancements to the datalogger.
 - Enable defogger switch based file logging via menu bar (don't need to 
   select it in switch list anymore) 
 - Defogger switch is only logged to file when explicitly enabled
+- Absolute timestamp option added for file logging
+- Relative timestamp now reset to zero at the beginning of each log file
+  (unless absolute timestamp is selected) 
 - Graph tab color scheme updated 
 - Enhancements to the map overlay feature, including display of the live 
   data and overlay of the live data values on the map cells.

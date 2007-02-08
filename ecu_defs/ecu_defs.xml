@@ -150,7 +150,7 @@
       <description>Vehicle speed at which by gear compensations are disabled.</description>
 </table>
 
-<table type="3D" name="Initial Wastegate Duty" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="8" userlevel="1">
+<table type="3D" name="Initial Wastegate Duty" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="8" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="uint8" endian="big" sizex="8" locked="true" logparam="P13">
      <scaling units="%" expression="x*.48828125" to_byte="x/.48828125" format="#" fineincrement="1" coarseincrement="5" />
@@ -161,7 +161,7 @@
      <description>These are the starting values for wastegate duty. When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
  </table>
 
-<table type="3D" name="Max Wastegate Duty (AT)" category="Wastegate" storagetype="uint8" endian="big" sizex="8" sizey="8" userlevel="1">
+<table type="3D" name="Max Wastegate Duty (AT)" category="Wastegate" storagetype="uint8" endian="big" sizex="8" sizey="8" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*.390625" to_byte="x/.390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="uint16" endian="big" sizex="8" logparam="P13">
      <scaling units="%" expression="x*.00230414" to_byte="x/.00230414" format="#" fineincrement="1" coarseincrement="5"  />
@@ -172,7 +172,7 @@
      <description>These are the maximum values for wastegate duty (automatic transmission). When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
 </table>
 
-<table type="3D" name="Max Wastegate Duty " category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="8" userlevel="1">
+<table type="3D" name="Max Wastegate Duty " category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="8" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="uint8" endian="big" sizex="8" locked="true" logparam="P13">
      <scaling units="%" expression="x*.48828125" to_byte="x/.48828125" format="#" fineincrement="1" coarseincrement="5" />
@@ -183,7 +183,7 @@
      <description>These are the maximum values for wastegate duty. When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
  </table>
 
-<table type="3D" name="Max Wastegate Duty (MT)" category="Wastegate" storagetype="uint8" endian="big" sizex="8" sizey="8" userlevel="1">
+<table type="3D" name="Max Wastegate Duty (MT)" category="Wastegate" storagetype="uint8" endian="big" sizex="8" sizey="8" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*.390625" to_byte="x/.390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="uint16" endian="big" sizex="8" logparam="P13">
      <scaling units="%" expression="x*.00230414" to_byte="x/.00230414" format="#" fineincrement="1" coarseincrement="5" />
@@ -194,7 +194,7 @@
      <description>These are the maximum values for wastegate duty (manual transmission). When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
 </table>
 
-<table type="3D" name="Max Wastegate Duty" category="Wastegate" storagetype="uint8" endian="big" sizex="8" sizey="8" userlevel="1">
+<table type="3D" name="Max Wastegate Duty" category="Wastegate" storagetype="uint8" endian="big" sizex="8" sizey="8" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*.390625" to_byte="x/.390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="uint16" endian="big" sizex="8" logparam="P13">
      <scaling units="%" expression="x*.00230414" to_byte="x/.00230414" format="#" fineincrement="1" coarseincrement="5" />
@@ -328,7 +328,7 @@
 	<description>Percent change of wastegate duty cycles based on transmission gear selection. For 6-speeds, the value for 5th gear is used for 5th and 6th.</description>
 </table>
 
- <table type="3D" name="Low Detonation Fuel" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="16" userlevel="1">
+ <table type="3D" name="Low Detonation Fuel" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="16" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="14" logparam="P200">
       <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -339,7 +339,7 @@
       <description>This fuel map is used when the advance multiplier is greater than the 'fuel map switch threshold' value. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
- <table type="3D" name="Low Detonation Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="16" userlevel="1">
+ <table type="3D" name="Low Detonation Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="16" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="14" logparam="P200">
       <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -350,7 +350,7 @@
       <description>This fuel map is used when the advance multiplier is greater than the 'fuel map switch threshold' value. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
- <table type="3D" name="Low Detonation Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="16" userlevel="1">
+ <table type="3D" name="Low Detonation Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="16" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="14" logparam="P200">
       <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -361,7 +361,7 @@
       <description>This fuel map is used when the advance multiplier is greater than the 'fuel map switch threshold' value. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
- <table type="3D" name="High Detonation Fuel" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="18" userlevel="1">
+ <table type="3D" name="High Detonation Fuel" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="14" logparam="P200">
       <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -372,7 +372,7 @@
       <description>This fuel map is used when the advance multiplier falls below the 'fuel map switch' value. It is designed to run a typically richer mixture to thermally manage a high knock condition. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
- <table type="3D" name="High Detonation Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="18" userlevel="1">
+ <table type="3D" name="High Detonation Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="14" logparam="P200">
       <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -383,7 +383,7 @@
       <description>This fuel map is used when the advance multiplier falls below the 'fuel map switch' value. It is designed to run a typically richer mixture to thermally manage a high knock condition. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
- <table type="3D" name="High Detonation Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="16" userlevel="1">
+ <table type="3D" name="High Detonation Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="14" sizey="16" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="14" logparam="P200">
       <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -523,7 +523,7 @@
     <description>This is the minimum (base) amount of timing. To achieve total timing, the ignition correction map values are added on top of this base map. The amount of the correction map added is dependent on knock and adjusted through rough ignition correction (the advance multiplier) as well as fine ignition correction. Additional compensation tables may also affect total timing. This base ignition map is intended by Subaru to be the maximum amount of timing to run, without knock, with the lowest octane fuel and fuel quality that the vehicle is likely to encounter.</description>
  </table>
 
- <table type="3D" name="Ignition Correction" category="Timing" storagetype="uint8" endian="big" sizex="13" sizey="16" userlevel="1">
+ <table type="3D" name="Ignition Correction" category="Timing" storagetype="uint8" endian="big" sizex="13" sizey="16" userlevel="1" logparam="P23">
      <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
      <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="13" logparam="P200">
      <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -534,7 +534,7 @@
      <description>This is the maximum timing added to the base ignition map to make up total timing. Actual correction added depends on knock activity. Rough ignition correction is applied to this table in the advent of certain levels of knock and the actual correction = ignition correction x (advance multiplier/16). In addition, there is a fine ignition correction, stored in RAM, which can alter correction in a more narrow capacity at particular rpm/load sites. There are also various compensation tables that can affect the final timing. Added correction will never be greater than the values on this map.</description>
  </table>
 
- <table type="3D" name="Ignition Correction A" category="Timing" storagetype="uint8" endian="big" sizex="13" sizey="16" userlevel="1">
+ <table type="3D" name="Ignition Correction A" category="Timing" storagetype="uint8" endian="big" sizex="13" sizey="16" userlevel="1" logparam="P23">
      <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
      <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="13" logparam="P200">
      <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -545,7 +545,7 @@
      <description>This is the maximum timing added to the base ignition map to make up total timing. Actual correction added depends on knock activity. Rough ignition correction is applied to this table in the advent of certain levels of knock and the actual correction = ignition correction x (advance multiplier/16). In addition, there is a fine ignition correction, stored in RAM, which can alter correction in a more narrow capacity at particular rpm/load sites. There are also various compensation tables that can affect the final timing. Added correction will never be greater than the values on this map.</description>
  </table>
 
- <table type="3D" name="Ignition Correction B" category="Timing" storagetype="uint8" endian="big" sizex="13" sizey="16" userlevel="1">
+ <table type="3D" name="Ignition Correction B" category="Timing" storagetype="uint8" endian="big" sizex="13" sizey="16" userlevel="1" logparam="P23">
      <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
      <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="13" logparam="P200">
      <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -1132,7 +1132,7 @@
 	<description>Target AFR during closed loop cruise conditions.</description>
 </table>
 
- <table type="3D" name="EGT Limit" category="Emissions" storagetype="uint8" endian="big" sizex="2" sizey="2" userlevel="2">
+ <table type="3D" name="EGT Limit" category="Emissions" storagetype="uint8" endian="big" sizex="2" sizey="2" userlevel="2" logparam="P79">
       <scaling units="Exhaust Gas Temperature (F)" expression="((x*4)+40)*1.8+32" to_byte="(((x-32)/1.8)-40)/4" format="#" fineincrement="10" coarseincrement="100" />
       <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" sizex="2" logparam="P200">
       <scaling units="2*g/rev" expression="x*.0001220703125" to_byte="x/.0001220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11132,7 +11132,7 @@
 	<description>Percent change of target boost at different atmospheric pressures.</description>
 </table>
 
-<table type="3D" name="Initial Wastegate Duty A" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1">
+<table type="3D" name="Initial Wastegate Duty A" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="float" endian="little" sizex="8" logparam="P13">
      <scaling units="%" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
@@ -11143,7 +11143,7 @@
      <description>These are the starting values for wastegate duty. When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
  </table>
 
-<table type="3D" name="Initial Wastegate Duty B" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1">
+<table type="3D" name="Initial Wastegate Duty B" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="float" endian="little" sizex="8" logparam="P13">
      <scaling units="%" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
@@ -11154,7 +11154,7 @@
      <description>These are the starting values for wastegate duty. When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
  </table>
 
-<table type="3D" name="Initial Wastegate Duty C" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1">
+<table type="3D" name="Initial Wastegate Duty C" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="float" endian="little" sizex="8" logparam="P13">
      <scaling units="%" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
@@ -11165,7 +11165,7 @@
      <description>These are the starting values for wastegate duty. When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
  </table>
 
-<table type="3D" name="Initial Wastegate Duty D" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1">
+<table type="3D" name="Initial Wastegate Duty D" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="float" endian="little" sizex="8" logparam="P13">
      <scaling units="%" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
@@ -11176,7 +11176,7 @@
      <description>These are the starting values for wastegate duty. When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
  </table>
 
-<table type="3D" name="Initial Wastegate Duty E" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1">
+<table type="3D" name="Initial Wastegate Duty E" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="float" endian="little" sizex="8" logparam="P13">
      <scaling units="%" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
@@ -11187,7 +11187,7 @@
      <description>These are the starting values for wastegate duty. When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
  </table>
 
-<table type="3D" name="Initial Wastegate Duty F" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1">
+<table type="3D" name="Initial Wastegate Duty F" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="12" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="float" endian="little" sizex="8" logparam="P13">
      <scaling units="%" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
@@ -11198,7 +11198,7 @@
      <description>These are the starting values for wastegate duty. When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
  </table>
 
-<table type="3D" name="Max Wastegate Duty A" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="8" userlevel="1">
+<table type="3D" name="Max Wastegate Duty A" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="8" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="float" endian="little" sizex="8" logparam="P13">
      <scaling units="%" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
@@ -11209,7 +11209,7 @@
      <description>These are the maximum values for wastegate duty. When wastegate duty cycles are raised, this typically results in more boost, but with an increased chance of spiking. When wastegate duty cycles are lowered, this typically results in less boost and a greater chance of not hitting boost targets. Other compensation factors also have an influence on actual wastegate duty cycles.</description>
  </table>
 
-<table type="3D" name="Max Wastegate Duty B" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="8" userlevel="1">
+<table type="3D" name="Max Wastegate Duty B" category="Wastegate" storagetype="uint16" endian="big" sizex="8" sizey="8" userlevel="1" logparam="P36">
      <scaling units="Wastegate Duty Cycle (%)" expression="x*0.00390625" to_byte="x/0.00390625" format="0.0" fineincrement="1" coarseincrement="5" />
      <table type="X Axis" name="Throttle" storagetype="float" endian="little" sizex="8" logparam="P13">
      <scaling units="%" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
@@ -11338,7 +11338,7 @@
      <description>The percent change of wastegate duties at different atmospheric pressures.</description>
  </table>
 
- <table type="3D" name="Low Detonation Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1">
+ <table type="3D" name="Low Detonation Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200">
       <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11349,7 +11349,7 @@
       <description>This fuel map is used when the advance multiplier is greater than the 'fuel map switch threshold' value. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
- <table type="3D" name="Low Detonation Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1">
+ <table type="3D" name="Low Detonation Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200">
       <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11360,7 +11360,7 @@
       <description>This fuel map is used when the advance multiplier is greater than the 'fuel map switch threshold' value. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
- <table type="3D" name="Low Detonation Fuel C" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1">
+ <table type="3D" name="Low Detonation Fuel C" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200">
       <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11371,7 +11371,7 @@
       <description>This fuel map is used when the advance multiplier is greater than the 'fuel map switch threshold' value. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
-<table type="3D" name="High Detonation Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1">
+<table type="3D" name="High Detonation Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200">
       <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11382,7 +11382,7 @@
       <description>This fuel map is used when the advance multiplier falls below the 'fuel map switch' value. It is designed to run a typically richer mixture to thermally manage a high knock condition. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
-<table type="3D" name="High Detonation Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1">
+<table type="3D" name="High Detonation Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200">
       <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11393,7 +11393,7 @@
       <description>This fuel map is used when the advance multiplier falls below the 'fuel map switch' value. It is designed to run a typically richer mixture to thermally manage a high knock condition. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
-<table type="3D" name="High Detonation Fuel C" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1">
+<table type="3D" name="High Detonation Fuel C" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200">
       <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11404,7 +11404,7 @@
       <description>This fuel map is used when the advance multiplier falls below the 'fuel map switch' value. It is designed to run a typically richer mixture to thermally manage a high knock condition. These values are used in open loop operation only and the air/fuel ratio is calculated using the air flow data from the MAF sensor. Because there is no feedback in open loop operation, the actual AFR may differ from the values in this table. In addition, the ECU applies a long-term A/F learning compensation to open loop fueling from patterns it recognizes in closed loop loop fueling which can cause further changes in the actual AFR.</description>
  </table>
 
- <table type="3D" name="Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1">
+ <table type="3D" name="Fuel A" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200">
       <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11415,7 +11415,7 @@
       <description></description>
  </table>
 
- <table type="3D" name="Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1">
+ <table type="3D" name="Fuel B" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200">
       <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11426,7 +11426,7 @@
       <description></description>
  </table>
 
- <table type="3D" name="Fuel C" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1">
+ <table type="3D" name="Fuel C" category="Fuel" storagetype="uint8" endian="big" sizex="15" sizey="18" userlevel="1" logparam="P58">
       <scaling units="Air/Fuel Ratio" expression="14.7/(1+x*.0078125)" to_byte="(14.7/x-1)/.0078125" format="0.00" fineincrement=".2" coarseincrement="1" />
       <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="15" logparam="P200">
       <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11575,7 +11575,7 @@
     <description>This is the minimum (base) amount of timing. To achieve total timing, the ignition correction map values are added on top of this base map. The amount of the correction map added is dependent on knock and adjusted through rough ignition correction (the advance multiplier) as well as fine ignition correction. Additional compensation tables may also affect total timing. This base ignition map is intended by Subaru to be the maximum amount of timing to run, without knock, with the lowest octane fuel and fuel quality that the vehicle is likely to encounter.</description>
  </table>
 
- <table type="3D" name="Ignition Correction A" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1">
+ <table type="3D" name="Ignition Correction A" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1" logparam="P23">
      <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" />
      <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="16" logparam="P200">
      <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11586,7 +11586,7 @@
      <description>This is the maximum timing added to the base ignition map to make up total timing. Actual correction added depends on knock activity. Rough ignition correction is applied to this table in the advent of certain levels of knock and the actual correction = ignition correction x (advance multiplier). In addition, there is a fine ignition correction, stored in RAM, which can alter correction in a more narrow capacity at particular rpm/load sites. There are also various compensation tables that can affect the final timing.</description>
  </table>
 
- <table type="3D" name="Ignition Correction B" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1">
+ <table type="3D" name="Ignition Correction B" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1" logparam="P23">
      <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" />
      <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="16" logparam="P200">
      <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11597,7 +11597,7 @@
      <description>This is the maximum timing added to the base ignition map to make up total timing. Actual correction added depends on knock activity. Rough ignition correction is applied to this table in the advent of certain levels of knock and the actual correction = ignition correction x (advance multiplier). In addition, there is a fine ignition correction, stored in RAM, which can alter correction in a more narrow capacity at particular rpm/load sites. There are also various compensation tables that can affect the final timing.</description>
  </table>
 
- <table type="3D" name="Ignition Correction C" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1">
+ <table type="3D" name="Ignition Correction C" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1" logparam="P23">
      <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" />
      <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="16" logparam="P200">
      <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -11608,7 +11608,7 @@
      <description>This is the maximum timing added to the base ignition map to make up total timing. Actual correction added depends on knock activity. Rough ignition correction is applied to this table in the advent of certain levels of knock and the actual correction = ignition correction x (advance multiplier). In addition, there is a fine ignition correction, stored in RAM, which can alter correction in a more narrow capacity at particular rpm/load sites. There are also various compensation tables that can affect the final timing.</description>
  </table>
 
- <table type="3D" name="Ignition Correction D" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1">
+ <table type="3D" name="Ignition Correction D" category="Timing" storagetype="uint8" endian="big" sizex="16" sizey="18" userlevel="1" logparam="P23">
      <scaling units="Timing (degrees)" expression="x*.3515625" to_byte="x/.3515625" format="0.00" fineincrement=".3" coarseincrement="1" />
      <table type="X Axis" name="Engine Load" storagetype="float" endian="little" sizex="16" logparam="P200">
      <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
