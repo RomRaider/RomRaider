@@ -94,6 +94,9 @@ major enhancements to the datalogger.
 - Graph tab color scheme updated 
 - Enhancements to the map overlay feature, including display of the live 
   data and overlay of the live data values on the map cells.
+- Tooltips added to parameter list showing parameter description (not all
+  parameters have a description yet though)
+- General logger parameter updates/additions
 
 
 0.4.0b (11/10/2006)
