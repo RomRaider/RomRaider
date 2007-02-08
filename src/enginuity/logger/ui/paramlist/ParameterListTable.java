@@ -22,18 +22,22 @@
 package enginuity.logger.ui.paramlist;
 
 import enginuity.logger.definition.EcuData;
+import static enginuity.util.ParamChecker.isNullOrEmpty;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
 public final class ParameterListTable extends JTable {
     private UnitsComboBoxEditor comboBoxEditor = new UnitsComboBoxEditor();
     private UnitsComboBoxRenderer comboBoxRenderer = new UnitsComboBoxRenderer();
+    private final ParameterListTableModel tableModel;
 
-    public ParameterListTable(TableModel tableModel) {
+    public ParameterListTable(ParameterListTableModel tableModel) {
         super(tableModel);
+        this.tableModel = tableModel;
     }
 
     public TableCellRenderer getCellRenderer(int row, int col) {
@@ -42,6 +46,20 @@ public final class ParameterListTable extends JTable {
 
     public TableCellEditor getCellEditor(int row, int col) {
         return displayComboBox(row, col) ? comboBoxEditor : super.getCellEditor(row, col);
+    }
+
+    public String getToolTipText(MouseEvent mouseEvent) {
+        List<ParameterRow> parameterRows = tableModel.getParameterRows();
+        if (!isNullOrEmpty(parameterRows)) {
+            ParameterRow parameterRow = parameterRows.get(rowAtPoint(mouseEvent.getPoint()));
+            if (parameterRow != null) {
+                String description = parameterRow.getEcuData().getDescription();
+                if (!isNullOrEmpty(description)) {
+                    return description;
+                }
+            }
+        }
+        return super.getToolTipText(mouseEvent);
     }
 
     private boolean displayComboBox(int row, int col) {

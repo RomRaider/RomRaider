@@ -81,4 +81,7 @@ public final class ParamChecker {
         return param == null || param.length() == 0;
     }
 
+    public static boolean isNullOrEmpty(Collection<?> param) {
+        return param == null || param.isEmpty();
+    }
 }

@@ -73,7 +73,6 @@ import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import static javax.swing.JTabbedPane.BOTTOM;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.EAST;
@@ -436,7 +435,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return tabbedPane;
     }
 
-    private JComponent buildParamListPane(TableModel paramListTableModel, TableModel switchListTableModel) {
+    private JComponent buildParamListPane(ParameterListTableModel paramListTableModel, ParameterListTableModel switchListTableModel) {
         JScrollPane paramList = new JScrollPane(buildParamListTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, paramList, switchList);
@@ -445,7 +444,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return splitPane;
     }
 
-    private JTable buildParamListTable(TableModel tableModel) {
+    private JTable buildParamListTable(ParameterListTableModel tableModel) {
         JTable paramListTable = new ParameterListTable(tableModel);
         changeColumnWidth(paramListTable, 0, 20, 55, 55);
         changeColumnWidth(paramListTable, 2, 50, 250, 80);
