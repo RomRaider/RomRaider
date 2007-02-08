@@ -51,7 +51,7 @@ public class Settings implements Serializable {
     private boolean displayHighTables = true;
     private boolean valueLimitWarning = true;
 
-    private Font tableFont = new Font("Arial", Font.BOLD, 12);
+    private Font tableFont = new Font("Arial", Font.BOLD, 11);
     private Dimension cellSize = new Dimension(42, 18);
     private Color maxColor = new Color(255, 102, 102);
     private Color minColor = new Color(153, 153, 255);
