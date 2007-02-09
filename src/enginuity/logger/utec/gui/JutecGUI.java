@@ -56,7 +56,7 @@ public class JutecGUI extends JFrame implements ActionListener{
 		
 		// Main frame
 		// Grid layout with a top and bottom, ie two rows
-		super("-=<JUTEC Tuning Tool>=-  USE AT OWN RISK,NO WARRANTY");
+		super("UTEC Loggers");
 		this.setSize(800, 600);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(setDefaultCloseOperation);
