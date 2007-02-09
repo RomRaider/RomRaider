@@ -15,5 +15,12 @@
 	<classpathentry exported="true" kind="lib" path="lib/Graph3d/jama-1.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/BareBonesBrowserLaunch.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jdic/jdic.jar"/>
+	<classpathentry kind="lib" path="lib/tts/freetts.jar"/>
+	<classpathentry kind="lib" path="lib/tts/en_us.jar"/>
+	<classpathentry kind="lib" path="lib/tts/cmulex.jar"/>
+	<classpathentry kind="lib" path="lib/tts/cmudict04.jar"/>
+	<classpathentry kind="lib" path="lib/tts/cmu_us_kal.jar"/>
+	<classpathentry kind="lib" path="lib/tts/cmu_time_awb.jar"/>
+	<classpathentry kind="lib" path="lib/tts/cmutimelex.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

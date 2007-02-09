@@ -32,6 +32,7 @@ import com.centerkey.utils.BareBonesBrowserLaunch;
 import enginuity.ECUEditor;
 import enginuity.logger.EcuLogger;
 import enginuity.maps.Rom;
+import enginuity.logger.utec.gui.JutecGUI;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
@@ -63,7 +64,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private JMenu loggerMenu = new JMenu("Logger");
     private JMenuItem openLogger = new JMenuItem("Launch ECU Logger...");
-
+    private JMenuItem utecLogger = new JMenuItem("Launch UTEC Logger...");
+    
+    
     private JMenu helpMenu = new JMenu("Help");
     private JMenuItem about = new JMenuItem("About Enginuity");
 
@@ -162,8 +165,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         loggerMenu.setMnemonic('L');
         openLogger.setMnemonic('O');
         loggerMenu.add(openLogger);
+        loggerMenu.add(utecLogger);
         openLogger.addActionListener(this);
-
+        utecLogger.addActionListener(this);
+        
         // help menu stuff
         add(helpMenu);
         helpMenu.setMnemonic('H');
@@ -264,6 +269,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == openLogger) {
             EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
+
+        } else if (e.getSource() == utecLogger) {
+        	JutecGUI.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
 
         } else if (e.getSource() == updateDefinition) {
             BareBonesBrowserLaunch.openURL(parent.getSettings().getEcuDefsURL());
