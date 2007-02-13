@@ -34,7 +34,7 @@ public class CommInterface{
 	private static SerialParameters parameters = new SerialParameters();
 	
 	//Actual connection entity
-	private static SerialConnection connection = new SerialConnection(parameters);
+	private static UtecControl connection = new UtecControl(parameters);
 
 
 	public static boolean ISOPEN = connection.isOpen();
@@ -101,7 +101,7 @@ public class CommInterface{
 	 *
 	 */
 	public static void startDataLogFromUtec(){
-		connection.startDataFlow();
+		connection.startLoggerDataFlow();
 	}
 	
 	

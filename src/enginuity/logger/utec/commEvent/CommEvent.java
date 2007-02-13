@@ -9,6 +9,9 @@ package enginuity.logger.utec.commEvent;
 
 
 import java.util.*;
+import enginuity.logger.utec.mapData.UtecMapData;
+
+
 /**
  * @author emorgan
  *
@@ -16,11 +19,16 @@ import java.util.*;
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class CommEvent {
-	public String UtecBuffer = null;
-	public String[] data = new String[6];
-	public double[] doubleData = new double[6];
+	private String UtecBuffer = null;
+	private String[] data = new String[6];
+	private double[] doubleData = new double[6];
 	
-	public CommEvent(String buffer){
+	private boolean isLoggerData = false;
+	private boolean isMapData = false;
+	
+	private UtecMapData mapData = null;
+	
+	public void setLoggerData(String buffer){
 		UtecBuffer = buffer;
 		StringTokenizer st = new StringTokenizer(UtecBuffer, ",");
 		int counter = 0;
@@ -72,5 +80,65 @@ public class CommEvent {
 			doubleData[i] = Double.parseDouble(theData);
 		}
 		
+	}
+
+
+	public boolean isLoggerData() {
+		return isLoggerData;
+	}
+
+
+	public void setLoggerData(boolean isLoggerData) {
+		this.isLoggerData = isLoggerData;
+	}
+
+
+	public boolean isMapData() {
+		return isMapData;
+	}
+
+
+	public void setMapData(boolean isMapData) {
+		this.isMapData = isMapData;
+	}
+
+
+	public UtecMapData getMapData() {
+		return mapData;
+	}
+
+
+	public void setMapData(UtecMapData mapData) {
+		this.mapData = mapData;
+	}
+
+
+	public String[] getData() {
+		return data;
+	}
+
+
+	public void setData(String[] data) {
+		this.data = data;
+	}
+
+
+	public double[] getDoubleData() {
+		return doubleData;
+	}
+
+
+	public void setDoubleData(double[] doubleData) {
+		this.doubleData = doubleData;
+	}
+
+
+	public String getUtecBuffer() {
+		return UtecBuffer;
+	}
+
+
+	public void setUtecBuffer(String utecBuffer) {
+		UtecBuffer = utecBuffer;
 	}
 }

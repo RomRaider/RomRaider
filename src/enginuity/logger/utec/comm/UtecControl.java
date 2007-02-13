@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import enginuity.logger.utec.commEvent.*;
+import enginuity.logger.utec.mapData.UtecMapData;
 
 
 /**
@@ -22,7 +23,7 @@ import enginuity.logger.utec.commEvent.*;
 
 import gnu.io.*;
 
-public class SerialConnection implements SerialPortEventListener{
+public class UtecControl implements SerialPortEventListener{
 	
 	// Parent object organizing connections to and from UTEC
 	//private JPanel parent;
@@ -56,6 +57,12 @@ public class SerialConnection implements SerialPortEventListener{
 
 	//Listeners
 	private Vector portListeners = new Vector();
+	
+	//Define whether or not we are recieving a map from the UTEC
+	private boolean isMapFromUtecPrep = false;
+	private boolean isMapFromUtec = false;
+	private UtecMapData currentMap = null;
+	
 	/**
 	 * Public constructor
 	 * 
@@ -66,7 +73,7 @@ public class SerialConnection implements SerialPortEventListener{
 	 */
 	//public SerialConnection(JPanel parent, SerialParameters parameters,
 	//		TextArea messageAreaOut, TextArea messageAreaIn) {
-	public SerialConnection(SerialParameters parameters) {
+	public UtecControl(SerialParameters parameters) {
 		//this.parent = parent;
 		//this.messageAreaOut = messageAreaOut;
 		//this.messageAreaIn = messageAreaIn;
@@ -74,10 +81,10 @@ public class SerialConnection implements SerialPortEventListener{
 	}
 	
 	/**
-	 * Get UTEC to send data
+	 * Get UTEC to send logger data data
 	 *
 	 */
-	public void startDataFlow(){
+	public void startLoggerDataFlow(){
 		System.out.println("Starting data flow from UTEC");
 		
 		//OutPut a '1' to start basic data flow from UTEC
@@ -95,16 +102,75 @@ public class SerialConnection implements SerialPortEventListener{
 	 *
 	 */
 	public void resetUtec(){
-		//OutPut and 'escape' to UTEC
+		//OutPut 2 ctrl-x to UTEC
+		this.sendDataToUtec('\u0018');
+		this.sendDataToUtec('\u0018');
+	}
+	
+	/**
+	 * Get map data from map number passed in
+	 * 
+	 * @param mapNumber
+	 */
+	public void pullMapData(int mapNumber){
+		if(mapNumber < 1 || mapNumber > 5){
+			return;
+		}
+		
+		// Setup map transfer prep state
+		this.isMapFromUtecPrep = true;
+		
+		// Reset the UTEC
+		this.resetUtec();
+		
+		// Send an 'e' to enter map menu
+		this.sendDataToUtec('\u0065');
+		
+		// Point UTEC menu to the appropriate map
+		if(mapNumber == 1){
+			this.sendDataToUtec('\u0021');
+		}
+		if(mapNumber == 2){
+			this.sendDataToUtec('\u0040');
+		}
+		if(mapNumber == 3){
+			this.sendDataToUtec('\u0023');
+		}
+		if(mapNumber == 4){
+			this.sendDataToUtec('\u0024');
+		}
+		if(mapNumber == 5){
+			this.sendDataToUtec('\u0025');
+		}
+		
+		// Write first ctrl-s to init save state
+		this.sendDataToUtec('\u0013');
+		
+		// Make this class receptive to map transfer
+		this.isMapFromUtec = true;
+		
+		// No longer map prep
+		this.isMapFromUtecPrep = false;
+		
+		// Write second ctrl-s to start map data flow
+		this.sendDataToUtec('\u0013');
+	}
+
+	/**
+	 * Helper method to write chars to the UTEC
+	 * 
+	 * @param charValue
+	 */
+	private void sendDataToUtec(char charValue){
 		try{
-			outputToUtecStream.write((int) '\u001B');
+			outputToUtecStream.write((int) charValue);
 		}
 		catch(IOException e){
-			System.err.println("Can't start flow of data from UTEC");
+			System.err.println("Can't send char data to UTEC: "+charValue);
 			e.getMessage();
 		}
 	}
-
+	
 	/**
 	 * Opens a connection to the defined serial port If attempt fails,
 	 * SerialConnectionException is thrown
@@ -325,15 +391,37 @@ public class SerialConnection implements SerialPortEventListener{
 			}
 			
 			//Build new event with buffer data
-			CommEvent commEvent = new CommEvent(new String(inputBuffer));
+			CommEvent commEvent = null; 
+			if(this.isMapFromUtec || this.isMapFromUtecPrep){
+				// See if we are finally recieving a map from the UTEC
+				if(this.isMapFromUtec){
+					
+					// If this is the start of map data flow, then create a new map data object
+					if(this.currentMap == null){
+						currentMap = new UtecMapData();
+					}
+					
+					// Append byte data from the UTEC
+					this.currentMap.addRawData(newData);
+					
+				}
+				//commEvent.setMapData(true);
+			}else{
+				commEvent = new CommEvent();
+				commEvent.setLoggerData(new String(inputBuffer));
+				commEvent.setLoggerData(true);
+			}
 			
 			//Send received data to listeners
-			Iterator portIterator = portListeners.iterator();
-			while(portIterator.hasNext()){
-				CommListener theListener = (CommListener)portIterator.next();
-				theListener.getCommEvent(commEvent);
+			if(commEvent != null){
+				Iterator portIterator = portListeners.iterator();
+				while(portIterator.hasNext()){
+					CommListener theListener = (CommListener)portIterator.next();
+					theListener.getCommEvent(commEvent);
+				}
+				break;
 			}
-			break;
+			
 
 		// If break event append BREAK RECEIVED message.
 		/*
