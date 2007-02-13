@@ -17,22 +17,109 @@ public class UtecMapData {
 	
 	private double[] tempStorage = new double[440];
 	
+	private String stringChecksumHexValue = "";
+	
 	public void addRawData(int byteData) {
 		rawMapData.append(byteData);
 	}
 
-	public void populateMapData() {
+	public void populateMapDataStructures() {
 		System.out.println("---------------");
-		//System.out.println(rawMapData);
+		System.out.println(rawMapData);
 
 		// Functionality as the method names suggest
 		cleanUpMapData();
+		
+		System.out.println("---------------");
+		System.out.println(rawMapData);
+		
 		populateMapName();
 		populateMapComment();
 		populateFuelMapData();
 		populateTimingMapData();
 		populateBoostMapData();
 		calculateChecksum();
+		
+		System.out.println("------------------");
+		System.out.println(getUpdatedMap());
+	}
+	 
+	
+	public StringBuffer getUpdatedMap(){
+		calculateChecksum();
+		
+		
+		StringBuffer totalFile = new StringBuffer("");
+		
+		totalFile.append("[START][MAPGROUP1][MAPGROUP]\r");
+		totalFile.append("Map Name:-["+this.mapName+"]\r");
+		totalFile.append("Map Comments:-["+this.mapComment+"]\r");
+		
+		totalFile.append("Fuel Map\r");
+		for(int i=0 ; i<40 ; i++){
+			for(int j=0 ; j<11 ; j++){
+				String temp = this.fuelMap[j][i]+"";
+				if(temp.endsWith(".0")){
+					temp = temp.substring(0, temp.length()-2);
+				}
+				String number = "["+temp+"]";
+				int count = 9-number.length();
+				String spaces = "";
+				for(int k=0 ; k<count ; k++){
+					spaces += " ";
+				}
+				
+				number = spaces+number;
+				totalFile.append(number);
+			}
+			totalFile.append("\r");
+		}
+		totalFile.append("\r");
+		
+		totalFile.append("Timing Map\r");
+		for(int i=0 ; i<40 ; i++){
+			for(int j=0 ; j<11 ; j++){
+				String temp = this.timingMap[j][i]+"";
+				if(temp.endsWith(".0")){
+					temp = temp.substring(0, temp.length()-2);
+				}
+				String number = "["+temp+"]";
+				int count = 9-number.length();
+				String spaces = "";
+				for(int k=0 ; k<count ; k++){
+					spaces += " ";
+				}
+				
+				number = spaces+number;
+				totalFile.append(number);
+			}
+			totalFile.append("\r");
+		}
+		totalFile.append("\r");
+		
+
+		totalFile.append("Boost Map\r");
+		for(int i=0 ; i<40 ; i++){
+			for(int j=0 ; j<11 ; j++){
+				String temp = this.boostMap[j][i]+"";
+				if(temp.endsWith(".0")){
+					temp = temp.substring(0, temp.length()-2);
+				}
+				String number = "["+temp+"]";
+				int count = 9-number.length();
+				String spaces = "";
+				for(int k=0 ; k<count ; k++){
+					spaces += " ";
+				}
+				
+				number = spaces+number;
+				totalFile.append(number);
+			}
+			totalFile.append("\r");
+		}
+		
+		totalFile.append("[END][MAPGROUP]["+this.stringChecksumHexValue.toUpperCase()+"][EOF]");
+		return totalFile;
 	}
 	
 	public void calculateChecksum(){
@@ -43,7 +130,7 @@ public class UtecMapData {
 			int charValue = charArray[i];
 			mapChecksumValue += charValue;
 		}
-		System.out.println("Map name Checksum:"+mapChecksumValue);
+		//System.out.println("Map name Checksum:"+mapChecksumValue);
 		
 		int mapCommentChecksumValue = 0;
 		charArray = this.mapComment.toCharArray();
@@ -51,7 +138,7 @@ public class UtecMapData {
 			int charValue = charArray[i];
 			mapCommentChecksumValue += charValue;
 		}
-		System.out.println("Map comment Checksum:"+mapCommentChecksumValue);
+		//System.out.println("Map comment Checksum:"+mapCommentChecksumValue);
 		
 		int fuelChecksum = 0; 
 		for(int i=0 ; i<40 ; i++){
@@ -59,7 +146,7 @@ public class UtecMapData {
 				fuelChecksum += (this.fuelMap[j][i]*10 + 1000 + 1);
 			}
 		}
-		System.out.println("Fuel Checksum:"+fuelChecksum);
+		//System.out.println("Fuel Checksum:"+fuelChecksum);
 		
 		int timingChecksum = 0; 
 		for(int i=0 ; i<40 ; i++){
@@ -67,7 +154,7 @@ public class UtecMapData {
 				timingChecksum += (this.timingMap[j][i]*10 + 1000 + 1);
 			}
 		}
-		System.out.println("Timing Checksum:"+timingChecksum);
+		//System.out.println("Timing Checksum:"+timingChecksum);
 		
 		int boostChecksum = 0; 
 		for(int i=0 ; i<40 ; i++){
@@ -75,18 +162,19 @@ public class UtecMapData {
 				boostChecksum += (this.boostMap[j][i]*100 + 1);
 			}
 		}
-		System.out.println("Boost Checksum:"+boostChecksum);
+		//System.out.println("Boost Checksum:"+boostChecksum);
 		
 		int totalChecksum = mapChecksumValue+mapCommentChecksumValue+fuelChecksum+timingChecksum+boostChecksum;
-		System.out.println("Total decimal checksum:"+totalChecksum);
+		//System.out.println("Total decimal checksum:"+totalChecksum);
 		String hexString = Integer.toHexString(totalChecksum);
-		System.out.println("Total hex checksum:"+hexString);
+		//System.out.println("Total hex checksum:"+hexString);
 		
-		hexString = hexString.substring(1);
+		hexString = hexString.substring(hexString.length()-4, hexString.length());
 		hexString = 0 + hexString;
 		totalChecksum = Integer.parseInt(hexString, 16);
+		
+		this.stringChecksumHexValue = hexString;
 		System.out.println("Total hex checksum:"+Integer.toHexString(totalChecksum));
-		System.out.println("Final expected value:"+Integer.parseInt("0B05E", 16));
 	}
 	
 	public void populateBoostMapData(){
@@ -255,14 +343,10 @@ public class UtecMapData {
 		int stop = rawMapData.indexOf("[EOF]") + 5;
 		int size = rawMapData.length();
 
-		//System.out.println("Start:" + start);
-		//System.out.println("Stop:" + stop);
-		//System.out.println("Length:" + size);
-
 		if (stop != size) {
 			rawMapData.delete(0, start);
-			rawMapData.delete(stop, rawMapData.length());
-			//System.out.println("***************" + rawMapData);
+			stop = rawMapData.indexOf("[EOF]") + 5;
+			rawMapData.delete(stop, size);
 		} else {
 			//System.out.println("Nothing to update.");
 			//System.out.println(rawMapData);
@@ -295,7 +379,7 @@ public class UtecMapData {
 			e.printStackTrace();
 		}
 
-		populateMapData();
+		populateMapDataStructures();
 
 	}
 
