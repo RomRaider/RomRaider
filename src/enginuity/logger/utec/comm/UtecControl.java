@@ -91,14 +91,8 @@ public class UtecControl implements SerialPortEventListener{
 	public void startLoggerDataFlow(){
 		System.out.println("Starting data flow from UTEC");
 		
-		//OutPut a '1' to start basic data flow from UTEC
-		try{
-			outputToUtecStream.write((int) '!');
-		}
-		catch(IOException e){
-			System.err.println("Can't start flow of data from UTEC");
-			e.getMessage();
-		}
+		//OutPut a '!' to start basic data flow from UTEC
+		this.sendDataToUtec(33);
 	}
 	
 	/**
@@ -109,6 +103,8 @@ public class UtecControl implements SerialPortEventListener{
 		//OutPut 2 ctrl-x to UTEC
 		this.sendDataToUtec('\u0018');
 		this.sendDataToUtec('\u0018');
+		this.sendDataToUtec(33);
+		this.sendDataToUtec(33);
 	}
 	
 	/**
@@ -117,7 +113,7 @@ public class UtecControl implements SerialPortEventListener{
 	 * @param mapNumber
 	 */
 	public void pullMapData(int mapNumber, GetMapFromUtecListener listener){
-		
+		System.out.println("UtecControl, getting map:"+mapNumber);
 		
 		// Check bounds of map requested
 		if(mapNumber < 1 || mapNumber > 5){
@@ -138,27 +134,41 @@ public class UtecControl implements SerialPortEventListener{
 		this.resetUtec();
 		
 		// Send an 'e' to enter map menu
-		this.sendDataToUtec('\u0065');
+		//this.sendDataToUtec('\u0065');
+		this.sendDataToUtec('e');
+		System.out.println("Sent an e");
 		
 		// Point UTEC menu to the appropriate map
 		if(mapNumber == 1){
-			this.sendDataToUtec('\u0021');
+			//this.sendDataToUtec('\u0021');
+			this.sendDataToUtec(33);
+			System.out.println("Requested Map 1");
 		}
 		if(mapNumber == 2){
-			this.sendDataToUtec('\u0040');
+			//this.sendDataToUtec('\u0040');
+			this.sendDataToUtec(64);
+			System.out.println("Requested Map 2");
 		}
 		if(mapNumber == 3){
-			this.sendDataToUtec('\u0023');
+			//this.sendDataToUtec('\u0023');
+			this.sendDataToUtec(35);
+			System.out.println("Requested Map 3");
 		}
 		if(mapNumber == 4){
-			this.sendDataToUtec('\u0024');
+			//this.sendDataToUtec('\u0024');
+			this.sendDataToUtec(36);
+			System.out.println("Requested Map 4");
 		}
 		if(mapNumber == 5){
-			this.sendDataToUtec('\u0025');
+			//this.sendDataToUtec('\u0025');
+			this.sendDataToUtec(37);
+			System.out.println("Requested Map 5");
 		}
 		
 		// Write first ctrl-s to init save state
-		this.sendDataToUtec('\u0013');
+		//this.sendDataToUtec('\u0013');
+		this.sendDataToUtec(19);
+		System.out.println("Sent crtl-s");
 		
 		// Make this class receptive to map transfer
 		this.isMapFromUtec = true;
@@ -167,7 +177,9 @@ public class UtecControl implements SerialPortEventListener{
 		this.isMapFromUtecPrep = false;
 		
 		// Write second ctrl-s to start map data flow
-		this.sendDataToUtec('\u0013');
+		//this.sendDataToUtec('\u0013');
+		this.sendDataToUtec(19);
+		System.out.println("Sent crtl-s");
 	}
 
 	/**
@@ -175,9 +187,9 @@ public class UtecControl implements SerialPortEventListener{
 	 * 
 	 * @param charValue
 	 */
-	private void sendDataToUtec(char charValue){
+	private void sendDataToUtec(int charValue){
 		try{
-			outputToUtecStream.write((int) charValue);
+			outputToUtecStream.write(charValue);
 		}
 		catch(IOException e){
 			System.err.println("Can't send char data to UTEC: "+charValue);
@@ -436,20 +448,22 @@ public class UtecControl implements SerialPortEventListener{
 				}
 				
 			}else{
-				commEvent = new CommEvent();
-				commEvent.setLoggerData(new String(inputBuffer));
-				commEvent.setLoggerData(true);
+				
 			}
 			
+			commEvent = new CommEvent();
+			commEvent.setLoggerData(new String(inputBuffer));
+			commEvent.setLoggerData(true);
+			
 			//Send received data to listeners
-			if(commEvent != null){
+			//if(commEvent != null){
 				Iterator portIterator = portListeners.iterator();
 				while(portIterator.hasNext()){
 					CommListener theListener = (CommListener)portIterator.next();
 					theListener.getCommEvent(commEvent);
 				}
 				break;
-			}
+			//}
 			
 
 		// If break event append BREAK RECEIVED message.
