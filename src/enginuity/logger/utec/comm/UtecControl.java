@@ -113,6 +113,10 @@ public class UtecControl implements SerialPortEventListener{
 	 * @param mapNumber
 	 */
 	public void pullMapData(int mapNumber){
+		// Put utec into a known state
+		this.resetUtec();
+		
+		// Check bounds of map requested
 		if(mapNumber < 1 || mapNumber > 5){
 			return;
 		}
@@ -395,6 +399,7 @@ public class UtecControl implements SerialPortEventListener{
 			if(this.isMapFromUtec || this.isMapFromUtecPrep){
 				// See if we are finally recieving a map from the UTEC
 				if(this.isMapFromUtec){
+					System.out.println("Getting the map.");
 					
 					// If this is the start of map data flow, then create a new map data object
 					if(this.currentMap == null){
@@ -404,8 +409,13 @@ public class UtecControl implements SerialPortEventListener{
 					// Append byte data from the UTEC
 					this.currentMap.addRawData(newData);
 					
+					// Detect the end of the map recieving
+					if(inputBuffer.indexOf("[EOF]") != -1){
+						this.isMapFromUtecPrep = false;
+						this.currentMap.populateMapDataStructures();
+					}
 				}
-				//commEvent.setMapData(true);
+				
 			}else{
 				commEvent = new CommEvent();
 				commEvent.setLoggerData(new String(inputBuffer));

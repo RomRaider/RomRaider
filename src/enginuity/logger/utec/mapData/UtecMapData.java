@@ -1,8 +1,11 @@
 package enginuity.logger.utec.mapData;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class UtecMapData {
@@ -22,32 +25,68 @@ public class UtecMapData {
 	public void addRawData(int byteData) {
 		rawMapData.append(byteData);
 	}
+	
+	/**
+	 * Generic constructor
+	 *
+	 */
+	public UtecMapData() {
+	}
+	
+	/**
+	 * Constructor takes a file location to import
+	 * @param fileLocation
+	 */
+	public UtecMapData(String fileLocation) {
+		importFileData(fileLocation);
+	}
+
+
+	/**
+	 * Import UTEC maps from a file
+	 * @param fileLocation
+	 */
+	public void importFileData(String fileLocation) {
+		rawMapData = new StringBuffer();
+		BufferedReader br = null;
+		try {
+			FileReader fr = new FileReader(fileLocation);
+			br = new BufferedReader(fr);
+
+			String record = new String();
+			try {
+				while ((record = br.readLine()) != null) {
+					this.rawMapData.append(record+"\r");
+					// System.out.println(record);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		populateMapDataStructures();
+	}
 
 	public void populateMapDataStructures() {
-		System.out.println("---------------");
-		System.out.println(rawMapData);
-
+		
 		// Functionality as the method names suggest
 		cleanUpMapData();
-		
-		System.out.println("---------------");
-		System.out.println(rawMapData);
-		
 		populateMapName();
 		populateMapComment();
 		populateFuelMapData();
 		populateTimingMapData();
 		populateBoostMapData();
 		calculateChecksum();
-		
-		System.out.println("------------------");
-		System.out.println(getUpdatedMap());
 	}
 	 
 	
 	public StringBuffer getUpdatedMap(){
 		calculateChecksum();
-		
 		
 		StringBuffer totalFile = new StringBuffer("");
 		
@@ -318,7 +357,6 @@ public class UtecMapData {
 		
 	}
 	
-	
 	public void populateMapComment(){
 		int start = rawMapData.indexOf("Map Comments:-[")+15;
 		int stop = rawMapData.indexOf("]\rFuel Map");
@@ -337,7 +375,10 @@ public class UtecMapData {
 		//System.out.println("Map name:"+mapName+":");
 	}
 
-	
+	/**
+	 * Remove possible cruft from map file
+	 *
+	 */
 	public void cleanUpMapData() {
 		int start = rawMapData.indexOf("[START]");
 		int stop = rawMapData.indexOf("[EOF]") + 5;
@@ -352,35 +393,27 @@ public class UtecMapData {
 			//System.out.println(rawMapData);
 		}
 	}
-
 	
-	
-	// Test method
-	public void testInputFile(String fileLocation) {
-		rawMapData = new StringBuffer();
-		BufferedReader br = null;
+	/**
+	 * Write method overwrites file of same name.
+	 * @param entirePath
+	 */
+	public void writeMapToFile(String entirePath){
+		
+		// Overwrite file if it exists already
+		File tempFile = new File(entirePath);
+		boolean exists = (tempFile).exists();
+	    if (exists) {
+	    	tempFile.delete();
+	    } 
+		tempFile = null;
+		
+		// Write data to new file
 		try {
-			FileReader fr = new FileReader(fileLocation);
-			br = new BufferedReader(fr);
-
-			String record = new String();
-			try {
-				while ((record = br.readLine()) != null) {
-					this.rawMapData.append(record+"\r");
-					// System.out.println(record);
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		populateMapDataStructures();
-
+	        BufferedWriter out = new BufferedWriter(new FileWriter(entirePath));
+	        out.write(this.getUpdatedMap().toString());
+	        out.close();
+	    } catch (IOException e) {
+	    }
 	}
-
 }
