@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import enginuity.logger.utec.commEvent.*;
+import enginuity.logger.utec.mapData.GetMapFromUtecListener;
 import enginuity.logger.utec.mapData.UtecMapData;
 
 
@@ -34,6 +35,8 @@ public class UtecControl implements SerialPortEventListener{
 	//Data from UTEC
 	//private JTextArea messageAreaIn;
 
+	private GetMapFromUtecListener getMapFromUtecListener = null;
+	
 	// Parameters used to define serial connection
 	public SerialParameters parameters = new SerialParameters();
 
@@ -80,6 +83,7 @@ public class UtecControl implements SerialPortEventListener{
 		open = false;
 	}
 	
+	
 	/**
 	 * Get UTEC to send logger data data
 	 *
@@ -112,17 +116,23 @@ public class UtecControl implements SerialPortEventListener{
 	 * 
 	 * @param mapNumber
 	 */
-	public void pullMapData(int mapNumber){
-		// Put utec into a known state
-		this.resetUtec();
+	public void pullMapData(int mapNumber, GetMapFromUtecListener listener){
+		
 		
 		// Check bounds of map requested
 		if(mapNumber < 1 || mapNumber > 5){
 			return;
 		}
 		
+		// Null out any previously loaded map
+		this.currentMap = null;
+		
+		// Who will get this map in the end?
+		this.getMapFromUtecListener = listener;
+		
 		// Setup map transfer prep state
 		this.isMapFromUtecPrep = true;
+		this.isMapFromUtec = false;
 		
 		// Reset the UTEC
 		this.resetUtec();
@@ -380,6 +390,7 @@ public class UtecControl implements SerialPortEventListener{
 			while (newData != -1) {
 				try {
 					newData = inputFromUtecStream.read();
+					
 					if (newData == -1) {
 						break;
 					}
@@ -388,6 +399,8 @@ public class UtecControl implements SerialPortEventListener{
 					} else {
 						inputBuffer.append((char) newData);
 					}
+					
+					
 				} catch (IOException ex) {
 					System.err.println(ex);
 					return;
@@ -408,11 +421,17 @@ public class UtecControl implements SerialPortEventListener{
 					
 					// Append byte data from the UTEC
 					this.currentMap.addRawData(newData);
+					System.out.println("Added:"+(char)newData);
 					
 					// Detect the end of the map recieving
 					if(inputBuffer.indexOf("[EOF]") != -1){
 						this.isMapFromUtecPrep = false;
 						this.currentMap.populateMapDataStructures();
+						
+						// Notify listner if available
+						if(this.getMapFromUtecListener != null){
+							this.getMapFromUtecListener.mapRetrieved(this.currentMap);
+						}
 					}
 				}
 				

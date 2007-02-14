@@ -419,4 +419,38 @@ public class UtecMapData {
 	    } catch (IOException e) {
 	    }
 	}
+	
+	// Misc getters and setters.
+
+	public double[][] getBoostMap() {
+		return boostMap;
+	}
+
+	public void setBoostMap(double[][] boostMap) {
+		this.boostMap = boostMap;
+	}
+
+	public double[][] getFuelMap() {
+		return fuelMap;
+	}
+
+	public void setFuelMap(double[][] fuelMap) {
+		this.fuelMap = fuelMap;
+	}
+
+	public double[][] getTimingMap() {
+		return timingMap;
+	}
+
+	public void setTimingMap(double[][] timingMap) {
+		this.timingMap = timingMap;
+	}
+
+	public String getMapComment() {
+		return mapComment;
+	}
+
+	public String getMapName() {
+		return mapName;
+	}
 }

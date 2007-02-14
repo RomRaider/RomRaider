@@ -16,13 +16,15 @@ import java.awt.*;
 import enginuity.Settings;
 import enginuity.logger.utec.gui.realtimeData.*;
 import enginuity.logger.utec.gui.bottomControl.*;
+import enginuity.logger.utec.mapData.GetMapFromUtecListener;
+import enginuity.logger.utec.mapData.UtecMapData;
 import enginuity.tts.VoiceThread;
-import enginuity.logger.utec.commInterface.CommInterface;
+import enginuity.logger.utec.commInterface.UtecInterface;
 
 /**
  * @author botman
  */
-public class JutecGUI extends JFrame implements ActionListener{
+public class JutecGUI extends JFrame implements ActionListener, GetMapFromUtecListener{
 	//Top level desktop pane
 	public JLayeredPane desktop = null;
 	
@@ -43,10 +45,19 @@ public class JutecGUI extends JFrame implements ActionListener{
 	
 	
 	//FileMenu Items
-	public JMenuItem saveItem = new JMenuItem("Save");
+	public JMenuItem saveItem = new JMenuItem("Save Log");
+	public JMenuItem saveMapItem = new JMenuItem("Save Map To File");
 	public JMenuItem exitItem = new JMenuItem("Exit");
 	
+	public JMenuItem loadMapOne = new JMenuItem("Load Map #1");
+	public JMenuItem loadMapTwo = new JMenuItem("Load Map #2");
+	public JMenuItem loadMapThree = new JMenuItem("Load Map #3");
+	public JMenuItem loadMapFour = new JMenuItem("Load Map #4");
+	public JMenuItem loadMapFive = new JMenuItem("Load Map #5");
+	
 	private static JutecGUI instance = null;
+	
+	private UtecMapData currentMap = null;
 	
 	public static JutecGUI getInstance(){
 		return instance;
@@ -75,7 +86,7 @@ public class JutecGUI extends JFrame implements ActionListener{
 				System.out.println("JUTEC Exiting");
 				
 				//Use interface to close the connecetion to the Utec
-				CommInterface.closeConnection();
+				UtecInterface.closeConnection();
 				
 			}
 		});
@@ -92,11 +103,26 @@ public class JutecGUI extends JFrame implements ActionListener{
 		// Define the menu system
 		JMenu fileMenu = new JMenu("File");
 		saveItem.addActionListener(this);
+		saveMapItem.addActionListener(this);
 		exitItem.addActionListener(this);
 		fileMenu.add(saveItem);
+		fileMenu.add(saveMapItem);
 		fileMenu.add(exitItem);
 		menuBar.add(fileMenu);
 		
+		
+		JMenu getMapsMenu = new JMenu("Load Map");
+		loadMapOne.addActionListener(this);
+		loadMapTwo.addActionListener(this);
+		loadMapThree.addActionListener(this);
+		loadMapFour.addActionListener(this);
+		loadMapFive.addActionListener(this);
+		getMapsMenu.add(loadMapOne);
+		getMapsMenu.add(loadMapTwo);
+		getMapsMenu.add(loadMapThree);
+		getMapsMenu.add(loadMapFour);
+		getMapsMenu.add(loadMapFive);
+		menuBar.add(getMapsMenu);
 		
 		//----------------------------------
 		//Add a menu item for comm port selection
@@ -104,7 +130,7 @@ public class JutecGUI extends JFrame implements ActionListener{
 		JMenu portsMenu =new JMenu("Ports");
 		
 		//Gather list of ports from interface
-		Vector portsVector =CommInterface.getPortsVector();
+		Vector portsVector =UtecInterface.getPortsVector();
 		
 		Iterator portsIterator = portsVector.iterator();
 		int counter = 0;
@@ -118,7 +144,7 @@ public class JutecGUI extends JFrame implements ActionListener{
 			portsMenu.add(item);
 			if(counter == 1){
 				defaultPort = theName;
-				CommInterface.setPortChoice(defaultPort);
+				UtecInterface.setPortChoice(defaultPort);
 			}
 		}
 		menuBar.add(portsMenu);
@@ -176,7 +202,7 @@ public class JutecGUI extends JFrame implements ActionListener{
 		}
 		
 		//Start Capture
-		else if (cmd.equals("Save")) {
+		else if (cmd.equals("Save Log")) {
 			String saveFileName = null;
 			System.out.println("Save action occuring");
 			fileChosen = fileChooser.showSaveDialog(this);
@@ -196,13 +222,61 @@ public class JutecGUI extends JFrame implements ActionListener{
 				    e2.printStackTrace();
 				}
 		 	 }	
-			 
+			
+		}
+		
+		else if (cmd.equals("Save Map To File")) {
+			System.out.println("Saving map to file.");
+			if(this.currentMap != null){
+
+				String saveFileName = null;
+				System.out.println("Save map now.");
+				fileChosen = fileChooser.showSaveDialog(this);
+				 if(fileChosen == JFileChooser.APPROVE_OPTION)
+				 {
+				 	saveFileName = fileChooser.getSelectedFile().getPath();
+				 	this.currentMap.writeMapToFile(saveFileName);
+				 	
+			 	 }
+			}else{
+				System.out.println("Map is null.");
+			}
+		}
+		
+		else if (cmd.equals("Load Map #1")) {
+			System.out.println("Starting to get map 1");
+			UtecInterface.openConnection();
+			UtecInterface.getMap(1, this);
+		}
+		
+		else if (cmd.equals("Load Map #2")) {
+			System.out.println("Starting to get map 2");
+			UtecInterface.openConnection();
+			UtecInterface.getMap(2, this);
+		}
+		
+		else if (cmd.equals("Load Map #3")) {
+			System.out.println("Starting to get map 3");
+			UtecInterface.openConnection();
+			UtecInterface.getMap(3, this);
+		}
+		
+		else if (cmd.equals("Load Map #4")) {
+			System.out.println("Starting to get map 4");
+			UtecInterface.openConnection();
+			UtecInterface.getMap(4, this);
+		}
+		
+		else if (cmd.equals("Load Map #5")) {
+			System.out.println("Starting to get map 5");
+			UtecInterface.openConnection();
+			UtecInterface.getMap(5, this);
 		}
 		
 		//Stop Capture
 		else if (cmd.equals("Exit")) {
 			//Use interface to finally close the connection to the Utec
-			CommInterface.closeConnection();
+			UtecInterface.closeConnection();
 			System.out.println("Exit action occuring");
 			
 			//Close out the application
@@ -218,7 +292,7 @@ public class JutecGUI extends JFrame implements ActionListener{
 			String portChoice = theItem.getName();
 			System.out.println("Port chosen: "+portChoice);
 			currentPort = portChoice;
-			CommInterface.setPortChoice(currentPort);
+			UtecInterface.setPortChoice(currentPort);
 			bottomPanel.setEnabled(true);
 			//Notify the infoPane of the current port choice
 			//infoPane.setPort(currentPort);
@@ -243,5 +317,10 @@ public class JutecGUI extends JFrame implements ActionListener{
 		JutecGUI application = new JutecGUI(0);
 		application.setVisible(true);
 
+	}
+
+	public void mapRetrieved(UtecMapData theMap) {
+		System.out.println("Got a map from the utec:"+theMap.getMapName());
+		this.currentMap = theMap;	
 	}
 }

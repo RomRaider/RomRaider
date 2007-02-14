@@ -8,7 +8,7 @@ package enginuity.logger.utec.gui.bottomControl;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import enginuity.logger.utec.commInterface.CommInterface;
+import enginuity.logger.utec.commInterface.UtecInterface;
 import enginuity.logger.utec.gui.JutecGUI;
 import enginuity.logger.utec.commEvent.*;
 
@@ -99,7 +99,7 @@ public class BottomUtecControl extends JPanel implements ActionListener, CommLis
 		this.add(utecOutTextScroll);
 		
 		//Make this panel listen for comm events
-		CommInterface.addListener(this);
+		UtecInterface.addListener(this);
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class BottomUtecControl extends JPanel implements ActionListener, CommLis
 
 			//Open Port
 			if (cmd.equals("OPEN PORT")) {
-				System.out.println("Opening connection to defined port: "+CommInterface.getPortChoiceUsed());
+				System.out.println("Opening connection to defined port: "+UtecInterface.getPortChoiceUsed());
 	
 				//Don't allow use after first press, and until after close port has been pressed
 				openButton.setEnabled(false);
@@ -120,7 +120,7 @@ public class BottomUtecControl extends JPanel implements ActionListener, CommLis
 				stopButton.setEnabled(false);
 			
 				//Use interface to open connection
-				CommInterface.openConnection();
+				UtecInterface.openConnection();
 
 				//VoiceThread vc = new VoiceThread("open port");
 				//vc.start();
@@ -131,7 +131,7 @@ public class BottomUtecControl extends JPanel implements ActionListener, CommLis
 				System.out.println("Closing connection to defined port");
 		
 				//Use interface to close the connection to the Utec
-				CommInterface.closeConnection();
+				UtecInterface.closeConnection();
 			
 				//Set button states
 				openButton.setEnabled(true);
@@ -148,7 +148,7 @@ public class BottomUtecControl extends JPanel implements ActionListener, CommLis
 				System.out.println("Starting data capture from the UTEC");
 			
 				//Use interface to pull logging data from the Utec
-				CommInterface.startDataLogFromUtec();
+				UtecInterface.startDataLogFromUtec();
 			
 				//Set button states
 				startButton.setEnabled(false);
@@ -168,7 +168,7 @@ public class BottomUtecControl extends JPanel implements ActionListener, CommLis
 				System.out.println("Stopping data capture from the UTEC");
 			
 				//Use interface to reset the state of the Utec
-				CommInterface.resetUtec();
+				UtecInterface.resetUtec();
 			
 				//Set button states
 				startButton.setEnabled(true);

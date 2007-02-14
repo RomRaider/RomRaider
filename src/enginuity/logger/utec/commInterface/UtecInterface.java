@@ -12,13 +12,13 @@ import java.awt.event.*;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.Enumeration;
 import java.util.*;
 //import javax.comm.CommPortIdentifier
 import gnu.io.*;
 import javax.swing.*;
 
 import enginuity.logger.utec.gui.realtimeData.*;
+import enginuity.logger.utec.mapData.GetMapFromUtecListener;
 import enginuity.logger.utec.comm.*;
 /**
  * @author emorgan
@@ -26,7 +26,7 @@ import enginuity.logger.utec.comm.*;
  * To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-public class CommInterface{
+public class UtecInterface{
 	//Store string vector of known system comm ports
 	private static Vector portChoices =  listPortChoices();
 	
@@ -34,17 +34,21 @@ public class CommInterface{
 	private static SerialParameters parameters = new SerialParameters();
 	
 	//Actual connection entity
-	private static UtecControl connection = new UtecControl(parameters);
+	private static UtecControl utecControl = new UtecControl(parameters);
 
 
-	public static boolean ISOPEN = connection.isOpen();
+	public static boolean ISOPEN = utecControl.isOpen();
 	
 	public static Vector getPortsVector(){
 		return portChoices;
 	}
 	
 	public static String getPortChoiceUsed(){
-		return connection.parameters.getPortName();
+		return utecControl.parameters.getPortName();
+	}
+	
+	public static void getMap(int mapNumber, GetMapFromUtecListener listener){
+		utecControl.pullMapData(mapNumber, listener);
 	}
 	
 	/**
@@ -53,8 +57,13 @@ public class CommInterface{
 	 * @param portName
 	 */
 	 public static void openConnection(){
+		 if(utecControl.isOpen()){
+			 System.out.println("Port is already open.");
+			 return;
+		 }
+		 
 		//No port yet chosen
-		if(connection.parameters.getPortName().equalsIgnoreCase("")){
+		if(utecControl.parameters.getPortName().equalsIgnoreCase("")){
 					System.err.println("No Port Yet Chosen, nothing to open");
 					return;
 		}
@@ -69,7 +78,7 @@ public class CommInterface{
 	 	
 	 	//Attempt to make connection
 	 	try{
-	 		connection.openConnection();
+	 		utecControl.openConnection();
 	 	}catch(SerialConnectionException e){
 	 		System.err.println("Error opening serial port connection");
 	 		e.printStackTrace();
@@ -81,11 +90,11 @@ public class CommInterface{
 	 }
 	
 	public static void closeConnection(){
-		connection.closeConnection();	
+		utecControl.closeConnection();	
 	}
 	
 	public static void setPortChoice(String port){
-		connection.parameters.setPortName(port);
+		utecControl.parameters.setPortName(port);
 	}
 	
 	/**
@@ -93,7 +102,7 @@ public class CommInterface{
 	 *
 	 */
 	public static void resetUtec(){
-		connection.resetUtec();	
+		utecControl.resetUtec();	
 	}
 	
 	/**
@@ -101,7 +110,7 @@ public class CommInterface{
 	 *
 	 */
 	public static void startDataLogFromUtec(){
-		connection.startLoggerDataFlow();
+		utecControl.startLoggerDataFlow();
 	}
 	
 	
@@ -110,12 +119,12 @@ public class CommInterface{
 	 * @param o
 	 */
 	public static void addListener(Object o){
-		if(connection == null){
-			System.err.println("No Serial Connection defined yet.. DIZZoGG!");
+		if(utecControl == null){
+			System.err.println("No Serial Connection defined yet.");
 			return;
 		}
 		
-		connection.addListener(o);
+		utecControl.addListener(o);
 	}
 	
 	/**

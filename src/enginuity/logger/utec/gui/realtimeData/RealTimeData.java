@@ -7,7 +7,7 @@ import javax.swing.*;
 import enginuity.logger.utec.gui.bottomControl.*;
 import enginuity.tts.VoiceThread;
 import enginuity.logger.utec.commEvent.*;
-import enginuity.logger.utec.commInterface.CommInterface;
+import enginuity.logger.utec.commInterface.UtecInterface;
 
 /**
  * @author botman
@@ -37,7 +37,7 @@ public class RealTimeData extends JComponent implements CommListener{
 	
 	//Constructor
 	public RealTimeData() {
-		CommInterface.addListener(this);
+		UtecInterface.addListener(this);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class RealTimeData extends JComponent implements CommListener{
 	 * @param portChoice
 	 */
 	public void setPort(String portChoice) {
-		CommInterface.setPortChoice(portChoice);
+		UtecInterface.setPortChoice(portChoice);
 	}
 	
 	public void paint(Graphics g) {
