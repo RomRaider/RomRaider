@@ -84,7 +84,10 @@ public class UtecMapData {
 		calculateChecksum();
 	}
 	 
-	
+	/**
+	 * Return map based on current data.
+	 * @return
+	 */
 	public StringBuffer getUpdatedMap(){
 		calculateChecksum();
 		
