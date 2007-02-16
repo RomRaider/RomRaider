@@ -415,6 +415,8 @@ public class UtecSerialConnection implements SerialPortEventListener{
 		// Read data until -1 is returned. If \r is received substitute
 		// \n for correct newline handling.
 		case SerialPortEvent.DATA_AVAILABLE:
+			
+			// Output all utec noise to listeners
 			while (newData != -1) {
 				try {
 					newData = inputFromUtecStream.read();
