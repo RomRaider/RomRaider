@@ -82,7 +82,7 @@ public class JutecGUI extends JFrame implements ActionListener,
 		// Main frame
 		// Grid layout with a top and bottom, ie two rows
 		super("UTEC Loggers");
-		this.setSize(800, 600);
+		this.setSize(800, 620);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(setDefaultCloseOperation);
 
@@ -180,11 +180,11 @@ public class JutecGUI extends JFrame implements ActionListener,
 		topTabbedPane.add("Graph Data", new RealTimeData());
 
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		splitPane.setDividerLocation(435);
+		splitPane.setDividerLocation(440);
 
 		splitPane.setTopComponent(topTabbedPane);
 		splitPane.setBottomComponent(bottomPanel);
-		splitPane.setPreferredSize(new Dimension(800, 600));
+		splitPane.setPreferredSize(new Dimension(800, 700));
 
 		totalPanel.add(commandPanel, BorderLayout.NORTH);
 		totalPanel.add(splitPane, BorderLayout.CENTER);

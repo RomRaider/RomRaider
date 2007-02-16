@@ -103,8 +103,10 @@ public class UtecSerialConnection implements SerialPortEventListener{
 		//OutPut 2 ctrl-x to UTEC
 		//this.sendDataToUtec('\u0018');
 		//this.sendDataToUtec('\u0018');
-		this.sendDataToUtec(33);
-		this.sendDataToUtec(33);
+		System.out.println("Utec reset called.");
+		this.sendDataToUtec(24);
+		this.sendDataToUtec(24);
+		this.sendDataToUtec(24);
 	}
 	
 	/**
@@ -188,10 +190,12 @@ public class UtecSerialConnection implements SerialPortEventListener{
 	 * @param charValue
 	 */
 	public void sendDataToUtec(int charValue){
+		/*
 		if(this.sPort == null){
 			System.err.println("No Port Selected.");
 			return;
 		}
+		*/
 		
 		try{
 			outputToUtecStream.write(charValue);
@@ -211,11 +215,12 @@ public class UtecSerialConnection implements SerialPortEventListener{
 	 * @throws SerialConnectionException
 	 */
 	public void openConnection() throws SerialConnectionException {
-
+		/*
 		if(sPort == null){
 			System.err.println("No port selected.");
 			return;
 		}
+		*/
 		
 		// Obtain a CommPortIdentifier object for the port you want to open.
 		try {
@@ -424,18 +429,23 @@ public class UtecSerialConnection implements SerialPortEventListener{
 					if (newData == -1) {
 						break;
 					}
+					
+					
 					if ('\r' == (char) newData) {
 						inputBuffer.append('\n');
 					} else {
 						inputBuffer.append((char) newData);
 					}
 					
+					//inputBuffer.append((char) newData);
 					
 				} catch (IOException ex) {
 					System.err.println(ex);
 					return;
 				}
 			}
+			
+			System.out.println(inputBuffer);
 			
 			//Build new event with buffer data
 			CommEvent commEvent = null; 
