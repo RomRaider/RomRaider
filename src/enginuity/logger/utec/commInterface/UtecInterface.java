@@ -34,7 +34,7 @@ public class UtecInterface{
 	private static SerialParameters parameters = new SerialParameters();
 	
 	//Actual connection entity
-	private static UtecControl utecControl = new UtecControl(parameters);
+	private static UtecSerialConnection utecControl = new UtecSerialConnection(parameters);
 
 
 	public static boolean ISOPEN = utecControl.isOpen();
@@ -49,6 +49,14 @@ public class UtecInterface{
 	
 	public static void getMap(int mapNumber, GetMapFromUtecListener listener){
 		utecControl.pullMapData(mapNumber, listener);
+	}
+	
+	/**
+	 * Pass a command to the UTEC
+	 * @param charValue
+	 */
+	public static void sendDataToUtec(int charValue){
+		utecControl.sendDataToUtec(charValue);
 	}
 	
 	/**

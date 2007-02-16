@@ -24,7 +24,7 @@ import enginuity.logger.utec.mapData.UtecMapData;
 
 import gnu.io.*;
 
-public class UtecControl implements SerialPortEventListener{
+public class UtecSerialConnection implements SerialPortEventListener{
 	
 	// Parent object organizing connections to and from UTEC
 	//private JPanel parent;
@@ -76,7 +76,7 @@ public class UtecControl implements SerialPortEventListener{
 	 */
 	//public SerialConnection(JPanel parent, SerialParameters parameters,
 	//		TextArea messageAreaOut, TextArea messageAreaIn) {
-	public UtecControl(SerialParameters parameters) {
+	public UtecSerialConnection(SerialParameters parameters) {
 		//this.parent = parent;
 		//this.messageAreaOut = messageAreaOut;
 		//this.messageAreaIn = messageAreaIn;
@@ -101,8 +101,8 @@ public class UtecControl implements SerialPortEventListener{
 	 */
 	public void resetUtec(){
 		//OutPut 2 ctrl-x to UTEC
-		this.sendDataToUtec('\u0018');
-		this.sendDataToUtec('\u0018');
+		//this.sendDataToUtec('\u0018');
+		//this.sendDataToUtec('\u0018');
 		this.sendDataToUtec(33);
 		this.sendDataToUtec(33);
 	}
@@ -187,7 +187,12 @@ public class UtecControl implements SerialPortEventListener{
 	 * 
 	 * @param charValue
 	 */
-	private void sendDataToUtec(int charValue){
+	public void sendDataToUtec(int charValue){
+		if(this.sPort == null){
+			System.err.println("No Port Selected.");
+			return;
+		}
+		
 		try{
 			outputToUtecStream.write(charValue);
 		}
@@ -197,6 +202,8 @@ public class UtecControl implements SerialPortEventListener{
 		}
 	}
 	
+	
+	
 	/**
 	 * Opens a connection to the defined serial port If attempt fails,
 	 * SerialConnectionException is thrown
@@ -205,6 +212,11 @@ public class UtecControl implements SerialPortEventListener{
 	 */
 	public void openConnection() throws SerialConnectionException {
 
+		if(sPort == null){
+			System.err.println("No port selected.");
+			return;
+		}
+		
 		// Obtain a CommPortIdentifier object for the port you want to open.
 		try {
 			//System.out.println("PORT: "+parameters.getPortName());
@@ -223,7 +235,7 @@ public class UtecControl implements SerialPortEventListener{
 			sPort = (SerialPort) portId.open("SerialDemo", 30000);
 		} catch (PortInUseException e) {
 			System.err.println("Can't open serial port");
-			throw new SerialConnectionException(e.getMessage());
+			//throw new SerialConnectionException(e.getMessage());
 		}
 
 		// Set the parameters of the connection. If they won't set, close the
@@ -289,6 +301,10 @@ public class UtecControl implements SerialPortEventListener{
 	 */
 	public void setConnectionParameters() throws SerialConnectionException {
 
+		if(sPort == null){
+			System.err.println("No port selected.");
+			return;
+		}
 		// Save state of parameters before trying a set.
 		int oldBaudRate = sPort.getBaudRate();
 		int oldDatabits = sPort.getDataBits();
