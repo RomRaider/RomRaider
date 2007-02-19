@@ -23,10 +23,11 @@ package enginuity.newmaps.ecudata;
 
 import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.exception.DataPopulationException;
+import enginuity.util.ByteUtil;
 
 public class Table3DData extends TableData {
     
-    private float[][] values;
+    private DataCell[][] values;
     private AxisData xAxis;
     private AxisData yAxis;
     
@@ -35,11 +36,11 @@ public class Table3DData extends TableData {
         populate(data);
     }
     
-    public float[][] getValues() {
+    public DataCell[][] getValues() {
         return values;
     }
     
-    public float getValueAt(int x, int y) throws IndexOutOfBoundsException {
+    public DataCell getValueAt(int x, int y) throws IndexOutOfBoundsException {
         return values[x][y];
     }
     
@@ -51,7 +52,13 @@ public class Table3DData extends TableData {
     }
     
     public boolean populate(byte[] data) {
-        Table3DMetadata meta = (Table3DMetadata)metadata;
+        
+        // populate axes first
+        xAxis.populate(data);
+        yAxis.populate(data);
+        
+        // Now populate the table itself
+        int dataSize = ByteUtil.getLengthInBytes(metadata.getScale().getStorageType());
         return true;
     }
     

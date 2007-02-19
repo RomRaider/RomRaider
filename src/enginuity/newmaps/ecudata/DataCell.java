@@ -21,13 +21,40 @@
 
 package enginuity.newmaps.ecudata;
 
-public class DataCell {
+import enginuity.util.ByteUtil;
+
+public class DataCell extends Number {
     
     byte[] bytes;
-    String displayValue;
+    int endian;
+    int storageType;
     
-    public DataCell(byte[] bytes, int storageType) {
+    public DataCell(byte[] bytes, int storageType, int endian) {
         this.bytes = bytes;
+        this.storageType = storageType;
+        this.endian = endian;
+    }
+
+    public int intValue() {
+        return ByteUtil.asSignedInt(bytes, endian);
+    }
+
+    public long longValue() {
+        // TODO: this..
+        return 0;
+    }
+
+    public float floatValue() {
+        return ByteUtil.asFloat(bytes, endian);
+    }
+
+    public double doubleValue() {
+        // TODO: this..
+        return 0;
+    }
+    
+    public byte[] byteValues() {
+        return bytes;
     }
     
 }

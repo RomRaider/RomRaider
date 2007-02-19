@@ -31,7 +31,10 @@ public final class ByteUtil {
     private ByteUtil() {
     }
 
-    public static int asUnsignedInt(byte[] bytes) {
+    public static int asUnsignedInt(byte[] bytes, int endian) {
+        
+        if (endian == Scale.ENDIAN_LITTLE) bytes = reverseEndian(bytes);
+        
         int i = 0;
         for (int j = 0; j < bytes.length; j++) {
             if (j > 0) {
@@ -42,7 +45,14 @@ public final class ByteUtil {
         return i;
     }
     
-    public static int asSignedInt(byte[] bytes) {
+    public static int asUnsignedInt(byte[] bytes) {
+        return asUnsignedInt(bytes, Scale.ENDIAN_BIG);
+    }
+    
+    public static int asSignedInt(byte[] bytes, int endian) {
+        
+        if (endian == Scale.ENDIAN_LITTLE) bytes = reverseEndian(bytes);
+
         int i = 0;
         for (int j = 0; j < bytes.length; j++) {
             if (j > 0) {
@@ -52,6 +62,10 @@ public final class ByteUtil {
         }
         return i;
     }    
+    
+    public static int asSignedInt(byte[] bytes) {
+        return asSignedInt(bytes, Scale.ENDIAN_BIG);
+    }
     
     public static int getLengthInBytes(int type) {        
         
@@ -76,12 +90,14 @@ public final class ByteUtil {
         return Byte.valueOf(b).intValue();
     }
 
-    public static byte[] asUnsignedBytes(int i) {
+    public static byte[] asUnsignedBytes(int i, int endian) {
         byte[] b = new byte[4];
         for (int j = 0; j < 4; j++) {
             int offset = (b.length - 1 - j) << 3;
             b[j] = (byte) ((i >>> offset) & 0xFF);
         }
+        
+        if (endian == Scale.ENDIAN_LITTLE) b = reverseEndian(b);
         return b;
     }
     
@@ -93,17 +109,19 @@ public final class ByteUtil {
         return newData;
     }
     
-    public static byte[] asSignedBytes(int i) {
+    public static byte[] asSignedBytes(int i, int endian) {
         byte[] b = new byte[4];
         for (int j = 0; j < 4; j++) {
             int offset = (b.length - 1 - j) << 3;
             b[j] = (byte) (i >>> offset);
         }
+        if (endian == Scale.ENDIAN_LITTLE) b = reverseEndian(b);
         return b;
     }    
 
-    public static float asFloat(byte[] bytes) {
-        return Float.intBitsToFloat(asUnsignedInt(bytes));
+    public static float asFloat(byte[] bytes, int endian) {
+        byte[] currentCell = { bytes[0],bytes[1],bytes[2],bytes[3] };
+        return Float.intBitsToFloat(asUnsignedInt(currentCell, endian));
     }
     
     public static byte[] asBytes(float f) {

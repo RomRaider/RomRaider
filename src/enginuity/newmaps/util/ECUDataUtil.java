@@ -40,42 +40,6 @@ public final class ECUDataUtil {
     }
     
     
-    public static float binaryToReal(byte[] data, int dataType, int endian, String to_real) {
-        
-        float output = 0;
-        
-        // Check endian
-        if (endian == Scale.ENDIAN_LITTLE) data = ByteUtil.reverseEndian(data);
-
-        // Calculate ECU values
-        if (dataType == Scale.STORAGE_TYPE_FLOAT) output = ByteUtil.asFloat(data);
-        else if (dataType == Scale.STORAGE_TYPE_INT8) output = ByteUtil.asSignedInt(data);
-        else if (dataType == Scale.STORAGE_TYPE_INT16) output = ByteUtil.asSignedInt(data);
-        else if (dataType == Scale.STORAGE_TYPE_INT32) output = ByteUtil.asSignedInt(data);
-        else if (dataType == Scale.STORAGE_TYPE_UINT8) output = ByteUtil.asUnsignedInt(data);
-        else if (dataType == Scale.STORAGE_TYPE_UINT16) output = ByteUtil.asUnsignedInt(data);
-        else if (dataType == Scale.STORAGE_TYPE_UINT32) output = ByteUtil.asUnsignedInt(data);
-                
-        return (float)JEPUtil.evaluate(to_real, (double)output);
-    }
-    
-    
-    public static byte[] realToBinary(float realValue, int dataType, int endian, String to_byte) {
-        
-        realValue = (float)JEPUtil.evaluate(to_byte, (double)realValue);
-        
-        if (dataType == Scale.STORAGE_TYPE_FLOAT) return ByteUtil.asBytes(realValue);
-        else if (dataType == Scale.STORAGE_TYPE_INT8) return ByteUtil.asSignedBytes((int)realValue);
-        else if (dataType == Scale.STORAGE_TYPE_INT16) return ByteUtil.asSignedBytes((int)realValue);
-        else if (dataType == Scale.STORAGE_TYPE_INT32) return ByteUtil.asSignedBytes((int)realValue);
-        else if (dataType == Scale.STORAGE_TYPE_UINT8) return ByteUtil.asUnsignedBytes((int)realValue);
-        else if (dataType == Scale.STORAGE_TYPE_UINT16) return ByteUtil.asUnsignedBytes((int)realValue);
-        else if (dataType == Scale.STORAGE_TYPE_UINT32) return ByteUtil.asUnsignedBytes((int)realValue);
-        
-        return null;
-    }
-    
-    
     public static byte[] getTableAsBytes() {
         // TODO: build byte arrays from table data
         return null;
