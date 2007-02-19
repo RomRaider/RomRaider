@@ -46,11 +46,17 @@ public class Frame3D extends EnginuityFrame {
         //super(data, (TableMetadata)metadata);
     	Table3DMetadata metadata = (Table3DMetadata) table.getMetadata();
     	DataCell[][] dataCell = table.getValues();
-
         jTable = new EnginuityJTable(metadata.getSizeX(), metadata.getSizeY());
+        setLocationRelativeTo( null );
+        setVisible(true);
 
-        for (int x = 0; x < metadata.getSizeX(); x++) {
-        	for (int y = 0; y < metadata.getSizeY(); y++) {
+        for (int y = 0; y < metadata.getSizeY(); y++) {
+        	for (int x = 0; x < metadata.getSizeX(); x++) {
+        		
+        		System.out.println("x=" + x + " y=" + y + " sizex=" 
+        				+ metadata.getSizeX() + " sizey="
+        				+ metadata.getSizeY());
+        		
         		jTable.setValueAt(dataCell[x][y], x, y);
         	}
         }
@@ -87,7 +93,7 @@ public class Frame3D extends EnginuityFrame {
         AxisMetadata yAxisMetadata = new AxisMetadata("Y Axis");
         yAxisMetadata.setDescription("This is the Y Axis");
         yAxisMetadata.setAddress(25);
-        yAxisMetadata.setSize(5);
+        yAxisMetadata.setSize(4);
         tableMetadata.setYaxis(yAxisMetadata);
 
 
@@ -144,9 +150,6 @@ public class Frame3D extends EnginuityFrame {
 	        //
 	        Frame3D frame = new Frame3D(table);
 	        frame.setDefaultCloseOperation( EXIT_ON_CLOSE );
-	        frame.pack();
-	        frame.setLocationRelativeTo( null );
-	        frame.setVisible(true);
 
 		} catch (DataPopulationException e) {
 			e.printStackTrace();

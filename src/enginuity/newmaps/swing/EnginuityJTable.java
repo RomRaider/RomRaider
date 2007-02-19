@@ -37,9 +37,10 @@ public class EnginuityJTable extends JTable
 
     private int action;
 
-	public EnginuityJTable(int rows, int columns)
+	public EnginuityJTable(int columns, int rows)
 	{
 		super (rows, columns);
+
 		MouseMotionListener[] cls = (MouseMotionListener[])(this.getListeners(MouseMotionListener.class));
 		for ( int i = 0; i < cls.length; i++)
 		{
@@ -211,6 +212,10 @@ public class EnginuityJTable extends JTable
 	{
 		if ( cellSelection != null )
 			this.cellSelection.clear();
+	}
+
+	public void setValueAt(Object aValue, int column, int row) {
+		super.setValueAt(aValue, row, column);
 	}
 
 

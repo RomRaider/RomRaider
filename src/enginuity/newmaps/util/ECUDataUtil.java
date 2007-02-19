@@ -73,13 +73,13 @@ public final class ECUDataUtil {
     	int endian = metadata.getScale().getEndian();
     	int address = metadata.getAddress();
 
-    	for (int x = 0; x < metadata.getSizeX(); x++) {
-    		for (int y = 0; y < metadata.getSizeY(); y++) {
+    	for (int y = 0; y < metadata.getSizeY(); y++) {
+    		for (int x = 0; x < metadata.getSizeX(); x++) {
 
     			// Build single datacell bytes
     			byte[] cellBytes = new byte[dataSize];
     			for (int i = 0; i < dataSize; i++) {
-    				cellBytes[i] = input[address + dataSize * (x * metadata.getSizeY() + y)];
+    				cellBytes[i] = input[address + dataSize * (y * metadata.getSizeX() + x)];
     			}
 
     			// Get DataCell and add to array
