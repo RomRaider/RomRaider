@@ -1,12 +1,9 @@
 package enginuity.newmaps.gui;
 
-import java.awt.Color;
-
-
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
- 
+
 public class Test extends JFrame
 {
     public Test()
@@ -15,7 +12,7 @@ public class Test extends JFrame
         JScrollPane scrollPane = new JScrollPane( table );
         getContentPane().add( scrollPane );
     }
- 
+
     public static void main(String[] args)
     {
         Test frame = new Test();
@@ -24,5 +21,5 @@ public class Test extends JFrame
         frame.setLocationRelativeTo( null );
         frame.setVisible(true);
     }
-    
+
 }

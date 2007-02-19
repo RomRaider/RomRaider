@@ -24,7 +24,6 @@ package enginuity.newmaps.ecudata;
 import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.exception.DataPopulationException;
 import enginuity.newmaps.util.ECUDataUtil;
-import enginuity.util.ByteUtil;
 
 public class Table3DData extends TableData {
 
@@ -59,7 +58,7 @@ public class Table3DData extends TableData {
         yAxis.populate(data);
 
         // Now populate the table itself
-        DataCell[] rawData = ECUDataUtil.buildValues(data, metadata);
+        values = ECUDataUtil.buildValues(data, (Table3DMetadata)metadata);
         return true;
     }
 

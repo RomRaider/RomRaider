@@ -27,16 +27,15 @@ import enginuity.newmaps.util.ECUDataUtil;
 
 public class AxisData extends TableData {
 
+	DataCell[] values;
+
     public AxisData(byte[] data, AxisMetadata metadata) {
         this.metadata = metadata;
         populate(data);
     }
 
     public boolean populate(byte[] data) {
-        Scale scale = metadata.getScale();
-        /*float values[] = ECUDataUtil.calcRealValues(data, scale.getStorageType(),
-                                    metadata.getAddress(), metadata.getSize(),
-                                    scale.getEndian(), scale.getUnit().getTo_real());*/
+    	values = ECUDataUtil.buildValues(data, metadata);
         return true;
     }
 
@@ -45,8 +44,7 @@ public class AxisData extends TableData {
     }
 
     public byte[] returnValues() {
-
-        return null;
+    	return null;
     }
 
 }

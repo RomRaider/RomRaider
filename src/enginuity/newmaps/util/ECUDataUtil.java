@@ -27,7 +27,6 @@ import enginuity.newmaps.ecumetadata.Scale;
 import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.ecumetadata.TableMetadata;
 import enginuity.util.ByteUtil;
-import enginuity.util.JEPUtil;
 
 public final class ECUDataUtil {
 

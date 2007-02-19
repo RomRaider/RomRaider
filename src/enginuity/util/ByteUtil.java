@@ -23,7 +23,6 @@ package enginuity.util;
 
 import enginuity.newmaps.ecumetadata.Scale;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 @SuppressWarnings({"UnnecessaryBoxing"})
 public final class ByteUtil {
@@ -32,9 +31,9 @@ public final class ByteUtil {
     }
 
     public static int asUnsignedInt(byte[] bytes, int endian) {
-        
+
         if (endian == Scale.ENDIAN_LITTLE) bytes = reverseEndian(bytes);
-        
+
         int i = 0;
         for (int j = 0; j < bytes.length; j++) {
             if (j > 0) {
@@ -44,13 +43,13 @@ public final class ByteUtil {
         }
         return i;
     }
-    
+
     public static int asUnsignedInt(byte[] bytes) {
         return asUnsignedInt(bytes, Scale.ENDIAN_BIG);
     }
-    
+
     public static int asSignedInt(byte[] bytes, int endian) {
-        
+
         if (endian == Scale.ENDIAN_LITTLE) bytes = reverseEndian(bytes);
 
         int i = 0;
@@ -61,14 +60,14 @@ public final class ByteUtil {
             i |= bytes[j];
         }
         return i;
-    }    
-    
+    }
+
     public static int asSignedInt(byte[] bytes) {
         return asSignedInt(bytes, Scale.ENDIAN_BIG);
     }
-    
-    public static int getLengthInBytes(int type) {        
-        
+
+    public static int getLengthInBytes(int type) {
+
         if (type == Scale.STORAGE_TYPE_CHAR) return 1;
         else if (type == Scale.STORAGE_TYPE_FLOAT) return 4;
         else if (type == Scale.STORAGE_TYPE_HEX) return 1;
@@ -77,10 +76,10 @@ public final class ByteUtil {
         else if (type == Scale.STORAGE_TYPE_UINT16) return 2;
         else if (type == Scale.STORAGE_TYPE_UINT8) return 1;
         else if (type == Scale.STORAGE_TYPE_UINT32) return 4;
-        else if (type == Scale.STORAGE_TYPE_INT32) return 4;       
-        
-        else return 0; 
-    }    
+        else if (type == Scale.STORAGE_TYPE_INT32) return 4;
+
+        else return 0;
+    }
 
     public static byte asByte(int i) {
         return Integer.valueOf(i).byteValue();
@@ -96,11 +95,11 @@ public final class ByteUtil {
             int offset = (b.length - 1 - j) << 3;
             b[j] = (byte) ((i >>> offset) & 0xFF);
         }
-        
+
         if (endian == Scale.ENDIAN_LITTLE) b = reverseEndian(b);
         return b;
     }
-    
+
     public static byte[] reverseEndian(byte[] data) {
         byte[] newData = new byte[data.length];
         for (int i = 0; i < data.length; i++) {
@@ -108,7 +107,7 @@ public final class ByteUtil {
         }
         return newData;
     }
-    
+
     public static byte[] asSignedBytes(int i, int endian) {
         byte[] b = new byte[4];
         for (int j = 0; j < 4; j++) {
@@ -117,16 +116,16 @@ public final class ByteUtil {
         }
         if (endian == Scale.ENDIAN_LITTLE) b = reverseEndian(b);
         return b;
-    }    
+    }
 
     public static float asFloat(byte[] bytes, int endian) {
         byte[] currentCell = { bytes[0],bytes[1],bytes[2],bytes[3] };
         return Float.intBitsToFloat(asUnsignedInt(currentCell, endian));
     }
-    
+
     public static byte[] asBytes(float f) {
         byte[] output = new byte[4];
-        ByteBuffer bb = ByteBuffer.wrap(output, 0, 4);        
+        ByteBuffer bb = ByteBuffer.wrap(output, 0, 4);
         bb.putFloat(f);
         return bb.array();
     }
