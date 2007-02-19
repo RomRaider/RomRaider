@@ -21,8 +21,6 @@
 
 package enginuity.newmaps.ecudata;
 
-import enginuity.newmaps.ecumetadata.TableMetadata;
-
 public class SwitchGroupData extends TableData {
     
     public SwitchGroupData() {

@@ -62,7 +62,7 @@ public class SwitchMetadata extends TableMetadata implements Serializable {
         this.stateOff = stringToByteArray(values, " ");
     }
     
-    public void setDefaultValue(int defaultVal) {
+    public void setDefaultValue(int defaultValue) {
         this.defaultValue = defaultValue;
     }
     

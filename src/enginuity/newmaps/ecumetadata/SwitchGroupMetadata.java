@@ -41,7 +41,7 @@ public class SwitchGroupMetadata extends TableMetadata {
         super(name);
     }
     
-    public void setDefaultValue(int defaultVal) {
+    public void setDefaultValue(int defaultValue) {
         this.defaultValue = defaultValue;
     }
     

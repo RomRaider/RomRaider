@@ -21,8 +21,6 @@
 
 package enginuity.newmaps.ecudata;
 
-import enginuity.newmaps.ecumetadata.TableMetadata;
-
 public class Table2DData extends TableData {
     
     public Table2DData() {
