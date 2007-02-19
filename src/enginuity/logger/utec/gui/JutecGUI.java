@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import enginuity.Settings;
+import enginuity.logger.utec.gui.mapTabs.FuelJPanel;
 import enginuity.logger.utec.gui.realtimeData.*;
 import enginuity.logger.utec.gui.bottomControl.*;
 import enginuity.logger.utec.mapData.GetMapFromUtecListener;
@@ -46,6 +47,12 @@ public class JutecGUI extends JFrame implements ActionListener,
 
 	private File selectedFile = null;
 
+	// Tabbed Panes
+	public JTabbedPane topTabbedPane = new JTabbedPane();
+	public JTabbedPane timingTabbedPane = new JTabbedPane();
+	public JTabbedPane fuelTabbedPane = new JTabbedPane();
+	public JTabbedPane boostTabbedPane = new JTabbedPane();
+	
 	// FileMenu Items
 	public JMenuItem saveItem = new JMenuItem("Save Log");
 
@@ -68,7 +75,6 @@ public class JutecGUI extends JFrame implements ActionListener,
 	private UtecMapData currentMap = null;
 
 	// Text input field for sending commands directly to the UTEC
-	//private JTextArea textInput = new JTextArea();
 	private JTextField textInput = new JTextField();
 
 	private JLabel utecInputLabel = new JLabel("   Send Commands to UTEC: ");
@@ -82,7 +88,7 @@ public class JutecGUI extends JFrame implements ActionListener,
 		// Main frame
 		// Grid layout with a top and bottom, ie two rows
 		super("UTEC Loggers");
-		this.setSize(800, 620);
+		this.setSize(800, 640);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(setDefaultCloseOperation);
 
@@ -90,8 +96,7 @@ public class JutecGUI extends JFrame implements ActionListener,
 		// Voice the welcome message
 		// *************************
 
-		VoiceThread vc = new VoiceThread(
-				"Welcome to you teck logger! Use at your own risk.");
+		VoiceThread vc = new VoiceThread("Welcome to you teck logger! Use at your own risk.");
 		vc.start();
 
 		// Actions to take when window is closing
@@ -176,8 +181,11 @@ public class JutecGUI extends JFrame implements ActionListener,
 
 		bottomPanel = new BottomUtecControl();
 
-		JTabbedPane topTabbedPane = new JTabbedPane();
-		topTabbedPane.add("Graph Data", new RealTimeData());
+		
+		this.topTabbedPane.add("Graph Data", new RealTimeData());
+		this.topTabbedPane.add("Timing Data", new JPanel());
+		this.topTabbedPane.add("Fuel Data", new FuelJPanel());
+		this.topTabbedPane.add("Boost Data", new JPanel());
 
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setDividerLocation(440);

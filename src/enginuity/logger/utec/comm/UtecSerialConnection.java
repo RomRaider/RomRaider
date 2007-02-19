@@ -9,41 +9,39 @@ import enginuity.logger.utec.commEvent.*;
 import enginuity.logger.utec.mapData.GetMapFromUtecListener;
 import enginuity.logger.utec.mapData.UtecMapData;
 
-
 /**
  * Class negotiates data to and from UTEC via the serial port
  * 
- * Please note that at this time ownership issues are not handled.
- * See commented out code pertaining to the parent entity
+ * Please note that at this time ownership issues are not handled. See commented
+ * out code pertaining to the parent entity
  * 
  * @author botman
  * 
  */
-//public class SerialConnection implements SerialPortEventListener,
-//		CommPortOwnershipListener {
-
+// public class SerialConnection implements SerialPortEventListener,
+// CommPortOwnershipListener {
 import gnu.io.*;
 
-public class UtecSerialConnection implements SerialPortEventListener{
-	
+public class UtecSerialConnection implements SerialPortEventListener {
+
 	// Parent object organizing connections to and from UTEC
-	//private JPanel parent;
+	// private JPanel parent;
 
-	//Data to UTEC
-	//private JTextArea messageAreaOut;
+	// Data to UTEC
+	// private JTextArea messageAreaOut;
 
-	//Data from UTEC
-	//private JTextArea messageAreaIn;
+	// Data from UTEC
+	// private JTextArea messageAreaIn;
 
 	private GetMapFromUtecListener getMapFromUtecListener = null;
-	
+
 	// Parameters used to define serial connection
 	public SerialParameters parameters = new SerialParameters();
 
-	//Data from UTEC
+	// Data from UTEC
 	private OutputStream outputToUtecStream;
 
-	//Data to UTEC
+	// Data to UTEC
 	private InputStream inputFromUtecStream;
 
 	// Handler for keyboard input
@@ -58,14 +56,16 @@ public class UtecSerialConnection implements SerialPortEventListener{
 	// Defin state of defined comport, open or closed.
 	private boolean open;
 
-	//Listeners
+	// Listeners
 	private Vector portListeners = new Vector();
-	
-	//Define whether or not we are recieving a map from the UTEC
+
+	// Define whether or not we are recieving a map from the UTEC
 	private boolean isMapFromUtecPrep = false;
+
 	private boolean isMapFromUtec = false;
+
 	private UtecMapData currentMap = null;
-	
+
 	/**
 	 * Public constructor
 	 * 
@@ -74,112 +74,112 @@ public class UtecSerialConnection implements SerialPortEventListener{
 	 * @param messageAreaOut
 	 * @param messageAreaIn
 	 */
-	//public SerialConnection(JPanel parent, SerialParameters parameters,
-	//		TextArea messageAreaOut, TextArea messageAreaIn) {
+	// public SerialConnection(JPanel parent, SerialParameters parameters,
+	// TextArea messageAreaOut, TextArea messageAreaIn) {
 	public UtecSerialConnection(SerialParameters parameters) {
-		//this.parent = parent;
-		//this.messageAreaOut = messageAreaOut;
-		//this.messageAreaIn = messageAreaIn;
+		// this.parent = parent;
+		// this.messageAreaOut = messageAreaOut;
+		// this.messageAreaIn = messageAreaIn;
 		open = false;
 	}
-	
-	
+
 	/**
 	 * Get UTEC to send logger data data
-	 *
+	 * 
 	 */
-	public void startLoggerDataFlow(){
+	public void startLoggerDataFlow() {
 		System.out.println("Starting data flow from UTEC");
-		
-		//OutPut a '!' to start basic data flow from UTEC
+
+		// OutPut a '!' to start basic data flow from UTEC
 		this.sendDataToUtec(33);
 	}
-	
+
 	/**
 	 * Reset UTEC to main screen
-	 *
+	 * 
 	 */
-	public void resetUtec(){
-		//OutPut 2 ctrl-x to UTEC
-		//this.sendDataToUtec('\u0018');
-		//this.sendDataToUtec('\u0018');
+	public void resetUtec() {
+		// OutPut 2 ctrl-x to UTEC
+		// this.sendDataToUtec('\u0018');
+		// this.sendDataToUtec('\u0018');
 		System.out.println("Utec reset called.");
 		this.sendDataToUtec(24);
 		this.sendDataToUtec(24);
 		this.sendDataToUtec(24);
 	}
-	
+
 	/**
 	 * Get map data from map number passed in
 	 * 
 	 * @param mapNumber
 	 */
-	public void pullMapData(int mapNumber, GetMapFromUtecListener listener){
-		System.out.println("UtecControl, getting map:"+mapNumber);
-		
+	public void pullMapData(int mapNumber, GetMapFromUtecListener listener) {
+		System.out.println("UtecControl, getting map:" + mapNumber);
+
 		// Check bounds of map requested
-		if(mapNumber < 1 || mapNumber > 5){
+		if (mapNumber < 1 || mapNumber > 5) {
+			System.err.println("Map selection out of range.");
 			return;
 		}
-		
+
 		// Null out any previously loaded map
 		this.currentMap = null;
-		
+
 		// Who will get this map in the end?
 		this.getMapFromUtecListener = listener;
-		
+
 		// Setup map transfer prep state
 		this.isMapFromUtecPrep = true;
 		this.isMapFromUtec = false;
-		
+
 		// Reset the UTEC
 		this.resetUtec();
-		
+
 		// Send an 'e' to enter map menu
-		//this.sendDataToUtec('\u0065');
-		this.sendDataToUtec('e');
+		// this.sendDataToUtec('\u0065');
+		this.sendDataToUtec(101);
 		System.out.println("Sent an e");
-		
+
 		// Point UTEC menu to the appropriate map
-		if(mapNumber == 1){
-			//this.sendDataToUtec('\u0021');
+		if (mapNumber == 1) {
+			// this.sendDataToUtec('\u0021');
 			this.sendDataToUtec(33);
 			System.out.println("Requested Map 1");
 		}
-		if(mapNumber == 2){
-			//this.sendDataToUtec('\u0040');
+		if (mapNumber == 2) {
+			// this.sendDataToUtec('\u0040');
 			this.sendDataToUtec(64);
 			System.out.println("Requested Map 2");
 		}
-		if(mapNumber == 3){
-			//this.sendDataToUtec('\u0023');
+		if (mapNumber == 3) {
+			// this.sendDataToUtec('\u0023');
 			this.sendDataToUtec(35);
 			System.out.println("Requested Map 3");
 		}
-		if(mapNumber == 4){
-			//this.sendDataToUtec('\u0024');
+		if (mapNumber == 4) {
+			// this.sendDataToUtec('\u0024');
 			this.sendDataToUtec(36);
 			System.out.println("Requested Map 4");
 		}
-		if(mapNumber == 5){
-			//this.sendDataToUtec('\u0025');
+		if (mapNumber == 5) {
+			// this.sendDataToUtec('\u0025');
 			this.sendDataToUtec(37);
 			System.out.println("Requested Map 5");
 		}
-		
+
 		// Write first ctrl-s to init save state
-		//this.sendDataToUtec('\u0013');
+		// this.sendDataToUtec('\u0013');
 		this.sendDataToUtec(19);
 		System.out.println("Sent crtl-s");
-		
+
 		// Make this class receptive to map transfer
 		this.isMapFromUtec = true;
-		
+
 		// No longer map prep
 		this.isMapFromUtecPrep = false;
-		
+
 		// Write second ctrl-s to start map data flow
-		//this.sendDataToUtec('\u0013');
+		// this.sendDataToUtec('\u0013');
 		this.sendDataToUtec(19);
 		System.out.println("Sent crtl-s");
 	}
@@ -189,25 +189,20 @@ public class UtecSerialConnection implements SerialPortEventListener{
 	 * 
 	 * @param charValue
 	 */
-	public void sendDataToUtec(int charValue){
+	public void sendDataToUtec(int charValue) {
 		/*
-		if(this.sPort == null){
-			System.err.println("No Port Selected.");
-			return;
-		}
-		*/
-		
-		try{
+		 * if(this.sPort == null){ System.err.println("No Port Selected.");
+		 * return; }
+		 */
+
+		try {
 			outputToUtecStream.write(charValue);
-		}
-		catch(IOException e){
-			System.err.println("Can't send char data to UTEC: "+charValue);
+		} catch (IOException e) {
+			System.err.println("Can't send char data to UTEC: " + charValue);
 			e.getMessage();
 		}
 	}
-	
-	
-	
+
 	/**
 	 * Opens a connection to the defined serial port If attempt fails,
 	 * SerialConnectionException is thrown
@@ -216,15 +211,12 @@ public class UtecSerialConnection implements SerialPortEventListener{
 	 */
 	public void openConnection() throws SerialConnectionException {
 		/*
-		if(sPort == null){
-			System.err.println("No port selected.");
-			return;
-		}
-		*/
-		
+		 * if(sPort == null){ System.err.println("No port selected."); return; }
+		 */
+
 		// Obtain a CommPortIdentifier object for the port you want to open.
 		try {
-			//System.out.println("PORT: "+parameters.getPortName());
+			// System.out.println("PORT: "+parameters.getPortName());
 			portId = CommPortIdentifier.getPortIdentifier(parameters
 					.getPortName());
 		} catch (NoSuchPortException e) {
@@ -240,7 +232,7 @@ public class UtecSerialConnection implements SerialPortEventListener{
 			sPort = (SerialPort) portId.open("SerialDemo", 30000);
 		} catch (PortInUseException e) {
 			System.err.println("Can't open serial port");
-			//throw new SerialConnectionException(e.getMessage());
+			// throw new SerialConnectionException(e.getMessage());
 		}
 
 		// Set the parameters of the connection. If they won't set, close the
@@ -267,8 +259,8 @@ public class UtecSerialConnection implements SerialPortEventListener{
 		// Create a new KeyHandler to respond to key strokes in the
 		// messageAreaOut. Add the KeyHandler as a keyListener to the
 		// messageAreaOut.
-		//keyHandler = new KeyHandler(outputToUtecStream);
-		//messageAreaOut.addKeyListener(keyHandler);
+		// keyHandler = new KeyHandler(outputToUtecStream);
+		// messageAreaOut.addKeyListener(keyHandler);
 
 		// Add this object as an event listener for the serial port.
 		try {
@@ -294,7 +286,7 @@ public class UtecSerialConnection implements SerialPortEventListener{
 		}
 
 		// Add ownership listener to allow ownership event handling.
-		//portId.addPortOwnershipListener(this);
+		// portId.addPortOwnershipListener(this);
 
 		open = true;
 	}
@@ -306,7 +298,7 @@ public class UtecSerialConnection implements SerialPortEventListener{
 	 */
 	public void setConnectionParameters() throws SerialConnectionException {
 
-		if(sPort == null){
+		if (sPort == null) {
 			System.err.println("No port selected.");
 			return;
 		}
@@ -349,12 +341,12 @@ public class UtecSerialConnection implements SerialPortEventListener{
 			return;
 		}
 		System.out.println("Closing connection to the currently targeted port");
-		
-		//Reset the UTEC first
+
+		// Reset the UTEC first
 		resetUtec();
-		
+
 		// Remove the key listener.
-		//messageAreaOut.removeKeyListener(keyHandler);
+		// messageAreaOut.removeKeyListener(keyHandler);
 
 		// Check to make sure sPort has reference to avoid a NPE.
 		if (sPort != null) {
@@ -370,7 +362,7 @@ public class UtecSerialConnection implements SerialPortEventListener{
 			sPort.close();
 
 			// Remove the ownership listener.
-			//portId.removePortOwnershipListener(this);
+			// portId.removePortOwnershipListener(this);
 		}
 
 		open = false;
@@ -392,12 +384,12 @@ public class UtecSerialConnection implements SerialPortEventListener{
 		return open;
 	}
 
-
 	/**
 	 * Method adds a class as a listener
+	 * 
 	 * @param o
 	 */
-	public void addListener(Object o){
+	public void addListener(Object o) {
 		portListeners.add(o);
 	}
 
@@ -420,87 +412,89 @@ public class UtecSerialConnection implements SerialPortEventListener{
 		// Read data until -1 is returned. If \r is received substitute
 		// \n for correct newline handling.
 		case SerialPortEvent.DATA_AVAILABLE:
-			
-			// Output all utec noise to listeners
+
+			// Append new output to buffer
 			while (newData != -1) {
 				try {
 					newData = inputFromUtecStream.read();
-					
+
 					if (newData == -1) {
 						break;
 					}
-					
-					
+
 					if ('\r' == (char) newData) {
 						inputBuffer.append('\n');
 					} else {
 						inputBuffer.append((char) newData);
 					}
-					
-					//inputBuffer.append((char) newData);
-					
+
+					// inputBuffer.append((char) newData);
+
 				} catch (IOException ex) {
 					System.err.println(ex);
 					return;
 				}
 			}
-			
-			System.out.println(inputBuffer);
-			
-			//Build new event with buffer data
-			CommEvent commEvent = null; 
-			if(this.isMapFromUtec || this.isMapFromUtecPrep){
-				// See if we are finally recieving a map from the UTEC
-				if(this.isMapFromUtec){
-					System.out.println("Getting the map.");
-					
-					// If this is the start of map data flow, then create a new map data object
-					if(this.currentMap == null){
-						currentMap = new UtecMapData();
-					}
-					
-					// Append byte data from the UTEC
-					this.currentMap.addRawData(newData);
-					System.out.println("Added:"+(char)newData);
-					
-					// Detect the end of the map recieving
-					if(inputBuffer.indexOf("[EOF]") != -1){
-						this.isMapFromUtecPrep = false;
-						this.currentMap.populateMapDataStructures();
-						
-						// Notify listner if available
-						if(this.getMapFromUtecListener != null){
-							this.getMapFromUtecListener.mapRetrieved(this.currentMap);
-						}
-					}
-				}
-				
-			}else{
-				
+
+
+			if (this.isMapFromUtecPrep == true) {
+				System.out.println("Map Prep State.");
 			}
-			
-			commEvent = new CommEvent();
-			commEvent.setLoggerData(new String(inputBuffer));
-			commEvent.setLoggerData(true);
-			
-			//Send received data to listeners
-			//if(commEvent != null){
+
+			else if (this.isMapFromUtec == true) {
+				System.out.println("Map From Utec Data.");
+
+				// If this is the start of map data flow, then create a new map
+				// data object
+				if (this.currentMap == null) {
+					currentMap = new UtecMapData();
+				}
+
+				// Append byte data from the UTEC
+				this.currentMap.addRawData(newData);
+				System.out.println("Added:" + (char) newData);
+
+				// Detect the end of the map recieving
+				if (inputBuffer.indexOf("[EOF]") != -1) {
+					System.out.println("End of file detected.");
+
+					this.isMapFromUtec = false;
+					this.currentMap.populateMapDataStructures();
+
+					// Notify listner if available
+					if (this.getMapFromUtecListener != null) {
+						this.getMapFromUtecListener.mapRetrieved(this.currentMap);
+					}
+					
+					// Empty out map storage
+					this.currentMap = null;
+				}
+			}
+
+			// Logger data
+			else {
+				CommEvent commEvent = new CommEvent();
+				commEvent.setLoggerData(new String(inputBuffer));
+				commEvent.setLoggerData(true);
+
 				Iterator portIterator = portListeners.iterator();
-				while(portIterator.hasNext()){
-					CommListener theListener = (CommListener)portIterator.next();
+				while (portIterator.hasNext()) {
+					CommListener theListener = (CommListener) portIterator
+							.next();
 					theListener.getCommEvent(commEvent);
 				}
 				break;
-			//}
+			}
 			
+			// Ouput to console
+			System.out.println(inputBuffer);
 
-		// If break event append BREAK RECEIVED message.
-		/*
+			// If break event append BREAK RECEIVED message.
 		case SerialPortEvent.BI:
-			messageAreaIn.append("\n--- BREAK RECEIVED ---\n");
-		*/
+			System.out.println("BREAK RECEIVED.");
+
 		}
-		
+
 	}
 
 	/**
@@ -509,13 +503,11 @@ public class UtecSerialConnection implements SerialPortEventListener{
 	 * the port. No action is taken on other types of ownership events.
 	 */
 	/*
-	public void ownershipChange(int type) {
-		if (type == CommPortOwnershipListener.PORT_OWNERSHIP_REQUESTED) {
-			PortRequestedDialog prd = new PortRequestedDialog(parent);
-		}
-	}
-	*/
-	
+	 * public void ownershipChange(int type) { if (type ==
+	 * CommPortOwnershipListener.PORT_OWNERSHIP_REQUESTED) { PortRequestedDialog
+	 * prd = new PortRequestedDialog(parent); } }
+	 */
+
 	/**
 	 * A class to handle <code>KeyEvent</code> s generated by the
 	 * messageAreaOut. When a <code>KeyEvent</code> occurs the
@@ -523,7 +515,7 @@ public class UtecSerialConnection implements SerialPortEventListener{
 	 * an <code>int</code> and writen to the <code>OutputStream</code> for
 	 * the port.
 	 */
-	
+
 	class KeyHandler extends KeyAdapter {
 		OutputStream toUtec;
 
@@ -553,5 +545,5 @@ public class UtecSerialConnection implements SerialPortEventListener{
 			}
 		}
 	}
-	
+
 }
