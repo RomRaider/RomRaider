@@ -33,6 +33,10 @@ public class Table3DData extends TableData {
 
     public Table3DData(byte[] data, Table3DMetadata metadata) throws DataPopulationException {
         this.metadata = metadata;
+
+        xAxis = new AxisData(data, metadata.getXaxis());
+        yAxis = new AxisData(data, metadata.getYaxis());
+
         populate(data);
     }
 

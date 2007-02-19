@@ -21,11 +21,14 @@
 
 package enginuity.newmaps.swing;
 
+import enginuity.newmaps.ecudata.Table3DData;
 import enginuity.newmaps.ecumetadata.AxisMetadata;
 import enginuity.newmaps.ecumetadata.Scale;
 import enginuity.newmaps.ecumetadata.TableMetadata;
 import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.ecumetadata.Unit;
+import enginuity.newmaps.exception.DataPopulationException;
+
 import javax.swing.JScrollPane;
 
 
@@ -78,19 +81,20 @@ public class Frame3D extends EnginuityFrame {
         //
         // Create table and axis
         //
-        Table3DMetadata table = new Table3DMetadata("Test");
-        table.setDescription("This is the table");
-        table.setAddress(75);
-        AxisMetadata xAxis = new AxisMetadata("X Axis");
-        xAxis.setDescription("This is the X Axis");
-        xAxis.setAddress(0);
-        xAxis.setSize(5);
-        table.setXaxis(xAxis);
-        AxisMetadata yAxis = new AxisMetadata("Y Axis");
-        yAxis.setDescription("This is the Y Axis");
-        yAxis.setAddress(25);
-        yAxis.setSize(5);
-        table.setYaxis(yAxis);
+        Table3DMetadata tableMetadata = new Table3DMetadata("Test");
+        tableMetadata.setDescription("This is the table");
+        tableMetadata.setAddress(0);
+        AxisMetadata xAxisMetadata = new AxisMetadata("X Axis");
+        xAxisMetadata.setDescription("This is the X Axis");
+        xAxisMetadata.setAddress(0);
+        xAxisMetadata.setSize(5);
+        tableMetadata.setXaxis(xAxisMetadata);
+        AxisMetadata yAxisMetadata = new AxisMetadata("Y Axis");
+        yAxisMetadata.setDescription("This is the Y Axis");
+        yAxisMetadata.setAddress(25);
+        yAxisMetadata.setSize(5);
+        tableMetadata.setYaxis(yAxisMetadata);
+        
 
         //
         // Create scales
@@ -107,7 +111,7 @@ public class Frame3D extends EnginuityFrame {
         tableScale.setDescription("This is the table scale");
         tableScale.setEndian(Scale.ENDIAN_BIG);
         tableScale.setStorageType(Scale.STORAGE_TYPE_UINT16);
-        table.setScale(tableScale);
+        tableMetadata.setScale(tableScale);
 
         Unit xUnit = new Unit("X Unit");
         xUnit.setCoarseIncrement(2);
@@ -121,7 +125,7 @@ public class Frame3D extends EnginuityFrame {
         xScale.setDescription("This is the x scale");
         xScale.setEndian(Scale.ENDIAN_LITTLE);
         xScale.setStorageType(Scale.STORAGE_TYPE_INT8);
-        xAxis.setScale(xScale);
+        xAxisMetadata.setScale(xScale);
 
         Unit yUnit = new Unit("Y Unit");
         yUnit.setCoarseIncrement(3);
@@ -135,13 +139,19 @@ public class Frame3D extends EnginuityFrame {
         yScale.setDescription("This is the y scale");
         yScale.setEndian(Scale.ENDIAN_LITTLE);
         yScale.setStorageType(Scale.STORAGE_TYPE_FLOAT);
-        yAxis.setScale(yScale);
+        yAxisMetadata.setScale(yScale);
+        
+    	try {
+			Table3DData table = new Table3DData(data, tableMetadata);
+		} catch (DataPopulationException e) {
+			e.printStackTrace();
+		}
 
 
         //
         // Create frame
         //
-        Frame3D frame = new Frame3D(data, table);
+        Frame3D frame = new Frame3D(data, tableMetadata);
         frame.setDefaultCloseOperation( EXIT_ON_CLOSE );
         frame.pack();
         frame.setLocationRelativeTo( null );
