@@ -20,9 +20,9 @@
  */
 
 /**
- * 
+ *
  */
-package enginuity.newmaps.gui;
+package enginuity.newmaps.swing;
 
 import java.util.Random;
 import javax.swing.DefaultListSelectionModel;
@@ -33,11 +33,11 @@ import javax.swing.DefaultListSelectionModel;
  */
 public class TableSelectionModel extends DefaultListSelectionModel
 {
-	
-	
-	
+
+
+
 	 public static final int MULTIPLE_SELECTION = 3;
-	 
+
 	 private int selectionMode = MULTIPLE_INTERVAL_SELECTION;
 
 		/* (non-Javadoc)

@@ -1,4 +1,4 @@
-package enginuity.newmaps.gui;
+package enginuity.newmaps.swing;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;

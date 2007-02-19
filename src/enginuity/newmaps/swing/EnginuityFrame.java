@@ -19,16 +19,16 @@
  *
  */
 
-package enginuity.newmaps.gui;
+package enginuity.newmaps.swing;
 
 import enginuity.newmaps.ecumetadata.TableMetadata;
 import javax.swing.JFrame;
 
 public abstract class EnginuityFrame extends JFrame {
-        
+
         public EnginuityFrame(byte[] data, TableMetadata metadata) {
-            
-            
+
+
         }
-    
+
 }
