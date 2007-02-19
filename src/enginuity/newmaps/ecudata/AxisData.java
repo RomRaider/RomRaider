@@ -26,23 +26,27 @@ import enginuity.newmaps.ecumetadata.Scale;
 import enginuity.newmaps.util.ECUDataUtil;
 
 public class AxisData extends TableData {
-    
+
     public AxisData(byte[] data, AxisMetadata metadata) {
         this.metadata = metadata;
         populate(data);
     }
-    
+
     public boolean populate(byte[] data) {
-        Scale scale = metadata.getScale();        
+        Scale scale = metadata.getScale();
         /*float values[] = ECUDataUtil.calcRealValues(data, scale.getStorageType(),
-                                    metadata.getAddress(), metadata.getSize(), 
+                                    metadata.getAddress(), metadata.getSize(),
                                     scale.getEndian(), scale.getUnit().getTo_real());*/
         return true;
     }
-    
+
+    public int getSize() {
+    	return metadata.getSize();
+    }
+
     public byte[] returnValues() {
-        
+
         return null;
     }
-    
+
 }

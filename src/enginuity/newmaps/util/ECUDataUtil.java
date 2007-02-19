@@ -21,6 +21,7 @@
 
 package enginuity.newmaps.util;
 
+import enginuity.newmaps.ecudata.DataCell;
 import enginuity.newmaps.ecudata.TableData;
 import enginuity.newmaps.ecumetadata.Scale;
 import enginuity.newmaps.ecumetadata.Table3DMetadata;
@@ -29,21 +30,65 @@ import enginuity.util.ByteUtil;
 import enginuity.util.JEPUtil;
 
 public final class ECUDataUtil {
-    
-    public static TableData getTableData(byte[] data, TableMetadata metadata) {
-        
-        if (metadata instanceof Table3DMetadata) {           
-            
-        }
-        
-        return null;
-    }
-    
-    
+
     public static byte[] getTableAsBytes() {
         // TODO: build byte arrays from table data
         return null;
     }
-    
-    
+
+
+    //
+    // Populate 1d and 2d tables
+    //
+    public static DataCell[] buildValues(byte[] input, TableMetadata metadata) {
+
+    	DataCell[] output = new DataCell[metadata.getSize()];
+    	int dataSize = ByteUtil.getLengthInBytes(metadata.getScale().getStorageType());
+    	int storageType = metadata.getScale().getStorageType();
+    	int endian = metadata.getScale().getEndian();
+    	int address = metadata.getAddress();
+
+    	for (int j = 0; j < metadata.getSize(); j++) {
+
+    			// Build single datacell bytes
+    			byte[] cellBytes = new byte[dataSize];
+    			for (int i = 0; i < dataSize; i++) {
+    				cellBytes[i] = input[address + dataSize * j];
+    			}
+
+    			// Get DataCell and add to array
+    			output[j] = new DataCell(cellBytes, storageType, endian);
+    	}
+    	return output;
+    }
+
+
+    //
+    // Populate 3d tables
+    //
+    public static DataCell[][] buildValues(byte[] input, Table3DMetadata metadata) {
+
+    	DataCell[][] output = new DataCell[metadata.getSizeX()][metadata.getSizeY()];
+    	int dataSize = ByteUtil.getLengthInBytes(metadata.getScale().getStorageType());
+    	int storageType = metadata.getScale().getStorageType();
+    	int endian = metadata.getScale().getEndian();
+    	int address = metadata.getAddress();
+
+    	for (int x = 0; x < metadata.getSizeX(); x++) {
+    		for (int y = 0; y < metadata.getSizeY(); y++) {
+
+    			// Build single datacell bytes
+    			byte[] cellBytes = new byte[dataSize];
+    			for (int i = 0; i < dataSize; i++) {
+    				cellBytes[i] = input[address + dataSize * x * y];
+    			}
+
+    			// Get DataCell and add to array
+    			output[x][y] = new DataCell(cellBytes, storageType, endian);
+    		}
+    	}
+    	return output;
+    }
+
+
 }

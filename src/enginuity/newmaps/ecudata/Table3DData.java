@@ -23,43 +23,44 @@ package enginuity.newmaps.ecudata;
 
 import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.exception.DataPopulationException;
+import enginuity.newmaps.util.ECUDataUtil;
 import enginuity.util.ByteUtil;
 
 public class Table3DData extends TableData {
-    
+
     private DataCell[][] values;
     private AxisData xAxis;
     private AxisData yAxis;
-    
+
     public Table3DData(byte[] data, Table3DMetadata metadata) throws DataPopulationException {
         this.metadata = metadata;
         populate(data);
     }
-    
+
     public DataCell[][] getValues() {
         return values;
     }
-    
+
     public DataCell getValueAt(int x, int y) throws IndexOutOfBoundsException {
         return values[x][y];
     }
-    
+
     public byte[] returnValues() {
         // Returns updated byte values to ECUData
-        
+
         // TODO: Find return values (using ECUDataUtil)
         return null;
     }
-    
+
     public boolean populate(byte[] data) {
-        
+
         // populate axes first
         xAxis.populate(data);
         yAxis.populate(data);
-        
+
         // Now populate the table itself
-        int dataSize = ByteUtil.getLengthInBytes(metadata.getScale().getStorageType());
+        DataCell[] rawData = ECUDataUtil.buildValues(data, metadata);
         return true;
     }
-    
+
 }
