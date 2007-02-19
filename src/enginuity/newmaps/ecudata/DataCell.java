@@ -21,14 +21,15 @@
 
 package enginuity.newmaps.ecudata;
 
+import enginuity.newmaps.ecumetadata.Scale;
 import enginuity.util.ByteUtil;
 
 public class DataCell extends Number {
-    
+
     byte[] bytes;
     int endian;
     int storageType;
-    
+
     public DataCell(byte[] bytes, int storageType, int endian) {
         this.bytes = bytes;
         this.storageType = storageType;
@@ -52,9 +53,45 @@ public class DataCell extends Number {
         // TODO: this..
         return 0;
     }
-    
+
     public byte[] byteValues() {
         return bytes;
     }
-    
+
+    public String toString() {
+    	if (storageType == Scale.STORAGE_TYPE_CHAR) {
+
+    		return new String(bytes);
+
+
+    	} else if (storageType == Scale.STORAGE_TYPE_FLOAT) {
+
+    		return ByteUtil.asFloat(bytes, endian)+"";
+
+
+    	} else if (storageType == Scale.STORAGE_TYPE_HEX) {
+
+    		// TODO: Hex..
+    		return "Hex";
+
+
+    	} else if (storageType == Scale.STORAGE_TYPE_INT8 ||
+    				storageType == Scale.STORAGE_TYPE_INT16 ||
+    				storageType == Scale.STORAGE_TYPE_INT32) {
+
+    		return ByteUtil.asSignedInt(bytes, endian)+"";
+
+
+    	} else if (storageType == Scale.STORAGE_TYPE_UINT8 ||
+					storageType == Scale.STORAGE_TYPE_UINT16 ||
+					storageType == Scale.STORAGE_TYPE_UINT32) {
+
+    		return ByteUtil.asUnsignedInt(bytes, endian)+"";
+
+
+    	} else {
+    		return "Blah";
+    	}
+    }
+
 }

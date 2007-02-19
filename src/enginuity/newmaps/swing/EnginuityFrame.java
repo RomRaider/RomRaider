@@ -26,9 +26,5 @@ import javax.swing.JFrame;
 
 public abstract class EnginuityFrame extends JFrame {
 
-        public EnginuityFrame(byte[] data, TableMetadata metadata) {
-
-
-        }
 
 }

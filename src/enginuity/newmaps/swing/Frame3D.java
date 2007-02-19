@@ -21,6 +21,7 @@
 
 package enginuity.newmaps.swing;
 
+import enginuity.newmaps.ecudata.DataCell;
 import enginuity.newmaps.ecudata.Table3DData;
 import enginuity.newmaps.ecumetadata.AxisMetadata;
 import enginuity.newmaps.ecumetadata.Scale;
@@ -28,44 +29,38 @@ import enginuity.newmaps.ecumetadata.TableMetadata;
 import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.ecumetadata.Unit;
 import enginuity.newmaps.exception.DataPopulationException;
-
 import javax.swing.JScrollPane;
 
 
 public class Frame3D extends EnginuityFrame {
 
+    Table3DData table;
     EnginuityJTable xAxisTable;
     EnginuityJTable yAxisTable;
-    EnginuityJTable table;
+    EnginuityJTable jTable;
 
-    public Frame3D(byte[] data, Table3DMetadata metadata) {
+    public Frame3D(Table3DData table) {
 
-        super(data, (TableMetadata)metadata);
+    	this.table = table;
 
-        table = new EnginuityJTable(5, 5);
+        //super(data, (TableMetadata)metadata);
+    	Table3DMetadata metadata = (Table3DMetadata) table.getMetadata();
+    	DataCell[][] dataCell = table.getValues();
 
-        for (int i = 0; i < 5; i++)
-        	for (int j = 0; j < 5; j++)
-        	{
-        		table.setValueAt(new Integer(i+j), i, j);
+        jTable = new EnginuityJTable(metadata.getSizeX(), metadata.getSizeY());
+
+        for (int x = 0; x < metadata.getSizeX(); x++) {
+        	for (int y = 0; y < metadata.getSizeY(); y++) {
+        		jTable.setValueAt(dataCell[x][y], x, y);
         	}
-        JScrollPane scrollPane = new JScrollPane( table );
+        }
+
+        JScrollPane scrollPane = new JScrollPane( jTable );
         getContentPane().add( scrollPane );
 
         this.pack();
 
     }
-
-
-    private void populateTable(byte[] data) {
-        //
-        // Do table first..
-        //
-
-
-    }
-
-
 
 
     //
@@ -83,7 +78,7 @@ public class Frame3D extends EnginuityFrame {
         //
         Table3DMetadata tableMetadata = new Table3DMetadata("Test");
         tableMetadata.setDescription("This is the table");
-        tableMetadata.setAddress(0);
+        tableMetadata.setAddress(1);
         AxisMetadata xAxisMetadata = new AxisMetadata("X Axis");
         xAxisMetadata.setDescription("This is the X Axis");
         xAxisMetadata.setAddress(0);
@@ -94,7 +89,7 @@ public class Frame3D extends EnginuityFrame {
         yAxisMetadata.setAddress(25);
         yAxisMetadata.setSize(5);
         tableMetadata.setYaxis(yAxisMetadata);
-        
+
 
         //
         // Create scales
@@ -110,7 +105,7 @@ public class Frame3D extends EnginuityFrame {
         tableScale.setUnits(tableUnits);
         tableScale.setDescription("This is the table scale");
         tableScale.setEndian(Scale.ENDIAN_BIG);
-        tableScale.setStorageType(Scale.STORAGE_TYPE_UINT16);
+        tableScale.setStorageType(Scale.STORAGE_TYPE_UINT8);
         tableMetadata.setScale(tableScale);
 
         Unit xUnit = new Unit("X Unit");
@@ -140,23 +135,22 @@ public class Frame3D extends EnginuityFrame {
         yScale.setEndian(Scale.ENDIAN_LITTLE);
         yScale.setStorageType(Scale.STORAGE_TYPE_FLOAT);
         yAxisMetadata.setScale(yScale);
-        
+
     	try {
 			Table3DData table = new Table3DData(data, tableMetadata);
+
+	        //
+	        // Create frame
+	        //
+	        Frame3D frame = new Frame3D(table);
+	        frame.setDefaultCloseOperation( EXIT_ON_CLOSE );
+	        frame.pack();
+	        frame.setLocationRelativeTo( null );
+	        frame.setVisible(true);
+
 		} catch (DataPopulationException e) {
 			e.printStackTrace();
 		}
-
-
-        //
-        // Create frame
-        //
-        Frame3D frame = new Frame3D(data, tableMetadata);
-        frame.setDefaultCloseOperation( EXIT_ON_CLOSE );
-        frame.pack();
-        frame.setLocationRelativeTo( null );
-        frame.setVisible(true);
-
     }
 
 }
