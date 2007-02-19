@@ -79,7 +79,7 @@ public final class ECUDataUtil {
     			// Build single datacell bytes
     			byte[] cellBytes = new byte[dataSize];
     			for (int i = 0; i < dataSize; i++) {
-    				cellBytes[i] = input[address + dataSize * x * y];
+    				cellBytes[i] = input[address + dataSize * (x * metadata.getSizeY() + y)];
     			}
 
     			// Get DataCell and add to array
