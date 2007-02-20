@@ -26,6 +26,12 @@ public class UtecMapData {
 		rawMapData.append(byteData);
 	}
 	
+	public void replaceRawData(StringBuffer newDataBuffer){
+		this.rawMapData = newDataBuffer;
+		System.out.println("---------- Unclean data. ------------");
+		System.out.println(this.rawMapData);
+		System.out.println("---------- Unclean data. ------------");
+	}
 	/**
 	 * Generic constructor
 	 *
@@ -75,13 +81,24 @@ public class UtecMapData {
 	public void populateMapDataStructures() {
 		
 		// Functionality as the method names suggest
+		System.out.println("Starting to populated map data.");
 		cleanUpMapData();
+		System.out.println("Cleaned up map ok.");
+		System.out.println("---------- Clean data. ------------");
+		System.out.println(this.rawMapData);
+		System.out.println("---------- Clean data. ------------");
 		populateMapName();
+		System.out.println("Populated map name ok.");
 		populateMapComment();
+		System.out.println("Populated map comment ok.");
 		populateFuelMapData();
+		System.out.println("Populated Fuel data ok.");
 		populateTimingMapData();
+		System.out.println("Populated Timing data ok.");
 		populateBoostMapData();
+		System.out.println("Populated Boost data ok.");
 		calculateChecksum();
+		System.out.println("Populated Checksum ok.");
 	}
 	 
 	/**
@@ -220,8 +237,8 @@ public class UtecMapData {
 	}
 	
 	public void populateBoostMapData(){
-		int fuelStart = rawMapData.indexOf("Boost Map\r")+9;
-		int fuelEnd = rawMapData.indexOf("\r[END]");
+		int fuelStart = rawMapData.indexOf("Boost Map")+10;
+		int fuelEnd = rawMapData.indexOf("[END]") - 1;
 		String singleRow = rawMapData.substring(fuelStart, fuelEnd);
 		
 		String numericalValue = "";
@@ -267,8 +284,8 @@ public class UtecMapData {
 	}
 	
 	public void populateTimingMapData(){
-		int fuelStart = rawMapData.indexOf("Timing Map\r")+9;
-		int fuelEnd = rawMapData.indexOf("\r\rBoost Map");
+		int fuelStart = rawMapData.indexOf("Timing Map")+10;
+		int fuelEnd = rawMapData.indexOf("Boost Map") - 2;
 		String singleRow = rawMapData.substring(fuelStart, fuelEnd);
 		
 		String numericalValue = "";
@@ -314,8 +331,8 @@ public class UtecMapData {
 	}
 	
 	public void populateFuelMapData(){
-		int fuelStart = rawMapData.indexOf("Fuel Map\r")+9;
-		int fuelEnd = rawMapData.indexOf("\r\rTiming Map");
+		int fuelStart = rawMapData.indexOf("Fuel Map")+10;
+		int fuelEnd = rawMapData.indexOf("Timing Map") - 2;
 		String singleRow = rawMapData.substring(fuelStart, fuelEnd);
 		
 		String numericalValue = "";
@@ -362,20 +379,21 @@ public class UtecMapData {
 	
 	public void populateMapComment(){
 		int start = rawMapData.indexOf("Map Comments:-[")+15;
-		int stop = rawMapData.indexOf("]\rFuel Map");
+		int stop = rawMapData.indexOf("Fuel Map") - 3;
 		this.mapComment = rawMapData.substring(start, stop);
-		//System.out.println("Map comment:"+mapComment+":");
+		System.out.println("Map comment:"+mapComment+":");
 	}
 	
 	public void populateMapName(){
+		System.out.println("Populating map name.");
 		int start = rawMapData.indexOf("Map Name:-[")+11;
-		int stop = rawMapData.indexOf("]\rMap Comments");
+		int stop = rawMapData.indexOf("Map Comments") - 3;
 		
-		//System.out.println("Start:"+start);
-		//System.out.println("Stop:"+stop);
+		System.out.println("Start:"+start);
+		System.out.println("Stop:"+stop);
 		
 		this.mapName = rawMapData.substring(start, stop);
-		//System.out.println("Map name:"+mapName+":");
+		System.out.println("Map name:"+mapName+":");
 	}
 
 	/**

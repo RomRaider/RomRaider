@@ -77,7 +77,13 @@ public class CommEvent {
 			if(theData.startsWith("--")){
 				theData = "0.0";
 			}
-			doubleData[i] = Double.parseDouble(theData);
+			
+			try{
+				doubleData[i] = Double.parseDouble(theData);
+			}catch (NumberFormatException e) {
+				System.out.println("Number error in commevent.");
+				return;
+	        }
 		}
 		
 	}

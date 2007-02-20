@@ -12,8 +12,8 @@ import enginuity.logger.utec.mapData.UtecMapData;
 public class MapJPanel extends JPanel{
 
 	public static int FUELMAP = 0;
-	public static int TIMINGMAP = 0;
-	public static int BOOSTMAP = 0;
+	public static int TIMINGMAP = 1;
+	public static int BOOSTMAP = 2;
 	
 	private int mapType = 0;
 	
@@ -45,14 +45,17 @@ public class MapJPanel extends JPanel{
 	
 	public void updateData(UtecMapData utecMapData){
 		if(this.mapType == MapJPanel.FUELMAP){
+			System.out.println("Updating fuel map now.");
 			this.tableModel.replaceData(utecMapData.getFuelMap());
 		}
 		
 		if(this.mapType == MapJPanel.TIMINGMAP){
+			System.out.println("Updating timing map now.");
 			this.tableModel.replaceData(utecMapData.getTimingMap());
 		}
 		
 		if(this.mapType == MapJPanel.BOOSTMAP){
+			System.out.println("Updating boost map now.");
 			this.tableModel.replaceData(utecMapData.getBoostMap());
 		}
 		

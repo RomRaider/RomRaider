@@ -65,7 +65,7 @@ public class UtecSerialConnection implements SerialPortEventListener {
 	private boolean isMapFromUtec = false;
 
 	private UtecMapData currentMap = null;
-
+	private String totalDat = "";
 	/**
 	 * Public constructor
 	 * 
@@ -139,12 +139,14 @@ public class UtecSerialConnection implements SerialPortEventListener {
 		// this.sendDataToUtec('\u0065');
 		this.sendDataToUtec(101);
 		System.out.println("Sent an e");
-
+		this.waitForIt();
+		
 		// Point UTEC menu to the appropriate map
 		if (mapNumber == 1) {
 			// this.sendDataToUtec('\u0021');
 			this.sendDataToUtec(33);
 			System.out.println("Requested Map 1");
+			this.waitForIt();
 		}
 		if (mapNumber == 2) {
 			// this.sendDataToUtec('\u0040');
@@ -171,6 +173,7 @@ public class UtecSerialConnection implements SerialPortEventListener {
 		// this.sendDataToUtec('\u0013');
 		this.sendDataToUtec(19);
 		System.out.println("Sent crtl-s");
+		this.waitForIt();
 
 		// Make this class receptive to map transfer
 		this.isMapFromUtec = true;
@@ -200,6 +203,18 @@ public class UtecSerialConnection implements SerialPortEventListener {
 		} catch (IOException e) {
 			System.err.println("Can't send char data to UTEC: " + charValue);
 			e.getMessage();
+		}
+		
+		
+	}
+	
+	private void waitForIt(){
+		try {
+			Thread.currentThread().sleep(1000);
+			System.out.println("waiting 1 second.");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -421,28 +436,33 @@ public class UtecSerialConnection implements SerialPortEventListener {
 					if (newData == -1) {
 						break;
 					}
-
+					
+					/*
 					if ('\r' == (char) newData) {
 						inputBuffer.append('\n');
 					} else {
 						inputBuffer.append((char) newData);
 					}
-
-					// inputBuffer.append((char) newData);
-
+					*/
+					
+					inputBuffer.append((char) newData);
+					System.out.print((char)newData);
+					this.totalDat += (char)newData;
+					
 				} catch (IOException ex) {
 					System.err.println(ex);
 					return;
 				}
 			}
-
+//			 Ouput to console
+			//System.out.println(inputBuffer);
 
 			if (this.isMapFromUtecPrep == true) {
 				System.out.println("Map Prep State.");
 			}
 
 			else if (this.isMapFromUtec == true) {
-				System.out.println("Map From Utec Data.");
+				//System.out.println("Map From Utec Data.");
 
 				// If this is the start of map data flow, then create a new map
 				// data object
@@ -452,18 +472,28 @@ public class UtecSerialConnection implements SerialPortEventListener {
 
 				// Append byte data from the UTEC
 				this.currentMap.addRawData(newData);
-				System.out.println("Added:" + (char) newData);
+				//System.out.println("Added:" + (char) newData);
 
 				// Detect the end of the map recieving
 				if (inputBuffer.indexOf("[EOF]") != -1) {
 					System.out.println("End of file detected.");
-
+					
+					this.currentMap.replaceRawData(new StringBuffer(this.totalDat));
+					this.totalDat = "";
+					
+					System.out.println("hi 1");
 					this.isMapFromUtec = false;
+					System.out.println("hi 2");
 					this.currentMap.populateMapDataStructures();
+					System.out.println("hi 3");
 
 					// Notify listner if available
+					System.out.println("Calling listeners.");
 					if (this.getMapFromUtecListener != null) {
+						System.out.println("Listener called.");
 						this.getMapFromUtecListener.mapRetrieved(this.currentMap);
+					}else{
+						System.out.println("Calling listeners, but none found.");
 					}
 					
 					// Empty out map storage
@@ -473,6 +503,7 @@ public class UtecSerialConnection implements SerialPortEventListener {
 
 			// Logger data
 			else {
+				/*
 				CommEvent commEvent = new CommEvent();
 				commEvent.setLoggerData(new String(inputBuffer));
 				commEvent.setLoggerData(true);
@@ -483,15 +514,13 @@ public class UtecSerialConnection implements SerialPortEventListener {
 							.next();
 					theListener.getCommEvent(commEvent);
 				}
+				*/
 				break;
 			}
-			
-			// Ouput to console
-			System.out.println(inputBuffer);
 
 			// If break event append BREAK RECEIVED message.
 		case SerialPortEvent.BI:
-			System.out.println("BREAK RECEIVED.");
+			//System.out.println("BREAK RECEIVED.");
 
 		}
 

@@ -79,6 +79,11 @@ public class JutecGUI extends JFrame implements ActionListener,
 
 	private JLabel utecInputLabel = new JLabel("   Send Commands to UTEC: ");
 	
+	// Map tabs
+	private MapJPanel timingMapPanel =  new MapJPanel(MapJPanel.TIMINGMAP);
+	private MapJPanel fuelMapPanel = new MapJPanel(MapJPanel.FUELMAP);
+	private MapJPanel boostMapPanel =  new MapJPanel(MapJPanel.BOOSTMAP);
+
 	public static JutecGUI getInstance() {
 		return instance;
 	}
@@ -361,9 +366,11 @@ public class JutecGUI extends JFrame implements ActionListener,
 	}
 
 	public void mapRetrieved(UtecMapData theMap) {
-		System.out.println("Got a map from the utec:" + theMap.getMapName());
+		System.out.println("@@@@@@@@@@@@@@@@@@ Got a map from the utec:" + theMap.getMapName());
 		this.currentMap = theMap;
-		
+		this.boostMapPanel.updateData(theMap);
+		this.fuelMapPanel.updateData(theMap);
+		this.timingMapPanel.updateData(theMap);
 	}
 
 	public void keyPressed(KeyEvent arg0) {
