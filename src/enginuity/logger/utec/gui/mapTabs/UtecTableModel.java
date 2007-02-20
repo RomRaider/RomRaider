@@ -10,7 +10,6 @@ public class UtecTableModel extends AbstractTableModel {
 	
 	public UtecTableModel() {
 		for (int i = 0; i < columnNames.length; i++) {
-			System.out.println("count: " + i);
 			columnNames[i] = i + "";
 		}
 	}
@@ -48,5 +47,15 @@ public class UtecTableModel extends AbstractTableModel {
         fireTableCellUpdated(row, col);
 
     }
+	
+	public void replaceData(double[][] newData){
+		
+		for(int i = 0; i < 11; i++){
+			for(int j = 0; j < 40; j++){
+				setValueAt(newData[i][j], j ,i);
+			}
+		}
+		
+	}
 
 }

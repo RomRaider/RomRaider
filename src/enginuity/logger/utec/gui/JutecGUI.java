@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import enginuity.Settings;
-import enginuity.logger.utec.gui.mapTabs.FuelJPanel;
+import enginuity.logger.utec.gui.mapTabs.MapJPanel;
 import enginuity.logger.utec.gui.realtimeData.*;
 import enginuity.logger.utec.gui.bottomControl.*;
 import enginuity.logger.utec.mapData.GetMapFromUtecListener;
@@ -72,7 +72,7 @@ public class JutecGUI extends JFrame implements ActionListener,
 
 	private static JutecGUI instance = null;
 
-	private UtecMapData currentMap = null;
+	public static UtecMapData currentMap = null;
 
 	// Text input field for sending commands directly to the UTEC
 	private JTextField textInput = new JTextField();
@@ -183,9 +183,9 @@ public class JutecGUI extends JFrame implements ActionListener,
 
 		
 		this.topTabbedPane.add("Graph Data", new RealTimeData());
-		this.topTabbedPane.add("Timing Data", new JPanel());
-		this.topTabbedPane.add("Fuel Data", new FuelJPanel());
-		this.topTabbedPane.add("Boost Data", new JPanel());
+		this.topTabbedPane.add("Timing Data", new MapJPanel(MapJPanel.TIMINGMAP));
+		this.topTabbedPane.add("Fuel Data", new MapJPanel(MapJPanel.FUELMAP));
+		this.topTabbedPane.add("Boost Data", new MapJPanel(MapJPanel.BOOSTMAP));
 
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setDividerLocation(440);
@@ -363,6 +363,7 @@ public class JutecGUI extends JFrame implements ActionListener,
 	public void mapRetrieved(UtecMapData theMap) {
 		System.out.println("Got a map from the utec:" + theMap.getMapName());
 		this.currentMap = theMap;
+		
 	}
 
 	public void keyPressed(KeyEvent arg0) {
