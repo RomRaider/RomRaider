@@ -8,7 +8,12 @@ public class UtecTableModel extends AbstractTableModel {
 
 	private double[][] data = new double[11][40];
 	
-	public UtecTableModel() {
+	String test = "";
+	
+	public UtecTableModel(int identifier, double[][] initialData) {
+		
+		this.data = initialData;
+		
 		for (int i = 0; i < columnNames.length; i++) {
 			columnNames[i] = i + "";
 		}
@@ -23,6 +28,7 @@ public class UtecTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int col) {
+		System.out.println(test+"->("+row+","+col+") "+data[col][row]);
 		return data[col][row];
 	}
 
@@ -34,8 +40,9 @@ public class UtecTableModel extends AbstractTableModel {
 		return true;
 	}
 	
+	
 	public void setValueAt(Object value, int row, int col) {
-        System.out.println("Updated:"+(String)value);
+        System.out.print(" Updated:"+(String)value+": ");
         // Set new data in table
         double temp = data[col][row];
         
@@ -45,22 +52,14 @@ public class UtecTableModel extends AbstractTableModel {
         	System.out.println("Not a valid number entered.");
         }
         data[col][row] = temp;
-        fireTableCellUpdated(row, col);
-
+        this.fireTableDataChanged();
     }
+	
 	
 	public void replaceData(double[][] newData){
 		System.out.println("Model data being replaced in full.");
-		
-			for(int j = 0; j < 40; j++){
-				for(int i = 0; i < 11; i++){
-					System.out.print(newData[i][j]+", ");
-					//this.data[i][j] = newData[i][j];
-					 this.setValueAt(newData[i][j]+"", j, i);
-				}
-				System.out.print("\n");
-			}
-			//this.fireTableDataChanged();
+		this.data = newData;
+		this.fireTableDataChanged();
 	}
-
+	
 }

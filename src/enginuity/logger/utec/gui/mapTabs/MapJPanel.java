@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableModel;
 
 import enginuity.logger.utec.mapData.UtecMapData;
 
@@ -17,20 +19,29 @@ public class MapJPanel extends JPanel{
 	
 	private int mapType = 0;
 	
-	private UtecTableModel tableModel = new UtecTableModel();
+	private UtecTableModel tableModel = null; 
 	
+	private UtecJTable table = null;
 	
 	public MapJPanel(int mapType){
 		super(new BorderLayout());
 		
 		this.mapType = mapType;
 		
+		double[][] initialData = new double[11][40];
+		for(int i=0; i < 40; i++){
+			for(int j = 0; j < 11 ; j++){
+				initialData[j][i] = 0.0;
+			}
+		}
+		this.tableModel = new UtecTableModel(this.mapType, initialData);
+	
 		init();
 		
 	}
 	
 	public void init(){	
-        JTable table = new JTable(tableModel);
+		table = new UtecJTable(tableModel, mapType);
         //table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
         //Create the scroll pane and add the table to it.
@@ -43,20 +54,21 @@ public class MapJPanel extends JPanel{
 
 	}
 	
-	public void updateData(UtecMapData utecMapData){
+	public void updateDaa(UtecMapData utecMapData){
 		if(this.mapType == MapJPanel.FUELMAP){
 			System.out.println("Updating fuel map now.");
-			this.tableModel.replaceData(utecMapData.getFuelMap());
+			//this.table.setModel(new UtecTableModel(this.mapType, utecMapData));
+			//this.tableModel.replaceData(utecMapData.getFuelMap());
 		}
 		
 		if(this.mapType == MapJPanel.TIMINGMAP){
 			System.out.println("Updating timing map now.");
-			this.tableModel.replaceData(utecMapData.getTimingMap());
+			//this.tableModel.replaceData(utecMapData.getTimingMap());
 		}
 		
 		if(this.mapType == MapJPanel.BOOSTMAP){
 			System.out.println("Updating boost map now.");
-			this.tableModel.replaceData(utecMapData.getBoostMap());
+			//this.tableModel.replaceData(utecMapData.getBoostMap());
 		}
 		
 	}
