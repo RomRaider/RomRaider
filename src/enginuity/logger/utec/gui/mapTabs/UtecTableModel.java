@@ -10,7 +10,10 @@ public class UtecTableModel extends AbstractTableModel {
 	
 	String test = "";
 	
+	private int identifier = 0;
+	
 	public UtecTableModel(int identifier, double[][] initialData) {
+		this.identifier = identifier;
 		
 		this.data = initialData;
 		
@@ -51,6 +54,18 @@ public class UtecTableModel extends AbstractTableModel {
         	System.out.println("Not a valid number entered.");
         }
         data[col][row] = temp;
+        
+        // Update current map in scope
+        if(this.identifier == MapJPanel.FUELMAP){
+        	DataManager.setFuelMapValue(row, col, temp);
+        } 
+        else if(this.identifier == MapJPanel.TIMINGMAP){
+        	DataManager.setTimingMapValue(row, col, temp);
+        }
+        else if(this.identifier == MapJPanel.BOOSTMAP){
+        	DataManager.setBoostMapValue(row, col, temp);
+        }
+        
         this.fireTableDataChanged();
     }
 	

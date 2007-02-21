@@ -471,4 +471,16 @@ public class UtecMapData {
 	public String getMapName() {
 		return mapName;
 	}
+	
+	public void setFuelMapValue(int row, int col, double value){
+		this.fuelMap[col][row] = value;
+	}
+	
+	public void setBoostMapValue(int row, int col, double value){
+		this.boostMap[col][row] = value;
+	}
+	
+	public void setTimingMapValue(int row, int col, double value){
+		this.timingMap[col][row] = value;
+	}
 }
