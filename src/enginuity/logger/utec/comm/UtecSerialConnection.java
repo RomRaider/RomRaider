@@ -104,8 +104,11 @@ public class UtecSerialConnection implements SerialPortEventListener {
 		// this.sendDataToUtec('\u0018');
 		System.out.println("Utec reset called.");
 		this.sendDataToUtec(24);
+		this.waitForIt();
 		this.sendDataToUtec(24);
+		this.waitForIt();
 		this.sendDataToUtec(24);
+		this.waitForIt();
 	}
 
 	/**
@@ -114,6 +117,7 @@ public class UtecSerialConnection implements SerialPortEventListener {
 	 * @param mapNumber
 	 */
 	public void pullMapData(int mapNumber, GetMapFromUtecListener listener) {
+		this.resetUtec();
 		System.out.println("UtecControl, getting map:" + mapNumber);
 
 		// Check bounds of map requested

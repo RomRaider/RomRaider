@@ -28,7 +28,6 @@ public class UtecTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int col) {
-		System.out.println(test+"->("+row+","+col+") "+data[col][row]);
 		return data[col][row];
 	}
 
