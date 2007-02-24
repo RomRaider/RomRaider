@@ -251,10 +251,16 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         }
     }
 
-    private boolean isSupportedParameter(final EcuInit ecuInit, final String ecuByteIndex, final String ecuBit) {
-        byte[] bytes = new byte[1];
-        System.arraycopy(ecuInit.getEcuInitBytes(), Integer.parseInt(ecuByteIndex), bytes, 0, 1);
-        return (bytes[0] & 1 << Integer.parseInt(ecuBit)) > 0;
+    private boolean isSupportedParameter(EcuInit ecuInit, String ecuByteIndex, String ecuBit) {
+        byte[] ecuInitBytes = ecuInit.getEcuInitBytes();
+        int index = Integer.parseInt(ecuByteIndex);
+        if (index < ecuInitBytes.length) {
+            byte[] bytes = new byte[1];
+            System.arraycopy(ecuInitBytes, index, bytes, 0, 1);
+            return (bytes[0] & 1 << Integer.parseInt(ecuBit)) > 0;
+        } else {
+            return false;
+        }
     }
 
     public List<EcuParameter> getEcuParameters() {
