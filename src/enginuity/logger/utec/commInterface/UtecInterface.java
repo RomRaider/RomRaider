@@ -48,6 +48,7 @@ public class UtecInterface{
 	}
 	
 	public static void getMap(int mapNumber, GetMapFromUtecListener listener){
+		openConnection();
 		utecControl.pullMapData(mapNumber, listener);
 	}
 	
@@ -56,6 +57,7 @@ public class UtecInterface{
 	 * @param charValue
 	 */
 	public static void sendDataToUtec(int charValue){
+		openConnection();
 		utecControl.sendDataToUtec(charValue);
 	}
 	
@@ -64,7 +66,7 @@ public class UtecInterface{
 	 * 
 	 * @param portName
 	 */
-	 public static void openConnection(){
+	 private static void openConnection(){
 		 if(utecControl.isOpen()){
 			 System.out.println("Port is already open.");
 			 return;
@@ -102,6 +104,7 @@ public class UtecInterface{
 	}
 	
 	public static void setPortChoice(String port){
+		utecControl.closeConnection();
 		utecControl.parameters.setPortName(port);
 	}
 	
@@ -110,6 +113,7 @@ public class UtecInterface{
 	 *
 	 */
 	public static void resetUtec(){
+		openConnection();
 		utecControl.resetUtec();	
 	}
 	
@@ -118,6 +122,8 @@ public class UtecInterface{
 	 *
 	 */
 	public static void startDataLogFromUtec(){
+		openConnection();
+		utecControl.resetUtec();
 		utecControl.startLoggerDataFlow();
 	}
 	

@@ -438,7 +438,9 @@ public class UtecMapData {
 	    }
 	}
 	
+	// *************************
 	// Misc getters and setters.
+	// *************************
 
 	public double[][] getBoostMap() {
 		return boostMap;

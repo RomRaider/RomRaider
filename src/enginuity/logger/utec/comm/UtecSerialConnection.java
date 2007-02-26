@@ -197,10 +197,10 @@ public class UtecSerialConnection implements SerialPortEventListener {
 	 * @param charValue
 	 */
 	public void sendDataToUtec(int charValue) {
-		/*
-		 * if(this.sPort == null){ System.err.println("No Port Selected.");
-		 * return; }
-		 */
+		
+		 if(this.sPort == null){ System.err.println("No Port Selected, therefore no interraction with Utec happening.");
+		 return; }
+		 
 
 		try {
 			outputToUtecStream.write(charValue);
@@ -229,9 +229,9 @@ public class UtecSerialConnection implements SerialPortEventListener {
 	 * @throws SerialConnectionException
 	 */
 	public void openConnection() throws SerialConnectionException {
-		/*
-		 * if(sPort == null){ System.err.println("No port selected."); return; }
-		 */
+		
+		 if(sPort == null){ System.err.println("No port selected or available to open."); return; }
+		 
 
 		// Obtain a CommPortIdentifier object for the port you want to open.
 		try {
@@ -357,6 +357,7 @@ public class UtecSerialConnection implements SerialPortEventListener {
 	public void closeConnection() {
 		// If port is alread closed just return.
 		if (!open) {
+			System.err.println("Attempting to close an already closed port.");
 			return;
 		}
 		System.out.println("Closing connection to the currently targeted port");
