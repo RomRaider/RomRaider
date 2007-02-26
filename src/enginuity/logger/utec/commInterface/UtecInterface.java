@@ -73,11 +73,12 @@ public class UtecInterface{
 		 }
 		 
 		//No port yet chosen
+		 /*
 		if(utecControl.parameters.getPortName().equalsIgnoreCase("")){
 					System.err.println("No Port Yet Chosen, nothing to open");
 					return;
 		}
-	 	
+	 	*/
 	 	//Port is already opened, any port is open
 	 	/*
 	 	if(ISOPEN){
@@ -106,6 +107,7 @@ public class UtecInterface{
 	public static void setPortChoice(String port){
 		utecControl.closeConnection();
 		utecControl.parameters.setPortName(port);
+		openConnection();
 	}
 	
 	/**

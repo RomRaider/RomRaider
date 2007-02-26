@@ -39,8 +39,8 @@ public class SerialParameters {
     @param portName New port name.
     */
     public void setPortName(String portName) {
-    	//System.out.println("Set portName requested");
-	this.portName = portName;
+    	System.out.println("Set portName chosen: "+portName);
+    	this.portName = portName;
     }
 
     /**

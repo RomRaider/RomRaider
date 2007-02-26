@@ -230,9 +230,12 @@ public class UtecSerialConnection implements SerialPortEventListener {
 	 */
 	public void openConnection() throws SerialConnectionException {
 		
-		 if(sPort == null){ System.err.println("No port selected or available to open."); return; }
+		// if(sPort == null){ System.err.println("No port selected or available to open."); return; }
 		 
-
+		if(parameters == null){
+			System.err.println("No port selected or available to open."); 
+			return; 
+		}
 		// Obtain a CommPortIdentifier object for the port you want to open.
 		try {
 			// System.out.println("PORT: "+parameters.getPortName());
@@ -240,7 +243,8 @@ public class UtecSerialConnection implements SerialPortEventListener {
 					.getPortName());
 		} catch (NoSuchPortException e) {
 			System.err.println("Can't get commport identifier");
-			throw new SerialConnectionException(e.getMessage());
+			return;
+			//throw new SerialConnectionException(e.getMessage());
 		}
 
 		// Open the port represented by the CommPortIdentifier object. Give
@@ -308,6 +312,7 @@ public class UtecSerialConnection implements SerialPortEventListener {
 		// portId.addPortOwnershipListener(this);
 
 		open = true;
+		System.out.println("Port opened with success.");
 	}
 
 	/**
@@ -508,18 +513,19 @@ public class UtecSerialConnection implements SerialPortEventListener {
 
 			// Logger data
 			else {
-				/*
+				
 				CommEvent commEvent = new CommEvent();
 				commEvent.setLoggerData(new String(inputBuffer));
 				commEvent.setLoggerData(true);
 
 				Iterator portIterator = portListeners.iterator();
 				while (portIterator.hasNext()) {
-					CommListener theListener = (CommListener) portIterator
-							.next();
-					theListener.getCommEvent(commEvent);
+					CommListener theListener = (CommListener) portIterator.next();
+					if(commEvent.isValidData() == true){
+						theListener.getCommEvent(commEvent);
+					}
 				}
-				*/
+				
 				break;
 			}
 

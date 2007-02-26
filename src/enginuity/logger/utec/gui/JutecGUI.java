@@ -177,10 +177,12 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 			item.setName(theName);
 			item.addActionListener(this);
 			portsMenu.add(item);
+			/*
 			if (counter == 1) {
 				defaultPort = theName;
 				UtecInterface.setPortChoice(defaultPort);
 			}
+			*/
 		}
 		menuBar.add(portsMenu);
 		

@@ -28,6 +28,8 @@ public class CommEvent {
 	
 	private UtecMapData mapData = null;
 	
+	private boolean isValidData = true;
+	
 	public void setLoggerData(String buffer){
 		UtecBuffer = buffer;
 		StringTokenizer st = new StringTokenizer(UtecBuffer, ",");
@@ -82,6 +84,7 @@ public class CommEvent {
 				doubleData[i] = Double.parseDouble(theData);
 			}catch (NumberFormatException e) {
 				System.out.println("Number error in commevent.");
+				this.isValidData = false;
 				return;
 	        }
 		}
@@ -146,5 +149,10 @@ public class CommEvent {
 
 	public void setUtecBuffer(String utecBuffer) {
 		UtecBuffer = utecBuffer;
+	}
+
+
+	public boolean isValidData() {
+		return isValidData;
 	}
 }
