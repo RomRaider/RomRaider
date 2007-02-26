@@ -5,7 +5,8 @@ import java.awt.geom.*;
 import javax.swing.*;
 
 import enginuity.logger.utec.gui.bottomControl.*;
-import enginuity.tts.VoiceThread;
+import enginuity.logger.utec.properties.UtecProperties;
+import enginuity.tts.SpeakString;
 import enginuity.logger.utec.commEvent.*;
 import enginuity.logger.utec.commInterface.UtecInterface;
 
@@ -16,24 +17,19 @@ import enginuity.logger.utec.commInterface.UtecInterface;
  */
 public class RealTimeData extends JComponent implements CommListener{
 
-	//Buttons to be used
-	private JButton openButton;
-	private JButton closeButton;
-	private JButton startButton;
-	private JButton stopButton;
-
-	//Text areas to be used
-	private JTextArea textFromUtec;
-
 	//Recieved utec data, start values are zero
-	public String[] stringData = {"0","0","0","0","0","0"};
-	public double[] doubleData = {0,0,0,0,0,0};
+	public double[] doubleData = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 	
 	//Graph Constants
 	private double maxHeight = 370;
 	
 	//Window Constants
 	private int windowHeight = 400;
+	
+	// Needed data
+	String[] indexes = UtecProperties.getProperties("utec.loggerIndexes");
+	String[] titles = UtecProperties.getProperties("utec.loggerTitles");
+	String[] dataRanges = UtecProperties.getProperties("utec.loggerDataRanges");
 	
 	//Constructor
 	public RealTimeData() {
@@ -56,10 +52,10 @@ public class RealTimeData extends JComponent implements CommListener{
 		Font font = new Font("Serif", Font.PLAIN, 20);
 		g2.setFont(font);
 		
-		//RPM
-		double max1 = 7500;
-		double min1 = 0;
-		double value1 = doubleData[0];
+		// 0
+		double max1 = (minAndMax(dataRanges[0]))[1];
+		double min1 = (minAndMax(dataRanges[0]))[0];
+		double value1 = doubleData[Integer.parseInt(indexes[0])];
 		double height1 = ((value1 - min1)/(max1 - min1))*maxHeight;
 		double yValue1 = 5 + (maxHeight - height1);
 		double xValueLeft1 = 30;
@@ -69,14 +65,14 @@ public class RealTimeData extends JComponent implements CommListener{
 		g2.fill(rect1);
 		g2.setPaint(Color.BLACK);
 		g2.draw(rect1);
-		g2.drawString("RPM:"+(int)value1, (int)xValueLeft1, windowHeight);
+		g2.drawString(titles[0]+":"+(int)value1, (int)xValueLeft1, windowHeight);
 		
-		//PSI
-		double max2 = 20;
-		double min2 = -14.7;
-		double value2 = doubleData[1];
+		// 1
+		double max2 = (minAndMax(dataRanges[1]))[1];
+		double min2 = (minAndMax(dataRanges[1]))[0];
+		double value2 = doubleData[Integer.parseInt(indexes[1])];
 		if(value2 > 18.5){
-			VoiceThread vc = new VoiceThread("Max P S I,"+value2);
+			SpeakString vc = new SpeakString("Max P S I,"+value2);
 			vc.start();
 		}
 		double height2 = ((value2 - min2)/(max2 - min2))*maxHeight;
@@ -88,14 +84,14 @@ public class RealTimeData extends JComponent implements CommListener{
 		g2.fill(rect2);
 		g2.setPaint(Color.BLACK);
 		g2.draw(rect2);
-		g2.drawString("PSI:"+value2, (int)xValueLeft2, windowHeight);
+		g2.drawString(titles[1]+":"+value2, (int)xValueLeft2, windowHeight);
 		
-		//KNOCK
-		double max3 = 20;
-		double min3 = 0;
-		double value3 = doubleData[2];
+		// 2
+		double max3 = (minAndMax(dataRanges[2]))[1];
+		double min3 = (minAndMax(dataRanges[2]))[0];
+		double value3 = doubleData[Integer.parseInt(indexes[2])];
 		if(value3 > 0){
-			VoiceThread vc = new VoiceThread("knock, count "+(int)value3);
+			SpeakString vc = new SpeakString("knock, count "+(int)value3);
 			vc.start();
 		}
 		double height3 = ((value3 - min3)/(max3 - min3))*maxHeight;
@@ -107,12 +103,12 @@ public class RealTimeData extends JComponent implements CommListener{
 		g2.fill(rect3);
 		g2.setPaint(Color.BLACK);
 		g2.draw(rect3);
-		g2.drawString("KNOCK:"+(int)value3, (int)xValueLeft3, windowHeight);
+		g2.drawString(titles[2]+":"+(int)value3, (int)xValueLeft3, windowHeight);
 		
-		//IGN
-		double max4 = 80;
-		double min4 = 0;
-		double value4 = doubleData[3];
+		// 3
+		double max4 = (minAndMax(dataRanges[3]))[1];
+		double min4 = (minAndMax(dataRanges[3]))[0];
+		double value4 = doubleData[Integer.parseInt(indexes[3])];
 		double height4 = ((value4 - min4)/(max4 - min4))*maxHeight;
 		double yValue4 = 5 + (maxHeight - height4);
 		double xValueLeft4 = 400;
@@ -122,14 +118,14 @@ public class RealTimeData extends JComponent implements CommListener{
 		g2.fill(rect4);
 		g2.setPaint(Color.BLACK);
 		g2.draw(rect4);
-		g2.drawString("IGN:"+value4, (int)xValueLeft4, windowHeight);
+		g2.drawString(titles[3]+":"+value4, (int)xValueLeft4, windowHeight);
 		
-		//DUTY
-		double max5 = 105;
-		double min5 = 0;
-		double value5 = doubleData[4];
+		// 4
+		double max5 = (minAndMax(dataRanges[4]))[1];
+		double min5 = (minAndMax(dataRanges[4]))[0];
+		double value5 = doubleData[Integer.parseInt(indexes[4])];
 		if(value5 > 98){
-			VoiceThread vc = new VoiceThread("Max duty "+value5);
+			SpeakString vc = new SpeakString("Max duty "+value5);
 			vc.start();
 		}
 		double height5 = ((value5 - min5)/(max5 - min5))*maxHeight;
@@ -141,12 +137,12 @@ public class RealTimeData extends JComponent implements CommListener{
 		g2.fill(rect5);
 		g2.setPaint(Color.BLACK);
 		g2.draw(rect5);
-		g2.drawString("DUTY:"+value5, (int)xValueLeft5, windowHeight);
+		g2.drawString(titles[4]+":"+value5, (int)xValueLeft5, windowHeight);
 		
-		//AFR
-		double max6 = 26;
-		double min6 = 0;
-		double value6 = doubleData[5];
+		// 5
+		double max6 = (minAndMax(dataRanges[5]))[1];
+		double min6 = (minAndMax(dataRanges[5]))[0];
+		double value6 = doubleData[Integer.parseInt(indexes[5])];
 		double height6 = ((value6 - min6)/(max6 - min6))*maxHeight;
 		double yValue6 = 5 + (maxHeight - height6);
 		double xValueLeft6 = 660;
@@ -156,15 +152,24 @@ public class RealTimeData extends JComponent implements CommListener{
 		g2.fill(rect6);
 		g2.setPaint(Color.BLACK);
 		g2.draw(rect6);
-		g2.drawString("AFR:"+value6, (int)xValueLeft6, windowHeight);
+		g2.drawString(titles[5]+":"+value6, (int)xValueLeft6, windowHeight);
 		
 	}
 	
 	public void getCommEvent(CommEvent e){
 		if(e.isLoggerData()){
-			stringData = e.getData();
 			doubleData = e.getDoubleData();
 			this.repaint();
 		}
+	}
+	
+	private double[] minAndMax(String value){
+		String[] temp = value.split("<>");
+		
+		double[] values = new double[2];
+		values[0] = Double.parseDouble(temp[0]);
+		values[1] = Double.parseDouble(temp[1]);
+		
+		return values;
 	}
 }

@@ -36,14 +36,25 @@ public class DataManager {
 	}
 
 	public static void setFuelMapValue(int row, int col, double value){
-		currentMapData.setFuelMapValue(row, col, value);
+		if(currentMapData != null){
+			currentMapData.setFuelMapValue(row, col, value);
+		}
 	}
 	
 	public static void setBoostMapValue(int row, int col, double value){
-		currentMapData.setBoostMapValue(row, col, value);
+		if(currentMapData != null){
+			currentMapData.setBoostMapValue(row, col, value);
+		}
 	}
 	
 	public static void setTimingMapValue(int row, int col, double value){
-		currentMapData.setTimingMapValue(row, col, value);
+		if(currentMapData != null){
+			currentMapData.setTimingMapValue(row, col, value);
+		}
+	}
+
+
+	public static UtecMapData getCurrentMapData() {
+		return currentMapData;
 	}
 }

@@ -19,6 +19,7 @@ import javax.swing.*;
 
 import enginuity.logger.utec.gui.realtimeData.*;
 import enginuity.logger.utec.mapData.GetMapFromUtecListener;
+import enginuity.logger.utec.mapData.UtecMapData;
 import enginuity.logger.utec.comm.*;
 /**
  * @author emorgan
@@ -52,13 +53,18 @@ public class UtecInterface{
 		utecControl.pullMapData(mapNumber, listener);
 	}
 	
+	public static void uploadMap(int mapNumber, UtecMapData mapData){
+		openConnection();
+		utecControl.sendMapData(mapNumber, mapData.getUpdatedMap());
+	}
+	
 	/**
 	 * Pass a command to the UTEC
 	 * @param charValue
 	 */
-	public static void sendDataToUtec(int charValue){
+	public static void sendCommandToUtec(int charValue){
 		openConnection();
-		utecControl.sendDataToUtec(charValue);
+		utecControl.sendCommandToUtec(charValue);
 	}
 	
 	/**
