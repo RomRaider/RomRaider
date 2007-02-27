@@ -45,11 +45,14 @@ public class CommEvent {
 			if(theData.startsWith("--")){
 				theData = "0.0";
 			}
+			if(theData.equalsIgnoreCase("ecu.")){
+				theData = "0.0";
+			}
 			
 			try{
 				doubleData[i] = Double.parseDouble(theData);
 			}catch (NumberFormatException e) {
-				System.out.println("Number error in commevent.");
+				System.out.println("Number error in commevent:"+theData);
 				this.isValidData = false;
 				return;
 	        }

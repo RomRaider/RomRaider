@@ -159,6 +159,7 @@ public class RealTimeData extends JComponent implements CommListener{
 	public void getCommEvent(CommEvent e){
 		if(e.isLoggerData()){
 			doubleData = e.getDoubleData();
+			System.out.println("Got new data:"+doubleData[0]+"," + doubleData[1]);
 			this.repaint();
 		}
 	}
