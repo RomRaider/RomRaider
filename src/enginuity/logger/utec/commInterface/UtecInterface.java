@@ -55,7 +55,12 @@ public class UtecInterface{
 	
 	public static void uploadMap(int mapNumber, UtecMapData mapData){
 		openConnection();
-		utecControl.sendMapData(mapNumber, mapData.getUpdatedMap());
+		if(mapData == null){
+			System.err.println("No valid map loaded.");
+		}else{
+			utecControl.sendMapData(mapNumber, mapData.getUpdatedMap());
+		}
+		
 	}
 	
 	/**

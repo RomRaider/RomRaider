@@ -280,6 +280,8 @@ public class UtecSerialConnection implements SerialPortEventListener {
 		 	return; 
 		 }
 		 
+		String[] pauseString = UtecProperties.getProperties("utec.commandTransmissionPauseMS");
+		int pauseCount = Integer.parseInt(pauseString[0]);
 
 		try {
 			outputToUtecStream.write(charValue);
@@ -290,7 +292,7 @@ public class UtecSerialConnection implements SerialPortEventListener {
 			e.getMessage();
 		}
 		
-		this.waitForIt();
+		this.waitForIt(pauseCount);
 	}
 	
 	/**
@@ -302,7 +304,13 @@ public class UtecSerialConnection implements SerialPortEventListener {
 		 	return; 
 		 }
 		 
+		String[] pauseString = UtecProperties.getProperties("utec.dataTransmissionPauseMS");
+		int pauseCount = Integer.parseInt(pauseString[0]);
+		 
 		for(int i = 0; i < mapData.length(); i++){
+			
+			// System.out.println("Char out value:"+(int)mapData.charAt(i)+"   :"+mapData.charAt(i));
+			
 			try {
 				outputToUtecStream.write(mapData.charAt(i));
 			} catch (IOException e) {
@@ -310,8 +318,9 @@ public class UtecSerialConnection implements SerialPortEventListener {
 				e.getMessage();
 			}
 			
+			
 			//Wait
-			this.waitForIt();
+			this.waitForIt(pauseCount);
 		}
 	}
 	
@@ -319,13 +328,11 @@ public class UtecSerialConnection implements SerialPortEventListener {
 	 * Helper method to pause application. Used to spread data transmission
 	 *
 	 */
-	private void waitForIt(){
-		String[] pauseString = UtecProperties.getProperties("utec.dataTransmissionPauseMS");
-		
-		int pauseCount = Integer.parseInt(pauseString[0]);
+	private void waitForIt(int count){
+
 		try {
-			Thread.currentThread().sleep(pauseCount);
-			System.out.println("waiting for this many ms:"+pauseCount);
+			Thread.currentThread().sleep(count);
+			System.out.println("waiting for this many ms:"+count);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

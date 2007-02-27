@@ -67,6 +67,7 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 	public JMenuItem loadMapThree = new JMenuItem("Load Map #3");
 	public JMenuItem loadMapFour = new JMenuItem("Load Map #4");
 	public JMenuItem loadMapFive = new JMenuItem("Load Map #5");
+	public JMenuItem loadMapFile = new JMenuItem("Load Map File");
 
 	public JMenuItem saveMapOne = new JMenuItem("Save To Map #1");
 	public JMenuItem saveMapTwo = new JMenuItem("Save To Map #2");
@@ -157,11 +158,13 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 		loadMapThree.addActionListener(this);
 		loadMapFour.addActionListener(this);
 		loadMapFive.addActionListener(this);
+		loadMapFile.addActionListener(this);
 		getMapsMenu.add(loadMapOne);
 		getMapsMenu.add(loadMapTwo);
 		getMapsMenu.add(loadMapThree);
 		getMapsMenu.add(loadMapFour);
 		getMapsMenu.add(loadMapFive);
+		getMapsMenu.add(loadMapFile);
 		menuBar.add(getMapsMenu);
 		
 
@@ -349,6 +352,18 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 				UtecInterface.getMap(5, this);
 			}
 
+			else if (cmd.equals("Load Map File")) {
+				System.out.println("Load Map From File");
+
+				String saveFileName = null;
+				fileChosen = fileChooser.showSaveDialog(this);
+				if (fileChosen == JFileChooser.APPROVE_OPTION) {
+					saveFileName = fileChooser.getSelectedFile().getPath();
+					UtecMapData mapData = new UtecMapData(saveFileName);
+					DataManager.setCurrentMap(mapData);
+				}
+			}
+			
 			else if (cmd.equals("Save To Map #1")) {
 				System.out.println("Starting to save map #1");
 				UtecInterface.uploadMap(1, DataManager.getCurrentMapData());
