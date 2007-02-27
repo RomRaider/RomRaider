@@ -15,7 +15,7 @@ import enginuity.logger.utec.commInterface.UtecInterface;
  *
  * Class displays live data from the UTEC
  */
-public class RealTimeData extends JComponent implements CommListener{
+public class RealTimeData extends JComponent implements LoggerListener{
 
 	//Recieved utec data, start values are zero
 	public double[] doubleData = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -156,7 +156,7 @@ public class RealTimeData extends JComponent implements CommListener{
 		
 	}
 	
-	public void getCommEvent(CommEvent e){
+	public void getCommEvent(LoggerEvent e){
 		if(e.isLoggerData()){
 			doubleData = e.getDoubleData();
 			System.out.println("Got new data:"+doubleData[0]+"," + doubleData[1]);

@@ -1,5 +1,6 @@
 package enginuity.logger.utec.gui.mapTabs;
 
+import enginuity.logger.utec.commEvent.UtecAFRListener;
 import enginuity.logger.utec.mapData.UtecMapData;
 
 public class DataManager {
@@ -10,6 +11,7 @@ public class DataManager {
 	private static UtecTableModel timingListener = null;
 	private static UtecTableModel boostListener = null;
 	
+	private static UtecAFRListener utecAFRListener = null;
 
 	public static void setCurrentMap(UtecMapData newUtecMap){
 		currentMapData = newUtecMap;
@@ -56,5 +58,15 @@ public class DataManager {
 
 	public static UtecMapData getCurrentMapData() {
 		return currentMapData;
+	}
+
+
+	public static UtecAFRListener getUtecAFRListener() {
+		return utecAFRListener;
+	}
+
+
+	public static void setUtecAFRListener(UtecAFRListener utecAFRListener) {
+		DataManager.utecAFRListener = utecAFRListener;
 	}
 }

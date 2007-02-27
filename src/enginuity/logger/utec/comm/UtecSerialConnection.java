@@ -631,15 +631,15 @@ public class UtecSerialConnection implements SerialPortEventListener {
 			// Logger data
 			else {
 				
-				CommEvent commEvent = new CommEvent();
-				commEvent.setLoggerData(new String(inputBuffer));
-				commEvent.setLoggerData(true);
+				LoggerEvent loggerEvent = new LoggerEvent();
+				loggerEvent.setLoggerData(new String(inputBuffer));
+				loggerEvent.setLoggerData(true);
 
 				Iterator portIterator = portListeners.iterator();
 				while (portIterator.hasNext()) {
-					CommListener theListener = (CommListener) portIterator.next();
-					if(commEvent.isValidData() == true){
-						theListener.getCommEvent(commEvent);
+					LoggerListener theListener = (LoggerListener) portIterator.next();
+					if(loggerEvent.isValidData() == true){
+						theListener.getCommEvent(loggerEvent);
 					}
 				}
 				

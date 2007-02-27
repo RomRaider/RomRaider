@@ -12,6 +12,6 @@ package enginuity.logger.utec.commEvent;
  * To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-public interface CommListener {
-	public void getCommEvent(CommEvent e);
+public interface LoggerListener {
+	public void getCommEvent(LoggerEvent e);
 }

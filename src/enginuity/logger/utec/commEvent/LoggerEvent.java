@@ -9,7 +9,10 @@ package enginuity.logger.utec.commEvent;
 
 
 import java.util.*;
+
+import enginuity.logger.utec.gui.mapTabs.DataManager;
 import enginuity.logger.utec.mapData.UtecMapData;
+import enginuity.logger.utec.properties.UtecProperties;
 
 
 /**
@@ -18,7 +21,7 @@ import enginuity.logger.utec.mapData.UtecMapData;
  * To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-public class CommEvent {
+public class LoggerEvent {
 	private String UtecBuffer = null;
 	private String[] data = new String[6];
 	private double[] doubleData = null; //new double[6];
@@ -45,17 +48,27 @@ public class CommEvent {
 			if(theData.startsWith("--")){
 				theData = "0.0";
 			}
-			if(theData.equalsIgnoreCase("ecu.")){
-				theData = "0.0";
-			}
 			
 			try{
 				doubleData[i] = Double.parseDouble(theData);
 			}catch (NumberFormatException e) {
-				System.out.println("Number error in commevent:"+theData);
+				System.out.println("Number error in commevent.");
 				this.isValidData = false;
 				return;
 	        }
+			
+			
+			// Valid data found
+			String[] afrIndex = UtecProperties.getProperties("utec.afrIndex");
+			if(afrIndex == null || afrIndex[0] == null || afrIndex[0].length() < 1){
+				// No afr data available
+			}else{
+				System.out.println("AFR Data available.");
+				UtecAFRListener utecAFRListener = DataManager.getUtecAFRListener();
+				if(utecAFRListener != null){
+					utecAFRListener.receivedUtecAFRData(Double.parseDouble(afrIndex[0]));
+				}
+			}
 		}
 		
 	}

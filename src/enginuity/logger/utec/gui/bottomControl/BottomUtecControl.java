@@ -20,7 +20,7 @@ import enginuity.logger.utec.commEvent.*;
  * Preferences - Java - Code Generation - Code and Comments
  */
 public class BottomUtecControl extends JPanel implements ActionListener,
-		CommListener {
+		LoggerListener {
 	// Buttons to be used
 	private JButton openButton;
 
@@ -191,7 +191,7 @@ public class BottomUtecControl extends JPanel implements ActionListener,
 		}
 	}
 
-	public void getCommEvent(CommEvent e) {
+	public void getCommEvent(LoggerEvent e) {
 		if (e.isLoggerData()) {
 			String utecData = e.getUtecBuffer();
 			totalLog += utecData;
