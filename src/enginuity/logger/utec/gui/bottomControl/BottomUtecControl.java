@@ -104,7 +104,7 @@ public class BottomUtecControl extends JPanel implements ActionListener,
 		this.add(utecOutTextScroll, BorderLayout.CENTER);
 
 		// Make this panel listen for comm events
-		UtecInterface.addListener(this);
+		UtecInterface.addLoggerListener(this);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class BottomUtecControl extends JPanel implements ActionListener,
 			System.out.println("Starting data capture from the UTEC");
 
 			// Use interface to pull logging data from the Utec
-			UtecInterface.startDataLogFromUtec();
+			//UtecInterface.startDataLogFromUtec();
 
 			// Set button states
 			startButton.setEnabled(false);
@@ -196,8 +196,7 @@ public class BottomUtecControl extends JPanel implements ActionListener,
 			String utecData = e.getUtecBuffer();
 			totalLog += utecData;
 			textFromUtec.append(utecData);
-			textFromUtec.setCaretPosition(textFromUtec.getDocument()
-					.getLength());
+			textFromUtec.setCaretPosition(textFromUtec.getDocument().getLength());
 		}
 
 		// System.out.println("Adding data to the text AREA");

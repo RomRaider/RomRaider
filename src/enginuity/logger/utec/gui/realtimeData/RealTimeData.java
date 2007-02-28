@@ -33,7 +33,7 @@ public class RealTimeData extends JComponent implements LoggerListener{
 	
 	//Constructor
 	public RealTimeData() {
-		UtecInterface.addListener(this);
+		UtecInterface.addLoggerListener(this);
 	}
 
 	/**

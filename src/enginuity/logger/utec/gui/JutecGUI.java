@@ -329,27 +329,27 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 
 			else if (cmd.equals("Load Map #1")) {
 				System.out.println("Starting to get map 1");
-				UtecInterface.getMap(1, this);
+				UtecInterface.pullMapData(1, this);
 			}
 
 			else if (cmd.equals("Load Map #2")) {
 				System.out.println("Starting to get map 2");
-				UtecInterface.getMap(2, this);
+				UtecInterface.pullMapData(2, this);
 			}
 
 			else if (cmd.equals("Load Map #3")) {
 				System.out.println("Starting to get map 3");
-				UtecInterface.getMap(3, this);
+				UtecInterface.pullMapData(3, this);
 			}
 
 			else if (cmd.equals("Load Map #4")) {
 				System.out.println("Starting to get map 4");
-				UtecInterface.getMap(4, this);
+				UtecInterface.pullMapData(4, this);
 			}
 
 			else if (cmd.equals("Load Map #5")) {
 				System.out.println("Starting to get map 5");
-				UtecInterface.getMap(5, this);
+				UtecInterface.pullMapData(5, this);
 			}
 
 			else if (cmd.equals("Load Map File")) {
@@ -366,27 +366,27 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 			
 			else if (cmd.equals("Save To Map #1")) {
 				System.out.println("Starting to save map #1");
-				UtecInterface.uploadMap(1, DataManager.getCurrentMapData());
+				UtecInterface.sendMapData(1, DataManager.getCurrentMapData().getUpdatedMap());
 			}
 
 			else if (cmd.equals("Save To Map #2")) {
 				System.out.println("Starting to save map #2");
-				UtecInterface.uploadMap(2, DataManager.getCurrentMapData());
+				UtecInterface.sendMapData(2, DataManager.getCurrentMapData().getUpdatedMap());
 			}
 
 			else if (cmd.equals("Save To Map #3")) {
 				System.out.println("Starting to save map #3");
-				UtecInterface.uploadMap(3, DataManager.getCurrentMapData());
+				UtecInterface.sendMapData(3, DataManager.getCurrentMapData().getUpdatedMap());
 			}
 
 			else if (cmd.equals("Save To Map #4")) {
 				System.out.println("Starting to save map #4");
-				UtecInterface.uploadMap(4, DataManager.getCurrentMapData());
+				UtecInterface.sendMapData(4, DataManager.getCurrentMapData().getUpdatedMap());
 			}
 
 			else if (cmd.equals("Save To Map #5")) {
 				System.out.println("Starting to save map #5");
-				UtecInterface.uploadMap(5, DataManager.getCurrentMapData());
+				UtecInterface.sendMapData(5, DataManager.getCurrentMapData().getUpdatedMap());
 			}
 			else if (cmd.equals("Exit")) {
 				// Use interface to finally close the connection to the Utec
@@ -404,7 +404,7 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 			
 			else if(cmd.equals("Start Logging")){
 				System.out.println("Kicking off the logging.");
-				UtecInterface.startDataLogFromUtec();
+				UtecInterface.startLoggerDataFlow();
 			}
 			
 			else if(cmd.equals("Close Port")){

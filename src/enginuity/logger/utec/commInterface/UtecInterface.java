@@ -12,15 +12,21 @@ import java.awt.event.*;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.*;
 //import javax.comm.CommPortIdentifier
 import gnu.io.*;
+
 import javax.swing.*;
 
 import enginuity.logger.utec.gui.realtimeData.*;
 import enginuity.logger.utec.mapData.GetMapFromUtecListener;
 import enginuity.logger.utec.mapData.UtecMapData;
+import enginuity.logger.utec.properties.UtecProperties;
 import enginuity.logger.utec.comm.*;
+import enginuity.logger.utec.commEvent.LoggerEvent;
+import enginuity.logger.utec.commEvent.LoggerListener;
+import enginuity.logger.utec.commEvent.UtecTimerTaskManager;
 /**
  * @author emorgan
  *
@@ -30,128 +36,278 @@ import enginuity.logger.utec.comm.*;
 public class UtecInterface{
 	//Store string vector of known system comm ports
 	private static Vector portChoices =  listPortChoices();
-	
-	//Basic connection settings, already tuned for a UTEC connection, baud, parity, etc
-	private static SerialParameters parameters = new SerialParameters();
-	
-	//Actual connection entity
-	private static UtecSerialConnection utecControl = new UtecSerialConnection(parameters);
+	private static UtecSerialListener se = new UtecSerialListener();
+	private static Vector<LoggerListener> loggerListeners = new Vector<LoggerListener>();
 
+	/**
+	 * Initial setup of the class
+	 *
+	 */
+	public static void init(){
+		UtecSerialConnection.init(se);
+	}
 
-	public static boolean ISOPEN = utecControl.isOpen();
+	/**
+	 * Method sends string data to the utec
+	 * @param mapData
+	 */
+	public static void sendDataToUtec(StringBuffer commandData){
+		UtecTimerTaskManager.execute(commandData);
+	}
 	
+	/**
+	 * Transmit a map to the utec
+	 * 
+	 * @param mapNumber
+	 * @param listener
+	 */
+	public static void sendMapData(int mapNumber, StringBuffer mapData) {
+
+		// Sanity check
+		if (mapNumber < 1 || mapNumber > 5) {
+			System.err.println("Map selection out of range.");
+			return;
+		}
+		
+		String[] commandList = UtecProperties.getProperties("utec.startMapDownload");
+		if(commandList == null){
+			System.err.println("Command string in properties file for utec.startMapUpload not found.");
+			return;
+		}
+		
+		resetUtec();
+		System.out.println("UtecControl, sending map:" + mapNumber);
+		
+		// Iterate through command string
+		int starCounter = 0;
+		for(int i = 0; i < commandList.length ; i++){
+			if(commandList[i].equalsIgnoreCase("*")){
+				if(starCounter == 0){
+					// Select map
+					
+					if (mapNumber == 1) {
+						UtecTimerTaskManager.execute(33);
+						System.out.println("Requested Map 1");
+					}
+					if (mapNumber == 2) {
+						UtecTimerTaskManager.execute(64);
+						System.out.println("Requested Map 2");
+					}
+					if (mapNumber == 3) {
+						UtecTimerTaskManager.execute(35);
+						System.out.println("Requested Map 3");
+					}
+					if (mapNumber == 4) {
+						UtecTimerTaskManager.execute(36);
+						System.out.println("Requested Map 4");
+					}
+					if (mapNumber == 5) {
+						UtecTimerTaskManager.execute(37);
+						System.out.println("Requested Map 5");
+					}
+				}else if(starCounter == 1){
+					UtecTimerTaskManager.execute(mapData);
+					
+				}else{
+					System.err.println("No operation supported for properties value '*'");
+				}
+				
+				starCounter++;
+			}else{
+				// Send parsed command to the utec
+				UtecTimerTaskManager.execute(Integer.parseInt(commandList[i]));
+			}
+		}
+	}
+	
+
+	/**
+	 * Get UTEC to send logger data data
+	 * 
+	 */
+	public static void startLoggerDataFlow() {
+		System.out.println("Starting data flow from UTEC");
+		
+		String[] commandList = UtecProperties.getProperties("utec.startLogging");
+		if(commandList == null){
+			System.err.println("Command string in properties file for utec.startLogging not found.");
+			return;
+		}
+		
+		resetUtec();
+		for(int i = 0; i < commandList.length ; i++){
+			// Send parsed command to the utec
+			UtecTimerTaskManager.execute(Integer.parseInt(commandList[i]));
+		}
+	}
+
+	/**
+	 * Reset UTEC to main screen
+	 * 
+	 */
+	public static void resetUtec() {
+		System.out.println("Utec reset called.");
+
+		String[] commandList = UtecProperties.getProperties("utec.resetUtec");
+		if(commandList == null){
+			System.err.println("Command string in properties file for utec.resetUtec not found.");
+			return;
+		}
+		
+		for(int i = 0; i < commandList.length ; i++){
+			// Send parsed command to the utec
+			UtecTimerTaskManager.execute(Integer.parseInt(commandList[i]));
+		}
+	}
+
+	/**
+	 * Get map data from map number passed in
+	 * 
+	 * @param mapNumber
+	 */
+	
+	public static void pullMapData(int mapNumber, GetMapFromUtecListener listener) {
+		/*
+		// Sanity check
+		if (mapNumber < 1 || mapNumber > 5) {
+			System.err.println("Map selection out of range.");
+			return;
+		}
+		
+		String[] commandList = UtecProperties.getProperties("utec.startMapDownload");
+		if(commandList == null){
+			System.err.println("Command string in properties file for utec.startMapDownload not found.");
+			return;
+		}
+		
+		resetUtec();
+		System.out.println("UtecControl, getting map:" + mapNumber);
+
+		// Null out any previously loaded map
+		this.currentMap = null;
+
+		// Who will get this map in the end?
+		this.getMapFromUtecListener = listener;
+
+		// Setup map transfer prep state
+		this.isMapFromUtecPrep = true;
+		this.isMapFromUtec = false;
+		
+		// Iterate through command string
+		int starCounter = 0;
+		for(int i = 0; i < commandList.length ; i++){
+			if(commandList[i].equalsIgnoreCase("*")){
+				if(starCounter == 0){
+					// Select map
+					
+					if (mapNumber == 1) {
+						this.sendCommandToUtec(33);
+						System.out.println("Requested Map 1");
+					}
+					if (mapNumber == 2) {
+						this.sendCommandToUtec(64);
+						System.out.println("Requested Map 2");
+					}
+					if (mapNumber == 3) {
+						this.sendCommandToUtec(35);
+						System.out.println("Requested Map 3");
+					}
+					if (mapNumber == 4) {
+						this.sendCommandToUtec(36);
+						System.out.println("Requested Map 4");
+					}
+					if (mapNumber == 5) {
+						this.sendCommandToUtec(37);
+						System.out.println("Requested Map 5");
+					}
+				}else if(starCounter == 1){
+
+					// Make this class receptive to map transfer
+					this.isMapFromUtec = true;
+
+					// No longer map prep
+					this.isMapFromUtecPrep = false;
+					
+				}else{
+					System.err.println("No operation supported for properties value '*'");
+				}
+				
+				starCounter++;
+			}else{
+				// Send parsed command to the utec
+				this.sendCommandToUtec(Integer.parseInt(commandList[i]));
+			}
+		}
+		*/
+	}
+
+	
+	/**
+	 * Get a list of all the ports available
+	 * @return
+	 */
 	public static Vector getPortsVector(){
 		return portChoices;
 	}
 	
+	/**
+	 * Get name of currently used port
+	 * @return
+	 */
 	public static String getPortChoiceUsed(){
-		return utecControl.parameters.getPortName();
+		return UtecSerialConnection.parameters.getPortName();
 	}
-	
-	public static void getMap(int mapNumber, GetMapFromUtecListener listener){
-		openConnection();
-		utecControl.pullMapData(mapNumber, listener);
-	}
-	
-	public static void uploadMap(int mapNumber, UtecMapData mapData){
-		openConnection();
-		if(mapData == null){
-			System.err.println("No valid map loaded.");
-		}else{
-			utecControl.sendMapData(mapNumber, mapData.getUpdatedMap());
-		}
-		
-	}
+
 	
 	/**
-	 * Pass a command to the UTEC
+	 * Pass a single command char to the UTEC
 	 * @param charValue
 	 */
 	public static void sendCommandToUtec(int charValue){
-		openConnection();
-		utecControl.sendCommandToUtec(charValue);
+		UtecTimerTaskManager.execute(charValue);
 	}
 	
 	/**
+	 * PRIVATE
+	 * 
 	 * Open a port as per names defined in get port names method
 	 * 
 	 * @param portName
 	 */
 	 private static void openConnection(){
-		 if(utecControl.isOpen()){
+		 if(UtecSerialConnection.isOpen()){
 			 System.out.println("Port is already open.");
 			 return;
 		 }
 		 
-		//No port yet chosen
-		 /*
-		if(utecControl.parameters.getPortName().equalsIgnoreCase("")){
-					System.err.println("No Port Yet Chosen, nothing to open");
-					return;
-		}
-	 	*/
-	 	//Port is already opened, any port is open
-	 	/*
-	 	if(ISOPEN){
-	 		System.err.println("Port already opened");
-	 		return;
-	 	}
-	 	*/
 	 	
 	 	//Attempt to make connection
 	 	try{
-	 		utecControl.openConnection();
+	 		UtecSerialConnection.openConnection();
 	 	}catch(SerialConnectionException e){
 	 		System.err.println("Error opening serial port connection");
 	 		e.printStackTrace();
 	 		return;
 	 	}
 	 	
-	 	//Successful opening of port
-	 	//ISOPEN=true;
 	 }
 	
+	/**
+	 * Close connection to the currently opened port
+	 *
+	 */
 	public static void closeConnection(){
-		utecControl.closeConnection();	
+		UtecSerialConnection.closeConnection();	
 	}
 	
+	/**
+	 * Open selected port.
+	 * @param port
+	 */
 	public static void setPortChoice(String port){
-		utecControl.closeConnection();
-		utecControl.parameters.setPortName(port);
+		UtecSerialConnection.closeConnection();
+		UtecSerialConnection.parameters.setPortName(port);
 		openConnection();
-	}
-	
-	/**
-	 * Resets UTEC to main screen
-	 *
-	 */
-	public static void resetUtec(){
-		openConnection();
-		utecControl.resetUtec();	
-	}
-	
-	/**
-	 * Starts the #1 logger (SHIFT-1), ie !, ie CSV logger.
-	 *
-	 */
-	public static void startDataLogFromUtec(){
-		openConnection();
-		utecControl.resetUtec();
-		utecControl.startLoggerDataFlow();
-	}
-	
-	
-	/**
-	 * Adds a listener for comm port events
-	 * @param o
-	 */
-	public static void addListener(Object o){
-		if(utecControl == null){
-			System.err.println("No Serial Connection defined yet.");
-			return;
-		}
-		
-		utecControl.addListener(o);
 	}
 	
 	/**
@@ -177,5 +333,14 @@ public class UtecInterface{
 			}
 		}
 		return theChoices;
+	}
+	
+	/**
+	 * Add a listener to logger data
+	 * 
+	 * @param ll
+	 */
+	public static void addLoggerListener(LoggerListener ll){
+		loggerListeners.add(ll);
 	}
 }
