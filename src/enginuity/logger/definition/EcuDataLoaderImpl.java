@@ -39,8 +39,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
     private EcuSwitch fileLoggingControllerSwitch;
 
-    public void loadFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId,
-                            EcuInit ecuInit) {
+    public void loadFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
         checkNotNullOrEmpty(protocol, "protocol");
         checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
