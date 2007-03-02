@@ -17,6 +17,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import static java.awt.BorderLayout.CENTER;
@@ -37,78 +38,35 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
     private final Map<EcuData, ChartPanel> chartMap = synchronizedMap(new HashMap<EcuData, ChartPanel>());
     private final Map<EcuData, XYSeries> seriesMap = synchronizedMap(new HashMap<EcuData, XYSeries>());
     private final Map<EcuData, Integer> datasetIndexes = synchronizedMap(new HashMap<EcuData, Integer>());
-    private final long startTime = System.currentTimeMillis();
+    private long startTime = System.currentTimeMillis();
     private final JPanel graphPanel;
     private boolean combinedChart = false;
+    private boolean paused = false;
+    private long pauseStartTime = System.currentTimeMillis();
     private ChartPanel combinedChartPanel = null;
     private int counter = 0;
 
 
     public GraphUpdateHandler(final JPanel panel) {
         this.graphPanel = new JPanel(new SpringLayout());
-        final JCheckBox combinedCheckbox = new JCheckBox("Combine Graphs", combinedChart);
-        combinedCheckbox.addActionListener(new ActionListener() {
+        JCheckBox combinedCheckbox = new JCheckBox("Combine Graphs", combinedChart);
+        combinedCheckbox.addActionListener(new CombinedActionListener(combinedCheckbox));
+        JToggleButton playPauseButton = new JToggleButton("Pause Graphs");
+        playPauseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (actionEvent.getSource() == combinedCheckbox) {
-                    new Thread(new Runnable() {
-                        public void run() {
-                            try {
-                                SwingUtilities.invokeAndWait(new Runnable() {
-                                    public void run() {
-                                        synchronized (this) {
-                                            combinedChart = combinedCheckbox.isSelected();
-                                            if (combinedChart) {
-                                                removeAllFromPanel();
-                                                addAllToCombined();
-                                                layoutForCombined();
-//                                                combinedChartPanel.repaint();
-                                            } else {
-                                                removeAllFromCombined();
-                                                addAllToPanel();
-                                                layoutForPanel();
-                                            }
-                                        }
-                                    }
-                                });
-//                                panel.doLayout();
-//                                panel.repaint();
-                                graphPanel.doLayout();
-                                graphPanel.repaint();
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
+                paused = !paused;
+                if (paused) {
+                    pauseStartTime = System.currentTimeMillis();
+                } else {
+                    startTime = startTime + (System.currentTimeMillis() - pauseStartTime);
                 }
             }
         });
-        panel.add(combinedCheckbox, NORTH);
+        JPanel controlPanel = new JPanel();
+        controlPanel.add(combinedCheckbox);
+        controlPanel.add(playPauseButton);
+        panel.add(controlPanel, NORTH);
         panel.add(this.graphPanel, CENTER);
-    }
-
-    private void addAllToCombined() {
-        for (EcuData ecuData : seriesMap.keySet()) {
-            addToCombined(ecuData);
-        }
-    }
-
-    private void removeAllFromPanel() {
-        for (EcuData ecuData : seriesMap.keySet()) {
-            removeFromPanel(ecuData);
-        }
-    }
-
-    private void addAllToPanel() {
-        for (EcuData ecuData : seriesMap.keySet()) {
-            addToPanel(ecuData);
-        }
-    }
-
-    private void removeAllFromCombined() {
-        for (EcuData ecuData : seriesMap.keySet()) {
-            removeFromCombined(ecuData);
-        }
     }
 
     public synchronized void registerData(EcuData ecuData) {
@@ -121,7 +79,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
             addToPanel(ecuData);
             layoutForPanel();
         }
-        repaintGraphPanel(2);
+        graphPanel.updateUI();
     }
 
     private synchronized void addToPanel(EcuData ecuData) {
@@ -161,7 +119,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
     public synchronized void handleDataUpdate(EcuData ecuData, final double value, final long timestamp) {
         // update chart
         final XYSeries series = seriesMap.get(ecuData);
-        if (series != null) {
+        if (series != null && !paused) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     series.add((timestamp - startTime) / 1000.0, value);
@@ -178,7 +136,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
             removeFromPanel(ecuData);
             layoutForPanel();
         }
-        repaintGraphPanel(1);
+        graphPanel.updateUI();
     }
 
     private void removeFromCombined(EcuData ecuData) {
@@ -246,24 +204,51 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         return ecuData.getName() + " (" + ecuData.getSelectedConvertor().getUnits() + ")";
     }
 
-    private void repaintGraphPanel(final int parentRepaintLevel) {
-        new Thread(new Runnable() {
-            public void run() {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if (datasetIndexes.size() < parentRepaintLevel) {
-                            graphPanel.doLayout();
-                            graphPanel.repaint();
-                        } else {
-                            if (datasetIndexes.size() == 1) {
-                                graphPanel.doLayout();
-                            }
-                            graphPanel.getParent().doLayout();
-                            graphPanel.getParent().repaint();
-                        }
-                    }
-                });
+    
+    private final class CombinedActionListener implements ActionListener {
+        private final JCheckBox combinedCheckbox;
+
+        private CombinedActionListener(JCheckBox combinedCheckbox) {
+            this.combinedCheckbox = combinedCheckbox;
+        }
+
+        public void actionPerformed(ActionEvent actionEvent) {
+            combinedChart = combinedCheckbox.isSelected();
+            if (combinedChart) {
+                removeAllFromPanel();
+                addAllToCombined();
+                layoutForCombined();
+            } else {
+                removeAllFromCombined();
+                addAllToPanel();
+                layoutForPanel();
             }
-        }).start();
+            graphPanel.updateUI();
+        }
+
+        private void addAllToCombined() {
+            for (EcuData ecuData : seriesMap.keySet()) {
+                addToCombined(ecuData);
+            }
+        }
+
+        private void removeAllFromPanel() {
+            for (EcuData ecuData : seriesMap.keySet()) {
+                removeFromPanel(ecuData);
+            }
+        }
+
+        private void addAllToPanel() {
+            for (EcuData ecuData : seriesMap.keySet()) {
+                addToPanel(ecuData);
+            }
+        }
+
+        private void removeAllFromCombined() {
+            for (EcuData ecuData : seriesMap.keySet()) {
+                removeFromCombined(ecuData);
+            }
+        }
+
     }
 }
