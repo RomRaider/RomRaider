@@ -39,7 +39,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
     private final Map<EcuData, Integer> datasetIndexes = synchronizedMap(new HashMap<EcuData, Integer>());
     private final long startTime = System.currentTimeMillis();
     private final JPanel graphPanel;
-    private boolean combinedChart = true;
+    private boolean combinedChart = false;
     private ChartPanel combinedChartPanel = null;
     private int counter = 0;
 
