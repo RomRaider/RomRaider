@@ -20,6 +20,7 @@ public class UtecTableModel extends AbstractTableModel {
 		for (int i = 0; i < columnNames.length; i++) {
 			columnNames[i] = i + "";
 		}
+		
 	}
 
 	public int getColumnCount() {

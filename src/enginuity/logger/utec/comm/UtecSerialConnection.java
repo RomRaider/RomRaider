@@ -25,9 +25,9 @@ import enginuity.logger.utec.properties.UtecProperties;
 // CommPortOwnershipListener {
 import gnu.io.*;
 
-public class UtecSerialConnection {
+public class UtecSerialConnection{
 
-	private static GetMapFromUtecListener getMapFromUtecListener = null;
+	
 
 	// Parameters used to define serial connection
 	public static SerialParameters parameters = new SerialParameters();
@@ -50,14 +50,7 @@ public class UtecSerialConnection {
 	// Listeners
 	private static Vector portListeners = new Vector();
 
-	// Define whether or not we are recieving a map from the UTEC
-	private static boolean isMapFromUtecPrep = false;
 
-	private static boolean isMapFromUtec = false;
-
-	private static UtecMapData currentMap = null;
-	private static String totalDat = "";
-	
 	private static UtecSerialListener serialListener = null;
 	
 	public static void init(UtecSerialListener se){
@@ -100,6 +93,7 @@ public class UtecSerialConnection {
 	 * @throws SerialConnectionException
 	 */
 	public static void openConnection() throws SerialConnectionException {
+		System.out.println("Opening connection now.");
 		
 		// if(sPort == null){ System.err.println("No port selected or available to open."); return; }
 		 
@@ -158,7 +152,7 @@ public class UtecSerialConnection {
 
 		// Add this object as an event listener for the serial port.
 		try {
-			sPort.addEventListener(serialListener);
+			sPort.addEventListener(new UtecSerialListener());
 		} catch (TooManyListenersException e) {
 			System.err.println("Too Many listeners");
 			sPort.close();
@@ -281,5 +275,18 @@ public class UtecSerialConnection {
 	 */
 	public static boolean isOpen(){
 		return open;
+	}
+
+	public static InputStream getInputFromUtecStream() {
+		return inputFromUtecStream;
+	}
+
+	public static OutputStream getOutputToUtecStream() {
+		return outputToUtecStream;
+	}
+
+	public void serialEvent(SerialPortEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

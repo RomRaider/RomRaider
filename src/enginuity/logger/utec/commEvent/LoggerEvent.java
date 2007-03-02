@@ -48,27 +48,17 @@ public class LoggerEvent {
 			if(theData.startsWith("--")){
 				theData = "0.0";
 			}
+			if(theData.startsWith("ECU")){
+				theData = "0.0";
+			}
 			
 			try{
 				doubleData[i] = Double.parseDouble(theData);
 			}catch (NumberFormatException e) {
-				System.out.println("Number error in commevent.");
+				//System.out.println("Number error in commevent.");
 				this.isValidData = false;
 				return;
 	        }
-			
-			
-			// Valid data found
-			String[] afrIndex = UtecProperties.getProperties("utec.afrIndex");
-			if(afrIndex == null || afrIndex[0] == null || afrIndex[0].length() < 1){
-				// No afr data available
-			}else{
-				System.out.println("AFR Data available.");
-				UtecAFRListener utecAFRListener = DataManager.getUtecAFRListener();
-				if(utecAFRListener != null){
-					utecAFRListener.receivedUtecAFRData(Double.parseDouble(afrIndex[0]));
-				}
-			}
 		}
 		
 	}

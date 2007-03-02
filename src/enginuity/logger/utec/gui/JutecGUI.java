@@ -27,7 +27,7 @@ import enginuity.logger.utec.commInterface.UtecInterface;
 /**
  * @author botman
  */
-public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecListener, KeyListener {
+public class JutecGUI extends JFrame implements ActionListener, KeyListener {
 	
 	// Top level desktop pane
 	public JLayeredPane desktop = null;
@@ -78,17 +78,17 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 	
 	private static JutecGUI instance = null;
 
-	public static UtecMapData currentMap = null;
 
 	// Text input field for sending commands directly to the UTEC
 	private JTextField textInput = new JTextField();
 
 	private JLabel utecInputLabel = new JLabel("   Send Single Char Commands to UTEC: ");
 	
-	// Map tabs
-	private MapJPanel timingMapPanel =  new MapJPanel(MapJPanel.TIMINGMAP);
-	private MapJPanel fuelMapPanel = new MapJPanel(MapJPanel.FUELMAP);
-	private MapJPanel boostMapPanel =  new MapJPanel(MapJPanel.BOOSTMAP);
+	private JProgressBar jProgressBar = new JProgressBar();
+
+	public JProgressBar getJProgressBar() {
+		return jProgressBar;
+	}
 
 	public static JutecGUI getInstance() {
 		return instance;
@@ -103,12 +103,15 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 		this.setResizable(false);
 		this.setDefaultCloseOperation(setDefaultCloseOperation);
 		
+		this.jProgressBar.setSize(790,20);
+		
 		// *************************
 		// Voice the welcome message
 		// *************************
 
 		SpeakString vc = new SpeakString("Welcome to you teck logger! Use at your own risk.");
-
+		System.out.println("UTEC Gui is loading now.");
+		
 		// Actions to take when window is closing
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -221,7 +224,8 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 		JPanel totalPanel = new JPanel(new BorderLayout());
 		JPanel commandPanel = new JPanel(new BorderLayout());
 		this.textInput.addKeyListener(this);
-
+		
+		commandPanel.add(this.jProgressBar, BorderLayout.NORTH);
 		commandPanel.add(this.utecInputLabel, BorderLayout.WEST);
 		commandPanel.add(this.textInput, BorderLayout.CENTER);
 
@@ -312,14 +316,14 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 
 			else if (cmd.equals("Save Map To File")) {
 				System.out.println("Saving map to file.");
-				if (this.currentMap != null) {
+				if (DataManager.getCurrentMapData() != null) {
 
 					String saveFileName = null;
 					System.out.println("Save map now.");
 					fileChosen = fileChooser.showSaveDialog(this);
 					if (fileChosen == JFileChooser.APPROVE_OPTION) {
 						saveFileName = fileChooser.getSelectedFile().getPath();
-						this.currentMap.writeMapToFile(saveFileName);
+						DataManager.getCurrentMapData().writeMapToFile(saveFileName);
 
 					}
 				} else {
@@ -329,27 +333,27 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 
 			else if (cmd.equals("Load Map #1")) {
 				System.out.println("Starting to get map 1");
-				UtecInterface.pullMapData(1, this);
+				UtecInterface.pullMapData(1);
 			}
 
 			else if (cmd.equals("Load Map #2")) {
 				System.out.println("Starting to get map 2");
-				UtecInterface.pullMapData(2, this);
+				UtecInterface.pullMapData(2);
 			}
 
 			else if (cmd.equals("Load Map #3")) {
 				System.out.println("Starting to get map 3");
-				UtecInterface.pullMapData(3, this);
+				UtecInterface.pullMapData(3);
 			}
 
 			else if (cmd.equals("Load Map #4")) {
 				System.out.println("Starting to get map 4");
-				UtecInterface.pullMapData(4, this);
+				UtecInterface.pullMapData(4);
 			}
 
 			else if (cmd.equals("Load Map #5")) {
 				System.out.println("Starting to get map 5");
-				UtecInterface.pullMapData(5, this);
+				UtecInterface.pullMapData(5);
 			}
 
 			else if (cmd.equals("Load Map File")) {
@@ -451,12 +455,6 @@ public class JutecGUI extends JFrame implements ActionListener,GetMapFromUtecLis
 		application.setVisible(true);
 		application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-	}
-
-	public void mapRetrieved(UtecMapData theMap) {
-		System.out.println("@@@@@@@@@@@@@@@@@@ Got a map from the utec:" + theMap.getMapName());
-		this.currentMap = theMap;
-		DataManager.setCurrentMap(theMap);
 	}
 
 	public void keyPressed(KeyEvent arg0) {

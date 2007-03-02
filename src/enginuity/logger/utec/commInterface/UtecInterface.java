@@ -36,7 +36,7 @@ import enginuity.logger.utec.commEvent.UtecTimerTaskManager;
 public class UtecInterface{
 	//Store string vector of known system comm ports
 	private static Vector portChoices =  listPortChoices();
-	private static UtecSerialListener se = new UtecSerialListener();
+	private static UtecSerialListener serialEventListener = new UtecSerialListener();
 	private static Vector<LoggerListener> loggerListeners = new Vector<LoggerListener>();
 
 	/**
@@ -44,7 +44,7 @@ public class UtecInterface{
 	 *
 	 */
 	public static void init(){
-		UtecSerialConnection.init(se);
+		UtecSerialConnection.init(serialEventListener);
 	}
 
 	/**
@@ -166,8 +166,7 @@ public class UtecInterface{
 	 * @param mapNumber
 	 */
 	
-	public static void pullMapData(int mapNumber, GetMapFromUtecListener listener) {
-		/*
+	public static void pullMapData(int mapNumber) {
 		// Sanity check
 		if (mapNumber < 1 || mapNumber > 5) {
 			System.err.println("Map selection out of range.");
@@ -184,14 +183,11 @@ public class UtecInterface{
 		System.out.println("UtecControl, getting map:" + mapNumber);
 
 		// Null out any previously loaded map
-		this.currentMap = null;
-
-		// Who will get this map in the end?
-		this.getMapFromUtecListener = listener;
+		serialEventListener.currentMap = null;
 
 		// Setup map transfer prep state
-		this.isMapFromUtecPrep = true;
-		this.isMapFromUtec = false;
+		serialEventListener.isMapFromUtecPrep = true;
+		serialEventListener.isMapFromUtec = false;
 		
 		// Iterate through command string
 		int starCounter = 0;
@@ -201,32 +197,32 @@ public class UtecInterface{
 					// Select map
 					
 					if (mapNumber == 1) {
-						this.sendCommandToUtec(33);
+						UtecTimerTaskManager.execute(33);
 						System.out.println("Requested Map 1");
 					}
 					if (mapNumber == 2) {
-						this.sendCommandToUtec(64);
+						UtecTimerTaskManager.execute(64);
 						System.out.println("Requested Map 2");
 					}
 					if (mapNumber == 3) {
-						this.sendCommandToUtec(35);
+						UtecTimerTaskManager.execute(35);
 						System.out.println("Requested Map 3");
 					}
 					if (mapNumber == 4) {
-						this.sendCommandToUtec(36);
+						UtecTimerTaskManager.execute(36);
 						System.out.println("Requested Map 4");
 					}
 					if (mapNumber == 5) {
-						this.sendCommandToUtec(37);
+						UtecTimerTaskManager.execute(37);
 						System.out.println("Requested Map 5");
 					}
 				}else if(starCounter == 1){
 
 					// Make this class receptive to map transfer
-					this.isMapFromUtec = true;
+					serialEventListener.isMapFromUtec = true;
 
 					// No longer map prep
-					this.isMapFromUtecPrep = false;
+					serialEventListener.isMapFromUtecPrep = false;
 					
 				}else{
 					System.err.println("No operation supported for properties value '*'");
@@ -235,10 +231,9 @@ public class UtecInterface{
 				starCounter++;
 			}else{
 				// Send parsed command to the utec
-				this.sendCommandToUtec(Integer.parseInt(commandList[i]));
+				UtecTimerTaskManager.execute(Integer.parseInt(commandList[i]));
 			}
 		}
-		*/
 	}
 
 	
@@ -342,5 +337,9 @@ public class UtecInterface{
 	 */
 	public static void addLoggerListener(LoggerListener ll){
 		loggerListeners.add(ll);
+	}
+
+	public static Vector<LoggerListener> getLoggerListeners() {
+		return loggerListeners;
 	}
 }

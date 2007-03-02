@@ -36,12 +36,23 @@ public class MapJPanel extends JPanel{
 		}
 		this.tableModel = new UtecTableModel(this.mapType, initialData);
 	
-		init();
+		if(this.mapType == MapJPanel.FUELMAP){
+			init(-8.0, 8.0);
+		}
+		
+		if(this.mapType == MapJPanel.TIMINGMAP){
+			init(-1.0, 5.0);
+		}
+		
+		if(this.mapType == MapJPanel.BOOSTMAP){
+			init(0.0, 500.0);
+		}
+		
 		
 	}
 	
-	public void init(){	
-		table = new UtecJTable(tableModel, mapType);
+	public void init(double min, double max){	
+		table = new UtecJTable(tableModel, mapType, min, max);
         //table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
         //Create the scroll pane and add the table to it.
