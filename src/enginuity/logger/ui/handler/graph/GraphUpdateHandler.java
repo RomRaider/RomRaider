@@ -38,8 +38,8 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
     private final Map<EcuData, ChartPanel> chartMap = synchronizedMap(new HashMap<EcuData, ChartPanel>());
     private final Map<EcuData, XYSeries> seriesMap = synchronizedMap(new HashMap<EcuData, XYSeries>());
     private final Map<EcuData, Integer> datasetIndexes = synchronizedMap(new HashMap<EcuData, Integer>());
-    private long startTime = System.currentTimeMillis();
     private final JPanel graphPanel;
+    private long startTime = System.currentTimeMillis();
     private boolean combinedChart = false;
     private boolean paused = false;
     private long pauseStartTime = System.currentTimeMillis();
