@@ -140,8 +140,10 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
 
     private synchronized void addToCombined(EcuData ecuData) {
         if (combinedChartPanel == null) {
-            combinedChartPanel = new ChartPanel(createXYLineChart(ecuData, null, false), false, true, true, true, true);
-            combinedChartPanel.getChart().addLegend(new LegendTitle(combinedChartPanel.getChart().getXYPlot()));
+            combinedChartPanel = new ChartPanel(createXYLineChart(ecuData, null, true), false, true, true, true, true);
+            LegendTitle legendTitle = new LegendTitle(combinedChartPanel.getChart().getXYPlot());
+            legendTitle.setItemPaint(WHITE);
+            combinedChartPanel.getChart().addLegend(legendTitle);
             combinedChartPanel.setMinimumSize(new Dimension(500, 400));
             combinedChartPanel.setPreferredSize(new Dimension(500, 400));
             graphPanel.add(combinedChartPanel);
@@ -222,12 +224,13 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         seriesMap.put(ecuData, series);
     }
 
-    private JFreeChart createXYLineChart(EcuData ecuData, XYDataset dataset, boolean showLegend) {
-        final JFreeChart chart = ChartFactory.createXYLineChart(ecuData.getName(), "Time (sec)", buildRangeAxisTitle(ecuData), dataset,
-                VERTICAL, showLegend, true, false);
+    private JFreeChart createXYLineChart(EcuData ecuData, XYDataset dataset, boolean combined) {
+        String title = combined ? "Combined Data" : ecuData.getName();
+        String rangeAxisTitle = combined ? "Data" : buildRangeAxisTitle(ecuData);
+        JFreeChart chart = ChartFactory.createXYLineChart(title, "Time (sec)", rangeAxisTitle, dataset, VERTICAL, false, true, false);
         chart.setBackgroundPaint(BLACK);
         chart.getTitle().setPaint(WHITE);
-        final XYPlot plot = chart.getXYPlot();
+        XYPlot plot = chart.getXYPlot();
         plot.setBackgroundPaint(BLACK);
         plot.getDomainAxis().setLabelPaint(WHITE);
         plot.getRangeAxis().setLabelPaint(WHITE);
