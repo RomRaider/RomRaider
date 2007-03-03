@@ -21,6 +21,7 @@
 
 package enginuity.logger.definition;
 
+import enginuity.io.connection.ConnectionProperties;
 import enginuity.logger.comms.query.EcuInit;
 
 import java.util.List;
@@ -35,4 +36,6 @@ public interface EcuDataLoader {
     List<EcuSwitch> getEcuSwitches();
 
     EcuSwitch getFileLoggingControllerSwitch();
+
+    ConnectionProperties getConnectionProperties();
 }

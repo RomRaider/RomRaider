@@ -21,6 +21,7 @@
 
 package enginuity.logger.comms.io.connection;
 
+import enginuity.io.connection.ConnectionProperties;
 import enginuity.io.connection.SerialConnection;
 import enginuity.io.connection.SerialConnectionImpl;
 import enginuity.logger.comms.io.protocol.LoggerProtocol;
@@ -28,6 +29,8 @@ import enginuity.logger.comms.io.protocol.SSMLoggerProtocol;
 import enginuity.logger.comms.query.RegisteredQuery;
 import enginuity.logger.exception.SerialCommunicationException;
 import static enginuity.util.HexUtil.asHex;
+import static enginuity.util.ParamChecker.checkNotNull;
+import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
 
 import java.util.Collection;
@@ -36,12 +39,14 @@ public final class SSMLoggerConnection implements LoggerConnection {
     private LoggerProtocol protocol;
     private SerialConnection serialConnection;
 
-    public SSMLoggerConnection(String portName) {
+    public SSMLoggerConnection(String portName, ConnectionProperties connectionProperties) {
+        checkNotNullOrEmpty(portName, "portName");
+        checkNotNull(connectionProperties);
         protocol = new SSMLoggerProtocol();
 
         // Use TestSSMConnectionImpl for testing!!
-        serialConnection = new SerialConnectionImpl(protocol.getConnectionProperties(), portName);
-//        serialConnection = new TestSSMConnectionImpl(protocol.getConnectionProperties(), portName);
+        serialConnection = new SerialConnectionImpl(connectionProperties, portName);
+//        serialConnection = new TestSSMConnectionImpl(connectionProperties, portName);
     }
 
     public void sendAddressReads(Collection<RegisteredQuery> queries) {

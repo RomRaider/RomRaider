@@ -38,7 +38,7 @@ import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.sleep;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;
@@ -119,7 +119,7 @@ public final class QueryManagerImpl implements QueryManager {
     private boolean doEcuInit() {
         try {
             Protocol protocol = ProtocolFactory.getInstance().getProtocol(settings.getLoggerProtocol());
-            EcuConnection ecuConnection = new EcuConnectionImpl(protocol.getConnectionProperties(), settings.getLoggerPort());
+            EcuConnection ecuConnection = new EcuConnectionImpl(settings.getLoggerConnectionProperties(), settings.getLoggerPort());
             try {
                 messageListener.reportMessage("Sending ECU Init...");
                 byte[] request = protocol.constructEcuInitRequest();

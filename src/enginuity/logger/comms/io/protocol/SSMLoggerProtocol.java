@@ -21,7 +21,6 @@
 
 package enginuity.logger.comms.io.protocol;
 
-import enginuity.io.connection.ConnectionProperties;
 import enginuity.io.protocol.Protocol;
 import enginuity.io.protocol.SSMProtocol;
 import static enginuity.io.protocol.SSMProtocol.ADDRESS_SIZE;
@@ -80,10 +79,6 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         for (RegisteredQuery query : queries) {
             query.setResponse(addressResults.get(query.getHex()));
         }
-    }
-
-    public ConnectionProperties getConnectionProperties() {
-        return protocol.getConnectionProperties();
     }
 
     private Collection<RegisteredQuery> filterDuplicates(Collection<RegisteredQuery> queries) {

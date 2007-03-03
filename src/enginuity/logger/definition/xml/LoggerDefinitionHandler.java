@@ -21,6 +21,8 @@
 
 package enginuity.logger.definition.xml;
 
+import enginuity.io.connection.ConnectionProperties;
+import enginuity.io.connection.ConnectionPropertiesImpl;
 import enginuity.logger.comms.query.EcuInit;
 import enginuity.logger.definition.EcuData;
 import enginuity.logger.definition.EcuDataConvertor;
@@ -72,12 +74,19 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_BIT = "bit";
     private static final String ATTR_PARAMETER = "parameter";
     private static final String ATTR_STORAGETYPE = "storagetype";
+    private static final String ATTR_BAUD = "baud";
+    private static final String ATTR_DATABITS = "databits";
+    private static final String ATTR_STOPBITS = "stopbits";
+    private static final String ATTR_PARITY = "parity";
+    private static final String ATTR_CONNECT_TIMEOUT = "connect_timeout";
+    private static final String ATTR_SEND_TIMEOUT = "send_timeout";
     private final String protocol;
     private final String fileLoggingControllerSwitchId;
     private final EcuInit ecuInit;
     private List<EcuParameter> params;
     private List<EcuSwitch> switches;
     private EcuSwitch fileLoggingControllerSwitch;
+    private ConnectionProperties connectionProperties;
     private Map<String, EcuData> ecuDataMap;
     private String id;
     private String name;
@@ -113,6 +122,12 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if (TAG_PROTOCOL.equals(qName)) {
             parseProtocol = protocol.equalsIgnoreCase(attributes.getValue(ATTR_ID));
+            if (parseProtocol) {
+                connectionProperties = new ConnectionPropertiesImpl(Integer.parseInt(attributes.getValue(ATTR_BAUD)),
+                        Integer.parseInt(attributes.getValue(ATTR_DATABITS)), Integer.parseInt(attributes.getValue(ATTR_STOPBITS)),
+                        Integer.parseInt(attributes.getValue(ATTR_PARITY)), Integer.parseInt(attributes.getValue(ATTR_CONNECT_TIMEOUT)),
+                        Integer.parseInt(attributes.getValue(ATTR_SEND_TIMEOUT)));
+            }
         } else if (parseProtocol) {
             if (TAG_PARAMETER.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
@@ -226,6 +241,22 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         }
     }
 
+    public List<EcuParameter> getEcuParameters() {
+        return params;
+    }
+
+    public List<EcuSwitch> getEcuSwitches() {
+        return switches;
+    }
+
+    public EcuSwitch getFileLoggingControllerSwitch() {
+        return fileLoggingControllerSwitch;
+    }
+
+    public ConnectionProperties getConnectionProperties() {
+        return connectionProperties;
+    }
+
     private List<String> getAddressList(String startAddress, int addressLength) {
         List<String> addresses = new LinkedList<String>();
         int start = HexUtil.hexToInt(startAddress);
@@ -261,18 +292,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         } else {
             return false;
         }
-    }
-
-    public List<EcuParameter> getEcuParameters() {
-        return params;
-    }
-
-    public List<EcuSwitch> getEcuSwitches() {
-        return switches;
-    }
-
-    public EcuSwitch getFileLoggingControllerSwitch() {
-        return fileLoggingControllerSwitch;
     }
 
     private String[] toArray(Set<String> set) {

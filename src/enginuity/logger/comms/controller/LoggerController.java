@@ -41,5 +41,4 @@ public interface LoggerController {
     void stop();
 
     void addListener(StatusChangeListener listener);
-
 }

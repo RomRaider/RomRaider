@@ -157,6 +157,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
         bootstrap(settings);
+        loadLoggerConfig();
         initControllerListeners();
         initUserInterface();
         initDataUpdateHandlers();
@@ -251,6 +252,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             loadEcuParams(ecuParams);
             loadEcuSwitches(dataLoader.getEcuSwitches());
             initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
+            settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
         } catch (Exception e) {
             reportError(e);
         }

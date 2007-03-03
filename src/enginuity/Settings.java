@@ -21,9 +21,13 @@
 
 package enginuity;
 
+import enginuity.io.connection.ConnectionProperties;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Point;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Vector;
@@ -74,6 +78,7 @@ public class Settings implements Serializable {
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();
     private boolean loggerWindowMaximized = false;
+    private ConnectionProperties loggerConnectionProperties;
 
 
     public Settings() {
@@ -390,4 +395,11 @@ public class Settings implements Serializable {
         this.fileLoggingAbsoluteTimestamp = fileLoggingAbsoluteTimestamp;
     }
 
+    public ConnectionProperties getLoggerConnectionProperties() {
+        return loggerConnectionProperties;
+    }
+
+    public void setLoggerConnectionProperties(ConnectionProperties loggerConnectionProperties) {
+        this.loggerConnectionProperties = loggerConnectionProperties;
+    }
 }

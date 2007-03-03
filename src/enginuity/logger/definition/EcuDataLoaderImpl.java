@@ -21,6 +21,7 @@
 
 package enginuity.logger.definition;
 
+import enginuity.io.connection.ConnectionProperties;
 import enginuity.logger.comms.query.EcuInit;
 import enginuity.logger.definition.xml.LoggerDefinitionHandler;
 import enginuity.logger.exception.ConfigurationException;
@@ -38,6 +39,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
     private EcuSwitch fileLoggingControllerSwitch;
+    private ConnectionProperties connectionProperties;
 
     public void loadFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
@@ -51,6 +53,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();
                 fileLoggingControllerSwitch = handler.getFileLoggingControllerSwitch();
+                connectionProperties = handler.getConnectionProperties();
             } finally {
                 inputStream.close();
             }
@@ -69,5 +72,9 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
 
     public EcuSwitch getFileLoggingControllerSwitch() {
         return fileLoggingControllerSwitch;
+    }
+
+    public ConnectionProperties getConnectionProperties() {
+        return connectionProperties;
     }
 }

@@ -47,6 +47,12 @@
 
 <!ELEMENT protocol ( parameters?, switches?, ecuparams? ) >
 <!ATTLIST protocol id ID #REQUIRED >
+<!ATTLIST protocol baud CDATA #REQUIRED >
+<!ATTLIST protocol databits CDATA #REQUIRED >
+<!ATTLIST protocol stopbits CDATA #REQUIRED >
+<!ATTLIST protocol parity CDATA #REQUIRED >
+<!ATTLIST protocol connect_timeout CDATA #REQUIRED >
+<!ATTLIST protocol send_timeout CDATA #REQUIRED >
 
 <!ELEMENT protocols ( protocol+ ) >
 

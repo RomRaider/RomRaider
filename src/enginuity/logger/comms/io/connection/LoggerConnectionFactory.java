@@ -21,6 +21,7 @@
 
 package enginuity.logger.comms.io.connection;
 
+import enginuity.io.connection.ConnectionProperties;
 import enginuity.logger.exception.UnsupportedProtocolException;
 
 public final class LoggerConnectionFactory {
@@ -33,10 +34,10 @@ public final class LoggerConnectionFactory {
     private LoggerConnectionFactory() {
     }
 
-    public LoggerConnection getLoggerConnection(String protocolName, String portName) {
+    public LoggerConnection getLoggerConnection(String protocolName, String portName, ConnectionProperties connectionProperties) {
         try {
             Class<?> cls = Class.forName(this.getClass().getPackage().getName() + "." + protocolName + "LoggerConnection");
-            return (LoggerConnection) cls.getConstructor(String.class).newInstance(portName);
+            return (LoggerConnection) cls.getConstructor(String.class, ConnectionProperties.class).newInstance(portName, connectionProperties);
         } catch (Exception e) {
             throw new UnsupportedProtocolException("'" + protocolName + "' is not a supported protocol", e);
         }

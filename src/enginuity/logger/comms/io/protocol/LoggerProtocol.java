@@ -21,7 +21,6 @@
 
 package enginuity.logger.comms.io.protocol;
 
-import enginuity.io.connection.ConnectionProperties;
 import enginuity.logger.comms.query.RegisteredQuery;
 
 import java.util.Collection;
@@ -35,6 +34,4 @@ public interface LoggerProtocol {
     byte[] preprocessResponse(byte[] request, byte[] response);
 
     void processReadAddressResponses(Collection<RegisteredQuery> queries, byte[] response);
-
-    ConnectionProperties getConnectionProperties();
 }

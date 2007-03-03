@@ -42,8 +42,10 @@ public final class TransmissionManagerImpl implements TransmissionManager {
 
     public void start() {
         try {
-            connection = LoggerConnectionFactory.getInstance().getLoggerConnection(settings.getLoggerProtocol(), settings.getLoggerPort());
-            System.out.println("Connected to: " + settings.getLoggerPort() + "; using protocol: " + settings.getLoggerProtocol());
+            connection = LoggerConnectionFactory.getInstance().getLoggerConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
+                    settings.getLoggerConnectionProperties());
+            System.out.println("Connected to: " + settings.getLoggerPort() + "; using protocol: " + settings.getLoggerProtocol() + "; conn props: "
+                    + settings.getLoggerConnectionProperties());
         } catch (Throwable e) {
             stop();
             throw new SerialCommunicationException("Unable to connect to port: " + settings.getLoggerPort() + ", with protocol: "
