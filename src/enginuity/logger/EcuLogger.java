@@ -76,12 +76,15 @@ import javax.swing.JScrollPane;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
+import javax.swing.JSeparator;
+import static javax.swing.JSeparator.VERTICAL;
 import javax.swing.JSplitPane;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
 import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import javax.swing.JTabbedPane;
 import static javax.swing.JTabbedPane.BOTTOM;
 import javax.swing.JTable;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
@@ -92,6 +95,7 @@ import static java.awt.BorderLayout.SOUTH;
 import static java.awt.BorderLayout.WEST;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.RED;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -153,6 +157,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JPanel dashboardPanel;
     private DashboardUpdateHandler dashboardUpdateHandler;
     private EcuInit ecuInit;
+    private JToggleButton logToFileButton;
 
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
@@ -278,11 +283,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         controller.setFileLoggerSwitch(fileLoggingControllerSwitch, new LoggerCallback() {
             public void callback(byte[] bytes) {
                 // update handlers
-                double value = fileLoggingControllerSwitch.getSelectedConvertor().convert(bytes);
-                if ((int) value == 1) {
-                    fileUpdateHandler.start();
-                } else {
-                    fileUpdateHandler.stop();
+                if (settings.isFileLoggingControllerSwitchActive()) {
+                    boolean logToFile = (int) fileLoggingControllerSwitch.getSelectedConvertor().convert(bytes) == 1;
+                    logToFileButton.setSelected(logToFile);
+                    if (logToFile) {
+                        fileUpdateHandler.start();
+                    } else {
+                        fileUpdateHandler.stop();
+                    }
                 }
             }
         });
@@ -547,6 +555,22 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return controlPanel;
     }
 
+    private Component buildLogToFileButton() {
+        logToFileButton = new JToggleButton("Log to file");
+        logToFileButton.setToolTipText("Start/stop file logging");
+        logToFileButton.setPreferredSize(new Dimension(100, 25));
+        logToFileButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (logToFileButton.isSelected()) {
+                    fileUpdateHandler.start();
+                } else {
+                    fileUpdateHandler.stop();
+                }
+            }
+        });
+        return logToFileButton;
+    }
+
     private JPanel buildPortsComboBox() {
         portsComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -587,6 +611,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         });
         comboBoxPanel.add(resetConnectionButton);
         comboBoxPanel.add(disconnectButton);
+        comboBoxPanel.add(new JSeparator(VERTICAL));
+        comboBoxPanel.add(buildLogToFileButton());
         return comboBoxPanel;
     }
 

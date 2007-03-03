@@ -2,17 +2,16 @@ package enginuity.logger.ui.swing.menubar.action;
 
 import enginuity.logger.EcuLogger;
 
-import javax.swing.*;
+import javax.swing.Action;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractAction implements Action {
-    public static final String SELECTED = "selected";
+    public static final String SELECTED_KEY = "selected";
     private final Map<String, Object> valueMap = new HashMap<String, Object>();
     private boolean enabled = true;
     protected EcuLogger logger;
-    public static final String SELECTED_KEY = "selected";
 
     public AbstractAction(EcuLogger logger) {
         this.logger = logger;

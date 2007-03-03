@@ -13,7 +13,9 @@ import enginuity.logger.ui.swing.menubar.action.ResetConnectionAction;
 import enginuity.logger.ui.swing.menubar.action.SaveProfileAction;
 import enginuity.logger.ui.swing.menubar.action.SaveProfileAsAction;
 
-import javax.swing.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JSeparator;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static java.awt.event.KeyEvent.CTRL_MASK;
 import static java.awt.event.KeyEvent.SHIFT_MASK;
@@ -23,6 +25,7 @@ import static java.awt.event.KeyEvent.VK_D;
 import static java.awt.event.KeyEvent.VK_F;
 import static java.awt.event.KeyEvent.VK_H;
 import static java.awt.event.KeyEvent.VK_L;
+import static java.awt.event.KeyEvent.VK_O;
 import static java.awt.event.KeyEvent.VK_P;
 import static java.awt.event.KeyEvent.VK_R;
 import static java.awt.event.KeyEvent.VK_S;
@@ -45,7 +48,7 @@ public class EcuLoggerMenuBar extends JMenuBar {
 
         // settings menu items
         JMenu settingsMenu = new EcuLoggerMenu("Settings", VK_S);
-        settingsMenu.add(new EcuLoggerMenuItem("Log File Output Location...", VK_F, getKeyStroke(VK_F, CTRL_MASK), new LogFileLocationAction(logger)));
+        settingsMenu.add(new EcuLoggerMenuItem("Log File Output Location...", VK_O, getKeyStroke(VK_O, CTRL_MASK), new LogFileLocationAction(logger)));
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new EcuLoggerRadioButtonMenuItem("Control File Logging With Defogger Switch", VK_C, getKeyStroke(VK_C, CTRL_MASK), new LogFileControllerSwitchAction(logger), logger.getSettings().isFileLoggingControllerSwitchActive()));
         settingsMenu.add(new EcuLoggerRadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));

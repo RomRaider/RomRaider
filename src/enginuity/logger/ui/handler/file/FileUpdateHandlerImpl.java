@@ -39,13 +39,10 @@ import java.util.Set;
 public final class FileUpdateHandlerImpl implements FileUpdateHandler, ConvertorUpdateListener {
     private final Map<EcuData, Integer> ecuDatas = synchronizedMap(new LinkedHashMap<EcuData, Integer>());
     private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
-    private final Settings settings;
     private final FileLogger fileLogger;
     private Line currentLine = new Line(ecuDatas.keySet());
 
     public FileUpdateHandlerImpl(Settings settings, MessageListener messageListener) {
-        checkNotNull(settings);
-        this.settings = settings;
         fileLogger = new FileLoggerImpl(settings, messageListener);
     }
 
@@ -99,7 +96,7 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
     }
 
     public synchronized void start() {
-        if (settings.isFileLoggingControllerSwitchActive() && !fileLogger.isStarted()) {
+        if (!fileLogger.isStarted()) {
             fileLogger.start();
             notifyListeners(true);
             writeHeaders();
