@@ -11,7 +11,7 @@ import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_COMMAND;
 import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_RESPONSE;
 import static enginuity.io.protocol.SSMProtocol.REQUEST_NON_DATA_BYTES;
 import static enginuity.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
-import enginuity.logger.exception.SerialCommunicationException;
+import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;

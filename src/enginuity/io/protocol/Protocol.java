@@ -21,8 +21,8 @@
 
 package enginuity.io.protocol;
 
-import enginuity.logger.comms.query.EcuInit;
-import enginuity.logger.exception.InvalidResponseException;
+import enginuity.logger.ecu.comms.query.EcuInit;
+import enginuity.logger.ecu.exception.InvalidResponseException;
 
 public interface Protocol {
 

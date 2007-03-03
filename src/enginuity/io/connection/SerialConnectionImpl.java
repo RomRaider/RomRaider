@@ -21,10 +21,10 @@
 
 package enginuity.io.connection;
 
-import enginuity.logger.exception.NotConnectedException;
-import enginuity.logger.exception.PortNotFoundException;
-import enginuity.logger.exception.SerialCommunicationException;
-import enginuity.logger.exception.UnsupportedPortTypeException;
+import enginuity.logger.ecu.exception.NotConnectedException;
+import enginuity.logger.ecu.exception.PortNotFoundException;
+import enginuity.logger.ecu.exception.SerialCommunicationException;
+import enginuity.logger.ecu.exception.UnsupportedPortTypeException;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;

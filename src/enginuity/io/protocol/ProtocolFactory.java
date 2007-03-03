@@ -21,7 +21,7 @@
 
 package enginuity.io.protocol;
 
-import enginuity.logger.exception.UnsupportedProtocolException;
+import enginuity.logger.ecu.exception.UnsupportedProtocolException;
 
 public final class ProtocolFactory {
     private static final ProtocolFactory INSTANCE = new ProtocolFactory();

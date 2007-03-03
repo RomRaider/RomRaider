@@ -21,7 +21,7 @@
 
 package enginuity.io.connection;
 
-import enginuity.logger.exception.SerialCommunicationException;
+import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;

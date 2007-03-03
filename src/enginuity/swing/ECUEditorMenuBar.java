@@ -21,18 +21,29 @@
 
 package enginuity.swing;
 
+import com.centerkey.utils.BareBonesBrowserLaunch;
+import enginuity.ECUEditor;
+import enginuity.logger.ecu.EcuLogger;
+import enginuity.logger.utec.gui.JutecGUI;
+import enginuity.maps.Rom;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
+import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import static javax.swing.JOptionPane.CANCEL_OPTION;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.showConfirmDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
-import javax.swing.*;
-import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
-import static javax.swing.JOptionPane.*;
-import com.centerkey.utils.BareBonesBrowserLaunch;
-import enginuity.ECUEditor;
-import enginuity.logger.EcuLogger;
-import enginuity.maps.Rom;
-import enginuity.logger.utec.gui.JutecGUI;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 

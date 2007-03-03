@@ -21,7 +21,7 @@
 
 package enginuity.newmaps.xml;
 
-import enginuity.logger.exception.ConfigurationException;
+import enginuity.logger.ecu.exception.ConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

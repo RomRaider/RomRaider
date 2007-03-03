@@ -29,7 +29,7 @@ import static enginuity.io.protocol.SSMProtocol.HEADER;
 import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_RESPONSE;
 import static enginuity.io.protocol.SSMProtocol.READ_MEMORY_RESPONSE;
 import static enginuity.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
-import enginuity.logger.exception.InvalidResponseException;
+import enginuity.logger.ecu.exception.InvalidResponseException;
 import static enginuity.util.ByteUtil.asByte;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
