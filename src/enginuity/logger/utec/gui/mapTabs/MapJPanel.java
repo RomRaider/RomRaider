@@ -10,6 +10,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
 import enginuity.logger.utec.mapData.UtecMapData;
+import enginuity.logger.utec.properties.UtecProperties;
 
 public class MapJPanel extends JPanel{
 
@@ -37,22 +38,40 @@ public class MapJPanel extends JPanel{
 		this.tableModel = new UtecTableModel(this.mapType, initialData);
 	
 		if(this.mapType == MapJPanel.FUELMAP){
-			init(-8.0, 8.0);
+			Object[] ignored = {new Double(-100.0)};
+			init(Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored, false);
 		}
 		
 		if(this.mapType == MapJPanel.TIMINGMAP){
-			init(-1.0, 5.0);
+			Object[] ignored = {new Double(-100.0)};
+			init(Double.parseDouble(UtecProperties.getProperties("utec.timingMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.timingMapMax")[0]), ignored, true);
 		}
 		
 		if(this.mapType == MapJPanel.BOOSTMAP){
-			init(0.0, 500.0);
+			Object[] ignored = {new Double(-100.0)};
+			init(Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, false);
 		}
 		
 		
 	}
 	
-	public void init(double min, double max){	
-		table = new UtecJTable(tableModel, mapType, min, max);
+	public void init(double min, double max, Object[] ignoredValues, boolean isInvertedColoring){
+
+		
+		// ************************
+		// Utec Specific code below
+		// ************************
+		if(mapType == MapJPanel.FUELMAP){
+			DataManager.setFuelListener(tableModel);
+		}
+		else if(mapType == MapJPanel.BOOSTMAP){
+			DataManager.setBoostListener(tableModel);
+		}
+		else if(mapType == MapJPanel.TIMINGMAP){
+			DataManager.setTimingListener(tableModel);
+		}
+		
+		table = new UtecJTable(tableModel, min, max, ignoredValues, isInvertedColoring);
         //table.setPreferredScrollableViewportSize(new Dimension(500, 70));
 
         //Create the scroll pane and add the table to it.

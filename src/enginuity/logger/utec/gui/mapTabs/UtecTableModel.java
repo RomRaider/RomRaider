@@ -45,16 +45,21 @@ public class UtecTableModel extends AbstractTableModel {
 	
 	
 	public void setValueAt(Object value, int row, int col) {
-        System.out.print(" Updated:"+(String)value+": ");
+        //System.out.print(" Updated:"+(String)value+": ");
         // Set new data in table
         double temp = data[col][row];
         
-        try{
-        	temp = Double.parseDouble((String)value);
-        }catch (NumberFormatException e) {
-        	System.out.println("Not a valid number entered.");
+        if(value instanceof String){
+        	 try{
+             	temp = Double.parseDouble((String)value);
+             }catch (NumberFormatException e) {
+             	System.out.println("Not a valid number entered.");
+             }
+             data[col][row] = temp;
+        }else if(value instanceof Double){
+        	data[col][row] = (Double)value;
         }
-        data[col][row] = temp;
+       
         
         // Update current map in scope
         if(this.identifier == MapJPanel.FUELMAP){
@@ -69,6 +74,10 @@ public class UtecTableModel extends AbstractTableModel {
         
         this.fireTableDataChanged();
     }
+	
+	public void setDoubleData(int row, int col, double value){
+		this.data[col][row] = value;
+	}
 	
 	
 	public void replaceData(double[][] newData){

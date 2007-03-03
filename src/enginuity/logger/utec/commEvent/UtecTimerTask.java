@@ -11,8 +11,11 @@ public class UtecTimerTask extends TimerTask{
 	private int counter = 0;
 	private StringBuffer stringBuffer = null;
 	
-	public UtecTimerTask(String data, UtecTimerTaskListener listener){
+	public UtecTimerTask(UtecTimerTaskListener listener){
 		this.listener = listener;
+	}
+	
+	public void setData(String data){
 		this.data = data;
 		this.stringBuffer = new StringBuffer(data);
 		JutecGUI.getInstance().getJProgressBar().setMinimum(0);
@@ -21,7 +24,7 @@ public class UtecTimerTask extends TimerTask{
 	
 	public void run(){
 		char theChar = stringBuffer.charAt(counter);
-		// System.out.println("->"+theChar+"<-  :"+(int)theChar+"");
+		 System.out.println("->"+theChar+"<-  :"+(int)theChar+"");
 		
 		//Send the data to the Utec
 		UtecSerialConnection.sendCommandToUtec((int)theChar);

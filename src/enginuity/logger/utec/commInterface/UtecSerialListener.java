@@ -23,7 +23,7 @@ public class UtecSerialListener implements SerialPortEventListener{
 	}
 	
 	public void serialEvent(SerialPortEvent e) {
-		System.out.println("Got serial event.");
+		//System.out.println("Got serial event.");
 		
 		
 		// Create a StringBuffer and int to receive input data.
@@ -47,7 +47,7 @@ public class UtecSerialListener implements SerialPortEventListener{
 					}
 					
 					inputBuffer.append((char) newData);
-					System.out.print((char)newData);
+					//System.out.print((char)newData);
 					this.totalDat += (char)newData;
 					
 				} catch (IOException ex) {
