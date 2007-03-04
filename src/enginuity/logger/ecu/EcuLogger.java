@@ -33,6 +33,8 @@ import enginuity.logger.ecu.definition.EcuDataLoader;
 import enginuity.logger.ecu.definition.EcuDataLoaderImpl;
 import enginuity.logger.ecu.definition.EcuParameter;
 import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.external.ExternalDataSourceLoader;
+import enginuity.logger.ecu.external.ExternalDataSourceLoaderImpl;
 import enginuity.logger.ecu.profile.UserProfile;
 import enginuity.logger.ecu.profile.UserProfileImpl;
 import enginuity.logger.ecu.profile.UserProfileItem;
@@ -162,7 +164,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
         bootstrap(settings);
-        loadLoggerConfig();
+        //loadLoggerConfig();
+        loadLoggerPlugins();
         initControllerListeners();
         initUserInterface();
         initDataUpdateHandlers();
@@ -248,7 +251,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         getContentPane().add(mainPanel);
     }
 
-    public void loadLoggerConfig() {
+    private void loadLoggerConfig() {
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
             dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(), settings.getFileLoggingControllerSwitchId(), ecuInit);
@@ -258,6 +261,16 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             loadEcuSwitches(dataLoader.getEcuSwitches());
             initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
             settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
+        } catch (Exception e) {
+            reportError(e);
+        }
+    }
+
+    private void loadLoggerPlugins() {
+        try {
+            ExternalDataSourceLoader dataSourceLoader = new ExternalDataSourceLoaderImpl();
+            dataSourceLoader.loadFromDataSources();
+            //TODO: Finish this!!
         } catch (Exception e) {
             reportError(e);
         }

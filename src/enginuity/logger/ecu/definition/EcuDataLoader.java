@@ -28,8 +28,7 @@ import java.util.List;
 
 public interface EcuDataLoader {
 
-    void loadFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId,
-                     EcuInit ecuInit);
+    void loadFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit);
 
     List<EcuParameter> getEcuParameters();
 
