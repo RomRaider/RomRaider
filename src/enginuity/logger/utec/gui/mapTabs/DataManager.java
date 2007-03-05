@@ -5,14 +5,13 @@ import enginuity.logger.utec.mapData.UtecMapData;
 
 public class DataManager {
 	private static UtecMapData currentMapData = null;
-	
-	
 	private static UtecTableModel fuelListener = null;
 	private static UtecTableModel timingListener = null;
 	private static UtecTableModel boostListener = null;
-	
 	private static UtecAFRListener utecAFRListener = null;
 
+	private static double afrData = -300.0;
+	
 	public static void setCurrentMap(UtecMapData newUtecMap){
 		currentMapData = newUtecMap;
 		
@@ -68,5 +67,15 @@ public class DataManager {
 
 	public static void setUtecAFRListener(UtecAFRListener utecAFRListener) {
 		DataManager.utecAFRListener = utecAFRListener;
+	}
+
+
+	public static double getAfrData() {
+		return afrData;
+	}
+
+
+	public static void setAfrData(double afrData) {
+		DataManager.afrData = afrData;
 	}
 }

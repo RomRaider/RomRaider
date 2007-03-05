@@ -67,6 +67,7 @@ public class LoggerEvent {
 	        }
 		}
 		
+		DataManager.setAfrData(doubleData[Integer.parseInt(UtecProperties.getProperties("utec.afrIndex")[0])]);
 	}
 
 
