@@ -26,7 +26,6 @@ public class LoggerEvent {
 	private String[] data = new String[6];
 	private double[] doubleData = null; //new double[6];
 	
-	private boolean isLoggerData = false;
 	private boolean isMapData = false;
 	
 	private UtecMapData mapData = null;
@@ -37,6 +36,13 @@ public class LoggerEvent {
 		UtecBuffer = buffer;
 		
 		data = UtecBuffer.split(",");
+		
+		// Count the "," to ensure this is a line of logging data
+		if(data.length < 4){
+			this.isValidData = false;
+			return;
+		}
+		
 		doubleData = new double[data.length];
 		
 		for(int i = 0; i < data.length; i++){
@@ -64,14 +70,6 @@ public class LoggerEvent {
 	}
 
 
-	public boolean isLoggerData() {
-		return isLoggerData;
-	}
-
-
-	public void setLoggerData(boolean isLoggerData) {
-		this.isLoggerData = isLoggerData;
-	}
 
 
 	public boolean isMapData() {

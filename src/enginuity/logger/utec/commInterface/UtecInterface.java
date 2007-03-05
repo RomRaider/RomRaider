@@ -183,11 +183,11 @@ public class UtecInterface{
 		System.out.println("UtecControl, getting map:" + mapNumber);
 
 		// Null out any previously loaded map
-		serialEventListener.currentMap = null;
+		//serialEventListener.currentMap = null;
 
 		// Setup map transfer prep state
-		serialEventListener.isMapFromUtecPrep = true;
-		serialEventListener.isMapFromUtec = false;
+		//serialEventListener.isMapFromUtecPrep = true;
+		//serialEventListener.isMapFromUtec = false;
 		
 		// Iterate through command string
 		int starCounter = 0;
@@ -219,10 +219,10 @@ public class UtecInterface{
 				}else if(starCounter == 1){
 
 					// Make this class receptive to map transfer
-					serialEventListener.isMapFromUtec = true;
+					//serialEventListener.isMapFromUtec = true;
 
 					// No longer map prep
-					serialEventListener.isMapFromUtecPrep = false;
+					//serialEventListener.isMapFromUtecPrep = false;
 					
 				}else{
 					System.err.println("No operation supported for properties value '*'");

@@ -192,12 +192,11 @@ public class BottomUtecControl extends JPanel implements ActionListener,
 	}
 
 	public void getCommEvent(LoggerEvent e) {
-		if (e.isLoggerData()) {
-			String utecData = e.getUtecBuffer();
-			totalLog += utecData;
-			textFromUtec.append(utecData);
-			textFromUtec.setCaretPosition(textFromUtec.getDocument().getLength());
-		}
+		
+		String utecData = e.getUtecBuffer();
+		totalLog += utecData;
+		textFromUtec.append(utecData);
+		textFromUtec.setCaretPosition(textFromUtec.getDocument().getLength());
 
 		// System.out.println("Adding data to the text AREA");
 	}

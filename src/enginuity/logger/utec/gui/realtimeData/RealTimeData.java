@@ -157,11 +157,9 @@ public class RealTimeData extends JComponent implements LoggerListener{
 	}
 	
 	public void getCommEvent(LoggerEvent e){
-		if(e.isLoggerData()){
-			doubleData = e.getDoubleData();
-			//System.out.println("Got new data:"+doubleData[0]+"," + doubleData[1]);
-			this.repaint();
-		}
+		doubleData = e.getDoubleData();
+		//System.out.println("Got new data:"+doubleData[0]+"," + doubleData[1]);
+		this.repaint();
 	}
 	
 	private double[] minAndMax(String value){
