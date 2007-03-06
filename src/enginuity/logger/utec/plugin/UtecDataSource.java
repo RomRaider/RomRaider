@@ -6,6 +6,7 @@ import enginuity.logger.ecu.external.ExternalDataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+//NOTE: This class is instantiated via a no-args constructor.
 public final class UtecDataSource implements ExternalDataSource {
 
     public String getName() {
