@@ -53,7 +53,7 @@ public final class ParameterListTable extends JTable {
         if (!isNullOrEmpty(parameterRows)) {
             ParameterRow parameterRow = parameterRows.get(rowAtPoint(mouseEvent.getPoint()));
             if (parameterRow != null) {
-                String description = parameterRow.getEcuData().getDescription();
+                String description = parameterRow.getLoggerData().getDescription();
                 if (!isNullOrEmpty(description)) {
                     return description;
                 }

@@ -1,7 +1,7 @@
 package enginuity.logger.ecu.ui.handler.graph;
 
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import static enginuity.logger.ecu.ui.handler.graph.SpringUtilities.makeCompactGrid;
 import org.jfree.chart.ChartFactory;
@@ -35,9 +35,9 @@ import java.util.Map;
 public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
-    private final Map<EcuData, ChartPanel> chartMap = synchronizedMap(new HashMap<EcuData, ChartPanel>());
-    private final Map<EcuData, XYSeries> seriesMap = synchronizedMap(new HashMap<EcuData, XYSeries>());
-    private final Map<EcuData, Integer> datasetIndexes = synchronizedMap(new HashMap<EcuData, Integer>());
+    private final Map<LoggerData, ChartPanel> chartMap = synchronizedMap(new HashMap<LoggerData, ChartPanel>());
+    private final Map<LoggerData, XYSeries> seriesMap = synchronizedMap(new HashMap<LoggerData, XYSeries>());
+    private final Map<LoggerData, Integer> datasetIndexes = synchronizedMap(new HashMap<LoggerData, Integer>());
     private final JPanel graphPanel;
     private long startTime = System.currentTimeMillis();
     private boolean combinedChart = false;
@@ -69,26 +69,26 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         panel.add(this.graphPanel, CENTER);
     }
 
-    public synchronized void registerData(EcuData ecuData) {
+    public synchronized void registerData(LoggerData loggerData) {
         // add to charts
-        registerSeries(ecuData);
+        registerSeries(loggerData);
         if (combinedChart) {
-            addToCombined(ecuData);
+            addToCombined(loggerData);
             layoutForCombined();
         } else {
-            addToPanel(ecuData);
+            addToPanel(loggerData);
             layoutForPanel();
         }
         graphPanel.updateUI();
     }
 
-    private synchronized void addToPanel(EcuData ecuData) {
-        XYSeries series = seriesMap.get(ecuData);
-        ChartPanel chartPanel = new ChartPanel(createXYLineChart(ecuData, new XYSeriesCollection(series), false), false, true, true, true, true);
+    private synchronized void addToPanel(LoggerData loggerData) {
+        XYSeries series = seriesMap.get(loggerData);
+        ChartPanel chartPanel = new ChartPanel(createXYLineChart(loggerData, new XYSeriesCollection(series), false), false, true, true, true, true);
         chartPanel.setMinimumSize(new Dimension(600, 200));
         chartPanel.setMaximumSize(new Dimension(10000, 200));
         chartPanel.setPreferredSize(new Dimension(600, 200));
-        chartMap.put(ecuData, chartPanel);
+        chartMap.put(loggerData, chartPanel);
         graphPanel.add(chartPanel);
     }
 
@@ -96,9 +96,9 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         makeCompactGrid(graphPanel, seriesMap.size(), 1, 2, 2, 2, 2);
     }
 
-    private synchronized void addToCombined(EcuData ecuData) {
+    private synchronized void addToCombined(LoggerData loggerData) {
         if (combinedChartPanel == null) {
-            combinedChartPanel = new ChartPanel(createXYLineChart(ecuData, null, true), false, true, true, true, true);
+            combinedChartPanel = new ChartPanel(createXYLineChart(loggerData, null, true), false, true, true, true, true);
             LegendTitle legendTitle = new LegendTitle(combinedChartPanel.getChart().getXYPlot());
             legendTitle.setItemPaint(WHITE);
             combinedChartPanel.getChart().addLegend(legendTitle);
@@ -107,18 +107,18 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
             graphPanel.add(combinedChartPanel);
         }
         XYPlot plot = combinedChartPanel.getChart().getXYPlot();
-        plot.setDataset(counter, new XYSeriesCollection(seriesMap.get(ecuData)));
+        plot.setDataset(counter, new XYSeriesCollection(seriesMap.get(loggerData)));
         plot.setRenderer(counter, new StandardXYItemRenderer());
-        datasetIndexes.put(ecuData, counter++);
+        datasetIndexes.put(loggerData, counter++);
     }
 
     private void layoutForCombined() {
         makeCompactGrid(graphPanel, 1, 1, 2, 2, 2, 2);
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, final double value, final long timestamp) {
+    public synchronized void handleDataUpdate(LoggerData loggerData, final double value, final long timestamp) {
         // update chart
-        final XYSeries series = seriesMap.get(ecuData);
+        final XYSeries series = seriesMap.get(loggerData);
         if (series != null && !paused) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
@@ -128,35 +128,35 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         }
     }
 
-    public synchronized void deregisterData(EcuData ecuData) {
-        seriesMap.remove(ecuData);
+    public synchronized void deregisterData(LoggerData loggerData) {
+        seriesMap.remove(loggerData);
         if (combinedChart) {
-            removeFromCombined(ecuData);
+            removeFromCombined(loggerData);
         } else {
-            removeFromPanel(ecuData);
+            removeFromPanel(loggerData);
             layoutForPanel();
         }
         graphPanel.updateUI();
     }
 
-    private void removeFromCombined(EcuData ecuData) {
+    private void removeFromCombined(LoggerData loggerData) {
         // remove from charts
-        if (datasetIndexes.containsKey(ecuData)) {
-            combinedChartPanel.getChart().getXYPlot().setDataset(datasetIndexes.get(ecuData), null);
+        if (datasetIndexes.containsKey(loggerData)) {
+            combinedChartPanel.getChart().getXYPlot().setDataset(datasetIndexes.get(loggerData), null);
         }
-        datasetIndexes.remove(ecuData);
-        chartMap.remove(ecuData);
+        datasetIndexes.remove(loggerData);
+        chartMap.remove(loggerData);
         if (datasetIndexes.isEmpty()) {
             graphPanel.remove(combinedChartPanel);
             combinedChartPanel = null;
         }
     }
 
-    private void removeFromPanel(EcuData ecuData) {
+    private void removeFromPanel(LoggerData loggerData) {
         // remove from charts
-        graphPanel.remove(chartMap.get(ecuData));
-        datasetIndexes.remove(ecuData);
-        chartMap.remove(ecuData);
+        graphPanel.remove(chartMap.get(loggerData));
+        datasetIndexes.remove(loggerData);
+        chartMap.remove(loggerData);
     }
 
     public synchronized void cleanUp() {
@@ -168,23 +168,23 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         }
     }
 
-    public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
-        if (chartMap.containsKey(updatedEcuData)) {
-            seriesMap.get(updatedEcuData).clear();
-            JFreeChart chart = chartMap.get(updatedEcuData).getChart();
-            chart.getXYPlot().getRangeAxis().setLabel(buildRangeAxisTitle(updatedEcuData));
+    public synchronized void notifyConvertorUpdate(LoggerData updatedLoggerData) {
+        if (chartMap.containsKey(updatedLoggerData)) {
+            seriesMap.get(updatedLoggerData).clear();
+            JFreeChart chart = chartMap.get(updatedLoggerData).getChart();
+            chart.getXYPlot().getRangeAxis().setLabel(buildRangeAxisTitle(updatedLoggerData));
         }
     }
 
-    private void registerSeries(EcuData ecuData) {
-        final XYSeries series = new XYSeries(ecuData.getName());
+    private void registerSeries(LoggerData loggerData) {
+        final XYSeries series = new XYSeries(loggerData.getName());
         series.setMaximumItemCount(200);
-        seriesMap.put(ecuData, series);
+        seriesMap.put(loggerData, series);
     }
 
-    private JFreeChart createXYLineChart(EcuData ecuData, XYDataset dataset, boolean combined) {
-        String title = combined ? "Combined Data" : ecuData.getName();
-        String rangeAxisTitle = combined ? "Data" : buildRangeAxisTitle(ecuData);
+    private JFreeChart createXYLineChart(LoggerData loggerData, XYDataset dataset, boolean combined) {
+        String title = combined ? "Combined Data" : loggerData.getName();
+        String rangeAxisTitle = combined ? "Data" : buildRangeAxisTitle(loggerData);
         JFreeChart chart = ChartFactory.createXYLineChart(title, "Time (sec)", rangeAxisTitle, dataset, VERTICAL, false, true, false);
         chart.setBackgroundPaint(BLACK);
         chart.getTitle().setPaint(WHITE);
@@ -200,11 +200,11 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         return chart;
     }
 
-    private String buildRangeAxisTitle(EcuData ecuData) {
-        return ecuData.getName() + " (" + ecuData.getSelectedConvertor().getUnits() + ")";
+    private String buildRangeAxisTitle(LoggerData loggerData) {
+        return loggerData.getName() + " (" + loggerData.getSelectedConvertor().getUnits() + ")";
     }
 
-    
+
     private final class CombinedActionListener implements ActionListener {
         private final JCheckBox combinedCheckbox;
 
@@ -227,26 +227,26 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         }
 
         private void addAllToCombined() {
-            for (EcuData ecuData : seriesMap.keySet()) {
-                addToCombined(ecuData);
+            for (LoggerData loggerData : seriesMap.keySet()) {
+                addToCombined(loggerData);
             }
         }
 
         private void removeAllFromPanel() {
-            for (EcuData ecuData : seriesMap.keySet()) {
-                removeFromPanel(ecuData);
+            for (LoggerData loggerData : seriesMap.keySet()) {
+                removeFromPanel(loggerData);
             }
         }
 
         private void addAllToPanel() {
-            for (EcuData ecuData : seriesMap.keySet()) {
-                addToPanel(ecuData);
+            for (LoggerData loggerData : seriesMap.keySet()) {
+                addToPanel(loggerData);
             }
         }
 
         private void removeAllFromCombined() {
-            for (EcuData ecuData : seriesMap.keySet()) {
-                removeFromCombined(ecuData);
+            for (LoggerData loggerData : seriesMap.keySet()) {
+                removeFromCombined(loggerData);
             }
         }
 

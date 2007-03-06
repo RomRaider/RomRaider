@@ -22,17 +22,17 @@
 package enginuity.logger.ecu.comms.controller;
 
 import enginuity.logger.ecu.comms.query.LoggerCallback;
-import enginuity.logger.ecu.definition.EcuData;
 import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.StatusChangeListener;
 
 public interface LoggerController {
 
     void setFileLoggerSwitch(EcuSwitch ecuSwitch, LoggerCallback callback);
 
-    void addLogger(String callerId, EcuData ecuData, LoggerCallback callback);
+    void addLogger(String callerId, LoggerData loggerData, LoggerCallback callback);
 
-    void removeLogger(String callerId, EcuData ecuData);
+    void removeLogger(String callerId, LoggerData loggerData);
 
     boolean isStarted();
 

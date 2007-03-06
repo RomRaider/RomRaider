@@ -23,7 +23,7 @@ package enginuity.logger.ecu.ui.handler.file;
 
 import enginuity.Settings;
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -37,10 +37,10 @@ import java.util.Map;
 import java.util.Set;
 
 public final class FileUpdateHandlerImpl implements FileUpdateHandler, ConvertorUpdateListener {
-    private final Map<EcuData, Integer> ecuDatas = synchronizedMap(new LinkedHashMap<EcuData, Integer>());
+    private final Map<LoggerData, Integer> loggerDatas = synchronizedMap(new LinkedHashMap<LoggerData, Integer>());
     private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
     private final FileLogger fileLogger;
-    private Line currentLine = new Line(ecuDatas.keySet());
+    private Line currentLine = new Line(loggerDatas.keySet());
 
     public FileUpdateHandlerImpl(Settings settings, MessageListener messageListener) {
         fileLogger = new FileLoggerImpl(settings, messageListener);
@@ -51,19 +51,19 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         listeners.add(listener);
     }
 
-    public synchronized void registerData(EcuData ecuData) {
-        if (ecuDatas.keySet().contains(ecuData)) {
-            ecuDatas.put(ecuData, ecuDatas.get(ecuData) + 1);
+    public synchronized void registerData(LoggerData loggerData) {
+        if (loggerDatas.keySet().contains(loggerData)) {
+            loggerDatas.put(loggerData, loggerDatas.get(loggerData) + 1);
         } else {
-            ecuDatas.put(ecuData, 1);
+            loggerDatas.put(loggerData, 1);
             resetLine();
             writeHeaders();
         }
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
+    public synchronized void handleDataUpdate(LoggerData loggerData, double value, long timestamp) {
         if (fileLogger.isStarted()) {
-            currentLine.updateParamValue(ecuData, ecuData.getSelectedConvertor().format(value));
+            currentLine.updateParamValue(loggerData, loggerData.getSelectedConvertor().format(value));
             if (currentLine.isFull()) {
                 fileLogger.writeLine(currentLine.values(), timestamp);
                 resetLine();
@@ -71,11 +71,11 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         }
     }
 
-    public synchronized void deregisterData(EcuData ecuData) {
-        if (ecuDatas.keySet().contains(ecuData) && ecuDatas.get(ecuData) > 1) {
-            ecuDatas.put(ecuData, ecuDatas.get(ecuData) - 1);
+    public synchronized void deregisterData(LoggerData loggerData) {
+        if (loggerDatas.keySet().contains(loggerData) && loggerDatas.get(loggerData) > 1) {
+            loggerDatas.put(loggerData, loggerDatas.get(loggerData) - 1);
         } else {
-            ecuDatas.remove(ecuData);
+            loggerDatas.remove(loggerData);
             resetLine();
             writeHeaders();
         }
@@ -90,7 +90,7 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
     public synchronized void reset() {
     }
 
-    public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
+    public synchronized void notifyConvertorUpdate(LoggerData updatedLoggerData) {
         resetLine();
         writeHeaders();
     }
@@ -111,7 +111,7 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
     }
 
     private void resetLine() {
-        currentLine = new Line(ecuDatas.keySet());
+        currentLine = new Line(loggerDatas.keySet());
     }
 
     private void writeHeaders() {
@@ -132,24 +132,24 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
 
     private final class Line {
         private static final char DELIMITER = ',';
-        private final Map<EcuData, String> ecuDataValues;
+        private final Map<LoggerData, String> loggerDataValues;
 
-        public Line(Set<EcuData> ecuParams) {
-            this.ecuDataValues = new LinkedHashMap<EcuData, String>();
-            for (EcuData ecuParam : ecuParams) {
-                ecuDataValues.put(ecuParam, null);
+        public Line(Set<LoggerData> loggerDatas) {
+            this.loggerDataValues = new LinkedHashMap<LoggerData, String>();
+            for (LoggerData loggerData : loggerDatas) {
+                loggerDataValues.put(loggerData, null);
             }
         }
 
-        public synchronized void updateParamValue(EcuData ecuData, String value) {
-            if (ecuDataValues.containsKey(ecuData)) {
-                ecuDataValues.put(ecuData, value);
+        public synchronized void updateParamValue(LoggerData loggerData, String value) {
+            if (loggerDataValues.containsKey(loggerData)) {
+                loggerDataValues.put(loggerData, value);
             }
         }
 
         public synchronized boolean isFull() {
-            for (EcuData ecuData : ecuDataValues.keySet()) {
-                if (ecuDataValues.get(ecuData) == null) {
+            for (LoggerData loggerData : loggerDataValues.keySet()) {
+                if (loggerDataValues.get(loggerData) == null) {
                     return false;
                 }
             }
@@ -158,17 +158,17 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
 
         public synchronized String headers() {
             StringBuilder buffer = new StringBuilder();
-            for (EcuData ecuData : ecuDataValues.keySet()) {
-                buffer.append(DELIMITER).append(ecuData.getName()).append(" (")
-                        .append(ecuData.getSelectedConvertor().getUnits()).append(')');
+            for (LoggerData loggerData : loggerDataValues.keySet()) {
+                buffer.append(DELIMITER).append(loggerData.getName()).append(" (")
+                        .append(loggerData.getSelectedConvertor().getUnits()).append(')');
             }
             return buffer.toString();
         }
 
         public synchronized String values() {
             StringBuilder buffer = new StringBuilder();
-            for (EcuData ecuData : ecuDataValues.keySet()) {
-                String value = ecuDataValues.get(ecuData);
+            for (LoggerData loggerData : loggerDataValues.keySet()) {
+                String value = loggerDataValues.get(loggerData);
                 buffer.append(DELIMITER).append(value);
             }
             return buffer.toString();

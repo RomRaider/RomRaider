@@ -21,27 +21,27 @@
 
 package enginuity.logger.ecu.ui.paramlist;
 
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class ParameterRow {
-    private final EcuData ecuData;
+    private final LoggerData loggerData;
     private boolean selected = false;
 
-    public ParameterRow(EcuData ecuData) {
-        checkNotNull(ecuData, "ecuData");
-        this.ecuData = ecuData;
+    public ParameterRow(LoggerData loggerData) {
+        checkNotNull(loggerData, "loggerData");
+        this.loggerData = loggerData;
     }
 
-    public EcuData getEcuData() {
-        return ecuData;
+    public LoggerData getLoggerData() {
+        return loggerData;
     }
 
-    public Boolean isSelected() {
+    public boolean isSelected() {
         return selected;
     }
 
-    public void setSelected(Boolean selected) {
+    public void setSelected(boolean selected) {
         this.selected = selected;
     }
 }

@@ -22,7 +22,7 @@
 package enginuity.logger.ecu.ui.handler.livedata;
 
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 
 import javax.swing.SwingUtilities;
@@ -34,23 +34,23 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler, Convertor
         this.dataTableModel = dataTableModel;
     }
 
-    public synchronized void registerData(EcuData ecuData) {
+    public synchronized void registerData(LoggerData loggerData) {
         // add to datatable
-        dataTableModel.addParam(ecuData);
+        dataTableModel.addParam(loggerData);
     }
 
-    public synchronized void handleDataUpdate(final EcuData ecuData, final double value, long timestamp) {
+    public synchronized void handleDataUpdate(final LoggerData loggerData, final double value, long timestamp) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 // update data table
-                dataTableModel.updateParam(ecuData, value);
+                dataTableModel.updateParam(loggerData, value);
             }
         });
     }
 
-    public synchronized void deregisterData(EcuData ecuData) {
+    public synchronized void deregisterData(LoggerData loggerData) {
         // remove from datatable
-        dataTableModel.removeParam(ecuData);
+        dataTableModel.removeParam(loggerData);
     }
 
     public synchronized void cleanUp() {
@@ -60,7 +60,7 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler, Convertor
         dataTableModel.reset();
     }
 
-    public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
-        dataTableModel.resetRow(updatedEcuData);
+    public synchronized void notifyConvertorUpdate(LoggerData updatedLoggerData) {
+        dataTableModel.resetRow(updatedLoggerData);
     }
 }

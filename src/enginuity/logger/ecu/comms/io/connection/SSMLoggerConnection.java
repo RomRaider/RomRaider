@@ -23,7 +23,7 @@ package enginuity.logger.ecu.comms.io.connection;
 
 import enginuity.io.connection.ConnectionProperties;
 import enginuity.io.connection.SerialConnection;
-import enginuity.io.connection.SerialConnectionImpl;
+import enginuity.io.connection.TestSSMConnectionImpl;
 import enginuity.logger.ecu.comms.io.protocol.LoggerProtocol;
 import enginuity.logger.ecu.comms.io.protocol.SSMLoggerProtocol;
 import enginuity.logger.ecu.comms.query.RegisteredQuery;
@@ -45,8 +45,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
         protocol = new SSMLoggerProtocol();
 
         // Use TestSSMConnectionImpl for testing!!
-        serialConnection = new SerialConnectionImpl(connectionProperties, portName);
-//        serialConnection = new TestSSMConnectionImpl(connectionProperties, portName);
+//        serialConnection = new SerialConnectionImpl(connectionProperties, portName);
+        serialConnection = new TestSSMConnectionImpl(connectionProperties, portName);
     }
 
     public void sendAddressReads(Collection<RegisteredQuery> queries) {

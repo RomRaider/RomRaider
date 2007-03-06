@@ -26,8 +26,8 @@ import enginuity.logger.ecu.comms.manager.QueryManager;
 import enginuity.logger.ecu.comms.manager.QueryManagerImpl;
 import enginuity.logger.ecu.comms.query.EcuInitCallback;
 import enginuity.logger.ecu.comms.query.LoggerCallback;
-import enginuity.logger.ecu.definition.EcuData;
 import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -51,16 +51,16 @@ public final class LoggerControllerImpl implements LoggerController {
         queryManager.setFileLoggerQuery(ecuSwitch, callback);
     }
 
-    public void addLogger(String callerId, EcuData ecuData, LoggerCallback callback) {
-        checkNotNull(ecuData, callback);
-        System.out.println("Adding logger:   " + ecuData.getName());
-        queryManager.addQuery(callerId, ecuData, callback);
+    public void addLogger(String callerId, LoggerData loggerData, LoggerCallback callback) {
+        checkNotNull(loggerData, callback);
+        System.out.println("Adding logger:   " + loggerData.getName());
+        queryManager.addQuery(callerId, loggerData, callback);
     }
 
-    public void removeLogger(String callerId, EcuData ecuData) {
-        checkNotNull(ecuData, "ecuParam");
-        System.out.println("Removing logger: " + ecuData.getName());
-        queryManager.removeQuery(callerId, ecuData);
+    public void removeLogger(String callerId, LoggerData loggerData) {
+        checkNotNull(loggerData, "ecuParam");
+        System.out.println("Removing logger: " + loggerData.getName());
+        queryManager.removeQuery(callerId, loggerData);
     }
 
     public synchronized boolean isStarted() {

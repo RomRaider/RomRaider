@@ -21,16 +21,14 @@
 
 package enginuity.logger.ecu.ui;
 
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 
 import java.util.Comparator;
 
-public final class EcuDataComparator implements Comparator {
+public final class EcuDataComparator implements Comparator<LoggerData> {
 
-    public int compare(Object o1, Object o2) {
-        EcuData ecuData1 = (EcuData) o1;
-        EcuData ecuData2 = (EcuData) o2;
-        return ecuData1.getName().compareTo(ecuData2.getName());
+    public int compare(LoggerData loggerData1, LoggerData loggerData2) {
+        return loggerData1.getName().compareTo(loggerData2.getName());
     }
 
 }

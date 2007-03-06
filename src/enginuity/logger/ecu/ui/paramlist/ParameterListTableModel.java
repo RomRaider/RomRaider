@@ -21,7 +21,7 @@
 
 package enginuity.logger.ecu.ui.paramlist;
 
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.DataRegistrationBroker;
 
 import javax.swing.table.AbstractTableModel;
@@ -35,8 +35,8 @@ import java.util.Map;
 
 public final class ParameterListTableModel extends AbstractTableModel {
     private final String[] columnNames;
-    private final List<EcuData> registeredEcuData = synchronizedList(new LinkedList<EcuData>());
-    private final Map<EcuData, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<EcuData, ParameterRow>());
+    private final List<LoggerData> registeredLoggerData = synchronizedList(new LinkedList<LoggerData>());
+    private final Map<LoggerData, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<LoggerData, ParameterRow>());
     private final DataRegistrationBroker broker;
 
     public ParameterListTableModel(DataRegistrationBroker broker, String dataType) {
@@ -61,22 +61,22 @@ public final class ParameterListTableModel extends AbstractTableModel {
     }
 
     public synchronized Object getValueAt(int row, int col) {
-        ParameterRow paramRow = paramRowMap.get(registeredEcuData.get(row));
+        ParameterRow paramRow = paramRowMap.get(registeredLoggerData.get(row));
         switch (col) {
             case 0:
                 return paramRow.isSelected();
             case 1:
-                return paramRow.getEcuData().getName();
+                return paramRow.getLoggerData().getName();
             case 2:
-                EcuData ecuData = paramRow.getEcuData();
-                return ecuData.getConvertors().length > 1 ? ecuData : ecuData.getSelectedConvertor().getUnits();
+                LoggerData loggerData = paramRow.getLoggerData();
+                return loggerData.getConvertors().length > 1 ? loggerData : loggerData.getSelectedConvertor().getUnits();
             default:
                 return "Error!";
         }
     }
 
     public synchronized void setValueAt(Object value, int row, int col) {
-        ParameterRow paramRow = paramRowMap.get(registeredEcuData.get(row));
+        ParameterRow paramRow = paramRowMap.get(registeredLoggerData.get(row));
         if (col == 0 && paramRow != null) {
             Boolean selected = (Boolean) value;
             setSelected(paramRow, selected);
@@ -88,19 +88,19 @@ public final class ParameterListTableModel extends AbstractTableModel {
         return getValueAt(0, col).getClass();
     }
 
-    public synchronized void addParam(EcuData ecuData, boolean selected) {
-        if (!registeredEcuData.contains(ecuData)) {
-            ParameterRow paramRow = new ParameterRow(ecuData);
-            paramRowMap.put(ecuData, paramRow);
-            registeredEcuData.add(ecuData);
+    public synchronized void addParam(LoggerData loggerData, boolean selected) {
+        if (!registeredLoggerData.contains(loggerData)) {
+            ParameterRow paramRow = new ParameterRow(loggerData);
+            paramRowMap.put(loggerData, paramRow);
+            registeredLoggerData.add(loggerData);
             setSelected(paramRow, selected);
             fireTableDataChanged();
         }
     }
 
-    public synchronized void selectParam(EcuData ecuData, boolean selected) {
-        if (registeredEcuData.contains(ecuData)) {
-            setSelected(paramRowMap.get(ecuData), selected);
+    public synchronized void selectParam(LoggerData loggerData, boolean selected) {
+        if (registeredLoggerData.contains(loggerData)) {
+            setSelected(paramRowMap.get(loggerData), selected);
             fireTableDataChanged();
         }
     }
@@ -108,7 +108,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
     public synchronized void clear() {
         broker.clear();
         paramRowMap.clear();
-        registeredEcuData.clear();
+        registeredLoggerData.clear();
         fireTableDataChanged();
     }
 
@@ -116,12 +116,12 @@ public final class ParameterListTableModel extends AbstractTableModel {
         return new ArrayList<ParameterRow>(paramRowMap.values());
     }
 
-    private void setSelected(ParameterRow paramRow, Boolean selected) {
+    private void setSelected(ParameterRow paramRow, boolean selected) {
         paramRow.setSelected(selected);
         if (selected) {
-            broker.registerEcuDataForLogging(paramRow.getEcuData());
+            broker.registerLoggerDataForLogging(paramRow.getLoggerData());
         } else {
-            broker.deregisterEcuDataFromLogging(paramRow.getEcuData());
+            broker.deregisterLoggerDataFromLogging(paramRow.getLoggerData());
         }
     }
 }

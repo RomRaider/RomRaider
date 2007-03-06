@@ -28,11 +28,12 @@ import enginuity.logger.ecu.comms.controller.LoggerControllerImpl;
 import enginuity.logger.ecu.comms.query.EcuInit;
 import enginuity.logger.ecu.comms.query.EcuInitCallback;
 import enginuity.logger.ecu.comms.query.LoggerCallback;
-import enginuity.logger.ecu.definition.EcuData;
 import enginuity.logger.ecu.definition.EcuDataLoader;
 import enginuity.logger.ecu.definition.EcuDataLoaderImpl;
 import enginuity.logger.ecu.definition.EcuParameter;
 import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.ExternalData;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.external.ExternalDataSourceLoader;
 import enginuity.logger.ecu.external.ExternalDataSourceLoaderImpl;
 import enginuity.logger.ecu.profile.UserProfile;
@@ -123,7 +124,6 @@ TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
 TODO: Add ecu id and calid to ecu_defs
 TODO: parse ecu info from ecu defs (old and new formats) based on ecu id and display in UI
 TODO: Rewrite user profile application and saving to allow tab specific settings (eg. warn levels on dash tab)
-TODO: Add live data display to map overlays and param ids to ecu_defs
 TODO: Add custom graph tab (eg. engine speed vs. boost, etc.)
 TODO: Add log analysis tab (or maybe new window?), including log playback, custom graphs, map compare, etc
 */
@@ -132,6 +132,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private static final String ENGINUITY_ECU_LOGGER_TITLE = "Enginuity ECU Logger";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
+    private static final String HEADING_EXTERNAL = "External";
     private Settings settings;
     private LoggerController controller;
     private JLabel messageLabel;
@@ -143,14 +144,17 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private DataRegistrationBroker dataTabBroker;
     private ParameterListTableModel dataTabParamListTableModel;
     private ParameterListTableModel dataTabSwitchListTableModel;
+    private ParameterListTableModel dataTabExternalListTableModel;
     private DataUpdateHandlerManager graphHandlerManager;
     private DataRegistrationBroker graphTabBroker;
     private ParameterListTableModel graphTabParamListTableModel;
     private ParameterListTableModel graphTabSwitchListTableModel;
+    private ParameterListTableModel graphTabExternalListTableModel;
     private DataUpdateHandlerManager dashboardHandlerManager;
     private DataRegistrationBroker dashboardTabBroker;
     private ParameterListTableModel dashboardTabParamListTableModel;
     private ParameterListTableModel dashboardTabSwitchListTableModel;
+    private ParameterListTableModel dashboardTabExternalListTableModel;
     private FileUpdateHandlerImpl fileUpdateHandler;
     private LiveDataTableModel dataTableModel;
     private LiveDataUpdateHandler liveDataUpdateHandler;
@@ -203,14 +207,17 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dataTabBroker = new DataRegistrationBrokerImpl(controller, dataHandlerManager);
         dataTabParamListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_PARAMETERS);
         dataTabSwitchListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_SWITCHES);
+        dataTabExternalListTableModel = new ParameterListTableModel(dataTabBroker, HEADING_EXTERNAL);
         graphHandlerManager = new DataUpdateHandlerManagerImpl();
         graphTabBroker = new DataRegistrationBrokerImpl(controller, graphHandlerManager);
         graphTabParamListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_PARAMETERS);
         graphTabSwitchListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_SWITCHES);
+        graphTabExternalListTableModel = new ParameterListTableModel(graphTabBroker, HEADING_EXTERNAL);
         dashboardHandlerManager = new DataUpdateHandlerManagerImpl();
         dashboardTabBroker = new DataRegistrationBrokerImpl(controller, dashboardHandlerManager);
         dashboardTabParamListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_PARAMETERS);
         dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
+        dashboardTabExternalListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_EXTERNAL);
         fileUpdateHandler = new FileUpdateHandlerImpl(settings, this);
         dataTableModel = new LiveDataTableModel();
         liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
@@ -269,8 +276,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void loadLoggerPlugins() {
         try {
             ExternalDataSourceLoader dataSourceLoader = new ExternalDataSourceLoaderImpl();
-            dataSourceLoader.loadFromDataSources();
-            //TODO: Finish this!!
+            dataSourceLoader.loadFromExternalDataSources();
+            loadExternalDatas(dataSourceLoader.getExternalDatas());
         } catch (Exception e) {
             reportError(e);
         }
@@ -294,10 +301,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void initFileLoggingController(final EcuSwitch fileLoggingControllerSwitch) {
         // add logger and setup callback
         controller.setFileLoggerSwitch(fileLoggingControllerSwitch, new LoggerCallback() {
-            public void callback(byte[] bytes) {
+            public void callback(double value) {
                 // update handlers
                 if (settings.isFileLoggingControllerSwitchActive()) {
-                    boolean logToFile = (int) fileLoggingControllerSwitch.getSelectedConvertor().convert(bytes) == 1;
+//                    boolean logToFile = (int) fileLoggingControllerSwitch.getSelectedConvertor().convert(bytes) == 1;
+                    boolean logToFile = (int) value == 1;
                     logToFileButton.setSelected(logToFile);
                     if (logToFile) {
                         fileUpdateHandler.start();
@@ -323,27 +331,27 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void applyUserProfileToLiveDataTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
-            EcuData ecuData = row.getEcuData();
-            setDefaultUnits(profile, ecuData);
-            paramListTableModel.selectParam(ecuData, isSelectedOnLiveDataTab(profile, ecuData));
+            LoggerData loggerData = row.getLoggerData();
+            setDefaultUnits(profile, loggerData);
+            paramListTableModel.selectParam(loggerData, isSelectedOnLiveDataTab(profile, loggerData));
         }
     }
 
     private void applyUserProfileToGraphTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
-            EcuData ecuData = row.getEcuData();
-            setDefaultUnits(profile, ecuData);
-            paramListTableModel.selectParam(ecuData, isSelectedOnGraphTab(profile, ecuData));
+            LoggerData loggerData = row.getLoggerData();
+            setDefaultUnits(profile, loggerData);
+            paramListTableModel.selectParam(loggerData, isSelectedOnGraphTab(profile, loggerData));
         }
     }
 
     private void applyUserProfileToDashTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
-            EcuData ecuData = row.getEcuData();
-            setDefaultUnits(profile, ecuData);
-            paramListTableModel.selectParam(ecuData, isSelectedOnDashTab(profile, ecuData));
+            LoggerData loggerData = row.getLoggerData();
+            setDefaultUnits(profile, loggerData);
+            paramListTableModel.selectParam(loggerData, isSelectedOnDashTab(profile, loggerData));
         }
     }
 
@@ -375,6 +383,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dashboardTabSwitchListTableModel.clear();
     }
 
+    private void clearExternalTableModels() {
+        dataTabExternalListTableModel.clear();
+        graphTabExternalListTableModel.clear();
+        dashboardTabExternalListTableModel.clear();
+    }
+
     private void loadEcuParams(List<EcuParameter> ecuParams) {
         clearParamTableModels();
         sort(ecuParams, new EcuDataComparator());
@@ -395,26 +409,36 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
     }
 
-    private void setDefaultUnits(UserProfile profile, EcuData ecuData) {
+    private void loadExternalDatas(List<ExternalData> externalDatas) {
+        clearExternalTableModels();
+        sort(externalDatas, new EcuDataComparator());
+        for (ExternalData externalData : externalDatas) {
+            dataTabExternalListTableModel.addParam(externalData, false);
+            graphTabExternalListTableModel.addParam(externalData, false);
+            dashboardTabExternalListTableModel.addParam(externalData, false);
+        }
+    }
+
+    private void setDefaultUnits(UserProfile profile, LoggerData loggerData) {
         if (profile != null) {
             try {
-                ecuData.selectConvertor(profile.getSelectedConvertor(ecuData));
+                loggerData.selectConvertor(profile.getSelectedConvertor(loggerData));
             } catch (Exception e) {
                 reportError(e);
             }
         }
     }
 
-    private boolean isSelectedOnLiveDataTab(UserProfile profile, EcuData ecuData) {
-        return profile != null && profile.isSelectedOnLiveDataTab(ecuData);
+    private boolean isSelectedOnLiveDataTab(UserProfile profile, LoggerData loggerData) {
+        return profile != null && profile.isSelectedOnLiveDataTab(loggerData);
     }
 
-    private boolean isSelectedOnGraphTab(UserProfile profile, EcuData ecuData) {
-        return profile != null && profile.isSelectedOnGraphTab(ecuData);
+    private boolean isSelectedOnGraphTab(UserProfile profile, LoggerData loggerData) {
+        return profile != null && profile.isSelectedOnGraphTab(loggerData);
     }
 
-    private boolean isSelectedOnDashTab(UserProfile profile, EcuData ecuData) {
-        return profile != null && profile.isSelectedOnDashTab(ecuData);
+    private boolean isSelectedOnDashTab(UserProfile profile, LoggerData loggerData) {
+        return profile != null && profile.isSelectedOnDashTab(loggerData);
     }
 
     public UserProfile getCurrentProfile() {
@@ -428,8 +452,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows, List<ParameterRow> graphTabRows, List<ParameterRow> dashTabRows) {
         Map<String, UserProfileItem> profileItems = new HashMap<String, UserProfileItem>();
         for (ParameterRow dataTabRow : dataTabRows) {
-            String id = dataTabRow.getEcuData().getId();
-            String units = dataTabRow.getEcuData().getSelectedConvertor().getUnits();
+            String id = dataTabRow.getLoggerData().getId();
+            String units = dataTabRow.getLoggerData().getSelectedConvertor().getUnits();
             boolean dataTabSelected = dataTabRow.isSelected();
             boolean graphTabSelected = isEcuDataSelected(id, graphTabRows);
             boolean dashTabSelected = isEcuDataSelected(id, dashTabRows);
@@ -440,7 +464,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private boolean isEcuDataSelected(String id, List<ParameterRow> parameterRows) {
         for (ParameterRow row : parameterRows) {
-            if (id.equals(row.getEcuData().getId())) {
+            if (id.equals(row.getLoggerData().getId())) {
                 return row.isSelected();
             }
         }
@@ -467,16 +491,20 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildTabbedPane() {
-        tabbedPane.add("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel), buildDataTab()));
-        tabbedPane.add("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel), buildGraphTab()));
-        tabbedPane.add("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel), buildDashboardTab()));
+        tabbedPane.add("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel, dataTabExternalListTableModel), buildDataTab()));
+        tabbedPane.add("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()));
+        tabbedPane.add("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()));
         return tabbedPane;
     }
 
-    private JComponent buildParamListPane(ParameterListTableModel paramListTableModel, ParameterListTableModel switchListTableModel) {
+    private JComponent buildParamListPane(ParameterListTableModel paramListTableModel, ParameterListTableModel switchListTableModel, ParameterListTableModel externalListTableModel) {
         JScrollPane paramList = new JScrollPane(buildParamListTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, paramList, switchList);
+        JScrollPane externalList = new JScrollPane(buildParamListTable(externalListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JSplitPane subSplitPane = new JSplitPane(VERTICAL_SPLIT, paramList, externalList);
+        subSplitPane.setDividerSize(2);
+        subSplitPane.setDividerLocation(200);
+        JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, subSplitPane, switchList);
         splitPane.setDividerSize(2);
         splitPane.setDividerLocation(400);
         return splitPane;

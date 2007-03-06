@@ -21,10 +21,10 @@
 
 package enginuity.logger.ecu.profile;
 
-import enginuity.logger.ecu.definition.EcuData;
 import enginuity.logger.ecu.definition.EcuDataConvertor;
 import enginuity.logger.ecu.definition.EcuParameter;
 import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
@@ -49,40 +49,40 @@ public final class UserProfileImpl implements UserProfile {
         return serialPort;
     }
 
-    public boolean contains(EcuData ecuData) {
-        checkNotNull(ecuData, "ecuData");
-        return getMap(ecuData).keySet().contains(ecuData.getId());
+    public boolean contains(LoggerData loggerData) {
+        checkNotNull(loggerData, "loggerData");
+        return getMap(loggerData).keySet().contains(loggerData.getId());
     }
 
-    public boolean isSelectedOnLiveDataTab(EcuData ecuData) {
-        checkNotNull(ecuData, "ecuData");
-        return contains(ecuData) && getUserProfileItem(ecuData).isLiveDataSelected();
+    public boolean isSelectedOnLiveDataTab(LoggerData loggerData) {
+        checkNotNull(loggerData, "loggerData");
+        return contains(loggerData) && getUserProfileItem(loggerData).isLiveDataSelected();
     }
 
-    public boolean isSelectedOnGraphTab(EcuData ecuData) {
-        checkNotNull(ecuData, "ecuData");
-        return contains(ecuData) && getUserProfileItem(ecuData).isGraphSelected();
+    public boolean isSelectedOnGraphTab(LoggerData loggerData) {
+        checkNotNull(loggerData, "loggerData");
+        return contains(loggerData) && getUserProfileItem(loggerData).isGraphSelected();
     }
 
-    public boolean isSelectedOnDashTab(EcuData ecuData) {
-        checkNotNull(ecuData, "ecuData");
-        return contains(ecuData) && getUserProfileItem(ecuData).isDashSelected();
+    public boolean isSelectedOnDashTab(LoggerData loggerData) {
+        checkNotNull(loggerData, "loggerData");
+        return contains(loggerData) && getUserProfileItem(loggerData).isDashSelected();
     }
 
-    public EcuDataConvertor getSelectedConvertor(EcuData ecuData) {
-        checkNotNull(ecuData, "ecuData");
-        if (contains(ecuData)) {
-            String defaultUnits = getUserProfileItem(ecuData).getUnits();
-            if (defaultUnits != null && ecuData.getConvertors().length > 1) {
-                for (EcuDataConvertor convertor : ecuData.getConvertors()) {
+    public EcuDataConvertor getSelectedConvertor(LoggerData loggerData) {
+        checkNotNull(loggerData, "loggerData");
+        if (contains(loggerData)) {
+            String defaultUnits = getUserProfileItem(loggerData).getUnits();
+            if (defaultUnits != null && loggerData.getConvertors().length > 1) {
+                for (EcuDataConvertor convertor : loggerData.getConvertors()) {
                     if (defaultUnits.equals(convertor.getUnits())) {
                         return convertor;
                     }
                 }
-                throw new ConfigurationException("Unknown default units, '" + defaultUnits + "', specified for " + ecuData.getName());
+                throw new ConfigurationException("Unknown default units, '" + defaultUnits + "', specified for " + loggerData.getName());
             }
         }
-        return ecuData.getSelectedConvertor();
+        return loggerData.getSelectedConvertor();
     }
 
     public byte[] getBytes() {
@@ -99,19 +99,19 @@ public final class UserProfileImpl implements UserProfile {
         }
         if (!params.isEmpty()) {
             builder.append("    <parameters>").append(NEW_LINE);
-            appendEcuDataElements(builder, "parameter", params, true);
+            appendLoggerDataElements(builder, "parameter", params, true);
             builder.append("    </parameters>").append(NEW_LINE);
         }
         if (!switches.isEmpty()) {
             builder.append("    <switches>").append(NEW_LINE);
-            appendEcuDataElements(builder, "switch", switches, false);
+            appendLoggerDataElements(builder, "switch", switches, false);
             builder.append("    </switches>").append(NEW_LINE);
         }
         builder.append("</profile>").append(NEW_LINE);
         return builder.toString();
     }
 
-    private void appendEcuDataElements(StringBuilder builder, String dataType, Map<String, UserProfileItem> dataMap, boolean showUnits) {
+    private void appendLoggerDataElements(StringBuilder builder, String dataType, Map<String, UserProfileItem> dataMap, boolean showUnits) {
         for (String id : dataMap.keySet()) {
             UserProfileItem item = dataMap.get(id);
             builder.append("        <").append(dataType).append(" id=\"").append(id).append("\"");
@@ -131,17 +131,17 @@ public final class UserProfileImpl implements UserProfile {
         }
     }
 
-    private UserProfileItem getUserProfileItem(EcuData ecuData) {
-        return getMap(ecuData).get(ecuData.getId());
+    private UserProfileItem getUserProfileItem(LoggerData loggerData) {
+        return getMap(loggerData).get(loggerData.getId());
     }
 
-    private Map<String, UserProfileItem> getMap(EcuData ecuData) {
-        if (ecuData instanceof EcuParameter) {
+    private Map<String, UserProfileItem> getMap(LoggerData loggerData) {
+        if (loggerData instanceof EcuParameter) {
             return params;
-        } else if (ecuData instanceof EcuSwitch) {
+        } else if (loggerData instanceof EcuSwitch) {
             return switches;
         } else {
-            throw new UnsupportedOperationException("Unknown EcuData type: " + ecuData.getClass());
+            throw new UnsupportedOperationException("Unknown LoggerData type: " + loggerData.getClass());
         }
     }
 

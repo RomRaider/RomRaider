@@ -30,8 +30,8 @@ import enginuity.logger.ecu.comms.query.EcuInitCallback;
 import enginuity.logger.ecu.comms.query.LoggerCallback;
 import enginuity.logger.ecu.comms.query.RegisteredQuery;
 import enginuity.logger.ecu.comms.query.RegisteredQueryImpl;
-import enginuity.logger.ecu.definition.EcuData;
 import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
 import static enginuity.util.HexUtil.asHex;
@@ -78,14 +78,15 @@ public final class QueryManagerImpl implements QueryManager {
         fileLoggerQuery = new RegisteredQueryImpl(ecuSwitch, callback);
     }
 
-    public synchronized void addQuery(String callerId, EcuData ecuData, LoggerCallback callback) {
-        checkNotNull(callerId, ecuData, callback);
-        addList.put(buildQueryId(callerId, ecuData), new RegisteredQueryImpl(ecuData, callback));
+    public synchronized void addQuery(String callerId, LoggerData loggerData, LoggerCallback callback) {
+        checkNotNull(callerId, loggerData, callback);
+        //FIXME: Integrate LoggerData here!!! Cater for ecu and external data items
+        //addList.put(buildQueryId(callerId, loggerData), new RegisteredQueryImpl(loggerData, callback));
     }
 
-    public synchronized void removeQuery(String callerId, EcuData ecuData) {
-        checkNotNull(callerId, ecuData);
-        removeList.add(buildQueryId(callerId, ecuData));
+    public synchronized void removeQuery(String callerId, LoggerData loggerData) {
+        checkNotNull(callerId, loggerData);
+        removeList.add(buildQueryId(callerId, loggerData));
     }
 
     public boolean isRunning() {
@@ -179,8 +180,8 @@ public final class QueryManagerImpl implements QueryManager {
         }
     }
 
-    private String buildQueryId(String callerId, EcuData ecuData) {
-        return callerId + "_" + ecuData.getName();
+    private String buildQueryId(String callerId, LoggerData loggerData) {
+        return callerId + "_" + loggerData.getName();
     }
 
     private synchronized void updateQueryList() {

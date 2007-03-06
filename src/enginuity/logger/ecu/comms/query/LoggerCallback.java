@@ -23,6 +23,6 @@ package enginuity.logger.ecu.comms.query;
 
 public interface LoggerCallback {
 
-    void callback(byte[] bytes);
+    void callback(double value);
 
 }

@@ -22,17 +22,17 @@
 package enginuity.logger.ecu.comms.manager;
 
 import enginuity.logger.ecu.comms.query.LoggerCallback;
-import enginuity.logger.ecu.definition.EcuData;
 import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.StatusChangeListener;
 
 public interface QueryManager extends Runnable {
 
     void setFileLoggerQuery(EcuSwitch ecuSwitch, LoggerCallback callback);
 
-    void addQuery(String callerId, EcuData ecuData, LoggerCallback callback);
+    void addQuery(String callerId, LoggerData loggerData, LoggerCallback callback);
 
-    void removeQuery(String callerId, EcuData ecuData);
+    void removeQuery(String callerId, LoggerData loggerData);
 
     boolean isRunning();
 

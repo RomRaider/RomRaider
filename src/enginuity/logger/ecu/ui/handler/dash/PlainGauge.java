@@ -21,7 +21,7 @@
 
 package enginuity.logger.ecu.ui.handler.dash;
 
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import static javax.swing.BorderFactory.createLineBorder;
@@ -56,7 +56,7 @@ public final class PlainGauge extends Gauge implements ActionListener {
     private static final String ABOVE = "above";
     private static final String BELOW = "below";
     private final String zeroText;
-    private final EcuData ecuData;
+    private final LoggerData loggerData;
     private final JPanel liveValuePanel = new JPanel(new BorderLayout());
     private final JLabel liveValueLabel = new JLabel(BLANK, JLabel.CENTER);
     private final JLabel maxLabel = new JLabel(BLANK, JLabel.CENTER);
@@ -69,15 +69,15 @@ public final class PlainGauge extends Gauge implements ActionListener {
     private double max = Double.MIN_VALUE;
     private double min = Double.MAX_VALUE;
 
-    public PlainGauge(EcuData ecuData) {
-        checkNotNull(ecuData, "ecuData");
-        this.ecuData = ecuData;
+    public PlainGauge(LoggerData loggerData) {
+        checkNotNull(loggerData, "loggerData");
+        this.loggerData = loggerData;
         zeroText = format(0.0);
         initGaugeLayout();
     }
 
     public void refreshTitle() {
-        title.setText(ecuData.getName() + " (" + ecuData.getSelectedConvertor().getUnits() + ')');
+        title.setText(loggerData.getName() + " (" + loggerData.getSelectedConvertor().getUnits() + ')');
     }
 
     public void updateValue(double value) {
@@ -247,7 +247,7 @@ public final class PlainGauge extends Gauge implements ActionListener {
     }
 
     private String format(double value) {
-        return ecuData.getSelectedConvertor().format(value);
+        return loggerData.getSelectedConvertor().format(value);
     }
 
     private int scaleForProgressBar(double value) {

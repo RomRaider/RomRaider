@@ -21,7 +21,7 @@
 
 package enginuity.logger.ecu.ui.handler;
 
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import static enginuity.util.ThreadUtil.sleep;
 
 import java.util.ArrayList;
@@ -38,16 +38,16 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
         this.wrappee = wrappee;
     }
 
-    public void registerData(EcuData ecuData) {
-        wrappee.registerData(ecuData);
+    public void registerData(LoggerData loggerData) {
+        wrappee.registerData(loggerData);
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
-        updateList.add(new DataUpdate(ecuData, value, timestamp));
+    public synchronized void handleDataUpdate(LoggerData loggerData, double value, long timestamp) {
+        updateList.add(new DataUpdate(loggerData, value, timestamp));
     }
 
-    public void deregisterData(EcuData ecuData) {
-        wrappee.deregisterData(ecuData);
+    public void deregisterData(LoggerData loggerData) {
+        wrappee.deregisterData(loggerData);
     }
 
     public void cleanUp() {
@@ -63,7 +63,7 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
         while (!stop) {
             updateWorkingList();
             for (final DataUpdate dataUpdate : workingList) {
-                wrappee.handleDataUpdate(dataUpdate.getEcuData(), dataUpdate.getValue(), dataUpdate.getTimestamp());
+                wrappee.handleDataUpdate(dataUpdate.getLoggerData(), dataUpdate.getValue(), dataUpdate.getTimestamp());
             }
             sleep(3);
         }
@@ -78,18 +78,18 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
     }
 
     private static final class DataUpdate {
-        private final EcuData ecuData;
+        private final LoggerData loggerData;
         private final double value;
         private final long timestamp;
 
-        public DataUpdate(EcuData ecuData, double value, long timestamp) {
-            this.ecuData = ecuData;
+        public DataUpdate(LoggerData loggerData, double value, long timestamp) {
+            this.loggerData = loggerData;
             this.value = value;
             this.timestamp = timestamp;
         }
 
-        public EcuData getEcuData() {
-            return ecuData;
+        public LoggerData getLoggerData() {
+            return loggerData;
         }
 
         public long getTimestamp() {

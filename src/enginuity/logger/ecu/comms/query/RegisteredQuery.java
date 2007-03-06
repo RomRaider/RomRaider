@@ -21,8 +21,6 @@
 
 package enginuity.logger.ecu.comms.query;
 
-import enginuity.logger.ecu.definition.EcuData;
-
 public interface RegisteredQuery {
 
     String[] getAddresses();
@@ -32,6 +30,4 @@ public interface RegisteredQuery {
     String getHex();
 
     void setResponse(byte[] response);
-
-    EcuData getEcuData();
 }

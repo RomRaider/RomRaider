@@ -21,13 +21,13 @@
 
 package enginuity.logger.ecu.ui;
 
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 
 public interface DataRegistrationBroker extends StatusChangeListener {
 
-    void registerEcuDataForLogging(EcuData ecuData);
+    void registerLoggerDataForLogging(LoggerData loggerData);
 
-    void deregisterEcuDataFromLogging(EcuData ecuData);
+    void deregisterLoggerDataFromLogging(LoggerData loggerData);
 
     void clear();
 

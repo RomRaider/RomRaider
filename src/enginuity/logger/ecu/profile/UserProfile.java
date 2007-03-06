@@ -21,22 +21,22 @@
 
 package enginuity.logger.ecu.profile;
 
-import enginuity.logger.ecu.definition.EcuData;
 import enginuity.logger.ecu.definition.EcuDataConvertor;
+import enginuity.logger.ecu.definition.LoggerData;
 
 public interface UserProfile {
 
     String getSerialPort();
 
-    boolean contains(EcuData ecuData);
+    boolean contains(LoggerData loggerData);
 
-    boolean isSelectedOnLiveDataTab(EcuData ecuData);
+    boolean isSelectedOnLiveDataTab(LoggerData loggerData);
 
-    boolean isSelectedOnGraphTab(EcuData ecuData);
+    boolean isSelectedOnGraphTab(LoggerData loggerData);
 
-    boolean isSelectedOnDashTab(EcuData ecuData);
+    boolean isSelectedOnDashTab(LoggerData loggerData);
 
-    EcuDataConvertor getSelectedConvertor(EcuData ecuData);
+    EcuDataConvertor getSelectedConvertor(LoggerData loggerData);
 
     byte[] getBytes();
 }

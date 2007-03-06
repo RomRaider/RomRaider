@@ -40,10 +40,6 @@ public final class RegisteredQueryImpl implements RegisteredQuery {
         hex = asHex(bytes);
     }
 
-    public EcuData getEcuData() {
-        return ecuData;
-    }
-
     public String[] getAddresses() {
         return ecuData.getAddresses();
     }
@@ -57,14 +53,11 @@ public final class RegisteredQueryImpl implements RegisteredQuery {
     }
 
     public void setResponse(byte[] response) {
-        callback.callback(response);
+        callback.callback(ecuData.getSelectedConvertor().convert(response));
     }
 
     public boolean equals(Object object) {
-        if (object instanceof RegisteredQueryImpl) {
-            return getHex().equals(((RegisteredQueryImpl) object).getHex());
-        }
-        return false;
+        return object instanceof RegisteredQueryImpl && getHex().equals(((RegisteredQueryImpl) object).getHex());
     }
 
     public int hashCode() {

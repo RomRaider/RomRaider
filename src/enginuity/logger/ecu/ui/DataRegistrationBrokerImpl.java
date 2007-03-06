@@ -23,7 +23,7 @@ package enginuity.logger.ecu.ui;
 
 import enginuity.logger.ecu.comms.controller.LoggerController;
 import enginuity.logger.ecu.comms.query.LoggerCallback;
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManager;
 import static enginuity.util.ParamChecker.checkNotNull;
 
@@ -32,7 +32,7 @@ import static java.util.Collections.synchronizedList;
 import java.util.List;
 
 public final class DataRegistrationBrokerImpl implements DataRegistrationBroker {
-    private final List<EcuData> registeredEcuData = synchronizedList(new ArrayList<EcuData>());
+    private final List<LoggerData> registeredLoggerData = synchronizedList(new ArrayList<LoggerData>());
     private final LoggerController controller;
     private final DataUpdateHandlerManager handlerManager;
     private final String id;
@@ -44,41 +44,41 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
         id = System.currentTimeMillis() + "_" + hashCode();
     }
 
-    public synchronized void registerEcuDataForLogging(final EcuData ecuData) {
-        if (!registeredEcuData.contains(ecuData)) {
+    public synchronized void registerLoggerDataForLogging(final LoggerData loggerData) {
+        if (!registeredLoggerData.contains(loggerData)) {
             // register param with handlers
-            handlerManager.registerData(ecuData);
+            handlerManager.registerData(loggerData);
 
             // add logger and setup callback
-            controller.addLogger(id, ecuData, new LoggerCallback() {
-                public void callback(byte[] bytes) {
+            controller.addLogger(id, loggerData, new LoggerCallback() {
+                public void callback(double value) {
                     // update handlers
-                    double value = ecuData.getSelectedConvertor().convert(bytes);
-                    handlerManager.handleDataUpdate(ecuData, value, System.currentTimeMillis());
+//                    double value = loggerData.getSelectedConvertor().convert(bytes);
+                    handlerManager.handleDataUpdate(loggerData, value, System.currentTimeMillis());
                 }
             });
 
             // add to registered parameters list
-            registeredEcuData.add(ecuData);
+            registeredLoggerData.add(loggerData);
         }
     }
 
-    public synchronized void deregisterEcuDataFromLogging(EcuData ecuData) {
-        if (registeredEcuData.contains(ecuData)) {
+    public synchronized void deregisterLoggerDataFromLogging(LoggerData loggerData) {
+        if (registeredLoggerData.contains(loggerData)) {
             // deregister from dependant objects
-            deregisterEcuDataFromDependants(ecuData);
+            deregisterLoggerDataFromDependants(loggerData);
 
             // remove from registered list
-            registeredEcuData.remove(ecuData);
+            registeredLoggerData.remove(loggerData);
         }
 
     }
 
     public synchronized void clear() {
-        for (EcuData ecuData : registeredEcuData) {
-            deregisterEcuDataFromDependants(ecuData);
+        for (LoggerData loggerData : registeredLoggerData) {
+            deregisterLoggerDataFromDependants(loggerData);
         }
-        registeredEcuData.clear();
+        registeredLoggerData.clear();
     }
 
     public synchronized void connecting() {
@@ -93,12 +93,12 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
     public synchronized void stopped() {
     }
 
-    private void deregisterEcuDataFromDependants(EcuData ecuData) {
+    private void deregisterLoggerDataFromDependants(LoggerData loggerData) {
         // remove logger
-        controller.removeLogger(id, ecuData);
+        controller.removeLogger(id, loggerData);
 
         // deregister param from handlers
-        handlerManager.deregisterData(ecuData);
+        handlerManager.deregisterData(loggerData);
     }
 
 }

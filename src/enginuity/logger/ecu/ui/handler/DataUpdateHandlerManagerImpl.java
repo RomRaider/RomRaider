@@ -21,7 +21,7 @@
 
 package enginuity.logger.ecu.ui.handler;
 
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,21 +33,21 @@ public final class DataUpdateHandlerManagerImpl implements DataUpdateHandlerMana
         handlers.add(handler);
     }
 
-    public synchronized void registerData(EcuData ecuData) {
+    public synchronized void registerData(LoggerData loggerData) {
         for (DataUpdateHandler handler : handlers) {
-            handler.registerData(ecuData);
+            handler.registerData(loggerData);
         }
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
+    public synchronized void handleDataUpdate(LoggerData loggerData, double value, long timestamp) {
         for (DataUpdateHandler handler : handlers) {
-            handler.handleDataUpdate(ecuData, value, timestamp);
+            handler.handleDataUpdate(loggerData, value, timestamp);
         }
     }
 
-    public synchronized void deregisterData(EcuData ecuData) {
+    public synchronized void deregisterData(LoggerData loggerData) {
         for (DataUpdateHandler handler : handlers) {
-            handler.deregisterData(ecuData);
+            handler.deregisterData(loggerData);
         }
     }
 

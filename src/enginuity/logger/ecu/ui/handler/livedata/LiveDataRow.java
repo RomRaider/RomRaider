@@ -21,44 +21,44 @@
 
 package enginuity.logger.ecu.ui.handler.livedata;
 
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class LiveDataRow {
     private static final double ZERO = 0.0;
-    private final EcuData ecuData;
+    private final LoggerData loggerData;
     private double minValue;
     private double maxValue;
     private double currentValue;
     private boolean updated = false;
 
-    public LiveDataRow(EcuData ecuData) {
-        checkNotNull(ecuData, "ecuData");
-        this.ecuData = ecuData;
+    public LiveDataRow(LoggerData loggerData) {
+        checkNotNull(loggerData, "loggerData");
+        this.loggerData = loggerData;
     }
 
-    public EcuData getEcuData() {
-        return ecuData;
+    public LoggerData getLoggerData() {
+        return loggerData;
     }
 
     public String getName() {
-        return ecuData.getName();
+        return loggerData.getName();
     }
 
     public String getMinValue() {
-        return ecuData.getSelectedConvertor().format(minValue);
+        return loggerData.getSelectedConvertor().format(minValue);
     }
 
     public String getMaxValue() {
-        return ecuData.getSelectedConvertor().format(maxValue);
+        return loggerData.getSelectedConvertor().format(maxValue);
     }
 
     public String getCurrentValue() {
-        return ecuData.getSelectedConvertor().format(currentValue);
+        return loggerData.getSelectedConvertor().format(currentValue);
     }
 
     public String getUnits() {
-        return ecuData.getSelectedConvertor().getUnits();
+        return loggerData.getSelectedConvertor().getUnits();
     }
 
     public void updateValue(double value) {

@@ -23,6 +23,6 @@ package enginuity.logger.ecu.definition;
 
 public interface ConvertorUpdateListener {
 
-    void notifyConvertorUpdate(EcuData updatedEcuData);
+    void notifyConvertorUpdate(LoggerData updatedLoggerData);
 
 }

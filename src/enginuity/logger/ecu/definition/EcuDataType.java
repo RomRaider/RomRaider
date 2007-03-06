@@ -23,5 +23,6 @@ package enginuity.logger.ecu.definition;
 
 public enum EcuDataType {
     PARAMETER,
-    SWITCH
+    SWITCH,
+    EXTERNAL
 }

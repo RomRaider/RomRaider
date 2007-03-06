@@ -21,7 +21,7 @@
 
 package enginuity.logger.ecu.ui.handler.livedata;
 
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 
 import javax.swing.table.AbstractTableModel;
 import static java.util.Collections.synchronizedList;
@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 public final class LiveDataTableModel extends AbstractTableModel {
-    private final String[] columnNames = {"ECU Data", "Min Value", "Current Value", "Max Value", "Units"};
-    private final List<EcuData> registeredEcuData = synchronizedList(new LinkedList<EcuData>());
-    private final Map<EcuData, LiveDataRow> dataRowMap = synchronizedMap(new LinkedHashMap<EcuData, LiveDataRow>());
+    private final String[] columnNames = {"Logger Data", "Min Value", "Current Value", "Max Value", "Units"};
+    private final List<LoggerData> registeredLoggerData = synchronizedList(new LinkedList<LoggerData>());
+    private final Map<LoggerData, LiveDataRow> dataRowMap = synchronizedMap(new LinkedHashMap<LoggerData, LiveDataRow>());
 
     public synchronized int getRowCount() {
         return dataRowMap.size();
@@ -53,7 +53,7 @@ public final class LiveDataTableModel extends AbstractTableModel {
     }
 
     public synchronized Object getValueAt(int row, int col) {
-        LiveDataRow dataRow = dataRowMap.get(registeredEcuData.get(row));
+        LiveDataRow dataRow = dataRowMap.get(registeredLoggerData.get(row));
         switch (col) {
             case 0:
                 return dataRow.getName();
@@ -70,25 +70,25 @@ public final class LiveDataTableModel extends AbstractTableModel {
         }
     }
 
-    public synchronized void addParam(EcuData ecuData) {
-        if (!registeredEcuData.contains(ecuData)) {
-            dataRowMap.put(ecuData, new LiveDataRow(ecuData));
-            registeredEcuData.add(ecuData);
+    public synchronized void addParam(LoggerData loggerData) {
+        if (!registeredLoggerData.contains(loggerData)) {
+            dataRowMap.put(loggerData, new LiveDataRow(loggerData));
+            registeredLoggerData.add(loggerData);
             fireTableDataChanged();
         }
     }
 
-    public synchronized void removeParam(EcuData ecuData) {
-        registeredEcuData.remove(ecuData);
-        dataRowMap.remove(ecuData);
+    public synchronized void removeParam(LoggerData loggerData) {
+        registeredLoggerData.remove(loggerData);
+        dataRowMap.remove(loggerData);
         fireTableDataChanged();
     }
 
-    public synchronized void updateParam(EcuData ecuData, double value) {
-        LiveDataRow dataRow = dataRowMap.get(ecuData);
+    public synchronized void updateParam(LoggerData loggerData, double value) {
+        LiveDataRow dataRow = dataRowMap.get(loggerData);
         if (dataRow != null) {
             dataRow.updateValue(value);
-            int index = registeredEcuData.indexOf(ecuData);
+            int index = registeredLoggerData.indexOf(loggerData);
             fireTableRowsUpdated(index, index);
         }
     }
@@ -100,8 +100,8 @@ public final class LiveDataTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public synchronized void resetRow(EcuData ecuData) {
-        LiveDataRow liveDataRow = dataRowMap.get(ecuData);
+    public synchronized void resetRow(LoggerData loggerData) {
+        LiveDataRow liveDataRow = dataRowMap.get(loggerData);
         if (liveDataRow != null) {
             liveDataRow.reset();
             fireTableDataChanged();

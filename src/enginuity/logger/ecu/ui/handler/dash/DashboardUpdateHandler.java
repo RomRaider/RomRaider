@@ -22,7 +22,7 @@
 package enginuity.logger.ecu.ui.handler.dash;
 
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
-import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 
 import javax.swing.JPanel;
@@ -33,29 +33,29 @@ import java.util.Map;
 
 public final class DashboardUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final JPanel dashboardPanel;
-    private final Map<EcuData, Gauge> gauges = synchronizedMap(new HashMap<EcuData, Gauge>());
+    private final Map<LoggerData, Gauge> gauges = synchronizedMap(new HashMap<LoggerData, Gauge>());
 
     public DashboardUpdateHandler(JPanel dashboardPanel) {
         this.dashboardPanel = dashboardPanel;
     }
 
-    public synchronized void registerData(EcuData ecuData) {
-        Gauge gauge = new PlainGauge(ecuData);
-        gauges.put(ecuData, gauge);
+    public synchronized void registerData(LoggerData loggerData) {
+        Gauge gauge = new PlainGauge(loggerData);
+        gauges.put(loggerData, gauge);
         dashboardPanel.add(gauge);
         repaintDashboardPanel();
     }
 
-    public synchronized void handleDataUpdate(EcuData ecuData, double value, long timestamp) {
-        Gauge gauge = gauges.get(ecuData);
+    public synchronized void handleDataUpdate(LoggerData loggerData, double value, long timestamp) {
+        Gauge gauge = gauges.get(loggerData);
         if (gauge != null) {
             gauge.updateValue(value);
         }
     }
 
-    public synchronized void deregisterData(EcuData ecuData) {
-        dashboardPanel.remove(gauges.get(ecuData));
-        gauges.remove(ecuData);
+    public synchronized void deregisterData(LoggerData loggerData) {
+        dashboardPanel.remove(gauges.get(loggerData));
+        gauges.remove(loggerData);
         repaintDashboardPanel();
     }
 
@@ -68,8 +68,8 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
         }
     }
 
-    public synchronized void notifyConvertorUpdate(EcuData updatedEcuData) {
-        Gauge gauge = gauges.get(updatedEcuData);
+    public synchronized void notifyConvertorUpdate(LoggerData updatedLoggerData) {
+        Gauge gauge = gauges.get(updatedLoggerData);
         if (gauge != null) {
             gauge.resetValue();
             gauge.refreshTitle();

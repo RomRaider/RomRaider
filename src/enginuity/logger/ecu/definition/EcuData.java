@@ -21,22 +21,8 @@
 
 package enginuity.logger.ecu.definition;
 
-public interface EcuData {
-
-    String getId();
-
-    String getName();
-
-    String getDescription();
+public interface EcuData extends LoggerData {
 
     String[] getAddresses();
-
-    EcuDataConvertor getSelectedConvertor();
-
-    EcuDataConvertor[] getConvertors();
-
-    void selectConvertor(EcuDataConvertor convertor);
-
-    EcuDataType getDataType();
 
 }
