@@ -27,10 +27,16 @@ import enginuity.io.connection.EcuConnectionImpl;
 import enginuity.io.protocol.Protocol;
 import enginuity.io.protocol.ProtocolFactory;
 import enginuity.logger.ecu.comms.query.EcuInitCallback;
+import enginuity.logger.ecu.comms.query.EcuQuery;
+import enginuity.logger.ecu.comms.query.EcuQueryImpl;
+import enginuity.logger.ecu.comms.query.ExternalQuery;
+import enginuity.logger.ecu.comms.query.ExternalQueryImpl;
 import enginuity.logger.ecu.comms.query.LoggerCallback;
-import enginuity.logger.ecu.comms.query.RegisteredQuery;
-import enginuity.logger.ecu.comms.query.RegisteredQueryImpl;
+import enginuity.logger.ecu.comms.query.Query;
+import enginuity.logger.ecu.definition.EcuData;
+import static enginuity.logger.ecu.definition.EcuDataType.EXTERNAL;
 import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
@@ -41,6 +47,7 @@ import static enginuity.util.ThreadUtil.sleep;
 import javax.swing.SwingUtilities;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
@@ -50,13 +57,13 @@ import java.util.Map;
 public final class QueryManagerImpl implements QueryManager {
     private final DecimalFormat format = new DecimalFormat("0.00");
     private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
-    private final Map<String, RegisteredQuery> queryMap = synchronizedMap(new HashMap<String, RegisteredQuery>());
-    private final Map<String, RegisteredQuery> addList = new HashMap<String, RegisteredQuery>();
+    private final Map<String, Query> queryMap = synchronizedMap(new HashMap<String, Query>());
+    private final Map<String, Query> addList = new HashMap<String, Query>();
     private final List<String> removeList = new ArrayList<String>();
     private final Settings settings;
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
-    private RegisteredQuery fileLoggerQuery;
+    private EcuQuery fileLoggerQuery;
     private Thread queryManagerThread;
     private boolean started;
     private boolean stop;
@@ -75,13 +82,18 @@ public final class QueryManagerImpl implements QueryManager {
 
     public void setFileLoggerQuery(EcuSwitch ecuSwitch, LoggerCallback callback) {
         checkNotNull(ecuSwitch, callback);
-        fileLoggerQuery = new RegisteredQueryImpl(ecuSwitch, callback);
+        fileLoggerQuery = new EcuQueryImpl(ecuSwitch, callback);
     }
 
     public synchronized void addQuery(String callerId, LoggerData loggerData, LoggerCallback callback) {
         checkNotNull(callerId, loggerData, callback);
-        //FIXME: Integrate LoggerData here!!! Cater for ecu and external data items
-        //addList.put(buildQueryId(callerId, loggerData), new RegisteredQueryImpl(loggerData, callback));
+        //FIXME: This is a hack!!
+        String queryId = buildQueryId(callerId, loggerData);
+        if (loggerData.getDataType() == EXTERNAL) {
+            addList.put(queryId, new ExternalQueryImpl((ExternalData) loggerData, callback));
+        } else {
+            addList.put(queryId, new EcuQueryImpl((EcuData) loggerData, callback));
+        }
     }
 
     public synchronized void removeQuery(String callerId, LoggerData loggerData) {
@@ -156,11 +168,16 @@ public final class QueryManagerImpl implements QueryManager {
                     messageListener.reportMessage("Select parameters to be logged...");
                     sleep(1000L);
                 } else {
-                    List<RegisteredQuery> queries = new ArrayList<RegisteredQuery>(queryMap.values());
+                    List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
                     if (fileLoggerQuery != null) {
-                        queries.add(fileLoggerQuery);
+                        ecuQueries.add(fileLoggerQuery);
                     }
-                    txManager.sendQueries(queries);
+                    txManager.sendQueries(ecuQueries);
+                    List<ExternalQuery> externalQueries = filterExternalQueries(queryMap.values());
+                    for (ExternalQuery externalQuery : externalQueries) {
+                        //FIXME: This is a hack!!
+                        externalQuery.setResponse(externalQuery.getExternalData().getSelectedConvertor().convert(null));
+                    }
                     count++;
                     messageListener.reportMessage("Querying ECU...");
                     messageListener.reportStats(buildStatsMessage(start, count));
@@ -171,6 +188,28 @@ public final class QueryManagerImpl implements QueryManager {
         } finally {
             txManager.stop();
         }
+    }
+
+    //FIXME: This is a hack!!
+    private List<EcuQuery> filterEcuQueries(Collection<Query> queries) {
+        List<EcuQuery> filtered = new ArrayList<EcuQuery>();
+        for (Query query : queries) {
+            if (EcuQuery.class.isAssignableFrom(query.getClass())) {
+                filtered.add((EcuQuery) query);
+            }
+        }
+        return filtered;
+    }
+
+    //FIXME: This is a hack!!
+    private List<ExternalQuery> filterExternalQueries(Collection<Query> queries) {
+        List<ExternalQuery> filtered = new ArrayList<ExternalQuery>();
+        for (Query query : queries) {
+            if (ExternalQuery.class.isAssignableFrom(query.getClass())) {
+                filtered.add((ExternalQuery) query);
+            }
+        }
+        return filtered;
     }
 
     public void stop() {

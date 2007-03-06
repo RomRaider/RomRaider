@@ -24,7 +24,7 @@ package enginuity.logger.ecu.comms.manager;
 import enginuity.Settings;
 import enginuity.logger.ecu.comms.io.connection.LoggerConnection;
 import enginuity.logger.ecu.comms.io.connection.LoggerConnectionFactory;
-import enginuity.logger.ecu.comms.query.RegisteredQuery;
+import enginuity.logger.ecu.comms.query.EcuQuery;
 import enginuity.logger.ecu.exception.NotConnectedException;
 import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -53,7 +53,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
         }
     }
 
-    public void sendQueries(Collection<RegisteredQuery> queries) {
+    public void sendQueries(Collection<EcuQuery> queries) {
         checkNotNull(queries, "queries");
         if (connection != null) {
             connection.sendAddressReads(queries);

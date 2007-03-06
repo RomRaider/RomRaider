@@ -26,7 +26,7 @@ import enginuity.io.connection.SerialConnection;
 import enginuity.io.connection.TestSSMConnectionImpl;
 import enginuity.logger.ecu.comms.io.protocol.LoggerProtocol;
 import enginuity.logger.ecu.comms.io.protocol.SSMLoggerProtocol;
-import enginuity.logger.ecu.comms.query.RegisteredQuery;
+import enginuity.logger.ecu.comms.query.EcuQuery;
 import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -49,7 +49,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
         serialConnection = new TestSSMConnectionImpl(connectionProperties, portName);
     }
 
-    public void sendAddressReads(Collection<RegisteredQuery> queries) {
+    public void sendAddressReads(Collection<EcuQuery> queries) {
         try {
             byte[] request = protocol.constructReadAddressRequest(queries);
             byte[] response = protocol.constructReadAddressResponse(queries);

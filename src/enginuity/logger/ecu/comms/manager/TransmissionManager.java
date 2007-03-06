@@ -21,7 +21,7 @@
 
 package enginuity.logger.ecu.comms.manager;
 
-import enginuity.logger.ecu.comms.query.RegisteredQuery;
+import enginuity.logger.ecu.comms.query.EcuQuery;
 
 import java.util.Collection;
 
@@ -29,7 +29,7 @@ public interface TransmissionManager {
 
     void start();
 
-    void sendQueries(Collection<RegisteredQuery> query);
+    void sendQueries(Collection<EcuQuery> queries);
 
     void stop();
 

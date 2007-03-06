@@ -21,17 +21,17 @@
 
 package enginuity.logger.ecu.comms.io.protocol;
 
-import enginuity.logger.ecu.comms.query.RegisteredQuery;
+import enginuity.logger.ecu.comms.query.EcuQuery;
 
 import java.util.Collection;
 
 public interface LoggerProtocol {
 
-    byte[] constructReadAddressRequest(Collection<RegisteredQuery> queries);
+    byte[] constructReadAddressRequest(Collection<EcuQuery> queries);
 
-    byte[] constructReadAddressResponse(Collection<RegisteredQuery> queries);
+    byte[] constructReadAddressResponse(Collection<EcuQuery> queries);
 
     byte[] preprocessResponse(byte[] request, byte[] response);
 
-    void processReadAddressResponses(Collection<RegisteredQuery> queries, byte[] response);
+    void processReadAddressResponses(Collection<EcuQuery> queries, byte[] response);
 }

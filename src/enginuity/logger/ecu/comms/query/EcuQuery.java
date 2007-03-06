@@ -21,7 +21,7 @@
 
 package enginuity.logger.ecu.comms.query;
 
-public interface RegisteredQuery {
+public interface EcuQuery extends Query {
 
     String[] getAddresses();
 

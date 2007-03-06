@@ -26,13 +26,13 @@ import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 
-public final class RegisteredQueryImpl implements RegisteredQuery {
+public final class EcuQueryImpl implements EcuQuery {
     private final EcuData ecuData;
     private final LoggerCallback callback;
     private final byte[] bytes;
     private final String hex;
 
-    public RegisteredQueryImpl(EcuData ecuData, LoggerCallback callback) {
+    public EcuQueryImpl(EcuData ecuData, LoggerCallback callback) {
         checkNotNull(ecuData, callback);
         this.ecuData = ecuData;
         this.callback = callback;
@@ -57,7 +57,7 @@ public final class RegisteredQueryImpl implements RegisteredQuery {
     }
 
     public boolean equals(Object object) {
-        return object instanceof RegisteredQueryImpl && getHex().equals(((RegisteredQueryImpl) object).getHex());
+        return object instanceof EcuQueryImpl && getHex().equals(((EcuQueryImpl) object).getHex());
     }
 
     public int hashCode() {

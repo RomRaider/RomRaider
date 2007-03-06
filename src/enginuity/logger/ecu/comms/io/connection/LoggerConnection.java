@@ -21,13 +21,13 @@
 
 package enginuity.logger.ecu.comms.io.connection;
 
-import enginuity.logger.ecu.comms.query.RegisteredQuery;
+import enginuity.logger.ecu.comms.query.EcuQuery;
 
 import java.util.Collection;
 
 public interface LoggerConnection {
 
-    void sendAddressReads(Collection<RegisteredQuery> queries);
+    void sendAddressReads(Collection<EcuQuery> queries);
 
     void close();
 
