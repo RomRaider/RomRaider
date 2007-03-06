@@ -320,10 +320,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         if (profile != null) {
             applyUserProfileToLiveDataTabParameters(dataTabParamListTableModel, profile);
             applyUserProfileToLiveDataTabParameters(dataTabSwitchListTableModel, profile);
+            applyUserProfileToLiveDataTabParameters(dataTabExternalListTableModel, profile);
             applyUserProfileToGraphTabParameters(graphTabParamListTableModel, profile);
             applyUserProfileToGraphTabParameters(graphTabSwitchListTableModel, profile);
+            applyUserProfileToGraphTabParameters(graphTabExternalListTableModel, profile);
             applyUserProfileToDashTabParameters(dashboardTabParamListTableModel, profile);
             applyUserProfileToDashTabParameters(dashboardTabSwitchListTableModel, profile);
+            applyUserProfileToDashTabParameters(dashboardTabExternalListTableModel, profile);
         }
     }
 
@@ -445,7 +448,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 graphTabParamListTableModel.getParameterRows(), dashboardTabParamListTableModel.getParameterRows());
         Map<String, UserProfileItem> switchProfileItems = getProfileItems(dataTabSwitchListTableModel.getParameterRows(),
                 graphTabSwitchListTableModel.getParameterRows(), dashboardTabSwitchListTableModel.getParameterRows());
-        return new UserProfileImpl((String) portsComboBox.getSelectedItem(), paramProfileItems, switchProfileItems);
+        Map<String, UserProfileItem> externalProfileItems = getProfileItems(dataTabExternalListTableModel.getParameterRows(),
+                graphTabExternalListTableModel.getParameterRows(), dashboardTabExternalListTableModel.getParameterRows());
+        return new UserProfileImpl((String) portsComboBox.getSelectedItem(), paramProfileItems, switchProfileItems, externalProfileItems);
     }
 
     private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows, List<ParameterRow> graphTabRows, List<ParameterRow> dashTabRows) {

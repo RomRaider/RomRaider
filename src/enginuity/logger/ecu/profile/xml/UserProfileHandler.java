@@ -36,6 +36,7 @@ public final class UserProfileHandler extends DefaultHandler {
     private static final String TAG_SERIAL = "serial";
     private static final String TAG_PARAMETER = "parameter";
     private static final String TAG_SWITCH = "switch";
+    private static final String TAG_EXTERNAL = "external";
     private static final String ATTR_PORT = "port";
     private static final String ATTR_ID = "id";
     private static final String ATTR_UNITS = "units";
@@ -45,10 +46,12 @@ public final class UserProfileHandler extends DefaultHandler {
     private String serialPort;
     private Map<String, UserProfileItem> params;
     private Map<String, UserProfileItem> switches;
+    private Map<String, UserProfileItem> external;
 
     public void startDocument() {
         params = new HashMap<String, UserProfileItem>();
         switches = new HashMap<String, UserProfileItem>();
+        external = new HashMap<String, UserProfileItem>();
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -58,11 +61,13 @@ public final class UserProfileHandler extends DefaultHandler {
             params.put(attributes.getValue(ATTR_ID), getUserProfileItem(attributes));
         } else if (TAG_SWITCH.equals(qName)) {
             switches.put(attributes.getValue(ATTR_ID), getUserProfileItem(attributes));
+        } else if (TAG_EXTERNAL.equals(qName)) {
+            external.put(attributes.getValue(ATTR_ID), getUserProfileItem(attributes));
         }
     }
 
     public UserProfile getUserProfile() {
-        return new UserProfileImpl(serialPort, params, switches);
+        return new UserProfileImpl(serialPort, params, switches, external);
     }
 
     private UserProfileItem getUserProfileItem(Attributes attributes) {

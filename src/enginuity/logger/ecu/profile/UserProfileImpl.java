@@ -24,6 +24,7 @@ package enginuity.logger.ecu.profile;
 import enginuity.logger.ecu.definition.EcuDataConvertor;
 import enginuity.logger.ecu.definition.EcuParameter;
 import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -35,14 +36,17 @@ public final class UserProfileImpl implements UserProfile {
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final Map<String, UserProfileItem> params;
     private final Map<String, UserProfileItem> switches;
+    private final Map<String, UserProfileItem> external;
     private final String serialPort;
 
-    public UserProfileImpl(String serialPort, Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches) {
+    public UserProfileImpl(String serialPort, Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches, Map<String, UserProfileItem> external) {
         checkNotNull(params, "params");
         checkNotNull(switches, "switches");
+        checkNotNull(external, "external");
         this.serialPort = serialPort;
         this.params = params;
         this.switches = switches;
+        this.external = external;
     }
 
     public String getSerialPort() {
@@ -107,6 +111,11 @@ public final class UserProfileImpl implements UserProfile {
             appendLoggerDataElements(builder, "switch", switches, false);
             builder.append("    </switches>").append(NEW_LINE);
         }
+        if (!external.isEmpty()) {
+            builder.append("    <external>").append(NEW_LINE);
+            appendLoggerDataElements(builder, "external", external, false);
+            builder.append("    </external>").append(NEW_LINE);
+        }
         builder.append("</profile>").append(NEW_LINE);
         return builder.toString();
     }
@@ -140,6 +149,8 @@ public final class UserProfileImpl implements UserProfile {
             return params;
         } else if (loggerData instanceof EcuSwitch) {
             return switches;
+        } else if (loggerData instanceof ExternalData) {
+            return external;
         } else {
             throw new UnsupportedOperationException("Unknown LoggerData type: " + loggerData.getClass());
         }
