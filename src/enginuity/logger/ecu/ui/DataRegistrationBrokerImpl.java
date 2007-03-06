@@ -53,7 +53,6 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
             controller.addLogger(id, loggerData, new LoggerCallback() {
                 public void callback(double value) {
                     // update handlers
-//                    double value = loggerData.getSelectedConvertor().convert(bytes);
                     handlerManager.handleDataUpdate(loggerData, value, System.currentTimeMillis());
                 }
             });

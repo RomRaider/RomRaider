@@ -304,7 +304,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             public void callback(double value) {
                 // update handlers
                 if (settings.isFileLoggingControllerSwitchActive()) {
-//                    boolean logToFile = (int) fileLoggingControllerSwitch.getSelectedConvertor().convert(bytes) == 1;
                     boolean logToFile = (int) value == 1;
                     logToFileButton.setSelected(logToFile);
                     if (logToFile) {
@@ -503,10 +502,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JScrollPane externalList = new JScrollPane(buildParamListTable(externalListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JSplitPane subSplitPane = new JSplitPane(VERTICAL_SPLIT, paramList, externalList);
         subSplitPane.setDividerSize(2);
-        subSplitPane.setDividerLocation(200);
+        subSplitPane.setDividerLocation(360);
         JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, subSplitPane, switchList);
         splitPane.setDividerSize(2);
-        splitPane.setDividerLocation(400);
+        splitPane.setDividerLocation(410);
         return splitPane;
     }
 
