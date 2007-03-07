@@ -25,7 +25,7 @@ import enginuity.logger.utec.properties.UtecProperties;
 // CommPortOwnershipListener {
 import gnu.io.*;
 
-public class UtecSerialConnection{
+public class UtecSerialConnectionManager{
 
 	
 
@@ -54,9 +54,9 @@ public class UtecSerialConnection{
 	private static UtecSerialListener serialListener = null;
 	
 	public static void init(UtecSerialListener se){
-		UtecSerialConnection.setSerialListener(se);
+		UtecSerialConnectionManager.setSerialListener(se);
 		try {
-			UtecSerialConnection.setConnectionParameters();
+			UtecSerialConnectionManager.setConnectionParameters();
 		} catch (SerialConnectionException e) {
 			System.out.println("Error initializing the connection parameters.");
 			e.printStackTrace();
@@ -185,7 +185,7 @@ public class UtecSerialConnection{
 	 * If set fails return the parameters object to origional settings and throw
 	 * exception.
 	 */
-	public static void setConnectionParameters() throws SerialConnectionException {
+	private static void setConnectionParameters() throws SerialConnectionException {
 
 		if (sPort == null) {
 			System.err.println("No port selected.");
@@ -256,7 +256,7 @@ public class UtecSerialConnection{
 	/**
 	 * Send a one second break signal.
 	 */
-	public static void sendBreak() {
+	private static void sendBreak() {
 		sPort.sendBreak(1000);
 	}
 
@@ -266,7 +266,7 @@ public class UtecSerialConnection{
 	 * @param serialListener
 	 */
 	public static void setSerialListener(UtecSerialListener serialListener) {
-		UtecSerialConnection.serialListener = serialListener;
+		UtecSerialConnectionManager.serialListener = serialListener;
 	}
 	
 	/**

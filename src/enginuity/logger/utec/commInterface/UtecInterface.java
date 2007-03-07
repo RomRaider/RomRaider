@@ -44,7 +44,7 @@ public class UtecInterface{
 	 *
 	 */
 	public static void init(){
-		UtecSerialConnection.init(serialEventListener);
+		UtecSerialConnectionManager.init(serialEventListener);
 	}
 
 	/**
@@ -250,7 +250,7 @@ public class UtecInterface{
 	 * @return
 	 */
 	public static String getPortChoiceUsed(){
-		return UtecSerialConnection.parameters.getPortName();
+		return UtecSerialConnectionManager.parameters.getPortName();
 	}
 
 	
@@ -270,7 +270,7 @@ public class UtecInterface{
 	 * @param portName
 	 */
 	 private static void openConnection(){
-		 if(UtecSerialConnection.isOpen()){
+		 if(UtecSerialConnectionManager.isOpen()){
 			 System.out.println("Port is already open.");
 			 return;
 		 }
@@ -278,7 +278,7 @@ public class UtecInterface{
 	 	
 	 	//Attempt to make connection
 	 	try{
-	 		UtecSerialConnection.openConnection();
+	 		UtecSerialConnectionManager.openConnection();
 	 	}catch(SerialConnectionException e){
 	 		System.err.println("Error opening serial port connection");
 	 		e.printStackTrace();
@@ -292,7 +292,7 @@ public class UtecInterface{
 	 *
 	 */
 	public static void closeConnection(){
-		UtecSerialConnection.closeConnection();	
+		UtecSerialConnectionManager.closeConnection();	
 	}
 	
 	/**
@@ -300,8 +300,8 @@ public class UtecInterface{
 	 * @param port
 	 */
 	public static void setPortChoice(String port){
-		UtecSerialConnection.closeConnection();
-		UtecSerialConnection.parameters.setPortName(port);
+		UtecSerialConnectionManager.closeConnection();
+		UtecSerialConnectionManager.parameters.setPortName(port);
 		openConnection();
 	}
 	

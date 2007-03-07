@@ -3,7 +3,7 @@ package enginuity.logger.utec.commInterface;
 import java.io.IOException;
 import java.util.Iterator;
 
-import enginuity.logger.utec.comm.UtecSerialConnection;
+import enginuity.logger.utec.comm.UtecSerialConnectionManager;
 import enginuity.logger.utec.commEvent.LoggerEvent;
 import enginuity.logger.utec.commEvent.LoggerListener;
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
@@ -29,7 +29,7 @@ public class UtecSerialListener implements SerialPortEventListener {
 			// Append new output to buffer
 			while (newData != -1) {
 				try {
-					newData = UtecSerialConnection.getInputFromUtecStream().read();
+					newData = UtecSerialConnectionManager.getInputFromUtecStream().read();
 
 					// Invalid data
 					if (newData == -1) {

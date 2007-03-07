@@ -2,7 +2,7 @@ package enginuity.logger.utec.commEvent;
 
 import java.util.TimerTask;
 
-import enginuity.logger.utec.comm.UtecSerialConnection;
+import enginuity.logger.utec.comm.UtecSerialConnectionManager;
 import enginuity.logger.utec.gui.JutecGUI;
 
 public class UtecTimerTask extends TimerTask{
@@ -27,7 +27,7 @@ public class UtecTimerTask extends TimerTask{
 		 System.out.println("->"+theChar+"<-  :"+(int)theChar+"");
 		
 		//Send the data to the Utec
-		UtecSerialConnection.sendCommandToUtec((int)theChar);
+		UtecSerialConnectionManager.sendCommandToUtec((int)theChar);
 		
 		counter++;
 		JutecGUI.getInstance().getJProgressBar().setValue(counter);
