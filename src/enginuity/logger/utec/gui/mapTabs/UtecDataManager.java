@@ -3,14 +3,17 @@ package enginuity.logger.utec.gui.mapTabs;
 import enginuity.logger.utec.commEvent.UtecAFRListener;
 import enginuity.logger.utec.mapData.UtecMapData;
 
-public class DataManager {
+public class UtecDataManager {
 	private static UtecMapData currentMapData = null;
 	private static UtecTableModel fuelListener = null;
 	private static UtecTableModel timingListener = null;
 	private static UtecTableModel boostListener = null;
 	private static UtecAFRListener utecAFRListener = null;
 
-	private static double afrData = -300.0;
+	// Set data values to initial state
+	private static double afrData = 999.0;
+	private static double psiData = 999.0;
+	private static double knockData = 999.0;
 	
 	public static void setCurrentMap(UtecMapData newUtecMap){
 		currentMapData = newUtecMap;
@@ -23,17 +26,17 @@ public class DataManager {
 	
 	
 	public static void setBoostListener(UtecTableModel boostListener) {
-		DataManager.boostListener = boostListener;
+		UtecDataManager.boostListener = boostListener;
 	}
 
 
 	public static void setFuelListener(UtecTableModel fuelListener) {
-		DataManager.fuelListener = fuelListener;
+		UtecDataManager.fuelListener = fuelListener;
 	}
 
 
 	public static void setTimingListener(UtecTableModel timingListener) {
-		DataManager.timingListener = timingListener;
+		UtecDataManager.timingListener = timingListener;
 	}
 
 	public static void setFuelMapValue(int row, int col, double value){
@@ -66,7 +69,7 @@ public class DataManager {
 
 
 	public static void setUtecAFRListener(UtecAFRListener utecAFRListener) {
-		DataManager.utecAFRListener = utecAFRListener;
+		UtecDataManager.utecAFRListener = utecAFRListener;
 	}
 
 
@@ -76,6 +79,26 @@ public class DataManager {
 
 
 	public static void setAfrData(double afrData) {
-		DataManager.afrData = afrData;
+		UtecDataManager.afrData = afrData;
+	}
+
+
+	public static double getKnockData() {
+		return knockData;
+	}
+
+
+	public static void setKnockData(double knockData) {
+		UtecDataManager.knockData = knockData;
+	}
+
+
+	public static double getPsiData() {
+		return psiData;
+	}
+
+
+	public static void setPsiData(double psiData) {
+		UtecDataManager.psiData = psiData;
 	}
 }

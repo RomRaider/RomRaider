@@ -6,7 +6,7 @@ import java.util.Iterator;
 import enginuity.logger.utec.comm.UtecSerialConnection;
 import enginuity.logger.utec.commEvent.LoggerEvent;
 import enginuity.logger.utec.commEvent.LoggerListener;
-import enginuity.logger.utec.gui.mapTabs.DataManager;
+import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.mapData.UtecMapData;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
@@ -37,7 +37,7 @@ public class UtecSerialListener implements SerialPortEventListener {
 					}
 
 					this.totalData += (char) newData;
-					System.out.print((char)newData);
+					//System.out.print((char)newData);
 					
 				} catch (IOException ex) {
 					System.err.println(ex);
@@ -47,7 +47,7 @@ public class UtecSerialListener implements SerialPortEventListener {
 				// New line of data available now
 				//if((this.totalData.indexOf("\r") != 1) || (this.totalData.indexOf("\n") != 1)){
 				if(newData == 10){
-					System.out.println("New Line detected.");
+					//System.out.println("New Line detected.");
 					
 					// ************************
 					// Test for logging events*
@@ -59,7 +59,7 @@ public class UtecSerialListener implements SerialPortEventListener {
 					while (portIterator.hasNext()) {
 						LoggerListener theListener = (LoggerListener) portIterator.next();
 						if (loggerEvent.isValidData() == true) {
-							System.out.println("Valid logger data");
+							//System.out.println("Valid logger data");
 							theListener.getCommEvent(loggerEvent);
 						} 
 						else {

@@ -33,7 +33,7 @@ public class BottomUtecControl extends JPanel implements ActionListener,
 	// Text areas to be used
 	private JTextArea textFromUtec;
 
-	public String totalLog = "";
+	//public String totalLog = "";
 
 	public void setOpenPortEnabled(boolean choice) {
 		openButton.setEnabled(choice);
@@ -194,9 +194,9 @@ public class BottomUtecControl extends JPanel implements ActionListener,
 	public void getCommEvent(LoggerEvent e) {
 		
 		String utecData = e.getUtecBuffer();
-		totalLog += utecData;
-		textFromUtec.append(utecData);
-		textFromUtec.setCaretPosition(textFromUtec.getDocument().getLength());
+		//totalLog += utecData;
+		//textFromUtec.append(utecData);
+		//textFromUtec.setCaretPosition(textFromUtec.getDocument().getLength());
 
 		// System.out.println("Adding data to the text AREA");
 	}

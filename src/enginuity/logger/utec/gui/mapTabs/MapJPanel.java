@@ -62,13 +62,13 @@ public class MapJPanel extends JPanel{
 		// Utec Specific code below
 		// ************************
 		if(mapType == MapJPanel.FUELMAP){
-			DataManager.setFuelListener(tableModel);
+			UtecDataManager.setFuelListener(tableModel);
 		}
 		else if(mapType == MapJPanel.BOOSTMAP){
-			DataManager.setBoostListener(tableModel);
+			UtecDataManager.setBoostListener(tableModel);
 		}
 		else if(mapType == MapJPanel.TIMINGMAP){
-			DataManager.setTimingListener(tableModel);
+			UtecDataManager.setTimingListener(tableModel);
 		}
 		
 		table = new UtecJTable(tableModel, min, max, ignoredValues, isInvertedColoring);

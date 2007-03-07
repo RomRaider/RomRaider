@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import enginuity.Settings;
-import enginuity.logger.utec.gui.mapTabs.DataManager;
+import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.gui.mapTabs.MapJPanel;
 import enginuity.logger.utec.gui.realtimeData.*;
 import enginuity.logger.utec.gui.bottomControl.*;
@@ -302,9 +302,9 @@ public class JutecGUI extends JFrame implements ActionListener, KeyListener {
 					try {
 						File file = new File(saveFileName);
 						FileWriter out = new FileWriter(file);
-						out.write(bottomPanel.totalLog);
+						//out.write(bottomPanel.totalLog);
 						out.close();
-						bottomPanel.totalLog = "";
+						//bottomPanel.totalLog = "";
 					} catch (IOException e2) {
 						System.out
 								.println("Couldn't save file " + saveFileName);
@@ -316,14 +316,14 @@ public class JutecGUI extends JFrame implements ActionListener, KeyListener {
 
 			else if (cmd.equals("Save Map To File")) {
 				System.out.println("Saving map to file.");
-				if (DataManager.getCurrentMapData() != null) {
+				if (UtecDataManager.getCurrentMapData() != null) {
 
 					String saveFileName = null;
 					System.out.println("Save map now.");
 					fileChosen = fileChooser.showSaveDialog(this);
 					if (fileChosen == JFileChooser.APPROVE_OPTION) {
 						saveFileName = fileChooser.getSelectedFile().getPath();
-						DataManager.getCurrentMapData().writeMapToFile(saveFileName);
+						UtecDataManager.getCurrentMapData().writeMapToFile(saveFileName);
 
 					}
 				} else {
@@ -364,33 +364,33 @@ public class JutecGUI extends JFrame implements ActionListener, KeyListener {
 				if (fileChosen == JFileChooser.APPROVE_OPTION) {
 					saveFileName = fileChooser.getSelectedFile().getPath();
 					UtecMapData mapData = new UtecMapData(saveFileName);
-					DataManager.setCurrentMap(mapData);
+					UtecDataManager.setCurrentMap(mapData);
 				}
 			}
 			
 			else if (cmd.equals("Save To Map #1")) {
 				System.out.println("Starting to save map #1");
-				UtecInterface.sendMapData(1, DataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(1, UtecDataManager.getCurrentMapData().getUpdatedMap());
 			}
 
 			else if (cmd.equals("Save To Map #2")) {
 				System.out.println("Starting to save map #2");
-				UtecInterface.sendMapData(2, DataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(2, UtecDataManager.getCurrentMapData().getUpdatedMap());
 			}
 
 			else if (cmd.equals("Save To Map #3")) {
 				System.out.println("Starting to save map #3");
-				UtecInterface.sendMapData(3, DataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(3, UtecDataManager.getCurrentMapData().getUpdatedMap());
 			}
 
 			else if (cmd.equals("Save To Map #4")) {
 				System.out.println("Starting to save map #4");
-				UtecInterface.sendMapData(4, DataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(4, UtecDataManager.getCurrentMapData().getUpdatedMap());
 			}
 
 			else if (cmd.equals("Save To Map #5")) {
 				System.out.println("Starting to save map #5");
-				UtecInterface.sendMapData(5, DataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(5, UtecDataManager.getCurrentMapData().getUpdatedMap());
 			}
 			else if (cmd.equals("Exit")) {
 				// Use interface to finally close the connection to the Utec

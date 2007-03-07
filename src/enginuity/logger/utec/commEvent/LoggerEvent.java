@@ -10,7 +10,7 @@ package enginuity.logger.utec.commEvent;
 
 import java.util.*;
 
-import enginuity.logger.utec.gui.mapTabs.DataManager;
+import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.mapData.UtecMapData;
 import enginuity.logger.utec.properties.UtecProperties;
 
@@ -67,7 +67,9 @@ public class LoggerEvent {
 	        }
 		}
 		
-		DataManager.setAfrData(doubleData[Integer.parseInt(UtecProperties.getProperties("utec.afrIndex")[0])]);
+		UtecDataManager.setAfrData(doubleData[Integer.parseInt(UtecProperties.getProperties("utec.afrIndex")[0])]);
+		UtecDataManager.setPsiData(doubleData[Integer.parseInt(UtecProperties.getProperties("utec.psiIndex")[0])]);
+		UtecDataManager.setKnockData(doubleData[Integer.parseInt(UtecProperties.getProperties("utec.knockIndex")[0])]);
 	}
 
 

@@ -63,13 +63,13 @@ public class UtecTableModel extends AbstractTableModel {
         
         // Update current map in scope
         if(this.identifier == MapJPanel.FUELMAP){
-        	DataManager.setFuelMapValue(row, col, temp);
+        	UtecDataManager.setFuelMapValue(row, col, temp);
         } 
         else if(this.identifier == MapJPanel.TIMINGMAP){
-        	DataManager.setTimingMapValue(row, col, temp);
+        	UtecDataManager.setTimingMapValue(row, col, temp);
         }
         else if(this.identifier == MapJPanel.BOOSTMAP){
-        	DataManager.setBoostMapValue(row, col, temp);
+        	UtecDataManager.setBoostMapValue(row, col, temp);
         }
         
         this.fireTableDataChanged();
