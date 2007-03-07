@@ -428,6 +428,7 @@ public class JutecGUI extends JFrame implements ActionListener, KeyListener {
 				System.out.println("Port chosen: " + portChoice);
 				currentPort = portChoice;
 				UtecInterface.setPortChoice(currentPort);
+				UtecInterface.openConnection();
 				bottomPanel.setEnabled(true);
 				// Notify the infoPane of the current port choice
 				// infoPane.setPort(currentPort);

@@ -2,6 +2,7 @@ package enginuity.logger.utec.plugin;
 
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
+import enginuity.logger.utec.commInterface.UtecInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,32 @@ public final class UtecDataSource implements ExternalDataSource {
     }
 
     public List<ExternalDataItem> getDataItems() {
-        System.out.println("External data items requested.");
+        System.out.println("External TXS data items requested.");
         
-        return new ArrayList<ExternalDataItem>();
+        return externalDataItems;
+    }
+    
+    // *****************************
+    // Suggested Methods of interest
+    // *****************************
+    
+    public void setCommPortChoice(String commPort){
+    	UtecInterface.setPortChoice(commPort);
+    }
+    
+    public void connect(){
+    	UtecInterface.openConnection();
+    }
+    
+    public void disconnect(){
+    	UtecInterface.closeConnection();
+    }
+    
+    public void startLogging(){
+    	UtecInterface.startLoggerDataFlow();
+    }
+    
+    public void stopLogging(){
+    	UtecInterface.resetUtec();
     }
 }

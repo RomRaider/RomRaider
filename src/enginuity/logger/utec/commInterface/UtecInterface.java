@@ -269,7 +269,7 @@ public class UtecInterface{
 	 * 
 	 * @param portName
 	 */
-	 private static void openConnection(){
+	 public static void openConnection(){
 		 if(UtecSerialConnectionManager.isOpen()){
 			 System.out.println("Port is already open.");
 			 return;
@@ -302,7 +302,7 @@ public class UtecInterface{
 	public static void setPortChoice(String port){
 		UtecSerialConnectionManager.closeConnection();
 		UtecSerialConnectionManager.parameters.setPortName(port);
-		openConnection();
+		// openConnection();
 	}
 	
 	/**

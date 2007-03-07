@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import enginuity.logger.utec.commInterface.UtecInterface;
+
 public final class TestExternalDataSource implements ExternalDataSource {
 
     public String getName() {
@@ -37,5 +39,30 @@ public final class TestExternalDataSource implements ExternalDataSource {
         List<ExternalDataItem> dataItems = new ArrayList<ExternalDataItem>();
         dataItems.add(dataItem);
         return dataItems;
+    }
+    
+    
+    // *****************************
+    // Suggested Methods of interest
+    // *****************************
+    
+    public void setCommPortChoice(String commPort){
+    	
+    }
+    
+    public void connect(){
+    	
+    }
+    
+    public void disconnect(){
+    	
+    }
+    
+    public void startLogging(){
+    	
+    }
+    
+    public void stopLogging(){
+    	
     }
 }
