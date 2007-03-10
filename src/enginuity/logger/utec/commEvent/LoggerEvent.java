@@ -25,26 +25,34 @@ public class LoggerEvent {
 	private String UtecBuffer = null;
 	private String[] data = new String[6];
 	private double[] doubleData = null; //new double[6];
-	
 	private boolean isMapData = false;
-	
 	private UtecMapData mapData = null;
-	
 	private boolean isValidData = true;
 	
-	public void setLoggerData(String buffer){
-		UtecBuffer = buffer;
+	public LoggerEvent(String buffer){
+		
+		this.UtecBuffer = buffer;
+		this.setLoggerData();
+	}
+	
+	private void setLoggerData(){
+		
+		System.out.println("LoggerEvent:"+UtecBuffer+":");
 		
 		data = UtecBuffer.split(",");
 		
 		// Count the "," to ensure this is a line of logging data
+		System.out.println("LoggerEvent: Checking data length");
 		if(data.length < 4){
 			this.isValidData = false;
+			System.out.println("LoggerEvent: Too short returning, not valid data.");
 			return;
 		}
+		System.out.println("LoggerEvent: Data length ok:"+data.length);
 		
 		doubleData = new double[data.length];
 		
+		System.out.println("LoggerEvent: Building double array.");
 		for(int i = 0; i < data.length; i++){
 			String theData = data[i];
 			theData = theData.trim();
@@ -61,15 +69,20 @@ public class LoggerEvent {
 			try{
 				doubleData[i] = Double.parseDouble(theData);
 			}catch (NumberFormatException e) {
-				//System.out.println("Number error in commevent.");
+				System.out.println("LoggerEvent: Not valid data. Number error in commevent :"+theData+":");
+				for(int k=0;k<theData.length();k++){
+					System.out.println("-  LoggerEvent int values *****:"+(int)theData.charAt(k)+":");
+				}
 				this.isValidData = false;
 				return;
 	        }
 		}
 		
+		System.out.println("LoggerEvent: Setting data manager afr, psi and knock data.");
 		UtecDataManager.setAfrData(doubleData[Integer.parseInt(UtecProperties.getProperties("utec.afrIndex")[0])]);
 		UtecDataManager.setPsiData(doubleData[Integer.parseInt(UtecProperties.getProperties("utec.psiIndex")[0])]);
 		UtecDataManager.setKnockData(doubleData[Integer.parseInt(UtecProperties.getProperties("utec.knockIndex")[0])]);
+		System.out.println("******* Logger event DONE ok***********");
 	}
 
 
@@ -120,7 +133,7 @@ public class LoggerEvent {
 	}
 
 
-	public void setUtecBuffer(String utecBuffer) {
+	private void setUtecBuffer(String utecBuffer) {
 		UtecBuffer = utecBuffer;
 	}
 

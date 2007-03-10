@@ -25,7 +25,7 @@ import enginuity.logger.utec.mapData.UtecMapData;
 import enginuity.logger.utec.properties.UtecProperties;
 import enginuity.logger.utec.comm.*;
 import enginuity.logger.utec.commEvent.LoggerEvent;
-import enginuity.logger.utec.commEvent.LoggerListener;
+import enginuity.logger.utec.commEvent.LoggerDataListener;
 import enginuity.logger.utec.commEvent.UtecTimerTaskManager;
 /**
  * @author emorgan
@@ -36,15 +36,15 @@ import enginuity.logger.utec.commEvent.UtecTimerTaskManager;
 public class UtecInterface{
 	//Store string vector of known system comm ports
 	private static Vector portChoices =  listPortChoices();
-	private static UtecSerialListener serialEventListener = new UtecSerialListener();
-	private static Vector<LoggerListener> loggerListeners = new Vector<LoggerListener>();
+	//private static UtecSerialListener serialEventListener = new UtecSerialListener();
+	
 
 	/**
 	 * Initial setup of the class
 	 *
 	 */
 	public static void init(){
-		UtecSerialConnectionManager.init(serialEventListener);
+		UtecSerialConnectionManager.init();
 	}
 
 	/**
@@ -328,18 +328,5 @@ public class UtecInterface{
 			}
 		}
 		return theChoices;
-	}
-	
-	/**
-	 * Add a listener to logger data
-	 * 
-	 * @param ll
-	 */
-	public static void addLoggerListener(LoggerListener ll){
-		loggerListeners.add(ll);
-	}
-
-	public static Vector<LoggerListener> getLoggerListeners() {
-		return loggerListeners;
 	}
 }

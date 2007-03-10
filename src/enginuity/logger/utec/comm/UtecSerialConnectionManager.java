@@ -51,10 +51,11 @@ public class UtecSerialConnectionManager{
 	private static Vector portListeners = new Vector();
 
 
-	private static UtecSerialListener serialListener = null;
+	//private static UtecSerialListener serialListener = null;
 	
-	public static void init(UtecSerialListener se){
-		UtecSerialConnectionManager.setSerialListener(se);
+	//public static void init(UtecSerialListener se){
+	public static void init(){
+		//UtecSerialConnectionManager.setSerialListener(se);
 		try {
 			UtecSerialConnectionManager.setConnectionParameters();
 		} catch (SerialConnectionException e) {
@@ -128,7 +129,7 @@ public class UtecSerialConnectionManager{
 		try {
 			setConnectionParameters();
 		} catch (SerialConnectionException e) {
-			System.err.println("Can't set connection parameters");
+			System.err.println("Can't set serial port connection parameters");
 			sPort.close();
 			throw e;
 		}
@@ -152,7 +153,16 @@ public class UtecSerialConnectionManager{
 
 		// Add this object as an event listener for the serial port.
 		try {
-			sPort.addEventListener(new UtecSerialListener());
+			
+			// *****************************************************************
+			// Test to ensure that the listener is not registered multiple times
+			// *****************************************************************
+			//if(!UtecSerialListener.isRegistered()){
+			//	sPort.addEventListener(UtecSerialListener.getInstance());
+			//	UtecSerialListener.setRegistered(true);
+			//}
+			sPort.addEventListener(UtecSerialListener.getInstance());
+			
 		} catch (TooManyListenersException e) {
 			System.err.println("Too Many listeners");
 			sPort.close();
@@ -265,9 +275,9 @@ public class UtecSerialConnectionManager{
 	 * Set listener for serial events
 	 * @param serialListener
 	 */
-	public static void setSerialListener(UtecSerialListener serialListener) {
-		UtecSerialConnectionManager.serialListener = serialListener;
-	}
+	//public static void setSerialListener(UtecSerialListener serialListener) {
+	//	UtecSerialConnectionManager.serialListener = serialListener;
+	//}
 	
 	/**
 	 * Return whether or not the port is open

@@ -5,6 +5,7 @@ import java.awt.geom.*;
 import javax.swing.*;
 
 import enginuity.logger.utec.gui.bottomControl.*;
+import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.properties.UtecProperties;
 import enginuity.tts.SpeakString;
 import enginuity.logger.utec.commEvent.*;
@@ -15,7 +16,7 @@ import enginuity.logger.utec.commInterface.UtecInterface;
  *
  * Class displays live data from the UTEC
  */
-public class RealTimeData extends JComponent implements LoggerListener{
+public class RealTimeData extends Component implements LoggerDataListener{
 
 	//Recieved utec data, start values are zero
 	public double[] doubleData = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -33,7 +34,7 @@ public class RealTimeData extends JComponent implements LoggerListener{
 	
 	//Constructor
 	public RealTimeData() {
-		UtecInterface.addLoggerListener(this);
+		UtecDataManager.addLoggerListener(this);
 	}
 
 	/**
@@ -156,8 +157,8 @@ public class RealTimeData extends JComponent implements LoggerListener{
 		
 	}
 	
-	public void getCommEvent(LoggerEvent e){
-		doubleData = e.getDoubleData();
+	public void getCommEvent(double[] doubleData){
+		this.doubleData = doubleData;
 		//System.out.println("Got new data:"+doubleData[0]+"," + doubleData[1]);
 		this.repaint();
 	}

@@ -5,22 +5,31 @@ import java.util.Iterator;
 
 import enginuity.logger.utec.comm.UtecSerialConnectionManager;
 import enginuity.logger.utec.commEvent.LoggerEvent;
-import enginuity.logger.utec.commEvent.LoggerListener;
+import enginuity.logger.utec.commEvent.LoggerDataListener;
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.mapData.UtecMapData;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
 public class UtecSerialListener implements SerialPortEventListener {
-	public String totalData = "";
-
-	public UtecSerialListener() {
+	private static UtecSerialListener instance = null;
+	private static String totalData = "";
+	private static boolean isRegistered = false;
+	
+	public static UtecSerialListener getInstance(){
+		if(instance == null){
+			instance = new UtecSerialListener();
+		}
+		System.out.println("Seria listener instance query.");
+		return instance;
+	}
+	
+	private UtecSerialListener() {
+		totalData = "";
 		System.out.println("Serial listener was instantiated.");
 	}
 
 	public void serialEvent(SerialPortEvent e) {
-		
-		//System.out.println("Got serial event.");
 		
 		int newData = 1;
 		switch (e.getEventType()) {
@@ -33,10 +42,19 @@ public class UtecSerialListener implements SerialPortEventListener {
 
 					// Invalid data
 					if (newData == -1) {
+						//totalData = "";
+						//System.err.println("Invalid data at UtecSerialListener, breaking while loop.");
 						break;
 					}
+					
+					// Dont append new lines \r or \n
+					if(newData == 13 || newData == 10){
+						//Dont append newlines or carriage returns
+					}else{
+						totalData += (char) newData;
+					}
 
-					this.totalData += (char) newData;
+					// Output all data received
 					//System.out.print((char)newData);
 					
 				} catch (IOException ex) {
@@ -46,150 +64,24 @@ public class UtecSerialListener implements SerialPortEventListener {
 				
 				// New line of data available now
 				//if((this.totalData.indexOf("\r") != 1) || (this.totalData.indexOf("\n") != 1)){
-				if(newData == 10){
-					//System.out.println("New Line detected.");
+				if(newData == 13){
+					//System.out.println("USL Newline:"+newData);
+					String tempData = totalData;
+					totalData = "";
+					//System.out.println("USL totalData:"+tempData+":");
+					UtecDataManager.setSerialData(tempData);
 					
-					// ************************
-					// Test for logging events*
-					// ************************
-					LoggerEvent loggerEvent = new LoggerEvent();
-					loggerEvent.setLoggerData(this.totalData);
-
-					Iterator portIterator = UtecInterface.getLoggerListeners().iterator();
-					while (portIterator.hasNext()) {
-						LoggerListener theListener = (LoggerListener) portIterator.next();
-						if (loggerEvent.isValidData() == true) {
-							//System.out.println("Valid logger data");
-							theListener.getCommEvent(loggerEvent);
-						} 
-						else {
-							//System.out.println("Invalid logger data");
-						}
-					}
-					
-					// Empty out the buffer now that newline of data has been processed
-					this.totalData = "";
 				}
-			}
+				
+			}// End while loop
 		}
 	}
 
-	/*
-	public void serialEvents(SerialPortEvent e) {
-		// System.out.println("Got serial event.");
-
-		// Create a StringBuffer and int to receive input data.
-		// StringBuffer inputBuffer = new StringBuffer();
-		int newData = 0;
-
-		// Determine type of event.
-		switch (e.getEventType()) {
-
-		// Read data until -1 is returned. If \r is received substitute
-		// \n for correct newline handling.
-		case SerialPortEvent.DATA_AVAILABLE:
-
-			// Append new output to buffer
-			while (newData != -1) {
-				try {
-					newData = UtecSerialConnection.getInputFromUtecStream()
-							.read();
-
-					// Invalid data
-					if (newData == -1) {
-						break;
-					}
-
-					// inputBuffer.append((char) newData);
-					// System.out.print((char)newData);
-					this.totalData += (char) newData;
-
-				} catch (IOException ex) {
-					System.err.println(ex);
-					return;
-				}
-			}
-
-			// System.out.println(inputBuffer);
-
-			if (this.isMapFromUtecPrep == true) {
-				System.out.println("Map Prep State.");
-			}
-
-			else if (this.isMapFromUtec == true) {
-				// System.out.println("Map From Utec Data.");
-
-				// If this is the start of map data flow, then create a new map
-				// data object
-				if (this.currentMap == null) {
-					currentMap = new UtecMapData();
-				}
-
-				// Append byte data from the UTEC
-				this.currentMap.addRawData(newData);
-				// System.out.println("Added:" + (char) newData);
-
-				// Detect the end of the map recieving
-				// if (inputBuffer.indexOf("[EOF]") != -1) {
-				if (false) {
-					System.out.println("End of file detected.");
-
-					// this.currentMap.replaceRawData(new
-					// StringBuffer(this.totalDat));
-					// this.totalDat = "";
-
-					System.out.println("hi 1");
-					this.isMapFromUtec = false;
-					System.out.println("hi 2");
-					this.currentMap.populateMapDataStructures();
-					System.out.println("hi 3");
-
-					// Inform data manager of new map
-					DataManager.setCurrentMap(this.currentMap);
-
-					// Notify listner if available
-					// System.out.println("Calling listeners.");
-					// if (this.getMapFromUtecListener != null) {
-					// System.out.println("Listener called.");
-					// this.getMapFromUtecListener.mapRetrieved(this.currentMap);
-					// }else{
-					// System.out.println("Calling listeners, but none found.");
-					// }
-
-					// Empty out map storage
-					this.currentMap = null;
-				}
-			}
-
-			// Logger data
-			else {
-
-				LoggerEvent loggerEvent = new LoggerEvent();
-				loggerEvent.setLoggerData(this.totalData);
-				loggerEvent.setIsLoggerData(true);
-
-				Iterator portIterator = UtecInterface.getLoggerListeners()
-						.iterator();
-				while (portIterator.hasNext()) {
-					LoggerListener theListener = (LoggerListener) portIterator
-							.next();
-					if (loggerEvent.isValidData() == true) {
-						System.out.println("Valid data");
-						theListener.getCommEvent(loggerEvent);
-						this.totalData = "";
-					} else {
-						System.out.println("Invalid data");
-					}
-				}
-
-				break;
-			}
-
-		// If break event append BREAK RECEIVED message.
-		case SerialPortEvent.BI:
-		// System.out.println("BREAK RECEIVED.");
-
-		}
+	public static boolean isRegistered() {
+		return isRegistered;
 	}
-	*/
+
+	public static void setRegistered(boolean isRegistered) {
+		UtecSerialListener.isRegistered = isRegistered;
+	}
 }

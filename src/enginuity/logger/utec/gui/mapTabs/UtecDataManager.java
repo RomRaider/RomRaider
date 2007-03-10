@@ -1,7 +1,12 @@
 package enginuity.logger.utec.gui.mapTabs;
 
+import java.util.Iterator;
+import java.util.Vector;
+
+import enginuity.logger.utec.commEvent.LoggerDataListener;
 import enginuity.logger.utec.commEvent.UtecAFRListener;
 import enginuity.logger.utec.mapData.UtecMapData;
+import enginuity.logger.utec.properties.UtecProperties;
 
 public class UtecDataManager {
 	private static UtecMapData currentMapData = null;
@@ -9,7 +14,14 @@ public class UtecDataManager {
 	private static UtecTableModel timingListener = null;
 	private static UtecTableModel boostListener = null;
 	private static UtecAFRListener utecAFRListener = null;
-
+	private static Vector<LoggerDataListener> loggerListener = new Vector<LoggerDataListener>();
+ 
+	
+	
+	private static int afrIndex = Integer.parseInt(UtecProperties.getProperties("utec.afrIndex")[0]);
+	private static int psiIndex = Integer.parseInt(UtecProperties.getProperties("utec.psiIndex")[0]);
+	private static int knockIndex = Integer.parseInt(UtecProperties.getProperties("utec.knockIndex")[0]);
+	
 	// Set data values to initial state
 	private static double afrData = 999.0;
 	private static double psiData = 999.0;
@@ -22,6 +34,80 @@ public class UtecDataManager {
 		fuelListener.replaceData(currentMapData.getFuelMap());
 		boostListener.replaceData(currentMapData.getBoostMap());
 		timingListener.replaceData(currentMapData.getTimingMap());
+	}
+	
+	/**
+	 * Set serial data from a serial event
+	 * 
+	 * @param serialData
+	 */
+	public static void setSerialData(String serialData){
+		
+		String[] data = serialData.split(",");
+		
+		// Count the "," to ensure this is a line of logging data
+		//System.out.println("DM LoggerEvent: Checking data length");
+		if(data.length < 4){
+			
+			// **********************************
+			// Call out to general data listeners
+			// **********************************
+			
+			
+			return;
+		}
+		
+		double[] doubleData = new double[data.length];
+		
+		for(int i = 0; i < data.length; i++){
+			String theData = data[i];
+			theData = theData.trim();
+			if(theData.startsWith(">")){
+				theData = "25.5";
+			}
+			if(theData.startsWith("--")){
+				theData = "0.0";
+			}
+			if(theData.startsWith("ECU")){
+				theData = "0.0";
+			}
+			
+			try{
+				doubleData[i] = Double.parseDouble(theData);
+			}catch (NumberFormatException e) {
+				for(int k=0;k<theData.length();k++){
+					//System.out.println("--  DM LoggerEvent int values *****:"+(int)theData.charAt(k)+":");
+				}
+				
+				// **********************************
+				// Call out to general data listeners
+				// **********************************
+				
+	        }
+		}
+		
+		// ********************************************************
+		// If we make it this far we know we have valid logger data
+		// ********************************************************
+		UtecDataManager.notifyLoggerDataListeners(doubleData);
+		
+	}
+	
+	/**
+	 * Helper method to dole out data to logger data listeners
+	 * @param doubleData
+	 */
+	private static void notifyLoggerDataListeners(double[] doubleData){
+		
+		setAfrData(doubleData[afrIndex]);
+		setPsiData(doubleData[psiIndex]);
+		setKnockData(doubleData[knockIndex]);
+		
+		Iterator iterator = UtecDataManager.getLoggerListeners().iterator();
+		while(iterator.hasNext()){
+			LoggerDataListener loggerListener = (LoggerDataListener)iterator.next();
+			loggerListener.getCommEvent(doubleData);
+		}
 	}
 	
 	
@@ -100,5 +186,13 @@ public class UtecDataManager {
 
 	public static void setPsiData(double psiData) {
 		UtecDataManager.psiData = psiData;
+	}
+
+	public static Vector<LoggerDataListener> getLoggerListeners() {
+		return loggerListener;
+	}
+
+	public static void addLoggerListener(LoggerDataListener loggerListener) {
+		UtecDataManager.loggerListener.add(loggerListener);
 	}
 }
