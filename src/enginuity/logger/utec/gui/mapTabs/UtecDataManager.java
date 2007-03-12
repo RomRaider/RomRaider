@@ -15,9 +15,12 @@ public class UtecDataManager {
 	private static UtecTableModel boostListener = null;
 	private static UtecAFRListener utecAFRListener = null;
 	private static Vector<LoggerDataListener> loggerListener = new Vector<LoggerDataListener>();
- 
+	private static Vector<LoggerDataListener> generalListener = new Vector<LoggerDataListener>();
+	private static boolean isExpectingMap = false;
 	
+	private static String rawMapData = "";
 	
+	// Loggers
 	private static int afrIndex = Integer.parseInt(UtecProperties.getProperties("utec.afrIndex")[0]);
 	private static int psiIndex = Integer.parseInt(UtecProperties.getProperties("utec.psiIndex")[0]);
 	private static int knockIndex = Integer.parseInt(UtecProperties.getProperties("utec.knockIndex")[0]);
@@ -27,13 +30,17 @@ public class UtecDataManager {
 	private static double psiData = 999.0;
 	private static double knockData = 999.0;
 	
+	private static int lineCounter = 0;
+	
 	public static void setCurrentMap(UtecMapData newUtecMap){
 		currentMapData = newUtecMap;
 		
 		// Call listeners
+		System.out.println("Calling map listeners.");
 		fuelListener.replaceData(currentMapData.getFuelMap());
 		boostListener.replaceData(currentMapData.getBoostMap());
 		timingListener.replaceData(currentMapData.getTimingMap());
+		System.out.println("Done calling map listeners.");
 	}
 	
 	/**
@@ -43,6 +50,32 @@ public class UtecDataManager {
 	 */
 	public static void setSerialData(String serialData){
 		
+		if(isExpectingMap){
+			lineCounter++;
+			System.out.println("Line:"+lineCounter);
+			//System.out.println("Map:"+serialData+":");
+			rawMapData += serialData+"\n";
+			
+			// Detect End of Map
+			if(lineCounter == 128){
+				rawMapData += "[END][MAPGROUP][0B05E][EOF]";
+				lineCounter = 0;
+				System.out.println("Map EOF");
+				UtecMapData newMap = new UtecMapData();
+				newMap.replaceRawData(new StringBuffer(rawMapData));
+				newMap.populateMapDataStructures();
+				setCurrentMap(newMap);
+				rawMapData = "";
+				setExpectingMap(false);
+			}
+		}else{
+			pullLoggerData(serialData);
+		}
+		
+		
+	}
+
+	private static void pullLoggerData(String serialData) {
 		String[] data = serialData.split(",");
 		
 		// Count the "," to ensure this is a line of logging data
@@ -90,7 +123,6 @@ public class UtecDataManager {
 		// If we make it this far we know we have valid logger data
 		// ********************************************************
 		UtecDataManager.notifyLoggerDataListeners(doubleData);
-		
 	}
 	
 	/**
@@ -194,5 +226,17 @@ public class UtecDataManager {
 
 	public static void addLoggerListener(LoggerDataListener loggerListener) {
 		UtecDataManager.loggerListener.add(loggerListener);
+	}
+	
+	public static void addMapDataListener(LoggerDataListener loggerListener) {
+		UtecDataManager.loggerListener.add(loggerListener);
+	}
+
+	public static boolean isExpectingMap() {
+		return isExpectingMap;
+	}
+
+	public static void setExpectingMap(boolean isExpectingMap) {
+		UtecDataManager.isExpectingMap = isExpectingMap;
 	}
 }

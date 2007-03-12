@@ -19,6 +19,7 @@ import gnu.io.*;
 
 import javax.swing.*;
 
+import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.gui.realtimeData.*;
 import enginuity.logger.utec.mapData.GetMapFromUtecListener;
 import enginuity.logger.utec.mapData.UtecMapData;
@@ -61,8 +62,13 @@ public class UtecInterface{
 	 * @param mapNumber
 	 * @param listener
 	 */
-	public static void sendMapData(int mapNumber, StringBuffer mapData) {
-
+	public static void sendMapData(int mapNumber) {
+		// Pull current data
+		if(UtecDataManager.getCurrentMapData() == null){
+			return;
+		}
+		StringBuffer mapData = UtecDataManager.getCurrentMapData().getUpdatedMap();
+		
 		// Sanity check
 		if (mapNumber < 1 || mapNumber > 5) {
 			System.err.println("Map selection out of range.");
@@ -169,25 +175,18 @@ public class UtecInterface{
 	public static void pullMapData(int mapNumber) {
 		// Sanity check
 		if (mapNumber < 1 || mapNumber > 5) {
-			System.err.println("Map selection out of range.");
+			System.err.println("UI Map selection out of range.");
 			return;
 		}
 		
 		String[] commandList = UtecProperties.getProperties("utec.startMapDownload");
 		if(commandList == null){
-			System.err.println("Command string in properties file for utec.startMapDownload not found.");
+			System.err.println("UI Command string in properties file for utec.startMapDownload not found.");
 			return;
 		}
 		
 		resetUtec();
-		System.out.println("UtecControl, getting map:" + mapNumber);
-
-		// Null out any previously loaded map
-		//serialEventListener.currentMap = null;
-
-		// Setup map transfer prep state
-		//serialEventListener.isMapFromUtecPrep = true;
-		//serialEventListener.isMapFromUtec = false;
+		System.out.println("UI, getting map:" + mapNumber);
 		
 		// Iterate through command string
 		int starCounter = 0;
@@ -195,7 +194,7 @@ public class UtecInterface{
 			if(commandList[i].equalsIgnoreCase("*")){
 				if(starCounter == 0){
 					// Select map
-					
+					UtecDataManager.setExpectingMap(true);
 					if (mapNumber == 1) {
 						UtecTimerTaskManager.execute(33);
 						System.out.println("Requested Map 1");
@@ -218,14 +217,11 @@ public class UtecInterface{
 					}
 				}else if(starCounter == 1){
 
-					// Make this class receptive to map transfer
-					//serialEventListener.isMapFromUtec = true;
-
-					// No longer map prep
-					//serialEventListener.isMapFromUtecPrep = false;
+					// Make data class receptive to map transfer
+					
 					
 				}else{
-					System.err.println("No operation supported for properties value '*'");
+					System.err.println(" UI No operation supported for properties value '*'");
 				}
 				
 				starCounter++;

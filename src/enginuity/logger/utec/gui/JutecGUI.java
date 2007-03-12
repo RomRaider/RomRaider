@@ -370,27 +370,27 @@ public class JutecGUI extends JFrame implements ActionListener, KeyListener {
 			
 			else if (cmd.equals("Save To Map #1")) {
 				System.out.println("Starting to save map #1");
-				UtecInterface.sendMapData(1, UtecDataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(1);
 			}
 
 			else if (cmd.equals("Save To Map #2")) {
 				System.out.println("Starting to save map #2");
-				UtecInterface.sendMapData(2, UtecDataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(2);
 			}
 
 			else if (cmd.equals("Save To Map #3")) {
 				System.out.println("Starting to save map #3");
-				UtecInterface.sendMapData(3, UtecDataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(3);
 			}
 
 			else if (cmd.equals("Save To Map #4")) {
 				System.out.println("Starting to save map #4");
-				UtecInterface.sendMapData(4, UtecDataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(4);
 			}
 
 			else if (cmd.equals("Save To Map #5")) {
 				System.out.println("Starting to save map #5");
-				UtecInterface.sendMapData(5, UtecDataManager.getCurrentMapData().getUpdatedMap());
+				UtecInterface.sendMapData(5);
 			}
 			else if (cmd.equals("Exit")) {
 				// Use interface to finally close the connection to the Utec
