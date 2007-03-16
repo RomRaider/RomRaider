@@ -213,12 +213,19 @@ public class UtecDataManager {
 
 
 	public static double getKnockData() {
-		return knockData;
+		// Zero out knock data when pulled
+		double temp = UtecDataManager.knockData;
+		UtecDataManager.knockData = 0;
+		return temp;
 	}
 
 
 	public static void setKnockData(double knockData) {
-		UtecDataManager.knockData = knockData;
+		// Save highest counted knock events
+		if(knockData > UtecDataManager.knockData){
+			UtecDataManager.knockData = knockData;
+		}
+		
 	}
 
 
