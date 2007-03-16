@@ -37,9 +37,20 @@ public class UtecDataManager {
 		
 		// Call listeners
 		System.out.println("Calling map listeners.");
-		fuelListener.replaceData(currentMapData.getFuelMap());
-		boostListener.replaceData(currentMapData.getBoostMap());
-		timingListener.replaceData(currentMapData.getTimingMap());
+		if(fuelListener != null){
+			fuelListener.replaceData(currentMapData.getFuelMap());
+		}
+		
+		if(boostListener != null){
+			boostListener.replaceData(currentMapData.getBoostMap());
+		}
+		
+		if(timingListener != null){
+			timingListener.replaceData(currentMapData.getTimingMap());
+		}
+		
+		
+		
 		System.out.println("Done calling map listeners.");
 	}
 	

@@ -72,9 +72,9 @@ public class RealTimeData extends Component implements LoggerDataListener{
 		double max2 = (minAndMax(dataRanges[1]))[1];
 		double min2 = (minAndMax(dataRanges[1]))[0];
 		double value2 = doubleData[Integer.parseInt(indexes[1])];
-		if(value2 > 18.5){
+		double maxAllowed2 = Double.parseDouble(UtecProperties.getProperties("utec.boostLimitWarningMaxAcceptable")[0]);
+		if(value2 > maxAllowed2){
 			SpeakString vc = new SpeakString("Max P S I,"+value2);
-			vc.start();
 		}
 		double height2 = ((value2 - min2)/(max2 - min2))*maxHeight;
 		double yValue2 = 5 + (maxHeight - height2);
@@ -91,9 +91,12 @@ public class RealTimeData extends Component implements LoggerDataListener{
 		double max3 = (minAndMax(dataRanges[2]))[1];
 		double min3 = (minAndMax(dataRanges[2]))[0];
 		double value3 = doubleData[Integer.parseInt(indexes[2])];
-		if(value3 > 0){
+		Toolkit.getDefaultToolkit().beep();
+		Toolkit.getDefaultToolkit().beep();
+		Toolkit.getDefaultToolkit().beep();
+		double maxAllowed3 = Double.parseDouble(UtecProperties.getProperties("utec.knockCountWarningMaxAcceptable")[0]);
+		if(value3 > maxAllowed3){
 			SpeakString vc = new SpeakString("knock, count "+(int)value3);
-			vc.start();
 		}
 		double height3 = ((value3 - min3)/(max3 - min3))*maxHeight;
 		double yValue3 = 5 + (maxHeight - height3);
@@ -125,9 +128,9 @@ public class RealTimeData extends Component implements LoggerDataListener{
 		double max5 = (minAndMax(dataRanges[4]))[1];
 		double min5 = (minAndMax(dataRanges[4]))[0];
 		double value5 = doubleData[Integer.parseInt(indexes[4])];
-		if(value5 > 98){
-			SpeakString vc = new SpeakString("Max duty "+value5);
-			vc.start();
+		double maxAllowed5 = Double.parseDouble(UtecProperties.getProperties("utec.injectorCycleWarningMaxAcceptable")[0]);
+		if(value5 > maxAllowed5){
+			SpeakString vc = new SpeakString("Max injector duty "+value5);
 		}
 		double height5 = ((value5 - min5)/(max5 - min5))*maxHeight;
 		double yValue5 = 5 + (maxHeight - height5);
