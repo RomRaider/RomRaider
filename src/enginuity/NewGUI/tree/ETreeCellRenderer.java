@@ -16,15 +16,10 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
 public class ETreeCellRenderer implements TreeCellRenderer{
-
-    JLabel nodeNameJLabel;
-    
+	
     DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
     
     public ETreeCellRenderer(){
-    	nodeNameJLabel = new JLabel(" ");
-    	nodeNameJLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-    	nodeNameJLabel.setHorizontalAlignment(JLabel.CENTER);
     }
     
     
@@ -42,62 +37,60 @@ public class ETreeCellRenderer implements TreeCellRenderer{
     		
     		ETreeNode eTreeNode = (ETreeNode)value;
     		
-    		JPanel renderer = new JPanel(new GridLayout(1, 1));
-            renderer.setBorder(createLineBorder(Color.WHITE));
-            JLabel tableName = new JLabel("");
-            renderer.setBackground(Color.WHITE);
+    		JPanel namedJPanel = new JPanel(new GridLayout(1, 1));
+            namedJPanel.setBorder(createLineBorder(Color.WHITE));
+            JLabel nodeName = new JLabel("");
+            namedJPanel.setBackground(Color.WHITE);
     		
             // Define appropriate ICON to use for node
     		if(eTreeNode.getNodeType() == ETreeNode.DATA1D){
-    			tableName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/1d.gif"), JLabel.LEFT);
+    			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/1d.gif"), JLabel.LEFT);
     		}else if(eTreeNode.getNodeType() == ETreeNode.DATA2D){
-    			tableName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/2d.gif"), JLabel.LEFT);
+    			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/2d.gif"), JLabel.LEFT);
     		}else if(eTreeNode.getNodeType() == ETreeNode.DATA3D){
-    			tableName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/3d.gif"), JLabel.LEFT);
+    			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/3d.gif"), JLabel.LEFT);
     		}else if(eTreeNode.getNodeType() == ETreeNode.CATEGORY){
-    			tableName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/1d.gif"), JLabel.LEFT);
+    			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/1d.gif"), JLabel.LEFT);
     		}
     		
 
     		if(eTreeNode.getNodeType() == ETreeNode.CATEGORY){
     			
-    			System.out.println("Name: "+eTreeNode.getNodeName());
-                nodeNameJLabel.setText(eTreeNode.getNodeName());
-                
-                renderer = new JPanel(new GridLayout(2, 1));
-                renderer.add(nodeNameJLabel);
+                nodeName = new JLabel(eTreeNode.getNodeName(), JLabel.LEFT);
+                nodeName.setFont(new Font("Tahoma", Font.PLAIN, 11));
+                namedJPanel.add(nodeName);
 
                 if (selected) {
-                    renderer.setBackground(new Color(220, 220, 255));
-                    renderer.setBorder(createLineBorder(new Color(0, 0, 225)));
+                    namedJPanel.setBackground(new Color(220, 220, 255));
+                    namedJPanel.setBorder(createLineBorder(new Color(0, 0, 225)));
 
                 } else {
-                    renderer.setBorder(createLineBorder(new Color(220, 0, 0)));
-                    renderer.setBackground(new Color(255, 210, 210));
+                    namedJPanel.setBorder(createLineBorder(new Color(220, 0, 0)));
+                    namedJPanel.setBackground(new Color(255, 210, 210));
                 }
 
-                renderer.setPreferredSize(new Dimension(tree.getParent().getWidth(), 30));
-                renderer.setMaximumSize(new Dimension(tree.getParent().getWidth(), 30));
-                renderer.setEnabled(tree.isEnabled());
-                returnValue = renderer;
+                namedJPanel.setPreferredSize(new Dimension(tree.getParent().getWidth(), 30));
+                namedJPanel.setMaximumSize(new Dimension(tree.getParent().getWidth(), 30));
+                namedJPanel.setEnabled(tree.isEnabled());
+                returnValue = namedJPanel;
     			
-    		}else if(eTreeNode.getNodeType() == ETreeNode.DATA3D){
+    		}else if(eTreeNode.getNodeType() == ETreeNode.DATA3D || eTreeNode.getNodeType() == ETreeNode.DATA2D || eTreeNode.getNodeType() == ETreeNode.DATA1D){
     			System.out.println("HI 3");
 
                 // set color
-                renderer.add(tableName);
-                tableName.setFont(new Font("Tahoma", Font.PLAIN, 11));
+                namedJPanel.add(nodeName);
+                nodeName.setFont(new Font("Tahoma", Font.PLAIN, 11));
 
                 if (selected) {
-                    renderer.setBackground(new Color(220, 220, 255));
-                    renderer.setBorder(createLineBorder(new Color(0, 0, 225)));
+                    namedJPanel.setBackground(new Color(220, 220, 255));
+                    namedJPanel.setBorder(createLineBorder(new Color(0, 0, 225)));
                 }
 
                 // TODO Imlement user level
                 
                 if (eTreeNode.getUserLevel() == 5) {
-                    tableName.setForeground(new Color(255, 150, 150));
-                    tableName.setFont(new Font("Tahoma", Font.ITALIC, 11));
+                    nodeName.setForeground(new Color(255, 150, 150));
+                    nodeName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 
                 } 
                 
@@ -109,10 +102,8 @@ public class ETreeCellRenderer implements TreeCellRenderer{
                 
                 */
 
-                returnValue = renderer;
+                returnValue = namedJPanel;
     		}
-    		
-    		
     	}
     	
 
