@@ -28,7 +28,7 @@ public class UtecDataManager {
 	// Set data values to initial state
 	private static double afrData = 999.0;
 	private static double psiData = 999.0;
-	private static double knockData = 999.0;
+	private static double knockData = 0.0;
 	
 	private static int lineCounter = 0;
 	

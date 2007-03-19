@@ -91,12 +91,13 @@ public class RealTimeData extends Component implements LoggerDataListener{
 		double max3 = (minAndMax(dataRanges[2]))[1];
 		double min3 = (minAndMax(dataRanges[2]))[0];
 		double value3 = doubleData[Integer.parseInt(indexes[2])];
-		Toolkit.getDefaultToolkit().beep();
-		Toolkit.getDefaultToolkit().beep();
-		Toolkit.getDefaultToolkit().beep();
 		double maxAllowed3 = Double.parseDouble(UtecProperties.getProperties("utec.knockCountWarningMaxAcceptable")[0]);
 		if(value3 > maxAllowed3){
 			SpeakString vc = new SpeakString("knock, count "+(int)value3);
+
+			Toolkit.getDefaultToolkit().beep();
+			Toolkit.getDefaultToolkit().beep();
+			Toolkit.getDefaultToolkit().beep();
 		}
 		double height3 = ((value3 - min3)/(max3 - min3))*maxHeight;
 		double yValue3 = 5 + (maxHeight - height3);

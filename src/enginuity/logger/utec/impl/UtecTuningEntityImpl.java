@@ -4,15 +4,21 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 
-import enginuity.NewGUI.interfaces.TreeNode;
 import enginuity.NewGUI.interfaces.TuningEntity;
+import enginuity.NewGUI.interfaces.TuningEntityListener;
+import enginuity.NewGUI.tree.ETreeNode;
 import enginuity.logger.utec.commInterface.UtecInterface;
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.mapData.UtecMapData;
@@ -47,9 +53,9 @@ public class UtecTuningEntityImpl implements TuningEntity{
 	public JMenuItem saveMapFour = new JMenuItem("Save To Map #4");
 	public JMenuItem saveMapFive = new JMenuItem("Save To Map #5");
 	
+	private TuningEntityListener theTEL;
 	
 	public UtecTuningEntityImpl(){
-		init();
 		initJMenu();
 	}
 	
@@ -133,39 +139,30 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			item.setName(theName);
 			item.addActionListener(this);
 			portsMenu.add(item);
-			/*
-			if (counter == 1) {
-				defaultPort = theName;
-				UtecInterface.setPortChoice(defaultPort);
-			}
-			*/
 		}
 		jMenuItems.add(portsMenu);
 	}
 	
-	public TreeNode getJTreeNodeStructure() {
-		UtecTreeNode parentNode = new UtecTreeNode("Utec Maps", TreeNode.NODimension);
-		UtecTreeNode childOne = new UtecTreeNode("Child One", TreeNode.DATA3D);
-		UtecTreeNode childTwo = new UtecTreeNode("Child Two", TreeNode.DATA3D);
-		UtecTreeNode childThree = new UtecTreeNode("Child Three", TreeNode.NODimension);
-		UtecTreeNode childFour = new UtecTreeNode("Child Four", TreeNode.DATA2D);
-		
-		childThree.addChild(childFour);
-		parentNode.addChild(childOne);
-		parentNode.addChild(childTwo);
-		parentNode.addChild(childThree);
-		
-		return parentNode;
-	}
-
 	public double[][] getTableData(String tableName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void init() {
-		// TODO Auto-generated method stub
+	public void init(TuningEntityListener theTEL) {
+		this.theTEL = theTEL;
+
+		// Initialise tree
+		ETreeNode root = new ETreeNode(ETreeNode.CATEGORY, "No map selected....");
+		ETreeNode fuel = new ETreeNode(ETreeNode.DATA3D, "Fuel");
+		ETreeNode timing = new ETreeNode(ETreeNode.DATA3D, "Timing");
+		ETreeNode boost = new ETreeNode(ETreeNode.DATA3D, "Boost");
+		root.add(fuel);
+		root.add(timing);
+		root.add(boost);
 		
+		
+		// Inform main GUI of initial tree
+		this.theTEL.TreeStructureChanged(root);
 	}
 
 	public String getName() {
@@ -272,6 +269,16 @@ public class UtecTuningEntityImpl implements TuningEntity{
 					UtecMapData mapData = new UtecMapData(saveFileName);
 					UtecDataManager.setCurrentMap(mapData);
 				}
+				
+				
+				// Call GUI with new map data tree
+				Hashtable newTable = new Hashtable();
+				newTable.put("UTEC", new ETreeNode(ETreeNode.CATEGORY, UtecDataManager.getCurrentMapData().getMapName()));
+				newTable.put("FUEL", new ETreeNode(ETreeNode.DATA3D, "fuel"));
+				newTable.put("TIMING", new ETreeNode(ETreeNode.DATA3D, "timing"));
+				newTable.put("BOOST", new ETreeNode(ETreeNode.DATA3D, "boost"));
+				
+				this.theTEL.TreeStructureChanged(null);
 			}
 			
 			else if (cmd.equals("Save To Map #1")) {

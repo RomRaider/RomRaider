@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -21,26 +22,38 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import enginuity.NewGUI.data.DataManager;
-import enginuity.NewGUI.interfaces.TreeNode;
 import enginuity.NewGUI.interfaces.TuningEntity;
+import enginuity.NewGUI.interfaces.TuningEntityListener;
+import enginuity.NewGUI.tree.ETree;
+import enginuity.NewGUI.tree.ETreeCellRenderer;
+import enginuity.NewGUI.tree.ETreeNode;
 import enginuity.logger.utec.impl.UtecTuningEntityImpl;
+import enginuity.swing.LookAndFeelManager;
 
-public class NewGUI extends JFrame implements ActionListener, TreeSelectionListener{
+public class NewGUI extends JFrame implements ActionListener, TreeSelectionListener, TuningEntityListener{
 	private static NewGUI instance;
+	
 	private JPanel mainJPanel = new JPanel();
-	private JSplitPane splitPane = new JSplitPane();
-	private JTree leftJTree;
-	private JDesktopPane rightDesktopPane = new JDesktopPane();
+	
 	private JMenuBar jMenuBar = new JMenuBar();
 	private JMenu tuningEntitiesJMenu = new JMenu("Tuning Entities");
-	private DefaultTreeModel treeModel;
-	private DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Waiting...");
+	
+
+	private JSplitPane splitPane = new JSplitPane();
+	private JDesktopPane rightDesktopPane = new JDesktopPane();
+	
+	private ETreeNode rootNode = new ETreeNode(ETreeNode.RESERVED_ROOT, "Enginuity");
+	private ETree leftJTree = new ETree(rootNode);
 	
 	private NewGUI(){
+		// Define which tuning entities are available
 		initData();
+		
+		// Initialize the GUI elements
 		initGui();
 	}
 	
@@ -54,7 +67,9 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	
 	private void initData(){
 		// Add supported tuning entities
-		DataManager.addTuningEntity(new UtecTuningEntityImpl());
+		UtecTuningEntityImpl utei = new UtecTuningEntityImpl();
+		
+		DataManager.addTuningEntity(utei);
 	}
 	
 	private void initGui(){
@@ -65,13 +80,9 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		this.setSize(800,600);
 		
 		
-		// Initialise tree
-		this.treeModel = new DefaultTreeModel(rootNode);
-		this.leftJTree = new JTree(treeModel);
-		this.leftJTree.setEditable(true);
-		this.leftJTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		this.leftJTree.addTreeSelectionListener(this);
-		this.leftJTree.setShowsRootHandles(true);
+		// Setup the look and feel
+		LookAndFeelManager.initLookAndFeel();
+		
 		
 		// Setup JMenu
 		Iterator tuningEntities = DataManager.getTuningEntities().iterator();
@@ -114,46 +125,23 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equalsIgnoreCase("UTEC Tuning Entity")){
 			String theCommand = e.getActionCommand();
-			if(DataManager.getCurrentTuningEntity() != null && DataManager.getCurrentTuningEntity().getName().equals("UTEC Tuning Entity")){
-				return;
-			}
 			
-			DataManager.setCurrentTuningEntity(theCommand);
-			rebuildJMenuBar();
-			rebuildJTree();
+			
+			DataManager.setCurrentTuningEntity(theCommand, this);
 		}
 	}
 	
-	private void rebuildJTree(){
-		this.leftJTree.removeAll();
-		DefaultMutableTreeNode treeMainNode = new DefaultMutableTreeNode(DataManager.getCurrentTuningEntity().getName());
-		TreeNode parentNode = DataManager.getCurrentTuningEntity().getJTreeNodeStructure();
-		DefaultMutableTreeNode topJTreeNode = getChildren(parentNode);
-		System.out.println("Parent:"+parentNode.getName());
-		this.treeModel.removeNodeFromParent(this.rootNode);
-		//this.treeModel.insertNodeInto(rootNode);
-		this.leftJTree.revalidate();
+	private void rebuildJTree(ETreeNode treeRootNode){
+		this.rootNode.removeAllChildren();
+		this.rootNode.add(treeRootNode);
+		this.leftJTree.updateUI();
+		this.splitPane.repaint();
 		
-		
+		System.out.println("Changed the tree model");
 	}
 	
-	public DefaultMutableTreeNode getChildren(TreeNode theNode){
-		DefaultMutableTreeNode returnNode = new DefaultMutableTreeNode(theNode.getName());
-		LinkedList children = theNode.getChildren();
-		
-		Iterator childIterator = children.iterator();
-		while(childIterator.hasNext()){
-			TreeNode tempNode = (TreeNode)childIterator.next();
-			DefaultMutableTreeNode jtreeNode = getChildren(tempNode);
-			returnNode.add(jtreeNode);
-		}
-		
-		
-		return returnNode;
-	}
 
-	private void rebuildJMenuBar() {
-		Vector<JMenu> items = DataManager.getCurrentTuningEntity().getMenuItems();
+	public void rebuildJMenuBar(Vector<JMenu> items) {
 		Iterator iterator = items.iterator();
 		
 		this.jMenuBar.removeAll();
@@ -168,6 +156,11 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	public void valueChanged(TreeSelectionEvent arg0) {
 		
 		System.out.println("Tree Node selected.");
+		
+	}
+
+	public void TreeStructureChanged(ETreeNode newTreeModel) {
+		this.rebuildJTree(newTreeModel);
 		
 	}
 	

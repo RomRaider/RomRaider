@@ -4,14 +4,13 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.JMenu;
+import javax.swing.tree.TreeModel;
 
 
 public interface TuningEntity extends ActionListener{
+	
 	// Return name of tuning entity
 	public String getName();
-	
-	// Method returns parent node of entire tree structure of maps available
-	public TreeNode getJTreeNodeStructure();
 	
 	// Return all the menu items relevant to tuning entity
 	public Vector<JMenu> getMenuItems();
@@ -20,5 +19,5 @@ public interface TuningEntity extends ActionListener{
 	public double[][] getTableData(String tableName);
 	
 	// Control methods
-	public void init();
+	public void init(TuningEntityListener listener);
 }
