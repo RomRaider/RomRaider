@@ -27,13 +27,9 @@ public class ETreeCellRenderer implements TreeCellRenderer{
             boolean selected, boolean expanded, boolean leaf, int row,
             boolean hasFocus) {
     	
-    	
-    	System.out.println("HI :"+value.getClass().toString());
-    	
     	Component returnValue = null;
     	
     	if(value != null && value instanceof ETreeNode){
-    		System.out.println("HI 2");
     		
     		ETreeNode eTreeNode = (ETreeNode)value;
     		
@@ -75,8 +71,7 @@ public class ETreeCellRenderer implements TreeCellRenderer{
                 returnValue = namedJPanel;
     			
     		}else if(eTreeNode.getNodeType() == ETreeNode.DATA3D || eTreeNode.getNodeType() == ETreeNode.DATA2D || eTreeNode.getNodeType() == ETreeNode.DATA1D){
-    			System.out.println("HI 3");
-
+    			
                 // set color
                 namedJPanel.add(nodeName);
                 nodeName.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -110,10 +105,8 @@ public class ETreeCellRenderer implements TreeCellRenderer{
         if (returnValue == null) {
             returnValue = defaultRenderer.getTreeCellRendererComponent(tree,value, selected, expanded, leaf, row, hasFocus);
             
-            System.out.println("HI 4");
         }
     	
 		return returnValue;
 	}
-
 }
