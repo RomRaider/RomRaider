@@ -1,8 +1,8 @@
 package enginuity.NewGUI.tree;
 
-import java.util.LinkedList;
-
 import javax.swing.tree.DefaultMutableTreeNode;
+import enginuity.NewGUI.data.ApplicationStateManager;
+import enginuity.NewGUI.data.TableNodeMetaData;
 
 public class ETreeNode extends DefaultMutableTreeNode{
 	public static final int DATA1D = 0;
@@ -10,22 +10,19 @@ public class ETreeNode extends DefaultMutableTreeNode{
 	public static final int DATA3D = 3;
 	public static final int CATEGORY = 4;
 	public static final int RESERVED_ROOT = 5;
-	public static final int USER_LEVEL_1 = 6;
-	public static final int USER_LEVEL_2 = 7;
-	public static final int USER_LEVEL_3 = 8;
-	public static final int USER_LEVEL_4 = 9;
-	public static final int USER_LEVEL_5 = 10;
 	
 	
-	private int userLevel = ETreeNode.USER_LEVEL_1;
+	private int userLevel = ApplicationStateManager.USER_LEVEL_1;
 	private int nodeType;
 	private String nodeName = "";
 	
+	private TableNodeMetaData tableMetaData = null;
 	
-	public ETreeNode(int nodeType, String nodeName){
+	public ETreeNode(int nodeType, String nodeName, TableNodeMetaData tableMetaData){
 		super(nodeName);
 		this.nodeType = nodeType;
 		this.nodeName = nodeName;
+		this.tableMetaData = tableMetaData;
 	}
 	
 	
@@ -46,5 +43,10 @@ public class ETreeNode extends DefaultMutableTreeNode{
 	}
 	public void setUserLevel(int userLevel) {
 		this.userLevel = userLevel;
+	}
+
+
+	public TableNodeMetaData getTableMetaData() {
+		return tableMetaData;
 	}
 }

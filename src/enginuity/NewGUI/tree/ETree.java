@@ -6,6 +6,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JTree;
 
+import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.swing.RomCellRenderer;
 
 public class ETree extends JTree implements MouseListener {
@@ -19,9 +20,32 @@ public class ETree extends JTree implements MouseListener {
         setFont(new Font("Tahoma", Font.PLAIN, 11));
 	}
 
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	public void mouseClicked(MouseEvent e) {
+		if(e == null){
+			return;
+		}
+		if(getPathForLocation(e.getX(), e.getY()) == null){
+			return;
+		}
 		
+		Object selectedObject = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
+		
+		// Null selection occurs when no tree row is selected
+		if(selectedObject == null){
+			return;
+		}
+		
+		if(selectedObject instanceof ETreeNode){
+			ETreeNode theNode = (ETreeNode)selectedObject;
+			
+			// If this is a table that contains data, then open it in the right pane in an internal frame
+			if(theNode.getNodeType() == ETreeNode.DATA1D || theNode.getNodeType() == ETreeNode.DATA2D || theNode.getNodeType() == ETreeNode.DATA3D){
+				System.out.println("Table data");
+				double[][] tableData = ApplicationStateManager.getCurrentTuningEntity().getTableData(theNode.getNodeName());
+				ApplicationStateManager.getEnginuityInstance().displayInternalFrameTable(tableData, theNode.getTableMetaData());
+			}
+			
+		}
 	}
 
 	public void mousePressed(MouseEvent arg0) {

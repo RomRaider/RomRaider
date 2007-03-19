@@ -25,7 +25,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
-import enginuity.NewGUI.data.DataManager;
+import enginuity.NewGUI.data.ApplicationStateManager;
+import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.etable.EJTable;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
 import enginuity.NewGUI.tree.ETree;
@@ -46,7 +48,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	private JSplitPane splitPane = new JSplitPane();
 	private JDesktopPane rightDesktopPane = new JDesktopPane();
 	
-	private ETreeNode rootNode = new ETreeNode(ETreeNode.RESERVED_ROOT, "Enginuity");
+	private ETreeNode rootNode = new ETreeNode(ETreeNode.RESERVED_ROOT, "Enginuity", null);
 	private ETree leftJTree = new ETree(rootNode);
 	
 	private NewGUI(){
@@ -58,18 +60,18 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	}
 	
 	public static NewGUI getInstance(){
-		if(instance == null){
-			instance = new NewGUI();
+		if(ApplicationStateManager.getEnginuityInstance() == null){
+			ApplicationStateManager.setEnginuityInstance(new NewGUI());
 		}
 		
-		return instance;
+		return ApplicationStateManager.getEnginuityInstance();
 	}
 	
 	private void initData(){
 		// Add supported tuning entities
 		UtecTuningEntityImpl utei = new UtecTuningEntityImpl();
 		
-		DataManager.addTuningEntity(utei);
+		ApplicationStateManager.addTuningEntity(utei);
 	}
 	
 	private void initGui(){
@@ -85,7 +87,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 		
 		// Setup JMenu
-		Iterator tuningEntities = DataManager.getTuningEntities().iterator();
+		Iterator tuningEntities = ApplicationStateManager.getTuningEntities().iterator();
 		while(tuningEntities.hasNext()){
 			TuningEntity theTuningEntity = (TuningEntity)tuningEntities.next();
 			JMenuItem tempItem = new JMenuItem(theTuningEntity.getName());
@@ -95,16 +97,8 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		this.jMenuBar.add(this.tuningEntitiesJMenu);
 		this.setJMenuBar(this.jMenuBar);
 		
-		
-		// Test internalFrames
-		JInternalFrame internalTest = new JInternalFrame("Test Internal", true, true, true, true);
-		internalTest.setSize(300,300);
-		internalTest.setVisible(true);
-		
-		
 		// Setup desktop pane
 		rightDesktopPane.setBackground(Color.BLACK);
-		rightDesktopPane.add(internalTest);
 		
 		
 		// Setup split pane
@@ -127,7 +121,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 			String theCommand = e.getActionCommand();
 			
 			
-			DataManager.setCurrentTuningEntity(theCommand, this);
+			ApplicationStateManager.setCurrentTuningEntity(theCommand, this);
 		}
 	}
 	
@@ -136,8 +130,6 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		this.rootNode.add(treeRootNode);
 		this.leftJTree.updateUI();
 		this.splitPane.repaint();
-		
-		System.out.println("Changed the tree model");
 	}
 	
 
@@ -163,5 +155,14 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		this.rebuildJTree(newTreeModel);
 		
 	}
-	
+
+	public void displayInternalFrameTable(double[][] data, TableNodeMetaData tableMetaData){
+		// Add internal frame
+		JInternalFrame newInternalFrame = new JInternalFrame(tableMetaData.getTableName(), true, true, true, true);
+		EJTable newTable = new EJTable(tableMetaData, data);
+		newInternalFrame.add(newTable);
+		newInternalFrame.setVisible(true);
+		newInternalFrame.setSize(300,300);
+		this.rightDesktopPane.add(newInternalFrame);
+	}
 }

@@ -3,12 +3,23 @@ package enginuity.NewGUI.data;
 import java.util.Iterator;
 import java.util.Vector;
 
+import enginuity.NewGUI.NewGUI;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
 
-public class DataManager {
+public class ApplicationStateManager {
+
+	public static final int USER_LEVEL_1 = 1;
+	public static final int USER_LEVEL_2 = 2;
+	public static final int USER_LEVEL_3 = 3;
+	public static final int USER_LEVEL_4 = 4;
+	public static final int USER_LEVEL_5 = 5;
+	
 	private static Vector<TuningEntity> tuningEntities = new Vector<TuningEntity>();
 	private static TuningEntity currentTuningEntity;
+	private static int currentUserLevel = ApplicationStateManager.USER_LEVEL_1;
+	
+	private static NewGUI enginuityInstance = null;
 	
 	public static Vector<TuningEntity> getTuningEntities() {
 		return tuningEntities;
@@ -33,5 +44,25 @@ public class DataManager {
 				listener.rebuildJMenuBar(currentTuningEntity.getMenuItems());
 			}
 		}
+	}
+
+	public static int getCurrentUserLevel() {
+		return currentUserLevel;
+	}
+
+	public static void setCurrentUserLevel(int currentUserLevel) {
+		ApplicationStateManager.currentUserLevel = currentUserLevel;
+	}
+
+	public static TuningEntity getCurrentTuningEntity() {
+		return currentTuningEntity;
+	}
+
+	public static NewGUI getEnginuityInstance() {
+		return enginuityInstance;
+	}
+
+	public static void setEnginuityInstance(NewGUI enginuityInstance) {
+		ApplicationStateManager.enginuityInstance = enginuityInstance;
 	}
 }

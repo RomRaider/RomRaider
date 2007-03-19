@@ -15,13 +15,11 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
+import enginuity.NewGUI.data.ApplicationStateManager;
+
 public class ETreeCellRenderer implements TreeCellRenderer{
 	
     DefaultTreeCellRenderer defaultRenderer = new DefaultTreeCellRenderer();
-    
-    public ETreeCellRenderer(){
-    }
-    
     
     public Component getTreeCellRendererComponent(JTree tree, Object value,
             boolean selected, boolean expanded, boolean leaf, int row,
@@ -72,7 +70,6 @@ public class ETreeCellRenderer implements TreeCellRenderer{
     			
     		}else if(eTreeNode.getNodeType() == ETreeNode.DATA3D || eTreeNode.getNodeType() == ETreeNode.DATA2D || eTreeNode.getNodeType() == ETreeNode.DATA1D){
     			
-                // set color
                 namedJPanel.add(nodeName);
                 nodeName.setFont(new Font("Tahoma", Font.PLAIN, 11));
 
@@ -81,21 +78,16 @@ public class ETreeCellRenderer implements TreeCellRenderer{
                     namedJPanel.setBorder(createLineBorder(new Color(0, 0, 225)));
                 }
 
-                // TODO Imlement user level
-                
                 if (eTreeNode.getUserLevel() == 5) {
                     nodeName.setForeground(new Color(255, 150, 150));
                     nodeName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 
                 } 
-                
-                /*else if (eTreeNode.getUserLevel() > table.getRom().getContainer().getSettings().getUserLevel()) {
+                else if (eTreeNode.getUserLevel() > ApplicationStateManager.getCurrentUserLevel()) {
                     //tableName.setForeground(new Color(185, 185, 185));
-                    tableName.setFont(new Font("Tahoma", Font.ITALIC, 11));
+                	nodeName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 
                 }
-                
-                */
 
                 returnValue = namedJPanel;
     		}

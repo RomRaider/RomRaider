@@ -18,6 +18,9 @@ public interface TuningEntity extends ActionListener{
 	// Return double data based on passed table name
 	public double[][] getTableData(String tableName);
 	
+	// Push back modified data to the tuning entity
+	public double[][] setTableData(String tableName, double[][] data);
+	
 	// Control methods
 	public void init(TuningEntityListener listener);
 }

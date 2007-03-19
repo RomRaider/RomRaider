@@ -16,12 +16,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import enginuity.NewGUI.data.TableNodeMetaData;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
 import enginuity.NewGUI.tree.ETreeNode;
 import enginuity.logger.utec.commInterface.UtecInterface;
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.mapData.UtecMapData;
+import enginuity.logger.utec.properties.UtecProperties;
 
 public class UtecTuningEntityImpl implements TuningEntity{
 
@@ -144,21 +146,29 @@ public class UtecTuningEntityImpl implements TuningEntity{
 	}
 	
 	public double[][] getTableData(String tableName) {
-		// TODO Auto-generated method stub
-		return null;
+		double[][] data;
+		
+		if(UtecDataManager.getCurrentMapData() == null){
+			return new double[0][0];
+		}
+		
+		if(tableName == "Fuel"){
+			data = UtecDataManager.getCurrentMapData().getFuelMap();
+		}else if(tableName == "Timing"){
+			data = UtecDataManager.getCurrentMapData().getTimingMap();
+		}else if(tableName == "Boost"){
+			data = UtecDataManager.getCurrentMapData().getBoostMap();
+		}else{
+			data = new double[0][0];
+		}
+		return data;
 	}
 
 	public void init(TuningEntityListener theTEL) {
 		this.theTEL = theTEL;
 
 		// Initialise tree
-		ETreeNode root = new ETreeNode(ETreeNode.CATEGORY, "No map selected....");
-		ETreeNode fuel = new ETreeNode(ETreeNode.DATA3D, "Fuel");
-		ETreeNode timing = new ETreeNode(ETreeNode.DATA3D, "Timing");
-		ETreeNode boost = new ETreeNode(ETreeNode.DATA3D, "Boost");
-		root.add(fuel);
-		root.add(timing);
-		root.add(boost);
+		ETreeNode root = new ETreeNode(ETreeNode.CATEGORY, "UTEC: No map selected....", null);
 		
 		
 		// Inform main GUI of initial tree
@@ -270,15 +280,22 @@ public class UtecTuningEntityImpl implements TuningEntity{
 					UtecDataManager.setCurrentMap(mapData);
 				}
 				
+
+				// Initialise tree
+				ETreeNode root = new ETreeNode(ETreeNode.CATEGORY, "UTEC:"+UtecDataManager.getCurrentMapData().getMapName()+", "+UtecDataManager.getCurrentMapData().getMapComment(), null);
+				Object[] ignored = {new Double(-100.0)};
+				ETreeNode fuel = new ETreeNode(ETreeNode.DATA3D, "Fuel", new TableNodeMetaData(Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored, false, "Fuel" ));
 				
-				// Call GUI with new map data tree
-				Hashtable newTable = new Hashtable();
-				newTable.put("UTEC", new ETreeNode(ETreeNode.CATEGORY, UtecDataManager.getCurrentMapData().getMapName()));
-				newTable.put("FUEL", new ETreeNode(ETreeNode.DATA3D, "fuel"));
-				newTable.put("TIMING", new ETreeNode(ETreeNode.DATA3D, "timing"));
-				newTable.put("BOOST", new ETreeNode(ETreeNode.DATA3D, "boost"));
+				Object[] ignored2 = {new Double(-100.0)};
+				ETreeNode timing = new ETreeNode(ETreeNode.DATA3D, "Timing", new TableNodeMetaData(Double.parseDouble(UtecProperties.getProperties("utec.timingMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.timingMapMax")[0]), ignored, false, "Timing" ));
 				
-				this.theTEL.TreeStructureChanged(null);
+				Object[] ignored3 = {new Double(-100.0)};
+				ETreeNode boost = new ETreeNode(ETreeNode.DATA3D, "Boost", new TableNodeMetaData(Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, false, "Boost" ));
+				root.add(fuel);
+				root.add(timing);
+				root.add(boost);
+				
+				this.theTEL.TreeStructureChanged(root);
 			}
 			
 			else if (cmd.equals("Save To Map #1")) {
@@ -343,5 +360,10 @@ public class UtecTuningEntityImpl implements TuningEntity{
 				UtecInterface.setPortChoice(currentPort);
 				UtecInterface.openConnection();
 			}
+	}
+
+	public double[][] setTableData(String tableName, double[][] data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
