@@ -1,36 +1,29 @@
 package enginuity.NewGUI.etable;
 
+import java.awt.Dimension;
+import java.util.Iterator;
+import java.util.Vector;
+
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import enginuity.NewGUI.data.TableNodeMetaData;
 
 public class ETable extends JTable{
-
+	public static final int INCREMENT = 0;
+	public static final int DECREMENT = 1;
+	public static final int MULTIPLY = 2;
+	public static final int SET = 3;
+	
 	private ETableModel theModel;
+	private Vector tempSelectedCells = new Vector();
 	
-	public ETable(TableNodeMetaData metaData, double[][] data){
-		
-		
-
-		
+	ETable(TableNodeMetaData metaData, double[][] data){
 		this.theModel = new ETableModel(metaData.getTableName(), data);
-		//TODO update, possible issue here
 		super.setModel(this.theModel);
-		
-		
-		//this.setSelectionModel(ListSelectionModel.)
-		
+		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.setCellSelectionEnabled(true);
-		this.getSelectionModel().addListSelectionListener(new ESelectionListener(this));
 		this.setDefaultRenderer(Object.class, new ETableCellRenderer(metaData.getMinValue(), metaData.getMaxValue(), metaData.getIgnoredValues(), metaData.isInvertedColoring()));
-	
-		//this.setSelectedQuadrilateral(2,4,4,7);
-		//this.incSelectedCells(22);
-		// this.setSelected(0,0);
-		// this.setSelected(1,1);
-		// this.incSelectedCells(22);
-		//this.setSelected(3,5);
 	}
 	
 	
@@ -58,14 +51,24 @@ public class ETable extends JTable{
 	 * @param colIndex
 	 */
 	public void setSelected(int rowIndex, int colIndex){
-		this.changeSelection(rowIndex, colIndex, false, true);
+
+	    boolean toggle = false;
+	    boolean extend = true;
+	    //this.changeSelection(rowIndex, colIndex, toggle, extend);
+	    //this.changeSelection(1, 1, toggle, extend);
+	    //this.changeSelection(2, 2, toggle, extend);
+	    //this.setSelectedQuadrilateral(1,3,4,6);
+	    //this.addColumnSelectionInterval(3, 6);
+	    
+	    System.out.println(" >"+ this.getSelectedColumnCount()+"  >"+this.getSelectedRowCount());
 	}
 	
 	/**
 	 * Increment cell values by passed double amount.
 	 * @param amount
 	 */
-	public void incSelectedCells(double amount){
+	public void changeSelectedCells(double amount, int type){
+		Vector tempCells = new Vector();
 		
 		int rowStart = this.getSelectedRow();
 		int rowEnd = this.getSelectionModel().getMaxSelectionIndex();
@@ -73,48 +76,63 @@ public class ETable extends JTable{
 		int colStart = this.getSelectedColumn();
 		int colEnd = this.getColumnModel().getSelectionModel().getMaxSelectionIndex();
 		
+		int counter = 0;
 		for(int i = rowStart; i <= rowEnd; i++){
 			for(int j = colStart; j <= colEnd; j++){
 				if(this.isCellSelected(i,j)){
+					counter++;
+					tempCells.add(new Coordinate(i,j));
 					// The cell is selected
 					Object value = theModel.getValueAt(i, j);
-					System.out.println("Selection found at:"+i+"    :"+j);
 					
 					if(value instanceof Double){
-						Double temp = (Double)value + amount;
+						double temp = 0.0;
+						if(type == ETable.INCREMENT){
+							 temp = (Double)value + amount;
+							 System.out.println("INC");
+						}
+						
+						if(type == ETable.DECREMENT){
+							 temp = (Double)value - amount;
+							 System.out.println("DEC");
+						}
+						
+						if(type == ETable.MULTIPLY){
+							 temp = (Double)value * amount;
+							 System.out.println("MULT");
+						}
+						
+						if(type == ETable.SET){
+							 temp = amount;
+							 System.out.println("SET");
+						}
+						
 						//theModel.setValueAt(temp, i, j);
 						theModel.setDoubleData(i,j,temp);
 					}
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Decrement cell values by passed double amount.
-	 * @param amount
-	 */
-	public void decSelectedCells(double amount){
 		
-		int rowStart = this.getSelectedRow();
-		int rowEnd = this.getSelectionModel().getMaxSelectionIndex();
-		
-		int colStart = this.getSelectedColumn();
-		int colEnd = this.getColumnModel().getSelectionModel().getMaxSelectionIndex();
-		
-		for(int i = rowStart; i <= rowEnd; i++){
-			for(int j = colStart; j <= colEnd; j++){
-				if(this.isCellSelected(i,j)){
-					// The cell is selected
-					Object value = theModel.getValueAt(i, j);
-					if(value instanceof Double){
-						Double temp = (Double)value - amount;
-						//theModel.setValueAt(temp, i, j);
-						theModel.setDoubleData(i,j,temp);
-					}
+		if(counter == 0){
+			Iterator tempIterate = this.tempSelectedCells.iterator();
+			while(tempIterate.hasNext()){
+				Coordinate tempCoord = (Coordinate)tempIterate.next();
+				
+				Object value = theModel.getValueAt(tempCoord.getX(), tempCoord.getY());
+				
+				if(value instanceof Double){
+					Double temp = (Double)value + amount;
+					//theModel.setValueAt(temp, i, j);
+					theModel.setDoubleData(tempCoord.getX(),tempCoord.getY(),temp);
 				}
 			}
+		}else{
+			this.tempSelectedCells = tempCells;
 		}
+		
+		theModel.refresh();
+		
 	}
 	
 	/**
@@ -123,5 +141,28 @@ public class ETable extends JTable{
 	 */
 	public void replaceAlltableData(double[][] newData){
 		((ETableModel)this.dataModel).replaceData(newData);
+	}
+
+
+	public ETableModel getTheModel() {
+		return theModel;
+	}
+	
+	private class Coordinate{
+		private int x;
+		private int y;
+		
+		public Coordinate(int x, int y){
+			this.x = x;
+			this.y = y;
+		}
+		
+		public int getX(){
+			return this.x;
+		}
+		
+		public int getY(){
+			return this.y;
+		}
 	}
 }

@@ -2,6 +2,7 @@ package enginuity.NewGUI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -19,6 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -28,6 +31,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.etable.EInternalFrame;
 import enginuity.NewGUI.etable.ETable;
 import enginuity.NewGUI.etable.EToolBar;
 import enginuity.NewGUI.interfaces.TuningEntity;
@@ -39,14 +43,11 @@ import enginuity.logger.utec.impl.UtecTuningEntityImpl;
 import enginuity.swing.LookAndFeelManager;
 
 public class NewGUI extends JFrame implements ActionListener, TreeSelectionListener, TuningEntityListener{
-	private static NewGUI instance;
-	
 	private JPanel mainJPanel = new JPanel();
 	
 	private JMenuBar jMenuBar = new JMenuBar();
 	private JMenu tuningEntitiesJMenu = new JMenu("Tuning Entities");
 	
-
 	private JSplitPane splitPane = new JSplitPane();
 	private JDesktopPane rightDesktopPane = new JDesktopPane();
 	
@@ -159,23 +160,9 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	}
 
 	public void displayInternalFrameTable(double[][] data, TableNodeMetaData tableMetaData){
-		EToolBar toolBar = new EToolBar(tableMetaData);
+
 		
-		ETable newTable = new ETable(tableMetaData, data);
-		
-		JScrollPane scrollPane = new JScrollPane(newTable);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
-    	// Add internal frame
-		JInternalFrame newInternalFrame = new JInternalFrame(tableMetaData.getTableName(), true, true, true, true);
-		newInternalFrame.setLayout(new BorderLayout());
-		newInternalFrame.add(toolBar, BorderLayout.NORTH);
-		newInternalFrame.add(scrollPane, BorderLayout.CENTER);
-		newInternalFrame.setVisible(true);
-		newInternalFrame.setSize(470,450);
-		
-		
-		this.rightDesktopPane.add(newInternalFrame);
+		this.rightDesktopPane.add(new EInternalFrame(tableMetaData, data, new Dimension(470, 450)));
 	}
+
 }

@@ -60,19 +60,6 @@ public class ETableModel extends AbstractTableModel {
         	data[col][row] = (Double)value;
         }
        
-        // TODO RE IMPLEMENT
-        // Update current map in scope
-        /*
-        if(this.identifier == MapJPanel.FUELMAP){
-        	UtecDataManager.setFuelMapValue(row, col, temp);
-        } 
-        else if(this.identifier == MapJPanel.TIMINGMAP){
-        	UtecDataManager.setTimingMapValue(row, col, temp);
-        }
-        else if(this.identifier == MapJPanel.BOOSTMAP){
-        	UtecDataManager.setBoostMapValue(row, col, temp);
-        }
-        */
         this.fireTableDataChanged();
     }
 	
@@ -84,6 +71,14 @@ public class ETableModel extends AbstractTableModel {
 	public void replaceData(double[][] newData){
 		System.out.println("Model data being replaced in full.");
 		this.data = newData;
+		this.fireTableDataChanged();
+	}
+
+	public double[][] getData() {
+		return data;
+	}
+	
+	public void refresh(){
 		this.fireTableDataChanged();
 	}
 	

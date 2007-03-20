@@ -44,8 +44,6 @@ public class ETreeCellRenderer implements TreeCellRenderer{
     			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/2d.gif"), JLabel.LEFT);
     		}else if(eTreeNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA3D){
     			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/3d.gif"), JLabel.LEFT);
-    		}else if(eTreeNode.getTableMetaData().getNodeType() == TableNodeMetaData.CATEGORY){
-    			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/1d.gif"), JLabel.LEFT);
     		}
     		
 

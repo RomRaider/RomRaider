@@ -49,10 +49,14 @@ public class EToolBar extends JToolBar implements MouseListener, ItemListener,Ac
 	private JButton clearOverlay = new JButton("Clear Overlay");
 	private JLabel liveDataValue = new JLabel();
 
-	public EToolBar(TableNodeMetaData tableMetaData) {
+	private ETable eTable;
+	
+	public EToolBar(TableNodeMetaData tableMetaData, ETable eTable) {
+		this.eTable = eTable;
+		
 		this.setFloatable(false);
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
-
+		
 		JPanel finePanel = new JPanel();
 		finePanel.add(incrementFine);
 		finePanel.add(decrementFine);
@@ -141,16 +145,16 @@ public class EToolBar extends JToolBar implements MouseListener, ItemListener,Ac
 		overlayLog.addItemListener(this);
 		clearOverlay.addActionListener(this);
 
-		/*
+	
+		// TODO Implement further
 		try {
-			incrementByFine.setValue(Math.abs(table.getScale()
-					.getFineIncrement()));
-			incrementByCoarse.setValue(Math.abs(table.getScale()
-					.getCoarseIncrement()));
+			incrementByFine.setValue(Math.abs(0.1));
+			incrementByCoarse.setValue(Math.abs(1.0));
+			this.setValueText.setValue(Math.abs(1.0));
 		} catch (Exception ex) {
 			// scaling units haven't been added yet -- no problem
 		}
-		*/
+		
 		
 		// key binding actions
 		Action enterAction = new AbstractAction() {
@@ -181,8 +185,37 @@ public class EToolBar extends JToolBar implements MouseListener, ItemListener,Ac
 		//setScales(table.getScales());
 	}
 
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	public void mouseClicked(MouseEvent e) {
+		 	if (e.getSource() == incrementCoarse) {
+		 		System.out.println("> inc");
+	            eTable.changeSelectedCells(Double.parseDouble(String.valueOf(incrementByCoarse.getValue())), ETable.INCREMENT);
+	        }
+		 	
+		 	else if (e.getSource() == decrementCoarse) {
+		 		System.out.println("> dec");
+	            eTable.changeSelectedCells(Double.parseDouble(String.valueOf(incrementByCoarse.getValue())), ETable.DECREMENT);
+	        } 
+		 	
+		 	else if (e.getSource() == enable3d) {
+	            // TODO Implement
+	        	System.out.println("Implement Enable 3d");
+	        } 
+		 	
+		 	else if (e.getSource() == incrementFine) {
+	            eTable.changeSelectedCells(Double.parseDouble(String.valueOf(incrementByFine.getValue())), ETable.INCREMENT);
+	        } 
+		 	
+		 	else if (e.getSource() == decrementFine) {
+	            eTable.changeSelectedCells(Double.parseDouble(String.valueOf(incrementByFine.getValue())), ETable.DECREMENT);
+	        } 
+		 	
+		 	else if (e.getSource() == multiply) {
+	            eTable.changeSelectedCells(Double.parseDouble(setValueText.getText()), ETable.MULTIPLY);
+	        } 
+		 	
+		 	else if (e.getSource() == setValue) {
+	            eTable.changeSelectedCells(Double.parseDouble(setValueText.getText()), ETable.SET);
+	        }
 
 	}
 

@@ -8,8 +8,7 @@ public class ESelectionListener implements ListSelectionListener{
 	private JTable parentTable = null;
 	
 	public ESelectionListener(JTable parentTable){
-		this.parentTable = parentTable;
-	}
+}
 	public void valueChanged(ListSelectionEvent event) {
 		//System.out.println("1: "+ event.getFirstIndex()+"     2: "+event.getLastIndex());
 		
