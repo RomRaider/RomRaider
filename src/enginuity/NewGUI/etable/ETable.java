@@ -89,22 +89,18 @@ public class ETable extends JTable{
 						double temp = 0.0;
 						if(type == ETable.INCREMENT){
 							 temp = (Double)value + amount;
-							 System.out.println("INC");
 						}
 						
-						if(type == ETable.DECREMENT){
+						else if(type == ETable.DECREMENT){
 							 temp = (Double)value - amount;
-							 System.out.println("DEC");
 						}
 						
-						if(type == ETable.MULTIPLY){
+						else if(type == ETable.MULTIPLY){
 							 temp = (Double)value * amount;
-							 System.out.println("MULT");
 						}
 						
-						if(type == ETable.SET){
+						else if(type == ETable.SET){
 							 temp = amount;
-							 System.out.println("SET");
 						}
 						
 						//theModel.setValueAt(temp, i, j);
@@ -122,7 +118,23 @@ public class ETable extends JTable{
 				Object value = theModel.getValueAt(tempCoord.getX(), tempCoord.getY());
 				
 				if(value instanceof Double){
-					Double temp = (Double)value + amount;
+					double temp = 0.0;
+					if(type == ETable.INCREMENT){
+						 temp = (Double)value + amount;
+					}
+					
+					else if(type == ETable.DECREMENT){
+						 temp = (Double)value - amount;
+					}
+					
+					else if(type == ETable.MULTIPLY){
+						 temp = (Double)value * amount;
+					}
+					
+					else if(type == ETable.SET){
+						 temp = amount;
+					}
+					
 					//theModel.setValueAt(temp, i, j);
 					theModel.setDoubleData(tempCoord.getX(),tempCoord.getY(),temp);
 				}
