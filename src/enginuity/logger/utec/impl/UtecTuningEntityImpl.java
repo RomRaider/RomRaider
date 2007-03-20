@@ -168,7 +168,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		this.theTEL = theTEL;
 
 		// Initialise tree
-		ETreeNode root = new ETreeNode(ETreeNode.CATEGORY, "UTEC: No map selected....", null);
+		ETreeNode root = new ETreeNode("UTEC: No map selected....", new TableNodeMetaData(TableNodeMetaData.CATEGORY,0.0,0.0,new Object[0],false,""));
 		
 		
 		// Inform main GUI of initial tree
@@ -282,15 +282,16 @@ public class UtecTuningEntityImpl implements TuningEntity{
 				
 
 				// Initialise tree
-				ETreeNode root = new ETreeNode(ETreeNode.CATEGORY, "UTEC:"+UtecDataManager.getCurrentMapData().getMapName()+", "+UtecDataManager.getCurrentMapData().getMapComment(), null);
+				ETreeNode root = new ETreeNode("UTEC:"+UtecDataManager.getCurrentMapData().getMapName()+", "+UtecDataManager.getCurrentMapData().getMapComment(), new TableNodeMetaData(TableNodeMetaData.CATEGORY,0.0,0.0,new Object[0],false,""));
+				
 				Object[] ignored = {new Double(-100.0)};
-				ETreeNode fuel = new ETreeNode(ETreeNode.DATA3D, "Fuel", new TableNodeMetaData(Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored, false, "Fuel" ));
+				ETreeNode fuel = new ETreeNode("Fuel", new TableNodeMetaData(TableNodeMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored, false, "Fuel" ));
 				
 				Object[] ignored2 = {new Double(-100.0)};
-				ETreeNode timing = new ETreeNode(ETreeNode.DATA3D, "Timing", new TableNodeMetaData(Double.parseDouble(UtecProperties.getProperties("utec.timingMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.timingMapMax")[0]), ignored, false, "Timing" ));
+				ETreeNode timing = new ETreeNode("Timing", new TableNodeMetaData(TableNodeMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.timingMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.timingMapMax")[0]), ignored, false, "Timing" ));
 				
 				Object[] ignored3 = {new Double(-100.0)};
-				ETreeNode boost = new ETreeNode(ETreeNode.DATA3D, "Boost", new TableNodeMetaData(Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, false, "Boost" ));
+				ETreeNode boost = new ETreeNode("Boost", new TableNodeMetaData(TableNodeMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, false, "Boost" ));
 				root.add(fuel);
 				root.add(timing);
 				root.add(boost);

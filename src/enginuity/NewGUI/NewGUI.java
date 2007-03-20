@@ -16,6 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -27,7 +28,8 @@ import javax.swing.tree.TreeSelectionModel;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.NewGUI.data.TableNodeMetaData;
-import enginuity.NewGUI.etable.EJTable;
+import enginuity.NewGUI.etable.ETable;
+import enginuity.NewGUI.etable.EToolBar;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
 import enginuity.NewGUI.tree.ETree;
@@ -48,7 +50,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	private JSplitPane splitPane = new JSplitPane();
 	private JDesktopPane rightDesktopPane = new JDesktopPane();
 	
-	private ETreeNode rootNode = new ETreeNode(ETreeNode.RESERVED_ROOT, "Enginuity", null);
+	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableNodeMetaData(TableNodeMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],false,""));
 	private ETree leftJTree = new ETree(rootNode);
 	
 	private NewGUI(){
@@ -157,12 +159,23 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	}
 
 	public void displayInternalFrameTable(double[][] data, TableNodeMetaData tableMetaData){
-		// Add internal frame
+		EToolBar toolBar = new EToolBar(tableMetaData);
+		
+		ETable newTable = new ETable(tableMetaData, data);
+		
+		JScrollPane scrollPane = new JScrollPane(newTable);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+    	// Add internal frame
 		JInternalFrame newInternalFrame = new JInternalFrame(tableMetaData.getTableName(), true, true, true, true);
-		EJTable newTable = new EJTable(tableMetaData, data);
-		newInternalFrame.add(newTable);
+		newInternalFrame.setLayout(new BorderLayout());
+		newInternalFrame.add(toolBar, BorderLayout.NORTH);
+		newInternalFrame.add(scrollPane, BorderLayout.CENTER);
 		newInternalFrame.setVisible(true);
-		newInternalFrame.setSize(300,300);
+		newInternalFrame.setSize(470,450);
+		
+		
 		this.rightDesktopPane.add(newInternalFrame);
 	}
 }

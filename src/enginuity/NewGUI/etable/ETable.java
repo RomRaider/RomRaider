@@ -5,11 +5,11 @@ import javax.swing.ListSelectionModel;
 
 import enginuity.NewGUI.data.TableNodeMetaData;
 
-public class EJTable extends JTable{
+public class ETable extends JTable{
 
 	private ETableModel theModel;
 	
-	public EJTable(TableNodeMetaData metaData, double[][] data){
+	public ETable(TableNodeMetaData metaData, double[][] data){
 		
 		
 
@@ -17,6 +17,7 @@ public class EJTable extends JTable{
 		this.theModel = new ETableModel(metaData.getTableName(), data);
 		//TODO update, possible issue here
 		super.setModel(this.theModel);
+		
 		
 		//this.setSelectionModel(ListSelectionModel.)
 		
