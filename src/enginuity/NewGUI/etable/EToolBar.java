@@ -187,12 +187,10 @@ public class EToolBar extends JToolBar implements MouseListener, ItemListener,Ac
 
 	public void mouseClicked(MouseEvent e) {
 		 	if (e.getSource() == incrementCoarse) {
-		 		System.out.println("> inc");
 	            eTable.changeSelectedCells(Double.parseDouble(String.valueOf(incrementByCoarse.getValue())), ETable.INCREMENT);
 	        }
 		 	
 		 	else if (e.getSource() == decrementCoarse) {
-		 		System.out.println("> dec");
 	            eTable.changeSelectedCells(Double.parseDouble(String.valueOf(incrementByCoarse.getValue())), ETable.DECREMENT);
 	        } 
 		 	

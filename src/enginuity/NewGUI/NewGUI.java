@@ -31,6 +31,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.desktop.EDesktopPane;
 import enginuity.NewGUI.etable.EInternalFrame;
 import enginuity.NewGUI.etable.ETable;
 import enginuity.NewGUI.etable.EToolBar;
@@ -49,7 +50,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	private JMenu tuningEntitiesJMenu = new JMenu("Tuning Entities");
 	
 	private JSplitPane splitPane = new JSplitPane();
-	private JDesktopPane rightDesktopPane = new JDesktopPane();
+	private EDesktopPane rightDesktopPane = new EDesktopPane();
 	
 	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableNodeMetaData(TableNodeMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],false,""));
 	private ETree leftJTree = new ETree(rootNode);
@@ -160,7 +161,11 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	}
 
 	public void displayInternalFrameTable(double[][] data, TableNodeMetaData tableMetaData){
-
+		JInternalFrame[] internalFrames = this.rightDesktopPane.getAllFrames();
+		for(int i = 0; i < internalFrames.length; i ++){
+			JInternalFrame theFrame = internalFrames[i];
+			theFrame.toBack();
+		}
 		
 		this.rightDesktopPane.add(new EInternalFrame(tableMetaData, data, new Dimension(470, 450)));
 	}
