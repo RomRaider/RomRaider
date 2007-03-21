@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -21,6 +22,7 @@ import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
 import enginuity.NewGUI.tree.ETreeNode;
 import enginuity.logger.utec.commInterface.UtecInterface;
+import enginuity.logger.utec.gui.JutecToolBar;
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.mapData.UtecMapData;
 import enginuity.logger.utec.properties.UtecProperties;
@@ -366,5 +368,10 @@ public class UtecTuningEntityImpl implements TuningEntity{
 	public double[][] setTableData(String tableName, double[][] data) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public JToolBar getToolBar() {
+		// TODO Auto-generated method stub
+		return new JutecToolBar();
 	}
 }

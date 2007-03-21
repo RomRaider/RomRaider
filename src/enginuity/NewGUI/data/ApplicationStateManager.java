@@ -42,6 +42,7 @@ public class ApplicationStateManager {
 				currentTuningEntity = tuningEntity;
 				currentTuningEntity.init(listener);
 				listener.rebuildJMenuBar(currentTuningEntity.getMenuItems());
+				listener.setNewToolBar(currentTuningEntity.getToolBar());
 			}
 		}
 	}

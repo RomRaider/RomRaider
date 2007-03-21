@@ -19,6 +19,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -34,7 +35,7 @@ import enginuity.NewGUI.data.TableNodeMetaData;
 import enginuity.NewGUI.desktop.EDesktopPane;
 import enginuity.NewGUI.etable.EInternalFrame;
 import enginuity.NewGUI.etable.ETable;
-import enginuity.NewGUI.etable.EToolBar;
+import enginuity.NewGUI.etable.ETableToolBar;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
 import enginuity.NewGUI.tree.ETree;
@@ -98,8 +99,11 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 			tempItem.addActionListener(this);
 			tuningEntitiesJMenu.add(tempItem);
 		}
+		
 		this.jMenuBar.add(this.tuningEntitiesJMenu);
+		this.setLayout(new BorderLayout());
 		this.setJMenuBar(this.jMenuBar);
+	
 		
 		// Setup desktop pane
 		rightDesktopPane.setBackground(Color.BLACK);
@@ -117,7 +121,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 		
 		// Add everything to JFrame
-		this.add(mainJPanel);
+		this.add(mainJPanel, BorderLayout.CENTER);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -141,11 +145,14 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		Iterator iterator = items.iterator();
 		
 		this.jMenuBar.removeAll();
-		jMenuBar.add(this.tuningEntitiesJMenu);
+		
 		while(iterator.hasNext()){
 			JMenu tempMenu = (JMenu)iterator.next();
 			jMenuBar.add(tempMenu);
 		}
+		
+		jMenuBar.add(this.tuningEntitiesJMenu);
+		
 		this.jMenuBar.revalidate();
 	}
 
@@ -168,6 +175,15 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		}
 		
 		this.rightDesktopPane.add(new EInternalFrame(tableMetaData, data, new Dimension(470, 450)));
+	}
+	
+	public void removeInternalFrame(EInternalFrame frame){
+		this.rightDesktopPane.remove(frame);
+	}
+
+	public void setNewToolBar(JToolBar theToolBar) {
+		this.add(theToolBar, BorderLayout.NORTH);
+		
 	}
 
 }

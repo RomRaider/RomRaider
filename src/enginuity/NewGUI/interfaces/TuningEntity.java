@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.JMenu;
+import javax.swing.JToolBar;
 import javax.swing.tree.TreeModel;
 
 
@@ -14,6 +15,9 @@ public interface TuningEntity extends ActionListener{
 	
 	// Return all the menu items relevant to tuning entity
 	public Vector<JMenu> getMenuItems();
+	
+	// Return the toolbar
+	public JToolBar getToolBar();
 	
 	// Return double data based on passed table name
 	public double[][] getTableData(String tableName);

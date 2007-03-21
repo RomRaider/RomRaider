@@ -70,7 +70,12 @@ public class ETableModel extends AbstractTableModel {
 	
 	public void replaceData(double[][] newData){
 		System.out.println("Model data being replaced in full.");
+		if(this.data == newData){
+			System.out.println("Same data");
+		}
+		
 		this.data = newData;
+		
 		this.fireTableDataChanged();
 	}
 

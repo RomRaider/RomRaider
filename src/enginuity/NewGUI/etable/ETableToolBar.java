@@ -32,7 +32,7 @@ import javax.swing.KeyStroke;
 import enginuity.NewGUI.data.TableNodeMetaData;
 import enginuity.maps.Table;
 
-public class EToolBar extends JToolBar implements MouseListener, ItemListener,ActionListener {
+public class ETableToolBar extends JToolBar implements MouseListener, ItemListener,ActionListener {
 
 	private JButton incrementFine = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
 	private JButton decrementFine = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
@@ -51,7 +51,7 @@ public class EToolBar extends JToolBar implements MouseListener, ItemListener,Ac
 
 	private ETable eTable;
 	
-	public EToolBar(TableNodeMetaData tableMetaData, ETable eTable) {
+	public ETableToolBar(TableNodeMetaData tableMetaData, ETable eTable) {
 		this.eTable = eTable;
 		
 		this.setFloatable(false);
