@@ -2,13 +2,13 @@ package enginuity.NewGUI.etable;
 
 import javax.swing.table.AbstractTableModel;
 
-public class ERowLabelTable extends AbstractTableModel{
+public class ETableRowLabel extends AbstractTableModel{
 
 	private int length;
 	private String[] labels;
 	private int counter = 0;
 	
-	public ERowLabelTable(int length, String[] labels){
+	public ETableRowLabel(int length, String[] labels){
 		this.length = length;
 		this.labels = labels;
 	}

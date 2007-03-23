@@ -32,7 +32,7 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	
 	private ETable eTable;
 	private TableMetaData tableMetaData;
-	
+
 	public EInternalFrame(TableMetaData tableMetaData, Double[][] data, Dimension tableDimensions){
 		super(tableMetaData.getTableName(), true, true, true, true);
 		this.tableMetaData = tableMetaData;
@@ -70,7 +70,7 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 			}
 		};
 		
-		TableModel tableModel = new ERowLabelTable(data[0].length, tableMetaData.getRowLabels());
+		TableModel tableModel = new ETableRowLabel(data[0].length, tableMetaData.getRowLabels());
 		eTable = new ETable(tableMetaData, data, columnModel);
 		eTable.setBackground(Color.LIGHT_GRAY);
 		
@@ -111,12 +111,21 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	}
 	
 	public boolean dataChanged(){
+		if(this.eTable.getTheModel().getData() != this.savedData.get(savedData.size()-1).getData()){
+			System.out.println("Data not the same.");
+			return true;
+		}
+		
 		return false;
 	}
 	
 	public Double[][] getTableData(){
 		Double[][] data = this.eTable.getTheModel().getData();
 		return data;
+	}
+	
+	public void saveDataToParentTuningEntity(){
+		this.tableMetaData.getParentTuningEntity().setTableData(this.tableMetaData.getTableIdentifier(), this.eTable.getTheModel().getData());
 	}
 	
 	public void saveDataState(){
@@ -126,7 +135,12 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	
 	public void revertDataState(){
 		if(!this.savedData.isEmpty()){
-			this.setTableData(this.savedData.pop().getData());
+			if(this.savedData.size() > 1){
+				this.setTableData(this.savedData.pop().getData());
+			}else if(savedData.size() == 1){
+				this.setTableData(this.savedData.peek().getData());
+			}
+			
 			//this.setTableData(this.savedData.pop());
 		}
 	}

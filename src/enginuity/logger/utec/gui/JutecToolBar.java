@@ -26,7 +26,7 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
 	private TuningEntityListener theTEL;
 	private int fileChosen;
 	private JFileChooser fileChooser =  new JFileChooser();
-	private TuningEntity parentEntity;
+	private TuningEntity parentTuningEntity;
 	
    // private ECUEditor parent;
     private JButton openImage = new JButton(new ImageIcon("./graphics/icon-open.png"));
@@ -34,9 +34,9 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
     private JButton refreshImage = new JButton(new ImageIcon("./graphics/icon-refresh.png"));
     private JButton closeImage = new JButton(new ImageIcon("./graphics/icon-close.png"));
 
-    public JutecToolBar(TuningEntityListener theTEL, TuningEntity parentEntity){
+    public JutecToolBar(TuningEntityListener theTEL, TuningEntity parentTuningEntity){
     	this.theTEL = theTEL;
-    	this.parentEntity = parentEntity;
+    	this.parentTuningEntity = parentTuningEntity;
     	
         this.setFloatable(false);
         this.add(openImage);
@@ -53,12 +53,16 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
         refreshImage.setMaximumSize(new Dimension(50, 50));
         refreshImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
 
-        updateButtons();
-
         openImage.addActionListener(this);
         saveImage.addActionListener(this);
         closeImage.addActionListener(this);
         refreshImage.addActionListener(this);
+        
+        // Set initial button state
+        this.openImage.setEnabled(true);
+        this.saveImage.setEnabled(false);
+        this.refreshImage.setEnabled(false);
+        this.closeImage.setEnabled(false);
     }
 
     public void updateButtons() {
@@ -69,15 +73,6 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
         refreshImage.setToolTipText("Refresh " + file + " from saved copy");
         closeImage.setToolTipText("Close " + file);
 
-        if ("".equals(file)) {
-            saveImage.setEnabled(false);
-            refreshImage.setEnabled(false);
-            closeImage.setEnabled(false);
-        } else {
-            saveImage.setEnabled(true);
-            refreshImage.setEnabled(true);
-            closeImage.setEnabled(true);
-        }
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -98,21 +93,24 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
 				if(mapData != null){
 
 					// Initialise tree
-					ETreeNode root = new ETreeNode("UTEC:"+UtecDataManager.getCurrentMapData().getMapName()+", "+UtecDataManager.getCurrentMapData().getMapComment(), new TableMetaData(TableMetaData.CATEGORY,0.0,0.0,new Object[0],null,null,false,"","", this.parentEntity));
+					ETreeNode root = new ETreeNode("UTEC:"+UtecDataManager.getCurrentMapData().getMapName()+", "+UtecDataManager.getCurrentMapData().getMapComment(), new TableMetaData(TableMetaData.CATEGORY,0.0,0.0,new Object[0],null,null,false,"","", "", this.parentTuningEntity));
 					
 					Object[] ignored = {new Double(-100.0)};
-					ETreeNode fuel = new ETreeNode("Fuel", new TableMetaData(TableMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored,null,null, false, "Fuel" , "Fuel:"+mapData.getMapName(), this.parentEntity));
+					ETreeNode fuel = new ETreeNode("Fuel", new TableMetaData(TableMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored,null,null, false, "Fuel" , "Fuel:"+mapData.getMapName(), mapData.getMapName(),this.parentTuningEntity));
 					
 					Object[] ignored2 = {new Double(-100.0)};
-					ETreeNode timing = new ETreeNode("Timing", new TableMetaData(TableMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.timingMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.timingMapMax")[0]), ignored,null,null, false, "Timing" , "Timing:"+mapData.getMapName(), this.parentEntity));
+					ETreeNode timing = new ETreeNode("Timing", new TableMetaData(TableMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.timingMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.timingMapMax")[0]), ignored,null,null, false, "Timing" , "Timing:"+mapData.getMapName(), mapData.getMapName(),this.parentTuningEntity));
 					
 					Object[] ignored3 = {new Double(-100.0)};
-					ETreeNode boost = new ETreeNode("Boost", new TableMetaData(TableMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, null,null,false, "Boost" , "Boost:"+mapData.getMapName(), this.parentEntity));
+					ETreeNode boost = new ETreeNode("Boost", new TableMetaData(TableMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, null,null,false, "Boost" , "Boost:"+mapData.getMapName(), mapData.getMapName(), this.parentTuningEntity));
 					root.add(fuel);
 					root.add(timing);
 					root.add(boost);
 					
 					this.theTEL.TreeStructureChanged(root);
+					
+					// Enable the save option
+					this.saveImage.setEnabled(true);
 				}
 
             } catch (Exception ex) {
@@ -120,7 +118,10 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
             }
         } else if (e.getSource() == saveImage) {
             try {
-                //((ECUEditorMenuBar) parent.getJMenuBar()).saveImage(parent.getLastSelectedRom());
+            	System.out.println("Calling save now.");
+                int count = this.theTEL.getMapChangeCount(this.parentTuningEntity, UtecDataManager.getCurrentMapData().getMapName());
+                System.out.println("Count =:"+count);
+                
             } catch (Exception ex) {
                // JOptionPane.showMessageDialog(parent, new DebugPanel(ex,parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }

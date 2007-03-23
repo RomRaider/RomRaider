@@ -23,7 +23,7 @@ public interface TuningEntity extends ActionListener{
 	public Double[][] getTableData(String tableName);
 	
 	// Push back modified data to the tuning entity
-	public Double[][] setTableData(String tableName, Double[][] data);
+	public void setTableData(String tableIdentifier, Double[][] data);
 	
 	// Control methods
 	public void init(TuningEntityListener listener);

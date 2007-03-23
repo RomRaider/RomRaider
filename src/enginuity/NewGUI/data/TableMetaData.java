@@ -20,11 +20,12 @@ public class TableMetaData {
 	private boolean isInvertedColoring;
 	private String tableName;
 	private String tableIdentifier;
+	private String tableGroup;
 	private int dimensions;
 	private TuningEntity parentTuningEntity;
 	
 	
-	public TableMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, String[] columnLabels, String[] rowLabels, boolean isInvertedColoring, String tableName, String tableIdentifier, TuningEntity parentTuningEntity) {
+	public TableMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, String[] columnLabels, String[] rowLabels, boolean isInvertedColoring, String tableName, String tableIdentifier, String tableGroup, TuningEntity parentTuningEntity) {
 		this.dimensions = dimensions;
 		this.maxValue = maxValue;
 		this.minValue = minValue;
@@ -34,6 +35,7 @@ public class TableMetaData {
 		this.isInvertedColoring = isInvertedColoring;
 		this.tableName = tableName;
 		this.tableIdentifier = tableIdentifier;
+		this.tableGroup = tableGroup;
 		this.parentTuningEntity = parentTuningEntity;
 		
 		System.out.println("Min:"+this.minValue+ " Max:"+this.maxValue + " Name:"+this.tableName+ " Inv:"+this.isInvertedColoring);
@@ -77,5 +79,9 @@ public class TableMetaData {
 
 	public TuningEntity getParentTuningEntity() {
 		return parentTuningEntity;
+	}
+
+	public String getTableGroup() {
+		return tableGroup;
 	}
 }

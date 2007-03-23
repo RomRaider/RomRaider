@@ -47,6 +47,9 @@ import enginuity.logger.utec.impl.UtecTuningEntityImpl;
 import enginuity.swing.LookAndFeelManager;
 
 public class NewGUI extends JFrame implements ActionListener, TreeSelectionListener, TuningEntityListener{
+	
+	private String version = "v0.5.0 alpha 1";
+	
 	private JPanel mainJPanel = new JPanel();
 	
 	private JMenuBar jMenuBar = new JMenuBar();
@@ -55,7 +58,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	private JSplitPane splitPane = new JSplitPane();
 	private EDesktopPane rightDesktopPane = new EDesktopPane();
 	
-	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableMetaData(TableMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],null, null,false,"", "", null));
+	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableMetaData(TableMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],null, null,false,"", "", "", null));
 	private ETree leftJTree = new ETree(rootNode);
 	
 	private NewGUI(){
@@ -87,6 +90,10 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		// Set the frame icon
 		Image img = Toolkit.getDefaultToolkit().getImage("graphics/enginuity-ico.gif");
 		setIconImage( img );
+		
+		
+		// Set frame title
+		this.setTitle("Enginuity "+this.version);
 		
 		
 		// Set main JFrame size
@@ -188,6 +195,39 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	public void setNewToolBar(JToolBar theToolBar) {
 		this.add(theToolBar, BorderLayout.NORTH);
 		
+	}
+	
+	
+	public int getMapChangeCount(TuningEntity tuningEntity, String tableGroup){
+		JInternalFrame[] allFrames = this.rightDesktopPane.getAllFrames();
+		
+		int number = 0;
+		for(int i = 0 ; i < allFrames.length; i++){
+			EInternalFrame eInternalFrame = (EInternalFrame)allFrames[i];
+			
+			if(eInternalFrame.getTableMetaData().getTableGroup().equals(tableGroup)){
+				if(eInternalFrame.dataChanged()){
+					number++;
+				}
+			}
+		}
+		
+		return number;
+		
+	}
+	
+	public void saveMaps(TuningEntity tuningEntity, String tableGroup){
+		JInternalFrame[] allFrames = this.rightDesktopPane.getAllFrames();
+		
+		for(int i = 0 ; i < allFrames.length; i++){
+			EInternalFrame eInternalFrame = (EInternalFrame)allFrames[i];
+			
+			if(eInternalFrame.getTableMetaData().getTableGroup().equals(tableGroup)){
+				if(eInternalFrame.dataChanged()){
+					eInternalFrame.saveDataToParentTuningEntity();
+				}
+			}
+		}
 	}
 
 }

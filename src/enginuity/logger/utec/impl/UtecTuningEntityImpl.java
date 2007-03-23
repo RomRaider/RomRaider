@@ -167,7 +167,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		this.theTEL = theTEL;
 
 		// Initialise tree
-		ETreeNode root = new ETreeNode("UTEC: No map selected....", new TableMetaData(TableMetaData.CATEGORY,0.0,0.0,new Object[0], null, null, false,"","", this));
+		ETreeNode root = new ETreeNode("UTEC: No map selected....", new TableMetaData(TableMetaData.CATEGORY,0.0,0.0,new Object[0], null, null, false,"","","", this));
 		
 		
 		// Inform main GUI of initial tree
@@ -337,8 +337,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		return new JutecToolBar(this.theTEL, this);
 	}
 
-	public Double[][] setTableData(String tableName, Double[][] data) {
-		// TODO Auto-generated method stub
-		return null;
+	public void setTableData(String tableIdentifier, Double[][] data) {
+		System.out.println("utec save data requested");
 	}
 }
