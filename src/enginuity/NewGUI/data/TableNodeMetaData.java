@@ -1,5 +1,7 @@
 package enginuity.NewGUI.data;
 
+import enginuity.NewGUI.interfaces.TuningEntity;
+
 public class TableNodeMetaData {
 
 	public static final int DATA1D = 0;
@@ -15,15 +17,20 @@ public class TableNodeMetaData {
 	private Object[] ignoredValues;
 	private boolean isInvertedColoring;
 	private String tableName;
+	private String tableIdentifier;
 	private int dimensions;
+	private TuningEntity parentTuningEntity;
 	
-	public TableNodeMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, boolean isInvertedColoring, String tableName) {
+	
+	public TableNodeMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, boolean isInvertedColoring, String tableName, String tableIdentifier, TuningEntity parentTuningEntity) {
 		this.dimensions = dimensions;
 		this.maxValue = maxValue;
 		this.minValue = minValue;
 		this.ignoredValues = ignoredValues;
 		this.isInvertedColoring = isInvertedColoring;
 		this.tableName = tableName;
+		this.tableIdentifier = tableIdentifier;
+		this.parentTuningEntity = parentTuningEntity;
 		
 		System.out.println("Min:"+this.minValue+ " Max:"+this.maxValue + " Name:"+this.tableName+ " Inv:"+this.isInvertedColoring);
 	}
@@ -50,5 +57,9 @@ public class TableNodeMetaData {
 
 	public int getNodeType() {
 		return dimensions;
+	}
+
+	public String getTableIdentifier() {
+		return tableIdentifier;
 	}
 }

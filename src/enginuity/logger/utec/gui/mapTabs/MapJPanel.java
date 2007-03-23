@@ -29,7 +29,7 @@ public class MapJPanel extends JPanel{
 		
 		this.mapType = mapType;
 		
-		double[][] initialData = new double[11][40];
+		Double[][] initialData = new Double[11][40];
 		for(int i=0; i < 40; i++){
 			for(int j = 0; j < 11 ; j++){
 				initialData[j][i] = 0.0;

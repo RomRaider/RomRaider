@@ -18,7 +18,7 @@ public class ETable extends JTable{
 	private ETableModel theModel;
 	private Vector tempSelectedCells = new Vector();
 	
-	ETable(TableNodeMetaData metaData, double[][] data){
+	ETable(TableNodeMetaData metaData, Double[][] data){
 		this.theModel = new ETableModel(metaData.getTableName(), data);
 		super.setModel(this.theModel);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -151,7 +151,7 @@ public class ETable extends JTable{
 	 * Replace all table data with passed data.
 	 * @param newData
 	 */
-	public void replaceAlltableData(double[][] newData){
+	public void replaceAlltableData(Double[][] newData){
 		((ETableModel)this.dataModel).replaceData(newData);
 	}
 

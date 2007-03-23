@@ -114,7 +114,7 @@ public class UtecJTable extends JTable{
 	 * Replace all table data with passed data.
 	 * @param newData
 	 */
-	public void replaceAlltableData(double[][] newData){
+	public void replaceAlltableData(Double[][] newData){
 		((UtecTableModel)this.dataModel).replaceData(newData);
 	}
 }

@@ -6,13 +6,13 @@ public class ETableModel extends AbstractTableModel {
 
 	private String[] columnNames = new String[11];
 
-	private double[][] data = new double[11][40];
-	
+	//private double[][] data = new double[11][40];
+	private Double[][] data = new Double[11][40];
 	String test = "";
 	
 	private String tableName;
 	
-	public ETableModel(String tableName, double[][] initialData) {
+	public ETableModel(String tableName, Double[][] initialData) {
 		this.tableName = tableName;
 		
 		this.data = initialData;
@@ -68,7 +68,7 @@ public class ETableModel extends AbstractTableModel {
 	}
 	
 	
-	public void replaceData(double[][] newData){
+	public void replaceData(Double[][] newData){
 		System.out.println("Model data being replaced in full.");
 		if(this.data == newData){
 			System.out.println("Same data");
@@ -79,7 +79,7 @@ public class ETableModel extends AbstractTableModel {
 		this.fireTableDataChanged();
 	}
 
-	public double[][] getData() {
+	public Double[][] getData() {
 		return data;
 	}
 	

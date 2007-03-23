@@ -1,15 +1,15 @@
 package enginuity.NewGUI.etable;
 
 public class ETableSaveState {
-	private double[][] internalData;
+	private Double[][] internalData;
 	private String name;
-	public ETableSaveState(double[][] data){
+	public ETableSaveState(Double[][] data){
 		this.name = name;
 		int width = data.length;
 		int height = data[0].length;
 		
 		System.out.println("Dimensions:  w:"+ width+"   h:"+height);
-		this.internalData = new double[width][height];
+		this.internalData = new Double[width][height];
 		
 		for(int i = 0; i < width; i ++){
 			for(int j=0; j < height; j++){
@@ -21,7 +21,7 @@ public class ETableSaveState {
 		System.out.println("Sample: "+this.internalData[0][0]);
 	}
 	
-	public double[][] getData(){
+	public Double[][] getData(){
 		return this.internalData;
 	}
 	

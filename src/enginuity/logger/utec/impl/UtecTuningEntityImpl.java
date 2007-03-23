@@ -49,7 +49,6 @@ public class UtecTuningEntityImpl implements TuningEntity{
 	public JMenuItem loadMapThree = new JMenuItem("Load Map #3");
 	public JMenuItem loadMapFour = new JMenuItem("Load Map #4");
 	public JMenuItem loadMapFive = new JMenuItem("Load Map #5");
-	public JMenuItem loadMapFile = new JMenuItem("Load Map File");
 
 	public JMenuItem saveMapOne = new JMenuItem("Save To Map #1");
 	public JMenuItem saveMapTwo = new JMenuItem("Save To Map #2");
@@ -99,13 +98,11 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		loadMapThree.addActionListener(this);
 		loadMapFour.addActionListener(this);
 		loadMapFive.addActionListener(this);
-		loadMapFile.addActionListener(this);
 		getMapsMenu.add(loadMapOne);
 		getMapsMenu.add(loadMapTwo);
 		getMapsMenu.add(loadMapThree);
 		getMapsMenu.add(loadMapFour);
 		getMapsMenu.add(loadMapFive);
-		getMapsMenu.add(loadMapFile);
 		jMenuItems.add(getMapsMenu);
 		
 
@@ -147,11 +144,11 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		jMenuItems.add(portsMenu);
 	}
 	
-	public double[][] getTableData(String tableName) {
-		double[][] data;
+	public Double[][] getTableData(String tableName) {
+		Double[][] data;
 		
 		if(UtecDataManager.getCurrentMapData() == null){
-			return new double[0][0];
+			return new Double[0][0];
 		}
 		
 		if(tableName == "Fuel"){
@@ -161,7 +158,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		}else if(tableName == "Boost"){
 			data = UtecDataManager.getCurrentMapData().getBoostMap();
 		}else{
-			data = new double[0][0];
+			data = new Double[0][0];
 		}
 		return data;
 	}
@@ -170,7 +167,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		this.theTEL = theTEL;
 
 		// Initialise tree
-		ETreeNode root = new ETreeNode("UTEC: No map selected....", new TableNodeMetaData(TableNodeMetaData.CATEGORY,0.0,0.0,new Object[0],false,""));
+		ETreeNode root = new ETreeNode("UTEC: No map selected....", new TableNodeMetaData(TableNodeMetaData.CATEGORY,0.0,0.0,new Object[0],false,"","", this));
 		
 		
 		// Inform main GUI of initial tree
@@ -270,36 +267,6 @@ public class UtecTuningEntityImpl implements TuningEntity{
 				System.out.println("Starting to get map 5");
 				UtecInterface.pullMapData(5);
 			}
-
-			else if (cmd.equals("Load Map File")) {
-				System.out.println("Load Map From File");
-
-				String saveFileName = null;
-				fileChosen = fileChooser.showSaveDialog(null);
-				if (fileChosen == JFileChooser.APPROVE_OPTION) {
-					saveFileName = fileChooser.getSelectedFile().getPath();
-					UtecMapData mapData = new UtecMapData(saveFileName);
-					UtecDataManager.setCurrentMap(mapData);
-				}
-				
-
-				// Initialise tree
-				ETreeNode root = new ETreeNode("UTEC:"+UtecDataManager.getCurrentMapData().getMapName()+", "+UtecDataManager.getCurrentMapData().getMapComment(), new TableNodeMetaData(TableNodeMetaData.CATEGORY,0.0,0.0,new Object[0],false,""));
-				
-				Object[] ignored = {new Double(-100.0)};
-				ETreeNode fuel = new ETreeNode("Fuel", new TableNodeMetaData(TableNodeMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored, false, "Fuel" ));
-				
-				Object[] ignored2 = {new Double(-100.0)};
-				ETreeNode timing = new ETreeNode("Timing", new TableNodeMetaData(TableNodeMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.timingMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.timingMapMax")[0]), ignored, false, "Timing" ));
-				
-				Object[] ignored3 = {new Double(-100.0)};
-				ETreeNode boost = new ETreeNode("Boost", new TableNodeMetaData(TableNodeMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, false, "Boost" ));
-				root.add(fuel);
-				root.add(timing);
-				root.add(boost);
-				
-				this.theTEL.TreeStructureChanged(root);
-			}
 			
 			else if (cmd.equals("Save To Map #1")) {
 				System.out.println("Starting to save map #1");
@@ -365,13 +332,13 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			}
 	}
 
-	public double[][] setTableData(String tableName, double[][] data) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public JToolBar getToolBar() {
 		// TODO Auto-generated method stub
-		return new JutecToolBar();
+		return new JutecToolBar(this.theTEL, this);
+	}
+
+	public Double[][] setTableData(String tableName, Double[][] data) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

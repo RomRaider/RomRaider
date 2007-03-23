@@ -53,7 +53,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	private JSplitPane splitPane = new JSplitPane();
 	private EDesktopPane rightDesktopPane = new EDesktopPane();
 	
-	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableNodeMetaData(TableNodeMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],false,""));
+	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableNodeMetaData(TableNodeMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],false,"", "", null));
 	private ETree leftJTree = new ETree(rootNode);
 	
 	private NewGUI(){
@@ -167,14 +167,8 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 	}
 
-	public void displayInternalFrameTable(double[][] data, TableNodeMetaData tableMetaData){
-		JInternalFrame[] internalFrames = this.rightDesktopPane.getAllFrames();
-		for(int i = 0; i < internalFrames.length; i ++){
-			JInternalFrame theFrame = internalFrames[i];
-			theFrame.toBack();
-		}
-		
-		this.rightDesktopPane.add(new EInternalFrame(tableMetaData, data, new Dimension(470, 450)));
+	public void displayInternalFrameTable(Double[][] data, TableNodeMetaData tableMetaData){
+		this.rightDesktopPane.add(data, tableMetaData);
 	}
 	
 	public void removeInternalFrame(EInternalFrame frame){

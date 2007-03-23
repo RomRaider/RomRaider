@@ -17,14 +17,18 @@ import enginuity.NewGUI.data.TableNodeMetaData;
 
 public class EInternalFrame extends JInternalFrame implements InternalFrameListener, ActionListener{
 	private Stack<ETableSaveState> savedData = new Stack<ETableSaveState>();
+	//private Stack<Double[][]> savedData = new Stack<Double[][]>();
 	
 	private ETable eTable;
+	private TableNodeMetaData tableMetaData;
 	
-	public EInternalFrame(TableNodeMetaData tableMetaData, double[][] data, Dimension tableDimensions){
+	public EInternalFrame(TableNodeMetaData tableMetaData, Double[][] data, Dimension tableDimensions){
 		super(tableMetaData.getTableName(), true, true, true, true);
+		this.tableMetaData = tableMetaData;
 		
 		// Save initial data
 		this.savedData.push(new ETableSaveState(data));
+		//this.savedData.push(data);
 		
 		eTable = new ETable(tableMetaData, data);
 		
@@ -44,23 +48,29 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 		this.addInternalFrameListener(this);
 	}
 	
-	public double[][] getTableData(){
-		double[][] data = this.eTable.getTheModel().getData();
+	public boolean dataChanged(){
+		return false;
+	}
+	
+	public Double[][] getTableData(){
+		Double[][] data = this.eTable.getTheModel().getData();
 		return data;
 	}
 	
 	public void saveDataState(){
 		this.savedData.push(new ETableSaveState(this.getTableData()));
+		//this.savedData.push(this.getTableData());
 	}
 	
 	public void revertDataState(){
 		if(!this.savedData.isEmpty()){
 			this.setTableData(this.savedData.pop().getData());
+			//this.setTableData(this.savedData.pop());
 		}
 	}
 	
 	
-	public void setTableData(double[][] data){
+	public void setTableData(Double[][] data){
 		this.eTable.getTheModel().replaceData(data);
 	}
 	
@@ -104,5 +114,9 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public TableNodeMetaData getTableMetaData() {
+		return tableMetaData;
 	}
 }

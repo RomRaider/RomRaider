@@ -13,6 +13,10 @@ import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
+import enginuity.NewGUI.data.ApplicationStateManager;
+import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.etable.EInternalFrame;
+
 
 public class EDesktopPane extends JDesktopPane{
     private static int FRAME_OFFSET = 20;
@@ -29,41 +33,65 @@ public class EDesktopPane extends JDesktopPane{
         checkDesktopSize();
     }
 
-    public Component add(JInternalFrame frame) {
+    public Component add(Double[][] data, TableNodeMetaData tableMetaData) {
         JInternalFrame[] array = getAllFrames();
         Point p;
         int w;
         int h;
 
-        Component retval = super.add(frame);
-        checkDesktopSize();
-        if (array.length > 0) {
-            p = array[0].getLocation();
-            p.x = p.x + FRAME_OFFSET;
-            p.y = p.y + FRAME_OFFSET;
-        } else {
-            p = new Point(0, 0);
-        }
-        frame.setLocation(p.x, p.y);
-        if (frame.isResizable()) {
-            w = getWidth() - (getWidth() / 3);
-            h = getHeight() - (getHeight() / 3);
-            if (w < frame.getMinimumSize().getWidth()) {
-                w = (int) frame.getMinimumSize().getWidth();
+        JInternalFrame[] allFrames = getAllFrames();
+    	boolean addFrame = true;
+    	EInternalFrame tempFrame = null;
+        for(int i = 0; i < allFrames.length ; i++){
+    		tempFrame = (EInternalFrame)allFrames[i];
+    		if(tempFrame.getTableMetaData().getTableIdentifier() == tableMetaData.getTableIdentifier()){
+    			addFrame = false;
+    			break;
+    		}
+    	}
+        
+        if(addFrame){
+        	EInternalFrame frame = new EInternalFrame(tableMetaData, data, new Dimension(470, 450));
+        	Component retval = super.add(frame);
+            checkDesktopSize();
+            if (array.length > 0) {
+                p = array[0].getLocation();
+                p.x = p.x + FRAME_OFFSET;
+                p.y = p.y + FRAME_OFFSET;
+            } else {
+                p = new Point(0, 0);
             }
-            if (h < frame.getMinimumSize().getHeight()) {
-                h = (int) frame.getMinimumSize().getHeight();
+            frame.setLocation(p.x, p.y);
+            if (frame.isResizable()) {
+                w = getWidth() - (getWidth() / 3);
+                h = getHeight() - (getHeight() / 3);
+                if (w < frame.getMinimumSize().getWidth()) {
+                    w = (int) frame.getMinimumSize().getWidth();
+                }
+                if (h < frame.getMinimumSize().getHeight()) {
+                    h = (int) frame.getMinimumSize().getHeight();
+                }
+                frame.setSize(w, h);
             }
-            frame.setSize(w, h);
+            moveToFront(frame);
+            frame.setVisible(true);
+            try {
+                frame.setSelected(true);
+            } catch (PropertyVetoException e) {
+                frame.toBack();
+            }
+            return retval;
         }
-        moveToFront(frame);
-        frame.setVisible(true);
-        try {
-            frame.setSelected(true);
-        } catch (PropertyVetoException e) {
-            frame.toBack();
+        else{
+        	boolean isVisible = tempFrame.isVisible();
+        	if(isVisible){
+        		tempFrame.setVisible(false);
+        	}else{
+        		tempFrame.setVisible(true);
+        	}
         }
-        return retval;
+        
+        return null;
     }
 
     public void remove(Component c) {

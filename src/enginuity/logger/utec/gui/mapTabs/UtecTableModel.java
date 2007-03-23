@@ -6,13 +6,13 @@ public class UtecTableModel extends AbstractTableModel {
 
 	private String[] columnNames = new String[11];
 
-	private double[][] data = new double[11][40];
+	private Double[][] data = new Double[11][40];
 	
 	String test = "";
 	
 	private int identifier = 0;
 	
-	public UtecTableModel(int identifier, double[][] initialData) {
+	public UtecTableModel(int identifier, Double[][] initialData) {
 		this.identifier = identifier;
 		
 		this.data = initialData;
@@ -80,7 +80,7 @@ public class UtecTableModel extends AbstractTableModel {
 	}
 	
 	
-	public void replaceData(double[][] newData){
+	public void replaceData(Double[][] newData){
 		System.out.println("Model data being replaced in full.");
 		this.data = newData;
 		this.fireTableDataChanged();

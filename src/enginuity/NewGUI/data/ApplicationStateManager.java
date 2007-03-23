@@ -1,9 +1,11 @@
 package enginuity.NewGUI.data;
 
+import java.awt.Dimension;
 import java.util.Iterator;
 import java.util.Vector;
 
 import enginuity.NewGUI.NewGUI;
+import enginuity.NewGUI.etable.EInternalFrame;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
 
@@ -20,6 +22,8 @@ public class ApplicationStateManager {
 	private static int currentUserLevel = ApplicationStateManager.USER_LEVEL_1;
 	
 	private static NewGUI enginuityInstance = null;
+	
+	public static Vector<EInternalFrame> eInternalFrames = new Vector<EInternalFrame>();
 	
 	public static Vector<TuningEntity> getTuningEntities() {
 		return tuningEntities;
@@ -65,5 +69,36 @@ public class ApplicationStateManager {
 
 	public static void setEnginuityInstance(NewGUI enginuityInstance) {
 		ApplicationStateManager.enginuityInstance = enginuityInstance;
+	}
+	
+	public static EInternalFrame addEInternalFrame(Double[][] data, TableNodeMetaData tableMetaData){
+		Iterator frameIterator = ApplicationStateManager.getEInternalFrames().iterator();
+		EInternalFrame theFrame = null;
+		
+		boolean addFrameBoolean = true;
+		while(frameIterator.hasNext()){
+			theFrame = (EInternalFrame)frameIterator.next();
+			if(theFrame.getTableMetaData().getTableIdentifier() == tableMetaData.getTableIdentifier()){
+				System.out.println("Same frame opening again");
+				
+				theFrame.setVisible(true);
+				addFrameBoolean = false;
+			}
+		}
+		
+		if(addFrameBoolean){
+			theFrame = new EInternalFrame(tableMetaData, data, new Dimension(470, 450));
+				
+			ApplicationStateManager.eInternalFrames.add(theFrame);
+			
+		}else{
+			theFrame = null;
+		}
+		
+		return theFrame;
+	}
+	
+	public static Vector<EInternalFrame> getEInternalFrames(){
+		return ApplicationStateManager.eInternalFrames;
 	}
 }

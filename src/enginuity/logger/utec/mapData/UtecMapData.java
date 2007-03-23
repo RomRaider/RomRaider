@@ -11,9 +11,9 @@ import java.io.IOException;
 public class UtecMapData {
 	private StringBuffer rawMapData = new StringBuffer();
 
-	private double[][] fuelMap = new double[11][40];
-	private double[][] timingMap = new double[11][40];
-	private double[][] boostMap = new double[11][40];
+	private Double[][] fuelMap = new Double[11][40];
+	private Double[][] timingMap = new Double[11][40];
+	private Double[][] boostMap = new Double[11][40];
 
 	private String mapName = "";
 	private String mapComment = "";
@@ -442,27 +442,27 @@ public class UtecMapData {
 	// Misc getters and setters.
 	// *************************
 
-	public double[][] getBoostMap() {
+	public Double[][] getBoostMap() {
 		return boostMap;
 	}
 
-	public void setBoostMap(double[][] boostMap) {
+	public void setBoostMap(Double[][] boostMap) {
 		this.boostMap = boostMap;
 	}
 
-	public double[][] getFuelMap() {
+	public Double[][] getFuelMap() {
 		return fuelMap;
 	}
 
-	public void setFuelMap(double[][] fuelMap) {
+	public void setFuelMap(Double[][] fuelMap) {
 		this.fuelMap = fuelMap;
 	}
 
-	public double[][] getTimingMap() {
+	public Double[][] getTimingMap() {
 		return timingMap;
 	}
 
-	public void setTimingMap(double[][] timingMap) {
+	public void setTimingMap(Double[][] timingMap) {
 		this.timingMap = timingMap;
 	}
 
