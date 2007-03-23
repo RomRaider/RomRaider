@@ -71,7 +71,7 @@ public class ApplicationStateManager {
 		ApplicationStateManager.enginuityInstance = enginuityInstance;
 	}
 	
-	public static EInternalFrame addEInternalFrame(Double[][] data, TableNodeMetaData tableMetaData){
+	public static EInternalFrame addEInternalFrame(Double[][] data, TableMetaData tableMetaData){
 		Iterator frameIterator = ApplicationStateManager.getEInternalFrames().iterator();
 		EInternalFrame theFrame = null;
 		

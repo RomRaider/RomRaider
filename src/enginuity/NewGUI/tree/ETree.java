@@ -7,7 +7,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JTree;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.data.TableMetaData;
 import enginuity.swing.RomCellRenderer;
 
 public class ETree extends JTree implements MouseListener {
@@ -40,7 +40,7 @@ public class ETree extends JTree implements MouseListener {
 			ETreeNode theNode = (ETreeNode)selectedObject;
 			
 			// If this is a table that contains data, then open it in the right pane in an internal frame
-			if(theNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA1D || theNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA2D || theNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA3D){
+			if(theNode.getTableMetaData().getNodeType() == TableMetaData.DATA1D || theNode.getTableMetaData().getNodeType() == TableMetaData.DATA2D || theNode.getTableMetaData().getNodeType() == TableMetaData.DATA3D){
 				System.out.println("Table data");
 				Double[][] tableData = ApplicationStateManager.getCurrentTuningEntity().getTableData(theNode.getNodeName());
 				ApplicationStateManager.getEnginuityInstance().displayInternalFrameTable(tableData, theNode.getTableMetaData());

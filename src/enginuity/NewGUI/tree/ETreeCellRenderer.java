@@ -16,7 +16,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.data.TableMetaData;
 
 public class ETreeCellRenderer implements TreeCellRenderer{
 	
@@ -38,16 +38,16 @@ public class ETreeCellRenderer implements TreeCellRenderer{
             namedJPanel.setBackground(Color.WHITE);
     		
             // Define appropriate ICON to use for node
-    		if(eTreeNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA1D){
+    		if(eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA1D){
     			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/1d.gif"), JLabel.LEFT);
-    		}else if(eTreeNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA2D){
+    		}else if(eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA2D){
     			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/2d.gif"), JLabel.LEFT);
-    		}else if(eTreeNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA3D){
+    		}else if(eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA3D){
     			nodeName = new JLabel(eTreeNode.getNodeName() + " ", new ImageIcon("./graphics/3d.gif"), JLabel.LEFT);
     		}
     		
 
-    		if(eTreeNode.getTableMetaData().getNodeType() == TableNodeMetaData.CATEGORY){
+    		if(eTreeNode.getTableMetaData().getNodeType() == TableMetaData.CATEGORY){
     			
                 nodeName = new JLabel(eTreeNode.getNodeName(), JLabel.LEFT);
                 nodeName.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -67,7 +67,7 @@ public class ETreeCellRenderer implements TreeCellRenderer{
                 namedJPanel.setEnabled(tree.isEnabled());
                 returnValue = namedJPanel;
     			
-    		}else if(eTreeNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA3D || eTreeNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA2D || eTreeNode.getTableMetaData().getNodeType() == TableNodeMetaData.DATA1D){
+    		}else if(eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA3D || eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA2D || eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA1D){
     			
                 namedJPanel.add(nodeName);
                 nodeName.setFont(new Font("Tahoma", Font.PLAIN, 11));

@@ -17,7 +17,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.data.TableMetaData;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
 import enginuity.NewGUI.tree.ETreeNode;
@@ -167,7 +167,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		this.theTEL = theTEL;
 
 		// Initialise tree
-		ETreeNode root = new ETreeNode("UTEC: No map selected....", new TableNodeMetaData(TableNodeMetaData.CATEGORY,0.0,0.0,new Object[0],false,"","", this));
+		ETreeNode root = new ETreeNode("UTEC: No map selected....", new TableMetaData(TableMetaData.CATEGORY,0.0,0.0,new Object[0], null, null, false,"","", this));
 		
 		
 		// Inform main GUI of initial tree

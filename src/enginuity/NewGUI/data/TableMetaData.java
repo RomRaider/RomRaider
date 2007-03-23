@@ -2,7 +2,7 @@ package enginuity.NewGUI.data;
 
 import enginuity.NewGUI.interfaces.TuningEntity;
 
-public class TableNodeMetaData {
+public class TableMetaData {
 
 	public static final int DATA1D = 0;
 	public static final int DATA2D = 1;
@@ -14,6 +14,8 @@ public class TableNodeMetaData {
 	
 	private double maxValue;
 	private double minValue;
+	private String[] columnLabels;
+	private String[] rowLabels;
 	private Object[] ignoredValues;
 	private boolean isInvertedColoring;
 	private String tableName;
@@ -22,11 +24,13 @@ public class TableNodeMetaData {
 	private TuningEntity parentTuningEntity;
 	
 	
-	public TableNodeMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, boolean isInvertedColoring, String tableName, String tableIdentifier, TuningEntity parentTuningEntity) {
+	public TableMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, String[] columnLabels, String[] rowLabels, boolean isInvertedColoring, String tableName, String tableIdentifier, TuningEntity parentTuningEntity) {
 		this.dimensions = dimensions;
 		this.maxValue = maxValue;
 		this.minValue = minValue;
 		this.ignoredValues = ignoredValues;
+		this.columnLabels = columnLabels;
+		this.rowLabels = rowLabels;
 		this.isInvertedColoring = isInvertedColoring;
 		this.tableName = tableName;
 		this.tableIdentifier = tableIdentifier;
@@ -61,5 +65,17 @@ public class TableNodeMetaData {
 
 	public String getTableIdentifier() {
 		return tableIdentifier;
+	}
+
+	public String[] getColumnLabels() {
+		return columnLabels;
+	}
+
+	public String[] getRowLabels() {
+		return rowLabels;
+	}
+
+	public TuningEntity getParentTuningEntity() {
+		return parentTuningEntity;
 	}
 }

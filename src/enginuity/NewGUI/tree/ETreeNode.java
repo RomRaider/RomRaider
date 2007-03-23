@@ -2,16 +2,16 @@ package enginuity.NewGUI.tree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.data.TableMetaData;
 
 public class ETreeNode extends DefaultMutableTreeNode{
 	
 	private int userLevel = ApplicationStateManager.USER_LEVEL_1;
 	private String nodeName = "";
 	
-	private TableNodeMetaData tableMetaData = null;
+	private TableMetaData tableMetaData = null;
 	
-	public ETreeNode(String nodeName, TableNodeMetaData tableMetaData){
+	public ETreeNode(String nodeName, TableMetaData tableMetaData){
 		super(nodeName);
 		this.nodeName = nodeName;
 		this.tableMetaData = tableMetaData;
@@ -31,7 +31,7 @@ public class ETreeNode extends DefaultMutableTreeNode{
 	}
 
 
-	public TableNodeMetaData getTableMetaData() {
+	public TableMetaData getTableMetaData() {
 		return tableMetaData;
 	}
 }

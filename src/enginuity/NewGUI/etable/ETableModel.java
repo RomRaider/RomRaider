@@ -2,25 +2,25 @@ package enginuity.NewGUI.etable;
 
 import javax.swing.table.AbstractTableModel;
 
+import enginuity.NewGUI.data.TableMetaData;
+
 public class ETableModel extends AbstractTableModel {
 
 	private String[] columnNames = new String[11];
-
-	//private double[][] data = new double[11][40];
 	private Double[][] data = new Double[11][40];
-	String test = "";
+	private TableMetaData tableMetaData;
 	
-	private String tableName;
-	
-	public ETableModel(String tableName, Double[][] initialData) {
-		this.tableName = tableName;
-		
+	public ETableModel(TableMetaData metaData, Double[][] initialData) {
+		this.tableMetaData = metaData;
 		this.data = initialData;
 		
-		for (int i = 0; i < columnNames.length; i++) {
-			columnNames[i] = i + "";
+		if(metaData.getColumnLabels() == null){
+			for (int i = 0; i < columnNames.length; i++) {
+				columnNames[i] = i + "";
+			}
+		}else{
+			this.columnNames = metaData.getColumnLabels();
 		}
-		
 	}
 
 	public int getColumnCount() {

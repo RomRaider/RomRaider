@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.data.TableMetaData;
 import enginuity.NewGUI.etable.EInternalFrame;
 
 
@@ -33,7 +33,7 @@ public class EDesktopPane extends JDesktopPane{
         checkDesktopSize();
     }
 
-    public Component add(Double[][] data, TableNodeMetaData tableMetaData) {
+    public Component add(Double[][] data, TableMetaData tableMetaData) {
         JInternalFrame[] array = getAllFrames();
         Point p;
         int w;

@@ -29,7 +29,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
-import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.data.TableMetaData;
 import enginuity.maps.Table;
 
 public class ETableToolBar extends JToolBar implements MouseListener, ItemListener,ActionListener {
@@ -51,7 +51,7 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 
 	private ETable eTable;
 	
-	public ETableToolBar(TableNodeMetaData tableMetaData, ETable eTable) {
+	public ETableToolBar(TableMetaData tableMetaData, ETable eTable) {
 		this.eTable = eTable;
 		
 		this.setFloatable(false);
@@ -76,7 +76,7 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 		this.add(setValuePanel);
 
 		// Only add the 3d button if table includes 3d data
-		if (tableMetaData.getNodeType() == TableNodeMetaData.DATA3D) {
+		if (tableMetaData.getNodeType() == TableMetaData.DATA3D) {
 			this.add(enable3d);
 		}
 

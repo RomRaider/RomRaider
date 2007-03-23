@@ -1,13 +1,15 @@
 package enginuity.NewGUI.etable;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableColumnModel;
 
-import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.data.TableMetaData;
 
 public class ETable extends JTable{
 	public static final int INCREMENT = 0;
@@ -18,9 +20,12 @@ public class ETable extends JTable{
 	private ETableModel theModel;
 	private Vector tempSelectedCells = new Vector();
 	
-	ETable(TableNodeMetaData metaData, Double[][] data){
-		this.theModel = new ETableModel(metaData.getTableName(), data);
+	ETable(TableMetaData metaData, Double[][] data, TableColumnModel cm){
+		this.theModel = new ETableModel(metaData, data);
+		super.setColumnModel(cm);
 		super.setModel(this.theModel);
+		this.getTableHeader().setReorderingAllowed(false);
+		this.getTableHeader().setBackground(Color.BLACK);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		this.setCellSelectionEnabled(true);
 		this.setDefaultRenderer(Object.class, new ETableCellRenderer(metaData.getMinValue(), metaData.getMaxValue(), metaData.getIgnoredValues(), metaData.isInvertedColoring()));

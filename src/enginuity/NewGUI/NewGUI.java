@@ -3,6 +3,8 @@ package enginuity.NewGUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -31,7 +33,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableNodeMetaData;
+import enginuity.NewGUI.data.TableMetaData;
 import enginuity.NewGUI.desktop.EDesktopPane;
 import enginuity.NewGUI.etable.EInternalFrame;
 import enginuity.NewGUI.etable.ETable;
@@ -53,7 +55,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	private JSplitPane splitPane = new JSplitPane();
 	private EDesktopPane rightDesktopPane = new EDesktopPane();
 	
-	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableNodeMetaData(TableNodeMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],false,"", "", null));
+	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableMetaData(TableMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],null, null,false,"", "", null));
 	private ETree leftJTree = new ETree(rootNode);
 	
 	private NewGUI(){
@@ -82,6 +84,10 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	private void initGui(){
 		System.out.println("Initializing GUI.");
 		
+		// Set the frame icon
+		Image img = Toolkit.getDefaultToolkit().getImage("graphics/enginuity-ico.gif");
+		setIconImage( img );
+		
 		
 		// Set main JFrame size
 		this.setSize(800,600);
@@ -89,6 +95,10 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 		// Setup the look and feel
 		LookAndFeelManager.initLookAndFeel();
+		
+		
+		// Define window closed operation
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
 		// Setup JMenu
@@ -167,7 +177,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 	}
 
-	public void displayInternalFrameTable(Double[][] data, TableNodeMetaData tableMetaData){
+	public void displayInternalFrameTable(Double[][] data, TableMetaData tableMetaData){
 		this.rightDesktopPane.add(data, tableMetaData);
 	}
 	
