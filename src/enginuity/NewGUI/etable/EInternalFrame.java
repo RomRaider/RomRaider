@@ -26,6 +26,7 @@ import javax.swing.table.TableModel;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.tools.FitData;
 
 public class EInternalFrame extends JInternalFrame implements InternalFrameListener, ActionListener{
 	private Stack<ETableSaveState> savedData = new Stack<ETableSaveState>();

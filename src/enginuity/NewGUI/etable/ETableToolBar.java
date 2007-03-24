@@ -39,6 +39,7 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 	private JButton incrementCoarse = new JButton(new ImageIcon("./graphics/icon-inccoarse.png"));
 	private JButton decrementCoarse = new JButton(new ImageIcon("./graphics/icon-deccoarse.png"));
 	private JButton enable3d = new JButton(new ImageIcon("./graphics/3d_render.png"));
+	private JButton smooth = new JButton(new ImageIcon("./graphics/icon-smooth.png"));
 	private JButton setValue = new JButton("Set");
 	private JButton multiply = new JButton("Mul");
 	private JFormattedTextField incrementByFine = new JFormattedTextField(new DecimalFormat("#.####"));
@@ -80,6 +81,8 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 			this.add(enable3d);
 		}
 
+		this.add(smooth);
+		
 		// this.add(scaleSelection);
 		/*
 		if (table.isLiveDataSupported()) {
@@ -102,6 +105,8 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 				.setBorder(createLineBorder(new Color(150, 150, 150), 1));
 		enable3d.setPreferredSize(new Dimension(33, 33));
 		enable3d.setBorder(createLineBorder(new Color(150, 150, 150), 1));
+		smooth.setPreferredSize(new Dimension(33, 33));
+		smooth.setBorder(createLineBorder(new Color(150, 150, 150), 1));
 		setValue.setPreferredSize(new Dimension(33, 23));
 		setValue.setBorder(createLineBorder(new Color(150, 150, 150), 1));
 		multiply.setPreferredSize(new Dimension(33, 23));
@@ -126,6 +131,7 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 		incrementCoarse.setToolTipText("Increment Value (Coarse)");
 		decrementCoarse.setToolTipText("Decrement Value (Coarse)");
 		enable3d.setToolTipText("Render data in 3d");
+		smooth.setToolTipText("Smooth data");
 		setValue.setToolTipText("Set Absolute Value");
 		setValueText.setToolTipText("Set Absolute Value");
 		incrementByFine.setToolTipText("Fine Value Adjustment");
@@ -139,6 +145,7 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 		incrementCoarse.addMouseListener(this);
 		decrementCoarse.addMouseListener(this);
 		enable3d.addMouseListener(this);
+		smooth.addMouseListener(this);
 		setValue.addMouseListener(this);
 		multiply.addMouseListener(this);
 		scaleSelection.addItemListener(this);
@@ -197,6 +204,11 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 		 	else if (e.getSource() == enable3d) {
 	            // TODO Implement
 	        	System.out.println("Implement Enable 3d");
+	        } 
+		 	
+		 	else if (e.getSource() == smooth) {
+	        	System.out.println("Smoothing the data");
+	        	eTable.smoothData();
 	        } 
 		 	
 		 	else if (e.getSource() == incrementFine) {

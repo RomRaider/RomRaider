@@ -10,6 +10,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumnModel;
 
 import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.tools.FitData;
 
 public class ETable extends JTable{
 	public static final int INCREMENT = 0;
@@ -48,6 +49,11 @@ public class ETable extends JTable{
 		}
 	}
 	
+
+	public void smoothData(){
+		Double[][] newData = FitData.getFullSmooth(this.getTheModel().getData());
+		this.getTheModel().replaceData(newData);
+	}
 	
 	/**
 	 * Set a cell as being selected.
