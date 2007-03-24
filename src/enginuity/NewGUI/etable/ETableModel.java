@@ -69,14 +69,27 @@ public class ETableModel extends AbstractTableModel {
 	
 	
 	public void replaceData(Double[][] newData){
-		System.out.println("Model data being replaced in full.");
-		if(this.data == newData){
-			System.out.println("Same data");
-		}
-		
-		this.data = newData;
+		this.copyData(newData);
 		
 		this.fireTableDataChanged();
+		this.fireTableStructureChanged();
+	}
+	
+	/**
+	 * ARG Why????
+	 * 
+	 * @param data
+	 */
+	private void copyData(Double[][] data){
+		int width = data.length;
+		int height = data[0].length;
+		
+		for(int i = 0; i < width; i ++){
+			for(int j=0; j < height; j++){
+				double tempData = data[i][j];
+				this.data[i][j] = tempData;
+			}
+		}
 	}
 
 	public Double[][] getData() {

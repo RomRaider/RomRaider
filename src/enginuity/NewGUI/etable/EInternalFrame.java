@@ -136,12 +136,12 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	public void revertDataState(){
 		if(!this.savedData.isEmpty()){
 			if(this.savedData.size() > 1){
+				System.out.println("Saved data:"+this.savedData.size());
 				this.setTableData(this.savedData.pop().getData());
 			}else if(savedData.size() == 1){
+				System.out.println("Saved data:1");
 				this.setTableData(this.savedData.peek().getData());
 			}
-			
-			//this.setTableData(this.savedData.pop());
 		}
 	}
 	

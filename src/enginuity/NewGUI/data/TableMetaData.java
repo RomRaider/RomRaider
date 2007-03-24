@@ -38,7 +38,7 @@ public class TableMetaData {
 		this.tableGroup = tableGroup;
 		this.parentTuningEntity = parentTuningEntity;
 		
-		System.out.println("Min:"+this.minValue+ " Max:"+this.maxValue + " Name:"+this.tableName+ " Inv:"+this.isInvertedColoring);
+		// System.out.println("Min:"+this.minValue+ " Max:"+this.maxValue + " Name:"+this.tableName+ " Inv:"+this.isInvertedColoring);
 	}
 
 	public Object[] getIgnoredValues() {
