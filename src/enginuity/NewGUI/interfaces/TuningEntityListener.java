@@ -1,11 +1,8 @@
 package enginuity.NewGUI.interfaces;
 
-import java.util.Hashtable;
 import java.util.Vector;
-
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
-
 import enginuity.NewGUI.tree.ETreeNode;
 
 public interface TuningEntityListener {

@@ -108,16 +108,40 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 		this.add(scrollPane, BorderLayout.CENTER);
 		this.setSize(tableDimensions);
 		this.setVisible(true);
+		this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
 		this.addInternalFrameListener(this);
 	}
 	
 	public boolean dataChanged(){
-		if(this.eTable.getTheModel().getData() != this.savedData.get(savedData.size()-1).getData()){
+		//if(this.eTable.getTheModel().getData() != this.savedData.get(savedData.size()-1).getData()){
+		if(!compareMe(this.eTable.getTheModel().getData(), this.savedData.get(savedData.size()-1).getData())){
 			System.out.println("Data not the same.");
 			return true;
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Helper method to compare data in two arrays. Must be a better wat to do this.
+	 * .equals and == does not work for some reason.
+	 * @param data1
+	 * @param data2
+	 * @return
+	 */
+	private boolean compareMe(Double[][] data1, Double[][] data2){
+		int width = data1.length;
+		int height = data1[0].length;
+		
+		
+		for(int i = 0; i < width; i++){
+			for(int j = 0; j < height; j++){
+				if((data1[i][j] - data2[i][j]) != 0){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	public Double[][] getTableData(){
@@ -157,14 +181,14 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	}
 
 	public void internalFrameClosing(InternalFrameEvent arg0) {
-		System.out.println("Start to close frame.");
-		
+		System.out.println("EInternalframe Start to close frame.");
+		this.setVisible(false);
 		
 	}
 
 	public void internalFrameClosed(InternalFrameEvent arg0) {
-		System.out.println("Internal Frame closed, complete cleaning up");
-		ApplicationStateManager.getEnginuityInstance().removeInternalFrame(this);
+		System.out.println("EInternal Frame closed, complete cleaning up");
+		//ApplicationStateManager.getEnginuityInstance().removeInternalFrame(this);
 		
 	}
 

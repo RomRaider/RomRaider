@@ -84,6 +84,7 @@ public class EDesktopPane extends JDesktopPane{
         }
         else{
         	boolean isVisible = tempFrame.isVisible();
+        	// Toggle the visibility of the frame
         	if(isVisible){
         		tempFrame.setVisible(false);
         	}else{

@@ -85,6 +85,8 @@ public class ETableModel extends AbstractTableModel {
 	/**
 	 * ARG Why????
 	 * 
+	 * Seem to be getting some pass by refence issues.
+	 * 
 	 * @param data
 	 */
 	private void copyData(Double[][] data){
