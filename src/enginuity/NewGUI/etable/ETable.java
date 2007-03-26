@@ -50,11 +50,6 @@ public class ETable extends JTable{
 		}
 	}
 	
-
-	public void smoothEntireTableData(){
-		Double[][] newData = FitData.getFullSmooth(this.getTheModel().getData());
-		this.getTheModel().replaceData(newData);
-	}
 	
 	/**
 	 * Set a cell as being selected.

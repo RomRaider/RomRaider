@@ -1,5 +1,7 @@
 package enginuity.NewGUI.etable;
 
+import java.text.DecimalFormat;
+
 import javax.swing.table.AbstractTableModel;
 
 import enginuity.NewGUI.data.TableMetaData;
@@ -9,6 +11,7 @@ public class ETableModel extends AbstractTableModel {
 	private String[] columnNames = new String[11];
 	private Double[][] data = new Double[11][40];
 	private TableMetaData tableMetaData;
+	private DecimalFormat formatter = new DecimalFormat( "#.0" );
 	
 	public ETableModel(TableMetaData metaData, Double[][] initialData) {
 		this.tableMetaData = metaData;
@@ -51,24 +54,28 @@ public class ETableModel extends AbstractTableModel {
         
         if(value instanceof String){
         	 try{
-             	temp = Double.parseDouble((String)value);
+        		String tempString = formatter.format(value);
+             	temp = Double.parseDouble(tempString);
              }catch (NumberFormatException e) {
              	System.out.println("Not a valid number entered.");
              }
              data[col][row] = temp;
         }else if(value instanceof Double){
-        	data[col][row] = (Double)value;
+        	String tempString = formatter.format(value);
+        	data[col][row] = Double.parseDouble(tempString);
         }
        
         this.fireTableDataChanged();
     }
 	
 	public void setDoubleData(int row, int col, double value){
-		this.data[col][row] = value;
+		String tempString = formatter.format(value);
+		this.data[col][row] = Double.parseDouble(tempString);
 	}
 	
 	
 	public void replaceData(Double[][] newData){
+		
 		this.copyData(newData);
 		
 		this.fireTableDataChanged();
@@ -87,7 +94,8 @@ public class ETableModel extends AbstractTableModel {
 		for(int i = 0; i < width; i ++){
 			for(int j=0; j < height; j++){
 				double tempData = data[i][j];
-				this.data[i][j] = tempData;
+				String tempString = formatter.format(tempData);
+				this.data[i][j] = Double.parseDouble(tempString);
 			}
 		}
 	}

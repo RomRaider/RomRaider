@@ -1,5 +1,7 @@
 package enginuity.NewGUI.data;
 
+import java.text.DecimalFormat;
+
 import enginuity.NewGUI.interfaces.TuningEntity;
 
 public class TableMetaData {
@@ -23,7 +25,7 @@ public class TableMetaData {
 	private String tableGroup;
 	private int dimensions;
 	private TuningEntity parentTuningEntity;
-	
+	private DecimalFormat formatter = new DecimalFormat( "#.0" );
 	
 	public TableMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, String[] columnLabels, String[] rowLabels, boolean isInvertedColoring, String tableName, String tableIdentifier, String tableGroup, TuningEntity parentTuningEntity) {
 		this.dimensions = dimensions;
@@ -83,5 +85,16 @@ public class TableMetaData {
 
 	public String getTableGroup() {
 		return tableGroup;
+	}
+
+	
+	// Getters and setters for not so commonly used items, not included in constructor
+	
+	public DecimalFormat getFormatter() {
+		return formatter;
+	}
+
+	public void setFormatter(DecimalFormat formatter) {
+		this.formatter = formatter;
 	}
 }

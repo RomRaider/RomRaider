@@ -2,6 +2,7 @@ package enginuity.NewGUI.etable;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.text.DecimalFormat;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -14,6 +15,7 @@ public class ETableCellRenderer extends DefaultTableCellRenderer{
 	private double max;
 	private Object[] ignoredValues;
 	private boolean isInvertedColoring;
+	
 	
 	public ETableCellRenderer(double min, double max, Object[] ignoredValues, boolean isInvertedColoring){
 		this.min = min;
