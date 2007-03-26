@@ -61,6 +61,8 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableMetaData(TableMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],null, null,false,"", "", "", null));
 	private ETree leftJTree = new ETree(rootNode);
 	
+	private boolean newTree = true;
+	
 	private NewGUI(){
 		// Define which tuning entities are available
 		initData();
@@ -150,13 +152,6 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		}
 	}
 	
-	private void rebuildJTree(ETreeNode treeRootNode){
-		this.rootNode.removeAllChildren();
-		this.rootNode.add(treeRootNode);
-		this.leftJTree.updateUI();
-		this.splitPane.repaint();
-	}
-	
 
 	public void rebuildJMenuBar(Vector<JMenu> items) {
 		Iterator iterator = items.iterator();
@@ -179,9 +174,40 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 	}
 
-	public void TreeStructureChanged(ETreeNode newTreeModel) {
-		this.rebuildJTree(newTreeModel);
+	/**
+	 * Tuning group is a collection of maps and parameters, ala a ROM or a UTEC Map file
+	 * 
+	 */
+	public void addNewTuningGroup(ETreeNode newTreeModel) {
+		System.out.println("test: "+this.newTree);
 		
+		int childCount = this.rootNode.getChildCount();
+		String newTuningGroup = newTreeModel.getTableMetaData().getTableGroup();
+		
+		System.out.println("Children:"+childCount +"  :"+newTuningGroup);
+		for(int i = 0; i < childCount; i++){
+			ETreeNode tempNode = (ETreeNode)this.rootNode.getChildAt(i);
+			if(tempNode.getTableMetaData().getTableGroup().equals(newTuningGroup)){
+				System.out.println("Can't open same ROM / Map file 2x");
+				
+				return;
+			}
+		}
+		
+		
+		if(this.newTree == true){
+			System.out.println(" newtree");
+			this.newTree = false;
+			this.rootNode.removeAllChildren();
+		}
+		
+		this.rootNode.add(newTreeModel);
+		
+
+		
+		
+		this.leftJTree.updateUI();
+		this.splitPane.repaint();
 	}
 
 	public void displayInternalFrameTable(Double[][] data, TableMetaData tableMetaData){

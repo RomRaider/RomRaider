@@ -32,6 +32,13 @@ public class UtecDataManager {
 	
 	private static int lineCounter = 0;
 	
+	private static Vector<UtecMapData> allMaps = new Vector<UtecMapData>();
+	
+	public static void addMap(UtecMapData newUtecMap){
+		allMaps.add(newUtecMap);
+		setCurrentMap(newUtecMap);
+	}
+	
 	public static void setCurrentMap(UtecMapData newUtecMap){
 		currentMapData = newUtecMap;
 		
@@ -256,5 +263,9 @@ public class UtecDataManager {
 
 	public static void setExpectingMap(boolean isExpectingMap) {
 		UtecDataManager.isExpectingMap = isExpectingMap;
+	}
+
+	public static Vector<UtecMapData> getAllMaps() {
+		return allMaps;
 	}
 }

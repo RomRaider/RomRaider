@@ -51,7 +51,7 @@ public class EDesktopPane extends JDesktopPane{
     	}
         
         if(addFrame){
-        	EInternalFrame frame = new EInternalFrame(tableMetaData, data, new Dimension(470, 450));
+        	EInternalFrame frame = new EInternalFrame(tableMetaData, data, new Dimension(800, 600));
         	Component retval = super.add(frame);
             checkDesktopSize();
             if (array.length > 0) {

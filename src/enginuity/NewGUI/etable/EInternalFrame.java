@@ -155,16 +155,13 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	
 	public void saveDataState(){
 		this.savedData.push(new ETableSaveState(this.getTableData()));
-		//this.savedData.push(this.getTableData());
 	}
 	
 	public void revertDataState(){
 		if(!this.savedData.isEmpty()){
 			if(this.savedData.size() > 1){
-				System.out.println("Saved data:"+this.savedData.size());
 				this.setTableData(this.savedData.pop().getData());
 			}else if(savedData.size() == 1){
-				System.out.println("Saved data:1");
 				this.setTableData(this.savedData.peek().getData());
 			}
 		}
@@ -181,15 +178,11 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	}
 
 	public void internalFrameClosing(InternalFrameEvent arg0) {
-		System.out.println("EInternalframe Start to close frame.");
 		this.setVisible(false);
 		
 	}
 
 	public void internalFrameClosed(InternalFrameEvent arg0) {
-		System.out.println("EInternal Frame closed, complete cleaning up");
-		//ApplicationStateManager.getEnginuityInstance().removeInternalFrame(this);
-		
 	}
 
 	public void internalFrameIconified(InternalFrameEvent arg0) {

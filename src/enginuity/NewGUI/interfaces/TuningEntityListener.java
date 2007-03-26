@@ -12,7 +12,7 @@ public interface TuningEntityListener {
 	 * 
 	 * @param rootNodeOfNewTree
 	 */
-	public void TreeStructureChanged(ETreeNode rootNodeOfNewTree);
+	public void addNewTuningGroup(ETreeNode rootNodeOfNewTree);
 	
 	/**
 	 * Prepends list of menu items to the menu bae

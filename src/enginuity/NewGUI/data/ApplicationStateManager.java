@@ -1,11 +1,9 @@
 package enginuity.NewGUI.data;
 
-import java.awt.Dimension;
 import java.util.Iterator;
 import java.util.Vector;
 
 import enginuity.NewGUI.NewGUI;
-import enginuity.NewGUI.etable.EInternalFrame;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
 

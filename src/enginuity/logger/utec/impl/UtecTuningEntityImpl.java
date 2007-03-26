@@ -144,21 +144,32 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		jMenuItems.add(portsMenu);
 	}
 	
-	public Double[][] getTableData(String tableName) {
-		Double[][] data;
+	public Double[][] getTableData(String tableIdentifier) {
+		System.out.println("UTEC Impl tablename:"+tableIdentifier);
+		Double[][] data = null;
 		
 		if(UtecDataManager.getCurrentMapData() == null){
+			System.out.println("UTEC Impl Current map data is null");
 			return new Double[0][0];
 		}
 		
-		if(tableName == "Fuel"){
-			data = UtecDataManager.getCurrentMapData().getFuelMap();
-		}else if(tableName == "Timing"){
-			data = UtecDataManager.getCurrentMapData().getTimingMap();
-		}else if(tableName == "Boost"){
-			data = UtecDataManager.getCurrentMapData().getBoostMap();
-		}else{
-			data = new Double[0][0];
+		Iterator mapIterator = UtecDataManager.getAllMaps().iterator();
+		while(mapIterator.hasNext()){
+			UtecMapData newMapData = (UtecMapData)mapIterator.next();
+			String mapName = newMapData.getMapName();
+			
+			if(tableIdentifier.equals("Fuel:"+mapName)){
+				data = newMapData.getFuelMap();
+			}
+			else if(tableIdentifier.equals("Timing:"+mapName)){
+				data = newMapData.getTimingMap();
+			}
+			else if(tableIdentifier.equals("Boost:"+mapName)){
+				data = newMapData.getBoostMap();
+			}else{
+				data = new Double[0][0];
+			}
+			
 		}
 		return data;
 	}
@@ -167,11 +178,11 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		this.theTEL = theTEL;
 
 		// Initialise tree
-		ETreeNode root = new ETreeNode("UTEC: No map selected....", new TableMetaData(TableMetaData.CATEGORY,0.0,0.0,new Object[0], null, null, false,"","","", this));
+		// ETreeNode root = new ETreeNode("UTEC: No map selected....", new TableMetaData(TableMetaData.CATEGORY,0.0,0.0,new Object[0], null, null, false,"","","", this));
 		
 		
 		// Inform main GUI of initial tree
-		this.theTEL.TreeStructureChanged(root);
+		//this.theTEL.addNewTuningGroup(root);
 	}
 
 	public String getName() {
