@@ -216,8 +216,9 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 	}
 	
-	public void saveMaps(TuningEntity tuningEntity, String tableGroup){
+	public void saveMaps(){
 		JInternalFrame[] allFrames = this.rightDesktopPane.getAllFrames();
+		String tableGroup = ApplicationStateManager.getSelectedTuningGroup();
 		
 		for(int i = 0 ; i < allFrames.length; i++){
 			EInternalFrame eInternalFrame = (EInternalFrame)allFrames[i];

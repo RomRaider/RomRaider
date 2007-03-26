@@ -23,6 +23,8 @@ public class ApplicationStateManager {
 	
 	private static NewGUI enginuityInstance = null;
 	
+	private static String selectedTuningGroup = "";
+	
 	
 	public static Vector<TuningEntity> getTuningEntities() {
 		return tuningEntities;
@@ -68,5 +70,13 @@ public class ApplicationStateManager {
 
 	public static void setEnginuityInstance(NewGUI enginuityInstance) {
 		ApplicationStateManager.enginuityInstance = enginuityInstance;
+	}
+
+	public static String getSelectedTuningGroup() {
+		return selectedTuningGroup;
+	}
+
+	public static void setSelectedTuningGroup(String selectedTuningGroup) {
+		ApplicationStateManager.selectedTuningGroup = selectedTuningGroup;
 	}
 }

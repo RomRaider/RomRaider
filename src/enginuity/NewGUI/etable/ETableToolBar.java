@@ -78,7 +78,7 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 
 		// Only add the 3d button if table includes 3d data
 		if (tableMetaData.getNodeType() == TableMetaData.DATA3D) {
-			this.add(enable3d);
+			//this.add(enable3d);
 		}
 
 		this.add(smooth);

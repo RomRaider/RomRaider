@@ -43,9 +43,6 @@ public interface TuningEntityListener {
 	/**
 	 * Has the main GUI kick off the process of saving table data.
 	 * 
-	 * @param tuningEntity
-	 * @param tableGroup
-	 * @param tableIdentifier
 	 */
-	public void saveMaps(TuningEntity tuningEntity, String tableGroup);
+	public void saveMaps();
 }

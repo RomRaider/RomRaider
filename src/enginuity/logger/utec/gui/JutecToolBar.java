@@ -122,6 +122,8 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
                 int count = this.theTEL.getMapChangeCount(this.parentTuningEntity, UtecDataManager.getCurrentMapData().getMapName());
                 System.out.println("Count =:"+count);
                 
+                this.theTEL.saveMaps();
+                
             } catch (Exception ex) {
                // JOptionPane.showMessageDialog(parent, new DebugPanel(ex,parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }

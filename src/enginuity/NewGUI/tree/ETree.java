@@ -39,6 +39,11 @@ public class ETree extends JTree implements MouseListener {
 		if(selectedObject instanceof ETreeNode){
 			ETreeNode theNode = (ETreeNode)selectedObject;
 			
+			String tableGroup = theNode.getTableMetaData().getTableGroup();
+			if(tableGroup != null && tableGroup != ""){
+				ApplicationStateManager.setSelectedTuningGroup(tableGroup);
+			}
+			
 			// If this is a table that contains data, then open it in the right pane in an internal frame
 			if(theNode.getTableMetaData().getNodeType() == TableMetaData.DATA1D || theNode.getTableMetaData().getNodeType() == TableMetaData.DATA2D || theNode.getTableMetaData().getNodeType() == TableMetaData.DATA3D){
 				System.out.println("Table data");

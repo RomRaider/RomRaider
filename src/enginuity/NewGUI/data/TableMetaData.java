@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import enginuity.NewGUI.interfaces.TuningEntity;
 
 public class TableMetaData {
-
+	// Type of node
 	public static final int DATA1D = 0;
 	public static final int DATA2D = 1;
 	public static final int DATA3D = 3;
@@ -13,7 +13,7 @@ public class TableMetaData {
 	public static final int RESERVED_ROOT = 5;
 	
 	
-	
+	// Constructor set values
 	private double maxValue;
 	private double minValue;
 	private String[] columnLabels;
@@ -25,6 +25,8 @@ public class TableMetaData {
 	private String tableGroup;
 	private int dimensions;
 	private TuningEntity parentTuningEntity;
+	
+	// Setter set values
 	private DecimalFormat formatter = new DecimalFormat( "#.0" );
 	
 	public TableMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, String[] columnLabels, String[] rowLabels, boolean isInvertedColoring, String tableName, String tableIdentifier, String tableGroup, TuningEntity parentTuningEntity) {
@@ -38,9 +40,7 @@ public class TableMetaData {
 		this.tableName = tableName;
 		this.tableIdentifier = tableIdentifier;
 		this.tableGroup = tableGroup;
-		this.parentTuningEntity = parentTuningEntity;
-		
-		// System.out.println("Min:"+this.minValue+ " Max:"+this.maxValue + " Name:"+this.tableName+ " Inv:"+this.isInvertedColoring);
+		this.parentTuningEntity = parentTuningEntity;	
 	}
 
 	public Object[] getIgnoredValues() {

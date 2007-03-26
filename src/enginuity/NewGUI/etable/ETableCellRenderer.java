@@ -22,6 +22,7 @@ public class ETableCellRenderer extends DefaultTableCellRenderer{
 		this.max = max;
 		this.ignoredValues = ignoredValues;
 		this.isInvertedColoring = isInvertedColoring;
+		this.setHorizontalAlignment( CENTER );
 	}
 	
 	/**
