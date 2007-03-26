@@ -17,6 +17,7 @@ public class ETable extends JTable{
 	public static final int DECREMENT = 1;
 	public static final int MULTIPLY = 2;
 	public static final int SET = 3;
+	public static final int SMOOTH = 4;
 	
 	private ETableModel theModel;
 	private Vector tempSelectedCells = new Vector();
@@ -50,7 +51,7 @@ public class ETable extends JTable{
 	}
 	
 
-	public void smoothData(){
+	public void smoothEntireTableData(){
 		Double[][] newData = FitData.getFullSmooth(this.getTheModel().getData());
 		this.getTheModel().replaceData(newData);
 	}
@@ -87,6 +88,37 @@ public class ETable extends JTable{
 		int colStart = this.getSelectedColumn();
 		int colEnd = this.getColumnModel().getSelectionModel().getMaxSelectionIndex();
 		
+		Double[][] tempSelectionData = new Double[colEnd - colStart+1][rowEnd - rowStart+1];
+		Double[][] smoothData = new Double[colEnd - colStart+1][rowEnd - rowStart+1];
+		
+		
+		// Get smoothed data from selection
+		if(type == ETable.SMOOTH){
+			
+			if(!((colEnd - colStart + 1) > 1 && (rowEnd - rowStart) > 1)){
+				return;
+			}
+			
+			
+			for(int i = rowStart; i <= rowEnd; i++){
+				for(int j = colStart; j <= colEnd; j++){
+					if(this.isCellSelected(i,j)){
+						// The cell is selected
+						Object value = theModel.getValueAt(i, j);
+						
+						if(value instanceof Double){
+							tempSelectionData[j - colStart][i - rowStart] = (Double)value;
+						}
+					}
+				}
+			}
+			
+			// Smooth the data
+			smoothData = FitData.getFullSmooth(tempSelectionData);
+		}
+		
+		
+		
 		int counter = 0;
 		for(int i = rowStart; i <= rowEnd; i++){
 			for(int j = colStart; j <= colEnd; j++){
@@ -112,6 +144,10 @@ public class ETable extends JTable{
 						
 						else if(type == ETable.SET){
 							 temp = amount;
+						}
+						
+						else if(type == ETable.SMOOTH){
+							temp = smoothData[j - colStart][i - rowStart];
 						}
 						
 						//theModel.setValueAt(temp, i, j);

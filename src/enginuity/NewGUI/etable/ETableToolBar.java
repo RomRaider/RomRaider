@@ -207,8 +207,7 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 	        } 
 		 	
 		 	else if (e.getSource() == smooth) {
-	        	System.out.println("Smoothing the data");
-	        	eTable.smoothData();
+		 		eTable.changeSelectedCells(0.0, ETable.SMOOTH);
 	        } 
 		 	
 		 	else if (e.getSource() == incrementFine) {
