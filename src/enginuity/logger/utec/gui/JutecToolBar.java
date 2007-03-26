@@ -42,7 +42,7 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
         this.add(openImage);
         this.add(saveImage);
         this.add(closeImage);
-        this.add(refreshImage);
+        //this.add(refreshImage);
 
         openImage.setMaximumSize(new Dimension(58, 50));
         openImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
@@ -58,20 +58,28 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
         closeImage.addActionListener(this);
         refreshImage.addActionListener(this);
         
+        // Set tool tips
+
+        openImage.setToolTipText("Open Utec Map");
+        saveImage.setToolTipText("Save Utec Map");
+        //refreshImage.setToolTipText("Refresh " + file + " from saved copy");
+        closeImage.setToolTipText("Close Utec Map");
+        
+        
         // Set initial button state
         this.openImage.setEnabled(true);
         this.saveImage.setEnabled(false);
-        this.refreshImage.setEnabled(false);
+        //this.refreshImage.setEnabled(false);
         this.closeImage.setEnabled(false);
     }
 
     public void updateButtons() {
         String file = "";//getLastSelectedRomFileName();
 
-        openImage.setToolTipText("Open Image");
-        saveImage.setToolTipText("Save " + file);
-        refreshImage.setToolTipText("Refresh " + file + " from saved copy");
-        closeImage.setToolTipText("Close " + file);
+        openImage.setToolTipText("Open Utec Map");
+        saveImage.setToolTipText("Save Utec Map");
+        //refreshImage.setToolTipText("Refresh " + file + " from saved copy");
+        closeImage.setToolTipText("Close Utec Map");
 
     }
 
@@ -121,7 +129,11 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
         } else if (e.getSource() == saveImage) {
             try {
             	int count = this.theTEL.getMapChangeCount(this.parentTuningEntity, UtecDataManager.getCurrentMapData().getMapName());
-                this.theTEL.saveMaps();
+                System.out.println("Maps Changed:"+count);
+                if(count > 0){
+                	this.theTEL.saveMaps();
+                }
+            	
                 
             } catch (Exception ex) {
                // JOptionPane.showMessageDialog(parent, new DebugPanel(ex,parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
