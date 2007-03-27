@@ -38,7 +38,8 @@ public class ETree extends JTree implements MouseListener {
 		
 		if(selectedObject instanceof ETreeNode){
 			ETreeNode theNode = (ETreeNode)selectedObject;
-			
+			String title = ApplicationStateManager.getEnginuityInstance().getEngninuityTitle();
+			ApplicationStateManager.getEnginuityInstance().setTitle(title+": "+theNode.getTableMetaData().getTableGroup());
 			String tableGroup = theNode.getTableMetaData().getTableGroup();
 			if(tableGroup != null && tableGroup != ""){
 				ApplicationStateManager.setSelectedTuningGroup(tableGroup);
@@ -49,7 +50,6 @@ public class ETree extends JTree implements MouseListener {
 				System.out.println("ETree Table data:"+theNode.getTableMetaData().getTableIdentifier());
 				Double[][] tableData = ApplicationStateManager.getCurrentTuningEntity().getTableData(theNode.getTableMetaData().getTableIdentifier());
 				System.out.println("ETree size:"+tableData.length);
-				
 				ApplicationStateManager.getEnginuityInstance().displayInternalFrameTable(tableData, theNode.getTableMetaData());
 			}
 			

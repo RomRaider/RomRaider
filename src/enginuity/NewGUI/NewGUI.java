@@ -48,7 +48,7 @@ import enginuity.swing.LookAndFeelManager;
 
 public class NewGUI extends JFrame implements ActionListener, TreeSelectionListener, TuningEntityListener{
 	
-	private String version = "v0.5.0 alpha 1";
+	private String engninuityTitle = "Enginuity v0.5.0 alpha 1";
 	
 	private JPanel mainJPanel = new JPanel();
 	
@@ -95,7 +95,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 		
 		// Set frame title
-		this.setTitle("Enginuity "+this.version);
+		this.setTitle(this.engninuityTitle);
 		
 		
 		// Set main JFrame size
@@ -254,6 +254,10 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 				}
 			}
 		}
+	}
+
+	public String getEngninuityTitle() {
+		return engninuityTitle;
 	}
 
 }

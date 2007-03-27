@@ -146,6 +146,14 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
                 	this.theTEL.saveMaps();
                 }
             	
+                // Kick off the saving file to disk
+            	System.out.println("Saving map to file.");
+            	String saveFileName = null;
+				fileChosen = fileChooser.showSaveDialog(null);
+				if (fileChosen == JFileChooser.APPROVE_OPTION) {
+					saveFileName = fileChooser.getSelectedFile().getPath();
+					mapData.writeMapToFile(saveFileName);
+				}
                 
             } catch (Exception ex) {
                // JOptionPane.showMessageDialog(parent, new DebugPanel(ex,parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
