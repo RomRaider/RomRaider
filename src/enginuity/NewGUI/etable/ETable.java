@@ -21,11 +21,13 @@ public class ETable extends JTable{
 	
 	private ETableModel theModel;
 	private Vector tempSelectedCells = new Vector();
+	private TableMetaData tableMetaData;
 	
 	ETable(TableMetaData metaData, Double[][] data, TableColumnModel cm){
 		this.theModel = new ETableModel(metaData, data);
 		super.setColumnModel(cm);
 		super.setModel(this.theModel);
+		this.tableMetaData = metaData;
 		this.getTableHeader().setReorderingAllowed(false);
 		this.getTableHeader().setBackground(Color.BLACK);
 		this.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -218,5 +220,9 @@ public class ETable extends JTable{
 		public int getY(){
 			return this.y;
 		}
+	}
+
+	public TableMetaData getTableMetaData() {
+		return tableMetaData;
 	}
 }

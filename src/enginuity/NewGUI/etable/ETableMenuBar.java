@@ -1,5 +1,8 @@
 package enginuity.NewGUI.etable;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -7,6 +10,7 @@ import java.beans.PropertyVetoException;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 public class ETableMenuBar extends JMenuBar implements ActionListener{
 
@@ -18,13 +22,14 @@ public class ETableMenuBar extends JMenuBar implements ActionListener{
 	
 	
 	private JMenu editMenu = new JMenu("Edit");
+	private JMenuItem copyTable = new JMenuItem("Copy Table");
+	private JMenuItem copySelection = new JMenuItem("Copy Selection");
+	private JMenuItem paste = new JMenuItem("Paste Table Data");
 	
-	
-	
-	private EInternalFrame parentFrame;
+	private EInternalFrame parentEInternalFrame;
 	
 	public ETableMenuBar(EInternalFrame parentFrame){
-		this.parentFrame = parentFrame;
+		this.parentEInternalFrame = parentFrame;
 		
 		// Setup the GUI below
 		
@@ -39,25 +44,49 @@ public class ETableMenuBar extends JMenuBar implements ActionListener{
 		
 		
 		// Edit Menu
+		this.copySelection.addActionListener(this);
+		this.copyTable.addActionListener(this);
+		this.paste.addActionListener(this);
+		this.editMenu.add(this.copySelection);
+		this.editMenu.add(this.copyTable);
+		this.editMenu.addSeparator();
+		this.editMenu.add(this.paste);
 		this.add(this.editMenu);
 		
 	}
+	
+	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == this.saveItem){
-			this.parentFrame.saveDataState();
+			this.parentEInternalFrame.saveDataState();
 		}
 		
 		else if(e.getSource() == this.undoItem){
-			this.parentFrame.revertDataState();
+			this.parentEInternalFrame.revertDataState();
 		}
 		
 		else if(e.getSource() == this.closeItem){
 			try {
-				this.parentFrame.setClosed(true);
+				this.parentEInternalFrame.setClosed(true);
 			} catch (PropertyVetoException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		}
+		
+
+		else if(e.getSource() == this.copySelection){
+			this.parentEInternalFrame.getExcelCopy().copySelectedTableData();
+		}
+		
+
+		else if(e.getSource() == this.copyTable){
+			this.parentEInternalFrame.getExcelCopy().copyEntireTable();
+		}
+		
+
+		else if(e.getSource() == this.paste){
+			this.parentEInternalFrame.getExcelCopy().pasteTableData();
 		}
 	}
 

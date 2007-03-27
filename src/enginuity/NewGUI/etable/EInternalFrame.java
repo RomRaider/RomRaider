@@ -34,7 +34,8 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	
 	private ETable eTable;
 	private TableMetaData tableMetaData;
-
+	private ClipBoardCopy excelCopy;
+	
 	public EInternalFrame(TableMetaData tableMetaData, Double[][] data, Dimension tableDimensions){
 		super(tableMetaData.getTableName()+"   "+tableMetaData.getTableGroup(), true, true, true, true);
 		this.tableMetaData = tableMetaData;
@@ -75,7 +76,7 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 		TableModel tableModel = new ETableRowLabel(data[0].length, tableMetaData.getRowLabels());
 		eTable = new ETable(tableMetaData, data, columnModel);
 		eTable.setBackground(Color.LIGHT_GRAY);
-		ClipBoardCopy excelCopy = new ClipBoardCopy(eTable);
+		excelCopy = new ClipBoardCopy(eTable);
 		
 		JTable headerColumn = new JTable(tableModel, rowHeaderModel);
 		eTable.createDefaultColumnsFromModel();
@@ -213,5 +214,13 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 
 	public TableMetaData getTableMetaData() {
 		return tableMetaData;
+	}
+
+	public ETable getETable() {
+		return eTable;
+	}
+
+	public ClipBoardCopy getExcelCopy() {
+		return excelCopy;
 	}
 }
