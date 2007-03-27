@@ -36,7 +36,7 @@ public class UtecDataManager {
 	
 	public static void addMap(UtecMapData newUtecMap){
 		allMaps.add(newUtecMap);
-		setCurrentMap(newUtecMap);
+		//setCurrentMap(newUtecMap);
 	}
 	
 	public static void setCurrentMap(UtecMapData newUtecMap){
@@ -82,7 +82,7 @@ public class UtecDataManager {
 				UtecMapData newMap = new UtecMapData();
 				newMap.replaceRawData(new StringBuffer(rawMapData));
 				newMap.populateMapDataStructures();
-				setCurrentMap(newMap);
+				// setCurrentMap(newMap);
 				rawMapData = "";
 				setExpectingMap(false);
 			}

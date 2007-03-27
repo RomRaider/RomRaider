@@ -145,10 +145,10 @@ public class UtecTuningEntityImpl implements TuningEntity{
 	}
 	
 	public Double[][] getTableData(String tableIdentifier) {
-		System.out.println("UTEC Impl tablename:"+tableIdentifier);
+		System.out.println("UTEC getTableData Impl tablename:"+tableIdentifier);
 		Double[][] data = null;
 		
-		if(UtecDataManager.getCurrentMapData() == null){
+		if(UtecDataManager.getAllMaps().size() == 0){
 			System.out.println("UTEC Impl Current map data is null");
 			return new Double[0][0];
 		}
@@ -159,14 +159,22 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			String mapName = newMapData.getMapName();
 			
 			if(tableIdentifier.equals("Fuel:"+mapName)){
+				System.out.println("UTE Fuel");
 				data = newMapData.getFuelMap();
+				System.out.println("Fuel size:"+data.length);
+				return data;
 			}
 			else if(tableIdentifier.equals("Timing:"+mapName)){
+				System.out.println("UTE Timing");
 				data = newMapData.getTimingMap();
+				return data;
 			}
 			else if(tableIdentifier.equals("Boost:"+mapName)){
+				System.out.println("UTE Boost");
 				data = newMapData.getBoostMap();
+				return data;
 			}else{
+				System.out.println("UTE returning empty data");
 				data = new Double[0][0];
 			}
 			
@@ -238,6 +246,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			}
 
 			else if (cmd.equals("Save Map To File")) {
+				/*
 				System.out.println("Saving map to file.");
 				if (UtecDataManager.getCurrentMapData() != null) {
 
@@ -252,6 +261,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 				} else {
 					System.out.println("Map is null.");
 				}
+				*/
 			}
 
 			else if (cmd.equals("Load Map #1")) {
@@ -349,6 +359,28 @@ public class UtecTuningEntityImpl implements TuningEntity{
 	}
 
 	public void setTableData(String tableIdentifier, Double[][] data) {
-		System.out.println("utec save data requested");
+		System.out.println("utec save data requested:"+tableIdentifier);
+		
+		Iterator mapIterate = UtecDataManager.getAllMaps().iterator();
+		while(mapIterate.hasNext()){
+			UtecMapData mapData = (UtecMapData)mapIterate.next();
+			String[] split = tableIdentifier.split(":");
+			String mapType = split[0];
+			String tableName = split[1];
+			if(mapData.getMapName().equals(tableName)){
+				if(mapType.equals("Fuel")){
+					System.out.println("UTE: Fuel");
+					mapData.setFuelMap(data);
+				}
+				else if(mapType.equals("Boost")){
+					System.out.println("UTE: Boost");
+					mapData.setBoostMap(data);
+				}
+				else if(mapType.equals("Timing")){
+					System.out.println("UTE: Timing");
+					mapData.setTimingMap(data);
+				}
+			}
+		}
 	}
 }

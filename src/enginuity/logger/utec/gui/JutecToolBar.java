@@ -103,7 +103,7 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
 				if(mapData != null){
 
 					// Initialise tree
-					ETreeNode root = new ETreeNode("UTEC:"+UtecDataManager.getCurrentMapData().getMapName()+", "+UtecDataManager.getCurrentMapData().getMapComment(), new TableMetaData(TableMetaData.CATEGORY,0.0,0.0,new Object[0],null,null,false,"","", mapData.getMapName(), this.parentTuningEntity));
+					ETreeNode root = new ETreeNode("UTEC:"+mapData.getMapName()+", "+mapData.getMapComment(), new TableMetaData(TableMetaData.CATEGORY,0.0,0.0,new Object[0],null,null,false,"","", mapData.getMapName(), this.parentTuningEntity));
 					
 					Object[] ignored = {new Double(-100.0)};
 					ETreeNode fuel = new ETreeNode("Fuel", new TableMetaData(TableMetaData.DATA3D, Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored,null,null, false, "Fuel" , "Fuel:"+mapData.getMapName(), mapData.getMapName(),this.parentTuningEntity));
@@ -128,7 +128,9 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
             }
         } else if (e.getSource() == saveImage) {
             try {
-            	int count = this.theTEL.getMapChangeCount(this.parentTuningEntity, UtecDataManager.getCurrentMapData().getMapName());
+            	String temp = ApplicationStateManager.getSelectedTuningGroup();
+            	System.out.println("TEMP:"+temp);
+            	int count = 0;//this.theTEL.getMapChangeCount(this.parentTuningEntity, UtecDataManager.getCurrentMapData().getMapName());
                 System.out.println("Maps Changed:"+count);
                 if(count > 0){
                 	this.theTEL.saveMaps();
