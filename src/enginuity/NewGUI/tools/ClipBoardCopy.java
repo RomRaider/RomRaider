@@ -12,7 +12,7 @@ import java.util.*;
  * format used by Excel. This provides for clipboard interoperability between
  * enabled JTables and Excel.
  */
-public class ClipBoardCopyTest implements ActionListener {
+public class ClipBoardCopy implements ActionListener {
 	private String rowstring, value;
 
 	private Clipboard clipBoard;
@@ -25,7 +25,7 @@ public class ClipBoardCopyTest implements ActionListener {
 	 * The Excel Adapter is constructed with a JTable on which it enables
 	 * Copy-Paste and acts as a Clipboard listener.
 	 */
-	public ClipBoardCopyTest(JTable myJTable) {
+	public ClipBoardCopy(JTable myJTable) {
 		jTable1 = myJTable;
 		KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,ActionEvent.CTRL_MASK, false);
 		// Identifying the copy KeyStroke user can modify this
@@ -75,8 +75,7 @@ public class ClipBoardCopyTest implements ActionListener {
 			}
 			for (int i = 0; i < numrows; i++) {
 				for (int j = 0; j < numcols; j++) {
-					sbf.append(jTable1.getValueAt(rowsselected[i],
-							colsselected[j]));
+					sbf.append(jTable1.getValueAt(rowsselected[i],colsselected[j]));
 					if (j < numcols - 1)
 						sbf.append("\t");
 				}
@@ -104,8 +103,7 @@ public class ClipBoardCopyTest implements ActionListener {
 								&& startCol + j < jTable1.getColumnCount())
 							jTable1.setValueAt(value, startRow + i, startCol
 									+ j);
-						System.out.println("Putting " + value + "atrow="
-								+ startRow + i + "column=" + startCol + j);
+						System.out.println("Putting " + value + "atrow="+ startRow + i + "column=" + startCol + j);
 					}
 				}
 			} catch (Exception ex) {

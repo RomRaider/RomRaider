@@ -11,7 +11,7 @@ public class ETableModel extends AbstractTableModel {
 	private String[] columnNames = new String[11];
 	private Double[][] data = new Double[11][40];
 	private TableMetaData tableMetaData;
-	private DecimalFormat formatter = new DecimalFormat( "#.0" );
+	private DecimalFormat formatter = new DecimalFormat( "#.#" );
 	
 	public ETableModel(TableMetaData metaData, Double[][] initialData) {
 		this.tableMetaData = metaData;
@@ -54,8 +54,10 @@ public class ETableModel extends AbstractTableModel {
         
         if(value instanceof String){
         	 try{
-        		String tempString = formatter.format(value);
-             	temp = Double.parseDouble(tempString);
+        		 System.out.println("value:"+value+":");
+        		//String tempString = formatter.format(value);
+             	//temp = Double.parseDouble(tempString);
+        		 temp = Double.parseDouble((String)value);
              }catch (NumberFormatException e) {
              	System.out.println("Not a valid number entered.");
              }

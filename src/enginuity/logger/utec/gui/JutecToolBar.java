@@ -90,12 +90,12 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
                 //((ECUEditorMenuBar) parent.getJMenuBar()).openImageDialog();
             	System.out.println("Load Map From File");
 
-				String saveFileName = null;
-				fileChosen = fileChooser.showSaveDialog(null);
+				String openFileName = null;
+				fileChosen = fileChooser.showOpenDialog(null);
 				UtecMapData mapData = null;
 				if (fileChosen == JFileChooser.APPROVE_OPTION) {
-					saveFileName = fileChooser.getSelectedFile().getPath();
-					mapData = new UtecMapData(saveFileName);
+					openFileName = fileChooser.getSelectedFile().getPath();
+					mapData = new UtecMapData(openFileName);
 					
 					//UtecDataManager.setCurrentMap(mapData);
 					UtecDataManager.addMap(mapData);
