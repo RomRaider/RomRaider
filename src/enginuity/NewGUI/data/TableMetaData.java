@@ -6,12 +6,12 @@ import enginuity.NewGUI.interfaces.TuningEntity;
 
 public class TableMetaData {
 	// Type of node
-	public static final int DATA1D = 0;
-	public static final int DATA2D = 1;
-	public static final int DATA3D = 3;
-	public static final int CATEGORY = 4;
+	public static final int DATA_1D = 0;
+	public static final int DATA_2D = 1;
+	public static final int DATA_3D = 3;
+	public static final int MAP_SET_ROOT = 4;
 	public static final int RESERVED_ROOT = 5;
-	
+	public static final int CATEGORY = 6;
 	
 	// Constructor set values
 	private double maxValue;
@@ -26,7 +26,7 @@ public class TableMetaData {
 	private int dimensions;
 	private TuningEntity parentTuningEntity;
 	
-	// Setter set values
+	// Optional setters
 	private DecimalFormat formatter = new DecimalFormat( "#.0" );
 	
 	public TableMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, String[] columnLabels, String[] rowLabels, boolean isInvertedColoring, String tableName, String tableIdentifier, String tableGroup, TuningEntity parentTuningEntity) {

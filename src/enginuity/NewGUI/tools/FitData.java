@@ -11,7 +11,7 @@ public class FitData {
 
 	static double b; // Max x value
 
-	static int n = 6; // Iterations
+	static int n = 100; // Iterations
 
 	static int m = 0; // Number of x values
 
