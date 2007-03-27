@@ -48,7 +48,7 @@ import enginuity.swing.LookAndFeelManager;
 
 public class NewGUI extends JFrame implements ActionListener, TreeSelectionListener, TuningEntityListener{
 	
-	private String engninuityTitle = "Enginuity v0.5.0 alpha 1";
+	private final String engninuityTitle = "Enginuity v0.5.0 alpha 1";
 	
 	private JPanel mainJPanel = new JPanel();
 	

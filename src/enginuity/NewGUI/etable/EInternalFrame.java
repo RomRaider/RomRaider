@@ -26,6 +26,7 @@ import javax.swing.table.TableModel;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.tools.ClipBoardCopyTest;
 import enginuity.NewGUI.tools.FitData;
 
 public class EInternalFrame extends JInternalFrame implements InternalFrameListener, ActionListener{
@@ -74,7 +75,7 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 		TableModel tableModel = new ETableRowLabel(data[0].length, tableMetaData.getRowLabels());
 		eTable = new ETable(tableMetaData, data, columnModel);
 		eTable.setBackground(Color.LIGHT_GRAY);
-		
+		ClipBoardCopyTest excelCopy = new ClipBoardCopyTest(eTable);
 		
 		JTable headerColumn = new JTable(tableModel, rowHeaderModel);
 		eTable.createDefaultColumnsFromModel();
