@@ -35,7 +35,7 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	private TableMetaData tableMetaData;
 
 	public EInternalFrame(TableMetaData tableMetaData, Double[][] data, Dimension tableDimensions){
-		super(tableMetaData.getTableName(), true, true, true, true);
+		super(tableMetaData.getTableName()+"   "+tableMetaData.getTableGroup(), true, true, true, true);
 		this.tableMetaData = tableMetaData;
 		
 		// Save initial data

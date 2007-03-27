@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -129,8 +130,17 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
         } else if (e.getSource() == saveImage) {
             try {
             	String temp = ApplicationStateManager.getSelectedTuningGroup();
-            	System.out.println("TEMP:"+temp);
-            	int count = 0;//this.theTEL.getMapChangeCount(this.parentTuningEntity, UtecDataManager.getCurrentMapData().getMapName());
+            	System.out.println("Jutec Tuning group:"+temp);
+            	UtecMapData mapData = null;
+            	Iterator mapIterate = UtecDataManager.getAllMaps().iterator();
+            	while(mapIterate.hasNext()){
+            		mapData = (UtecMapData)mapIterate.next();
+            		if(mapData.getMapName().equals(temp)){
+            			break;
+            		}
+            	}
+            	
+            	int count = this.theTEL.getMapChangeCount(this.parentTuningEntity, mapData.getMapName());
                 System.out.println("Maps Changed:"+count);
                 if(count > 0){
                 	this.theTEL.saveMaps();

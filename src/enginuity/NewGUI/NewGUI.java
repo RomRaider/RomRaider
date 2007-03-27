@@ -226,7 +226,6 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	
 	public int getMapChangeCount(TuningEntity tuningEntity, String tableGroup){
 		JInternalFrame[] allFrames = this.rightDesktopPane.getAllFrames();
-		
 		int number = 0;
 		for(int i = 0 ; i < allFrames.length; i++){
 			EInternalFrame eInternalFrame = (EInternalFrame)allFrames[i];
@@ -243,7 +242,6 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	}
 	
 	public void saveMaps(){
-		System.out.println("NewGUI save called");
 		JInternalFrame[] allFrames = this.rightDesktopPane.getAllFrames();
 		String tableGroup = ApplicationStateManager.getSelectedTuningGroup();
 		

@@ -161,7 +161,6 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			if(tableIdentifier.equals("Fuel:"+mapName)){
 				System.out.println("UTE Fuel");
 				data = newMapData.getFuelMap();
-				System.out.println("Fuel size:"+data.length);
 				return data;
 			}
 			else if(tableIdentifier.equals("Timing:"+mapName)){
