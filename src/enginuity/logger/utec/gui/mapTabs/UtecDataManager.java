@@ -268,4 +268,19 @@ public class UtecDataManager {
 	public static Vector<UtecMapData> getAllMaps() {
 		return allMaps;
 	}
+	
+	public static void removeTuningGroup(String tuningGroup){
+		Iterator mapIterator = allMaps.iterator();
+		UtecMapData newMapData = null;
+		while(mapIterator.hasNext()){
+			newMapData = (UtecMapData)mapIterator.next();
+			if(newMapData.getMapName().equals(tuningGroup)){
+				break;
+			}
+		}
+		
+		if(newMapData != null){
+			allMaps.remove(newMapData);
+		}
+	}
 }

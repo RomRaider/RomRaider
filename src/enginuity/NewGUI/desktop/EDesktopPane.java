@@ -45,13 +45,13 @@ public class EDesktopPane extends JDesktopPane{
         for(int i = 0; i < allFrames.length ; i++){
         	tempFrame = (EInternalFrame)allFrames[i];
         	if(tempFrame.getTableMetaData().getTableGroup().equals(tuningGroup)){
+        		System.out.println("EDesktopPane: removing internal frame.");
         		this.remove(tempFrame);
         	}
         }
     }
 
     public Component add(Double[][] data, TableMetaData tableMetaData) {
-        JInternalFrame[] array = getAllFrames();
         Point p;
         int w;
         int h;
@@ -71,8 +71,8 @@ public class EDesktopPane extends JDesktopPane{
         	EInternalFrame frame = new EInternalFrame(tableMetaData, data, new Dimension(800, 600));
         	Component retval = super.add(frame);
             checkDesktopSize();
-            if (array.length > 0) {
-                p = array[0].getLocation();
+            if (allFrames.length > 0) {
+                p = allFrames[0].getLocation();
                 p.x = p.x + FRAME_OFFSET;
                 p.y = p.y + FRAME_OFFSET;
             } else {

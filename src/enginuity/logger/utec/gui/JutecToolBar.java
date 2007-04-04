@@ -152,6 +152,7 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
             } catch (Exception ex) {
             }
         } else if (e.getSource() == closeImage) {
+        	System.out.println("Jutec Tool Bar: close image");
         	
         	String tuningGroup = ApplicationStateManager.getSelectedTuningGroup();
         	int mapChangeCount = this.theTEL.getMapChangeCount(ApplicationStateManager.getCurrentTuningEntity(),tuningGroup);
@@ -173,7 +174,6 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
                 		}
                 	}
                 	
-                	System.out.println("Saving map to file.");
                 	String saveFileName = null;
     				fileChosen = fileChooser.showSaveDialog(null);
     				if (fileChosen == JFileChooser.APPROVE_OPTION) {
@@ -187,6 +187,8 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
         		}else if(returnValue == 2){
         			return;
         		}
+        	}else{
+        		this.theTEL.removeTuningGroup(tuningGroup);
         	}
         }
     }

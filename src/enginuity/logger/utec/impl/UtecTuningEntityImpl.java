@@ -144,6 +144,12 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		jMenuItems.add(portsMenu);
 	}
 	
+	public void removeTuningGroup(String tuningGroup){
+		System.out.println("UTE removing tuning group:"+tuningGroup);
+		
+		UtecDataManager.removeTuningGroup(tuningGroup);
+	}
+	
 	public Double[][] getTableData(String tableIdentifier) {
 		System.out.println("UTEC getTableData Impl tablename:"+tableIdentifier);
 		Double[][] data = null;

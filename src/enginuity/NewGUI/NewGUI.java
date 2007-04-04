@@ -230,6 +230,15 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 				// Clean up
 				this.rightDesktopPane.removeInternalFrames(tableGroup);
 				
+				// Clean up on tuning entity sides
+				Iterator tuningEntites = ApplicationStateManager.getTuningEntities().iterator();
+				
+				while(tuningEntites.hasNext()){
+					TuningEntity theTuningEntity = (TuningEntity)tuningEntites.next();
+					theTuningEntity.removeTuningGroup(tableGroup);
+				}
+				
+				
 				return;
 			}
 		}
