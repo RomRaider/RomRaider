@@ -12,6 +12,8 @@ import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
@@ -26,8 +28,10 @@ import javax.swing.table.TableModel;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.etable.text.RotatedLabel;
 import enginuity.NewGUI.tools.ClipBoardCopy;
 import enginuity.NewGUI.tools.FitData;
+import enginuity.swing.VTextIcon;
 
 public class EInternalFrame extends JInternalFrame implements InternalFrameListener, ActionListener{
 	private Stack<ETableSaveState> savedData = new Stack<ETableSaveState>();
@@ -35,6 +39,7 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	private ETable eTable;
 	private TableMetaData tableMetaData;
 	private ClipBoardCopy excelCopy;
+	private JPanel labelJPanel = new JPanel();
 	
 	public EInternalFrame(TableMetaData tableMetaData, Double[][] data, Dimension tableDimensions){
 		super(tableMetaData.getTableName()+"   "+tableMetaData.getTableGroup(), true, true, true, true);
@@ -108,7 +113,28 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 		this.setLayout(new BorderLayout());
 		this.setJMenuBar(new ETableMenuBar(this));
 		this.add(toolBar, BorderLayout.NORTH);
-		this.add(scrollPane, BorderLayout.CENTER);
+		
+		// Table Title
+		JLabel titleJLabel = new JLabel(tableMetaData.getTableName());
+		titleJLabel.setHorizontalAlignment(JLabel.CENTER);
+		
+		// X Label
+		JLabel xAxisJLabel = new JLabel(tableMetaData.getXAxisLabel());
+		xAxisJLabel.setHorizontalAlignment(JLabel.CENTER);
+		
+		// Y Label
+		RotatedLabel yAxisJLabel = new RotatedLabel(tableMetaData.getYAxisLabel());
+		yAxisJLabel.setHorizontalAlignment(JLabel.CENTER);
+		
+		this.labelJPanel.setLayout(new BorderLayout());
+		this.labelJPanel.add(titleJLabel, BorderLayout.NORTH);
+		this.labelJPanel.add(xAxisJLabel, BorderLayout.SOUTH);
+		this.labelJPanel.add(yAxisJLabel, BorderLayout.WEST);
+		
+		this.labelJPanel.add(scrollPane, BorderLayout.CENTER);
+		this.add(this.labelJPanel, BorderLayout.CENTER);
+		
+		
 		this.setSize(tableDimensions);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);

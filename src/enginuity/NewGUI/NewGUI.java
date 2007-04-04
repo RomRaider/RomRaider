@@ -58,7 +58,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	private JSplitPane splitPane = new JSplitPane();
 	private EDesktopPane rightDesktopPane = new EDesktopPane();
 	
-	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableMetaData(TableMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],null, null,false,"", "", "", null));
+	private ETreeNode rootNode = new ETreeNode("Enginuity", new TableMetaData(TableMetaData.RESERVED_ROOT,0.0,0.0,new Object[0],null, null,false,"", "", "", "", "", null));
 	private ETree leftJTree = new ETree(rootNode);
 	
 	private boolean newTree = true;

@@ -21,6 +21,8 @@ public class TableMetaData {
 	private Object[] ignoredValues;
 	private boolean isInvertedColoring;
 	private String tableName;
+	private String xAxisLabel;
+	private String yAxisLabel;
 	private String tableIdentifier;
 	private String tableGroup;
 	private int dimensions;
@@ -29,7 +31,7 @@ public class TableMetaData {
 	// Optional setters
 	private DecimalFormat formatter = new DecimalFormat( "#.0" );
 	
-	public TableMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, String[] columnLabels, String[] rowLabels, boolean isInvertedColoring, String tableName, String tableIdentifier, String tableGroup, TuningEntity parentTuningEntity) {
+	public TableMetaData(int dimensions, double minValue, double maxValue, Object[] ignoredValues, String[] columnLabels, String[] rowLabels, boolean isInvertedColoring, String tableName, String xAxisLabel, String yAxisLabel, String tableIdentifier, String tableGroup, TuningEntity parentTuningEntity) {
 		this.dimensions = dimensions;
 		this.maxValue = maxValue;
 		this.minValue = minValue;
@@ -38,6 +40,8 @@ public class TableMetaData {
 		this.rowLabels = rowLabels;
 		this.isInvertedColoring = isInvertedColoring;
 		this.tableName = tableName;
+		this.xAxisLabel = xAxisLabel;
+		this.yAxisLabel = yAxisLabel;
 		this.tableIdentifier = tableIdentifier;
 		this.tableGroup = tableGroup;
 		this.parentTuningEntity = parentTuningEntity;	
@@ -96,5 +100,13 @@ public class TableMetaData {
 
 	public void setFormatter(DecimalFormat formatter) {
 		this.formatter = formatter;
+	}
+
+	public String getXAxisLabel() {
+		return xAxisLabel;
+	}
+
+	public String getYAxisLabel() {
+		return yAxisLabel;
 	}
 }

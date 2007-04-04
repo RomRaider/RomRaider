@@ -44,7 +44,7 @@ public class VTextIcon extends Component implements Icon, PropertyChangeListener
     int[] fPosition; // Japanese half-height characters need to be shifted when drawn vertically
     int fWidth, fHeight, fCharHeight, fDescent; // Cached for speed
     int fRotation;
-    Component fComponent;
+    //Component fComponent;
 
     static final int POSITION_NORMAL = 0;
     static final int POSITION_TOP_RIGHT = 1;
@@ -74,11 +74,11 @@ public class VTextIcon extends Component implements Icon, PropertyChangeListener
      * @see #verifyRotation
      */
     public VTextIcon(Component component, String label, int rotateHint) {
-        fComponent = component;
+        //fComponent = component;
         fLabel = label;
         fRotation = verifyRotation(label, rotateHint);
         calcDimensions();
-        fComponent.addPropertyChangeListener(this);
+        //fComponent.addPropertyChangeListener(this);
     }
 
     /**
@@ -113,14 +113,14 @@ public class VTextIcon extends Component implements Icon, PropertyChangeListener
         int hOld = getIconHeight();
         calcDimensions();
         if (wOld != getIconWidth() || hOld != getIconHeight()) {
-            fComponent.invalidate();
+            //fComponent.invalidate();
         }
     }
 
     void calcDimensions() {
-        FontMetrics fm = fComponent.getFontMetrics(fComponent.getFont());
-        fCharHeight = fm.getAscent() + fm.getDescent();
-        fDescent = fm.getDescent();
+        //FontMetrics fm = fComponent.getFontMetrics(fComponent.getFont());
+       // fCharHeight = fm.getAscent() + fm.getDescent();
+       // fDescent = fm.getDescent();
         if (fRotation == ROTATE_NONE) {
             int len = fLabel.length();
             char data[] = new char[len];
@@ -134,7 +134,7 @@ public class VTextIcon extends Component implements Icon, PropertyChangeListener
             char ch;
             for (int i = 0; i < len; i++) {
                 ch = data[i];
-                fCharWidths[i] = fm.charWidth(ch);
+               // fCharWidths[i] = fm.charWidth(ch);
                 if (fCharWidths[i] > fWidth) {
                     fWidth = fCharWidths[i];
                 }
@@ -155,7 +155,7 @@ public class VTextIcon extends Component implements Icon, PropertyChangeListener
             // if rotated, width is the height of the string
             fWidth = fCharHeight;
             // and height is the width, plus some buffer space
-            fHeight = fm.stringWidth(fLabel) + 2 * kBufferSpace;
+            //fHeight = fm.stringWidth(fLabel) + 2 * kBufferSpace;
         }
     }
 
