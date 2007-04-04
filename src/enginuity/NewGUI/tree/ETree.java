@@ -38,8 +38,7 @@ public class ETree extends JTree implements MouseListener {
 		
 		if(selectedObject instanceof ETreeNode){
 			ETreeNode theNode = (ETreeNode)selectedObject;
-			String title = ApplicationStateManager.getEnginuityInstance().getEngninuityTitle();
-			ApplicationStateManager.getEnginuityInstance().setTitle(title+": "+theNode.getTableMetaData().getTableGroup());
+			ApplicationStateManager.getEnginuityInstance().addTuningGroupNameToTitle(theNode.getTableMetaData().getTableGroup());
 			String tableGroup = theNode.getTableMetaData().getTableGroup();
 			if(tableGroup != null && tableGroup != ""){
 				ApplicationStateManager.setSelectedTuningGroup(tableGroup);

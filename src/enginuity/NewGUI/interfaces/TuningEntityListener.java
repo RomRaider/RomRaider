@@ -15,6 +15,13 @@ public interface TuningEntityListener {
 	public void addNewTuningGroup(ETreeNode rootNodeOfNewTree);
 	
 	/**
+	 * Removes a tuning group from the tree
+	 * 
+	 * @param tableGroup
+	 */
+	public void removeTuningGroup(String tableGroup);
+	
+	/**
 	 * Prepends list of menu items to the menu bae
 	 * 
 	 * @param items

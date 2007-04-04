@@ -48,7 +48,7 @@ import enginuity.swing.LookAndFeelManager;
 
 public class NewGUI extends JFrame implements ActionListener, TreeSelectionListener, TuningEntityListener{
 	
-	private final String engninuityTitle = "Enginuity v0.5.0 alpha 1";
+	private final String engninuityVersionTitle = "Enginuity v0.5.0 alpha 1";
 	
 	private JPanel mainJPanel = new JPanel();
 	
@@ -95,7 +95,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 		
 		// Set frame title
-		this.setTitle(this.engninuityTitle);
+		this.setTitle(this.engninuityVersionTitle);
 		
 		
 		// Set main JFrame size
@@ -175,6 +175,10 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		System.out.println("Tree Node selected.");
 		
 	}
+	
+	public void addTuningGroupNameToTitle(String titleAppend){
+		this.setTitle(this.engninuityVersionTitle+": "+titleAppend);
+	}
 
 	/**
 	 * Tuning group is a collection of maps and parameters, ala a ROM or a UTEC Map file
@@ -198,18 +202,37 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 		
 		if(this.newTree == true){
-			System.out.println(" newtree");
 			this.newTree = false;
 			this.rootNode.removeAllChildren();
 		}
 		
 		this.rootNode.add(newTreeModel);
-		
-
-		
-		
 		this.leftJTree.updateUI();
 		this.splitPane.repaint();
+	}
+	
+	/**
+	 * Removes a tuning group from the GUI
+	 * 
+	 */
+	public void removeTuningGroup(String tableGroup){
+		int childCount = this.rootNode.getChildCount();
+		
+		for(int i = 0; i < childCount; i++){
+			ETreeNode tempNode = (ETreeNode)this.rootNode.getChildAt(i);
+			if(tempNode.getTableMetaData().getTableGroup().equals(tableGroup)){
+				ApplicationStateManager.setSelectedTuningGroup("No Tuning Group Selected.");
+				this.addTuningGroupNameToTitle("");
+				this.rootNode.remove(i);
+				this.leftJTree.updateUI();
+				this.splitPane.repaint();
+				
+				// Clean up
+				this.rightDesktopPane.removeInternalFrames(tableGroup);
+				
+				return;
+			}
+		}
 	}
 
 	public void displayInternalFrameTable(Double[][] data, TableMetaData tableMetaData){
@@ -260,7 +283,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	}
 
 	public String getEngninuityTitle() {
-		return engninuityTitle;
+		return engninuityVersionTitle;
 	}
 
 }

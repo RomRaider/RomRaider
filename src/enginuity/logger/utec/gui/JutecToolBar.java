@@ -11,6 +11,7 @@ import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
 import enginuity.NewGUI.data.ApplicationStateManager;
@@ -29,10 +30,8 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
 	private JFileChooser fileChooser =  new JFileChooser();
 	private TuningEntity parentTuningEntity;
 	
-   // private ECUEditor parent;
     private JButton openImage = new JButton(new ImageIcon("./graphics/icon-open.png"));
     private JButton saveImage = new JButton(new ImageIcon("./graphics/icon-save.png"));
-    private JButton refreshImage = new JButton(new ImageIcon("./graphics/icon-refresh.png"));
     private JButton closeImage = new JButton(new ImageIcon("./graphics/icon-close.png"));
 
     public JutecToolBar(TuningEntityListener theTEL, TuningEntity parentTuningEntity){
@@ -43,7 +42,6 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
         this.add(openImage);
         this.add(saveImage);
         this.add(closeImage);
-        //this.add(refreshImage);
 
         openImage.setMaximumSize(new Dimension(58, 50));
         openImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
@@ -51,27 +49,21 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
         saveImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
         closeImage.setMaximumSize(new Dimension(50, 50));
         closeImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
-        refreshImage.setMaximumSize(new Dimension(50, 50));
-        refreshImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
 
         openImage.addActionListener(this);
         saveImage.addActionListener(this);
         closeImage.addActionListener(this);
-        refreshImage.addActionListener(this);
         
         // Set tool tips
-
         openImage.setToolTipText("Open Utec Map");
         saveImage.setToolTipText("Save Utec Map");
-        //refreshImage.setToolTipText("Refresh " + file + " from saved copy");
         closeImage.setToolTipText("Close Utec Map");
         
         
         // Set initial button state
         this.openImage.setEnabled(true);
         this.saveImage.setEnabled(false);
-        //this.refreshImage.setEnabled(false);
-        this.closeImage.setEnabled(false);
+        this.closeImage.setEnabled(true);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -158,16 +150,44 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
 				}
                 
             } catch (Exception ex) {
-               // JOptionPane.showMessageDialog(parent, new DebugPanel(ex,parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == closeImage) {
-            //((ECUEditorMenuBar) parent.getJMenuBar()).closeImage();
-        } else if (e.getSource() == refreshImage) {
-            try {
-                //((ECUEditorMenuBar) parent.getJMenuBar()).refreshImage();
-            } catch (Exception ex) {
-                //JOptionPane.showMessageDialog(parent, new DebugPanel(ex,parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
-            }
+        	
+        	String tuningGroup = ApplicationStateManager.getSelectedTuningGroup();
+        	int mapChangeCount = this.theTEL.getMapChangeCount(ApplicationStateManager.getCurrentTuningEntity(),tuningGroup);
+        	
+        	if(mapChangeCount > 0){
+        		int returnValue = JOptionPane.showConfirmDialog(this, "Tuning Group contains changes, save before continuing?", "Warning", JOptionPane.YES_NO_CANCEL_OPTION);
+        		
+        		if(returnValue == 0){
+        			this.theTEL.saveMaps();
+
+                    // Kick off the saving file to disk
+        			String temp = ApplicationStateManager.getSelectedTuningGroup();
+        			UtecMapData mapData = null;
+                	Iterator mapIterate = UtecDataManager.getAllMaps().iterator();
+                	while(mapIterate.hasNext()){
+                		mapData = (UtecMapData)mapIterate.next();
+                		if(mapData.getMapName().equals(temp)){
+                			break;
+                		}
+                	}
+                	
+                	System.out.println("Saving map to file.");
+                	String saveFileName = null;
+    				fileChosen = fileChooser.showSaveDialog(null);
+    				if (fileChosen == JFileChooser.APPROVE_OPTION) {
+    					saveFileName = fileChooser.getSelectedFile().getPath();
+    					mapData.writeMapToFile(saveFileName);
+    				}
+    				
+                	this.theTEL.removeTuningGroup(tuningGroup);
+        		}else if(returnValue == 1){
+        			this.theTEL.removeTuningGroup(tuningGroup);
+        		}else if(returnValue == 2){
+        			return;
+        		}
+        	}
         }
     }
 }

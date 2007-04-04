@@ -32,6 +32,23 @@ public class EDesktopPane extends JDesktopPane{
         super.setBounds(x, y, w, h);
         checkDesktopSize();
     }
+    
+    /**
+     * Removed the internal frames associated with the passed tunign group.
+     * 
+     * @param tuningGroup
+     */
+    public void removeInternalFrames(String tuningGroup){
+    	JInternalFrame[] allFrames = getAllFrames();
+    	
+    	EInternalFrame tempFrame = null;
+        for(int i = 0; i < allFrames.length ; i++){
+        	tempFrame = (EInternalFrame)allFrames[i];
+        	if(tempFrame.getTableMetaData().getTableGroup().equals(tuningGroup)){
+        		this.remove(tempFrame);
+        	}
+        }
+    }
 
     public Component add(Double[][] data, TableMetaData tableMetaData) {
         JInternalFrame[] array = getAllFrames();
