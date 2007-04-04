@@ -15,13 +15,13 @@ import javax.swing.JOptionPane;
 public class ETableMenuBar extends JMenuBar implements ActionListener{
 
 	
-	private JMenu tableMenu = new JMenu("Table");
-	private JMenuItem saveItem = new JMenuItem("Save");
-	private JMenuItem undoItem = new JMenuItem("Undo");
+	private JMenu tableMenu = new JMenu("File");
 	private JMenuItem closeItem = new JMenuItem("Close");
 	
 	
 	private JMenu editMenu = new JMenu("Edit");
+	private JMenuItem saveItem = new JMenuItem("Save");
+	private JMenuItem undoItem = new JMenuItem("Undo");
 	private JMenuItem copyTable = new JMenuItem("Copy Table");
 	private JMenuItem copySelection = new JMenuItem("Copy Selection");
 	private JMenuItem paste = new JMenuItem("Paste Table Data");
@@ -37,8 +37,6 @@ public class ETableMenuBar extends JMenuBar implements ActionListener{
 		this.saveItem.addActionListener(this);
 		this.undoItem.addActionListener(this);
 		this.closeItem.addActionListener(this);
-		this.tableMenu.add(saveItem);
-		this.tableMenu.add(undoItem);
 		this.tableMenu.add(closeItem);
 		this.add(this.tableMenu);
 		
@@ -47,6 +45,9 @@ public class ETableMenuBar extends JMenuBar implements ActionListener{
 		this.copySelection.addActionListener(this);
 		this.copyTable.addActionListener(this);
 		this.paste.addActionListener(this);
+		this.editMenu.add(saveItem);
+		this.editMenu.add(undoItem);	
+		this.editMenu.addSeparator();
 		this.editMenu.add(this.copySelection);
 		this.editMenu.add(this.copyTable);
 		this.editMenu.addSeparator();

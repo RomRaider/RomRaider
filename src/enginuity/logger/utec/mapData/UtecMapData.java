@@ -379,7 +379,7 @@ public class UtecMapData {
 	
 	public void populateMapComment(){
 		int start = rawMapData.indexOf("Map Comments:-[")+15;
-		int stop = rawMapData.indexOf("Fuel Map") - 3;
+		int stop = rawMapData.indexOf("Fuel Map") - 2;
 		this.mapComment = rawMapData.substring(start, stop);
 		System.out.println("Map comment:"+mapComment+":");
 	}
@@ -387,7 +387,7 @@ public class UtecMapData {
 	public void populateMapName(){
 		System.out.println("Populating map name.");
 		int start = rawMapData.indexOf("Map Name:-[")+11;
-		int stop = rawMapData.indexOf("Map Comments") - 3;
+		int stop = rawMapData.indexOf("Map Comments") - 2;
 		
 		System.out.println("Start:"+start);
 		System.out.println("Stop:"+stop);

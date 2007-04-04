@@ -79,6 +79,7 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 		excelCopy = new ClipBoardCopy(eTable);
 		
 		JTable headerColumn = new JTable(tableModel, rowHeaderModel);
+		headerColumn.setBackground(new Color(236, 233, 216));
 		eTable.createDefaultColumnsFromModel();
 		headerColumn.createDefaultColumnsFromModel();
 		eTable.setSelectionModel(headerColumn.getSelectionModel());

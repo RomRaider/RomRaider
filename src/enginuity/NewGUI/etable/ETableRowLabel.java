@@ -26,10 +26,11 @@ public class ETableRowLabel extends AbstractTableModel{
 			return  arg0;
 		}
 		
-		return this.labels[arg1];
+		return this.labels[arg0];
 	}
 	
 	public String getColumnName(int col){
+		
 		if(this.labels == null){
 			return counter++ + "";
 		}

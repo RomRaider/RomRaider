@@ -120,6 +120,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		}
 		
 		this.jMenuBar.add(this.tuningEntitiesJMenu);
+		this.jMenuBar.setBackground(new Color(236, 233, 216));
 		this.setLayout(new BorderLayout());
 		this.setJMenuBar(this.jMenuBar);
 	
@@ -132,6 +133,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		splitPane.setDividerLocation(200);
 		splitPane.setLeftComponent(leftJTree);
 		splitPane.setRightComponent(rightDesktopPane);
+		splitPane.setDividerSize(5);
 		
 		
 		// Setup main JPanel
@@ -219,8 +221,9 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	}
 
 	public void setNewToolBar(JToolBar theToolBar) {
+		// Ensure proper color
+		theToolBar.setBackground(new Color(236, 233, 216));
 		this.add(theToolBar, BorderLayout.NORTH);
-		
 	}
 	
 	
