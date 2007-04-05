@@ -79,43 +79,13 @@ public class JutecToolBar  extends JToolBar implements ActionListener {
 					openFileName = fileChooser.getSelectedFile().getPath();
 					mapData = new UtecMapData(openFileName);
 					
-					//UtecDataManager.setCurrentMap(mapData);
-					UtecDataManager.addMap(mapData);
-				}
-				
-				if(mapData != null){
-
-					// Define columnLabels
-					String[] columnLabels = new String[11];
-					for(int i = 0; i < columnLabels.length ; i++){
-						columnLabels[i] = i+"";
+					if(mapData != null){
+						// Add map to collection of maps
+						UtecDataManager.addMap(mapData);
+						
+						// Enable the save option
+						this.saveImage.setEnabled(true);
 					}
-
-					String[] rowLabels = new String[40];
-					for(int i = 0; i < rowLabels.length ; i++){
-						rowLabels[i] = i+"";
-					}
-					
-					
-					// Initialise tree
-					ETreeNode root = new ETreeNode("UTEC:"+mapData.getMapName()+", "+mapData.getMapComment(), new TableMetaData(TableMetaData.MAP_SET_ROOT,0.0,0.0,new Object[0],null,null,false,"","", "", "", mapData.getMapName(), this.parentTuningEntity));
-					
-					Object[] ignored = {new Double(-100.0)};
-					ETreeNode fuel = new ETreeNode("Fuel", new TableMetaData(TableMetaData.DATA_3D, Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored,columnLabels,rowLabels, false, "Fuel" , "Data", "RPM", "Fuel:"+mapData.getMapName(), mapData.getMapName(),this.parentTuningEntity));
-					
-					Object[] ignored2 = {new Double(-100.0)};
-					ETreeNode timing = new ETreeNode("Timing", new TableMetaData(TableMetaData.DATA_3D, Double.parseDouble(UtecProperties.getProperties("utec.timingMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.timingMapMax")[0]), ignored,columnLabels,rowLabels, false, "Timing" , "Data", "RPM",  "Timing:"+mapData.getMapName(), mapData.getMapName(),this.parentTuningEntity));
-					
-					Object[] ignored3 = {new Double(-100.0)};
-					ETreeNode boost = new ETreeNode("Boost", new TableMetaData(TableMetaData.DATA_3D, Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, columnLabels,rowLabels,false, "Boost", "Data", "RPM", "Boost:"+mapData.getMapName(), mapData.getMapName(), this.parentTuningEntity));
-					root.add(fuel);
-					root.add(timing);
-					root.add(boost);
-					
-					this.theTEL.addNewTuningGroup(root);
-					
-					// Enable the save option
-					this.saveImage.setEnabled(true);
 				}
 
             } catch (Exception ex) {

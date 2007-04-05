@@ -18,8 +18,8 @@ public class UtecTimerTask extends TimerTask{
 	public void setData(String data){
 		this.data = data;
 		this.stringBuffer = new StringBuffer(data);
-		JutecGUI.getInstance().getJProgressBar().setMinimum(0);
-		JutecGUI.getInstance().getJProgressBar().setMaximum(data.length());
+		//JutecGUI.getInstance().getJProgressBar().setMinimum(0);
+		//JutecGUI.getInstance().getJProgressBar().setMaximum(data.length());
 	}
 	
 	public void run(){
@@ -30,7 +30,7 @@ public class UtecTimerTask extends TimerTask{
 		UtecSerialConnectionManager.sendCommandToUtec((int)theChar);
 		
 		counter++;
-		JutecGUI.getInstance().getJProgressBar().setValue(counter);
+		//JutecGUI.getInstance().getJProgressBar().setValue(counter);
 		
 		// Kill the timer after a at the end of the string
 		if(counter == data.length()){

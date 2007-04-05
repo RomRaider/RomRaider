@@ -3,6 +3,10 @@ package enginuity.logger.utec.gui.mapTabs;
 import java.util.Iterator;
 import java.util.Vector;
 
+import enginuity.NewGUI.data.ApplicationStateManager;
+import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.interfaces.TuningEntity;
+import enginuity.NewGUI.tree.ETreeNode;
 import enginuity.logger.utec.commEvent.LoggerDataListener;
 import enginuity.logger.utec.commEvent.UtecAFRListener;
 import enginuity.logger.utec.mapData.UtecMapData;
@@ -15,7 +19,6 @@ public class UtecDataManager {
 	private static UtecTableModel boostListener = null;
 	private static UtecAFRListener utecAFRListener = null;
 	private static Vector<LoggerDataListener> loggerListener = new Vector<LoggerDataListener>();
-	private static Vector<LoggerDataListener> generalListener = new Vector<LoggerDataListener>();
 	private static boolean isExpectingMap = false;
 	
 	private static String rawMapData = "";
@@ -36,7 +39,9 @@ public class UtecDataManager {
 	
 	public static void addMap(UtecMapData newUtecMap){
 		allMaps.add(newUtecMap);
-		//setCurrentMap(newUtecMap);
+		System.out.println("UtecDataManager:"+ApplicationStateManager.getCurrentTuningEntity().getName());
+		ETreeNode rootNode = buildMapDataTreeNode(newUtecMap, ApplicationStateManager.getCurrentTuningEntity());
+		ApplicationStateManager.getEnginuityInstance().addNewTuningGroup(rootNode);
 	}
 	
 	public static void setCurrentMap(UtecMapData newUtecMap){
@@ -61,8 +66,39 @@ public class UtecDataManager {
 		System.out.println("Done calling map listeners.");
 	}
 	
+	private static ETreeNode buildMapDataTreeNode(UtecMapData mapData, TuningEntity parentTuningEntity) {
+		// Define columnLabels
+		String[] columnLabels = new String[11];
+		for(int i = 0; i < columnLabels.length ; i++){
+			columnLabels[i] = (i * 10)+"";
+		}
+
+		String[] rowLabels = new String[40];
+		for(int i = 0; i < rowLabels.length ; i++){
+			rowLabels[i] = i+"";
+		}
+		
+		
+		// Initialise tree
+		ETreeNode root = new ETreeNode("UTEC:"+mapData.getMapName()+", "+mapData.getMapComment(), new TableMetaData(TableMetaData.MAP_SET_ROOT,0.0,0.0,new Object[0],null,null,false,"","", "", "", mapData.getMapName(), parentTuningEntity));
+		
+		Object[] ignored = {new Double(-100.0)};
+		ETreeNode fuel = new ETreeNode("Fuel", new TableMetaData(TableMetaData.DATA_3D, Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored,columnLabels,rowLabels, false, "Fuel" , "Load", "RPM", "Fuel:"+mapData.getMapName(), mapData.getMapName(),parentTuningEntity));
+		
+		Object[] ignored2 = {new Double(-100.0)};
+		ETreeNode timing = new ETreeNode("Timing", new TableMetaData(TableMetaData.DATA_3D, Double.parseDouble(UtecProperties.getProperties("utec.timingMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.timingMapMax")[0]), ignored,columnLabels,rowLabels, false, "Timing" , "Load", "RPM",  "Timing:"+mapData.getMapName(), mapData.getMapName(),parentTuningEntity));
+		
+		Object[] ignored3 = {new Double(-100.0)};
+		ETreeNode boost = new ETreeNode("Boost", new TableMetaData(TableMetaData.DATA_3D, Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, columnLabels,rowLabels,false, "Boost", "Load", "RPM", "Boost:"+mapData.getMapName(), mapData.getMapName(), parentTuningEntity));
+		root.add(fuel);
+		root.add(timing);
+		root.add(boost);
+		
+		return root;
+	}
+	
 	/**
-	 * Set serial data from a serial event
+	 * Get serial data from a serial event
 	 * 
 	 * @param serialData
 	 */
@@ -82,8 +118,11 @@ public class UtecDataManager {
 				UtecMapData newMap = new UtecMapData();
 				newMap.replaceRawData(new StringBuffer(rawMapData));
 				newMap.populateMapDataStructures();
+				
+				
 				// setCurrentMap(newMap);
 				rawMapData = "";
+				addMap(newMap);
 				setExpectingMap(false);
 			}
 		}else{
@@ -99,11 +138,6 @@ public class UtecDataManager {
 		// Count the "," to ensure this is a line of logging data
 		//System.out.println("DM LoggerEvent: Checking data length");
 		if(data.length < 4){
-			
-			// **********************************
-			// Call out to general data listeners
-			// **********************************
-			
 			
 			return;
 		}
