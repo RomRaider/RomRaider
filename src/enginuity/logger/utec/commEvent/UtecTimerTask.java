@@ -24,7 +24,7 @@ public class UtecTimerTask extends TimerTask{
 	
 	public void run(){
 		char theChar = stringBuffer.charAt(counter);
-		 System.out.println("->"+theChar+"<-  :"+(int)theChar+"");
+		System.out.println("->"+theChar+"<-  :"+(int)theChar+"");
 		
 		//Send the data to the Utec
 		UtecSerialConnectionManager.sendCommandToUtec((int)theChar);

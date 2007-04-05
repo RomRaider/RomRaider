@@ -17,6 +17,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.NewGUI.data.TableMetaData;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
@@ -296,27 +297,57 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			
 			else if (cmd.equals("Save To Map #1")) {
 				System.out.println("Starting to save map #1");
-				UtecInterface.sendMapData(1);
+				Iterator mapIterator = UtecDataManager.getAllMaps().iterator();
+				while(mapIterator.hasNext()){
+					UtecMapData mapData = (UtecMapData)mapIterator.next();
+					if(mapData.getMapName().equals(ApplicationStateManager.getSelectedTuningGroup())){
+						UtecInterface.sendMapData(1, mapData);
+					}
+				}
 			}
 
 			else if (cmd.equals("Save To Map #2")) {
 				System.out.println("Starting to save map #2");
-				UtecInterface.sendMapData(2);
+				Iterator mapIterator = UtecDataManager.getAllMaps().iterator();
+				while(mapIterator.hasNext()){
+					UtecMapData mapData = (UtecMapData)mapIterator.next();
+					if(mapData.getMapName().equals(ApplicationStateManager.getSelectedTuningGroup())){
+						UtecInterface.sendMapData(2, mapData);
+					}
+				}
 			}
 
 			else if (cmd.equals("Save To Map #3")) {
 				System.out.println("Starting to save map #3");
-				UtecInterface.sendMapData(3);
+				Iterator mapIterator = UtecDataManager.getAllMaps().iterator();
+				while(mapIterator.hasNext()){
+					UtecMapData mapData = (UtecMapData)mapIterator.next();
+					if(mapData.getMapName().equals(ApplicationStateManager.getSelectedTuningGroup())){
+						UtecInterface.sendMapData(3, mapData);
+					}
+				}
 			}
 
 			else if (cmd.equals("Save To Map #4")) {
 				System.out.println("Starting to save map #4");
-				UtecInterface.sendMapData(4);
+				Iterator mapIterator = UtecDataManager.getAllMaps().iterator();
+				while(mapIterator.hasNext()){
+					UtecMapData mapData = (UtecMapData)mapIterator.next();
+					if(mapData.getMapName().equals(ApplicationStateManager.getSelectedTuningGroup())){
+						UtecInterface.sendMapData(4, mapData);
+					}
+				}
 			}
 
 			else if (cmd.equals("Save To Map #5")) {
 				System.out.println("Starting to save map #5");
-				UtecInterface.sendMapData(5);
+				Iterator mapIterator = UtecDataManager.getAllMaps().iterator();
+				while(mapIterator.hasNext()){
+					UtecMapData mapData = (UtecMapData)mapIterator.next();
+					if(mapData.getMapName().equals(ApplicationStateManager.getSelectedTuningGroup())){
+						UtecInterface.sendMapData(5, mapData);
+					}
+				}
 			}
 			else if (cmd.equals("Exit")) {
 				// Use interface to finally close the connection to the Utec

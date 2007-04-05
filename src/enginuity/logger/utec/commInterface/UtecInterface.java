@@ -62,27 +62,24 @@ public class UtecInterface{
 	 * @param mapNumber
 	 * @param listener
 	 */
-	public static void sendMapData(int mapNumber) {
-		// Pull current data
-		if(UtecDataManager.getCurrentMapData() == null){
-			return;
-		}
-		StringBuffer mapData = UtecDataManager.getCurrentMapData().getUpdatedMap();
+	public static void sendMapData(int mapNumber, UtecMapData mapData) {
 		
 		// Sanity check
 		if (mapNumber < 1 || mapNumber > 5) {
-			System.err.println("Map selection out of range.");
+			System.err.println("UtecInterface, Map selection out of range:"+mapNumber);
 			return;
 		}
 		
-		String[] commandList = UtecProperties.getProperties("utec.startMapDownload");
+		StringBuffer mapDataStringBuffer = mapData.getUpdatedMap();
+		
+		String[] commandList = UtecProperties.getProperties("utec.startMapUpload");
 		if(commandList == null){
-			System.err.println("Command string in properties file for utec.startMapUpload not found.");
+			System.err.println("UtecInterface, Command string in properties file for utec.startMapUpload not found.");
 			return;
 		}
 		
 		resetUtec();
-		System.out.println("UtecControl, sending map:" + mapNumber);
+		System.out.println("UtecInterface, sending map:" + mapNumber);
 		
 		// Iterate through command string
 		int starCounter = 0;
@@ -112,7 +109,8 @@ public class UtecInterface{
 						System.out.println("Requested Map 5");
 					}
 				}else if(starCounter == 1){
-					UtecTimerTaskManager.execute(mapData);
+					System.out.println("UtecInterface, Sending map data to the UTEC");
+					UtecTimerTaskManager.execute(mapDataStringBuffer);
 					
 				}else{
 					System.err.println("No operation supported for properties value '*'");

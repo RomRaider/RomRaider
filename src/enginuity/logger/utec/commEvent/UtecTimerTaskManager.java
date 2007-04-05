@@ -49,6 +49,7 @@ public class UtecTimerTaskManager {
 	 * @param command
 	 */
 	public static void execute(StringBuffer command){
+		
 		if(theQueue.peek() == null){
 			if(isExecuting == true){
 				theQueue.add(command.toString());
