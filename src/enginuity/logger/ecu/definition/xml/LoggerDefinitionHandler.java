@@ -24,13 +24,31 @@ package enginuity.logger.ecu.definition.xml;
 import enginuity.io.connection.ConnectionProperties;
 import enginuity.io.connection.ConnectionPropertiesImpl;
 import enginuity.logger.ecu.comms.query.EcuInit;
-import enginuity.logger.ecu.definition.*;
+import enginuity.logger.ecu.definition.EcuAddress;
+import enginuity.logger.ecu.definition.EcuAddressImpl;
+import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.EcuDataConvertor;
+import enginuity.logger.ecu.definition.EcuDerivedParameterConvertor;
+import enginuity.logger.ecu.definition.EcuDerivedParameterConvertorImpl;
+import enginuity.logger.ecu.definition.EcuDerivedParameterImpl;
+import enginuity.logger.ecu.definition.EcuParameter;
+import enginuity.logger.ecu.definition.EcuParameterConvertorImpl;
+import enginuity.logger.ecu.definition.EcuParameterImpl;
+import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.EcuSwitchConvertorImpl;
+import enginuity.logger.ecu.definition.EcuSwitchImpl;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ParamChecker.isValidBit;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String FLOAT = "float";

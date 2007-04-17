@@ -2,8 +2,6 @@ package enginuity.logger.ecu.external;
 
 import java.util.List;
 
-import enginuity.logger.utec.commInterface.UtecInterface;
-
 public interface ExternalDataSource {
 
     String getName();

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import enginuity.logger.utec.commInterface.UtecInterface;
-
 public final class TestExternalDataSource implements ExternalDataSource {
 
     public String getName() {
