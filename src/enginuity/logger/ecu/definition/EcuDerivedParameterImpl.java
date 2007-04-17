@@ -37,7 +37,8 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
     private final Set<ConvertorUpdateListener> listeners = new HashSet<ConvertorUpdateListener>();
     private int selectedConvertorIndex = 0;
 
-    public EcuDerivedParameterImpl(String id, String name, String description, EcuData[] ecuDatas, EcuDerivedParameterConvertor[] convertors) {
+    public EcuDerivedParameterImpl(String id, String name, String description, EcuData[] ecuDatas,
+                                   EcuDerivedParameterConvertor[] convertors) {
         checkNotNullOrEmpty(name, "id");
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");

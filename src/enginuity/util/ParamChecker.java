@@ -77,11 +77,21 @@ public final class ParamChecker {
         }
     }
 
+    public static void checkBit(int bit) {
+        if (!isValidBit(bit)) {
+            throw new IllegalArgumentException("Bit must be between 0 and 7 inclusive.");
+        }
+    }
+
     public static boolean isNullOrEmpty(String param) {
         return param == null || param.length() == 0;
     }
 
     public static boolean isNullOrEmpty(Collection<?> param) {
         return param == null || param.isEmpty();
+    }
+
+    public static boolean isValidBit(int bit) {
+        return bit >= 0 && bit <= 7;
     }
 }

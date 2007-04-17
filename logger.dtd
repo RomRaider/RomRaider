@@ -21,7 +21,7 @@
 
 <!ELEMENT conversions ( conversion+ ) >
 
-<!ELEMENT parameter ( ( address | depends ), conversions ) >
+<!ELEMENT parameter ( ( address, conversions?) | (depends, conversions) ) >
 <!ATTLIST parameter ecubit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ) #IMPLIED >
 <!ATTLIST parameter ecubyteindex CDATA #IMPLIED >
 <!ATTLIST parameter desc CDATA #REQUIRED >
@@ -39,7 +39,7 @@
 
 <!ELEMENT switches ( switch+ ) >
 
-<!ELEMENT ecuparam ( ecu+, conversions ) >
+<!ELEMENT ecuparam ( ecu+, conversions? ) >
 <!ATTLIST ecuparam desc CDATA #REQUIRED >
 <!ATTLIST ecuparam name CDATA #REQUIRED >
 <!ATTLIST ecuparam id ID #REQUIRED >

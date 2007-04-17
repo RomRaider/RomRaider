@@ -26,6 +26,7 @@ import enginuity.io.connection.ConnectionPropertiesImpl;
 import enginuity.logger.ecu.comms.query.EcuInit;
 import enginuity.logger.ecu.definition.*;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+import static enginuity.util.ParamChecker.isValidBit;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -38,7 +39,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_ADDRESS = "address";
     private static final String TAG_DEPENDS = "depends";
     private static final String TAG_CONVERSION = "conversion";
-    private static final String TAG_CONVERSIONS = "conversions";
     private static final String TAG_REF = "ref";
     private static final String TAG_SWITCH = "switch";
     private static final String TAG_ECUPARAM = "ecuparam";
@@ -117,6 +117,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 desc = attributes.getValue(ATTR_DESC);
                 ecuByteIndex = attributes.getValue(ATTR_ECUBYTEINDEX);
                 ecuBit = attributes.getValue(ATTR_ECUBIT);
+                resetConvertorLists();
             } else if (TAG_ADDRESS.equals(qName)) {
                 String length = attributes.getValue(ATTR_LENGTH);
                 addressLength = length == null ? 1 : Integer.valueOf(length);
@@ -128,17 +129,18 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 derived = true;
             } else if (TAG_REF.equals(qName)) {
                 dependsList.add(attributes.getValue(ATTR_PARAMETER));
-            } else if (TAG_CONVERSIONS.equals(qName)) {
-                convertorList = new LinkedHashSet<EcuDataConvertor>();
-                derivedConvertorList = new LinkedHashSet<EcuDerivedParameterConvertor>();
             } else if (TAG_CONVERSION.equals(qName)) {
                 if (derived) {
                     derivedConvertorList.add(new EcuDerivedParameterConvertorImpl(attributes.getValue(ATTR_UNITS),
                             attributes.getValue(ATTR_EXPRESSION), attributes.getValue(ATTR_FORMAT)));
                 } else {
-                    convertorList.add(new EcuParameterConvertorImpl(attributes.getValue(ATTR_UNITS),
-                            attributes.getValue(ATTR_EXPRESSION), attributes.getValue(ATTR_FORMAT),
-                            FLOAT.equalsIgnoreCase(attributes.getValue(ATTR_STORAGETYPE))));
+                    if (isValidBit(address.getBit())) {
+                        convertorList.add(new EcuSwitchConvertorImpl(address.getBit()));
+                    } else {
+                        convertorList.add(new EcuParameterConvertorImpl(attributes.getValue(ATTR_UNITS),
+                                attributes.getValue(ATTR_EXPRESSION), attributes.getValue(ATTR_FORMAT),
+                                FLOAT.equalsIgnoreCase(attributes.getValue(ATTR_STORAGETYPE))));
+                    }
                 }
             } else if (TAG_SWITCH.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
@@ -151,6 +153,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);
                 desc = attributes.getValue(ATTR_DESC);
+                resetConvertorLists();
                 ecuAddressMap = new HashMap<String, EcuAddress>();
                 derived = false;
             } else if (TAG_ECU.equals(qName)) {
@@ -192,7 +195,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 } else {
                     if (ecuByteIndex == null || ecuBit == null || ecuInit == null || isSupportedParameter(ecuInit,
                             ecuByteIndex, ecuBit)) {
-                        EcuParameter param = new EcuParameterImpl(id, name, desc, address, 
+                        if (convertorList.isEmpty()) {
+                            convertorList.add(new EcuParameterConvertorImpl());
+                        }
+                        EcuParameter param = new EcuParameterImpl(id, name, desc, address,
                                 convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                         params.add(param);
                         ecuDataMap.put(param.getId(), param);
@@ -209,6 +215,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
+                    if (convertorList.isEmpty()) {
+                        convertorList.add(new EcuParameterConvertorImpl());
+                    }
                     EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
                             convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                     params.add(param);
@@ -236,6 +245,11 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
 
     public ConnectionProperties getConnectionProperties() {
         return connectionProperties;
+    }
+
+    private void resetConvertorLists() {
+        convertorList = new LinkedHashSet<EcuDataConvertor>();
+        derivedConvertorList = new LinkedHashSet<EcuDerivedParameterConvertor>();
     }
 
     private boolean isSupportedParameter(EcuInit ecuInit, String ecuByteIndex, String ecuBit) {

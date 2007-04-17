@@ -34,6 +34,10 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
     private final DecimalFormat format;
     private final boolean isFloat;
 
+    public EcuParameterConvertorImpl() {
+        this("Raw data", "x", "0", false);
+    }
+
     public EcuParameterConvertorImpl(String units, String expression, String format) {
         this(units, expression, format, false);
     }

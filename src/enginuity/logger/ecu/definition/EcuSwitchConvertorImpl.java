@@ -21,6 +21,8 @@
 
 package enginuity.logger.ecu.definition;
 
+import static enginuity.util.ParamChecker.checkBit;
+
 public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
     private final int bit;
 
@@ -44,12 +46,6 @@ public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
 
     public String toString() {
         return getUnits();
-    }
-
-    private void checkBit(int bit) {
-        if (bit < 0 || bit > 7) {
-            throw new IllegalArgumentException("Bit must be between 0 and 7 inclusive.");
-        }
     }
 
 }
