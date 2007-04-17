@@ -4,7 +4,7 @@
 <!ATTLIST address length CDATA #IMPLIED >
 <!ATTLIST address bit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ) #IMPLIED >
 
-<!ELEMENT ecu ( address+ ) >
+<!ELEMENT ecu ( address ) >
 <!ATTLIST ecu id CDATA #REQUIRED >
 
 <!ELEMENT ref EMPTY >

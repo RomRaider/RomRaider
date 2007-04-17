@@ -24,25 +24,12 @@ package enginuity.logger.ecu.definition.xml;
 import enginuity.io.connection.ConnectionProperties;
 import enginuity.io.connection.ConnectionPropertiesImpl;
 import enginuity.logger.ecu.comms.query.EcuInit;
-import enginuity.logger.ecu.definition.EcuData;
-import enginuity.logger.ecu.definition.EcuDataConvertor;
-import enginuity.logger.ecu.definition.EcuDerivedParameterConvertor;
-import enginuity.logger.ecu.definition.EcuDerivedParameterConvertorImpl;
-import enginuity.logger.ecu.definition.EcuDerivedParameterImpl;
-import enginuity.logger.ecu.definition.EcuParameter;
-import enginuity.logger.ecu.definition.EcuParameterConvertorImpl;
-import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.*;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String FLOAT = "float";
@@ -89,11 +76,11 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String ecuByteIndex;
     private String ecuBit;
     private String ecuIds;
-    private Set<String> addressList;
+    private EcuAddress address;
     private Set<String> dependsList;
-    private Map<String, String[]> ecuAddressMap;
+    private Map<String, EcuAddress> ecuAddressMap;
     private boolean derived;
-    private int bit;
+    private int addressBit;
     private int addressLength;
     private Set<EcuDataConvertor> convertorList;
     private Set<EcuDerivedParameterConvertor> derivedConvertorList;
@@ -133,9 +120,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             } else if (TAG_ADDRESS.equals(qName)) {
                 String length = attributes.getValue(ATTR_LENGTH);
                 addressLength = length == null ? 1 : Integer.valueOf(length);
-                String bitx = attributes.getValue(ATTR_BIT);
-                bit = bitx == null ? -1 : Integer.valueOf(bitx);
-                addressList = new LinkedHashSet<String>(addressLength);
+                String bit = attributes.getValue(ATTR_BIT);
+                addressBit = bit == null ? -1 : Integer.valueOf(bit);
                 derived = false;
             } else if (TAG_DEPENDS.equals(qName)) {
                 dependsList = new LinkedHashSet<String>();
@@ -158,15 +144,14 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);
                 desc = attributes.getValue(ATTR_DESC);
-                addressList = new HashSet<String>();
-                addressList.add(attributes.getValue(ATTR_BYTE));
-                bit = Integer.valueOf(attributes.getValue(ATTR_BIT));
+                address = new EcuAddressImpl(attributes.getValue(ATTR_BYTE), 1,
+                        Integer.valueOf(attributes.getValue(ATTR_BIT)));
                 derived = false;
             } else if (TAG_ECUPARAM.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);
                 desc = attributes.getValue(ATTR_DESC);
-                ecuAddressMap = new HashMap<String, String[]>();
+                ecuAddressMap = new HashMap<String, EcuAddress>();
                 derived = false;
             } else if (TAG_ECU.equals(qName)) {
                 ecuIds = attributes.getValue(ATTR_ID);
@@ -180,14 +165,14 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             charBuffer.append(ch, start, length);
         }
     }
-//FIXME: Fix all the commented out stuff!!!
+
     public void endElement(String uri, String localName, String qName) {
         if (TAG_PROTOCOL.equals(qName)) {
             parseProtocol = false;
         } else if (parseProtocol) {
             if (TAG_ADDRESS.equals(qName)) {
                 String startAddress = charBuffer.toString();
-//                addressList.addAll(getAddressList(startAddress, addressLength));
+                address = new EcuAddressImpl(startAddress, addressLength, addressBit);
             } else if (TAG_PARAMETER.equals(qName)) {
                 if (derived) {
                     Set<EcuData> dependencies = new HashSet<EcuData>();
@@ -207,32 +192,31 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 } else {
                     if (ecuByteIndex == null || ecuBit == null || ecuInit == null || isSupportedParameter(ecuInit,
                             ecuByteIndex, ecuBit)) {
-//                        EcuParameter param = new EcuParameterImpl(id, name, desc, toArray(addressList),
-//                                convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
-//                        params.add(param);
-//                        ecuDataMap.put(param.getId(), param);
+                        EcuParameter param = new EcuParameterImpl(id, name, desc, address, 
+                                convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+                        params.add(param);
+                        ecuDataMap.put(param.getId(), param);
                     }
                 }
             } else if (TAG_SWITCH.equals(qName)) {
-//                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList),
-//                        new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)});
-//                switches.add(ecuSwitch);
-//                ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
+                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address,
+                        new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())});
+                switches.add(ecuSwitch);
+                ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
                 if (id.equalsIgnoreCase(fileLoggingControllerSwitchId)) {
-//                    fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList),
-//                            new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)});
+                    fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, address,
+                            new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())});
                 }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
-//                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
-//                            convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
-//                    params.add(param);
-//                    ecuDataMap.put(param.getId(), param);
+                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
+                            convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+                    params.add(param);
+                    ecuDataMap.put(param.getId(), param);
                 }
             } else if (TAG_ECU.equals(qName)) {
-                String[] addresses = toArray(addressList);
                 for (String ecuId : ecuIds.split(",")) {
-                    ecuAddressMap.put(ecuId, addresses);
+                    ecuAddressMap.put(ecuId, address);
                 }
             }
         }
@@ -264,11 +248,5 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         } else {
             return false;
         }
-    }
-
-    private String[] toArray(Set<String> set) {
-        String[] addresses = new String[set.size()];
-        set.toArray(addresses);
-        return addresses;
     }
 }
