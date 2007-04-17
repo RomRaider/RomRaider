@@ -33,7 +33,7 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
     private final String name;
     private final String description;
     private final EcuDerivedParameterConvertor[] convertors;
-    private final String[] addresses;
+    private final EcuAddress address;
     private final Set<ConvertorUpdateListener> listeners = new HashSet<ConvertorUpdateListener>();
     private int selectedConvertorIndex = 0;
 
@@ -47,7 +47,7 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
         this.name = name;
         this.description = description;
         this.convertors = convertors;
-        addresses = setAddresses(ecuDatas);
+        this.address = buildCombinedAddress(ecuDatas);
         setEcuDatas(ecuDatas);
     }
 
@@ -63,8 +63,8 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
         return description;
     }
 
-    public String[] getAddresses() {
-        return addresses;
+    public EcuAddress getAddress() {
+        return address;
     }
 
     public EcuDataConvertor getSelectedConvertor() {
@@ -96,16 +96,16 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
         listeners.add(listener);
     }
 
-    private String[] setAddresses(EcuData[] ecuDatas) {
+    private EcuAddress buildCombinedAddress(EcuData[] ecuDatas) {
         String[] addresses = new String[0];
         for (EcuData ecuData : ecuDatas) {
-            String[] newAddresses = ecuData.getAddresses();
+            String[] newAddresses = ecuData.getAddress().getAddresses();
             String[] tmp = new String[addresses.length + newAddresses.length];
             System.arraycopy(addresses, 0, tmp, 0, addresses.length);
             System.arraycopy(newAddresses, 0, tmp, addresses.length, newAddresses.length);
             addresses = tmp;
         }
-        return addresses;
+        return new EcuAddressImpl(addresses);
     }
 
     private void setEcuDatas(EcuData[] ecuDatas) {

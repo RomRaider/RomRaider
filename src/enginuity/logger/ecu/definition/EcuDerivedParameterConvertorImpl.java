@@ -51,7 +51,7 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
         String exp = expression;
         int index = 0;
         for (EcuData ecuData : ecuDatas) {
-            int length = ecuData.getAddresses().length;
+            int length = ecuData.getAddress().getLength();
             byte[] tmp = new byte[length];
             System.arraycopy(bytes, index, tmp, 0, length);
             ExpressionInfo expressionInfo = expressionInfoMap.get(ecuData.getId());

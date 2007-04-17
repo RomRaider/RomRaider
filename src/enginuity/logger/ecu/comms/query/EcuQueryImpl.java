@@ -22,7 +22,6 @@
 package enginuity.logger.ecu.comms.query;
 
 import enginuity.logger.ecu.definition.EcuData;
-import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 
@@ -36,12 +35,12 @@ public final class EcuQueryImpl implements EcuQuery {
         checkNotNull(ecuData, callback);
         this.ecuData = ecuData;
         this.callback = callback;
-        bytes = getAddressBytes(ecuData);
+        bytes = ecuData.getAddress().getBytes();
         hex = asHex(bytes);
     }
 
     public String[] getAddresses() {
-        return ecuData.getAddresses();
+        return ecuData.getAddress().getAddresses();
     }
 
     public byte[] getBytes() {
@@ -66,18 +65,5 @@ public final class EcuQueryImpl implements EcuQuery {
 
     public String toString() {
         return "0x" + getHex();
-    }
-
-    private byte[] getAddressBytes(EcuData ecuData) {
-        String[] addresses = ecuData.getAddresses();
-        byte[] bytes = new byte[0];
-        for (String address : addresses) {
-            byte[] tmp1 = asBytes(address);
-            byte[] tmp2 = new byte[bytes.length + tmp1.length];
-            System.arraycopy(bytes, 0, tmp2, 0, bytes.length);
-            System.arraycopy(tmp1, 0, tmp2, bytes.length, tmp1.length);
-            bytes = tmp2;
-        }
-        return bytes;
     }
 }

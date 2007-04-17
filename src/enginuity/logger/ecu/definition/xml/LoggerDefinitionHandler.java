@@ -31,11 +31,7 @@ import enginuity.logger.ecu.definition.EcuDerivedParameterConvertorImpl;
 import enginuity.logger.ecu.definition.EcuDerivedParameterImpl;
 import enginuity.logger.ecu.definition.EcuParameter;
 import enginuity.logger.ecu.definition.EcuParameterConvertorImpl;
-import enginuity.logger.ecu.definition.EcuParameterImpl;
 import enginuity.logger.ecu.definition.EcuSwitch;
-import enginuity.logger.ecu.definition.EcuSwitchConvertorImpl;
-import enginuity.logger.ecu.definition.EcuSwitchImpl;
-import enginuity.util.HexUtil;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -44,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -138,6 +133,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             } else if (TAG_ADDRESS.equals(qName)) {
                 String length = attributes.getValue(ATTR_LENGTH);
                 addressLength = length == null ? 1 : Integer.valueOf(length);
+                String bitx = attributes.getValue(ATTR_BIT);
+                bit = bitx == null ? -1 : Integer.valueOf(bitx);
                 addressList = new LinkedHashSet<String>(addressLength);
                 derived = false;
             } else if (TAG_DEPENDS.equals(qName)) {
@@ -183,14 +180,14 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             charBuffer.append(ch, start, length);
         }
     }
-
+//FIXME: Fix all the commented out stuff!!!
     public void endElement(String uri, String localName, String qName) {
         if (TAG_PROTOCOL.equals(qName)) {
             parseProtocol = false;
         } else if (parseProtocol) {
             if (TAG_ADDRESS.equals(qName)) {
                 String startAddress = charBuffer.toString();
-                addressList.addAll(getAddressList(startAddress, addressLength));
+//                addressList.addAll(getAddressList(startAddress, addressLength));
             } else if (TAG_PARAMETER.equals(qName)) {
                 if (derived) {
                     Set<EcuData> dependencies = new HashSet<EcuData>();
@@ -210,27 +207,27 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 } else {
                     if (ecuByteIndex == null || ecuBit == null || ecuInit == null || isSupportedParameter(ecuInit,
                             ecuByteIndex, ecuBit)) {
-                        EcuParameter param = new EcuParameterImpl(id, name, desc, toArray(addressList),
-                                convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
-                        params.add(param);
-                        ecuDataMap.put(param.getId(), param);
+//                        EcuParameter param = new EcuParameterImpl(id, name, desc, toArray(addressList),
+//                                convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+//                        params.add(param);
+//                        ecuDataMap.put(param.getId(), param);
                     }
                 }
             } else if (TAG_SWITCH.equals(qName)) {
-                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList),
-                        new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)});
-                switches.add(ecuSwitch);
-                ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
+//                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList),
+//                        new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)});
+//                switches.add(ecuSwitch);
+//                ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
                 if (id.equalsIgnoreCase(fileLoggingControllerSwitchId)) {
-                    fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList),
-                            new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)});
+//                    fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, toArray(addressList),
+//                            new EcuDataConvertor[]{new EcuSwitchConvertorImpl(bit)});
                 }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
-                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
-                            convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
-                    params.add(param);
-                    ecuDataMap.put(param.getId(), param);
+//                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
+//                            convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
+//                    params.add(param);
+//                    ecuDataMap.put(param.getId(), param);
                 }
             } else if (TAG_ECU.equals(qName)) {
                 String[] addresses = toArray(addressList);
@@ -255,31 +252,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
 
     public ConnectionProperties getConnectionProperties() {
         return connectionProperties;
-    }
-
-    private List<String> getAddressList(String startAddress, int addressLength) {
-        List<String> addresses = new LinkedList<String>();
-        int start = HexUtil.hexToInt(startAddress);
-        for (int i = 0; i < addressLength; i++) {
-            addresses.add(padAddress(HexUtil.intToHexString(start + i), startAddress.length()));
-        }
-//        System.out.println(startAddress + ":" + addressLength + " => " + addresses);
-        return addresses;
-    }
-
-    private String padAddress(String address, int length) {
-        if (address.length() == length) {
-            return address;
-        } else {
-            StringBuilder builder = new StringBuilder(length);
-            builder.append("0x");
-            String s = address.substring(2);
-            for (int i = 0; i < length - s.length() - 2; i++) {
-                builder.append('0');
-            }
-            builder.append(s);
-            return builder.toString();
-        }
     }
 
     private boolean isSupportedParameter(EcuInit ecuInit, String ecuByteIndex, String ecuBit) {

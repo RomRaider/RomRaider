@@ -23,6 +23,6 @@ package enginuity.logger.ecu.definition;
 
 public interface EcuData extends LoggerData {
 
-    String[] getAddresses();
+    EcuAddress getAddress();
 
 }
