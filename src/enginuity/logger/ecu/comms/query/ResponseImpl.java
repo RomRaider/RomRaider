@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ResponseImpl implements Response {
+    private static final double ZERO = 0.0;
     private final Map<LoggerData, Double> dataValues = new LinkedHashMap<LoggerData, Double>();
     private final long timestamp;
 
@@ -23,7 +24,8 @@ public class ResponseImpl implements Response {
     }
 
     public double getDataValue(LoggerData data) {
-        return dataValues.get(data);
+        Double value = dataValues.get(data);
+        return value == null ? ZERO : value;
     }
 
     public long getTimestamp() {

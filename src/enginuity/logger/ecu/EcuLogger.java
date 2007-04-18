@@ -50,6 +50,8 @@ import enginuity.logger.ecu.ui.StatusIndicator;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManager;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManagerImpl;
 import enginuity.logger.ecu.ui.handler.dash.DashboardUpdateHandler;
+import enginuity.logger.ecu.ui.handler.file.FileLoggerControllerSwitchHandler;
+import enginuity.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitorImpl;
 import enginuity.logger.ecu.ui.handler.file.FileUpdateHandlerImpl;
 import enginuity.logger.ecu.ui.handler.graph.GraphUpdateHandler;
 import enginuity.logger.ecu.ui.handler.livedata.LiveDataTableModel;
@@ -300,24 +302,19 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void initFileLoggingController(final EcuSwitch fileLoggingControllerSwitch) {
-        // add logger and setup callback
-        controller.setFileLoggerSwitch(fileLoggingControllerSwitch);
-
-        //FIXME: Add auto button toggle on defog switch back in somehow! Use a FileLoggingUpdateHandler or something
-//        controller.setFileLoggerSwitch(fileLoggingControllerSwitch, new LoggerCallback() {
-//            public void callback(double value) {
-//                // update handlers
-//                if (settings.isFileLoggingControllerSwitchActive()) {
-//                    boolean logToFile = (int) value == 1;
-//                    logToFileButton.setSelected(logToFile);
-//                    if (logToFile) {
-//                        fileUpdateHandler.start();
-//                    } else {
-//                        fileUpdateHandler.stop();
-//                    }
-//                }
-//            }
-//        });
+        controller.setFileLoggerSwitchMonitor(new FileLoggerControllerSwitchMonitorImpl(fileLoggingControllerSwitch, new FileLoggerControllerSwitchHandler() {
+            public void handleSwitch(double switchValue) {
+                if (settings.isFileLoggingControllerSwitchActive()) {
+                    boolean logToFile = (int) switchValue == 1;
+                    logToFileButton.setSelected(logToFile);
+                    if (logToFile) {
+                        fileUpdateHandler.start();
+                    } else {
+                        fileUpdateHandler.stop();
+                    }
+                }
+            }
+        }));
     }
 
     private void applyUserProfile(UserProfile profile) {

@@ -36,12 +36,12 @@ import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.comms.query.ResponseImpl;
 import enginuity.logger.ecu.definition.EcuData;
 import static enginuity.logger.ecu.definition.EcuDataType.EXTERNAL;
-import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
+import enginuity.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitor;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.runAsDaemon;
@@ -67,6 +67,7 @@ public final class QueryManagerImpl implements QueryManager {
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
     private final DataUpdateHandler[] dataUpdateHandlers;
+    private FileLoggerControllerSwitchMonitor monitor;
     private EcuQuery fileLoggerQuery;
     private Thread queryManagerThread;
     private boolean started;
@@ -86,9 +87,10 @@ public final class QueryManagerImpl implements QueryManager {
         listeners.add(listener);
     }
 
-    public void setFileLoggerQuery(EcuSwitch ecuSwitch) {
-        checkNotNull(ecuSwitch);
-        fileLoggerQuery = new EcuQueryImpl(ecuSwitch);
+    public void setFileLoggerSwitchMonitor(FileLoggerControllerSwitchMonitor monitor) {
+        checkNotNull(monitor);
+        this.monitor = monitor;
+        fileLoggerQuery = new EcuQueryImpl(monitor.getEcuSwitch());
     }
 
     public synchronized void addQuery(String callerId, LoggerData loggerData) {
@@ -191,7 +193,7 @@ public final class QueryManagerImpl implements QueryManager {
 
     private void sendEcuQueries(TransmissionManager txManager) {
         List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
-        if (fileLoggerQuery != null && !ecuQueries.contains(fileLoggerQuery)) {
+        if (fileLoggerQuery != null) {
             ecuQueries.add(fileLoggerQuery);
         }
         txManager.sendQueries(ecuQueries);
@@ -206,10 +208,12 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private void handleQueryResponse() {
+        monitor.monitorFileLoggerSwitch(fileLoggerQuery.getResponse());
+        final Response response = buildResponse(queryMap.values());
         for (final DataUpdateHandler dataUpdateHandler : dataUpdateHandlers) {
             runAsDaemon(new Runnable() {
                 public void run() {
-                    dataUpdateHandler.handleDataUpdate(buildResponse(queryMap.values()));
+                    dataUpdateHandler.handleDataUpdate(response);
                 }
             });
         }

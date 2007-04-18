@@ -25,11 +25,11 @@ import enginuity.Settings;
 import enginuity.logger.ecu.comms.manager.QueryManager;
 import enginuity.logger.ecu.comms.manager.QueryManagerImpl;
 import enginuity.logger.ecu.comms.query.EcuInitCallback;
-import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
+import enginuity.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitor;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class LoggerControllerImpl implements LoggerController {
@@ -46,10 +46,10 @@ public final class LoggerControllerImpl implements LoggerController {
         queryManager.addListener(listener);
     }
 
-    public void setFileLoggerSwitch(EcuSwitch ecuSwitch) {
-        checkNotNull(ecuSwitch);
-        System.out.println("Setting file logger switch:   " + ecuSwitch.getName());
-        queryManager.setFileLoggerQuery(ecuSwitch);
+    public void setFileLoggerSwitchMonitor(FileLoggerControllerSwitchMonitor monitor) {
+        checkNotNull(monitor);
+        System.out.println("Setting file logger switch monitor:   " + monitor.getEcuSwitch().getName());
+        queryManager.setFileLoggerSwitchMonitor(monitor);
     }
 
     public void addLogger(String callerId, LoggerData loggerData) {
