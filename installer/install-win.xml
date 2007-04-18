@@ -22,7 +22,8 @@
     </resources>    
     
     <panels>
-        <!-- <panel classname="HelloPanel"/> -->
+        <!-- <panel classname="HelloPanel"/>
+ -->
         <panel classname="InfoPanel"/>
         <panel classname="LicencePanel"/>
         <panel classname="TargetPanel"/> 
@@ -69,9 +70,8 @@
         				
         		<file src="lib/logger/jcommon-1.0.7.jar" targetdir="$INSTALL_PATH/lib" />
         		<file src="lib/logger/jfreechart-1.0.3.jar" targetdir="$INSTALL_PATH/lib" />
-        		<file src="lib/logger/rxtx/INSTALL" targetdir="$INSTALL_PATH/lib" />
         		<file src="lib/logger/rxtx/RXTXcomm.jar" targetdir="$INSTALL_PATH/lib" />
-        		<file src="lib/logger/rxtx/rxtxSerial.dll" targetdir="$INSTALL_PATH/lib" />
+        		<file src="lib/logger/rxtx/win32/rxtxSerial.dll" targetdir="$INSTALL_PATH/lib" />
             	
         </pack>
         <!-- END Base Pack -->        
