@@ -62,6 +62,7 @@ import enginuity.logger.ecu.ui.paramlist.ParameterListTable;
 import enginuity.logger.ecu.ui.paramlist.ParameterListTableModel;
 import enginuity.logger.ecu.ui.paramlist.ParameterRow;
 import enginuity.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
+import enginuity.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
@@ -70,6 +71,7 @@ import static javax.swing.BorderFactory.createLoweredBevelBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import static javax.swing.JLabel.RIGHT;
@@ -88,6 +90,7 @@ import javax.swing.JTabbedPane;
 import static javax.swing.JTabbedPane.BOTTOM;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
+import static javax.swing.KeyStroke.getKeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
@@ -121,7 +124,6 @@ TODO: Clean up this class!
 So much to do, so little time....
 
 TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
-TODO: Add ecu id and calid to ecu_defs
 TODO: parse ecu info from ecu defs (old and new formats) based on ecu id and display in UI
 TODO: Rewrite user profile application and saving to allow tab specific settings (eg. warn levels on dash tab)
 TODO: Add custom graph tab (eg. engine speed vs. boost, etc.)
@@ -613,6 +615,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 }
             }
         });
+        logToFileButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F1"), "toggleFileLogging");
+        logToFileButton.getActionMap().put("toggleFileLogging", new ToggleButtonAction(this, logToFileButton));
         return logToFileButton;
     }
 
