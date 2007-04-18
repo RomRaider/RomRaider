@@ -228,9 +228,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
         dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
-        dataUpdateHandlerManager.addHandler(dataHandlerManager);
-        dataUpdateHandlerManager.addHandler(graphHandlerManager);
-        dataUpdateHandlerManager.addHandler(dashboardHandlerManager);
     }
 
     private void initControllerListeners() {
@@ -493,6 +490,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         graphHandlerManager.addHandler(threadedFileUpdateHandler);
         dashboardHandlerManager.addHandler(startHandlerInThread(dashboardUpdateHandler));
         dashboardHandlerManager.addHandler(threadedFileUpdateHandler);
+
+        dataUpdateHandlerManager.addHandler(dataHandlerManager);
+        dataUpdateHandlerManager.addHandler(graphHandlerManager);
+        dataUpdateHandlerManager.addHandler(dashboardHandlerManager);
     }
 
     private DataUpdateHandler startHandlerInThread(DataUpdateHandler handler) {
