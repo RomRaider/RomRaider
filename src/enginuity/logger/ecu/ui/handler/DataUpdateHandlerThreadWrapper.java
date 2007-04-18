@@ -21,6 +21,7 @@
 
 package enginuity.logger.ecu.ui.handler;
 
+import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.LoggerData;
 import static enginuity.util.ThreadUtil.sleep;
 
@@ -29,8 +30,8 @@ import static java.util.Collections.synchronizedList;
 import java.util.List;
 
 public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, Runnable {
-    private final List<DataUpdate> updateList = synchronizedList(new ArrayList<DataUpdate>());
-    private final List<DataUpdate> workingList = synchronizedList(new ArrayList<DataUpdate>());
+    private final List<Response> updateList = synchronizedList(new ArrayList<Response>());
+    private final List<Response> workingList = synchronizedList(new ArrayList<Response>());
     private final DataUpdateHandler wrappee;
     private boolean stop = false;
 
@@ -42,8 +43,8 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
         wrappee.registerData(loggerData);
     }
 
-    public synchronized void handleDataUpdate(LoggerData loggerData, double value, long timestamp) {
-        updateList.add(new DataUpdate(loggerData, value, timestamp));
+    public synchronized void handleDataUpdate(Response response) {
+        updateList.add(response);
     }
 
     public void deregisterData(LoggerData loggerData) {
@@ -62,8 +63,8 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
     public void run() {
         while (!stop) {
             updateWorkingList();
-            for (final DataUpdate dataUpdate : workingList) {
-                wrappee.handleDataUpdate(dataUpdate.getLoggerData(), dataUpdate.getValue(), dataUpdate.getTimestamp());
+            for (final Response response : workingList) {
+                wrappee.handleDataUpdate(response);
             }
             sleep(3);
         }
@@ -71,34 +72,10 @@ public final class DataUpdateHandlerThreadWrapper implements DataUpdateHandler, 
 
     private synchronized void updateWorkingList() {
         workingList.clear();
-        for (DataUpdate dataUpdate : updateList) {
-            workingList.add(dataUpdate);
+        for (Response response : updateList) {
+            workingList.add(response);
         }
         updateList.clear();
     }
 
-    private static final class DataUpdate {
-        private final LoggerData loggerData;
-        private final double value;
-        private final long timestamp;
-
-        public DataUpdate(LoggerData loggerData, double value, long timestamp) {
-            this.loggerData = loggerData;
-            this.value = value;
-            this.timestamp = timestamp;
-        }
-
-        public LoggerData getLoggerData() {
-            return loggerData;
-        }
-
-        public long getTimestamp() {
-            return timestamp;
-        }
-
-        public double getValue() {
-            return value;
-        }
-
-    }
 }

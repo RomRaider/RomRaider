@@ -1,5 +1,6 @@
 package enginuity.logger.ecu.ui.handler.graph;
 
+import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
@@ -116,15 +117,16 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         makeCompactGrid(graphPanel, 1, 1, 2, 2, 2, 2);
     }
 
-    public synchronized void handleDataUpdate(LoggerData loggerData, final double value, final long timestamp) {
-        // update chart
-        final XYSeries series = seriesMap.get(loggerData);
-        if (series != null && !paused) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    series.add((timestamp - startTime) / 1000.0, value);
-                }
-            });
+    public synchronized void handleDataUpdate(final Response response) {
+        for (final LoggerData loggerData : response.getData()) {
+            final XYSeries series = seriesMap.get(loggerData);
+            if (series != null && !paused) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        series.add((response.getTimestamp() - startTime) / 1000.0, response.getDataValue(loggerData));
+                    }
+                });
+            }
         }
     }
 

@@ -22,6 +22,7 @@
 package enginuity.logger.ecu.ui.handler.file;
 
 import enginuity.Settings;
+import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
@@ -61,11 +62,13 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         }
     }
 
-    public synchronized void handleDataUpdate(LoggerData loggerData, double value, long timestamp) {
+    public synchronized void handleDataUpdate(Response response) {
         if (fileLogger.isStarted()) {
-            currentLine.updateParamValue(loggerData, loggerData.getSelectedConvertor().format(value));
+            for (LoggerData loggerData : response.getData()) {
+                currentLine.updateParamValue(loggerData, loggerData.getSelectedConvertor().format(response.getDataValue(loggerData)));
+            }
             if (currentLine.isFull()) {
-                fileLogger.writeLine(currentLine.values(), timestamp);
+                fileLogger.writeLine(currentLine.values(), response.getTimestamp());
                 resetLine();
             }
         }

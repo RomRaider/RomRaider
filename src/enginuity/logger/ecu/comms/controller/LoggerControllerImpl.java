@@ -25,19 +25,20 @@ import enginuity.Settings;
 import enginuity.logger.ecu.comms.manager.QueryManager;
 import enginuity.logger.ecu.comms.manager.QueryManagerImpl;
 import enginuity.logger.ecu.comms.query.EcuInitCallback;
-import enginuity.logger.ecu.comms.query.LoggerCallback;
 import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
+import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManager;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class LoggerControllerImpl implements LoggerController {
     private final QueryManager queryManager;
 
-    public LoggerControllerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener) {
-        checkNotNull(settings, ecuInitCallback, messageListener);
-        queryManager = new QueryManagerImpl(settings, ecuInitCallback, messageListener);
+    public LoggerControllerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener,
+                                DataUpdateHandlerManager dataUpdateHandlerManager) {
+        checkNotNull(settings, ecuInitCallback, messageListener, dataUpdateHandlerManager);
+        queryManager = new QueryManagerImpl(settings, ecuInitCallback, messageListener, dataUpdateHandlerManager);
     }
 
     public synchronized void addListener(StatusChangeListener listener) {
@@ -45,16 +46,16 @@ public final class LoggerControllerImpl implements LoggerController {
         queryManager.addListener(listener);
     }
 
-    public void setFileLoggerSwitch(EcuSwitch ecuSwitch, LoggerCallback callback) {
-        checkNotNull(ecuSwitch, callback);
+    public void setFileLoggerSwitch(EcuSwitch ecuSwitch) {
+        checkNotNull(ecuSwitch);
         System.out.println("Setting file logger switch:   " + ecuSwitch.getName());
-        queryManager.setFileLoggerQuery(ecuSwitch, callback);
+        queryManager.setFileLoggerQuery(ecuSwitch);
     }
 
-    public void addLogger(String callerId, LoggerData loggerData, LoggerCallback callback) {
-        checkNotNull(loggerData, callback);
+    public void addLogger(String callerId, LoggerData loggerData) {
+        checkNotNull(loggerData);
         System.out.println("Adding logger:   " + loggerData.getName());
-        queryManager.addQuery(callerId, loggerData, callback);
+        queryManager.addQuery(callerId, loggerData);
     }
 
     public void removeLogger(String callerId, LoggerData loggerData) {

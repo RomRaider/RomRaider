@@ -27,7 +27,6 @@ import enginuity.logger.ecu.comms.controller.LoggerController;
 import enginuity.logger.ecu.comms.controller.LoggerControllerImpl;
 import enginuity.logger.ecu.comms.query.EcuInit;
 import enginuity.logger.ecu.comms.query.EcuInitCallback;
-import enginuity.logger.ecu.comms.query.LoggerCallback;
 import enginuity.logger.ecu.definition.EcuDataLoader;
 import enginuity.logger.ecu.definition.EcuDataLoaderImpl;
 import enginuity.logger.ecu.definition.EcuParameter;
@@ -142,6 +141,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JLabel statsLabel;
     private JTabbedPane tabbedPane;
     private SerialPortComboBox portsComboBox;
+    private DataUpdateHandlerManager dataUpdateHandlerManager;
     private DataUpdateHandlerManager dataHandlerManager;
     private DataRegistrationBroker dataTabBroker;
     private ParameterListTableModel dataTabParamListTableModel;
@@ -199,7 +199,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 }
             }
         };
-        controller = new LoggerControllerImpl(settings, ecuInitCallback, this);
+        dataUpdateHandlerManager = new DataUpdateHandlerManagerImpl();
+        controller = new LoggerControllerImpl(settings, ecuInitCallback, this, dataUpdateHandlerManager);
         messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
         ecuIdLabel = new JLabel(buildEcuIdLabelText());
         statsLabel = buildStatsLabel();
@@ -227,6 +228,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
         dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
+        dataUpdateHandlerManager.addHandler(dataHandlerManager);
+        dataUpdateHandlerManager.addHandler(graphHandlerManager);
+        dataUpdateHandlerManager.addHandler(dashboardHandlerManager);
     }
 
     private void initControllerListeners() {
@@ -302,20 +306,23 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private void initFileLoggingController(final EcuSwitch fileLoggingControllerSwitch) {
         // add logger and setup callback
-        controller.setFileLoggerSwitch(fileLoggingControllerSwitch, new LoggerCallback() {
-            public void callback(double value) {
-                // update handlers
-                if (settings.isFileLoggingControllerSwitchActive()) {
-                    boolean logToFile = (int) value == 1;
-                    logToFileButton.setSelected(logToFile);
-                    if (logToFile) {
-                        fileUpdateHandler.start();
-                    } else {
-                        fileUpdateHandler.stop();
-                    }
-                }
-            }
-        });
+        controller.setFileLoggerSwitch(fileLoggingControllerSwitch);
+
+        //FIXME: Add auto button toggle on defog switch back in somehow! Use a FileLoggingUpdateHandler or something
+//        controller.setFileLoggerSwitch(fileLoggingControllerSwitch, new LoggerCallback() {
+//            public void callback(double value) {
+//                // update handlers
+//                if (settings.isFileLoggingControllerSwitchActive()) {
+//                    boolean logToFile = (int) value == 1;
+//                    logToFileButton.setSelected(logToFile);
+//                    if (logToFile) {
+//                        fileUpdateHandler.start();
+//                    } else {
+//                        fileUpdateHandler.stop();
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void applyUserProfile(UserProfile profile) {
@@ -778,9 +785,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void cleanUpUpdateHandlers() {
-        dataHandlerManager.cleanUp();
-        graphHandlerManager.cleanUp();
-        dashboardHandlerManager.cleanUp();
+        dataUpdateHandlerManager.cleanUp();
     }
 
     public Settings getSettings() {

@@ -21,6 +21,7 @@
 
 package enginuity.logger.ecu.ui.handler.dash;
 
+import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
@@ -46,10 +47,12 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
         repaintDashboardPanel();
     }
 
-    public synchronized void handleDataUpdate(LoggerData loggerData, double value, long timestamp) {
-        Gauge gauge = gauges.get(loggerData);
-        if (gauge != null) {
-            gauge.updateValue(value);
+    public synchronized void handleDataUpdate(Response response) {
+        for (LoggerData loggerData : response.getData()) {
+            Gauge gauge = gauges.get(loggerData);
+            if (gauge != null) {
+                gauge.updateValue(response.getDataValue(loggerData));
+            }
         }
     }
 

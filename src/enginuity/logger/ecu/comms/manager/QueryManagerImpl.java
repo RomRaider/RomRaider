@@ -31,8 +31,9 @@ import enginuity.logger.ecu.comms.query.EcuQuery;
 import enginuity.logger.ecu.comms.query.EcuQueryImpl;
 import enginuity.logger.ecu.comms.query.ExternalQuery;
 import enginuity.logger.ecu.comms.query.ExternalQueryImpl;
-import enginuity.logger.ecu.comms.query.LoggerCallback;
 import enginuity.logger.ecu.comms.query.Query;
+import enginuity.logger.ecu.comms.query.Response;
+import enginuity.logger.ecu.comms.query.ResponseImpl;
 import enginuity.logger.ecu.definition.EcuData;
 import static enginuity.logger.ecu.definition.EcuDataType.EXTERNAL;
 import enginuity.logger.ecu.definition.EcuSwitch;
@@ -40,6 +41,7 @@ import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
+import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManager;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.sleep;
@@ -63,16 +65,19 @@ public final class QueryManagerImpl implements QueryManager {
     private final Settings settings;
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
+    private final DataUpdateHandlerManager dataUpdateHandlerManager;
     private EcuQuery fileLoggerQuery;
     private Thread queryManagerThread;
     private boolean started;
     private boolean stop;
 
-    public QueryManagerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener) {
-        checkNotNull(settings, ecuInitCallback, messageListener);
+    public QueryManagerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener,
+                            DataUpdateHandlerManager dataUpdateHandlerManager) {
+        checkNotNull(settings, ecuInitCallback, messageListener, dataUpdateHandlerManager);
         this.settings = settings;
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
+        this.dataUpdateHandlerManager = dataUpdateHandlerManager;
     }
 
     public synchronized void addListener(StatusChangeListener listener) {
@@ -80,19 +85,19 @@ public final class QueryManagerImpl implements QueryManager {
         listeners.add(listener);
     }
 
-    public void setFileLoggerQuery(EcuSwitch ecuSwitch, LoggerCallback callback) {
-        checkNotNull(ecuSwitch, callback);
-        fileLoggerQuery = new EcuQueryImpl(ecuSwitch, callback);
+    public void setFileLoggerQuery(EcuSwitch ecuSwitch) {
+        checkNotNull(ecuSwitch);
+        fileLoggerQuery = new EcuQueryImpl(ecuSwitch);
     }
 
-    public synchronized void addQuery(String callerId, LoggerData loggerData, LoggerCallback callback) {
-        checkNotNull(callerId, loggerData, callback);
+    public synchronized void addQuery(String callerId, LoggerData loggerData) {
+        checkNotNull(callerId, loggerData);
         //FIXME: This is a hack!!
         String queryId = buildQueryId(callerId, loggerData);
         if (loggerData.getDataType() == EXTERNAL) {
-            addList.put(queryId, new ExternalQueryImpl((ExternalData) loggerData, callback));
+            addList.put(queryId, new ExternalQueryImpl((ExternalData) loggerData));
         } else {
-            addList.put(queryId, new EcuQueryImpl((EcuData) loggerData, callback));
+            addList.put(queryId, new EcuQueryImpl((EcuData) loggerData));
         }
     }
 
@@ -176,8 +181,9 @@ public final class QueryManagerImpl implements QueryManager {
                     List<ExternalQuery> externalQueries = filterExternalQueries(queryMap.values());
                     for (ExternalQuery externalQuery : externalQueries) {
                         //FIXME: This is a hack!!
-                        externalQuery.setResponse(externalQuery.getExternalData().getSelectedConvertor().convert(null));
+                        externalQuery.setResponse(externalQuery.getLoggerData().getSelectedConvertor().convert(null));
                     }
+                    dataUpdateHandlerManager.handleDataUpdate(buildResponse(queryMap.values()));
                     count++;
                     messageListener.reportMessage("Querying ECU...");
                     messageListener.reportStats(buildStatsMessage(start, count));
@@ -188,6 +194,14 @@ public final class QueryManagerImpl implements QueryManager {
         } finally {
             txManager.stop();
         }
+    }
+
+    private Response buildResponse(Collection<Query> queries) {
+        Response response = new ResponseImpl();
+        for (Query query : queries) {
+            response.setDataValue(query.getLoggerData(), query.getResponse());
+        }
+        return response;
     }
 
     //FIXME: This is a hack!!

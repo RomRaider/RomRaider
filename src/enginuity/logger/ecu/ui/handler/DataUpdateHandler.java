@@ -21,13 +21,14 @@
 
 package enginuity.logger.ecu.ui.handler;
 
+import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.LoggerData;
 
 public interface DataUpdateHandler {
 
     void registerData(LoggerData loggerData);
 
-    void handleDataUpdate(LoggerData loggerData, double value, long timestamp);
+    void handleDataUpdate(Response response);
 
     void deregisterData(LoggerData loggerData);
 

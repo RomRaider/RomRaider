@@ -21,6 +21,7 @@
 
 package enginuity.logger.ecu.ui.handler.table;
 
+import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.maps.Table;
@@ -41,12 +42,14 @@ public final class TableUpdateHandler implements DataUpdateHandler {
     public void registerData(LoggerData loggerData) {
     }
 
-    public void handleDataUpdate(LoggerData loggerData, double value, long timestamp) {
-        List<Table> tables = tableMap.get(loggerData.getId());
-        if (tables != null && !tables.isEmpty()) {
-            String formattedValue = loggerData.getSelectedConvertor().format(value);
-            for (Table table : tables) {
-                table.setLiveValue(formattedValue);
+    public void handleDataUpdate(Response response) {
+        for (LoggerData loggerData : response.getData()) {
+            List<Table> tables = tableMap.get(loggerData.getId());
+            if (tables != null && !tables.isEmpty()) {
+                String formattedValue = loggerData.getSelectedConvertor().format(response.getDataValue(loggerData));
+                for (Table table : tables) {
+                    table.setLiveValue(formattedValue);
+                }
             }
         }
     }

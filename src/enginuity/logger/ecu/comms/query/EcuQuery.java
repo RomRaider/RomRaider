@@ -29,5 +29,5 @@ public interface EcuQuery extends Query {
 
     String getHex();
 
-    void setResponse(byte[] response);
+    void setResponse(byte[] bytes);
 }

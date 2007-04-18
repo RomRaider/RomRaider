@@ -21,6 +21,7 @@
 
 package enginuity.logger.ecu.ui.handler.livedata;
 
+import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
@@ -39,13 +40,14 @@ public final class LiveDataUpdateHandler implements DataUpdateHandler, Convertor
         dataTableModel.addParam(loggerData);
     }
 
-    public synchronized void handleDataUpdate(final LoggerData loggerData, final double value, long timestamp) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                // update data table
-                dataTableModel.updateParam(loggerData, value);
-            }
-        });
+    public synchronized void handleDataUpdate(final Response response) {
+        for (final LoggerData loggerData : response.getData()) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    dataTableModel.updateParam(loggerData, response.getDataValue(loggerData));
+                }
+            });
+        }
     }
 
     public synchronized void deregisterData(LoggerData loggerData) {

@@ -22,21 +22,25 @@
 package enginuity.logger.ecu.comms.query;
 
 import enginuity.logger.ecu.definition.EcuData;
+import enginuity.logger.ecu.definition.LoggerData;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class EcuQueryImpl implements EcuQuery {
     private final EcuData ecuData;
-    private final LoggerCallback callback;
     private final byte[] bytes;
     private final String hex;
+    private double response;
 
-    public EcuQueryImpl(EcuData ecuData, LoggerCallback callback) {
-        checkNotNull(ecuData, callback);
+    public EcuQueryImpl(EcuData ecuData) {
+        checkNotNull(ecuData);
         this.ecuData = ecuData;
-        this.callback = callback;
         bytes = ecuData.getAddress().getBytes();
         hex = asHex(bytes);
+    }
+
+    public LoggerData getLoggerData() {
+        return ecuData;
     }
 
     public String[] getAddresses() {
@@ -51,8 +55,12 @@ public final class EcuQueryImpl implements EcuQuery {
         return hex;
     }
 
-    public void setResponse(byte[] response) {
-        callback.callback(ecuData.getSelectedConvertor().convert(response));
+    public double getResponse() {
+        return response;
+    }
+
+    public void setResponse(byte[] bytes) {
+        this.response = ecuData.getSelectedConvertor().convert(bytes);
     }
 
     public boolean equals(Object object) {

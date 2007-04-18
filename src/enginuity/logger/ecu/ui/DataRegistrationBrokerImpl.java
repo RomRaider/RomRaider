@@ -22,7 +22,6 @@
 package enginuity.logger.ecu.ui;
 
 import enginuity.logger.ecu.comms.controller.LoggerController;
-import enginuity.logger.ecu.comms.query.LoggerCallback;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManager;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -49,13 +48,8 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
             // register param with handlers
             handlerManager.registerData(loggerData);
 
-            // add logger and setup callback
-            controller.addLogger(id, loggerData, new LoggerCallback() {
-                public void callback(double value) {
-                    // update handlers
-                    handlerManager.handleDataUpdate(loggerData, value, System.currentTimeMillis());
-                }
-            });
+            // add logger
+            controller.addLogger(id, loggerData);
 
             // add to registered parameters list
             registeredLoggerData.add(loggerData);
