@@ -29,16 +29,16 @@ import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
-import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManager;
+import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 public final class LoggerControllerImpl implements LoggerController {
     private final QueryManager queryManager;
 
     public LoggerControllerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener,
-                                DataUpdateHandlerManager dataUpdateHandlerManager) {
-        checkNotNull(settings, ecuInitCallback, messageListener, dataUpdateHandlerManager);
-        queryManager = new QueryManagerImpl(settings, ecuInitCallback, messageListener, dataUpdateHandlerManager);
+                                DataUpdateHandler... dataUpdateHandlers) {
+        checkNotNull(settings, ecuInitCallback, messageListener, dataUpdateHandlers);
+        queryManager = new QueryManagerImpl(settings, ecuInitCallback, messageListener, dataUpdateHandlers);
     }
 
     public synchronized void addListener(StatusChangeListener listener) {

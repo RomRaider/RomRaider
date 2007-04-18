@@ -47,10 +47,8 @@ import enginuity.logger.ecu.ui.EcuDataComparator;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.SerialPortComboBox;
 import enginuity.logger.ecu.ui.StatusIndicator;
-import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManager;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManagerImpl;
-import enginuity.logger.ecu.ui.handler.DataUpdateHandlerThreadWrapper;
 import enginuity.logger.ecu.ui.handler.dash.DashboardUpdateHandler;
 import enginuity.logger.ecu.ui.handler.file.FileUpdateHandlerImpl;
 import enginuity.logger.ecu.ui.handler.graph.GraphUpdateHandler;
@@ -141,7 +139,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JLabel statsLabel;
     private JTabbedPane tabbedPane;
     private SerialPortComboBox portsComboBox;
-    private DataUpdateHandlerManager dataUpdateHandlerManager;
     private DataUpdateHandlerManager dataHandlerManager;
     private DataRegistrationBroker dataTabBroker;
     private ParameterListTableModel dataTabParamListTableModel;
@@ -199,8 +196,15 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 }
             }
         };
-        dataUpdateHandlerManager = new DataUpdateHandlerManagerImpl();
-        controller = new LoggerControllerImpl(settings, ecuInitCallback, this, dataUpdateHandlerManager);
+        fileUpdateHandler = new FileUpdateHandlerImpl(settings, this);
+        dataTableModel = new LiveDataTableModel();
+        liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
+        graphPanel = new JPanel(new BorderLayout(2, 2));
+        graphUpdateHandler = new GraphUpdateHandler(graphPanel);
+        dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
+        dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
+        controller = new LoggerControllerImpl(settings, ecuInitCallback, this, liveDataUpdateHandler,
+                graphUpdateHandler, dashboardUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
         messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
         ecuIdLabel = new JLabel(buildEcuIdLabelText());
         statsLabel = buildStatsLabel();
@@ -221,13 +225,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dashboardTabParamListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_PARAMETERS);
         dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
         dashboardTabExternalListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_EXTERNAL);
-        fileUpdateHandler = new FileUpdateHandlerImpl(settings, this);
-        dataTableModel = new LiveDataTableModel();
-        liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
-        graphPanel = new JPanel(new BorderLayout(2, 2));
-        graphUpdateHandler = new GraphUpdateHandler(graphPanel);
-        dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
-        dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
     }
 
     private void initControllerListeners() {
@@ -264,7 +261,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void loadLoggerConfig() {
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-            dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(), settings.getFileLoggingControllerSwitchId(), ecuInit);
+            dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(),
+                    settings.getFileLoggingControllerSwitchId(), ecuInit);
             List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
             addConvertorUpdateListeners(ecuParams);
             loadEcuParams(ecuParams);
@@ -482,26 +480,15 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void initDataUpdateHandlers() {
-        DataUpdateHandler threadedFileUpdateHandler = startHandlerInThread(fileUpdateHandler);
-        dataHandlerManager.addHandler(startHandlerInThread(liveDataUpdateHandler));
-        dataHandlerManager.addHandler(threadedFileUpdateHandler);
-        dataHandlerManager.addHandler(startHandlerInThread(TableUpdateHandler.getInstance()));
-        graphHandlerManager.addHandler(startHandlerInThread(graphUpdateHandler));
-        graphHandlerManager.addHandler(threadedFileUpdateHandler);
-        dashboardHandlerManager.addHandler(startHandlerInThread(dashboardUpdateHandler));
-        dashboardHandlerManager.addHandler(threadedFileUpdateHandler);
-
-        dataUpdateHandlerManager.addHandler(dataHandlerManager);
-        dataUpdateHandlerManager.addHandler(graphHandlerManager);
-        dataUpdateHandlerManager.addHandler(dashboardHandlerManager);
-    }
-
-    private DataUpdateHandler startHandlerInThread(DataUpdateHandler handler) {
-        DataUpdateHandlerThreadWrapper runnableHandler = new DataUpdateHandlerThreadWrapper(handler);
-        Thread thread = new Thread(runnableHandler);
-        thread.setDaemon(true);
-        thread.start();
-        return runnableHandler;
+        dataHandlerManager.addHandler(liveDataUpdateHandler);
+        dataHandlerManager.addHandler(fileUpdateHandler);
+        dataHandlerManager.addHandler(TableUpdateHandler.getInstance());
+        graphHandlerManager.addHandler(graphUpdateHandler);
+        graphHandlerManager.addHandler(fileUpdateHandler);
+        graphHandlerManager.addHandler(TableUpdateHandler.getInstance());
+        dashboardHandlerManager.addHandler(dashboardUpdateHandler);
+        dashboardHandlerManager.addHandler(fileUpdateHandler);
+        dashboardHandlerManager.addHandler(TableUpdateHandler.getInstance());
     }
 
     private JComponent buildTabbedPane() {
@@ -786,7 +773,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void cleanUpUpdateHandlers() {
-        dataUpdateHandlerManager.cleanUp();
+        dataHandlerManager.cleanUp();
+        graphHandlerManager.cleanUp();
+        dashboardHandlerManager.cleanUp();
     }
 
     public Settings getSettings() {

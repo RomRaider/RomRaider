@@ -21,8 +21,18 @@
 
 package enginuity.logger.ecu.ui.handler;
 
-public interface DataUpdateHandlerManager extends DataUpdateHandler {
+import enginuity.logger.ecu.definition.LoggerData;
+
+public interface DataUpdateHandlerManager {
 
     void addHandler(DataUpdateHandler handler);
+
+    void registerData(LoggerData loggerData);
+
+    void deregisterData(LoggerData loggerData);
+
+    void cleanUp();
+
+    void reset();
 
 }

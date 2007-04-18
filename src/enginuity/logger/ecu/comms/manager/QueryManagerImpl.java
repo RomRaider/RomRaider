@@ -41,9 +41,10 @@ import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
-import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManager;
+import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
+import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 
 import javax.swing.SwingUtilities;
@@ -65,19 +66,19 @@ public final class QueryManagerImpl implements QueryManager {
     private final Settings settings;
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
-    private final DataUpdateHandlerManager dataUpdateHandlerManager;
+    private final DataUpdateHandler[] dataUpdateHandlers;
     private EcuQuery fileLoggerQuery;
     private Thread queryManagerThread;
     private boolean started;
     private boolean stop;
 
     public QueryManagerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener,
-                            DataUpdateHandlerManager dataUpdateHandlerManager) {
-        checkNotNull(settings, ecuInitCallback, messageListener, dataUpdateHandlerManager);
+                            DataUpdateHandler... dataUpdateHandlers) {
+        checkNotNull(settings, ecuInitCallback, messageListener, dataUpdateHandlers);
         this.settings = settings;
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
-        this.dataUpdateHandlerManager = dataUpdateHandlerManager;
+        this.dataUpdateHandlers = dataUpdateHandlers;
     }
 
     public synchronized void addListener(StatusChangeListener listener) {
@@ -173,17 +174,9 @@ public final class QueryManagerImpl implements QueryManager {
                     messageListener.reportMessage("Select parameters to be logged...");
                     sleep(1000L);
                 } else {
-                    List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
-                    if (fileLoggerQuery != null) {
-                        ecuQueries.add(fileLoggerQuery);
-                    }
-                    txManager.sendQueries(ecuQueries);
-                    List<ExternalQuery> externalQueries = filterExternalQueries(queryMap.values());
-                    for (ExternalQuery externalQuery : externalQueries) {
-                        //FIXME: This is a hack!!
-                        externalQuery.setResponse(externalQuery.getLoggerData().getSelectedConvertor().convert(null));
-                    }
-                    dataUpdateHandlerManager.handleDataUpdate(buildResponse(queryMap.values()));
+                    sendEcuQueries(txManager);
+                    sendExternalQueries();
+                    handleQueryResponse();
                     count++;
                     messageListener.reportMessage("Querying ECU...");
                     messageListener.reportStats(buildStatsMessage(start, count));
@@ -193,6 +186,32 @@ public final class QueryManagerImpl implements QueryManager {
             messageListener.reportError(e);
         } finally {
             txManager.stop();
+        }
+    }
+
+    private void sendEcuQueries(TransmissionManager txManager) {
+        List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
+        if (fileLoggerQuery != null) {
+            ecuQueries.add(fileLoggerQuery);
+        }
+        txManager.sendQueries(ecuQueries);
+    }
+
+    private void sendExternalQueries() {
+        List<ExternalQuery> externalQueries = filterExternalQueries(queryMap.values());
+        for (ExternalQuery externalQuery : externalQueries) {
+            //FIXME: This is a hack!!
+            externalQuery.setResponse(externalQuery.getLoggerData().getSelectedConvertor().convert(null));
+        }
+    }
+
+    private void handleQueryResponse() {
+        for (final DataUpdateHandler dataUpdateHandler : dataUpdateHandlers) {
+            runAsDaemon(new Runnable() {
+                public void run() {
+                    dataUpdateHandler.handleDataUpdate(buildResponse(queryMap.values()));
+                }
+            });
         }
     }
 

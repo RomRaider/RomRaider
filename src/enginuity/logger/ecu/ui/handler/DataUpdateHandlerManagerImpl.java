@@ -21,7 +21,6 @@
 
 package enginuity.logger.ecu.ui.handler;
 
-import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.LoggerData;
 
 import java.util.ArrayList;
@@ -37,12 +36,6 @@ public final class DataUpdateHandlerManagerImpl implements DataUpdateHandlerMana
     public synchronized void registerData(LoggerData loggerData) {
         for (DataUpdateHandler handler : handlers) {
             handler.registerData(loggerData);
-        }
-    }
-
-    public synchronized void handleDataUpdate(Response response) {
-        for (DataUpdateHandler handler : handlers) {
-            handler.handleDataUpdate(response);
         }
     }
 
