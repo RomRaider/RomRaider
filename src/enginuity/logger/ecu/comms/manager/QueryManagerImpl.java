@@ -191,7 +191,7 @@ public final class QueryManagerImpl implements QueryManager {
 
     private void sendEcuQueries(TransmissionManager txManager) {
         List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
-        if (fileLoggerQuery != null) {
+        if (fileLoggerQuery != null && !ecuQueries.contains(fileLoggerQuery)) {
             ecuQueries.add(fileLoggerQuery);
         }
         txManager.sendQueries(ecuQueries);
