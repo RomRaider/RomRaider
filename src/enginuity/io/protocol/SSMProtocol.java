@@ -31,6 +31,7 @@ import enginuity.logger.ecu.exception.InvalidResponseException;
 import static enginuity.util.ByteUtil.asByte;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
+import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class SSMProtocol implements Protocol {
@@ -42,6 +43,10 @@ public final class SSMProtocol implements Protocol {
     public static final byte READ_MEMORY_RESPONSE = (byte) 0xE0;
     public static final byte READ_ADDRESS_COMMAND = (byte) 0xA8;
     public static final byte READ_ADDRESS_RESPONSE = (byte) 0xE8;
+    public static final byte WRITE_MEMORY_COMMAND = (byte) 0xB0;
+    public static final byte WRITE_MEMORY_RESPONSE = (byte) 0xF0;
+    public static final byte WRITE_ADDRESS_COMMAND = (byte) 0xB8;
+    public static final byte WRITE_ADDRESS_RESPONSE = (byte) 0xF8;
     public static final byte ECU_INIT_COMMAND = (byte) 0xBF;
     public static final byte ECU_INIT_RESPONSE = (byte) 0xFF;
     public static final int ADDRESS_SIZE = 3;
@@ -52,6 +57,20 @@ public final class SSMProtocol implements Protocol {
     public byte[] constructEcuInitRequest() {
         // 0x80 0x10 0xF0 0x01 0xBF 0x40
         return buildRequest(ECU_INIT_COMMAND, false, new byte[0]);
+    }
+
+    public byte[] constructWriteMemoryRequest(byte[] address, byte[] values) {
+        checkNotNullOrEmpty(address, "address");
+        checkNotNullOrEmpty(values, "values");
+        // 0x80 0x10 0xF0 data_length 0xB0 from_address value1 value2 ... valueN checksum
+        return buildRequest(WRITE_MEMORY_COMMAND, false, address, values);
+    }
+
+    public byte[] constructWriteAddressRequest(byte[] address, byte value) {
+        checkNotNullOrEmpty(address, "address");
+        checkNotNull(value, "value");
+        // 0x80 0x10 0xF0 data_length 0xB8 from_address value checksum
+        return buildRequest(WRITE_ADDRESS_COMMAND, false, address, new byte[]{value});
     }
 
     public byte[] constructReadMemoryRequest(byte[] address, int numBytes) {

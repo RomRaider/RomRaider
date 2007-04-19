@@ -28,6 +28,10 @@ public interface Protocol {
 
     byte[] constructEcuInitRequest();
 
+    byte[] constructWriteMemoryRequest(byte[] address, byte[] values);
+
+    byte[] constructWriteAddressRequest(byte[] address, byte value);
+
     byte[] constructReadMemoryRequest(byte[] address, int numBytes);
 
     byte[] constructReadAddressRequest(byte[][] addresses);
