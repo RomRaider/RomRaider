@@ -200,6 +200,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                             Map<String, EcuDefinition> ecuDefinitionMap = settings.getLoggerEcuDefinitionMap();
                             if (!isNullOrEmpty(ecuDefinitionMap)) {
                                 String calId = ecuDefinitionMap.get(ecuId).getCalId();
+                                System.out.println("CAL ID = " + calId);
                                 calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
                             }
                             ecuIdLabel.setText(buildEcuInfoLabelText(ECU_ID_LABEL, ecuId));
