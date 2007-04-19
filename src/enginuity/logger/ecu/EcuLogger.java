@@ -333,9 +333,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private void initFileLoggingController(final EcuSwitch fileLoggingControllerSwitch) {
         controller.setFileLoggerSwitchMonitor(new FileLoggerControllerSwitchMonitorImpl(fileLoggingControllerSwitch, new FileLoggerControllerSwitchHandler() {
+            boolean oldDefogStatus = false;
             public void handleSwitch(double switchValue) {
-                if (settings.isFileLoggingControllerSwitchActive()) {
-                    boolean logToFile = (int) switchValue == 1;
+                boolean logToFile = (int) switchValue == 1;
+                if (settings.isFileLoggingControllerSwitchActive() && logToFile != oldDefogStatus) {
                     logToFileButton.setSelected(logToFile);
                     if (logToFile) {
                         fileUpdateHandler.start();
@@ -343,6 +344,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                         fileUpdateHandler.stop();
                     }
                 }
+                oldDefogStatus = logToFile;
             }
         }));
     }
