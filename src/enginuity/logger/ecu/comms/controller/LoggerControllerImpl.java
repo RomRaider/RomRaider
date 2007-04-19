@@ -31,6 +31,7 @@ import enginuity.logger.ecu.ui.StatusChangeListener;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitor;
 import static enginuity.util.ParamChecker.checkNotNull;
+import static enginuity.util.ThreadUtil.runAsDaemon;
 
 public final class LoggerControllerImpl implements LoggerController {
     private final QueryManager queryManager;
@@ -70,9 +71,7 @@ public final class LoggerControllerImpl implements LoggerController {
 
     public synchronized void start() {
         if (!isStarted()) {
-            Thread queryManagerThread = new Thread(queryManager);
-            queryManagerThread.setDaemon(true);
-            queryManagerThread.start();
+            runAsDaemon(queryManager);
         }
     }
 

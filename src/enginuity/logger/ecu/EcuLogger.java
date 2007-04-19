@@ -65,6 +65,7 @@ import enginuity.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import enginuity.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
+import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 
 import static javax.swing.BorderFactory.createLoweredBevelBorder;
@@ -251,9 +252,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private void startPortRefresherThread() {
         SerialPortRefresher serialPortRefresher = new SerialPortRefresher(portsComboBox, settings.getLoggerPort());
-        Thread portRefresherThread = new Thread(serialPortRefresher);
-        portRefresherThread.setDaemon(true);
-        portRefresherThread.start();
+        runAsDaemon(serialPortRefresher);
         // wait until port refresher fully started before continuing
         while (!serialPortRefresher.isStarted()) {
             sleep(100);

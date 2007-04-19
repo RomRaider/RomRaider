@@ -25,6 +25,7 @@ import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
+import static enginuity.util.ThreadUtil.run;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -80,7 +81,7 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
     }
 
     private void repaintDashboardPanel() {
-        new Thread(new Runnable() {
+        run(new Runnable() {
             public void run() {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
@@ -93,7 +94,7 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
                     }
                 });
             }
-        }).start();
+        });
     }
 
 }
