@@ -35,15 +35,18 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
     private final String units;
     private final String expression;
     private final DecimalFormat format;
+    private final Map<String, String> replaceMap;
     private final Map<String, ExpressionInfo> expressionInfoMap = synchronizedMap(new HashMap<String, ExpressionInfo>());
 
-    public EcuDerivedParameterConvertorImpl(String units, String expression, String format) {
+    public EcuDerivedParameterConvertorImpl(String units, String expression, String format, Map<String, String> replaceMap) {
         checkNotNullOrEmpty(units, "units");
         checkNotNullOrEmpty(expression, "expression");
         checkNotNullOrEmpty(format, "format");
+        checkNotNull(replaceMap, "replaceMap");
         this.units = units;
         this.expression = expression;
         this.format = new DecimalFormat(format);
+        this.replaceMap = replaceMap;
     }
 
     public double convert(byte[] bytes) {
@@ -68,7 +71,12 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
     }
 
     public String format(double value) {
-        return format.format(value);
+        String formattedValue = format.format(value);
+        if (replaceMap.containsKey(formattedValue)) {
+            return replaceMap.get(formattedValue);
+        } else {
+            return formattedValue;
+        }
     }
 
     public void setEcuDatas(EcuData[] ecuDatas) {

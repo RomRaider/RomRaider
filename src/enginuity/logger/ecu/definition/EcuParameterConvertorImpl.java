@@ -23,33 +23,35 @@ package enginuity.logger.ecu.definition;
 
 import static enginuity.util.ByteUtil.asUnsignedInt;
 import static enginuity.util.JEPUtil.evaluate;
+import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 import static java.lang.Float.intBitsToFloat;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class EcuParameterConvertorImpl implements EcuDataConvertor {
     private final String units;
     private final String expression;
     private final DecimalFormat format;
     private final boolean isFloat;
+    private final Map<String, String> replaceMap;
 
     public EcuParameterConvertorImpl() {
-        this("Raw data", "x", "0", false);
+        this("Raw data", "x", "0", false, new HashMap<String, String>());
     }
 
-    public EcuParameterConvertorImpl(String units, String expression, String format) {
-        this(units, expression, format, false);
-    }
-
-    public EcuParameterConvertorImpl(String units, String expression, String format, boolean isFloat) {
+    public EcuParameterConvertorImpl(String units, String expression, String format, boolean isFloat, Map<String, String> replaceMap) {
         checkNotNullOrEmpty(units, "units");
         checkNotNullOrEmpty(expression, "expression");
         checkNotNullOrEmpty(format, "format");
+        checkNotNull(replaceMap, "replaceMap");
         this.units = units;
         this.expression = expression;
         this.format = new DecimalFormat(format);
         this.isFloat = isFloat;
+        this.replaceMap = replaceMap;
     }
 
     public double convert(byte[] bytes) {
@@ -63,7 +65,12 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
     }
 
     public String format(double value) {
-        return format.format(value);
+        String formattedValue = format.format(value);
+        if (replaceMap.containsKey(formattedValue)) {
+            return replaceMap.get(formattedValue);
+        } else {
+            return formattedValue;
+        }
     }
 
     public String toString() {

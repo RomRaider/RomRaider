@@ -13,7 +13,11 @@
 
 <!ELEMENT depends ( ref+ ) >
 
-<!ELEMENT conversion EMPTY >
+<!ELEMENT replace EMPTY >
+<!ATTLIST replace value CDATA #REQUIRED >
+<!ATTLIST replace with CDATA #REQUIRED >
+
+<!ELEMENT conversion ( replace* ) >
 <!ATTLIST conversion expr CDATA #REQUIRED >
 <!ATTLIST conversion format ( 0 | 0.0 | 0.00 ) #REQUIRED >
 <!ATTLIST conversion storagetype ( uint8 | uint16 | float ) #IMPLIED >
