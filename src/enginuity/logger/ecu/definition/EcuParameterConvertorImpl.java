@@ -25,6 +25,7 @@ import static enginuity.util.ByteUtil.asUnsignedInt;
 import static enginuity.util.JEPUtil.evaluate;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+import static enginuity.util.ParamChecker.isValidBit;
 
 import static java.lang.Float.intBitsToFloat;
 import java.text.DecimalFormat;
@@ -35,14 +36,15 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
     private final String units;
     private final String expression;
     private final DecimalFormat format;
+    private final int bit;
     private final boolean isFloat;
     private final Map<String, String> replaceMap;
 
     public EcuParameterConvertorImpl() {
-        this("Raw data", "x", "0", false, new HashMap<String, String>());
+        this("Raw data", "x", "0", -1, false, new HashMap<String, String>());
     }
 
-    public EcuParameterConvertorImpl(String units, String expression, String format, boolean isFloat, Map<String, String> replaceMap) {
+    public EcuParameterConvertorImpl(String units, String expression, String format, int bit, boolean isFloat, Map<String, String> replaceMap) {
         checkNotNullOrEmpty(units, "units");
         checkNotNullOrEmpty(expression, "expression");
         checkNotNullOrEmpty(format, "format");
@@ -50,14 +52,19 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
         this.units = units;
         this.expression = expression;
         this.format = new DecimalFormat(format);
+        this.bit = bit;
         this.isFloat = isFloat;
         this.replaceMap = replaceMap;
     }
 
     public double convert(byte[] bytes) {
-        double value = (double) (isFloat ? intBitsToFloat(asUnsignedInt(bytes)) : asUnsignedInt(bytes));
-        double result = evaluate(expression, value);
-        return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
+        if (isValidBit(bit)) {
+            return (bytes[0] & (1 << bit)) > 0 ? 1 : 0;
+        } else {
+            double value = (double) (isFloat ? intBitsToFloat(asUnsignedInt(bytes)) : asUnsignedInt(bytes));
+            double result = evaluate(expression, value);
+            return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
+        }
     }
 
     public String getUnits() {

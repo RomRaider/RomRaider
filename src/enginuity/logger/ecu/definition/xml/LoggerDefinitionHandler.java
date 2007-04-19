@@ -234,7 +234,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         convertorList.add(new EcuSwitchConvertorImpl(address.getBit()));
                     } else {
                         convertorList.add(new EcuParameterConvertorImpl(conversionUnits,
-                                conversionExpression, conversionFormat,
+                                conversionExpression, conversionFormat, address.getBit(),
                                 FLOAT.equalsIgnoreCase(conversionStorageType), replaceMap));
                     }
                 }
