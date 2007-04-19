@@ -23,8 +23,10 @@ package enginuity.logger.ecu.definition;
 
 import enginuity.io.connection.ConnectionProperties;
 import enginuity.logger.ecu.comms.query.EcuInit;
+import enginuity.logger.ecu.definition.xml.EcuDefinitionHandler;
 import enginuity.logger.ecu.definition.xml.LoggerDefinitionHandler;
 import enginuity.logger.ecu.exception.ConfigurationException;
+import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.SaxParserFactory.getSaxParser;
 
@@ -33,15 +35,34 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class EcuDataLoaderImpl implements EcuDataLoader {
+    private Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>(); 
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
     private EcuSwitch fileLoggingControllerSwitch;
     private ConnectionProperties connectionProperties;
 
-    public void loadFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
+    public void loadEcuDefsFromXml(File ecuDefsFile) {
+        checkNotNull(ecuDefsFile, "ecuDefsFile");
+        try {
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(ecuDefsFile));
+            try {
+                EcuDefinitionHandler handler = new EcuDefinitionHandler();
+                getSaxParser().parse(inputStream, handler);
+                ecuDefinitionMap = handler.getEcuDefinitionMap();
+            } finally {
+                inputStream.close();
+            }
+        } catch (Exception e) {
+            throw new ConfigurationException(e);
+        }
+    }
+
+    public void loadConfigFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
         checkNotNullOrEmpty(protocol, "protocol");
         checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
@@ -60,6 +81,10 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
+    }
+
+    public Map<String, EcuDefinition> getEcuDefinitionMap() {
+        return ecuDefinitionMap;
     }
 
     public List<EcuParameter> getEcuParameters() {

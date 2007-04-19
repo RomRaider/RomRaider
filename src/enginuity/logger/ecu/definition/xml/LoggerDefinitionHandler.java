@@ -83,8 +83,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private final String protocol;
     private final String fileLoggingControllerSwitchId;
     private final EcuInit ecuInit;
-    private List<EcuParameter> params;
-    private List<EcuSwitch> switches;
+    private List<EcuParameter> params = new ArrayList<EcuParameter>();
+    private List<EcuSwitch> switches = new ArrayList<EcuSwitch>();
     private EcuSwitch fileLoggingControllerSwitch;
     private ConnectionProperties connectionProperties;
     private Map<String, EcuData> ecuDataMap;
@@ -192,8 +192,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             parseProtocol = false;
         } else if (parseProtocol) {
             if (TAG_ADDRESS.equals(qName)) {
-                String startAddress = charBuffer.toString();
-                address = new EcuAddressImpl(startAddress, addressLength, addressBit);
+                address = new EcuAddressImpl(charBuffer.toString(), addressLength, addressBit);
             } else if (TAG_PARAMETER.equals(qName)) {
                 if (derived) {
                     Set<EcuData> dependencies = new HashSet<EcuData>();
@@ -205,8 +204,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     if (dependsList.size() == dependencies.size()) {
                         EcuParameter param = new EcuDerivedParameterImpl(id, name, desc,
                                 dependencies.toArray(new EcuData[dependencies.size()]),
-                                derivedConvertorList.toArray(
-                                        new EcuDerivedParameterConvertor[derivedConvertorList.size()]));
+                                derivedConvertorList.toArray(new EcuDerivedParameterConvertor[derivedConvertorList.size()]));
                         params.add(param);
                         ecuDataMap.put(param.getId(), param);
                     }

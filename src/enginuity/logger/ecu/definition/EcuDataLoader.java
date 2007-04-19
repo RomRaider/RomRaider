@@ -24,12 +24,18 @@ package enginuity.logger.ecu.definition;
 import enginuity.io.connection.ConnectionProperties;
 import enginuity.logger.ecu.comms.query.EcuInit;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 public interface EcuDataLoader {
 
-    void loadFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit);
+    void loadEcuDefsFromXml(File ecuDefsFile);
 
+    void loadConfigFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit);
+
+    Map<String, EcuDefinition> getEcuDefinitionMap();
+    
     List<EcuParameter> getEcuParameters();
 
     List<EcuSwitch> getEcuSwitches();

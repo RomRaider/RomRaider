@@ -22,6 +22,7 @@
 package enginuity;
 
 import enginuity.io.connection.ConnectionProperties;
+import enginuity.logger.ecu.definition.EcuDefinition;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 import java.awt.Color;
@@ -30,6 +31,7 @@ import java.awt.Font;
 import java.awt.Point;
 import java.io.File;
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Vector;
 
 public class Settings implements Serializable {
@@ -79,6 +81,7 @@ public class Settings implements Serializable {
     private Point loggerWindowLocation = new Point();
     private boolean loggerWindowMaximized = false;
     private ConnectionProperties loggerConnectionProperties;
+    private Map<String, EcuDefinition> loggerEcuDefinitionMap;
 
 
     public Settings() {
@@ -401,5 +404,13 @@ public class Settings implements Serializable {
 
     public void setLoggerConnectionProperties(ConnectionProperties loggerConnectionProperties) {
         this.loggerConnectionProperties = loggerConnectionProperties;
+    }
+
+    public Map<String, EcuDefinition> getLoggerEcuDefinitionMap() {
+        return loggerEcuDefinitionMap;
+    }
+
+    public void setLoggerEcuDefinitionMap(Map<String, EcuDefinition> loggerEcuDefinitionMap) {
+        this.loggerEcuDefinitionMap = loggerEcuDefinitionMap;
     }
 }

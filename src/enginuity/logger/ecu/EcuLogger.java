@@ -29,6 +29,7 @@ import enginuity.logger.ecu.comms.query.EcuInit;
 import enginuity.logger.ecu.comms.query.EcuInitCallback;
 import enginuity.logger.ecu.definition.EcuDataLoader;
 import enginuity.logger.ecu.definition.EcuDataLoaderImpl;
+import enginuity.logger.ecu.definition.EcuDefinition;
 import enginuity.logger.ecu.definition.EcuParameter;
 import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.ExternalData;
@@ -116,6 +117,7 @@ import static java.util.Collections.sort;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 /*
 TODO: add better debug logging, preferably to a file and switchable (on/off)
@@ -134,9 +136,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
+    private static final String CAL_ID_LABEL = "CAL ID";
+    private static final String ECU_ID_LABEL = "ECU ID";
     private Settings settings;
     private LoggerController controller;
     private JLabel messageLabel;
+    private JLabel calIdLabel;
     private JLabel ecuIdLabel;
     private JLabel statsLabel;
     private JTabbedPane tabbedPane;
@@ -169,6 +174,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
         bootstrap(settings);
+        loadEcuDefs();
         loadLoggerConfig();
         loadLoggerPlugins();
         initControllerListeners();
@@ -190,8 +196,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                     ecuInit = newEcuInit;
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            ecuIdLabel.setText(buildEcuIdLabelText(ecuInit.getEcuId()));
-                            System.out.println("Loading logger config for new ECU (" + ecuInit.getEcuId() + ")...");
+                            String ecuId = ecuInit.getEcuId();
+                            String calId = settings.getLoggerEcuDefinitionMap().get(ecuId).getCalId();
+                            calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
+                            ecuIdLabel.setText(buildEcuInfoLabelText(ECU_ID_LABEL, ecuId));
+                            System.out.println("Loading logger config for new ECU (calid: " + calId + ", ecuid: " + ecuId + ")...");
                             loadLoggerConfig();
                         }
                     });
@@ -208,7 +217,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this, liveDataUpdateHandler,
                 graphUpdateHandler, dashboardUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
         messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
-        ecuIdLabel = new JLabel(buildEcuIdLabelText());
+        calIdLabel = new JLabel(buildEcuInfoLabelText(CAL_ID_LABEL, null));
+        ecuIdLabel = new JLabel(buildEcuInfoLabelText(ECU_ID_LABEL, null));
         statsLabel = buildStatsLabel();
         tabbedPane = new JTabbedPane(BOTTOM);
         portsComboBox = new SerialPortComboBox(settings);
@@ -260,10 +270,27 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         getContentPane().add(mainPanel);
     }
 
+    private void loadEcuDefs() {
+        try {
+            Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
+            Vector<File> ecuDefFiles = settings.getEcuDefinitionFiles();
+            if (!ecuDefFiles.isEmpty()) {
+                EcuDataLoader dataLoader = new EcuDataLoaderImpl();
+                for (File ecuDefFile : ecuDefFiles) {
+                    dataLoader.loadEcuDefsFromXml(ecuDefFile);
+                    ecuDefinitionMap.putAll(dataLoader.getEcuDefinitionMap());
+                }
+            }
+            settings.setLoggerEcuDefinitionMap(ecuDefinitionMap);
+        } catch (Exception e) {
+            reportError(e);
+        }
+    }
+
     private void loadLoggerConfig() {
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-            dataLoader.loadFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(),
+            dataLoader.loadConfigFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(),
                     settings.getFileLoggingControllerSwitchId(), ecuInit);
             List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
             addConvertorUpdateListeners(ecuParams);
@@ -544,6 +571,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
         JPanel ecuIdPanel = new JPanel(new FlowLayout());
         ecuIdPanel.setBorder(createLoweredBevelBorder());
+        ecuIdPanel.add(calIdLabel);
         ecuIdPanel.add(ecuIdLabel);
         constraints.gridx = 2;
         constraints.gridy = 0;
@@ -567,12 +595,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return statusBar;
     }
 
-    private String buildEcuIdLabelText() {
-        return buildEcuIdLabelText(null);
-    }
-
-    private String buildEcuIdLabelText(String ecuId) {
-        return "ECU ID: " + (isNullOrEmpty(ecuId) ? "Unknown" : ecuId);
+    private String buildEcuInfoLabelText(String label, String value) {
+        return label + ": " + (isNullOrEmpty(value) ? " Unknown " : value);
     }
 
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
