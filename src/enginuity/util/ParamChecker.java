@@ -91,6 +91,10 @@ public final class ParamChecker {
         return param == null || param.isEmpty();
     }
 
+    public static boolean isNullOrEmpty(Map<?, ?> param) {
+        return param == null || param.isEmpty();
+    }
+
     public static boolean isValidBit(int bit) {
         return bit >= 0 && bit <= 7;
     }

@@ -197,10 +197,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             String ecuId = ecuInit.getEcuId();
-                            String calId = settings.getLoggerEcuDefinitionMap().get(ecuId).getCalId();
-                            calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
+                            Map<String, EcuDefinition> ecuDefinitionMap = settings.getLoggerEcuDefinitionMap();
+                            if (!isNullOrEmpty(ecuDefinitionMap)) {
+                                String calId = ecuDefinitionMap.get(ecuId).getCalId();
+                                calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
+                            }
                             ecuIdLabel.setText(buildEcuInfoLabelText(ECU_ID_LABEL, ecuId));
-                            System.out.println("Loading logger config for new ECU (calid: " + calId + ", ecuid: " + ecuId + ")...");
+                            System.out.println("Loading logger config for new ECU (ecuid: " + ecuId + ")...");
                             loadLoggerConfig();
                         }
                     });
