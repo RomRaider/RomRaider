@@ -36,7 +36,9 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class SSMResponseProcessor {
+
     private SSMResponseProcessor() {
+        throw new UnsupportedOperationException();
     }
 
     public static byte[] filterRequestFromResponse(byte[] request, byte[] response) {

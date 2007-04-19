@@ -21,7 +21,6 @@
 
 package enginuity.io.protocol;
 
-import enginuity.io.connection.ConnectionProperties;
 import static enginuity.io.protocol.SSMChecksumCalculator.calculateChecksum;
 import static enginuity.io.protocol.SSMResponseProcessor.extractResponseData;
 import static enginuity.io.protocol.SSMResponseProcessor.filterRequestFromResponse;
@@ -87,35 +86,6 @@ public final class SSMProtocol implements Protocol {
         checkNotNullOrEmpty(response, "response");
         byte[] responseData = extractResponseData(response);
         return new SSMEcuInit(responseData);
-    }
-
-    public ConnectionProperties getConnectionProperties() {
-        return new ConnectionProperties() {
-
-            public int getBaudRate() {
-                return 4800;
-            }
-
-            public int getDataBits() {
-                return 8;
-            }
-
-            public int getStopBits() {
-                return 1;
-            }
-
-            public int getParity() {
-                return 0;
-            }
-
-            public int getConnectTimeout() {
-                return 2000;
-            }
-
-            public int getSendTimeout() {
-                return 55;
-            }
-        };
     }
 
     //TODO: Clean up SSM request building... pretty ugly at the moment..

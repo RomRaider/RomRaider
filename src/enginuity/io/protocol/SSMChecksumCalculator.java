@@ -25,7 +25,9 @@ import static enginuity.util.ByteUtil.asByte;
 import static enginuity.util.ByteUtil.asInt;
 
 public final class SSMChecksumCalculator {
+
     private SSMChecksumCalculator() {
+        throw new UnsupportedOperationException();
     }
 
     public static byte calculateChecksum(byte[] bytes) {
