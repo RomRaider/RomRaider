@@ -282,7 +282,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         LookAndFeelManager.initLookAndFeel();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("RAM Writer - Test App");
+                RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("RAMTune - Test App");
                 ramTuneTestApp.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
                 ramTuneTestApp.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 ramTuneTestApp.addWindowListener(ramTuneTestApp);
