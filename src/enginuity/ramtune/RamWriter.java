@@ -82,8 +82,28 @@ public final class RamWriter extends JFrame implements WindowListener {
         JPanel inputPanel = new JPanel(new BorderLayout(3, 3));
         inputPanel.add(new JTextField(), NORTH);
         inputPanel.add(new JTextArea(10, 50), CENTER);
-        inputPanel.add(new JButton("Write to ECU"), SOUTH);
+        inputPanel.add(buildWriteButton(), SOUTH);
         return inputPanel;
+    }
+
+    private JButton buildWriteButton() {
+        JButton button = new JButton("Write to ECU");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                connect();
+                try {
+                    // TODO: finish me
+                    write();
+                } finally {
+                    disconnect();
+                }
+            }
+        });
+        return button;
+    }
+
+    private void write() {
+        // TODO: finish me
     }
 
     private JComponent buildStatusBar() {
@@ -121,15 +141,6 @@ public final class RamWriter extends JFrame implements WindowListener {
     }
 
     private JPanel buildPortsComboBox() {
-        portsComboBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                settings.setLoggerPort((String) portsComboBox.getSelectedItem());
-                // this is a hack...
-                if (!actionEvent.paramString().endsWith("modifiers=")) {
-                    reconnect();
-                }
-            }
-        });
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
@@ -143,7 +154,7 @@ public final class RamWriter extends JFrame implements WindowListener {
         showMessageDialog(this, writer.toString(), "Error", ERROR_MESSAGE);
     }
 
-    private void reconnect() {
+    private void connect() {
         // TODO: Finish me
     }
 
