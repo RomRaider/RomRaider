@@ -1,8 +1,12 @@
-package enginuity.ramtune;
+package enginuity.ramtune.test;
 
 import enginuity.Settings;
 import enginuity.io.port.SerialPortRefresher;
 import enginuity.logger.ecu.ui.SerialPortComboBox;
+import enginuity.ramtune.test.command.Command;
+import enginuity.ramtune.test.command.EcuInitCommand;
+import enginuity.ramtune.test.command.ReadCommand;
+import enginuity.ramtune.test.command.WriteCommand;
 import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
@@ -164,7 +168,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     }
 
     private JComboBox buildCommandComboBox() {
-        return new JComboBox(new Object[] {"ECU Init", "Read", "Write"});
+        return new JComboBox(new Command[] {new EcuInitCommand(), new ReadCommand(), new WriteCommand()});
     }
 
     private Component buildOutputPanel() {
