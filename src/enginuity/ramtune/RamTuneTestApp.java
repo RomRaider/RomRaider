@@ -10,24 +10,31 @@ import static enginuity.util.ThreadUtil.sleep;
 import static javax.swing.BorderFactory.createLoweredBevelBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import static javax.swing.border.BevelBorder.LOWERED;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.BorderLayout.SOUTH;
 import static java.awt.BorderLayout.WEST;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
+import static java.awt.GridBagConstraints.BOTH;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -40,13 +47,13 @@ import java.io.Writer;
  * This is a test app! Use at your own risk!!
  * It borrows some functionality from the logger which should be rewritten/removed before being released!!
  */
-public final class RamWriter extends JFrame implements WindowListener {
+public final class RamTuneTestApp extends JFrame implements WindowListener {
     private Settings settings = new Settings();
     private SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
     private JLabel messageLabel = new JLabel();
     private JLabel connectionStatusLabel = new JLabel();
 
-    public RamWriter(String title) {
+    public RamTuneTestApp(String title) {
         super(title);
         initUserInterface();
         startPortRefresherThread();
@@ -64,30 +71,114 @@ public final class RamWriter extends JFrame implements WindowListener {
     private void initUserInterface() {
         // setup main panel
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(buildControlToolbar(), NORTH);
-        mainPanel.add(buildInputPanel(), CENTER);
-        mainPanel.add(buildStatusBar(), SOUTH);
+        JPanel contentPanel = buildContentPanel();
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+        mainPanel.add(buildStatusBar(), BorderLayout.SOUTH);
 
         // add to container
         getContentPane().add(mainPanel);
     }
 
-    private JPanel buildControlToolbar() {
-        JPanel controlPanel = new JPanel(new FlowLayout());
-        controlPanel.add(buildPortsComboBox());
-        return controlPanel;
+    private JPanel buildContentPanel() {
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        JPanel mainPanel = new JPanel(gridBagLayout);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = BOTH;
+        constraints.insets = new Insets(3, 5, 3, 5);
+
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        mainPanel.add(buildComPortPanel(), constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        mainPanel.add(buildInputPanel(), constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        mainPanel.add(buildOutputPanel(), constraints);
+        
+        return mainPanel;
     }
 
     private Component buildInputPanel() {
-        JPanel inputPanel = new JPanel(new BorderLayout(3, 3));
-        inputPanel.add(new JTextField(), NORTH);
-        inputPanel.add(new JTextArea(10, 50), CENTER);
-        inputPanel.add(buildWriteButton(), SOUTH);
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        JPanel inputPanel = new JPanel(gridBagLayout);
+        inputPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "ECU Command"));
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = BOTH;
+        constraints.insets = new Insets(0, 5, 5, 5);
+
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 2;
+        constraints.gridheight = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        inputPanel.add(buildCommandComboBox(), constraints);
+
+        JPanel addressPanel = new JPanel(new FlowLayout());
+        addressPanel.add(new JLabel("Address:"));
+        addressPanel.add(new JTextField(6));
+        addressPanel.add(new JLabel("eg. 200000"));
+        constraints.gridx = 3;
+        constraints.gridy = 0;
+        constraints.gridwidth = 2;
+        constraints.gridheight = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        inputPanel.add(addressPanel, constraints);
+
+        JTextArea dataField = new JTextArea(10, 30);
+        dataField.setLineWrap(true);
+        dataField.setBorder(new BevelBorder(LOWERED));
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 5;
+        constraints.gridheight = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        inputPanel.add(new JScrollPane(dataField, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.gridwidth = 5;
+        constraints.gridheight = 1;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        inputPanel.add(buildSendButton(), constraints);
+
         return inputPanel;
     }
 
-    private JButton buildWriteButton() {
-        JButton button = new JButton("Write to ECU");
+    private JComboBox buildCommandComboBox() {
+        return new JComboBox(new Object[] {"ECU Init", "Read", "Write"});
+    }
+
+    private Component buildOutputPanel() {
+        JTextArea responseField = new JTextArea(10, 30);
+        responseField.setLineWrap(true);
+        responseField.setEditable(false);
+        responseField.setBorder(new BevelBorder(LOWERED));
+        JScrollPane responseScrollPane = new JScrollPane(responseField, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        responseScrollPane.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "ECU Response"));
+        return responseScrollPane;
+    }
+
+    private JButton buildSendButton() {
+        JButton button = new JButton("Send Command");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 connect();
@@ -112,7 +203,7 @@ public final class RamWriter extends JFrame implements WindowListener {
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
-        constraints.fill = GridBagConstraints.BOTH;
+        constraints.fill = BOTH;
 
         JPanel messagePanel = new JPanel(new BorderLayout());
         messagePanel.setBorder(createLoweredBevelBorder());
@@ -140,11 +231,13 @@ public final class RamWriter extends JFrame implements WindowListener {
         return statusBar;
     }
 
-    private JPanel buildPortsComboBox() {
+    private JPanel buildComPortPanel() {
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
-        return comboBoxPanel;
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(comboBoxPanel, WEST);
+        return panel;
     }
 
     private void reportError(Exception e) {
@@ -189,13 +282,13 @@ public final class RamWriter extends JFrame implements WindowListener {
         LookAndFeelManager.initLookAndFeel();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                RamWriter ramWriter = new RamWriter("RAM Writer - Test App");
-                ramWriter.setSize(400, 400);
-                ramWriter.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
-                ramWriter.setDefaultCloseOperation(EXIT_ON_CLOSE);
-                ramWriter.addWindowListener(ramWriter);
-                ramWriter.setLocation(100, 100);
-                ramWriter.setVisible(true);
+                RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("RAM Writer - Test App");
+                ramTuneTestApp.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
+                ramTuneTestApp.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                ramTuneTestApp.addWindowListener(ramTuneTestApp);
+                ramTuneTestApp.setLocation(100, 100);
+                ramTuneTestApp.pack();
+                ramTuneTestApp.setVisible(true);
             }
         });
     }

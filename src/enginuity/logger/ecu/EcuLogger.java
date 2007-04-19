@@ -890,6 +890,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         EcuLogger ecuLogger = new EcuLogger(settings);
 
         // set remaining window properties
+        ecuLogger.pack();
         ecuLogger.setSize(settings.getLoggerWindowSize());
         ecuLogger.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
         ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
