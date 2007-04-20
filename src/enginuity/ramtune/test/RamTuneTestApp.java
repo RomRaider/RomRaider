@@ -68,8 +68,6 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     private static final String REGEX_VALID_DATA_BYTES = "[0-9a-fA-F]{2,}";
     private final Protocol protocol = new SSMProtocol();
     private final Settings settings = new Settings();
-    private final JLabel messageLabel = new JLabel();
-    private final JLabel connectionStatusLabel = new JLabel();
     private final JTextField addressField = new JTextField(6);
     private final JTextField lengthField = new JTextField(4);
     private final JTextArea dataField = new JTextArea(10, 80);
