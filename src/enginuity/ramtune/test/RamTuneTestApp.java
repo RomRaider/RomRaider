@@ -44,6 +44,8 @@ import java.awt.BorderLayout;
 import static java.awt.BorderLayout.WEST;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import static java.awt.Font.PLAIN;
 import java.awt.GridBagConstraints;
 import static java.awt.GridBagConstraints.BOTH;
 import java.awt.GridBagLayout;
@@ -69,8 +71,8 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     private final JLabel connectionStatusLabel = new JLabel();
     private final JTextField addressField = new JTextField(6);
     private final JTextField lengthField = new JTextField(4);
-    private final JTextArea dataField = new JTextArea(10, 60);
-    private final JTextArea responseField = new JTextArea(20, 60);
+    private final JTextArea dataField = new JTextArea(10, 80);
+    private final JTextArea responseField = new JTextArea(15, 80);
     private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
     private final JComboBox commandComboBox = new JComboBox(new CommandGenerator[]{new EcuInitCommandGenerator(protocol),
             new ReadCommandGenerator(protocol), new WriteCommandGenerator(protocol)});
@@ -155,6 +157,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         addressPanel.add(new JLabel("Address (eg. 020000):"));
         addressPanel.add(addressField);
         addressPanel.add(new JLabel("Length:"));
+        lengthField.setText("1");
         addressPanel.add(lengthField);
         constraints.gridx = 3;
         constraints.gridy = 0;
@@ -164,6 +167,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         constraints.weighty = 1;
         inputPanel.add(addressPanel, constraints);
 
+        dataField.setFont(new Font ("Monospaced", PLAIN, 12));
         dataField.setLineWrap(true);
         dataField.setBorder(new BevelBorder(LOWERED));
         constraints.gridx = 0;
@@ -186,6 +190,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     }
 
     private Component buildOutputPanel() {
+        responseField.setFont(new Font ("Monospaced", PLAIN, 12));
         responseField.setLineWrap(true);
         responseField.setEditable(false);
         responseField.setBorder(new BevelBorder(LOWERED));
@@ -203,8 +208,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
                             (String) portsComboBox.getSelectedItem());
                     CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
                     if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
-                        byte[] command = commandGenerator.createCommand(asBytes(addressField.getText()), asBytes(dataField.getText()),
-                                Integer.parseInt(lengthField.getText().trim()));
+                        byte[] command = commandGenerator.createCommand(getAddress(), getData(), getLength());
                         responseField.append("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
                         byte[] result = commandExecutor.executeCommand(command);
                         responseField.append("RCV [" + commandGenerator + "]:\t" + asHex(result) + "\n");
@@ -215,6 +219,30 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
             }
         });
         return button;
+    }
+
+    private byte[] getAddress() {
+        try {
+            return asBytes(addressField.getText());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private byte[] getData() {
+        try {
+            return asBytes(dataField.getText());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private int getLength() {
+        try {
+            return Integer.parseInt(lengthField.getText().trim());
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
     private boolean validateInput(CommandGenerator commandGenerator) {
