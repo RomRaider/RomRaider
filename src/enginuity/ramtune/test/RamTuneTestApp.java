@@ -68,6 +68,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     private final JLabel messageLabel = new JLabel();
     private final JLabel connectionStatusLabel = new JLabel();
     private final JTextField addressField = new JTextField(6);
+    private final JTextField lengthField = new JTextField(4);
     private final JTextArea dataField = new JTextArea(10, 60);
     private final JTextArea responseField = new JTextArea(20, 60);
     private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
@@ -151,9 +152,10 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         inputPanel.add(commandComboBox, constraints);
 
         JPanel addressPanel = new JPanel(new FlowLayout());
-        addressPanel.add(new JLabel("Address:"));
+        addressPanel.add(new JLabel("Address (eg. 020000):"));
         addressPanel.add(addressField);
-        addressPanel.add(new JLabel("eg. 200000"));
+        addressPanel.add(new JLabel("Length:"));
+        addressPanel.add(lengthField);
         constraints.gridx = 3;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
