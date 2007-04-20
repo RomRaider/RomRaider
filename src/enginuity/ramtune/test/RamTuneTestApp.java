@@ -203,7 +203,8 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
                             (String) portsComboBox.getSelectedItem());
                     CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
                     if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
-                        byte[] command = commandGenerator.createCommand(asBytes(addressField.getText()), asBytes(dataField.getText()));
+                        byte[] command = commandGenerator.createCommand(asBytes(addressField.getText()), asBytes(dataField.getText()),
+                                Integer.parseInt(lengthField.getText().trim()));
                         responseField.append("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
                         byte[] result = commandExecutor.executeCommand(command);
                         responseField.append("RCV [" + commandGenerator + "]:\t" + asHex(result) + "\n");
@@ -226,6 +227,18 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
                 return false;
             } else if (!address.matches(REGEX_VALID_ADDRESS_BYTES)) {
                 showErrorDialog("Invalid address - bad bytes.");
+                return false;
+            }
+        }
+        if (isReadCommandGenerator) {
+            try {
+                int length = Integer.parseInt(lengthField.getText().trim());
+                if (length <= 0) {
+                    showErrorDialog("Invalid length - must be greater then zero.");
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                showErrorDialog("Invalid length.");
                 return false;
             }
         }

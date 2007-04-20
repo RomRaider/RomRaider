@@ -9,7 +9,7 @@ public final class WriteCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public byte[] createCommand(byte[] address, byte[] data) {
+    public byte[] createCommand(byte[] address, byte[] data, int length) {
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(data, "data");
         return protocol.constructWriteMemoryRequest(address, data);

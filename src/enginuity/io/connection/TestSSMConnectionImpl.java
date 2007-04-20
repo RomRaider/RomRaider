@@ -9,11 +9,14 @@ import static enginuity.io.protocol.SSMProtocol.ECU_INIT_COMMAND;
 import static enginuity.io.protocol.SSMProtocol.HEADER;
 import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_COMMAND;
 import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_RESPONSE;
+import static enginuity.io.protocol.SSMProtocol.READ_MEMORY_COMMAND;
+import static enginuity.io.protocol.SSMProtocol.READ_MEMORY_RESPONSE;
 import static enginuity.io.protocol.SSMProtocol.REQUEST_NON_DATA_BYTES;
 import static enginuity.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static enginuity.io.protocol.SSMProtocol.WRITE_MEMORY_COMMAND;
 import static enginuity.io.protocol.SSMProtocol.WRITE_MEMORY_RESPONSE;
 import enginuity.logger.ecu.exception.SerialCommunicationException;
+import static enginuity.util.ByteUtil.asInt;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -47,6 +50,8 @@ public final class TestSSMConnectionImpl implements SerialConnection {
             return asBytes(ECU_INIT_RESPONSE).length;
         } else if (isReadAddressRequest()) {
             return request.length + (RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes());
+        } else if (isReadMemoryRequest()) {
+            return request.length + (RESPONSE_NON_DATA_BYTES + asInt(request[9]) + 1);
         } else if (isWriteMemoryRequest()) {
             return request.length + (RESPONSE_NON_DATA_BYTES + (request.length - 6 - ADDRESS_SIZE));
         } else {
@@ -64,7 +69,7 @@ public final class TestSSMConnectionImpl implements SerialConnection {
             byte[] response = asBytes("0x80F01006E83EC74A760033");
             System.arraycopy(response, 0, bytes, request.length, response.length);
         } else if (isReadAddressRequest()) {
-            byte[] responseData = generateResponseData();
+            byte[] responseData = generateResponseData(calculateNumResponseDataBytes());
             int i = 0;
             byte[] response = new byte[RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes()];
             response[i++] = HEADER;
@@ -72,6 +77,19 @@ public final class TestSSMConnectionImpl implements SerialConnection {
             response[i++] = ECU_ID;
             response[i++] = (byte) (1 + responseData.length);
             response[i++] = READ_ADDRESS_RESPONSE;
+            System.arraycopy(responseData, 0, response, i, responseData.length);
+            response[i += responseData.length] = calculateChecksum(response);
+            System.arraycopy(request, 0, bytes, 0, request.length);
+            System.arraycopy(response, 0, bytes, request.length, response.length);
+        } else if (isReadMemoryRequest()) {
+            byte[] responseData = generateResponseData(asInt(request[9]) + 1);
+            int i = 0;
+            byte[] response = new byte[RESPONSE_NON_DATA_BYTES + responseData.length];
+            response[i++] = HEADER;
+            response[i++] = DIAGNOSTIC_TOOL_ID;
+            response[i++] = ECU_ID;
+            response[i++] = (byte) (1 + responseData.length);
+            response[i++] = READ_MEMORY_RESPONSE;
             System.arraycopy(responseData, 0, response, i, responseData.length);
             response[i += responseData.length] = calculateChecksum(response);
             System.arraycopy(request, 0, bytes, 0, request.length);
@@ -123,8 +141,8 @@ public final class TestSSMConnectionImpl implements SerialConnection {
         return hex.startsWith("8010F011A8") && hex.contains("FFA6FCFFA6FDFFA6FEFFA6FF");
     }
 
-    private byte[] generateResponseData() {
-        byte[] responseData = new byte[calculateNumResponseDataBytes()];
+    private byte[] generateResponseData(int dataLength) {
+        byte[] responseData = new byte[dataLength];
         for (int i = 0; i < responseData.length; i++) {
             responseData[i] = (byte) RANDOM.nextInt(255);
         }
@@ -138,6 +156,10 @@ public final class TestSSMConnectionImpl implements SerialConnection {
 
     private boolean isReadAddressRequest() {
         return isCommand(READ_ADDRESS_COMMAND);
+    }
+
+    private boolean isReadMemoryRequest() {
+        return isCommand(READ_MEMORY_COMMAND);
     }
 
     private boolean isWriteMemoryRequest() {

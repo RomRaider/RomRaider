@@ -8,7 +8,7 @@ public final class EcuInitCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public byte[] createCommand(byte[] address, byte[] data) {
+    public byte[] createCommand(byte[] address, byte[] data, int length) {
         return protocol.constructEcuInitRequest();
     }
 
