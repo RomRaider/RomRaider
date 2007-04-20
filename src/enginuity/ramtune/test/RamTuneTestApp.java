@@ -61,6 +61,8 @@ import java.io.Writer;
  * It borrows some functionality from the logger which should be rewritten/removed before being released!!
  */
 public final class RamTuneTestApp extends JFrame implements WindowListener {
+    private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
+    private static final String REGEX_VALID_DATA_BYTES = "[0-9a-fA-F]{2,}";
     private final Protocol protocol = new SSMProtocol();
     private final Settings settings = new Settings();
     private final JLabel messageLabel = new JLabel();
@@ -220,7 +222,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
             if (address.trim().length() != 6) {
                 showErrorDialog("Invalid address - must be 3 bytes long.");
                 return false;
-            } else if (!address.matches("[0-9a-fA-F]{6}")) {
+            } else if (!address.matches(REGEX_VALID_ADDRESS_BYTES)) {
                 showErrorDialog("Invalid address - bad bytes.");
                 return false;
             }
@@ -234,7 +236,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
             } else if (dataLength % 2 != 0) {
                 showErrorDialog("Invalid data - odd number of characters.");
                 return false;
-            } else if (!data.matches("[0-9a-fA-F]{2,}")) {
+            } else if (!data.matches(REGEX_VALID_DATA_BYTES)) {
                 showErrorDialog("Invalid data - bad bytes.");
                 return false;
             }
