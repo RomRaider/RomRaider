@@ -10,15 +10,22 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class CommandExecutorImpl implements CommandExecutor {
-    private final EcuConnection ecuConnection;
+    private final ConnectionProperties connectionProperties;
+    private final String port;
 
     public CommandExecutorImpl(ConnectionProperties connectionProperties, String port) {
         checkNotNull(connectionProperties);
         checkNotNullOrEmpty(port, "port");
-        this.ecuConnection = new EcuConnectionImpl(connectionProperties, port);
+        this.connectionProperties = connectionProperties;
+        this.port = port;
     }
 
     public CommandResult executeCommand(Command command) {
-        return new CommandResultImpl(ecuConnection.send(command.getBytes()));
+        EcuConnection ecuConnection = new EcuConnectionImpl(connectionProperties, port);
+        try {
+            return new CommandResultImpl(ecuConnection.send(command.getBytes()));
+        } finally {
+            ecuConnection.close();
+        }
     }
 }
