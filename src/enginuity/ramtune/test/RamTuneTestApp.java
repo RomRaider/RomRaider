@@ -11,6 +11,7 @@ import enginuity.ramtune.test.command.generator.CommandGenerator;
 import enginuity.ramtune.test.command.generator.EcuInitCommandGenerator;
 import enginuity.ramtune.test.command.generator.ReadCommandGenerator;
 import enginuity.ramtune.test.command.generator.WriteCommandGenerator;
+import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ThreadUtil.runAsDaemon;
@@ -75,7 +76,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     private final JTextArea responseField = new JTextArea(15, 80);
     private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
     private final JComboBox commandComboBox = new JComboBox(new CommandGenerator[]{new EcuInitCommandGenerator(protocol),
-            new ReadCommandGenerator(protocol), new WriteCommandGenerator(protocol)});
+                                                                                   new ReadCommandGenerator(protocol), new WriteCommandGenerator(protocol)});
 
     public RamTuneTestApp(String title) {
         super(title);
@@ -156,7 +157,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         JPanel addressPanel = new JPanel(new FlowLayout());
         addressPanel.add(new JLabel("Address (eg. 020000):"));
         addressPanel.add(addressField);
-        addressPanel.add(new JLabel("Length:"));
+        addressPanel.add(new JLabel("Read Length:"));
         lengthField.setText("1");
         addressPanel.add(lengthField);
         constraints.gridx = 3;
@@ -167,7 +168,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         constraints.weighty = 1;
         inputPanel.add(addressPanel, constraints);
 
-        dataField.setFont(new Font ("Monospaced", PLAIN, 12));
+        dataField.setFont(new Font("Monospaced", PLAIN, 12));
         dataField.setLineWrap(true);
         dataField.setBorder(new BevelBorder(LOWERED));
         constraints.gridx = 0;
@@ -190,7 +191,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     }
 
     private Component buildOutputPanel() {
-        responseField.setFont(new Font ("Monospaced", PLAIN, 12));
+        responseField.setFont(new Font("Monospaced", PLAIN, 12));
         responseField.setLineWrap(true);
         responseField.setEditable(false);
         responseField.setBorder(new BevelBorder(LOWERED));
@@ -375,12 +376,16 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     //**********************************************************************
 
     public static void main(String[] args) {
-        //LookAndFeelManager.initLookAndFeel();
+        LookAndFeelManager.initLookAndFeel();
+        startTestApp(EXIT_ON_CLOSE);
+    }
+
+    public static void startTestApp(final int defaultCloseOperation) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("RAMTune - Test App");
                 ramTuneTestApp.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
-                ramTuneTestApp.setDefaultCloseOperation(EXIT_ON_CLOSE);
+                ramTuneTestApp.setDefaultCloseOperation(defaultCloseOperation);
                 ramTuneTestApp.addWindowListener(ramTuneTestApp);
                 ramTuneTestApp.setLocation(100, 50);
                 ramTuneTestApp.pack();

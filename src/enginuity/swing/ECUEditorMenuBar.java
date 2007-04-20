@@ -26,6 +26,7 @@ import enginuity.ECUEditor;
 import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.utec.gui.JutecGUI;
 import enginuity.maps.Rom;
+import enginuity.ramtune.test.RamTuneTestApp;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
@@ -76,8 +77,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenu loggerMenu = new JMenu("Logger");
     private JMenuItem openLogger = new JMenuItem("Launch ECU Logger...");
     private JMenuItem utecLogger = new JMenuItem("Launch UTEC Logger...");
-    
-    
+
+    private JMenu ramTuneMenu = new JMenu("RAMTune");
+    private JMenuItem launchRamTuneTestApp = new JMenuItem("Launch Test App...");
+
     private JMenu helpMenu = new JMenu("Help");
     private JMenuItem about = new JMenuItem("About Enginuity");
 
@@ -179,6 +182,13 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         loggerMenu.add(utecLogger);
         openLogger.addActionListener(this);
         utecLogger.addActionListener(this);
+
+        // ramtune menu stuff
+        add(ramTuneMenu);
+        ramTuneMenu.setMnemonic('R');
+        launchRamTuneTestApp.setMnemonic('L');
+        ramTuneMenu.add(launchRamTuneTestApp);
+        launchRamTuneTestApp.addActionListener(this);
         
         // help menu stuff
         add(helpMenu);
@@ -286,6 +296,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == updateDefinition) {
             BareBonesBrowserLaunch.openURL(parent.getSettings().getEcuDefsURL());
+
+        } else if (e.getSource() == launchRamTuneTestApp) {
+            RamTuneTestApp.startTestApp(DISPOSE_ON_CLOSE);
 
         }
     }
