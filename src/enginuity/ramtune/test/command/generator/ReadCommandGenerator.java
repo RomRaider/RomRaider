@@ -1,8 +1,6 @@
 package enginuity.ramtune.test.command.generator;
 
 import enginuity.io.protocol.Protocol;
-import enginuity.ramtune.test.command.Command;
-import enginuity.ramtune.test.command.CommandImpl;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class ReadCommandGenerator extends AbstractCommandGenerator {
@@ -11,9 +9,9 @@ public final class ReadCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public Command createCommand(byte[] address, byte[] data) {
+    public byte[] createCommand(byte[] address, byte[] data) {
         checkNotNullOrEmpty(address, "address");
-        return new CommandImpl(protocol.constructReadAddressRequest(new byte[][] {address}));
+        return protocol.constructReadAddressRequest(new byte[][]{address});
     }
 
     public String toString() {

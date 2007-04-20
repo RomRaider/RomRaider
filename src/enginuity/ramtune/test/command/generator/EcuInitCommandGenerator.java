@@ -1,8 +1,6 @@
 package enginuity.ramtune.test.command.generator;
 
 import enginuity.io.protocol.Protocol;
-import enginuity.ramtune.test.command.Command;
-import enginuity.ramtune.test.command.CommandImpl;
 
 public final class EcuInitCommandGenerator extends AbstractCommandGenerator {
     
@@ -10,11 +8,11 @@ public final class EcuInitCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public Command createCommand(byte[] address, byte[] data) {
-        return new CommandImpl(protocol.constructEcuInitRequest());
+    public byte[] createCommand(byte[] address, byte[] data) {
+        return protocol.constructEcuInitRequest();
     }
 
     public String toString() {
-        return "ECU Init";
+        return "Init";
     }
 }

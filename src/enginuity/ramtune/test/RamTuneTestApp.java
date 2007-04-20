@@ -5,11 +5,15 @@ import enginuity.io.port.SerialPortRefresher;
 import enginuity.io.protocol.Protocol;
 import enginuity.io.protocol.SSMProtocol;
 import enginuity.logger.ecu.ui.SerialPortComboBox;
+import enginuity.ramtune.test.command.executor.CommandExecutor;
+import enginuity.ramtune.test.command.executor.CommandExecutorImpl;
 import enginuity.ramtune.test.command.generator.CommandGenerator;
 import enginuity.ramtune.test.command.generator.EcuInitCommandGenerator;
 import enginuity.ramtune.test.command.generator.ReadCommandGenerator;
 import enginuity.ramtune.test.command.generator.WriteCommandGenerator;
 import enginuity.swing.LookAndFeelManager;
+import static enginuity.util.HexUtil.asBytes;
+import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 
@@ -20,8 +24,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
@@ -56,9 +58,14 @@ import java.io.Writer;
 public final class RamTuneTestApp extends JFrame implements WindowListener {
     private final Protocol protocol = new SSMProtocol();
     private final Settings settings = new Settings();
-    private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
     private final JLabel messageLabel = new JLabel();
     private final JLabel connectionStatusLabel = new JLabel();
+    private final JTextField addressField = new JTextField(6);
+    private final JTextArea dataField = new JTextArea(10, 60);
+    private final JTextArea responseField = new JTextArea(20, 60);
+    private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
+    private final JComboBox commandComboBox = new JComboBox(new CommandGenerator[]{new EcuInitCommandGenerator(protocol),
+            new ReadCommandGenerator(protocol), new WriteCommandGenerator(protocol)});
 
     public RamTuneTestApp(String title) {
         super(title);
@@ -116,14 +123,14 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         constraints.weightx = 1;
         constraints.weighty = 1;
         mainPanel.add(buildOutputPanel(), constraints);
-        
+
         return mainPanel;
     }
 
     private Component buildInputPanel() {
         GridBagLayout gridBagLayout = new GridBagLayout();
         JPanel inputPanel = new JPanel(gridBagLayout);
-        inputPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "ECU Command"));
+        inputPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Command"));
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = BOTH;
         constraints.insets = new Insets(0, 5, 5, 5);
@@ -134,11 +141,11 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         constraints.gridheight = 1;
         constraints.weightx = 1;
         constraints.weighty = 1;
-        inputPanel.add(buildCommandComboBox(), constraints);
+        inputPanel.add(commandComboBox, constraints);
 
         JPanel addressPanel = new JPanel(new FlowLayout());
         addressPanel.add(new JLabel("Address:"));
-        addressPanel.add(new JTextField(6));
+        addressPanel.add(addressField);
         addressPanel.add(new JLabel("eg. 200000"));
         constraints.gridx = 3;
         constraints.gridy = 0;
@@ -148,7 +155,6 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         constraints.weighty = 1;
         inputPanel.add(addressPanel, constraints);
 
-        JTextArea dataField = new JTextArea(10, 30);
         dataField.setLineWrap(true);
         dataField.setBorder(new BevelBorder(LOWERED));
         constraints.gridx = 0;
@@ -170,18 +176,12 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         return inputPanel;
     }
 
-    private JComboBox buildCommandComboBox() {
-        return new JComboBox(new CommandGenerator[] {new EcuInitCommandGenerator(protocol),
-                new ReadCommandGenerator(protocol), new WriteCommandGenerator(protocol)});
-    }
-
     private Component buildOutputPanel() {
-        JTextArea responseField = new JTextArea(10, 30);
         responseField.setLineWrap(true);
         responseField.setEditable(false);
         responseField.setBorder(new BevelBorder(LOWERED));
         JScrollPane responseScrollPane = new JScrollPane(responseField, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
-        responseScrollPane.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "ECU Response"));
+        responseScrollPane.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Trace"));
         return responseScrollPane;
     }
 
@@ -189,20 +189,21 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         JButton button = new JButton("Send Command");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                connect();
                 try {
-                    // TODO: finish me
-                    write();
-                } finally {
-                    disconnect();
+                    CommandExecutor commandExecutor = new CommandExecutorImpl(protocol.getDefaultConnectionProperties(),
+                            (String) portsComboBox.getSelectedItem());
+                    CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
+                    byte[] command = commandGenerator.createCommand(asBytes(addressField.getText().replaceAll(" ", "")),
+                            asBytes(dataField.getText().replaceAll(" ", "")));
+                    responseField.append("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
+                    byte[] result = commandExecutor.executeCommand(command);
+                    responseField.append("RCV [" + commandGenerator + "]:\t" + asHex(result) + "\n");
+                } catch (Exception ex) {
+                    reportError(ex);
                 }
             }
         });
         return button;
-    }
-
-    private void write() {
-        // TODO: finish me
     }
 
     private JComponent buildStatusBar() {
@@ -252,15 +253,10 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         final Writer writer = new StringWriter();
         final PrintWriter printWriter = new PrintWriter(writer);
         e.printStackTrace(printWriter);
-        showMessageDialog(this, writer.toString(), "Error", ERROR_MESSAGE);
-    }
-
-    private void connect() {
-        // TODO: Finish me
-    }
-
-    private void disconnect() {
-        // TODO: Finish me
+        responseField.append("\n**************************************************************************\n");
+        responseField.append("ERROR: ");
+        responseField.append(writer.toString());
+        responseField.append("\n**************************************************************************\n\n");
     }
 
     public void windowOpened(WindowEvent e) {
