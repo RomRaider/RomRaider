@@ -11,7 +11,6 @@ import enginuity.ramtune.test.command.generator.CommandGenerator;
 import enginuity.ramtune.test.command.generator.EcuInitCommandGenerator;
 import enginuity.ramtune.test.command.generator.ReadCommandGenerator;
 import enginuity.ramtune.test.command.generator.WriteCommandGenerator;
-import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ThreadUtil.runAsDaemon;
@@ -24,10 +23,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
@@ -197,7 +198,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
                     CommandExecutor commandExecutor = new CommandExecutorImpl(protocol.getDefaultConnectionProperties(),
                             (String) portsComboBox.getSelectedItem());
                     CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
-                    if (confirmCommandExecution(commandGenerator)) {
+                    if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
                         byte[] command = commandGenerator.createCommand(asBytes(addressField.getText()), asBytes(dataField.getText()));
                         responseField.append("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
                         byte[] result = commandExecutor.executeCommand(command);
@@ -209,6 +210,36 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
             }
         });
         return button;
+    }
+
+    private boolean validateInput(CommandGenerator commandGenerator) {
+        boolean isReadCommandGenerator = ReadCommandGenerator.class.isAssignableFrom(commandGenerator.getClass());
+        boolean isWriteCommandGenerator = WriteCommandGenerator.class.isAssignableFrom(commandGenerator.getClass());
+        if (isReadCommandGenerator || isWriteCommandGenerator) {
+            String address = addressField.getText();
+            if (address.trim().length() != 6) {
+                showErrorDialog("Invalid address bytes - must be 3 bytes long.");
+                return false;
+            } else if (!address.matches("[0-9a-fA-F]{6}")) {
+                showErrorDialog("Invalid address bytes - bad bytes.");
+                return false;
+            }
+        }
+        if (isWriteCommandGenerator) {
+            String data = dataField.getText().trim();
+            int dataLength = data.length();
+            if (dataLength == 0) {
+                showErrorDialog("No data specified.");
+                return false;
+            } else if (dataLength % 2 != 0) {
+                showErrorDialog("Invalid data bytes - odd number of characters.");
+                return false;
+            } else if (!data.matches("[0-9a-fA-F]{2,}")) {
+                showErrorDialog("Invalid data bytes - bad bytes.");
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean confirmCommandExecution(CommandGenerator commandGenerator) {
@@ -268,7 +299,11 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         responseField.append("ERROR: ");
         responseField.append(writer.toString());
         responseField.append("\n**************************************************************************\n\n");
-        //showMessageDialog(this, "An error occurred:\n\n" + writer.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+        //showErrorDialog("An error occurred:\n\n" + writer.toString());
+    }
+
+    private void showErrorDialog(String message) {
+        showMessageDialog(this, message, "Error", ERROR_MESSAGE);
     }
 
     public void windowOpened(WindowEvent e) {
@@ -295,7 +330,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     //**********************************************************************
 
     public static void main(String[] args) {
-        LookAndFeelManager.initLookAndFeel();
+        //LookAndFeelManager.initLookAndFeel();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("RAMTune - Test App");
