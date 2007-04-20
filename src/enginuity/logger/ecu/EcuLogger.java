@@ -625,7 +625,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private Component buildLogToFileButton() {
         logToFileButton = new JToggleButton("Log to file");
-        logToFileButton.setToolTipText("Start/stop file logging");
+        logToFileButton.setToolTipText("Start/stop file logging (F1)");
         logToFileButton.setPreferredSize(new Dimension(100, 25));
         logToFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
