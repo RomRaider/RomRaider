@@ -11,6 +11,8 @@ import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_COMMAND;
 import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_RESPONSE;
 import static enginuity.io.protocol.SSMProtocol.REQUEST_NON_DATA_BYTES;
 import static enginuity.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
+import static enginuity.io.protocol.SSMProtocol.WRITE_MEMORY_COMMAND;
+import static enginuity.io.protocol.SSMProtocol.WRITE_MEMORY_RESPONSE;
 import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
@@ -45,6 +47,8 @@ public final class TestSSMConnectionImpl implements SerialConnection {
             return asBytes(ECU_INIT_RESPONSE).length;
         } else if (isReadAddressRequest()) {
             return request.length + (RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes());
+        } else if (isWriteMemoryRequest()) {
+            return request.length + (RESPONSE_NON_DATA_BYTES + (request.length - 6 - ADDRESS_SIZE));
         } else {
             throw new SerialCommunicationException("*** TEST *** Unsupported request: " + asHex(request));
         }
@@ -60,7 +64,6 @@ public final class TestSSMConnectionImpl implements SerialConnection {
             byte[] response = asBytes("0x80F01006E83EC74A760033");
             System.arraycopy(response, 0, bytes, request.length, response.length);
         } else if (isReadAddressRequest()) {
-
             byte[] responseData = generateResponseData();
             int i = 0;
             byte[] response = new byte[RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes()];
@@ -71,6 +74,19 @@ public final class TestSSMConnectionImpl implements SerialConnection {
             response[i++] = READ_ADDRESS_RESPONSE;
             System.arraycopy(responseData, 0, response, i, responseData.length);
             response[i += responseData.length] = calculateChecksum(response);
+            System.arraycopy(request, 0, bytes, 0, request.length);
+            System.arraycopy(response, 0, bytes, request.length, response.length);
+        } else if (isWriteMemoryRequest()) {
+            int numDataBytes = request.length - 6 - ADDRESS_SIZE;
+            byte[] response = new byte[RESPONSE_NON_DATA_BYTES + numDataBytes];
+            int i = 0;
+            response[i++] = HEADER;
+            response[i++] = DIAGNOSTIC_TOOL_ID;
+            response[i++] = ECU_ID;
+            response[i++] = (byte) (numDataBytes + 1);
+            response[i++] = WRITE_MEMORY_RESPONSE;
+            System.arraycopy(request, 8, response, i, numDataBytes);
+            response[i += numDataBytes] = calculateChecksum(response);
             System.arraycopy(request, 0, bytes, 0, request.length);
             System.arraycopy(response, 0, bytes, request.length, response.length);
         } else {
@@ -122,6 +138,10 @@ public final class TestSSMConnectionImpl implements SerialConnection {
 
     private boolean isReadAddressRequest() {
         return isCommand(READ_ADDRESS_COMMAND);
+    }
+
+    private boolean isWriteMemoryRequest() {
+        return isCommand(WRITE_MEMORY_COMMAND);
     }
 
     private boolean isCommand(byte command) {
