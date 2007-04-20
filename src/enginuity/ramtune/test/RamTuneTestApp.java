@@ -92,7 +92,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel contentPanel = buildContentPanel();
         mainPanel.add(contentPanel, BorderLayout.CENTER);
-        mainPanel.add(buildStatusBar(), BorderLayout.SOUTH);
+//        mainPanel.add(buildStatusBar(), BorderLayout.SOUTH);
 
         // add to container
         getContentPane().add(mainPanel);
