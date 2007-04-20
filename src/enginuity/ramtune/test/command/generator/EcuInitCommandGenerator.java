@@ -3,14 +3,11 @@ package enginuity.ramtune.test.command.generator;
 import enginuity.io.protocol.Protocol;
 import enginuity.ramtune.test.command.Command;
 import enginuity.ramtune.test.command.CommandImpl;
-import static enginuity.util.ParamChecker.checkNotNull;
 
-public final class EcuInitCommandGenerator implements CommandGenerator {
-    private final Protocol protocol;
-
+public final class EcuInitCommandGenerator extends AbstractCommandGenerator {
+    
     public EcuInitCommandGenerator(Protocol protocol) {
-        checkNotNull(protocol, "protocol");
-        this.protocol = protocol;
+        super(protocol);
     }
 
     public Command createCommand(byte[] address, byte[] data) {
