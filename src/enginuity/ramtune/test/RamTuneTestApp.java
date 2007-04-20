@@ -218,10 +218,10 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         if (isReadCommandGenerator || isWriteCommandGenerator) {
             String address = addressField.getText();
             if (address.trim().length() != 6) {
-                showErrorDialog("Invalid address bytes - must be 3 bytes long.");
+                showErrorDialog("Invalid address - must be 3 bytes long.");
                 return false;
             } else if (!address.matches("[0-9a-fA-F]{6}")) {
-                showErrorDialog("Invalid address bytes - bad bytes.");
+                showErrorDialog("Invalid address - bad bytes.");
                 return false;
             }
         }
@@ -232,10 +232,10 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
                 showErrorDialog("No data specified.");
                 return false;
             } else if (dataLength % 2 != 0) {
-                showErrorDialog("Invalid data bytes - odd number of characters.");
+                showErrorDialog("Invalid data - odd number of characters.");
                 return false;
             } else if (!data.matches("[0-9a-fA-F]{2,}")) {
-                showErrorDialog("Invalid data bytes - bad bytes.");
+                showErrorDialog("Invalid data - bad bytes.");
                 return false;
             }
         }
@@ -337,7 +337,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
                 ramTuneTestApp.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
                 ramTuneTestApp.setDefaultCloseOperation(EXIT_ON_CLOSE);
                 ramTuneTestApp.addWindowListener(ramTuneTestApp);
-                ramTuneTestApp.setLocation(100, 100);
+                ramTuneTestApp.setLocation(100, 50);
                 ramTuneTestApp.pack();
                 ramTuneTestApp.setVisible(true);
             }
