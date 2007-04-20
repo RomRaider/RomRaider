@@ -17,11 +17,9 @@ import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 
-import static javax.swing.BorderFactory.createLoweredBevelBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -101,7 +99,6 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel contentPanel = buildContentPanel();
         mainPanel.add(contentPanel, BorderLayout.CENTER);
-//        mainPanel.add(buildStatusBar(), BorderLayout.SOUTH);
 
         // add to container
         getContentPane().add(mainPanel);
@@ -295,40 +292,6 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         boolean isWriteCommandGenerator = WriteCommandGenerator.class.isAssignableFrom(commandGenerator.getClass());
         return !isWriteCommandGenerator || showConfirmDialog(this, "Are you sure you want to write to ECU memory?",
                 "Confirm Write Command", YES_NO_OPTION, WARNING_MESSAGE) == YES_OPTION;
-    }
-
-    private JComponent buildStatusBar() {
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        JPanel statusBar = new JPanel(gridBagLayout);
-
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.anchor = GridBagConstraints.WEST;
-        constraints.fill = BOTH;
-
-        JPanel messagePanel = new JPanel(new BorderLayout());
-        messagePanel.setBorder(createLoweredBevelBorder());
-        messagePanel.add(messageLabel, WEST);
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 2;
-        constraints.gridheight = 1;
-        constraints.weightx = 10;
-        constraints.weighty = 1;
-        gridBagLayout.setConstraints(messagePanel, constraints);
-        statusBar.add(messagePanel);
-
-        JPanel statsPanel = new JPanel(new FlowLayout());
-        statsPanel.setBorder(createLoweredBevelBorder());
-        statsPanel.add(connectionStatusLabel);
-        constraints.gridx = 3;
-        constraints.gridy = 0;
-        constraints.gridwidth = 1;
-        constraints.gridheight = 1;
-        constraints.weightx = 1;
-        gridBagLayout.setConstraints(statsPanel, constraints);
-        statusBar.add(statsPanel);
-
-        return statusBar;
     }
 
     private JPanel buildComPortPanel() {
