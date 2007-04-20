@@ -5,6 +5,7 @@ import enginuity.io.connection.EcuConnection;
 import enginuity.io.connection.EcuConnectionImpl;
 import enginuity.ramtune.test.command.Command;
 import enginuity.ramtune.test.command.CommandResult;
+import enginuity.ramtune.test.command.CommandResultImpl;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -18,7 +19,6 @@ public final class CommandExecutorImpl implements CommandExecutor {
     }
 
     public CommandResult executeCommand(Command command) {
-        ecuConnection.send(command.getBytes());
-        return null;
+        return new CommandResultImpl(ecuConnection.send(command.getBytes()));
     }
 }
