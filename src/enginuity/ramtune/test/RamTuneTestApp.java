@@ -2,11 +2,13 @@ package enginuity.ramtune.test;
 
 import enginuity.Settings;
 import enginuity.io.port.SerialPortRefresher;
+import enginuity.io.protocol.Protocol;
+import enginuity.io.protocol.SSMProtocol;
 import enginuity.logger.ecu.ui.SerialPortComboBox;
-import enginuity.ramtune.test.command.Command;
-import enginuity.ramtune.test.command.EcuInitCommand;
-import enginuity.ramtune.test.command.ReadCommand;
-import enginuity.ramtune.test.command.WriteCommand;
+import enginuity.ramtune.test.command.generator.CommandGenerator;
+import enginuity.ramtune.test.command.generator.EcuInitCommandGenerator;
+import enginuity.ramtune.test.command.generator.ReadCommandGenerator;
+import enginuity.ramtune.test.command.generator.WriteCommandGenerator;
 import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
@@ -52,10 +54,11 @@ import java.io.Writer;
  * It borrows some functionality from the logger which should be rewritten/removed before being released!!
  */
 public final class RamTuneTestApp extends JFrame implements WindowListener {
-    private Settings settings = new Settings();
-    private SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
-    private JLabel messageLabel = new JLabel();
-    private JLabel connectionStatusLabel = new JLabel();
+    private final Protocol protocol = new SSMProtocol();
+    private final Settings settings = new Settings();
+    private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
+    private final JLabel messageLabel = new JLabel();
+    private final JLabel connectionStatusLabel = new JLabel();
 
     public RamTuneTestApp(String title) {
         super(title);
@@ -168,7 +171,8 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     }
 
     private JComboBox buildCommandComboBox() {
-        return new JComboBox(new Command[] {new EcuInitCommand(), new ReadCommand(), new WriteCommand()});
+        return new JComboBox(new CommandGenerator[] {new EcuInitCommandGenerator(protocol),
+                new ReadCommandGenerator(protocol), new WriteCommandGenerator(protocol)});
     }
 
     private Component buildOutputPanel() {
