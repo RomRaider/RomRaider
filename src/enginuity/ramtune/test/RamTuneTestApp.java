@@ -24,6 +24,8 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import static javax.swing.JOptionPane.YES_OPTION;
+import static javax.swing.JOptionPane.showConfirmDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
@@ -193,17 +195,23 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
                     CommandExecutor commandExecutor = new CommandExecutorImpl(protocol.getDefaultConnectionProperties(),
                             (String) portsComboBox.getSelectedItem());
                     CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
-                    byte[] command = commandGenerator.createCommand(asBytes(addressField.getText().replaceAll(" ", "")),
-                            asBytes(dataField.getText().replaceAll(" ", "")));
-                    responseField.append("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
-                    byte[] result = commandExecutor.executeCommand(command);
-                    responseField.append("RCV [" + commandGenerator + "]:\t" + asHex(result) + "\n");
+                    if (confirmCommandExecution(commandGenerator)) {
+                        byte[] command = commandGenerator.createCommand(asBytes(addressField.getText()), asBytes(dataField.getText()));
+                        responseField.append("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
+                        byte[] result = commandExecutor.executeCommand(command);
+                        responseField.append("RCV [" + commandGenerator + "]:\t" + asHex(result) + "\n");
+                    }
                 } catch (Exception ex) {
                     reportError(ex);
                 }
             }
         });
         return button;
+    }
+
+    private boolean confirmCommandExecution(CommandGenerator commandGenerator) {
+        boolean isWriteCommandGenerator = WriteCommandGenerator.class.isAssignableFrom(commandGenerator.getClass());
+        return !isWriteCommandGenerator || showConfirmDialog(null, "Are you sure you want to write to ECU memory?") == YES_OPTION;
     }
 
     private JComponent buildStatusBar() {

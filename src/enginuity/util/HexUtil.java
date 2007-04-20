@@ -31,6 +31,9 @@ public final class HexUtil {
     }
 
     public static byte[] asBytes(String hex) {
+        if (hex.indexOf(' ') >= 0) {
+            hex = hex.replaceAll(" ", "");
+        }
         if (hex.startsWith("0x")) {
             hex = hex.substring(2);
         }
