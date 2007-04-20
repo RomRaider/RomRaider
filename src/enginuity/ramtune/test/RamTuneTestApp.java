@@ -24,6 +24,8 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import javax.swing.JPanel;
@@ -211,7 +213,8 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
 
     private boolean confirmCommandExecution(CommandGenerator commandGenerator) {
         boolean isWriteCommandGenerator = WriteCommandGenerator.class.isAssignableFrom(commandGenerator.getClass());
-        return !isWriteCommandGenerator || showConfirmDialog(null, "Are you sure you want to write to ECU memory?") == YES_OPTION;
+        return !isWriteCommandGenerator || showConfirmDialog(this, "Are you sure you want to write to ECU memory?",
+                "Confirm Write Command", YES_NO_OPTION, WARNING_MESSAGE) == YES_OPTION;
     }
 
     private JComponent buildStatusBar() {
@@ -265,6 +268,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         responseField.append("ERROR: ");
         responseField.append(writer.toString());
         responseField.append("\n**************************************************************************\n\n");
+        //showMessageDialog(this, "An error occurred:\n\n" + writer.toString(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     public void windowOpened(WindowEvent e) {
