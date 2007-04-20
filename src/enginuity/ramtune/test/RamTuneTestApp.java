@@ -62,6 +62,7 @@ import java.io.Writer;
 /*
  * This is a test app! Use at your own risk!!
  * It borrows some functionality from the logger which should be rewritten/removed before being released!!
+ * It is also a bit of a mess and needs to be cleaned up
  */
 public final class RamTuneTestApp extends JFrame implements WindowListener {
     private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
@@ -76,7 +77,8 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     private final JTextArea responseField = new JTextArea(15, 80);
     private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
     private final JComboBox commandComboBox = new JComboBox(new CommandGenerator[]{new EcuInitCommandGenerator(protocol),
-                                                                                   new ReadCommandGenerator(protocol), new WriteCommandGenerator(protocol)});
+                                                                                   new ReadCommandGenerator(protocol),
+                                                                                   new WriteCommandGenerator(protocol)});
 
     public RamTuneTestApp(String title) {
         super(title);
