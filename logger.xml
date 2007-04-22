@@ -19,8 +19,8 @@
                 <parameter id="P2" name="Coolant Temperature" desc="" ecubyteindex="8" ecubit="6">
                     <address>0x000008</address>
                     <conversions>
-                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
                         <conversion units="C" expr="x-40" format="0"/>
+                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
                     </conversions>
                 </parameter>
 
@@ -70,8 +70,8 @@
                 <parameter id="P9" name="Vehicle Speed" desc="" ecubyteindex="9" ecubit="7">
                     <address>0x000010</address>
                     <conversions>
-                        <conversion units="mph" expr="x*0.621371192" format="0"/>
                         <conversion units="kph" expr="x" format="0"/>
+                        <conversion units="mph" expr="x*0.621371192" format="0"/>
                     </conversions>
                 </parameter>
 
@@ -85,8 +85,8 @@
                 <parameter id="P11" name="Intake Air Temperature" desc="" ecubyteindex="9" ecubit="5">
                     <address>0x000012</address>
                     <conversions>
-                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
                         <conversion units="C" expr="x-40" format="0"/>
+                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
                     </conversions>
                 </parameter>
 
@@ -230,8 +230,8 @@
                 <parameter id="P31" name="Fuel Temperature" desc="" ecubyteindex="11" ecubit="1">
                     <address>0x00002A</address>
                     <conversions>
-                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
                         <conversion units="C" expr="x-40" format="0"/>
+                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
                     </conversions>
                 </parameter>
 
@@ -572,8 +572,8 @@
                 <parameter id="P79" name="Exhaust Gas Temperature" desc="Exhaust gas temperature reading." ecubyteindex="40" ecubit="1">
                     <address>0x000106</address>
                     <conversions>
-                        <conversion units="F" expr="32+9*(x+40)" format="0"/>
                         <conversion units="C" expr="(x+40)*5" format="0"/>
+                        <conversion units="F" expr="32+9*(x+40)" format="0"/>
                     </conversions>
                 </parameter>
 
@@ -594,8 +594,8 @@
                 <parameter id="P82" name="Memorised Cruise Speed" desc="" ecubyteindex="41" ecubit="5">
                     <address>0x00010A</address>
                     <conversions>
-                        <conversion units="mph" expr="x*0.621371192" format="0"/>
                         <conversion units="kph" expr="x" format="0"/>
+                        <conversion units="mph" expr="x*0.621371192" format="0"/>
                     </conversions>
                 </parameter>
 
@@ -687,10 +687,10 @@
                         <ref parameter="P58"/> <!-- AFR-->
                     </depends>
                     <conversions>
+                        <conversion units="l/100km" expr="(3600/[P9:kph])*((P12/[P58:AFR])/761)*100" format="0.00"/>
+                        <conversion units="km/l" expr="([P9:kph]/3600)/((P12/[P58:AFR])/761)" format="0.00"/>
                         <conversion units="mpg (US)" expr="([P9:mph]/3600)/((P12/[P58:AFR])/2880)" format="0.00"/>
                         <conversion units="mpg (UK)" expr="([P9:mph]/3600)/((P12/[P58:AFR])/3459)" format="0.00"/>
-                        <conversion units="km/l" expr="([P9:kph]/3600)/((P12/[P58:AFR])/761)" format="0.00"/>
-                        <conversion units="l/100km" expr="(3600/[P9:kph])*((P12/[P58:AFR])/761)*100" format="0.00"/>
                     </conversions>
                 </parameter>
 
