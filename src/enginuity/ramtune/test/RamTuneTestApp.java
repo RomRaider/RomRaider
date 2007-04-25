@@ -14,6 +14,7 @@ import enginuity.ramtune.test.command.generator.WriteCommandGenerator;
 import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
+import enginuity.util.ThreadUtil;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 
@@ -200,26 +201,44 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     }
 
     private JButton buildSendButton() {
-        JButton button = new JButton("Send Command");
+        final JButton button = new JButton("Send Command");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    CommandExecutor commandExecutor = new CommandExecutorImpl(protocol, (String) portsComboBox.getSelectedItem());
-                    CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
-                    if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
-                        List<byte[]> commands = commandGenerator.createCommands(getData(), getAddress(), getLength());
-                        for (byte[] command : commands) {
-                            responseField.append("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
-                            byte[] result = commandExecutor.executeCommand(command);
-                            responseField.append("RCV [" + commandGenerator + "]:\t" + asHex(result) + "\n");
+                ThreadUtil.runAsDaemon(new Runnable() {
+                    public void run() {
+                        button.setEnabled(false);
+                        try {
+                            final CommandExecutor commandExecutor = new CommandExecutorImpl(protocol, (String) portsComboBox.getSelectedItem());
+                            final CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
+                            if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
+                                StringBuilder builder = new StringBuilder();
+                                List<byte[]> commands = commandGenerator.createCommands(getData(), getAddress(), getLength());
+                                for (byte[] command : commands) {
+                                    appendResponseLater("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
+                                    byte[] response = protocol.preprocessResponse(command, commandExecutor.executeCommand(command));
+                                    appendResponseLater("RCV [" + commandGenerator + "]:\t" + asHex(response) + "\n");
+                                    builder.append(asHex(protocol.parseResponseData(response)));
+                                }
+                                appendResponseLater("DATA [Raw]:\t" + builder.toString() + "\n\n");
+                            }
+                        } catch (Exception ex) {
+                            reportError(ex);
+                        } finally {
+                            button.setEnabled(true);
                         }
                     }
-                } catch (Exception ex) {
-                    reportError(ex);
-                }
+                });
             }
         });
         return button;
+    }
+
+    private void appendResponseLater(final String text) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                responseField.append(text);
+            }
+        });
     }
 
     private byte[] getAddress() {

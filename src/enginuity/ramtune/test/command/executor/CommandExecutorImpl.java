@@ -20,8 +20,7 @@ public final class CommandExecutorImpl implements CommandExecutor {
     public byte[] executeCommand(byte[] command) {
         EcuConnection ecuConnection = new EcuConnectionImpl(protocol.getDefaultConnectionProperties(), port);
         try {
-            byte[] response = ecuConnection.send(command);
-            return protocol.parseResponseData(protocol.preprocessResponse(command, response));
+            return ecuConnection.send(command);
         } finally {
             ecuConnection.close();
         }
