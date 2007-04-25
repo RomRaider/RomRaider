@@ -100,7 +100,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private EcuAddress address;
     private Set<String> dependsList;
     private Map<String, EcuAddress> ecuAddressMap;
-    private boolean isSwitch;
     private boolean derived;
     private int addressBit;
     private int addressLength;
@@ -144,7 +143,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 ecuByteIndex = attributes.getValue(ATTR_ECUBYTEINDEX);
                 ecuBit = attributes.getValue(ATTR_ECUBIT);
                 resetConvertorLists();
-                isSwitch = false;
             } else if (TAG_ADDRESS.equals(qName)) {
                 String length = attributes.getValue(ATTR_LENGTH);
                 addressLength = length == null ? 1 : Integer.valueOf(length);
@@ -169,8 +167,13 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 name = attributes.getValue(ATTR_NAME);
                 desc = attributes.getValue(ATTR_DESC);
                 address = new EcuAddressImpl(attributes.getValue(ATTR_BYTE), 1, Integer.valueOf(attributes.getValue(ATTR_BIT)));
-                derived = false;
-                isSwitch = true;
+                EcuDataConvertor[] convertors = new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())};
+                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
+                switches.add(ecuSwitch);
+                ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
+                if (id.equalsIgnoreCase(fileLoggingControllerSwitchId)) {
+                    fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
+                }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);
@@ -178,7 +181,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 resetConvertorLists();
                 ecuAddressMap = new HashMap<String, EcuAddress>();
                 derived = false;
-                isSwitch = false;
             } else if (TAG_ECU.equals(qName)) {
                 ecuIds = attributes.getValue(ATTR_ID);
             }
@@ -230,22 +232,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     derivedConvertorList.add(new EcuDerivedParameterConvertorImpl(conversionUnits,
                             conversionExpression, conversionFormat, replaceMap));
                 } else {
-                    if (isSwitch) {
-                        convertorList.add(new EcuSwitchConvertorImpl(address.getBit()));
-                    } else {
-                        convertorList.add(new EcuParameterConvertorImpl(conversionUnits,
-                                conversionExpression, conversionFormat, address.getBit(),
+                    convertorList.add(new EcuParameterConvertorImpl(conversionUnits, conversionExpression, conversionFormat, address.getBit(),
                                 FLOAT.equalsIgnoreCase(conversionStorageType), replaceMap));
-                    }
-                }
-            } else if (TAG_SWITCH.equals(qName)) {
-                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address,
-                        new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())});
-                switches.add(ecuSwitch);
-                ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
-                if (id.equalsIgnoreCase(fileLoggingControllerSwitchId)) {
-                    fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, address,
-                            new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())});
                 }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
