@@ -14,7 +14,6 @@ import enginuity.ramtune.test.command.generator.WriteCommandGenerator;
 import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
-import enginuity.util.ThreadUtil;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 
@@ -204,7 +203,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         final JButton button = new JButton("Send Command");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ThreadUtil.runAsDaemon(new Runnable() {
+                runAsDaemon(new Runnable() {
                     public void run() {
                         button.setEnabled(false);
                         try {
