@@ -39,9 +39,11 @@ public interface Protocol {
 
     byte[] preprocessResponse(byte[] request, byte[] response);
 
-    void checkValidEcuInitResponse(byte[] bytes) throws InvalidResponseException;
+    byte[] parseResponseData(byte[] processedResponse);
 
-    EcuInit parseEcuInitResponse(byte[] response);
+    void checkValidEcuInitResponse(byte[] processedResponse) throws InvalidResponseException;
+
+    EcuInit parseEcuInitResponse(byte[] processedResponse);
 
     ConnectionProperties getDefaultConnectionProperties();
 }

@@ -56,6 +56,7 @@ import java.awt.event.WindowListener;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.List;
 
 /*
  * This is a test app! Use at your own risk!!
@@ -203,14 +204,15 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    CommandExecutor commandExecutor = new CommandExecutorImpl(protocol.getDefaultConnectionProperties(),
-                            (String) portsComboBox.getSelectedItem());
+                    CommandExecutor commandExecutor = new CommandExecutorImpl(protocol, (String) portsComboBox.getSelectedItem());
                     CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
                     if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
-                        byte[] command = commandGenerator.createCommand(getAddress(), getData(), getLength());
-                        responseField.append("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
-                        byte[] result = commandExecutor.executeCommand(command);
-                        responseField.append("RCV [" + commandGenerator + "]:\t" + asHex(result) + "\n");
+                        List<byte[]> commands = commandGenerator.createCommands(getData(), getAddress(), getLength());
+                        for (byte[] command : commands) {
+                            responseField.append("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
+                            byte[] result = commandExecutor.executeCommand(command);
+                            responseField.append("RCV [" + commandGenerator + "]:\t" + asHex(result) + "\n");
+                        }
                     }
                 } catch (Exception ex) {
                     reportError(ex);

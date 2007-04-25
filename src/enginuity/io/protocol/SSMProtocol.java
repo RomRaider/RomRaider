@@ -91,21 +91,24 @@ public final class SSMProtocol implements Protocol {
         return filterRequestFromResponse(request, response);
     }
 
-    public void checkValidEcuInitResponse(byte[] response) throws InvalidResponseException {
+    public byte[] parseResponseData(byte[] processedResponse) {
+        checkNotNullOrEmpty(processedResponse, "processedResponse");
+        return extractResponseData(processedResponse);
+    }
+
+    public void checkValidEcuInitResponse(byte[] processedResponse) throws InvalidResponseException {
         // response_header 3_unknown_bytes 5_ecu_id_bytes readable_params_switches... checksum
         // 80F01039FF A21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000 59
-        checkNotNullOrEmpty(response, "response");
-        validateResponse(response);
-        byte responseType = response[4];
+        checkNotNullOrEmpty(processedResponse, "processedResponse");
+        validateResponse(processedResponse);
+        byte responseType = processedResponse[4];
         if (responseType != ECU_INIT_RESPONSE) {
             throw new InvalidResponseException("Unexpected ECU Init response type: " + asHex(new byte[]{responseType}));
         }
     }
 
-    public EcuInit parseEcuInitResponse(byte[] response) {
-        checkNotNullOrEmpty(response, "response");
-        byte[] responseData = extractResponseData(response);
-        return new SSMEcuInit(responseData);
+    public EcuInit parseEcuInitResponse(byte[] processedResponse) {
+        return new SSMEcuInit(parseResponseData(processedResponse));
     }
 
     public ConnectionProperties getDefaultConnectionProperties() {

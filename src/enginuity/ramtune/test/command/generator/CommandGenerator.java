@@ -1,7 +1,9 @@
 package enginuity.ramtune.test.command.generator;
 
+import java.util.List;
+
 public interface CommandGenerator {
 
-    byte[] createCommand(byte[] address, byte[] data, int length);
+    List<byte[]> createCommands(byte[] data, byte[] address, int length);
 
 }

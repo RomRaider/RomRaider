@@ -22,12 +22,14 @@
 package enginuity.util;
 
 import enginuity.newmaps.ecumetadata.Scale;
+
 import java.nio.ByteBuffer;
 
 @SuppressWarnings({"UnnecessaryBoxing"})
 public final class ByteUtil {
 
     private ByteUtil() {
+        throw new UnsupportedOperationException();
     }
 
     public static int asUnsignedInt(byte[] bytes, int endian) {
