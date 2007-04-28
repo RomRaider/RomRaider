@@ -705,6 +705,28 @@
                     </conversions>
                 </parameter>
 
+                <parameter id="P205" name="WHP" desc="Approximate Wheel Horsepower">
+                    <depends>
+                        <ref parameter="P12"/> <!-- MAF-->
+                    </depends>
+                    <conversions>
+                        <conversion units="kW" expr="P12*0.793" format="0.00"/>
+                        <conversion units="hp" expr="P12*1.064" format="0.00"/>
+                        <conversion units="ps" expr="P12*1.079" format="0.00"/>
+                    </conversions>
+                </parameter>
+
+                <parameter id="P206" name="Torque" desc="Approximate Wheel Torque">
+                    <depends>
+                        <ref parameter="P8"/> <!-- Engine Speed -->
+                        <ref parameter="P205"/> <!-- WHP-->
+                    </depends>
+                    <conversions>
+                        <conversion units="Nm" expr="([P205:kW]*46326.77)/P8" format="0.00"/>
+                        <conversion units="lb-ft" expr="([P205:hp]*5252)/P8" format="0.00"/>
+                    </conversions>
+                </parameter> 
+
             </parameters>
 
             <switches>
