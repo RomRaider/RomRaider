@@ -39,6 +39,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
+
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -49,8 +50,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.tree.TreePath;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
+
+import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
 import enginuity.net.URL;
@@ -66,8 +73,6 @@ import enginuity.xml.DOMRomUnmarshaller;
 import enginuity.xml.DOMSettingsBuilder;
 import enginuity.xml.DOMSettingsUnmarshaller;
 import enginuity.xml.RomNotFoundException;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
 
@@ -294,6 +299,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                 Vector<Table> romTables = rom.getTables();
                 for (Table t : romTables) {
                     rightPanel.remove(t.getFrame());
+                    TableUpdateHandler.getInstance().deregisterTable(t);
                 }
 
                 Vector<TreePath> path = new Vector<TreePath>();
