@@ -19,14 +19,14 @@ public interface TuningEntity extends ActionListener{
 	// Return the toolbar
 	public JToolBar getToolBar();
 	
-	// Return double data based on passed table name
-	public Double[][] getTableData(String tableName);
+	// Return object data based on passed table name
+	public Object[][] getTableData(String tableName);
 	
 	// Remove tuning group
 	public void removeTuningGroup(String tuningGroup);
 	
 	// Push back modified data to the tuning entity
-	public void setTableData(String tableIdentifier, Double[][] data);
+	public void setTableData(String tableIdentifier, Object[][] data);
 	
 	// Control methods
 	public void init(TuningEntityListener listener);

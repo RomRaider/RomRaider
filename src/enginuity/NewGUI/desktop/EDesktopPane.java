@@ -51,7 +51,7 @@ public class EDesktopPane extends JDesktopPane{
         }
     }
 
-    public Component add(Double[][] data, TableMetaData tableMetaData) {
+    public Component add(Object[][] data, TableMetaData tableMetaData) {
         Point p;
         int w;
         int h;
@@ -61,14 +61,17 @@ public class EDesktopPane extends JDesktopPane{
     	EInternalFrame tempFrame = null;
         for(int i = 0; i < allFrames.length ; i++){
     		tempFrame = (EInternalFrame)allFrames[i];
+    		
+    		//Does the fram we're adding already exist?
     		if(tempFrame.getTableMetaData().getTableIdentifier() == tableMetaData.getTableIdentifier()){
     			addFrame = false;
     			break;
     		}
     	}
         
+        // Frame does not exist already, now add
         if(addFrame){
-        	EInternalFrame frame = new EInternalFrame(tableMetaData, data, new Dimension(800, 600));
+        	EInternalFrame frame = new EInternalFrame(tableMetaData, data);
         	Component retval = super.add(frame);
             checkDesktopSize();
             if (allFrames.length > 0) {
@@ -88,7 +91,7 @@ public class EDesktopPane extends JDesktopPane{
                 if (h < frame.getMinimumSize().getHeight()) {
                     h = (int) frame.getMinimumSize().getHeight();
                 }
-                frame.setSize(w, h);
+                //frame.setSize(w, h);
             }
             moveToFront(frame);
             frame.setVisible(true);
@@ -99,6 +102,8 @@ public class EDesktopPane extends JDesktopPane{
             }
             return retval;
         }
+        
+        // Since frame already exists, toggle its visibility
         else{
         	boolean isVisible = tempFrame.isVisible();
         	// Toggle the visibility of the frame
@@ -129,7 +134,7 @@ public class EDesktopPane extends JDesktopPane{
         int frameHeight = (getBounds().height - 5) - allFrames.length * FRAME_OFFSET;
         int frameWidth = (getBounds().width - 5) - allFrames.length * FRAME_OFFSET;
         for (int i = allFrames.length - 1; i >= 0; i--) {
-            allFrames[i].setSize(frameWidth, frameHeight);
+            //allFrames[i].setSize(frameWidth, frameHeight);
             allFrames[i].setLocation(x, y);
             x = x + FRAME_OFFSET;
             y = y + FRAME_OFFSET;
@@ -145,7 +150,7 @@ public class EDesktopPane extends JDesktopPane{
         int frameHeight = getBounds().height / allFrames.length;
         int y = 0;
         for (int i = 0; i < allFrames.length; i++) {
-            allFrames[i].setSize(getBounds().width, frameHeight);
+            //allFrames[i].setSize(getBounds().width, frameHeight);
             allFrames[i].setLocation(0, y);
             y = y + frameHeight;
         }

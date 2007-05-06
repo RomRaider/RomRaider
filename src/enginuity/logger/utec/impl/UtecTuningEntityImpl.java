@@ -151,9 +151,9 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		UtecDataManager.removeTuningGroup(tuningGroup);
 	}
 	
-	public Double[][] getTableData(String tableIdentifier) {
+	public Object[][] getTableData(String tableIdentifier) {
 		System.out.println("UTEC getTableData Impl tablename:"+tableIdentifier);
-		Double[][] data = null;
+		Object[][] data = null;
 		
 		if(UtecDataManager.getAllMaps().size() == 0){
 			System.out.println("UTEC Impl Current map data is null");
@@ -178,6 +178,11 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			else if(tableIdentifier.equals("Boost:"+mapName)){
 				System.out.println("UTE Boost");
 				data = newMapData.getBoostMap();
+				return data;
+			}else if(tableIdentifier.equals("MapName:"+mapName)){
+				System.out.println("UTE MapName");
+				data = new Object[1][1];
+				data[0][0] = newMapData.getMapName();
 				return data;
 			}else{
 				System.out.println("UTE returning empty data");
@@ -252,8 +257,8 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			}
 
 			else if (cmd.equals("Save Map To File")) {
-				/*
 				System.out.println("Saving map to file.");
+
 				if (UtecDataManager.getCurrentMapData() != null) {
 
 					String saveFileName = null;
@@ -267,7 +272,6 @@ public class UtecTuningEntityImpl implements TuningEntity{
 				} else {
 					System.out.println("Map is null.");
 				}
-				*/
 			}
 
 			else if (cmd.equals("Load Map #1")) {
@@ -394,7 +398,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		return new JutecToolBar(this.theTEL, this);
 	}
 
-	public void setTableData(String tableIdentifier, Double[][] data) {
+	public void setTableData(String tableIdentifier, Object[][] data) {
 		System.out.println("utec save data requested:"+tableIdentifier);
 		
 		Iterator mapIterate = UtecDataManager.getAllMaps().iterator();
@@ -405,18 +409,42 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			String tableName = split[1];
 			if(mapData.getMapName().equals(tableName)){
 				if(mapType.equals("Fuel")){
-					System.out.println("UTE: Fuel");
-					mapData.setFuelMap(data);
+					System.out.println("UTE: Fuel Set");
+					mapData.setFuelMap(convertObjToDouble(data));
 				}
 				else if(mapType.equals("Boost")){
-					System.out.println("UTE: Boost");
-					mapData.setBoostMap(data);
+					System.out.println("UTE: Boost Set");
+					mapData.setBoostMap(convertObjToDouble(data));
 				}
 				else if(mapType.equals("Timing")){
-					System.out.println("UTE: Timing");
-					mapData.setTimingMap(data);
+					System.out.println("UTE: Timing Set");
+					mapData.setTimingMap(convertObjToDouble(data));
+				}
+				else if(mapType.equals("MapName")){
+					System.out.println("UTE: MapName Set");
+					mapData.setMapName((String)data[0][0]);
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Helper method for when dealing with fuel timing and boost tables
+	 * @param objData
+	 * @return
+	 */
+	private Double[][] convertObjToDouble(Object[][] objData){
+		int length = objData.length;
+		int width = objData[0].length;
+		
+		Double[][] newData = new Double[length][width];
+		
+		for(int i = 0 ; i < length ; i++){
+			for(int j = 0 ; j < width ; j++){
+				newData[i][j] = (Double)objData[i][j];
+			}
+		}
+		
+		return newData;
 	}
 }

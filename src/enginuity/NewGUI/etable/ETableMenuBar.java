@@ -12,6 +12,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import enginuity.NewGUI.etable.dataJPanel.DataJPanelInterface;
+
 public class ETableMenuBar extends JMenuBar implements ActionListener{
 
 	
@@ -26,9 +28,9 @@ public class ETableMenuBar extends JMenuBar implements ActionListener{
 	private JMenuItem copySelection = new JMenuItem("Copy Selection");
 	private JMenuItem paste = new JMenuItem("Paste Table Data");
 	
-	private EInternalFrame parentEInternalFrame;
+	private DataJPanelInterface parentEInternalFrame;
 	
-	public ETableMenuBar(EInternalFrame parentFrame){
+	public ETableMenuBar(DataJPanelInterface parentFrame){
 		this.parentEInternalFrame = parentFrame;
 		
 		// Setup the GUI below
@@ -67,27 +69,22 @@ public class ETableMenuBar extends JMenuBar implements ActionListener{
 		}
 		
 		else if(e.getSource() == this.closeItem){
-			try {
-				this.parentEInternalFrame.setClosed(true);
-			} catch (PropertyVetoException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			this.parentEInternalFrame.setClosed(true);
 		}
 		
 
 		else if(e.getSource() == this.copySelection){
-			this.parentEInternalFrame.getExcelCopy().copySelectedTableData();
+			this.parentEInternalFrame.copySelectedTableData();
 		}
 		
 
 		else if(e.getSource() == this.copyTable){
-			this.parentEInternalFrame.getExcelCopy().copyEntireTable();
+			this.parentEInternalFrame.copyEntireTable();
 		}
 		
 
 		else if(e.getSource() == this.paste){
-			this.parentEInternalFrame.getExcelCopy().pasteTableData();
+			this.parentEInternalFrame.pasteTableData();
 		}
 	}
 

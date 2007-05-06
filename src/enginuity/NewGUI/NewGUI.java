@@ -244,7 +244,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		}
 	}
 
-	public void displayInternalFrameTable(Double[][] data, TableMetaData tableMetaData){
+	public void displayInternalFrameTable(Object[][] data, TableMetaData tableMetaData){
 		this.rightDesktopPane.add(data, tableMetaData);
 	}
 	

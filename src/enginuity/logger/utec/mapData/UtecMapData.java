@@ -474,6 +474,10 @@ public class UtecMapData {
 		return mapName;
 	}
 	
+	public void setMapName(String newMapName){
+		this.mapName = newMapName;
+	}
+	
 	public void setFuelMapValue(int row, int col, double value){
 		this.fuelMap[col][row] = value;
 	}

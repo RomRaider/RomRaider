@@ -47,7 +47,7 @@ public class ETree extends JTree implements MouseListener {
 			// If this is a table that contains data, then open it in the right pane in an internal frame
 			if(theNode.getTableMetaData().getNodeType() == TableMetaData.DATA_1D || theNode.getTableMetaData().getNodeType() == TableMetaData.DATA_2D || theNode.getTableMetaData().getNodeType() == TableMetaData.DATA_3D){
 				System.out.println("ETree Table data:"+theNode.getTableMetaData().getTableIdentifier());
-				Double[][] tableData = ApplicationStateManager.getCurrentTuningEntity().getTableData(theNode.getTableMetaData().getTableIdentifier());
+				Object[][] tableData = ApplicationStateManager.getCurrentTuningEntity().getTableData(theNode.getTableMetaData().getTableIdentifier());
 				System.out.println("ETree size:"+tableData.length);
 				ApplicationStateManager.getEnginuityInstance().displayInternalFrameTable(tableData, theNode.getTableMetaData());
 			}

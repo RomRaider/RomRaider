@@ -23,7 +23,7 @@ public class ETable extends JTable{
 	private Vector tempSelectedCells = new Vector();
 	private TableMetaData tableMetaData;
 	
-	ETable(TableMetaData metaData, Double[][] data, TableColumnModel cm){
+	public ETable(TableMetaData metaData, Double[][] data, TableColumnModel cm){
 		this.theModel = new ETableModel(metaData, data);
 		super.setColumnModel(cm);
 		super.setModel(this.theModel);

@@ -1,11 +1,12 @@
 package enginuity.NewGUI.data;
 
+import java.awt.Dimension;
 import java.text.DecimalFormat;
 
 import enginuity.NewGUI.interfaces.TuningEntity;
 
 public class TableMetaData {
-	// Type of node
+	// Type of table
 	public static final int DATA_1D = 0;
 	public static final int DATA_2D = 1;
 	public static final int DATA_3D = 3;
@@ -13,19 +14,35 @@ public class TableMetaData {
 	public static final int RESERVED_ROOT = 5;
 	public static final int CATEGORY = 6;
 	
+	//Frame Dimensions
+	private static final Dimension Data3DDimension = new Dimension(500, 500);
+	private static final Dimension Data2DDimension = new Dimension(500, 200);
+	private static final Dimension Data1DDimension = new Dimension(500, 60);
+	
+	
+	// **********************
 	// Constructor set values
+	// **********************
+	
+	// Table data related
 	private double maxValue;
 	private double minValue;
-	private String[] columnLabels;
-	private String[] rowLabels;
 	private Object[] ignoredValues;
 	private boolean isInvertedColoring;
+	
+	// Table labels etc
 	private String tableName;
+	private String[] columnLabels;
+	private String[] rowLabels;
 	private String xAxisLabel;
 	private String yAxisLabel;
 	private String tableIdentifier;
 	private String tableGroup;
+	
+	// Is this a table1d, table2d, table3d
 	private int dimensions;
+	
+	// What tuning entity should table decribed by this meta data refer to?
 	private TuningEntity parentTuningEntity;
 	
 	// Optional setters
@@ -108,5 +125,17 @@ public class TableMetaData {
 
 	public String getYAxisLabel() {
 		return yAxisLabel;
+	}
+
+	public static Dimension getData1DDimension() {
+		return Data1DDimension;
+	}
+
+	public static Dimension getData2DDimension() {
+		return Data2DDimension;
+	}
+
+	public static Dimension getData3DDimension() {
+		return Data3DDimension;
 	}
 }

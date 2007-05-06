@@ -82,6 +82,10 @@ public class UtecDataManager {
 		// Initialise tree
 		ETreeNode root = new ETreeNode("UTEC:"+mapData.getMapName()+", "+mapData.getMapComment(), new TableMetaData(TableMetaData.MAP_SET_ROOT,0.0,0.0,new Object[0],null,null,false,"","", "", "", mapData.getMapName(), parentTuningEntity));
 		
+		ETreeNode mapName = new ETreeNode("Map Name", new TableMetaData(TableMetaData.DATA_1D, Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), null,columnLabels,rowLabels, false, "Map Name" , "", "", "MapName:"+mapData.getMapName(), mapData.getMapName(),parentTuningEntity));
+		
+		
+		
 		Object[] ignored = {new Double(-100.0)};
 		ETreeNode fuel = new ETreeNode("Fuel", new TableMetaData(TableMetaData.DATA_3D, Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.fuelMapMax")[0]), ignored,columnLabels,rowLabels, false, "Fuel" , "Load", "RPM", "Fuel:"+mapData.getMapName(), mapData.getMapName(),parentTuningEntity));
 		
@@ -90,6 +94,8 @@ public class UtecDataManager {
 		
 		Object[] ignored3 = {new Double(-100.0)};
 		ETreeNode boost = new ETreeNode("Boost", new TableMetaData(TableMetaData.DATA_3D, Double.parseDouble(UtecProperties.getProperties("utec.boostMapMin")[0]), Double.parseDouble(UtecProperties.getProperties("utec.boostMapMax")[0]), ignored, columnLabels,rowLabels,false, "Boost", "Load", "RPM", "Boost:"+mapData.getMapName(), mapData.getMapName(), parentTuningEntity));
+		
+		root.add(mapName);
 		root.add(fuel);
 		root.add(timing);
 		root.add(boost);
