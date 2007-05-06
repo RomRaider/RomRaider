@@ -31,8 +31,13 @@ import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 import enginuity.xml.RomAttributeParser;
 
 import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -370,6 +375,7 @@ public class Table3D extends Table {
         }
         xAxis.increment(increment);
         yAxis.increment(increment);
+        colorize();
     }
 
     public void multiply(double factor) {

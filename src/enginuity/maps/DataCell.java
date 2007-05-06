@@ -24,12 +24,14 @@ package enginuity.maps;
 import enginuity.util.JEPUtil;
 
 import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.*;
+import javax.swing.JLabel;
 import javax.swing.border.Border;
-import java.awt.*;
+import java.awt.Color;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.RED;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
@@ -220,10 +222,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                 binValue < maxValue) {
             System.out.println(maxValue + " " + binValue);
             increment(increment * 2);
-
         }
-
-        table.colorize();
 
     }
 

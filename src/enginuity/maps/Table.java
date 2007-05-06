@@ -682,6 +682,7 @@ public abstract class Table extends JPanel implements Serializable {
                     cell.increment(increment);
                 }
             }
+            colorize();
         } else if (userLevel > settings.getUserLevel()) {
             JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
                     userLevel + " or greater. Click View->User Level to change your userlevel.",
