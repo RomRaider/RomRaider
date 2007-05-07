@@ -27,8 +27,11 @@ import enginuity.util.AxisRange;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -248,6 +251,7 @@ public class Table2D extends Table {
                 axis.paste();
             }
         }
+        colorize();
     }
 
     public void pasteCompare() {

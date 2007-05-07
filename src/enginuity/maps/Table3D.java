@@ -720,11 +720,13 @@ public class Table3D extends Table {
             // put datavalues in clipboard and paste
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(dataValues)), null);
             pasteValues();
+            colorize();
             // reset clipboard
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
 
         } else if ("[Selection3D]".equalsIgnoreCase(pasteType)) { // paste selection
             pasteValues();
+            colorize();
         } else if ("[Selection1D]".equalsIgnoreCase(pasteType)) { // paste selection
             xAxis.paste();
             yAxis.paste();

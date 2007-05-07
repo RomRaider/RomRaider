@@ -994,6 +994,7 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         }
+        colorize();
     }
 
     public void pasteCompare() {
