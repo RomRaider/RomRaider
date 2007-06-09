@@ -1,6 +1,7 @@
 package enginuity.ramtune.test;
 
 import enginuity.Settings;
+import enginuity.io.connection.ConnectionProperties;
 import enginuity.io.port.SerialPortRefresher;
 import enginuity.io.protocol.Protocol;
 import enginuity.io.protocol.SSMProtocol;
@@ -11,6 +12,7 @@ import enginuity.ramtune.test.command.generator.CommandGenerator;
 import enginuity.ramtune.test.command.generator.EcuInitCommandGenerator;
 import enginuity.ramtune.test.command.generator.ReadCommandGenerator;
 import enginuity.ramtune.test.command.generator.WriteCommandGenerator;
+import enginuity.ramtune.test.io.RamTuneTestAppConnectionProperties;
 import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
@@ -40,9 +42,9 @@ import static javax.swing.border.BevelBorder.LOWERED;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
-import static java.awt.BorderLayout.WEST;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import static java.awt.FlowLayout.LEFT;
 import java.awt.Font;
 import static java.awt.Font.PLAIN;
 import java.awt.GridBagConstraints;
@@ -71,6 +73,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     private final Settings settings = new Settings();
     private final JTextField addressField = new JTextField(6);
     private final JTextField lengthField = new JTextField(4);
+    private final JTextField sendTimeoutField = new JTextField(4);
     private final JTextArea dataField = new JTextArea(10, 80);
     private final JTextArea responseField = new JTextArea(15, 80);
     private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
@@ -112,10 +115,10 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
 
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.gridwidth = 1;
+        constraints.gridwidth = 2;
         constraints.gridheight = 1;
         constraints.weightx = 1;
-        constraints.weighty = 1;
+        constraints.weighty = 0;
         mainPanel.add(buildComPortPanel(), constraints);
 
         constraints.gridx = 0;
@@ -153,13 +156,17 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         constraints.weighty = 1;
         inputPanel.add(commandComboBox, constraints);
 
-        JPanel addressPanel = new JPanel(new FlowLayout());
-        addressPanel.add(new JLabel("Address (eg. 020000):"));
-        addressPanel.add(addressField);
-        addressPanel.add(new JLabel("   Read Length:"));
+        JPanel addressFieldPanel = new JPanel(new FlowLayout());
+        addressFieldPanel.add(new JLabel("Address (eg. 020000):"));
+        addressFieldPanel.add(addressField);
+        JPanel lengthPanel = new JPanel(new FlowLayout());
+        lengthPanel.add(new JLabel("   Read Length:"));
         lengthField.setText("1");
-        addressPanel.add(lengthField);
-        addressPanel.add(new JLabel("byte(s)"));
+        lengthPanel.add(lengthField);
+        lengthPanel.add(new JLabel("byte(s)"));
+        JPanel addressPanel = new JPanel(new FlowLayout(LEFT));
+        addressPanel.add(addressFieldPanel);
+        addressPanel.add(lengthPanel);
         constraints.gridx = 3;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
@@ -208,7 +215,8 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
                     public void run() {
                         button.setEnabled(false);
                         try {
-                            final CommandExecutor commandExecutor = new CommandExecutorImpl(protocol, (String) portsComboBox.getSelectedItem());
+                            ConnectionProperties connectionProperties = new RamTuneTestAppConnectionProperties(protocol.getDefaultConnectionProperties(), getSendTimeout());
+                            final CommandExecutor commandExecutor = new CommandExecutorImpl(connectionProperties, (String) portsComboBox.getSelectedItem());
                             final CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
                             if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
                                 StringBuilder builder = new StringBuilder();
@@ -258,8 +266,16 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     }
 
     private int getLength() {
+        return getIntFromField(lengthField);
+    }
+
+    private int getSendTimeout() {
+        return getIntFromField(sendTimeoutField);
+    }
+
+    private int getIntFromField(JTextField field) {
         try {
-            return Integer.parseInt(lengthField.getText().trim());
+            return Integer.parseInt(field.getText().trim());
         } catch (NumberFormatException e) {
             return -1;
         }
@@ -314,11 +330,25 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     }
 
     private JPanel buildComPortPanel() {
-        JPanel comboBoxPanel = new JPanel(new FlowLayout());
-        comboBoxPanel.add(new JLabel("COM Port:"));
-        comboBoxPanel.add(portsComboBox);
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(comboBoxPanel, WEST);
+        JPanel panel = new JPanel(new FlowLayout(LEFT));
+        panel.add(buildComPorts());
+        panel.add(buildSendTimeout());
+        return panel;
+    }
+
+    private Component buildSendTimeout() {
+        sendTimeoutField.setText("55");
+        JPanel panel = new JPanel(new FlowLayout());
+        panel.add(new JLabel("Send Timeout:"));
+        panel.add(sendTimeoutField);
+        panel.add(new JLabel("ms"));
+        return panel;
+    }
+
+    private JPanel buildComPorts() {
+        JPanel panel = new JPanel(new FlowLayout());
+        panel.add(new JLabel("COM Port:"));
+        panel.add(portsComboBox);
         return panel;
     }
 
