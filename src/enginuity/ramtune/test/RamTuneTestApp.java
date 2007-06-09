@@ -156,9 +156,10 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
         JPanel addressPanel = new JPanel(new FlowLayout());
         addressPanel.add(new JLabel("Address (eg. 020000):"));
         addressPanel.add(addressField);
-        addressPanel.add(new JLabel("Read Length:"));
+        addressPanel.add(new JLabel("   Read Length:"));
         lengthField.setText("1");
         addressPanel.add(lengthField);
+        addressPanel.add(new JLabel("byte(s)"));
         constraints.gridx = 3;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
