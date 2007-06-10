@@ -130,6 +130,7 @@ public final class SerialConnectionImpl implements SerialConnection {
         SerialPort serialPort = openPort(portIdentifier, connectionProperties.getConnectTimeout());
         initSerialPort(serialPort, connectionProperties.getBaudRate(), connectionProperties.getDataBits(), connectionProperties.getStopBits(),
                 connectionProperties.getParity());
+        System.out.println("Connected to: " + portName);
         return serialPort;
     }
 
