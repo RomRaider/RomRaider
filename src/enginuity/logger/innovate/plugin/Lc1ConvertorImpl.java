@@ -1,6 +1,5 @@
 package enginuity.logger.innovate.plugin;
 
-import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 
 public final class Lc1ConvertorImpl implements Lc1Convertor {
@@ -42,23 +41,18 @@ public final class Lc1ConvertorImpl implements Lc1Convertor {
     }
 
     private boolean isError(byte[] bytes) {
-        return (bytes[2] & 24) == 24;
+        return matches(bytes[2], 24);
     }
 
     private boolean isHeaderValid(byte[] bytes) {
-        return (bytes[0] & 178) == 178 && (bytes[1] & 128) == 128;
+        return matches(bytes[0], 178) && matches(bytes[1], 128);
     }
 
     private boolean isLc1(byte[] bytes) {
-        return bytes.length == 6 && (bytes[2] & 66) == 66;
+        return bytes.length == 6 && matches(bytes[2], 66);
     }
 
-    public static void main(String[] args) {
-        Lc1Convertor convertor = new Lc1ConvertorImpl();
-        String[] data = {"B28253130000", "B28243131827", "B28243131740", "B28243131752", "B28243131743", "B28243131740"};
-        for (String s : data) {
-            double afr = convertor.convert(asBytes(s));
-            System.out.println("afr = " + afr);
-        }
+    private boolean matches(byte b, int mask) {
+        return (b & mask) == mask;
     }
 }
