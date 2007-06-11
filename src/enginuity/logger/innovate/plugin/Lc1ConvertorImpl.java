@@ -22,7 +22,7 @@ public final class Lc1ConvertorImpl implements Lc1Convertor {
     }
 
     private double getAfr(byte[] bytes) {
-        return (getLambda(bytes) + 500) * getAF(bytes) / 10000;
+        return (getLambda(bytes) + 500) * getAF(bytes) / 10000.0;
     }
 
     private int getAF(byte[] bytes) {

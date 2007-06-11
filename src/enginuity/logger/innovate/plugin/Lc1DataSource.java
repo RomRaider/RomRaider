@@ -9,10 +9,12 @@ import java.util.List;
 
 public final class Lc1DataSource implements ExternalDataSource {
     private InnovateController controller;
+    private List<ExternalDataItem> dataItems;
 
     public Lc1DataSource() {
         Lc1Connection connection = new Lc1Connection(new InnovateConnectionProperties(), "COM6");
         controller = new InnovateControllerImpl(connection);
+        dataItems = asList(controller.getDataItem());
     }
 
     public String getName() {
@@ -24,7 +26,7 @@ public final class Lc1DataSource implements ExternalDataSource {
     }
 
     public List<ExternalDataItem> getDataItems() {
-        return asList(controller.getDataItem());
+        return dataItems;
     }
 
     public void setCommPortChoice(String commPort) {
