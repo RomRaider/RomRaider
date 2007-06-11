@@ -15,7 +15,7 @@ public interface ExternalDataSource {
     // Suggested Methods of interest
     // *****************************
     
-    public void setCommPortChoice(String commPort);
+    public void setPort(String portName);
     
     public void connect();
     

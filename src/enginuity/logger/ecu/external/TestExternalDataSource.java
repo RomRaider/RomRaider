@@ -44,7 +44,7 @@ public final class TestExternalDataSource implements ExternalDataSource {
     // Suggested Methods of interest
     // *****************************
     
-    public void setCommPortChoice(String commPort){
+    public void setPort(String commPort){
     	
     }
     

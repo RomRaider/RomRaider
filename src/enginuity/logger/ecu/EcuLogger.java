@@ -33,7 +33,10 @@ import enginuity.logger.ecu.definition.EcuDefinition;
 import enginuity.logger.ecu.definition.EcuParameter;
 import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.ExternalData;
+import enginuity.logger.ecu.definition.ExternalDataImpl;
 import enginuity.logger.ecu.definition.LoggerData;
+import enginuity.logger.ecu.external.ExternalDataItem;
+import enginuity.logger.ecu.external.ExternalDataSource;
 import enginuity.logger.ecu.external.ExternalDataSourceLoader;
 import enginuity.logger.ecu.external.ExternalDataSourceLoaderImpl;
 import enginuity.logger.ecu.profile.UserProfile;
@@ -114,6 +117,7 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.ArrayList;
 import static java.util.Collections.sort;
 import java.util.HashMap;
 import java.util.List;
@@ -171,13 +175,14 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private DashboardUpdateHandler dashboardUpdateHandler;
     private EcuInit ecuInit;
     private JToggleButton logToFileButton;
+    private List<ExternalDataSource> externalDataSources;
 
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
         bootstrap(settings);
         loadEcuDefs();
-        loadLoggerConfig();
         loadLoggerPlugins();
+        loadLoggerParams();
         initControllerListeners();
         initUserInterface();
         initDataUpdateHandlers();
@@ -206,7 +211,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                             }
                             ecuIdLabel.setText(buildEcuInfoLabelText(ECU_ID_LABEL, ecuId));
                             System.out.println("Loading logger config for new ECU (ecuid: " + ecuId + ")...");
-                            loadLoggerConfig();
+                            loadLoggerParams();
                         }
                     });
                 }
@@ -242,6 +247,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dashboardTabParamListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_PARAMETERS);
         dashboardTabSwitchListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_SWITCHES);
         dashboardTabExternalListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_EXTERNAL);
+    }
+
+    private void loadLoggerParams() {
+        loadLoggerConfig();
+        loadFromExternalDataSources();
     }
 
     private void initControllerListeners() {
@@ -309,8 +319,17 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void loadLoggerPlugins() {
         try {
             ExternalDataSourceLoader dataSourceLoader = new ExternalDataSourceLoaderImpl();
-            dataSourceLoader.loadFromExternalDataSources();
-            loadExternalDatas(dataSourceLoader.getExternalDatas());
+            dataSourceLoader.loadExternalDataSources();
+            externalDataSources = dataSourceLoader.getExternalDataSources();
+        } catch (Exception e) {
+            reportError(e);
+        }
+    }
+
+    private void loadFromExternalDataSources() {
+        try {
+            List<ExternalData> externalDatas = getExternalData(externalDataSources);
+            loadExternalDatas(externalDatas);
         } catch (Exception e) {
             reportError(e);
         }
@@ -334,6 +353,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void initFileLoggingController(final EcuSwitch fileLoggingControllerSwitch) {
         controller.setFileLoggerSwitchMonitor(new FileLoggerControllerSwitchMonitorImpl(fileLoggingControllerSwitch, new FileLoggerControllerSwitchHandler() {
             boolean oldDefogStatus = false;
+
             public void handleSwitch(double switchValue) {
                 boolean logToFile = (int) switchValue == 1;
                 if (settings.isFileLoggingControllerSwitchActive() && logToFile != oldDefogStatus) {
@@ -442,6 +462,21 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             graphTabSwitchListTableModel.addParam(ecuSwitch, false);
             dashboardTabSwitchListTableModel.addParam(ecuSwitch, false);
         }
+    }
+
+    private List<ExternalData> getExternalData(List<ExternalDataSource> externalDataSources) {
+        List<ExternalData> externalDatas = new ArrayList<ExternalData>();
+        for (ExternalDataSource dataSource : externalDataSources) {
+            try {
+                List<ExternalDataItem> dataItems = dataSource.getDataItems();
+                for (ExternalDataItem item : dataItems) {
+                    externalDatas.add(new ExternalDataImpl(item));
+                }
+            } catch (Exception e) {
+                reportError("Error loading plugin: " + dataSource.getName() + " v" + dataSource.getVersion(), e);
+            }
+        }
+        return externalDatas;
     }
 
     private void loadExternalDatas(List<ExternalData> externalDatas) {
@@ -863,6 +898,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 reportError(e.toString());
             }
         }
+    }
+
+    public void reportError(String error, Exception e) {
+        if (e != null) {
+            e.printStackTrace();
+        }
+        reportError(error);
     }
 
     public void setTitle(String title) {

@@ -35,7 +35,7 @@ public final class UtecDataSource implements ExternalDataSource {
     // Suggested Methods of interest
     // *****************************
     
-    public void setCommPortChoice(String commPort){
+    public void setPort(String commPort){
     	UtecInterface.setPortChoice(commPort);
     }
     

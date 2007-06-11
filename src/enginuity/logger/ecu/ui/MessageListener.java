@@ -32,4 +32,6 @@ public interface MessageListener {
     void reportError(String error);
 
     void reportError(Exception e);
+
+    void reportError(String error, Exception e);
 }

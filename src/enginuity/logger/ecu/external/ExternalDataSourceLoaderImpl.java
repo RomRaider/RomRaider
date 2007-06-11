@@ -1,7 +1,5 @@
 package enginuity.logger.ecu.external;
 
-import enginuity.logger.ecu.definition.ExternalData;
-import enginuity.logger.ecu.definition.ExternalDataImpl;
 import enginuity.logger.ecu.definition.plugin.PluginFilenameFilter;
 import enginuity.logger.ecu.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
@@ -13,13 +11,13 @@ import java.util.List;
 import java.util.Properties;
 
 public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoader {
-    private List<ExternalData> externalDatas = new ArrayList<ExternalData>();
+    private List<ExternalDataSource> externalDataSources = new ArrayList<ExternalDataSource>();
 
-    public void loadFromExternalDataSources() {
+    public void loadExternalDataSources() {
         try {
             File pluginsDir = new File("./plugins");
             if (pluginsDir.exists() && pluginsDir.isDirectory()) {
-                externalDatas = new ArrayList<ExternalData>();
+                externalDataSources = new ArrayList<ExternalDataSource>();
                 File[] pluginPropertyFiles = pluginsDir.listFiles(new PluginFilenameFilter());
                 for (File pluginPropertyFile : pluginPropertyFiles) {
                     Properties pluginProps = new Properties();
@@ -32,10 +30,7 @@ public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoa
                                 Class<?> dataSourceClass = getClass().getClassLoader().loadClass(datasourceClassName);
                                 if (dataSourceClass != null && ExternalDataSource.class.isAssignableFrom(dataSourceClass)) {
                                     ExternalDataSource dataSource = (ExternalDataSource) dataSourceClass.newInstance();
-                                    List<ExternalDataItem> dataItems = dataSource.getDataItems();
-                                    for (ExternalDataItem dataItem : dataItems) {
-                                        externalDatas.add(new ExternalDataImpl(dataItem));
-                                    }
+                                    externalDataSources.add(dataSource);
                                     System.out.println("Plugin loaded: " + dataSource.getName() + " v" + dataSource.getVersion());
                                 }
                             } catch (Throwable t) {
@@ -54,7 +49,7 @@ public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoa
         }
     }
 
-    public List<ExternalData> getExternalDatas() {
-        return externalDatas;
+    public List<ExternalDataSource> getExternalDataSources() {
+        return externalDataSources;
     }
 }

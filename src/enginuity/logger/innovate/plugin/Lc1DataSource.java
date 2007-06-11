@@ -8,6 +8,7 @@ import static java.util.Arrays.asList;
 import java.util.List;
 
 public final class Lc1DataSource implements ExternalDataSource {
+    private String portName = "COM6";
 
     public String getName() {
         return "Innovate LC-1 Datasource";
@@ -18,12 +19,13 @@ public final class Lc1DataSource implements ExternalDataSource {
     }
 
     public List<ExternalDataItem> getDataItems() {
-        Lc1Connection connection = new Lc1Connection(new InnovateConnectionProperties(), "COM6");
+        Lc1Connection connection = new Lc1Connection(new InnovateConnectionProperties(), portName);
         InnovateController controller = new InnovateControllerImpl(connection);
         return asList(controller.getDataItem());
     }
 
-    public void setCommPortChoice(String commPort) {
+    public void setPort(String portName) {
+        this.portName = portName;
     }
 
     public void connect() {
