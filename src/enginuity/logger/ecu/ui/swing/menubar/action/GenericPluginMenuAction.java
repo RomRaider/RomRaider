@@ -1,10 +1,9 @@
-package enginuity.logger.innovate.plugin;
+package enginuity.logger.ecu.ui.swing.menubar.action;
 
 import enginuity.io.port.SerialPortDiscoverer;
 import enginuity.io.port.SerialPortDiscovererImpl;
 import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataSource;
-import enginuity.logger.ecu.ui.swing.menubar.action.AbstractAction;
 import gnu.io.CommPortIdentifier;
 
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;

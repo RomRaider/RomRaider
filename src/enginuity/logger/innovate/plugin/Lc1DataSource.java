@@ -3,6 +3,7 @@ package enginuity.logger.innovate.plugin;
 import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
+import enginuity.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 
 import javax.swing.Action;

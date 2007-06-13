@@ -3,7 +3,7 @@ package enginuity.logger.utec.plugin;
 import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
-import enginuity.logger.innovate.plugin.GenericPluginMenuAction;
+import enginuity.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
 import enginuity.logger.utec.commInterface.UtecInterface;
 
 import javax.swing.Action;
