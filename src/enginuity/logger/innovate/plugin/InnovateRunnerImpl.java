@@ -1,7 +1,6 @@
 package enginuity.logger.innovate.plugin;
 
 import enginuity.logger.innovate.io.InnovateConnectionProperties;
-import static enginuity.util.HexUtil.asHex;
 
 public final class InnovateRunnerImpl implements InnovateRunner {
     private final InnovateConnection connection;
@@ -17,7 +16,6 @@ public final class InnovateRunnerImpl implements InnovateRunner {
         try {
             while (!stop) {
                 byte[] bytes = connection.read();
-                System.out.println("Read bytes = " + asHex(bytes));
                 listener.setBytes(bytes);
             }
         } finally {

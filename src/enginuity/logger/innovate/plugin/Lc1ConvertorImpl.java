@@ -1,14 +1,10 @@
 package enginuity.logger.innovate.plugin;
 
-import static enginuity.util.HexUtil.asHex;
-
 public final class Lc1ConvertorImpl implements Lc1Convertor {
     public double convert(byte[] bytes) {
         /*
-       10110010 10000010 01000011 00010011 00010111 00101111
+       Example bytes: 10110010 10000010 01000011 00010011 00010111 00101111
         */
-        // check header
-        System.out.println("Converting bytes = " + asHex(bytes));
         if (isLc1(bytes) && isHeaderValid(bytes)) {
             if (isError(bytes)) {
                 return -1 * getLambda(bytes);
@@ -25,15 +21,11 @@ public final class Lc1ConvertorImpl implements Lc1Convertor {
     }
 
     private int getAF(byte[] bytes) {
-        int af = (((bytes[2] | 254) & 1) << 7) | bytes[3];
-        System.out.println("af     = " + af);
-        return af;
+        return (((bytes[2] | 254) & 1) << 7) | bytes[3];
     }
 
     private int getLambda(byte[] bytes) {
-        int lambda = ((bytes[4] & 63) << 7) | bytes[5];
-        System.out.println("lambda = " + lambda);
-        return lambda;
+        return ((bytes[4] & 63) << 7) | bytes[5];
     }
 
     private boolean isOk(byte[] bytes) {
