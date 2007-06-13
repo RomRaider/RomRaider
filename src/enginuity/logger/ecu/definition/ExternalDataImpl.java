@@ -4,6 +4,9 @@ import static enginuity.logger.ecu.definition.EcuDataType.EXTERNAL;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import static enginuity.util.ParamChecker.checkNotNull;
 
+import java.text.DecimalFormat;
+import java.text.Format;
+
 public final class ExternalDataImpl implements ExternalData {
     private final ExternalDataItem dataItem;
     private final EcuDataConvertor[] convertors = new EcuDataConvertor[1];
@@ -12,12 +15,14 @@ public final class ExternalDataImpl implements ExternalData {
         checkNotNull(dataItem);
         this.dataItem = dataItem;
         convertors[0] = new EcuDataConvertor() {
+            Format format = new DecimalFormat("0.##");
+
             public double convert(byte[] bytes) {
                 return dataItem.getData();
             }
 
             public String format(double value) {
-                return String.valueOf(value);
+                return format.format(value);
             }
 
             public String getUnits() {
