@@ -4,6 +4,7 @@ import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
 import enginuity.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
+import enginuity.logger.innovate.io.InnovateRunnerImpl;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 
 import javax.swing.Action;

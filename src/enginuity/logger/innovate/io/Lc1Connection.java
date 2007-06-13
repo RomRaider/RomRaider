@@ -1,4 +1,4 @@
-package enginuity.logger.innovate.plugin;
+package enginuity.logger.innovate.io;
 
 import enginuity.io.connection.ConnectionProperties;
 import enginuity.io.connection.SerialConnection;

@@ -1,4 +1,4 @@
-package enginuity.logger.innovate.plugin;
+package enginuity.logger.innovate.io;
 
 public interface InnovateConnection {
     byte[] read();
