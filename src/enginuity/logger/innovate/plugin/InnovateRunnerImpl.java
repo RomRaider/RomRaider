@@ -1,5 +1,6 @@
 package enginuity.logger.innovate.plugin;
 
+import enginuity.logger.innovate.io.InnovateConnectionProperties;
 import static enginuity.util.HexUtil.asHex;
 
 public final class InnovateRunnerImpl implements InnovateRunner {
@@ -7,8 +8,8 @@ public final class InnovateRunnerImpl implements InnovateRunner {
     private final DataListener listener;
     private boolean stop;
 
-    public InnovateRunnerImpl(InnovateConnection connection, DataListener listener) {
-        this.connection = connection;
+    public InnovateRunnerImpl(InnovateSettings innovateSettings, DataListener listener) {
+        connection = new Lc1Connection(new InnovateConnectionProperties(), innovateSettings.getPort());
         this.listener = listener;
     }
 

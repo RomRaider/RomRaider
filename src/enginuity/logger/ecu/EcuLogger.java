@@ -468,7 +468,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         List<ExternalData> externalDatas = new ArrayList<ExternalData>();
         for (ExternalDataSource dataSource : externalDataSources) {
             try {
-                List<ExternalDataItem> dataItems = dataSource.getDataItems();
+                List<? extends ExternalDataItem> dataItems = dataSource.getDataItems();
                 for (ExternalDataItem item : dataItems) {
                     externalDatas.add(new ExternalDataImpl(item));
                 }

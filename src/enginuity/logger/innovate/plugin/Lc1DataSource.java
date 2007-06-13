@@ -3,13 +3,16 @@ package enginuity.logger.innovate.plugin;
 import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
+import static enginuity.util.ThreadUtil.runAsDaemon;
 
 import javax.swing.Action;
 import static java.util.Arrays.asList;
 import java.util.List;
 
 public final class Lc1DataSource implements ExternalDataSource {
-    private String port;
+    private InnovateSettings settings = new InnovateSettingsImpl();
+    private Lc1DataItem dataItem = new Lc1DataItem();
+    private InnovateRunnerImpl runner;
 
     public String getName() {
         return "Innovate LC-1";
@@ -19,11 +22,9 @@ public final class Lc1DataSource implements ExternalDataSource {
         return "0.01";
     }
 
-    public List<ExternalDataItem> getDataItems() {
-//        Lc1Connection connection = new Lc1Connection(new InnovateConnectionProperties(), port);
-//        InnovateController controller = new InnovateControllerImpl(connection);
-        InnovateController controller = new InnovateControllerImpl();
-        return asList(controller.getDataItem());
+    public List<? extends ExternalDataItem> getDataItems() {
+        reconnect();
+        return asList(dataItem);
     }
 
     public Action getMenuAction(EcuLogger logger) {
@@ -31,11 +32,12 @@ public final class Lc1DataSource implements ExternalDataSource {
     }
 
     public void setPort(String port) {
-        this.port = port;
+        reconnect();
+        settings.setPort(port);
     }
 
     public String getPort() {
-        return port;
+        return settings.getPort();
     }
 
     public void connect() {
@@ -48,5 +50,15 @@ public final class Lc1DataSource implements ExternalDataSource {
     }
 
     public void stopLogging() {
+    }
+
+    private synchronized void reconnect() {
+        if (runner != null) runner.stop();
+        try {
+            runner = new InnovateRunnerImpl(settings, dataItem);
+            runAsDaemon(runner);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

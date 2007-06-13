@@ -11,7 +11,7 @@ public interface ExternalDataSource {
     
     String getVersion();
 
-    List<ExternalDataItem> getDataItems();
+    List<? extends ExternalDataItem> getDataItems();
     
     Action getMenuAction(EcuLogger logger);
 

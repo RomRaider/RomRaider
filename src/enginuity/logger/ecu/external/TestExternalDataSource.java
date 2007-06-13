@@ -17,7 +17,7 @@ public final class TestExternalDataSource implements ExternalDataSource {
         return "0.0001";
     }
 
-    public List<ExternalDataItem> getDataItems() {
+    public List<? extends ExternalDataItem> getDataItems() {
         ExternalDataItem dataItem = new ExternalDataItem() {
             private Random random = new Random(System.currentTimeMillis());
 

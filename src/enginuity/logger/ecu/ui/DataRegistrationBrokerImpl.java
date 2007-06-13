@@ -64,7 +64,6 @@ public final class DataRegistrationBrokerImpl implements DataRegistrationBroker 
             // remove from registered list
             registeredLoggerData.remove(loggerData);
         }
-
     }
 
     public synchronized void clear() {

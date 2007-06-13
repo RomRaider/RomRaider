@@ -3,7 +3,7 @@ package enginuity.logger.innovate.plugin;
 import enginuity.logger.ecu.external.ExternalDataItem;
 
 public final class Lc1DataItem implements ExternalDataItem, DataListener {
-    private Lc1Convertor convertor = new Lc1ConvertorImpl();
+    private final Lc1Convertor convertor = new Lc1ConvertorImpl();
     private byte[] bytes;
 
     public String getName() {

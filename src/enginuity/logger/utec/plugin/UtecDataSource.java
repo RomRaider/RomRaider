@@ -28,7 +28,7 @@ public final class UtecDataSource implements ExternalDataSource {
         return "0.01";
     }
 
-    public List<ExternalDataItem> getDataItems() {
+    public List<? extends ExternalDataItem> getDataItems() {
         System.out.println("External TXS data items requested.");
         return externalDataItems;
     }
