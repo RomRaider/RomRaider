@@ -1,17 +1,18 @@
 package enginuity.logger.innovate.plugin;
 
+import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
-import enginuity.logger.innovate.io.InnovateConnectionProperties;
 
+import javax.swing.Action;
 import static java.util.Arrays.asList;
 import java.util.List;
 
 public final class Lc1DataSource implements ExternalDataSource {
-    private String portName = "COM6";
+    private String port;
 
     public String getName() {
-        return "Innovate LC-1 Datasource";
+        return "Innovate LC-1";
     }
 
     public String getVersion() {
@@ -19,13 +20,22 @@ public final class Lc1DataSource implements ExternalDataSource {
     }
 
     public List<ExternalDataItem> getDataItems() {
-        Lc1Connection connection = new Lc1Connection(new InnovateConnectionProperties(), portName);
-        InnovateController controller = new InnovateControllerImpl(connection);
+//        Lc1Connection connection = new Lc1Connection(new InnovateConnectionProperties(), port);
+//        InnovateController controller = new InnovateControllerImpl(connection);
+        InnovateController controller = new InnovateControllerImpl();
         return asList(controller.getDataItem());
     }
 
-    public void setPort(String portName) {
-        this.portName = portName;
+    public Action getMenuAction(EcuLogger logger) {
+        return new GenericPluginMenuAction(logger, this);
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    public String getPort() {
+        return port;
     }
 
     public void connect() {

@@ -1,24 +1,27 @@
 package enginuity.logger.utec.plugin;
 
+import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
+import enginuity.logger.innovate.plugin.GenericPluginMenuAction;
 import enginuity.logger.utec.commInterface.UtecInterface;
 
+import javax.swing.Action;
 import java.util.ArrayList;
 import java.util.List;
 
 //NOTE: This class is instantiated via a no-args constructor.
 public final class UtecDataSource implements ExternalDataSource {
-	private ArrayList<ExternalDataItem> externalDataItems = new ArrayList<ExternalDataItem>();
-	
-	public UtecDataSource(){
-		externalDataItems.add(new AfrExternalDataItem());
-		externalDataItems.add(new PsiExternalDataItem());
-		externalDataItems.add(new KnockExternalDataItem());
-	}
-	
+    private ArrayList<ExternalDataItem> externalDataItems = new ArrayList<ExternalDataItem>();
+
+    public UtecDataSource() {
+        externalDataItems.add(new AfrExternalDataItem());
+        externalDataItems.add(new PsiExternalDataItem());
+        externalDataItems.add(new KnockExternalDataItem());
+    }
+
     public String getName() {
-        return "UTEC Datasource";
+        return "UTEC";
     }
 
     public String getVersion() {
@@ -27,31 +30,38 @@ public final class UtecDataSource implements ExternalDataSource {
 
     public List<ExternalDataItem> getDataItems() {
         System.out.println("External TXS data items requested.");
-        
         return externalDataItems;
     }
-    
+
+    public Action getMenuAction(EcuLogger logger) {
+        return new GenericPluginMenuAction(logger, this);
+    }
+
+    public void setPort(String port) {
+        UtecInterface.setPortChoice(port);
+    }
+
+    public String getPort() {
+        return UtecInterface.getPortChoiceUsed();
+    }
+
     // *****************************
     // Suggested Methods of interest
     // *****************************
-    
-    public void setPort(String commPort){
-    	UtecInterface.setPortChoice(commPort);
+
+    public void connect() {
+        UtecInterface.openConnection();
     }
-    
-    public void connect(){
-    	UtecInterface.openConnection();
+
+    public void disconnect() {
+        UtecInterface.closeConnection();
     }
-    
-    public void disconnect(){
-    	UtecInterface.closeConnection();
+
+    public void startLogging() {
+        UtecInterface.startLoggerDataFlow();
     }
-    
-    public void startLogging(){
-    	UtecInterface.startLoggerDataFlow();
-    }
-    
-    public void stopLogging(){
-    	UtecInterface.resetUtec();
+
+    public void stopLogging() {
+        UtecInterface.resetUtec();
     }
 }

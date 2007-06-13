@@ -1,5 +1,8 @@
 package enginuity.logger.ecu.external;
 
+import enginuity.logger.ecu.EcuLogger;
+
+import javax.swing.Action;
 import java.util.List;
 
 public interface ExternalDataSource {
@@ -10,18 +13,21 @@ public interface ExternalDataSource {
 
     List<ExternalDataItem> getDataItems();
     
-    
+    Action getMenuAction(EcuLogger logger);
+
+    void setPort(String port);
+
+    String getPort();
+
     // *****************************
     // Suggested Methods of interest
     // *****************************
-    
-    public void setPort(String portName);
-    
+
     public void connect();
-    
+
     public void disconnect();
-    
+
     public void startLogging();
-    
+
     public void stopLogging();
 }

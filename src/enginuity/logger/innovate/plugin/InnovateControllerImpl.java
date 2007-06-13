@@ -6,6 +6,9 @@ import static enginuity.util.ThreadUtil.runAsDaemon;
 public final class InnovateControllerImpl implements InnovateController {
     private Lc1DataItem dataItem = new Lc1DataItem();
 
+    public InnovateControllerImpl() {
+    }
+
     public InnovateControllerImpl(InnovateConnection connection) {
         runAsDaemon(new InnovateRunnerImpl(connection, dataItem));
     }

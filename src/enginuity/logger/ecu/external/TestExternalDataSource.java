@@ -1,5 +1,8 @@
 package enginuity.logger.ecu.external;
 
+import enginuity.logger.ecu.EcuLogger;
+
+import javax.swing.Action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -38,16 +41,22 @@ public final class TestExternalDataSource implements ExternalDataSource {
         dataItems.add(dataItem);
         return dataItems;
     }
-    
-    
+
+    public Action getMenuAction(EcuLogger logger) {
+        return null;
+    }
+
+    public void setPort(String port) {
+    }
+
+    public String getPort() {
+        return null;
+    }
+
     // *****************************
     // Suggested Methods of interest
     // *****************************
-    
-    public void setPort(String commPort){
-    	
-    }
-    
+
     public void connect(){
     	
     }

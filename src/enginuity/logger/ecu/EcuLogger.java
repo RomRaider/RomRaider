@@ -648,7 +648,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JMenuBar buildMenubar() {
-        return new EcuLoggerMenuBar(this);
+        return new EcuLoggerMenuBar(this, externalDataSources);
     }
 
     private JPanel buildControlToolbar() {
