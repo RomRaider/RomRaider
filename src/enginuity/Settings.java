@@ -74,7 +74,7 @@ public class Settings implements Serializable {
     private String loggerProfileFilePath = "profile.xml";
     private String loggerOutputDirPath = System.getProperty("user.home");
     private String fileLoggingControllerSwitchId = "S20"; // defogger switch by default
-    private boolean fileLoggingControllerSwitchActive = false;
+    private boolean fileLoggingControllerSwitchActive = true;
     private boolean fileLoggingAbsoluteTimestamp = false;
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
