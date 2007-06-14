@@ -18,6 +18,7 @@ public final class Lc1Connection implements InnovateConnection {
         checkNotNullOrEmpty(portName, "portName");
         this.sendTimeout = connectionProperties.getSendTimeout();
         serialConnection = new SerialConnectionImpl(connectionProperties, portName);
+        System.out.println("LC-1 connected");
     }
 
     public byte[] read() {
@@ -45,5 +46,6 @@ public final class Lc1Connection implements InnovateConnection {
 
     public void close() {
         serialConnection.close();
+        System.out.println("LC-1 disconnected");
     }
 }

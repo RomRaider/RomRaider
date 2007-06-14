@@ -8,8 +8,8 @@ import java.text.DecimalFormat;
 import java.text.Format;
 
 public final class ExternalDataImpl implements ExternalData {
-    private final ExternalDataItem dataItem;
     private final EcuDataConvertor[] convertors = new EcuDataConvertor[1];
+    private final ExternalDataItem dataItem;
 
     public ExternalDataImpl(final ExternalDataItem dataItem) {
         checkNotNull(dataItem);

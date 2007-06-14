@@ -34,8 +34,8 @@ public final class Lc1DataSource implements ExternalDataSource {
     }
 
     public void setPort(String port) {
-        reconnect();
         settings.setPort(port);
+        reconnect();
     }
 
     public String getPort() {
