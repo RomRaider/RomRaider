@@ -23,6 +23,7 @@ package enginuity.logger.ecu;
 
 import enginuity.Settings;
 import enginuity.swing.LookAndFeelManager;
+import enginuity.util.SettingsManagerImpl;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -40,8 +41,11 @@ public final class EcuLoggerExec {
         // set look and feel
         LookAndFeelManager.initLookAndFeel();
 
+        // load settings
+        Settings settings = new SettingsManagerImpl().load("Using default settings.");
+
         // start logger
-        EcuLogger.startLogger(EXIT_ON_CLOSE, new Settings());
+        EcuLogger.startLogger(EXIT_ON_CLOSE, settings);
     }
 
 }

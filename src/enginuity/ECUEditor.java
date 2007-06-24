@@ -21,6 +21,37 @@
 
 package enginuity;
 
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
+import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
+import enginuity.maps.Rom;
+import enginuity.maps.Table;
+import enginuity.net.URL;
+import enginuity.swing.ECUEditorMenuBar;
+import enginuity.swing.ECUEditorToolBar;
+import enginuity.swing.JProgressPane;
+import enginuity.swing.MDIDesktopPane;
+import enginuity.swing.RomTree;
+import enginuity.swing.RomTreeNode;
+import enginuity.swing.RomTreeRootNode;
+import enginuity.swing.TableFrame;
+import enginuity.util.SettingsManager;
+import enginuity.util.SettingsManagerImpl;
+import enginuity.xml.DOMRomUnmarshaller;
+import enginuity.xml.RomNotFoundException;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -40,115 +71,29 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.tree.TreePath;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
-
-import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
-import enginuity.maps.Rom;
-import enginuity.maps.Table;
-import enginuity.net.URL;
-import enginuity.swing.ECUEditorMenuBar;
-import enginuity.swing.ECUEditorToolBar;
-import enginuity.swing.JProgressPane;
-import enginuity.swing.MDIDesktopPane;
-import enginuity.swing.RomTree;
-import enginuity.swing.RomTreeNode;
-import enginuity.swing.RomTreeRootNode;
-import enginuity.swing.TableFrame;
-import enginuity.xml.DOMRomUnmarshaller;
-import enginuity.xml.DOMSettingsBuilder;
-import enginuity.xml.DOMSettingsUnmarshaller;
-import enginuity.xml.RomNotFoundException;
-
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
-
     private static final String NEW_LINE = System.getProperty("line.separator");
+    private final SettingsManager settingsManager = new SettingsManagerImpl();
     private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private RomTree imageList = new RomTree(imageRoot);
-    private Settings settings = new Settings();
     private String version = "0.4.1 Beta";
     private String versionDate = "2/8/2007";
     private String titleText = "Enginuity v" + version;
     public MDIDesktopPane rightPanel = new MDIDesktopPane();
-    private Rom lastSelectedRom = null;
+    private JProgressPane statusPanel = new JProgressPane();
     private JSplitPane splitPane = new JSplitPane();
+    private Rom lastSelectedRom = null;
     private ECUEditorToolBar toolBar;
     private ECUEditorMenuBar menuBar;
-    private JProgressPane statusPanel = new JProgressPane();
+    private Settings settings;
 
     public ECUEditor() {
 
         // get settings from xml
-        try {
-            InputSource src = new InputSource(new FileInputStream(new File("./settings.xml")));
-            DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
-            DOMParser parser = new DOMParser();
-            parser.parse(src);
-            Document doc = parser.getDocument();
-            settings = domUms.unmarshallSettings(doc.getDocumentElement());
+        settings = settingsManager.load("A new file will be created.");
 
-        } catch (RuntimeException re) {
-            // Catching RE specifially will prevent real bugs from being
-            // presented as a settings file not found exception
-            throw re;
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Settings file not found.\n" +
-                    "A new file will be created.", "Error Loading Settings", JOptionPane.INFORMATION_MESSAGE);
-        }
-        finally {
-
-            BufferedReader br = null;
-
-            if (!settings.getRecentVersion().equalsIgnoreCase(version)) {
-
-                try {
-                    // new version being used, display release notes
-                    JTextArea releaseNotes = new JTextArea();
-                    releaseNotes.setEditable(false);
-                    releaseNotes.setWrapStyleWord(true);
-                    releaseNotes.setLineWrap(true);
-                    releaseNotes.setFont(new Font("Tahoma", Font.PLAIN, 12));
-
-                    JScrollPane scroller = new JScrollPane(releaseNotes,
-                            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-                    scroller.setPreferredSize(new Dimension(600, 500));
-
-                    br = new BufferedReader(new FileReader(settings.getReleaseNotes()));
-                    StringBuffer sb = new StringBuffer();
-                    while (br.ready()) {
-                        sb.append(br.readLine()).append(NEW_LINE);
-                    }
-
-                    releaseNotes.setText(sb.toString());
-
-                    JOptionPane.showMessageDialog(this, scroller,
-                            "Enginuity " + version + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
-                } catch (Exception ex) {
-                }
-
-            }
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException ioe) {
-                    /* Ignore */
-                }
-            }
+        if (!settings.getRecentVersion().equalsIgnoreCase(version)) {
+            showReleaseNotes();
         }
 
         setSize(getSettings().getWindowSize());
@@ -187,25 +132,52 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
 
     }
 
+    private void showReleaseNotes() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(settings.getReleaseNotes()));
+            try {
+                // new version being used, display release notes
+                JTextArea releaseNotes = new JTextArea();
+                releaseNotes.setEditable(false);
+                releaseNotes.setWrapStyleWord(true);
+                releaseNotes.setLineWrap(true);
+                releaseNotes.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
+                JScrollPane scroller = new JScrollPane(releaseNotes,
+                        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                scroller.setPreferredSize(new Dimension(600, 500));
+
+                StringBuffer sb = new StringBuffer();
+                while (br.ready()) {
+                    sb.append(br.readLine()).append(NEW_LINE);
+                }
+
+                releaseNotes.setText(sb.toString());
+
+                JOptionPane.showMessageDialog(this, scroller,
+                        "Enginuity " + version + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
+            } finally {
+                br.close();
+            }
+        } catch (Exception e) {
+            /* Ignore */
+        }
+    }
+
     public void handleExit() {
-        getSettings().setSplitPaneLocation(splitPane.getDividerLocation());
+        settings.setSplitPaneLocation(splitPane.getDividerLocation());
         if (getExtendedState() == JFrame.MAXIMIZED_BOTH) {
-            getSettings().setWindowMaximized(true);
+            settings.setWindowMaximized(true);
         } else {
-            getSettings().setWindowMaximized(false);
-            getSettings().setWindowSize(getSize());
-            getSettings().setWindowLocation(getLocation());
+            settings.setWindowMaximized(false);
+            settings.setWindowSize(getSize());
+            settings.setWindowLocation(getLocation());
         }
 
-        DOMSettingsBuilder builder = new DOMSettingsBuilder();
-        try {
-            //JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");
-            builder.buildSettings(settings, new File("./settings.xml"), statusPanel, version);
-        } catch (IOException ex) {
-        } finally {
-            statusPanel.update("Ready...", 0);
-            repaint();
-        }
+        settingsManager.save(settings, statusPanel, version);
+        statusPanel.update("Ready...", 0);
+        repaint();
     }
 
     public void windowClosing(WindowEvent e) {
@@ -253,7 +225,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             infoPanel.setLayout(new GridLayout(3, 1));
             infoPanel.add(new JLabel("A newer version of this ECU revision exists. " +
                     "Please visit the following link to download the latest revision:"));
-            infoPanel.add(new URL(getSettings().getRomRevisionURL()));
+            infoPanel.add(new URL(settings.getRomRevisionURL()));
 
             JCheckBox check = new JCheckBox("Always display this message", true);
             check.setHorizontalAlignment(JCheckBox.RIGHT);
@@ -401,8 +373,8 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             Rom rom;
 
             // parse ecu definition files until result found
-            for (int i = 0; i < getSettings().getEcuDefinitionFiles().size(); i++) {
-                InputSource src = new InputSource(new FileInputStream(getSettings().getEcuDefinitionFiles().get(i)));
+            for (int i = 0; i < settings.getEcuDefinitionFiles().size(); i++) {
+                InputSource src = new InputSource(new FileInputStream(settings.getEcuDefinitionFiles().get(i)));
 
                 parser.parse(src);
                 Document doc = parser.getDocument();
