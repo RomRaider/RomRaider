@@ -23,4 +23,12 @@
 
 <!ELEMENT switches ( switch+ ) >
 
-<!ELEMENT profile ( serial?, logfilelocation?, parameters*, switches* ) >
+<!ELEMENT external EMPTY >
+<!ATTLIST external id ID #REQUIRED >
+<!ATTLIST external livedata ( selected ) #IMPLIED >
+<!ATTLIST external graph ( selected ) #IMPLIED >
+<!ATTLIST external dash ( selected ) #IMPLIED >
+
+<!ELEMENT externals ( external+ ) >
+
+<!ELEMENT profile ( serial?, logfilelocation?, parameters*, switches*, externals* ) >

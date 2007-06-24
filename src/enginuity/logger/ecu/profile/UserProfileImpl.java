@@ -112,9 +112,9 @@ public final class UserProfileImpl implements UserProfile {
             builder.append("    </switches>").append(NEW_LINE);
         }
         if (!external.isEmpty()) {
-            builder.append("    <external>").append(NEW_LINE);
+            builder.append("    <externals>").append(NEW_LINE);
             appendLoggerDataElements(builder, "external", external, false);
-            builder.append("    </external>").append(NEW_LINE);
+            builder.append("    </externals>").append(NEW_LINE);
         }
         builder.append("</profile>").append(NEW_LINE);
         return builder.toString();
