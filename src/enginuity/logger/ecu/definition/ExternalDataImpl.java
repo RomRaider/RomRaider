@@ -10,10 +10,12 @@ import java.text.Format;
 public final class ExternalDataImpl implements ExternalData {
     private final EcuDataConvertor[] convertors = new EcuDataConvertor[1];
     private final ExternalDataItem dataItem;
+    private final String id;
 
     public ExternalDataImpl(final ExternalDataItem dataItem) {
         checkNotNull(dataItem);
         this.dataItem = dataItem;
+        id = createId(dataItem);
         convertors[0] = new EcuDataConvertor() {
             Format format = new DecimalFormat("0.##");
 
@@ -32,7 +34,7 @@ public final class ExternalDataImpl implements ExternalData {
     }
 
     public String getId() {
-        return "X_" + dataItem.getName();
+        return id;
     }
 
     public String getName() {
@@ -56,5 +58,9 @@ public final class ExternalDataImpl implements ExternalData {
 
     public EcuDataType getDataType() {
         return EXTERNAL;
+    }
+
+    private String createId(ExternalDataItem dataItem) {
+        return "X_" + dataItem.getName().replaceAll(" ", "_");
     }
 }
