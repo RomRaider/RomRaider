@@ -22,6 +22,7 @@
 package enginuity.logger.ecu.ui.handler.dash;
 
 import enginuity.logger.ecu.definition.LoggerData;
+import enginuity.tts.Speaker;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import static javax.swing.BorderFactory.createLineBorder;
@@ -237,6 +238,7 @@ public final class PlainGauge extends Gauge implements ActionListener {
                     setBackground(RED);
                     liveValuePanel.setBackground(RED);
                     progressBar.setForeground(RED);
+                    Speaker.say("Warning!");
                 } else {
                     setBackground(LIGHT_GREY);
                     liveValuePanel.setBackground(LIGHT_GREY);

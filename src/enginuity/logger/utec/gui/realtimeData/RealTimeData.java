@@ -1,15 +1,20 @@
 package enginuity.logger.utec.gui.realtimeData;
 
-import java.awt.*;
-import java.awt.geom.*;
-import javax.swing.*;
-
-import enginuity.logger.utec.gui.bottomControl.*;
+import enginuity.logger.utec.commEvent.LoggerDataListener;
+import enginuity.logger.utec.commInterface.UtecInterface;
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.properties.UtecProperties;
-import enginuity.tts.SpeakString;
-import enginuity.logger.utec.commEvent.*;
-import enginuity.logger.utec.commInterface.UtecInterface;
+import enginuity.logger.utec.tts.UtecSpeaker;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.geom.RoundRectangle2D;
 
 /**
  * @author botman
@@ -74,7 +79,7 @@ public class RealTimeData extends Component implements LoggerDataListener{
 		double value2 = doubleData[Integer.parseInt(indexes[1])];
 		double maxAllowed2 = Double.parseDouble(UtecProperties.getProperties("utec.boostLimitWarningMaxAcceptable")[0]);
 		if(value2 > maxAllowed2){
-			SpeakString vc = new SpeakString("Max P S I,"+value2);
+			UtecSpeaker.say("Max P S I,"+value2);
 		}
 		double height2 = ((value2 - min2)/(max2 - min2))*maxHeight;
 		double yValue2 = 5 + (maxHeight - height2);
@@ -93,7 +98,7 @@ public class RealTimeData extends Component implements LoggerDataListener{
 		double value3 = doubleData[Integer.parseInt(indexes[2])];
 		double maxAllowed3 = Double.parseDouble(UtecProperties.getProperties("utec.knockCountWarningMaxAcceptable")[0]);
 		if(value3 > maxAllowed3){
-			SpeakString vc = new SpeakString("knock, count "+(int)value3);
+			UtecSpeaker.say("knock, count "+(int)value3);
 
 			Toolkit.getDefaultToolkit().beep();
 			Toolkit.getDefaultToolkit().beep();
@@ -131,7 +136,7 @@ public class RealTimeData extends Component implements LoggerDataListener{
 		double value5 = doubleData[Integer.parseInt(indexes[4])];
 		double maxAllowed5 = Double.parseDouble(UtecProperties.getProperties("utec.injectorCycleWarningMaxAcceptable")[0]);
 		if(value5 > maxAllowed5){
-			SpeakString vc = new SpeakString("Max injector duty "+value5);
+			UtecSpeaker.say("Max injector duty "+value5);
 		}
 		double height5 = ((value5 - min5)/(max5 - min5))*maxHeight;
 		double yValue5 = 5 + (maxHeight - height5);

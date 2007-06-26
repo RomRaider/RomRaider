@@ -13,7 +13,7 @@ import enginuity.logger.utec.gui.mapTabs.MapJPanel;
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.gui.realtimeData.RealTimeData;
 import enginuity.logger.utec.mapData.UtecMapData;
-import enginuity.tts.SpeakString;
+import enginuity.logger.utec.tts.UtecSpeaker;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -127,7 +127,7 @@ public class JutecGUI extends JFrame implements ActionListener, KeyListener {
 		// Voice the welcome message
 		// *************************
 
-		SpeakString vc = new SpeakString("Welcome to you teck logger! Use at your own risk.");
+		UtecSpeaker.say("Welcome to you teck logger! Use at your own risk.");
 		System.out.println("UTEC Gui is loading now.");
 		
 		// Actions to take when window is closing
