@@ -7,10 +7,9 @@ import static enginuity.util.ThreadUtil.runAsDaemon;
 public class Speaker {
     private static final String VOICE_NAME = "kevin16";
     private static final VoiceManager VOICE_MANAGER = VoiceManager.getInstance();
-    private static final Voice VOICE;
+    private static final Voice VOICE = VOICE_MANAGER.getVoice(VOICE_NAME);
 
     static {
-        VOICE = VOICE_MANAGER.getVoice(VOICE_NAME);
         VOICE.allocate();
     }
 
