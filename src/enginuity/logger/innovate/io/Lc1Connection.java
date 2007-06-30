@@ -8,8 +8,10 @@ import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
+import org.apache.log4j.Logger;
 
 public final class Lc1Connection implements InnovateConnection {
+    private static final Logger LOGGER = Logger.getLogger(Lc1Connection.class);
     private final long sendTimeout;
     private final SerialConnection serialConnection;
 
@@ -18,7 +20,7 @@ public final class Lc1Connection implements InnovateConnection {
         checkNotNullOrEmpty(portName, "portName");
         this.sendTimeout = connectionProperties.getSendTimeout();
         serialConnection = new SerialConnectionImpl(connectionProperties, portName);
-        System.out.println("LC-1 connected");
+        LOGGER.info("LC-1 connected");
     }
 
     public byte[] read() {
@@ -32,7 +34,7 @@ public final class Lc1Connection implements InnovateConnection {
                 if (timeout <= 0) {
                     byte[] badBytes = new byte[serialConnection.available()];
                     serialConnection.read(badBytes);
-                    System.out.println("Bad response (read timeout): " + asHex(badBytes));
+                    LOGGER.debug("Bad response (read timeout): " + asHex(badBytes));
                     break;
                 }
             }
@@ -46,6 +48,6 @@ public final class Lc1Connection implements InnovateConnection {
 
     public void close() {
         serialConnection.close();
-        System.out.println("LC-1 disconnected");
+        LOGGER.info("LC-1 disconnected");
     }
 }

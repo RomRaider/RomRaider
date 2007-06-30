@@ -22,6 +22,7 @@
 package enginuity;
 
 import enginuity.swing.LookAndFeelManager;
+import enginuity.util.LogManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,6 +37,8 @@ public class ECUExec {
     }
 
     public static void main(String args[]) {
+        // init debug loging
+        LogManager.initLogging();
 
         // check for dodgy threading - dev only
 //        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));

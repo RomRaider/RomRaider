@@ -3,6 +3,7 @@ package enginuity.logger.ecu.external;
 import enginuity.logger.ecu.definition.plugin.PluginFilenameFilter;
 import enginuity.logger.ecu.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 
 public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoader {
+    private static final Logger LOGGER = Logger.getLogger(ExternalDataSourceLoaderImpl.class);
     private List<ExternalDataSource> externalDataSources = new ArrayList<ExternalDataSource>();
 
     public void loadExternalDataSources() {
@@ -31,12 +33,11 @@ public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoa
                                 if (dataSourceClass != null && ExternalDataSource.class.isAssignableFrom(dataSourceClass)) {
                                     ExternalDataSource dataSource = (ExternalDataSource) dataSourceClass.newInstance();
                                     externalDataSources.add(dataSource);
-                                    System.out.println("Plugin loaded: " + dataSource.getName() + " v" + dataSource.getVersion());
+                                    LOGGER.info("Plugin loaded: " + dataSource.getName() + " v" + dataSource.getVersion());
                                 }
                             } catch (Throwable t) {
-                                System.out.println("Error loading external datasource: " + datasourceClassName + ", specified in: "
-                                        + pluginPropertyFile.getAbsolutePath());
-                                t.printStackTrace();
+                                LOGGER.error("Error loading external datasource: " + datasourceClassName + ", specified in: "
+                                        + pluginPropertyFile.getAbsolutePath(), t);
                             }
                         }
                     } finally {

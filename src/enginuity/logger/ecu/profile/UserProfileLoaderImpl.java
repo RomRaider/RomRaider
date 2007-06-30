@@ -24,6 +24,7 @@ package enginuity.logger.ecu.profile;
 import enginuity.logger.ecu.profile.xml.UserProfileHandler;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.SaxParserFactory.getSaxParser;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -31,6 +32,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 public final class UserProfileLoaderImpl implements UserProfileLoader {
+    private static final Logger LOGGER = Logger.getLogger(UserProfileLoaderImpl.class);
 
     public UserProfile loadProfile(String userProfileFilePath) {
         checkNotNullOrEmpty(userProfileFilePath, "userProfileFilePath");
@@ -44,7 +46,7 @@ public final class UserProfileLoaderImpl implements UserProfileLoader {
                 inputStream.close();
             }
         } catch (Exception e) {
-            System.out.println("Error loading user profile file: " + userProfileFilePath);
+            LOGGER.error("Error loading user profile file: " + userProfileFilePath, e);
             return null;
         }
     }

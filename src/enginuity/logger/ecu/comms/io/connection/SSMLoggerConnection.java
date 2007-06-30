@@ -32,10 +32,12 @@ import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
+import org.apache.log4j.Logger;
 
 import java.util.Collection;
 
 public final class SSMLoggerConnection implements LoggerConnection {
+    private static final Logger LOGGER = Logger.getLogger(SSMLoggerConnection.class);
     private LoggerProtocol protocol;
     private SerialConnection serialConnection;
 
@@ -63,7 +65,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
                 if (timeout <= 0) {
                     byte[] badBytes = new byte[serialConnection.available()];
                     serialConnection.read(badBytes);
-                    System.out.println("Bad response (read timeout): " + asHex(badBytes));
+                    LOGGER.debug("Bad response (read timeout): " + asHex(badBytes));
                     break;
                 }
             }
@@ -71,8 +73,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
 
             byte[] processedResponse = protocol.preprocessResponse(request, response);
 
-//            System.out.println("Request  ---> " + asHex(request));
-//            System.out.println("Response <--- " + asHex(processedResponse));
+//            LOGGER.debug("Request  ---> " + asHex(request));
+//            LOGGER.debug("Response <--- " + asHex(processedResponse));
 
             protocol.processReadAddressResponses(queries, processedResponse);
         } catch (Exception e) {

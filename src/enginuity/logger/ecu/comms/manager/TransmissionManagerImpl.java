@@ -28,10 +28,12 @@ import enginuity.logger.ecu.comms.query.EcuQuery;
 import enginuity.logger.ecu.exception.NotConnectedException;
 import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.ParamChecker.checkNotNull;
+import org.apache.log4j.Logger;
 
 import java.util.Collection;
 
 public final class TransmissionManagerImpl implements TransmissionManager {
+    private static final Logger LOGGER = Logger.getLogger(TransmissionManagerImpl.class);
     private final Settings settings;
     private LoggerConnection connection;
 
@@ -44,7 +46,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
         try {
             connection = LoggerConnectionFactory.getInstance().getLoggerConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
-            System.out.println("Connected to: " + settings.getLoggerPort() + "; using protocol: " + settings.getLoggerProtocol() + "; conn props: "
+            LOGGER.info("Connected to: " + settings.getLoggerPort() + "; using protocol: " + settings.getLoggerProtocol() + "; conn props: "
                     + settings.getLoggerConnectionProperties());
         } catch (Throwable e) {
             stop();
@@ -66,7 +68,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
         if (connection != null) {
             connection.close();
         }
-        System.out.println("Disconnected.");
+        LOGGER.info("Disconnected.");
     }
 
 }

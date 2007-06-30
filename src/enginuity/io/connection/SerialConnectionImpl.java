@@ -36,6 +36,7 @@ import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import static gnu.io.SerialPort.FLOWCONTROL_NONE;
 import gnu.io.UnsupportedCommOperationException;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,7 @@ import java.io.OutputStream;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
 public final class SerialConnectionImpl implements SerialConnection {
+    private static final Logger LOGGER = Logger.getLogger(SerialConnectionImpl.class);
     private final SerialPort serialPort;
     private final OutputStream os;
     private final InputStream is;
@@ -78,7 +80,7 @@ public final class SerialConnectionImpl implements SerialConnection {
         if (is.available() > 0) {
             byte[] staleBytes = new byte[is.available()];
             read(staleBytes);
-            System.out.println("Stale data read: " + asHex(staleBytes));
+            LOGGER.debug("Stale data read: " + asHex(staleBytes));
         }
     }
 
@@ -104,7 +106,7 @@ public final class SerialConnectionImpl implements SerialConnection {
                 e.printStackTrace();
             }
         }
-        System.out.println("Connection closed.");
+        LOGGER.info("Connection closed.");
     }
 
     private OutputStream initOutputStream() {
@@ -130,7 +132,7 @@ public final class SerialConnectionImpl implements SerialConnection {
         SerialPort serialPort = openPort(portIdentifier, connectionProperties.getConnectTimeout());
         initSerialPort(serialPort, connectionProperties.getBaudRate(), connectionProperties.getDataBits(), connectionProperties.getStopBits(),
                 connectionProperties.getParity());
-        System.out.println("Connected to: " + portName);
+        LOGGER.info("Connected to: " + portName);
         return serialPort;
     }
 

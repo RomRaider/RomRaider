@@ -44,12 +44,12 @@ public final class SSMResponseProcessor {
     public static byte[] filterRequestFromResponse(byte[] request, byte[] response) {
         checkNotNull(request, "request");
         checkNotNullOrEmpty(response, "response");
-        //System.out.println("Raw request        = " + asHex(request));
-        //System.out.println("Raw response       = " + asHex(response));
+        //LOGGER.("Raw request        = " + asHex(request));
+        //LOGGER.("Raw response       = " + asHex(response));
         byte[] filteredResponse = new byte[response.length - request.length];
         System.arraycopy(response, request.length, filteredResponse, 0, filteredResponse.length);
-        //System.out.println("Filtered response  = " + asHex(filteredResponse));
-        //System.out.println();
+        //LOGGER.("Filtered response  = " + asHex(filteredResponse));
+        //LOGGER.();
         return filteredResponse;
     }
 

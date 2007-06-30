@@ -32,8 +32,10 @@ import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitor;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.runAsDaemon;
+import org.apache.log4j.Logger;
 
 public final class LoggerControllerImpl implements LoggerController {
+    private static final Logger LOGGER = Logger.getLogger(LoggerControllerImpl.class);
     private final QueryManager queryManager;
 
     public LoggerControllerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener,
@@ -49,19 +51,19 @@ public final class LoggerControllerImpl implements LoggerController {
 
     public void setFileLoggerSwitchMonitor(FileLoggerControllerSwitchMonitor monitor) {
         checkNotNull(monitor);
-        System.out.println("Setting file logger switch monitor:   " + monitor.getEcuSwitch().getName());
+        LOGGER.debug("Setting file logger switch monitor:   " + monitor.getEcuSwitch().getName());
         queryManager.setFileLoggerSwitchMonitor(monitor);
     }
 
     public void addLogger(String callerId, LoggerData loggerData) {
         checkNotNull(loggerData);
-        System.out.println("Adding logger:   " + loggerData.getName());
+        LOGGER.debug("Adding logger:   " + loggerData.getName());
         queryManager.addQuery(callerId, loggerData);
     }
 
     public void removeLogger(String callerId, LoggerData loggerData) {
         checkNotNull(loggerData, "ecuParam");
-        System.out.println("Removing logger: " + loggerData.getName());
+        LOGGER.debug("Removing logger: " + loggerData.getName());
         queryManager.removeQuery(callerId, loggerData);
     }
 

@@ -1,5 +1,7 @@
 package enginuity.logger.ecu.ui.handler.graph;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import java.awt.Component;
@@ -12,8 +14,10 @@ import java.awt.Container;
  * SpringBox and SpringCompactGrid.
  */
 public class SpringUtilities {
+    private static final Logger LOGGER = Logger.getLogger(SpringUtilities.class);
 
     private SpringUtilities() {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -21,9 +25,9 @@ public class SpringUtilities {
      * minimum, preferred, and maximum sizes.
      */
     public static void printSizes(Component c) {
-        System.out.println("minimumSize = " + c.getMinimumSize());
-        System.out.println("preferredSize = " + c.getPreferredSize());
-        System.out.println("maximumSize = " + c.getMaximumSize());
+        LOGGER.debug("minimumSize = " + c.getMinimumSize());
+        LOGGER.debug("preferredSize = " + c.getPreferredSize());
+        LOGGER.debug("maximumSize = " + c.getMaximumSize());
     }
 
     /**

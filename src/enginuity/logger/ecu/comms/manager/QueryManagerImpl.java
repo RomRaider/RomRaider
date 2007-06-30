@@ -46,6 +46,7 @@ import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
+import org.apache.log4j.Logger;
 
 import javax.swing.SwingUtilities;
 import java.text.DecimalFormat;
@@ -58,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class QueryManagerImpl implements QueryManager {
+    private static final Logger LOGGER = Logger.getLogger(QueryManagerImpl.class);
     private final DecimalFormat format = new DecimalFormat("0.00");
     private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
     private final Map<String, Query> queryMap = synchronizedMap(new HashMap<String, Query>());
@@ -116,7 +118,7 @@ public final class QueryManagerImpl implements QueryManager {
     public void run() {
         started = true;
         queryManagerThread = Thread.currentThread();
-        System.out.println("QueryManager started.");
+        LOGGER.debug("QueryManager started.");
         try {
             stop = false;
             while (!stop) {
@@ -133,7 +135,7 @@ public final class QueryManagerImpl implements QueryManager {
         } finally {
             notifyStopped();
             messageListener.reportMessage("Disconnected.");
-            System.out.println("QueryManager stopped.");
+            LOGGER.debug("QueryManager stopped.");
         }
     }
 
@@ -144,11 +146,11 @@ public final class QueryManagerImpl implements QueryManager {
             try {
                 messageListener.reportMessage("Sending ECU Init...");
                 byte[] request = protocol.constructEcuInitRequest();
-                System.out.println("Ecu Init Request  ---> " + asHex(request));
+                LOGGER.debug("Ecu Init Request  ---> " + asHex(request));
                 byte[] response = ecuConnection.send(request);
                 byte[] processedResponse = protocol.preprocessResponse(request, response);
                 protocol.checkValidEcuInitResponse(processedResponse);
-                System.out.println("Ecu Init Response <--- " + asHex(processedResponse));
+                LOGGER.debug("Ecu Init Response <--- " + asHex(processedResponse));
                 ecuInitCallback.callback(protocol.parseEcuInitResponse(processedResponse));
                 messageListener.reportMessage("Sending ECU Init...done.");
                 return true;
@@ -157,7 +159,7 @@ public final class QueryManagerImpl implements QueryManager {
             }
         } catch (Exception e) {
             messageListener.reportMessage("Unable to send ECU init - check correct serial port has been selected, cable is connected and ignition is on.");
-            e.printStackTrace();
+            LOGGER.error("Error sending ecu init", e);
             return false;
         }
     }

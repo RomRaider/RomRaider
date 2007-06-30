@@ -6,8 +6,10 @@ import enginuity.io.connection.SerialConnectionImpl;
 import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+import org.apache.log4j.Logger;
 
 public final class AemConnectionImpl implements AemConnection {
+    private static final Logger LOGGER = Logger.getLogger(AemConnectionImpl.class);
     private final long sendTimeout;
     private final SerialConnection serialConnection;
 
@@ -16,7 +18,7 @@ public final class AemConnectionImpl implements AemConnection {
         checkNotNullOrEmpty(portName, "portName");
         this.sendTimeout = connectionProperties.getSendTimeout();
         serialConnection = new SerialConnectionImpl(connectionProperties, portName);
-        System.out.println("AEM connected");
+        LOGGER.info("AEM connected");
     }
 
     //TODO: Update this for AEM...same as lc1 atm which won't work
@@ -31,7 +33,7 @@ public final class AemConnectionImpl implements AemConnection {
 //                if (timeout <= 0) {
 //                    byte[] badBytes = new byte[serialConnection.available()];
 //                    serialConnection.read(badBytes);
-//                    System.out.println("Bad response (read timeout): " + asHex(badBytes));
+//                    LOGGER.debug("Bad response (read timeout): " + asHex(badBytes));
 //                    break;
 //                }
 //            }
@@ -45,6 +47,6 @@ public final class AemConnectionImpl implements AemConnection {
 
     public void close() {
         serialConnection.close();
-        System.out.println("AEM disconnected");
+        LOGGER.info("AEM disconnected");
     }
 }

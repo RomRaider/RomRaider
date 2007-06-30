@@ -23,6 +23,7 @@ package enginuity.logger.ecu;
 
 import enginuity.Settings;
 import enginuity.swing.LookAndFeelManager;
+import enginuity.util.LogManager;
 import enginuity.util.SettingsManagerImpl;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
@@ -34,6 +35,8 @@ public final class EcuLoggerExec {
     }
 
     public static void main(String... args) {
+        // init debug loging
+        LogManager.initLogging();
 
         // check for dodgy threading - dev only
 //        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));

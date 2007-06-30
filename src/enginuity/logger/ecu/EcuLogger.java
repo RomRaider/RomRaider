@@ -70,6 +70,7 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
+import org.apache.log4j.Logger;
 
 import static javax.swing.BorderFactory.createLoweredBevelBorder;
 import javax.swing.ImageIcon;
@@ -137,6 +138,7 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
+    private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
     private static final String ENGINUITY_ECU_LOGGER_TITLE = "Enginuity ECU Logger";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
@@ -197,7 +199,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         this.settings = settings;
         EcuInitCallback ecuInitCallback = new EcuInitCallback() {
             public void callback(EcuInit newEcuInit) {
-                System.out.println("ECU ID = " + newEcuInit.getEcuId());
+                LOGGER.info("ECU ID = " + newEcuInit.getEcuId());
                 if (ecuInit == null || !ecuInit.getEcuId().equals(newEcuInit.getEcuId())) {
                     ecuInit = newEcuInit;
                     SwingUtilities.invokeLater(new Runnable() {
@@ -206,11 +208,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                             Map<String, EcuDefinition> ecuDefinitionMap = settings.getLoggerEcuDefinitionMap();
                             if (!isNullOrEmpty(ecuDefinitionMap)) {
                                 String calId = ecuDefinitionMap.get(ecuId).getCalId();
-                                System.out.println("CAL ID = " + calId);
+                                LOGGER.info("CAL ID = " + calId);
                                 calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
                             }
                             ecuIdLabel.setText(buildEcuInfoLabelText(ECU_ID_LABEL, ecuId));
-                            System.out.println("Loading logger config for new ECU (ecuid: " + ecuId + ")...");
+                            LOGGER.info("Loading logger config for new ECU (ecuid: " + ecuId + ")...");
                             loadLoggerParams();
                         }
                     });
@@ -821,7 +823,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 cleanUpUpdateHandlers();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("Error stopping logger", e);
         } finally {
             rememberWindowProperties();
         }
@@ -890,7 +892,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportError(Exception e) {
         if (e != null) {
-            e.printStackTrace();
+            LOGGER.error("Error occurred", e);
             String error = e.getMessage();
             if (!isNullOrEmpty(error)) {
                 reportError(error);
@@ -902,7 +904,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportError(String error, Exception e) {
         if (e != null) {
-            e.printStackTrace();
+            LOGGER.error(error, e);
         }
         reportError(error);
     }
