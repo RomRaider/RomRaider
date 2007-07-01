@@ -21,18 +21,22 @@
 
 package enginuity.util;
 
+import org.apache.log4j.Logger;
+
 import java.util.concurrent.TimeUnit;
 
 public final class ThreadUtil {
+    private static final Logger LOGGER = Logger.getLogger(ThreadUtil.class);
 
     private ThreadUtil() {
+        throw new UnsupportedOperationException();
     }
 
     public static void sleep(long millis) {
         try {
             TimeUnit.MILLISECONDS.sleep(millis);
         } catch (InterruptedException e) {
-            //e.printStackTrace();
+            LOGGER.debug("Sleep interrupted", e);
         }
     }
 

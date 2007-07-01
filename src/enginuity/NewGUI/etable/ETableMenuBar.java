@@ -1,18 +1,12 @@
 package enginuity.NewGUI.etable;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyVetoException;
+import enginuity.NewGUI.etable.dataJPanel.DataJPanelInterface;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-
-import enginuity.NewGUI.etable.dataJPanel.DataJPanelInterface;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ETableMenuBar extends JMenuBar implements ActionListener{
 

@@ -6,12 +6,19 @@
  */
 package enginuity.logger.utec.gui.bottomControl;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import enginuity.logger.utec.commEvent.LoggerDataListener;
 import enginuity.logger.utec.commInterface.UtecInterface;
 import enginuity.logger.utec.gui.JutecGUI;
-import enginuity.logger.utec.commEvent.*;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author emorgan

@@ -24,10 +24,10 @@ package enginuity.swing;
 import enginuity.maps.Table;
 
 import static javax.swing.BorderFactory.createBevelBorder;
-import javax.swing.*;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import java.awt.*;
+import java.awt.BorderLayout;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener {
 

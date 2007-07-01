@@ -1,14 +1,12 @@
 package enginuity.NewGUI.etable;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.text.DecimalFormat;
+import com.ecm.graphics.tools.ColorTable;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.vecmath.Color3f;
-
-import com.ecm.graphics.tools.ColorTable;
+import java.awt.Color;
+import java.awt.Component;
 
 public class ETableCellRenderer extends DefaultTableCellRenderer{
 	private double min;

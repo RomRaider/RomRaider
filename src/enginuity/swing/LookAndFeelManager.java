@@ -21,11 +21,15 @@
 
 package enginuity.swing;
 
-import javax.swing.*;
+import org.apache.log4j.Logger;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
 import static javax.swing.UIManager.setLookAndFeel;
 
 public final class LookAndFeelManager {
+    private static final Logger LOGGER = Logger.getLogger(LookAndFeelManager.class);
     private static final String OS_NAME = "os.name";
     private static final String OS_VERSION = "os.version";
     private static final String MAC_OS_X = "Mac OS X";
@@ -59,7 +63,7 @@ public final class LookAndFeelManager {
             JDialog.setDefaultLookAndFeelDecorated(true);
 
         } catch (Exception ex) {
-            System.err.println("Error loading system look and feel.\n" + ex);
+            LOGGER.error("Error loading system look and feel.", ex);
         }
     }
 

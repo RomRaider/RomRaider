@@ -89,21 +89,21 @@ public final class SerialConnectionImpl implements SerialConnection {
             try {
                 os.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("Error closing output stream", e);
             }
         }
         if (is != null) {
             try {
                 is.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.error("Error closing input stream", e);
             }
         }
         if (serialPort != null) {
             try {
                 serialPort.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Error closing serial port", e);
             }
         }
         LOGGER.info("Connection closed.");

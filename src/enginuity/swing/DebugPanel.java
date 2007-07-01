@@ -23,8 +23,11 @@ package enginuity.swing;
 
 import enginuity.net.URL;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 
 public class DebugPanel extends JPanel {
 

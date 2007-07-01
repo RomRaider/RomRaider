@@ -1,10 +1,8 @@
 package enginuity.NewGUI.desktop;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.Point;
-import java.beans.PropertyVetoException;
+import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.etable.EInternalFrame;
+import org.apache.log4j.Logger;
 
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JComponent;
@@ -12,13 +10,15 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
-
-import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableMetaData;
-import enginuity.NewGUI.etable.EInternalFrame;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Point;
+import java.beans.PropertyVetoException;
 
 
 public class EDesktopPane extends JDesktopPane{
+    private static final Logger LOGGER = Logger.getLogger(EDesktopPane.class);
     private static int FRAME_OFFSET = 20;
     private MDIDesktopManager manager;
 
@@ -45,7 +45,7 @@ public class EDesktopPane extends JDesktopPane{
         for(int i = 0; i < allFrames.length ; i++){
         	tempFrame = (EInternalFrame)allFrames[i];
         	if(tempFrame.getTableMetaData().getTableGroup().equals(tuningGroup)){
-        		System.out.println("EDesktopPane: removing internal frame.");
+        		LOGGER.debug("EDesktopPane: removing internal frame.");
         		this.remove(tempFrame);
         	}
         }

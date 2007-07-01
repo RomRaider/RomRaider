@@ -1,10 +1,15 @@
 package enginuity.NewGUI.etable.text;
 
-import java.awt.*;
-import java.awt.image.*;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import javax.swing.*;
- 
+import java.awt.image.BufferedImage;
+
 public class RotatedLabel extends JPanel implements Icon
 {
  

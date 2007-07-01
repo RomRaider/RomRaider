@@ -16,6 +16,7 @@ import enginuity.ramtune.test.io.RamTuneTestAppConnectionProperties;
 import enginuity.swing.LookAndFeelManager;
 import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
+import enginuity.util.LogManager;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 
@@ -391,6 +392,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     //**********************************************************************
 
     public static void main(String[] args) {
+        LogManager.initLogging();
         LookAndFeelManager.initLookAndFeel();
         startTestApp(EXIT_ON_CLOSE);
     }

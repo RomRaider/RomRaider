@@ -1,16 +1,11 @@
 package enginuity.logger.utec.gui.mapTabs;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import enginuity.logger.utec.mapData.UtecMapData;
+import enginuity.logger.utec.properties.UtecProperties;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.DefaultTableModel;
-
-import enginuity.logger.utec.mapData.UtecMapData;
-import enginuity.logger.utec.properties.UtecProperties;
+import java.awt.BorderLayout;
 
 public class MapJPanel extends JPanel{
 

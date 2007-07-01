@@ -21,9 +21,11 @@
 
 package enginuity.maps;
 
-import java.awt.*;
-import javax.swing.*;
 import enginuity.Settings;
+
+import javax.swing.JLabel;
+import java.awt.BorderLayout;
+import java.awt.Color;
 
 public class Table1D extends Table {
     private Color axisColor = new Color(255, 255, 255);

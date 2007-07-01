@@ -1,9 +1,10 @@
 package enginuity.NewGUI.interfaces;
 
-import java.util.Vector;
+import enginuity.NewGUI.tree.ETreeNode;
+
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
-import enginuity.NewGUI.tree.ETreeNode;
+import java.util.Vector;
 
 public interface TuningEntityListener {
 	

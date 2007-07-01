@@ -22,8 +22,6 @@
 package enginuity.newmaps.util;
 
 import enginuity.newmaps.ecudata.DataCell;
-import enginuity.newmaps.ecudata.TableData;
-import enginuity.newmaps.ecumetadata.Scale;
 import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.ecumetadata.TableMetadata;
 import enginuity.util.ByteUtil;

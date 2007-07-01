@@ -34,6 +34,7 @@ import java.io.FileInputStream;
 public final class SaxParserFactory {
 
     private SaxParserFactory() {
+        throw new UnsupportedOperationException();
     }
 
     public static SAXParser getSaxParser() throws ParserConfigurationException, SAXException {

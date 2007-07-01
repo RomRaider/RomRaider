@@ -21,9 +21,16 @@
 
 package enginuity.net;
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 
 public class BrowserControl {
+    private static final Logger LOGGER = Logger.getLogger(BrowserControl.class);
+
+    private BrowserControl() {
+        throw new UnsupportedOperationException();
+    }
 
     public static void displayURL(String url) {
         boolean windows = isWindowsPlatform();
@@ -44,16 +51,13 @@ public class BrowserControl {
                     }
                 }
                 catch (InterruptedException x) {
-                    System.err.println("Error bringing up browser, cmd='" +
-                            cmd + "'");
-                    System.err.println("Caught: " + x);
+                    LOGGER.error("Error bringing up browser, command=" + cmd, x);
                 }
             }
         }
         catch (IOException x) {
             // couldn't exec browser
-            System.err.println("Could not invoke browser, command=" + cmd);
-            System.err.println("Caught: " + x);
+            LOGGER.error("Could not invoke browser, command=" + cmd, x);
         }
     }
 

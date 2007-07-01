@@ -1,7 +1,6 @@
 package enginuity.logger.utec.gui.mapTabs;
 
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 
 public class UtecJTable extends JTable{
 

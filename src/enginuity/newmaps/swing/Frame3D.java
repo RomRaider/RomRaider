@@ -25,15 +25,17 @@ import enginuity.newmaps.ecudata.DataCell;
 import enginuity.newmaps.ecudata.Table3DData;
 import enginuity.newmaps.ecumetadata.AxisMetadata;
 import enginuity.newmaps.ecumetadata.Scale;
-import enginuity.newmaps.ecumetadata.TableMetadata;
 import enginuity.newmaps.ecumetadata.Table3DMetadata;
 import enginuity.newmaps.ecumetadata.Unit;
 import enginuity.newmaps.exception.DataPopulationException;
+import enginuity.util.LogManager;
+import org.apache.log4j.Logger;
+
 import javax.swing.JScrollPane;
 
 
 public class Frame3D extends EnginuityFrame {
-
+    private static final Logger LOGGER = Logger.getLogger(Frame3D.class);
     Table3DData table;
     EnginuityJTable xAxisTable;
     EnginuityJTable yAxisTable;
@@ -41,28 +43,28 @@ public class Frame3D extends EnginuityFrame {
 
     public Frame3D(Table3DData table) {
 
-    	this.table = table;
+        this.table = table;
 
         //super(data, (TableMetadata)metadata);
-    	Table3DMetadata metadata = (Table3DMetadata) table.getMetadata();
-    	DataCell[][] dataCell = table.getValues();
+        Table3DMetadata metadata = (Table3DMetadata) table.getMetadata();
+        DataCell[][] dataCell = table.getValues();
         jTable = new EnginuityJTable(metadata.getSizeX(), metadata.getSizeY());
-        setLocationRelativeTo( null );
+        setLocationRelativeTo(null);
         setVisible(true);
 
         for (int y = 0; y < metadata.getSizeY(); y++) {
-        	for (int x = 0; x < metadata.getSizeX(); x++) {
-        		
-        		System.out.println("x=" + x + " y=" + y + " sizex=" 
-        				+ metadata.getSizeX() + " sizey="
-        				+ metadata.getSizeY());
-        		
-        		jTable.setValueAt(dataCell[x][y], x, y);
-        	}
+            for (int x = 0; x < metadata.getSizeX(); x++) {
+
+                LOGGER.debug("x=" + x + " y=" + y + " sizex="
+                        + metadata.getSizeX() + " sizey="
+                        + metadata.getSizeY());
+
+                jTable.setValueAt(dataCell[x][y], x, y);
+            }
         }
 
-        JScrollPane scrollPane = new JScrollPane( jTable );
-        getContentPane().add( scrollPane );
+        JScrollPane scrollPane = new JScrollPane(jTable);
+        getContentPane().add(scrollPane);
 
         this.pack();
 
@@ -73,10 +75,10 @@ public class Frame3D extends EnginuityFrame {
     // Test driver
     //
     public static void main(String[] args) {
-
+        LogManager.initLogging();
         byte[] data = new byte[100];
         for (int i = 0; i < data.length; i++) {
-            data[i] = (byte)i;
+            data[i] = (byte) i;
         }
 
         //
@@ -95,7 +97,6 @@ public class Frame3D extends EnginuityFrame {
         yAxisMetadata.setAddress(25);
         yAxisMetadata.setSize(4);
         tableMetadata.setYaxis(yAxisMetadata);
-
 
         //
         // Create scales
@@ -142,18 +143,18 @@ public class Frame3D extends EnginuityFrame {
         yScale.setStorageType(Scale.STORAGE_TYPE_FLOAT);
         yAxisMetadata.setScale(yScale);
 
-    	try {
-			Table3DData table = new Table3DData(data, tableMetadata);
+        try {
+            Table3DData table = new Table3DData(data, tableMetadata);
 
-	        //
-	        // Create frame
-	        //
-	        Frame3D frame = new Frame3D(table);
-	        frame.setDefaultCloseOperation( EXIT_ON_CLOSE );
+            //
+            // Create frame
+            //
+            Frame3D frame = new Frame3D(table);
+            frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		} catch (DataPopulationException e) {
-			e.printStackTrace();
-		}
+        } catch (DataPopulationException e) {
+            e.printStackTrace();
+        }
     }
 
 }

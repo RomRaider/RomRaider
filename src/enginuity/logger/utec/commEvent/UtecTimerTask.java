@@ -1,9 +1,8 @@
 package enginuity.logger.utec.commEvent;
 
-import java.util.TimerTask;
-
 import enginuity.logger.utec.comm.UtecSerialConnectionManager;
-import enginuity.logger.utec.gui.JutecGUI;
+
+import java.util.TimerTask;
 
 public class UtecTimerTask extends TimerTask{
 	private UtecTimerTaskListener listener = null;

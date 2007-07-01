@@ -1,8 +1,8 @@
 package enginuity.logger.utec.commEvent;
 
-import java.util.Timer;
-
 import enginuity.logger.utec.properties.UtecProperties;
+
+import java.util.Timer;
 
 public class UtecTimerTaskExecute implements UtecTimerTaskListener{
 	private final Timer timer = new Timer();

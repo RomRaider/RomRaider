@@ -1,11 +1,11 @@
 package enginuity.NewGUI.data;
 
-import java.util.Iterator;
-import java.util.Vector;
-
 import enginuity.NewGUI.NewGUI;
 import enginuity.NewGUI.interfaces.TuningEntity;
 import enginuity.NewGUI.interfaces.TuningEntityListener;
+
+import java.util.Iterator;
+import java.util.Vector;
 
 public class ApplicationStateManager {
 

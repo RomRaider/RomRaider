@@ -1,9 +1,16 @@
 package enginuity.logger.utec.comm;
 
 
-import java.awt.*;
-import java.awt.event.*;
-import enginuity.logger.utec.gui.*;
+import enginuity.logger.utec.gui.JutecGUI;
+
+import java.awt.Button;
+import java.awt.Dialog;
+import java.awt.FontMetrics;
+import java.awt.GridLayout;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
 Informs the user that an other application has requested the port they 

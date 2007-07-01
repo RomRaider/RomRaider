@@ -26,8 +26,10 @@ import enginuity.ECUEditor;
 import enginuity.Settings;
 import enginuity.util.FileAssociator;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JColorChooser;
+import javax.swing.JFrame;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;

@@ -1,29 +1,20 @@
 package enginuity.logger.utec.comm;
 
 //import javax.comm.*;
-import java.io.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import enginuity.logger.utec.commEvent.*;
-import enginuity.logger.utec.commInterface.UtecInterface;
-import enginuity.logger.utec.commInterface.UtecSerialListener;
-import enginuity.logger.utec.mapData.GetMapFromUtecListener;
-import enginuity.logger.utec.mapData.UtecMapData;
-import enginuity.logger.utec.properties.UtecProperties;
 
-/**
- * Class negotiates data to and from UTEC via the serial port
- * 
- * Please note that at this time ownership issues are not handled. See commented
- * out code pertaining to the parent entity
- * 
- * @author botman
- * 
- */
-// public class SerialConnection implements SerialPortEventListener,
-// CommPortOwnershipListener {
-import gnu.io.*;
+import enginuity.logger.utec.commInterface.UtecSerialListener;
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
+import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.UnsupportedCommOperationException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.TooManyListenersException;
+import java.util.Vector;
 
 public class UtecSerialConnectionManager{
 

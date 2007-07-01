@@ -1,11 +1,9 @@
 package enginuity.NewGUI.interfaces;
 
-import java.awt.event.ActionListener;
-import java.util.Vector;
-
 import javax.swing.JMenu;
 import javax.swing.JToolBar;
-import javax.swing.tree.TreeModel;
+import java.awt.event.ActionListener;
+import java.util.Vector;
 
 
 public interface TuningEntity extends ActionListener{

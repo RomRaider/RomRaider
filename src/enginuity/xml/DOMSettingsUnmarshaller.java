@@ -6,8 +6,11 @@ import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import static java.awt.Font.BOLD;
+import java.awt.Point;
 import java.io.File;
 
 public final class DOMSettingsUnmarshaller {

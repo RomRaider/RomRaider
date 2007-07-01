@@ -1,14 +1,19 @@
 package enginuity.NewGUI.tools;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
-
 import enginuity.NewGUI.etable.ETable;
+import org.apache.log4j.Logger;
 
-import java.awt.datatransfer.*;
-import java.util.*;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.util.StringTokenizer;
 
 /**
  * ExcelAdapter enables Copy-Paste Clipboard functionality on JTables. The
@@ -17,7 +22,8 @@ import java.util.*;
  * enabled JTables and Excel.
  */
 public class ClipBoardCopy implements ActionListener {
-	private String rowstring;
+    private static final Logger LOGGER = Logger.getLogger(ClipBoardCopy.class);
+    private String rowstring;
 	private String value;
 	private Clipboard clipBoard;
 	private StringSelection stringSelection;
@@ -50,7 +56,7 @@ public class ClipBoardCopy implements ActionListener {
 	
 	
 	public void copySelectedTableData(){
-		System.out.println("Excel copy");
+		LOGGER.debug("Excel copy");
 		StringBuffer sbf = new StringBuffer();
 		// Check to ensure we have selected only a contiguous block of
 		// cells
@@ -60,7 +66,7 @@ public class ClipBoardCopy implements ActionListener {
 		int[] colsselected = eTable.getSelectedColumns();
 		
 		if(rowsselected.length == 0 || colsselected.length == 0){
-			System.out.println("Clipboardcopy empty selection region.");
+			LOGGER.debug("Clipboardcopy empty selection region.");
 			return;
 		}
 		
@@ -86,7 +92,7 @@ public class ClipBoardCopy implements ActionListener {
 	
 	
 	public void pasteTableData(){
-		System.out.println("Pasting data");
+		LOGGER.debug("Pasting data");
 		
 		if(eTable.getSelectedRowCount() == 0){
 			this.pasteEntireTable();
@@ -98,7 +104,7 @@ public class ClipBoardCopy implements ActionListener {
 		
 		try {
 			String trstring = (String) (clipBoard.getContents(this).getTransferData(DataFlavor.stringFlavor));
-			System.out.println("String is:" + trstring);
+			LOGGER.debug("String is:" + trstring);
 			StringTokenizer st1 = new StringTokenizer(trstring, "\n");
 			for (int i = 0; st1.hasMoreTokens(); i++) {
 				rowstring = st1.nextToken();
@@ -117,17 +123,17 @@ public class ClipBoardCopy implements ActionListener {
 						eTable.setValueAt(value, startRow + i, startCol+ j);
 					}
 						
-					System.out.println("Putting " + value + "atrow="+ startRow + i + "column=" + startCol + j);
+					LOGGER.debug("Putting " + value + "atrow="+ startRow + i + "column=" + startCol + j);
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOGGER.error("Error pasting data", ex);
 		}
 	}
 	
 	
 	private void pasteEntireTable(){
-		System.out.println("Trying to Paste Entire Table");
+		LOGGER.debug("Trying to Paste Entire Table");
 		int startRow = 0;
 		int startCol = 0;
 		
@@ -135,7 +141,7 @@ public class ClipBoardCopy implements ActionListener {
 		int numrows = eTable.getRowCount();
 		
 		if(numcols == 0 || numrows == 0){
-			System.out.println("Nothing to paste");
+			LOGGER.debug("Nothing to paste");
 			return;
 		}
 		
@@ -144,7 +150,7 @@ public class ClipBoardCopy implements ActionListener {
 		try {
 			String trstring = (String) (clipBoard.getContents(this).getTransferData(DataFlavor.stringFlavor));
 			
-			System.out.println("String is:" + trstring);
+			LOGGER.debug("String is:" + trstring);
 			StringTokenizer st1 = new StringTokenizer(trstring, "\n");
 			for (int i = 0; st1.hasMoreTokens(); i++) {
 				rowstring = st1.nextToken();
@@ -152,7 +158,7 @@ public class ClipBoardCopy implements ActionListener {
 				// Skip the first row
 				if(i == 0){
 					if(!rowstring.startsWith("[TABLE:")){
-						System.out.println("Not an entire tables worth of data in clipboard");
+						LOGGER.debug("Not an entire tables worth of data in clipboard");
 						return;
 					}
 					rowstring = st1.nextToken();
@@ -171,11 +177,11 @@ public class ClipBoardCopy implements ActionListener {
 						//eTable.setValueAt(value, startRow + i, startCol+ j);
 					}
 						
-					System.out.println("Putting " + value + "atrow="+ startRow + i + "column=" + startCol + j);
+					LOGGER.debug("Putting " + value + "atrow="+ startRow + i + "column=" + startCol + j);
 				}
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			LOGGER.error("Error pasting table", ex);
 		}
 		
 		// Set the new data
@@ -184,14 +190,14 @@ public class ClipBoardCopy implements ActionListener {
 	
 	
 	public void copyEntireTable(){
-		System.out.println("Excel copy");
+		LOGGER.debug("Excel copy");
 		StringBuffer sbf = new StringBuffer();
 		// Check to ensure we have selected only a contiguous block of
 		// cells
 		int numcols = eTable.getColumnCount();
 		int numrows = eTable.getRowCount();
 		
-		System.out.println("Rows:"+numrows+"  Cols:"+numcols);
+		LOGGER.debug("Rows:"+numrows+"  Cols:"+numcols);
 		
 		String[] rowLabels = eTable.getTableMetaData().getRowLabels();
 		String[] columnLabels = eTable.getTableMetaData().getColumnLabels();

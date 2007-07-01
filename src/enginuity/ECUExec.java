@@ -23,6 +23,7 @@ package enginuity;
 
 import enginuity.swing.LookAndFeelManager;
 import enginuity.util.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,6 +32,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ECUExec {
+    private static final Logger LOGGER = Logger.getLogger(ECUExec.class);
 
     private ECUExec() {
         throw new UnsupportedOperationException();
@@ -71,7 +73,7 @@ public class ECUExec {
                     socket.close();
 
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error occurred", e);
                 }
                 // after sending filename, exit
                 System.exit(0);
@@ -90,7 +92,7 @@ public class ECUExec {
                 editor.openImage(new File(args[0]).getCanonicalFile());
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("Error opening file", ex);
         }
 
         // listen for files
@@ -114,7 +116,7 @@ public class ECUExec {
             }
 
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOGGER.error("Error occurred", e);
         }
     }
 }

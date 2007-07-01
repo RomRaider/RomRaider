@@ -1,14 +1,17 @@
 package enginuity.NewGUI.etable;
 
+import org.apache.log4j.Logger;
+
 public class ETableSaveState {
-	private Object[][] internalData;
+    private static final Logger LOGGER = Logger.getLogger(ETableSaveState.class);
+    private Object[][] internalData;
 	//private String name;
 	public ETableSaveState(Object[][] data){
 		//this.name = name;
 		int width = data.length;
 		int height = data[0].length;
 		
-		//System.out.println("Dimensions:  w:"+ width+"   h:"+height);
+		//LOGGER.debug("Dimensions:  w:"+ width+"   h:"+height);
 		this.internalData = new Object[width][height];
 		
 		for(int i = 0; i < width; i ++){
@@ -18,7 +21,7 @@ public class ETableSaveState {
 			}
 		}
 		
-		System.out.println("Sample: "+this.internalData[0][0]);
+		LOGGER.debug("Sample: "+this.internalData[0][0]);
 	}
 	
 	public Object[][] getData(){

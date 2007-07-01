@@ -15,20 +15,22 @@ import enginuity.maps.Table3D;
 import enginuity.maps.TableSwitch;
 import enginuity.swing.DebugPanel;
 import enginuity.swing.JProgressPane;
+import enginuity.util.LogManager;
 import enginuity.util.ObjectCloner;
 import static enginuity.xml.DOMHelper.unmarshallAttribute;
 import static enginuity.xml.DOMHelper.unmarshallText;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
 
 import javax.management.modelmbean.XMLParseException;
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class DOMRomUnmarshaller {
-
+    private static final Logger LOGGER = Logger.getLogger(DOMRomUnmarshaller.class);
     private JProgressPane progress = null;
     private List<Scale> scales = new ArrayList<Scale>();
     private Settings settings;
@@ -107,7 +109,7 @@ public final class DOMRomUnmarshaller {
                 return true;
             } catch (Exception ex) {
                 // if any exception is encountered, names do not match
-                ex.printStackTrace();
+                LOGGER.warn("Error finding match", ex);
                 return false;
             }
 
@@ -138,22 +140,23 @@ public final class DOMRomUnmarshaller {
     }
 
     public static void main(String args[]) {
+        LogManager.initLogging();
         DOMRomUnmarshaller um = new DOMRomUnmarshaller(new Settings(), new ECUEditor());
         um.parent.dispose();
         RomID romID = new RomID();
         romID.setInternalIdString("Asdfd");
 
         byte[] file = "Asdfd".getBytes();
-        System.out.println(foundMatch(romID, file));
+        LOGGER.debug(foundMatch(romID, file));
 
         file[0] = 1;
         file[1] = 1;
         file[2] = 1;
         file[3] = 1;
-        System.out.println(foundMatch(romID, file));
+        LOGGER.debug(foundMatch(romID, file));
 
         romID.setInternalIdString("0x010101");
-        System.out.println(foundMatch(romID, file));
+        LOGGER.debug(foundMatch(romID, file));
     }
 
     public Rom unmarshallRom(Node rootNode, Rom rom) throws XMLParseException, RomNotFoundException, StackOverflowError, Exception {
@@ -194,7 +197,7 @@ public final class DOMRomUnmarshaller {
                             rom.removeTable(table.getName());
                         }
                     } catch (XMLParseException ex) {
-                        ex.printStackTrace();
+                        LOGGER.error("Error unmarshalling rom", ex);
                     }
 
                 } else { /* unexpected element in Rom (skip)*/ }

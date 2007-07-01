@@ -24,14 +24,15 @@ package enginuity.maps;
 import enginuity.ECUEditor;
 import enginuity.swing.JProgressPane;
 import enginuity.xml.TableNotFoundException;
+import org.apache.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Vector;
 
 public class Rom implements Serializable {
-
+    private static final Logger LOGGER = Logger.getLogger(Rom.class);
     private RomID romID = new RomID();
     private String fileName = "";
     private File fullFileName = new File(".");
@@ -54,7 +55,9 @@ public class Rom implements Serializable {
                 break;
             }
         }
-        if (!found) tables.add(table);
+        if (!found) {
+            tables.add(table);
+        }
     }
 
     public Table getTable(String tableName) throws TableNotFoundException {
@@ -90,9 +93,9 @@ public class Rom implements Serializable {
 
                     } catch (ArrayIndexOutOfBoundsException ex) {
 
-                        System.out.println(tables.get(i).getName() +
+                        LOGGER.error(tables.get(i).getName() +
                                 " type " + tables.get(i).getType() + " start " +
-                                tables.get(i).getStorageAddress() + " " + binData.length + " filesize");
+                                tables.get(i).getStorageAddress() + " " + binData.length + " filesize", ex);
 
                         // table storage address extends beyond end of file
                         JOptionPane.showMessageDialog(container, "Storage address for table \"" + tables.get(i).getName() +

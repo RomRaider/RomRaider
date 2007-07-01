@@ -22,7 +22,6 @@
 package enginuity.newmaps.ecudata;
 
 import enginuity.newmaps.ecumetadata.AxisMetadata;
-import enginuity.newmaps.ecumetadata.Scale;
 import enginuity.newmaps.util.ECUDataUtil;
 
 public class AxisData extends TableData {

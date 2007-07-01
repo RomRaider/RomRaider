@@ -25,8 +25,12 @@ import enginuity.ECUEditor;
 import enginuity.maps.Rom;
 
 import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JToolBar;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

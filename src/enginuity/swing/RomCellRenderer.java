@@ -25,11 +25,18 @@ import enginuity.maps.Rom;
 import enginuity.maps.Table;
 
 import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 
 public class RomCellRenderer implements TreeCellRenderer {
 

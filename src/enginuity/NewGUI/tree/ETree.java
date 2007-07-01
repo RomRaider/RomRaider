@@ -1,18 +1,18 @@
 package enginuity.NewGUI.tree;
 
+import enginuity.NewGUI.data.ApplicationStateManager;
+import enginuity.NewGUI.data.TableMetaData;
+import org.apache.log4j.Logger;
+
+import javax.swing.JTree;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.JTree;
-
-import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableMetaData;
-import enginuity.swing.RomCellRenderer;
-
 public class ETree extends JTree implements MouseListener {
+    private static final Logger LOGGER = Logger.getLogger(ETree.class);
 	
-	public ETree(ETreeNode treeRootNode){
+    public ETree(ETreeNode treeRootNode){
 		super(treeRootNode);
 		setCellRenderer(new ETreeCellRenderer());
 		setRootVisible(true);
@@ -46,9 +46,9 @@ public class ETree extends JTree implements MouseListener {
 			
 			// If this is a table that contains data, then open it in the right pane in an internal frame
 			if(theNode.getTableMetaData().getNodeType() == TableMetaData.DATA_1D || theNode.getTableMetaData().getNodeType() == TableMetaData.DATA_2D || theNode.getTableMetaData().getNodeType() == TableMetaData.DATA_3D){
-				System.out.println("ETree Table data:"+theNode.getTableMetaData().getTableIdentifier());
+				LOGGER.debug("ETree Table data:"+theNode.getTableMetaData().getTableIdentifier());
 				Object[][] tableData = ApplicationStateManager.getCurrentTuningEntity().getTableData(theNode.getTableMetaData().getTableIdentifier());
-				System.out.println("ETree size:"+tableData.length);
+				LOGGER.debug("ETree size:"+tableData.length);
 				ApplicationStateManager.getEnginuityInstance().displayInternalFrameTable(tableData, theNode.getTableMetaData());
 			}
 			

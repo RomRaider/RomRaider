@@ -1,8 +1,9 @@
 package enginuity.NewGUI.tree;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.NewGUI.data.TableMetaData;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 
 public class ETreeNode extends DefaultMutableTreeNode{
 	

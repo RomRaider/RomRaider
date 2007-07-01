@@ -1,27 +1,22 @@
 package enginuity.logger.utec.gui;
 
+import enginuity.NewGUI.data.ApplicationStateManager;
+import enginuity.NewGUI.interfaces.TuningEntity;
+import enginuity.NewGUI.interfaces.TuningEntityListener;
+import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
+import enginuity.logger.utec.mapData.UtecMapData;
+
 import static javax.swing.BorderFactory.createLineBorder;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Iterator;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
-
-import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableMetaData;
-import enginuity.NewGUI.interfaces.TuningEntity;
-import enginuity.NewGUI.interfaces.TuningEntityListener;
-import enginuity.NewGUI.tree.ETreeNode;
-import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
-import enginuity.logger.utec.mapData.UtecMapData;
-import enginuity.logger.utec.properties.UtecProperties;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 public class JutecToolBar  extends JToolBar implements ActionListener {
 

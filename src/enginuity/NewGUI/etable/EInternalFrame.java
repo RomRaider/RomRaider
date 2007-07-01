@@ -1,40 +1,21 @@
 package enginuity.NewGUI.etable;
 
+import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.etable.dataJPanel.DataJPanel1DString;
+import enginuity.NewGUI.etable.dataJPanel.DataJPanel3DDouble;
+import enginuity.NewGUI.etable.dataJPanel.DataJPanelInterface;
+
+import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedList;
 import java.util.Stack;
-
-import javax.swing.ImageIcon;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JViewport;
-import javax.swing.UIManager;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-
-import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableMetaData;
-import enginuity.NewGUI.etable.dataJPanel.DataJPanel1DString;
-import enginuity.NewGUI.etable.dataJPanel.DataJPanelInterface;
-import enginuity.NewGUI.etable.dataJPanel.DataJPanel3DDouble;
-import enginuity.NewGUI.etable.text.RotatedLabel;
-import enginuity.NewGUI.tools.ClipBoardCopy;
-import enginuity.NewGUI.tools.FitData;
-import enginuity.swing.VTextIcon;
 
 public class EInternalFrame extends JInternalFrame implements InternalFrameListener, ActionListener{
 	private Stack<ETableSaveState> savedData = new Stack<ETableSaveState>();

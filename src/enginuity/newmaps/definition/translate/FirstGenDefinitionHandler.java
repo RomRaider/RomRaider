@@ -38,6 +38,7 @@ import static enginuity.xml.DOMHelper.unmarshallAttribute;
 import static enginuity.xml.DOMHelper.unmarshallText;
 import enginuity.xml.RomAttributeParser;
 import enginuity.xml.TableIsOmittedException;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
@@ -49,7 +50,7 @@ import java.util.List;
 import java.util.Vector;
 
 public final class FirstGenDefinitionHandler {
-
+    private static final Logger LOGGER = Logger.getLogger(FirstGenDefinitionHandler.class);
     private List<Scale> scales = new ArrayList<Scale>();
     private Settings settings = new Settings();
     private Vector<Rom> roms = new Vector<Rom>();
@@ -74,10 +75,10 @@ public final class FirstGenDefinitionHandler {
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("rom")) {
                 Rom rom = unmarshallRom(n, new Rom());
                 add(rom);
-                System.out.println("Added " + rom.getRomIDString() + " (#" + roms.size() + ")");
+                LOGGER.debug("Added " + rom.getRomIDString() + " (#" + roms.size() + ")");
             }
         }
-        
+
         return roms;
     }
 
@@ -146,58 +147,60 @@ public final class FirstGenDefinitionHandler {
                 rom.getRomID().setObsolete(false);
                 rom.setParent(unmarshallAttribute(rootNode, "base", ""));
             }
-            
-        rom.setAbstract(Boolean.parseBoolean(unmarshallAttribute(rootNode, "abstract", "false")));
+
+            rom.setAbstract(Boolean.parseBoolean(unmarshallAttribute(rootNode, "abstract", "false")));
 
 
-        for (int i = 0; i < nodes.getLength(); i++) {
-            n = nodes.item(i);
+            for (int i = 0; i < nodes.getLength(); i++) {
+                n = nodes.item(i);
 
-            // update progress
-            int currProgress = (int) ((double) i / (double) nodes.getLength() * 40);
+                // update progress
+                int currProgress = (int) ((double) i / (double) nodes.getLength() * 40);
 
-            if (n.getNodeType() == ELEMENT_NODE) {
-                if (n.getNodeName().equalsIgnoreCase("romid")) {
-                    rom.setRomID(unmarshallRomID(n, rom.getRomID()));
+                if (n.getNodeType() == ELEMENT_NODE) {
+                    if (n.getNodeName().equalsIgnoreCase("romid")) {
+                        rom.setRomID(unmarshallRomID(n, rom.getRomID()));
 
-                } else if (n.getNodeName().equalsIgnoreCase("table")) {
-                    Table table = null;
-                    try {
-                        table = rom.getTable(unmarshallAttribute(n, "name", "unknown"));
-                    } catch (Exception e) { /* table does not already exist (do nothing) */ }
+                    } else if (n.getNodeName().equalsIgnoreCase("table")) {
+                        Table table = null;
+                        try {
+                            table = rom.getTable(unmarshallAttribute(n, "name", "unknown"));
+                        } catch (Exception e) { /* table does not already exist (do nothing) */ }
 
-                    try {
-                        table = unmarshallTable(n, table, rom);
-                        table.setRom(rom);
-                        rom.addTable(table);
-                    } catch (TableIsOmittedException ex) {
-                        // table is not supported in inherited def (skip)
-                        if (table != null) {
-                            rom.removeTable(table.getName());
+                        try {
+                            table = unmarshallTable(n, table, rom);
+                            table.setRom(rom);
+                            rom.addTable(table);
+                        } catch (TableIsOmittedException ex) {
+                            // table is not supported in inherited def (skip)
+                            if (table != null) {
+                                rom.removeTable(table.getName());
+                            }
+                        } catch (XMLParseException ex) {
+                            ex.printStackTrace();
                         }
-                    } catch (XMLParseException ex) {
-                        ex.printStackTrace();
-                    }
 
-                } else { /* unexpected element in Rom (skip)*/ }
-            } else { /* unexpected node-type in Rom (skip)*/ }
-        }
+                    } else { /* unexpected element in Rom (skip)*/ }
+                } else { /* unexpected node-type in Rom (skip)*/ }
+            }
             return rom;
         } catch (Exception ex) {
-            System.out.println("Failed: " + unmarshallAttribute(rootNode, "base","none"));
-        }        
+            LOGGER.error("Failed: " + unmarshallAttribute(rootNode, "base", "none"), ex);
+        }
         throw new Exception();
     }
-    
+
     public void add(Rom rom) {
         roms.add(rom);
     }
-    
+
     public Rom get(String name) throws Exception {
         Iterator it = roms.iterator();
         while (it.hasNext()) {
-            Rom rom = (Rom)it.next();
-            if (rom.getRomIDString().equalsIgnoreCase(name)) return (Rom)ObjectCloner.deepCopy(rom);
+            Rom rom = (Rom) it.next();
+            if (rom.getRomIDString().equalsIgnoreCase(name)) {
+                return (Rom) ObjectCloner.deepCopy(rom);
+            }
         }
         throw new Exception();
     }
@@ -268,7 +271,7 @@ public final class FirstGenDefinitionHandler {
     private Table unmarshallTable(Node tableNode, Table table, Rom rom) throws Exception {
 
         if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase("none")) { // copy base table for inheritance      
-            table = (Table) ObjectCloner.deepCopy((Object) rom.getTable(unmarshallAttribute(tableNode, "base", "none")));      
+            table = (Table) ObjectCloner.deepCopy((Object) rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
         }
 
         try {
@@ -456,5 +459,5 @@ public final class FirstGenDefinitionHandler {
 
         return scale;
     }
-      
+
 }

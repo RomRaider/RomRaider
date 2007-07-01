@@ -24,8 +24,10 @@ package enginuity.newmaps.definition.index;
 import enginuity.newmaps.definition.RomDefinitionHandler;
 import enginuity.newmaps.ecumetadata.RomMetadata;
 import enginuity.newmaps.xml.SaxParserFactory;
+import enginuity.util.LogManager;
 import static enginuity.util.MD5Checksum.getMD5Checksum;
 import enginuity.util.exception.NameableNotFoundException;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXParseException;
 
 import java.io.BufferedInputStream;
@@ -40,7 +42,7 @@ import java.io.ObjectOutputStream;
 import java.util.Iterator;
 
 public class IndexBuilder {
-
+    private static final Logger LOGGER = Logger.getLogger(IndexBuilder.class);
     public static final String INDEX_FILE_NAME = "index.dat";
     public static final String MEMMODEL_FILE_NAME = "memmodels.xml";
 
@@ -161,7 +163,7 @@ public class IndexBuilder {
 
     public static void testMemUsage() {
         try {
-            File dir = new File("/newdefs");            
+            File dir = new File("/newdefs");
             //File dir = new File("./xmltest");
             Index index = getIndex(dir);
             RomDefinitionHandler handler = new RomDefinitionHandler(index);
@@ -171,46 +173,47 @@ public class IndexBuilder {
             long time = 0;
             while (it.hasNext()) {
                 IndexItem item = (IndexItem) it.next();
-                System.out.println("Adding " + item.getFile() + " (#" + ++i + ")");
+                LOGGER.debug("Adding " + item.getFile() + " (#" + ++i + ")");
                 InputStream inputStream1 = new BufferedInputStream(new FileInputStream(item.getFile()));
                 long start = System.currentTimeMillis();
                 SaxParserFactory.getSaxParser().parse(inputStream1, handler);
-                //System.out.println(handler.getRom());
+                //LOGGER.debug(handler.getRom());
                 time += (System.currentTimeMillis() - start);
-                
+
                 saveDef(handler.getRom());
 
             }
-            
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-            
+
     }
-    
-    
+
+
     public static void saveDef(RomMetadata rom) {
-        
+
         try {
             FileOutputStream fileOut = new FileOutputStream("/sizetest/" + rom.getName() + ".dat");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
-            System.out.println("Writing Hashtable Object...");
+            LOGGER.debug("Writing Hashtable Object...");
             out.writeObject(rom);
 
-            System.out.println("Closing all output streams...\n");
+            LOGGER.debug("Closing all output streams...\n");
             out.close();
-            fileOut.close();  
-        } catch(FileNotFoundException e) {
+            fileOut.close();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }                   
+        }
     }
 
 
     public static void main(String[] args) {
+        LogManager.initLogging();
         /*try {
             //File file = new File("/newdefs");
             File file = new File("./xmltest");
@@ -218,7 +221,7 @@ public class IndexBuilder {
         } catch (Exception ex) {
             ex.printStackTrace();
         } */
-        
+
         testMemUsage();
     }
 }

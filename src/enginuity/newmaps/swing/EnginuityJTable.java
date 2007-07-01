@@ -1,5 +1,6 @@
 package enginuity.newmaps.swing;
 
+import javax.swing.JTable;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.InputEvent;
@@ -11,8 +12,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-
-import javax.swing.JTable;
 
 public class EnginuityJTable extends JTable
 {

@@ -1,15 +1,11 @@
 package enginuity.logger.utec.commInterface;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 import enginuity.logger.utec.comm.UtecSerialConnectionManager;
-import enginuity.logger.utec.commEvent.LoggerEvent;
-import enginuity.logger.utec.commEvent.LoggerDataListener;
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
-import enginuity.logger.utec.mapData.UtecMapData;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+
+import java.io.IOException;
 
 public class UtecSerialListener implements SerialPortEventListener {
 	private static UtecSerialListener instance = null;

@@ -22,6 +22,7 @@
 package enginuity.maps;
 
 import enginuity.util.JEPUtil;
+import org.apache.log4j.Logger;
 
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.JLabel;
@@ -38,7 +39,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
-
+    private static final Logger LOGGER = Logger.getLogger(DataCell.class);
     private final Border defaultBorder = createLineBorder(BLACK, 1);
     private final Border modifiedBorder = createLineBorder(RED, 3);
     private final Font defaultFont = new Font("Arial", Font.BOLD, 12);
@@ -220,7 +221,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                 oldValue == Double.parseDouble(getText()) &&
                 binValue > 0 &&
                 binValue < maxValue) {
-            System.out.println(maxValue + " " + binValue);
+            LOGGER.debug(maxValue + " " + binValue);
             increment(increment * 2);
         }
 

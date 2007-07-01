@@ -1,14 +1,13 @@
 package enginuity.NewGUI.etable.dataJPanel;
 
-import java.awt.BorderLayout;
+import enginuity.NewGUI.data.TableMetaData;
 
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
-
-import enginuity.NewGUI.data.TableMetaData;
+import java.awt.BorderLayout;
 
 public class DataJPanel1DString extends JPanel implements DataJPanelInterface{
 	

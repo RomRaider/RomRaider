@@ -23,8 +23,9 @@ package enginuity.swing;
 
 import enginuity.ECUEditor;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFileChooser;
+import javax.swing.ListSelectionModel;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;

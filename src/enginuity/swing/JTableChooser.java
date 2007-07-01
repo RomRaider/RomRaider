@@ -24,9 +24,13 @@ package enginuity.swing;
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.util.Vector;
 
 public class JTableChooser extends JOptionPane {

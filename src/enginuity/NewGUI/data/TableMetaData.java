@@ -1,9 +1,9 @@
 package enginuity.NewGUI.data;
 
+import enginuity.NewGUI.interfaces.TuningEntity;
+
 import java.awt.Dimension;
 import java.text.DecimalFormat;
-
-import enginuity.NewGUI.interfaces.TuningEntity;
 
 public class TableMetaData {
 	// Type of table

@@ -7,27 +7,17 @@
 package enginuity.logger.utec.commInterface;
 
 
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
-import java.awt.event.*;
-import java.io.IOException;
-import java.util.*;
-//import javax.comm.CommPortIdentifier
-import gnu.io.*;
-
-import javax.swing.*;
-
+import enginuity.logger.utec.comm.SerialConnectionException;
+import enginuity.logger.utec.comm.UtecSerialConnectionManager;
+import enginuity.logger.utec.commEvent.UtecTimerTaskManager;
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
-import enginuity.logger.utec.gui.realtimeData.*;
-import enginuity.logger.utec.mapData.GetMapFromUtecListener;
 import enginuity.logger.utec.mapData.UtecMapData;
 import enginuity.logger.utec.properties.UtecProperties;
-import enginuity.logger.utec.comm.*;
-import enginuity.logger.utec.commEvent.LoggerEvent;
-import enginuity.logger.utec.commEvent.LoggerDataListener;
-import enginuity.logger.utec.commEvent.UtecTimerTaskManager;
+import gnu.io.CommPortIdentifier;
+
+import java.util.Enumeration;
+import java.util.Vector;
+
 /**
  * @author emorgan
  *

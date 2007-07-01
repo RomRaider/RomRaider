@@ -1,19 +1,19 @@
 package enginuity.NewGUI.etable;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.util.Iterator;
-import java.util.Vector;
+import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.tools.FitData;
+import org.apache.log4j.Logger;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumnModel;
-
-import enginuity.NewGUI.data.TableMetaData;
-import enginuity.NewGUI.tools.FitData;
+import java.awt.Color;
+import java.util.Iterator;
+import java.util.Vector;
 
 public class ETable extends JTable{
-	public static final int INCREMENT = 0;
+    private static final Logger LOGGER = Logger.getLogger(ETable.class);
+    public static final int INCREMENT = 0;
 	public static final int DECREMENT = 1;
 	public static final int MULTIPLY = 2;
 	public static final int SET = 3;
@@ -69,7 +69,7 @@ public class ETable extends JTable{
 	    //this.setSelectedQuadrilateral(1,3,4,6);
 	    //this.addColumnSelectionInterval(3, 6);
 	    
-	    System.out.println(" >"+ this.getSelectedColumnCount()+"  >"+this.getSelectedRowCount());
+	    LOGGER.debug(" >"+ this.getSelectedColumnCount()+"  >"+this.getSelectedRowCount());
 	}
 	
 	/**

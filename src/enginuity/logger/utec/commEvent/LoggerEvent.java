@@ -8,8 +8,6 @@ package enginuity.logger.utec.commEvent;
 
 
 
-import java.util.*;
-
 import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
 import enginuity.logger.utec.mapData.UtecMapData;
 import enginuity.logger.utec.properties.UtecProperties;

@@ -1,22 +1,20 @@
 package enginuity.NewGUI.tree;
 
+import enginuity.NewGUI.data.ApplicationStateManager;
+import enginuity.NewGUI.data.TableMetaData;
+
 import static javax.swing.BorderFactory.createLineBorder;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
-
-import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableMetaData;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 
 public class ETreeCellRenderer implements TreeCellRenderer{
 	

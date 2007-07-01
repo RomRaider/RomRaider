@@ -1,7 +1,9 @@
 package enginuity.util;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
+import java.awt.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 

@@ -1,9 +1,14 @@
 package enginuity.NewGUI.etable.dataJPanel;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.util.Stack;
+import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.etable.ETable;
+import enginuity.NewGUI.etable.ETableMenuBar;
+import enginuity.NewGUI.etable.ETableRowLabel;
+import enginuity.NewGUI.etable.ETableSaveState;
+import enginuity.NewGUI.etable.ETableToolBar;
+import enginuity.NewGUI.etable.text.RotatedLabel;
+import enginuity.NewGUI.tools.ClipBoardCopy;
+import org.apache.log4j.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -16,18 +21,14 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-
-import enginuity.NewGUI.data.TableMetaData;
-import enginuity.NewGUI.etable.ETable;
-import enginuity.NewGUI.etable.ETableMenuBar;
-import enginuity.NewGUI.etable.ETableRowLabel;
-import enginuity.NewGUI.etable.ETableSaveState;
-import enginuity.NewGUI.etable.ETableToolBar;
-import enginuity.NewGUI.etable.text.RotatedLabel;
-import enginuity.NewGUI.tools.ClipBoardCopy;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.util.Stack;
 
 public class DataJPanel3DDouble extends JPanel implements DataJPanelInterface{
-	private Stack<ETableSaveState> savedData = new Stack<ETableSaveState>();
+    private static final Logger LOGGER = Logger.getLogger(DataJPanel3DDouble.class);
+    private Stack<ETableSaveState> savedData = new Stack<ETableSaveState>();
 	private ETable eTable;
 	private TableMetaData tableMetaData;
 	private ClipBoardCopy excelCopy;
@@ -136,7 +137,7 @@ public class DataJPanel3DDouble extends JPanel implements DataJPanelInterface{
 	public boolean dataChanged(){
 		//if(this.eTable.getTheModel().getData() != this.savedData.get(savedData.size()-1).getData()){
 		if(!compareMe(this.eTable.getTheModel().getData(), this.savedData.get(savedData.size()-1).getData())){
-			System.out.println("Data not the same.");
+			LOGGER.debug("Data not the same.");
 			return true;
 		}
 		

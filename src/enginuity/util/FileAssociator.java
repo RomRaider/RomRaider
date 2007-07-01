@@ -21,6 +21,7 @@
 
 package enginuity.util;
 
+import org.apache.log4j.Logger;
 import org.jdesktop.jdic.filetypes.Action;
 import org.jdesktop.jdic.filetypes.Association;
 import org.jdesktop.jdic.filetypes.AssociationService;
@@ -29,8 +30,10 @@ import java.io.File;
 
 
 public final class FileAssociator {
+    private static final Logger LOGGER = Logger.getLogger(FileAssociator.class);
 
     private FileAssociator() {
+        throw new UnsupportedOperationException();
     }
 
     public static boolean addAssociation(String extension, String command, /*String iconFileName,*/ String description) {
@@ -39,9 +42,9 @@ public final class FileAssociator {
 
         // remove association if it already exists
 
-        System.out.println("Removing 1...\n");
+        LOGGER.debug("Removing 1...");
         removeAssociation(extension);
-        System.out.println("Removing 2...\n");
+        LOGGER.debug("Removing 2...");
 
         AssociationService serv = new AssociationService();
         Association logassoc = new Association();
@@ -51,12 +54,12 @@ public final class FileAssociator {
         logassoc.addAction(new Action("open", command + " %1"));
         logassoc.setIconFileName(new File("").getAbsolutePath() + "/graphics/enginuity-ico.ico");
 
-        System.out.println("Adding ...\n" + logassoc + "\n\n\n");
+        LOGGER.debug("Adding ...\n" + logassoc + "\n\n\n");
 
         try {
             serv.registerUserAssociation(logassoc);
         } catch (Exception e) {
-            System.err.println(e);
+            LOGGER.error("Error adding association", e);
         }
 
         return true;
@@ -67,12 +70,12 @@ public final class FileAssociator {
         AssociationService serv = new AssociationService();
         Association logassoc = serv.getFileExtensionAssociation(extension.toUpperCase());
 
-        System.out.println("Removing ...\n" + logassoc + "\n\n\n");
+        LOGGER.debug("Removing ...\n" + logassoc + "\n\n\n");
 
         try {
             serv.unregisterUserAssociation(logassoc);
         } catch (Exception e) {
-            System.err.println(e);
+            LOGGER.error("Error removing association", e);
         }
         return true;
     }

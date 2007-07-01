@@ -5,7 +5,8 @@
 package enginuity.logger.utec.comm;
 
 //import javax.comm.*;
-import gnu.io.*;
+
+import gnu.io.SerialPort;
 
 /**
  * A class that stores parameters for serial ports.

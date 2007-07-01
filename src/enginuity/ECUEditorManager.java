@@ -21,7 +21,7 @@
 
 package enginuity;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 public class ECUEditorManager {
     private static ECUEditor editor = null;

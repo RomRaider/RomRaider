@@ -1,53 +1,38 @@
 package enginuity.NewGUI;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Vector;
+import enginuity.NewGUI.data.ApplicationStateManager;
+import enginuity.NewGUI.data.TableMetaData;
+import enginuity.NewGUI.desktop.EDesktopPane;
+import enginuity.NewGUI.etable.EInternalFrame;
+import enginuity.NewGUI.interfaces.TuningEntity;
+import enginuity.NewGUI.interfaces.TuningEntityListener;
+import enginuity.NewGUI.tree.ETree;
+import enginuity.NewGUI.tree.ETreeNode;
+import enginuity.logger.utec.impl.UtecTuningEntityImpl;
+import enginuity.swing.LookAndFeelManager;
+import org.apache.log4j.Logger;
 
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
-import javax.swing.JTree;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeSelectionModel;
-
-import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableMetaData;
-import enginuity.NewGUI.desktop.EDesktopPane;
-import enginuity.NewGUI.etable.EInternalFrame;
-import enginuity.NewGUI.etable.ETable;
-import enginuity.NewGUI.etable.ETableToolBar;
-import enginuity.NewGUI.interfaces.TuningEntity;
-import enginuity.NewGUI.interfaces.TuningEntityListener;
-import enginuity.NewGUI.tree.ETree;
-import enginuity.NewGUI.tree.ETreeCellRenderer;
-import enginuity.NewGUI.tree.ETreeNode;
-import enginuity.logger.utec.impl.UtecTuningEntityImpl;
-import enginuity.swing.LookAndFeelManager;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.Vector;
 
 public class NewGUI extends JFrame implements ActionListener, TreeSelectionListener, TuningEntityListener{
-	
+	private static final Logger LOGGER = Logger.getLogger(NewGUI.class);
 	private final String engninuityVersionTitle = "Enginuity v0.5.0 alpha 1";
 	
 	private JPanel mainJPanel = new JPanel();
@@ -87,7 +72,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	}
 	
 	private void initGui(){
-		System.out.println("Initializing GUI.");
+		LOGGER.info("Initializing GUI.");
 		
 		// Set the frame icon
 		Image img = Toolkit.getDefaultToolkit().getImage("graphics/enginuity-ico.gif");
@@ -172,7 +157,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 
 	public void valueChanged(TreeSelectionEvent arg0) {
 		
-		System.out.println("Tree Node selected.");
+		LOGGER.debug("Tree Node selected.");
 		
 	}
 	
@@ -185,17 +170,16 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	 * 
 	 */
 	public void addNewTuningGroup(ETreeNode newTreeModel) {
-		System.out.println("test: "+this.newTree);
+		LOGGER.debug("test: "+this.newTree);
 		
 		int childCount = this.rootNode.getChildCount();
 		String newTuningGroup = newTreeModel.getTableMetaData().getTableGroup();
 		
-		System.out.println("Children:"+childCount +"  :"+newTuningGroup);
+		LOGGER.debug("Children:"+childCount +"  :"+newTuningGroup);
 		for(int i = 0; i < childCount; i++){
 			ETreeNode tempNode = (ETreeNode)this.rootNode.getChildAt(i);
 			if(tempNode.getTableMetaData().getTableGroup().equals(newTuningGroup)){
-				System.out.println("Can't open same ROM / Map file 2x");
-				
+				LOGGER.error("Can't open same ROM / Map file 2x");
 				return;
 			}
 		}

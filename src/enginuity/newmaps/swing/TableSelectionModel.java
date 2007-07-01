@@ -24,7 +24,6 @@
  */
 package enginuity.newmaps.swing;
 
-import java.util.Random;
 import javax.swing.DefaultListSelectionModel;
 
 /**

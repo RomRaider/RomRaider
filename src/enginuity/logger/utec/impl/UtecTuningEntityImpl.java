@@ -1,32 +1,23 @@
 package enginuity.logger.utec.impl;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Vector;
+import enginuity.NewGUI.data.ApplicationStateManager;
+import enginuity.NewGUI.interfaces.TuningEntity;
+import enginuity.NewGUI.interfaces.TuningEntityListener;
+import enginuity.logger.utec.commInterface.UtecInterface;
+import enginuity.logger.utec.gui.JutecToolBar;
+import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
+import enginuity.logger.utec.mapData.UtecMapData;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-
-import enginuity.NewGUI.data.ApplicationStateManager;
-import enginuity.NewGUI.data.TableMetaData;
-import enginuity.NewGUI.interfaces.TuningEntity;
-import enginuity.NewGUI.interfaces.TuningEntityListener;
-import enginuity.NewGUI.tree.ETreeNode;
-import enginuity.logger.utec.commInterface.UtecInterface;
-import enginuity.logger.utec.gui.JutecToolBar;
-import enginuity.logger.utec.gui.mapTabs.UtecDataManager;
-import enginuity.logger.utec.mapData.UtecMapData;
-import enginuity.logger.utec.properties.UtecProperties;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Vector;
 
 public class UtecTuningEntityImpl implements TuningEntity{
 

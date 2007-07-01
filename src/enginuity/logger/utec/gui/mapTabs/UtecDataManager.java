@@ -1,8 +1,5 @@
 package enginuity.logger.utec.gui.mapTabs;
 
-import java.util.Iterator;
-import java.util.Vector;
-
 import enginuity.NewGUI.data.ApplicationStateManager;
 import enginuity.NewGUI.data.TableMetaData;
 import enginuity.NewGUI.interfaces.TuningEntity;
@@ -11,6 +8,9 @@ import enginuity.logger.utec.commEvent.LoggerDataListener;
 import enginuity.logger.utec.commEvent.UtecAFRListener;
 import enginuity.logger.utec.mapData.UtecMapData;
 import enginuity.logger.utec.properties.UtecProperties;
+
+import java.util.Iterator;
+import java.util.Vector;
 
 public class UtecDataManager {
 	private static UtecMapData currentMapData = null;

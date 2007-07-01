@@ -25,7 +25,7 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.sleep;
 import gnu.io.CommPortIdentifier;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;

@@ -29,10 +29,26 @@ import enginuity.maps.Scale;
 import enginuity.maps.Table;
 import enginuity.maps.Table1D;
 import enginuity.maps.Table3D;
+import org.apache.log4j.Logger;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import static javax.swing.BorderFactory.createLineBorder;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -46,7 +62,7 @@ import java.text.ParseException;
 import java.util.Vector;
 
 public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ActionListener, GraphDataListener {
-
+    private static final Logger LOGGER = Logger.getLogger(TableToolBar.class);
     private JButton incrementFine = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
     private JButton decrementFine = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
     private JButton incrementCoarse = new JButton(new ImageIcon("./graphics/icon-inccoarse.png"));
@@ -340,7 +356,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             //***********
             /*minV = 0.0;
             maxV = 13.01;*/
-            System.out.println("Scale: " + maxV + "," + minV);
+            LOGGER.debug("Scale: " + maxV + "," + minV);
             //***********
 
             //Render 3d

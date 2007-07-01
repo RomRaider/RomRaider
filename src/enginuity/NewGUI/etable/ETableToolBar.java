@@ -1,7 +1,22 @@
 package enginuity.NewGUI.etable;
 
-import static javax.swing.BorderFactory.createLineBorder;
+import enginuity.NewGUI.data.TableMetaData;
+import org.apache.log4j.Logger;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import static javax.swing.BorderFactory.createLineBorder;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -15,25 +30,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.DecimalFormat;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.InputMap;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-
-import enginuity.NewGUI.data.TableMetaData;
-import enginuity.maps.Table;
-
 public class ETableToolBar extends JToolBar implements MouseListener, ItemListener,ActionListener {
-
+    private static final Logger LOGGER = Logger.getLogger(ETableToolBar.class);
 	private JButton incrementFine = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
 	private JButton decrementFine = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
 	private JButton incrementCoarse = new JButton(new ImageIcon("./graphics/icon-inccoarse.png"));
@@ -203,7 +201,7 @@ public class ETableToolBar extends JToolBar implements MouseListener, ItemListen
 		 	
 		 	else if (e.getSource() == enable3d) {
 	            // TODO Implement
-	        	System.out.println("Implement Enable 3d");
+	        	LOGGER.debug("Implement Enable 3d");
 	        } 
 		 	
 		 	else if (e.getSource() == smooth) {
