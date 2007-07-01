@@ -36,7 +36,7 @@ public final class ThreadUtil {
         try {
             TimeUnit.MILLISECONDS.sleep(millis);
         } catch (InterruptedException e) {
-            LOGGER.debug("Sleep interrupted", e);
+            LOGGER.trace("Sleep interrupted", e);
         }
     }
 

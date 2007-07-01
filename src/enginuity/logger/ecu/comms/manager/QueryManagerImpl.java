@@ -159,8 +159,16 @@ public final class QueryManagerImpl implements QueryManager {
             }
         } catch (Exception e) {
             messageListener.reportMessage("Unable to send ECU init - check correct serial port has been selected, cable is connected and ignition is on.");
-            LOGGER.error("Error sending ecu init", e);
+            logError(e);
             return false;
+        }
+    }
+
+    private void logError(Exception e) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Error sending ecu init", e);
+        } else {
+            LOGGER.info("Error sending ecu init: " + e.getMessage());
         }
     }
 

@@ -62,7 +62,7 @@ public final class Lc1DataSource implements ExternalDataSource {
             runner = new InnovateRunnerImpl(settings, dataItem);
             runAsDaemon(runner);
         } catch (Exception e) {
-            LOGGER.warn("Error starting AEM runner", e);
+            LOGGER.warn("Error starting Innovate runner", e);
         }
     }
 }
