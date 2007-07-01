@@ -1,10 +1,16 @@
 package enginuity.logger.innovate.plugin;
 
+import static enginuity.util.HexUtil.asHex;
+import org.apache.log4j.Logger;
+
 public final class Lc1ConvertorImpl implements Lc1Convertor {
+    private static final Logger LOGGER = Logger.getLogger(Lc1ConvertorImpl.class);
+
     public double convert(byte[] bytes) {
         /*
        Example bytes: 10110010 10000010 01000011 00010011 00010111 00101111
         */
+        LOGGER.trace("Converting LC-1 bytes: " + asHex(bytes));
         if (isLc1(bytes) && isHeaderValid(bytes)) {
             if (isError(bytes)) {
                 return -1 * getLambda(bytes);

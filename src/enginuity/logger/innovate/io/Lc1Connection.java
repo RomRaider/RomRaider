@@ -39,6 +39,7 @@ public final class Lc1Connection implements InnovateConnection {
                 }
             }
             serialConnection.read(response);
+            LOGGER.trace("LC-1 Response: " + asHex(response));
             return response;
         } catch (Exception e) {
             close();
