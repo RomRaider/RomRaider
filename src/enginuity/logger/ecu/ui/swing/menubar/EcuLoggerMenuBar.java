@@ -11,6 +11,7 @@ import enginuity.logger.ecu.ui.swing.menubar.action.LogFileControllerSwitchActio
 import enginuity.logger.ecu.ui.swing.menubar.action.LogFileLocationAction;
 import enginuity.logger.ecu.ui.swing.menubar.action.ReloadProfileAction;
 import enginuity.logger.ecu.ui.swing.menubar.action.ResetConnectionAction;
+import enginuity.logger.ecu.ui.swing.menubar.action.ResetEcuAction;
 import enginuity.logger.ecu.ui.swing.menubar.action.SaveProfileAction;
 import enginuity.logger.ecu.ui.swing.menubar.action.SaveProfileAsAction;
 
@@ -25,6 +26,7 @@ import static java.awt.event.KeyEvent.VK_A;
 import static java.awt.event.KeyEvent.VK_C;
 import static java.awt.event.KeyEvent.VK_D;
 import static java.awt.event.KeyEvent.VK_F;
+import static java.awt.event.KeyEvent.VK_F7;
 import static java.awt.event.KeyEvent.VK_H;
 import static java.awt.event.KeyEvent.VK_L;
 import static java.awt.event.KeyEvent.VK_O;
@@ -57,6 +59,17 @@ public class EcuLoggerMenuBar extends JMenuBar {
         settingsMenu.add(new EcuLoggerRadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));
         add(settingsMenu);
 
+        // connection menu items
+        JMenu connectionMenu = new EcuLoggerMenu("Connection", VK_C);
+        connectionMenu.add(new EcuLoggerMenuItem("Reset", new ResetConnectionAction(logger), VK_R, getKeyStroke(VK_R, CTRL_MASK)));
+        connectionMenu.add(new EcuLoggerMenuItem("Disconnect", new DisconnectAction(logger), VK_D, getKeyStroke(VK_D, CTRL_MASK)));
+        add(connectionMenu);
+
+        // tools menu items
+        JMenu toolsMenu = new EcuLoggerMenu("Tools", VK_T);
+        toolsMenu.add(new EcuLoggerMenuItem("Reset ECU", new ResetEcuAction(logger), VK_R, getKeyStroke(VK_F7, 0)));
+        add(toolsMenu);
+
         // plugins menu items
         JMenu pluginsMenu = new EcuLoggerMenu("Plugins", VK_P);
         pluginsMenu.setEnabled(!externalDataSources.isEmpty());
@@ -67,12 +80,6 @@ public class EcuLoggerMenuBar extends JMenuBar {
             }
         }
         add(pluginsMenu);
-
-        // connection menu items
-        JMenu connectionMenu = new EcuLoggerMenu("Connection", VK_C);
-        connectionMenu.add(new EcuLoggerMenuItem("Reset", new ResetConnectionAction(logger), VK_R, getKeyStroke(VK_R, CTRL_MASK)));
-        connectionMenu.add(new EcuLoggerMenuItem("Disconnect", new DisconnectAction(logger), VK_D, getKeyStroke(VK_D, CTRL_MASK)));
-        add(connectionMenu);
 
         // help menu stuff
         JMenu helpMenu = new EcuLoggerMenu("Help", VK_H);
