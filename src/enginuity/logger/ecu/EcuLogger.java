@@ -27,6 +27,8 @@ import enginuity.logger.ecu.comms.controller.LoggerController;
 import enginuity.logger.ecu.comms.controller.LoggerControllerImpl;
 import enginuity.logger.ecu.comms.query.EcuInit;
 import enginuity.logger.ecu.comms.query.EcuInitCallback;
+import enginuity.logger.ecu.comms.reset.ResetManager;
+import enginuity.logger.ecu.comms.reset.ResetManagerImpl;
 import enginuity.logger.ecu.definition.EcuDataLoader;
 import enginuity.logger.ecu.definition.EcuDataLoaderImpl;
 import enginuity.logger.ecu.definition.EcuDefinition;
@@ -147,6 +149,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private static final String ECU_ID_LABEL = "ECU ID";
     private Settings settings;
     private LoggerController controller;
+    private ResetManager resetManager;
     private JLabel messageLabel;
     private JLabel calIdLabel;
     private JLabel ecuIdLabel;
@@ -228,6 +231,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this, liveDataUpdateHandler,
                 graphUpdateHandler, dashboardUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
+        resetManager = new ResetManagerImpl(settings, this);
         messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
         calIdLabel = new JLabel(buildEcuInfoLabelText(CAL_ID_LABEL, null));
         ecuIdLabel = new JLabel(buildEcuInfoLabelText(ECU_ID_LABEL, null));
@@ -813,6 +817,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void stopLogging() {
         controller.stop();
         sleep(1000L);
+    }
+
+    public boolean resetEcu() {
+        return resetManager.resetEcu();
     }
 
     public void handleExit() {

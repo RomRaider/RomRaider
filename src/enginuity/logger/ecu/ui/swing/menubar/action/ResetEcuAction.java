@@ -2,6 +2,8 @@ package enginuity.logger.ecu.ui.swing.menubar.action;
 
 import enginuity.logger.ecu.EcuLogger;
 
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
@@ -16,12 +18,14 @@ public final class ResetEcuAction extends AbstractAction {
 
     public void actionPerformed(ActionEvent actionEvent) {
         if (showConfirmation() == OK_OPTION) {
-            //TODO: Finish reset!!
-            /*
-            -->  80 10 F0 05 B8 00 00 60 40 DD
-            <--  80 10 F0 05 B8 00 00 60 40 DD 80 F0 10 02 F8 40 BA
-             */
-            showMessageDialog(logger, "Not yet implemented!");
+//            logger.stopLogging();
+            if (logger.resetEcu()) {
+                showMessageDialog(logger, "Reset Successful!\nTurn your ignition OFF and then\nback ON to complete the process.",
+                        "Reset ECU", INFORMATION_MESSAGE);
+            } else {
+                showMessageDialog(logger, "Error performing reset.\nCheck the following:\n* Correct COM port selected\n" +
+                        "* Cable is connected properly\n* Ignition is ON\n* Logger is stopped", "Reset ECU", ERROR_MESSAGE);
+            }
         }
     }
 

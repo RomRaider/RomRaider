@@ -96,7 +96,7 @@ public final class SSMProtocol implements Protocol {
         return extractResponseData(processedResponse);
     }
 
-    public void checkValidEcuInitResponse(byte[] processedResponse) throws InvalidResponseException {
+    public void checkValidEcuInitResponse(byte[] processedResponse) {
         // response_header 3_unknown_bytes 5_ecu_id_bytes readable_params_switches... checksum
         // 80F01039FF A21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000 59
         checkNotNullOrEmpty(processedResponse, "processedResponse");
@@ -109,6 +109,23 @@ public final class SSMProtocol implements Protocol {
 
     public EcuInit parseEcuInitResponse(byte[] processedResponse) {
         return new SSMEcuInit(parseResponseData(processedResponse));
+    }
+
+    public byte[] constructEcuResetRequest() {
+        //  80 10 F0 05 B8 00 00 60 40 DD
+        //FIXME: Create a buildWriteAddressRequest() method
+        byte[] resetDataBytes = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x60, (byte) 0x40};
+        return buildRequest(WRITE_ADDRESS_COMMAND, false, resetDataBytes);
+    }
+
+    public void checkValidEcuResetResponse(byte[] processedResponse) {
+        // 80 F0 10 02 F8 40 BA
+        checkNotNullOrEmpty(processedResponse, "processedResponse");
+        validateResponse(processedResponse);
+        byte responseType = processedResponse[4];
+        if (responseType != WRITE_ADDRESS_RESPONSE || processedResponse[5] != (byte) 0x40) {
+            throw new InvalidResponseException("Unexpected ECU Reset response: " + asHex(processedResponse));
+        }
     }
 
     public ConnectionProperties getDefaultConnectionProperties() {

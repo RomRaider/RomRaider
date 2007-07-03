@@ -23,7 +23,6 @@ package enginuity.io.protocol;
 
 import enginuity.io.connection.ConnectionProperties;
 import enginuity.logger.ecu.comms.query.EcuInit;
-import enginuity.logger.ecu.exception.InvalidResponseException;
 
 public interface Protocol {
 
@@ -41,9 +40,13 @@ public interface Protocol {
 
     byte[] parseResponseData(byte[] processedResponse);
 
-    void checkValidEcuInitResponse(byte[] processedResponse) throws InvalidResponseException;
+    void checkValidEcuInitResponse(byte[] processedResponse);
 
     EcuInit parseEcuInitResponse(byte[] processedResponse);
+
+    byte[] constructEcuResetRequest();
+
+    void checkValidEcuResetResponse(byte[] processedResponse);
 
     ConnectionProperties getDefaultConnectionProperties();
 }
