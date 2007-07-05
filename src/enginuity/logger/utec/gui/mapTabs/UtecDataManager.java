@@ -27,11 +27,13 @@ public class UtecDataManager {
 	private static int afrIndex = Integer.parseInt(UtecProperties.getProperties("utec.afrIndex")[0]);
 	private static int psiIndex = Integer.parseInt(UtecProperties.getProperties("utec.psiIndex")[0]);
 	private static int knockIndex = Integer.parseInt(UtecProperties.getProperties("utec.knockIndex")[0]);
+	private static int loadIndex = Integer.parseInt(UtecProperties.getProperties("utec.loadIndex")[0]);
 	
 	// Set data values to initial state
 	private static double afrData = 999.0;
 	private static double psiData = 999.0;
 	private static double knockData = 0.0;
+	private static double loadData = 0.0;
 	
 	private static int lineCounter = 0;
 	
@@ -192,6 +194,7 @@ public class UtecDataManager {
 		setAfrData(doubleData[afrIndex]);
 		setPsiData(doubleData[psiIndex]);
 		setKnockData(doubleData[knockIndex]);
+		setLoadData(doubleData[loadIndex]);
 		
 		Iterator iterator = UtecDataManager.getLoggerListeners().iterator();
 		while(iterator.hasNext()){
@@ -272,10 +275,19 @@ public class UtecDataManager {
 		if(knockData > UtecDataManager.knockData){
 			UtecDataManager.knockData = knockData;
 		}
-		
 	}
 
 
+	public static double getLoadData() {
+		return loadData;
+	}
+
+
+	public static void setLoadData(double loadData) {
+		UtecDataManager.loadData = loadData;
+	}
+	
+	
 	public static double getPsiData() {
 		return psiData;
 	}
