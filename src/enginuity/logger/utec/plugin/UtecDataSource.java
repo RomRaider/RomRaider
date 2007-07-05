@@ -15,9 +15,10 @@ public final class UtecDataSource implements ExternalDataSource {
     private ArrayList<ExternalDataItem> externalDataItems = new ArrayList<ExternalDataItem>();
 
     public UtecDataSource() {
-        externalDataItems.add(new AfrExternalDataItem());
-        externalDataItems.add(new PsiExternalDataItem());
-        externalDataItems.add(new KnockExternalDataItem());
+		externalDataItems.add(new AfrExternalDataItem());
+		externalDataItems.add(new PsiExternalDataItem());
+		externalDataItems.add(new KnockExternalDataItem());
+		externalDataItems.add(new LoadExternalDataItem());
     }
 
     public String getName() {
