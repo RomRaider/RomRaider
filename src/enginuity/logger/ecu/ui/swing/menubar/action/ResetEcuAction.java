@@ -18,18 +18,31 @@ public final class ResetEcuAction extends AbstractAction {
 
     public void actionPerformed(ActionEvent actionEvent) {
         if (showConfirmation() == OK_OPTION) {
-//            logger.stopLogging();
-            if (logger.resetEcu()) {
-                showMessageDialog(logger, "Reset Successful!\nTurn your ignition OFF and then\nback ON to complete the process.",
-                        "Reset ECU", INFORMATION_MESSAGE);
-            } else {
-                showMessageDialog(logger, "Error performing reset.\nCheck the following:\n* Correct COM port selected\n" +
-                        "* Cable is connected properly\n* Ignition is ON\n* Logger is stopped", "Reset ECU", ERROR_MESSAGE);
-            }
+            logger.stopLogging();
+            resetEcu();
         }
     }
 
     private int showConfirmation() {
-        return showConfirmDialog(logger, "Do you want to rest the ECU?", "Reset ECU", YES_NO_OPTION, WARNING_MESSAGE);
+        return showConfirmDialog(logger, "Do you want to reset the ECU?", "Reset ECU", YES_NO_OPTION, WARNING_MESSAGE);
+    }
+
+    private void resetEcu() {
+        if (doReset()) {
+            showMessageDialog(logger, "Reset Successful!\nTurn your ignition OFF and then\nback ON to complete the process.",
+                    "Reset ECU", INFORMATION_MESSAGE);
+        } else {
+            showMessageDialog(logger, "Error performing ECU reset.\nCheck the following:\n* Correct COM port selected\n" +
+                    "* Cable is connected properly\n* Ignition is ON\n* Logger is stopped", "Reset ECU", ERROR_MESSAGE);
+        }
+    }
+
+    private boolean doReset() {
+        try {
+            return logger.resetEcu();
+        } catch (Exception e) {
+            logger.reportError("Error performing ECU reset", e);
+            return false;
+        }
     }
 }
