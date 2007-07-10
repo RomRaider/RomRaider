@@ -17,5 +17,11 @@ Class-Path:
  lib/j3dutils.jar 
  lib/vecmath.jar 
  lib/swing-layout-1.0.jar 
- lib/jdic_stub.jar
+ lib/jdic_stub.jar 
+ lib/log4j-1.2.14.jar 
+ lib/cmu_time_awb.jar 
+ lib/cmu_us_kal.jar 
+ lib/cmutimelex.jar 
+ lib/en_us.jar 
+ lib/freetts.jar 
 X-COMMENT: Main-Class will be added automatically by build
