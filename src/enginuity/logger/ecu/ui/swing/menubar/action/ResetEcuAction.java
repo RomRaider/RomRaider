@@ -18,8 +18,10 @@ public final class ResetEcuAction extends AbstractAction {
 
     public void actionPerformed(ActionEvent actionEvent) {
         if (showConfirmation() == OK_OPTION) {
-            logger.stopLogging();
+            boolean logging = logger.isLogging();
+            if (logging) logger.stopLogging();
             resetEcu();
+            if (logging) logger.startLogging();
         }
     }
 
