@@ -27,16 +27,15 @@ public final class Lc1Connection implements InnovateConnection {
         try {
             byte[] response = new byte[6];
             serialConnection.readStaleData();
-            long timeout = sendTimeout;
+            long start = System.currentTimeMillis();
             while (serialConnection.available() < response.length) {
-                sleep(1);
-                timeout -= 1;
-                if (timeout <= 0) {
+                if (System.currentTimeMillis() - start > sendTimeout) {
                     byte[] badBytes = new byte[serialConnection.available()];
                     serialConnection.read(badBytes);
-                    LOGGER.debug("Bad response (read timeout): " + asHex(badBytes));
-                    break;
+                    LOGGER.warn("LC-1 Response [read timeout]: " + asHex(badBytes));
+                    return badBytes;
                 }
+                sleep(5);
             }
             serialConnection.read(response);
             LOGGER.trace("LC-1 Response: " + asHex(response));

@@ -30,7 +30,7 @@ public final class AemConnectionImpl implements AemConnection {
 //            while (serialConnection.available() < response.length) {
 //                sleep(1);
 //                timeout -= 1;
-//                if (timeout <= 0) {
+//                if (timeout < 0) {
 //                    byte[] badBytes = new byte[serialConnection.available()];
 //                    serialConnection.read(badBytes);
 //                    LOGGER.debug("Bad response (read timeout): " + asHex(badBytes));
