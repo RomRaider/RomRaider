@@ -13,12 +13,17 @@ public final class Lc1ConvertorImpl implements Lc1Convertor {
         LOGGER.trace("Converting LC-1 bytes: " + asHex(bytes));
         if (isLc1(bytes) && isHeaderValid(bytes)) {
             if (isError(bytes)) {
-                return -1 * getLambda(bytes);
+                int error = -1 * getLambda(bytes);
+                LOGGER.error("LC-1 error: " + asHex(bytes) + " --> " + error);
+                return error;
             }
             if (isOk(bytes)) {
-                return getAfr(bytes);
+                double afr = getAfr(bytes);
+                LOGGER.trace("LC-1 AFR: " + afr);
+                return afr;
             }
         }
+        LOGGER.error("LC-1 unrecognized response: " + asHex(bytes));
         return 0;
     }
 
