@@ -9,7 +9,7 @@ public final class AemConvertorImpl implements AemConvertor {
     public double convert(byte[] bytes) {
         String value = new String(bytes);
         double result = convert(value);
-        LOGGER.debug("Converting AEM response: " + asHex(bytes) + " --> \"" + value + "\" --> " + result);
+        LOGGER.trace("Converting AEM response: " + asHex(bytes) + " --> \"" + value + "\" --> " + result);
         return result;
     }
 
