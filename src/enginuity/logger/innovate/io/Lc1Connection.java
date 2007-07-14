@@ -30,8 +30,7 @@ public final class Lc1Connection implements InnovateConnection {
             long start = System.currentTimeMillis();
             while (serialConnection.available() < response.length) {
                 if (System.currentTimeMillis() - start > sendTimeout) {
-                    byte[] badBytes = new byte[serialConnection.available()];
-                    serialConnection.read(badBytes);
+                    byte[] badBytes = serialConnection.readAvailable();
                     LOGGER.warn("LC-1 Response [read timeout]: " + asHex(badBytes));
                     return badBytes;
                 }

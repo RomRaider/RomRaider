@@ -4,9 +4,14 @@ import enginuity.io.connection.ConnectionProperties;
 import enginuity.io.connection.SerialConnection;
 import enginuity.io.connection.SerialConnectionImpl;
 import enginuity.logger.ecu.exception.SerialCommunicationException;
+import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
+import static enginuity.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class AemConnectionImpl implements AemConnection {
     private static final Logger LOGGER = Logger.getLogger(AemConnectionImpl.class);
@@ -21,24 +26,30 @@ public final class AemConnectionImpl implements AemConnection {
         LOGGER.info("AEM connected");
     }
 
-    //TODO: Update this for AEM...same as lc1 atm which won't work
+    //TODO: This a guess!!...untested!!
     public byte[] read() {
         try {
-            byte[] response = new byte[6];
-//            serialConnection.readStaleData();
-//            long timeout = sendTimeout;
-//            while (serialConnection.available() < response.length) {
-//                sleep(1);
-//                timeout -= 1;
-//                if (timeout < 0) {
-//                    byte[] badBytes = new byte[serialConnection.available()];
-//                    serialConnection.read(badBytes);
-//                    LOGGER.debug("Bad response (read timeout): " + asHex(badBytes));
-//                    break;
-//                }
-//            }
-            serialConnection.read(response);
-            return response;
+            List<Byte> buffer = new ArrayList<Byte>();
+            serialConnection.readStaleData();
+            long start = System.currentTimeMillis();
+            while (System.currentTimeMillis() - start <= sendTimeout) {
+                byte[] bytes = serialConnection.readAvailable();
+                if (bytes.length > 0) {
+                    for (byte b : bytes) {
+                        if (b == (byte) 0x0D) {
+                            byte[] response = toArray(buffer);
+                            LOGGER.trace("AEM UEGO Response: " + asHex(response));
+                            return response;
+                        } else {
+                            buffer.add(b);
+                        }
+                    }
+                }
+                sleep(1);
+            }
+            byte[] badBytes = toArray(buffer);
+            LOGGER.warn("AEM UEGO Response [read timeout]: " + asHex(badBytes));
+            return badBytes;
         } catch (Exception e) {
             close();
             throw new SerialCommunicationException(e);
@@ -48,5 +59,13 @@ public final class AemConnectionImpl implements AemConnection {
     public void close() {
         serialConnection.close();
         LOGGER.info("AEM disconnected");
+    }
+
+    private byte[] toArray(List<Byte> buffer) {
+        byte[] result = new byte[buffer.size()];
+        for (int j = 0; j < buffer.size(); j++) {
+            result[j] = buffer.get(j);
+        }
+        return result;
     }
 }
