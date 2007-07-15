@@ -19,15 +19,7 @@ public interface ExternalDataSource {
 
     String getPort();
 
-    // *****************************
-    // Suggested Methods of interest
-    // *****************************
-
     public void connect();
 
     public void disconnect();
-
-    public void startLogging();
-
-    public void stopLogging();
 }

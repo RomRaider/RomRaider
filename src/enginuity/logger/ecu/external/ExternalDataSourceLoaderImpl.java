@@ -32,7 +32,8 @@ public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoa
                                 Class<?> dataSourceClass = getClass().getClassLoader().loadClass(datasourceClassName);
                                 if (dataSourceClass != null && ExternalDataSource.class.isAssignableFrom(dataSourceClass)) {
                                     ExternalDataSource dataSource = (ExternalDataSource) dataSourceClass.newInstance();
-                                    externalDataSources.add(dataSource);
+                                    ExternalDataSource managedDataSource = new GenericDataSourceManager(dataSource);
+                                    externalDataSources.add(managedDataSource);
                                     LOGGER.info("Plugin loaded: " + dataSource.getName() + " v" + dataSource.getVersion());
                                 }
                             } catch (Throwable t) {

@@ -4,7 +4,12 @@ import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
 import enginuity.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
-import enginuity.logger.utec.commInterface.UtecInterface;
+import static enginuity.logger.utec.commInterface.UtecInterface.closeConnection;
+import static enginuity.logger.utec.commInterface.UtecInterface.getPortChoiceUsed;
+import static enginuity.logger.utec.commInterface.UtecInterface.openConnection;
+import static enginuity.logger.utec.commInterface.UtecInterface.resetUtec;
+import static enginuity.logger.utec.commInterface.UtecInterface.setPortChoice;
+import static enginuity.logger.utec.commInterface.UtecInterface.startLoggerDataFlow;
 
 import javax.swing.Action;
 import java.util.ArrayList;
@@ -39,30 +44,20 @@ public final class UtecDataSource implements ExternalDataSource {
     }
 
     public void setPort(String port) {
-        UtecInterface.setPortChoice(port);
+        setPortChoice(port);
     }
 
     public String getPort() {
-        return UtecInterface.getPortChoiceUsed();
+        return getPortChoiceUsed();
     }
 
-    // *****************************
-    // Suggested Methods of interest
-    // *****************************
-
     public void connect() {
-        UtecInterface.openConnection();
+        openConnection();
+        startLoggerDataFlow();
     }
 
     public void disconnect() {
-        UtecInterface.closeConnection();
-    }
-
-    public void startLogging() {
-        UtecInterface.startLoggerDataFlow();
-    }
-
-    public void stopLogging() {
-        UtecInterface.resetUtec();
+        resetUtec();
+        closeConnection();
     }
 }

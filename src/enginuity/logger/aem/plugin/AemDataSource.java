@@ -27,7 +27,6 @@ public final class AemDataSource implements ExternalDataSource {
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
-        reconnect();
         return asList(dataItem);
     }
 
@@ -37,7 +36,6 @@ public final class AemDataSource implements ExternalDataSource {
 
     public void setPort(String port) {
         settings.setPort(port);
-        reconnect();
     }
 
     public String getPort() {
@@ -45,26 +43,17 @@ public final class AemDataSource implements ExternalDataSource {
     }
 
     public void connect() {
-    }
-
-    public void disconnect() {
-    }
-
-    public void startLogging() {
-    }
-
-    public void stopLogging() {
-    }
-
-    private synchronized void reconnect() {
-        if (runner != null) {
-            runner.stop();
-        }
         try {
             runner = new AemRunnerImpl(settings, dataItem);
             runAsDaemon(runner);
         } catch (Exception e) {
             LOGGER.warn("Error starting AEM runner", e);
+        }
+    }
+
+    public void disconnect() {
+        if (runner != null) {
+            runner.stop();
         }
     }
 }

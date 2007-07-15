@@ -819,6 +819,16 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         sleep(1000L);
     }
 
+    private void stopPlugins() {
+        for (ExternalDataSource dataSource : externalDataSources) {
+            try {
+                dataSource.disconnect();
+            } catch (Exception e) {
+                LOGGER.warn("Error stopping datasource: " + dataSource.getName(), e);
+            }
+        }
+    }
+
     public boolean resetEcu() {
         return resetManager.resetEcu();
     }
@@ -826,7 +836,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void handleExit() {
         try {
             try {
-                stopLogging();
+                try {
+                    stopLogging();
+                } finally {
+                    stopPlugins();
+                }
             } finally {
                 cleanUpUpdateHandlers();
             }
