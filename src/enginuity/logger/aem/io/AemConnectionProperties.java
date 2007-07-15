@@ -25,6 +25,6 @@ public final class AemConnectionProperties implements ConnectionProperties {
 
     public int getSendTimeout() {
         //TODO: What should this be??
-        return 100;
+        return 200;
     }
 }
