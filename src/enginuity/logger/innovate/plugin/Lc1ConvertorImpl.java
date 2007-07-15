@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 
 public final class Lc1ConvertorImpl implements Lc1Convertor {
     private static final Logger LOGGER = Logger.getLogger(Lc1ConvertorImpl.class);
+    private static final double MAX_AFR = 20.33;
 
     public double convert(byte[] bytes) {
         /*
@@ -20,8 +21,11 @@ public final class Lc1ConvertorImpl implements Lc1Convertor {
             if (isOk(bytes)) {
                 double afr = getAfr(bytes);
                 LOGGER.trace("LC-1 AFR: " + afr);
-                return afr;
+                return afr > MAX_AFR ? MAX_AFR : afr;
             }
+            // out of range value seen on overrun...
+            LOGGER.trace("LC-1 response out of range (overrun?): " + asHex(bytes));
+            return MAX_AFR;
         }
         LOGGER.error("LC-1 unrecognized response: " + asHex(bytes));
         return 0;
