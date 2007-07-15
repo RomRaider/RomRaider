@@ -27,12 +27,16 @@ import enginuity.logger.ecu.ui.DataRegistrationBroker;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public final class ParameterListTableModel extends AbstractTableModel {
     private final String[] columnNames;
     private final List<LoggerData> registeredLoggerData = synchronizedList(new LinkedList<LoggerData>());
+    private final Map<LoggerData, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<LoggerData, ParameterRow>());
     private final DataRegistrationBroker broker;
 
     public ParameterListTableModel(DataRegistrationBroker broker, String dataType) {
@@ -41,7 +45,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
     }
 
     public synchronized int getRowCount() {
-        return registeredLoggerData.size();
+        return paramRowMap.size();
     }
 
     public int getColumnCount() {
@@ -57,13 +61,14 @@ public final class ParameterListTableModel extends AbstractTableModel {
     }
 
     public synchronized Object getValueAt(int row, int col) {
-        LoggerData loggerData = registeredLoggerData.get(row);
+        ParameterRow paramRow = paramRowMap.get(registeredLoggerData.get(row));
         switch (col) {
             case 0:
-                return loggerData.isSelected();
+                return paramRow.isSelected();
             case 1:
-                return loggerData.getName();
+                return paramRow.getLoggerData().getName();
             case 2:
+                LoggerData loggerData = paramRow.getLoggerData();
                 return loggerData.getConvertors().length > 1 ? loggerData : loggerData.getSelectedConvertor().getUnits();
             default:
                 return "Error!";
@@ -71,10 +76,10 @@ public final class ParameterListTableModel extends AbstractTableModel {
     }
 
     public synchronized void setValueAt(Object value, int row, int col) {
-        LoggerData loggerData = registeredLoggerData.get(row);
-        if (col == 0 && loggerData != null) {
+        ParameterRow paramRow = paramRowMap.get(registeredLoggerData.get(row));
+        if (col == 0 && paramRow != null) {
             Boolean selected = (Boolean) value;
-            setSelected(loggerData, selected);
+            setSelected(paramRow, selected);
             fireTableRowsUpdated(row, row);
         }
     }
@@ -85,35 +90,38 @@ public final class ParameterListTableModel extends AbstractTableModel {
 
     public synchronized void addParam(LoggerData loggerData, boolean selected) {
         if (!registeredLoggerData.contains(loggerData)) {
+            ParameterRow paramRow = new ParameterRow(loggerData);
+            paramRowMap.put(loggerData, paramRow);
             registeredLoggerData.add(loggerData);
-            setSelected(loggerData, selected);
+            setSelected(paramRow, selected);
             fireTableDataChanged();
         }
     }
 
     public synchronized void selectParam(LoggerData loggerData, boolean selected) {
         if (registeredLoggerData.contains(loggerData)) {
-            setSelected(loggerData, selected);
+            setSelected(paramRowMap.get(loggerData), selected);
             fireTableDataChanged();
         }
     }
 
     public synchronized void clear() {
         broker.clear();
+        paramRowMap.clear();
         registeredLoggerData.clear();
         fireTableDataChanged();
     }
 
-    public List<LoggerData> getLoggerData() {
-        return new ArrayList<LoggerData>(registeredLoggerData);
+    public List<ParameterRow> getParameterRows() {
+        return new ArrayList<ParameterRow>(paramRowMap.values());
     }
 
-    private void setSelected(LoggerData loggerData, boolean selected) {
-        loggerData.setSelected(selected);
+    private void setSelected(ParameterRow paramRow, boolean selected) {
+        paramRow.setSelected(selected);
         if (selected) {
-            broker.registerLoggerDataForLogging(loggerData);
+            broker.registerLoggerDataForLogging(paramRow.getLoggerData());
         } else {
-            broker.deregisterLoggerDataFromLogging(loggerData);
+            broker.deregisterLoggerDataFromLogging(paramRow.getLoggerData());
         }
     }
 }

@@ -22,7 +22,6 @@
 package enginuity.logger.ecu.ui.paramlist;
 
 import enginuity.logger.ecu.definition.EcuData;
-import enginuity.logger.ecu.definition.LoggerData;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 
 import javax.swing.JTable;
@@ -50,11 +49,11 @@ public final class ParameterListTable extends JTable {
     }
 
     public String getToolTipText(MouseEvent mouseEvent) {
-        List<LoggerData> parameterRows = tableModel.getLoggerData();
+        List<ParameterRow> parameterRows = tableModel.getParameterRows();
         if (!isNullOrEmpty(parameterRows)) {
-            LoggerData loggerData = parameterRows.get(rowAtPoint(mouseEvent.getPoint()));
-            if (loggerData != null) {
-                String description = loggerData.getDescription();
+            ParameterRow parameterRow = parameterRows.get(rowAtPoint(mouseEvent.getPoint()));
+            if (parameterRow != null) {
+                String description = parameterRow.getLoggerData().getDescription();
                 if (!isNullOrEmpty(description)) {
                     return description;
                 }
