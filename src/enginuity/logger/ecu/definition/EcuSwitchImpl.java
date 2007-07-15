@@ -31,8 +31,9 @@ public final class EcuSwitchImpl implements EcuSwitch {
     private final String description;
     private final EcuAddress address;
     private final EcuDataConvertor[] convertors;
-    private int selectedConvertorIndex = 0;
+    private int selectedConvertorIndex;
     private boolean fileLogController;
+    private boolean selected;
 
     public EcuSwitchImpl(String id, String name, String description, EcuAddress address, EcuDataConvertor[] convertors) {
         checkNotNullOrEmpty(id, "id");
@@ -82,6 +83,14 @@ public final class EcuSwitchImpl implements EcuSwitch {
 
     public EcuDataType getDataType() {
         return SWITCH;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public void setFileLogController(boolean fileLogController) {

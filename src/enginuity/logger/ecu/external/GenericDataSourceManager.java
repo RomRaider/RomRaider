@@ -2,11 +2,13 @@ package enginuity.logger.ecu.external;
 
 import enginuity.logger.ecu.EcuLogger;
 import static enginuity.util.ParamChecker.checkNotNull;
+import org.apache.log4j.Logger;
 
 import javax.swing.Action;
 import java.util.List;
 
 public final class GenericDataSourceManager implements ExternalDataSource {
+    private static final Logger LOGGER = Logger.getLogger(GenericDataSourceManager.class);
     private final ExternalDataSource dataSource;
 
     public GenericDataSourceManager(ExternalDataSource dataSource) {
@@ -23,7 +25,6 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
-        reconnect();
         return dataSource.getDataItems();
     }
 
@@ -32,6 +33,7 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     public void setPort(String port) {
+        LOGGER.info(dataSource.getName() + ": port " + port + " selected");
         dataSource.setPort(port);
         reconnect();
     }
@@ -41,11 +43,21 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     public synchronized void connect() {
-        dataSource.connect();
+        try {
+            LOGGER.info(dataSource.getName() + ": connecting");
+            dataSource.connect();
+        } catch (Exception e) {
+            LOGGER.error("External Datasource connect error", e);
+        }
     }
 
     public synchronized void disconnect() {
-        dataSource.disconnect();
+        try {
+            LOGGER.info(dataSource.getName() + ": disconnecting");
+            dataSource.disconnect();
+        } catch (Exception e) {
+            LOGGER.error("External datasource disconnect error", e);
+        }
     }
 
     private synchronized void reconnect() {

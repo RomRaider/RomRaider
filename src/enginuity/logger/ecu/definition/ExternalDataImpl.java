@@ -2,6 +2,7 @@ package enginuity.logger.ecu.definition;
 
 import static enginuity.logger.ecu.definition.EcuDataType.EXTERNAL;
 import enginuity.logger.ecu.external.ExternalDataItem;
+import enginuity.logger.ecu.external.ExternalDataSource;
 import static enginuity.util.ParamChecker.checkNotNull;
 
 import java.text.DecimalFormat;
@@ -10,11 +11,14 @@ import java.text.Format;
 public final class ExternalDataImpl implements ExternalData {
     private final EcuDataConvertor[] convertors = new EcuDataConvertor[1];
     private final ExternalDataItem dataItem;
+    private final ExternalDataSource dataSource;
     private final String id;
+    private boolean selected;
 
-    public ExternalDataImpl(final ExternalDataItem dataItem) {
-        checkNotNull(dataItem);
+    public ExternalDataImpl(final ExternalDataItem dataItem, ExternalDataSource dataSource) {
+        checkNotNull(dataItem, dataSource);
         this.dataItem = dataItem;
+        this.dataSource = dataSource;
         id = createId(dataItem);
         convertors[0] = new EcuDataConvertor() {
             Format format = new DecimalFormat("0.##");
@@ -60,7 +64,24 @@ public final class ExternalDataImpl implements ExternalData {
         return EXTERNAL;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        updateConnection(selected);
+    }
+
     private String createId(ExternalDataItem dataItem) {
         return "X_" + dataItem.getName().replaceAll(" ", "_");
+    }
+
+    private void updateConnection(boolean connect) {
+        if (connect) {
+            dataSource.connect();
+        } else {
+            dataSource.disconnect();
+        }
     }
 }

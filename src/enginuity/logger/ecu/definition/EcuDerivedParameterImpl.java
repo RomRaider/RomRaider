@@ -35,7 +35,8 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
     private final EcuDerivedParameterConvertor[] convertors;
     private final EcuAddress address;
     private final Set<ConvertorUpdateListener> listeners = new HashSet<ConvertorUpdateListener>();
-    private int selectedConvertorIndex = 0;
+    private int selectedConvertorIndex;
+    private boolean selected;
 
     public EcuDerivedParameterImpl(String id, String name, String description, EcuData[] ecuDatas,
                                    EcuDerivedParameterConvertor[] convertors) {
@@ -90,6 +91,14 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
 
     public EcuDataType getDataType() {
         return PARAMETER;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public void addConvertorUpdateListener(ConvertorUpdateListener listener) {

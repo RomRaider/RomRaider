@@ -65,7 +65,6 @@ import enginuity.logger.ecu.ui.handler.livedata.LiveDataUpdateHandler;
 import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
 import enginuity.logger.ecu.ui.paramlist.ParameterListTable;
 import enginuity.logger.ecu.ui.paramlist.ParameterListTableModel;
-import enginuity.logger.ecu.ui.paramlist.ParameterRow;
 import enginuity.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import enginuity.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -390,27 +389,24 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void applyUserProfileToLiveDataTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
-        List<ParameterRow> rows = paramListTableModel.getParameterRows();
-        for (ParameterRow row : rows) {
-            LoggerData loggerData = row.getLoggerData();
+        List<LoggerData> rows = paramListTableModel.getLoggerData();
+        for (LoggerData loggerData : rows) {
             setDefaultUnits(profile, loggerData);
             paramListTableModel.selectParam(loggerData, isSelectedOnLiveDataTab(profile, loggerData));
         }
     }
 
     private void applyUserProfileToGraphTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
-        List<ParameterRow> rows = paramListTableModel.getParameterRows();
-        for (ParameterRow row : rows) {
-            LoggerData loggerData = row.getLoggerData();
+        List<LoggerData> rows = paramListTableModel.getLoggerData();
+        for (LoggerData loggerData : rows) {
             setDefaultUnits(profile, loggerData);
             paramListTableModel.selectParam(loggerData, isSelectedOnGraphTab(profile, loggerData));
         }
     }
 
     private void applyUserProfileToDashTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
-        List<ParameterRow> rows = paramListTableModel.getParameterRows();
-        for (ParameterRow row : rows) {
-            LoggerData loggerData = row.getLoggerData();
+        List<LoggerData> rows = paramListTableModel.getLoggerData();
+        for (LoggerData loggerData : rows) {
             setDefaultUnits(profile, loggerData);
             paramListTableModel.selectParam(loggerData, isSelectedOnDashTab(profile, loggerData));
         }
@@ -476,7 +472,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             try {
                 List<? extends ExternalDataItem> dataItems = dataSource.getDataItems();
                 for (ExternalDataItem item : dataItems) {
-                    externalDatas.add(new ExternalDataImpl(item));
+                    externalDatas.add(new ExternalDataImpl(item, dataSource));
                 }
             } catch (Exception e) {
                 reportError("Error loading plugin: " + dataSource.getName() + " v" + dataSource.getVersion(), e);
@@ -518,21 +514,21 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public UserProfile getCurrentProfile() {
-        Map<String, UserProfileItem> paramProfileItems = getProfileItems(dataTabParamListTableModel.getParameterRows(),
-                graphTabParamListTableModel.getParameterRows(), dashboardTabParamListTableModel.getParameterRows());
-        Map<String, UserProfileItem> switchProfileItems = getProfileItems(dataTabSwitchListTableModel.getParameterRows(),
-                graphTabSwitchListTableModel.getParameterRows(), dashboardTabSwitchListTableModel.getParameterRows());
-        Map<String, UserProfileItem> externalProfileItems = getProfileItems(dataTabExternalListTableModel.getParameterRows(),
-                graphTabExternalListTableModel.getParameterRows(), dashboardTabExternalListTableModel.getParameterRows());
+        Map<String, UserProfileItem> paramProfileItems = getProfileItems(dataTabParamListTableModel.getLoggerData(),
+                graphTabParamListTableModel.getLoggerData(), dashboardTabParamListTableModel.getLoggerData());
+        Map<String, UserProfileItem> switchProfileItems = getProfileItems(dataTabSwitchListTableModel.getLoggerData(),
+                graphTabSwitchListTableModel.getLoggerData(), dashboardTabSwitchListTableModel.getLoggerData());
+        Map<String, UserProfileItem> externalProfileItems = getProfileItems(dataTabExternalListTableModel.getLoggerData(),
+                graphTabExternalListTableModel.getLoggerData(), dashboardTabExternalListTableModel.getLoggerData());
         return new UserProfileImpl((String) portsComboBox.getSelectedItem(), paramProfileItems, switchProfileItems, externalProfileItems);
     }
 
-    private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows, List<ParameterRow> graphTabRows, List<ParameterRow> dashTabRows) {
+    private Map<String, UserProfileItem> getProfileItems(List<LoggerData> dataTabRows, List<LoggerData> graphTabRows, List<LoggerData> dashTabRows) {
         Map<String, UserProfileItem> profileItems = new HashMap<String, UserProfileItem>();
-        for (ParameterRow dataTabRow : dataTabRows) {
-            String id = dataTabRow.getLoggerData().getId();
-            String units = dataTabRow.getLoggerData().getSelectedConvertor().getUnits();
-            boolean dataTabSelected = dataTabRow.isSelected();
+        for (LoggerData loggerData : dataTabRows) {
+            String id = loggerData.getId();
+            String units = loggerData.getSelectedConvertor().getUnits();
+            boolean dataTabSelected = loggerData.isSelected();
             boolean graphTabSelected = isEcuDataSelected(id, graphTabRows);
             boolean dashTabSelected = isEcuDataSelected(id, dashTabRows);
             profileItems.put(id, new UserProfileItemImpl(units, dataTabSelected, graphTabSelected, dashTabSelected));
@@ -540,10 +536,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return profileItems;
     }
 
-    private boolean isEcuDataSelected(String id, List<ParameterRow> parameterRows) {
-        for (ParameterRow row : parameterRows) {
-            if (id.equals(row.getLoggerData().getId())) {
-                return row.isSelected();
+    private boolean isEcuDataSelected(String id, List<LoggerData> parameterRows) {
+        for (LoggerData loggerData : parameterRows) {
+            if (id.equals(loggerData.getId())) {
+                return loggerData.isSelected();
             }
         }
         return false;
