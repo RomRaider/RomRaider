@@ -6,14 +6,12 @@ import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
 import enginuity.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
 import static enginuity.util.ThreadUtil.runAsDaemon;
-import org.apache.log4j.Logger;
 
 import javax.swing.Action;
 import static java.util.Arrays.asList;
 import java.util.List;
 
 public final class AemDataSource implements ExternalDataSource {
-    private static final Logger LOGGER = Logger.getLogger(AemDataSource.class);
     private AemSettings settings = new AemSettingsImpl();
     private AemDataItem dataItem = new AemDataItem();
     private AemRunnerImpl runner;
@@ -43,12 +41,8 @@ public final class AemDataSource implements ExternalDataSource {
     }
 
     public void connect() {
-        try {
-            runner = new AemRunnerImpl(settings, dataItem);
-            runAsDaemon(runner);
-        } catch (Exception e) {
-            LOGGER.warn("Error starting AEM runner", e);
-        }
+        runner = new AemRunnerImpl(settings, dataItem);
+        runAsDaemon(runner);
     }
 
     public void disconnect() {

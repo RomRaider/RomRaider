@@ -10,6 +10,7 @@ import java.util.List;
 public final class GenericDataSourceManager implements ExternalDataSource {
     private static final Logger LOGGER = Logger.getLogger(GenericDataSourceManager.class);
     private final ExternalDataSource dataSource;
+    private int connectCount;
 
     public GenericDataSourceManager(ExternalDataSource dataSource) {
         checkNotNull(dataSource, "dataSource");
@@ -44,8 +45,12 @@ public final class GenericDataSourceManager implements ExternalDataSource {
 
     public synchronized void connect() {
         try {
-            LOGGER.info(dataSource.getName() + ": connecting");
-            dataSource.connect();
+            if (connectCount == 0) {
+                LOGGER.info(dataSource.getName() + ": connecting");
+                dataSource.connect();
+            }
+            connectCount++;
+            LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
         } catch (Exception e) {
             LOGGER.error("External Datasource connect error", e);
         }
@@ -53,8 +58,12 @@ public final class GenericDataSourceManager implements ExternalDataSource {
 
     public synchronized void disconnect() {
         try {
-            LOGGER.info(dataSource.getName() + ": disconnecting");
-            dataSource.disconnect();
+            if (connectCount == 1) {
+                LOGGER.info(dataSource.getName() + ": disconnecting");
+                dataSource.disconnect();
+            }
+            connectCount = connectCount > 0 ? connectCount - 1 : 0;
+            LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
         } catch (Exception e) {
             LOGGER.error("External datasource disconnect error", e);
         }
