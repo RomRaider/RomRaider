@@ -24,6 +24,7 @@ public final class InnovateConnectionProperties implements ConnectionProperties 
     }
 
     public int getSendTimeout() {
-        return 82;
+        // innovate specifies 82 but this isn't enough...
+        return 200;
     }
 }
