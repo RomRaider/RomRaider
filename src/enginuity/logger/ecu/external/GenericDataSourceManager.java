@@ -52,7 +52,7 @@ public final class GenericDataSourceManager implements ExternalDataSource {
             connectCount++;
             LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
         } catch (Exception e) {
-            LOGGER.error("External Datasource connect error", e);
+            LOGGER.error("External Datasource [" + dataSource.getName() + "] connect error", e);
         }
     }
 
@@ -65,7 +65,7 @@ public final class GenericDataSourceManager implements ExternalDataSource {
             connectCount = connectCount > 0 ? connectCount - 1 : 0;
             LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
         } catch (Exception e) {
-            LOGGER.error("External datasource disconnect error", e);
+            LOGGER.error("External Datasource [" + dataSource.getName() + "] disconnect error", e);
         }
     }
 
