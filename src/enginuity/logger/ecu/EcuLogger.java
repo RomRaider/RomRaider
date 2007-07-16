@@ -133,7 +133,6 @@ TODO: Clean up this class!
 So much to do, so little time....
 
 TODO: Keyboard accessibility (enable/disable parameters, select tabs, etc)
-TODO: parse ecu info from ecu defs (old and new formats) based on ecu id and display in UI
 TODO: Rewrite user profile application and saving to allow tab specific settings (eg. warn levels on dash tab)
 TODO: Add custom graph tab (eg. engine speed vs. boost, etc.)
 TODO: Add log analysis tab (or maybe new window?), including log playback, custom graphs, map compare, etc
