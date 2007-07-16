@@ -21,7 +21,7 @@ public final class Lc1DataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.01";
+        return "0.02";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
