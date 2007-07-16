@@ -969,7 +969,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
         // display the window
         ecuLogger.setLocation(settings.getLoggerWindowLocation());
-        if (settings.isWindowMaximized()) {
+        if (settings.isLoggerWindowMaximized()) {
             ecuLogger.setExtendedState(MAXIMIZED_BOTH);
         }
         ecuLogger.setVisible(true);

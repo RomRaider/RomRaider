@@ -73,12 +73,12 @@ import java.util.Vector;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
     private static final String NEW_LINE = System.getProperty("line.separator");
+    public static final String VERSION = "0.4.1 Beta";
     private final SettingsManager settingsManager = new SettingsManagerImpl();
     private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private RomTree imageList = new RomTree(imageRoot);
-    private String version = "0.4.1 Beta";
     private String versionDate = "2/8/2007";
-    private String titleText = "Enginuity v" + version;
+    private String titleText = "Enginuity v" + VERSION;
     public MDIDesktopPane rightPanel = new MDIDesktopPane();
     private JProgressPane statusPanel = new JProgressPane();
     private JSplitPane splitPane = new JSplitPane();
@@ -92,14 +92,14 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         // get settings from xml
         settings = settingsManager.load("A new file will be created.");
 
-        if (!settings.getRecentVersion().equalsIgnoreCase(version)) {
+        if (!settings.getRecentVersion().equalsIgnoreCase(VERSION)) {
             showReleaseNotes();
         }
 
         setSize(getSettings().getWindowSize());
         setLocation(getSettings().getWindowLocation());
         if (getSettings().isWindowMaximized()) {
-            setExtendedState(JFrame.MAXIMIZED_BOTH);
+            setExtendedState(MAXIMIZED_BOTH);
         }
 
         JScrollPane rightScrollPane = new JScrollPane(rightPanel,
@@ -156,7 +156,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                 releaseNotes.setText(sb.toString());
 
                 JOptionPane.showMessageDialog(this, scroller,
-                        "Enginuity " + version + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
+                        "Enginuity " + VERSION + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
             } finally {
                 br.close();
             }
@@ -167,15 +167,11 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
 
     public void handleExit() {
         settings.setSplitPaneLocation(splitPane.getDividerLocation());
-        if (getExtendedState() == JFrame.MAXIMIZED_BOTH) {
-            settings.setWindowMaximized(true);
-        } else {
-            settings.setWindowMaximized(false);
-            settings.setWindowSize(getSize());
-            settings.setWindowLocation(getLocation());
-        }
+        settings.setWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
+        settings.setWindowSize(getSize());
+        settings.setWindowLocation(getLocation());
 
-        settingsManager.save(settings, statusPanel, version);
+        settingsManager.save(settings, statusPanel);
         statusPanel.update("Ready...", 0);
         repaint();
     }
@@ -203,7 +199,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     }
 
     public String getVersion() {
-        return version;
+        return VERSION;
     }
 
     public Settings getSettings() {

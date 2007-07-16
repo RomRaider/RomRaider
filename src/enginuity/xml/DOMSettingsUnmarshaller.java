@@ -51,7 +51,10 @@ public final class DOMSettingsUnmarshaller {
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
-            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("size")) {
+            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
+                settings.setWindowMaximized(unmarshallAttribute(n, "value", false));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("size")) {
                 settings.setWindowSize(new Dimension(unmarshallAttribute(n, "y", 600),
                         unmarshallAttribute(n, "x", 800)));
 
@@ -190,7 +193,10 @@ public final class DOMSettingsUnmarshaller {
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
-            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("size")) {
+            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
+                settings.setLoggerWindowMaximized(unmarshallAttribute(n, "value", false));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("size")) {
                 settings.setLoggerWindowSize(new Dimension(unmarshallAttribute(n, "y", 600),
                         unmarshallAttribute(n, "x", 1000)));
 

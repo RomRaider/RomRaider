@@ -1,6 +1,7 @@
 package enginuity.util;
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+import static enginuity.ECUEditor.VERSION;
 import enginuity.Settings;
 import enginuity.swing.JProgressPane;
 import enginuity.xml.DOMSettingsBuilder;
@@ -35,13 +36,13 @@ public final class SettingsManagerImpl implements SettingsManager {
     }
 
     public void save(Settings settings) {
-        save(settings, new JProgressPane(), "");
+        save(settings, new JProgressPane());
     }
 
-    public void save(Settings settings, JProgressPane progress, String version) {
+    public void save(Settings settings, JProgressPane progress) {
         DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
-            builder.buildSettings(settings, new File("./settings.xml"), progress, version);
+            builder.buildSettings(settings, new File("./settings.xml"), progress, VERSION);
         } catch (Exception e) {
             // ignore
         }

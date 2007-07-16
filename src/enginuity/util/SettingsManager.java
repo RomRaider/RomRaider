@@ -8,5 +8,5 @@ public interface SettingsManager {
 
     void save(Settings settings);
 
-    void save(Settings settings, JProgressPane progress, String version);
+    void save(Settings settings, JProgressPane progress);
 }

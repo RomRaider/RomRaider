@@ -48,6 +48,11 @@ public final class DOMSettingsBuilder {
     private IIOMetadataNode buildWindow(Settings settings) {
         IIOMetadataNode windowSettings = new IIOMetadataNode("window");
 
+        // window maximized
+        IIOMetadataNode maximized = new IIOMetadataNode("maximized");
+        maximized.setAttribute("value", String.valueOf((settings.isLoggerWindowMaximized())));
+        windowSettings.appendChild(maximized);
+
         // window size
         IIOMetadataNode size = new IIOMetadataNode("size");
         size.setAttribute("x", String.valueOf(((int) settings.getWindowSize().getHeight())));
@@ -207,6 +212,11 @@ public final class DOMSettingsBuilder {
 
     private IIOMetadataNode buildLogger(Settings settings) {
         IIOMetadataNode loggerSettings = new IIOMetadataNode("logger");
+
+        // window maximized
+        IIOMetadataNode maximized = new IIOMetadataNode("maximized");
+        maximized.setAttribute("value", String.valueOf((settings.isLoggerWindowMaximized())));
+        loggerSettings.appendChild(maximized);
 
         // window size
         IIOMetadataNode size = new IIOMetadataNode("size");
