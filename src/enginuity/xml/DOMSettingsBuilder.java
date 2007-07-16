@@ -50,7 +50,7 @@ public final class DOMSettingsBuilder {
 
         // window maximized
         IIOMetadataNode maximized = new IIOMetadataNode("maximized");
-        maximized.setAttribute("value", String.valueOf((settings.isLoggerWindowMaximized())));
+        maximized.setAttribute("value", String.valueOf((settings.isWindowMaximized())));
         windowSettings.appendChild(maximized);
 
         // window size
