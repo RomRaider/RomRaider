@@ -34,10 +34,13 @@ public final class SettingsManagerImpl implements SettingsManager {
         }
     }
 
+    public void save(Settings settings) {
+        save(settings, new JProgressPane(), "");
+    }
+
     public void save(Settings settings, JProgressPane progress, String version) {
         DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
-            //JProgressPane progress = new JProgressPane(this, "Saving settings...", "Saving settings...");
             builder.buildSettings(settings, new File("./settings.xml"), progress, version);
         } catch (Exception e) {
             // ignore

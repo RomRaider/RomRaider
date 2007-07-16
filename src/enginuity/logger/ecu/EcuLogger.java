@@ -70,6 +70,7 @@ import enginuity.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import enginuity.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
+import enginuity.util.SettingsManagerImpl;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
@@ -847,7 +848,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             LOGGER.warn("Error stopping logger", e);
         } finally {
             rememberWindowProperties();
+            saveSettings();
         }
+    }
+
+    private void saveSettings() {
+        new SettingsManagerImpl().save(settings);
     }
 
     private void rememberWindowProperties() {
