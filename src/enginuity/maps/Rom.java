@@ -22,6 +22,7 @@
 package enginuity.maps;
 
 import enginuity.ECUEditor;
+import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
 import enginuity.swing.JProgressPane;
 import enginuity.xml.TableNotFoundException;
 import org.apache.log4j.Logger;
@@ -85,20 +86,21 @@ public class Rom implements Serializable {
             int currProgress = (int) ((double) i / (double) getTables().size() * 40);
             progress.update("Populating tables...", 40 + currProgress);
 
+            Table table = tables.get(i);
             try {
                 // if storageaddress has not been set (or is set to 0) omit table
-                if (tables.get(i).getStorageAddress() != 0) {
+                if (table.getStorageAddress() != 0) {
                     try {
-                        tables.get(i).populateTable(binData);
-
+                        table.populateTable(binData);
+                        TableUpdateHandler.getInstance().registerTable(table);                        
                     } catch (ArrayIndexOutOfBoundsException ex) {
 
-                        LOGGER.error(tables.get(i).getName() +
-                                " type " + tables.get(i).getType() + " start " +
-                                tables.get(i).getStorageAddress() + " " + binData.length + " filesize", ex);
+                        LOGGER.error(table.getName() +
+                                " type " + table.getType() + " start " +
+                                table.getStorageAddress() + " " + binData.length + " filesize", ex);
 
                         // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(container, "Storage address for table \"" + tables.get(i).getName() +
+                        JOptionPane.showMessageDialog(container, "Storage address for table \"" + table.getName() +
                                 "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                         tables.removeElementAt(i);
                         i--;
@@ -112,7 +114,7 @@ public class Rom implements Serializable {
                 }
 
             } catch (NullPointerException ex) {
-                JOptionPane.showMessageDialog(container, "There was an error loading table " + tables.get(i).getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(container, "There was an error loading table " + table.getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                 tables.removeElementAt(i);
             }
         }

@@ -22,7 +22,6 @@
 package enginuity.maps;
 
 import enginuity.Settings;
-import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
 import enginuity.swing.TableFrame;
 import static enginuity.util.ColorScaler.getScaledColor;
 import enginuity.util.JEPUtil;
@@ -497,7 +496,6 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setLogParam(String logParam) {
         this.logParam = logParam;
-        TableUpdateHandler.getInstance().registerTable(this);
     }
 
     public String getLogParam() {

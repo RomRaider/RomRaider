@@ -72,15 +72,21 @@ public final class TableUpdateHandler implements DataUpdateHandler {
         if (!tables.contains(table)) {
             tables.add(table);
         }
-	}
+    }
 
-	public void deregisterTable(Table table) {
-		List<Table> tables = tableMap.get(table.getLogParam());
-		tables.remove(table);
-	}
+    public void deregisterTable(Table table) {
+        String logParam = table.getLogParam();
+        if (tableMap.containsKey(logParam)) {
+            List<Table> tables = tableMap.get(logParam);
+            tables.remove(table);
+            if (tables.isEmpty()) {
+                tableMap.remove(logParam);
+            }
+        }
+    }
 
-	public static TableUpdateHandler getInstance() {
-		return INSTANCE;
-	}
+    public static TableUpdateHandler getInstance() {
+        return INSTANCE;
+    }
 
 }
