@@ -9,8 +9,8 @@
             <author name="Jared Gould" email="jared.gould@enginuity.org"/>
         </authors>
         <url>http://www.enginuity.org</url>
-    </info>  
-		<native type="izpack" name="ShellLink.dll"/>    
+    </info>
+    <native type="izpack" name="ShellLink.dll"/>
     <guiprefs width="640" height="480" resizable="no"/>
     <locale>
         <langpack iso3="eng"/>
@@ -18,72 +18,73 @@
     <resources>
         <res id="LicencePanel.licence" src="license.txt"/>
         <res id="InfoPanel.info" src="release notes.txt"/>
-				<res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
-    </resources>    
-    
+        <res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
+    </resources>
+
     <panels>
         <!-- <panel classname="HelloPanel"/>
  -->
         <panel classname="InfoPanel"/>
         <panel classname="LicencePanel"/>
-        <panel classname="TargetPanel"/> 
+        <panel classname="TargetPanel"/>
         <panel classname="PacksPanel"/>
         <panel classname="ShortcutPanel"/>
         <panel classname="InstallPanel"/>
         <panel classname="SimpleFinishPanel"/>
-    </panels>    
+    </panels>
 
     <packs>
         <pack name="Base" required="yes">
             <description>Enginuity binary files</description>
-            <file src="Enginuity.exe"     targetdir="$INSTALL_PATH" os="windows" />
-            <file src="Enginuity.jar"     targetdir="$INSTALL_PATH" />
-            <file src="license.txt"       targetdir="$INSTALL_PATH" />
-            <file src="release notes.txt" targetdir="$INSTALL_PATH" />
-            <file src="images"            targetdir="$INSTALL_PATH" />
-            <fileset dir="graphics" 	  	targetdir="$INSTALL_PATH/graphics" excludes="*.bmp" />
-            
-            <!-- Logger files -->
-            <file src="logger.xml"        targetdir="$INSTALL_PATH" />
-            <file src="logger.dtd"        targetdir="$INSTALL_PATH" />
-            <file src="profile.dtd" targetdir="$INSTALL_PATH" />
+            <file src="Enginuity.exe" targetdir="$INSTALL_PATH" os="windows"/>
+            <file src="Enginuity.jar" targetdir="$INSTALL_PATH"/>
+            <file src="license.txt" targetdir="$INSTALL_PATH"/>
+            <file src="release notes.txt" targetdir="$INSTALL_PATH"/>
+            <file src="images" targetdir="$INSTALL_PATH"/>
+            <fileset dir="graphics" targetdir="$INSTALL_PATH/graphics" excludes="*.bmp"/>
 
-        		<file src="lib/BareBonesBrowserLaunch.jar" targetdir="$INSTALL_PATH/lib" />
-        		<file src="lib/jep.jar" targetdir="$INSTALL_PATH/lib" />
-        		<file src="lib/JFontChooser.jar" targetdir="$INSTALL_PATH/lib" />
-        		<file src="lib/swing-layout-1.0.jar" targetdir="$INSTALL_PATH/lib" />
-        		
-        		<file src="lib/Graph3d/jama-1.0.2.jar" targetdir="$INSTALL_PATH/lib" />
-        				<file src="lib/Graph3d/windows/Graph3d.jar" targetdir="$INSTALL_PATH/lib" os="windows" />
-        				<file src="lib/Graph3d/windows/lib/j3dcore.jar" targetdir="$INSTALL_PATH/lib" os="windows" />
-        				<file src="lib/Graph3d/windows/lib/j3dcore-ogl.dll" targetdir="$INSTALL_PATH/lib" os="windows" />
-        				<file src="lib/Graph3d/windows/lib/j3dcore-ogl-cg.dll" targetdir="$INSTALL_PATH/lib" os="windows" />
-        				<file src="lib/Graph3d/windows/lib/j3dutils.jar" targetdir="$INSTALL_PATH/lib" os="windows" />        				
-        				<file src="lib/Graph3d/windows/lib/vecmath.jar" targetdir="$INSTALL_PATH/lib" os="windows" />
-        		
-        		<file src="lib/jdic/jdic.jar" targetdir="$INSTALL_PATH/lib" />
-        				<file src="lib/jdic/windows/jdic_stub.jar" targetdir="$INSTALL_PATH/lib" os="windows" />
-        				<file src="lib/jdic/windows/x86/IeEmbed.exe" targetdir="$INSTALL_PATH/lib" os="windows" />
-        				<file src="lib/jdic/windows/x86/jdic.dll" targetdir="$INSTALL_PATH/lib" os="windows" />
-        				<file src="lib/jdic/windows/x86/MozEmbed.exe" targetdir="$INSTALL_PATH/lib" os="windows" />        				      				
-        				<file src="lib/jdic/windows/x86/tray.dll" targetdir="$INSTALL_PATH/lib" os="windows" />    			
-        				
-        		<file src="lib/logger/jcommon-1.0.7.jar" targetdir="$INSTALL_PATH/lib" />
-        		<file src="lib/logger/jfreechart-1.0.3.jar" targetdir="$INSTALL_PATH/lib" />
-        		<file src="lib/logger/rxtx/RXTXcomm.jar" targetdir="$INSTALL_PATH/lib" />
-        		<file src="lib/logger/rxtx/win32/rxtxSerial.dll" targetdir="$INSTALL_PATH/lib" />
-            	
+            <!-- Logger files -->
+            <file src="logger.xml" targetdir="$INSTALL_PATH"/>
+            <file src="logger.dtd" targetdir="$INSTALL_PATH"/>
+            <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
+
+            <file src="lib/BareBonesBrowserLaunch.jar" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/jep.jar" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/JFontChooser.jar" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/swing-layout-1.0.jar" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/log4j-1.2.14.jar" targetdir="$INSTALL_PATH/lib"/>
+
+            <file src="lib/Graph3d/jama-1.0.2.jar" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/Graph3d/windows/Graph3d.jar" targetdir="$INSTALL_PATH/lib" os="windows"/>
+            <file src="lib/Graph3d/windows/lib/j3dcore.jar" targetdir="$INSTALL_PATH/lib" os="windows"/>
+            <file src="lib/Graph3d/windows/lib/j3dcore-ogl.dll" targetdir="$INSTALL_PATH/lib" os="windows"/>
+            <file src="lib/Graph3d/windows/lib/j3dcore-ogl-cg.dll" targetdir="$INSTALL_PATH/lib" os="windows"/>
+            <file src="lib/Graph3d/windows/lib/j3dutils.jar" targetdir="$INSTALL_PATH/lib" os="windows"/>
+            <file src="lib/Graph3d/windows/lib/vecmath.jar" targetdir="$INSTALL_PATH/lib" os="windows"/>
+
+            <file src="lib/jdic/jdic.jar" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/jdic/windows/jdic_stub.jar" targetdir="$INSTALL_PATH/lib" os="windows"/>
+            <file src="lib/jdic/windows/x86/IeEmbed.exe" targetdir="$INSTALL_PATH/lib" os="windows"/>
+            <file src="lib/jdic/windows/x86/jdic.dll" targetdir="$INSTALL_PATH/lib" os="windows"/>
+            <file src="lib/jdic/windows/x86/MozEmbed.exe" targetdir="$INSTALL_PATH/lib" os="windows"/>
+            <file src="lib/jdic/windows/x86/tray.dll" targetdir="$INSTALL_PATH/lib" os="windows"/>
+
+            <file src="lib/logger/jcommon-1.0.7.jar" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/logger/jfreechart-1.0.3.jar" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/logger/rxtx/RXTXcomm.jar" targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/logger/rxtx/win32/rxtxSerial.dll" targetdir="$INSTALL_PATH/lib"/>
+
         </pack>
-        <!-- END Base Pack -->        
-        
+        <!-- END Base Pack -->
+
         <pack name="ECU Definitions" required="no">
             <description>The latest official ECU definitions</description>
             <file src="ecu_defs.xml" targetdir="$INSTALL_PATH"/>
-        </pack>        
-        
+        </pack>
+
         <pack name="Source Files" required="no">
             <description>Enginuity Source Files</description>
             <file src="src" targetdir="$INSTALL_PATH"/>
         </pack>
-    </packs>    
+    </packs>
 </installation>
