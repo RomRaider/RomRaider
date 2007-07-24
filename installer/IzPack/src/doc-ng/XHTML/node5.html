@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<title>Advanced Features</title>
+<meta name="description" content="Advanced Features" />
+<meta name="keywords" content="izpack-doc" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta content="text/css" />
+<link rel="STYLESHEET" href="izpack-doc.css" />
+<link rel="next" href="node6.html" />
+<link rel="previous" href="node4.html" />
+<link rel="up" href="izpack-doc.html" />
+<link rel="next" href="node6.html" />
+</head>
+<body>
+
+
+<!--Navigation Panel-->
+<table width="100%">
+<tr>
+<td><a name="tex2html425" href="node6.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html421" href="izpack-doc.html"><img class="alignbottom"
+width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html415" href="node4.html"><img class="alignbottom" width="63" height="24" alt="previous" src="prev.png" /></a> <a name="tex2html423"
+href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width=
+"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+</tr>
+
+<tr>
+<td><b>Next:</b> <a name="tex2html426" href="node6.html">Desktop Shortcuts</a> <b>Up:</b> <a name="tex2html422" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html416" href= 
+"node4.html">Writing Installation XML Files</a> <b><a name="tex2html424" href="node1.html">Contents</a></b></td>
+</tr>
+</table>
+<!--End of Navigation Panel-->
+
+
+<!--Table of Child-Links--> 
+<p><br /><a name="CHILD_linkS"><strong>Subsections</strong></a> </p>
+
+<ul>
+<li><a name="tex2html427" href="node5.html#SECTION00510000000000000000">Ant Integration</a></li>
+
+<li><a name="tex2html428" href="node5.html#SECTION00520000000000000000">Embedding the installation file using a config element</a></li>
+
+<li><a name="tex2html429" href="node5.html#SECTION00530000000000000000">System properties as variable</a></li>
+
+<li><a name="tex2html430" href="node5.html#SECTION00540000000000000000">Automated Installers</a></li>
+
+<li><a name="tex2html431" href="node5.html#SECTION00550000000000000000">Picture on the Language Selection Dialog</a></li>
+
+<li><a name="tex2html432" href="node5.html#SECTION00560000000000000000">Picture in the installer</a></li>
+
+<li><a href="node5.html#modifyingGui">Modifying the GUI</a>
+	<ul>
+		<li><a href="node5.html#modifyingLangDialog">Modifying Language Selection Dialog</a></li>
+		<li><a href="node5.html#modifyingPanels">Modifying IzPack Panels</a></li>
+		<li><a href="node5.html#headingPanels">Using a Separated Heading Panel</a></li>
+		<li><a href="node5.html#quitDialog">Alternative Cancel Dialog</a></li>
+	</ul>
+</li>
+
+<li><a href="node5.html#Logging">Logging the Installation</a></li>
+
+<li><a name="tex2html433" href="node5.html#SECTION00570000000000000000">Web Installers</a></li>
+
+<li><a name="tex2html434" href="node5.html#SECTION00580000000000000000">More Internationalization</a> 
+
+<ul>
+<li><a name="tex2html435" href="node5.html#SECTION00581000000000000000">Special resources</a></li>
+
+<li><a name="tex2html436" href="node5.html#SECTION00582000000000000000">Packs</a></li>
+</ul>
+</li>
+</ul>
+
+<!--End of Table of Child-Links-->
+<hr />
+<h1><a name="SECTION00500000000000000000">Advanced Features</a></h1>
+
+<h1><a name="SECTION00510000000000000000"></a> <a name="ant-integration"></a><br />
+Ant Integration</h1>
+
+<p>I<small>Z</small>P<small>ACK</small> can be easily integrated inside an Ant build process. To do so you first need to tell Ant that you would like to use I<small>Z</small>P<small>ACK</small> :</p>
+
+<pre>
+&lt;!-- Allows us to use the IzPack Ant task --&gt;
+&lt;taskdef name="izpack" classpath="${basedir}/lib/compiler.jar"
+         classname="com.izforge.izpack.ant.IzPackTask"/&gt;
+</pre>
+
+<p>If you want to use the standalone compiler (and therefore don't need an IzPack installation for building), the task needs to be defined as follows:</p>
+
+<pre>
+&lt;!-- Allows us to use the IzPack Ant task --&gt;
+&lt;taskdef name="izpack" classpath="${basedir}/lib/standalone-compiler.jar"
+         classname="com.izforge.izpack.ant.IzPackTask"/&gt;
+</pre>
+
+<p>Don't forget to add <tt>compiler.jar</tt> or <tt>standalone-compiler.jar</tt> to the classpath of the Ant process.</p>
+
+<p>Then you can invoke I<small>Z</small>P<small>ACK</small> with the <tt>izpack</tt> task which takes the following parameters:</p>
+
+<ul>
+<li><tt>input</tt> : the XML installation file. The installation can be specified as an external file, or embedded using a <tt>config</tt> child element (see section&nbsp;<a href="#embedconfig">
+3.2</a>).</li>
+
+<li><tt>output</tt> : the output jar installer file</li>
+
+<li><tt>installerType</tt> : optional. <tt>standard</tt> or <tt>web</tt>. If <tt>web</tt>, the <tt>&lt;webdir&gt;</tt> attribute must be specified in the input file (see section&nbsp;<a href= 
+"#webinstaller">3.7</a>). Used to force creation of a standard installer when the <tt>&lt;webdir&gt;</tt> attribute has been used.</li>
+
+<li><tt>baseDir</tt> : the base directory to resolve the relative paths</li>
+
+<li><tt>izPackDir</tt>: the I<small>Z</small>P<small>ACK</small> home directory. Only neccessary if you do not use the standalone compiler.</li>
+</ul>
+
+<p>Here is a sample of the task invocation:<br />
+</p>
+
+<pre>
+&lt;!-- We call IzPack --&gt;
+&lt;echo message="Makes the installer using IzPack"/&gt;
+&lt;izpack input="${dist.dir}/IzPack-install.xml"
+        output="${dist.dir}/IzPack-install.jar"
+        installerType="standard"
+        basedir="${dist.dir}"
+        izPackDir="${dist.dir}/"/&gt;
+</pre>
+
+<h1><a name="SECTION00520000000000000000"></a> <a name="embedconfig"></a><br />
+Embedding the installation file using a config element</h1>
+
+<p>Instead of using the install attribute to specify an external installation document, you can embed the installation config as a child of the izpack task using a <tt>config</tt> child element with
+a <tt>CDATA</tt> section. For example:</p>
+
+<pre>
+&lt;property name="jboss.home.url" value="http://www.jboss.com/" /&gt;
+...
+
+&lt;!-- Call IzPack with an embedded install using the config element --&gt;
+&lt;izpack output="${dist.dir}/IzPack-install.jar"
+        installerType="standard"
+        basedir="${dist.dir}"
+        izPackDir="${dist.dir}/"&gt;
+        &lt;config&gt;&lt;![CDATA[
+&lt;installation version="1.0"&gt;
+   &lt;info&gt;
+      &lt;appname&gt;JBossAS&lt;/appname&gt;
+      &lt;appversion&gt;4.0.2&lt;/appversion&gt;
+      &lt;appsubpath&gt;jboss-4.0.2&lt;/appsubpath&gt;
+      &lt;authors&gt;
+         &lt;author name="JBoss Inc." email="sales@jboss.com"/&gt;
+      &lt;/authors&gt;
+      &lt;url&gt;@{jboss.home.url}&lt;/url&gt;
+      &lt;javaversion&gt;1.4&lt;/javaversion&gt;
+   &lt;/info&gt;
+...
+        ]]&gt;&lt;/config&gt;
+&lt;/izpack&gt;
+</pre>
+
+<p>Property references of the form <tt>@{x}</tt> are replaced by the associated <tt>x</tt> ant property if it is defined.</p>
+
+<h1><a name="SECTION00530000000000000000">System properties as variable</a></h1>
+
+<p>All system properties are available as $SYSTEM_&lt;variable&gt; where &lt;variable&gt; is the actual name _BUT_ with all separators replaced by '_'. Properties with null values are never
+stored.<br />
+</p>
+
+<p>Examples:</p>
+
+<pre>
+$SYSTEM_java_version or $SYSTEM_os_name
+</pre>
+
+<h1><a name="SECTION00540000000000000000">Automated Installers</a></h1>
+
+<p>When you conclude your installation with a FinishPanel, the user can save the data for an automatic installation. With this data, he will be able to run the same installation on another similar
+machine. In an environment where many computers need to be supported this can save <i>a lot</i> of time.<br />
+</p>
+
+<p>So run once the installation on a machine and save your automatic installation data in <tt>auto-install.xml</tt> (that's just a sample). Then put this file in the same directory as the installer
+on another machine. Run it with:<br />
+<tt>java -jar installer.jar auto-install.xml</tt><br />
+</p>
+
+<p>It has reproduced the same installation :-)<br />
+</p>
+
+<h1><a name="SECTION00550000000000000000">Picture on the Language Selection Dialog</a></h1>
+
+<p>You can add a picture on the language selection dialog by adding the following resource : <tt>installer.langsel.img</tt>. <i>GIF</i>, <i>JPEG</i> and <i>PNG</i> pictures are supported starting
+from J2SE 1.3.<br />
+</p>
+
+<h1><a name="SECTION00560000000000000000">Picture in the installer</a></h1>
+
+<p>It is possible to specify an optional picture to display on the left side of the installer. To do this, you just have to define a resource whose id is <tt>Installer.image</tt>. For instance,</p>
+
+<pre>
+&lt;res id="Installer.image" src="nice-image.png" /&gt;
+</pre>
+<p>
+will do that. If the resource isn't specified, no picture will be displayed at all. <i>GIF</i>, <i>JPEG</i> and <i>PNG</i> pictures are supported starting from J2SE 1.3. </p>
+<p>
+You can also give a specific picture for a specific panel by using the <tt>Installer.image.n</tt> resource names where <img width="16" height="16" class="alignbottom" src="img5.png" alt=
+"$n$" /> is the panel index. For instance if you want a specific picture for the third panel, use <tt>Installer.image.2</tt> since the indexes start from 0.<br />
+</p>
+    <h1><a id="modifyingGui" name="modifyingGui">Modifying the GUI</a></h1>
+
+    <p>There are some options to modify the graphic user interface. Most of them are managed with
+    key/value pairs of the element &lt;modifier&gt; which will be located in the element <a
+    href="node4.html#SECTION00434000000000000000">&lt;guprefs&gt;</a> in the installation
+    description file.</p>
+
+    <h2><a id="modifyingLangDialog" name="modifyingLangDialog">Modifying Language Selection
+    Dialog</a></h2>
+
+    <p>Additonal to the picture in the language selection dialog it is possible to modify flags and
+    the type of showing the language name. Following different views (without an images to reduce
+    space).</p>
+
+    <div class="center">
+      <a id="langSelectExample" name="langSelectExample"></a> 
+
+      <table class="a" cellspacing="10">
+        <colgroup>
+          <col style="width: 40%" />
+          <col style="width: 20%" />
+          <col style="width: 40%" />
+        </colgroup>
+
+        <thead>
+          <tr>
+            <td>
+              <p>Standard language selection dialog</p>
+            </td>
+
+            <td>
+            </td>
+
+            <td>
+              <p>Alternative language selection dialog</p>
+            </td>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td><img class="alignmiddle" src="stdLangSel.png" width="215" height="136" alt="" /> </td>
+            <td>
+            </td>
+            <td><img class="alignmiddle" src="modLangSel.png" width="154" height="133" alt="" /> </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ul>
+      <li>
+        <tt>useFlags</tt>:<br />
+        possible are "yes" or "no". Default is "yes". If it is set to "no", no flag will be
+        displayed in the language selection dialog. For "no" it is recomanded to define also
+        langDisplayType other then "iso3".
+      </li>
+
+      <li>
+        <tt>langDisplayType</tt>:<br />
+        possible are "iso3", "native" and "default". Default is "iso3". With "iso3" the text for a
+        language will be displayed as ISO 639-2:1998 code. With "native" the notation of the
+        language will be used if possible, else the notation of the default locale. Using "default"
+        will be presented the language in the notation of the default locale of the VM.
+      </li>
+    </ul>
+
+    <h2><a id="modifyingPanels" name="modifyingPanels">Modifying IzPack Panels</a></h2>
+
+    <p>There are some graphic elements and behavior which are prefered by some people and deprecate
+    by other. The following keys are related to the hole installation (all panels).
+		</p>
+    <ul>
+      <li>
+        <tt>useButtonIcons</tt>:<br />
+        possible are "yes" or "no". Default is "yes". If it is set to "no", all buttons which are
+        created via the ButtonFactory contains no icon also a icon id was submitted. Directly
+        created buttons are not affected.
+      </li>
+
+      <li>
+        <tt>useLabelIcons</tt>:<br />
+        possible are "yes" or "no". Default is "yes". If it is set to "no", all labels which are
+        created via the LabelFactory contains no icon also a icon id was submitted. Directly
+        created labels are not affected.
+      </li>
+
+      <li>
+        <tt>layoutAnchor</tt>:<br />
+        layout anchor for IzPanels. Valid are "NORTH", "NORTHWEST", "SOUTHWEST", "SOUTH" and
+        "CENTER". Only panels which are using the layout helper of IzPanels are
+        supported. These are not all standard panels. At developing custom panels it is
+		recommended to use the layout helper with an IzPanelLayout. <br />NOTE: The anchor definition will be used for all panels!
+      </li>
+      <li>
+	    <tt>Gaps</tt>:<br />
+		there are defined different gaps between different components of a IzPanel if
+		using IzPanelLayout. The gaps can be set also via the element &lt;modifier&gt; of
+		<a href="node4.html#SECTION00434000000000000000">&lt;guprefs&gt;</a>. It is
+		possible to declare different values for X and Y axis. This will be determined
+		in the key word name. X Gaps are insert after Y gaps under the control for which
+		the gap was declared.  
+		  
+		Following key words are defined:
+		<ul>
+		  <li>
+		    <tt>labelXGap</tt> | <tt>labelYGap</tt>:<br />
+			gap in pixel between two labels in X or Y direction.
+		  </li>
+		  <li>
+		    <tt>textXGap</tt> | <tt>textYGap</tt>:<br />
+			gap in pixel between two text fields.
+		  </li>
+		  <li>
+		    <tt>controlXGap</tt> | <tt>controlYGap</tt>:<br />
+			gap in pixel between two controls other than label or textfield.
+		  </li>
+		  <li>
+		    <tt>paragraphYGap</tt>:<br />
+			gap in pixel for a pragraph. A paragraph will be created in the panel
+			source for controls which should be separated. paragraphXGap is
+			declared, but not used.
+		  </li>
+		  <li>
+		    <tt>labelToTextXGap</tt> | <tt>labelToTextYGap</tt>:<br />
+			gap in pixel between a label (left or top) and a text field (right or bottom).
+		  </li>
+		  <li>
+		    <tt>labelToControlXGap</tt> | <tt>labelToControlYGap</tt>:<br />
+			gap in pixel between a label (left or top) and a control other than a label or a textfield.
+		  </li>
+		  <li>
+		    <tt>textToLabelXGap</tt> | <tt>textToLabelYGap</tt>:<br />
+			gap in pixel between a text field (left or top) and a label.
+		  </li>
+		  <li>
+		    <tt>controlToLabelXGap</tt> | <tt>controlToLabelYGap</tt>:<br />
+			gap in pixel between a control other than a label or a text field and a label.
+		  </li>
+		  <li>
+		    <tt>controlToTextXGap</tt> | <tt>controlToTextYGap</tt>:<br />
+			gap in pixel between  a control other than a label or a text field and a text field.
+		  </li>
+		  <li>
+		    <tt>textToControlXGap</tt> | <tt>textToControlYGap</tt>:<br />
+			gap in pixel between a text field and a control other than a label or a text field .
+		  </li>
+		  <li>
+		    <tt>firstYGap</tt>:<br />
+			gap in pixel between the top border and the first control.
+		  </li>
+		  <li>
+		    <tt>filler[N]XGap</tt> | <tt>filler[N]YGap</tt>:<br />
+			gap in pixel created by the layout manager. Filler are used by some panels.
+			[N] is a number between 1 and 5 to allow to use different filler e.g.
+			filler3XGap or filler1YGap.
+		  </li>
+		  <li>
+		    <tt>allXGap</tt> | <tt>allYGap</tt>:<br />
+			gap in pixel between all controls in X or Y direction. If this is declared
+			all gaps for which no own declaration exists gets this value. If a gap
+			has an own declaration this will be used instead. 
+		  </li>
+		</ul>
+      </li>
+	  <li>
+	    <a name="layoutStretchType"></a><tt>layoutYStretchType</tt> | <tt>layoutXStretchType</tt>:<br />
+		The IzPanelLayout manager allows to declare stretch factors for controls.
+		This means, that a control will be stratched if there is place in the line.
+		The amount of stretching will be determined by the stretch factor. But 
+		what todo if the hole stretch factor for a line or column is not 1.0?
+		To determine this these settings are exist. Valid values are "RELATIVE",
+		"ABSOLUTE" and "NO". With "NO" no stretch will be performed. with 
+		"RELATIVE" the values are normalized, with "ABSOLUTE" the values will be
+		used as they are (may be a part will be clipped if the sum is greater
+		than 1.0). 
+	  </li>
+	  <li>
+	    <tt>layoutFullLineStretch</tt> | <tt>layoutFullColumnStretch</tt>:<br />
+		As <a href="#layoutStretchType">described</a> there are controls which 
+		should be stretched. Beside fixed values there are the symbolic values
+		FULL_LINE_STRETCH and FULL_COLUMN_STRETCH which are computed at layouting.
+		E.g. MultiLineLabels has this stretch factor for x direction. But what
+		todo if a centered layout is chosen? With a control like this the lines
+		will be stretch to the hole size. With this settings it can be changed.
+		E.g. a factor of 0.7 creates a nice centered layout. The default is 1.0,
+		valid are 0.0 upto 1.0.
+	  </li>
+    </ul>
+	<p>It is possible to use an alternatively frame title. Normaly the title has the aspect
+	"IzPack - Installation of " + $APP_NAME. If the langpack key <tt>installer.reversetitle</tt>
+	is defined, the value of that key will be used instead of the key <tt>installer.title</tt>.
+	There is no string added, but it is possible to use IzPack variables. The 
+	<a href="#example3">third heading example</a> contains such a alternatively frame title.
+	It is only possible to use predefined variables like $APP_NAME because the
+	title will be created before the frame will be shown. It is common to use the
+	name of the installation toolkit in the frame title. </p>
+
+    <h2><a id="headingPanels" name="headingPanels">Using a Separated Heading Panel</a></h2>
+
+    <p>Some standard panels have headings (e.g. ShortcutPanel). These headings are integrated in
+    the IzPanel. In oposite to this following heading will be displayed in a separated panel potential
+    for all panels with the same design. There is no need to modify existent java classes else
+    declaration of some key/value pairs are enough.</p>
+
+    <p>There can be one real head and zero or more info lines. The headline will be written
+    bold, the fontsize can be changed. Info lines will be indented and written with the normal used
+    font. The heading message has to be written into the langpack (or custom langpack) file with
+    the key <tt>&lt;panel class name&gt;.headline</tt>. Examples can be seen in <tt>eng.xml</tt>.
+	May be the entries for standard panels are not present in other languages.
+    Messages for info lines have the key <tt>&lt;panel class name&gt;.headinfo&lt;info line
+    number&gt;</tt>. First info line has number zero. If no or empty headline messages will be 
+	declared in the chosen language no heading panel will be shown. This behavior can be used to 
+    suppress heading for special panels.</p>
+	<p>It is also possible to declare head and info lines additonal dependent on the panelid.
+	The result is, that it is possible to declare different messages for panels which are shown
+	more than one time (e.g. the UserInputPanel. In this case the key for heading is</p>
+	<pre>&lt;panel class name&gt;.headline.&lt;panelid&gt;</pre>
+	<p>and for info lines</p>
+	<pre>&lt;panel class name&gt;.headinfo&lt;info line number&gt;.&lt;panelid&gt;</pre>
+	<p>Panelids are declared in ELEMENT %lt;panel&gt;. See <a href="node4.html#SECTION00437000000000000000">
+	The Panels Element <tt>&lt;panels&gt;</tt></a> . The standard strings are declared in the
+	standard langpack file. For customized panels it is common to write the string into the
+	custom langpack (see <a href="node7.html#SECTION00720000000000000000">
+	The Internationalization of custom panels</a>. If (as example) in <i>install.xml</i>
+	was following written:</p>
+	<pre>    &lt;panels&gt;
+        ...
+        &lt;panel classname="UserInputPanel" id="one"/&gt;
+        &lt;panel classname="UserInputPanel"id="two"/&gt;
+        ...
+    &lt;/panels&gt;</pre>
+	<p>Then the messages can be declared in <i>CustomLangpack.xml_eng</i> like</p>
+	<pre>&lt;langpack&gt;
+    ...
+    &lt;str id="UserInputPanel.headline.one" txt="User Data one"/&gt;
+    &lt;str id="UserInputPanel.headline.two" txt="User Data two"/&gt;
+    &lt;str id="UserInputPanel.headinfo0.one" txt="Info 1 one"/&gt;
+    &lt;str id="UserInputPanel.headinfo1.one" txt="Info 2 one"/&gt;
+    &lt;str id="UserInputPanel.headinfo0.two" txt="Info 1 two"/&gt;
+    &lt;str id="UserInputPanel.headinfo1.two" txt="Info 2 two"/&gt;
+    ...
+&lt;langpack&gt;</pre>
+	<p>It is possible to place an icon on the right side of the heading. To do this a simple 
+	resource entry will be needed:</p>
+	<pre>&lt;resources&gt;
+  ...
+  &lt;res id="Heading.image" src="[my path in the source tree]"/&gt;
+  ...
+&lt;/resources&gt;
+</pre>
+
+    <p>There are some guiprefs modifier keys to use and modify heading (see above). Additonal it is
+    possible to count the generell not hidden panels in the heading or navigation panel.</p>
+
+    <ul>
+      <li>
+        <tt>useHeadingPanel</tt>:<br />
+        generell switch for heading. If this key does not exist or does not have the value "yes" no
+        heading panel will be shown.
+      </li>
+	  <li>
+        <tt>useHeadingForSummary</tt>:<br />
+		in the language files there are entries for the heading text ([Panel name].headline)
+		and the summary caption ([Panel name].summaryCaption). If this modifier is set to "yes",
+		the text of the heading will be also used for the summary caption.
+	  </li>
+      <li>
+        <tt>headingLineCount</tt>:<br />
+        number of heading lines. If no info lines should be shown the value should be one (not
+        zero).
+      </li>
+
+      <li>
+        <tt>headingFontSize</tt>:<br />
+        a float value used as multiplier for the standard font size.
+      </li>
+
+      <li>
+        <tt>headingBackgroundColor</tt>:<br />
+        background color of the heading panel as integer. Often used is 0x00ffffff (white).
+      </li>
+
+      <li>
+        <tt>headingPanelCounter</tt>:<br />
+        draw a panel counting. Possible values are "text" or "progressbar". inHeading the
+        progressbar will be not the best choice.
+      </li>
+
+      <li>
+        <tt>headingPanelCounterPos</tt>:<br />
+        declares where the counter will be shown. Possible are "inHeading" or
+        "inNavigationPanel". If "inNavigationPanel" is chosen, the panel counter can be
+		used also no heading was selected. 
+      </li>
+    </ul>
+
+    <p><a name="example1"></a>A normal IzPack GUI looks like</p>
+
+    <div class="center">
+      <a id="exampleImg1" name="exampleImg1"></a> 
+
+      <table>
+        <caption class="alignbottom">
+          <i>Normal look of an IzPack frame (TargetPanel)</i>
+        </caption>
+
+        <tr>
+          <td>
+            <div>
+              <img src="stdTargetPanel.jpg" width="640" height="480" alt="" />
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <p><a name="example2"></a>Key/value pairs to create IzPack installation with heading, no button and label icons and a
+    panel text counter in the heading panel.</p>
+<pre>
+&lt;guiprefs width="600" height="480" resizable="no"&gt;
+  &lt;modifier key="useButtonIcons" value="no"/&gt;
+  &lt;modifier key="useLabelIcons" value="no"/&gt;
+  &lt;modifier key="labelGap" value="2"/&gt;    
+  &lt;modifier key="layoutAnchor" value="NORTHWEST"/&gt;    
+  &lt;modifier key="useHeadingPanel" value="yes"/&gt;
+  &lt;modifier key="headingLineCount" value="1"/&gt;
+  &lt;modifier key="headingFontSize" value="1.5"/&gt;
+  &lt;modifier key="headingBackgroundColor" value="0x00ffffff"/&gt;
+  &lt;modifier key="headingPanelCounter" value="text"/&gt;
+  &lt;modifier key="headingPanelCounterPos" value="inHeading"/&gt;
+&lt;/guiprefs&gt;
+</pre>
+
+    <div class="center">
+      <a id="exampleImg2" name="exampleImg2"></a> 
+
+      <table>
+        <caption class="alignbottom">
+          <i>IzPack frame (TargetPanel) with heading panel and a text counter in the heading panel
+          <br />
+           with panel image.</i>
+        </caption>
+
+        <tr>
+          <td>
+            <div>
+              <img class="alignmiddle" src="modTargetPanel3.png" width="600" height="480" alt="" />
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <p><a name="example3"></a>Changed resources and langpack keys to create IzPack installation with 
+	alternatively frame title, heading, no button and label icons and a text counter in the heading 
+	panel.</p>
+	<pre>In install.xml 
+&lt;installation version="1.0"&gt;
+  ...
+  &lt;resources&gt;
+    ...
+    &lt;res src="border4.png" id="Installer.image.3"/&gt; REMOVED
+    ...
+  &lt;/resources&gt;
+&lt;/installation&gt;
+
+Add in &lt;ISO3&gt;.xml or CustomLangpack.xml_&lt;ISO3&gt;
+&lt;langpack&gt;
+  ...
+  &lt;str id="installer.reversetitle" txt="$APP_NAME $APP_VER - IzPack Wizard "/&gt;
+  ...
+&lt;/langpack&gt;
+
+	</pre>
+	<p></p>
+    <div class="center">
+      <a id="exampleImg3" name="exampleImg3"></a> 
+
+      <table>
+        <caption class="alignbottom">
+          <i>IzPack frame (TargetPanel) with heading panel and a text counter in the heading panel
+          <br />
+           with alternative frame title, no panel image.</i>
+        </caption>
+
+        <tr>
+          <td>
+            <div>
+              <img class="alignmiddle" src="modTargetPanel.png" width="600" height="480" alt="" />
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <p><a name="example4"></a>Changed key/value pairs to create IzPack installation with heading, no button and label
+    icons and a panel progressbar counter in the navigation panel.</p>
+
+    <p>Key/value pairs for modifying IzPack GUI (references for panel images removed):</p>
+<pre>
+&lt;guiprefs width="640" height="480" resizable="no"&gt;
+  &lt;modifier key="useButtonIcons" value="no"/&gt;
+  &lt;modifier key="useLabelIcons" value="no"/&gt;
+  &lt;modifier key="layoutAnchor" value="NORTHWEST"/&gt;    
+  &lt;modifier key="labelGap" value="2"/&gt;    
+  &lt;modifier key="useHeadingPanel" value="yes"/&gt;
+  &lt;modifier key="headingLineCount" value="1"/&gt;
+  &lt;modifier key="headingFontSize" value="1.5"/&gt;
+  &lt;modifier key="headingBackgroundColor" value="0x00ffffff"/&gt;
+  &lt;modifier key="headingPanelCounter" value="progressbar"/&gt;
+  &lt;modifier key="headingPanelCounterPos" value="inNavigationPanel"/&gt;
+&lt;/guiprefs&gt;
+</pre>
+
+    <div class="center">
+      <a id="exampleImg4" name="exampleImg4"></a> 
+
+      <table>
+        <caption class="alignbottom">
+          <i>IzPack frame (TargetPanel) with heading panel and a progressbar counter in the
+          <br />
+           navigation panel without panel image.</i>
+        </caption>
+
+        <tr>
+          <td>
+            <div>
+              <img class="alignmiddle" src="modTargetPanel2.png" width="600" height="480" alt="" />
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <h2><a id="quitDialog" name="quitDialog">Alternative Cancel Dialog</a></h2>
+	<p>The cancel dialog will be shown if the cancel button or the close button of the frame was
+	pushed. In the standard dialog the title contains the question and the message an affirmation.
+	In other dialogs often the title is a common heading and the question will be called in the
+	dialog as message. The standard behavior will be modified if the messages <tt>installer.quit.reversemessage</tt>
+	and <tt>installer.quit.reversetitle</tt>are declared.</p>
+<pre>
+Add in &lt;ISO3&gt;.xml or CustomLangpack.xml_&lt;ISO3&gt;
+&lt;langpack&gt;
+  ...
+  &lt;str id="installer.quit.reversemessage" txt="Are you sure you want to cancel installation?"/&gt;
+  &lt;str id="installer.quit.reversetitle" txt="$APP_NAME $APP_VER"/&gt;
+  ...
+&lt;/langpack&gt;
+</pre>
+    <div class="center">
+      <a id="quitExample" name="quitExample"></a> 
+
+      <table class="a" cellspacing="10">
+        <colgroup>
+          <col style="width: 40%" />
+          <col style="width: 20%" />
+          <col style="width: 40%" />
+        </colgroup>
+
+        <thead>
+          <tr>
+            <td>
+              <p>Standard cancel dialog</p>
+            </td>
+
+            <td>
+            </td>
+
+            <td>
+              <p>Alternative cancel dialog</p>
+            </td>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td><img class="alignmiddle" src="normQuitDialog.png" width="268" height="115" alt="" />
+			 </td>
+
+            <td>
+            </td>
+
+            <td><img class="alignmiddle" src="revQuitDialog.png" width="283" height="115" alt="" />
+			</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+	
+<h1><a name="Logging">Logging the Installation</a></h1>
+<p>Logging was made as copruduct at implementing other features. There was no common design for it.
+Therefor there is no one way to made logging of any kind else for each group a different logging stuff exist.
+Not nice, but reality.</p>
+<dl>
+<dt><tt>Debug Informations</tt></dt>
+<dd>There is a rudimental <a href="node3.html#section00356000000000000000">debug stuff</a> in IzPack. The class <tt>com.izforge.izpack.util.Debug</tt> is used by
+some other classes to write debug informations on stdout. The class can be used by custom panels or actions or
+other custom classes. To activate it, add <tt>-DTRACE=TRUE</tt> infront of -jar of the installer call.</dd>
+<dt><tt>Summary of Panels</tt></dt>
+<dd>There is a <a href="node4.html#SECTION004418000000000000000">summary panel</a> which shows some informations of previos shown panels.
+The same contents can be written to a <a href="node9.html#SECTION00970000000000000000">summary log file</a>.</dd>
+<dt><tt>Logging of Installed File Set</tt></dt>
+<dd>The files which are installed are logged into the uninstaller jar file to be used at uninstallation. The contents can be
+also duplicated into a <a href="node4.html#InstLogFile">logfile</a>.</dd>
+<dt><tt>Logging of the Process Panel</tt></dt>
+<dd>The <a href="node4.html#SECTION004414000000000000000">process panel</a> logs informations of each performed process in a scrollable text area. The contents
+can be duplicated into a <a href="node4.html#ProcessPanelLogFile">logfile</a> where the used directory can be selected (but not the logfile name).</dd>
+<dt><tt>Logging of Ant Actions</tt></dt>
+<dd>It is possible to perform ant actions with the <a href="node9.html#SECTION00950000000000000000">AntActionInstallerListener</a>.
+The grade of <a href="node9.html#AntActionVerbose">logging</a> and the path of a <a href="node9.html#AntActionLogFile">logfile</a> can by determinded.</dd>
+</dl>
+<h1><a name="SECTION00570000000000000000"></a> <a name="webinstaller"></a><br />
+Web Installers</h1>
+
+<p>The web installers allow your users to download a small installer that does not contain the files to install. These files will be downloaded from an HttP server such as <i>Apache HttPD</i>. If you
+have many optional packs, this can save people's resources. Its very easy: people download a small Jar file containing the installer, they launch it and choose their packages. Then the installer will
+get the required packages from individual Jar files located on a server, only downloading those required. It's that simple.<br />
+</p>
+
+<p>To create a web installer, add the <tt>&lt;webdir&gt;</tt> element to the <tt>&lt;info&gt;</tt> element (see section&nbsp;<a href="node4.html#info-element">2.3.2</a>). The text must be a valid,
+fully qualified URL for a direcory on the web server.<br />
+</p>
+
+<pre>
+&lt;info&gt;
+  &lt;appname&gt;Super extractor&lt;/appname&gt;
+  &lt;appversion&gt;2.1 beta 6&lt;/appversion&gt;
+  &lt;url&gt;http://www.superextractor.com/&lt;/url&gt;
+  &lt;webdir&gt;http://www.superextractor.com/download&lt;/url&gt;
+&lt;/info&gt;
+</pre>
+
+<p>You can force creation of a standard installer even if <tt>webdir</tt> is specified, by specifically creating a <tt>standard</tt> installer from the command line invocation or ant task (see <a
+name="ant-integration"></a>).</p>
+
+<p>When installing, if the user is behind a firewall, attempting download the jar files may fail. If this happens, the user will be prompted to enter the name hostname and port of their firewall.</p>
+
+<p>You may password protect the files using mechanisms provided by your web server, IzPack will prompt for a password at install time, when required.</p>
+
+<h1><a name="SECTION00580000000000000000">More Internationalization</a></h1>
+
+<h2><a name="SECTION00581000000000000000">Special resources</a></h2>
+
+<p>IzPack is available in several languages. However you might want to internationalize some additional parts of your installer. In particular you might want this for the *InfoPanel and
+*LicencePanel. This is actually pretty easy to do. You just have to add one resource per localization, suffixed with the ISO3 language code. At runtime these panels will try to load a localized
+version.<br />
+</p>
+
+<p>For instance let's suppose that we use a htmlInfoPanel. Suppose that we have it in English, French and German. We want to have a French text for french users. Here we add a resource pointing to
+the French text whose name is <tt>htmlInfoPanel.info_fra</tt>. And that's it ! English and German users (or anywhere other than in France) will get the default text (denoted by <tt>
+htmlInfoPanel.info</tt>) and the French users will get the French version. Same thing for the other Licence and Info panels.<br />
+</p>
+
+<p><i>To sum up :</i> add <tt>_&lt;iso3 code&gt;</tt> to the resource name for <tt>InfoPanel</tt>, <tt>htmlInfoPanel</tt>, <tt>LicencePanel</tt> and <tt>htmlLicencePanel</tt>.<br />
+</p>
+
+<h2><a name="SECTION00582000000000000000">Packs</a></h2>
+
+<p>Thanks to Thorsten Kamann, it is possible to translate the packs names and descriptions. To do that, you have to define a special identifier in the elements of the XML installation file and add
+the related entries in the suitable langpacks. For instance if you have the following XML snippet:</p>
+
+<pre>
+&lt;pack name="core" id="core.package" ...&gt;
+  &lt;description/&gt;
+&lt;/pack&gt;
+</pre>
+
+<p>then the related entries of the langpacks will look like this: </p>
+
+<pre>
+&lt;str id="core.package" txt="Core Package"/&gt;
+&lt;str id="core.package.description" txt="The core package provides
+</pre>
+
+<hr />
+<!--Navigation Panel-->
+<table width="100%">
+<tr>
+<td><a name="tex2html425" href="node6.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html421" href="izpack-doc.html"><img class="alignbottom"
+width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html415" href="node4.html"><img class="alignbottom" width="63" height="24" alt="previous" src="prev.png" /></a> <a name="tex2html423"
+href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width=
+"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+</tr>
+
+<tr>
+<td><b>Next:</b> <a name="tex2html426" href="node6.html">Desktop Shortcuts</a> <b>Up:</b> <a name="tex2html422" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html416" href= 
+"node4.html">Writing Installation XML Files</a> <b><a name="tex2html424" href="node1.html">Contents</a></b></td>
+</tr>
+</table>
+<!--End of Navigation Panel-->
+<address>Julien Ponge 2005-05-24</address>
+</body>
+</html>
+

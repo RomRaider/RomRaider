@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>
+      Creating Your Own Panels
+    </title>
+    <meta name="description" content="Creating Your Own Panels" />
+    <meta name="keywords" content="izpack-doc" />
+    <meta name="resource-type" content="document" />
+    <meta name="distribution" content="global" />
+    <meta content="text/css" />
+    <link rel="STYLESHEET" href="izpack-doc.css" />
+    <link rel="next" href="node8.html" />
+    <link rel="previous" href="node6.html" />
+    <link rel="up" href="izpack-doc.html" />
+    <link rel="next" href="node8.html" />
+  </head>
+  <body>
+    <!--Navigation Panel-->
+	<table width="100%">
+	<tr>
+	<td><a name="tex2html477" href="node8.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html473" href="izpack-doc.html"><img class="alignbottom"
+	width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html467" href="node6.html"><img class="alignbottom" width="63" height="24" alt="previous" src="prev.png" /></a> <a name="tex2html475"
+	href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+	<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width=
+	"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+	</tr>
+	
+	<tr>
+	<td><b>Next:</b> <a name="tex2html478" href="node8.html">User Input</a> <b>Up:</b> <a name="tex2html474" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html468"
+	href="node6.html">Advanced Features</a> <b><a name="tex2html476" href="node1.html">Contents</a></b></td>
+	</tr>
+	</table>
+	<!--End of Navigation Panel-->
+    
+    <!--Table of Child-Links--> 
+    <p><br /><a name="CHILD_linkS"><strong>Subsections</strong></a> </p>
+    <ul>
+      <li>
+     	<a name="tex2html4790" href="node7.html#SECTION00700000000000000000">Creating Your Own Panels</a> 
+        <ul>
+          <li>
+            <a name="tex2html479" href="node7.html#SECTION00701000000000000000">How to get started</a>
+          </li>
+          <li>
+            <a name="tex2html480" href="node7.html#SECTION00702000000000000000">Next Steps</a>
+          </li>
+          <li>
+            <a name="tex2html481" href="node7.html#SECTION00703000000000000000">Access to the Variable Substitution System</a>
+          </li>
+          <li>
+            <a name="tex2html482" href="node7.html#SECTION00704000000000000000">Controlling Flow</a>
+          </li>
+          <li>
+            <a name="tex2html483" href="node7.html#SECTION00705000000000000000">Reading XML</a>
+          </li>
+          <li>
+            <a name="tex2html484" href="node7.html#SECTION00706000000000000000">Supporting Classes</a>
+          </li>
+          <li>
+            <a name="tex2html485" href="node7.html#SECTION00707000000000000000">Panels that are not visible</a>
+          </li>
+          <li>
+            <a name="tex2html486" href="node7.html#SECTION00708000000000000000">A word about building IzPack</a>
+          </li>
+        </ul>
+        <br />
+      </li>
+      <li>
+        <a name="tex2html487" href="node7.html#SECTION00710000000000000000">The <tt>IzPanel</tt> Class</a> 
+        <ul>
+          <li>
+            <a name="tex2html488" href="node7.html#SECTION00711000000000000000">UML Diagram</a>
+          </li>
+          <li>
+            <a name="tex2html489" href="node7.html#SECTION00712000000000000000">Description</a>
+          </li>
+        </ul>
+        <br />
+      </li>
+      <li>
+        <a name="tex2html490" href="node7.html#SECTION00720000000000000000">The <tt>Internationalization</tt> of custom panels</a>
+      </li>
+    </ul>
+    <!--End of Table of Child-Links-->
+    <hr />
+    <h1>
+      <a name="SECTION00700000000000000000">Creating Your Own Panels</a>
+    </h1>
+    <p>
+      In IzPack all of the actual work of installing an application is done in panels. The IzPack framework is primarily there to support the operation of the panels and to manage the navigation
+      through the installation process. This enables a user to decide which operations are carried out during an installation and the order in which they are carried out, simply by listing the
+      appropriate panels in the desired order.<br />
+    </p>
+    <p>
+      As far as extending the functionality of IzPack is concerned, the result of this design is that new functionality can be integrated by adding new panels to the framework and then listing them
+      in the install spec. Because the existing panels all have a visible GUI and because the term panel hints at something visible, it is not obvious that a panel does not have to contain any
+      visible GUI to function in this framework. There are more details on this subject later on in this chapter.<br />
+    </p>
+    <h2>
+      <a name="SECTION00701000000000000000">How to get started</a>
+    </h2>
+    <p>
+      To get started with writing your own panels, it is best to place all the IzPack code into a separate working directory, from where you can compile it. Then try to compile the code as is and get
+      that to work.<br />
+    </p>
+    <p>
+      The next step would be to have a look at another panel implementation, so you can see how things are done. Make sure you look at the less complicated panels, as the panels with advanced
+      features will only be confusing. All the code for building UI and such, only detracts from the essentials of what a panel needs to do. This means that you shouldn't start with <tt>
+      UserInputPanel</tt> or <tt>ShortcutPanel</tt>. <tt>HelloPanel</tt> is probably a much better choice at this stage. The source code for panels is located at:<br />
+    </p>
+    <p>
+      <tt>/src/lib/com/izforge/izpack/panels</tt>.<br />
+    </p>
+    <p>
+      You will find that all panels are derived from <tt>IzPanel</tt>; do the same thing with your new panel. Please note that the <tt>IzPanel</tt> class itself is located in the <tt>
+      com.izforge.izpack.installer</tt> package but your panels need to belong to <tt>com.izforge.izpack.panels</tt>. Perhaps you can just copy the code of a panel, remove all the functional stuff
+      and then start filling in your own code. Start with something very simple to begin with, just to see how it works. The implementation is really quite straight forward.<br />
+    </p>
+    <h2>
+      <a name="SECTION00702000000000000000">Next Steps</a>
+    </h2>
+    <p>
+      Once you have a successful compilation, you must place the compiled result of your panel code at a special place, so that the installer compiler can fetch it when building an installer that
+      uses your panel. Go to:<br />
+    </p>
+    <p>
+      <tt>/bin/panels</tt><br />
+    </p>
+    <p>
+      You will see that there is a subdirectory for each panel. Make a subdirectory for your new panel with the exact same name as your panel and place your compiled panel code there.<br />
+    </p>
+    <p>
+      Once this is accomplished, you are ready to use your panel in an installer. Just list it in the spec file like any other panel, compile and in theory it will show up when running the installer.
+      Once you made it this far, you can dig deeper and get going with your specific needs.<br />
+    </p>
+    <p>
+      Oh, and one other thing: If you think the your code might be useful for a larger audience, please think about a contribution to IzPack.
+    </p>
+    <h2>
+      <a name="SECTION00703000000000000000">Access to the Variable Substitution System</a>
+    </h2>
+    <p>
+      One thing many developers ask about is how to get access to the variable substitution system. This is not surprising, because customizing an installation for a particular target environment is
+      one of the most important functions of an installer and the variable substitution system plays a big part in this operation.<br />
+    </p>
+    <p>
+      You can get access to the variable substitution system through the protected variable <tt>idata</tt> in <tt>IzPanel</tt>. This variable is of the type <tt>InstallData</tt>, which is in turn
+      subclassed from <tt>AutomatedInstallData</tt>. The Javadoc documentation will give you more details on these classes. Of particular interest in this context are the methods <tt>
+      getVariable()</tt>, <tt>setVariable()</tt> and <tt>getVariableValueMap()</tt> in <tt>AutomatedInstallData</tt>.<br />
+    </p>
+    <h2>
+      <a name="SECTION00704000000000000000">Controlling Flow</a>
+    </h2>
+    <p>
+      Some of the interesting methods in <tt>com.izforge.izpack.InstallerFrame</tt> that you might want to explore are <tt>lockPrevButton()</tt> and <tt>lockNextButton()</tt>. They allow you to block
+      the use of the button to move back to the previous panel and the button that moves to the next panel respectively. Being able to control the availability of these buttons to the user is
+      important if one of your panels performs a task where the effects cannot be undone. If the user would navigate back to the previous panel your installation might get into an unknown or even
+      unstable state. On the other hand, if the operations in one panel vitally depend that a task in the previous panel is completed, then you should block the use of the next button until that task
+      is completed.<br />
+    </p>
+    <h2>
+      <a name="SECTION00705000000000000000">Reading XML</a>
+    </h2>
+    <p>
+      If you need configuration files for your panel you would want to use XML for that purpose. To read XML files you should use NanoXML, as it is guaranteed to be available at installation time. In
+      fact, all of the IzPack infrastructure uses NanoXML to read XML files. First you should read the NanoXML documentation. The documentation is included as PDF file with the IzPack distribution,
+      have a look in <tt>/doc/nanoxml</tt>. In addition to that, the Javadoc-generated class documentation is an excellent resource to get help on NanoXML. And then, there is always the code of other
+      panels to see practical examples. Generally, it is a much simpler matter to use NanoXML then to use the DOM included with the Java distribution, so don't hesitate to explore NanoXML.
+    </p>
+    <h2>
+      <a name="SECTION00706000000000000000">Supporting Classes</a>
+    </h2>
+    <p>
+      If your panel requires any supporting classes that are part of the panels package, then you must place the *.class files into the same directory with your panel .class file.<br />
+    </p>
+    <p>
+      It is also possible to have supporting classes that are not part of the panels package. In fact, these classes don't even have to be in the <tt>com.izpack...</tt> tree. You simply have to
+      ensure that the *.class files are located in the proper directory structure inside <tt>/lib/installer.jar</tt>. If this is done, they will be available at install time. For your first
+      experiments you can simply compile your classes and add them to the *.jar file using the jar tool or a zip utility. However, ultimately it is much easier to use Ant and the IzPack build script
+      to accomplish this task.<br />
+    </p>
+    <h2>
+      <a name="SECTION00707000000000000000">Panels that are not visible</a>
+    </h2>
+    <p>
+      If you have a task that needs to be performed at a particular step in the installation process, but that does not need any user interaction, you can implement a panel that is not visible. To
+      implement this, you should first familiarize yourself with the Javadoc documentation of <tt>com.izforge.izpack.InstallerFrame</tt>. In your panel code you get access to the right instance of
+      <tt>InstallerFrame</tt> through the protected variable <tt>parent</tt> in <tt>IzFrame</tt>.<br />
+    </p>
+    <p>
+      To begin with, do not configure any UI. In other words, do not set a layout and do not place any GUI elements on your panel. In this context the method <tt>skipPanel()</tt> is what gets the job
+      done. In your <tt>panelActivate()</tt> method you simply perform your task and then call <tt>parent.skipPanel()</tt>. This gets the job done without the user being aware that there was another
+      panel in the flow.<br />
+    </p>
+    <h2>
+      <a name="SECTION00708000000000000000">A word about building IzPack</a>
+    </h2>
+    <p>
+      If you don't already use Jakarta Ant to support your development work, i highly recommend you have a look at it. It is a great help in organizing practically all routine tasks connected with
+      building and packaging your application. For example, building and getting IzPack ready for distribution is not a straight forward process but with Ant this all comes down to starting a single
+      command. In addition, IzPack provides its own Ant task, which supports the integration of building a complete installer into your regular build scripts. You can find more details about this in
+      the chapter about advanced features. To get a look at Ant you can visit the following link: <tt><a name="tex2html28" href="http://ant.apache.org/index.html">
+      http://ant.apache.org/index.html</a></tt>.<br />
+    </p>
+    <p>
+      You can find the Ant build script for IzPack itself at:<br />
+    </p>
+    <p>
+      <tt>/src/build.xml</tt><br />
+    </p>
+    <h1>
+      <a name="SECTION00710000000000000000">The <tt>IzPanel</tt> Class</a>
+    </h1>
+    <h2>
+      <a name="SECTION00711000000000000000">UML Diagram</a>
+    </h2>
+    <div class="center">
+      <!-- MATH
+       $\fbox{\includegraphics[scale=0.5]{img/ch5-izpanel}}$
+       --><img width="573" height="555" class="alignmiddle" src="img6.png" alt="\fbox{\includegraphics[scale=0.5]{img/ch5-izpanel}}" />
+    </div>
+    <h2>
+      <a name="SECTION00712000000000000000">Description</a>
+    </h2>
+    <p>
+      The two data members are : the install data (refer to the <tt>InstallData</tt> Javadoc reference) and a reference to the parent installer frame.<br />
+    </p>
+    <p>
+      The methods have the following functionality :<br />
+    </p>
+    <ul>
+      <li>
+        <i>(constructor)</i> : called just after the language selection dialog. All the panels are constructed at this time and then the installer is shown. So be aware of the fact that the installer
+        window is <b>not</b> yet visible when the panel is created. If you need to do some work when the window is created, it is in most cases better do it in <tt>panelActivate</tt>.<br />
+      </li>
+      <li>
+        <tt>isValidated</tt> returns <tt>true</tt> if the user is allowed to go a step further in the installation process. Returning <tt>false</tt> will lock it. For instance the LicencePanel
+        returns <tt>true</tt> only if the user has agreed with the license agreement. The default is to return <tt>true</tt>.<br />
+      </li>
+      <li>
+        <tt>panelActivate</tt> is called when the panel becomes active. This is the best place for most initialization tasks. The default is to do nothing.<br />
+      </li>
+      <li>
+        <tt>makeXMLData</tt> is called to build the automated installer data. The default is to do nothing. <tt>panelRoot</tt> refers to the node in the XML tree where you can save your data. Each
+        panel is given a node. You can organize it as you want with the markups you want starting from <tt>panelRoot</tt>. It's that simple.<br />
+      </li>
+      <li>
+        <tt>runAutomated</tt> is called by an automated-mode installation. Each panel is called and can do its job by picking the data collected during a previous installation as saved in <tt>
+        panelRoot</tt> by <tt>makeXMLData</tt>.<br />
+      </li>
+      <li>
+        <tt>setInitialFocus</tt> with this method it is possible to set a hint which component should be get the focus at activation of the panel. It is only a hint. Not all components are supported.
+        For more information see java.awt.Component.requestFocusInWindow or java.awt.Component.requestFocus if the VM version is less than 1.4.<br />
+      </li>
+      <li>
+        <tt>getInitialFocus</tt> returns the component which should be get the focos at activation of the panel. If no component was set, null returns.<br />
+      </li>
+      <li>
+        <tt>getSummaryBody</tt> this method will be called from the SummaryPanel to get the summary of this class which should be placed in the SummaryPanel. The returned text should not contain a
+        caption of this item. The caption will be requested from the method getCaption. If null returns, no summary for this panel will be enerated. Default behaviour is to return null.<br />
+      </li>
+      <li>
+        <tt>getSummaryCaption</tt> this method will be called from the SummaryPanel to get the caption for this class which should be placed in the SummaryPanel. Default behaviour is to return the
+        string given by langpack for the key ClassName.summaryCaption.<br />
+      </li>
+    </ul>
+    <p>
+      Additionally, there are some helper methods to simplify grid bag layout handling and creation of some common used components.
+    </p>
+    <h1>
+      <a name="SECTION00720000000000000000">The <tt>Internationalization</tt> of custom panels</a>
+    </h1>
+   <p> A common way to define language dependant messages for custom panels is to add entries into the common langpacks which are stored in the directory </p>
+<pre>
+[IzPackRoot]/bin/langpacks/installer
+</pre>
+   <p> New with version 3.8 is the possibility to define a resource for custom langpacks. Define e.g. </p>
+<pre>
+&lt;resources&gt;
+    ...
+    &lt;res id="CustomLangpack.xml_deu" 
+        src="myConfigSubPath/CustomLangpack_deu.xml"/&gt;
+    ...
+&lt;/resources&gt;
+</pre>
+   <p> in the install.xml file.The id should be written as shown, the file sub path and name can be other than in the example. This file should be using the same DTD as the common langpack. For each
+    language a separate file with the ISO3 extension in the id should be used. </p>
+    <hr />
+       <!--Navigation Panel-->
+	<table width="100%">
+	<tr>
+	<td><a name="tex2html477" href="node8.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html473" href="izpack-doc.html"><img class="alignbottom"
+	width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html467" href="node6.html"><img class="alignbottom" width="63" height="24" alt="previous" src="prev.png" /></a> <a name="tex2html475"
+	href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+	<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width=
+	"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+	</tr>
+	
+	<tr>
+	<td><b>Next:</b> <a name="tex2html478" href="node8.html">User Input</a> <b>Up:</b> <a name="tex2html474" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html468"
+	href="node6.html">Advanced Features</a> <b><a name="tex2html476" href="node1.html">Contents</a></b></td>
+	</tr>
+	</table>
+	<address>
+	<!--End of Navigation Panel-->
+      Julien Ponge 2005-05-24
+    </address>
+  </body>
+</html>
+

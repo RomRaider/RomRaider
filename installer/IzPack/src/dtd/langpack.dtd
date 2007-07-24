@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!-- 
+        ==================================
+        The DTD for IzPack Languages Packs 
+        ==================================
+-->
+
+<!-- The root element -->
+<!ELEMENT langpack (str+)>
+
+<!-- A String definition -->
+<!ELEMENT str (#PCDATA)>
+    <!ATTLIST str id CDATA #REQUIRED>
+    <!ATTLIST str txt CDATA #REQUIRED>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!--
+
+        =====================================
+        The DTD for the IzPack CustomActions
+        AntActionInstallerListener and
+        AntActionUninstallerListener
+        =====================================
+$Id: antaction.dtd 1075 2005-02-15 13:06:59Z jponge $
+        
+-->
+
+<!-- The root element -->
+<!ELEMENT antactions (pack*)>
+
+<!--  -->
+<!--  -->
+    <!-- The pack sections. The names should be the same as the pack sections in
+         the install xml file (see also installation.dtd). The defined actions 
+         are performed only for packs which are selected for installation.
+    -->
+    <!ELEMENT pack (antcall+)>
+        <!ATTLIST pack name CDATA #REQUIRED>
+        <!-- The antcall section. It defines, what antcall to perform at what time
+             of installation with what environment.
+        -->
+        <!ELEMENT antcall (property*, propertyfile*, target*, uninstall_target*)>
+            <!-- Attribute order determine at what point of installation the antcalls
+                 defined by ELEMENT target should be performed.
+            -->
+            <!ATTLIST antcall order (beforepack|afterpack|beforepacks|afterpacks) #REQUIRED>
+            <!-- Attribute uninstall_order determine at what point of uninstallation 
+                 the antcalls defined by ELEMENT uninstall_target should be performed.
+            -->
+            <!ATTLIST antcall uninstall_order (beforedeletion|afterdeletion) "beforedeletion">
+            <!ATTLIST antcall quiet (yes|no) "no">
+            <!ATTLIST antcall verbose (yes|no) "no">
+            <!ATTLIST antcall logfile CDATA  #IMPLIED>
+            <!-- ID of the message which should be displayed in the InstallPanel. The ID 
+                 is related to the &lt;language&gt;.xml file.
+			-->
+            <!ATTLIST antcall messageid CDATA  #IMPLIED>
+            <!-- Path of the file which contains the antcall. -->
+            <!ATTLIST antcall buildfile CDATA #REQUIRED>
+            <!-- Properties to be used with all targets and uninstall_targets 
+                 which are defined for this antcall.
+            -->
+            <!ELEMENT property EMPTY>
+                <!ATTLIST property name CDATA #REQUIRED>
+                <!ATTLIST property value CDATA #REQUIRED>
+            <!-- Properties to be used with all targets and uninstall_targets 
+                 which are defined for this antcall given by the path of a properties
+                 file..
+            -->
+            <!ELEMENT propertyfile EMPTY>
+                <!ATTLIST propertyfile path CDATA #REQUIRED>
+            <!-- Targets to perform with this antcall at installation time.
+                 The targets should be defined in the given buildfile, else an
+                 ant exception will be raised.
+            -->
+            <!ELEMENT target EMPTY>
+                <!ATTLIST target name CDATA #REQUIRED>
+            <!-- Targets to perform with this antcall at uninstallation time.
+                 The targets should be defined in the given buildfile, else an
+                 ant exception will be raised.
+            -->
+            <!ELEMENT uninstall_target EMPTY>
+                <!ATTLIST uninstall_target name CDATA #IMPLIED>
+
+                

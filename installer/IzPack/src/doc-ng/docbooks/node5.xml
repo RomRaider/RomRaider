@@ -1,0 +1,211 @@
+<?xml version='1.0' ?>
+<article>
+
+
+
+<informaltable><tgroup cols="2"><tbody><row><entry><anchor id="tex2html425"/><informalfigure><mediaobject><imageobject><imagedata fileref="next.png" width="37">24</imagedata></imageobject><caption><para>next</para></caption></mediaobject></informalfigure> <anchor id="tex2html421"/><informalfigure><mediaobject><imageobject><imagedata fileref="up.png" width="26">24</imagedata></imageobject><caption><para>up</para></caption></mediaobject></informalfigure> <anchor id="tex2html415"/><informalfigure><mediaobject><imageobject><imagedata fileref="prev.png" width="63">24</imagedata></imageobject><caption><para>previous</para></caption></mediaobject></informalfigure> <anchor id="tex2html423"/><informalfigure><mediaobject><imageobject><imagedata fileref="contents.png" width="65">24</imagedata></imageobject><caption><para>contents</para></caption></mediaobject></informalfigure></entry><entry><ulink url="http://validator.w3.org/check?uri=referer"><informalfigure><mediaobject><imageobject><imagedata fileref="http://www.w3.org/Icons/valid-xhtml10">31</imagedata></imageobject><caption><para>Valid XHTML 1.0!</para></caption></mediaobject></informalfigure></ulink> <ulink url="http://jigsaw.w3.org/css-validator/"><informalfigure><mediaobject><imageobject><imagedata fileref="http://jigsaw.w3.org/css-validator/images/vcss">31</imagedata></imageobject><caption><para>Valid CSS!</para></caption></mediaobject></informalfigure></ulink></entry></row>
+<row><entry><emphasis role="b">Next:</emphasis> <anchor id="tex2html426"/>Desktop Shortcuts <emphasis role="b">Up:</emphasis> <anchor id="tex2html422"/>izpack-doc <emphasis role="b">Previous:</emphasis> <anchor id="tex2html416"/>Writing Installation XML Files <emphasis role="b"><anchor id="tex2html424"/>Contents</emphasis></entry></row>
+</tbody></tgroup></informaltable>
+
+
+
+ 
+<para><?db2html element="br"?><anchor id="CHILD_linkS"/><emphasis role="strong">Subsections</emphasis> </para>
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html427"/>Ant Integration</para></listitem><listitem><para><anchor id="tex2html428"/>Embedding the installation file using a config element</para></listitem><listitem><para><anchor id="tex2html429"/>System properties as variable</para></listitem><listitem><para><anchor id="tex2html430"/>Automated Installers</para></listitem><listitem><para><anchor id="tex2html431"/>Picture on the Language Selection Dialog</para></listitem><listitem><para><anchor id="tex2html432"/>Picture in the installer</para></listitem><listitem><para><anchor id="tex2html433"/>Web Installers</para></listitem><listitem><para><anchor id="tex2html434"/>More Internationalization 
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html435"/>Special resources</para></listitem><listitem><para><anchor id="tex2html436"/>Packs</para></listitem></itemizedlist>
+</para></listitem></itemizedlist>
+
+
+<hr xmlns="http://www.w3.org/1999/xhtml"/>
+<title>Advanced Features</title>
+
+<title> <?db2html element="br"?>
+Ant Integration</title>
+
+<para>I<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> can be easily integrated inside an Ant build process. To do so you first need to tell Ant that you would like to use I<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> :</para>
+
+<programlisting>
+&lt;!-- Allows us to use the IzPack Ant task --&gt;
+&lt;taskdef name="izpack" classpath="${basedir}/lib/compiler.jar"
+         classname="com.izforge.izpack.ant.IzPackTask"/&gt;
+</programlisting>
+
+<para>If you want to use the standalone compiler (and therefore don't need an IzPack installation for building), the task needs to be defined as follows:</para>
+
+<programlisting>
+&lt;!-- Allows us to use the IzPack Ant task --&gt;
+&lt;taskdef name="izpack" classpath="${basedir}/lib/standalone-compiler.jar"
+         classname="com.izforge.izpack.ant.IzPackTask"/&gt;
+</programlisting>
+
+<para>Don't forget to add <literal>compiler.jar</literal> or <literal>standalone-compiler.jar</literal> to the classpath of the Ant process.</para>
+
+<para>Then you can invoke I<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> with the <literal>izpack</literal> task which takes the following parameters:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>input</literal> : the XML installation file. The installation can be specified as an external file, or embedded using a <literal>config</literal> child element (see section&#160;<link linkend="embedconfig">
+3.2</link>).</para></listitem><listitem><para><literal>output</literal> : the output jar installer file</para></listitem><listitem><para><literal>installerType</literal> : optional. <literal>standard</literal> or <literal>web</literal>. If <literal>web</literal>, the <literal>&lt;webdir&gt;</literal> attribute must be specified in the input file (see section&#160;<link linkend="webinstaller">3.7</link>). Used to force creation of a standard installer when the <literal>&lt;webdir&gt;</literal> attribute has been used.</para></listitem><listitem><para><literal>baseDir</literal> : the base directory to resolve the relative paths</para></listitem><listitem><para><literal>izPackDir</literal>: the I<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> home directory. Only neccessary if you do not use the standalone compiler.</para></listitem></itemizedlist>
+
+<para>Here is a sample of the task invocation:<?db2html element="br"?>
+</para>
+
+<programlisting>
+&lt;!-- We call IzPack --&gt;
+&lt;echo message="Makes the installer using IzPack"/&gt;
+&lt;izpack input="${dist.dir}/IzPack-install.xml"
+        output="${dist.dir}/IzPack-install.jar"
+        installerType="standard"
+        basedir="${dist.dir}"
+        izPackDir="${dist.dir}/"/&gt;
+</programlisting>
+
+<title> <?db2html element="br"?>
+Embedding the installation file using a config element</title>
+
+<para>Instead of using the install attribute to specify an external installation document, you can embed the installation config as a child of the izpack task using a <literal>config</literal> child element with
+a <literal>CDATA</literal> section. For example:</para>
+
+<programlisting>
+&lt;property name="jboss.home.url" value="http://www.jboss.com/" /&gt;
+...
+
+&lt;!-- Call IzPack with an embedded install using the config element --&gt;
+&lt;izpack output="${dist.dir}/IzPack-install.jar"
+        installerType="standard"
+        basedir="${dist.dir}"
+        izPackDir="${dist.dir}/"&gt;
+        &lt;config&gt;&lt;![CDATA[
+&lt;installation version="1.0"&gt;
+   &lt;info&gt;
+      &lt;appname&gt;JBossAS&lt;/appname&gt;
+      &lt;appversion&gt;4.0.2&lt;/appversion&gt;
+      &lt;appsubpath&gt;jboss-4.0.2&lt;/appsubpath&gt;
+      &lt;authors&gt;
+         &lt;author name="JBoss Inc." email="sales@jboss.com"/&gt;
+      &lt;/authors&gt;
+      &lt;url&gt;@{jboss.home.url}&lt;/url&gt;
+      &lt;javaversion&gt;1.4&lt;/javaversion&gt;
+   &lt;/info&gt;
+...
+        ]]&gt;&lt;/config&gt;
+&lt;/izpack&gt;
+</programlisting>
+
+<para>Property references of the form <literal>@{x}</literal> are replaced by the associated <literal>x</literal> ant property if it is defined.</para>
+
+<title>System properties as variable</title>
+
+<para>All system properties are available as $SYSTEM_&lt;variable&gt; where &lt;variable&gt; is the actual name _BUT_ with all separators replaced by '_'. Properties with null values are never
+stored.<?db2html element="br"?>
+</para>
+
+<para>Examples:</para>
+
+<programlisting>
+$SYSTEM_java_version or $SYSTEM_os_name
+</programlisting>
+
+<title>Automated Installers</title>
+
+<para>When you conclude your installation with a FinishPanel, the user can save the data for an automatic installation. With this data, he will be able to run the same installation on another similar
+machine. In an environment where many computers need to be supported this can save <emphasis role="i">a lot</emphasis> of time.<?db2html element="br"?>
+</para>
+
+<para>So run once the installation on a machine and save your automatic installation data in <literal>auto-install.xml</literal> (that's just a sample). Then put this file in the same directory as the installer
+on another machine. Run it with:<?db2html element="br"?>
+<literal>java -jar installer.jar auto-install.xml</literal><?db2html element="br"?>
+</para>
+
+<para>It has reproduced the same installation :-)<?db2html element="br"?>
+</para>
+
+<title>Picture on the Language Selection Dialog</title>
+
+<para>You can add a picture on the language selection dialog by adding the following resource : <literal>installer.langsel.img</literal>. <emphasis role="i">GIF</emphasis>, <emphasis role="i">JPEG</emphasis> and <emphasis role="i">PNG</emphasis> pictures are supported starting
+from J2SE 1.3.<?db2html element="br"?>
+</para>
+
+<title>Picture in the installer</title>
+
+<para>It is possible to specify an optional picture to display on the left side of the installer. To do this, you just have to define a resource whose id is <literal>Installer.image</literal>. For instance,</para>
+
+<programlisting>
+&lt;res id="Installer.image" src="nice-image.png" /&gt;
+</programlisting>
+<para>
+will do that. If the resource isn't specified, no picture will be displayed at all. <emphasis role="i">GIF</emphasis>, <emphasis role="i">JPEG</emphasis> and <emphasis role="i">PNG</emphasis> pictures are supported starting from J2SE 1.3. </para>
+<para>
+You can also give a specific picture for a specific panel by using the <literal>Installer.image.n</literal> resource names where <inlinemediaobject><imageobject><imagedata fileref="img5.png" width="16">16</imagedata></imageobject></inlinemediaobject> is the panel index. For instance if you want a specific picture for the third panel, use <literal>Installer.image.2</literal> since the indexes start from 0.<?db2html element="br"?>
+</para>
+
+<title> <?db2html element="br"?>
+Web Installers</title>
+
+<para>The web installers allow your users to download a small installer that does not contain the files to install. These files will be downloaded from an HttP server such as <emphasis role="i">Apache HttPD</emphasis>. If you
+have many optional packs, this can save people's resources. Its very easy: people download a small Jar file containing the installer, they launch it and choose their packages. Then the installer will
+get the required packages from individual Jar files located on a server, only downloading those required. It's that simple.<?db2html element="br"?>
+</para>
+
+<para>To create a web installer, add the <literal>&lt;webdir&gt;</literal> element to the <literal>&lt;info&gt;</literal> element (see section&#160;<ulink url="node4.html#info-element">2.3.2</ulink>). The text must be a valid,
+fully qualified URL for a direcory on the web server.<?db2html element="br"?>
+</para>
+
+<programlisting>
+&lt;info&gt;
+  &lt;appname&gt;Super extractor&lt;/appname&gt;
+  &lt;appversion&gt;2.1 beta 6&lt;/appversion&gt;
+  &lt;url&gt;http://www.superextractor.com/&lt;/url&gt;
+  &lt;webdir&gt;http://www.superextractor.com/download&lt;/url&gt;
+&lt;/info&gt;
+</programlisting>
+
+<para>You can force creation of a standard installer even if <literal>webdir</literal> is specified, by specifically creating a <literal>standard</literal> installer from the command line invocation or ant task (see <anchor id="ant-integration"/>).</para>
+
+<para>When installing, if the user is behind a firewall, attempting download the jar files may fail. If this happens, the user will be prompted to enter the name hostname and port of their firewall.</para>
+
+<para>You may password protect the files using mechanisms provided by your web server, IzPack will prompt for a password at install time, when required.</para>
+
+<title>More Internationalization</title>
+
+<para/><section id="SECTION00581000000000000000"><title>Special resources</title>
+
+<para>IzPack is available in several languages. However you might want to internationalize some additional parts of your installer. In particular you might want this for the *InfoPanel and
+*LicencePanel. This is actually pretty easy to do. You just have to add one resource per localization, suffixed with the ISO3 language code. At runtime these panels will try to load a localized
+version.<?db2html element="br"?>
+</para>
+
+<para>For instance let's suppose that we use a htmlInfoPanel. Suppose that we have it in English, French and German. We want to have a French text for french users. Here we add a resource pointing to
+the French text whose name is <literal>htmlInfoPanel.info_fra</literal>. And that's it ! English and German users (or anywhere other than in France) will get the default text (denoted by <literal>
+htmlInfoPanel.info</literal>) and the French users will get the French version. Same thing for the other Licence and Info panels.<?db2html element="br"?>
+</para>
+
+<para><emphasis role="i">To sum up :</emphasis> add <literal>_&lt;iso3 code&gt;</literal> to the resource name for <literal>InfoPanel</literal>, <literal>htmlInfoPanel</literal>, <literal>LicencePanel</literal> and <literal>htmlLicencePanel</literal>.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00582000000000000000"><title>Packs</title>
+
+<para>Thanks to Thorsten Kamann, it is possible to translate the packs names and descriptions. To do that, you have to define a special identifier in the elements of the XML installation file and add
+the related entries in the suitable langpacks. For instance if you have the following XML snippet:</para>
+
+<programlisting>
+&lt;pack name="core" id="core.package" ...&gt;
+  &lt;description/&gt;
+&lt;/pack&gt;
+</programlisting>
+
+<para>then the related entries of the langpacks will look like this: </para>
+
+<programlisting>
+&lt;str id="core.package" txt="Core Package"/&gt;
+&lt;str id="core.package.description" txt="The core package provides
+</programlisting>
+
+<hr xmlns="http://www.w3.org/1999/xhtml"/>
+
+<informaltable><tgroup cols="2"><tbody><row><entry><anchor id="tex2html425"/><informalfigure><mediaobject><imageobject><imagedata fileref="next.png" width="37">24</imagedata></imageobject><caption><para>next</para></caption></mediaobject></informalfigure> <anchor id="tex2html421"/><informalfigure><mediaobject><imageobject><imagedata fileref="up.png" width="26">24</imagedata></imageobject><caption><para>up</para></caption></mediaobject></informalfigure> <anchor id="tex2html415"/><informalfigure><mediaobject><imageobject><imagedata fileref="prev.png" width="63">24</imagedata></imageobject><caption><para>previous</para></caption></mediaobject></informalfigure> <anchor id="tex2html423"/><informalfigure><mediaobject><imageobject><imagedata fileref="contents.png" width="65">24</imagedata></imageobject><caption><para>contents</para></caption></mediaobject></informalfigure></entry><entry><ulink url="http://validator.w3.org/check?uri=referer"><informalfigure><mediaobject><imageobject><imagedata fileref="http://www.w3.org/Icons/valid-xhtml10">31</imagedata></imageobject><caption><para>Valid XHTML 1.0!</para></caption></mediaobject></informalfigure></ulink> <ulink url="http://jigsaw.w3.org/css-validator/"><informalfigure><mediaobject><imageobject><imagedata fileref="http://jigsaw.w3.org/css-validator/images/vcss">31</imagedata></imageobject><caption><para>Valid CSS!</para></caption></mediaobject></informalfigure></ulink></entry></row>
+<row><entry><emphasis role="b">Next:</emphasis> <anchor id="tex2html426"/>Desktop Shortcuts <emphasis role="b">Up:</emphasis> <anchor id="tex2html422"/>izpack-doc <emphasis role="b">Previous:</emphasis> <anchor id="tex2html416"/>Writing Installation XML Files <emphasis role="b"><anchor id="tex2html424"/>Contents</emphasis></entry></row>
+</tbody></tgroup></informaltable>
+
+<address xmlns="http://www.w3.org/1999/xhtml">Julien Ponge 2005-05-24</address>
+<para/></section></article>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!-- 
+	ATTENTION!!! do not edit with an editor which do not handle UTF-8 in a right manner!!
+	Storing with a wrong editor can crash this file!
+    Registry definition file for IzPack Installation.
+    $Id: RegistrySpec.xml 1335 2005-09-02 11:02:23Z bartzkau $
+-->
+
+<registry>
+	<pack name="UninstallStuff">
+		<!-- Special "pack", if not defined an uninstall key will be generated automatically -->
+		<!-- The variable $UNINSTALL_NAME can be only used if CheckedHelloPanel will be used
+		     because there the variable will be declared. With that variabel it is possible
+		     to install more as one instances of the product on one machine each with an
+		     unique uninstall key. -->
+		<value name="DisplayName" 
+			keypath="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$UNINSTALL_NAME"  
+			root="HKLM" 
+			string="$UNINSTALL_NAME"/>
+		<value name="UninstallString" 
+			keypath="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$UNINSTALL_NAME"  
+			root="HKLM" 
+			string="&quot;$JAVA_HOME\bin\javaw.exe&quot; -jar &quot;$INSTALL_PATH\uninstaller\uninstaller.jar&quot;"/>
+		<value name="DisplayIcon" 
+			keypath="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$UNINSTALL_NAME"  
+			root="HKLM" 
+			string="$INSTALL_PATH\bin\icons\izpack.ico"/>
+		<value name="HelpLink" 
+			keypath="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$UNINSTALL_NAME"  
+			root="HKLM" 
+			string="$APP_URL"/>
+      </pack>
+	<pack name="Core">
+		<key
+			keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME\ЮникодТестКлюч"  
+			root="HKLM" />
+		<value name="Path" 
+			keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME"  
+			root="HKLM" 
+			string="$INSTALL_PATH"/>
+		<value name="DWORD" 
+			keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME"  
+			root="HKLM" 
+			dword="42"/>
+		<value name="BIN" 
+			keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME"  
+			root="HKLM" >
+			<bin data="42, 49, 4e, 20, 54, 45, 53, 54" />
+			<bin data="42, 49, 4e, 20, 54, 45, 53, 54" />
+		</value>
+		<value name="MULTI" 
+			keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME"  
+			root="HKLM" >
+			<multi data="A multi string with three elements" />
+			<multi data="Element two"/>
+			<multi data="Element three"/>
+		</value>
+		<value name="ЮникодМногострочныйТест" 
+			keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME"  
+			root="HKLM">
+			<multi data="первая строчка" />
+			<multi data="вторая строчка" />
+		</value>
+		<value name="ЮникодТестСтрока" 
+			keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME"  
+			root="HKLM" 
+			string="это тестовая строка для поддержки юникода"/>
+	</pack>
+	<pack name="Documentation-HTML">
+			<key keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME\Documentation\HTML" root="HKLM"/>
+	</pack>
+	<pack name="Documentation-PDF">
+			<key keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME\Documentation\PDF" root="HKLM"/>
+	</pack>
+	<pack name="Documentation-PDF">
+			<key keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME\Documentation\PDF" root="HKLM"/>
+	</pack>
+	<pack name="Documentation-NanoXML">
+			<key keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME\Documentation\NanoXML" root="HKLM"/>
+	</pack>
+	<pack name="Sample">
+			<key keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME\Sample" root="HKLM"/>
+	</pack>
+	<pack name="Sources">
+			<key keypath="SOFTWARE\IzForge\IzPack\$UNINSTALL_NAME\Sources" root="HKLM"/>
+	</pack>
+</registry>
+

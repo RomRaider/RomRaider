@@ -1,0 +1,8 @@
+# Microsoft Developer Studio erstellte Abhängigkeitsdatei, einbezogen von ShellLink.mak
+
+.\ShellLink.cpp : \
+	".\com_izforge_izpack_util_os_ShellLink.h"\
+	"c:\program files\microsoft visual studio\vc98\include\basetsd.h"\
+	"c:\usr\java\jdk1.3.1_05\include\jni.h"\
+	"c:\usr\java\jdk1.3.1_05\include\win32\jni_md.h"\
+	

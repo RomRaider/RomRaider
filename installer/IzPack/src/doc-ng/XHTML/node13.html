@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+<title>CookBooks</title>
+<meta name="description" content="CookBooks" />
+<meta name="keywords" content="izpack-doc" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+
+<link rel="STYLESHEET" href="izpack-doc.css" />
+<link rel="previous" href="node9.html" />
+<link rel="up" href="izpack-doc.html" />
+</head>
+
+<body >
+	<!--Navigation Panel-->
+	<table width="100%">
+	<tr>
+	<td><a name="whatever" href="node10.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html592" href="izpack-doc.html"><img class="alignbottom"
+	width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html588" href="node9.html"><img src="prev.png" alt="previous" width="63" height="24" class="alignbottom" /></a> <a name="tex2html594"
+	href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+	<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid Xhtml 1.0!" height="31" width=
+	"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+	</tr>
+	
+	<tr>
+	<td><b>Next:</b> <a name="whatever2" href="node10.html">The Apache License Version 2.0</a> <b>Up:</b> <a name="tex2html593" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html589"
+	href="node9.html">Custom Actions</a> <b><a name="tex2html595" href="node1.html">Contents</a></b></td>
+	</tr>
+	</table>
+	<!--End of Navigation Panel-->
+
+	<!--Table of Child-Links--> 
+<p><br /><a name="CHILD_linkS"><strong>Subsections</strong></a> </p>
+
+<ul>
+<li><a name="listmainTitle1" href="node13.html#mainTitle1">CookBooks</a>
+	<ul>
+		<li><a name="listcookbook1" href="node13.html#cookbook1">How To create an ODBC connection with IzPack (by Fabrice Mirabile)</a>
+			<ul>
+				<li><a name="listcookbook12" href="node13.html#cookbook11">Problem</a></li>
+				<li><a name="listcookbook12" href="node13.html#cookbook12">Solution</a></li>
+				<li><a name="listcookbook13" href="node13.html#cookbook13">Discussion</a></li>
+			</ul>
+		</li>
+		<li><a name="listcookbook2" href="node13.html#cookbook2">Work around for pack and process dependence And Execution of Java Classes that runs SQL / PLSQL (by Fabrice Mirabile)</a>
+			<ul>
+				<li><a name="listcookbook21" href="node13.html#cookbook21">Problem</a></li>
+				<li><a name="listcookbook22" href="node13.html#cookbook22">Solution</a></li>
+				<li><a name="listcookbook23" href="node13.html#cookbook23">Discussion</a></li>
+			</ul>
+		</li>
+	</ul>
+</li>
+</ul>
+
+<!--End of Table of Child-Links-->
+<hr />
+<h1><a name="mainTitle1">
+CookBooks</a>
+</h1>
+
+<h2><a name="cookbook1">1. How To create an ODBC connection with IzPack (by Fabrice Mirabile)</a></h2>
+<h3><a name="cookbook11">a. Problem</a></h3>
+<p>ODBC can be used as a layer between app servers and databases. It is quite convienent to setup an ODBC connection at installation time when the installer can actually retrieve all info needed for such setup. How can we achieve that? And for which OS ?</p>
+
+
+<h3><a name="cookbook12">b. Solution</a></h3>
+<p>After looking at many solutions, I found one that is very convenient in the sense that it applies to both Windows and UNIX environment.<br />
+
+In fact, the Windows ODBC Manager applet offers two type of setup:<br /></p>
+<ul>
+	<li>The system source</li>
+	<li>The file source</li>
+</ul>
+<p>Basically, the system source writes in the registry and unfortunately does something else that I couldn't figure out.<br />
+However, the file source is very similar to ODBC.ini under UNIX.<br />
+In ODBC.ini, you can define all connections into this file. For windows it's a bit different as you will have as many files as connections. But even though, there's a trick!<br />
+</p>
+<p>
+	A fileDSN (the name given to this type of connection) for a connection to an Oracle database will look like this :
+</p>
+<p>
+<tt>
+[ODBC]<br />
+DRIVER=Oracle in OraHome92<br />
+UID=%{UID}<br />
+PWD=%{PWD}<br />
+DBQ=%{DBName}<br />
+SERVER=%{DBName}<br />
+</tt>
+</p>
+<p>
+Therefore you can realize straightforwardly that by changing the UID and PWD you will make your connection point to any schemas you want.
+</p>
+<p>
+In my company's software, we use ODBC to make the connection between the application and the database. Therefore, we use a batch to launch the server with a bunch of parameters. One of them is the ODBC DSN. This one, using fileDSN, should be defined as follows:
+</p>
+<p>SET DSN=filedsn=$INSTALL_PATH\whateveryoulike.dsn</p>
+
+<p>
+A very nice trick is to put in this batch the UID and the PWD so that it's not needed in the file directly and therefore you make the installer create different batch loaders for different Schemas !
+<br />
+That's very usefull when you have on the same DB many schema and you want the same application server to access both of them without reinstalling the whole thing !
+</p>
+
+<p>
+In the following discussion, I'll show you an example on how to prepare the installer for creating a file at the root of the installation path which will permit to connect to an Oracle DataBase.<br />	
+</p>
+
+<h3><a name="cookbook13">c. Discussion</a></h3>
+<p>
+<b>Install.xml:</b></p>
+<p>
+&lt;file src="dsn.dsn" targetdir="$INSTALL_PATH"/&gt;<br />
+&lt;parsable type="shell" targetfile="$INSTALL_PATH/whateveryoulike.dsn"/&gt;</p>
+<p>
+<b>UserInputSpec.xml:</b></p>
+<pre>
+&lt;userInput&gt;
+	&lt;panel order="0"&gt;
+		&lt;field type="staticText" align="left" txt="Server Only: Enter the settings for the ODBC Connection (DSN) environment variable:" id="staticText3.text"/&gt;
+		&lt;field type="divider" align="center"/&gt;
+		&lt;field type="text" variable="UID"&gt;
+			&lt;description align="left" txt="" id="description2.text"/&gt;
+			&lt;spec txt="-&gt; Enter UID:" id="text.label" size="15" set=""/&gt;
+		&lt;/field&gt;
+		&lt;field type="divider" align="center"/&gt;
+		&lt;field type="password" variable="PWD"&gt;
+			&lt;description align="left" txt="" id="description3.text"/&gt;
+			&lt;spec&gt;
+			&lt;pwd txt="-&gt; Type the password for the connection:" id="pwd.label" size="10" set=""/&gt;
+				&lt;pwd txt="-&gt; Retype the password for the connection:" id="pwd.label2" size="10" set=""/&gt;
+			&lt;/spec&gt;
+			&lt;validator class="com.izforge.sample.PWDValidator" txt="Both versions of the password must match" id="error.label"/&gt;
+			&lt;processor class="com.izforge.sample.PWDEncryptor"/&gt;
+		&lt;/field&gt;
+		&lt;field type="space" align="center"/&gt;
+		&lt;field type="divider" align="center"/&gt;
+		&lt;field type="space" align="center"/&gt;
+		&lt;field type="text" variable="DBName"&gt;
+			&lt;description align="left" txt="" id="description4.text"/&gt;
+			&lt;spec txt="-&gt; Enter the name of the Database:" id="text.label" size="15" set=""/&gt;
+		&lt;/field&gt;
+		&lt;field type="text" variable="DBPortNo"&gt;
+			&lt;description align="left" txt="-&gt; Enter the port number for the database connection" id="description5.text"/&gt;
+			&lt;spec txt="(usually 1521 for oracle and 1433 for MS SQL Server)" id="text.label" size="15" set=""/&gt;
+		&lt;/field&gt;
+	&lt;/panel&gt;
+&lt;/userInput&gt;
+</pre>
+
+<p><b>BatchLoader.bat:</b></p>
+<pre>
+SET DSN=filedsn=$INSTALL_PATH\whateveryoulike.dsn;UID=$UID;PWD=$PWD
+start $INSTALL_PATH\yourpath\yourapp
+</pre>
+
+<p><b>whateveryoulike.dsn:</b></p>
+<pre>
+[ODBC]
+DRIVER=Oracle in OraHome92
+DBQ=%{DBName}
+SERVER=%{DBName}
+</pre>
+
+<p>Now during the installation the user will be prompt for the parameters (UID, PWD...) and the file will be parsed.</p>
+
+<p>Pretty simple !</p>
+
+<p>What about SQL Server or other db you would say ? Well, there's many ways to do it, a simple would be to have a skeleton for kind of db and then during the userinput ask for the database type (DB2, SQLSERVER,ORACLE...) and switch to the corresponding file before parsing.</p>
+
+<p>Let's imagine you choose SQL Server in the userinputpanel, then instead of copying whateveryoulike.dsn, you can copy whateveryoulikeforMS.dsn which looks like this:
+</p>
+
+<pre>
+[ODBC]
+DRIVER=SQL Server
+WSID=%{DBName}
+APP=Microsoft Open Database Connectivity
+SERVER=%{DBName}
+</pre>
+
+<p>In our installer, we create four packs, one for each DataBase. These packs copy the corresponding file and parse them. Again, pretty simple !</p>
+
+<p>Another remark, is that in this way if you choose more than one pack you could setup more than one connection at once on different DB as long as UID and PWD are the same. If not you'll need a little trick...</p>
+
+<p>I hope this helps and if anyone has a question, don't hesitate to contact me via <a href="http://developer.berlios.de/sendmessage.php?touser=12462">http://developer.berlios.de/sendmessage.php?touser=12462</a> or post into the user/devel list.</p>
+
+<p><b>Done by Fabrice Mirabile on 20<sup>th</sup> of april 2005</b></p>
+
+<h2><a name="cookbook2">2. Work around for pack and process dependence And Execution of Java Classes that runs SQL/PLSQL</a></h2>
+<h3><a name="cookbook21">a. Problem</a></h3>
+<p>
+I've encountered in many cases the need to have a relation between job being executed with the processpanel and a pack.
+Since IzPack doesn't provide yet such feature I worked out something that does the job.
+</p>
+<p>
+I'll explain it using an example on how to execute a java class that runs SQL statements.
+</p>
+
+<h3><a name="cookbook22">b. Solution</a></h3>
+<p>Here is what you will need:</p>
+<ul>
+	<li>UserInputSpec.xml</li>
+	<li>Install.xml</li>
+	<li>ProcessPanel.Spec.xml</li>
+</ul>
+<p>Which are at the root of the installation folder.</p>
+<p>
+Then you could have a folder with the SQL Stuffs, let's call it update.<br />
+So in update you'll have:
+</p>
+<ul>
+	<li>JDBCGeneral.class, I use JDBC to make a DataBase connection</li>
+	<li>launchsql.bat, which runs the class with all kind of arguments</li>
+	<li>ojdbc14.jar, oracle JDBC drivers</li>
+	<li>mssqlserver.jar, msutil.jar and msbase.jar, SQL server drivers (You could have also drivers for other DB such as DB2 or Sybase)</li>
+	<li>Two folders for the SQL scripts:
+		<ul>
+			<li>sqlsms, for SQL Server scripts</li>
+			<li>sqlsoracle, for oracle scripts</li>
+		</ul>
+	</li>
+</ul>
+<p>Inside those folders you can have any number of SQL scripts.
+The scripts can be written in this way for example:<br />
+delete from task_category;<br />
+insert into task_category values('LoadSource','Data Source Loading','source_loader_task.bat');
+</p>
+<p>
+Once you have this tree of files prepared you need to setup each file. The idea is that the install should copy on the client side the SQL scripts depending on the pack(s) chosen, plus the class and the batch file and then run the batch using the processpanel job. Therefore only the scripts for a specific pack would be run and there is the dependence we're looking for!
+</p>
+
+<h3><a name="cookbook23">c .Discussion</a></h3>
+<p><b>Install.xml:</b></p>
+<pre>
+&lt;?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?&gt;
+&lt;installation version="1.0"&gt;
+....
+&nbsp; &lt;resources&gt;
+&nbsp; &nbsp;  &lt;res id="ProcessPanel.Spec.xml" src="ProcessPanel.Spec.xml"/&gt;  
+&nbsp; &nbsp; &lt;res id="userInputSpec.xml" src="UserInputSpec.xml"/&gt;
+....
+&nbsp; &lt;/resources&gt;
+&nbsp; &lt;panels&gt;
+&nbsp; .....
+&nbsp; &nbsp; &lt;panel classname="UserInputPanel"/&gt;
+&nbsp; &nbsp; &lt;panel classname="ProcessPanel"/&gt;
+&nbsp; .....
+&nbsp; &lt;/panels&gt;
+&nbsp; &lt;packs&gt;
+......
+&nbsp; &nbsp; &lt;pack name="16-12-04" preselected="no" required="no" os="windows"&gt;
+&nbsp; &nbsp; &nbsp; &lt;description&gt;jar and SQL&lt;/description&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\sqlsms\sql161204.txt" target="$INSTALL_PATH\updates\sqlsms\sql161204.txt"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\sqlsoracle\sql161204.txt" target="$INSTALL_PATH\updates\sqlsoracle\sql161204.txt"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;file src="uninstaller.bat" targetdir="$INSTALL_PATH\Uninstaller"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;file src="uninstall.ico" targetdir="$INSTALL_PATH\Uninstaller"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\msbase.jar" target="$INSTALL_PATH\updates\msbase.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\mssqlserver.jar" target="$INSTALL_PATH\updates\mssqlserver.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\msutil.jar" target="$INSTALL_PATH\updates\msutil.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\ojdbc14.jar" target="$INSTALL_PATH\updates\ojdbc14.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\jdbcgeneral.class" target="$INSTALL_PATH\updates\JDBCGeneral.class"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\class\axiom_lang.jar" target="$INSTALL_PATH\class2\axiom_lang.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\class\axiom_lib.jar" target="$INSTALL_PATH\class2\axiom_lib.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\launchsql.bat" target="$INSTALL_PATH\updates\launchsql.bat"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;parsable targetfile="$INSTALL_PATH\updates\launchsql.bat"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;parsable targetfile="$INSTALL_PATH\Uninstaller\uninstaller.bat"/&gt;
+&nbsp; &nbsp; &lt;/pack&gt;
+
+&nbsp; &nbsp; &lt;pack name="17-12-04" preselected="no" required="no" os="windows"&gt;
+&nbsp; &nbsp; &nbsp; &lt;description&gt;jar and SQL&lt;/description&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\sqlsms\sql171204.txt" target="$INSTALL_PATH\updates\sqlsms\sql171204.txt"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\sqlsoracle\sql171204.txt" target="$INSTALL_PATH\updates\sqlsoracle\sql171204.txt"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;file src="uninstaller.bat" targetdir="$INSTALL_PATH\Uninstaller"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;file src="uninstall.ico" targetdir="$INSTALL_PATH\Uninstaller"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\msbase.jar" target="$INSTALL_PATH\updates\msbase.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\mssqlserver.jar" target="$INSTALL_PATH\updates\mssqlserver.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\msutil.jar" target="$INSTALL_PATH\updates\msutil.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\ojdbc14.jar" target="$INSTALL_PATH\updates\ojdbc14.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\jdbcgeneral.class" target="$INSTALL_PATH\updates\JDBCGeneral.class"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\launchsql.bat" target="$INSTALL_PATH\updates\launchsql.bat"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\class\axiom_lang.jar" target="$INSTALL_PATH\class2\axiom_lang.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;singlefile src="updates\class\axiom_lib.jar" target="$INSTALL_PATH\class2\axiom_lib.jar"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;parsable targetfile="$INSTALL_PATH\updates\launchsql.bat"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;parsable targetfile="$INSTALL_PATH\Uninstaller\uninstaller.bat"/&gt;
+&nbsp; &nbsp; &lt;/pack&gt;
+.....
+&nbsp; &lt;/packs&gt;
+&lt;/installation&gt;
+</pre>
+
+<p><b>UserInputSpec.xml:</b></p>
+<pre>
+&lt;userInput&gt;
+&nbsp; &lt;panel order="0"&gt;
+&nbsp; &nbsp; &lt;field type="title" align="Left" txt="Database Connection Parameters" bold="true" size="1" id="DBParam"/&gt;
+&nbsp; &nbsp; &lt;field type="staticText" align="left" txt="The following information are needed for making the connection with the database." id="staticText1.text"/&gt;
+&nbsp; &nbsp; &lt;field type="staticText" align="left" txt="Careful&nbsp;  These fields are case sensitive !" id="staticText2.text"/&gt;
+&nbsp; &nbsp; &lt;field type="divider" align="center"/&gt;
+&nbsp; &nbsp; &lt;field type="divider" align="center"/&gt;
+&nbsp; &nbsp; &lt;field type="combo" variable="SQLServerType"&gt;
+&nbsp; &nbsp; &nbsp; &lt;spec txt="Select the type of DataBase you're using &nbsp;  " id="SqlServerType.spec"&gt;
+&nbsp; &nbsp; &nbsp; &lt;choice processor="" txt="Not Needed !" id="SQLServerType.notneeded" value="None" set="true"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;choice processor="" txt="Oracle" id="SQLServerType.Oracle" value="Oracle"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;choice processor="" txt="Microsoft SQL Server" id="SQLServerType.MS" value="SQLServer"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;/spec&gt;
+&nbsp; &nbsp; &lt;/field&gt;
+&nbsp; &nbsp; &lt;field type="text" variable="ServerNameTextInput"&gt;
+&nbsp; &nbsp; &nbsp; &lt;description align="left" txt="" id="description1.text"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;spec txt="Enter server name&nbsp; " id="text.label" size="15" set="localhost"/&gt;
+&nbsp; &nbsp; &lt;/field&gt;
+&nbsp; &nbsp; &lt;field type="divider" align="center"/&gt;
+&nbsp; &nbsp; &lt;field type="text" variable="PortNbTextInput"&gt;
+&nbsp; &nbsp; &nbsp; &lt;description align="left" txt="-&gt; Enter the port number for the database connection" id="description5.text"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;spec txt="(usually 1521 for oracle and 1433 for MS SQL Server)" id="text.label" size="15" set="1433"/&gt;
+&nbsp; &nbsp; &lt;/field&gt;
+&nbsp; &nbsp; &lt;field type="divider" align="center"/&gt;
+&nbsp; &nbsp; &lt;field type="text" variable="DBNameTextInput"&gt;
+&nbsp; &nbsp; &nbsp; &lt;description align="left" txt="" id="description3.text"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;spec txt="Enter Database name&nbsp; " id="text.label" size="15" set="axiom"/&gt;
+&nbsp; &nbsp; &lt;/field&gt;
+&nbsp; &nbsp; &lt;field type="divider" align="center"/&gt;
+&nbsp; &nbsp; &lt;field type="text" variable="UserNameTextInput"&gt;
+&nbsp; &nbsp; &nbsp; &lt;description align="left" txt="" id="description4.text"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;spec txt="Enter Schema/User name for the Database&nbsp; " id="text.label" size="15" set="axiom"/&gt;
+&nbsp; &nbsp; &lt;/field&gt;
+&nbsp; &nbsp; &lt;field type="text" variable="UserPwdTextInput"&gt;
+&nbsp; &nbsp; &nbsp; &lt;description align="left" txt="" id="description5.text"/&gt;
+&nbsp; &nbsp; &nbsp; &lt;spec txt="Enter Schema/User name password for the Database&nbsp; " id="text.label" size="15" set="okta007"/&gt;
+&nbsp; &nbsp; &lt;/field&gt;
+&nbsp; &lt;/panel&gt;
+&lt;/userInput&gt;
+</pre>
+
+<p><b>ProcessPanel.Spec.xml:</b></p>
+<pre>
+&lt;processing&gt;
+&nbsp; &lt;job name="Executing the Needed Queries"&gt;
+&nbsp; &nbsp; &lt;os family="windows" /&gt;
+&nbsp; &nbsp; &lt;executefile name="$INSTALL_PATH\updates\launchsql.bat"/&gt;
+&nbsp; &lt;/job&gt;
+&lt;/processing&gt;
+</pre>
+
+<p><b>Launchsql.bat:</b></p>
+<pre>echo "Execution of SQL Queries \n"
+java -classpath $INSTALL_PATH\updates\msutil.jar;$INSTALL_PATH\updates\msbase.jar;$INSTALL_PATH\updates\mssqlserver.jar;$INSTALL_PATH\updates\ojdbc14.jar;$INSTALL_PATH\updates\ 
+JDBCGeneral 
+$INSTALL_PATH\updates\ 
+$ServerNameTextInput 
+$PortNbTextInput 
+$DBNameTextInput 
+$UserNameTextInput 
+$UserPwdTextInput 
+$SQLServerType
+</pre>
+
+<p><b>JDBCGeneral.java: (of course you need the compiled .class !!! but I'm showing the source code)</b></p>
+<pre>/**
+ * Parses a .sql file and runs them depending on DB settings
+ * through jdbc.
+ *
+ * @author  Fabrice Mirabile
+ * @version 2.0
+*/
+
+
+import java.*&#59;
+import java.sql.*&#59;
+import java.io.*&#59;
+import java.util.*&#59;
+import java.io.File&#59;
+
+
+public class JDBCGeneral{
+    private java.sql.Connection  con = null&#59;
+    private final String selectMethod = "cursor"&#59; 
+     
+     // Constructor
+     public JDBCGeneral(){}
+     
+     public static void main(String[] argv) throws Exception
+    {
+      String folderpath = ""&#59;  
+      
+      final String folderpathbase = argv[0]&#59;
+      final String serverName= argv[1]&#59;
+      final String portNumber = argv[2]&#59;
+      final String databaseName= argv[3]&#59;
+      final String userName = argv[4]&#59;
+      final String password = argv[5]&#59;
+      final String SQLServerType = argv[6]&#59;
+     
+      if (SQLServerType.equals("SQLServer")) {
+        final String url = "jdbc:microsoft:sqlserver://"&#59;
+        folderpath = folderpathbase.concat("sqlsms")&#59;
+        String classforname = "com.microsoft.jdbc.sqlserver.SQLServerDriver"&#59;
+        JDBCGeneral myDbTest = new JDBCGeneral()&#59;
+        //myDbTest.displayDbPropertiesMS(classforname,url,serverName,portNumber, databaseName, userName, password)&#59;
+        String[] files = myDbTest.getfilenamesMS(classforname,url,folderpath, serverName, portNumber, databaseName, userName, password)&#59;
+      } 
+      else if (SQLServerType.equals("Oracle")) {
+        final String url = "jdbc:oracle:thin:@"&#59;
+        folderpath = folderpathbase.concat("sqlsoracle")&#59;
+        //test if there's no need for SQL Execution,
+        //check if null value is returned from file selection on selecte path
+       String classforname = "oracle.jdbc.driver.OracleDriver"&#59;
+       JDBCGeneral myDbTest = new JDBCGeneral()&#59;
+       //myDbTest.displayDbPropertiesOracle(classforname,url,serverName,portNumber, databaseName, userName, password)&#59;
+       String[] files = myDbTest.getfilenamesOracle(classforname,url,folderpath, serverName, portNumber, databaseName, userName, password)&#59;
+      }
+           
+    }
+     
+     public void displayDbPropertiesOracle(String classforname, String url,String serverName, String portNumber, String databaseName, String userName, String password){
+          java.sql.DatabaseMetaData dm = null&#59;
+          java.sql.ResultSet rs = null&#59;
+          try{
+               con= this.getConnectionOracle(classforname,url,serverName, portNumber, databaseName, userName, password)&#59;
+               if(con!=null){
+                    dm = con.getMetaData()&#59;
+                    System.out.println("Driver Information")&#59;
+                    System.out.println("\tDriver Name: "+ dm.getDriverName())&#59;
+                    System.out.println("\tDriver Version: "+ dm.getDriverVersion ())&#59;
+                    System.out.println("\nDatabase Information ")&#59;
+                    System.out.println("\tDatabase Name: "+ dm.getDatabaseProductName())&#59;
+                    System.out.println("\tDatabase Version: "+ dm.getDatabaseProductVersion())&#59;
+                    System.out.println("Avalilable Catalogs ")&#59;
+                    rs = dm.getCatalogs()&#59;
+                    while(rs.next()){
+                         System.out.println("\tcatalog: "+ rs.getString(1))&#59;
+                    } 
+                    rs.close()&#59;
+                    rs = null&#59;
+                    closeConnection()&#59;
+               }else System.out.println("Error: No active Connection")&#59;
+          }catch(Exception e){
+               e.printStackTrace()&#59;
+          }
+          dm=null&#59;
+     }
+     
+     public void displayDbPropertiesMS(String classforname, String url,String serverName, String portNumber, String databaseName, String userName, String password){
+          java.sql.DatabaseMetaData dm = null&#59;
+          java.sql.ResultSet rs = null&#59;
+          try{
+               con= this.getConnectionMS(classforname,url,serverName, portNumber, databaseName, userName, password)&#59;
+               if(con!=null){
+                    dm = con.getMetaData()&#59;
+                    System.out.println("Driver Information")&#59;
+                    System.out.println("\tDriver Name: "+ dm.getDriverName())&#59;
+                    System.out.println("\tDriver Version: "+ dm.getDriverVersion ())&#59;
+                    System.out.println("\nDatabase Information ")&#59;
+                    System.out.println("\tDatabase Name: "+ dm.getDatabaseProductName())&#59;
+                    System.out.println("\tDatabase Version: "+ dm.getDatabaseProductVersion())&#59;
+                    System.out.println("Avalilable Catalogs ")&#59;
+                    rs = dm.getCatalogs()&#59;
+                    while(rs.next()){
+                         System.out.println("\tcatalog: "+ rs.getString(1))&#59;
+                    } 
+                    rs.close()&#59;
+                    rs = null&#59;
+                    closeConnection()&#59;
+               }else System.out.println("Error: No active Connection")&#59;
+          }catch(Exception e){
+               e.printStackTrace()&#59;
+          }
+          dm=null&#59;
+     }
+     
+     private java.sql.Connection getConnectionMS(String classforname, String url,String serverName, String portNumber, String databaseName, String userName, String password){
+          try{
+               Class.forName(classforname)&#59; 
+               con = java.sql.DriverManager.getConnection(getConnectionUrlMS(url,serverName, portNumber, databaseName),userName,password)&#59;
+               if(con!=null) System.out.println("Connection Successful!")&#59;
+          }catch(Exception e){
+               e.printStackTrace()&#59;
+               System.out.println("Error Trace in getConnection() : " + e.getMessage())&#59;
+         }
+          return con&#59;
+      }
+     
+     private String getConnectionUrlMS(String url,String serverName, String portNumber, String databaseName){
+          return url+serverName+":"+portNumber+"&#59;databaseName="+databaseName+"&#59;selectMethod="+selectMethod+"&#59;"&#59;
+     }
+     
+     private java.sql.Connection getConnectionOracle(String classforname, String url,String serverName, String portNumber, String databaseName, String userName, String password){
+          try{
+               Class.forName(classforname)&#59; 
+               con = java.sql.DriverManager.getConnection(getConnectionUrlOracle(url,serverName, portNumber, databaseName),userName,password)&#59;
+               if(con!=null) System.out.println("Oracle Connection Successful!")&#59;
+          }catch(Exception e){
+               e.printStackTrace()&#59;
+               System.out.println("Error Trace in getConnectionOracle() : " + e.getMessage())&#59;
+         }
+          return con&#59;
+      }
+     
+     private String getConnectionUrlOracle(String url,String serverName, String portNumber, String databaseName){
+          return url+serverName+":"+portNumber+":"+databaseName&#59;
+     }
+     
+     private String[] getfilenamesOracle(String classforname, String url, String folderpath, String serverName, String portNumber, String databaseName, String userName, String password) throws FileNotFoundException,IOException{
+         String newfolderpath = folderpath + "\\"&#59;
+         File toto = new File(newfolderpath)&#59;
+         String [] thelist = toto.list()&#59;
+         for (int j=0&#59; j&lt;thelist.length&#59; ++j)
+         {
+                 //System.out.println("file n°" + j + " = " +  thelist[j] + "\n")&#59;
+                 String[] StatementsSQL = SQLFileInput(newfolderpath + thelist[j])&#59;
+                 RunSQLOracle(StatementsSQL,classforname,url,serverName, portNumber, databaseName, userName, password)&#59;
+         }
+         return thelist&#59;
+     }
+     
+     private String[] getfilenamesMS(String classforname, String url, String folderpath, String serverName, String portNumber, String databaseName, String userName, String password) throws FileNotFoundException,IOException{
+         String newfolderpath = folderpath + "\\"&#59;
+         File toto = new File(newfolderpath)&#59;
+         String [] thelist = toto.list()&#59;
+         for (int j=0&#59; j&lt;thelist.length&#59; ++j)
+        {
+              //System.out.println("file n°" + j + " = " +  thelist[j] + "\n")&#59;
+              String[] StatementsSQL = SQLFileInput(newfolderpath + thelist[j])&#59;
+              RunSQLMS(StatementsSQL,classforname,url,serverName, portNumber, databaseName, userName, password)&#59;
+        }
+         return thelist&#59;
+     }
+     
+     /*
+     public String[] addToArray(String[] array, String s)
+     {
+       String[] ans = new String[array.length+1]&#59;
+       System.arraycopy(array, 0, ans, 0, array.length)&#59;
+       ans[ans.length - 1] = s&#59;
+       return ans&#59;
+     }
+	*/
+
+     public String[] SQLFileInput(String sqlinput) throws FileNotFoundException,IOException {
+        BufferedReader br = new BufferedReader(new FileReader(sqlinput))&#59;
+        List lines = new ArrayList()&#59;
+        int i = 0&#59;
+        int h = 0&#59;
+        String thisLine&#59;
+        String[] SQLStatements = new String[1000]&#59;
+        
+        while ((thisLine = br.readLine()) != null)
+        {
+           //System.out.println(thisLine)&#59;
+           SQLStatements[h] = thisLine&#59;
+            h++&#59;
+        }
+        
+        /*for(String line = br.readLine()&#59;line != null&#59;line = br.readLine()) {
+            // split by semi-colon
+            InsertRows = line.split("&#59;")&#59;
+            i++&#59;
+        }
+        
+        for (int j=0&#59; j&lt;SQLStatements.length&#59; ++j)
+        {
+            if (SQLStatements[j] != null)
+                System.out.println("query n°" + j + " = " +  SQLStatements[j])&#59;
+        }*/
+        
+        return SQLStatements&#59;
+    }
+     
+     public void RunSQLOracle(String[] StatementsSQL, String classforname, String url, String serverName, String portNumber, String databaseName, String userName, String password){
+         try {
+            con= this.getConnectionOracle(classforname,url,serverName, portNumber, databaseName, userName, password)&#59;
+            Statement stAddUser = con.createStatement()&#59;
+            
+            for (int i=0&#59; i&lt;StatementsSQL.length&#59; ++i)
+            {
+                 if (StatementsSQL[i] != null)
+                 {
+                     System.out.print(StatementsSQL[i] + "...")&#59;
+                     int rowsAffected = stAddUser.executeUpdate(StatementsSQL[i])&#59;
+                     if (rowsAffected == 1)
+                        System.out.println("OK")&#59;
+                  }
+            }
+            closeConnection()&#59;
+         }
+         catch(SQLException e) {
+          e.printStackTrace()&#59;
+          System.out.println("\nError Trace in RunSQLOracle(): " + e.getMessage())&#59;
+         }
+     }
+  
+     public void RunSQLMS(String[] StatementsSQL, String classforname, String url, String serverName, String portNumber, String databaseName, String userName, String password){
+         try {
+            con= this.getConnectionMS(classforname, url,serverName, portNumber, databaseName, userName, password)&#59;
+            Statement stAddUser = con.createStatement()&#59;
+            
+            for (int i=0&#59; i&lt;StatementsSQL.length&#59; ++i)
+            {
+                if (StatementsSQL[i] != null)
+                 {
+                    System.out.print(StatementsSQL[i] + "...")&#59;
+                    int rowsAffected = stAddUser.executeUpdate(StatementsSQL[i])&#59;
+                    if (rowsAffected == 1)
+                        System.out.println("OK")&#59;
+                 }
+            }
+            closeConnection()&#59;
+         }
+         catch(SQLException e) {
+          e.printStackTrace()&#59;
+          System.out.println("\nError Trace in RunSQLMS(): " + e.getMessage())&#59;
+         }
+     }
+     
+     private void closeConnection(){
+          try{
+               if(con!=null)
+                    con.close()&#59;
+               con=null&#59;
+          }catch(Exception e){
+               e.printStackTrace()&#59;
+          }
+     }
+}</pre>
+
+<p><b>To sum up</b>:</p>
+<p>The install.xml copy the files, the userinput ask for the DB connections, the process.xml launch the class which takes as arguments the following entries:</p>
+<ul>
+	<li>a folder that will contain the sql files (each file is a sequence of sql queries semi-colon separated). This folder contains subfolder for each type of DB</li>
+	<li>the server name of the machine hosting the DB</li>
+	<li>the port number of the connection (1433 for sql server and 1521 for oracle for example)</li>
+	<li>name of the DB</li>
+	<li>username</li>
+	<li>username password</li>
+	<li>type of DB (oracle, sqlserver...) in order to execute the sql inside the corresponding sub-folder</li>
+</ul>
+<p>Once again, i hope you'll find this useful and if anyone has a question, don't hesitate to contact me via <a href="http://developer.berlios.de/sendmessage.php?touser=12462">http://developer.berlios.de/sendmessage.php?touser=12462</a> or post into the user/devel list.</p>
+
+<p><b>Done by Fabrice Mirabile on 20<sup>th</sup> of april 2005</b></p>
+
+<!--Navigation Panel-->
+	<table width="100%">
+	<tr>
+	<td><a name="whatever" href="node10.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html592" href="izpack-doc.html"><img class="alignbottom"
+	width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html588" href="node9.html"><img src="prev.png" alt="previous" width="63" height="24" class="alignbottom" /></a> <a name="tex2html594"
+	href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+	<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid Xhtml 1.0!" height="31" width=
+	"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+	</tr>
+	
+	<tr>
+	<td><b>Next:</b> <a name="whatever2" href="node10.html">The Apache License Version 2.0</a> <b>Up:</b> <a name="tex2html593" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html589"
+	href="node9.html">Custom Actions</a> <b><a name="tex2html595" href="node1.html">Contents</a></b></td>
+	</tr>
+	</table>
+	<!--End of Navigation Panel-->
+<address>
+Julien Ponge
+2005-05-24
+</address>
+</body>
+</html>

@@ -1,0 +1,809 @@
+<?xml version='1.0' ?>
+<article>
+
+<informaltable><tgroup cols="2"><tbody><row><entry><anchor id="tex2html366"/><informalfigure><mediaobject><imageobject><imagedata fileref="next.png" width="37">24</imagedata></imageobject><caption><para>next</para></caption></mediaobject></informalfigure> <anchor id="tex2html362"/><informalfigure><mediaobject><imageobject><imagedata fileref="up.png" width="26">24</imagedata></imageobject><caption><para>up</para></caption></mediaobject></informalfigure> <anchor id="tex2html356"/><informalfigure><mediaobject><imageobject><imagedata fileref="prev.png" width="63">24</imagedata></imageobject><caption><para>previous</para></caption></mediaobject></informalfigure> <anchor id="tex2html364"/><informalfigure><mediaobject><imageobject><imagedata fileref="contents.png" width="65">24</imagedata></imageobject><caption><para>contents</para></caption></mediaobject></informalfigure></entry><entry><ulink url="http://validator.w3.org/check?uri=referer"><informalfigure><mediaobject><imageobject><imagedata fileref="http://www.w3.org/Icons/valid-xhtml10">31</imagedata></imageobject><caption><para>Valid XHTML 1.0!</para></caption></mediaobject></informalfigure></ulink> <ulink url="http://jigsaw.w3.org/css-validator/"><informalfigure><mediaobject><imageobject><imagedata fileref="http://jigsaw.w3.org/css-validator/images/vcss">31</imagedata></imageobject><caption><para>Valid CSS!</para></caption></mediaobject></informalfigure></ulink></entry></row>
+<row><entry><emphasis role="b">Next:</emphasis> <anchor id="tex2html367"/>Advanced Features <emphasis role="b">Up:</emphasis> <anchor id="tex2html363"/>izpack-doc <emphasis role="b">Previous:</emphasis> <anchor id="tex2html357"/>Getting started <emphasis role="b"><anchor id="tex2html365"/>Contents</emphasis></entry></row>
+</tbody></tgroup></informaltable>
+
+
+
+<para><?db2html element="br"?>
+<anchor id="CHILD_linkS"/><emphasis role="strong">Subsections</emphasis></para>
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html368"/>What You Need 
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html369"/>Your editor</para></listitem><listitem><para><anchor id="tex2html370"/>Writing XML</para></listitem></itemizedlist>
+
+<?db2html element="br"?>
+</para></listitem><listitem><para><anchor id="tex2html371"/>Variable Substitution 
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html372"/>The Built-In Variables</para></listitem><listitem><para><anchor id="tex2html373"/>Environment Variables</para></listitem><listitem><para><anchor id="tex2html374"/>Parse Types</para></listitem></itemizedlist>
+
+<?db2html element="br"?>
+</para></listitem><listitem><para><anchor id="tex2html375"/>The I<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> Elements 
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html376"/>The Root Element <literal>&lt;installation&gt;</literal></para></listitem><listitem><para><anchor id="tex2html377"/>The Information Element <literal>&lt;info&gt;</literal></para></listitem><listitem><para><anchor id="tex2html378"/>The Variables Element <literal>&lt;variables&gt;</literal></para></listitem><listitem><para><anchor id="tex2html379"/>The GUI Preferences Element <literal>&lt;guiprefs&gt;</literal></para></listitem><listitem><para><anchor id="tex2html380"/>The Localization Element <literal>&lt;locale&gt;</literal></para></listitem><listitem><para><anchor id="tex2html381"/>The Resources Element <literal>&lt;resources&gt;</literal></para></listitem><listitem><para><anchor id="tex2html382"/>The Panels Element <literal>&lt;panels&gt;</literal></para></listitem><listitem><para><anchor id="tex2html383"/>The Packs Element <literal>&lt;packs&gt;</literal> 
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html384"/>Internationalization of the PacksPanel</para></listitem><listitem><para><anchor id="tex2html385"/><literal>&lt;description&gt;</literal> - pack description</para></listitem><listitem><para><anchor id="tex2html386"/><literal>&lt;depends&gt;</literal> - pack dependencies</para></listitem><listitem><para><anchor id="tex2html387"/><literal>&lt;os&gt;</literal> - OS restrictions</para></listitem><listitem><para><anchor id="tex2html388"/><literal>&lt;updatecheck&gt;</literal></para></listitem><listitem><para><anchor id="tex2html389"/><literal>&lt;file&gt;</literal> - add files or directories 
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html390"/><literal>&lt;additionaldata&gt;</literal></para></listitem></itemizedlist>
+</para></listitem><listitem><para><anchor id="tex2html391"/><literal>&lt;singlefile&gt;</literal> - add a single file</para></listitem><listitem><para><anchor id="tex2html392"/><literal>&lt;fileset&gt;</literal>: add a fileset</para></listitem><listitem><para><anchor id="tex2html393"/><literal>&lt;parsable&gt;</literal> - parse a file after installation</para></listitem><listitem><para><anchor id="tex2html394"/><literal>&lt;executable&gt;</literal> - mark file executable or execute it</para></listitem><listitem><para><anchor id="tex2html395"/><literal>&lt;os&gt;</literal> - make a file OS-dependent</para></listitem></itemizedlist>
+</para></listitem><listitem><para><anchor id="tex2html396"/>The Native Element <literal>&lt;native&gt;</literal> 
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html397"/><literal>&lt;os&gt;</literal> - make a library OS-dependent</para></listitem></itemizedlist>
+</para></listitem><listitem><para><anchor id="tex2html398"/>The Jar Merging Element <literal>&lt;jar&gt;</literal></para></listitem></itemizedlist>
+
+<?db2html element="br"?>
+</para></listitem><listitem><para><anchor id="tex2html399"/>The Available Panels 
+
+<itemizedlist spacing="compact"><listitem><para><anchor id="tex2html400"/>HelloPanel</para></listitem><listitem><para><anchor id="tex2html401"/>InfoPanel and HTMLInfoPanel</para></listitem><listitem><para><anchor id="tex2html402"/>LicencePanel and HTMLLicencePanel</para></listitem><listitem><para><anchor id="tex2html403"/>PacksPanel</para></listitem><listitem><para><anchor id="tex2html404"/>ImgPacksPanel</para></listitem><listitem><para><anchor id="tex2html405"/>TargetPanel</para></listitem><listitem><para><anchor id="tex2html406"/>InstallPanel</para></listitem><listitem><para><anchor id="tex2html407"/>XInfoPanel</para></listitem><listitem><para><anchor id="tex2html408"/>FinishPanel</para></listitem><listitem><para><anchor id="tex2html409"/>SimpleFinishPanel</para></listitem><listitem><para><anchor id="tex2html410"/>ShortcutPanel</para></listitem><listitem><para><anchor id="tex2html411"/>UserInputPanel</para></listitem><listitem><para><anchor id="tex2html412"/>CompilePanel</para></listitem><listitem><para><anchor id="tex2html413"/>ProcessPanel</para></listitem><listitem><para><anchor id="tex2html414"/>JDKPathPanel</para></listitem></itemizedlist>
+</para></listitem></itemizedlist>
+
+
+<hr xmlns="http://www.w3.org/1999/xhtml"/>
+<title>Writing Installation XML Files</title>
+
+<title>What You Need</title>
+
+<para/><section id="SECTION00411000000000000000"><title>Your editor</title>
+
+<para>In order to write your XML installation files, you just need a plain text editor. Of course it's always easier to work with color coded text, so you might rather want to work with a text editor
+having such a feature. Here is a list of free editors that work well :</para>
+
+<itemizedlist spacing="compact"><listitem><para>Jext : <literal><anchor id="tex2html19"/>http://www.jext.org/</literal></para></listitem><listitem><para>JEdit : <literal><anchor id="tex2html20"/>http://www.jedit.org/</literal></para></listitem><listitem><para>classics like Vim and (X)Emacs.</para></listitem></itemizedlist>
+
+<para/></section><section id="SECTION00412000000000000000"><title>Writing XML</title>
+
+<para>Though you might not know much about XML, you have certainly heard about it. If you know XML you can skip this subsection as we will briefly present how to use XML.<?db2html element="br"?>
+</para>
+
+<para>XML is a markup language, really close to HTML. If you've ever worked with HTML the transition will be fast. However there are a few little things to know. The markups used in XML have the
+following form : <literal>&lt;markup&gt;</literal>. Each markup has to be closed somewhere with its ending tag : <literal>&lt;/markup&gt;</literal>. Each tag can contain text and other markups. If a markup does not
+contain anything, it is just reported once : <literal>&lt;markup/&gt;</literal>. A markup can contain attributes like : <literal>&lt;markup attr1="123" attr2="hello !"/&gt;</literal>. Here is a sample of a valid XML
+structure :</para>
+
+<programlisting>
+&lt;chapter title="Chapter 1"&gt;
+  &lt;section name="Introduction"&gt;
+    &lt;paragraph&gt;
+    This is the text of the paragraph number 1. It is available for the very low
+    price of &lt;price currency="dollar"&gt;1 000 000&lt;/price&gt;.
+    &lt;/paragraph&gt;
+  &lt;/section&gt;
+  &lt;section name="xxx"&gt;
+  xxx
+  &lt;/section&gt;
+&lt;/chapter&gt;
+</programlisting>
+
+<para>You should be aware of the following common mistakes :</para>
+
+<itemizedlist spacing="compact"><listitem><para>markups <emphasis role="b">are</emphasis> case sensitive : <literal>&lt;markup&gt;</literal> is different from <literal>&lt;Markup&gt;</literal>.</para></listitem><listitem><para>you <emphasis role="b">must</emphasis> close the markups in the same order as you create them : <literal>&lt;m1&gt;&lt;m2&gt;(...)&lt;/m2&gt;&lt;/m1&gt;</literal> is right but <literal>
+&lt;m1&gt;&lt;m2&gt;(...)&lt;/m1&gt;&lt;/m2&gt;</literal> is not.</para></listitem></itemizedlist>
+
+<para>Also, an XML file must start with the following header :<?db2html element="br"?>
+<literal>&lt;?xml version="1.0" encoding="iso-8859-1 standalone="yes" ?&gt;</literal>. The only thing you should modify is the encoding (put here the one your text editor saves your files to). The <literal>
+standalone</literal> attribute is not very important for us.<?db2html element="br"?>
+</para>
+
+<para>This (brief !) introduction to XML was just meant to enable you to write your installation specification. For a better introduction there are plenty of books and articles/tutorials dealing with
+XML on the Internet, in book stores, in magazines and so on.<?db2html element="br"?>
+</para>
+
+<title>Variable Substitution</title>
+
+<para>During the installation process IzPack can substitute variables in various places with real values. Obvious targets for variable substitution are resource files and launch scripts, however you
+will notice many more places where it is more powerful to use variables rather then hard coded values. Wherever variables can be used it will be explained in the documentation.<?db2html element="br"?>
+</para>
+
+<para>There are three types of variables:</para>
+
+<itemizedlist spacing="compact"><listitem><para>Built-In variables. These are implemented in IzPack and are all dynamic in nature. This means that the value of each variable depends on local conditions on the target system.</para></listitem><listitem><para>Environment variables. These are provided by the operating system the installer is run on.</para></listitem><listitem><para>Variables that you can define. You also define the value, which is fixed for a given installation file.</para></listitem></itemizedlist>
+
+<para>You define your own variables in the installation XML file with the <literal>&lt;variable&gt;</literal> tag. How to do this is explained in detail later in this chapter.<?db2html element="br"?>
+</para>
+
+<para><emphasis role="b">Please note</emphasis> that when using variables they must always appear with a '<literal>$</literal>' sign as the first character, even though they are not defined this way.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00421000000000000000"><title>The Built-In Variables</title>
+<para>
+The following variables are built-in : 
+</para>
+<itemizedlist spacing="compact"><listitem><para><literal>$INSTALL_PATH</literal> : the installation path on the target system, as chosen by the user</para></listitem><listitem><para><literal>$APPLICATIONS_DEFAULT_ROOT</literal> : the default path for applications</para></listitem><listitem><para><literal>$JAVA_HOME</literal> : the Java<sup xmlns="http://www.w3.org/1999/xhtml"><small>TM</small></sup> virtual machine home path</para></listitem><listitem><para><literal>$USER_HOME</literal> : the user's home directory path</para></listitem><listitem><para><literal>$USER_name</literal> : the user name</para></listitem><listitem><para><literal>$APP_name</literal> : the application name</para></listitem><listitem><para><literal>$APP_URL</literal> : the application URL</para></listitem><listitem><para><literal>$APP_VER</literal> : the application version</para></listitem><listitem><para><literal>$ISO3_LANG</literal> : the ISO3 language code of the selected langpack.</para></listitem><listitem><para><literal>$FILE_SEPARATOR</literal> : the file separator on the installation system</para></listitem><listitem><para><literal>$DESKTOPSHORTCUTCHECKBOXENABLED</literal> : When set to true, it automatically checks the "Create Desktop Shortcuts" button.</para></listitem></itemizedlist>
+
+<para/></section><section id="SECTION00422000000000000000"><title>Environment Variables</title>
+<para>
+Environment variables can be accessed via the syntax <literal>${ENV[variable]}</literal>. The curly braces are mandatory. Note that variable names are case-sensitive and usually in UPPER CASE. 
+</para>
+<para>Example: To get the value of the OS environment variable "CATALINA_HOME", use <literal>${ENV[CATALINA_HOME]}</literal>.</para>
+
+<para/></section><section id="SECTION00423000000000000000"><title>Parse Types</title>
+<para>
+Parse types apply only when replacing variables in text files. At places where it might be necessary to specify a parse type, the documentation will mention this. Depending on the parse type, IzPack
+will handle special cases -such as escaping control characters- correctly. The following parse types are available: 
+</para>
+<itemizedlist spacing="compact"><listitem><para><literal>plain</literal> - use this type for plain text files, where no special substitution rules apply. All variables will be replaced with their respective values as is.</para></listitem><listitem><para><literal>javaprop</literal> - use this type if the substitution happens in a Java properties file. Individual variables might be modified to function properly within the context of Java property
+files.</para></listitem><listitem><para><literal>xml</literal> - use this type if the substitution happens in a XML file. Individual variables might be modified to function properly within the context of XML files.</para></listitem><listitem><para><literal>shell</literal> - use this type if the substitution happens in a shell script. Because shell scripts use <literal>$variable</literal> themselves, an alternative variable marker is used: <literal>%variable</literal>
+or <literal>%{variable}</literal>.</para></listitem></itemizedlist>
+
+<title>The i<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> Elements</title>
+
+<para><emphasis role="i">When writing your installer XML files, it's a good idea to have a look at the i<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> installation DTD</emphasis>.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00431000000000000000"><title> <?db2html element="br"?>
+The Root Element <literal>&lt;installation&gt;</literal></title>
+
+<para>The root element of an installation is <literal>&lt;installation&gt;</literal>. It takes one required attribute : <literal>version</literal>. The attribute defines the version of the XML file layout and is used by
+the compiler to identify if it is compatible with the XML file. This should be set to <inlinemediaobject><imageobject><imagedata fileref="img4.png" width="29">16</imagedata></imageobject></inlinemediaobject> for the moment.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00432000000000000000"><title> <?db2html element="br"?>
+The Information Element <literal>&lt;info&gt;</literal></title>
+
+<para>This element is used to specify some general information for the installer. It contains the following elements :</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>&lt;appname&gt;</literal> : the application name</para></listitem><listitem><para><literal>&lt;appversion&gt;</literal> : the application version</para></listitem><listitem><para><literal>&lt;appsubpath&gt;</literal> : the subpath for the default of the installation path. A variable substitution and a maskable slash-backslash conversion will be done. If this tag is not defined, the
+application name will be used instead.</para></listitem><listitem><para><literal>&lt;url&gt;</literal> : the application official website url</para></listitem><listitem><para><literal>&lt;authors&gt;</literal> : specifies the author(s) of the application. It must contain at least one <literal>&lt;author&gt;</literal> element whose attributes are : 
+
+<itemizedlist spacing="compact"><listitem><para><literal>name</literal> : the author's name</para></listitem><listitem><para><literal>email</literal> : the author's email</para></listitem></itemizedlist>
+</para></listitem><listitem><para><literal>&lt;uninstaller&gt;</literal> : specifies whether to create an uninstaller after installation, and which name to use for it. This tag has the <literal>write</literal> attribute, with default value <literal>
+yes</literal>. If this tag is not specified, the uninstaller will still be written. The <literal>name</literal> attribute can be used to change the default name of the generated uninstaller, <emphasis role="i">i.e.</emphasis> <literal>
+uninstaller.jar</literal>.</para></listitem><listitem><para><literal>&lt;javaversion&gt;</literal> : specifies the minimum version of Java required to install your program. Values can be <literal>1.2</literal>, <literal>1.2.2</literal>, <literal>1.4</literal>, etc. The test is a lexical
+comparison against the <literal>java.version</literal> System property on the install machine.</para></listitem><listitem><para><literal>&lt;webdir&gt;</literal> : Causes a ``web installer'' to be created, and specifies the URL packages are retrieved from at install time. The content of the tag must be a properly formed URL. See
+section&#160;<ulink url="node5.html#webinstaller">3.7</ulink> for more details.</para></listitem></itemizedlist>
+
+<para>Here is an example of a typical <literal>&lt;info&gt;</literal> section :<?db2html element="br"?>
+</para>
+
+<programlisting>
+&lt;info&gt;
+  &lt;appname&gt;Super extractor&lt;/appname&gt;
+  &lt;appversion&gt;2.1 beta 6&lt;/appversion&gt;
+  &lt;appsubpath&gt;myCompany/SExtractor&lt;/appsubpath&gt;
+  &lt;url&gt;http://www.superextractor.com/&lt;/url&gt;
+  &lt;authors&gt;
+    &lt;author name="John John Doo" email="jjd@jjd-mail.com"/&gt;
+    &lt;author name="El Goyo" email="goyoman@mymail.org"/&gt;
+  &lt;/authors&gt;
+  &lt;javaversion&gt;1.2&lt;/javaversion&gt;
+&lt;/info&gt;
+</programlisting>
+
+<para/></section><section id="SECTION00433000000000000000"><title> <?db2html element="br"?>
+The Variables Element <literal>&lt;variables&gt;</literal></title>
+
+<para>This element allows you to define variables for the variables substitution system. Some variables are built-in, such as <literal>$INSTALL_PATH</literal> (which is the installation path chosen by the user).
+When you define a set of variables, you just have to place as many <literal>&lt;variable&gt;</literal> tags in the file as needed. If you define a variable named <literal>VERSION</literal> you need to type $VERSION in
+the files to parse. The variable substitutor will then replace it with the correct value. One <literal>&lt;variable&gt;</literal> tag take the following attributes :</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>name</literal> : the variable name</para></listitem><listitem><para><literal>value</literal> : the variable value</para></listitem></itemizedlist>
+<para>Here's a sample <literal>&lt;variables&gt;</literal> section :<?db2html element="br"?>
+</para>
+<programlisting>
+&lt;variables&gt;
+  &lt;variable name="app-version" value="1.4"/&gt;
+  &lt;variable name="released-on" value="08/03/2002"/&gt;
+&lt;/variables&gt;
+</programlisting>
+
+<para/></section><section id="SECTION00434000000000000000"><title> <?db2html element="br"?>
+The GUI Preferences Element <literal>&lt;guiprefs&gt;</literal></title>
+
+<para>This element allows you to set the behavior of your installer GUI. This information will not have any effect on the command-line installers that will be available in future versions of
+i<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> . The arguments to specify are :</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>resizable</literal> : takes <literal>yes</literal> or <literal>no</literal> and indicates whether the window size can be changed or not.</para></listitem><listitem><para><literal>width</literal> : sets the initial window width</para></listitem><listitem><para><literal>height</literal> : sets the initial window height.</para></listitem></itemizedlist>
+
+<para>Here's a sample :</para>
+
+<programlisting>
+&lt;guiprefs resizable="no" width="800" height="600"/&gt;
+</programlisting>
+
+<para>Starting from IzPack 3.6, the look and feel can be specified in this section on a per-OS basis. For instance you can use the native look and feels on Win32 and OS X but use a third-party one on
+Unix-like platforms. To do that, you have to add some children to the <literal>guiprefs</literal> tag:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>laf</literal>: the tag that specifies a look and feel. It has a <literal>name</literal> parameter that defines the look and feel name.</para></listitem><listitem><para>Each <literal>laf</literal> element needs at least one <literal>os</literal> tag, specified like in the other parts of the specification that support this tag.</para></listitem><listitem><para>Like you can add <literal>os</literal> elements, you can add any number of <literal>param</literal> elements to customize a look and feel. A <literal>param</literal> elements has two attribues: <literal>name</literal> and <literal>
+value</literal>.</para></listitem></itemizedlist>
+
+<para>The available look and feels are:</para>
+
+<itemizedlist spacing="compact"><listitem><para>Kunststoff: <literal>kunststoff</literal></para></listitem><listitem><para>Liquid: <literal>liquid</literal></para></listitem><listitem><para>Metouia: <literal>metouia</literal></para></listitem><listitem><para>JGoodies Looks: <literal>looks</literal></para></listitem></itemizedlist>
+
+<para>If you don't specify a look and feel for a particular operating system, then the default native one will be used: Windows on Windows, Aqua on Mac OS X and Metal on the Unix-like variants.<?db2html element="br"?>
+</para>
+
+<para>The <emphasis role="i">Liquid Look and Feel</emphasis> supports the following parameters:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>decorate.frames</literal>: <literal>yes</literal> means that it will render the frames in Liquid style</para></listitem><listitem><para><literal>decorate.dialogs</literal>: <literal>yes</literal> means that it will render the dialogs in Liquid style</para></listitem></itemizedlist>
+
+<para>The <emphasis role="i">JGoodies Looks</emphasis> look and feel can be specified by using the <literal>variant</literal> parameters. The values can be one of:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>extwin</literal>: use the Windows Extension look</para></listitem><listitem><para><literal>plastic</literal>: use the basic Plastic look</para></listitem><listitem><para><literal>plastic3D</literal>: use the Plastic 3D look</para></listitem><listitem><para><literal>plasticXP</literal>: use the Plastic XP look (default).</para></listitem></itemizedlist>
+
+<para>Here is a small sample:</para>
+
+<programlisting>
+&lt;guiprefs height="600" resizable="yes" width="800"&gt;
+    &lt;laf name="metouia"&gt;
+        &lt;os family="unix" /&gt;
+    &lt;/laf&gt;
+    &lt;laf name="looks"&gt;
+        &lt;os family="windows" /&gt;
+        &lt;param name="variant" value="extwin" /&gt;
+    &lt;/laf&gt;
+&lt;/guiprefs&gt;
+</programlisting>
+
+<para>Starting from IzPack 3.7, some characteristics can be customized with the <literal>&lt;modifier&gt;</literal> tag which contains following attributes:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>key</literal>: a well defined key of the characteristic which should be changed.</para></listitem><listitem><para><literal>value</literal> the value for the key.</para></listitem></itemizedlist>
+<para>Following key value pairs are defined:</para>
+<itemizedlist spacing="compact"><listitem><para><literal>useButtonIcons</literal>: possible are "yes" or "no". Default is "yes". If it is set to "no", all buttons which are created via the ButtonFactory contains no icon also a icon id was submitted.
+Directly created buttons are not affected.</para></listitem><listitem><para><literal>useLabelIcons</literal>: possible are "yes" or "no". Default is "yes". If it is set to "no", all labels which are created via the LabelFactory contains no icon also a icon id was submitted.
+Directly created labels are not affected.</para></listitem><listitem><para><literal>useFlags</literal>: possible are "yes" or "no". Default is "yes". If it is set to "no", no flag will be displayed in the language selection dialog. For "no" it is recomanded to define also
+langDisplayType other then "iso3".</para></listitem><listitem><para><literal>langDisplayType</literal>: possible are "iso3", "native" and "default". Default is "iso3". With "iso3" the text for a language will be displayed as ISO 639-2:1998 code. With "native" the notation
+of the language will be used if possible, else the notation of the default locale. Using "default" will be presented the language in the notation of the default locale of the VM.</para></listitem></itemizedlist>
+
+<para>Here is a small sample:</para>
+
+<programlisting>
+&lt;guiprefs width="640" height="480" resizable="no"&gt;
+    &lt;modifier key="useButtonIcons" value="no"/&gt;
+    &lt;modifier key="useLabelIcons" value="no"/&gt;
+    &lt;modifier key="useFlags" value="no"/&gt;
+    &lt;modifier key="langDisplayType" value="native"/&gt;
+&lt;/guiprefs&gt;
+</programlisting>
+
+<para/></section><section id="SECTION00435000000000000000"><title> <?db2html element="br"?>
+The Localization Element <literal>&lt;locale&gt;</literal></title>
+
+<para>This element is used to specify the language packs (langpacks) that you want to use for your installer. You must set one <literal>&lt;langpack&gt;</literal> markup per language. This markup takes the <literal>
+iso3</literal> parameter which specifies the iso3 language code.<?db2html element="br"?>
+</para>
+
+<para>Here's a sample :<?db2html element="br"?>
+</para>
+<programlisting>
+&lt;locale&gt;
+  &lt;langpack iso3="eng"/&gt;
+  &lt;langpack iso3="fra"/&gt;
+  &lt;langpack iso3="spa"/&gt;
+&lt;/locale&gt;
+</programlisting>
+<para>The supported ISO3 codes are :</para>
+
+
+<informaltable><tgroup cols="2"><thead><row><entry><emphasis role="i">ISO3 code</emphasis></entry><entry><emphasis role="i">Language</emphasis></entry></row>
+</thead><tbody><row><entry>cat</entry><entry>Catalunyan</entry></row>
+<row><entry>chn</entry><entry>Chinese</entry></row>
+<row><entry>cze</entry><entry>Czech</entry></row>
+<row><entry>dan</entry><entry>Danish</entry></row>
+<row><entry>deu</entry><entry>German</entry></row>
+<row><entry>eng</entry><entry>English</entry></row>
+<row><entry>fin</entry><entry>Finnish</entry></row>
+<row><entry>fra</entry><entry>French</entry></row>
+<row><entry>hun</entry><entry>Hungarian</entry></row>
+<row><entry>ita</entry><entry>Italian</entry></row>
+<row><entry>jpn</entry><entry>Japanese</entry></row>
+<row><entry>mys</entry><entry>Malaysian</entry></row>
+<row><entry>ned</entry><entry>Nederlands</entry></row>
+<row><entry>nor</entry><entry>Norwegian</entry></row>
+<row><entry>pol</entry><entry>Polnish</entry></row>
+<row><entry>por</entry><entry>Portuguese (Brazilian)</entry></row>
+<row><entry>rom</entry><entry>Romanian</entry></row>
+<row><entry>rus</entry><entry>Russian</entry></row>
+<row><entry>scg</entry><entry>Serbian</entry></row>
+<row><entry>spa</entry><entry>Spanish</entry></row>
+<row><entry>svk</entry><entry>Slovakian</entry></row>
+<row><entry>swe</entry><entry>Swedish</entry></row>
+<row><entry>ukr</entry><entry>Ukrainian</entry></row>
+</tbody></tgroup></informaltable>
+
+
+<para/></section><section id="SECTION00436000000000000000"><title> <?db2html element="br"?>
+The Resources Element <literal>&lt;resources&gt;</literal></title>
+
+<para>Several panels, such as the license panel and the shortcut panel, require additional data to perform their task. This data is supplied in the form of resources. This section describes how to
+specify them. Take a look at each panel description to see if it might need any resources. Currently, no checks are made to ensure resources needed by any panel have been included. The <literal>
+&lt;resources&gt;</literal> element is not required, and no <literal>&lt;res&gt;</literal> elements are required within.<?db2html element="br"?>
+</para>
+
+<para>You have to set one <literal>&lt;res&gt;</literal> markup for each resource. Here are the attributes to specify :</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>src</literal> : the path to the resource file which can be named freely of course (for instance <literal>my-picture.jpg</literal>).</para></listitem><listitem><para><literal>id</literal> : the resource id, depending on the needs of a particular panel</para></listitem><listitem><para><literal>parse</literal> : takes <literal>yes</literal> or <literal>no</literal> (default is <literal>no</literal>) - used to specify whether the resource must be parsed at the installer compilation time. For instance you could set the
+application version in a readme file used by <literal>InfoPanel</literal>.</para></listitem><listitem><para><literal>type</literal> : specifies the parse type. This makes sense only for a text resource - the default is <literal>plain</literal>, other values are <literal>javaprop, xml</literal> (Java properties file and XML
+files)</para></listitem><listitem><para><literal>encoding</literal> : specifies the resource encoding if the receiver needs to know. This makes sense only for a text resource.</para></listitem></itemizedlist>
+
+<para>Here's a sample :</para>
+
+<programlisting>
+&lt;resources&gt;
+  &lt;res id="InfoPanel.info" src="doc/readme.txt" parse="yes"/&gt;
+  &lt;res id="LicencePanel.licence" src="legal/License.txt"/&gt;
+&lt;/resources&gt;
+</programlisting>
+
+<para/></section><section id="SECTION00437000000000000000"><title> <?db2html element="br"?>
+The Panels Element <literal>&lt;panels&gt;</literal></title>
+
+<para>Here you tell the compiler which panels you want to use. They will appear in the installer in the order in which they are listed in your XML installation file. Take a look at the different panels
+in order to find the ones you need. The <literal>&lt;panel&gt;</literal> markup takes a single attribute <literal>classname</literal> which is the classname of the panel.<?db2html element="br"?>
+</para>
+
+<para>Here's a sample :</para>
+
+<programlisting>
+&lt;panels&gt;
+  &lt;panel classname="HelloPanel"/&gt;
+  &lt;panel classname="LicencePanel"/&gt;
+  &lt;panel classname="TargetPanel"/&gt;
+  &lt;panel classname="InstallPanel"/&gt;
+  &lt;panel classname="FinishPanel"/&gt;
+&lt;/panels&gt;
+</programlisting>
+
+<para/></section><section id="SECTION00438000000000000000"><title> <?db2html element="br"?>
+The Packs Element <literal>&lt;packs&gt;</literal></title>
+
+<para>This is a crucial section as it is used to specify the files that need to be installed. The <literal>&lt;packs&gt;</literal> section consists of several <literal>&lt;pack&gt;</literal> tags.</para>
+
+<para>The <literal>&lt;pack&gt;</literal> takes the following attributes :</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>name</literal>: the pack name</para></listitem><listitem><para><literal>required</literal>: takes <literal>yes</literal> or <literal>no</literal> and specifies whether the pack is optional or not.</para></listitem><listitem><para><literal>os</literal>: optional attribute that lets you make the pack targeted to a specific <emphasis role="i">operating system</emphasis>, for instance <literal>unix</literal>, <literal>mac</literal> and so on.</para></listitem><listitem><para><literal>preselected</literal>: optional attribute that lets you choose whether the pack is by default selected for installation or not. Possible values are <literal>yes</literal> and <literal>no</literal>. A pack which is
+not preselected needs to be explicitly selected by the user during installation to get installed.</para></listitem><listitem><para><literal>loose</literal>: can be used so that the files are not located in the installer Jar. The possible values are <literal>true</literal> or <literal>false</literal>, the default beeing <literal>false</literal>. The author of this
+feature needed to put his application on a CD so that the users could run it directly from this media. However, he also wanted to offer them the possibility to install the software localy. Enabling
+this feature will make IzPack take the files on disk instead of from the installer. <emphasis role="i">Please make sure that your relative files paths are correct !</emphasis></para></listitem><listitem><para><literal>id</literal>: this attribute is used to give a unique id to the pack to be used for internationalization.</para></listitem></itemizedlist>
+
+<para/><section id="SECTION00438100000000000000"><title>Internationalization of the PacksPanel</title>
+
+<para>In order to provide internationalization for the PacksPanel, so that your users can be presented with a different name and description for each language you support, you have to create a file named
+<literal>packsLang.xml_xyz</literal> where <literal>xyz</literal> is the ISO3 code of the language in lowercase. Please be aware that case is significant. This file has to be inserted in the resources section of <literal>
+install.xml</literal> with the <literal>id</literal> and <literal>src</literal> attributes set at the name of the file. The format of these files is identical with the distribution langpack files located at <literal>
+$IZPACK_HOME/install/langpacks/installer</literal>. For the name of the panel you just use the pack <literal>id</literal> as the txt <literal>id</literal>. For the description you use the pack <literal>id</literal> suffixed with <literal>
+'.description'</literal>. </para>
+
+<para>The following sections describe the tags available for a <literal>&lt;pack&gt;</literal> section.</para>
+
+<para/></section><section id="SECTION00438200000000000000"><title><literal>&lt;description&gt;</literal> - pack description</title>
+
+<para>The contents of the <literal>&lt;description&gt;</literal> tag describe the pack contents. This description is displayed if the user highlights the pack during installation.</para>
+
+<para/></section><section id="SECTION00438300000000000000"><title><literal>&lt;depends&gt;</literal> - pack dependencies</title>
+
+<para>This can be used to make this pack selectable only to be installed only if some other is selected to be installed. The pack can depend on more than one by specifying more than one <literal>
+&lt;depends&gt;</literal> elements. <?db2html element="br"?>
+Circular depedencies are not supported and the compiler reports an error if one occurs. </para>
+
+<para>This tag takes the following attribute:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>packname</literal>: The name of the pack that it depends on</para></listitem></itemizedlist>
+
+<para/></section><section id="SECTION00438400000000000000"><title><literal>&lt;os&gt;</literal> - OS restrictions</title>
+
+<para>It is possible to restrict a panel to a certain list of operating systems. This tag takes the following attributes:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>family</literal>: unix, windows or mac</para></listitem><listitem><para><literal>name</literal>: the exact OS name (ie Windows, Linux, ...)</para></listitem><listitem><para><literal>version</literal>: the exact OS version (see the JVM <literal>os.version</literal> property)</para></listitem><listitem><para><literal>arch</literal>: the machine architecture (see the JVM <literal>os.arch</literal> property).</para></listitem></itemizedlist>
+
+<para/></section><section id="SECTION00438500000000000000"><title><literal>&lt;updatecheck&gt;</literal></title>
+
+<para>This feature can update an already installed package, therefore removing superfluous files after installation. Here's how this feature author (Tino Schwarze) described it on the IzPack development
+mailing-list:</para>
+
+<blockquote><para>Each pack can now specify an <literal>&lt;updatecheck&gt;</literal> tag. It supports a subset of ant fileset syntax, e.g.:</para></blockquote>
+
+<programlisting>
+&lt;updatecheck&gt;
+  &lt;include name="lib/**" /&gt;
+  &lt;exclude name="config/local/** /&gt;
+&lt;/updatecheck&gt;
+</programlisting>
+
+<blockquote><para>If the paths are relative, they will be matched relative to <literal>$INSTALL_PATH</literal>. Update checks are only enabled if at least one <literal>&lt;include&gt;</literal> is specified. See <literal>
+com.izforge.izpack.installer.Unpacker</literal> for details.</para></blockquote>
+
+<para/></section><section id="SECTION00438600000000000000"><title><?db2html element="br"?>
+<literal>&lt;file&gt;</literal> - add files or directories</title>
+
+<para>The <literal>&lt;file&gt;</literal> tag specifies a file (a directory is a file too) to include into the pack. It takes the following attributes:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>src</literal>: the file location (relative path) - if this is a directory its content will be added recursively</para></listitem><listitem><para><literal>targetdir</literal>: the destination directory, could be something like <literal>$INSTALL_PATH/subdirX</literal></para></listitem><listitem><para><literal>os</literal>: can optionally specify a target operating system (<literal>unix, windows, mac</literal>) - this means that the file will only be installed on its target operating system</para></listitem><listitem><para><literal>override</literal>: if <literal>true</literal> then if the file is already installed, it will be overwritten. Alternative values: <literal>asktrue</literal> and <literal>askfalse</literal> - ask the user what to do and supply
+default value for non-interactive use. Another possible values is <literal>update</literal>. It means that the new file is only installed if it's modification time is newer than the modification time of the
+already existing file (note that this is not a reliable mechanism for updates - you cannot detect whether a file was altered after installation this way.) By default it is set to <literal>
+update</literal>.</para></listitem><listitem><para><literal>unpack</literal>: if true and the file is an archive then its content will be unpacked and added as individual files</para></listitem></itemizedlist>
+
+<para/><section id="SECTION00438610000000000000"><title><?db2html element="br"?>
+<literal>&lt;additionaldata&gt;</literal></title>
+
+<para>This tag can also be specified in order to pass additional data related to a file tag for customizing.</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>&lt;key&gt;</literal>: key to identify the data</para></listitem><listitem><para><literal>&lt;value&gt;</literal>: value which can be used by a custom action</para></listitem></itemizedlist>
+
+<para/></section></section><section id="SECTION00438700000000000000"><title><?db2html element="br"?>
+<literal>&lt;singlefile&gt;</literal> - add a single file</title>
+
+<para>Specifies a single file to include. The difference to <literal>&lt;file&gt;</literal> is that this tag allows the file to be renamed, therefore it has a <literal>target</literal> attribute instead of <literal>
+targetdir</literal>.</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>src</literal>: the file location (relative path)</para></listitem><listitem><para><literal>target</literal>: the destination file name, could be something like <literal>$INSTALL_PATH/subdirX/fileY</literal></para></listitem><listitem><para><literal>os</literal>: can optionally specify a target operating system (<literal>unix, windows, mac</literal>) - this means that the file will only be installed on its target operating system</para></listitem><listitem><para><literal>override</literal>: see <literal>&lt;file&gt;</literal> (<link linkend="tag:file">2.3.8</link>) for description</para></listitem></itemizedlist>
+
+<para>A <literal>&lt;additionaldata&gt;</literal> (<link linkend="tag:additionaldata">2.3.8</link>) tag can also be specified for customizing. </para>
+
+<para/></section><section id="SECTION00438800000000000000"><title><?db2html element="br"?>
+<literal>&lt;fileset&gt;</literal>: add a fileset</title>
+
+<para>The <literal>&lt;fileset&gt;</literal> tag allows files to be specified using the powerful Jakarta Ant set syntax. It takes the following parameters:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>dir</literal>: the base directory for the fileset (relative path)</para></listitem><listitem><para><literal>targetdir</literal>: the destination path, works like for <literal>&lt;file&gt;</literal></para></listitem><listitem><para><literal>casesensitive</literal>: optionally lets you specify if the names are case-sensitive or not - takes <literal>yes</literal> or <literal>no</literal></para></listitem><listitem><para><literal>defaultexcludes</literal>: optionally lets you specify if the default excludes will be used - takes <literal>yes</literal> or <literal>no</literal>.</para></listitem><listitem><para><literal>os</literal>: specifies the operating system, works like for <literal>&lt;file&gt;</literal></para></listitem><listitem><para><literal>override</literal>: see <literal>&lt;file&gt;</literal> for description</para></listitem><listitem><para><literal>includes</literal>: comma- or space-separated list of patterns of files that must be included; all files are included when omitted. This is an alternative for multiple include tags.</para></listitem><listitem><para><literal>excludes</literal>: comma- or space-separated list of patterns of files that must be excluded; no files (except default excludes) are excluded when omitted. This is an alternative for multiple
+exclude tags.</para></listitem></itemizedlist>
+
+<para>You specify the files with <literal>&lt;include&gt;</literal> and <literal>&lt;exclude&gt;</literal> tags that take the <literal>name</literal> parameter to specify the Ant-like pattern :</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>**</literal> : means any subdirectory</para></listitem><listitem><para><literal>*</literal> : used as a wildcard.</para></listitem></itemizedlist>
+<para>
+Here are some examples of Ant patterns : 
+</para>
+<itemizedlist spacing="compact"><listitem><para><literal>&lt;include name="lib"/&gt;</literal> : will include <literal>lib</literal> and the subdirectories of <literal>lib</literal></para></listitem><listitem><para><literal>&lt;exclude name="**/*.java"/&gt;</literal> : will exclude any file in any directory starting from the base path ending by <literal>.java</literal></para></listitem><listitem><para><literal>&lt;include name="lib/*.jar"/&gt;</literal> : will include all the files ending by <literal>.jar</literal> in <literal>lib</literal></para></listitem><listitem><para><literal>&lt;exclude name="lib/**/*FOO*"/&gt;</literal> : will exclude any file in any subdirectory starting from <literal>lib</literal> whose name contains <literal>FOO</literal>.</para></listitem></itemizedlist>
+
+<para>There area set of definitions that are excluded by default file-sets, just as in Ant. IzPack defaults to the Ant list of default excludes. There is currently no equivalent to the
+&lt;defaultexcludes&gt; task. Default excludes are:</para>
+
+<programlisting>
+     **/*\~{}
+     **/\#*\#
+     **/.\#*
+     **/%*%
+     **/.\_*
+     **/CVS
+     **/CVS/**
+     **/.cvsignore
+     **/SCCS
+     **/SCCS/**
+     **/vssver.scc
+     **/.svn
+     **/.svn/**
+     **/.DS\_Store
+</programlisting>
+
+<para>A <literal>&lt;additionaldata&gt;</literal> (<link linkend="tag:additionaldata">2.3.8</link>) tag can also be specified for customizing. </para>
+
+<para/></section><section id="SECTION00438900000000000000"><title><literal>&lt;parsable&gt;</literal> - parse a file after installation</title>
+
+<para>Files specified by <literal>&lt;parsable&gt;</literal> are parsed after installation and may have variables substituted.</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>targetfile</literal> : the file to parse, could be something like<?db2html element="br"?>
+ <literal>$INSTALL_PATH/bin/launch-script.sh</literal><?db2html element="br"?>
+ <anchor id="tag:slashMasking"/>A slash will be changed to the system dependant path separator (e.g. to a backslash on Windows) only if no backslash masks the slash.</para></listitem><listitem><para><literal>type</literal> : specifies the type (same as for the resources) - the default is <literal>plain</literal></para></listitem><listitem><para><literal>encoding</literal> : specifies the file encoding</para></listitem><listitem><para><literal>os</literal>: specifies the operating system, works like for <literal>&lt;file&gt;</literal></para></listitem></itemizedlist>
+
+<para/></section><section id="SECTION004381000000000000000"><title><literal>&lt;executable&gt;</literal> - mark file executable or execute it</title>
+
+<para>The <literal>&lt;executable&gt;</literal> tag is a very useful thing if you need to execute something during the installation process. It can also be used to set the executable flag on Unix-like systems.
+Here are the attributes :</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>targetfile</literal> : the file to run, could be something like<?db2html element="br"?>
+ <literal>$INSTALL_PATH/bin/launch-script.sh</literal><?db2html element="br"?>
+Slashes are handled special (see attribute <literal>targetfile</literal> of tag <literal>&lt;parsable&gt;</literal><link linkend="tag:slashMasking">2.3.8</link>).</para></listitem><listitem><para><literal>class</literal> : If the executable is a jar file, this is the class to run for a Java<sup xmlns="http://www.w3.org/1999/xhtml"><small>TM</small></sup> program</para></listitem><listitem><para><literal>type</literal> : <literal>bin</literal> or <literal>jar</literal> (the default is <literal>bin</literal>)</para></listitem><listitem><para><literal>stage</literal> : specifies when to launch : <literal>postinstall</literal> is just after the installation is done and the default value, <literal>never</literal> will never launch it (useful to set the +x flag on
+Unix). <literal>uninstall</literal> will launch the executable when the application is uninstalled. The executable is executed before any files are deleted.</para></listitem><listitem><para><literal>failure</literal> : specifies what to do when an error occurs : <literal>abort</literal> will abort the installation process, <literal>ask</literal> (default) will ask the user what to do and <literal>warn</literal> will just
+tell the user that something is wrong</para></listitem><listitem><para><literal>os</literal>: specifies the operating system, works like for <literal>&lt;file&gt;</literal></para></listitem><listitem><para><literal>keep</literal> : specifies whether the file will be kept after execution. The default is to delete the file after is has been executed. This can be changed by specifying <literal>keep="true"</literal>.</para></listitem></itemizedlist>
+
+<para>A <literal>&lt;args&gt;</literal> tag can also be specified in order to pass arguments to the executable: </para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>&lt;arg&gt;</literal>: passes the argument specified in the <literal>value</literal> attribute. Slashes are handled special (see attribute <literal>targetfile</literal> of tag <literal>&lt;parsable&gt;</literal><link linkend="tag:slashMasking">2.3.8</link>).</para></listitem></itemizedlist>
+
+<para/></section><section id="SECTION004381100000000000000"><title><?db2html element="br"?>
+<literal>&lt;os&gt;</literal> - make a file OS-dependent</title>
+
+<para>The <literal>&lt;os&gt;</literal> tag can be used inside the <literal>&lt;file&gt;</literal>, <literal>&lt;fileset&gt;</literal>, <literal>&lt;singlefile&gt;</literal>, <literal>&lt;parsable&gt;</literal>, <literal>&lt;executable&gt;</literal> tags to
+restrict it's effect to a specific operating system family, architecture or version:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>family</literal>: <literal>unix, windows, mac</literal> to specify the operating system family</para></listitem><listitem><para><literal>name</literal>: the operating system name</para></listitem><listitem><para><literal>version</literal>: the operating system version</para></listitem><listitem><para><literal>arch</literal>: the operating system architecture (for instance the Linux kernel can run on i386, sparc, and so on)</para></listitem></itemizedlist>
+
+<para>Here's an example installation file :</para>
+
+<programlisting>
+&lt;packs&gt;
+    &lt;!-- The core files --&gt;
+    &lt;pack name="Core" required="yes"&gt;
+        &lt;description&gt;The IzPack core files.&lt;/description&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="bin"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="lib"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="legal"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="Readme.txt"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="Versions.txt"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="Thanks.txt"/&gt;
+        &lt;parsable targetfile="$INSTALL_PATH/bin/izpack-fe"/&gt;
+        &lt;parsable targetfile="$INSTALL_PATH/bin/izpack-fe.bat"/&gt;
+        &lt;parsable targetfile="$INSTALL_PATH/bin/compile"/&gt;
+        &lt;parsable targetfile="$INSTALL_PATH/bin/compile.bat"/&gt;
+        &lt;executable targetfile="$INSTALL_PATH/bin/compile" stage="never"/&gt;
+        &lt;executable targetfile="$INSTALL_PATH/bin/izpack-fe" stage="never"/&gt;
+    &lt;/pack&gt;
+
+    &lt;!-- The documentation (1 directory) --&gt;
+    &lt;pack name="Documentation" required="no"&gt;
+        &lt;description&gt;The IzPack documentation (HTML and PDF).&lt;/description&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="doc"/&gt;
+    &lt;/pack&gt;
+&lt;/packs&gt;
+</programlisting>
+
+<para/></section></section><section id="SECTION00439000000000000000"><title> <?db2html element="br"?>
+The Native Element <literal>&lt;native&gt;</literal></title>
+
+<para>Use this if you want to use a feature that requires a native library. The native libraries are placed under <literal>bin/native/..</literal>. There are 2 kinds of native libraries : the
+i<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> libraries and the third-party ones. The IzPack libraries are located at <literal>bin/native/izpack</literal>, you can place your own libraries at <literal>
+bin/native/3rdparty</literal>. It is possible to place a native library also into the uninstaller. It is useable from CustomActions (<ulink url="node9.html#cha:customactions">7</ulink>). If one or more are
+referenced for it, the needed support classes are automatically placed into the uninstaller. To place it only on operating systems for which they are build, it is possible to define an OS
+restriction. This restriction will only be performed for the uninstaller. The markup takes the following attributes :</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>type</literal> : <literal>izpack</literal> or <literal>3rdparty</literal></para></listitem><listitem><para><literal>name</literal> : the library filename</para></listitem><listitem><para><literal>stage</literal>: stage where to use the library (install|uninstall|both)</para></listitem></itemizedlist>
+
+<para/><section id="SECTION00439100000000000000"><title><literal>&lt;os&gt;</literal> - make a library OS-dependent</title>
+
+<para>The <literal>&lt;os&gt;</literal> tag can be used to restrict the inclusion into the uninstaller to a specific operating system family, architecture or version. The inclusion into the installer will be
+always done. For more information see <link linkend="tag:os">2.3.8</link>.</para>
+
+<para>Here's a sample :</para>
+
+<programlisting>
+&lt;native type="izpack" name="ShellLink.dll"/&gt;
+</programlisting>
+
+<para/></section></section><section id="SECTION004310000000000000000"><title> <?db2html element="br"?>
+The Jar Merging Element <literal>&lt;jar&gt;</literal></title>
+
+<para>If you adapt i<small xmlns="http://www.w3.org/1999/xhtml">Z</small>P<small xmlns="http://www.w3.org/1999/xhtml">ACK</small> for your own needs, you might need to merge the content of another jar file into the jar installer. For instance, this could be a library that you
+need to merge. The <literal>&lt;jar&gt;</literal> markup allows you to merge the raw content of another jar file into the installer and the uninstaller. It is necessary that the paths in the jars are unique
+because only the contained files of the jar are added to the installer jar, not the jar file self. The attributes are:</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>src</literal> : the path at compile time</para></listitem><listitem><para><literal>stage</literal>: stage where to use the contents of the additional jar file (install|uninstall|both)</para></listitem></itemizedlist>
+
+<para>A sample :</para>
+
+<programlisting>
+&lt;jar src="../nicelibrary.jar"/&gt;
+</programlisting>
+
+<title>The Available Panels</title>
+
+<para>In this section i will introduce the various panels available in IzPack. The usage for most is pretty simple and described right here. The more elaborate ones are explained in more detail in the
+<emphasis role="i">Advanced Features</emphasis> chapter or in their own chapter. The panels are listed by their class name. This is the name that must be used with the <literal>classname</literal> attribute (case-sensitive).<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00441000000000000000"><title>HelloPanel</title>
+
+<para>This panel welcomes the user by displaying the project name, the version, the URL as well as the authors.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00442000000000000000"><title>InfoPanel and HTMLInfoPanel</title>
+
+<para>This is a kind of 'README' panel. It presents text of any length. The text is specified by the <literal>(HTML)InfoPanel.info</literal> resource. Starting from IzPack 3.7.0, variables substitution is
+allowed.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00443000000000000000"><title>LicencePanel and HTMLLicencePanel</title>
+
+<para>Note:<emphasis role="i">  There is a mistake in the name - it should be LicensePanel. In France the word is Licence ... and one of my diploma is a 'Licence' so ...:</emphasis> -)<?db2html element="br"?></para>
+
+
+<para>These panels can prompt the user to acknowledge a license agreement. They block unless the user selects the 'agree' option. To specify the license agreement text you have to use the <literal>
+(HTML)LicencePanel.licence</literal> resource.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00444000000000000000"><title>PacksPanel</title>
+
+<para>Allows the user to select the packs he wants to install.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00445000000000000000"><title>ImgPacksPanel</title>
+
+<para>This is the same as above, but for each panel a different picture is shown to the user. The pictures are specified with the resources <literal>ImgPacksPanel.img.x</literal> where x stands for the pack
+number, the numbers start from 0. Of course it's up to you to specify as many images as needed and with correct numbers. For instance if you have 2 packs <literal>core</literal> and <literal>documentation</literal> (in
+this order), then the resource for <literal>core</literal> will be <literal>ImgPacksPanel.img.0</literal> and the resource for <literal>doc</literal> will be <literal>ImgPacksPanel.img.1</literal>. The supported image formats depend on
+what you JVM supports, but starting from J2SE 1.3, <emphasis role="i">GIF</emphasis>, <emphasis role="i">JPEG</emphasis> and <emphasis role="i">PNG</emphasis> are supported.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00446000000000000000"><title>TargetPanel</title>
+
+<para>This panel allows the user to select the installation path. It can be customized with the following resources (they are text files containing the path) :</para>
+
+<itemizedlist spacing="compact"><listitem><para><literal>TargetPanel.dir.f</literal> where f stands for the family (<literal>mac, macosx, windows, unix</literal>)</para></listitem><listitem><para><literal>TargetPanel.dir</literal> : the directory name, instead of the software to install name</para></listitem><listitem><para><literal>TargetPanel.dir.d</literal> where d is a "dynamic" name, as returned by the Java<sup xmlns="http://www.w3.org/1999/xhtml"><small>TM</small></sup> virtual machine. You should write the name in lowercase and replace the spaces with
+underscores. For instance, you might want a different setting for Solaris and GNU/Linux which are both Unix-like systems. The resources would be <literal>TargetPanel.dir.sunos, TargetPanel.dir.linux</literal>.
+You should have a Unix-resource in case it wouldn't work though.</para></listitem></itemizedlist>
+
+<para/></section><section id="SECTION00447000000000000000"><title>InstallPanel</title>
+
+<para>You should always have this one as it launches the installation process !<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00448000000000000000"><title>XInfoPanel</title>
+
+<para>A panel showing text parsed by the variable substitutor. The text can be specified through the <literal>XInfoPanel.info</literal> resource. This panel can be useful when you have to show information after
+the installation process is completed (for instance if the text contains the target path).<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION00449000000000000000"><title>FinishPanel</title>
+
+<para>A ending panel, able to write automated installer information. For details see the chapter on 'Advanced Features'.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION004410000000000000000"><title>SimpleFinishPanel</title>
+
+<para>Same as <literal>FinishPanel</literal>, but without the automated installer features. It is aimed at making the life easier for end-users who will never encounter the automated installer extra
+feature.<?db2html element="br"?>
+</para>
+
+<para/></section><section id="SECTION004411000000000000000"><title>ShortcutPanel</title>
+
+<para>This panel is used to create desktop shortcuts. For details on using the ShortcutPanel see the chapter 'Desktop Shortcuts'.</para>
+
+<para/></section><section id="SECTION004412000000000000000"><title>UserInputPanel</title>
+
+<para>This panel allows you to prompt the user for data. What the user is prompted for is specified using an XML file which is included as a resource to the installer. See chapter <ulink url="node8.html#chap:userinput">6</ulink> on page <ulink url="node8.html#chap:userinput"><informalfigure><mediaobject><imageobject><imagedata fileref="crossref.png"/></imageobject><caption><para>[*]</para></caption></mediaobject></informalfigure></ulink> for a detailed explanation.</para>
+
+<para/></section><section id="SECTION004413000000000000000"><title>CompilePanel</title>
+
+<para>This panel allows you to compile just installed Java sourcecode. The details for the compilation are specified using the resource <literal>CompilePanel.Spec.xml</literal>. The XML file has the following
+format:</para>
+
+<programlisting>
+&lt;compilation&gt;
+  &lt;global&gt;
+    &lt;compiler&gt;
+      &lt;choice value="$JAVA_HOME/bin/javac" /&gt;
+      &lt;choice value="jikes" /&gt;
+    &lt;/compiler&gt;
+    &lt;arguments&gt;
+      &lt;choice value="-O -g:none" /&gt;
+      &lt;choice value="-O" /&gt;
+      &lt;choice value="-g" /&gt;
+      &lt;choice value="" /&gt;
+    &lt;/arguments&gt;
+  &lt;/global&gt;
+  &lt;jobs&gt;
+    &lt;classpath add="$INSTALL_PATH/src/classes/" /&gt;
+    &lt;job name="optional name"&gt;
+      &lt;directory name="$INSTALL_PATH/src/classes/xyz" /&gt;
+    &lt;/job&gt;
+    &lt;job name="another job"&gt;
+      &lt;packdepency name="some package name" /&gt;
+      &lt;classpath sub="$INSTALL_PATH/" /&gt;
+      &lt;directory name="$INSTALL_PATH/src/classes/abc" /&gt;
+      &lt;file name="$INSTALL_PATH/some/file.java" /&gt;
+    &lt;/job&gt;
+  &lt;/jobs&gt;
+&lt;/compilation&gt;
+</programlisting>
+
+<para>In theory, jobs can be nested but this has not been tested at all. A change to the classpath within a job only affects this job and nested jobs. The classpath should be specified before any files
+or directories.</para>
+
+<para>The user can change the compiler to use and choose from some default compilation options before compilation is started.</para>
+
+<para><inlinemediaobject><imageobject><imagedata fileref="./compilePanel.png" width="628">455</imagedata></imageobject></inlinemediaobject></para>
+
+<para/></section><section id="SECTION004414000000000000000"><title>ProcessPanel</title>
+
+<para>This panel allows you to execute arbitrary files after installation. The details for the compilation are specified using the resource <literal>ProcessPanel.Spec.xml</literal>.</para>
+
+<para>The XML file has the following format:</para>
+
+<programlisting>
+&lt;processing&gt;
+  &lt;job name="do xyz"&gt;
+    &lt;os family="windows" /&gt;
+    &lt;executefile name="$INSTALL_PATH/scripts/xyz.bat"&gt;
+      &lt;arg&gt;doit&lt;/arg&gt;&lt;arg&gt;$variable&lt;/arg&gt;
+    &lt;/executefile&gt;
+  &lt;/job&gt;
+  &lt;job name="do xyz"&gt;
+    &lt;os family="unix" /&gt;
+    &lt;executefile name="$INSTALL_PATH/scripts/xyz.sh"&gt;
+      &lt;arg&gt;doit&lt;/arg&gt;&lt;arg&gt;$variable&lt;/arg&gt;
+    &lt;/executefile&gt;
+  &lt;/job&gt;
+&lt;/processing&gt;
+</programlisting>
+
+<para>Each job may have an <literal>&lt;os&gt;</literal> attribute - see <link linkend="tag:os">2.3.8</link> for details.<?db2html element="br"?>
+</para>
+
+<para>It is also possible to execute Java classes from this panel. Here's what this feature author (Alex Bradley) says:</para>
+
+<blockquote><para>i've been able to work around my requirements by extending the <literal>ProcessPanelWorker</literal> functionality to run user-specified classes. i've extended the DTD of the <literal>
+ProcessPanel.Spec.xml</literal> to include a new element:</para></blockquote>
+
+<programlisting>
+&lt;executeclass name="classname"&gt;
+&lt;args..../&gt;
+&lt;/executeclass&gt;
+</programlisting>
+
+<blockquote><para>i've also added a new sub-class of <literal>Processable</literal> called <literal>executeclass</literal>. This will run a user-specified class in the context of the installer JVM with a single method
+:</para></blockquote>
+
+<programlisting>
+run( AbstractUIProcessHandler handler, String[] args]);
+</programlisting>
+
+<blockquote><para>It can do everything i need and more. In particular, it allows me to write a process extension and still be able to provide feedback to the user through the feedback panel, and to add new
+functionality to the installer, after its been built.</para></blockquote>
+
+<para>New with version 3.7 is the possibility to tee output that is written to the ProcessPanel's textarea into an optional logfile. Using this feature is pretty much straightforward, you only have to
+add a line in <literal>ProcessPanel.Spec.xml</literal> that will tell IzPack the location, where the logfile should be stored.</para>
+
+<para>Variable substitution is performed, so you can use <literal>$INSTALL_PATH</literal> as example.</para>
+
+<para>The name of the logfile is not (yet) configurable but should fit in most cases. It will be named</para>
+
+<programlisting>
+Install_V&lt;$APP_VER&gt;_&lt;YYYY&gt;-&lt;MM&gt;-&lt;DD&gt;_&lt;hh&gt;-&lt;mm&gt;-&lt;ss&gt;_&lt;RandomId&gt;.log
+</programlisting>
+
+<para>Here's an example:</para>
+
+<programlisting>
+&lt;processing&gt;
+  &lt;logfiledir&gt;$INSTALL_PATH&lt;/logfiledir&gt;
+  &lt;job name="do xyz"&gt;
+    &lt;os family="windows" /&gt;
+    &lt;executefile name="$INSTALL_PATH/scripts/xyz.bat"&gt;
+      &lt;arg&gt;doit&lt;/arg&gt;&lt;arg&gt;$variable&lt;/arg&gt;
+    &lt;/executefile&gt;
+&lt;/processing&gt;
+</programlisting>
+
+<para>This will generate a logfile named e.g. <literal>Install_V1.3_2004-11-08_19-22-20_43423.log</literal> located in <literal>$INSTALL_PATH</literal>.</para>
+
+<para><literal>ProcessPanelWorker</literal> will write all output that is directed to <literal>stdout</literal> and <literal>stderr</literal> to this file if <literal>ProcessPanel.Spec.xml</literal> contains the <literal>logfiledir</literal> entry.</para>
+
+<para>Please note that this one file is used for storing the complete output of all jobs and not a file for each job that is run.</para>
+
+<para/></section><section id="SECTION004415000000000000000"><title>JDKPathPanel</title>
+
+<para>This panel allows the user to select a JDK path. The variable JAVA_HOME does not point to a JDK, else to a JRE also the environment variable points to a JDK. This is not a bug, this is the behavior
+of the VM. But some products needs a JDK, for that this panel can be used. There is not only a selection of the path else a validation. The validation will be done with the file
+JDKPath/lib/tools.jar. If JAVA_HOME points to the VM which is placed in the JDK, the directory will be used as default (JAVA_HOME/..). If there is the variable </para>
+
+<programlisting>
+JDKPathPanel.skipIfValid
+</programlisting>
+
+<para>defined with the value "yes", the panel will be skiped if the path is valid. Additional it is possible to make a version control. If one or both variables </para>
+
+<programlisting>
+JDKPathPanel.minVersion
+JDKPathPanel.maxVersion
+</programlisting>
+
+<para>are defined, only a JDK will be accepted which has a version in the range of it. The detection is a little bit pragmatically, therefor it is possible, that the detection can fail at some VMs. The
+values in the install.xml should be like </para>
+
+<programlisting>
+&lt;variables&gt;
+  &lt;variable name="JDKPathPanel.minVersion" value="1.4.1" /&gt;
+  &lt;variable name="JDKPathPanel.maxVersion" value="1.4.99" /&gt;
+  &lt;variable name="JDKPathPanel.skipIfValid" value="yes" /&gt;
+&lt;/variables&gt;
+</programlisting>
+
+<para>If all is valid, the panels isValidated method sets the variable</para>
+
+<programlisting>
+JDKPath
+</programlisting>
+
+<para>to the chosen path. Be aware, this variable exist not until the JDKPanel was quitted once. At a secound activation, the default will be the last selection. </para>
+
+<hr xmlns="http://www.w3.org/1999/xhtml"/>
+
+<informaltable><tgroup cols="2"><tbody><row><entry><anchor id="tex2html366"/><informalfigure><mediaobject><imageobject><imagedata fileref="next.png" width="37">24</imagedata></imageobject><caption><para>next</para></caption></mediaobject></informalfigure> <anchor id="tex2html362"/><informalfigure><mediaobject><imageobject><imagedata fileref="up.png" width="26">24</imagedata></imageobject><caption><para>up</para></caption></mediaobject></informalfigure> <anchor id="tex2html356"/><informalfigure><mediaobject><imageobject><imagedata fileref="prev.png" width="63">24</imagedata></imageobject><caption><para>previous</para></caption></mediaobject></informalfigure> <anchor id="tex2html364"/><informalfigure><mediaobject><imageobject><imagedata fileref="contents.png" width="65">24</imagedata></imageobject><caption><para>contents</para></caption></mediaobject></informalfigure></entry><entry><ulink url="http://validator.w3.org/check?uri=referer"><informalfigure><mediaobject><imageobject><imagedata fileref="http://www.w3.org/Icons/valid-xhtml10">31</imagedata></imageobject><caption><para>Valid XHTML 1.0!</para></caption></mediaobject></informalfigure></ulink> <ulink url="http://jigsaw.w3.org/css-validator/"><informalfigure><mediaobject><imageobject><imagedata fileref="http://jigsaw.w3.org/css-validator/images/vcss">31</imagedata></imageobject><caption><para>Valid CSS!</para></caption></mediaobject></informalfigure></ulink></entry></row>
+<row><entry><emphasis role="b">Next:</emphasis> <anchor id="tex2html367"/>Advanced Features <emphasis role="b">Up:</emphasis> <anchor id="tex2html363"/>izpack-doc <emphasis role="b">Previous:</emphasis> <anchor id="tex2html357"/>Getting started <emphasis role="b"><anchor id="tex2html365"/>Contents</emphasis></entry></row>
+</tbody></tgroup></informaltable>
+
+
+<address xmlns="http://www.w3.org/1999/xhtml">Julien Ponge 2005-05-24</address>
+<para/></section></article>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<!-- 
+	Notes: 
+	Since there is no dtd (yet), here is a short explanation
+	of the last change.
+	- Each Shortcut has now a optional attribute
+
+	createForAll="yes|no"
+	
+	new at 2006-09-06:
+	TryExec="aTryExecCommand" will passes raw thru
+	Categories="Where to put in [K]-Menu"
+	 
+	As root you can create Shortcuts for all users or even only for yourself.
+	This can be the case i.e. for the uninstaller.
+	If you whant to do so, set createForAll to true otherwise to false, which is the default.
+	
+	! If not explicite set or present the default is false.	
+	
+	New Attibute for Root Installation on Linux:	
+		 
+	Categories="Development;IDE" 
+	   
+	TryExec="java -jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
+	   
+    Here are some Sample Categories and their apps
+		 examine *.desktop files in /usr/share/applications ...
+     Categories="Application;Network;WebDevelopment"    Nvu
+	 Categories="Qt;Development;GUIDesigner"    QtDesigner3
+	 Categories="Application;System;"   VwareServer-console  
+	 Categories="Network;WebBrowser"    Opera
+	 Categories="Development;Debugger"    DDD debugger
+     Categories="Development;IDE"    Eclipse IDE
+	 Categories="SystemSetup;X-SuSE-Core-System" Yast2
+	 Categories="System;Archiving" Sesam archiving
+    
+-->
+
+<shortcuts>
+
+  <programGroup defaultName="IzForge/IzPack@build.number@" location="applications"/>
+
+
+    <!-- Disabled since there is no Frontend
+  shortcut
+     name="IzPack"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH/bin/izpack-fe.sh"
+     commandLine=""
+     workingDirectory="$INSTALL_PATH/bin"
+     description="Front-End for IzPack installation tool"
+     iconFile="$INSTALL_PATH/bin/icons/izpack.png"
+     iconIndex="0"
+     type="Application"
+     encoding="UTF-8"
+     terminal="true"
+     KdeSubstUID="false"
+     initialState="normal">   
+     <createForPack name="Core"/>     
+   </shortcut -->
+
+   <shortcut
+     name="IzPack@ver@ XHtml Documentation"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH/bin/start.sh"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/doc/izpack/xhtml/izpack-doc.html"
+     initialState="noShow"
+     iconFile="help"
+     iconIndex="0" 
+     url="$INSTALL_PATH/doc/izpack/xhtml/index.html"                                
+     type="Application"
+     encoding="UTF-8" 
+   createForAll="true"  
+     description="This opens a WebBrowser to look into the IzPack @build.number@ (HTML) user documentation">
+     
+     <createForPack name="XHTML Documentation"/>
+   </shortcut>
+  
+     <shortcut
+     name="IzPack@ver@ Java Documentation"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH/bin/start.sh"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/doc/izpack/javadoc/index.html"
+     initialState="noShow"
+     iconFile="help"
+     iconIndex="0" 
+     url="$INSTALL_PATH/doc/izpack/javadoc/index.html"                                
+     type="Application"
+     encoding="UTF-8" 
+   createForAll="true"  
+     description="This opens a WebBrowser to look into the IzPack @build.number@ (HTML) Java documentation">
+     
+     <createForPack name="Java Documentation"/>
+   </shortcut>
+  
+   <shortcut
+     name="NanoXML Documentation"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/doc/nanoxml/NanoXML-Java.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"                                      
+     type="Application"
+     encoding="UTF-8"   
+     createForAll="true"
+     description="This opens Adobe (Acrobat) Reader (if available) to look into or print the NanoXML (PDF) user documentation">
+     
+     <createForPack name="NanoXML Documentation"/>
+   </shortcut>
+
+   <shortcut
+     name="IzPack@ver@ PDF Documentation"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="acroread"
+     workingDirectory=""
+     commandLine="$INSTALL_PATH/doc/izpack/pdf/izpack-doc.pdf"
+     initialState="noShow"
+     iconFile="acroread"
+     iconIndex="0"                                   
+     type="Application"
+     encoding="UTF-8"   
+   createForAll="true"
+     description="This opens Adobe (Acrobat) Reader (if available) to look into or print the IzPack @build.number@ (PDF) user documentation">
+     
+     <createForPack name="PDF Documentation"/>
+   </shortcut>
+
+      
+   <shortcut
+     name="Izpack@ver@ Uninstaller"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="no"
+     startup="no"
+     target="java"
+     commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
+     
+     initialState="noShow"
+     iconFile="trashcan_full"
+     iconIndex="0" 
+     workingDirectory=""
+     type="Application"
+     encoding="UTF-8"
+     KdeSubstUID="true"
+     KdeUsername="root"
+     createForAll="false"
+	 
+	 
+	 Categories="Development;IDE" 
+	   
+	 TryExec="java -jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
+	   
+     description="This uninstalls IzPack @build.number@">
+
+     <createForPack name="Core" />
+   </shortcut>
+   
+   
+</shortcuts>

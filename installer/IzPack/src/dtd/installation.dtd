@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!--
+
+        =====================================
+        The DTD for IzPack Installation Files
+        =====================================
+$Id: installation.dtd 1660 2006-11-29 17:03:01Z bartzkau $
+        
+-->
+
+<!-- The root element -->
+<!ELEMENT installation (preinstall?, info, properties?, variables?, 
+                        guiprefs?, locale, resources?, panels,
+                        listeners?, packs, jar*, native*, postinstall?)>
+    <!ATTLIST installation version CDATA #REQUIRED>
+
+<!-- The info section (general information on an installation) -->
+<!ELEMENT info (appname, appversion, appsubpath?, authors?, url?, javaversion?, uninstaller?, webdir?, summarylogfilepath?)>
+    <!ELEMENT appname (#PCDATA)>
+    <!ELEMENT appversion (#PCDATA)>
+    <!ELEMENT appsubpath (#PCDATA)>
+    <!ELEMENT authors (author*)>
+    <!ELEMENT author EMPTY>
+        <!ATTLIST author name CDATA #REQUIRED>
+        <!ATTLIST author email CDATA #REQUIRED>
+    <!ELEMENT url (#PCDATA)>
+    <!ELEMENT javaversion (#PCDATA)>
+    <!ELEMENT uninstaller EMPTY>
+        <!ATTLIST uninstaller write (yes|no) "yes">
+        <!ATTLIST uninstaller name CDATA "uninstaller.jar">
+    <!ELEMENT webdir (#PCDATA)>
+    <!ELEMENT summarylogfilepath (#PCDATA)>
+
+<!-- The properties markup (property declarations) -->
+<!ELEMENT properties (property*)>
+    <!ELEMENT property EMPTY>
+        <!ATTLIST property name CDATA #IMPLIED>
+        <!ATTLIST property value CDATA #IMPLIED>
+        <!ATTLIST property file CDATA #IMPLIED>
+        <!ATTLIST property environment CDATA #IMPLIED>
+        <!ATTLIST property prefix CDATA #IMPLIED>
+        
+<!-- The variables markup (variable declarations) -->
+<!ELEMENT variables (variable*)>
+    <!ELEMENT variable EMPTY>
+        <!ATTLIST variable name CDATA #REQUIRED>
+        <!ATTLIST variable value CDATA #REQUIRED>
+        
+<!-- The guiprefs markup (customizes the installer in GUI mode) -->
+<!ELEMENT guiprefs (laf*, modifier*)>
+    <!ATTLIST guiprefs resizable (yes|no) #REQUIRED>
+    <!ATTLIST guiprefs width CDATA #REQUIRED>
+    <!ATTLIST guiprefs height CDATA #REQUIRED>
+    <!ELEMENT laf (os+, param*)>
+    <!ATTLIST laf name CDATA #REQUIRED>
+    <!ELEMENT param EMPTY>
+        <!ATTLIST param
+            name  CDATA #REQUIRED
+            value CDATA #REQUIRED>
+    <!-- Well defined modifier for gui characteristics.
+         Possible keys are "useButtonIcons" and
+         "useLabelIcons" both with value "yes" or "no".
+    -->
+    <!ELEMENT modifier EMPTY>
+        <!ATTLIST modifier key CDATA #REQUIRED>
+        <!ATTLIST modifier value CDATA #REQUIRED>
+                  
+
+<!-- The locale section (indicates which langpacks to include) -->
+<!ELEMENT locale (langpack+)>
+    <!ELEMENT langpack EMPTY>
+        <!ATTLIST langpack iso3 CDATA #REQUIRED>
+
+<!-- The resources section (resources for the panel's usings) -->
+<!ELEMENT resources (res*)>
+    <!ELEMENT res EMPTY>
+        <!ATTLIST res src CDATA #REQUIRED>
+        <!ATTLIST res id CDATA #REQUIRED>
+        <!ATTLIST  res parse  (yes|no) "no">
+        <!ATTLIST  res type CDATA "plain">
+        <!ATTLIST  res encoding CDATA #IMPLIED>        
+
+<!-- The panels section (indicates the panels to use) -->
+<!ELEMENT panels (panel+)>
+    <!ELEMENT panel (os*)>
+        <!ATTLIST panel os (unix|windows|mac) #IMPLIED>
+        <!ATTLIST panel classname CDATA #REQUIRED>
+
+<!-- The listener section (indicates which listener where to use) -->
+<!ELEMENT listeners (listener*)>
+    <!ELEMENT listener ( os*)>
+        <!ATTLIST listener compiler CDATA #IMPLIED>
+        <!ATTLIST listener installer CDATA #IMPLIED>
+        <!ATTLIST listener uninstaller CDATA #IMPLIED>
+        <!ATTLIST listener jar CDATA #IMPLIED>
+
+<!-- The packs section (indicates the packs to create) -->
+<!ELEMENT packs (pack+)>
+    <!ELEMENT pack (description, os*, file*, singlefile*, fileset*, updatecheck?, parsable*, executable*, depends*)>
+        <!ATTLIST pack name CDATA #REQUIRED>
+        <!ATTLIST pack id CDATA #IMPLIED>
+        <!ATTLIST pack required (yes|no) #REQUIRED>
+        <!ATTLIST pack preselected (yes|no) "yes">
+        <!ATTLIST pack os (unix|windows|mac) #IMPLIED>
+        <!ATTLIST pack loose (true|false) "false">
+        <!ATTLIST pack group CDATA #IMPLIED>
+        <!ATTLIST pack installGroups CDATA #IMPLIED>
+        <!ATTLIST pack excludeGroup CDATA #IMPLIED>
+        <!ELEMENT description (#PCDATA)>
+        <!ELEMENT file (os*, additionaldata*)>
+            <!ATTLIST file src CDATA #REQUIRED>
+            <!ATTLIST file targetdir CDATA #REQUIRED>
+            <!ATTLIST file os (unix|windows|mac) #IMPLIED>
+            <!ATTLIST file override (true|false|asktrue|askfalse|update) "update">
+        <!ELEMENT singlefile (os*, additionaldata*)>
+            <!ATTLIST singlefile src CDATA #REQUIRED>
+            <!ATTLIST singlefile target CDATA #REQUIRED>
+            <!ATTLIST singlefile os (unix|windows|mac) #IMPLIED>
+            <!ATTLIST singlefile override (true|false|asktrue|askfalse|update) "update">
+    <!ELEMENT fileset (include*, exclude*, os*, additionaldata*)>
+          <!ATTLIST fileset dir CDATA #REQUIRED>
+          <!ATTLIST fileset targetdir CDATA #REQUIRED>  
+          <!ATTLIST fileset casesensitive (yes|no) "yes">  
+          <!ATTLIST fileset defaultexcludes (yes|no) "yes">  
+          <!ATTLIST fileset os (unix|windows|mac) #IMPLIED>
+          <!ATTLIST fileset override (true|false|asktrue|askfalse|update) "update">
+          <!ATTLIST fileset includes CDATA #IMPLIED>
+          <!ATTLIST fileset excludes CDATA #IMPLIED>
+      <!ELEMENT include EMPTY>
+            <!ATTLIST include name CDATA #REQUIRED>
+      <!ELEMENT exclude EMPTY>
+            <!ATTLIST exclude name CDATA #REQUIRED>
+      <!ELEMENT additionaldata EMPTY>
+            <!ATTLIST additionaldata key CDATA #REQUIRED>
+            <!ATTLIST additionaldata value CDATA #REQUIRED>
+      <!ELEMENT parsable (os*)>
+          <!ATTLIST parsable targetfile CDATA #REQUIRED>
+          <!ATTLIST parsable type CDATA "plain">
+          <!ATTLIST parsable encoding CDATA #IMPLIED>
+          <!ATTLIST parsable os (unix|windows|mac) #IMPLIED>
+      <!ELEMENT executable (args?, os*)>
+          <!ATTLIST executable targetfile CDATA #IMPLIED>
+          <!ATTLIST executable class CDATA #IMPLIED>
+          <!ATTLIST executable type (bin|jar) "bin">
+          <!ATTLIST executable stage (postinstall|never|uninstall) "never">
+          <!ATTLIST executable failure (abort|warn|ask) "ask">
+          <!ATTLIST executable keep (true|false) "false">
+          <!ELEMENT args (arg+)>
+              <!ELEMENT arg EMPTY>
+                  <!ATTLIST arg value CDATA #REQUIRED>
+          <!ELEMENT os EMPTY>
+                  <!ATTLIST os family (unix|windows|mac) #REQUIRED>
+                  <!ATTLIST os name CDATA #IMPLIED>
+                  <!ATTLIST os version CDATA #IMPLIED>
+                  <!ATTLIST os arch CDATA #IMPLIED>
+      <!ELEMENT updatecheck (include*, exclude*)>
+      <!ELEMENT depends EMPTY>
+          <!ATTLIST depends packname CDATA #REQUIRED>
+          
+<!-- Allows the inclusion in the installer or uninstaller of a native library -->
+<!ELEMENT native (os*)>
+    <!ATTLIST native type (izpack|3rdparty) #REQUIRED>
+    <!ATTLIST native name CDATA #REQUIRED>
+    <!ATTLIST native stage (install|uninstall|both) "install">
+
+<!-- Allows the inclusion in the installer of an additional jar file content -->
+<!ELEMENT jar EMPTY>
+    <!ATTLIST jar src CDATA #REQUIRED>
+    <!ATTLIST jar stage (install|uninstall|both) "install">

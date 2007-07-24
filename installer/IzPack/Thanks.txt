@@ -1,0 +1,109 @@
+[ A list to thank some people ]
+
+    I'd like to thank the following people as they helped me to create IzPack
+by their libraries, contributions, feedback, and so on. If you think that I
+forgot to mention your name, just send me a email : julien@izforge.com.
+
+    Of course, I would first like to thank YOU, whoever you are, for using
+IzPack for your projects ;-)
+
+- Marc De Scheemaecker : for the great NanoXML 2 library.
+- Jan Bosenberg at Incors : for the Kunststoff Look and Feel library and the
+  link on the Incors.org Kunststoff homepage.
+- Pierre Dittgen : for the Jakarta Ant makefile.
+- Klaus Hartlage : for the German language pack support.
+- Romain Guy : for the Jext editor, the feedback, and the use of IzPack for
+  Jext itself.
+- Johann Loefflmann for the great bug reports and improvements.
+- Carlos Rueda for the Spanish language pack support.
+- Eric Samson : for the feedback and the encouragements toward the project.
+- Brad Cox : for the feedback, some tips in the source code, and using IzPack
+  with its MyBank project.
+- Bertrand Luc : for the feedback.
+- Chris Boothe : for the feedback.
+- Alberto Molpeceres : for the javahispano.com website.
+- Johannes Lehtinen : for the Finnish language pack, the I/O improvements,
+  and the variables substitution system as well as some other hacks.
+- John Rousseau : for the feedback.
+- Nicolas Deschaume : for the nice splash screens.
+- Michael Peterson : for the TargetPanel enhancements (default target
+  customization) and the English language packs enhancements.
+- Paul Wilkinson : for the English language packs enhancements and the Ant
+  IzPack integration.
+- Joao Marcelo Pereira Alves : for the Brazilian-Portuguese langpack.
+- Serge Sivkov : for the fixes and the Russian langpack.
+- Marcus Wolschon : for the fix in PacksPanel.
+- Marcus Stursberg : for the clean ResourceManager.
+- Fridjof Jansen : for the Dutch language packs support.
+- Stefan Norman : for the Swedish language packs support.
+- Elmar Grom : for the huge job on giving IzPack the ability to add shortcuts to
+  the Windows operating system in a very elegant and portable way as well as
+  some great work on the documentation.
+- Olexij Tkatchenko : for the Ukrainian language pack as well as the job on
+  making IzPack able to execute some external executables scripts.
+- Piotr Bzdyl for the Polish language pack support.
+- The e-xmlmedia.fr people for the lot of improvements and new features added to
+  IzPack.
+- Harsan Peter for the Hungarian language pack.
+- Hiroki Akimoto for the Japanes language pack.
+- Gareth Cronin : for the Ant task fixes.
+- Jan Blok : for the very great improvements on the installer GUI.
+- Hani Suleiman : various things as well as the uninstallers script launching
+  feature patch.
+- Milan Madzia : for the Slovakian langpack.
+- Fran Taylor : for the packs OS-targeting patch.
+- Sanjay Linganna : for the OS selection accuracy patch.
+- Igor Anikeev : for the russian langpack updates.
+- Jonathan Halliday : for the directory creation patch and the great
+  enhancements.
+- Dani Orza : for the Romanian langpack.
+- Tom Moore : for the absolute files path patch.
+- Tino Schwarze : for the great enhancements.
+- Dennis Lundberg : for the Swedish and Windows "Program Files" i18n
+  improvements.
+- Alex Carlos Braga Antao : for the portuguese i18 contributions.
+- Cristian Ghezzi : for the Italian i18n contributions.
+- Chad McHenry : for the compiler warnings generation patch.
+- Everaldo & the KDE crew : for the first-class Crystal icons theme.
+- Frank Bille Jensen : for the Danish translation.
+- Volker Friedritz : for the ImgPacksPanel redesign.
+- Mike Cunneen : for the UserPanel enhancements.
+- Thorsten Kamann : for the various contributions.
+- Peter Mikula : for the installer images patch.
+- Dario Yuri : for the finish panels patch.
+- Bill Wong : for the Windows shortcuts contributions.
+- Gaganis Giorgos : for the userInputPanel i18n code.
+- Alex Bradley : for the ProcessPanel contributions.
+- Bronek Truszkowski : for the polish langpack fixes.
+- Erik Artzmark : for the bug fixes and the "files on disk" feature.
+- Flavio Fonseca : for the portuguese langpack updates.
+- Eduard Jodas Samper : for the keyboard UI blocking patch.
+- Andreas Vox : for the various patches.
+- Borje Jonsson : for the InfoPanel variables substitution patch.
+- Redhuan Daniel Oon : for the Malaysian translation.
+- Mohammed Sourouri : for the Norwegian translation.
+- Xi Ping Wang : for the Chinese translation.
+- Filip Brcic : for the Serbian translation.
+- Marc Eppelmann : for the Unix shortcuts support.
+- Michael Hagedorn : for the UserInputPanel fixes.
+- Jan Pavlovic : for the Czech translation.
+- Oscar Sierra : for the patches.
+- Per Abich : for the patches.
+- Alexey Makhmutov : Russian langpack updates.
+- Anthony Xin Chen : for the ProcessPanel patch.
+- Nils Nordman : for the Swedish updates.
+- Juan Alvarez : for the Spanish updates.
+- Andreas Breiter : for various patches.
+- Johannes Gutleber : for the ExecuteForPack, processing dependency on a selected pack.
+- Vitor Rodrigues : fox Fixes on shortcuts for RedHat and Mandrake.
+- Stefano Gamma: createForUnselectedPack, show a userinputapanel if a pack is not selected.
+- Fabrice Mirabile : for the patches.
+- Scott Starsk : for the patches.
+- Stefan Heidrich : for the PacksPanel langpack loading patch.
+- Oliver Kiddle: for the patches and fixes
+- Julian Payne: for the patch on WebAccessor
+- Hal Vaughan: for the patches
+- Eric Rose: for the patch related to the logfile of AntActions.
+- Ryan Shillington: for the patches
+- Amit Bhayani & JBoss: for the patches
+

@@ -4,7 +4,7 @@
 
     <info>
         <appname>Enginuity</appname>
-        <appversion>0.4.1 Beta</appversion>
+        <appversion>0.4.2 Beta</appversion>
         <authors>
             <author name="Jared Gould" email="jared.gould@enginuity.org"/>
         </authors>
@@ -18,7 +18,7 @@
     <resources>
         <res id="LicencePanel.licence" src="license.txt"/>
         <res id="InfoPanel.info" src="release notes.txt"/>
-        <res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
+        <res id="shortcutSpec.xml" src="installer/shortcutSpec.xml"/>
     </resources>
 
     <panels>
@@ -82,7 +82,7 @@
 
         <pack name="ECU Definitions" required="no">
             <description>The latest official ECU definitions</description>
-            <file src="ecu_defs.xml" targetdir="$INSTALL_PATH"/>
+            <file src="ecu_defs/ecu_defs.xml" targetdir="$INSTALL_PATH"/>
         </pack>
 
         <pack name="Source Files" required="no">

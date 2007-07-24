@@ -1,0 +1,1014 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>
+      Custom Actions
+    </title>
+    <meta name="description" content="Custom Actions" />
+    <meta name="keywords" content="izpack-doc" />
+    <meta name="resource-type" content="document" />
+    <meta name="distribution" content="global" />
+    <meta content="text/css" />
+    <link rel="STYLESHEET" href="izpack-doc.css" />
+    <link rel="next" href="node10.html" />
+    <link rel="previous" href="node8.html" />
+    <link rel="up" href="izpack-doc.html" />
+    <link rel="next" href="node10.html" />
+  </head>
+  <body>    
+  <!--Navigation Panel-->
+	<table width="100%">
+	<tr>
+	<td><a name="tex2html536" href="node13.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html532" href="izpack-doc.html"><img class="alignbottom"
+	width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html526" href="node8.html"><img class="alignbottom" width="63" height="24" alt="previous" src="prev.png" /></a> <a name="tex2html534"
+	href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+	<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width=
+	"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+	</tr>
+	
+	<tr>
+	<td><b>Next:</b> <a name="tex2html537" href="node13.html">CookBooks</a> <b>Up:</b> <a name="tex2html533" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html527"
+	href="node8.html">User Input</a> <b><a name="tex2html535" href="node1.html">Contents</a></b></td>
+	</tr>
+	</table>
+	<!--End of Navigation Panel-->
+    
+    <!--Table of Child-Links--> 
+    <p>
+      <br />
+      <a name="CHILD_linkS"><strong>Subsections</strong></a>
+    </p>
+    <ul>
+      <li>
+        <a name="tex2html538" href="node9.html#SECTION00910000000000000000">Overview</a>
+      </li>
+      <li>
+        <a name="tex2html539" href="node9.html#SECTION00920000000000000000">How It Works</a> 
+        <ul>
+          <li>
+            <a name="tex2html540" href="node9.html#SECTION00921000000000000000">Custom Action Types</a> 
+            <ul>
+              <li>
+                <a name="tex2html541" href="node9.html#SECTION00921100000000000000">Custom Actions At Packaging</a> 
+                <ul>
+                  <li>
+                    <a name="tex2html542" href="node9.html#SECTION00921110000000000000">UML Diagram</a>
+                  </li>
+                  <li>
+                    <a name="tex2html543" href="node9.html#SECTION00921120000000000000">Description</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a name="tex2html544" href="node9.html#SECTION00921200000000000000">Custom Actions At Installing Time</a> 
+                <ul>
+                  <li>
+                    <a name="tex2html545" href="node9.html#SECTION00921210000000000000">UML Diagram</a>
+                  </li>
+                  <li>
+                    <a name="tex2html546" href="node9.html#SECTION00921220000000000000">Description</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a name="tex2html547" href="node9.html#SECTION00921300000000000000">Custom Actions At Uninstalling Time</a> 
+                <ul>
+                  <li>
+                    <a name="tex2html548" href="node9.html#SECTION00921310000000000000">UML Diagram</a>
+                  </li>
+                  <li>
+                    <a name="tex2html549" href="node9.html#SECTION00921320000000000000">Description</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a name="tex2html550" href="node9.html#SECTION00922000000000000000">Package Path</a>
+          </li>
+          <li>
+            <a name="tex2html551" href="node9.html#SECTION00923000000000000000">Correlated Stuff</a> 
+            <ul>
+              <li>
+                <a name="tex2html552" href="node9.html#SECTION00923100000000000000">Native Libraries for Uninstallation</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a name="tex2html553" href="node9.html#SECTION00930000000000000000">What You Have To Do</a> 
+        <ul>
+          <li>
+            <a name="tex2html554" href="node9.html#SECTION00931000000000000000">Custom Actions at Packaging (CompilerListener)</a>
+          </li>
+          <li>
+            <a name="tex2html555" href="node9.html#SECTION00932000000000000000">Custom Actions at Installation Time (InstallerListener)</a>
+          </li>
+          <li>
+            <a name="tex2html556" href="node9.html#SECTION00933000000000000000">Custom Actions at Uninstallation Time (UninstallerListener)</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a name="tex2html557" href="node9.html#SECTION00940000000000000000">Example</a>
+      </li>
+      <li>
+        <a name="tex2html558" href="node9.html#SECTION00950000000000000000">Ant Actions (InstallerListener and UninstallerListener)</a> 
+        <ul>
+          <li>
+            <a name="tex2html559" href="node9.html#SECTION00951000000000000000">The Basic XML Struture</a> 
+            <ul>
+              <li>
+                <a name="tex2html560" href="node9.html#SECTION00951100000000000000"><tt>&lt;property&gt;</tt>: define a property</a>
+              </li>
+              <li>
+                <a name="tex2html561" href="node9.html#SECTION00951200000000000000"><tt>&lt;propertyfile&gt;</tt>: define properties in a file</a>
+              </li>
+              <li>
+                <a name="tex2html562" href="node9.html#SECTION00951300000000000000"><tt>&lt;target&gt;</tt>: target to call at installation</a>
+              </li>
+              <li>
+                <a name="tex2html563" href="node9.html#SECTION00951400000000000000"><tt>&lt;uninstall_target&gt;</tt>: target to call on uninstallation</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+	  	<a href="#RegistryListener">Registry access (InstallerListener and UninstallerListener)</a>
+		<ul>
+			<li>
+			<a href="#RegListBaseXML">The Basic XML Struture</a>
+			<ul>
+				<li><a href="#RegListKeyElm"><tt>&lt;key&gt;</tt>: define a key</a></li>
+				<li><a href="#RegListValueElm"><tt>&lt;value&gt;</tt>: define a value</a></li>
+			</ul>
+		    </li>
+			<li><a href="#RegListSpecPacks">Extended Uninstall Key</a></li>
+			<li><a href="#RegListUninst">Uninstall Behavior</a></li>
+			<li><a href="#RegListExamples">Examples</a></li>
+		</ul>
+      </li>
+      <li>
+         <a href="node9.html#SECTION00970000000000000000">Summary Logger (InstallerListener)</a> 
+      </li>
+   </ul>
+    <!--End of Table of Child-Links-->
+    <hr />
+    <h1>
+      <a name="SECTION00900000000000000000"></a><a name="cha:customactions"></a><br />
+      Custom Actions
+    </h1>
+    <p>(by Klaus B<small>ARTZ</small>) </p>
+    <h1>
+      <a name="SECTION00910000000000000000">Overview</a>
+    </h1>
+    <p>The implementation of custom actions presume knowledge of java. Custom actions are not
+	a good starting point for learning java. Learners can use existent custom actions but should
+	not implement them as exercise.</p>
+
+    <p>In general the installation procedure is separated into several steps. The first step, let's
+    call it the <i>data collection phase</i>, is getting specific data needed for the installation
+    process. Typically this is done by typing all neded data into one or more panels, if a GUI is
+    used, or automatically by reading the data from a config file. In general nothing will be
+    changed on the system until all needed data is obtained. But mostly - depending on to the
+    information, e.g. the destination path - different input panels are involved.</p>
+
+    <p>If all needed data is collected the second step will be perfomed, let us call it the
+    <i>action phase</i>. During this step the state of the locale machine will be changed, e.g.
+    files will be copied to the installation destination or some short cuts will be registered.
+    Each of this subsequent steps are denoted as actions. There are actions intended to be reused,
+    so called common actions, and actions for one special purpose only, so called custom actions.
+    In IzPack there are already some common actions, for example "file transfer", "parse" or
+    "execute".</p>
+
+    <p>The third step, the <i>reporting phase</i>, is normally represented by a panel that reports
+    the result state of the installation (OK, or not OK) and a simple good bye message.</p>
+
+    <p>With IzPack there are two ways to implement custom actions. Firstly it is always possible to
+    define a custom panel that perfoms the desired actions too. Secondly, and that's the new,
+    custom actions are supported.</p>
+
+    <p>Panels still may be used for actions that are perfomed, e.g. before files are transferred or
+    after the "execute" action. But if the needed action depends on the selected or already
+    installed packages, this works also, but the implementation effort is much higher.</p>
+
+    <p>If the action should be performed for several amount of elements of a pack, using custom
+    actions will be more easy than using panels. Additional custom actions may be defined for
+    installation, but also for packaging and uninstallation purposes. If a custom action is also
+    needed for uninstallation purposes, it'll be always a good idea to implement a corresponding
+    installation action as custom action, but not as panel.</p>
+
+    <h1>
+      <a name="SECTION00920000000000000000">How It Works</a>
+    </h1>
+    <p>Custom actions are implemented as listeners. Each listener implements callback methods that
+    will be called at well-defined points. The method <tt>InstallerListener.afterFile</tt> for
+    example will be called after a file has been copied. There are different interfaces intended
+    for being used at packaging time, at installation time and at uninstallation time.</p>
+
+    <p>Each interface is implemented by a class with the prefix "Simple" (e.g.
+    SimpleCompilerListener) that implements all declared interface methods with an empty body.
+    These classes may be used as base classes for own listener implementations.</p>
+
+    <p>To apply custom actions to the installer, an entry in the apropriate install.xml file is
+    needed. The configuration of listeners starts with the facultative ELEMENT "listeners" which
+    can contain one or more ELEMENTs of "listener". For a "listener" there are three attributes
+    which determine the "compiler", "installer" and "uninstaller" custom action pupose.
+    Additionally it is possible to make the listener OS dependent using the "os" ELEMENT.</p>
+
+    <p>If file related data will be set, the facultative ELEMENT "additionaldata" is defined for
+    the ELEMENTs "file", "singlefile" and "fileset". This data will be automatically moved to the
+    corresponding PackFile objects in the install.jar. Extraction and usage should be implemented
+    in a install custom action (see example).</p>
+    <h2>
+      <a name="SECTION00921000000000000000">Custom Action Types</a>
+    </h2>
+    <p>
+      Custom actions are intended to be used at packaging time, at installation time and at uninstallation time. The interfaces are:
+    </p>
+    <div class="center">
+      <table class="center" cellpadding="3" border="1">
+        <tr>
+          <th class="textleft">
+            <i>Custom action type</i>
+          </th>
+          <th class="textleft">
+            <i>Interface name</i>
+          </th>
+        </tr>
+        <tr>
+          <td class="textleft">
+            Packaging
+          </td>
+          <td class="textleft">
+            com.izforge.izpack.event.CompilerListener
+          </td>
+        </tr>
+        <tr>
+          <td class="textleft">
+            Installation
+          </td>
+          <td class="textleft">
+            com.izforge.izpack.event.InstallerListener
+          </td>
+        </tr>
+        <tr>
+          <td class="textleft">
+            Uninstallation
+          </td>
+          <td class="textleft">
+            com.izforge.izpack.event.UninstallerListener
+          </td>
+        </tr>
+      </table>
+    </div>
+    <h3>
+      <a name="SECTION00921100000000000000">Custom Actions At Packaging</a>
+    </h3>
+    <h4>
+      <a name="SECTION00921110000000000000">UML Diagram</a>
+    </h4>
+    <div class="center">
+      <!-- MATH
+       $\fbox{\includegraphics[scale=1.0]{img/CompilerListener}}$
+       --><img width="496" height="323" class="allignmiddle" src="img12.png" alt="\fbox{\includegraphics[scale=1.0]{img/CompilerListener}}" />
+    </div>
+    <h4>
+      <a name="SECTION00921120000000000000">Description</a>
+    </h4>
+    <ul>
+      <li>
+        <i>(constructor)</i>: only the default constructor will be used. It is called from Compiler just after
+        creating the packager. Therefore initializing will be better during in the first
+        <tt>notify</tt> call.
+      </li>
+
+      <li>
+        <tt>reviseAdditionalDataMap</tt> gives the facility to add data to each <tt>PackFile</tt> object. This is the place where
+        file related data can be transferred from the install xml file into the install jar file.
+        Although each key and value of the map can be any type, but the class definitions of all
+        used types must therfore be contained in the installer jar file or in the VM's classpath.
+        In general strings are the best choice for being used as keys or values. All keys must be
+        unique over all registered <tt>CompilerListeners</tt>. Each call of this method adds own
+        key value pairs to the given <tt>existenDataMap</tt> because more than one listener can be
+        used. If the given map is null, a new one will be created.
+      </li>
+
+      <li>
+        <tt>notify</tt> is called at the beginning and at the end of each "add" method call which is called in
+        <tt>Compiler.executeCompiler</tt>.
+      </li>
+    </ul>
+    <h3>
+      <a name="SECTION00921200000000000000">Custom Actions At Installing Time</a>
+    </h3>
+    <h4>
+      <a name="SECTION00921210000000000000">UML Diagram</a>
+    </h4>
+    <div class="center">
+      <!-- MATH
+       $\fbox{\includegraphics[scale=1.0]{img/InstallerListener}}$
+       --><img width="721" height="681" class="allignmiddle" src="img13.png" alt="\fbox{\includegraphics[scale=1.0]{img/InstallerListener}}" />
+    </div>
+    <h4>
+      <a name="SECTION00921220000000000000">Description</a>
+    </h4>
+    <ul>
+      <li>
+        <i>(constructor)</i>: only the default constructor will be used. It is called from <tt>Unpacker.run</tt>
+        before unpacking.
+      </li>
+
+      <li>
+        <tt>beforePacks</tt> will be called each time before an unpacking call is performed.
+      </li>
+
+      <li>
+        <tt>beforePack</tt> is called before a package is installed. Pack object and the number of the pack are
+        passed.
+      </li>
+
+      <li>
+        <tt>isFileListener</tt> determines whether the next four methods are called or not. This is a little performance
+        optimizing.
+      </li>
+
+      <li>
+        <tt>beforeDir</tt> is called before a directory is created. In this case, when file listeners exist,
+        directories are created recursively and the method is called at each step. The file and the
+        current <tt>PackFile</tt> object are passed.
+      </li>
+
+      <li>
+        <tt>afterDir</tt> is called directly after the directory creation.
+      </li>
+
+      <li>
+        <tt>beforeFile</tt> is called before a file is created. The file and <tt>PackFile</tt> object are passed as
+        parameters.
+      </li>
+
+      <li>
+        <tt>afterFile</tt> is the best place to perform file related actions. The given <tt>PackFile</tt> objects
+        contains the additional data which was set at packaging.
+      </li>
+
+      <li>
+        <tt>afterPack</tt> will be just called after the pack is closed.
+      </li>
+
+      <li>
+        <tt>afterPacks</tt> is the last step before the handler will be stopped.
+      </li>
+    </ul>
+    <h3>
+      <a name="SECTION00921300000000000000">Custom Actions At Uninstalling Time</a>
+    </h3>
+    <h4>
+      <a name="SECTION00921310000000000000">UML Diagram</a>
+    </h4>
+    <div class="center">
+      <!-- MATH
+       $\fbox{\includegraphics[scale=1.0]{img/UninstallerListener}}$
+       --><img width="522" height="476" class="allignmiddle" src="img14.png" alt="\fbox{\includegraphics[scale=1.0]{img/UninstallerListener}}" />
+    </div>
+    <h4>
+      <a name="SECTION00921320000000000000">Description</a>
+    </h4>
+    <ul>
+      <li>
+        <i>(constructor)</i> : only the default constructor will be used. It is called from <tt>Destroyer.run</tt> as first call.
+      </li>
+      <li>
+        <tt>beforeDeletion</tt> will be called after execute files was performed. The given list contains all <i>File</i> objects which are marked for deletion.
+      </li>
+      <li>
+        <tt>isFileListener</tt> determines whether the next two methods are called or not.
+      </li>
+      <li>
+        <tt>beforeDelete</tt> is the method which, is called before a single file is deleted. The <i>File</i> object is given as parameter.
+      </li>
+      <li>
+        <tt>afterDelete</tt> will be invoked after the delete call for a single file.
+      </li>
+      <li>
+        <tt>afterDeletion</tt> is the last call before the cleanup of created data is performed.
+      </li>
+    </ul>
+    <h2>
+      <a name="SECTION00922000000000000000">Package Path</a>
+    </h2>
+    <p>Custom actions must always implement one of the given listener interfaces. As mentioned
+    above, it is also possible to derive from one of the "Simple" listeners. The package path is
+    facultative, only the class name must be unique over all custom actions. The preparation of a
+    custom action for providing it with an installation is very similar to panels. Custom actions
+    must also be packed into a jar file with the name of the custom action class name. This jar
+    file should be placed in <tt>[IzPackRoot]/bin/customActions</tt>, may be</p>
+<pre>
+[IzPackRoot]/bin/customActions/MyCompilerListener.jar
+[IzPackRoot]/bin/customActions/MyInstallerListener.jar
+[IzPackRoot]/bin/customActions/MyUninstallerListener.jar
+</pre>
+
+    <p>In the default Ant definition file (build.xml) there are some targets for this stuff.</p>
+    <h2>
+      <a name="SECTION00923000000000000000">Correlated Stuff</a>
+    </h2>
+    <h3>
+      <a name="SECTION00923100000000000000">Native Libraries for Uninstallation</a>
+    </h3>
+    <p>If a custom action uses JNI at installation time, often the associated uninstall custom
+    action needs JNI too. For this situation it is possible to declare a native library for
+    unstallation. The only work to do is to add a <tt>stage</tt> attribute to the <tt>native</tt>
+    tag in the install xml file like</p>
+<pre>
+&lt;!-- The native section. We specify here our os dependant
+libs..--&gt; &lt;native type="3rdparty"
+name="MyOSHelper.dll"stage="both" &gt;
+   &lt;os family="windows" /&gt;
+&lt;/native&gt;
+</pre>
+
+    <p>The needed additional classes are packed into lib/uninstaller-ext.jar. If a native library
+    is defined for uninstallation, this file will also be packed into the installer.jar as
+    IzPack.unistaller-ext and used at its right position.</p>
+    <h1>
+      <a name="SECTION00930000000000000000">What You Have To Do</a>
+    </h1>
+    <p>Follow the steps that are needed to create and use custom actions with the "normal" source environment (not standalone compiler) using Ant. Of course, it works also with the standalone compiler. </p>
+    <h2>
+      <a name="SECTION00931000000000000000"></a><a name="sec:caPackaging"></a><br />
+      Custom Actions at Packaging (CompilerListener)
+    </h2>
+    <ul>
+      <li>
+        Implement <tt>com.izforge.izpack.event.CompilerListener</tt> or extend <tt>com.izforge.izpack.event.SimpleCompilerListener</tt>. Place it as <tt>
+        [IzPackRoot]/src/lib/[MyPackagePath]/MyCompilerListener.java</tt>.
+      </li>
+      <li>
+        Add a "<tt>build-compiler-listener</tt>" macro call in to the 
+        <tt>build.listeners</tt> target in <tt>[IzPackRoot]/src/build.xml</tt>.
+        Note that the name attribute value in the build-instealler-listener 
+        must match <tt>CompilerListener</tt> implementation class name (not 
+        including the package). You should include the actual Listener
+        implementation, as well as any other classes required by the listener.
+<pre>
+        &lt;build-compiler-listener name="MyCompilerListener"&gt;
+            &lt;include name="[MyPackagePath]/MyCompilerListener.java"/&gt;
+            &lt;include name="[MyPackagePath]/SomeOtherHelperClass.java"/&gt;
+        &lt;/build-compiler-listener&gt;
+</pre>
+      </li>
+      <li>
+        Run <tt>[IzPackRoot]/src/build.xml</tt>.
+        An <tt>ant</tt> alone will execute the required targets.
+      </li>
+      <li>
+        Add a "listeners" ELEMENT with a "listener" ELEMENT with a "compiler"
+        attribute in to [MyProjectPath]/install.xml 
+<pre>
+  &lt;listeners&gt;
+    &lt;listener compiler="MyCompilerListener" /&gt;
+  &lt;listeners&gt;
+</pre>
+      </li>
+      <li>
+        Compile with the following command, or an ant task you have set up.
+<pre>
+java -jar [IzPackRoot]/lib/compiler.jar -HOME [IzPackRoot]
+  [MyProjectPath]/install.xml -b [MyProductPath] -o
+  [MyBuildPath]/install.jar
+</pre>
+      </li>
+      <li>
+        Test it
+      </li>
+    </ul>
+    <h2>
+      <a name="SECTION00932000000000000000">Custom Actions at Installation Time (InstallerListener)</a>
+    </h2>
+    <p>Perform the same steps as described in <a href="#sec:caPackaging">7.3.1</a>, replace all occurrences of "CompilerListener" with "InstallerListener" and "compiler" with "installer". </p>
+    <h2>
+      <a name="SECTION00933000000000000000">Custom Actions at Uninstallation Time (UninstallerListener)</a>
+    </h2>
+   <p>Perform the same steps as described in <a href="#sec:caPackaging">7.3.1</a>, replace all occurrences of "CompilerListener" with "UninstallerListener"and "compiler" with "uninstaller". </p>
+    <h1>
+      <a name="SECTION00940000000000000000">Example</a>
+    </h1>
+    <p>Let us say, we want to set access rights for files and directories on Unix. The Java sources are placed in the directory <br />
+    <tt>[IzPackRoot]/sample/src/com/myCompany/tools/install/listener</tt>. There are the files ChmodCompilerListener.java and ChmodInstallerListener.java. </p>
+    <ul>
+      <li>
+        Copy the files too [IzPackRoot]/src/lib/com/myCompany/tools/install/listener
+      </li>
+      <li>
+        In [IzPackRoot]/src/build.xml there are the lines 
+<pre>
+    &lt;!-- CUSTOM ACTION test START
+    CUSTOM ACTION test END --&gt;
+</pre>
+        Uncomment them (activate the lines between them).
+      </li>
+      <li>
+        Build IzPack new.
+      </li>
+      <li>
+        Compile a test installation with 
+<pre>
+java -jar [IzPackRoot]/lib/compiler.jar -HOME [IzPackRoot]
+  [IzPackRoot]/sample/listener/install.xml
+  -b [IzPackRoot]/sample/listener -o
+  [IzPackRoot]/sample/listener/install.jar
+</pre>
+      </li>
+      <li>
+        Install it 
+<pre>
+java -jar install.jar
+</pre>
+      </li>
+    </ul>
+    <h1>
+      <a name="SECTION00950000000000000000">Ant Actions (InstallerListener and UninstallerListener)</a>
+    </h1>
+    <p>In this section the common ant task custom actions are described in detail. It is only for developers who are not acquainted with <tt>IzPack</tt> or it's custom actions. In addition to the basics
+    there are some recapitulations of the common custom action techniques and some hints for pitfalls. <br />
+    In the package <tt>com.izforge.izpack.event</tt> there are the ant related custom actions <tt>AntActionInstallerListener</tt> and <tt>AntActionUninstallerListener</tt>. As recapitulation, to add
+    any custom action a reference in install.xml will be needed, as example: <br /></p>
+<pre>
+&lt;listeners&gt;
+    &lt;listener installer="AntActionInstallerListener"
+        uninstaller="AntActionUninstallerListener" /&gt;
+&lt;/listeners&gt;
+</pre>
+    <p>
+      For all referenced listeners a jar file with the same name must exist in <tt>[IzPackRoot]/bin/customActions</tt>. If compilation (packaging) fails with a "not found" error, first verify, that
+      the jar file exists. If not, create it.<br />
+      With this custom action it is possible to perform ant calls at installation and/or uninstallation time. It is not only a wrapper for a comand-line ant call, but also an intersected description
+      file defining what target of the ant build file should be performed at what time of (un)installation and specifies which properties for what IzPack <tt>pack</tt> are to be used. The intersected
+      description file is written as XML, the corresponding dtd is placed in src/dtd/event/antaction.dtd. The description file should be declared as a resource in the install.xml with the id <tt>
+      AntActionsSpec.xml</tt> e.g.<br />
+    </p>
+<pre>
+&lt;resorces&gt;
+    ...
+    &lt;res id="AntActionsSpec.xml" src="myInstallSpecs/MyAntActionsSpec.xml" /&gt;
+    ...
+&lt;/resorces&gt;
+</pre>
+    <p>
+      The precise spelling of the id is important. The base path of <tt>src</tt> is the installation project path. If you want to use ant, you have to specify it here. IzPack is designed for running
+      without dependencies on external software or libraries. Therefore it is necessary to include everything needed, in this case ant self. The field <tt>&lt;jar&gt;</tt> in installation.xml is
+      predestinated for such cases, e.g.<br />
+    </p>
+<pre>
+&lt;jar src="jar/ant/ant.jar" stage="both" /&gt;
+</pre>
+    <p>
+      Be aware, that an "extended" ant use needs more than one jar, for example often <tt>xercesImpl.jar</tt>. If an obscure "class not found" exception is raised during testing, check first for
+      missing jar files.<br />
+      For supporting uninstallation the jar field was extended by the attribute <tt>stage</tt>. If an ant uninstaller custom action is used, the uninstaller also needs the jar files. If <tt>
+      stage</tt> is "both" or "uninstall", the contents of the referenced jar file will be packed into uninstaller.jar. Be aware that not the jar file itself, but the contents of it are required.
+      This implies, that the paths of the contained files are unique and the information in <tt>meta-inf/Manifest.mf</tt> will be lost.<br />
+    </p>
+    <h2>
+      <a name="SECTION00951000000000000000">The Basic XML Struture</a>
+    </h2>
+    <p>An ant action will be defined in the resource with the id "AntActionsSpec.xml". Sometimes it
+    will help to lock into <tt>[IzPackRoot]/src/dtd/event/antaction.dtd</tt> or validate a written
+    xml file with the dtd.
+    </p><p>
+    On this xml file a substitution will be performed using all defined <tt>IzPack</tt> variables.
+    It is performed just before processing the packs. This is a common way of loading spec files
+    into custom actions. For more information see method
+    <tt>com.izforge.izpack.util.SpecHelper.readSpec</tt>. If you want to substitute some custom
+    item, simply add a variable via idata.setVariable in a custom panel before
+    <tt>InstallPanel</tt>. The given variable name (id) should be written into the xml file in the
+    common variable notation.
+    </p>
+
+    <p>The top level XML section is called <tt>&lt;antactions&gt;</tt>. Only one is possible. The
+    <tt>&lt;antactions&gt;</tt> are segregated in one or more <tt>&lt;pack&gt;</tt> elements. The
+    single attribute <tt>&lt;name&gt;</tt> of the <tt>&lt;pack&gt;</tt> corresponds to the same
+    structure in install.xml (for more information see also installation.dtd). Only the "things"
+    included in the <tt>&lt;pack&gt;</tt> are performed, if a pack with the same name was chosen to
+    be installed. The "things" to be done to self are defined by the element
+    <tt>&lt;antcall&gt;</tt> (without ssss).
+     </p><p>
+     The <tt>&lt;antcall&gt;</tt> takes the following attributes:</p>
+
+    <ul>
+      <li>
+        <tt>order</tt>: required. Determine at what point of installation the antcalls defined by element
+        <tt>target</tt> should be performed. Possible are <tt>beforepack</tt>, <tt>afterpack</tt>,
+        <tt>beforepacks</tt> or <tt>afterpacks</tt>. Be aware that with beforepack(s) there are no
+        installed files and also no installed build file. With this order only preexistent build
+        files are useable.
+      </li>
+
+      <li>
+        <tt>uninstall_order</tt>: optional. Determine at what point of uninstallation the antcalls defined by element
+        <tt>uninstall_target</tt> should be performed. Possible are <tt>beforedeletion</tt> and
+        <tt>afterdeletion</tt>. As opposed to the behaviour of <tt>order</tt> the referenced files
+        are also accessible in the order <tt>afterdeletion</tt>. The uninstaller action copies the
+        files into tempfiles before deletion which are marked as deleteOnExit.
+      </li>
+
+      <li>
+        <tt>quiet</tt>: optional. To quit or not. Possible are yes or no. Default is no.
+      </li>
+
+      <li>
+        <a name="AntActionVerbose"></a><tt>verbose</tt>: optional. To output verbose information or not. Possible are yes or no. Default is
+        no.
+      </li>
+
+      <li>
+        <a name="AntActionLogFile"></a><tt>logfile</tt>: optional. Path of the file for logging should be performed. The logfile should be not
+        marked for uninstallation otherwise it will be deleted too.
+      </li>
+
+      <li>
+        <tt>buildfile</tt>: required. Path of the file which contains the antcall. This is the file you normally
+        use as <tt>-buildfile</tt> during an ant call via the command line. In this file variables
+        are not substituted. For substitution there are properties in ant which can be used. Never
+        write an <tt>IzPack</tt> variable in an ant buildfile.
+      </li>
+
+      <li>
+        <tt>messageid</tt>: optional. A string ID which refers to
+         <tt>bin/langpacks/installer/&lt;lang&gt;.xml</tt>. If it is defined, the message will be
+        displayed in the InstallPanel whilst performing the ant call.
+      </li>
+    </ul>
+
+    <p>In addition to the possible attributes there are some elements. All elements can be defined
+    more than one time in one <tt>&lt;antcall&gt;</tt>. All are optional, but with no
+    <tt>&lt;target&gt;</tt> element the <tt>&lt;antcall&gt;</tt> makes no sense. Do not confuse the
+    following: "required"s are related to the attributes of the elements, not to the elements
+    themselfs.</p>
+    <h3>
+      <a name="SECTION00951100000000000000"></a><a name="tag:antproperty"></a><br />
+      <tt>&lt;property&gt;</tt>: define a property
+    </h3>
+    <p>Property to be used with all <tt>target</tt>s and <tt>uninstall_target</tt>s which are defined for this antcall. </p>
+    <ul>
+      <li>
+        <tt>name</tt>: required. The name (id) of the property.
+      </li>
+      <li>
+        <tt>value</tt>: required. The value of the property.
+      </li>
+    </ul>
+    <h3>
+      <a name="SECTION00951200000000000000"></a><a name="tag:antpropertyfile"></a><br />
+      <tt>&lt;propertyfile&gt;</tt>: define properties in a file
+    </h3>
+    <p>Properties to be used with all targets and uninstall_targets which are defined for this antcall given by the path of a properties file. </p>
+    <ul>
+      <li>
+        <tt>path</tt>: required. Path of a file which contains properties in the syntax which is used by ant. Some ant calls need properties files. For these this element is used. One way to fill
+        specific data into it is to create a new file in a custom panel and fill it with values given by input fields. The file path can be set at installation time, if there is a variable in
+        AntActionSpec.xml and an IzPack variable was defined before InstallPanel. That file can be only created with deleteOnExit, if no <tt>&lt;uninstall_target&gt;</tt> was defined in this <tt>
+        &lt;antcall&gt;</tt>. This implies, that other <tt>&lt;antcall&gt;</tt>s can have a <tt>&lt;uninstall_target&gt;</tt>.
+      </li>
+    </ul>
+    <h3>
+      <a name="SECTION00951300000000000000"></a><a name="tag:anttarget"></a><br />
+      <tt>&lt;target&gt;</tt>: target to call at installation
+    </h3>
+    <p>Targets to perform with this antcall at installation time. The targets should be defined in the given buildfile or else an ant exception will be raised. This is that what you use, if you don't
+    want to perform the default target. e.g. cleaning the <tt>IzPack</tt> project with <tt>ant clean</tt> </p>
+    <ul>
+      <li>
+        <tt>name</tt>: required. The name of the target.
+      </li>
+    </ul>
+    <h3>
+      <a name="SECTION00951400000000000000"></a><a name="tag:antuninsttarget"></a><br />
+      <tt>&lt;uninstall_target&gt;</tt>: target to call on uninstallation
+    </h3>
+    <p>Targets to perform with this antcall at uninstallation time. The targets should be defined in the given buildfile otherwise an ant exception will be raised. With this target it will be possible
+    to undo the things done at installation time. </p>
+    <ul>
+      <li>
+        <tt>name</tt>: required. The name of the uninstall target.
+      </li>
+    </ul>
+    
+    <h1><a name="RegistryListener">Registry access (InstallerListener and UninstallerListener)</a></h1>
+	<p>The event package of <tt>IzPack</tt> contains an installer and an uninstaller listener for
+	Windows registry access. The listeners uses the separated pack <i>com.coi.tools</i> which is also 
+	available as source under the src subtree of <tt>IzPack</tt>. The registry will be called by JNI.</p>
+	<p>The registry stuff was implemented in all conscience, but certainly
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND</p>
+	<p>The listeners themselves are only able to write into the Windows registry at installation and
+	delet the writing at uninstall time. But it is also possible to use the registry 
+	handler as a registry reader in custom panels or costum actions. 
+	The <a href="./node4.html#SECTION00441000000000000000a">CheckedHelloPanel</a> reads the registry and
+	can be used as example for it.</p>
+	<p>To add registry support to an installation some changes in the installation definition
+	file (often called<tt>install.xml</tt>) are to be made. First the declaration of the listener 
+	themselves:</p>
+	<pre>
+&lt;listeners&gt;
+    &lt;listener installer="RegistryInstallerListener"
+        uninstaller="RegistryUninstallerListener" &gt;
+        &lt;os family="windows"/&gt;
+    &lt;/listener&gt;
+&lt;/listeners&gt;
+</pre>
+<p>It is also recomanded to add the uninstaller listener because it is usual to cleanup the
+registry at uninstallation. The listeners are only used on Windows, therefore we declare it.</p>
+<p>As with other listeners a jar file with the same name has to exist in <tt>[IzPackRoot]/bin/customActions</tt>. 
+If compilation (packaging) fails with an "not found" error, verify, that the jar file exists. 
+If not, create it. The jar files are <tt>RegistryInstallerListener.jar</tt> and <tt>RegistryUninstallerListener.jar</tt>.</p>
+<p>As second change in <tt>install.xml</tt> we have to declare the native part JNI needs the dll</p>
+<pre>
+&lt;native type="3rdparty" name="COIOSHelper.dll" stage="both"&gt;
+    &lt;os family="windows"/&gt;
+&lt;/native&gt;
+</pre>
+<p>The dll should be placed in <tt>[IzPackRoot]/bin/native/3rdparty</tt>. The stage "both" marks
+this dll not only to be put into the installation jar file but also to be put into the uninstallation jar file. This will automatically be performed by the packager and installation.</p>
+<p>With these two changes the registry support will be incorporated into your installation. Without
+any more actions an uninstall key will be crated in the registry at the installation. If you open
+the software manager of Windows, there will be an entry with the variables 
+$APP_NAME $APP_VER, e.g.:</p>
+<pre>
+IzPack 4.6.8 (build 2007.02.15)
+</pre>
+<p>The variables will be defined from the entries &lt;appname&gt; and &lt;appversion&gt; in the &lt;info&gt; 
+element of the installation definition file.</p>
+<p>If you would like to have more informations in the uninstaller key or to create other keys or values in
+the registry, you should create a specification file. The file should be then refered to in
+<tt>install.xml</tt> as resource:</p>
+<pre>
+&lt;resources&gt;
+    ...
+    &lt;res src="mySubPath/MyRegistrySpec.xml" id="RegistrySpec.xml"/&gt;
+&lt;/resources&gt;
+</pre>
+<p>The id has to be <tt>RegistrySpec.xml</tt>. The real file name is not of any importance but should be written the same as in your source tree. It will be securer if you do not use special chars like blanks
+or umlauts. Be aware! If you forget to refer to <tt>registrySpec.xml</tt> in your <tt>install.xml</tt> no exception will be made because this is a facultative file</p>
+<h2><a name="RegListBaseXML">The Basic XML
+    Struture</a></h2>
+    <p>The specification file for registry entries  will be defined in the resource with the 
+	id "ReigstrySpec.xml". Sometimes it
+    will help to lock into <tt>[IzPackRoot]/src/dtd/event/registry.dtd</tt> or validate a written
+    xml file with the dtd.
+    </p>
+    <p>On this xml file a substitution will be performed using all defined <tt>IzPack</tt> variables.
+    It is performed just before processing the packs. This is a common way of loading spec files
+    into custom actions. For more information see method
+    <tt>com.izforge.izpack.util.SpecHelper.readSpec</tt>. If you want to substitute some custom
+    item, simply add a variable via idata.setVariable in a custom panel before
+    <tt>InstallPanel</tt>. The given variable name (id) should be written into the xml file in the
+    common variable notation.
+    </p>
+    <p>The top level XML section is called <tt>&lt;registry&gt;</tt>. Only one is possible. The
+    <tt>&lt;registry&gt;</tt> is segregated in one or more <tt>&lt;pack&gt;</tt> elements. The
+    single attribute <tt>&lt;name&gt;</tt> of the <tt>&lt;pack&gt;</tt> corresponds to the same
+    structure in install.xml (for more information see also installation.dtd). Only the "things"
+    included in the <tt>&lt;pack&gt;</tt> are performed, if a pack with the same name was chosen to
+    be installed. Valid "things" are &lt;key&gt; &lt;value&gt;.</p>
+	<p><a name="RegRootEntry"></a> The registry stuff self allows to create keys and values directly under a registry root.
+	But Windows self allows this not on "real" roots like HKEY_LOCAL_MACHINE or HKEY_USERS. Only link like
+	roots as HKEY_CLASSES_ROOT are writeable. A try e.g. on HKLM will be cause an exception and the installation
+	fails. The error number in this case normally will be 87 with the meaning "wrong parameter", not 
+	"permission denied".</p>
+	<p>We do NOT recommend to create a key or a value directly on a registry root. IzPack
+	allows it now as a result of some user requests about it.
+	Most it is not needed. E.g. an extension entry under HKEY_CLASSES_ROOT is really an entry on
+	HKEY_LOCAL_MACHINE\Software\Classes. Why not write directly there?Reading is in opposite to writing
+	no problem.</p>
+	
+
+    <h3><a name="RegListKeyElm"></a><tt>&lt;key&gt;</tt>: define a key</h3>
+
+    <p>Key to be set at installation time into the Windows registry.</p>
+
+    <ul>
+      <li>
+        <tt>keypath</tt> : required. The path of the key in Windows syntax without the root.<br>
+		If the key should be placed directly under a registry root (<a href="#RegRootEntry">not recommended; 
+		often not possible)</a>) write the key name without any backslash.
+      </li>
+
+      <li>
+        <tt>root</tt> : required. The root of the key as symbol. Valid is one of 
+		HKCR HKCU HKLM HKU HKPD HKCC HKDDS.
+      </li>
+    </ul>
+
+    <h3><a name="RegListValueElm"></a><tt>&lt;value&gt;</tt>: define a value</h3>
+
+    <p>Value to be set at installation time into the Windows registry.</p>
+
+    <ul>
+      <li>
+        <tt>name</tt> : required. The name of the value to be set or modified without a path.<br>
+		The default value will be written as the empty string &quot;&quot;.
+      </li>
+      <li>
+        <tt>keypath</tt> : required. The key path under which the value should be placed 
+                 in Windows syntax without the root and value name.
+		If the key of the value should be placed directly under a registry root (if not exist,  
+		<a href="#RegRootEntry">not recommended; often not possible)</a>) write the key name without any backslash.<br>
+		If the value should be placed directly under a registry root (also not recommended and
+		often not possible) write as keypath the empty string &quot;&quot;.
+      </li>
+
+      <li>
+        <tt>root</tt> : required. The root of the key as symbol. Valid is one of 
+		HKCR HKCU HKLM HKU HKPD HKCC HKDDS.
+      </li>
+	  
+      <li>
+        <tt>override</tt> : optional. Override an existent value or not. Valid is 
+		"true" or "false", default is "true".
+      </li>
+	  
+      <li>
+        <tt>Contents part</tt>: accurately one of the following content elements should be defined. 
+		It implicit defines the type of the value.
+		<ul>
+      <li>
+        <tt>string</tt> : contents for value to be set if it is a string.
+      </li>
+      <li>
+        <tt>dword</tt> : contents for value to be set if it is an integer (Windows DWORD).
+		Only digits are valid. "48" is valid, "0x30" will be raise an NumberFormatException
+		from <tt>java.lang.Long.parseLong</tt>.
+      </li>
+      <li>
+        <tt>&lt;bin&gt;</tt> : element to handle one "line" of binary data.
+		<ul>
+			<li>
+			<tt>data</tt> : contents for value of type BINARY written as comma separated list of hex.
+		Only hex-digits are valid. "48, f4" is valid, "0x48, 0xf4" will be raise an NumberFormatException
+		from <tt>java.lang.Integer.parseInt</tt>.
+			</li>
+		</ul>
+      </li>
+      <li>
+        <tt>&lt;multi&gt;</tt>: element to handle one contents string for MULTI_STRINGs.
+		<ul>
+			<li>
+			<tt>data</tt> : the contents for the element &lt;multi&gt;.
+			</li>
+		</ul>
+      </li>
+
+		</ul>
+      </li>
+    </ul>
+	<p>May be the descriptions for  type BINARY and MULTI_STRING are not fully descriptive. Therefore
+	as example the test entries in the registry specification file of IzPack:</p>
+	<pre>
+&lt;registry&gt;
+  ...
+  &lt;pack name="Core"&gt;
+    &lt;value name="Path" 
+      keypath="SOFTWARE\IzForge\IzPack\$APP_VER"  
+      root="HKLM" 
+      string="$INSTALL_PATH"/&gt;
+    &lt;value name="DWORD" 
+      keypath="SOFTWARE\IzForge\IzPack\$APP_VER"  
+      root="HKLM" 
+      dword="42"/&gt;
+    &lt;value name="BIN" 
+      keypath="SOFTWARE\IzForge\IzPack\$APP_VER"  
+      root="HKLM" &gt;
+      &lt;bin data="42, 49, 4e, 20, 54, 45, 53, 54" /&gt;
+      &lt;bin data="42, 49, 4e, 20, 54, 45, 53, 54" /&gt;
+    &lt;/value&gt;
+    &lt;value name="MULTI" 
+      keypath="SOFTWARE\IzForge\IzPack\$APP_VER"  
+      root="HKLM" &gt;
+      &lt;multi data="A multi string with three elements" /&gt;
+      &lt;multi data="Element two"/&gt;
+      &lt;multi data="Element three"/&gt;
+    &lt;/value&gt;
+  &lt;/pack&gt;
+&lt;/registry&gt;
+	</pre>
+<h2><a name="RegListSpecPacks">Extended Uninstall Key</a></h2>
+<p>There is a special pack named <tt>UninstallStuff</tt>. If a pack will be declared like</p>
+<pre>&lt;pack name="UninstallStuff"&gt;</pre>
+<p>the incorporated elements will be used for creating the uninstall key and values instead of
+the build-in behavior. This pack name should be not used at an other point of the installation.
+It is a virtual and should be used only in <tt>RegistrySpec.xml</tt>.</p>
+<p>The registry handler self cannot ensure the uniqueness of an uninstaller key. There is the
+special panel <tt>CheckedHelloPanel</tt> which does it. If no pack <tt>UninstallStuff</tt> will
+be used, this will be performed full automatically. If the pack was declared, <b>all</b> keypaths under
+it should be written as following:</p>
+<pre>
+...
+&lt;value name="DisplayName" 
+  keypath="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$UNINSTALL_NAME"  
+  root="HKLM" 
+  string="$UNINSTALL_NAME"/&gt;
+...
+</pre>
+<p>The IzPack variable <tt>$UNINSTALL_NAME</tt> will be defined in the <tt>CheckedHelloPanel</tt>. With the "normal"
+<tt>HelloPanel</tt> it is undefined and the uninstall key catches the name "$UNINSTALL_NAME".</p>
+<h2><a name="RegListUninst">Uninstall Behavior</a></h2>
+<p>During uninstallation the deletion or modification of written keys or values will be performed
+depending to the following rules:</p>
+<ul>
+<li>A review of the registry will be performed only on supported operating systems (current
+only on Windows).</li>
+<li>A review of the registry will be performed only if the registry stuff was bound for uninstallation.</li>
+<li>Keys: Keys can only be deleted, a modification is not possible.
+<ul>
+<li>A previous existent key will be NOT deleted.</li>
+<li>A newly created key will be deleted, if...
+<ul>
+<li>no new values or subkeys are added after installation.</li>
+<li>no changes are made at the contents of values after installation.</li>
+</ul>
+With other words: if under the key something was changed between installation and uninstallation,
+the key will be persist.</li>
+</ul>
+</li>
+
+<li>Values:
+<ul>
+<li>A newly created value will be deleted, if the contents at uninstall time is the same
+as after installation.</li>
+<li>The contents of a previos existent value will be changed to the previos contents (the contents before
+installation) if the contents at uninstall time is the same
+as after installation. </li>
+</ul>
+With other words: if the contents of a value was changed between installation
+and uninstallation this contents will be persist. There is no handling of parts of the 
+contents (important for type MULTI_STRING).</li>
+</ul>
+<p>This conservative behavior cannot be changed to a user dependant voting because there is no
+user interface for custom actions at uninstall time. Additional the registry handler to not
+support voting.</p>
+<h2><a name="RegListExamples">Examples</a></h2>
+<p>There are the files</p>
+<pre>
+[IzPackRoot]/src/dist-files/IzPack-install-reg.xml
+[IzPackRoot]/src/dist-files/RegistrySpec.xml
+</pre>
+<p><tt>IzPack-install-reg.xml</tt> contains additional to the normal definition the stuff needed to create
+an <tt>IzPack</tt> installer which sets on Windows an extended uninstall key and some keys and
+values under a "private" key. Compare with the "normal" installation definition of IzPack.</p>
+<p><tt>RegistrySpec.xml</tt> will be referred by <tt>IzPack-install-reg.xml</tt> as resource.
+It contains the special pack named <tt>UninstallStuff</tt> for Izpack and defines some additional
+keys and values.</p>
+<h1>
+  <a name="SECTION00970000000000000000">Summary Logger (InstallerListener)</a>
+</h1>
+<p>The listener <tt>SummaryLoggerInstallerListener</tt> can be used to log the <a href="node4.html#SECTION004418000000000000000">summary of panels</a> into a file.
+To use it, add following element to the listener section of your installation config file.</p>
+	<pre>
+&lt;listeners&gt;
+    &lt;listener installer="SummaryLoggerInstallerListener"
+        uninstaller="SummaryLoggerInstallerListener" &gt;
+        &lt;os family="windows"/&gt;
+    &lt;/listener&gt;
+&lt;/listeners&gt;
+</pre>
+<p>The default path is</p>
+<pre>$INSTALL_PATH/Uninstaller/InstallSummary.htm</pre>
+<p>It can be changed with the subelement <tt>summarylogfilepath</tt> of the element <tt>info</tt>
+of the installation description file. As example:</p>
+<pre>
+&lt;info&gt;
+    ...
+    &lt;summarylogfilepath&gt;
+        $INSTALL_PATH/Uninstaller/MySummary.htm
+    &lt;/summarylogfilepath&gt;
+&lt;/info&gt;
+</pre>
+    <hr />
+  <!--Navigation Panel-->
+	<table width="100%">
+	<tr>
+	<td><a name="tex2html536" href="node13.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html532" href="izpack-doc.html"><img class="alignbottom"
+	width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html526" href="node8.html"><img class="alignbottom" width="63" height="24" alt="previous" src="prev.png" /></a> <a name="tex2html534"
+	href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+	<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width=
+	"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+	</tr>
+	
+	<tr>
+	<td><b>Next:</b> <a name="tex2html537" href="node13.html">CookBooks</a> <b>Up:</b> <a name="tex2html533" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html527"
+	href="node8.html">User Input</a> <b><a name="tex2html535" href="node1.html">Contents</a></b></td>
+	</tr>
+	</table>
+	<!--End of Navigation Panel-->
+	<address>
+      Julien Ponge 2005-05-24
+    </address>
+  </body>
+</html>
+

@@ -1,0 +1,1407 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<title>Writing Installation XML Files</title>
+<meta name="description" content="Writing Installation XML Files" />
+<meta name="keywords" content="izpack-doc" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta content="text/css" />
+<link rel="STYLESHEET" href="izpack-doc.css" />
+<link rel="next" href="node5.html" />
+<link rel="previous" href="node3.html" />
+<link rel="up" href="izpack-doc.html" />
+<link rel="next" href="node5.html" />
+</head>
+<body>
+<!--Navigation Panel-->
+<table width="100%">
+<tr>
+<td><a name="tex2html366" href="node5.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html362" href="izpack-doc.html"><img class="alignbottom"
+width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html356" href="node3.html"><img class="alignbottom" width="63" height="24" alt="previous" src="prev.png" /></a> <a name="tex2html364"
+href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width=
+"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+</tr>
+
+<tr>
+<td><b>Next:</b> <a name="tex2html367" href="node5.html">Advanced Features</a> <b>Up:</b> <a name="tex2html363" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html357" href= 
+"node3.html">Getting started</a> <b><a name="tex2html365" href="node1.html">Contents</a></b></td>
+</tr>
+</table>
+
+<!--End of Navigation Panel-->
+<!--Table of Child-Links-->
+<p><br />
+<a name="CHILD_linkS"><strong>Subsections</strong></a></p>
+
+<ul>
+<li><a name="tex2html368" href="node4.html#SECTION00410000000000000000">What You Need</a> 
+
+<ul>
+<li><a name="tex2html369" href="node4.html#SECTION00411000000000000000">Your editor</a></li>
+
+<li><a name="tex2html370" href="node4.html#SECTION00412000000000000000">Writing XML</a></li>
+</ul>
+
+<br />
+</li>
+
+<li><a name="tex2html371" href="node4.html#SECTION00420000000000000000">Variable Substitution</a> 
+
+<ul>
+<li><a name="tex2html372" href="node4.html#SECTION00421000000000000000">The Built-In Variables</a></li>
+
+<li><a name="tex2html373" href="node4.html#SECTION00422000000000000000">Environment Variables</a></li>
+
+<li><a name="tex2html374" href="node4.html#SECTION00423000000000000000">Parse Types</a></li>
+</ul>
+
+<br />
+</li>
+
+<li><a name="tex2html375" href="node4.html#SECTION00430000000000000000">The I<small>Z</small>P<small>ACK</small> Elements</a> 
+
+<ul>
+<li><a name="tex2html376" href="node4.html#SECTION00431000000000000000">The Root Element <tt>&lt;installation&gt;</tt></a></li>
+
+<li><a name="tex2html377" href="node4.html#SECTION00432000000000000000">The Information Element <tt>&lt;info&gt;</tt></a></li>
+
+<li><a name="tex2html378" href="node4.html#SECTION00433000000000000000">The Variables Element <tt>&lt;variables&gt;</tt></a></li>
+
+<li><a name="tex2html379" href="node4.html#SECTION00434000000000000000">The GUI Preferences Element <tt>&lt;guiprefs&gt;</tt></a></li>
+
+<li><a name="tex2html380" href="node4.html#SECTION00435000000000000000">The Localization Element <tt>&lt;locale&gt;</tt></a></li>
+
+<li><a name="tex2html381" href="node4.html#SECTION00436000000000000000">The Resources Element <tt>&lt;resources&gt;</tt></a></li>
+
+<li><a name="tex2html382" href="node4.html#SECTION00437000000000000000">The Panels Element <tt>&lt;panels&gt;</tt></a></li>
+
+<li><a name="tex2html383" href="node4.html#SECTION00438000000000000000">The Packs Element <tt>&lt;packs&gt;</tt></a> 
+
+<ul>
+<li><a name="tex2html384" href="node4.html#SECTION00438100000000000000">Internationalization of the PacksPanel</a></li>
+
+<li><a name="tex2html385" href="node4.html#SECTION00438200000000000000"><tt>&lt;description&gt;</tt> - pack description</a></li>
+
+<li><a name="tex2html386" href="node4.html#SECTION00438300000000000000"><tt>&lt;depends&gt;</tt> - pack dependencies</a></li>
+
+<li><a name="tex2html387" href="node4.html#SECTION00438400000000000000"><tt>&lt;os&gt;</tt> - OS restrictions</a></li>
+
+<li><a name="tex2html388" href="node4.html#SECTION00438500000000000000"><tt>&lt;updatecheck&gt;</tt></a></li>
+
+<li><a name="tex2html389" href="node4.html#SECTION00438600000000000000"><tt>&lt;file&gt;</tt> - add files or directories</a> 
+
+<ul>
+<li><a name="tex2html390" href="node4.html#SECTION00438610000000000000"><tt>&lt;additionaldata&gt;</tt></a></li>
+</ul>
+</li>
+
+<li><a name="tex2html391" href="node4.html#SECTION00438700000000000000"><tt>&lt;singlefile&gt;</tt> - add a single file</a></li>
+
+<li><a name="tex2html392" href="node4.html#SECTION00438800000000000000"><tt>&lt;fileset&gt;</tt>: add a fileset</a></li>
+
+<li><a name="tex2html393" href="node4.html#SECTION00438900000000000000"><tt>&lt;parsable&gt;</tt> - parse a file after installation</a></li>
+
+<li><a name="tex2html394" href="node4.html#SECTION004381000000000000000"><tt>&lt;executable&gt;</tt> - mark file executable or execute it</a></li>
+
+<li><a name="tex2html395" href="node4.html#SECTION004381100000000000000"><tt>&lt;os&gt;</tt> - make a file OS-dependent</a></li>
+</ul>
+</li>
+
+<li><a name="tex2html396" href="node4.html#SECTION00439000000000000000">The Native Element <tt>&lt;native&gt;</tt></a> 
+
+<ul>
+<li><a name="tex2html397" href="node4.html#SECTION00439100000000000000"><tt>&lt;os&gt;</tt> - make a library OS-dependent</a></li>
+</ul>
+</li>
+
+<li><a name="tex2html398" href="node4.html#SECTION004310000000000000000">The Jar Merging Element <tt>&lt;jar&gt;</tt></a></li>
+</ul>
+
+<br />
+</li>
+
+<li><a name="tex2html399" href="node4.html#SECTION00440000000000000000">The Available Panels</a> 
+
+<ul>
+<li><a name="tex2html400" href="node4.html#SECTION00441000000000000000">HelloPanel</a></li>
+
+<li><a name="tex2html400a" href="node4.html#SECTION00441000000000000000a">CheckedHelloPanel</a></li>
+
+<li><a name="tex2html401" href="node4.html#SECTION00442000000000000000">InfoPanel and HTMLInfoPanel</a></li>
+
+<li><a name="tex2html402" href="node4.html#SECTION00443000000000000000">LicencePanel and HTMLLicencePanel</a></li>
+
+<li><a name="tex2html403" href="node4.html#SECTION00444000000000000000">PacksPanel</a></li>
+
+<li><a name="tex2html404" href="node4.html#SECTION00445000000000000000">ImgPacksPanel</a></li>
+
+<li><a name="tex2html405" href="node4.html#SECTION00446000000000000000">TargetPanel</a></li>
+
+<li><a name="tex2html406" href="node4.html#SECTION00447000000000000000">InstallPanel</a></li>
+
+<li><a name="tex2html407" href="node4.html#SECTION00448000000000000000">XInfoPanel</a></li>
+
+<li><a name="tex2html408" href="node4.html#SECTION00449000000000000000">FinishPanel</a></li>
+
+<li><a name="tex2html409" href="node4.html#SECTION004410000000000000000">SimpleFinishPanel</a></li>
+
+<li><a name="tex2html410" href="node4.html#SECTION004411000000000000000">ShortcutPanel</a></li>
+
+<li><a name="tex2html411" href="node4.html#SECTION004412000000000000000">UserInputPanel</a></li>
+
+<li><a name="tex2html412" href="node4.html#SECTION004413000000000000000">CompilePanel</a></li>
+
+<li><a name="tex2html413" href="node4.html#SECTION004414000000000000000">ProcessPanel</a>
+	<ul>
+		<li><a name="tex2html397" href="node4.html#SECTION004414100000000000000"><tt>&lt;executeclass&gt;</tt> - Execute Java Classes</a></li>
+		<li><a name="tex2html397" href="node4.html#SECTION004414200000000000000"><tt>&lt;executeForPack&gt;</tt> - Only execute the job for certain packs</a></li>
+		<li><a name="tex2html397" href="node4.html#SECTION004414300000000000000"><tt>&lt;logfiledir&gt;</tt> - Output of the processPanel saved to a log</a></li>
+	</ul>
+</li>
+
+<li><a name="tex2html414" href="node4.html#SECTION004415000000000000000">JDKPathPanel</a></li>
+
+<li><a name="tex2html415" href="node4.html#SECTION004416000000000000000">SelectPrinterPanel</a></li>
+
+<li><a name="tex2html416" href="node4.html#SECTION004417000000000000000">DataCheckPanel</a></li>
+
+<li><a name="tex2html417" href="node4.html#SECTION004418000000000000000">SummaryPanel</a></li>
+
+<li><a name="tex2html418" href="node4.html#SECTION004419000000000000000">InstallationGroupPanel</a></li>
+</ul>
+</li>
+</ul>
+
+<!--End of Table of Child-Links-->
+<hr />
+<h1><a name="SECTION00400000000000000000">Writing Installation XML Files</a></h1>
+
+<h1><a name="SECTION00410000000000000000">What You Need</a></h1>
+
+<h2><a name="SECTION00411000000000000000">Your editor</a></h2>
+
+<p>In order to write your XML installation files, you just need a plain text editor. Of course it's always easier to work with color coded text, so you might rather want to work with a text editor
+having such a feature. Here is a list of free editors that work well :</p>
+
+<ul>
+	<li>Jext : <tt><a name="tex2html19" href="http://www.jext.org/">http://www.jext.org/</a></tt></li>
+	<li>JEdit : <tt><a name="tex2html20" href="http://www.jedit.org/">http://www.jedit.org/</a></tt></li>
+	<li>classics like Vim and (X)Emacs.</li>
+</ul>
+
+<p>If you are a developer and tend to write your own patches, extension or features to IzPack sources, or, if you wish to debug your compilation, installation and uninstallation, we recommend two IDE:</p>
+<ul>
+	<li>Jext : <tt><a name="tex2html191" href="http://www.jetbrains.com/idea/">http://www.jetbrains.com/idea/</a></tt></li>
+	<li>JEdit : <tt><a name="tex2html201" href="http://www.eclipse.org/">http://www.eclipse.org/</a></tt></li>
+</ul>
+<p>For the first one, JetBrains has granted us an Open Source License. All project members can ask the Licence Key to one of the project manager.</p>
+<p>The second one is a well know open source (Just like us :-)) IDE. We provide a tutorial on how to develop/debug IzPack using Eclipse in the chapter <a name="GetStarted-HowToDevDebug" href="node3.html#section00350000000000000000">Getting Started -> How to develop and debug IpPack using Eclipse</a></p>
+
+<h2><a name="SECTION00412000000000000000">Writing XML</a></h2>
+
+<p>Though you might not know much about XML, you have certainly heard about it. If you know XML you can skip this subsection as we will briefly present how to use XML.<br />
+</p>
+
+<p>XML is a markup language, really close to HTML. If you've ever worked with HTML the transition will be fast. However there are a few little things to know. The markups used in XML have the
+following form : <tt>&lt;markup&gt;</tt>. Each markup has to be closed somewhere with its ending tag : <tt>&lt;/markup&gt;</tt>. Each tag can contain text and other markups. If a markup does not
+contain anything, it is just reported once : <tt>&lt;markup/&gt;</tt>. A markup can contain attributes like : <tt>&lt;markup attr1="123" attr2="hello !"/&gt;</tt>. Here is a sample of a valid XML
+structure :</p>
+
+<pre>
+&lt;chapter title="Chapter 1"&gt;
+  &lt;section name="Introduction"&gt;
+    &lt;paragraph&gt;
+    This is the text of the paragraph number 1. It is available for the very low
+    price of &lt;price currency="dollar"&gt;1 000 000&lt;/price&gt;.
+    &lt;/paragraph&gt;
+  &lt;/section&gt;
+  &lt;section name="xxx"&gt;
+  xxx
+  &lt;/section&gt;
+&lt;/chapter&gt;
+</pre>
+
+<p>You should be aware of the following common mistakes :</p>
+
+<ul>
+<li>markups <b>are</b> case sensitive : <tt>&lt;markup&gt;</tt> is different from <tt>&lt;Markup&gt;</tt>.</li>
+
+<li>you <b>must</b> close the markups in the same order as you create them : <tt>&lt;m1&gt;&lt;m2&gt;(...)&lt;/m2&gt;&lt;/m1&gt;</tt> is right but <tt>
+&lt;m1&gt;&lt;m2&gt;(...)&lt;/m1&gt;&lt;/m2&gt;</tt> is not.</li>
+</ul>
+
+<p>Also, an XML file must start with the following header :<br />
+<tt>&lt;?xml version="1.0" encoding="iso-8859-1 standalone="yes" ?&gt;</tt>. The only thing you should modify is the encoding (put here the one your text editor saves your files to). The <tt>
+standalone</tt> attribute is not very important for us.<br />
+</p>
+
+<p>This (brief !) introduction to XML was just meant to enable you to write your installation specification. For a better introduction there are plenty of books and articles/tutorials dealing with
+XML on the Internet, in book stores, in magazines and so on.<br />
+</p>
+
+<h1><a name="SECTION00420000000000000000">Variable Substitution</a></h1>
+
+<p>During the installation process IzPack can substitute variables in various places with real values. Obvious targets for variable substitution are resource files and launch scripts, however you
+will notice many more places where it is more powerful to use variables rather then hard coded values. Wherever variables can be used it will be explained in the documentation.<br />
+</p>
+
+<p>There are three types of variables:</p>
+
+<ul>
+<li>Built-In variables. These are implemented in IzPack and are all dynamic in nature. This means that the value of each variable depends on local conditions on the target system.</li>
+
+<li>Environment variables. These are provided by the operating system the installer is run on.</li>
+
+<li>Variables that you can define. You also define the value, which is fixed for a given installation file.</li>
+</ul>
+
+<p>You define your own variables in the installation XML file with the <tt>&lt;variable&gt;</tt> tag. How to do this is explained in detail later in this chapter.<br />
+</p>
+
+<p><b>Please note</b> that when using variables they must always appear with a '<tt>$</tt>' sign as the first character, even though they are not defined this way.<br />
+</p>
+
+<h2><a name="SECTION00421000000000000000">The Built-In Variables</a></h2>
+<p>
+The following variables are built-in : 
+</p>
+<ul>
+<li><tt>$INSTALL_PATH</tt> : the installation path on the target system, as chosen by the user</li>
+
+<li><tt>$APPLICATIONS_DEFAULT_ROOT</tt> : the default path for applications</li>
+
+<li><tt>$JAVA_HOME</tt> : the Java<sup><small>TM</small></sup> virtual machine home path</li>
+
+<li><tt>$CLASS_PATH</tt> : the Class Path used mainly for Java Applications</li>
+
+<li><tt>$USER_HOME</tt> : the user's home directory path</li>
+
+<li><tt>$USER_name</tt> : the user name</li>
+
+<li><tt>$APP_name</tt> : the application name</li>
+
+<li><tt>$APP_URL</tt> : the application URL</li>
+
+<li><tt>$APP_VER</tt> : the application version</li>
+
+<li><tt>$ISO3_LANG</tt> : the ISO3 language code of the selected langpack.</li>
+
+<li><tt>$IP_ADDRESS</tt> : the IP Address of the local machine.</li>
+
+<li><tt>$HOST_NAME</tt> : the HostName of the local machine.</li>
+
+<li><tt>$FILE_SEPARATOR</tt> : the file separator on the installation system</li>
+
+<li><tt>$DesktopShortcutCheckboxEnabled</tt> : When set to true, it automatically checks the "Create Desktop Shortcuts" button. To see how to use it, go to <a name="tex2html378" href="node4.html#SECTION00433000000000000000">The Variables Element <tt>&lt;variables&gt;</tt></a> Be careful this variable is case sensitve !</li>
+
+<li><a name="InstLogFile"></a><tt>$InstallerFrame.logfilePath</tt> : The path to the install log. This file contains the paths of all installed files. If set to "default" then the "$INSTALL_PATH/Uninstaller/install.log" path will be used. To see how to use it, go to <a name="tex2html378" href="node4.html#SECTION00433000000000000000">The Variables Element <tt>&lt;variables&gt;</tt></a>. If this variable is not set, no install.log will be created.</li>
+
+</ul>
+
+<h2><a name="SECTION00422000000000000000">Environment Variables</a></h2>
+<p>
+Environment variables can be accessed via the syntax <tt>${ENV[variable]}</tt>. The curly braces are mandatory. Note that variable names are case-sensitive and usually in UPPER CASE. 
+</p>
+<p>Example: To get the value of the OS environment variable "CATALINA_HOME", use <tt>${ENV[CATALINA_HOME]}</tt>.</p>
+
+<h2><a name="SECTION00423000000000000000">Parse Types</a></h2>
+<p>
+Parse types apply only when replacing variables in text files. At places where it might be necessary to specify a parse type, the documentation will mention this. Depending on the parse type, IzPack
+will handle special cases -such as escaping control characters- correctly. The following parse types are available: 
+</p>
+<ul>
+<li><tt>plain</tt> - use this type for plain text files, where no special substitution rules apply. All variables will be replaced with their respective values as is.</li>
+
+<li><tt>javaprop</tt> - use this type if the substitution happens in a Java properties file. Individual variables might be modified to function properly within the context of Java property
+files.</li>
+
+<li><tt>xml</tt> - use this type if the substitution happens in a XML file. Individual variables might be modified to function properly within the context of XML files.</li>
+
+<li><tt>shell</tt> - use this type if the substitution happens in a shell script. Because shell scripts use <tt>$variable</tt> themselves, an alternative variable marker is used: <tt>%variable</tt>
+or <tt>%{variable}</tt>.</li>
+</ul>
+
+<h1><a name="SECTION00430000000000000000">The i<small>Z</small>P<small>ACK</small> Elements</a></h1>
+
+<p><i>When writing your installer XML files, it's a good idea to have a look at the i<small>Z</small>P<small>ACK</small> installation DTD</i>.<br />
+</p>
+
+<h2><a name="SECTION00431000000000000000"></a> <a name="root-element"></a><br />
+The Root Element <tt>&lt;installation&gt;</tt></h2>
+
+<p>The root element of an installation is <tt>&lt;installation&gt;</tt>. It takes one required attribute : <tt>version</tt>. The attribute defines the version of the XML file layout and is used by
+the compiler to identify if it is compatible with the XML file. This should be set to <img width="29" height="16" class="alignbottom" src="img4.png" alt="$1.0$" /> for the moment.<br />
+</p>
+
+<h2><a name="SECTION00432000000000000000"></a> <a name="info-element"></a><br />
+The Information Element <tt>&lt;info&gt;</tt></h2>
+
+<p>This element is used to specify some general information for the installer. It contains the following elements :</p>
+
+<ul>
+<li><tt>&lt;appname&gt;</tt> : the application name</li>
+
+<li><tt>&lt;appversion&gt;</tt> : the application version</li>
+
+<li><tt>&lt;appsubpath&gt;</tt> : the subpath for the default of the installation path. A variable substitution and a maskable slash-backslash conversion will be done. If this tag is not defined, the
+application name will be used instead.</li>
+
+<li><tt>&lt;url&gt;</tt> : the application official website url</li>
+
+<li><tt>&lt;authors&gt;</tt> : specifies the author(s) of the application. It must contain at least one <tt>&lt;author&gt;</tt> element whose attributes are : 
+
+<ul>
+<li><tt>name</tt> : the author's name</li>
+
+<li><tt>email</tt> : the author's email</li>
+</ul>
+</li>
+
+<li><tt>&lt;uninstaller&gt;</tt> : specifies whether to create an uninstaller after installation, and which name to use for it. This tag has the <tt>write</tt> attribute, with default value <tt>
+yes</tt>. If this tag is not specified, the uninstaller will still be written. The <tt>name</tt> attribute can be used to change the default name of the generated uninstaller, <i>i.e.</i> <tt>
+uninstaller.jar</tt>.</li>
+
+<li><tt>&lt;javaversion&gt;</tt> : specifies the minimum version of Java required to install your program. Values can be <tt>1.2</tt>, <tt>1.2.2</tt>, <tt>1.4</tt>, etc. The test is a lexical
+comparison against the <tt>java.version</tt> System property on the install machine.</li>
+
+<li><tt>&lt;webdir&gt;</tt> : Causes a ``web installer'' to be created, and specifies the URL packages are retrieved from at install time. The content of the tag must be a properly formed URL. See
+section&nbsp;<a href="node5.html#webinstaller">3.7</a> for more details.</li>
+<li><tt>&lt;summarylogfilepath&gt;</tt> : specifies the path for the logfile of the <a href="node9.html#SECTION00970000000000000000">SummaryLoggerInstallerListener</a>.</li>
+</ul>
+<p>Here is an example of a typical <tt>&lt;info&gt;</tt> section :<br />
+</p>
+
+<pre>
+&lt;info&gt;
+  &lt;appname&gt;Super extractor&lt;/appname&gt;
+  &lt;appversion&gt;2.1 beta 6&lt;/appversion&gt;
+  &lt;appsubpath&gt;myCompany/SExtractor&lt;/appsubpath&gt;
+  &lt;url&gt;http://www.superextractor.com/&lt;/url&gt;
+  &lt;authors&gt;
+    &lt;author name="John John Doo" email="jjd@jjd-mail.com"/&gt;
+    &lt;author name="El Goyo" email="goyoman@mymail.org"/&gt;
+  &lt;/authors&gt;
+  &lt;javaversion&gt;1.2&lt;/javaversion&gt;
+&lt;/info&gt;
+</pre>
+
+<h2><a name="SECTION00433000000000000000"></a> <a name="variables-element"></a><br />
+The Variables Element <tt>&lt;variables&gt;</tt></h2>
+
+<p>This element allows you to define variables for the variables substitution system. Some variables are built-in, such as <tt>$INSTALL_PATH</tt> (which is the installation path chosen by the user).
+When you define a set of variables, you just have to place as many <tt>&lt;variable&gt;</tt> tags in the file as needed. If you define a variable named <tt>VERSION</tt> you need to type $VERSION in
+the files to parse. The variable substitutor will then replace it with the correct value. One <tt>&lt;variable&gt;</tt> tag take the following attributes :</p>
+
+<ul>
+<li><tt>name</tt> : the variable name</li>
+
+<li><tt>value</tt> : the variable value</li>
+</ul>
+<p>Here's a sample <tt>&lt;variables&gt;</tt> section :<br />
+</p>
+<pre>
+&lt;variables&gt;
+  &lt;variable name="app-version" value="1.4"/&gt;
+  &lt;variable name="released-on" value="08/03/2002"/&gt;
+&lt;/variables&gt;
+</pre>
+
+<p class="ita" >Here's a precise sample on how to use desktopshortcutcheckboxenabled and InstallerFrame.logfilePath variables:<br />
+</p>
+<pre>
+&lt;variables&gt;
+  &lt;variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/My-install.log"/&gt; 
+  	&lt;!-- This means that the log name will be My-install and that it will be stored at the root of the installation. --&gt;
+  	&lt;!-- Any path is fine. If value is set to "Default" then "$INSTALL_PATH/uninstall/install.log" is used. --&gt;
+  	&lt;!-- And if variable isn't defined then no log is written. --&gt;
+  &lt;variable name="desktopshortcutcheckboxenabled" value="true"/&gt; 
+  	&lt;!-- This automatically checks the "Create Desktop Shortcuts" button. Default value is "False". --&gt;
+&lt;/variables&gt;
+</pre>
+
+<h2><a name="SECTION00434000000000000000"></a> <a name="guiprefs-element"></a><br />
+The GUI Preferences Element <tt>&lt;guiprefs&gt;</tt></h2>
+
+<p>This element allows you to set the behavior of your installer GUI. This information will not have any effect on the command-line installers that will be available in future versions of
+i<small>Z</small>P<small>ACK</small> . The arguments to specify are :</p>
+
+<ul>
+<li><tt>resizable</tt> : takes <tt>yes</tt> or <tt>no</tt> and indicates whether the window size can be changed or not.</li>
+
+<li><tt>width</tt> : sets the initial window width</li>
+
+<li><tt>height</tt> : sets the initial window height.</li>
+</ul>
+
+<p>Here's a sample :</p>
+
+<pre>
+&lt;guiprefs resizable="no" width="800" height="600"/&gt;
+</pre>
+
+<p>Starting from IzPack 3.6, the look and feel can be specified in this section on a per-OS basis. For instance you can use the native look and feels on Win32 and OS X but use a third-party one on
+Unix-like platforms. To do that, you have to add some children to the <tt>guiprefs</tt> tag:</p>
+
+<ul>
+<li><tt>laf</tt>: the tag that specifies a look and feel. It has a <tt>name</tt> parameter that defines the look and feel name.</li>
+
+<li>Each <tt>laf</tt> element needs at least one <tt>os</tt> tag, specified like in the other parts of the specification that support this tag.</li>
+
+<li>Like you can add <tt>os</tt> elements, you can add any number of <tt>param</tt> elements to customize a look and feel. A <tt>param</tt> elements has two attribues: <tt>name</tt> and <tt>
+value</tt>.</li>
+</ul>
+
+<p>The available look and feels are:</p>
+
+<ul>
+<li>Kunststoff: <tt>kunststoff</tt></li>
+
+<li>Liquid: <tt>liquid</tt></li>
+
+<li>Metouia: <tt>metouia</tt></li>
+
+<li>JGoodies Looks: <tt>looks</tt></li>
+</ul>
+
+<p>If you don't specify a look and feel for a particular operating system, then the default native one will be used: Windows on Windows, Aqua on Mac OS X and Metal on the Unix-like variants.<br />
+</p>
+
+<p>The <i>Liquid Look and Feel</i> supports the following parameters:</p>
+
+<ul>
+<li><tt>decorate.frames</tt>: <tt>yes</tt> means that it will render the frames in Liquid style</li>
+
+<li><tt>decorate.dialogs</tt>: <tt>yes</tt> means that it will render the dialogs in Liquid style</li>
+</ul>
+
+<p>The <i>JGoodies Looks</i> look and feel can be specified by using the <tt>variant</tt> parameters. The values can be one of:</p>
+
+<ul>
+<li><tt>extwin</tt>: use the Windows Extension look</li>
+
+<li><tt>plastic</tt>: use the basic Plastic look</li>
+
+<li><tt>plastic3D</tt>: use the Plastic 3D look</li>
+
+<li><tt>plasticXP</tt>: use the Plastic XP look (default).</li>
+</ul>
+
+<p>Here is a small sample:</p>
+
+<pre>
+&lt;guiprefs height="600" resizable="yes" width="800"&gt;
+    &lt;laf name="metouia"&gt;
+        &lt;os family="unix" /&gt;
+    &lt;/laf&gt;
+    &lt;laf name="looks"&gt;
+        &lt;os family="windows" /&gt;
+        &lt;param name="variant" value="extwin" /&gt;
+    &lt;/laf&gt;
+&lt;/guiprefs&gt;
+</pre>
+
+<p>Starting from IzPack 3.7, some characteristics can be customized with the <tt>&lt;modifier&gt;</tt> tag. There is a
+separate description in the <a href="node5.html">Advanced Features</a> chapter paragraph 
+<a href="node5.html#modifyingGui">Modifying the GUI</a>.</p>
+
+<h2><a name="SECTION00435000000000000000"></a> <a name="localization-element"></a><br />
+The Localization Element <tt>&lt;locale&gt;</tt></h2>
+
+<p>This element is used to specify the language packs (langpacks) that you want to use for your installer. You must set one <tt>&lt;langpack&gt;</tt> markup per language. This markup takes the <tt>
+iso3</tt> parameter which specifies the iso3 language code.<br />
+</p>
+
+<p>Here's a sample :<br />
+</p>
+<pre>
+&lt;locale&gt;
+  &lt;langpack iso3="eng"/&gt;
+  &lt;langpack iso3="fra"/&gt;
+  &lt;langpack iso3="spa"/&gt;
+&lt;/locale&gt;
+</pre>
+<p>The supported ISO3 codes are :</p>
+
+<div class="center">
+<table cellpadding="3" border="1" class="center">
+<tr>
+<th class="textleft"><i>ISO3 code</i></th>
+<th class="textleft"><i>Language</i></th>
+</tr>
+
+<tr>
+<td class="textleft">cat</td>
+<td class="textleft">Catalunyan</td>
+</tr>
+
+<tr>
+<td class="textleft">chn</td>
+<td class="textleft">Chinese</td>
+</tr>
+
+<tr>
+<td class="textleft">cze</td>
+<td class="textleft">Czech</td>
+</tr>
+
+<tr>
+<td class="textleft">dan</td>
+<td class="textleft">Danish</td>
+</tr>
+
+<tr>
+<td class="textleft">deu</td>
+<td class="textleft">German</td>
+</tr>
+
+<tr>
+<td class="textleft">eng</td>
+<td class="textleft">English</td>
+</tr>
+
+<tr>
+<td class="textleft">fin</td>
+<td class="textleft">Finnish</td>
+</tr>
+
+<tr>
+<td class="textleft">fra</td>
+<td class="textleft">French</td>
+</tr>
+
+<tr>
+<td class="textleft">hun</td>
+<td class="textleft">Hungarian</td>
+</tr>
+
+<tr>
+<td class="textleft">ita</td>
+<td class="textleft">Italian</td>
+</tr>
+
+<tr>
+<td class="textleft">jpn</td>
+<td class="textleft">Japanese</td>
+</tr>
+
+<tr>
+<td class="textleft">mys</td>
+<td class="textleft">Malaysian</td>
+</tr>
+
+<tr>
+<td class="textleft">ned</td>
+<td class="textleft">Nederlands</td>
+</tr>
+
+<tr>
+<td class="textleft">nor</td>
+<td class="textleft">Norwegian</td>
+</tr>
+
+<tr>
+<td class="textleft">pol</td>
+<td class="textleft">Polnish</td>
+</tr>
+
+<tr>
+<td class="textleft">por</td>
+<td class="textleft">Portuguese (Brazilian)</td>
+</tr>
+
+<tr>
+<td class="textleft">rom</td>
+<td class="textleft">Romanian</td>
+</tr>
+
+<tr>
+<td class="textleft">rus</td>
+<td class="textleft">Russian</td>
+</tr>
+
+<tr>
+<td class="textleft">scg</td>
+<td class="textleft">Serbian</td>
+</tr>
+
+<tr>
+<td class="textleft">spa</td>
+<td class="textleft">Spanish</td>
+</tr>
+
+<tr>
+<td class="textleft">svk</td>
+<td class="textleft">Slovakian</td>
+</tr>
+
+<tr>
+<td class="textleft">swe</td>
+<td class="textleft">Swedish</td>
+</tr>
+
+<tr>
+<td class="textleft">ukr</td>
+<td class="textleft">Ukrainian</td>
+</tr>
+</table>
+</div>
+
+<h2><a name="SECTION00436000000000000000"></a> <a name="resources-element"></a><br />
+The Resources Element <tt>&lt;resources&gt;</tt></h2>
+
+<p>Several panels, such as the license panel and the shortcut panel, require additional data to perform their task. This data is supplied in the form of resources. This section describes how to
+specify them. Take a look at each panel description to see if it might need any resources. Currently, no checks are made to ensure resources needed by any panel have been included. The <tt>
+&lt;resources&gt;</tt> element is not required, and no <tt>&lt;res&gt;</tt> elements are required within.<br />
+</p>
+
+<p>You have to set one <tt>&lt;res&gt;</tt> markup for each resource. Here are the attributes to specify :</p>
+
+<ul>
+<li><tt>src</tt> : the path to the resource file which can be named freely of course (for instance <tt>my-picture.jpg</tt>).</li>
+
+<li><tt>id</tt> : the resource id, depending on the needs of a particular panel</li>
+
+<li><tt>parse</tt> : takes <tt>yes</tt> or <tt>no</tt> (default is <tt>no</tt>) - used to specify whether the resource must be parsed at the installer compilation time. For instance you could set the
+application version in a readme file used by <tt>InfoPanel</tt>.</li>
+
+<li><tt>type</tt> : specifies the parse type. This makes sense only for a text resource - the default is <tt>plain</tt>, other values are <tt>javaprop, xml</tt> (Java properties file and XML
+files)</li>
+
+<li><tt>encoding</tt> : specifies the resource encoding if the receiver needs to know. This makes sense only for a text resource.</li>
+</ul>
+
+<p>Here's a sample :</p>
+
+<pre>
+&lt;resources&gt;
+  &lt;res id="InfoPanel.info" src="doc/readme.txt" parse="yes"/&gt;
+  &lt;res id="LicencePanel.licence" src="legal/License.txt"/&gt;
+&lt;/resources&gt;
+</pre>
+
+<h2><a name="SECTION00437000000000000000"></a> <a name="panels-element"></a><br />
+The Panels Element <tt>&lt;panels&gt;</tt></h2>
+
+<p>Here you tell the compiler which panels you want to use. They will appear in the installer in the order in which they are listed in your XML installation file. Take a look at the different panels
+in order to find the ones you need. The <tt>&lt;panel&gt;</tt> markup takes a single attribute <tt>classname</tt> which is the classname of the panel.<br />
+</p>
+
+<p>Here's a sample :</p>
+
+<pre>
+&lt;panels&gt;
+  &lt;panel classname="HelloPanel"/&gt;
+  &lt;panel classname="LicencePanel"/&gt;
+  &lt;panel classname="TargetPanel"/&gt;
+  &lt;panel classname="InstallPanel"/&gt;
+  &lt;panel classname="FinishPanel"/&gt;
+&lt;/panels&gt;
+</pre>
+
+<h2><a name="SECTION00438000000000000000"></a> <a name="packs-element"></a><br />
+The Packs Element <tt>&lt;packs&gt;</tt></h2>
+
+<p>This is a crucial section as it is used to specify the files that need to be installed. The <tt>&lt;packs&gt;</tt> section consists of several <tt>&lt;pack&gt;</tt> tags.</p>
+
+<p>The <tt>&lt;pack&gt;</tt> takes the following attributes :</p>
+
+<ul>
+<li><tt>name</tt>: the pack name</li>
+
+<li><tt>required</tt>: takes <tt>yes</tt> or <tt>no</tt> and specifies whether the pack is optional or not.</li>
+
+<li><tt>os</tt>: optional attribute that lets you make the pack targeted to a specific <i>operating system</i>, for instance <tt>unix</tt>, <tt>mac</tt> and so on.</li>
+
+<li><tt>preselected</tt>: optional attribute that lets you choose whether the pack is by default selected for installation or not. Possible values are <tt>yes</tt> and <tt>no</tt>. A pack which is
+not preselected needs to be explicitly selected by the user during installation to get installed.</li>
+
+<li><tt>loose</tt>: can be used so that the files are not located in the installer Jar. The possible values are <tt>true</tt> or <tt>false</tt>, the default beeing <tt>false</tt>. The author of this
+feature needed to put his application on a CD so that the users could run it directly from this media. However, he also wanted to offer them the possibility to install the software localy. Enabling
+this feature will make IzPack take the files on disk instead of from the installer. <i>Please make sure that your relative files paths are correct !</i></li>
+
+<li><tt>id</tt>: this attribute is used to give a unique id to the pack to be used for internationalization.</li>
+</ul>
+
+<h3><a name="SECTION00438100000000000000">Internationalization of the PacksPanel</a></h3>
+
+<p>In order to provide internationalization for the PacksPanel, so that your users can be presented with a different name and description for each language you support, you have to create a file named
+<tt>packsLang.xml_xyz</tt> where <tt>xyz</tt> is the ISO3 code of the language in lowercase. Please be aware that case is significant. This file has to be inserted in the resources section of <tt>
+install.xml</tt> with the <tt>id</tt> and <tt>src</tt> attributes set at the name of the file. The format of these files is identical with the distribution langpack files located at <tt>
+$IZPACK_HOME/bin/langpacks/installer</tt>. For the name of the panel you just use the pack <tt>id</tt> as the txt <tt>id</tt>. For the description you use the pack <tt>id</tt> suffixed with <tt>
+'.description'</tt>. </p>
+
+<p>The following sections describe the tags available for a <tt>&lt;pack&gt;</tt> section.</p>
+
+<h3><a name="SECTION00438200000000000000"><tt>&lt;description&gt;</tt> - pack description</a></h3>
+
+<p>The contents of the <tt>&lt;description&gt;</tt> tag describe the pack contents. This description is displayed if the user highlights the pack during installation.</p>
+
+<h3><a name="SECTION00438300000000000000"><tt>&lt;depends&gt;</tt> - pack dependencies</a></h3>
+
+<p>This can be used to make this pack selectable only to be installed only if some other is selected to be installed. The pack can depend on more than one by specifying more than one <tt>
+&lt;depends&gt;</tt> elements. <br />
+Circular depedencies are not supported and the compiler reports an error if one occurs. </p>
+
+<p>This tag takes the following attribute:</p>
+
+<ul>
+<li><tt>packname</tt>: The name of the pack that it depends on</li>
+</ul>
+
+<h3><a name="SECTION00438400000000000000"><tt>&lt;os&gt;</tt> - OS restrictions</a></h3>
+
+<p>It is possible to restrict a panel to a certain list of operating systems. This tag takes the following attributes:</p>
+
+<ul>
+<li><tt>family</tt>: unix, windows or mac</li>
+
+<li><tt>name</tt>: the exact OS name (ie Windows, Linux, ...)</li>
+
+<li><tt>version</tt>: the exact OS version (see the JVM <tt>os.version</tt> property)</li>
+
+<li><tt>arch</tt>: the machine architecture (see the JVM <tt>os.arch</tt> property).</li>
+</ul>
+
+<h3><a name="SECTION00438500000000000000"><tt>&lt;updatecheck&gt;</tt></a></h3>
+
+<p>This feature can update an already installed package, therefore removing superfluous files after installation. Here's how this feature author (Tino Schwarze) described it on the IzPack development
+mailing-list:</p>
+
+<blockquote><p>Each pack can now specify an <tt>&lt;updatecheck&gt;</tt> tag. It supports a subset of ant fileset syntax, e.g.:</p></blockquote>
+
+<pre>
+&lt;updatecheck&gt;
+  &lt;include name="lib/**" /&gt;
+  &lt;exclude name="config/local/** /&gt;
+&lt;/updatecheck&gt;
+</pre>
+
+<blockquote><p>If the paths are relative, they will be matched relative to <tt>$INSTALL_PATH</tt>. Update checks are only enabled if at least one <tt>&lt;include&gt;</tt> is specified. See <tt>
+com.izforge.izpack.installer.Unpacker</tt> for details.</p></blockquote>
+
+<h3><a name="SECTION00438600000000000000"></a><a name="tag:file"></a><br />
+<tt>&lt;file&gt;</tt> - add files or directories</h3>
+
+<p>The <tt>&lt;file&gt;</tt> tag specifies a file (a directory is a file too) to include into the pack. It takes the following attributes:</p>
+
+<ul>
+<li><tt>src</tt>: the file location (relative path) - if this is a directory its content will be added recursively</li>
+
+<li><tt>targetdir</tt>: the destination directory, could be something like <tt>$INSTALL_PATH/subdirX</tt></li>
+
+<li><tt>os</tt>: can optionally specify a target operating system (<tt>unix, windows, mac</tt>) - this means that the file will only be installed on its target operating system</li>
+
+<li><tt>override</tt>: if <tt>true</tt> then if the file is already installed, it will be overwritten. Alternative values: <tt>asktrue</tt> and <tt>askfalse</tt> - ask the user what to do and supply
+default value for non-interactive use. Another possible values is <tt>update</tt>. It means that the new file is only installed if it's modification time is newer than the modification time of the
+already existing file (note that this is not a reliable mechanism for updates - you cannot detect whether a file was altered after installation this way.) By default it is set to <tt>
+update</tt>.</li>
+
+<li><tt>unpack</tt>: if <tt>true</tt> and the file is an archive then its content will be unpacked and added as individual files</li>
+
+</ul>
+
+<h4><a name="SECTION00438610000000000000"></a><a name="tag:additionaldata"></a><br />
+<tt>&lt;additionaldata&gt;</tt></h4>
+
+<p>This tag can also be specified in order to pass additional data related to a file tag for customizing.</p>
+
+<ul>
+<li><tt>&lt;key&gt;</tt>: key to identify the data</li>
+
+<li><tt>&lt;value&gt;</tt>: value which can be used by a custom action</li>
+</ul>
+
+<h3><a name="SECTION00438700000000000000"></a><a name="tag:singlefile"></a><br />
+<tt>&lt;singlefile&gt;</tt> - add a single file</h3>
+
+<p>Specifies a single file to include. The difference to <tt>&lt;file&gt;</tt> is that this tag allows the file to be renamed, therefore it has a <tt>target</tt> attribute instead of <tt>
+targetdir</tt>.</p>
+
+<ul>
+<li><tt>src</tt>: the file location (relative path)</li>
+
+<li><tt>target</tt>: the destination file name, could be something like <tt>$INSTALL_PATH/subdirX/fileY</tt></li>
+
+<li><tt>os</tt>: can optionally specify a target operating system (<tt>unix, windows, mac</tt>) - this means that the file will only be installed on its target operating system</li>
+
+<li><tt>override</tt>: see <tt>&lt;file&gt;</tt> (<a href="#tag:file">2.3.8</a>) for description</li>
+</ul>
+
+<p>A <tt>&lt;additionaldata&gt;</tt> (<a href="#tag:additionaldata">2.3.8</a>) tag can also be specified for customizing. </p>
+
+<h3><a name="SECTION00438800000000000000"></a><a name="tag:fileset"></a><br />
+<tt>&lt;fileset&gt;</tt>: add a fileset</h3>
+
+<p>The <tt>&lt;fileset&gt;</tt> tag allows files to be specified using the powerful Jakarta Ant set syntax. It takes the following parameters:</p>
+
+<ul>
+<li><tt>dir</tt>: the base directory for the fileset (relative path)</li>
+
+<li><tt>targetdir</tt>: the destination path, works like for <tt>&lt;file&gt;</tt></li>
+
+<li><tt>casesensitive</tt>: optionally lets you specify if the names are case-sensitive or not - takes <tt>yes</tt> or <tt>no</tt></li>
+
+<li><tt>defaultexcludes</tt>: optionally lets you specify if the default excludes will be used - takes <tt>yes</tt> or <tt>no</tt>.</li>
+
+<li><tt>os</tt>: specifies the operating system, works like for <tt>&lt;file&gt;</tt></li>
+
+<li><tt>override</tt>: see <tt>&lt;file&gt;</tt> for description</li>
+
+<li><tt>includes</tt>: comma- or space-separated list of patterns of files that must be included; all files are included when omitted. This is an alternative for multiple include tags.</li>
+
+<li><tt>excludes</tt>: comma- or space-separated list of patterns of files that must be excluded; no files (except default excludes) are excluded when omitted. This is an alternative for multiple
+exclude tags.</li>
+</ul>
+
+<p>You specify the files with <tt>&lt;include&gt;</tt> and <tt>&lt;exclude&gt;</tt> tags that take the <tt>name</tt> parameter to specify the Ant-like pattern :</p>
+
+<ul>
+<li><tt>**</tt> : means any subdirectory</li>
+
+<li><tt>*</tt> : used as a wildcard.</li>
+</ul>
+<p>
+Here are some examples of Ant patterns : 
+</p>
+<ul>
+<li><tt>&lt;include name="lib"/&gt;</tt> : will include <tt>lib</tt> and the subdirectories of <tt>lib</tt></li>
+
+<li><tt>&lt;exclude name="**/*.java"/&gt;</tt> : will exclude any file in any directory starting from the base path ending by <tt>.java</tt></li>
+
+<li><tt>&lt;include name="lib/*.jar"/&gt;</tt> : will include all the files ending by <tt>.jar</tt> in <tt>lib</tt></li>
+
+<li><tt>&lt;exclude name="lib/**/*FOO*"/&gt;</tt> : will exclude any file in any subdirectory starting from <tt>lib</tt> whose name contains <tt>FOO</tt>.</li>
+</ul>
+
+<p>There area set of definitions that are excluded by default file-sets, just as in Ant. IzPack defaults to the Ant list of default excludes. There is currently no equivalent to the
+&lt;defaultexcludes&gt; task. Default excludes are:</p>
+
+<pre>
+     **/*\~{}
+     **/\#*\#
+     **/.\#*
+     **/%*%
+     **/.\_*
+     **/CVS
+     **/CVS/**
+     **/.cvsignore
+     **/SCCS
+     **/SCCS/**
+     **/vssver.scc
+     **/.svn
+     **/.svn/**
+     **/.DS\_Store
+</pre>
+
+<p>A <tt>&lt;additionaldata&gt;</tt> (<a href="#tag:additionaldata">2.3.8</a>) tag can also be specified for customizing. </p>
+
+<h3><a name="SECTION00438900000000000000"><tt>&lt;parsable&gt;</tt> - parse a file after installation</a></h3>
+
+<p>Files specified by <tt>&lt;parsable&gt;</tt> are parsed after installation and may have variables substituted.</p>
+
+<ul>
+<li><tt>targetfile</tt> : the file to parse, could be something like<br />
+ <tt>$INSTALL_PATH/bin/launch-script.sh</tt><br />
+ <a name="tag:slashMasking"></a>A slash will be changed to the system dependant path separator (e.g. to a backslash on Windows) only if no backslash masks the slash.</li>
+
+<li><tt>type</tt> : specifies the type (same as for the resources) - the default is <tt>plain</tt></li>
+
+<li><tt>encoding</tt> : specifies the file encoding</li>
+
+<li><tt>os</tt>: specifies the operating system, works like for <tt>&lt;file&gt;</tt></li>
+</ul>
+
+<h3><a name="SECTION004381000000000000000"><tt>&lt;executable&gt;</tt> - mark file executable or execute it</a></h3>
+
+<p>The <tt>&lt;executable&gt;</tt> tag is a very useful thing if you need to execute something during the installation process. It can also be used to set the executable flag on Unix-like systems.
+Here are the attributes :</p>
+
+<ul>
+<li><tt>targetfile</tt> : the file to run, could be something like<br />
+ <tt>$INSTALL_PATH/bin/launch-script.sh</tt><br />
+Slashes are handled special (see attribute <tt>targetfile</tt> of tag <tt>&lt;parsable&gt;</tt><a href="#tag:slashMasking">2.3.8</a>).</li>
+
+<li><tt>class</tt> : If the executable is a jar file, this is the class to run for a Java<sup><small>TM</small></sup> program</li>
+
+<li><tt>type</tt> : <tt>bin</tt> or <tt>jar</tt> (the default is <tt>bin</tt>)</li>
+
+<li><tt>stage</tt> : specifies when to launch : <tt>postinstall</tt> is just after the installation is done, <tt>never</tt> will never launch it (useful to set the +x flag on
+Unix). <tt>uninstall</tt> will launch the executable when the application is uninstalled. The executable is executed before any files are deleted. <tt>never</tt> is the default value.</li>
+
+<li><tt>failure</tt> : specifies what to do when an error occurs : <tt>abort</tt> will abort the installation process, <tt>ask</tt> (default) will ask the user what to do and <tt>warn</tt> will just
+tell the user that something is wrong</li>
+
+<li><tt>os</tt>: specifies the operating system, works like for <tt>&lt;file&gt;</tt></li>
+
+<li><tt>keep</tt> : specifies whether the file will be kept after execution. The default is to delete the file after is has been executed. This can be changed by specifying <tt>keep="true"</tt>.</li>
+</ul>
+
+<p>A <tt>&lt;args&gt;</tt> tag can also be specified in order to pass arguments to the executable: </p>
+
+<ul>
+<li><tt>&lt;arg&gt;</tt>: passes the argument specified in the <tt>value</tt> attribute. Slashes are handled special (see attribute <tt>targetfile</tt> of tag <tt>&lt;parsable&gt;</tt><a href= 
+"#tag:slashMasking">2.3.8</a>).</li>
+</ul>
+
+<h3><a name="SECTION004381100000000000000"></a><a name="tag:os"></a><br />
+<tt>&lt;os&gt;</tt> - make a file OS-dependent</h3>
+
+<p>The <tt>&lt;os&gt;</tt> tag can be used inside the <tt>&lt;file&gt;</tt>, <tt>&lt;fileset&gt;</tt>, <tt>&lt;singlefile&gt;</tt>, <tt>&lt;parsable&gt;</tt>, <tt>&lt;executable&gt;</tt> tags to
+restrict it's effect to a specific operating system family, architecture or version:</p>
+
+<ul>
+<li><tt>family</tt>: <tt>unix, windows, mac</tt> to specify the operating system family</li>
+
+<li><tt>name</tt>: the operating system name</li>
+
+<li><tt>version</tt>: the operating system version</li>
+
+<li><tt>arch</tt>: the operating system architecture (for instance the Linux kernel can run on i386, sparc, and so on)</li>
+</ul>
+
+<p>Here's an example installation file :</p>
+
+<pre>
+&lt;packs&gt;
+    &lt;!-- The core files --&gt;
+    &lt;pack name="Core" required="yes"&gt;
+        &lt;description&gt;The IzPack core files.&lt;/description&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="bin"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="lib"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="legal"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="Readme.txt"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="Versions.txt"/&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="Thanks.txt"/&gt;
+        &lt;parsable targetfile="$INSTALL_PATH/bin/izpack-fe"/&gt;
+        &lt;parsable targetfile="$INSTALL_PATH/bin/izpack-fe.bat"/&gt;
+        &lt;parsable targetfile="$INSTALL_PATH/bin/compile"/&gt;
+        &lt;parsable targetfile="$INSTALL_PATH/bin/compile.bat"/&gt;
+        &lt;executable targetfile="$INSTALL_PATH/bin/compile" stage="never"/&gt;
+        &lt;executable targetfile="$INSTALL_PATH/bin/izpack-fe" stage="never"/&gt;
+    &lt;/pack&gt;
+
+    &lt;!-- The documentation (1 directory) --&gt;
+    &lt;pack name="Documentation" required="no"&gt;
+        &lt;description&gt;The IzPack documentation (HTML and PDF).&lt;/description&gt;
+        &lt;file targetdir="$INSTALL_PATH" src="doc"/&gt;
+    &lt;/pack&gt;
+&lt;/packs&gt;
+</pre>
+
+<h2><a name="SECTION00439000000000000000"></a> <a name="native-element"></a><br />
+The Native Element <tt>&lt;native&gt;</tt></h2>
+
+<p>Use this if you want to use a feature that requires a native library. The native libraries are placed under <tt>bin/native/..</tt>. There are 2 kinds of native libraries : the
+i<small>Z</small>P<small>ACK</small> libraries and the third-party ones. The IzPack libraries are located at <tt>bin/native/izpack</tt>, you can place your own libraries at <tt>
+bin/native/3rdparty</tt>. It is possible to place a native library also into the uninstaller. It is useable from CustomActions (<a href="node9.html#cha:customactions">7</a>). If one or more are
+referenced for it, the needed support classes are automatically placed into the uninstaller. To place it only on operating systems for which they are build, it is possible to define an OS
+restriction. This restriction will only be performed for the uninstaller. The markup takes the following attributes :</p>
+
+<ul>
+<li><tt>type</tt> : <tt>izpack</tt> or <tt>3rdparty</tt></li>
+
+<li><tt>name</tt> : the library filename</li>
+
+<li><tt>stage</tt>: stage where to use the library (install|uninstall|both)</li>
+</ul>
+
+<h3><a name="SECTION00439100000000000000"><tt>&lt;os&gt;</tt> - make a library OS-dependent</a></h3>
+
+<p>The <tt>&lt;os&gt;</tt> tag can be used to restrict the inclusion into the uninstaller to a specific operating system family, architecture or version. The inclusion into the installer will be
+always done. For more information see <a href="#tag:os">2.3.8</a>.</p>
+
+<p>Here's a sample :</p>
+
+<pre>
+&lt;native type="izpack" name="ShellLink.dll"/&gt;
+</pre>
+
+<h2><a name="SECTION004310000000000000000"></a> <a name="jar-element"></a><br />
+The Jar Merging Element <tt>&lt;jar&gt;</tt></h2>
+
+<p>If you adapt i<small>Z</small>P<small>ACK</small> for your own needs, you might need to merge the content of another jar file into the jar installer. For instance, this could be a library that you
+need to merge. The <tt>&lt;jar&gt;</tt> markup allows you to merge the raw content of another jar file into the installer and the uninstaller. It is necessary that the paths in the jars are unique
+because only the contained files of the jar are added to the installer jar, not the jar file self. The attributes are:</p>
+
+<ul>
+<li><tt>src</tt> : the path at compile time</li>
+
+<li><tt>stage</tt>: stage where to use the contents of the additional jar file (install|uninstall|both)</li>
+</ul>
+
+<p>A sample :</p>
+
+<pre>
+&lt;jar src="../nicelibrary.jar"/&gt;
+</pre>
+
+<h1><a name="SECTION00440000000000000000">The Available Panels</a></h1>
+
+<p>In this section i will introduce the various panels available in IzPack. The usage for most is pretty simple and described right here. The more elaborate ones are explained in more detail in the
+<i>Advanced Features</i> chapter or in their own chapter. The panels are listed by their class name. This is the name that must be used with the <tt>classname</tt> attribute. Please be aware that the classname is Case-Sensitive, meaning that if the case from the install.xml and the founded class file differs the installation will break. In this last case, the installer will Throw an IllegalArgumentException in the compiler if the declared class name in the xml file differs in case from the founded class file.<br />
+</p>
+
+<h2><a name="SECTION00441000000000000000">HelloPanel</a></h2>
+
+<p>This panel welcomes the user by displaying the project name, the version, the URL as well as the authors.<br />
+</p>
+
+<h2><a name="SECTION00441000000000000000a">CheckedHelloPanel</a></h2>
+
+<p>This panel welcomes the user also by displaying the project name, the version, the URL as well as the authors.<br />
+<p>Additonal on windows the registry will be scanned for an entry which determines that the product is already installed.
+If so, a dialog will be shown which ask whether to install a second version of the product or not. If you use this
+panel do not forget to add the <a href="./node9.html#RegistryListener">registry feature</a> into your installation.</p>
+</p>
+
+<h2><a name="SECTION00442000000000000000">InfoPanel and HTMLInfoPanel</a></h2>
+
+<p>This is a kind of 'README' panel. It presents text of any length. The text is specified by the <tt>(HTML)InfoPanel.info</tt> resource. Starting from IzPack 3.7.0, variables substitution is
+allowed.<br />To add an image to the HTMLInfoPanel you simply need to add a ressource to your install.xml with an ID decided by you, then you can call this image by refering it by this same ID.<br />
+</p>
+<pre>
+e.g.:
+In install.xml:
+&lt;resources&gt;
+  &lt;res src="logo.jpg" id="GHGHGH"/&gt;
+  .....
+
+And in file.html:
+&lt;img src="GHGHGH" /&gt;
+</pre>
+
+<h2><a name="SECTION00443000000000000000">LicencePanel and HTMLLicencePanel</a></h2>
+
+<p>Note:<i>  There is a mistake in the name - it should be LicensePanel. In France the word is Licence ... and one of my diploma is a 'Licence' so ...:</i> -)<br /></p>
+<p>Adding images to HTMLLicencePanel works exactly the same way as with HTMLInfoPanel.</p>
+
+<p>These panels can prompt the user to acknowledge a license agreement. They block unless the user selects the 'agree' option. To specify the license agreement text you have to use the <tt>
+(HTML)LicencePanel.licence</tt> resource.<br />
+</p>
+
+<h2><a name="SECTION00444000000000000000">PacksPanel</a></h2>
+
+<p>Allows the user to select the packs he wants to install.<br />
+</p>
+
+<h2><a name="SECTION00445000000000000000">ImgPacksPanel</a></h2>
+
+<p>This is the same as above, but for each panel a different picture is shown to the user. The pictures are specified with the resources <tt>ImgPacksPanel.img.x</tt> where x stands for the pack
+number, the numbers start from 0. Of course it's up to you to specify as many images as needed and with correct numbers. For instance if you have 2 packs <tt>core</tt> and <tt>documentation</tt> (in
+this order), then the resource for <tt>core</tt> will be <tt>ImgPacksPanel.img.0</tt> and the resource for <tt>doc</tt> will be <tt>ImgPacksPanel.img.1</tt>. The supported image formats depend on
+what you JVM supports, but starting from J2SE 1.3, <i>GIF</i>, <i>JPEG</i> and <i>PNG</i> are supported.<br />
+</p>
+
+<h2><a name="SECTION00446000000000000000">TargetPanel</a></h2>
+
+<p>This panel allows the user to select the installation path. It can be customized with the following resources (they are text files containing the path) :</p>
+
+<ul>
+<li><tt>TargetPanel.dir.f</tt> where f stands for the family (<tt>mac, macosx, windows, unix</tt>)</li>
+
+<li><tt>TargetPanel.dir</tt> : the directory name, instead of the software to install name</li>
+
+<li><tt>TargetPanel.dir.d</tt> where d is a "dynamic" name, as returned by the Java<sup><small>TM</small></sup> virtual machine. You should write the name in lowercase and replace the spaces with
+underscores. For instance, you might want a different setting for Solaris and GNU/Linux which are both Unix-like systems. The resources would be <tt>TargetPanel.dir.sunos, TargetPanel.dir.linux</tt>.
+You should have a Unix-resource in case it wouldn't work though.</li>
+</ul>
+
+<h2><a name="SECTION00447000000000000000">InstallPanel</a></h2>
+
+<p>You should always have this one as it launches the installation process !<br />
+</p>
+
+<h2><a name="SECTION00448000000000000000">XInfoPanel</a></h2>
+
+<p>A panel showing text parsed by the variable substitutor. The text can be specified through the <tt>XInfoPanel.info</tt> resource. This panel can be useful when you have to show information after
+the installation process is completed (for instance if the text contains the target path).<br />
+</p>
+
+<h2><a name="SECTION00449000000000000000">FinishPanel</a></h2>
+
+<p>A ending panel, able to write automated installer information. For details see the chapter on 'Advanced Features'.<br />
+</p>
+
+<h2><a name="SECTION004410000000000000000">SimpleFinishPanel</a></h2>
+
+<p>Same as <tt>FinishPanel</tt>, but without the automated installer features. It is aimed at making the life easier for end-users who will never encounter the automated installer extra
+feature.<br />
+</p>
+
+<h2><a name="SECTION004411000000000000000">ShortcutPanel</a></h2>
+
+<p>This panel is used to create desktop shortcuts. For details on using the ShortcutPanel see the chapter 'Desktop Shortcuts'.</p>
+
+<h2><a name="SECTION004412000000000000000">UserInputPanel</a></h2>
+
+<p>This panel allows you to prompt the user for data. What the user is prompted for is specified using an XML file which is included as a resource to the installer. See chapter <a href= 
+"node8.html#chap:userinput">6</a> on page <a href="node8.html#chap:userinput"><img class="alignbottom1" alt="[*]" src="crossref.png" /></a> for a detailed explanation.</p>
+
+<h2><a name="SECTION004413000000000000000">CompilePanel</a></h2>
+
+<p>This panel allows you to compile just installed Java sourcecode. The details for the compilation are specified using the resource <tt>CompilePanel.Spec.xml</tt>. The XML file has the following
+format:</p>
+
+<pre>
+&lt;compilation&gt;
+  &lt;global&gt;
+    &lt;compiler&gt;
+      &lt;choice value="$JAVA_HOME/bin/javac" /&gt;
+      &lt;choice value="jikes" /&gt;
+    &lt;/compiler&gt;
+    &lt;arguments&gt;
+      &lt;choice value="-O -g:none" /&gt;
+      &lt;choice value="-O" /&gt;
+      &lt;choice value="-g" /&gt;
+      &lt;choice value="" /&gt;
+    &lt;/arguments&gt;
+  &lt;/global&gt;
+  &lt;jobs&gt;
+    &lt;classpath add="$INSTALL_PATH/src/classes/" /&gt;
+    &lt;job name="optional name"&gt;
+      &lt;directory name="$INSTALL_PATH/src/classes/xyz" /&gt;
+    &lt;/job&gt;
+    &lt;job name="another job"&gt;
+      &lt;packdepency name="some package name" /&gt;
+      &lt;classpath sub="$INSTALL_PATH/" /&gt;
+      &lt;directory name="$INSTALL_PATH/src/classes/abc" /&gt;
+      &lt;file name="$INSTALL_PATH/some/file.java" /&gt;
+    &lt;/job&gt;
+  &lt;/jobs&gt;
+&lt;/compilation&gt;
+</pre>
+
+<p>In theory, jobs can be nested but this has not been tested at all. A change to the classpath within a job only affects this job and nested jobs. The classpath should be specified before any files
+or directories.</p>
+
+<p>The user can change the compiler to use and choose from some default compilation options before compilation is started.</p>
+
+<p><img width="628" height="455" class="alignbottom" src="./compilePanel.png" alt="Image compilePanel" /></p>
+
+<h2><a name="SECTION004414000000000000000">ProcessPanel</a></h2>
+
+<p>This panel allows you to execute arbitrary files after installation. The details for the compilation are specified using the resource <tt>ProcessPanel.Spec.xml</tt>.</p>
+
+<p>The XML file has the following format:</p>
+
+<pre>
+&lt;processing&gt;
+  &lt;job name="do xyz"&gt;
+    &lt;os family="windows" /&gt;
+    &lt;executefile name="$INSTALL_PATH/scripts/xyz.bat"&gt;
+      &lt;arg&gt;doit&lt;/arg&gt;&lt;arg&gt;$variable&lt;/arg&gt;
+    &lt;/executefile&gt;
+  &lt;/job&gt;
+  &lt;job name="do xyz"&gt;
+    &lt;os family="unix" /&gt;
+    &lt;executefile name="$INSTALL_PATH/scripts/xyz.sh"&gt;
+      &lt;arg&gt;doit&lt;/arg&gt;&lt;arg&gt;$variable&lt;/arg&gt;
+    &lt;/executefile&gt;
+  &lt;/job&gt;
+&lt;/processing&gt;
+</pre>
+
+<p>Each job may have an <tt>&lt;os&gt;</tt> attribute - see <a href="#tag:os">2.3.8</a> for details.<br />
+</p>
+
+<a name="SECTION004414100000000000000"><h3><tt>&lt;executeclass&gt;</tt> - Execute Java Classes</h3></a>
+<p>It is also possible to execute Java classes from this panel. Here's what this feature author (Alex Bradley) says:</p>
+
+<blockquote><p>i've been able to work around my requirements by extending the <tt>ProcessPanelWorker</tt> functionality to run user-specified classes. i've extended the DTD of the <tt>
+ProcessPanel.Spec.xml</tt> to include a new element:</p></blockquote>
+
+<pre>
+&lt;executeclass name="classname"&gt;
+&lt;args..../&gt;
+&lt;/executeclass&gt;
+</pre>
+
+<blockquote><p>i've also added a new sub-class of <tt>Processable</tt> called <tt>executeclass</tt>. This will run a user-specified class in the context of the installer JVM with a single method
+:</p></blockquote>
+
+<pre>
+run( AbstractUIProcessHandler handler, String[] args]);
+</pre>
+
+<blockquote><p>It can do everything i need and more. In particular, it allows me to write a process extension and still be able to provide feedback to the user through the feedback panel, and to add new
+functionality to the installer, after its been built.</p></blockquote>
+
+<p>To use the executeclass facility, you will need to create a jar file
+with your class and then add it to the installer with the
+<a href="node4.html#SECTION004310000000000000000">The Jar Merging Element</a>.</p>
+
+<a name="SECTION004414200000000000000"><h3><tt>&lt;executeForPack&gt;</tt> - Only execute the job for certain packs</h3></a>
+
+<p>This can be be used to run the job only if the pack is enabled.
+For example, the batch file will if either the <code>Sources</code>
+or <code>Executables</code> packs are selected at install time.</p>
+<pre>
+&lt;processing&gt;
+ &lt;job name="List files"&gt;
+  &lt;executeForPack name="Sources"/&gt;
+  &lt;executeForPack name="Executables"/&gt;
+  &lt;os family="windows" /&gt;
+  &lt;executefile name="$INSTALL_PATH\batch\ListFiles.bat" /&gt;
+ &lt;/job&gt;
+&lt;/processing&gt; 
+</pre>
+
+<a name="SECTION004414300000000000000"><h3><tt>&lt;logfiledir&gt;</tt> - Output of the processPanel saved to a log</h3></a>
+<p><a name="ProcessPanelLogFile"></a>New with version 3.7 is the possibility to tee output that is written to the ProcessPanel's textarea into an optional logfile. Using this feature is pretty much straightforward, you only have to
+add a line in <tt>ProcessPanel.Spec.xml</tt> that will tell IzPack the location, where the logfile should be stored.</p>
+
+<p>Variable substitution is performed, so you can use <tt>$INSTALL_PATH</tt> as example.</p>
+
+<p>The name of the logfile is not (yet) configurable but should fit in most cases. It will be named</p>
+
+<pre>
+Install_V&lt;$APP_VER&gt;_&lt;YYYY&gt;-&lt;MM&gt;-&lt;DD&gt;_&lt;hh&gt;-&lt;mm&gt;-&lt;ss&gt;_&lt;RandomId&gt;.log
+</pre>
+
+<p>Here's an example:</p>
+
+<pre>
+&lt;processing&gt;
+  &lt;logfiledir&gt;$INSTALL_PATH&lt;/logfiledir&gt;
+  &lt;job name="do xyz"&gt;
+    &lt;os family="windows" /&gt;
+    &lt;executefile name="$INSTALL_PATH/scripts/xyz.bat"&gt;
+      &lt;arg&gt;doit&lt;/arg&gt;&lt;arg&gt;$variable&lt;/arg&gt;
+    &lt;/executefile&gt;
+&lt;/processing&gt;
+</pre>
+
+<p>This will generate a logfile named e.g. <tt>Install_V1.3_2004-11-08_19-22-20_43423.log</tt> located in <tt>$INSTALL_PATH</tt>.</p>
+
+<p><tt>ProcessPanelWorker</tt> will write all output that is directed to <tt>stdout</tt> and <tt>stderr</tt> to this file if <tt>ProcessPanel.Spec.xml</tt> contains the <tt>logfiledir</tt> entry.</p>
+
+<p>Please note that this one file is used for storing the complete output of all jobs and not a file for each job that is run.</p>
+
+<h2><a name="SECTION004415000000000000000">JDKPathPanel</a></h2>
+
+<p>This panel allows the user to select a JDK path. The variable JAVA_HOME does not point to a JDK, else to a JRE also the environment variable points to a JDK. This is not a bug, this is the behavior
+of the VM. But some products needs a JDK, for that this panel can be used. There is not only a selection of the path else a validation. The validation will be done with the file
+JDKPath/lib/tools.jar. If JAVA_HOME points to the VM which is placed in the JDK, the directory will be used as default (JAVA_HOME/..). If there is the variable </p>
+
+<pre>
+JDKPathPanel.skipIfValid
+</pre>
+
+<p>defined with the value "yes", the panel will be skiped if the path is valid. Additional it is possible to make a version control. If one or both variables </p>
+
+<pre>
+JDKPathPanel.minVersion
+JDKPathPanel.maxVersion
+</pre>
+
+<p>are defined, only a JDK will be accepted which has a version in the range of it. The detection is a little bit pragmatically, therefor it is possible, that the detection can fail at some VMs. The
+values in the install.xml should be like </p>
+
+<pre>
+&lt;variables&gt;
+  &lt;variable name="JDKPathPanel.minVersion" value="1.4.1" /&gt;
+  &lt;variable name="JDKPathPanel.maxVersion" value="1.4.99" /&gt;
+  &lt;variable name="JDKPathPanel.skipIfValid" value="yes" /&gt;
+&lt;/variables&gt;
+</pre>
+
+<p>If all is valid, the panels isValidated method sets the variable</p>
+
+<pre>
+JDKPath
+</pre>
+
+<p>to the chosen path. Be aware, this variable exist not until the JDKPanel was quitted once. At a secound activation, the default will be the last selection. </p>
+
+<h2><a name="SECTION004416000000000000000">SelectPrinterPanel</a></h2>
+
+<p>This panel will look at the local printers installed and propose a list box with all of them. Once chosen, the variable $SELECTED_PRINTER is set to the user choice.</p>
+
+<h2><a name="SECTION004417000000000000000">DataCheckPanel</a></h2>
+
+<p>DataCheckPanel is not for inclusion in an actuall install, but is a debugging resource for developers writing custom panels or code to be included in IzPack.  
+	<br />It creates a list of all the variables in InstallData, their values and a list of all packs, indicating which are selected.  <br />
+	This list is printed to the console and appears in a scrollable text area on the panel.  <br />
+	Put the panel in wherever you want to see any variables in InstallData or a listing of the packs with a line like this in the &lt;panels&gt; section of install.xml:
+</p>
+<p>
+&lt;panel classname="DataCheckPanel" /&gt;
+</p>
+<p>
+It will automatically give you a full list of all the variables and packs whenever the panel is made active.
+</p>
+<h2><a name="SECTION004418000000000000000">SummaryPanel</a></h2>
+
+<p>This panel gives a summary of all shown panels. The best place for it is just infront of the InstallPanel. Normaly it contains a warning that this is the last 
+panel before installation. The panel contains a scrollable HTML text area to display the summary. The informations are collected from each panel by calling the methods
+<tt>getSummaryCaption</tt> and <tt>getSummaryBody</tt>. <tt>getSummaryCaption</tt> is implemented in <tt>IzPanel</tt> with a panel name default text.
+<tt>getSummaryBody</tt> has to be implemented in all panels which should be presented in the summary. If the secound method is not implemented, no summary of this
+panel will be shown.
+</p>
+<p>Additional it is possible to <a href="node9.html#SECTION00970000000000000000">log the contents</a> of the summary panel into a HTML file.</p>
+
+<h2><a name="SECTION004419000000000000000">InstallationGroupPanel</a></h2>
+<p> This Panel groups the pack together. A panel which displays the available <em>installGroups</em> found on the packs to
+    allow the user to select a subset of the packs based on the pack <em>installGroups</em> attribute. This panel will be
+    skipped if there are no pack elements with an <em>installGroups</em> attribute. For example
+    <pre>
+    &lt;installation version="1.0"&gt;
+       (...)
+        &lt;panels&gt;
+            (...)
+            &lt;panel classname="InstallationGroupPanel"/&gt;
+            &lt;panel classname="PacksPanel"/&gt;
+            (...)
+        &lt;/panels&gt;
+
+        &lt;packs&gt;
+            &lt;pack name="Base"
+                installGroups="Group1" required="yes"&gt;
+                (...)
+            &lt;/pack&gt;
+            &lt;pack name="Docs"
+                installGroups="Group1,Group2" required="no"&gt;
+                (...)
+            &lt;/pack&gt;
+            &lt;pack name="Sources"
+                installGroups="Group3,Group2" required="no"&gt;
+                (...)
+            &lt;/pack&gt;
+        &lt;/packs&gt;
+    &lt;/installation&gt;
+    </pre>
+
+    In above example when InstallationGroupPanel is displayed, it contains three radios named Group1, Group2 and Group3.
+    Depending on what user selects respective Packs will be displayed in PacksPanel. InstallationGroupPanel will look
+    for description corresponding to key InstallationGroupPanel.description.Group1,
+    InstallationGroupPanel.description.Group2 etc in installation langpacks and displays this description for each of
+    the Group_i.
+
+</p>
+
+<hr />
+<!--Navigation Panel-->
+<table width="100%">
+<tr>
+<td><a name="tex2html366" href="node5.html"><img class="alignbottom" width="37" height="24" alt="next" src="next.png" /></a> <a name="tex2html362" href="izpack-doc.html"><img class="alignbottom"
+width="26" height="24" alt="up" src="up.png" /></a> <a name="tex2html356" href="node3.html"><img class="alignbottom" width="63" height="24" alt="previous" src="prev.png" /></a> <a name="tex2html364"
+href="node1.html"><img class="alignbottom" width="65" height="24" alt="contents" src="contents.png" /></a></td>
+<td class="textright" rowspan="2"><a href="http://validator.w3.org/check?uri=referer"><img class="alignmiddle" src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width=
+"88" /></a> <a href="http://jigsaw.w3.org/css-validator/"><img class="alignmiddle" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS!" height="31" width="88" /></a></td>
+</tr>
+
+<tr>
+<td><b>Next:</b> <a name="tex2html367" href="node5.html">Advanced Features</a> <b>Up:</b> <a name="tex2html363" href="izpack-doc.html">izpack-doc</a> <b>Previous:</b> <a name="tex2html357" href= 
+"node3.html">Getting started</a> <b><a name="tex2html365" href="node1.html">Contents</a></b></td>
+</tr>
+</table>
+
+<!--End of Navigation Panel-->
+<address>Julien Ponge 2005-05-24</address>
+</body>
+</html>
+

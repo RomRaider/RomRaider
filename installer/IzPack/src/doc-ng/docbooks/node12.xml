@@ -1,0 +1,32 @@
+<?xml version='1.0' ?>
+<article>
+	
+	<informaltable><tgroup cols="2"><tbody><row><entry><ulink url=""><informalfigure><mediaobject><imageobject><imagedata fileref="next_g.png" width="37">24</imagedata></imageobject><caption><para>next</para></caption></mediaobject></informalfigure></ulink> <anchor id="tex2html592"/><informalfigure><mediaobject><imageobject><imagedata fileref="up.png" width="26">24</imagedata></imageobject><caption><para>up</para></caption></mediaobject></informalfigure> <anchor id="tex2html588"/><informalfigure><mediaobject><imageobject><imagedata fileref="prev.png" width="63">24</imagedata></imageobject><caption><para>previous</para></caption></mediaobject></informalfigure> <anchor id="tex2html594"/><informalfigure><mediaobject><imageobject><imagedata fileref="contents.png" width="65">24</imagedata></imageobject><caption><para>contents</para></caption></mediaobject></informalfigure></entry><entry><ulink url="http://validator.w3.org/check?uri=referer"><informalfigure><mediaobject><imageobject><imagedata fileref="http://www.w3.org/Icons/valid-xhtml10">31</imagedata></imageobject><caption><para>Valid Xhtml 1.0!</para></caption></mediaobject></informalfigure></ulink> <ulink url="http://jigsaw.w3.org/css-validator/"><informalfigure><mediaobject><imageobject><imagedata fileref="http://jigsaw.w3.org/css-validator/images/vcss">31</imagedata></imageobject><caption><para>Valid CSS!</para></caption></mediaobject></informalfigure></ulink></entry></row>
+<row><entry><emphasis role="b">Up:</emphasis> <anchor id="tex2html593"/>izpack-doc <emphasis role="b">Previous:</emphasis> <anchor id="tex2html589"/>The Commons Creative Attribution-NonCommercial-ShareAlike <emphasis role="b"><anchor id="tex2html595"/>Contents</emphasis></entry></row>
+</tbody></tgroup></informaltable>
+	
+
+
+<title>
+About this document ...
+</title>
+ <para>
+This document was generated using ....................... Notepad <emphasis role="b">;-)</emphasis>
+</para>
+<para>
+All the documentation is Valid XHTML Strict 1.0 and CSS.<?db2html element="br"?>
+Validation has been made using the W3C Validator
+</para>
+<para><ulink url="http://validator.w3.org">http://validator.w3.org</ulink></para>
+<para>The translation was initiated by Julien Ponge on 2005-05-24 and ended by Fabrice Mirabile on 2005-08-27</para>
+<hr xmlns="http://www.w3.org/1999/xhtml"/>
+	
+	<informaltable><tgroup cols="2"><tbody><row><entry><ulink url=""><informalfigure><mediaobject><imageobject><imagedata fileref="next_g.png" width="37">24</imagedata></imageobject><caption><para>next</para></caption></mediaobject></informalfigure></ulink> <anchor id="tex2html592"/><informalfigure><mediaobject><imageobject><imagedata fileref="up.png" width="26">24</imagedata></imageobject><caption><para>up</para></caption></mediaobject></informalfigure> <anchor id="tex2html588"/><informalfigure><mediaobject><imageobject><imagedata fileref="prev.png" width="63">24</imagedata></imageobject><caption><para>previous</para></caption></mediaobject></informalfigure> <anchor id="tex2html594"/><informalfigure><mediaobject><imageobject><imagedata fileref="contents.png" width="65">24</imagedata></imageobject><caption><para>contents</para></caption></mediaobject></informalfigure></entry><entry><ulink url="http://validator.w3.org/check?uri=referer"><informalfigure><mediaobject><imageobject><imagedata fileref="http://www.w3.org/Icons/valid-xhtml10">31</imagedata></imageobject><caption><para>Valid Xhtml 1.0!</para></caption></mediaobject></informalfigure></ulink> <ulink url="http://jigsaw.w3.org/css-validator/"><informalfigure><mediaobject><imageobject><imagedata fileref="http://jigsaw.w3.org/css-validator/images/vcss">31</imagedata></imageobject><caption><para>Valid CSS!</para></caption></mediaobject></informalfigure></ulink></entry></row>
+<row><entry><emphasis role="b">Up:</emphasis> <anchor id="tex2html593"/>izpack-doc <emphasis role="b">Previous:</emphasis> <anchor id="tex2html589"/>The Commons Creative Attribution-NonCommercial-ShareAlike <emphasis role="b"><anchor id="tex2html595"/>Contents</emphasis></entry></row>
+</tbody></tgroup></informaltable>
+	
+<address xmlns="http://www.w3.org/1999/xhtml">
+Julien Ponge
+2005-05-24
+</address>
+<para/></article>

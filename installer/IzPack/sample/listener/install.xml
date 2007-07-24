@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-8859-1"  ?>
+<!DOCTYPE installation PUBLIC "" "file:///P:/IzPack_HEAD/izpack-src/src/dtd/installation.dtd" >
+
+<!-- 
+	@author  Klaus Bartz
+-->
+
+<installation version="1.0">
+
+    <!-- 
+        The info section.
+        The meaning of the tags should be natural ...
+    -->
+    <info>
+        <appname>CustomActionDemo</appname>
+        <appversion>1.47</appversion>
+        <authors>
+            <author name="Klaus Bartz" email="info@myCompany.de"/>
+        </authors>
+        <url>http://www.myCompany.com/</url>
+    </info>
+    
+    <!-- 
+        The gui preferences indication.
+        Sets the installer window to 640x480. It will not be able to change the size.
+    -->
+    <guiprefs width="640" height="480" resizable="no"/>
+    
+    <!-- 
+        The locale section.
+        Asks here to include the English and German langpacks.
+    -->
+    <locale>
+        <langpack iso3="eng"/>
+        <langpack iso3="deu"/>
+    </locale>
+    
+    <!-- 
+        The panels section.
+        We indicate here which panels we want to use. The order will be respected.
+    -->
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="TargetPanel"/> 
+        <panel classname="InstallPanel"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+    
+    <listeners>
+    	<listener compiler="ChmodCompilerListener" installer="ChmodInstallerListener"  >
+    	</listener>
+    </listeners>
+    <!-- 
+        The packs section.
+        We specify here our packs.
+    -->
+    <packs>
+        <pack name="Unix core" required="yes">
+            <description>Required pack for Unix</description>
+            <fileset dir="test1" targetdir="$INSTALL_PATH/test1" >
+            	<additionaldata key="permission.file" value="0666"/>
+            	<additionaldata key="permission.dir" value="0711"/>
+            </fileset>
+            <fileset dir="test2" targetdir="$INSTALL_PATH/test2" >
+            	<additionaldata key="permission.file" value="0444"/>
+            	<additionaldata key="permission.dir" value="0777"/>
+            </fileset>
+        </pack>
+    </packs>
+    
+   
+</installation>
