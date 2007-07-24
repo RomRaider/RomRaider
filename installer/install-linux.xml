@@ -37,6 +37,8 @@
         <pack name="Base" required="yes">
             <description>Enginuity binary files</description>
             <file src="Enginuity.jar" targetdir="$INSTALL_PATH"/>
+	    <file src="Enginuity.bat" targetdir="$INSTALL_PATH"/>
+	    <file src="log4j.properties" targetdir="$INSTALL_PATH"/>
             <file src="license.txt" targetdir="$INSTALL_PATH"/>
             <file src="release notes.txt" targetdir="$INSTALL_PATH"/>
             <file src="images" targetdir="$INSTALL_PATH"/>
@@ -46,6 +48,7 @@
             <file src="logger.xml" targetdir="$INSTALL_PATH"/>
             <file src="logger.dtd" targetdir="$INSTALL_PATH"/>
             <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
+	    <file src="utec/utec.properties" targetdir="$INSTALL_PATH/utec"/>
 
             <file src="lib/BareBonesBrowserLaunch.jar" targetdir="$INSTALL_PATH/lib"/>
             <file src="lib/jep.jar" targetdir="$INSTALL_PATH/lib"/>
@@ -76,6 +79,13 @@
             <file src="lib/logger/jfreechart-1.0.3.jar" targetdir="$INSTALL_PATH/lib"/>
             <file src="lib/logger/rxtx/RXTXcomm.jar" targetdir="$INSTALL_PATH/lib"/>
             <file src="lib/logger/rxtx/linux/i686/librxtxSerial.so" targetdir="$INSTALL_PATH/lib"/>
+	    <file src="lib/tts/cmu_time_awb.jar" targetdir="$INSTALL_PATH/lib"/>
+ 	    <file src="lib/tts/cmu_us_kal.jar" targetdir="$INSTALL_PATH/lib"/> 
+	    <file src="lib/tts/cmutimelex.jar" targetdir="$INSTALL_PATH/lib"/> 
+	    <file src="lib/tts/en_us.jar" targetdir="$INSTALL_PATH/lib"/> 
+	    <file src="lib/tts/freetts.jar" targetdir="$INSTALL_PATH/lib"/> 
+	    <file src="lib/tts/cmulex.jar" targetdir="$INSTALL_PATH/lib"/> 
+	    <file src="lib/tts/cmudict04.jar" targetdir="$INSTALL_PATH/lib"/> 
 
         </pack>
         <!-- END Base Pack -->
