@@ -1,14 +1,13 @@
 <shortcuts>
 	<skipIfNotSupported />
-	<programGroup defaultName="Enginuity"
-		location="applications||startMenu" />
+	<programGroup defaultName="Enginuity.org/Enginuity" location="startMenu"/>
 
      <shortcut
      name="Enginuity"
      programGroup="yes"
      desktop="yes"
-     applications="no"
-     startMenu="no"
+     applications="yes"
+     startMenu="yes"
      startup="no"
      target="$JAVA_HOME/bin/java"
      commandLine="-Djava.library.path=lib -Xmx256M -jar &quot;$INSTALL_PATH/Enginuity.jar&quot;"
@@ -23,10 +22,10 @@
 
 
      <shortcut
-     name="License"
+     name="Enginuity License"
      programGroup="yes"
      desktop="yes"
-     applications="no"
+     applications="yes"
      startMenu="yes"
      startup="no"
      target=""
@@ -44,10 +43,10 @@
    
    
      <shortcut
-     name="Release Notes"
+     name="Enginuity Release Notes"
      programGroup="yes"
      desktop="yes"
-     applications="no"
+     applications="yes"
      startMenu="yes"
      startup="no"
      target=""
@@ -67,8 +66,8 @@
      name="Enginuity Uninstaller"
      programGroup="yes"
      desktop="yes"
-     applications="no"
-     startMenu="no"
+     applications="yes"
+     startMenu="yes"
      startup="no"
      target="$JAVA_HOME/bin/java"
      commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
