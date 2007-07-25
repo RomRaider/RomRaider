@@ -10,8 +10,8 @@
      applications="no"
      startMenu="no"
      startup="no"
-     target="java"
-     commandLine="-jar &quot;$INSTALL_PATH/Enginuity.jar&quot;"
+     target="$JAVA_HOME/bin/java"
+     commandLine="-Djava.library.path=lib -Xmx256M -jar &quot;$INSTALL_PATH/Enginuity.jar&quot;"
      initialState="noShow"
      iconFile="$INSTALL_PATH/graphics/enginuity-ico.ico"
      workingDirectory="$INSTALL_PATH"
@@ -70,7 +70,7 @@
      applications="no"
      startMenu="no"
      startup="no"
-     target="java"
+     target="$JAVA_HOME/bin/java"
      commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
      initialState="noShow"
      iconFile="trashcan_full"
@@ -82,20 +82,4 @@
      <createForPack name="Base" />
    </shortcut>
    
-	<!-- 
-	<shortcut name="Enginuity" target="$INSTALL_PATH\Enginuity.bat"
-		workingDirectory="$INSTALL_PATH"
-		iconFile="$INSTALL_PATH\graphics\enginuity-ico.ico" programGroup="yes"
-		encoding="UTF-8"
-		desktop="yes" />
-
-	<shortcut name="Release Notes"
-		target="$INSTALL_PATH\release notes.txt" programGroup="yes" />
-
-	<shortcut name="License Agreement"
-		target="$INSTALL_PATH\license.txt" programGroup="yes" />
-
-	<shortcut name="Uninstall Enginuity"
-		target="$INSTALL_PATH\Uninstaller\uninstaller.jar" programGroup="yes" />
-	-->
 </shortcuts>
