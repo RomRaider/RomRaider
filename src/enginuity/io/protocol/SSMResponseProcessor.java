@@ -30,6 +30,7 @@ import static enginuity.io.protocol.SSMProtocol.READ_ADDRESS_RESPONSE;
 import static enginuity.io.protocol.SSMProtocol.READ_MEMORY_RESPONSE;
 import static enginuity.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static enginuity.io.protocol.SSMProtocol.WRITE_ADDRESS_RESPONSE;
+import static enginuity.io.protocol.SSMProtocol.WRITE_MEMORY_RESPONSE;
 import enginuity.logger.ecu.exception.InvalidResponseException;
 import static enginuity.util.ByteUtil.asByte;
 import static enginuity.util.HexUtil.asHex;
@@ -61,7 +62,7 @@ public final class SSMResponseProcessor {
         assertEquals(DIAGNOSTIC_TOOL_ID, response[i++], "Invalid diagnostic tool id");
         assertEquals(ECU_ID, response[i++], "Invalid ECU id");
         assertEquals(asByte(response.length - RESPONSE_NON_DATA_BYTES + 1), response[i++], "Invalid response data length");
-        assertOneOf(new byte[]{ECU_INIT_RESPONSE, READ_ADDRESS_RESPONSE, READ_MEMORY_RESPONSE, WRITE_ADDRESS_RESPONSE}, response[i], "Invalid response code");
+        assertOneOf(new byte[]{ECU_INIT_RESPONSE, READ_ADDRESS_RESPONSE, READ_MEMORY_RESPONSE, WRITE_ADDRESS_RESPONSE, WRITE_MEMORY_RESPONSE}, response[i], "Invalid response code");
         assertEquals(calculateChecksum(response), response[response.length - 1], "Invalid checksum");
     }
 
