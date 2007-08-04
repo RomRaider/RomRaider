@@ -32,7 +32,10 @@ public final class SaveProfileAsAction extends AbstractAction {
         if (fc.showSaveDialog(logger) == APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();
             if (!selectedFile.exists() || showConfirmDialog(logger, selectedFile.getName() + " already exists! Overwrite?") == OK_OPTION) {
-                saveProfileToFile(logger.getCurrentProfile(), selectedFile);
+                String profileFilePath = saveProfileToFile(logger.getCurrentProfile(), selectedFile);
+                logger.getSettings().setLoggerProfileFilePath(profileFilePath);
+                logger.reportMessageInTitleBar("Profile: " + profileFilePath);
+                logger.reportMessage("Profile succesfully saved as: " + profileFilePath);
             }
         }
     }
