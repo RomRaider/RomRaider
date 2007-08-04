@@ -25,6 +25,9 @@ import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.maps.Table;
+import enginuity.maps.Table2D;
+import enginuity.maps.Table3D;
+import static enginuity.util.ParamChecker.isNullOrEmpty;
 
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedMap;
@@ -65,13 +68,16 @@ public final class TableUpdateHandler implements DataUpdateHandler {
 
     public void registerTable(Table table) {
         String logParam = table.getLogParam();
-        if (!tableMap.containsKey(logParam)) {
-            tableMap.put(logParam, new ArrayList<Table>());
+        if (!isNullOrEmpty(logParam)) {
+            if (!tableMap.containsKey(logParam)) {
+                tableMap.put(logParam, new ArrayList<Table>());
+            }
+            List<Table> tables = tableMap.get(logParam);
+            if (!tables.contains(table)) {
+                tables.add(table);
+            }
         }
-        List<Table> tables = tableMap.get(logParam);
-        if (!tables.contains(table)) {
-            tables.add(table);
-        }
+        registerAxes(table);
     }
 
     public void deregisterTable(Table table) {
@@ -83,10 +89,31 @@ public final class TableUpdateHandler implements DataUpdateHandler {
                 tableMap.remove(logParam);
             }
         }
+        deregisterAxes(table);
     }
 
     public static TableUpdateHandler getInstance() {
         return INSTANCE;
+    }
+
+    private void registerAxes(Table table) {
+        if (table instanceof Table2D) {
+            registerTable(((Table2D) table).getAxis());
+        }
+        if (table instanceof Table3D) {
+            registerTable(((Table3D) table).getXAxis());
+            registerTable(((Table3D) table).getYAxis());
+        }
+    }
+
+    private void deregisterAxes(Table table) {
+        if (table instanceof Table2D) {
+            deregisterTable(((Table2D) table).getAxis());
+        }
+        if (table instanceof Table3D) {
+            deregisterTable(((Table3D) table).getXAxis());
+            deregisterTable(((Table3D) table).getYAxis());
+        }
     }
 
 }
