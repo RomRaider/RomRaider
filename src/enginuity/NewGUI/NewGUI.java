@@ -28,6 +28,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -92,8 +94,22 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 		
 		
 		// Define window closed operation
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		addWindowListener(new WindowAdapter() {
+		      public void windowClosing(WindowEvent e) {
+		    	  LOGGER.info("Preparing Enginuity for exit.");
+		    	 
+		    	  TuningEntity currentTuningEntity = ApplicationStateManager.getCurrentTuningEntity();
+		    	  
+		    	  if(currentTuningEntity == null){
+		    		  LOGGER.debug("No Tuning Entity ever selected.");
+		    		  LOGGER.info("Enginuity exiting.");
+		    		  System.exit(0);
+		    	  }else{
+		    		  LOGGER.debug("Notify current tuning entity of pending exit.");
+		    		  currentTuningEntity.notifySystemExit();
+		    	  }
+		      }
+		    });
 		
 		// Setup JMenu
 		Iterator tuningEntities = ApplicationStateManager.getTuningEntities().iterator();
@@ -131,6 +147,7 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		
 		if(e.getActionCommand().equalsIgnoreCase("UTEC Tuning Entity")){
 			String theCommand = e.getActionCommand();
 			
@@ -277,6 +294,11 @@ public class NewGUI extends JFrame implements ActionListener, TreeSelectionListe
 
 	public String getEngninuityTitle() {
 		return engninuityVersionTitle;
+	}
+
+	public void readyForExit() {
+		LOGGER.info("Enginuity is now exiting.");
+		System.exit(0);
 	}
 
 }

@@ -50,4 +50,9 @@ public interface TuningEntityListener {
 	 * 
 	 */
 	public void saveMaps();
+	
+	/**
+	 * Tuning entity calls back to main gui when its prepared for exit.
+	 */
+	public void readyForExit();
 }

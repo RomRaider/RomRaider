@@ -28,4 +28,8 @@ public interface TuningEntity extends ActionListener{
 	
 	// Control methods
 	public void init(TuningEntityListener listener);
+	
+	// Notify of system exit. Tuning entity must reply to parent GUI that they are in fac
+	// ready for shutdown
+	public void notifySystemExit();
 }

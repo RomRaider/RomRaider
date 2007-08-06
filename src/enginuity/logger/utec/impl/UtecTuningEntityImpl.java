@@ -438,4 +438,9 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		
 		return newData;
 	}
+
+	public void notifySystemExit() {
+		this.theTEL.readyForExit();
+		
+	}
 }
