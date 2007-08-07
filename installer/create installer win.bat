@@ -1,1 +1,1 @@
-..\IzPack\bin\compile install-win.xml -b . -o Enginuity0.4.1-492-win.jar -k standard
+installer\IzPack\bin\compile install-win.xml -b . -o Enginuity0.4.2-752-win.jar -k standard

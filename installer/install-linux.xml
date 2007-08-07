@@ -106,6 +106,7 @@
 				targetdir="$INSTALL_PATH/lib" />
 			<file src="lib/logger/rxtx/linux/i686/librxtxSerial.so"
 				targetdir="$INSTALL_PATH/lib" />
+				
 			<file src="lib/tts/cmu_time_awb.jar"
 				targetdir="$INSTALL_PATH/lib" />
 			<file src="lib/tts/cmu_us_kal.jar"
