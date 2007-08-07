@@ -10,6 +10,9 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+
+import org.apache.log4j.Logger;
+
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -21,6 +24,7 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	private Stack<ETableSaveState> savedData = new Stack<ETableSaveState>();
 	private TableMetaData tableMetaData;
 	private DataJPanelInterface dataJPanel = null;
+	private static final Logger LOGGER = Logger.getLogger(EInternalFrame.class);
 	
 	public EInternalFrame(TableMetaData tableMetaData, Object[][] data){
 		super(tableMetaData.getTableName()+"   "+tableMetaData.getTableGroup(), true, true, true, true);
@@ -78,6 +82,9 @@ public class EInternalFrame extends JInternalFrame implements InternalFrameListe
 	}
 	
 	public void saveDataToParentTuningEntity(){
+		if(this.dataJPanel.getData() == null){
+			LOGGER.error("EInternalFrame data in cells is null.");
+		}	
 		this.tableMetaData.getParentTuningEntity().setTableData(this.tableMetaData.getTableIdentifier(), this.dataJPanel.getData());
 	}
 	

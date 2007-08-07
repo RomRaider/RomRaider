@@ -34,10 +34,14 @@ public class DataJPanel3DDouble extends JPanel implements DataJPanelInterface{
 	private ClipBoardCopy excelCopy;
 	private ETableMenuBar eTableMenuBar = new ETableMenuBar(this);
 	private ETableToolBar toolBar = null;
+	private Double[][] newData = null;
 	
 	public DataJPanel3DDouble(TableMetaData tableMetaData, Object[][] data) {
-		
-		Double[][] newData = null;
+		if(data == null){
+			LOGGER.error("DataJPanel3DDouble: data passed into constructor is null.");
+			return;
+		}
+	
 		if(data[0][0] instanceof Double){
 			// Typical 2D & 3D data
 			newData = (Double[][])data;
@@ -202,8 +206,7 @@ public class DataJPanel3DDouble extends JPanel implements DataJPanelInterface{
 		
 	}
 
-	public Object[][] getData() {
-		// TODO Auto-generated method stub
-		return null;
+	public Object[][] getData() {	
+		return newData;
 	}
 }

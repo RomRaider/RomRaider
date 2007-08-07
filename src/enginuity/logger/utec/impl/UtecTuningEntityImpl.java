@@ -11,7 +11,11 @@ import enginuity.logger.utec.mapData.UtecMapData;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
+
+import org.apache.log4j.Logger;
+
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileWriter;
@@ -20,7 +24,8 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class UtecTuningEntityImpl implements TuningEntity{
-
+	private static final Logger LOGGER = Logger.getLogger(UtecTuningEntityImpl.class);
+	
 	// Misc items
 	private String currentPort = null;
 	private int fileChosen;
@@ -32,7 +37,6 @@ public class UtecTuningEntityImpl implements TuningEntity{
 	// Menu Items
 	public JMenuItem saveItem = new JMenuItem("Save Log");
 	public JMenuItem saveMapItem = new JMenuItem("Save Map To File");
-	public JMenuItem exitItem = new JMenuItem("Exit");
 	public JMenuItem resetUtec = new JMenuItem("Force Utec Reset");
 	public JMenuItem startLogging = new JMenuItem("Start Logging");
 	public JMenuItem closePort = new JMenuItem("Close Port");
@@ -63,10 +67,8 @@ public class UtecTuningEntityImpl implements TuningEntity{
 		JMenu fileMenu = new JMenu("File");
 		saveItem.addActionListener(this);
 		saveMapItem.addActionListener(this);
-		exitItem.addActionListener(this);
 		fileMenu.add(saveItem);
 		fileMenu.add(saveMapItem);
-		fileMenu.add(exitItem);
 		jMenuItems.add(fileMenu);
 		
 		// ******************************************
@@ -248,12 +250,12 @@ public class UtecTuningEntityImpl implements TuningEntity{
 			}
 
 			else if (cmd.equals("Save Map To File")) {
-				System.out.println("Saving map to file.");
+				LOGGER.info("Saving map to file.");
 
 				if (UtecDataManager.getCurrentMapData() != null) {
 
 					String saveFileName = null;
-					System.out.println("Save map now.");
+					LOGGER.info("Save map now.");
 					fileChosen = fileChooser.showSaveDialog(null);
 					if (fileChosen == JFileChooser.APPROVE_OPTION) {
 						saveFileName = fileChooser.getSelectedFile().getPath();
@@ -261,7 +263,7 @@ public class UtecTuningEntityImpl implements TuningEntity{
 
 					}
 				} else {
-					System.out.println("Map is null.");
+					LOGGER.info("Map is null.");
 				}
 			}
 
@@ -343,14 +345,6 @@ public class UtecTuningEntityImpl implements TuningEntity{
 						UtecInterface.sendMapData(5, mapData);
 					}
 				}
-			}
-			else if (cmd.equals("Exit")) {
-				// Use interface to finally close the connection to the Utec
-				UtecInterface.closeConnection();
-				System.out.println("Exit action occuring");
-
-				// Close out the application
-				System.exit(0);
 			}
 			
 			else if(cmd.equals("Force Utec Reset")){
@@ -440,7 +434,44 @@ public class UtecTuningEntityImpl implements TuningEntity{
 	}
 
 	public void notifySystemExit() {
+		LOGGER.info("Saving map to file.");
+
+    	String tuningGroup = ApplicationStateManager.getSelectedTuningGroup();
+    	int mapChangeCount = this.theTEL.getMapChangeCount(ApplicationStateManager.getCurrentTuningEntity(),tuningGroup);
+    	LOGGER.info("Number of maps changed: "+mapChangeCount);
+    	int returnValue = 0;
+    	if(mapChangeCount > 0){
+    		returnValue = JOptionPane.showConfirmDialog(null, "Tuning Group contains changes, save before continuing?", "Warning", JOptionPane.YES_NO_OPTION);
+    		
+    		if(returnValue == 0){
+    			this.theTEL.saveMaps();
+    			
+                // Kick off the saving file to disk
+    			String temp = ApplicationStateManager.getSelectedTuningGroup();
+    			UtecMapData mapData = null;
+            	Iterator mapIterate = UtecDataManager.getAllMaps().iterator();
+            	while(mapIterate.hasNext()){
+            		mapData = (UtecMapData)mapIterate.next();
+            		if(mapData.getMapName().equals(temp)){
+            			break;
+            		}
+            	}
+            	
+            	String saveFileName = null;
+				fileChosen = fileChooser.showSaveDialog(null);
+				if (fileChosen == JFileChooser.APPROVE_OPTION) {
+					saveFileName = fileChooser.getSelectedFile().getPath();
+					mapData.writeMapToFile(saveFileName);
+				}
+				
+            	this.theTEL.removeTuningGroup(tuningGroup);
+            	
+    		}else if(returnValue == 1){
+    			this.theTEL.removeTuningGroup(tuningGroup);
+    		}
+    	}
+    	
+    	UtecInterface.closeConnection();
 		this.theTEL.readyForExit();
-		
 	}
 }
