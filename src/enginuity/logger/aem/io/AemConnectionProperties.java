@@ -16,7 +16,7 @@ public final class AemConnectionProperties implements ConnectionProperties {
     }
 
     public int getParity() {
-        return 8;
+        return 0;
     }
 
     public int getConnectTimeout() {
