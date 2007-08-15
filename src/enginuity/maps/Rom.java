@@ -62,9 +62,9 @@ public class Rom implements Serializable {
     }
 
     public Table getTable(String tableName) throws TableNotFoundException {
-        for (int i = 0; i < tables.size(); i++) {
-            if (tables.get(i).getName().equalsIgnoreCase(tableName)) {
-                return tables.get(i);
+        for (Table table : tables) {
+            if (table.getName().equalsIgnoreCase(tableName)) {
+                return table;
             }
         }
         throw new TableNotFoundException();
@@ -162,16 +162,16 @@ public class Rom implements Serializable {
     public void setContainer(ECUEditor container) {
         this.container = container;
         // apply settings to tables
-        for (int i = 0; i < tables.size(); i++) {
-            tables.get(i).applyColorSettings(container.getSettings());
+        for (Table table : tables) {
+            table.applyColorSettings(container.getSettings());
             //tables.get(i).resize();
-            tables.get(i).getFrame().pack();
+            table.getFrame().pack();
         }
     }
 
     public byte[] saveFile() {
-        for (int i = 0; i < tables.size(); i++) {
-            tables.get(i).saveFile(binData);
+        for (Table table : tables) {
+            table.saveFile(binData);
         }
         return binData;
     }
@@ -187,6 +187,9 @@ public class Rom implements Serializable {
     public void setFullFileName(File fullFileName) {
         this.fullFileName = fullFileName;
         this.setFileName(fullFileName.getName());
+        for (Table table : tables) {
+            table.getFrame().updateFileName();
+        }
     }
 
     public String getParent() {

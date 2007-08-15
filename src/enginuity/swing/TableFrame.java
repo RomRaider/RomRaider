@@ -84,4 +84,8 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
     public void setTable(Table table) {
         this.table = table;
     }
+
+    public void updateFileName() {
+        setTitle(table.getRom().getFileName() + " - " + table.getName());
+    }
 }
