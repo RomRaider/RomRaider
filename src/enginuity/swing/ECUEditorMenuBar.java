@@ -334,21 +334,23 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             fc.setFileFilter(new ECUImageFilter());
             if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
                 boolean save = true;
-                if (fc.getSelectedFile().exists()) {
-                    if (showConfirmDialog(parent, fc.getSelectedFile().getName() + " already exists! Overwrite?") == CANCEL_OPTION) {
+                File selectedFile = fc.getSelectedFile();
+                if (selectedFile.exists()) {
+                    if (showConfirmDialog(parent, selectedFile.getName() + " already exists! Overwrite?") == CANCEL_OPTION) {
                         save = false;
                     }
                 }
                 if (save) {
                     byte[] output = parent.getLastSelectedRom().saveFile();
-                    FileOutputStream fos = new FileOutputStream(fc.getSelectedFile());
+                    FileOutputStream fos = new FileOutputStream(selectedFile);
                     try {
                         fos.write(output);
                     } finally {
                         fos.close();
                     }
-                    parent.getLastSelectedRom().setFullFileName(fc.getSelectedFile().getAbsoluteFile());
+                    parent.getLastSelectedRom().setFullFileName(selectedFile.getAbsoluteFile());
                     parent.setLastSelectedRom(parent.getLastSelectedRom());
+                    parent.getSettings().setLastImageDir(selectedFile.getParentFile());
                 }
             }
         }
