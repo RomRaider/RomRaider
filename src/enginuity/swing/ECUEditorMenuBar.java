@@ -21,13 +21,10 @@
 
 package enginuity.swing;
 
-import com.centerkey.utils.BareBonesBrowserLaunch;
-import enginuity.ECUEditor;
-import enginuity.logger.ecu.EcuLogger;
-import enginuity.logger.utec.gui.JutecGUI;
-import enginuity.maps.Rom;
-import enginuity.ramtune.test.RamTuneTestApp;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
@@ -41,10 +38,12 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
+import com.centerkey.utils.BareBonesBrowserLaunch;
+import enginuity.ECUEditor;
+import enginuity.logger.ecu.EcuLogger;
+import enginuity.logger.utec.gui.JutecGUI;
+import enginuity.maps.Rom;
+import enginuity.ramtune.test.RamTuneTestApp;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
@@ -289,7 +288,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             parent.setUserLevel(5);
 
         } else if (e.getSource() == openLogger) {
-            EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
+            EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent);
 
         } else if (e.getSource() == utecLogger) {
         	JutecGUI.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());

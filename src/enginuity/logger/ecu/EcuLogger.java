@@ -21,6 +21,59 @@
 
 package enginuity.logger.ecu;
 
+import java.awt.BorderLayout;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.EAST;
+import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.SOUTH;
+import static java.awt.BorderLayout.WEST;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.RED;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.util.ArrayList;
+import static java.util.Collections.sort;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import static javax.swing.BorderFactory.createLoweredBevelBorder;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import static javax.swing.JLabel.RIGHT;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
+import javax.swing.JSeparator;
+import static javax.swing.JSeparator.VERTICAL;
+import javax.swing.JSplitPane;
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+import static javax.swing.JSplitPane.VERTICAL_SPLIT;
+import javax.swing.JTabbedPane;
+import static javax.swing.JTabbedPane.BOTTOM;
+import javax.swing.JTable;
+import javax.swing.JToggleButton;
+import static javax.swing.KeyStroke.getKeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumn;
+import enginuity.ECUEditor;
 import enginuity.Settings;
 import enginuity.io.port.SerialPortRefresher;
 import enginuity.logger.ecu.comms.controller.LoggerController;
@@ -62,6 +115,7 @@ import enginuity.logger.ecu.ui.handler.file.FileUpdateHandlerImpl;
 import enginuity.logger.ecu.ui.handler.graph.GraphUpdateHandler;
 import enginuity.logger.ecu.ui.handler.livedata.LiveDataTableModel;
 import enginuity.logger.ecu.ui.handler.livedata.LiveDataUpdateHandler;
+import enginuity.logger.ecu.ui.handler.maf.MafUpdateHandler;
 import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
 import enginuity.logger.ecu.ui.paramlist.ParameterListTable;
 import enginuity.logger.ecu.ui.paramlist.ParameterListTableModel;
@@ -74,59 +128,6 @@ import enginuity.util.SettingsManagerImpl;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
-
-import static javax.swing.BorderFactory.createLoweredBevelBorder;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import static javax.swing.JLabel.RIGHT;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-import javax.swing.JSeparator;
-import static javax.swing.JSeparator.VERTICAL;
-import javax.swing.JSplitPane;
-import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
-import static javax.swing.JSplitPane.VERTICAL_SPLIT;
-import javax.swing.JTabbedPane;
-import static javax.swing.JTabbedPane.BOTTOM;
-import javax.swing.JTable;
-import javax.swing.JToggleButton;
-import static javax.swing.KeyStroke.getKeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.table.TableColumn;
-import java.awt.BorderLayout;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.EAST;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.BorderLayout.SOUTH;
-import static java.awt.BorderLayout.WEST;
-import static java.awt.Color.BLACK;
-import static java.awt.Color.RED;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.ArrayList;
-import static java.util.Collections.sort;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
 
 /*
 TODO: add better debug logging, preferably to a file and switchable (on/off)
@@ -147,6 +148,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
     private static final String ECU_ID_LABEL = "ECU ID";
+    private ECUEditor ecuEditor;
     private Settings settings;
     private LoggerController controller;
     private ResetManager resetManager;
@@ -178,12 +180,24 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private GraphUpdateHandler graphUpdateHandler;
     private JPanel dashboardPanel;
     private DashboardUpdateHandler dashboardUpdateHandler;
+    private JPanel mafPanel;
+    private MafUpdateHandler mafUpdateHandler;
     private EcuInit ecuInit;
     private JToggleButton logToFileButton;
     private List<ExternalDataSource> externalDataSources;
 
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
+        construct(settings);
+    }
+
+    public EcuLogger(ECUEditor ecuEditor) {
+        super(ENGINUITY_ECU_LOGGER_TITLE);
+        this.ecuEditor = ecuEditor;
+        construct(ecuEditor.getSettings());
+    }
+
+    private void construct(Settings settings) {
         bootstrap(settings);
         loadEcuDefs();
         loadLoggerPlugins();
@@ -229,8 +243,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
         dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
+        mafPanel = new JPanel(new BorderLayout(2, 2));
+        mafUpdateHandler = new MafUpdateHandler(mafPanel, ecuEditor);
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this, liveDataUpdateHandler,
-                graphUpdateHandler, dashboardUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
+                graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
         resetManager = new ResetManagerImpl(settings, this);
         messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
         calIdLabel = new JLabel(buildEcuInfoLabelText(CAL_ID_LABEL, null));
@@ -565,6 +581,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         tabbedPane.add("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel, dataTabExternalListTableModel), buildDataTab()));
         tabbedPane.add("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()));
         tabbedPane.add("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()));
+        tabbedPane.add("MAF", mafPanel);
         return tabbedPane;
     }
 
@@ -948,23 +965,36 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     //**********************************************************************
 
 
-    public static void startLogger(final int defaultCloseOperation, final Settings settings) {
+    public static void startLogger(int defaultCloseOperation, ECUEditor ecuEditor) {
+        // instantiate the controlling class.
+        final EcuLogger ecuLogger = new EcuLogger(ecuEditor);
+        createAndShowGui(defaultCloseOperation, ecuLogger);
+    }
+
+    public static void startLogger(int defaultCloseOperation, Settings settings) {
+        // instantiate the controlling class.
+        final EcuLogger ecuLogger = new EcuLogger(settings);
+        createAndShowGui(defaultCloseOperation, ecuLogger);
+    }
+
+    private static void createAndShowGui(final int defaultCloseOperation, final EcuLogger ecuLogger) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI(defaultCloseOperation, settings);
+                doCreateAndShowGui(defaultCloseOperation, ecuLogger);
             }
         });
     }
 
-    private static void createAndShowGUI(int defaultCloseOperation, Settings settings) {
-        // instantiate the controlling class.
-        EcuLogger ecuLogger = new EcuLogger(settings);
+    private static void doCreateAndShowGui(int defaultCloseOperation, EcuLogger ecuLogger) {
+        Settings settings = ecuLogger.getSettings();
+
+        // set default close operation
+        ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
 
         // set remaining window properties
         ecuLogger.pack();
         ecuLogger.setSize(settings.getLoggerWindowSize());
         ecuLogger.setIconImage(new ImageIcon("./graphics/enginuity-ico.gif").getImage());
-        ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
         ecuLogger.addWindowListener(ecuLogger);
 
         // display the window
@@ -974,5 +1004,4 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
         ecuLogger.setVisible(true);
     }
-
 }

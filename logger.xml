@@ -647,10 +647,10 @@
 
                 <parameter id="P200" name="Engine Load (Calculated)" desc="Engine load as calculated from MAF and RPM.">
                     <depends>
-                        <ref parameter="P8"/>
                         <!-- Engine Speed -->
-                        <ref parameter="P12"/>
+                        <ref parameter="P8"/>
                         <!-- MAF -->
+                        <ref parameter="P12"/>
                     </depends>
                     <conversions>
                         <conversion units="g/rev" expr="(P12*60)/P8" format="0.00"/>
@@ -661,10 +661,10 @@
 
                 <parameter id="P201" name="Injector Duty Cycle" desc="">
                     <depends>
-                        <ref parameter="P8"/>
                         <!-- Engine Speed -->
-                        <ref parameter="P21"/>
+                        <ref parameter="P8"/>
                         <!-- Fuel Inj. #1 Pulse Width -->
+                        <ref parameter="P21"/>
                     </depends>
                     <conversions>
                         <conversion units="%" expr="(P8*P21)/1200" format="0.00"/>
@@ -674,10 +674,10 @@
                 <parameter id="P202" name="Manifold Rel. Pressure (Corrected)"
                            desc="Difference between Manifold Absolute Pressure and Atmospheric Pressure.">
                     <depends>
-                        <ref parameter="P7"/>
                         <!-- MAP -->
-                        <ref parameter="P24"/>
+                        <ref parameter="P7"/>
                         <!-- Atmos. Pressure -->
+                        <ref parameter="P24"/>
                     </depends>
                     <conversions>
                         <conversion units="psi" expr="[P7:psi]-[P24:psi]" format="0.00"/>
@@ -688,12 +688,12 @@
                 <parameter id="P203" name="Fuel Consumption (Est.)"
                            desc="Estimated fuel consumption based on MAF, AFR and vehicle speed.">
                     <depends>
-                        <ref parameter="P9"/>
                         <!-- Vehicle Speed -->
-                        <ref parameter="P12"/>
+                        <ref parameter="P9"/>
                         <!-- MAF-->
-                        <ref parameter="P58"/>
+                        <ref parameter="P12"/>
                         <!-- AFR-->
+                        <ref parameter="P58"/>
                     </depends>
                     <conversions>
                         <conversion units="mpg (US)" expr="([P9:mph]/3600)/((P12/[P58:AFR])/2880)" format="0.00"/>
