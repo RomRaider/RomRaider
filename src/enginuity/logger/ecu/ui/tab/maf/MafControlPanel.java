@@ -237,30 +237,37 @@ public final class MafControlPanel extends JPanel {
         final JButton updateMafButton = new JButton("Update MAF");
         updateMafButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                Table2D table = getMafTable(ecuEditor);
-                if (table != null) {
-                    if (showUpdateMafConfirmation() == OK_OPTION) {
-                        if (isValidRange(mafvMin, mafvMax)) {
-                            DataCell[] axisCells = table.getAxis().getData();
-                            double[] x = new double[axisCells.length];
-                            for (int i = 0; i < axisCells.length; i++) {
-                                DataCell cell = axisCells[i];
-                                x[i] = cell.getValue();
-                            }
-                            double[] percentChange = trendline.calculate(x);
-                            DataCell[] dataCells = table.getData();
-                            for (int i = 0; i < dataCells.length; i++) {
-                                if (inRange(axisCells[i].getValue(), mafvMin, mafvMax)) {
-                                    DataCell cell = dataCells[i];
-                                    double value = cell.getValue();
-                                    cell.setRealValue(String.valueOf(value * (1.0 + percentChange[i] / 100.0)));
+                try {
+                    Table2D table = getMafTable(ecuEditor);
+                    if (table != null) {
+                        if (showUpdateMafConfirmation() == OK_OPTION) {
+                            if (isValidRange(mafvMin, mafvMax)) {
+                                DataCell[] axisCells = table.getAxis().getData();
+                                double[] x = new double[axisCells.length];
+                                for (int i = 0; i < axisCells.length; i++) {
+                                    DataCell cell = axisCells[i];
+                                    x[i] = cell.getValue();
                                 }
+                                double[] percentChange = trendline.calculate(x);
+                                DataCell[] dataCells = table.getData();
+                                for (int i = 0; i < dataCells.length; i++) {
+                                    if (inRange(axisCells[i].getValue(), mafvMin, mafvMax)) {
+                                        DataCell cell = dataCells[i];
+                                        double value = cell.getValue();
+                                        cell.setRealValue(String.valueOf(value * (1.0 + percentChange[i] / 100.0)));
+                                    }
+                                }
+                                table.colorize();
+                            } else {
+                                showMessageDialog(parent, "Invalid MAFv range specified.", "Error", ERROR_MESSAGE);
                             }
-                            table.colorize();
-                        } else {
-                            showMessageDialog(parent, "Invalid MAFv range specified.", "Error", ERROR_MESSAGE);
                         }
+                    } else {
+                        showMessageDialog(parent, "MAF Sensor Scaling table not found.", "Error", ERROR_MESSAGE);
                     }
+                } catch (Exception e) {
+                    String msg = e.getMessage() != null && e.getMessage().length() > 0 ? e.getMessage() : "Unknown";
+                    showMessageDialog(parent, "Error: " + msg, "Error", ERROR_MESSAGE);
                 }
             }
         });
@@ -308,7 +315,6 @@ public final class MafControlPanel extends JPanel {
             Rom rom = ecuEditor.getLastSelectedRom();
             return (Table2D) rom.getTable("MAF Sensor Scaling");
         } catch (Exception e) {
-            showMessageDialog(parent, "MAF Sensor Scaling table not found.", "Error", ERROR_MESSAGE);
             return null;
         }
     }
