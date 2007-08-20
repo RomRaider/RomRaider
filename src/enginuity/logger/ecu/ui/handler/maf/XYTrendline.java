@@ -54,6 +54,7 @@ public final class XYTrendline extends AbstractXYDataset {
     }
 
     public synchronized double[] calculate(double[] x) {
+        if (polyfit == null) throw new IllegalStateException("Interpolation required");
         Polyval polyval = new Polyval(x, polyfit);
         return polyval.getYout();
     }
@@ -62,5 +63,6 @@ public final class XYTrendline extends AbstractXYDataset {
         items.clear();
         xVals = new double[0];
         yPoly = new double[0];
+        polyfit = null;
     }
 }
