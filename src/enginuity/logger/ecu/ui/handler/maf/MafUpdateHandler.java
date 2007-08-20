@@ -47,16 +47,16 @@ public final class MafUpdateHandler implements DataUpdateHandler {
             boolean valid = true;
 
             // cl/ol check
-//            if (valid && (containsData(response, "E3") || containsData(response, "E27"))) {
-//                double clOl = -1;
-//                if (containsData(response, "E3")) {
-//                    clOl = (int) findValue(response, "E3");
-//                }
-//                if (containsData(response, "E27")) {
-//                    clOl = (int) findValue(response, "E27");
-//                }
-//                valid = clOl == 8;
-//            }
+            if (valid && (containsData(response, "E3") || containsData(response, "E27"))) {
+                double clOl = -1;
+                if (containsData(response, "E3")) {
+                    clOl = (int) findValue(response, "E3");
+                }
+                if (containsData(response, "E27")) {
+                    clOl = (int) findValue(response, "E27");
+                }
+                valid = clOl == 8;
+            }
 
             // afr check
             if (valid && containsData(response, "P58")) {
