@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -41,6 +42,7 @@ public final class MafControlPanel extends JPanel {
     private final JTextField mafMin = new JTextField("0", 3);
     private final JTextField mafMax = new JTextField("100", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
+    private final JCheckBox clCheckbox = new JCheckBox("Closed Loop Only", true);
     private final Component parent;
     private final XYTrendline trendline;
     private final XYSeries series;
@@ -57,6 +59,10 @@ public final class MafControlPanel extends JPanel {
 
     public boolean isRecordData() {
         return recordDataButton.isSelected();
+    }
+
+    public boolean isValidClOl(double value) {
+        return value == 8 || (!clCheckbox.isSelected() && value == 10);
     }
 
     public boolean isValidAfr(double value) {
@@ -166,11 +172,12 @@ public final class MafControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 0);
-        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 3);
-        addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 6);
-        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 9);
-        addComponent(panel, gridBagLayout, recordDataButton, 12);
+        addComponent(panel, gridBagLayout, clCheckbox, 0);
+        addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 1);
+        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 4);
+        addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 7);
+        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 10);
+        addComponent(panel, gridBagLayout, recordDataButton, 13);
 
         return panel;
     }

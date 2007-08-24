@@ -55,7 +55,7 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 if (containsData(response, "E27")) {
                     clOl = (int) findValue(response, "E27");
                 }
-                valid = clOl == 8;
+                valid = controlPanel.isValidClOl(clOl);
             }
 
             // afr check
