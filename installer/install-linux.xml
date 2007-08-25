@@ -56,11 +56,16 @@
 			<file src="lib/BareBonesBrowserLaunch.jar"
 				targetdir="$INSTALL_PATH/lib" />
 			<file src="lib/jep.jar" targetdir="$INSTALL_PATH/lib" />
+			<file src="lib/jep.jar" targetdir="$INSTALL_PATH/lib" />
 			<file src="lib/JFontChooser.jar"
 				targetdir="$INSTALL_PATH/lib" />
 			<file src="lib/swing-layout-1.0.jar"
 				targetdir="$INSTALL_PATH/lib" />
 			<file src="lib/log4j-1.2.14.jar"
+				targetdir="$INSTALL_PATH/lib" />
+			<file src="lib/Jama.jar"
+				targetdir="$INSTALL_PATH/lib" />
+			<file src="lib/jamlab.jar"
 				targetdir="$INSTALL_PATH/lib" />
 
 			<file src="lib/Graph3d/jama-1.0.2.jar"

@@ -5,7 +5,10 @@ Main-Class: enginuity.ECUExec
 Class-Path: 
  lib/BareBonesBrowserLaunch.jar 
  lib/jep.jar 
- lib/JFontChooser.jar 
+ lib/log4j-1.2.14.jar 
+ lib/Jama.jar
+ lib/jamlab.jar
+ lib/JFontChooser.jar
  lib/swing-layout-1.0.jar 
  lib/jcommon-1.0.7.jar 
  lib/jfreechart-1.0.3.jar 

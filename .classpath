@@ -9,6 +9,8 @@
 	<classpathentry kind="lib" path="lib/Graph3d/jama-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/BareBonesBrowserLaunch.jar"/>
 	<classpathentry kind="lib" path="lib/jep.jar"/>
+	<classpathentry kind="lib" path="lib/Jama.jar"/>
+	<classpathentry kind="lib" path="lib/jamlab.jar"/>
 	<classpathentry kind="lib" path="lib/JFontChooser.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.jar"/>
