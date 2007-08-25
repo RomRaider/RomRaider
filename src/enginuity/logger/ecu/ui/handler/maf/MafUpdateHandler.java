@@ -11,11 +11,7 @@ public final class MafUpdateHandler implements DataUpdateHandler {
     private static final String MAFV = "P18";
     private static final String AF_LEARNING_1 = "P4";
     private static final String AF_CORRECTION_1 = "P3";
-    private final MafTab mafTab;
-
-    public MafUpdateHandler(MafTab mafTab) {
-        this.mafTab = mafTab;
-    }
+    private MafTab mafTab;
 
     public synchronized void registerData(LoggerData loggerData) {
     }
@@ -106,5 +102,9 @@ public final class MafUpdateHandler implements DataUpdateHandler {
     }
 
     public synchronized void reset() {
+    }
+
+    public void setMafTab(MafTab mafTab) {
+        this.mafTab = mafTab;
     }
 }

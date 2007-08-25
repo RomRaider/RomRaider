@@ -8,6 +8,8 @@ import static java.awt.GridBagConstraints.NONE;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -24,14 +26,21 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.TitledBorder;
 import enginuity.ECUEditor;
+import enginuity.logger.ecu.definition.EcuParameter;
+import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.ExternalData;
+import enginuity.logger.ecu.definition.LoggerData;
+import enginuity.logger.ecu.ui.DataRegistrationBroker;
 import enginuity.logger.ecu.ui.handler.maf.XYTrendline;
 import enginuity.maps.DataCell;
 import enginuity.maps.Rom;
 import enginuity.maps.Table2D;
 import static enginuity.util.ParamChecker.checkNotNull;
+import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 
 public final class MafControlPanel extends JPanel {
+    private static final Logger LOGGER = Logger.getLogger(MafControlPanel.class);
     private final JToggleButton recordDataButton = new JToggleButton("Record Data");
     private final JTextField mafvMin = new JTextField("1.20", 3);
     private final JTextField mafvMax = new JTextField("2.60", 3);
@@ -47,8 +56,13 @@ public final class MafControlPanel extends JPanel {
     private final XYTrendline trendline;
     private final XYSeries series;
     private final ECUEditor ecuEditor;
+    private final DataRegistrationBroker broker;
+    private List<EcuParameter> params;
+    private List<EcuSwitch> switches;
+    private List<ExternalData> externals;
 
-    public MafControlPanel(Component parent, XYTrendline trendline, XYSeries series, ECUEditor ecuEditor) {
+    public MafControlPanel(Component parent, XYTrendline trendline, XYSeries series, DataRegistrationBroker broker, ECUEditor ecuEditor) {
+        this.broker = broker;
         checkNotNull(parent, trendline, series);
         this.parent = parent;
         this.trendline = trendline;
@@ -177,9 +191,50 @@ public final class MafControlPanel extends JPanel {
         addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 4);
         addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 7);
         addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 10);
-        addComponent(panel, gridBagLayout, recordDataButton, 13);
+        addComponent(panel, gridBagLayout, buildRecordDataButton(), 13);
 
         return panel;
+    }
+
+    private JToggleButton buildRecordDataButton() {
+        recordDataButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (recordDataButton.isSelected()) {
+                    registerData("P2", "P3", "P4", "P8", "P12", "P18", "P58", "E3", "E27");
+                } else {
+                    deregisterData("P2", "P3", "P4", "P8", "P12", "P18", "P58", "E3", "E27");
+                }
+            }
+        });
+        return recordDataButton;
+    }
+
+    private void registerData(String... ids) {
+        for (String id : ids) {
+            LoggerData data = findData(id);
+            if (data != null) broker.registerLoggerDataForLogging(data);
+        }
+    }
+
+    private void deregisterData(String... ids) {
+        for (String id : ids) {
+            LoggerData data = findData(id);
+            if (data != null) broker.deregisterLoggerDataFromLogging(data);
+        }
+    }
+
+    private LoggerData findData(String id) {
+        for (EcuParameter param : params) {
+            if (id.equals(param.getId())) return param;
+        }
+        for (EcuSwitch sw : switches) {
+            if (id.equals(sw.getId())) return sw;
+        }
+        for (ExternalData external : externals) {
+            if (id.equals(external.getId())) return external;
+        }
+        LOGGER.warn("Logger data not found for id: " + id);
+        return null;
     }
 
     private void addComponent(JPanel panel, GridBagLayout gridBagLayout, JComponent component, int y) {
@@ -324,5 +379,17 @@ public final class MafControlPanel extends JPanel {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public void setEcuParams(List<EcuParameter> params) {
+        this.params = new ArrayList<EcuParameter>(params);
+    }
+
+    public void setEcuSwitches(List<EcuSwitch> switches) {
+        this.switches = new ArrayList<EcuSwitch>(switches);
+    }
+
+    public void setExternalDatas(List<ExternalData> externals) {
+        this.externals = new ArrayList<ExternalData>(externals);
     }
 }

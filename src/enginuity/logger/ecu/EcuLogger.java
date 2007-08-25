@@ -184,6 +184,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private DashboardUpdateHandler dashboardUpdateHandler;
     private MafTab mafTab;
     private MafUpdateHandler mafUpdateHandler;
+    private DataUpdateHandlerManager mafHandlerManager;
+    private DataRegistrationBroker mafTabBroker;
     private EcuInit ecuInit;
     private JToggleButton logToFileButton;
     private List<ExternalDataSource> externalDataSources;
@@ -245,10 +247,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
         dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
-        mafTab = new MafTabImpl(ecuEditor);
-        mafUpdateHandler = new MafUpdateHandler(mafTab);
+        mafUpdateHandler = new MafUpdateHandler();
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this, liveDataUpdateHandler,
                 graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
+        mafHandlerManager = new DataUpdateHandlerManagerImpl();
+        mafTabBroker = new DataRegistrationBrokerImpl(controller, mafHandlerManager);
+        mafTab = new MafTabImpl(mafTabBroker, ecuEditor);
+        mafUpdateHandler.setMafTab(mafTab);
         resetManager = new ResetManagerImpl(settings, this);
         messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
         calIdLabel = new JLabel(buildEcuInfoLabelText(CAL_ID_LABEL, null));
@@ -476,6 +481,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             graphTabParamListTableModel.addParam(ecuParam, false);
             dashboardTabParamListTableModel.addParam(ecuParam, false);
         }
+        mafTab.setEcuParams(ecuParams);
     }
 
     private void loadEcuSwitches(List<EcuSwitch> ecuSwitches) {
@@ -486,6 +492,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             graphTabSwitchListTableModel.addParam(ecuSwitch, false);
             dashboardTabSwitchListTableModel.addParam(ecuSwitch, false);
         }
+        mafTab.setEcuSwitches(ecuSwitches);
     }
 
     private List<ExternalData> getExternalData(List<ExternalDataSource> externalDataSources) {
@@ -511,6 +518,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             graphTabExternalListTableModel.addParam(externalData, false);
             dashboardTabExternalListTableModel.addParam(externalData, false);
         }
+        mafTab.setExternalDatas(externalDatas);
     }
 
     private void setDefaultUnits(UserProfile profile, LoggerData loggerData) {
