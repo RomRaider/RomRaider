@@ -1,53 +1,31 @@
 package enginuity.logger.ecu.ui.handler.maf;
 
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.WEST;
 import java.util.Set;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import enginuity.ECUEditor;
 import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
-import enginuity.logger.ecu.ui.tab.maf.MafChartPanel;
-import enginuity.logger.ecu.ui.tab.maf.MafControlPanel;
-import org.jfree.data.xy.XYSeries;
+import enginuity.logger.ecu.ui.tab.maf.MafTab;
 
 public final class MafUpdateHandler implements DataUpdateHandler {
     private static final String MAFV = "P18";
     private static final String AF_LEARNING_1 = "P4";
     private static final String AF_CORRECTION_1 = "P3";
-    private final XYSeries series = new XYSeries("MAF Analysis");
-    private final XYTrendline trendline = new XYTrendline();
-    private final JPanel mafPanel;
-    private final ECUEditor ecuEditor;
-    private final MafControlPanel controlPanel;
+    private final MafTab mafTab;
 
-    public MafUpdateHandler(JPanel mafPanel, ECUEditor ecuEditor) {
-        this.mafPanel = mafPanel;
-        this.ecuEditor = ecuEditor;
-        controlPanel = buildControlPanel();
-        mafPanel.add(controlPanel, WEST);
-        mafPanel.add(buildGraphPanel(), CENTER);
-    }
-
-    private MafControlPanel buildControlPanel() {
-        return new MafControlPanel(mafPanel, trendline, series, ecuEditor);
-    }
-
-    private MafChartPanel buildGraphPanel() {
-        return new MafChartPanel(trendline, series);
+    public MafUpdateHandler(MafTab mafTab) {
+        this.mafTab = mafTab;
     }
 
     public synchronized void registerData(LoggerData loggerData) {
     }
 
     public synchronized void handleDataUpdate(Response response) {
-        if (controlPanel.isRecordData() && containsData(response, MAFV, AF_LEARNING_1, AF_CORRECTION_1)) {
+        if (mafTab.isRecordData() && containsData(response, MAFV, AF_LEARNING_1, AF_CORRECTION_1)) {
             boolean valid = true;
 
             // cl/ol check
-            if (valid && (containsData(response, "E3") || containsData(response, "E27"))) {
+            if ((containsData(response, "E3") || containsData(response, "E27"))) {
                 double clOl = -1;
                 if (containsData(response, "E3")) {
                     clOl = (int) findValue(response, "E3");
@@ -55,31 +33,31 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 if (containsData(response, "E27")) {
                     clOl = (int) findValue(response, "E27");
                 }
-                valid = controlPanel.isValidClOl(clOl);
+                valid = mafTab.isValidClOl(clOl);
             }
 
             // afr check
             if (valid && containsData(response, "P58")) {
                 double afr = findValue(response, "P58");
-                valid = controlPanel.isValidAfr(afr);
+                valid = mafTab.isValidAfr(afr);
             }
 
             // rpm check
             if (valid && containsData(response, "P8")) {
                 double rpm = findValue(response, "P8");
-                valid = controlPanel.isValidRpm(rpm);
+                valid = mafTab.isValidRpm(rpm);
             }
 
             // maf check
             if (valid && containsData(response, "P12")) {
                 double maf = findValue(response, "P12");
-                valid = controlPanel.isValidMaf(maf);
+                valid = mafTab.isValidMaf(maf);
             }
 
             // coolant temp check
             if (valid && containsData(response, "P2")) {
                 double temp = findValue(response, "P2");
-                valid = controlPanel.isValidCoolantTemp(temp);
+                valid = mafTab.isValidCoolantTemp(temp);
             }
 
             if (valid) {
@@ -88,7 +66,7 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 final double correction = findValue(response, AF_CORRECTION_1);
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        series.add(mafv, learning + correction);
+                        mafTab.addData(mafv, learning + correction);
                     }
                 });
             }

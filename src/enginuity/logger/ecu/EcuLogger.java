@@ -122,6 +122,8 @@ import enginuity.logger.ecu.ui.paramlist.ParameterListTableModel;
 import enginuity.logger.ecu.ui.paramlist.ParameterRow;
 import enginuity.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import enginuity.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
+import enginuity.logger.ecu.ui.tab.maf.MafTab;
+import enginuity.logger.ecu.ui.tab.maf.MafTabImpl;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import enginuity.util.SettingsManagerImpl;
@@ -180,7 +182,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private GraphUpdateHandler graphUpdateHandler;
     private JPanel dashboardPanel;
     private DashboardUpdateHandler dashboardUpdateHandler;
-    private JPanel mafPanel;
+    private MafTab mafTab;
     private MafUpdateHandler mafUpdateHandler;
     private EcuInit ecuInit;
     private JToggleButton logToFileButton;
@@ -243,8 +245,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
         dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
-        mafPanel = new JPanel(new BorderLayout(2, 2));
-        mafUpdateHandler = new MafUpdateHandler(mafPanel, ecuEditor);
+        mafTab = new MafTabImpl(ecuEditor);
+        mafUpdateHandler = new MafUpdateHandler(mafTab);
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this, liveDataUpdateHandler,
                 graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
         resetManager = new ResetManagerImpl(settings, this);
@@ -581,7 +583,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         tabbedPane.add("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel, dataTabExternalListTableModel), buildDataTab()));
         tabbedPane.add("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()));
         tabbedPane.add("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()));
-        tabbedPane.add("MAF", mafPanel);
+        tabbedPane.add("MAF", mafTab.getPanel());
         return tabbedPane;
     }
 
