@@ -120,6 +120,7 @@ import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
 import enginuity.logger.ecu.ui.paramlist.ParameterListTable;
 import enginuity.logger.ecu.ui.paramlist.ParameterListTableModel;
 import enginuity.logger.ecu.ui.paramlist.ParameterRow;
+import enginuity.logger.ecu.ui.playback.PlaybackManagerImpl;
 import enginuity.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import enginuity.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import enginuity.logger.ecu.ui.tab.maf.MafTab;
@@ -127,6 +128,7 @@ import enginuity.logger.ecu.ui.tab.maf.MafTabImpl;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import enginuity.util.SettingsManagerImpl;
+import enginuity.util.ThreadUtil;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
@@ -189,6 +191,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private EcuInit ecuInit;
     private JToggleButton logToFileButton;
     private List<ExternalDataSource> externalDataSources;
+
+    private List<EcuParameter> ecuParams;
 
     public EcuLogger(Settings settings) {
         super(ENGINUITY_ECU_LOGGER_TITLE);
@@ -482,6 +486,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             dashboardTabParamListTableModel.addParam(ecuParam, false);
         }
         mafTab.setEcuParams(ecuParams);
+        this.ecuParams = new ArrayList<EcuParameter>(ecuParams);
     }
 
     private void loadEcuSwitches(List<EcuSwitch> ecuSwitches) {
@@ -687,8 +692,29 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JPanel buildControlToolbar() {
         JPanel controlPanel = new JPanel(new BorderLayout());
         controlPanel.add(buildPortsComboBox(), WEST);
+        //TODO: Finish log playback stuff...
+        //controlPanel.add(buildPlaybackControls(), CENTER);
         controlPanel.add(buildStatusIndicator(), EAST);
         return controlPanel;
+    }
+
+    private Component buildPlaybackControls() {
+        JButton playButton = new JButton("Play");
+        playButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                ThreadUtil.runAsDaemon(new Runnable() {
+                    public void run() {
+                        PlaybackManagerImpl playbackManager = new PlaybackManagerImpl(ecuParams, liveDataUpdateHandler, graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler,
+                                TableUpdateHandler.getInstance());
+                        playbackManager.load(new File("foo.csv"));
+                        playbackManager.play();
+                    }
+                });
+            }
+        });
+        JPanel panel = new JPanel();
+        panel.add(playButton);
+        return panel;
     }
 
     private Component buildLogToFileButton() {
