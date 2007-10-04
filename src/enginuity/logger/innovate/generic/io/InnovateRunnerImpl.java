@@ -1,7 +1,7 @@
-package enginuity.logger.innovate.io;
+package enginuity.logger.innovate.generic.io;
 
-import enginuity.logger.innovate.plugin.DataListener;
-import enginuity.logger.innovate.plugin.InnovateSettings;
+import enginuity.logger.innovate.generic.plugin.DataListener;
+import enginuity.logger.innovate.generic.plugin.InnovateSettings;
 
 public final class InnovateRunnerImpl implements InnovateRunner {
     private final InnovateConnection connection;

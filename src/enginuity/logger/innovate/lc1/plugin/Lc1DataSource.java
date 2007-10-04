@@ -1,15 +1,16 @@
-package enginuity.logger.innovate.plugin;
+package enginuity.logger.innovate.lc1.plugin;
 
+import static java.util.Arrays.asList;
+import java.util.List;
+import javax.swing.Action;
 import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
 import enginuity.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
-import enginuity.logger.innovate.io.InnovateRunnerImpl;
+import enginuity.logger.innovate.generic.io.InnovateRunnerImpl;
+import enginuity.logger.innovate.generic.plugin.InnovateSettings;
+import enginuity.logger.innovate.generic.plugin.InnovateSettingsImpl;
 import static enginuity.util.ThreadUtil.runAsDaemon;
-
-import javax.swing.Action;
-import static java.util.Arrays.asList;
-import java.util.List;
 
 public final class Lc1DataSource implements ExternalDataSource {
     private InnovateSettings settings = new InnovateSettingsImpl();

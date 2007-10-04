@@ -1,4 +1,4 @@
-package enginuity.logger.innovate.plugin;
+package enginuity.logger.innovate.lc1.plugin;
 
 import static enginuity.util.HexUtil.asHex;
 import org.apache.log4j.Logger;

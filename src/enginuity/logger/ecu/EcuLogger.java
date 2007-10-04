@@ -693,7 +693,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JPanel controlPanel = new JPanel(new BorderLayout());
         controlPanel.add(buildPortsComboBox(), WEST);
         //TODO: Finish log playback stuff...
-        //controlPanel.add(buildPlaybackControls(), CENTER);
+//        controlPanel.add(buildPlaybackControls(), CENTER);
         controlPanel.add(buildStatusIndicator(), EAST);
         return controlPanel;
     }

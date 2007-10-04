@@ -1,6 +1,7 @@
-package enginuity.logger.innovate.plugin;
+package enginuity.logger.innovate.lc1.plugin;
 
 import enginuity.logger.ecu.external.ExternalDataItem;
+import enginuity.logger.innovate.generic.plugin.DataListener;
 
 public final class Lc1DataItem implements ExternalDataItem, DataListener {
     private final Lc1Convertor convertor = new Lc1ConvertorImpl();

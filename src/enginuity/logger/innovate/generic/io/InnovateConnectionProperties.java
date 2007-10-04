@@ -1,4 +1,4 @@
-package enginuity.logger.innovate.io;
+package enginuity.logger.innovate.generic.io;
 
 import enginuity.io.connection.ConnectionProperties;
 
