@@ -1,10 +1,11 @@
 package enginuity.logger.innovate.lc1.plugin;
 
+import enginuity.logger.innovate.generic.plugin.DataConvertor;
 import static enginuity.util.HexUtil.asHex;
 import org.apache.log4j.Logger;
 
-public final class Lc1ConvertorImpl implements Lc1Convertor {
-    private static final Logger LOGGER = Logger.getLogger(Lc1ConvertorImpl.class);
+public final class Lc1DataConvertor implements DataConvertor {
+    private static final Logger LOGGER = Logger.getLogger(Lc1DataConvertor.class);
     private static final double MAX_AFR = 20.33;
 
     public double convert(byte[] bytes) {
@@ -43,23 +44,31 @@ public final class Lc1ConvertorImpl implements Lc1Convertor {
         return ((bytes[4] & 63) << 7) | bytes[5];
     }
 
+    // 0100001x
     private boolean isOk(byte[] bytes) {
-        return ((bytes[2] >> 2) | 56) == 56;
+        return matchOnes(bytes[2], 66) && matchZeroes(bytes[0], 188);
     }
 
+    // 0101101x
     private boolean isError(byte[] bytes) {
-        return matches(bytes[2], 24);
+        return matchOnes(bytes[2], 90) && matchZeroes(bytes[2], 164);
     }
 
+    // 1x11xx1x 1xxxxxxx
     private boolean isHeaderValid(byte[] bytes) {
-        return matches(bytes[0], 178) && matches(bytes[1], 128);
+        return matchOnes(bytes[0], 178) && matchOnes(bytes[1], 128);
     }
 
+    // 010xxx1x
     private boolean isLc1(byte[] bytes) {
-        return bytes.length == 6 && matches(bytes[2], 66);
+        return bytes.length >= 6 && matchOnes(bytes[2], 66) && matchZeroes(bytes[2], 160);
     }
 
-    private boolean matches(byte b, int mask) {
+    private boolean matchOnes(int b, int mask) {
         return (b & mask) == mask;
+    }
+
+    private boolean matchZeroes(int b, int mask) {
+        return (b & mask) == 0;
     }
 }
