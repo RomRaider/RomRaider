@@ -4,15 +4,7 @@ package enginuity.xml;
 
 import enginuity.ECUEditor;
 import enginuity.Settings;
-import enginuity.maps.DataCell;
-import enginuity.maps.Rom;
-import enginuity.maps.RomID;
-import enginuity.maps.Scale;
-import enginuity.maps.Table;
-import enginuity.maps.Table1D;
-import enginuity.maps.Table2D;
-import enginuity.maps.Table3D;
-import enginuity.maps.TableSwitch;
+import enginuity.maps.*;
 import enginuity.swing.DebugPanel;
 import enginuity.swing.JProgressPane;
 import enginuity.util.LogManager;
@@ -25,7 +17,7 @@ import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
 
 import javax.management.modelmbean.XMLParseException;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -373,6 +365,7 @@ public final class DOMRomUnmarshaller {
         table.setLogParam(unmarshallAttribute(tableNode, "logparam", table.getLogParam()));
 
         if (table.getType() == Table.TABLE_3D) {
+            ((Table3D) table).setColumnBased(unmarshallAttribute(tableNode, "colbased", ((Table3D) table).getColumnBased()));
             ((Table3D) table).setFlipX(unmarshallAttribute(tableNode, "flipx", ((Table3D) table).getFlipX()));
             ((Table3D) table).setFlipY(unmarshallAttribute(tableNode, "flipy", ((Table3D) table).getFlipY()));
             ((Table3D) table).setSizeX(unmarshallAttribute(tableNode, "sizex", ((Table3D) table).getSizeX()));

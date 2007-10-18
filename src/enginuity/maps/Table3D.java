@@ -31,13 +31,8 @@ import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 import enginuity.xml.RomAttributeParser;
 
 import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -50,6 +45,7 @@ public class Table3D extends Table {
     private Table1D xAxis = new Table1D(new Settings());
     private Table1D yAxis = new Table1D(new Settings());
     private DataCell[][] data = new DataCell[1][1];
+    private boolean columnBased = false;
     private boolean swapXY = false;
     private boolean flipX = false;
     private boolean flipY = false;
@@ -76,7 +72,15 @@ public class Table3D extends Table {
         this.yAxis = yAxis;
     }
 
-    public boolean isSwapXY() {
+    public boolean getColumnBased() {
+        return columnBased;
+    }
+
+    public void setColumnBased(boolean columnBased) {
+        this.columnBased = columnBased;
+    }
+
+    public boolean getSwapXY() {
         return swapXY;
     }
 
@@ -139,17 +143,18 @@ public class Table3D extends Table {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        for (int i = 0; i < xAxis.getDataSize(); i++) {
-            centerPanel.add(xAxis.getDataCell(i));
+        for (int x = 0; x < xAxis.getDataSize(); x++) {
+            centerPanel.add(xAxis.getDataCell(x));
         }
 
         int offset = 0;
 
-        for (int x = 0; x < yAxis.getDataSize(); x++) {
-            centerPanel.add(yAxis.getDataCell(x));
-            for (int y = 0; y < xAxis.getDataSize(); y++) {
-                data[y][x] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
-                data[y][x].setTable(this);
+        int iMax = columnBased ? xAxis.getDataSize() : yAxis.getDataSize();
+        int jMax = columnBased ? yAxis.getDataSize() : xAxis.getDataSize();
+        for (int i = 0; i < iMax; i++) {
+            for (int j = 0; j < jMax; j++) {
+                data[i][j] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
+                data[i][j].setTable(this);
 
                 // populate data cells
                 if (storageType == STORAGE_TYPE_FLOAT) { //float storage type
@@ -158,10 +163,10 @@ public class Table3D extends Table {
                     byteValue[1] = input[storageAddress + offset * 4 - ramOffset + 1];
                     byteValue[2] = input[storageAddress + offset * 4 - ramOffset + 2];
                     byteValue[3] = input[storageAddress + offset * 4 - ramOffset + 3];
-                    data[y][x].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
+                    data[i][j].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
 
                 } else { // integer storage type
-                    data[y][x].setBinValue(
+                    data[i][j].setBinValue(
                             RomAttributeParser.parseByteValue(input,
                                     endian,
                                     storageAddress + offset * storageType - ramOffset,
@@ -170,14 +175,20 @@ public class Table3D extends Table {
 
                 // show locked cell
                 if (tempLock) {
-                    data[y][x].setForeground(Color.GRAY);
+                    data[i][j].setForeground(Color.GRAY);
                 }
 
-                centerPanel.add(data[y][x]);
-                data[y][x].setXCoord(y);
-                data[y][x].setYCoord(x);
-                data[y][x].setOriginalValue(data[y][x].getBinValue());
+                data[i][j].setXCoord(i);
+                data[i][j].setYCoord(j);
+                data[i][j].setOriginalValue(data[i][j].getBinValue());
                 offset++;
+            }
+        }
+
+        for (int y = 0; y < yAxis.getDataSize(); y++) {
+            centerPanel.add(yAxis.getDataCell(y));
+            for (int x = 0; x < xAxis.getDataSize(); x++) {
+                centerPanel.add(data[x][y]);
             }
         }
 
@@ -484,18 +495,20 @@ public class Table3D extends Table {
             binData = yAxis.saveFile(binData);
             int offset = 0;
 
-            for (int x = 0; x < yAxis.getDataSize(); x++) {
-                for (int y = 0; y < xAxis.getDataSize(); y++) {
+            int iMax = columnBased ? xAxis.getDataSize() : yAxis.getDataSize();
+            int jMax = columnBased ? yAxis.getDataSize() : xAxis.getDataSize();
+            for (int i = 0; i < iMax; i++) {
+                for (int j = 0; j < jMax; j++) {
 
                     // determine output byte values
                     byte[] output;
                     if (storageType != STORAGE_TYPE_FLOAT) {
-                        output = RomAttributeParser.parseIntegerValue((int) data[y][x].getBinValue(), endian, storageType);
+                        output = RomAttributeParser.parseIntegerValue((int) data[i][j].getBinValue(), endian, storageType);
                         for (int z = 0; z < storageType; z++) {
                             binData[offset * storageType + z + storageAddress - ramOffset] = output[z];
                         }
                     } else { // float
-                        output = RomAttributeParser.floatToByte((float) data[y][x].getBinValue(), endian);
+                        output = RomAttributeParser.floatToByte((float) data[i][j].getBinValue(), endian);
                         for (int z = 0; z < 4; z++) {
                             binData[offset * 4 + z + storageAddress - ramOffset] = output[z];
                         }
