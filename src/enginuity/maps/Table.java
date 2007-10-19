@@ -27,20 +27,9 @@ import static enginuity.util.ColorScaler.getScaledColor;
 import enginuity.util.JEPUtil;
 import enginuity.xml.RomAttributeParser;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
+import javax.swing.*;
 import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.InputMap;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -490,8 +479,8 @@ public abstract class Table extends JPanel implements Serializable {
         return flip;
     }
 
-    public void setFlip(boolean flipY) {
-        this.flip = flipY;
+    public void setFlip(boolean flip) {
+        this.flip = flip;
     }
 
     public void setLogParam(String logParam) {

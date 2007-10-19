@@ -1,0 +1,733 @@
+<rom>
+	<romid>
+		<xmlid>88580013</xmlid>
+		<internalidaddress>f52</internalidaddress>
+		<internalidhex>88580013</internalidhex>
+		<make>Mitsubishi</make>
+		<market>AUSDM</market>
+		<model>Lancer</model>
+		<submodel>Evolution IX</submodel>
+		<transmission>6MT</transmission>
+		<year>2005</year>
+		<flashmethod>mitsukernelocp</flashmethod>
+		<memmodel>SH7055</memmodel>
+	</romid>
+
+	<include>evo9base</include>
+
+<!--
+ *****************************************************************************
+ CUSTOM SCALINGS
+ *****************************************************************************
+-->
+
+	<scaling name="leanspoolrpm" units="RPM" toexpr="x*31.25" frexpr="x/31.25" format="%.0f" min="0" max="11000" inc="1" storagetype="uint8" endian="big"/>
+
+<!--
+ *****************************************************************************
+ AIR
+ *****************************************************************************
+-->
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Barometric Pressure Compensation" address="2d51" category="Air">
+		<table name="Atmosphere Pressure" address="6E9A"/>
+		<table name="RPM" address="6EE0"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Air Temperature Compensation" address="2d3e" category="Air">
+		<table name="Degrees" address="7178"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="MAF Sensor Filtering" address="1108" category="Air">
+		<table name="Load"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="MAF Size" address="110C" category="Air"/>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="MAF Smoothing Table" address="2d22" category="Air">
+		<table name="Load" address="6EAC"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="MAF Scaling" address="2d06" category="Air">
+		<table name="Load" address="6EAC"/>
+	</table>
+
+
+<!--
+ *****************************************************************************
+ FUEL
+ *****************************************************************************
+-->
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Open Loop Throttle High Load" address="30A8">
+		<table name="RPM" address="6CA0" elements="16"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Open Loop Throttle Low Load" address="3092">
+		<table name="RPM" address="6CA0" elements="16"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Open Loop Load # 1" address="3060">
+		<table name="RPM" address="6CA0" elements="16"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Open Loop Load # 2" address="3076">
+		<table name="RPM" address="6CA0" elements="16"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Injector size scaling" address="1106" scaling="InjectorScaling"/>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Accel Enrichment" address="3278">
+		<table name="RPM" address="6D2E" />
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Injector Battery Voltage Latency Compensation" address="31d4">
+		<table name="Battery Voltage" address="6EFC" elements="7"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="High Octane Fuel Map" address="2DBD">
+		<table name="Engine Load" address="6FD0" />
+		<table name="RPM" address="6FA8" />
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Low Octane Fuel Map" address="2EF5">
+		<table name="Engine Load" address="6FD0" />
+		<table name="RPM" address="6FA8" />
+	</table>
+
+
+<!--
+ *****************************************************************************
+ TIMING
+ *****************************************************************************
+-->
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 1" address="433D">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 2" address="43F9">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 3" address="44B5">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 4" address="4571">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 5" address="462D">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 6" address="4281">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 7" address="4937">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 8" address="49F3">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 9" address="4AAF">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 10" address="4B6B">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 11" address="4C27">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Knock Sensor Filter Map 12" address="4CE3">
+		<table name="TAR" address="745E"/>
+		<table name="RPM" address="741E"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="VVT Map 1 (Main)" address="69DF">
+		<table name="Engine Load" address="7B2A"/>
+		<table name="RPM" address="7B5C"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="VVT Map 2 (Not Used) Future Use" address="52F9">
+		<table name="Engine Load" address="7B2A"/>
+		<table name="RPM" address="7B5C"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="High Octane Ignition Map 1" address="33E9">
+		<table name="Engine Load" address="7034" elements="21"/>
+		<table name="RPM" address="7002" elements="20"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Low Octane Ignition Map 1" address="3599">
+		<table name="Engine Load" address="7034" elements="21"/>
+		<table name="RPM" address="7002" elements="20"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="High Octane Ignition Map 2" address="54B1">
+		<table name="Engine Load" address="7034" elements="21"/>
+		<table name="RPM" address="7002" elements="20"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Low Octane Ignition Map 2" address="5661">
+		<table name="Engine Load" address="7034" elements="21"/>
+		<table name="RPM" address="7002" elements="20"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="High Octane Ignition Map 3" address="59C1">
+		<table name="Engine Load" address="7034" elements="21"/>
+		<table name="RPM" address="7002" elements="20"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Low Octane Ignition Map 3" address="5B71">
+		<table name="Engine Load" address="7034" elements="21"/>
+		<table name="RPM" address="7002" elements="20"/>
+	</table>
+
+
+<!--
+ *****************************************************************************
+ LIMITS
+ *****************************************************************************
+-->
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Speed Limit" address="118E">
+		<table name="Condition"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Stationary Rev Limit" address="274A" />
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Rev Limit" address="118C" />
+
+
+<!--
+ *****************************************************************************
+ TURBO
+ *****************************************************************************
+-->
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Boost Enhancement (Anti-lag) Stop RPM" address="1282"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Boost Enhancement (Anti-Lag) Start RPM" address="1280"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Boost Control Limiting Vehicle Speed" address="1E04">
+		<table name="Condition"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Min Temp for Full Boost Control" address="1E00"/>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Boost Limit" address="3050">
+		<table name="RPM" address="77AE" elements="9"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Wastegate Solenoid De-activation RPM-Re-activate" address="166e"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Wastegate Solenoid De-activation RPM-De-activate" address="166c"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Wastegate Solenoid Activation RPM-De-activate" address="166a"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Wastegate Solenoid Activation RPM-Active" address="1668"/>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Max Wastegate Duty # 1" address="3F5C">
+		<table name="RPM" address="7336" elements="16" scaling="RPM" />
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Max Wastegate Duty # 2" address="3F72">
+		<table name="RPM" address="7336" elements="16" scaling="RPM" />
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Max Wastegate Duty # 3" address="3F8E">
+		<table name="RPM" address="7336" elements="16" scaling="RPM" />
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Boost Desired Engine Load # 1" address="3FA4">
+		<table name="RPM" address="7336" elements="16" scaling="RPM" />
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Boost Desired Engine Load  # 2" address="3FBA">
+		<table name="RPM" address="7336" elements="16" scaling="RPM"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Boost Desired Engine Load # 3" address="3FD6">
+		<table name="RPM" address="7336" elements="16" scaling="RPM" />
+	</table>
+
+
+	<!--
+	Data   : OK
+	Y-Axis : OK
+	-->
+	<table name="Turbo Boost Error Correction" address="3F44">
+		<table name="Boost Error" address="7360" />
+	</table>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Boost Control Load Offset" address="1670"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="Boost Delay Timer" address="119A" scaling="Time"/>
+
+
+<!--
+ *****************************************************************************
+ MISC
+ *****************************************************************************
+-->
+
+
+	<!--
+	Data   : OK
+	NB     : Need to verify that this is an actual map.
+	-->
+	<table name="Lean Spool Enable RPM" address="1281" type="1D" level="1" scaling="leanspoolrpm"/>
+
+
+	<!--
+	Data   : OK
+	NB     : Need to verify that this is an actual map.
+	-->
+	<table name="Lean Spool Disable RPM" address="1285" type="1D" level="1" scaling="leanspoolrpm"/>
+
+
+<!--
+ *****************************************************************************
+ IDLE
+ *****************************************************************************
+-->
+
+<!-- +108 offset -->
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Idle Stepper Lookup Table" address="3E55">
+		<table name="Throttle Postion" address="726C" scaling="uint16"/>
+		<table name="RPM" address="7286" scaling="RPM"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Desired ISCV intial step position with AC off-Neutral" address="3D48">
+		<table name="Engine Temp" address="71CA" elements="8"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Desired ISCV intial step position with AC off-Drive" address="3D5C">
+		<table name="Engine Temp" address="71CA" elements="8"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Desired ISCV intial step position with AC on-Neutral" address="3D70">
+		<table name="Engine Temp" address="71CA" elements="8"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Desired Idle RPM-Neutral" address="3D84">
+		<table name="Engine Temp" address="71CA" elements="8"/>
+	</table>
+
+
+	<!--
+	Data   : OK
+	X-Axis : OK
+	Y-Axis : OK
+	-->
+	<table name="Desired Idle RPM-Drive" address="3DA6">
+		<table name="Engine Temp" address="71CA" elements="8"/>
+	</table>
+
+
+<!--
+ *****************************************************************************
+ INTERCOOLER
+ *****************************************************************************
+-->
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Timer ON Mode Switch Time" address="207E" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Timer Control RPM" address="2080" scaling="RPMStatLimit" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Timer Control Water Temp Hi" address="2082" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Timer Control Water Temp Lo" address="2084" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Control Vehicle Speed" address="2086" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Control EV" address="207C" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Timer On Time" address="208A" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Timer Off Time" address="208C" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Timer Control Judgement Hi" address="2098" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Timer Control Judgement Lo" address="209A" category="Intercooler"/>
+
+
+	<!--
+	Data   : OK
+	-->
+	<table name="IC Relay Timer Air Temp" address="209C" category="Intercooler"/>
+
+
+
+</rom>

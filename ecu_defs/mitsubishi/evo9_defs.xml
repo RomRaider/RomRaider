@@ -38,6 +38,16 @@
             <description>Turbo Boost Error Correction</description>
         </table>
 
+        <table type="2D" name="Air Temperature Compensation" category="Fuel" flipy="true" storagetype="uint8"
+               endian="big" sizey="8" userlevel="3">
+            <scaling units="units" expression="x" to_byte="x" format="0.00" fineincrement="1" coarseincrement="5"/>
+            <table type="Y Axis" name="Temp" storagetype="uint16" endian="big">
+                <scaling units="C" expression="x-40" to_byte="x+40" format="0.00" fineincrement="1"
+                         coarseincrement="5"/>
+            </table>
+            <description>Air Temperature Compensation</description>
+        </table>
+
     </rom>
 
     <rom base="evo9base">
@@ -56,6 +66,10 @@
 
         <table name="Turbo Boost Error Correction" storageaddress="0x3F44">
             <table type="Y Axis" storageaddress="0x7360"/>
+        </table>
+
+        <table name="Air Temperature Compensation" storageaddress="0x2D3E">
+            <table type="Y Axis" storageaddress="0x7178"/>
         </table>
     </rom>
 </roms>
