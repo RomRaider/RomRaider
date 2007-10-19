@@ -365,7 +365,7 @@ public final class DOMRomUnmarshaller {
         table.setLogParam(unmarshallAttribute(tableNode, "logparam", table.getLogParam()));
 
         if (table.getType() == Table.TABLE_3D) {
-            ((Table3D) table).setColumnBased(unmarshallAttribute(tableNode, "colbased", ((Table3D) table).getColumnBased()));
+            ((Table3D) table).setSwapXY(unmarshallAttribute(tableNode, "swapxy", ((Table3D) table).getSwapXY()));
             ((Table3D) table).setFlipX(unmarshallAttribute(tableNode, "flipx", ((Table3D) table).getFlipX()));
             ((Table3D) table).setFlipY(unmarshallAttribute(tableNode, "flipy", ((Table3D) table).getFlipY()));
             ((Table3D) table).setSizeX(unmarshallAttribute(tableNode, "sizex", ((Table3D) table).getSizeX()));

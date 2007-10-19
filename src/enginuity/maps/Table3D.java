@@ -45,7 +45,6 @@ public class Table3D extends Table {
     private Table1D xAxis = new Table1D(new Settings());
     private Table1D yAxis = new Table1D(new Settings());
     private DataCell[][] data = new DataCell[1][1];
-    private boolean columnBased = false;
     private boolean swapXY = false;
     private boolean flipX = false;
     private boolean flipY = false;
@@ -70,14 +69,6 @@ public class Table3D extends Table {
 
     public void setYAxis(Table1D yAxis) {
         this.yAxis = yAxis;
-    }
-
-    public boolean getColumnBased() {
-        return columnBased;
-    }
-
-    public void setColumnBased(boolean columnBased) {
-        this.columnBased = columnBased;
     }
 
     public boolean getSwapXY() {
@@ -149,8 +140,8 @@ public class Table3D extends Table {
 
         int offset = 0;
 
-        int iMax = columnBased ? xAxis.getDataSize() : yAxis.getDataSize();
-        int jMax = columnBased ? yAxis.getDataSize() : xAxis.getDataSize();
+        int iMax = swapXY ? xAxis.getDataSize() : yAxis.getDataSize();
+        int jMax = swapXY ? yAxis.getDataSize() : xAxis.getDataSize();
         for (int i = 0; i < iMax; i++) {
             for (int j = 0; j < jMax; j++) {
                 data[i][j] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
@@ -495,8 +486,8 @@ public class Table3D extends Table {
             binData = yAxis.saveFile(binData);
             int offset = 0;
 
-            int iMax = columnBased ? xAxis.getDataSize() : yAxis.getDataSize();
-            int jMax = columnBased ? yAxis.getDataSize() : xAxis.getDataSize();
+            int iMax = swapXY ? xAxis.getDataSize() : yAxis.getDataSize();
+            int jMax = swapXY ? yAxis.getDataSize() : xAxis.getDataSize();
             for (int i = 0; i < iMax; i++) {
                 for (int j = 0; j < jMax; j++) {
 

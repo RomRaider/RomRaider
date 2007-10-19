@@ -13,7 +13,7 @@
         </romid>
 
         <table type="3D" name="High Octane Fuel Map" category="Fuel" storagetype="uint8" endian="big" sizex="20"
-               sizey="15" colbased="true" userlevel="1">
+               sizey="15" swapxy="true" userlevel="1">
             <scaling units="AFR" expression="14.7*128/x" to_byte="14.7*128/x" format="0.00" fineincrement="0.1"
                      coarseincrement="0.5"/>
             <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big">
