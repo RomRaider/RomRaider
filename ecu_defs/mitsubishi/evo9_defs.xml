@@ -38,8 +38,8 @@
             <description>Turbo Boost Error Correction</description>
         </table>
 
-        <table type="2D" name="Air Temperature Compensation" category="Fuel" flipy="true" storagetype="uint8"
-               endian="big" sizey="8" userlevel="3">
+        <table type="2D" name="Air Temperature Compensation" category="Fuel" storagetype="uint8" endian="big" sizey="8"
+               flipy="true" userlevel="3">
             <scaling units="units" expression="x" to_byte="x" format="0.00" fineincrement="1" coarseincrement="5"/>
             <table type="Y Axis" name="Temp" storagetype="uint16" endian="big">
                 <scaling units="C" expression="x-40" to_byte="x+40" format="0.00" fineincrement="1"

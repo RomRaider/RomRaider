@@ -144,8 +144,12 @@ public class Table3D extends Table {
         int jMax = swapXY ? yAxis.getDataSize() : xAxis.getDataSize();
         for (int i = 0; i < iMax; i++) {
             for (int j = 0; j < jMax; j++) {
-                data[i][j] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
-                data[i][j].setTable(this);
+
+                int x = flipX ? iMax - i - 1 : i;
+                int y = flipY ? jMax - j - 1 : j;
+
+                data[x][y] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
+                data[x][y].setTable(this);
 
                 // populate data cells
                 if (storageType == STORAGE_TYPE_FLOAT) { //float storage type
@@ -154,10 +158,10 @@ public class Table3D extends Table {
                     byteValue[1] = input[storageAddress + offset * 4 - ramOffset + 1];
                     byteValue[2] = input[storageAddress + offset * 4 - ramOffset + 2];
                     byteValue[3] = input[storageAddress + offset * 4 - ramOffset + 3];
-                    data[i][j].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
+                    data[x][y].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
 
                 } else { // integer storage type
-                    data[i][j].setBinValue(
+                    data[x][y].setBinValue(
                             RomAttributeParser.parseByteValue(input,
                                     endian,
                                     storageAddress + offset * storageType - ramOffset,
@@ -166,12 +170,12 @@ public class Table3D extends Table {
 
                 // show locked cell
                 if (tempLock) {
-                    data[i][j].setForeground(Color.GRAY);
+                    data[x][y].setForeground(Color.GRAY);
                 }
 
-                data[i][j].setXCoord(i);
-                data[i][j].setYCoord(j);
-                data[i][j].setOriginalValue(data[i][j].getBinValue());
+                data[x][y].setXCoord(x);
+                data[x][y].setYCoord(y);
+                data[x][y].setOriginalValue(data[x][y].getBinValue());
                 offset++;
             }
         }
@@ -491,15 +495,18 @@ public class Table3D extends Table {
             for (int i = 0; i < iMax; i++) {
                 for (int j = 0; j < jMax; j++) {
 
+                    int x = flipX ? iMax - i - 1 : i;
+                    int y = flipY ? jMax - j - 1 : j;
+
                     // determine output byte values
                     byte[] output;
                     if (storageType != STORAGE_TYPE_FLOAT) {
-                        output = RomAttributeParser.parseIntegerValue((int) data[i][j].getBinValue(), endian, storageType);
+                        output = RomAttributeParser.parseIntegerValue((int) data[x][y].getBinValue(), endian, storageType);
                         for (int z = 0; z < storageType; z++) {
                             binData[offset * storageType + z + storageAddress - ramOffset] = output[z];
                         }
                     } else { // float
-                        output = RomAttributeParser.floatToByte((float) data[i][j].getBinValue(), endian);
+                        output = RomAttributeParser.floatToByte((float) data[x][y].getBinValue(), endian);
                         for (int z = 0; z < 4; z++) {
                             binData[offset * 4 + z + storageAddress - ramOffset] = output[z];
                         }
