@@ -845,17 +845,6 @@ public abstract class Table extends JPanel implements Serializable {
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
         for (DataCell cell : data) {
-
-            // determine output byte values
-            byte[] output;
-            if (storageType != STORAGE_TYPE_FLOAT) {
-                output = RomAttributeParser.parseIntegerValue((int) cell.getBinValue(), endian, storageType);
-            } else { // float
-                output = RomAttributeParser.floatToByte((float) cell.getBinValue(), endian);
-            }
-
-            // Are we going to use the value output?
-
             for (int z = 0; z < storageType; z++) {
                 cell.addKeyListener(listener);
             }

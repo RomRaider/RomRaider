@@ -4,14 +4,7 @@ package enginuity.xml;
 
 import static enginuity.maps.Scale.INVERSE;
 import static enginuity.maps.Scale.LINEAR;
-import static enginuity.maps.Table.ENDIAN_BIG;
-import static enginuity.maps.Table.ENDIAN_LITTLE;
-import static enginuity.maps.Table.STORAGE_TYPE_FLOAT;
-import static enginuity.maps.Table.TABLE_1D;
-import static enginuity.maps.Table.TABLE_2D;
-import static enginuity.maps.Table.TABLE_3D;
-import static enginuity.maps.Table.TABLE_X_AXIS;
-import static enginuity.maps.Table.TABLE_Y_AXIS;
+import static enginuity.maps.Table.*;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -44,7 +37,7 @@ public final class RomAttributeParser {
     public static int parseStorageType(String input) {
         if (input.equalsIgnoreCase("float")) {
             return STORAGE_TYPE_FLOAT;
-        } else if (input.length() > 4 && input.substring(0, 4).equalsIgnoreCase("uint")) {
+        } else if (input.startsWith("uint")) {
             return Integer.parseInt(input.substring(4)) / 8;
         } else {
             return Integer.parseInt(input);
@@ -64,9 +57,11 @@ public final class RomAttributeParser {
             return TABLE_3D;
         } else if (input.equalsIgnoreCase("2D") || input.equalsIgnoreCase(String.valueOf(TABLE_2D))) {
             return TABLE_2D;
-        } else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_X_AXIS))) {
+        } else
+        if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_X_AXIS))) {
             return TABLE_X_AXIS;
-        } else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_Y_AXIS))) {
+        } else
+        if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_Y_AXIS))) {
             return TABLE_Y_AXIS;
         } else {
             return TABLE_1D;

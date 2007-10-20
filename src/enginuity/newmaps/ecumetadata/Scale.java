@@ -26,31 +26,32 @@ import enginuity.util.Nameable;
 import java.io.Serializable;
 
 public class Scale implements Nameable, Serializable {
-    
+
     public static final int ENDIAN_BIG = 0;
     public static final int ENDIAN_LITTLE = 1;
-    
+
     public static final int STORAGE_TYPE_INT8 = 0;
     public static final int STORAGE_TYPE_UINT8 = 1;
     public static final int STORAGE_TYPE_INT16 = 2;
     public static final int STORAGE_TYPE_UINT16 = 3;
     public static final int STORAGE_TYPE_FLOAT = 4;
     public static final int STORAGE_TYPE_HEX = 5;
-    public static final int STORAGE_TYPE_CHAR = 6;;
+    public static final int STORAGE_TYPE_CHAR = 6;
     public static final int STORAGE_TYPE_INT32 = 7;
     public static final int STORAGE_TYPE_UINT32 = 8;
-    
+
     protected String description;
-    protected Unit[] units;    
+    protected Unit[] units;
     protected int storageType;
     protected int endian;
     protected String logParam;
     protected int selectedUnit;
     protected String name;
-    
+
     // Disallow default constructor
-    private Scale() { }
-    
+    private Scale() {
+    }
+
     public Scale(String name) {
         this.name = name;
     }
@@ -86,10 +87,10 @@ public class Scale implements Nameable, Serializable {
     public void setLogParam(String logParam) {
         this.logParam = logParam;
     }
-  
+
     public Unit getUnit() {
         return getUnits()[selectedUnit];
-    }    
+    }
 
     public Unit[] getUnits() {
         return units;
@@ -106,14 +107,14 @@ public class Scale implements Nameable, Serializable {
     public String getName() {
         return name;
     }
-    
+
     public String toString() {
         String output = "      --- SCALE: " + name + " ---" +
                 "\n      - Description: " + description +
                 "\n      - Storage Type: " + storageType +
-                "\n      - Endian: " + endian + 
+                "\n      - Endian: " + endian +
                 "\n      - Log Param: " + logParam;
         return output;
     }
-    
+
 }
