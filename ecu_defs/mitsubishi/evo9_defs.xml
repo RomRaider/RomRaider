@@ -28,7 +28,7 @@
             <description>High Octane Fuel Map</description>
         </table>
 
-        <table type="3D" name="High Octane Ignition Map 1" category="Timing" storagetype="int8" endian="big" sizex="21"
+        <!--<table type="3D" name="High Octane Ignition Map 1" category="Timing" storagetype="int8" endian="big" sizex="21"
                sizey="20" swapxy="true" userlevel="1">
             <scaling units="degrees" expression="x" to_byte="x" format="0.00" fineincrement="0.1"
                      coarseincrement="1.0"/>
@@ -41,7 +41,7 @@
                          coarseincrement="100"/>
             </table>
             <description>High Octane Ignition Map 1</description>
-        </table>
+        </table>-->
 
         <table type="2D" name="Turbo Boost Error Correction" category="Turbo Dynamics" storagetype="uint8" endian="big"
                sizey="17" userlevel="2">

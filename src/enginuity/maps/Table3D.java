@@ -29,10 +29,14 @@ import static enginuity.util.ColorScaler.getScaledColor;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import static enginuity.util.TableAxisUtil.getLiveDataRangeForAxis;
 import enginuity.xml.RomAttributeParser;
-
 import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -145,8 +149,13 @@ public class Table3D extends Table {
         for (int i = 0; i < iMax; i++) {
             for (int j = 0; j < jMax; j++) {
 
-                int x = flipX ? iMax - i - 1 : i;
-                int y = flipY ? jMax - j - 1 : j;
+                int x = flipY ? jMax - j - 1 : j;
+                int y = flipX ? iMax - i - 1 : i;
+                if (swapXY) {
+                    int z = x;
+                    x = y;
+                    y = z;
+                }
 
                 data[x][y] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
                 data[x][y].setTable(this);
@@ -495,8 +504,13 @@ public class Table3D extends Table {
             for (int i = 0; i < iMax; i++) {
                 for (int j = 0; j < jMax; j++) {
 
-                    int x = flipX ? iMax - i - 1 : i;
-                    int y = flipY ? jMax - j - 1 : j;
+                    int x = flipY ? jMax - j - 1 : j;
+                    int y = flipX ? iMax - i - 1 : i;
+                    if (swapXY) {
+                        int z = x;
+                        x = y;
+                        y = z;
+                    }
 
                     // determine output byte values
                     byte[] output;
