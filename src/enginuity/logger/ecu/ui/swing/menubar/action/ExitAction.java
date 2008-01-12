@@ -11,9 +11,9 @@ public final class ExitAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
+        logger.setVisible(false);
         logger.handleExit();
         logger.dispose();
-        logger.setVisible(false);
     }
 
 }
