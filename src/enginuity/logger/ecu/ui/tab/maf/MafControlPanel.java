@@ -1,15 +1,18 @@
 package enginuity.logger.ecu.ui.tab.maf;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import static java.awt.GridBagConstraints.CENTER;
-import static java.awt.GridBagConstraints.HORIZONTAL;
-import static java.awt.GridBagConstraints.NONE;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+import enginuity.ECUEditor;
+import enginuity.logger.ecu.definition.EcuParameter;
+import enginuity.logger.ecu.definition.EcuSwitch;
+import enginuity.logger.ecu.definition.ExternalData;
+import enginuity.logger.ecu.definition.LoggerData;
+import enginuity.logger.ecu.ui.DataRegistrationBroker;
+import enginuity.logger.ecu.ui.handler.maf.XYTrendline;
+import enginuity.maps.DataCell;
+import enginuity.maps.Rom;
+import enginuity.maps.Table2D;
+import static enginuity.util.ParamChecker.checkNotNull;
+import org.apache.log4j.Logger;
+import org.jfree.data.xy.XYSeries;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -25,22 +28,28 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.TitledBorder;
-import enginuity.ECUEditor;
-import enginuity.logger.ecu.definition.EcuParameter;
-import enginuity.logger.ecu.definition.EcuSwitch;
-import enginuity.logger.ecu.definition.ExternalData;
-import enginuity.logger.ecu.definition.LoggerData;
-import enginuity.logger.ecu.ui.DataRegistrationBroker;
-import enginuity.logger.ecu.ui.handler.maf.XYTrendline;
-import enginuity.maps.DataCell;
-import enginuity.maps.Rom;
-import enginuity.maps.Table2D;
-import static enginuity.util.ParamChecker.checkNotNull;
-import org.apache.log4j.Logger;
-import org.jfree.data.xy.XYSeries;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import static java.awt.GridBagConstraints.CENTER;
+import static java.awt.GridBagConstraints.HORIZONTAL;
+import static java.awt.GridBagConstraints.NONE;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class MafControlPanel extends JPanel {
     private static final Logger LOGGER = Logger.getLogger(MafControlPanel.class);
+    private static final String COOLANT_TEMP = "P2";
+    private static final String AF_CORRECTION_1 = "P3";
+    private static final String AF_LEARNING_1 = "P4";
+    private static final String ENGINE_SPEED = "P8";
+    private static final String MASS_AIR_FLOW = "P12";
+    private static final String MASS_AIR_FLOW_V = "P18";
+    private static final String AFR = "P58";
+    private static final String CL_OL_16 = "E3";
+    private static final String CL_OL_32 = "E27";
     private final JToggleButton recordDataButton = new JToggleButton("Record Data");
     private final JTextField mafvMin = new JTextField("1.20", 3);
     private final JTextField mafvMax = new JTextField("2.60", 3);
@@ -200,9 +209,9 @@ public final class MafControlPanel extends JPanel {
         recordDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (recordDataButton.isSelected()) {
-                    registerData("P2", "P3", "P4", "P8", "P12", "P18", "P58", "E3", "E27");
+                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32);
                 } else {
-                    deregisterData("P2", "P3", "P4", "P8", "P12", "P18", "P58", "E3", "E27");
+                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32);
                 }
             }
         });
