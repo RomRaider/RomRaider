@@ -66,10 +66,10 @@ public final class MafUpdateHandler implements DataUpdateHandler {
             if ((containsData(response, "E23") || containsData(response, "E49"))) {
                 double tipIn = -1;
                 if (containsData(response, "E23")) {
-                    tipIn = (int) findValue(response, "E23");
+                    tipIn = findValue(response, "E23");
                 }
                 if (containsData(response, "E49")) {
-                    tipIn = (int) findValue(response, "E49");
+                    tipIn = findValue(response, "E49");
                 }
                 valid = mafTab.isValidTipInThrottle(tipIn);
             }
