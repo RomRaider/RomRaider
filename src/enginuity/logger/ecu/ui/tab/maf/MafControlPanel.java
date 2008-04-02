@@ -51,6 +51,8 @@ public final class MafControlPanel extends JPanel {
     private static final String AFR = "P58";
     private static final String CL_OL_16 = "E3";
     private static final String CL_OL_32 = "E27";
+    private static final String TIP_IN_THROTTLE_16 = "E23";
+    private static final String TIP_IN_THROTTLE_32 = "E49";
     private final JToggleButton recordDataButton = new JToggleButton("Record Data");
     private final JTextField mafvMin = new JTextField("1.20", 3);
     private final JTextField mafvMax = new JTextField("2.60", 3);
@@ -63,6 +65,7 @@ public final class MafControlPanel extends JPanel {
     private final JTextField iatMin = new JTextField("25", 3);
     private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
+    private final JTextField tipInMax = new JTextField("0", 3);
     private final JCheckBox clCheckbox = new JCheckBox("Closed Loop Only", true);
     private final Component parent;
     private final XYTrendline trendline;
@@ -115,6 +118,10 @@ public final class MafControlPanel extends JPanel {
         return checkInRange("Intake Air Temp.", iatMin, iatMax, value);
     }
 
+    public boolean isValidTipInThrottle(double value) {
+        return checkLessThan("Tip-In Throttle", tipInMax, value);
+    }
+
     private boolean checkInRange(String name, JTextField min, JTextField max, double value) {
         if (isValidRange(min, max)) {
             return inRange(value, min, max);
@@ -128,6 +135,16 @@ public final class MafControlPanel extends JPanel {
     private boolean checkGreaterThan(String name, JTextField min, double value) {
         if (isNumber(min)) {
             return value >= parseDouble(min);
+        } else {
+            showMessageDialog(parent, "Invalid " + name + " specified.", "Error", ERROR_MESSAGE);
+            recordDataButton.setSelected(false);
+            return false;
+        }
+    }
+
+    private boolean checkLessThan(String name, JTextField max, double value) {
+        if (isNumber(max)) {
+            return value <= parseDouble(max);
         } else {
             showMessageDialog(parent, "Invalid " + name + " specified.", "Error", ERROR_MESSAGE);
             recordDataButton.setSelected(false);
@@ -208,7 +225,8 @@ public final class MafControlPanel extends JPanel {
         addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 7);
         addMinMaxFilter(panel, gridBagLayout, "IAT Range", iatMin, iatMax, 10);
         addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 13);
-        addComponent(panel, gridBagLayout, buildRecordDataButton(), 16);
+        addLabeledComponent(panel, gridBagLayout, "Max. Tip-In Throttle", tipInMax, 16);
+        addComponent(panel, gridBagLayout, buildRecordDataButton(), 19);
 
         return panel;
     }
@@ -217,9 +235,9 @@ public final class MafControlPanel extends JPanel {
         recordDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (recordDataButton.isSelected()) {
-                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32);
+                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
                 } else {
-                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32);
+                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
                 }
             }
         });

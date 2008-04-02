@@ -21,6 +21,8 @@ public interface MafTab extends Tab {
 
     boolean isValidIntakeAirTemp(double value);
 
+    boolean isValidTipInThrottle(double value);
+
     void addData(double mafv, double correction);
 
     void setEcuParams(List<EcuParameter> params);

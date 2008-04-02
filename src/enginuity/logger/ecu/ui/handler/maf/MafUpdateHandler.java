@@ -50,16 +50,28 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 valid = mafTab.isValidMaf(maf);
             }
 
+            // intake air temp check
+            if (valid && containsData(response, "P11")) {
+                double temp = findValue(response, "P11");
+                valid = mafTab.isValidIntakeAirTemp(temp);
+            }
+
             // coolant temp check
             if (valid && containsData(response, "P2")) {
                 double temp = findValue(response, "P2");
                 valid = mafTab.isValidCoolantTemp(temp);
             }
 
-            // intake air temp check
-            if (valid && containsData(response, "P11")) {
-                double temp = findValue(response, "P11");
-                valid = mafTab.isValidIntakeAirTemp(temp);
+            // tip-in throttle check
+            if ((containsData(response, "E23") || containsData(response, "E49"))) {
+                double tipIn = -1;
+                if (containsData(response, "E23")) {
+                    tipIn = (int) findValue(response, "E23");
+                }
+                if (containsData(response, "E49")) {
+                    tipIn = (int) findValue(response, "E49");
+                }
+                valid = mafTab.isValidTipInThrottle(tipIn);
             }
 
             if (valid) {
