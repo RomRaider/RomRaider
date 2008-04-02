@@ -63,7 +63,7 @@ public final class MafUpdateHandler implements DataUpdateHandler {
             }
 
             // tip-in throttle check
-            if ((containsData(response, "E23") || containsData(response, "E49"))) {
+            if (valid && (containsData(response, "E23") || containsData(response, "E49"))) {
                 double tipIn = -1;
                 if (containsData(response, "E23")) {
                     tipIn = findValue(response, "E23");
