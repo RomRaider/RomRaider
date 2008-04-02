@@ -45,6 +45,7 @@ public final class MafControlPanel extends JPanel {
     private static final String AF_CORRECTION_1 = "P3";
     private static final String AF_LEARNING_1 = "P4";
     private static final String ENGINE_SPEED = "P8";
+    private static final String INTAKE_AIR_TEMP = "P11";
     private static final String MASS_AIR_FLOW = "P12";
     private static final String MASS_AIR_FLOW_V = "P18";
     private static final String AFR = "P58";
@@ -59,6 +60,8 @@ public final class MafControlPanel extends JPanel {
     private final JTextField rpmMax = new JTextField("4500", 3);
     private final JTextField mafMin = new JTextField("0", 3);
     private final JTextField mafMax = new JTextField("100", 3);
+    private final JTextField iatMin = new JTextField("25", 3);
+    private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
     private final JCheckBox clCheckbox = new JCheckBox("Closed Loop Only", true);
     private final Component parent;
@@ -106,6 +109,10 @@ public final class MafControlPanel extends JPanel {
 
     public boolean isValidCoolantTemp(double value) {
         return checkGreaterThan("Coolant Temp.", coolantMin, value);
+    }
+
+    public boolean isValidIntakeAirTemp(double value) {
+        return checkInRange("Intake Air Temp.", iatMin, iatMax, value);
     }
 
     private boolean checkInRange(String name, JTextField min, JTextField max, double value) {
@@ -199,8 +206,9 @@ public final class MafControlPanel extends JPanel {
         addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 1);
         addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 4);
         addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 7);
-        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 10);
-        addComponent(panel, gridBagLayout, buildRecordDataButton(), 13);
+        addMinMaxFilter(panel, gridBagLayout, "IAT Range", iatMin, iatMax, 10);
+        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 13);
+        addComponent(panel, gridBagLayout, buildRecordDataButton(), 16);
 
         return panel;
     }
@@ -209,9 +217,9 @@ public final class MafControlPanel extends JPanel {
         recordDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (recordDataButton.isSelected()) {
-                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32);
+                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32);
                 } else {
-                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32);
+                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32);
                 }
             }
         });

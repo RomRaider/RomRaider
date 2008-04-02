@@ -29,7 +29,6 @@ import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
-
 import java.util.Map;
 
 public final class UserProfileImpl implements UserProfile {
@@ -83,7 +82,7 @@ public final class UserProfileImpl implements UserProfile {
                         return convertor;
                     }
                 }
-                throw new ConfigurationException("Unknown default units, '" + defaultUnits + "', specified for " + loggerData.getName());
+                throw new ConfigurationException("Unknown default units, '" + defaultUnits + "', specified for [" + loggerData.getId() + "] " + loggerData.getName());
             }
         }
         return loggerData.getSelectedConvertor();

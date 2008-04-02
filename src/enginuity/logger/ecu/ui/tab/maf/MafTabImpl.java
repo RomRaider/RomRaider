@@ -1,10 +1,5 @@
 package enginuity.logger.ecu.ui.tab.maf;
 
-import java.awt.BorderLayout;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.WEST;
-import java.util.List;
-import javax.swing.JPanel;
 import enginuity.ECUEditor;
 import enginuity.logger.ecu.definition.EcuParameter;
 import enginuity.logger.ecu.definition.EcuSwitch;
@@ -12,6 +7,11 @@ import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.ui.DataRegistrationBroker;
 import enginuity.logger.ecu.ui.handler.maf.XYTrendline;
 import org.jfree.data.xy.XYSeries;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.WEST;
+import java.util.List;
 
 public final class MafTabImpl extends JPanel implements MafTab {
     private final XYSeries series = new XYSeries("MAF Analysis");
@@ -55,6 +55,10 @@ public final class MafTabImpl extends JPanel implements MafTab {
 
     public boolean isValidCoolantTemp(double value) {
         return controlPanel.isValidCoolantTemp(value);
+    }
+
+    public boolean isValidIntakeAirTemp(double value) {
+        return controlPanel.isValidIntakeAirTemp(value);
     }
 
     public void addData(double mafv, double correction) {

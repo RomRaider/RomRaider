@@ -51,19 +51,19 @@ public final class LoggerControllerImpl implements LoggerController {
 
     public void setFileLoggerSwitchMonitor(FileLoggerControllerSwitchMonitor monitor) {
         checkNotNull(monitor);
-        LOGGER.debug("Setting file logger switch monitor:   " + monitor.getEcuSwitch().getName());
+        LOGGER.debug("Setting file logger switch monitor: [" + monitor.getEcuSwitch().getId() + "] " + monitor.getEcuSwitch().getName());
         queryManager.setFileLoggerSwitchMonitor(monitor);
     }
 
     public void addLogger(String callerId, LoggerData loggerData) {
         checkNotNull(loggerData);
-        LOGGER.debug("Adding logger:   " + loggerData.getName());
+        LOGGER.debug("Adding logger:   [" + loggerData.getId() + "] " + loggerData.getName());
         queryManager.addQuery(callerId, loggerData);
     }
 
     public void removeLogger(String callerId, LoggerData loggerData) {
         checkNotNull(loggerData, "ecuParam");
-        LOGGER.debug("Removing logger: " + loggerData.getName());
+        LOGGER.debug("Removing logger: [" + loggerData.getId() + "] " + loggerData.getName());
         queryManager.removeQuery(callerId, loggerData);
     }
 

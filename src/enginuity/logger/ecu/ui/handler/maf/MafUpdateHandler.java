@@ -1,11 +1,11 @@
 package enginuity.logger.ecu.ui.handler.maf;
 
-import java.util.Set;
-import javax.swing.SwingUtilities;
 import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.logger.ecu.ui.tab.maf.MafTab;
+import javax.swing.SwingUtilities;
+import java.util.Set;
 
 public final class MafUpdateHandler implements DataUpdateHandler {
     private static final String MAFV = "P18";
@@ -54,6 +54,12 @@ public final class MafUpdateHandler implements DataUpdateHandler {
             if (valid && containsData(response, "P2")) {
                 double temp = findValue(response, "P2");
                 valid = mafTab.isValidCoolantTemp(temp);
+            }
+
+            // intake air temp check
+            if (valid && containsData(response, "P11")) {
+                double temp = findValue(response, "P11");
+                valid = mafTab.isValidIntakeAirTemp(temp);
             }
 
             if (valid) {
