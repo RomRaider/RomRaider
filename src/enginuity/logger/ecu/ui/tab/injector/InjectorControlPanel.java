@@ -9,13 +9,12 @@ import enginuity.logger.ecu.ui.DataRegistrationBroker;
 import enginuity.logger.ecu.ui.tab.XYTrendline;
 import enginuity.maps.DataCell;
 import enginuity.maps.Rom;
-import enginuity.maps.Table2D;
+import enginuity.maps.Table1D;
 import static enginuity.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -182,13 +181,12 @@ public final class InjectorControlPanel extends JPanel {
 
     private JPanel buildUpdateMafPanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Update MAF"));
+        panel.setBorder(new TitledBorder("Update Injector"));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        addMinMaxFilter(panel, gridBagLayout, "MAFv Range", mafvMin, mafvMax, 0);
-        addComponent(panel, gridBagLayout, buildUpdateMafButton(), 3);
+        addComponent(panel, gridBagLayout, buildUpdateInjectorScalerButton(), 0);
 
         return panel;
     }
@@ -200,9 +198,7 @@ public final class InjectorControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        JComboBox orderComboBox = buildPolyOrderComboBox();
-        addLabeledComponent(panel, gridBagLayout, "Poly. order", orderComboBox, 0);
-        addComponent(panel, gridBagLayout, buildInterpolateButton(orderComboBox), 2);
+        addComponent(panel, gridBagLayout, buildInterpolateButton(), 2);
 
         return panel;
     }
@@ -313,54 +309,32 @@ public final class InjectorControlPanel extends JPanel {
         return resetButton;
     }
 
-    private JButton buildInterpolateButton(final JComboBox orderComboBox) {
+    private JButton buildInterpolateButton() {
         JButton interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                trendline.update(series, (Integer) orderComboBox.getSelectedItem());
+                trendline.update(series, 1);
                 parent.repaint();
             }
         });
         return interpolateButton;
     }
 
-    private JComboBox buildPolyOrderComboBox() {
-        final JComboBox orderComboBox = new JComboBox(new Object[]{3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
-        orderComboBox.setSelectedItem(10);
-        return orderComboBox;
-    }
-
-    private JButton buildUpdateMafButton() {
-        final JButton updateMafButton = new JButton("Update MAF");
-        updateMafButton.addActionListener(new ActionListener() {
+    private JButton buildUpdateInjectorScalerButton() {
+        final JButton updateButton = new JButton("Update Injector Flow");
+        updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    Table2D table = getMafTable(ecuEditor);
+                    Table1D table = getInjectorFlowTable(ecuEditor);
                     if (table != null) {
-                        if (showUpdateMafConfirmation() == OK_OPTION) {
-                            if (isValidRange(mafvMin, mafvMax)) {
-                                DataCell[] axisCells = table.getAxis().getData();
-                                double[] x = new double[axisCells.length];
-                                for (int i = 0; i < axisCells.length; i++) {
-                                    DataCell cell = axisCells[i];
-                                    x[i] = cell.getValue();
-                                }
-                                double[] percentChange = trendline.calculate(x);
-                                DataCell[] dataCells = table.getData();
-                                for (int i = 0; i < dataCells.length; i++) {
-                                    if (inRange(axisCells[i].getValue(), mafvMin, mafvMax)) {
-                                        DataCell cell = dataCells[i];
-                                        double value = cell.getValue();
-                                        cell.setRealValue(String.valueOf(value * (1.0 + percentChange[i] / 100.0)));
-                                    }
-                                }
-                                table.colorize();
-                            } else {
-                                showMessageDialog(parent, "Invalid MAFv range specified.", "Error", ERROR_MESSAGE);
-                            }
+                        if (showUpdateInjectorFlowConfirmation() == OK_OPTION) {
+                            DataCell[] cells = table.getData();
+                            // FIX - Reinstate!!!
+//                            if (cells.length == 1) cells[0].setRealValue(trendline.???);
+                            table.colorize();
                         }
                     } else {
-                        showMessageDialog(parent, "MAF Sensor Scaling table not found.", "Error", ERROR_MESSAGE);
+                        showMessageDialog(parent, "Injector Flow Scaling table not found.", "Error", ERROR_MESSAGE);
                     }
                 } catch (Exception e) {
                     String msg = e.getMessage() != null && e.getMessage().length() > 0 ? e.getMessage() : "Unknown";
@@ -368,7 +342,7 @@ public final class InjectorControlPanel extends JPanel {
                 }
             }
         });
-        return updateMafButton;
+        return updateButton;
     }
 
     private boolean areNumbers(JTextField... textFields) {
@@ -403,14 +377,14 @@ public final class InjectorControlPanel extends JPanel {
         return Double.parseDouble(field.getText().trim());
     }
 
-    private int showUpdateMafConfirmation() {
-        return showConfirmDialog(parent, "Update MAF Sensor Scaling table?", "Confirm Update", YES_NO_OPTION, WARNING_MESSAGE);
+    private int showUpdateInjectorFlowConfirmation() {
+        return showConfirmDialog(parent, "Update Injector Flow Scaling?", "Confirm Update", YES_NO_OPTION, WARNING_MESSAGE);
     }
 
-    private Table2D getMafTable(ECUEditor ecuEditor) {
+    private Table1D getInjectorFlowTable(ECUEditor ecuEditor) {
         try {
             Rom rom = ecuEditor.getLastSelectedRom();
-            return (Table2D) rom.getTable("MAF Sensor Scaling");
+            return (Table1D) rom.getTable("Injector Flow Scaling");
         } catch (Exception e) {
             return null;
         }
