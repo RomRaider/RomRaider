@@ -76,8 +76,8 @@ public final class MafControlPanel extends JPanel {
     private List<ExternalData> externals;
 
     public MafControlPanel(Component parent, XYTrendline trendline, XYSeries series, DataRegistrationBroker broker, ECUEditor ecuEditor) {
+        checkNotNull(parent, trendline, series, broker, ecuEditor);
         this.broker = broker;
-        checkNotNull(parent, trendline, series);
         this.parent = parent;
         this.trendline = trendline;
         this.series = series;
