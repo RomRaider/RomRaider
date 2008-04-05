@@ -11,6 +11,7 @@ import enginuity.maps.DataCell;
 import enginuity.maps.Rom;
 import enginuity.maps.Table1D;
 import static enginuity.util.ParamChecker.checkNotNull;
+import jamlab.Polyfit;
 import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import javax.swing.JButton;
@@ -329,8 +330,12 @@ public final class InjectorControlPanel extends JPanel {
                     if (table != null) {
                         if (showUpdateInjectorFlowConfirmation() == OK_OPTION) {
                             DataCell[] cells = table.getData();
-                            // FIX - Reinstate!!!
-//                            if (cells.length == 1) cells[0].setRealValue(trendline.???);
+                            if (cells.length == 1) {
+                                Polyfit polyFit = trendline.getPolyFit();
+                                double[] coefficients = polyFit.getPolynomialCoefficients();
+                                double flowScaling = coefficients[0] * 1000 * 60;
+                                cells[0].setRealValue("" + flowScaling);
+                            }
                             table.colorize();
                         }
                     } else {
