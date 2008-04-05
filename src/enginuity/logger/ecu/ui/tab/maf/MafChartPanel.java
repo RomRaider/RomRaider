@@ -1,11 +1,6 @@
 package enginuity.logger.ecu.ui.tab.maf;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
 import enginuity.logger.ecu.ui.handler.graph.SpringUtilities;
-import enginuity.logger.ecu.ui.handler.maf.XYTrendline;
 import static enginuity.util.ParamChecker.checkNotNull;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -17,6 +12,10 @@ import org.jfree.chart.renderer.xy.XYDotRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import javax.swing.JPanel;
+import javax.swing.SpringLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 
 public final class MafChartPanel extends JPanel {
     private static final Color DARK_GREY = new Color(80, 80, 80);

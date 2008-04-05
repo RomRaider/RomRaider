@@ -5,7 +5,6 @@ import enginuity.logger.ecu.definition.EcuParameter;
 import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.ui.DataRegistrationBroker;
-import enginuity.logger.ecu.ui.handler.maf.XYTrendline;
 import org.jfree.data.xy.XYSeries;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;

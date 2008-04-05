@@ -1,13 +1,13 @@
-package enginuity.logger.ecu.ui.handler.maf;
+package enginuity.logger.ecu.ui.tab.maf;
 
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.List;
 import jamlab.Polyfit;
 import jamlab.Polyval;
 import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class XYTrendline extends AbstractXYDataset {
     private List<XYDataItem> items = new ArrayList<XYDataItem>();

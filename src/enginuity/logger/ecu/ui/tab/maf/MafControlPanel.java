@@ -6,7 +6,6 @@ import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.DataRegistrationBroker;
-import enginuity.logger.ecu.ui.handler.maf.XYTrendline;
 import enginuity.maps.DataCell;
 import enginuity.maps.Rom;
 import enginuity.maps.Table2D;
