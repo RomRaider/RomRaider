@@ -1,4 +1,4 @@
-package enginuity.logger.ecu.ui.tab.maf;
+package enginuity.logger.ecu.ui.tab;
 
 import enginuity.logger.ecu.ui.handler.graph.SpringUtilities;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -17,17 +17,21 @@ import javax.swing.SpringLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 
-public final class MafChartPanel extends JPanel {
+public final class LoggerChartPanel extends JPanel {
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
     private final XYTrendline trendline;
     private final XYSeries series;
+    private final String labelX;
+    private final String labelY;
 
-    public MafChartPanel(XYTrendline trendline, XYSeries series) {
+    public LoggerChartPanel(XYTrendline trendline, XYSeries series, String labelX, String labelY) {
         super(new SpringLayout());
-        checkNotNull(trendline, series);
+        checkNotNull(trendline, series, labelX, labelY);
         this.trendline = trendline;
         this.series = series;
+        this.labelX = labelX;
+        this.labelY = labelY;
         addChart();
     }
 
@@ -49,7 +53,7 @@ public final class MafChartPanel extends JPanel {
     }
 
     private JFreeChart buildChart(XYDataset dataset) {
-        JFreeChart chart = ChartFactory.createScatterPlot(null, "MAF (v)", "Total Correction (%)", dataset, VERTICAL, false, true, false);
+        JFreeChart chart = ChartFactory.createScatterPlot(null, labelX, labelY, dataset, VERTICAL, false, true, false);
         chart.setBackgroundPaint(Color.BLACK);
         configurePlot(chart);
         addTrendLine(chart);

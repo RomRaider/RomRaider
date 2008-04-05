@@ -1,4 +1,4 @@
-package enginuity.logger.ecu.ui.tab.maf;
+package enginuity.logger.ecu.ui.tab;
 
 import jamlab.Polyfit;
 import jamlab.Polyval;

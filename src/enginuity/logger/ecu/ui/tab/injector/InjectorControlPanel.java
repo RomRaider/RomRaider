@@ -1,4 +1,4 @@
-package enginuity.logger.ecu.ui.tab.maf;
+package enginuity.logger.ecu.ui.tab.injector;
 
 import enginuity.ECUEditor;
 import enginuity.logger.ecu.definition.EcuParameter;
@@ -39,20 +39,20 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class MafControlPanel extends JPanel {
-    private static final Logger LOGGER = Logger.getLogger(MafControlPanel.class);
+public final class InjectorControlPanel extends JPanel {
+    private static final Logger LOGGER = Logger.getLogger(InjectorControlPanel.class);
     private static final String COOLANT_TEMP = "P2";
-    private static final String AF_CORRECTION_1 = "P3";
-    private static final String AF_LEARNING_1 = "P4";
     private static final String ENGINE_SPEED = "P8";
     private static final String INTAKE_AIR_TEMP = "P11";
     private static final String MASS_AIR_FLOW = "P12";
-    private static final String MASS_AIR_FLOW_V = "P18";
+    private static final String PULSE_WIDTH = "P21";
     private static final String AFR = "P58";
     private static final String CL_OL_16 = "E3";
     private static final String CL_OL_32 = "E27";
     private static final String TIP_IN_THROTTLE_16 = "E23";
     private static final String TIP_IN_THROTTLE_32 = "E49";
+    private static final String ENGINE_LOAD_16 = "E2";
+    private static final String ENGINE_LOAD_32 = "E26";
     private final JToggleButton recordDataButton = new JToggleButton("Record Data");
     private final JTextField mafvMin = new JTextField("1.20", 3);
     private final JTextField mafvMax = new JTextField("2.60", 3);
@@ -76,7 +76,7 @@ public final class MafControlPanel extends JPanel {
     private List<EcuSwitch> switches;
     private List<ExternalData> externals;
 
-    public MafControlPanel(Component parent, XYTrendline trendline, XYSeries series, DataRegistrationBroker broker, ECUEditor ecuEditor) {
+    public InjectorControlPanel(Component parent, XYTrendline trendline, XYSeries series, DataRegistrationBroker broker, ECUEditor ecuEditor) {
         checkNotNull(parent, trendline, series, broker);
         this.broker = broker;
         this.parent = parent;
@@ -235,9 +235,9 @@ public final class MafControlPanel extends JPanel {
         recordDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (recordDataButton.isSelected()) {
-                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+                    registerData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH, ENGINE_LOAD_16, ENGINE_LOAD_32);
                 } else {
-                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+                    deregisterData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH, ENGINE_LOAD_16, ENGINE_LOAD_32);
                 }
             }
         });

@@ -1,4 +1,4 @@
-package enginuity.logger.ecu.ui.tab.maf;
+package enginuity.logger.ecu.ui.tab.injector;
 
 import enginuity.ECUEditor;
 import enginuity.logger.ecu.definition.EcuParameter;
@@ -14,24 +14,24 @@ import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
 import java.util.List;
 
-public final class MafTabImpl extends JPanel implements MafTab {
-    private final XYSeries series = new XYSeries("MAF Analysis");
+public final class InjectorTabImpl extends JPanel implements InjectorTab {
+    private final XYSeries series = new XYSeries("Injector Analysis");
     private final XYTrendline trendline = new XYTrendline();
-    private final MafControlPanel controlPanel;
+    private final InjectorControlPanel controlPanel;
 
-    public MafTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
+    public InjectorTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
         super(new BorderLayout(2, 2));
         controlPanel = buildControlPanel(broker, ecuEditor);
         add(controlPanel, WEST);
         add(buildGraphPanel(), CENTER);
     }
 
-    private MafControlPanel buildControlPanel(DataRegistrationBroker broker, ECUEditor ecuEditor) {
-        return new MafControlPanel(this, trendline, series, broker, ecuEditor);
+    private InjectorControlPanel buildControlPanel(DataRegistrationBroker broker, ECUEditor ecuEditor) {
+        return new InjectorControlPanel(this, trendline, series, broker, ecuEditor);
     }
 
     private LoggerChartPanel buildGraphPanel() {
-        return new LoggerChartPanel(trendline, series, "MAF (v)", "Total Correction (%)");
+        return new LoggerChartPanel(trendline, series, "Pulse Width (ms)", "Fuel per Combustion Event (cc)");
     }
 
     public boolean isRecordData() {

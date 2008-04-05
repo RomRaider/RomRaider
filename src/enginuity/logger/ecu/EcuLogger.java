@@ -21,58 +21,6 @@
 
 package enginuity.logger.ecu;
 
-import java.awt.BorderLayout;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.EAST;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.BorderLayout.SOUTH;
-import static java.awt.BorderLayout.WEST;
-import static java.awt.Color.BLACK;
-import static java.awt.Color.RED;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.ArrayList;
-import static java.util.Collections.sort;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import static javax.swing.BorderFactory.createLoweredBevelBorder;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import static javax.swing.JLabel.RIGHT;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-import javax.swing.JSeparator;
-import static javax.swing.JSeparator.VERTICAL;
-import javax.swing.JSplitPane;
-import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
-import static javax.swing.JSplitPane.VERTICAL_SPLIT;
-import javax.swing.JTabbedPane;
-import static javax.swing.JTabbedPane.BOTTOM;
-import javax.swing.JTable;
-import javax.swing.JToggleButton;
-import static javax.swing.KeyStroke.getKeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.table.TableColumn;
 import enginuity.ECUEditor;
 import enginuity.Settings;
 import enginuity.io.port.SerialPortRefresher;
@@ -113,6 +61,7 @@ import enginuity.logger.ecu.ui.handler.file.FileLoggerControllerSwitchHandler;
 import enginuity.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitorImpl;
 import enginuity.logger.ecu.ui.handler.file.FileUpdateHandlerImpl;
 import enginuity.logger.ecu.ui.handler.graph.GraphUpdateHandler;
+import enginuity.logger.ecu.ui.handler.injector.InjectorUpdateHandler;
 import enginuity.logger.ecu.ui.handler.livedata.LiveDataTableModel;
 import enginuity.logger.ecu.ui.handler.livedata.LiveDataUpdateHandler;
 import enginuity.logger.ecu.ui.handler.maf.MafUpdateHandler;
@@ -123,6 +72,8 @@ import enginuity.logger.ecu.ui.paramlist.ParameterRow;
 import enginuity.logger.ecu.ui.playback.PlaybackManagerImpl;
 import enginuity.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import enginuity.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
+import enginuity.logger.ecu.ui.tab.injector.InjectorTab;
+import enginuity.logger.ecu.ui.tab.injector.InjectorTabImpl;
 import enginuity.logger.ecu.ui.tab.maf.MafTab;
 import enginuity.logger.ecu.ui.tab.maf.MafTabImpl;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -132,6 +83,58 @@ import enginuity.util.ThreadUtil;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
+import static javax.swing.BorderFactory.createLoweredBevelBorder;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import static javax.swing.JLabel.RIGHT;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
+import javax.swing.JSeparator;
+import static javax.swing.JSeparator.VERTICAL;
+import javax.swing.JSplitPane;
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+import static javax.swing.JSplitPane.VERTICAL_SPLIT;
+import javax.swing.JTabbedPane;
+import static javax.swing.JTabbedPane.BOTTOM;
+import javax.swing.JTable;
+import javax.swing.JToggleButton;
+import static javax.swing.KeyStroke.getKeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.table.TableColumn;
+import java.awt.BorderLayout;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.EAST;
+import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.SOUTH;
+import static java.awt.BorderLayout.WEST;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.RED;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.util.ArrayList;
+import static java.util.Collections.sort;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /*
 TODO: add better debug logging, preferably to a file and switchable (on/off)
@@ -188,6 +191,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private MafUpdateHandler mafUpdateHandler;
     private DataUpdateHandlerManager mafHandlerManager;
     private DataRegistrationBroker mafTabBroker;
+    private InjectorTab injectorTab;
+    private InjectorUpdateHandler injectorUpdateHandler;
+    private DataUpdateHandlerManager injectorHandlerManager;
+    private DataRegistrationBroker injectorTabBroker;
     private EcuInit ecuInit;
     private JToggleButton logToFileButton;
     private List<ExternalDataSource> externalDataSources;
@@ -252,12 +259,18 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
         mafUpdateHandler = new MafUpdateHandler();
+        injectorUpdateHandler = new InjectorUpdateHandler();
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this, liveDataUpdateHandler,
-                graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
+                graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, injectorUpdateHandler,
+                fileUpdateHandler, TableUpdateHandler.getInstance());
         mafHandlerManager = new DataUpdateHandlerManagerImpl();
         mafTabBroker = new DataRegistrationBrokerImpl(controller, mafHandlerManager);
         mafTab = new MafTabImpl(mafTabBroker, ecuEditor);
         mafUpdateHandler.setMafTab(mafTab);
+        injectorHandlerManager = new DataUpdateHandlerManagerImpl();
+        injectorTabBroker = new DataRegistrationBrokerImpl(controller, injectorHandlerManager);
+        injectorTab = new InjectorTabImpl(injectorTabBroker, ecuEditor);
+        injectorUpdateHandler.setInjectorTab(injectorTab);
         resetManager = new ResetManagerImpl(settings, this);
         messageLabel = new JLabel(ENGINUITY_ECU_LOGGER_TITLE);
         calIdLabel = new JLabel(buildEcuInfoLabelText(CAL_ID_LABEL, null));
@@ -486,6 +499,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             dashboardTabParamListTableModel.addParam(ecuParam, false);
         }
         mafTab.setEcuParams(ecuParams);
+        injectorTab.setEcuParams(ecuParams);
         this.ecuParams = new ArrayList<EcuParameter>(ecuParams);
     }
 
@@ -498,6 +512,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             dashboardTabSwitchListTableModel.addParam(ecuSwitch, false);
         }
         mafTab.setEcuSwitches(ecuSwitches);
+        injectorTab.setEcuSwitches(ecuSwitches);
     }
 
     private List<ExternalData> getExternalData(List<ExternalDataSource> externalDataSources) {
@@ -524,6 +539,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             dashboardTabExternalListTableModel.addParam(externalData, false);
         }
         mafTab.setExternalDatas(externalDatas);
+        injectorTab.setExternalDatas(externalDatas);
     }
 
     private void setDefaultUnits(UserProfile profile, LoggerData loggerData) {
@@ -597,6 +613,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         tabbedPane.add("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()));
         tabbedPane.add("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()));
         tabbedPane.add("MAF", mafTab.getPanel());
+        tabbedPane.add("Injector", injectorTab.getPanel());
         return tabbedPane;
     }
 
