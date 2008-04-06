@@ -26,12 +26,12 @@ public final class InjectorTabImpl extends JPanel implements InjectorTab {
         add(buildGraphPanel(), CENTER);
     }
 
-    private InjectorControlPanel buildControlPanel(DataRegistrationBroker broker, ECUEditor ecuEditor) {
-        return new InjectorControlPanel(this, trendline, series, broker, ecuEditor);
+    public double getFuelStoichAfr() {
+        return controlPanel.getFuelStoichAfr();
     }
 
-    private LoggerChartPanel buildGraphPanel() {
-        return new LoggerChartPanel(trendline, series, "Pulse Width (ms)", "Fuel per Combustion Event (cc)");
+    public double getFuelDensity() {
+        return controlPanel.getFuelDensity();
     }
 
     public boolean isRecordData() {
@@ -84,5 +84,13 @@ public final class InjectorTabImpl extends JPanel implements InjectorTab {
 
     public JPanel getPanel() {
         return this;
+    }
+
+    private InjectorControlPanel buildControlPanel(DataRegistrationBroker broker, ECUEditor ecuEditor) {
+        return new InjectorControlPanel(this, trendline, series, broker, ecuEditor);
+    }
+
+    private LoggerChartPanel buildGraphPanel() {
+        return new LoggerChartPanel(trendline, series, "Pulse Width (ms)", "Fuel per Combustion Event (cc)");
     }
 }

@@ -66,6 +66,8 @@ public final class InjectorControlPanel extends JPanel {
     private final JTextField iatMin = new JTextField("25", 3);
     private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
+    private final JTextField fuelStoichAfr = new JTextField("14.7", 5);
+    private final JTextField fuelDensity = new JTextField("732", 5);
     private final JTextField flowScaling = new JTextField("", 5);
     private final JTextField latencyOffset = new JTextField("", 5);
     private final Component parent;
@@ -85,6 +87,14 @@ public final class InjectorControlPanel extends JPanel {
         this.series = series;
         this.ecuEditor = ecuEditor;
         addControls();
+    }
+
+    public double getFuelStoichAfr() {
+        return getProperty(fuelStoichAfr, "Fuel Stoich. AFR");
+    }
+
+    public double getFuelDensity() {
+        return getProperty(fuelDensity, "Fuel Density");
     }
 
     public boolean isRecordData() {
@@ -123,6 +133,13 @@ public final class InjectorControlPanel extends JPanel {
         return value == 0.0;
     }
 
+    private double getProperty(JTextField field, String name) {
+        if (isNumber(field)) return parseDouble(field);
+        showMessageDialog(parent, "Invalid " + name + " value specified.", "Error", ERROR_MESSAGE);
+        recordDataButton.setSelected(false);
+        return 0.0;
+    }
+
     private boolean checkInRange(String name, JTextField min, JTextField max, double value) {
         if (isValidRange(min, max)) {
             return inRange(value, min, max);
@@ -149,10 +166,11 @@ public final class InjectorControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        add(panel, gridBagLayout, buildFilterPanel(), 0, 0, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 1, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildUpdateInjectorPanel(), 0, 2, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildResetPanel(), 0, 3, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildFuelPropertiesPanel(), 0, 0, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildFilterPanel(), 0, 1, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 2, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildUpdateInjectorPanel(), 0, 3, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildResetPanel(), 0, 4, 1, HORIZONTAL);
 
         add(panel);
     }
@@ -205,6 +223,19 @@ public final class InjectorControlPanel extends JPanel {
     private void addLabeledComponent(JPanel panel, GridBagLayout gridBagLayout, String name, JComponent component, int y) {
         add(panel, gridBagLayout, new JLabel(name), 0, y, 3, HORIZONTAL);
         add(panel, gridBagLayout, component, 0, y + 1, 3, NONE);
+    }
+
+    private JPanel buildFuelPropertiesPanel() {
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder("Fuel Properties"));
+
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        panel.setLayout(gridBagLayout);
+
+        addLabeledComponent(panel, gridBagLayout, "Stoich. AFR", fuelStoichAfr, 0);
+        addLabeledComponent(panel, gridBagLayout, "Density (kg/m3)", fuelDensity, 3);
+
+        return panel;
     }
 
     private JPanel buildFilterPanel() {

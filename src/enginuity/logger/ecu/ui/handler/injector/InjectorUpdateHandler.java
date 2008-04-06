@@ -78,7 +78,9 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
             if (valid) {
                 final double pulseWidth = findValue(response, PULSE_WIDTH);
                 double load = containsData(response, ENGINE_LOAD_16) ? findValue(response, ENGINE_LOAD_16) : findValue(response, ENGINE_LOAD_32);
-                final double fuelcc = load / 2 / 14.7 * 1000 / 732;
+                double stoichAfr = injectorTab.getFuelStoichAfr();
+                double density = injectorTab.getFuelDensity();
+                final double fuelcc = load / 2 / stoichAfr * 1000 / density;
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         injectorTab.addData(pulseWidth, fuelcc);
