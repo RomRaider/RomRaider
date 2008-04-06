@@ -8,7 +8,8 @@ import javax.swing.SwingUtilities;
 import java.util.Set;
 
 public final class InjectorUpdateHandler implements DataUpdateHandler {
-    private static final String PULSE_WIDTH = "P21";
+    private static final String PULSE_WIDTH_16 = "E28";
+    private static final String PULSE_WIDTH_32 = "E60";
     private static final String ENGINE_LOAD_16 = "E2";
     private static final String ENGINE_LOAD_32 = "E26";
     private InjectorTab injectorTab;
@@ -17,8 +18,9 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
     }
 
     public synchronized void handleDataUpdate(Response response) {
-        if (injectorTab.isRecordData() && containsData(response, PULSE_WIDTH)
-                && (containsData(response, ENGINE_LOAD_16) || containsData(response, ENGINE_LOAD_32))) {
+        if (injectorTab.isRecordData()
+                && (containsData(response, PULSE_WIDTH_16, ENGINE_LOAD_16)
+                || containsData(response, PULSE_WIDTH_32, ENGINE_LOAD_32))) {
             boolean valid = true;
 
             // cl/ol check
@@ -76,7 +78,7 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
             }
 
             if (valid) {
-                final double pulseWidth = findValue(response, PULSE_WIDTH);
+                final double pulseWidth = containsData(response, PULSE_WIDTH_16) ? findValue(response, PULSE_WIDTH_16) : findValue(response, PULSE_WIDTH_32);
                 double load = containsData(response, ENGINE_LOAD_16) ? findValue(response, ENGINE_LOAD_16) : findValue(response, ENGINE_LOAD_32);
                 double stoichAfr = injectorTab.getFuelStoichAfr();
                 double density = injectorTab.getFuelDensity();

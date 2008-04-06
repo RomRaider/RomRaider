@@ -46,10 +46,11 @@ public final class InjectorControlPanel extends JPanel {
     private static final String ENGINE_SPEED = "P8";
     private static final String INTAKE_AIR_TEMP = "P11";
     private static final String MASS_AIR_FLOW = "P12";
-    private static final String PULSE_WIDTH = "P21";
     private static final String AFR = "P58";
     private static final String CL_OL_16 = "E3";
     private static final String CL_OL_32 = "E27";
+    private static final String PULSE_WIDTH_16 = "E28";
+    private static final String PULSE_WIDTH_32 = "E60";
     private static final String TIP_IN_THROTTLE_16 = "E23";
     private static final String TIP_IN_THROTTLE_32 = "E49";
     private static final String ENGINE_LOAD_16 = "E2";
@@ -61,7 +62,7 @@ public final class InjectorControlPanel extends JPanel {
     private final JTextField afrMax = new JTextField("16.0", 3);
     private final JTextField rpmMin = new JTextField("0", 3);
     private final JTextField rpmMax = new JTextField("4500", 3);
-    private final JTextField mafMin = new JTextField("0", 3);
+    private final JTextField mafMin = new JTextField("20", 3);
     private final JTextField mafMax = new JTextField("100", 3);
     private final JTextField iatMin = new JTextField("25", 3);
     private final JTextField iatMax = new JTextField("35", 3);
@@ -259,9 +260,9 @@ public final class InjectorControlPanel extends JPanel {
         recordDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (recordDataButton.isSelected()) {
-                    registerData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH, ENGINE_LOAD_16, ENGINE_LOAD_32);
+                    registerData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH_16, PULSE_WIDTH_32, ENGINE_LOAD_16, ENGINE_LOAD_32);
                 } else {
-                    deregisterData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH, ENGINE_LOAD_16, ENGINE_LOAD_32);
+                    deregisterData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH_16, PULSE_WIDTH_32, ENGINE_LOAD_16, ENGINE_LOAD_32);
                 }
             }
         });
