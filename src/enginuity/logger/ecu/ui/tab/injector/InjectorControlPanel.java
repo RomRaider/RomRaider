@@ -48,13 +48,13 @@ public final class InjectorControlPanel extends JPanel {
     private static final String MASS_AIR_FLOW = "P12";
     private static final String AFR = "P58";
     private static final String CL_OL_16 = "E3";
-    private static final String CL_OL_32 = "E27";
+    private static final String CL_OL_32 = "E33";
     private static final String PULSE_WIDTH_16 = "E28";
     private static final String PULSE_WIDTH_32 = "E60";
     private static final String TIP_IN_THROTTLE_16 = "E23";
-    private static final String TIP_IN_THROTTLE_32 = "E49";
+    private static final String TIP_IN_THROTTLE_32 = "E54";
     private static final String ENGINE_LOAD_16 = "E2";
-    private static final String ENGINE_LOAD_32 = "E26";
+    private static final String ENGINE_LOAD_32 = "E32";
     private final JToggleButton recordDataButton = new JToggleButton("Record Data");
     private final JTextField mafvMin = new JTextField("1.20", 3);
     private final JTextField mafvMax = new JTextField("2.60", 3);

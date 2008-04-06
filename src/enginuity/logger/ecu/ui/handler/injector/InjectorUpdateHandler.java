@@ -11,7 +11,7 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
     private static final String PULSE_WIDTH_16 = "E28";
     private static final String PULSE_WIDTH_32 = "E60";
     private static final String ENGINE_LOAD_16 = "E2";
-    private static final String ENGINE_LOAD_32 = "E26";
+    private static final String ENGINE_LOAD_32 = "E32";
     private InjectorTab injectorTab;
 
     public synchronized void registerData(LoggerData loggerData) {
@@ -24,13 +24,13 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
             boolean valid = true;
 
             // cl/ol check
-            if ((containsData(response, "E3") || containsData(response, "E27"))) {
+            if ((containsData(response, "E3") || containsData(response, "E33"))) {
                 double clOl = -1;
                 if (containsData(response, "E3")) {
                     clOl = (int) findValue(response, "E3");
                 }
-                if (containsData(response, "E27")) {
-                    clOl = (int) findValue(response, "E27");
+                if (containsData(response, "E33")) {
+                    clOl = (int) findValue(response, "E33");
                 }
                 valid = injectorTab.isValidClOl(clOl);
             }
@@ -66,13 +66,13 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
             }
 
             // tip-in throttle check
-            if (valid && (containsData(response, "E23") || containsData(response, "E49"))) {
+            if (valid && (containsData(response, "E23") || containsData(response, "E54"))) {
                 double tipIn = -1;
                 if (containsData(response, "E23")) {
                     tipIn = findValue(response, "E23");
                 }
-                if (containsData(response, "E49")) {
-                    tipIn = findValue(response, "E49");
+                if (containsData(response, "E54")) {
+                    tipIn = findValue(response, "E54");
                 }
                 valid = injectorTab.isValidTipInThrottle(tipIn);
             }

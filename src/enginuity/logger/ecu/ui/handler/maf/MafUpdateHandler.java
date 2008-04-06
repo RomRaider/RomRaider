@@ -21,13 +21,13 @@ public final class MafUpdateHandler implements DataUpdateHandler {
             boolean valid = true;
 
             // cl/ol check
-            if ((containsData(response, "E3") || containsData(response, "E27"))) {
+            if ((containsData(response, "E3") || containsData(response, "E33"))) {
                 double clOl = -1;
                 if (containsData(response, "E3")) {
                     clOl = (int) findValue(response, "E3");
                 }
-                if (containsData(response, "E27")) {
-                    clOl = (int) findValue(response, "E27");
+                if (containsData(response, "E33")) {
+                    clOl = (int) findValue(response, "E33");
                 }
                 valid = mafTab.isValidClOl(clOl);
             }
@@ -63,13 +63,13 @@ public final class MafUpdateHandler implements DataUpdateHandler {
             }
 
             // tip-in throttle check
-            if (valid && (containsData(response, "E23") || containsData(response, "E49"))) {
+            if (valid && (containsData(response, "E23") || containsData(response, "E54"))) {
                 double tipIn = -1;
                 if (containsData(response, "E23")) {
                     tipIn = findValue(response, "E23");
                 }
-                if (containsData(response, "E49")) {
-                    tipIn = findValue(response, "E49");
+                if (containsData(response, "E54")) {
+                    tipIn = findValue(response, "E54");
                 }
                 valid = mafTab.isValidTipInThrottle(tipIn);
             }

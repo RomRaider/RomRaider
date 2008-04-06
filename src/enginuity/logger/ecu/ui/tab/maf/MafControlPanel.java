@@ -49,9 +49,9 @@ public final class MafControlPanel extends JPanel {
     private static final String MASS_AIR_FLOW_V = "P18";
     private static final String AFR = "P58";
     private static final String CL_OL_16 = "E3";
-    private static final String CL_OL_32 = "E27";
+    private static final String CL_OL_32 = "E33";
     private static final String TIP_IN_THROTTLE_16 = "E23";
-    private static final String TIP_IN_THROTTLE_32 = "E49";
+    private static final String TIP_IN_THROTTLE_32 = "E54";
     private final JToggleButton recordDataButton = new JToggleButton("Record Data");
     private final JTextField mafvMin = new JTextField("1.20", 3);
     private final JTextField mafvMax = new JTextField("2.60", 3);
