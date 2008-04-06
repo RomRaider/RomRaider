@@ -316,7 +316,7 @@ public final class InjectorControlPanel extends JPanel {
                 double scaling = coefficients[0] * 1000 * 60;
                 DecimalFormat format = new DecimalFormat("0.00");
                 flowScaling.setText(format.format(scaling));
-                double offset = polyFit.getYIntercept();
+                double offset = -1 * coefficients[1] / coefficients[0];
                 latencyOffset.setText(format.format(offset));
                 parent.repaint();
             }
