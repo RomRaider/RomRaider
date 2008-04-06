@@ -4,8 +4,4 @@ import javax.swing.JPanel;
 
 public interface Tab {
     JPanel getPanel();
-
-    double getFuelStoichAfr();
-
-    double getFuelDensity();
 }

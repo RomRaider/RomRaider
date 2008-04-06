@@ -7,6 +7,11 @@ import enginuity.logger.ecu.ui.tab.Tab;
 import java.util.List;
 
 public interface InjectorTab extends Tab {
+
+    double getFuelStoichAfr();
+
+    double getFuelDensity();
+
     boolean isRecordData();
 
     boolean isValidClOl(double value);
