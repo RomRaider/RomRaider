@@ -14,7 +14,6 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -65,8 +64,6 @@ public final class MafControlPanel extends JPanel {
     private final JTextField iatMin = new JTextField("25", 3);
     private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
-    private final JTextField tipInMax = new JTextField("0", 3);
-    private final JCheckBox clCheckbox = new JCheckBox("Closed Loop Only", true);
     private final Component parent;
     private final XYTrendline trendline;
     private final XYSeries series;
@@ -91,7 +88,7 @@ public final class MafControlPanel extends JPanel {
     }
 
     public boolean isValidClOl(double value) {
-        return value == 8 || (!clCheckbox.isSelected() && value == 10);
+        return value == 8;
     }
 
     public boolean isValidAfr(double value) {
@@ -119,7 +116,7 @@ public final class MafControlPanel extends JPanel {
     }
 
     public boolean isValidTipInThrottle(double value) {
-        return checkLessThan("Tip-In Throttle", tipInMax, value);
+        return value == 0.0;
     }
 
     private boolean checkInRange(String name, JTextField min, JTextField max, double value) {
@@ -135,16 +132,6 @@ public final class MafControlPanel extends JPanel {
     private boolean checkGreaterThan(String name, JTextField min, double value) {
         if (isNumber(min)) {
             return value >= parseDouble(min);
-        } else {
-            showMessageDialog(parent, "Invalid " + name + " specified.", "Error", ERROR_MESSAGE);
-            recordDataButton.setSelected(false);
-            return false;
-        }
-    }
-
-    private boolean checkLessThan(String name, JTextField max, double value) {
-        if (isNumber(max)) {
-            return value <= parseDouble(max);
         } else {
             showMessageDialog(parent, "Invalid " + name + " specified.", "Error", ERROR_MESSAGE);
             recordDataButton.setSelected(false);
@@ -219,14 +206,12 @@ public final class MafControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        addComponent(panel, gridBagLayout, clCheckbox, 0);
-        addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 1);
-        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 4);
-        addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 7);
-        addMinMaxFilter(panel, gridBagLayout, "IAT Range", iatMin, iatMax, 10);
-        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 13);
-        addLabeledComponent(panel, gridBagLayout, "Max. Tip-In Throttle", tipInMax, 16);
-        addComponent(panel, gridBagLayout, buildRecordDataButton(), 19);
+        addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 0);
+        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 3);
+        addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 6);
+        addMinMaxFilter(panel, gridBagLayout, "IAT Range", iatMin, iatMax, 9);
+        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 12);
+        addComponent(panel, gridBagLayout, buildRecordDataButton(), 15);
 
         return panel;
     }
@@ -351,7 +336,7 @@ public final class MafControlPanel extends JPanel {
                                     if (inRange(axisCells[i].getValue(), mafvMin, mafvMax)) {
                                         DataCell cell = dataCells[i];
                                         double value = cell.getValue();
-                                        cell.setRealValue(String.valueOf(value * (1.0 + percentChange[i] / 100.0)));
+                                        cell.setRealValue("" + (value * (1.0 + percentChange[i] / 100.0)));
                                     }
                                 }
                                 table.colorize();

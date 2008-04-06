@@ -21,7 +21,6 @@
 
 package enginuity.logger.ecu.comms.io.connection;
 
-import java.util.Collection;
 import enginuity.io.connection.ConnectionProperties;
 import enginuity.io.connection.SerialConnection;
 import enginuity.io.connection.SerialConnectionImpl;
@@ -34,6 +33,7 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
+import java.util.Collection;
 
 public final class SSMLoggerConnection implements LoggerConnection {
     private static final Logger LOGGER = Logger.getLogger(SSMLoggerConnection.class);

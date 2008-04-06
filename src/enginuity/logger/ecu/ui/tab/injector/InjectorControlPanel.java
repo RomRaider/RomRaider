@@ -10,12 +10,12 @@ import enginuity.logger.ecu.ui.tab.XYTrendline;
 import enginuity.maps.DataCell;
 import enginuity.maps.Rom;
 import enginuity.maps.Table1D;
+import enginuity.maps.Table2D;
 import static enginuity.util.ParamChecker.checkNotNull;
 import jamlab.Polyfit;
 import org.apache.log4j.Logger;
 import org.jfree.data.xy.XYSeries;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -36,6 +36,7 @@ import static java.awt.GridBagConstraints.NONE;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,8 +66,8 @@ public final class InjectorControlPanel extends JPanel {
     private final JTextField iatMin = new JTextField("25", 3);
     private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
-    private final JTextField tipInMax = new JTextField("0", 3);
-    private final JCheckBox clCheckbox = new JCheckBox("Closed Loop Only", true);
+    private final JTextField flowScaling = new JTextField("", 5);
+    private final JTextField latencyOffset = new JTextField("", 5);
     private final Component parent;
     private final XYTrendline trendline;
     private final XYSeries series;
@@ -91,7 +92,7 @@ public final class InjectorControlPanel extends JPanel {
     }
 
     public boolean isValidClOl(double value) {
-        return value == 8 || (!clCheckbox.isSelected() && value == 10);
+        return value == 8;
     }
 
     public boolean isValidAfr(double value) {
@@ -119,7 +120,7 @@ public final class InjectorControlPanel extends JPanel {
     }
 
     public boolean isValidTipInThrottle(double value) {
-        return checkLessThan("Tip-In Throttle", tipInMax, value);
+        return value == 0.0;
     }
 
     private boolean checkInRange(String name, JTextField min, JTextField max, double value) {
@@ -142,16 +143,6 @@ public final class InjectorControlPanel extends JPanel {
         }
     }
 
-    private boolean checkLessThan(String name, JTextField max, double value) {
-        if (isNumber(max)) {
-            return value <= parseDouble(max);
-        } else {
-            showMessageDialog(parent, "Invalid " + name + " specified.", "Error", ERROR_MESSAGE);
-            recordDataButton.setSelected(false);
-            return false;
-        }
-    }
-
     private void addControls() {
         JPanel panel = new JPanel();
 
@@ -160,7 +151,7 @@ public final class InjectorControlPanel extends JPanel {
 
         add(panel, gridBagLayout, buildFilterPanel(), 0, 0, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildInterpolatePanel(), 0, 1, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildUpdateMafPanel(), 0, 2, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildUpdateInjectorPanel(), 0, 2, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildResetPanel(), 0, 3, 1, HORIZONTAL);
 
         add(panel);
@@ -180,18 +171,6 @@ public final class InjectorControlPanel extends JPanel {
         return panel;
     }
 
-    private JPanel buildUpdateMafPanel() {
-        JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Update Injector"));
-
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        panel.setLayout(gridBagLayout);
-
-        addComponent(panel, gridBagLayout, buildUpdateInjectorScalerButton(), 0);
-
-        return panel;
-    }
-
     private JPanel buildInterpolatePanel() {
         JPanel panel = new JPanel();
         panel.setBorder(new TitledBorder("Interpolate"));
@@ -200,6 +179,25 @@ public final class InjectorControlPanel extends JPanel {
         panel.setLayout(gridBagLayout);
 
         addComponent(panel, gridBagLayout, buildInterpolateButton(), 2);
+
+        return panel;
+    }
+
+    private JPanel buildUpdateInjectorPanel() {
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder("Update Injector"));
+
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        panel.setLayout(gridBagLayout);
+
+        flowScaling.setEditable(false);
+        latencyOffset.setEditable(false);
+
+        addLabeledComponent(panel, gridBagLayout, "Flow Scaling (cc/min)", flowScaling, 0);
+        addComponent(panel, gridBagLayout, buildUpdateInjectorScalerButton(), 2);
+
+        addLabeledComponent(panel, gridBagLayout, "Latency Offset (ms)", latencyOffset, 3);
+        addComponent(panel, gridBagLayout, buildUpdateInjectorLatencyButton(), 5);
 
         return panel;
     }
@@ -216,14 +214,12 @@ public final class InjectorControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        addComponent(panel, gridBagLayout, clCheckbox, 0);
-        addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 1);
-        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 4);
-        addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 7);
-        addMinMaxFilter(panel, gridBagLayout, "IAT Range", iatMin, iatMax, 10);
-        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 13);
-        addLabeledComponent(panel, gridBagLayout, "Max. Tip-In Throttle", tipInMax, 16);
-        addComponent(panel, gridBagLayout, buildRecordDataButton(), 19);
+        addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 0);
+        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 3);
+        addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 6);
+        addMinMaxFilter(panel, gridBagLayout, "IAT Range", iatMin, iatMax, 9);
+        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 12);
+        addComponent(panel, gridBagLayout, buildRecordDataButton(), 15);
 
         return panel;
     }
@@ -315,6 +311,13 @@ public final class InjectorControlPanel extends JPanel {
         interpolateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 trendline.update(series, 1);
+                Polyfit polyFit = trendline.getPolyFit();
+                double[] coefficients = polyFit.getPolynomialCoefficients();
+                double scaling = coefficients[0] * 1000 * 60;
+                DecimalFormat format = new DecimalFormat("0.00");
+                flowScaling.setText(format.format(scaling));
+                double offset = polyFit.getYIntercept();
+                latencyOffset.setText(format.format(offset));
                 parent.repaint();
             }
         });
@@ -322,24 +325,57 @@ public final class InjectorControlPanel extends JPanel {
     }
 
     private JButton buildUpdateInjectorScalerButton() {
-        final JButton updateButton = new JButton("Update Injector Flow");
+        final JButton updateButton = new JButton("Update Scaling");
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     Table1D table = getInjectorFlowTable(ecuEditor);
                     if (table != null) {
-                        if (showUpdateInjectorFlowConfirmation() == OK_OPTION) {
+                        if (showUpdateTableConfirmation("Injector Flow Scaling") == OK_OPTION) {
                             DataCell[] cells = table.getData();
                             if (cells.length == 1) {
-                                Polyfit polyFit = trendline.getPolyFit();
-                                double[] coefficients = polyFit.getPolynomialCoefficients();
-                                double flowScaling = coefficients[0] * 1000 * 60;
-                                cells[0].setRealValue("" + flowScaling);
+                                if (isNumber(flowScaling)) {
+                                    String value = flowScaling.getText().trim();
+                                    cells[0].setRealValue(value);
+                                    table.colorize();
+                                } else {
+                                    showMessageDialog(parent, "Injector Flow Scaling value invalid.", "Error", ERROR_MESSAGE);
+                                }
                             }
-                            table.colorize();
                         }
                     } else {
                         showMessageDialog(parent, "Injector Flow Scaling table not found.", "Error", ERROR_MESSAGE);
+                    }
+                } catch (Exception e) {
+                    String msg = e.getMessage() != null && e.getMessage().length() > 0 ? e.getMessage() : "Unknown";
+                    showMessageDialog(parent, "Error: " + msg, "Error", ERROR_MESSAGE);
+                }
+            }
+        });
+        return updateButton;
+    }
+
+    private JButton buildUpdateInjectorLatencyButton() {
+        final JButton updateButton = new JButton("Update Latency");
+        updateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    Table2D table = getInjectorLatencyTable(ecuEditor);
+                    if (table != null) {
+                        if (showUpdateTableConfirmation("Injector Latency") == OK_OPTION) {
+                            DataCell[] cells = table.getData();
+                            if (isNumber(latencyOffset)) {
+                                for (DataCell cell : cells) {
+                                    double newLatency = cell.getValue() + parseDouble(latencyOffset);
+                                    cell.setRealValue("" + newLatency);
+                                }
+                                table.colorize();
+                            } else {
+                                showMessageDialog(parent, "Injector Latency Offset value invalid.", "Error", ERROR_MESSAGE);
+                            }
+                        }
+                    } else {
+                        showMessageDialog(parent, "Injector Latency table not found.", "Error", ERROR_MESSAGE);
                     }
                 } catch (Exception e) {
                     String msg = e.getMessage() != null && e.getMessage().length() > 0 ? e.getMessage() : "Unknown";
@@ -382,14 +418,23 @@ public final class InjectorControlPanel extends JPanel {
         return Double.parseDouble(field.getText().trim());
     }
 
-    private int showUpdateInjectorFlowConfirmation() {
-        return showConfirmDialog(parent, "Update Injector Flow Scaling?", "Confirm Update", YES_NO_OPTION, WARNING_MESSAGE);
+    private int showUpdateTableConfirmation(String table) {
+        return showConfirmDialog(parent, "Update " + table + "?", "Confirm Update", YES_NO_OPTION, WARNING_MESSAGE);
     }
 
     private Table1D getInjectorFlowTable(ECUEditor ecuEditor) {
         try {
             Rom rom = ecuEditor.getLastSelectedRom();
             return (Table1D) rom.getTable("Injector Flow Scaling");
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Table2D getInjectorLatencyTable(ECUEditor ecuEditor) {
+        try {
+            Rom rom = ecuEditor.getLastSelectedRom();
+            return (Table2D) rom.getTable("Injector Latency");
         } catch (Exception e) {
             return null;
         }

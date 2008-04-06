@@ -75,8 +75,7 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
                 valid = injectorTab.isValidTipInThrottle(tipIn);
             }
 
-//            if (valid) {
-            if (true) {
+            if (valid) {
                 final double pulseWidth = findValue(response, PULSE_WIDTH);
                 double load = containsData(response, ENGINE_LOAD_16) ? findValue(response, ENGINE_LOAD_16) : findValue(response, ENGINE_LOAD_32);
                 final double fuelcc = load / 2 / 14.7 * 1000 / 732;
