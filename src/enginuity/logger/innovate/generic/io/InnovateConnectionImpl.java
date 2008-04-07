@@ -10,12 +10,12 @@ import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
 
-public final class Lc1Connection implements InnovateConnection {
-    private static final Logger LOGGER = Logger.getLogger(Lc1Connection.class);
+public final class InnovateConnectionImpl implements InnovateConnection {
+    private static final Logger LOGGER = Logger.getLogger(InnovateConnectionImpl.class);
     private final long sendTimeout;
     private final SerialConnection serialConnection;
 
-    public Lc1Connection(ConnectionProperties connectionProperties, String portName) {
+    public InnovateConnectionImpl(ConnectionProperties connectionProperties, String portName) {
         checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
         this.sendTimeout = connectionProperties.getSendTimeout();

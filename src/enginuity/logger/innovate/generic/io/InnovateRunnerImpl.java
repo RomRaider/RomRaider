@@ -9,7 +9,7 @@ public final class InnovateRunnerImpl implements InnovateRunner {
     private boolean stop;
 
     public InnovateRunnerImpl(InnovateSettings innovateSettings, DataListener listener) {
-        connection = new Lc1Connection(new InnovateConnectionProperties(), innovateSettings.getPort());
+        connection = new InnovateConnectionImpl(new InnovateConnectionProperties(), innovateSettings.getPort());
         this.listener = listener;
     }
 
