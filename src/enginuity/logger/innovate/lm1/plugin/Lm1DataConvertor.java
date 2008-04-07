@@ -35,7 +35,7 @@ public final class Lm1DataConvertor implements DataConvertor {
     }
 
     private int getAf(byte[] bytes) {
-        return (((bytes[2] | 254) & 1) << 7) | bytes[3];
+        return ((bytes[2] & 1) << 7) | bytes[3];
     }
 
     // 1x0xxx0x
