@@ -31,26 +31,16 @@ public final class Lm1DataConvertor implements DataConvertor {
     }
 
     private double getAfr(byte[] bytes) {
-        return (getLambda(bytes) + 500) * getAF(bytes) / 10000.0;
+        return (getLambda(bytes) + 500) * getAf(bytes) / 10000.0;
     }
 
-    private int getAF(byte[] bytes) {
+    private int getAf(byte[] bytes) {
         return (((bytes[2] | 254) & 1) << 7) | bytes[3];
     }
 
-    // 00xxxxxx 0xxxxxxx
-    private int getLambda(byte[] bytes) {
-        return (bytes[4] << 7) | bytes[5];
-    }
-
-    // 1x00000x
-    private boolean isOk(byte[] bytes) {
-        return matchOnes(bytes[2], 128) && matchZeroes(bytes[0], 62);
-    }
-
-    // 1x01100x
-    private boolean isError(byte[] bytes) {
-        return matchOnes(bytes[2], 152) && matchZeroes(bytes[2], 38);
+    // 1x0xxx0x
+    private boolean isLm1(byte[] bytes) {
+        return bytes.length >= 6 && matchOnes(bytes[2], 128) && matchZeroes(bytes[2], 34);
     }
 
     // 1x11xx1x 1xxxxxxx
@@ -58,9 +48,19 @@ public final class Lm1DataConvertor implements DataConvertor {
         return matchOnes(bytes[0], 178) && matchOnes(bytes[1], 128);
     }
 
-    // 1x0xxx0x
-    private boolean isLm1(byte[] bytes) {
-        return bytes.length >= 6 && matchOnes(bytes[2], 128) && matchZeroes(bytes[2], 34);
+    // 1x00000x
+    private boolean isOk(byte[] bytes) {
+        return matchOnes(bytes[2], 128) && matchZeroes(bytes[2], 62);
+    }
+
+    // 1x01100x
+    private boolean isError(byte[] bytes) {
+        return matchOnes(bytes[2], 152) && matchZeroes(bytes[2], 38);
+    }
+
+    // 00xxxxxx 0xxxxxxx
+    private int getLambda(byte[] bytes) {
+        return (bytes[4] << 7) | bytes[5];
     }
 
     private boolean matchOnes(int b, int mask) {
