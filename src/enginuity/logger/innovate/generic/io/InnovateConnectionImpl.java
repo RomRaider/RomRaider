@@ -12,15 +12,18 @@ import org.apache.log4j.Logger;
 
 public final class InnovateConnectionImpl implements InnovateConnection {
     private static final Logger LOGGER = Logger.getLogger(InnovateConnectionImpl.class);
+    private final String device;
     private final long sendTimeout;
     private final SerialConnection serialConnection;
 
-    public InnovateConnectionImpl(ConnectionProperties connectionProperties, String portName) {
+    public InnovateConnectionImpl(String device, ConnectionProperties connectionProperties, String portName) {
+        checkNotNullOrEmpty(device, "device");
         checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
+        this.device = device;
         this.sendTimeout = connectionProperties.getSendTimeout();
         serialConnection = new SerialConnectionImpl(connectionProperties, portName);
-        LOGGER.info("LC-1 connected");
+        LOGGER.info(device + " connected");
     }
 
     public byte[] read() {
@@ -31,13 +34,13 @@ public final class InnovateConnectionImpl implements InnovateConnection {
             while (serialConnection.available() < response.length) {
                 if (System.currentTimeMillis() - start > sendTimeout) {
                     byte[] badBytes = serialConnection.readAvailable();
-                    LOGGER.warn("LC-1 Response [read timeout]: " + asHex(badBytes));
+                    LOGGER.warn(device + " Response [read timeout]: " + asHex(badBytes));
                     return badBytes;
                 }
                 sleep(5);
             }
             serialConnection.read(response);
-            LOGGER.trace("LC-1 Response: " + asHex(response));
+            LOGGER.trace(device + " Response: " + asHex(response));
             return response;
         } catch (Exception e) {
             close();
@@ -47,6 +50,6 @@ public final class InnovateConnectionImpl implements InnovateConnection {
 
     public void close() {
         serialConnection.close();
-        LOGGER.info("LC-1 disconnected");
+        LOGGER.info(device + " disconnected");
     }
 }

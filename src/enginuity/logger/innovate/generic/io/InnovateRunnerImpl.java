@@ -8,8 +8,8 @@ public final class InnovateRunnerImpl implements InnovateRunner {
     private final DataListener listener;
     private boolean stop;
 
-    public InnovateRunnerImpl(InnovateSettings innovateSettings, DataListener listener) {
-        connection = new InnovateConnectionImpl(new InnovateConnectionProperties(), innovateSettings.getPort());
+    public InnovateRunnerImpl(String device, InnovateSettings innovateSettings, DataListener listener) {
+        connection = new InnovateConnectionImpl(device, new InnovateConnectionProperties(), innovateSettings.getPort());
         this.listener = listener;
     }
 
