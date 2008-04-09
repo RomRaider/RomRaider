@@ -4,10 +4,12 @@ import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.logger.ecu.ui.tab.maf.MafTab;
+import org.apache.log4j.Logger;
 import javax.swing.SwingUtilities;
 import java.util.Set;
 
 public final class MafUpdateHandler implements DataUpdateHandler {
+    private static final Logger LOGGER = Logger.getLogger(MafUpdateHandler.class);
     private static final String MAFV = "P18";
     private static final String AF_LEARNING_1 = "P4";
     private static final String AF_CORRECTION_1 = "P3";
@@ -25,41 +27,54 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 double clOl = -1;
                 if (containsData(response, "E3")) {
                     clOl = (int) findValue(response, "E3");
+                    LOGGER.trace("MAF:[CL/OL:E3]:  " + clOl);
                 }
                 if (containsData(response, "E33")) {
                     clOl = (int) findValue(response, "E33");
+                    LOGGER.trace("MAF:[CL/OL:E33]: " + clOl);
                 }
                 valid = mafTab.isValidClOl(clOl);
+                LOGGER.trace("MAF:[CL/OL]:     " + valid);
             }
 
             // afr check
             if (valid && containsData(response, "P58")) {
                 double afr = findValue(response, "P58");
+                LOGGER.trace("MAF:[AFR:P58]: " + afr);
                 valid = mafTab.isValidAfr(afr);
+                LOGGER.trace("MAF:[AFR]:     " + valid);
             }
 
             // rpm check
             if (valid && containsData(response, "P8")) {
                 double rpm = findValue(response, "P8");
+                LOGGER.trace("MAF:[RPM:P8]: " + rpm);
                 valid = mafTab.isValidRpm(rpm);
+                LOGGER.trace("MAF:[RPM]:    " + valid);
             }
 
             // maf check
             if (valid && containsData(response, "P12")) {
                 double maf = findValue(response, "P12");
+                LOGGER.trace("MAF:[MAF:P12]: " + maf);
                 valid = mafTab.isValidMaf(maf);
+                LOGGER.trace("MAF:[MAF]:     " + valid);
             }
 
             // intake air temp check
             if (valid && containsData(response, "P11")) {
                 double temp = findValue(response, "P11");
+                LOGGER.trace("MAF:[IAT:P11]: " + temp);
                 valid = mafTab.isValidIntakeAirTemp(temp);
+                LOGGER.trace("MAF:[IAT]:     " + valid);
             }
 
             // coolant temp check
             if (valid && containsData(response, "P2")) {
                 double temp = findValue(response, "P2");
+                LOGGER.trace("MAF:[CT:P2]: " + temp);
                 valid = mafTab.isValidCoolantTemp(temp);
+                LOGGER.trace("MAF:[CT]:    " + valid);
             }
 
             // tip-in throttle check
@@ -67,17 +82,21 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 double tipIn = -1;
                 if (containsData(response, "E23")) {
                     tipIn = findValue(response, "E23");
+                    LOGGER.trace("MAF:[TIP:E23]: " + tipIn);
                 }
                 if (containsData(response, "E54")) {
                     tipIn = findValue(response, "E54");
+                    LOGGER.trace("MAF:[TIP:E54]: " + tipIn);
                 }
                 valid = mafTab.isValidTipInThrottle(tipIn);
+                LOGGER.trace("MAF:[TIP]:     " + valid);
             }
 
             if (valid) {
                 final double mafv = findValue(response, MAFV);
                 final double learning = findValue(response, AF_LEARNING_1);
                 final double correction = findValue(response, AF_CORRECTION_1);
+                LOGGER.trace("MAF Data: " + mafv + "v, " + correction + "%");
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         mafTab.addData(mafv, learning + correction);
@@ -105,7 +124,7 @@ public final class MafUpdateHandler implements DataUpdateHandler {
     }
 
     private double findValue(Response response, String id) {
-        for (final LoggerData loggerData : response.getData()) {
+        for (LoggerData loggerData : response.getData()) {
             if (id.equals(loggerData.getId())) {
                 return response.getDataValue(loggerData);
             }
