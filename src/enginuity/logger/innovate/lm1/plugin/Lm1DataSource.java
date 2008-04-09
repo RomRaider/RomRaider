@@ -42,7 +42,7 @@ public final class Lm1DataSource implements ExternalDataSource {
     }
 
     public void connect() {
-        runner = new InnovateRunnerImpl("LM-1", settings, dataItem);
+        runner = new InnovateRunnerImpl("LM-1", settings, dataItem, 18);
         runAsDaemon(runner);
     }
 

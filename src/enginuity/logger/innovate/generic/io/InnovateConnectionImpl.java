@@ -5,6 +5,7 @@ import enginuity.io.connection.SerialConnection;
 import enginuity.io.connection.SerialConnectionImpl;
 import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.HexUtil.asHex;
+import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
@@ -15,20 +16,23 @@ public final class InnovateConnectionImpl implements InnovateConnection {
     private final String device;
     private final long sendTimeout;
     private final SerialConnection serialConnection;
+    private final int responseLength;
 
-    public InnovateConnectionImpl(String device, ConnectionProperties connectionProperties, String portName) {
+    public InnovateConnectionImpl(String device, ConnectionProperties connectionProperties, String portName, int responseLength) {
         checkNotNullOrEmpty(device, "device");
         checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
+        checkGreaterThanZero(responseLength, "responseLength");
         this.device = device;
         this.sendTimeout = connectionProperties.getSendTimeout();
+        this.responseLength = responseLength;
         serialConnection = new SerialConnectionImpl(connectionProperties, portName);
         LOGGER.info(device + " connected");
     }
 
     public byte[] read() {
         try {
-            byte[] response = new byte[6];
+            byte[] response = new byte[responseLength];
             serialConnection.readStaleData();
             long start = System.currentTimeMillis();
             while (serialConnection.available() < response.length) {
