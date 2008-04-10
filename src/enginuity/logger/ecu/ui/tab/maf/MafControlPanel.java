@@ -397,6 +397,7 @@ public final class MafControlPanel extends JPanel {
             Rom rom = ecuEditor.getLastSelectedRom();
             return (Table2D) rom.getTable("MAF Sensor Scaling");
         } catch (Exception e) {
+            LOGGER.warn("Error getting MAF table", e);
             return null;
         }
     }
