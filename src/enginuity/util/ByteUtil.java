@@ -22,7 +22,6 @@
 package enginuity.util;
 
 import enginuity.newmaps.ecumetadata.Scale;
-
 import java.nio.ByteBuffer;
 
 @SuppressWarnings({"UnnecessaryBoxing"})
@@ -121,7 +120,7 @@ public final class ByteUtil {
     }
 
     public static float asFloat(byte[] bytes, int endian) {
-        byte[] currentCell = { bytes[0],bytes[1],bytes[2],bytes[3] };
+        byte[] currentCell = {bytes[0], bytes[1], bytes[2], bytes[3]};
         return Float.intBitsToFloat(asUnsignedInt(currentCell, endian));
     }
 
@@ -130,6 +129,14 @@ public final class ByteUtil {
         ByteBuffer bb = ByteBuffer.wrap(output, 0, 4);
         bb.putFloat(f);
         return bb.array();
+    }
+
+    public static boolean matchOnes(byte b, int mask) {
+        return (b & mask) == mask;
+    }
+
+    public static boolean matchZeroes(byte b, int mask) {
+        return (b & mask) == 0;
     }
 
 }

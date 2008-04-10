@@ -1,6 +1,9 @@
 package enginuity.logger.innovate.lm1.plugin;
 
 import enginuity.logger.innovate.generic.plugin.DataConvertor;
+import static enginuity.util.ByteUtil.matchOnes;
+import static enginuity.util.ByteUtil.matchZeroes;
+import static enginuity.util.HexUtil.asBytes;
 import static enginuity.util.HexUtil.asHex;
 import org.apache.log4j.Logger;
 
@@ -63,11 +66,10 @@ public final class Lm1DataConvertor implements DataConvertor {
         return (bytes[4] << 7) | bytes[5];
     }
 
-    private boolean matchOnes(int b, int mask) {
-        return (b & mask) == mask;
-    }
-
-    private boolean matchZeroes(int b, int mask) {
-        return (b & mask) == 0;
+    public static void main(String[] args) {
+        byte[] bytes = asBytes("0xB2808113036F1E650124007000470039003A");
+        DataConvertor convertor = new Lm1DataConvertor();
+        double result = convertor.convert(bytes);
+        System.out.println("result = " + result);
     }
 }

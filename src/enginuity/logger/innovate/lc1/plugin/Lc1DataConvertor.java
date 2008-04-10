@@ -1,6 +1,8 @@
 package enginuity.logger.innovate.lc1.plugin;
 
 import enginuity.logger.innovate.generic.plugin.DataConvertor;
+import static enginuity.util.ByteUtil.matchOnes;
+import static enginuity.util.ByteUtil.matchZeroes;
 import static enginuity.util.HexUtil.asHex;
 import org.apache.log4j.Logger;
 
@@ -63,13 +65,5 @@ public final class Lc1DataConvertor implements DataConvertor {
     // 01xxxxxx 0xxxxxxx
     private int getLambda(byte[] bytes) {
         return ((bytes[4] & 63) << 7) | bytes[5];
-    }
-
-    private boolean matchOnes(int b, int mask) {
-        return (b & mask) == mask;
-    }
-
-    private boolean matchZeroes(int b, int mask) {
-        return (b & mask) == 0;
     }
 }
