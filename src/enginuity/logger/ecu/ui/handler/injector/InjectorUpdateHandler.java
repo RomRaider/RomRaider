@@ -4,10 +4,12 @@ import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.logger.ecu.ui.tab.injector.InjectorTab;
+import org.apache.log4j.Logger;
 import javax.swing.SwingUtilities;
 import java.util.Set;
 
 public final class InjectorUpdateHandler implements DataUpdateHandler {
+    private static final Logger LOGGER = Logger.getLogger(InjectorUpdateHandler.class);
     private static final String PULSE_WIDTH_16 = "E28";
     private static final String PULSE_WIDTH_32 = "E60";
     private static final String ENGINE_LOAD_16 = "E2";
@@ -28,41 +30,54 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
                 double clOl = -1;
                 if (containsData(response, "E3")) {
                     clOl = (int) findValue(response, "E3");
+                    LOGGER.trace("INJ:[CL/OL:E3]:  " + clOl);
                 }
                 if (containsData(response, "E33")) {
                     clOl = (int) findValue(response, "E33");
+                    LOGGER.trace("INJ:[CL/OL:E33]: " + clOl);
                 }
                 valid = injectorTab.isValidClOl(clOl);
+                LOGGER.trace("INJ:[CL/OL]:     " + valid);
             }
 
             // afr check
             if (valid && containsData(response, "P58")) {
                 double afr = findValue(response, "P58");
+                LOGGER.trace("INJ:[AFR:P58]: " + afr);
                 valid = injectorTab.isValidAfr(afr);
+                LOGGER.trace("INJ:[AFR]:     " + valid);
             }
 
             // rpm check
             if (valid && containsData(response, "P8")) {
                 double rpm = findValue(response, "P8");
+                LOGGER.trace("INJ:[RPM:P8]: " + rpm);
                 valid = injectorTab.isValidRpm(rpm);
+                LOGGER.trace("INJ:[RPM]:    " + valid);
             }
 
             // maf check
             if (valid && containsData(response, "P12")) {
                 double maf = findValue(response, "P12");
+                LOGGER.trace("INJ:[MAF:P12]: " + maf);
                 valid = injectorTab.isValidMaf(maf);
+                LOGGER.trace("INJ:[MAF]:     " + valid);
             }
 
             // intake air temp check
             if (valid && containsData(response, "P11")) {
                 double temp = findValue(response, "P11");
+                LOGGER.trace("INJ:[IAT:P11]: " + temp);
                 valid = injectorTab.isValidIntakeAirTemp(temp);
+                LOGGER.trace("INJ:[IAT]:     " + valid);
             }
 
             // coolant temp check
             if (valid && containsData(response, "P2")) {
                 double temp = findValue(response, "P2");
+                LOGGER.trace("INJ:[CT:P2]: " + temp);
                 valid = injectorTab.isValidCoolantTemp(temp);
+                LOGGER.trace("INJ:[CT]:    " + valid);
             }
 
             // tip-in throttle check
@@ -70,11 +85,14 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
                 double tipIn = -1;
                 if (containsData(response, "E23")) {
                     tipIn = findValue(response, "E23");
+                    LOGGER.trace("INJ:[TIP:E23]: " + tipIn);
                 }
                 if (containsData(response, "E54")) {
                     tipIn = findValue(response, "E54");
+                    LOGGER.trace("INJ:[TIP:E54]: " + tipIn);
                 }
                 valid = injectorTab.isValidTipInThrottle(tipIn);
+                LOGGER.trace("INJ:[TIP]:     " + valid);
             }
 
             if (valid) {
@@ -83,6 +101,7 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
                 double stoichAfr = injectorTab.getFuelStoichAfr();
                 double density = injectorTab.getFuelDensity();
                 final double fuelcc = load / 2 / stoichAfr * 1000 / density;
+                LOGGER.trace("Injector Data: " + pulseWidth + "ms, " + fuelcc + "cc");
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         injectorTab.addData(pulseWidth, fuelcc);
