@@ -9,6 +9,7 @@ import enginuity.logger.ecu.ui.DataRegistrationBroker;
 import enginuity.logger.ecu.ui.tab.XYTrendline;
 import enginuity.maps.DataCell;
 import enginuity.maps.Rom;
+import enginuity.maps.Table;
 import enginuity.maps.Table2D;
 import static enginuity.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
@@ -393,11 +394,17 @@ public final class MafControlPanel extends JPanel {
     }
 
     private Table2D getMafTable(ECUEditor ecuEditor) {
+        Table2D table = getTable(ecuEditor, "MAF Sensor Scaling");
+        if (table == null) return getTable(ecuEditor, "MAF Sensor Scaling ");
+        return table;
+    }
+
+    private <T extends Table> T getTable(ECUEditor ecuEditor, String tableName) {
         try {
             Rom rom = ecuEditor.getLastSelectedRom();
-            return (Table2D) rom.getTable("MAF Sensor Scaling");
+            return (T) rom.getTable(tableName);
         } catch (Exception e) {
-            LOGGER.warn("Error getting MAF table", e);
+            LOGGER.warn("Error getting " + tableName + " table", e);
             return null;
         }
     }

@@ -9,6 +9,7 @@ import enginuity.logger.ecu.ui.DataRegistrationBroker;
 import enginuity.logger.ecu.ui.tab.XYTrendline;
 import enginuity.maps.DataCell;
 import enginuity.maps.Rom;
+import enginuity.maps.Table;
 import enginuity.maps.Table1D;
 import enginuity.maps.Table2D;
 import static enginuity.util.ParamChecker.checkNotNull;
@@ -455,19 +456,23 @@ public final class InjectorControlPanel extends JPanel {
     }
 
     private Table1D getInjectorFlowTable(ECUEditor ecuEditor) {
-        try {
-            Rom rom = ecuEditor.getLastSelectedRom();
-            return (Table1D) rom.getTable("Injector Flow Scaling");
-        } catch (Exception e) {
-            return null;
-        }
+        Table1D table = getTable(ecuEditor, "Injector Flow Scaling");
+        if (table == null) return getTable(ecuEditor, "Injector Flow Scaling ");
+        return table;
     }
 
     private Table2D getInjectorLatencyTable(ECUEditor ecuEditor) {
+        Table2D table = getTable(ecuEditor, "Injector Latency");
+        if (table == null) return getTable(ecuEditor, "Injector Latency ");
+        return table;
+    }
+
+    private <T extends Table> T getTable(ECUEditor ecuEditor, String tableName) {
         try {
             Rom rom = ecuEditor.getLastSelectedRom();
-            return (Table2D) rom.getTable("Injector Latency");
+            return (T) rom.getTable(tableName);
         } catch (Exception e) {
+            LOGGER.warn("Error getting " + tableName + " table", e);
             return null;
         }
     }
