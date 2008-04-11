@@ -9,7 +9,6 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +28,8 @@ public final class AemConnectionImpl implements AemConnection {
     //TODO: This a guess!!...untested!!
     public byte[] read() {
         try {
-            List<Byte> buffer = new ArrayList<Byte>();
             serialConnection.readStaleData();
+            List<Byte> buffer = new ArrayList<Byte>();
             long start = System.currentTimeMillis();
             while (System.currentTimeMillis() - start <= sendTimeout) {
                 byte[] bytes = serialConnection.readAvailable();

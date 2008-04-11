@@ -40,6 +40,7 @@ public final class InnovateConnectionImpl implements InnovateConnection {
     // FIX - YIKES!!
     public byte[] read() {
         try {
+            serialConnection.readStaleData();
             byte[] response = new byte[responseLength];
             int bufferLength = responseLength + INNOVATE_HEADER.length - 1;
             long start = currentTimeMillis();
