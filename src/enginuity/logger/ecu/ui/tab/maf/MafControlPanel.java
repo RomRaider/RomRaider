@@ -320,9 +320,9 @@ public final class MafControlPanel extends JPanel {
         updateMafButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    Table2D table = getMafTable(ecuEditor);
-                    if (table != null) {
-                        if (showUpdateMafConfirmation() == OK_OPTION) {
+                    if (showUpdateMafConfirmation() == OK_OPTION) {
+                        Table2D table = getMafTable(ecuEditor);
+                        if (table != null) {
                             if (isValidRange(mafvMin, mafvMax)) {
                                 DataCell[] axisCells = table.getAxis().getData();
                                 double[] x = new double[axisCells.length];
@@ -343,9 +343,9 @@ public final class MafControlPanel extends JPanel {
                             } else {
                                 showMessageDialog(parent, "Invalid MAFv range specified.", "Error", ERROR_MESSAGE);
                             }
+                        } else {
+                            showMessageDialog(parent, "MAF Sensor Scaling table not found.", "Error", ERROR_MESSAGE);
                         }
-                    } else {
-                        showMessageDialog(parent, "MAF Sensor Scaling table not found.", "Error", ERROR_MESSAGE);
                     }
                 } catch (Exception e) {
                     String msg = e.getMessage() != null && e.getMessage().length() > 0 ? e.getMessage() : "Unknown";

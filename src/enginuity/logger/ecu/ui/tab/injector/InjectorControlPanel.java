@@ -361,9 +361,9 @@ public final class InjectorControlPanel extends JPanel {
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    Table1D table = getInjectorFlowTable(ecuEditor);
-                    if (table != null) {
-                        if (showUpdateTableConfirmation("Injector Flow Scaling") == OK_OPTION) {
+                    if (showUpdateTableConfirmation("Injector Flow Scaling") == OK_OPTION) {
+                        Table1D table = getInjectorFlowTable(ecuEditor);
+                        if (table != null) {
                             DataCell[] cells = table.getData();
                             if (cells.length == 1) {
                                 if (isNumber(flowScaling)) {
@@ -374,9 +374,9 @@ public final class InjectorControlPanel extends JPanel {
                                     showMessageDialog(parent, "Injector Flow Scaling value invalid.", "Error", ERROR_MESSAGE);
                                 }
                             }
+                        } else {
+                            showMessageDialog(parent, "Injector Flow Scaling table not found.", "Error", ERROR_MESSAGE);
                         }
-                    } else {
-                        showMessageDialog(parent, "Injector Flow Scaling table not found.", "Error", ERROR_MESSAGE);
                     }
                 } catch (Exception e) {
                     String msg = e.getMessage() != null && e.getMessage().length() > 0 ? e.getMessage() : "Unknown";
@@ -392,9 +392,9 @@ public final class InjectorControlPanel extends JPanel {
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    Table2D table = getInjectorLatencyTable(ecuEditor);
-                    if (table != null) {
-                        if (showUpdateTableConfirmation("Injector Latency") == OK_OPTION) {
+                    if (showUpdateTableConfirmation("Injector Latency") == OK_OPTION) {
+                        Table2D table = getInjectorLatencyTable(ecuEditor);
+                        if (table != null) {
                             DataCell[] cells = table.getData();
                             if (isNumber(latencyOffset)) {
                                 for (DataCell cell : cells) {
@@ -405,9 +405,9 @@ public final class InjectorControlPanel extends JPanel {
                             } else {
                                 showMessageDialog(parent, "Injector Latency Offset value invalid.", "Error", ERROR_MESSAGE);
                             }
+                        } else {
+                            showMessageDialog(parent, "Injector Latency table not found.", "Error", ERROR_MESSAGE);
                         }
-                    } else {
-                        showMessageDialog(parent, "Injector Latency table not found.", "Error", ERROR_MESSAGE);
                     }
                 } catch (Exception e) {
                     String msg = e.getMessage() != null && e.getMessage().length() > 0 ? e.getMessage() : "Unknown";
