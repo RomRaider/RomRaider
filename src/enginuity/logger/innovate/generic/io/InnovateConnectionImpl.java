@@ -7,6 +7,7 @@ import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.ByteUtil.matchOnes;
 import static enginuity.util.ByteUtil.matchZeroes;
 import static enginuity.util.HexUtil.asBytes;
+import static enginuity.util.HexUtil.asHex;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
@@ -50,11 +51,13 @@ public final class InnovateConnectionImpl implements InnovateConnection {
                 if (available < bufferLength) continue;
                 byte[] buffer = new byte[bufferLength];
                 serialConnection.read(buffer);
+                LOGGER.trace(device + " input: " + asHex(buffer));
                 int responseBeginIndex = 0;
                 int bufferBeginIndex = findHeader(buffer);
                 if (bufferBeginIndex < 0) {
                     bufferBeginIndex = findLm1(buffer);
                     if (bufferBeginIndex < 0) continue;
+                    LOGGER.trace(device + ": v1 protocol found - appending header...");
                     arraycopy(INNOVATE_HEADER, 0, response, 0, INNOVATE_HEADER.length);
                     responseBeginIndex = INNOVATE_HEADER.length;
                 }
@@ -66,6 +69,7 @@ public final class InnovateConnectionImpl implements InnovateConnection {
                     if (remainder.length == 0) continue;
                     arraycopy(remainder, 0, response, responseLength - remainderLength, remainderLength);
                 }
+                LOGGER.trace(device + " Response: " + asHex(response));
                 return response;
             }
             LOGGER.warn(device + " Response [read timeout]");
