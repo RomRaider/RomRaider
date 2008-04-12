@@ -6,6 +6,7 @@ import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.DataRegistrationBroker;
+import static enginuity.logger.ecu.ui.tab.TableFinder.findTableStartsWith;
 import enginuity.logger.ecu.ui.tab.XYTrendline;
 import enginuity.maps.DataCell;
 import enginuity.maps.Rom;
@@ -345,7 +346,7 @@ public final class MafControlPanel extends JPanel {
                                 showMessageDialog(parent, "Invalid MAFv range specified.", "Error", ERROR_MESSAGE);
                             }
                         } else {
-                            showMessageDialog(parent, "MAF Sensor Scaling table not found.", "Error", ERROR_MESSAGE);
+                            showMessageDialog(parent, "Error finding MAF Sensor Scaling table.", "Error", ERROR_MESSAGE);
                         }
                     }
                 } catch (Exception e) {
@@ -394,17 +395,15 @@ public final class MafControlPanel extends JPanel {
     }
 
     private Table2D getMafTable(ECUEditor ecuEditor) {
-        Table2D table = getTable(ecuEditor, "MAF Sensor Scaling");
-        if (table == null) return getTable(ecuEditor, "MAF Sensor Scaling ");
-        return table;
+        return getTable(ecuEditor, "MAF Sensor Scaling");
     }
 
-    private <T extends Table> T getTable(ECUEditor ecuEditor, String tableName) {
+    private <T extends Table> T getTable(ECUEditor ecuEditor, String name) {
         try {
             Rom rom = ecuEditor.getLastSelectedRom();
-            return (T) rom.getTable(tableName);
+            return (T) findTableStartsWith(rom, name);
         } catch (Exception e) {
-            LOGGER.warn("Error getting " + tableName + " table", e);
+            LOGGER.warn("Error getting " + name + " table", e);
             return null;
         }
     }

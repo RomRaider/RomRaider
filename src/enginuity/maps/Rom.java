@@ -26,10 +26,11 @@ import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
 import enginuity.swing.JProgressPane;
 import enginuity.xml.TableNotFoundException;
 import org.apache.log4j.Logger;
-
 import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class Rom implements Serializable {
@@ -70,6 +71,15 @@ public class Rom implements Serializable {
         throw new TableNotFoundException();
     }
 
+    public List<Table> findTables(String regex) {
+        List<Table> result = new ArrayList<Table>();
+        for (Table table : tables) {
+            String name = table.getName();
+            if (name.matches(regex)) result.add(table);
+        }
+        return result;
+    }
+
     public void removeTable(String tableName) {
         for (int i = 0; i < tables.size(); i++) {
             if (tables.get(i).getName().equalsIgnoreCase(tableName)) {
@@ -92,7 +102,7 @@ public class Rom implements Serializable {
                 if (table.getStorageAddress() != 0) {
                     try {
                         table.populateTable(binData);
-                        TableUpdateHandler.getInstance().registerTable(table);                        
+                        TableUpdateHandler.getInstance().registerTable(table);
                     } catch (ArrayIndexOutOfBoundsException ex) {
 
                         LOGGER.error(table.getName() +

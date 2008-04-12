@@ -6,11 +6,11 @@ import enginuity.logger.ecu.definition.EcuSwitch;
 import enginuity.logger.ecu.definition.ExternalData;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.DataRegistrationBroker;
+import static enginuity.logger.ecu.ui.tab.TableFinder.findTableStartsWith;
 import enginuity.logger.ecu.ui.tab.XYTrendline;
 import enginuity.maps.DataCell;
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
-import enginuity.maps.Table1D;
 import enginuity.maps.Table2D;
 import static enginuity.util.ParamChecker.checkNotNull;
 import jamlab.Polyfit;
@@ -363,7 +363,7 @@ public final class InjectorControlPanel extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     if (showUpdateTableConfirmation("Injector Flow Scaling") == OK_OPTION) {
-                        Table1D table = getInjectorFlowTable(ecuEditor);
+                        Table2D table = getInjectorFlowTable(ecuEditor);
                         if (table != null) {
                             DataCell[] cells = table.getData();
                             if (cells.length == 1) {
@@ -372,7 +372,7 @@ public final class InjectorControlPanel extends JPanel {
                                     cells[0].setRealValue(value);
                                     table.colorize();
                                 } else {
-                                    showMessageDialog(parent, "Injector Flow Scaling value invalid.", "Error", ERROR_MESSAGE);
+                                    showMessageDialog(parent, "Invalid Injector Flow Scaling value.", "Error", ERROR_MESSAGE);
                                 }
                             }
                         } else {
@@ -404,10 +404,10 @@ public final class InjectorControlPanel extends JPanel {
                                 }
                                 table.colorize();
                             } else {
-                                showMessageDialog(parent, "Injector Latency Offset value invalid.", "Error", ERROR_MESSAGE);
+                                showMessageDialog(parent, "Invalid Injector Latency Offset value.", "Error", ERROR_MESSAGE);
                             }
                         } else {
-                            showMessageDialog(parent, "Injector Latency table not found.", "Error", ERROR_MESSAGE);
+                            showMessageDialog(parent, "Error finding Injector Latency table.", "Error", ERROR_MESSAGE);
                         }
                     }
                 } catch (Exception e) {
@@ -455,24 +455,20 @@ public final class InjectorControlPanel extends JPanel {
         return showConfirmDialog(parent, "Update " + table + "?", "Confirm Update", YES_NO_OPTION, WARNING_MESSAGE);
     }
 
-    private Table1D getInjectorFlowTable(ECUEditor ecuEditor) {
-        Table1D table = getTable(ecuEditor, "Injector Flow Scaling");
-        if (table == null) return getTable(ecuEditor, "Injector Flow Scaling ");
-        return table;
+    private Table2D getInjectorFlowTable(ECUEditor ecuEditor) {
+        return getTable(ecuEditor, "Injector Flow Scaling");
     }
 
     private Table2D getInjectorLatencyTable(ECUEditor ecuEditor) {
-        Table2D table = getTable(ecuEditor, "Injector Latency");
-        if (table == null) return getTable(ecuEditor, "Injector Latency ");
-        return table;
+        return getTable(ecuEditor, "Injector Latency");
     }
 
-    private <T extends Table> T getTable(ECUEditor ecuEditor, String tableName) {
+    private <T extends Table> T getTable(ECUEditor ecuEditor, String name) {
         try {
             Rom rom = ecuEditor.getLastSelectedRom();
-            return (T) rom.getTable(tableName);
+            return (T) findTableStartsWith(rom, name);
         } catch (Exception e) {
-            LOGGER.warn("Error getting " + tableName + " table", e);
+            LOGGER.warn("Error getting " + name + " table", e);
             return null;
         }
     }
