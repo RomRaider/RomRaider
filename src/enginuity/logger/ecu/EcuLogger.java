@@ -149,7 +149,7 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
-    private static final String ENGINUITY_ECU_LOGGER_TITLE = "Enginuity ECU Logger";
+    private static final String ENGINUITY_ECU_LOGGER_TITLE = "RomRaider ECU Logger";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";

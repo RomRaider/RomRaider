@@ -22,7 +22,6 @@
 package enginuity.swing;
 
 import org.apache.log4j.Logger;
-
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
@@ -46,7 +45,7 @@ public final class LookAndFeelManager {
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 System.setProperty("apple.awt.rendering", "true");
                 System.setProperty("apple.awt.window.position.forceSafeCreation", "true");
-                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Enginuity");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "RomRaider");
                 System.setProperty("apple.awt.brushMetalLook", "true");
                 if (USE_RESTRICTED_PLATFORM_ON_MAC) {
                     setRestrictedPlatformLookAndFeel("Windows", "5.1");

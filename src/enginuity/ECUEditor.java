@@ -41,7 +41,6 @@ import enginuity.xml.DOMRomUnmarshaller;
 import enginuity.xml.RomNotFoundException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -77,8 +76,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     private final SettingsManager settingsManager = new SettingsManagerImpl();
     private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private RomTree imageList = new RomTree(imageRoot);
-    private String versionDate = "2/8/2007";
-    private String titleText = "Enginuity v" + VERSION;
+    private String titleText = "RomRaider v" + VERSION;
     public MDIDesktopPane rightPanel = new MDIDesktopPane();
     private JProgressPane statusPanel = new JProgressPane();
     private JSplitPane splitPane = new JSplitPane();
@@ -156,7 +154,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                 releaseNotes.setText(sb.toString());
 
                 JOptionPane.showMessageDialog(this, scroller,
-                        "Enginuity " + VERSION + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
+                        "RomRaider " + VERSION + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
             } finally {
                 br.close();
             }

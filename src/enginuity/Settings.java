@@ -24,7 +24,6 @@ package enginuity;
 import enginuity.io.connection.ConnectionProperties;
 import enginuity.logger.ecu.definition.EcuDefinition;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -42,8 +41,8 @@ public class Settings implements Serializable {
     private boolean windowMaximized = false;
 
     private String romRevisionURL = "http://www.scoobypedia.co.uk/index.php/Knowledge/ECUVersionCompatibilityList";
-    private String ecuDefsURL = "http://www.enginuity.org/viewtopic.php?t=360";
-    private String supportURL = "http://www.enginuity.org";
+    private String ecuDefsURL = "http://www.romraider.com/forum/forum8.html";
+    private String supportURL = "http://www.romraider.com";
     private String releaseNotes = "release notes.txt";
     private String recentVersion = "x";
 

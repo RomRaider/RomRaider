@@ -25,7 +25,6 @@ import enginuity.Settings;
 import enginuity.logger.ecu.exception.FileLoggerException;
 import enginuity.logger.ecu.ui.MessageListener;
 import static enginuity.util.ParamChecker.checkNotNull;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -123,7 +122,7 @@ public final class FileLoggerImpl implements FileLogger {
         if (!logDir.endsWith(File.separator)) {
             logDir += File.separator;
         }
-        logDir += "enginuitylog_" + dateFormat.format(new Date()) + ".csv";
+        logDir += "romraiderlog_" + dateFormat.format(new Date()) + ".csv";
         return logDir;
     }
 

@@ -22,7 +22,6 @@
 package enginuity.swing;
 
 import enginuity.net.URL;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -35,7 +34,7 @@ public class DebugPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JPanel top = new JPanel(new GridLayout(7, 1));
-        top.add(new JLabel("Enginuity has encountered an exception. Please review the details below."));
+        top.add(new JLabel("RomRaider has encountered an exception. Please review the details below."));
         top.add(new JLabel("If you are unable to fix this problem please visit the following website"));
         top.add(new JLabel("and provide these details and the steps that lead to this error."));
         top.add(new JLabel());

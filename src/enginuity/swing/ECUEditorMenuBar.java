@@ -21,10 +21,12 @@
 
 package enginuity.swing;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
+import com.centerkey.utils.BareBonesBrowserLaunch;
+import enginuity.ECUEditor;
+import enginuity.logger.ecu.EcuLogger;
+import enginuity.logger.utec.gui.JutecGUI;
+import enginuity.maps.Rom;
+import enginuity.ramtune.test.RamTuneTestApp;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
@@ -38,12 +40,10 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
-import com.centerkey.utils.BareBonesBrowserLaunch;
-import enginuity.ECUEditor;
-import enginuity.logger.ecu.EcuLogger;
-import enginuity.logger.utec.gui.JutecGUI;
-import enginuity.maps.Rom;
-import enginuity.ramtune.test.RamTuneTestApp;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
@@ -61,7 +61,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem updateDefinition = new JMenuItem("Update ECU Definitions...");
 
     private JMenu editMenu = new JMenu("Edit");
-    private JMenuItem settings = new JMenuItem("Enginuity Settings...");
+    private JMenuItem settings = new JMenuItem("RomRaider Settings...");
 
     private JMenu viewMenu = new JMenu("View");
     private JMenuItem romProperties = new JMenuItem("ECU Image Properties");
@@ -81,7 +81,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem launchRamTuneTestApp = new JMenuItem("Launch Test App...");
 
     private JMenu helpMenu = new JMenu("Help");
-    private JMenuItem about = new JMenuItem("About Enginuity");
+    private JMenuItem about = new JMenuItem("About RomRaider");
 
     private ECUEditor parent;
 
@@ -188,7 +188,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         launchRamTuneTestApp.setMnemonic('L');
         ramTuneMenu.add(launchRamTuneTestApp);
         launchRamTuneTestApp.addActionListener(this);
-        
+
         // help menu stuff
         add(helpMenu);
         helpMenu.setMnemonic('H');
@@ -291,7 +291,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent);
 
         } else if (e.getSource() == utecLogger) {
-        	JutecGUI.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
+            JutecGUI.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
 
         } else if (e.getSource() == updateDefinition) {
             BareBonesBrowserLaunch.openURL(parent.getSettings().getEcuDefsURL());

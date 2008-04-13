@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.ui.swing.menubar.action;
 
 import enginuity.logger.ecu.EcuLogger;
-
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import java.awt.event.ActionEvent;
@@ -13,6 +12,6 @@ public final class AboutAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-        showMessageDialog(logger, "Enginuity ECU Logger\nhttp://www.enginuity.org/", "About", INFORMATION_MESSAGE);
+        showMessageDialog(logger, "RomRaider ECU Logger\nhttp://www.romraider.com/", "About", INFORMATION_MESSAGE);
     }
 }
