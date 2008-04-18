@@ -47,6 +47,7 @@ public final class InjectorControlPanel extends JPanel {
     private static final String ENGINE_SPEED = "P8";
     private static final String INTAKE_AIR_TEMP = "P11";
     private static final String MASS_AIR_FLOW = "P12";
+    private static final String MASS_AIR_FLOW_V = "P18";
     private static final String AFR = "P58";
     private static final String CL_OL_16 = "E3";
     private static final String CL_OL_32 = "E33";
@@ -65,9 +66,9 @@ public final class InjectorControlPanel extends JPanel {
     private final JTextField rpmMax = new JTextField("4500", 3);
     private final JTextField mafMin = new JTextField("20", 3);
     private final JTextField mafMax = new JTextField("100", 3);
-    private final JTextField iatMin = new JTextField("25", 3);
     private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
+    private final JTextField mafvChangeMax = new JTextField("0.3", 3);
     private final JTextField fuelStoichAfr = new JTextField("14.7", 5);
     private final JTextField fuelDensity = new JTextField("732", 5);
     private final JTextField flowScaling = new JTextField("", 5);
@@ -128,7 +129,11 @@ public final class InjectorControlPanel extends JPanel {
     }
 
     public boolean isValidIntakeAirTemp(double value) {
-        return checkInRange("Intake Air Temp.", iatMin, iatMax, value);
+        return checkLessThan("Intake Air Temp.", iatMax, value);
+    }
+
+    public boolean isValidMafvChange(double value) {
+        return checkLessThan("dMAFv/dt", mafvChangeMax, value);
     }
 
     public boolean isValidTipInThrottle(double value) {
@@ -155,6 +160,16 @@ public final class InjectorControlPanel extends JPanel {
     private boolean checkGreaterThan(String name, JTextField min, double value) {
         if (isNumber(min)) {
             return value >= parseDouble(min);
+        } else {
+            showMessageDialog(parent, "Invalid " + name + " specified.", "Error", ERROR_MESSAGE);
+            recordDataButton.setSelected(false);
+            return false;
+        }
+    }
+
+    private boolean checkLessThan(String name, JTextField max, double value) {
+        if (isNumber(max)) {
+            return value <= parseDouble(max);
         } else {
             showMessageDialog(parent, "Invalid " + name + " specified.", "Error", ERROR_MESSAGE);
             recordDataButton.setSelected(false);
@@ -250,9 +265,10 @@ public final class InjectorControlPanel extends JPanel {
         addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 0);
         addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 3);
         addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 6);
-        addMinMaxFilter(panel, gridBagLayout, "IAT Range", iatMin, iatMax, 9);
-        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 12);
-        addComponent(panel, gridBagLayout, buildRecordDataButton(), 15);
+        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 9);
+        addLabeledComponent(panel, gridBagLayout, "Max. Intake Temp.", iatMax, 12);
+        addLabeledComponent(panel, gridBagLayout, "Max. dMAFv/dt (V/s)", mafvChangeMax, 15);
+        addComponent(panel, gridBagLayout, buildRecordDataButton(), 18);
 
         return panel;
     }
@@ -261,9 +277,9 @@ public final class InjectorControlPanel extends JPanel {
         recordDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (recordDataButton.isSelected()) {
-                    registerData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH_16, PULSE_WIDTH_32, ENGINE_LOAD_16, ENGINE_LOAD_32);
+                    registerData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH_16, PULSE_WIDTH_32, ENGINE_LOAD_16, ENGINE_LOAD_32);
                 } else {
-                    deregisterData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH_16, PULSE_WIDTH_32, ENGINE_LOAD_16, ENGINE_LOAD_32);
+                    deregisterData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH_16, PULSE_WIDTH_32, ENGINE_LOAD_16, ENGINE_LOAD_32);
                 }
             }
         });

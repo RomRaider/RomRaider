@@ -6,6 +6,8 @@ import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.logger.ecu.ui.tab.injector.InjectorTab;
 import org.apache.log4j.Logger;
 import javax.swing.SwingUtilities;
+import static java.lang.Math.abs;
+import static java.lang.System.currentTimeMillis;
 import java.util.Set;
 
 public final class InjectorUpdateHandler implements DataUpdateHandler {
@@ -15,6 +17,8 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
     private static final String ENGINE_LOAD_16 = "E2";
     private static final String ENGINE_LOAD_32 = "E32";
     private InjectorTab injectorTab;
+    private double lastMafv;
+    private long lastUpdate;
 
     public synchronized void registerData(LoggerData loggerData) {
     }
@@ -78,6 +82,18 @@ public final class InjectorUpdateHandler implements DataUpdateHandler {
                 LOGGER.trace("INJ:[CT:P2]: " + temp);
                 valid = injectorTab.isValidCoolantTemp(temp);
                 LOGGER.trace("INJ:[CT]:    " + valid);
+            }
+
+            // dMAFv/dt check
+            if (valid && containsData(response, "P18")) {
+                double mafv = findValue(response, "P18");
+                long now = currentTimeMillis();
+                double mafvChange = abs((mafv - lastMafv) / (now - lastUpdate) * 1000);
+                LOGGER.trace("INJ:[dMAFv/dt]: " + mafvChange);
+                valid = injectorTab.isValidMafvChange(mafvChange);
+                LOGGER.trace("INJ:[dMAFv/dt]: " + valid);
+                lastMafv = mafv;
+                lastUpdate = now;
             }
 
             // tip-in throttle check

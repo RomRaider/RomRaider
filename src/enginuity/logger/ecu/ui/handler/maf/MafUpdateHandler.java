@@ -6,6 +6,8 @@ import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import enginuity.logger.ecu.ui.tab.maf.MafTab;
 import org.apache.log4j.Logger;
 import javax.swing.SwingUtilities;
+import static java.lang.Math.abs;
+import static java.lang.System.currentTimeMillis;
 import java.util.Set;
 
 public final class MafUpdateHandler implements DataUpdateHandler {
@@ -14,6 +16,8 @@ public final class MafUpdateHandler implements DataUpdateHandler {
     private static final String AF_LEARNING_1 = "P4";
     private static final String AF_CORRECTION_1 = "P3";
     private MafTab mafTab;
+    private double lastMafv;
+    private long lastUpdate;
 
     public synchronized void registerData(LoggerData loggerData) {
     }
@@ -75,6 +79,18 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                 LOGGER.trace("MAF:[CT:P2]: " + temp);
                 valid = mafTab.isValidCoolantTemp(temp);
                 LOGGER.trace("MAF:[CT]:    " + valid);
+            }
+
+            // dMAFv/dt check
+            if (valid && containsData(response, "P18")) {
+                double mafv = findValue(response, "P18");
+                long now = currentTimeMillis();
+                double mafvChange = abs((mafv - lastMafv) / (now - lastUpdate) * 1000);
+                LOGGER.trace("MAF:[dMAFv/dt]: " + mafvChange);
+                valid = mafTab.isValidMafvChange(mafvChange);
+                LOGGER.trace("MAF:[dMAFv/dt]: " + valid);
+                lastMafv = mafv;
+                lastUpdate = now;
             }
 
             // tip-in throttle check

@@ -62,6 +62,10 @@ public final class MafTabImpl extends JPanel implements MafTab {
         return controlPanel.isValidIntakeAirTemp(value);
     }
 
+    public boolean isValidMafvChange(double value) {
+        return controlPanel.isValidMafvChange(value);
+    }
+
     public boolean isValidTipInThrottle(double value) {
         return controlPanel.isValidTipInThrottle(value);
     }
