@@ -9,6 +9,9 @@ import enginuity.logger.ecu.ui.tab.LoggerChartPanel;
 import enginuity.logger.ecu.ui.tab.XYTrendline;
 import org.jfree.data.xy.XYSeries;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
@@ -22,7 +25,8 @@ public final class InjectorTabImpl extends JPanel implements InjectorTab {
     public InjectorTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
         super(new BorderLayout(2, 2));
         controlPanel = buildControlPanel(broker, ecuEditor);
-        add(controlPanel, WEST);
+        JScrollPane scrollPane = new JScrollPane(controlPanel, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
+        add(scrollPane, WEST);
         add(buildGraphPanel(), CENTER);
     }
 
