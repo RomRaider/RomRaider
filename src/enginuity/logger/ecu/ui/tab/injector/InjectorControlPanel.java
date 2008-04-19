@@ -68,7 +68,7 @@ public final class InjectorControlPanel extends JPanel {
     private final JTextField mafMax = new JTextField("100", 3);
     private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
-    private final JTextField mafvChangeMax = new JTextField("0.3", 3);
+    private final JTextField mafvChangeMax = new JTextField("0.2", 3);
     private final JTextField fuelStoichAfr = new JTextField("14.7", 5);
     private final JTextField fuelDensity = new JTextField("732", 5);
     private final JTextField flowScaling = new JTextField("", 5);

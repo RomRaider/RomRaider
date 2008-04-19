@@ -65,7 +65,7 @@ public final class MafControlPanel extends JPanel {
     private final JTextField mafMax = new JTextField("100", 3);
     private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
-    private final JTextField mafvChangeMax = new JTextField("0.3", 3);
+    private final JTextField mafvChangeMax = new JTextField("0.2", 3);
     private final Component parent;
     private final XYTrendline trendline;
     private final XYSeries series;
