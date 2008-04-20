@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<!-- The French langpack -->
+
+<langpack>
+
+    <!-- General installer strings -->
+    <str id="installer.title" txt="IzPack - Installation de "/>
+    <str id="installer.next" txt="Suivant"/>
+    <str id="installer.prev" txt="Précédent"/>
+    <str id="installer.quit" txt="Quitter"/>
+    <str id="installer.madewith" txt="(Créé avec IzPack - http://izpack.org/)"/>
+    <str id="installer.quit.title" txt="Voulez vous vraiment quitter ?"/>
+    <str id="installer.quit.message" txt="Ceci va cesser l'installation !"/>
+    <str id="installer.warning" txt="Attention !"/>
+    <str id="installer.yes" txt="Oui"/>
+    <str id="installer.no" txt="Non"/>
+    <str id="installer.cancel" txt="Annuler"/> 
+    <str id="installer.error" txt="Erreur"/>
+    <str id="installer.help" txt="Aide"/>
+    <str id="installer.step" txt="Etape"/>
+    <str id="installer.of" txt="sur"/>
+    <str id="installer.Message" txt="Message"/>
+    
+    <!-- Uninstaller specific strings -->
+    <str id="uninstaller.warning" txt="Ceci va enlever l'(es) application(s) installée(s) !"/>
+    <str id="uninstaller.destroytarget" txt=" Forcer la suppression de : "/>
+    <str id="uninstaller.uninstall" txt="Désinstaller"/>
+    
+    <!-- HelloPanel strings -->
+    <str id="HelloPanel.welcome1" txt="Bienvenue dans l'installation de "/>
+    <str id="HelloPanel.welcome2" txt=" !"/>
+    <str id="HelloPanel.authors" txt="Le(s) auteur(s) de ce logiciel est(sont) : "/>
+    <str id="HelloPanel.url" txt="La page d'accueil de ce logiciel est : "/>
+    
+    <!-- LicensePanel strings -->
+    <str id="LicencePanel.info" txt="Veuillez lire attentivement l'accord de licence suivant :"/>
+    <str id="LicencePanel.agree" txt="J'accepte les termes de cet accord de licence"/>
+    <str id="LicencePanel.notagree" txt="Je n'accepte pas les termes de cet accord de licence"/>
+    <str id="LicencePanel.yes" txt="Oui"/>
+    <str id="LicencePanel.no" txt="Non"/>
+    
+    <!-- PrinterSelect Panel -->
+    <str id="PrinterSelectPanel.select_printer" txt="Sélectionner l'imprimante à utiliser durant l'installation et les tests." />
+    
+    <!-- InfoPanel strings -->
+    <str id="InfoPanel.info" txt="Veuillez lire les informations suivantes :"/>
+    
+    <!-- PathInputPanel strings -->
+    <str id="PathInputPanel.required" txt="Le répertoire choisi devrait exister."/>
+    <str id="PathInputPanel.required.forModificationInstallation" txt="Le répertoire choisi devrait exister."/>    
+    <str id="PathInputPanel.notValid" txt="Le répertoire choisi ne contient pas le produit requis"/>
+    
+    <!-- TargetPanel strings -->
+    <str id="TargetPanel.info" txt="Choisissez le chemin d'installation :"/>
+    <str id="TargetPanel.browse" txt="Parcourir ..."/>
+    <str id="TargetPanel.warn" txt="Le répertoire existe déjà ! Etes-vous sur de vouloir installer dans celui-ci ?"/>
+    <str id="TargetPanel.nodir" txt="Vous avez spécifié le nom d'un fichier existant ! Veuillez choisir un autre chemin d'installation."/>
+    <str id="TargetPanel.notwritable" txt="Le répertoire que vous avez choisi n'autorise pas l'écriture. Veuillez en choisir un autre." />
+    <str id="TargetPanel.empty_target" txt="Vous avez spécifié un nom de répertoire vide ! Etes-vous sûr(e) ?"/>
+    <str id="TargetPanel.createdir" txt="Le répertoire de destination sera créé :" />
+    
+    <!-- JDKPathPanel strings -->
+    <str id="JDKPathPanel.intro" txt="L’application installée nécessite un JDK. Un java runtime environment (JRE) ne sera pas suffisant."/>
+    <str id="JDKPathPanel.info" txt="Choisissez le chemin du JDK:"/>
+    <str id="JDKPathPanel.badVersion1" txt="La version du JDK choisi est incompatible (disponible:"/>
+    <str id="JDKPathPanel.badVersion2" txt=" requis "/>
+    <str id="JDKPathPanel.badVersion3" txt=") voulez-vous vraiment utiliser cette version?"/>
+
+    <!-- PacksPanel strings -->
+    <str id="PacksPanel.info" txt="Choisissez ici les paquetages à installer :"/>
+    <str id="PacksPanel.tip" txt="Note : les paquetages grisés ne sont pas optionnels."/>
+    <str id="PacksPanel.space" txt="Espace total requis :" />
+    <str id="PacksPanel.description" txt="Description"/>
+    <str id="PacksPanel.freespace" txt="Espace disque disponible :"/>
+    <str id="PacksPanel.dependencyList" txt="Les paquetages selectionnés nécessitent également les suivants :"/>
+    <str id="PacksPanel.notEnoughSpace" txt="L'espace disque disponible est insuffisant."/>
+    <str id="PacksPanel.notAscertainable" txt="incertain"/>
+    
+    <!-- InstallPanel strings -->
+    <str id="InstallPanel.info" txt="Vous pouvez lancer le processus d'installation ici :"/>
+    <str id="InstallPanel.install" txt="Installer !"/>
+    <str id="InstallPanel.tip" txt="Progression de l'installation :"/>
+    <str id="InstallPanel.begin" txt="[Rien]"/>
+    <str id="InstallPanel.finished" txt="[Terminé]"/>
+    <str id="InstallPanel.progress" txt="Progression de l'installation totale :"/>
+    <str id="InstallPanel.overwrite.title" txt="Le fichier existe déjà."/>
+    <str id="InstallPanel.overwrite.question" txt="Le fichier suivant existe déjà. Faut-il l'écraser ?"/>
+    
+    <!-- InstallationGroupPanel strings -->
+    <str id="InstallationGroupPanel.colNameSelected" txt="Groupe Ã  installer" />
+    <str id="InstallationGroupPanel.colNameInstallType" txt="Description" />
+    <str id="InstallationGroupPanel.colNameSize" txt="Taille" />
+	
+    <!-- FinishPanel strings -->
+    <str id="FinishPanel.success" txt="L'installation est réussie !"/>
+    <str id="FinishPanel.done" txt="Terminer"/>
+    <str id="FinishPanel.fail" txt="L'installation a échouée ..."/>
+    <str id="FinishPanel.uninst.info" txt="Un désinstallateur a été créé :"/>
+    <str id="FinishPanel.auto" txt="Générer un script d'installation automatisée"/>
+    <str id="FinishPanel.auto.tip" txt="Génère un fichier qui permet de refaire automatiquement la meme installation sur une autre machine."/>
+    
+    <!-- ImgPacksPanel strings -->
+    <str id="ImgPacksPanel.dependencyList" txt="Dépendences"/>
+  	<str id="ImgPacksPanel.packs" txt="Les paquetages suivants sont disponibles :"/>
+    <str id="ImgPacksPanel.snap" txt="Capture d'écran associée :"/>
+    <str id="ImgPacksPanel.checkbox" txt=" Installer ce paquetage"/>
+     
+    <!-- ShortcutPanel strings -->
+    <str id="ShortcutPanel.regular.list" txt="Sélectionnez un groupe pour les raccourcis :"/>
+    <str id="ShortcutPanel.regular.default" txt="Remise à 0"/>
+    <str id="ShortcutPanel.regular.desktop" txt="Créer un raccourci sur le bureau"/>
+    <str id="ShortcutPanel.regular.create" txt="Créer les raccourcis"/>
+    <str id="ShortcutPanel.regular.userIntro" txt="Créer un raccourci pour :"/>
+    <str id="ShortcutPanel.regular.currentUser" txt="utilisateur courant"/>
+    <str id="ShortcutPanel.regular.allUsers" txt="tous les utilisateurs"/>
+    <str id="ShortcutPanel.alternate.apology" txt="Désolé, mais IzPack ne supporte pas la création de raccourcis pour ce système d'exploitation. Veuillez vous référer à son manuel pour créer des raccourcis."/>
+    <str id="ShortcutPanel.alternate.targetsLabel" txt="La liste suivante contient les cibles auxquelles le créateur de ce logiciel voulait vous donner accès."/>  
+    <str id="ShortcutPanel.alternate.textFileExplanation" txt="Vous pouvez enregistrer les informations détaillées concernant les cibles dans un fichier texte pour vous y référer plus tard."/>
+    <str id="ShortcutPanel.alternate.saveButton" txt="Enregistrer le fichier texte"/>
+    <str id="ShortcutPanel.textFile.header" txt="Informations des raccourcis\n====================\n\nVoici une liste des informations intéressantes concernant les raccourcis.\n Ces informations devraient rendre possible la création manuelle de raccourcis.\n"/> 
+    <str id="ShortcutPanel.textFile.name"         txt="Raccourci             : "/>
+    <str id="ShortcutPanel.textFile.location"     txt="Emplacement           : "/>
+    <str id="ShortcutPanel.textFile.description"  txt="Description           : "/>
+    <str id="ShortcutPanel.textFile.target"       txt="Cible                 : "/>
+    <str id="ShortcutPanel.textFile.command"      txt="Ligne de commande     : "/>
+    <str id="ShortcutPanel.textFile.iconName"     txt="Icone                 : "/>
+    <str id="ShortcutPanel.textFile.iconIndex"    txt="Index de l'icone      : "/>
+    <str id="ShortcutPanel.textFile.work"         txt="Répertoire de travail :"/>
+    <str id="ShortcutPanel.location.desktop"      txt="Bureau"/>
+    <str id="ShortcutPanel.location.applications" txt="Menu applications"/>
+    <str id="ShortcutPanel.location.startMenu"    txt="Menu démarrer"/>
+    <str id="ShortcutPanel.location.startup"      txt="Groupe de démarrage"/>
+    <str id="ShortcutPanel.headline" txt="Configuration des raccourcis"/>
+    <str id="ShortcutPanel.regular.StartMenu:Start-Menu" txt="Menu démarrer"/>
+    <str id="ShortcutPanel.regular.StartMenu:K-Menu" txt="Menu K"/>
+
+    <!-- UserInputPanel strings -->
+    <str id="UserInputPanel.error.caption"        txt="Problème de saisie"/>
+    <str id="UserInputPanel.search.autodetect"    txt="Détection automatique"/>
+    <str id="UserInputPanel.search.autodetect.failed.message" txt="La détection automatique a échouée."/>
+    <str id="UserInputPanel.search.autodetect.failed.caption" txt="La détection automatique a échouée."/>
+    <str id="UserInputPanel.search.autodetect.tooltip" txt="Vérifiez le fichier ou répertoire dans les chemis suivants :"/>
+    <str id="UserInputPanel.search.location" txt="Entrez l'emplacement de "/>
+    <str id="UserInputPanel.search.browse" txt="Parcourir ..."/>
+    <str id="UserInputPanel.search.wrongselection.message" txt="Le fichier ou le répertoire que vous avez choisi n'existe pas ou n'est pas convenable." />
+    <str id="UserInputPanel.search.wrongselection.caption" txt="Sélection invalide."/>
+    <str id="UserInputPanel.search.location.checkedfile" txt="L'existence de {0} est vérifiée."/>
+    
+    <!-- CompilePanel strings -->
+    <str id="CompilePanel.heading" txt="Compilation" />
+    <str id="CompilePanel.tip" txt="Progression de la compilation :" />
+    <str id="CompilePanel.browse" txt="Parcourir ..." />
+    <str id="CompilePanel.browse.approve" txt="Utiliser en tant que compilateur" />
+    <str id="CompilePanel.start" txt="Démarrer" />
+    <str id="CompilePanel.progress.initial" txt="[Appuyez sur le bouton de démarrage]" />
+    <str id="CompilePanel.progress.finished" txt="[Fini]" />
+    <str id="CompilePanel.progress.overall" txt="Progression de la compilation totale :" />
+    <str id="CompilePanel.error" txt="La compilation a échouée." />
+    <str id="CompilePanel.error.reconfigure" txt="Re-configurer" />
+    <str id="CompilePanel.error.ignore" txt="Ignorer" />
+    <str id="CompilePanel.error.abort" txt="Abandonner" />
+    <str id="CompilePanel.error.seebelow" txt="Voyez ci-dessous la commande qui a échouée ainsi que sa sortie." />
+    <str id="CompilePanel.error.nofiles" txt="Erreur pendant la recherche des fichiers à compiler." />
+    <str id="CompilePanel.error.compilernotfound" txt="Le compilateur n'a pas pu etre exécuté." />
+    <str id="CompilePanel.error.invalidarguments" txt="Le compilateur n'aime pas les arguments fournis." />
+    <str id="CompilePanel.error.noclassfile" txt="Le compilateur n'a pas génére de fichier .class pour le fichier source " />
+    <str id="CompilePanel.choose_compiler" txt="Compilateur à utiliser :" />
+    <str id="CompilePanel.additional_arguments" txt="Arguments supplémentaires du compilateur : " />
+    
+    <!-- ProcessPanel strings -->
+    <str id="ProcessPanel.heading" txt="En cours de traitement" />
+    
+    <!-- SummaryPanel strings -->
+    <str id="SummaryPanel.info" txt="Prêt à installer. Les données importantes sont listées ci-dessous. Appuyez sur &quot;Suivant&quot; pour commencer l'installation, "/>
+    <str id="TargetPanel.summaryCaption" txt="Chemin de l'installation"/>
+    <str id="JDKPathPanel.summaryCaption" txt="Chemin du JDK"/>
+    <str id="PacksPanel.summaryCaption" txt="Paquet(s) d'installation choisis"/>
+    <str id="ImgPacksPanel.summaryCaption" txt="Paquet(s) d'installation choisis"/>
+    
+    <!-- Strings for the Registry -->
+    <str id="functionFailed.RegOpenKeyEx" txt="Impossible d'ouvrir la clé de registre {0}\\{1}."/>
+    
+    <!-- CheckedHelloPanel strings -->
+    <str id="CheckedHelloPanel.productAlreadyExist0" txt="Ce logiciel est déjà installé depuis le chemin "/>
+    <str id="CheckedHelloPanel.productAlreadyExist1" txt=" . Etes-vous certain de vouloir installer une autre entité ?" />
+    <str id="CheckedHelloPanel.infoOverUninstallKey" txt="La clé de désinstallation sera : " />
+    
+	<!-- Headlines -->
+    <str id="CheckedHelloPanel.headline" txt="Bienvenue" />
+    <str id="CompilePanel.headline" txt="Compiler les sources Java" />
+    <str id="ConditionalUserInputPanel.headline" txt="Données utilisateur" />
+    <str id="ExtendedInstallPanel.headline" txt="Installation et Configuration" />
+    <str id="FinishPanel.headline" txt="Installation Terminée" />
+    <str id="HTMLInfoPanel.headline" txt="Informations" />
+    <str id="HTMLLicencePanel.headline" txt="Accords de Licence" />
+    <str id="HelloPanel.headline" txt="Bienvenue" />
+    <str id="ImgPacksPanel.headline" txt="Sélection des paquets à installer" />
+    <str id="InfoPanel.headline" txt="Informations" />
+    <str id="InstallPanel.headline" txt="Installation" />
+    <str id="JDKPathPanel.extendedIntro" txt="La version installée de l'application nécessite un JDK entre la version ${JDKPathPanel.minVersion} et la version ${JDKPathPanel.maxVersion}. Un environnement d'execution Java (JRE) ne sera pas suffisant." />
+    <str id="JDKPathPanel.headline" txt="Chemin du JDK" />
+    <str id="LicencePanel.headline" txt="Accords de Licence" />
+    <str id="PacksPanel.headline" txt="Sélection des paquets à installer" />
+    <str id="ProcessPanel.headline" txt="Execution de processus externes" />
+    <str id="SimpleFinishPanel.headline" txt="Installation Terminée" />
+    <str id="SummaryPanel.headline" txt="Résumé des données de configuration" />
+    <str id="TargetPanel.headline" txt="Chemin d'installation" />
+    <str id="UserInputPanel.headline" txt="Données utilisateur" /> 
+	
+    <!-- Add your own panels specific strings here if you need -->
+    
+</langpack>

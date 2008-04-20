@@ -1,0 +1,1116 @@
+[ The list of the different public versions of IzPack ]
+
+  > 3.11.0 (build 2008.02.12)
+
+- Added ignore as possible value for failure argument in executables (Dennis Reil)
+- Added Conditional expressions (Dennis Reil)
+- Fixed selection of default language in LanguageSelectionDialog (Dennis Reil)
+- Fixed RegularExpressionValidator (Dennis Reil)
+- Added corrupt volume detection (Dennis Reil)
+- Added file and dir fields in UserInputPanel (Dennis Reil)
+- Modifications to keep original file dates and times in _dist directory and in the installer jar
+  (Ari Voutilainen via Julien Ponge)
+- UserInputPanel: force users to select an existing directory or file
+  (Michael Hagedorn via Julien Ponge)
+- Default path for JDKPathPanel will be got from Windows registry if possible (Klaus Bartz)  
+- New Farsi langpack (Parastou Kohvaei via Klaus Bartz)
+- Dynamic control re-rendering (show/hide) on radio and checkbox selection events (Vladimir Ralev)
+- Locale support of Shortcut specification file (Klaus Bartz using a hint of Loic)
+- Enabled distributed pack-definitions (Hans Aikema based on patch by Syed Khadeer)
+- Update of the Liquid and JGoodies look and feel libraries (Julien Ponge).
+- Support for the toned-down Substance look and feel themes (Julien Ponge).
+- Added main frame GUI properties 'headingForegroundColor' and 'headingImageBorderSize'
+  (Daniel Azarov, Exadel Inc via Vladimir Ralev)
+- Unix shortcuts fixes (Vladimir Ralev)
+- TreePacksPanel, a hierarchical packs selection panel (Vladimir Ralev)
+- HTMLInfoPanel to launch links in external browser on any Windows and Linux (Vladimir Ralev)
+- PacksModel fix (Markus Schlegel via Julien Ponge).
+- Workaround for layout problems in UserInputPanel when clicking previous button (Dennis Reil)
+- Nimbus look and feel support (Julien Ponge)
+- Try to load a 64-bit dll if the 32-bit load fails and 64-bit ShellLink (Vladimir Ralev)
+- File / fileset Os constraints: addition of a JRE version test (e.g., <os jre="1.5" />)
+  (Gilles Wiart via Julien Ponge)
+- Hungarian langpack update (Kerekes Balazs via Julien Ponge)
+- InstallGroupPanel: sortable InstallGroups (Markus Schlegel via Julien Ponge)
+- chmod only applies and executes when file type is set to bin (Andreas Guenther via Julien Ponge)
+- LayoutManager bug at handling EditorPanes fixed (width to small) (Klaus Bartz)
+- Fixed NPE when ypcat not installed on linux. (Dick Hollenbeck via Marc Eppelmann)
+- Updated web installer (Vladimir Ralev)
+- Unix shortcuts allow programGroup icon. Fixed appearing multiple times bug in Fedora 7.
+  (Vladimir Ralev)
+- TreePacksPanel with more user-friendly click logic. Added automated installer helper.
+  (Vladimir Ralev)
+- Updated installation listener interface (Vladimir Ralev)
+- Re-entrant ShortcutPanel (WALLEM Pascal, AWL-T&P via Vladimir Ralev)
+- FileExecutor: allow Java classpath specification in targetfile attribute using
+  either : or ; delimiter, and support classpath loading of all jar files within a given folder,
+  e.g. targetfile="$INSTALL_PATH/lib/allMyJars (Andreas Guenther via Julien Ponge)
+- Support of a new 'uninstall' (yes/no) attribute on pack elements to allow certains pack to be
+  kept on uninstallation (Gildas Le Louarn via Julien Ponge)
+- Uninstaller: in GUI mode, users don't see the 'force uninstallation' checkbox unless the
+  '-x' command-line flag is used (Gildas Le Louarn via Julien Ponge)
+- Fixed wrong display size of really big packs (Dennis Reil) 
+- Tango icons (Julien Ponge)
+- Refreshed installer border images (Julien Ponge)
+- Fixed conditions in PacksPanel/PacksModel (Dennis Reil)
+- Added conditions for jobs in ProcessPanel (Dennis Reil) 
+- Fixed wrong required size of packs (Dennis Reil)
+- Added condition-attribute to pack element in installer.xml (Dennis Reil)
+- Spanish langpack update (Sergio Banos Calvo via Julien Ponge)
+- Various fixes (Loic via Julien Ponge)
+- Added conditions-definition to installer xml (Dennis Reil)
+- Added dynamic variables (Dennis Reil)
+- IzPack installer: check that users are actually launching the latest version by checking from
+  the http://izpack.org/ website (Julien Ponge)
+- Added debugging for variables and conditions (Dennis Reil)
+- Added built-in conditions (Dennis Reil)
+- ProcessPanel: make the progress bar advance after the current process has run, not before
+  (Julien Ponge)
+- JDKPathPanel: Mac OS X fix (Julien Ponge)
+- PathInputPanel: add some space between the text and the input field (Julien Ponge)
+- Installer files: support of a 'requiresjdk' element to specify wether a JDK is required for the
+  software to install (instead of just a JRE). This is a light test performed like 'javaversion'
+  before the installer frame appears. (Julien Ponge)
+- Support of XInclude-like constructs (Matthew Fudge, Volantis Systems Ltd.
+  via Julien Ponge)
+- Spanish langpack update (Sergio Banos Calvo via Julien Ponge)
+- OsVersion class: detect X86, PPC and SPARC architectures (Julien Ponge)
+- RulesEngines: new built-in rules: izpack.solarisinstall.x86 and izpack.solarisinstall.sparc (Julien Ponge)
+- New Galician translation (Xabier Cancela via Julien Ponge)
+- build.xml: include the new L&F jars (Jeff Gordon via Julien Ponge)
+- FileExecutor: fix a blank dialog prompting the user to continue if there's a failure (Jeff Gordon via Julien Ponge)
+- Italian translation update (Roberto Boriotti, Sylvain Gaudard via Julien Ponge)
+- PacksPanelAutomationHelper fix (Jeff Gordon via Julien Ponge)
+- 'parsexml' attribute for resources (Matthew Fudge via Julien Ponge)
+- InstallationGroupPanel UI improvements (Jeff Gordon via Julien Ponge)
+- HTMLInfoPanel: open external links in a web browser on Mac OS X as well (Alexander Maslov via Julien Ponge)
+- UserInputPanel: some variables were not saved for silent installers (Piotr Skowronek via Julien Ponge)
+- Text fields now can support validators (Piotr Skowronek via Julien Ponge)
+- UserInputPanel: substitution support for text fields (Piotr Skowronek via Julien Ponge)
+- TextInputField: Vertical layout issue fixed. (Jeff Gordon)
+- RegularExpressionValidator: Added ability to use with password fields. (Jeff Gordon)
+- PasswordEqualityValidator: Implementation of sample validator for use in any installer. 
+  Shows how to get at validator parameters as well. (Jeff Gordon)
+- PasswordKeystoreValidator: Validates keystore and/or key access using password field. (Jeff Gordon)
+- CompilerConfig: Changed uninstaller name to allow file name without jar extension. (Jeff Gordon)
+- UserPathPanel: Implemented copy of PathPanel as an alternative to dir type in UserInputPanel. (Jeff Gordon)
+- ValidatorContainer: Added supporting class for using multiple validators. (Jeff Gordon)
+- PasswordGroup: Added usage of ValidatorContainer to support multiple validators. (Jeff Gordon)
+- UserInputPanel: Changes to support multiple validators in password field and better error messages. (Jeff Gordon)
+- build.xml: Added ValidatorContainer and section for UserPathPanel. (Jeff Gordon)
+- eng.xml: Grammatical corrections, added UserPathPanel headline, messages, and captions,
+  added UserInputPanel.dir.* messages and captions, added UserInputPanel.file.* messages and captions.
+  (Need to add/test with alternative lang packs)  (Jeff Gordon)
+- PacksPanelBase: the packs would be selected / deselected on any list event (e.g., by navigating using the keys).
+  This funky behavior has been fixed (Julien Ponge).
+- Changed File.toURL() to File.toURI().toURL() to get rid of deprecation messages in Java 6. (Jeff Gordon)
+- ProcessPanel: the installation success is set to false in case an error has occurred (Julien Ponge)
+- VariableSubstitutor: parameters can also contain dashes (without need to use braces) (Piotr Skowronek)
+- IzPack is now a Codehaus project
+
+  > 3.10.2 (build 2007.05.11)
+
+- Vista/Java6 fixes (Stefan Wachter via Julien Ponge)
+- Dutch Langpack fixes (Hans Aikema)
+- Fix NPE for pack.id == null in dependencies/excludes (Hans Aikema)
+- Indonesian Langpack fixes (Thomas Santosa via Hans Aikema)
+- UserInputPanel and InstallerFrame: enable the next button for search dialogs (Michael Hagedorn via Julien Ponge)
+- VariableSubstitutor: new Java source files support (Max Fedorov via Julien Ponge)
+- French langpack updates (Loic, via Julien Ponge)
+- Documentation update (Scott Plante via Julien Ponge)
+- AutomatedUninstaller.writeUninstallData() out of sync with InstallerFrame fixed (Marius Nicolae via Marc Eppelmann)
+- Finnish langpack updates (Ari Voutilainen via Julien Ponge)
+
+  > 3.10.1 (build 2007.03.29)
+
+- Fixed NPE for pack.id == null (Fabrice Mirabile)
+- Packages that are not marked as preselected must also be removed from the selectedPacks
+  (Martina Angela Albrecht, via Fabrice Mirabile)
+- FreeDesktop XDG standard support for Gnome and KDE shortcuts support
+  (Vladimir Ralev via Julien Ponge)
+- Workaround for a Sun bug in Java 6 which crashes the installer in some non-english locales,
+  see http://jira.jboss.com/jira/browse/JBINSTALL-232 (Vladimir Ralev)
+- Replaced the default checkbox icons in Gnome/KDE since they do not grey-out when disabled
+  as notes in the helper label. This change is only effective for UNIX. (Vladimir Ralev)
+- Added localization support for column names in InstallationGroupPanel
+  (Markus Schlegel via Vladimir Ralev)
+- Finnish langpack updates (Ari Voutilainen via Julien Ponge)
+- Fix: Variables assigned by UserInputPanel are not available when the next page
+  nagivations rules are evaluated. http://jira.jboss.com/jira/browse/JBINSTALL-248
+  (Vladimir Ralev)
+- Fixed an XML error in the French langpack. (Julien Ponge, reported by Ari Voutilainen).
+- Compile listeners are included in izevent.jar (Julien Ponge).
+- PacksModel: the number of required bytes could be wrong when selecting and deselecting
+  packs. (Stefan Wachter via Julien Ponge)
+- Turkish langpack updated (Melih Cetin via Julien Ponge)
+
+  > 3.10.0 (build 2007.01.29)
+
+- Added docu: executeForPack, executeclass,logfiledir  for ProcessPanel (Fabrice Mirabile)
+- Added docu: createForUnselectedPack for UserInputPanel (Fabrice Mirabile)
+- Added DataCheckPanel (Fabrice Mirabile & Hal Vaughan)
+- Bugfix at using OS dependant panels; dtd adapted to implementation of it
+  (Klaus Bartz, thanks to Francois Guillet).
+- Added Rulesengine, Conditions, panelconditions (Dennis Reil)
+- Fix DestroyButton in UninstallerFrame clickable only once (Dennis Reil)
+- Added conditions to UserInputPanel-fields (Dennis Reil)
+- Heading panel strings can be depend on the panelid (Klaus Bartz, thanks
+  to Stefan Wachter).
+- Registry access extended to keys and values directly under a root key
+  (Klaus Bartz, thanks to Markus Schlegel).
+- Added dtd for conditions (Dennis Reil)
+- Added support for panelid in InstallerImage-Definition (Dennis Reil)
+- Added support for customicons (Dennis Reil)
+- Fixed the DesktopShortcutCheckboxEnabled Builtin Variable in docu (Fabrice Mirabile)
+- Fixed build.xml (PathSelectionPanel without using TargetPanel) (Fabrice Mirabile)
+- UserInputPanel multiline label fix (Vladimir Ralev, JBoss/RedHat, via Julien Ponge)
+- Fix for calling the IzPack Ant task from Maven builds (Vladimir Ralev, JBoss/RedHat, via Julien Ponge)
+- Support for uncompressing archives and adding their content at the installer generation time (Nils Meier, via Julien Ponge)
+- Fix for default button changes when a text field receives focus in UserInputPanel (Vladimir Ralev, JBoss/RedHat, via Dennis Reil)
+- Use the 'ProgramFiles' environment variable to detect the Windows program files folder path. (Markus Schlegel via Julien Ponge)
+- TargetPanel.dir setting bug fix (Markus Schlegel via Julien Ponge)
+- Added support for packaging selection (Dennis Reil)
+- Added support for variables in UserInputPanel (Dennis Reil)
+- Non-interactive command-line uninstaller (Vladimir Ralev, JBoss/Redhat, via Julien Ponge)
+- PathSelectionPanel: the installation path could not be fully displayed in RedHat, Fedora and
+  Ubuntu (Vladimir Ralev, JBoss/RedHat, via Julien Ponge)
+- Installations could fail if the installation path contained non-english characters
+  (Vladimir Ralev, JBoss/RedHat, via Julien Ponge)
+- Non-English installation path could be displayed garbled in InstallSummary.html
+  (Vladimir Ralev, JBoss/RedHat, via Julien Ponge)
+- Selected packs not being refreshed in the collection when the PackPanel is initialized
+  (Vladimir Ralev, JBoss/RedHat, via Julien Ponge)
+- Finnish localization updates (Ari Voutilainen via Julien Ponge)
+- Going back and forth between profile selection and packs selection made packs selection unavailable
+  (Vladimir Ralev, JBoss/RedHat, via Julien Ponge)
+- PathInputPanel: the close button had incorrect behavior for all path input question/notification messages
+  (Vladimir Ralev, JBoss/RedHat, via Julien Ponge)
+- PathInputPanel: logged a stacktrace on Linux systems when no defaultInstallDir was specified and
+  no TargetPanel.dir.x resource was present (Stefan Wachter via Julien Ponge)
+- Added MultiVolumePackager, MultiVolumeUnpacker, MultiVolumeInstaller to support splitting the installer (Dennis Reil)
+- Added conditions for packs to PacksPanel (Dennis Reil)
+- Loose packs fixes (Markus Schlegel via Julien Ponge)
+- UserInputPanel: possible scrambled text fix (Markus Schlegel via Julien Ponge)
+- UserInputPanel (Markus Schlegel via Julien Ponge):
+  - support for the new "installGroup"-attribute for the "programGroup" element of the shortcutSpec.xml
+  - late creation of shortcuts, for example in case ShortcutPanel is displayed before InstallPanel
+  - fixed a bug where each Shortcut-Subgroup influenced the remaining Shortcut creation
+- Added icon resource extension, to dynamically change installer icon (Dennis Reil)
+- New splash-screen (Romain Guy)
+
+  > 3.9.0 (build 2006.09.25)
+- Fix NullPointerException in CompilerConfig, if you specify a
+	compiler listener and the compiler listener class can't be found (Dennis Reil)
+- Fix Accents In French Langpack (Fabrice Mirabile)
+- Update French Langpack (Julien Ponge)
+- New Indonesian Langpack (Hans Aikema, thanks to Thomas Edwin Santosa)
+- Updated Dutch Langpack (Hans Aikema)
+- Fix for ComboBox in SearchField of UserInputPanel returning
+  java.lang.reflect.InvocationTargetException
+  if no options added.(Fabrice Mirabile, thanks to Oliver Kiddle)
+- Fix for the header of the window runs the message into
+  the filename (Fabrice Mirabile, thanks to Oliver Kiddle)
+- Added TroubleShooting for ShellLink.dll missing in help (DocBook and XHTML)
+  (Fabrice Mirabile).
+- Swing threading fixes (Julien Ponge).
+- Some fixes adviced by IntelliJ IDEA 5.1 code inspector (Julien Ponge).
+- Spanish langpack update (Cesar Martinez Izquierdo).
+- New Polish langpack (Fabrice Mirabile, thanks to Radek)
+- Fixed the createPWD.sh (Fabrice Mirabile, thanks to Radek)
+- Workaround for crashes at end of installation with Java VM version
+  1.5 (also known as 5.0) (Klaus Bartz).
+- Updated russian langpack (Fabrice Mirabile)
+- Fixed indent of ShortcutPanels Headline (Marc Eppelmann)
+- Made available all IzPack Variable in the ShortCut Specs (Marc Eppelmann)
+- Configurable heading panel added to InstallerFrame (Klaus Bartz).
+- Panels counter (text or progressbar) useable in the heading or
+  navigation panel (Klaus Bartz).
+- Fixed logfile for AntActions (Eric Rose).
+- PacksPanels: fixed disk space requirements (Ryan Shillington, via Julien
+  Ponge).
+- Compiler fix (Ryan Shillington, via Julien Ponge).
+- fixed Shotcut(s)(Panel) for Administrators on Win32 (Marc Eppelmann)
+- Fixes on Launcher, handling stuff (Julien Ponge)
+- MAC OS: Launcher is built as universal (ie, i386/ppc) binary  (Julien Ponge)
+- MAC OS: Qt is embedded in the application bundle  (Julien Ponge)
+- Added a variable for install log, InstallerFrame.logfilePath (Klaus Bartz).
+- Added the docu for install log (Fabrice Mirabile).
+- TwoColumnLayout fix (Amit Bhayani @JBoss/RedHat).
+- New compiler (packager) comandline argument -h for IZPACK_HOME; try to
+  automatic resolving of IZPACK_HOME if not specified (Klaus Bartz).
+- New layout manager (IzPanelLayout) for simplify layouting of IzPanels.
+  Configurable anchor, gaps, stretch rules etc. (Klaus Bartz).
+- Documentation figures refreshment (Julien Ponge).
+- Throw an IllegalArgumentException in the compiler if the declared panel
+  name differs in case from the founded class name (Klaus Bartz).
+- Re-Activated Shortcut Support for the Automated Installation (Marc Eppelmann).
+- Expanded Debug.log()'s possibility to log with Timestamp and or new Date()
+  Default is now: with both. (Marc Eppelmann).
+- Suppress a NullPointerException in the RuleInputField (Dennis Reil, via Marc
+  Eppelmann).
+- Merged normal installer and registry-enabled installers (Julien Ponge).
+- A potential null pointer exception has been discovered in Unpacker with a
+  custom action. (Dennis Reil, via Julien Ponge).
+- Implemented the X-KDE subsitute user - shortcut attribute (see Unix_shortcutSpec.xml)
+  (Marc Eppelmann).
+- Write Desktop shortcuts to all known local and ypbinded users "desktop" folders.
+  (Marc Eppelmann)
+- Write common shortcuts and their icons to the new freedesktop.org common
+  "/usr/share/applications"   and "/usr/share/pixmaps" folders to display
+  these in the commons [start].menu (Marc Eppelmann)
+- New InstallationGroupPanel for grouping packs together (Amit Bhayani, Scott Starks,
+  Alex Pinkin @JBoss/RedHat, via Julien Ponge).
+- Variable substitution in the description-elements of the PacksPanel (Dennis Reil, via
+  Julien Ponge).
+- Added a src.tar.gz target in the build.xml to create a IzPack.src.tar.gz (Marc Eppelmann)
+
+  > 3.8.1 (build 2006.01.06)
+- Added Greek language support (Fabrice Mirabile, thanks to Panayotis
+  Katsaloulis for the translation and flag).
+- New splashscreen artwork (Nicolas Deschaume).
+- Added IPAdress and ClassPath variable (Fabrice Mirabile).
+- Added HostName variable (Fabrice Mirabile, thanks to Oliver Kiddle).
+- Fixes for IPAdress (Fabrice Mirabile).
+- Patch for WebAccessor: indeterminate progress bar (Julian Payne).
+- Finish language support update (Ari Voutilainen).
+- Script parser fix when no application URL is given.
+- Fix for installer spanning screens with xinerama.
+- Fix for bug #4551 (Weiji Guo).
+- Subgrouping of shortcuts (Weiji Guo).
+- Added Korean language support (Fabrice Mirabile, thanks to Dongsu Jang).
+- Added new panel SelectedPrinterPanel which allows the user to chose any local
+  printer installed and set it to the $SELECTED_PRINTER variable. (Hal Vaughan
+  and Fabrice Mirabile).
+
+  > 3.8.0 (build 2005.10.27)
+- Added 2 processor classes having the ability to fill a combobox
+  with all available unix user and groups (Thorsten Kamann)
+- All default values for the InputPanel (the values of the set attribute)
+  can conatins variables at now.  All
+  variables will be replaces by the VariableSubstitutor (Thorsten Kamann)
+- The resources of the target panel can contains variables at now. All
+  variables will be replaces by the VariableSubstitutor (Thorsten Kamann)
+- Fixed chinese Flag.
+- Patch for InstallerFrame to support user confirmation after pressing
+  windows "X" closing button.
+- Update the IzPackTask to support an embedded xml installation document that
+  replaces @{x} property references with the corresponding ant property.
+  (patch #442 - Scott Stark).
+- Compiler refactor into an xml parser and xml independent compiler + Pack
+  group, installGroups (patch #439/440 - Scott Stark).
+- IzPack is now released under the terms of the Apache Software License 2.0.
+- Support for a jar attribute on the listener element (patch #432 - Scott Stark).
+- PacksPanels: translations loading fix (patch #446 - Stefan Heidrich).
+- Fixing bug with comboboxes. There was no text shown if you do not use a
+  processor to generate the choices. At now you can us the id or txt attribute
+  (Thorsten Kamann)
+- Uninstaller: use the system Look and Feel instead of the cross-platform one
+  (feature request #470).
+- The uninstaller name can be changed (Thomas Girard).
+- Documentation on the panels creation updates (Elmar Grom).
+- New SummaryPanel (Klaus Bartz).
+- New SummaryLoggerInstallerListener which loggs the summary
+  into a log file (Klaus Bartz).
+- Langpack up-to-date check script (Oscar Sierra | Klaus Bartz).
+- Custom langpacks (Klaus Bartz).
+- New variable APPLICATIONS_DEFAULT_ROOT (Klaus Bartz).
+- Bugfix in MultiLineLabel; now a line break will be performed also
+  it is needed at the last word of the line (Klaus Bartz).
+- Bugfix in JDKPathPanel: now it is possible to select an out-of-version
+  JDK (Klaus Bartz).
+- Properties can be substituted at compile time from the environment,
+  command line, java properties, ant, or <property> tag (Chad McHenry
+  and Scott Stark).
+- New Turkish langpack (Levent Bayindir).
+- Mac OS X: better Swing integration.
+- Configurable notation of language names in the language selection dialog
+  (Christian Murphy | Klaus Bartz).
+- Fail message in SimpleFinishPanel (Klaus Bartz).
+- Interrupt handling changed (Klaus Bartz).
+- Fixed shortcuts for RedHat and Mandrake (Fabrice Mirabile, thanks to Vitor
+  Rodrigues for the code).
+- New ConditionalUserInputPanel (Andreas Breiter, patches #407, #408).
+- ExecuteForPack, allow processing depending on the selected pack (Fabrice
+  Mirabile, thanks to Johannes Gutleber for the code).
+- Ant file cleanup: requires ant 1.6. Incremental builds of jar files.
+- Macrodefs instead of antcalls (Chad McHenry).
+- createForUnselectedPack, show a userinputapanel if a pack is not selected
+  (Fabrice Mirabile, thanks to Stefano Gamma)
+- Registry support on Windows (Klaus Bartz).
+- New CheckedHelloPanel which checks already installed products (Klaus Bartz).
+- Most IzPackTask output for ant is only dumped in VERBOSE mode (Chad McHenry).
+- Introduction of a JUnit test suite.
+- Scripts for easier built of password validation and encrytion addon classes (Fabrice Mirabile)
+- standalone-compiler.jar no longer has duplicate entries (bug #3928).
+- Building process: Java source and target compatibility enforced to 1.4.
+- IzPack installer: use JGoodies Looks on *nix as MlF is buggy on 1.5.
+- "Made with IzPack label": enforce a specific font for the label, making it
+  look finally good with JGoodies Looks.
+- ImgPacksPanel: removed the useless/ugly border around the description area.
+- New compressor pack added to support different compression algorithm for the
+  packs; initial supported are "raw", "deflate" and "bzip2" (Klaus Bartz).
+- New documentation in XHTML Strict 1.0 + CSS (Fabrice Mirabile).
+- New documentation in DocBook (Fabrice Mirabile).
+- Unicode port of shortcuts and registry stuff (Klaus Bartz).
+- New Mac OS X icon (.icns).
+- Added the American Locale XML and Flad (Fabrice Mirabile thanks to Joe Favero)
+
+  > 3.7.2 (build 2005.04.22)
+
+- IoHelper.getPrimaryGroup: bugfix for SunOS (Klaus Bartz).
+- Russian langpack fixes (Alexey Makhmutov).
+- Swedish langpack update (Nils Nordman).
+- Spanish langpack update (Juan Alvarez).
+- UserInputPanel: made 'instanceNumber' a protected atribute (patch #406,
+  Andreas Breiter).
+
+  > 3.7.1 (build 2005.02.15)
+
+- The Danish langpack was empty by mistake in 3.7.0.
+- Silent installations fix (Oscar Sierra).
+- Free disk space bugfix on Solaris (Oscar Sierra).
+- Installation runable with VM versions < 1.4 again (Klaus Bartz)
+  (implementation for bug #2268 changed).
+- Italian langpack fixes (Fabrice Mirabille).
+- UserInputPanel: bug fixes by Per Abich (bugs #3233 and #3283).
+- Russian langpack fixes (Alexey Makhmutov).
+- ProcessPanel log file creation fix on Win32 (Anthony Xin Chen).
+- IoHelper.getenv: on Windows keys are not case sensitive (Klaus Bartz).
+
+  > 3.7.0 (build 2005.01.11)
+
+- Adding custom action stuff for packaging, installation and uninstallation
+  (Klaus Bartz).
+- The packs files can now be located on disk if needed, for instance to install
+  an application located on a live cd (Erik Artzmark).
+- The attributes "includes" and "excludes" now are supported for filesets
+  (Klaus Bartz).
+- As many sensitive clean-ups as possible have been made after a FindBugs run.
+- Support of native libraries and additional jar files in the uninstaller (Klaus Bartz).
+- InfoPanel: variables substitution is now allowed (Borje Jonsson).
+- InstallPanel supports internationalized package names (Gaganis Giorgos).
+- Support for package dependencies (Gaganis Giorgos).
+- ShortcutPanel: can be optionally skipped on non-supported platforms.
+- PacksPanels: free disk space stuff (Klaus Bartz).
+- New Malaysian langpack (Redhuan Daniel Oon).
+- System properties can now be used as variables (Borje Jonsson).
+- New Norwegian langpack (Mohammed Sourouri).
+- New Chinese langpack (Xi Ping Wang).
+- The language selection box will now appear in the Windows tasks list (Harald
+  Spfle).
+- Spanish langpack update (David Perez Carmona).
+- Fix that prevented the correct detection of OS X.
+- Custom actions for ant calls (Klaus Bartz).
+- IzPanel.setInitialFocus( Component ) stuff added (Klaus Bartz).
+- Configurable button and label icons (Klaus Bartz).
+- Configurable subpath for $INSTALL_PATH default (Klaus Bartz).
+- New base class PathInputPanle for TargetPanel; new JDKPathPanel (Klaus Bartz).
+- Common helper in IzPanel (Klaus Bartz).
+- JGoodies loading fix.
+- Unified OS detection in OsVersion (Hani Suleiman).
+- Default installation path on unix now checks for writable 'usr/local' instead
+  of 'root' username (Hani Suleiman).
+- Removed incomplete and non-functional support for Mac OS9 (Hani Suleiman).
+- Fixed punctuation and some wording in English langpack (Hani Suleiman).
+- Logfile for ProcessPanel (Klaus Bartz).
+- Automatic scrolling of ProcessPanel output (Anthony Xin Chen).
+- Fixed bug parsing some brace enclosed variables (Chad McHenry) (bug #2451).
+- New Serbian translation (Filip Brcic).
+- Bug at loading Panels from other packages fixed (Klaus Bartz).
+- Unix (KDE/Gnome) shortcuts support (Marc Eppelmann).
+- ShortcutPanel: going to a previous panel could lead to strange situations
+  (bug #2713).
+- Installers: avoid showing an empty JFrame behind the languages selection
+  dialog (observed on X11).
+- UserInputPanel: the autodetect button is hidden if not needed
+  (Michael Hagedorn).
+- A tutorial is now available.
+- New Czech langpack (Jan Pavlovic).
+- German langpack: the uninstaller checkbox string was confusing about the
+  uninstaller performing a full deletion, including the files not unpacked
+  by an IzPack installer.
+- Liquid LnF: version bump (0.2.9-alpha5).
+
+  > 3.6.1 (build 2004.10.09)
+
+- Slovak translation updates (Milan Madzia).
+- Java class execution bug fix (Erik Artzmark).
+- ImgPacksPanel was not aware of i18n by using the packsLang.xml_xxx resource.
+- Portuguese langpack updates (Flavio Fonseca).
+- Blocking the GUI interaction (like in InstallPanel) was only working with the
+  mouse events. It now works with the keyboard ones too (Eduard Jodas Samper).
+- TargetPanel: refuse selecting read-only directories.
+- Documentation fixes.
+- TargetPanel: more sanity checks (Andreas Vox).
+- InstallPanel: register errors as failures (Andreas Vox).
+- Polish translation updates (Bronek Truzkowski).
+  > 3.6.0 (build 2004.07.28)
+- New Danish langpack (Frank Bille Jensen).
+- Web installers can now prompt for passwords and a proxy (Chad McHenry).
+- Fixed all javadoc warnings and errors (Chad McHenry).
+- ImgPacksPanel has been reworked to offer some features that only PacksPanel
+  had (Volker Friedritz).
+- Panels can be from any package (Chad McHenry)
+- Uninstaller not included, if it is not to be written anyway (Chad McHenry).
+- Packager and Compiler refactored.
+- Changed the JFrame icon shown in the installers and uninstallers.
+- New SimpleFinishPanel that don't have the automated installers feature.
+- Heavy refactorings on the look and feels side. The Kunststoff packagers have
+  been removed. The look and feels can now be specified on a per-OS basis. If
+  no look and feel is specified for a particular OS, then the platform default
+  one will be used.
+- The IzPack own installer uses the ImgPacksPanel again with some refreshed
+  packages pictures.
+- UserInputPanel: more parameters and a regular expressions validator have been
+  added (Mike Cunneen).
+- 3 new UserInputPanel validators (Thorsten Kamann):
+  * PortValidator (checks whether a port on localhost is available)
+  * IsPortValidator (checks whether the enterd value is a port in the range
+    between 0 and 32000)
+  * HostAddressValidator (checks whether the combination host:port is available)
+- 1 new UserInputPanel processor that checks checks whether the combination of
+  host:port is available. If not the port will be arised until it is available.
+  (Thorsten Kamann)
+- Web install location specified in xml, not resource. (Chad McHenry)
+- Web installer packs are in separate jars to minimize downloads. (Chad McHenry)
+- fix bug so <fileset> uses same default excludes as ant. (Chad McHenry)
+- added 'defaultexcludes' attribute to <fileset> (Chad McHenry)
+- More elements in dtd are optional, fixed bugs causing errors if certain
+  optional elements were omitted. (Chad McHenry)
+- It is now possible to have a specific picture for a specific panel by using
+  the Installer.image.n resources where n is the panel 0-based index.
+  (Peter Mikula).
+- Adding support for i18n to the pack panel (Thorsten Kamann)
+- Removing limtation the going backward is disabled if a pack not selected and
+  the pack using a panel (Thorsten Kamann)
+- Adding support for floating text in a langpack file (Thorsten Kamann).
+- At now you can specify a processor class to pre process the set value of a
+  RuleInputField (Thorsten Kamann).
+- The choices of a combo box can be generated throug a processor class
+  (Thorsten Kamann).
+- The message of a validator can be a i18n message (Thorsten Kamann).
+- If a translation string value cannot be found, then the key will be returned
+  instead of null, avoiding null exceptions when new strings are added.
+- The finish panels are now setting the quit button text to 'Finish' instead of
+  'Quit', which could confuse some users (Dario Yuri).
+- Many Windows shortcuts code fixes and enhancements (Bill Wong).
+- UserInputPanel and PacksPanel i18n support (Gaganis Giorgos).
+- ProcessPanel can now execute Java classes (Alex Bradley).
+- TargetPanel: pressing enter in the target editor will move to the next panel
+  (Gaganis Giorgos).
+- Polish langpack fix (Bronek Truszkowski).
+
+  > 3.5.4 (build 2004.06.05)
+
+- German langpack fixes once again (Klaus Bartz).
+- Slovak langpack fix (pbe@whitestein.com).
+- The variable for the ISO3 language code was IS03_LANG instead of ISO3_LANG (a
+  zero instead of a 'o'). This stupid bug is now fixed (bug report #1883).
+- Catalan langpack update (Oscar Aubareda Fernandez).
+- UserInputPanel: fix for the directory detection failure (bug #1849) + added
+  the possibility to use a '*' in the choices
+  (ex: <choice value="/opt/java/*"/>). Patch by Thorsten Kamann.
+
+  > 3.5.3 (build 2004.05.15)
+
+- German langpack punctuation fixes (jonelo).
+- TargetPanel: the target path could be written several times in the automated
+  install XML descriptor (bug #1864).
+- TargetPanel: the path is now always converted to absolute (could cause
+  problems in variables substitutions). (bug #1866).
+- Target Panel: the path input field could be a bit short if a picture was used.
+  Fixed by Klaus Bartz (bug #1875).
+- German langpack: spelling correction (Dustin Sacks)
+- Fixed probelems creating a web-kunststoff installer (bug #1904)
+- IzPack installer: simpler and refreshed readme text.
+
+  > 3.5.2 (build 2004.05.01)
+
+- Fixed moving empty directory to root (pbe@whitestein.com).
+- UserInputPanel getResult() fix (bug #1769).
+- Slovak langpack fix (patch #88).
+- A new mailing-list izpack-changes@lists.berlios.de has been set up to receive
+  various development-related notifications.
+- German langpack fix (bug #1828).
+- Web installer fix: wrong jar was getting izpack classes
+- RuleTextField input bug fix (bug #1618)
+
+  > 3.5.1 (build 2004.03.16)
+
+- No custom look and feel will be applied on Mac platforms (Chad McHenry).
+- A message box is now raised when the installer detects that the Java version
+  it is running on is lower than the one required by the package provider.
+- The Win32 documentation shortcuts are now back again.
+- If 'user.home' is set to something like 'C:' on Windows, it will be changed to
+  'C:\'.
+- German langpack: minor fix on 'LicencePanel.agree' translation.
+- UserInputPanel.getResult(): path construction fix (bug #1634).
+
+  > 3.5.0 (build.2004.02.26)
+
+- The developer services have moved to BerliOS (http://developer.berlios.de/).
+- Uninstaller is now able to delete itself and the install directory
+  (Chad McHenry)
+- Upate Checking: The installer is now able to "update" an already installed
+  package, therefore removing superfluous files after installation
+  (Tino Schwarze).
+- Dutch langpack update (Hans Aikema).
+- The compiler now emits some warnings when processing an incorrect installation
+  file (Chad McHenry / Marcus Stursberg).
+- New SudoPanel (Jan Blok).
+- ShortcutPanel: the action is now performed when the 'next' button is pressed
+  (Jan Blok).
+- Nasty bug in AutomatedInstallData variables setting fix.
+- Ant build: 'clean' target fix (Chad McHenry).
+- Language selection dialog: the 'ok' button gains the focus by default (Chad
+  Mchenry).
+- Uninstaller: various fixes (Chad McHenry).
+- Installer: the 'next' button requests focus whenever it is available.
+- Switched to the Crystal icons from KDE 3.2.
+- Uninstaller: proper use of the ButtonFactory.
+- Packs can now be restricted to a certain OS list (Jan Blok).
+- Fixed a bug that caused the automated installers to produce broken installers
+  (bug #1472).
+- Files with the same file source are never stored more than once anymore in the
+  resulting installer jar (Jan Blok).
+- Various documentation refreshments. The PostScript[tm] version is not produced
+  anymore (PDF + HTML are the 2 targets).
+- Language selection box: UI rendering fix (Chad McHenry).
+
+  > 3.4.0 (build 2003.12.06)
+
+- The frontend which had been deprecated in 3.3.0 has been removed. There won't
+  be another frontend until someone volunteers to make a new one.
+- The files executor has been fixed when dealing with classpath arguments
+  passing.
+
+  > 3.3.0 (build 2003.11.15)
+
+- Various bugs fixed (taken from the bugs database).
+- The current GUI frontend is deprecated. The project is looking for people to
+  take over the development of a new one.
+- The compiler now returns a sensible exit code on error. This way, it can be
+  used in scripts.
+- Italian localization updates by Cristian Ghezzi.
+- Win32: Rewrote the localization of "Program Files" and added support for all
+  24 localized versions of Windows 2000/XP (Dennis Lundberg).
+- Portuguese localization updates from Alex Carlos Braga Antao.
+- Swedish localization updates from Dennis Lundberg.
+- InstallPanel: the overall progress bar makes steps forward only after a pack
+  has been fully processed. The previous behaviour was to step forward at the
+  beginning of a pack extraction.
+- CompilePanel: disable Start button after successful compilation (T.Schwarze).
+- improve search field of the UserInputPanel: add checkfilename (T.Schwarze).
+- XInfoPanel: UI fix.
+
+  > 3.2.1 (build 2003.09.19)
+
+- Added a new built-in variable ISO3_LANG that contains the selected language
+  ISO3 code (Elmar's idea).
+- Added a new 'run.installer' target to the Ant build file.
+- Added an uninstall target to the documentation makefile.
+
+  > 3.2.0 (build 2003.09.18)
+
+- Added 3 built-in variables that you can use with the variables substitutor:
+  o APP_NAME for the application name
+  o APP_URL for the application URL
+  o APP_VER for the application version.
+- New ProcessPanel (Tino Schwarze).
+- The documentation is now licensed under a Commons Creative license.
+- The documentation now has a nicer cover page.
+- Jar file execution fix on the classpath arguments passing.
+- Win32: "Program Files" can now be localised (resolves problems with German
+  Windows for instance).
+- com.izforge.izpack.util.OsConstraint was missing in uninstaller.jar .
+- Small documentation typing errors fixed.
+- Added an install target to the documentation Makefile.
+- Frontend: Jar files could be listed in the panels tab. Fixed.
+- The scripts execution flag is now set to every users on Unix-like systems
+  (chmod a+x), regardless of who the user is (i.e. root or a single user).
+- Reformatting (imports, Ant build file).
+
+  > 3.1.0b (build 2003.08.22)
+
+- Fix in the standalone compiler (Tino Schwarze).
+
+  > 3.1.0a (build 2003.08.15)
+
+- Fixes a bug while generating a Kunststoff installer.
+
+  > 3.1.0 (build 2003.08.11)
+
+- Added the possibility to use a standalone compiler (Tino Schwarze).
+- Added a new target to the Ant build system in order to fix the files CR/LF and
+  encodings.
+- Includes the following enhancements from Jonathan Halliday and Tino Schwarze.
+- Added overall progress bar to InstallPanel
+- Added SearchField to the UserInputPanel which allows to search for
+  files or directories at installation time
+- Added CompilePanel which allows Java classes to be compiled after
+  installation
+- Add infrastructure for automated installation - after installation,
+  the FinishPanel allows the user to save an XML file which can later be
+  used for automated installation (simply pass it to the installer as an
+  argument, for example:
+    java -jar my_super_program.jar super_program_autoinstall.xml
+  )
+- (internal) add infrastructure for GUI abstraction
+- Improved documentation:
+  o build better PDF using pdflatex (with hyperlinks and bookmarks)
+  o reorganize documentation for the <packs> section
+- Add <singlefile> tag which is useful if a file's name after
+  installation is different from the source file name
+- Add support for os attribute and <os> tag to all pack entries
+  (hopefully, the DTD is correct)
+- Allow files to be kept after execution
+- Allow packs to be preselected for installation or not
+- Allow packs to be OS dependent
+- Provide finer control when overwriting files:
+  o ask for overwriting, default yes
+  o ask for overwriting, default no
+  o update (only considers mtime - no real update)
+- Allow absolute paths in source files (might already be in 3.0.9)
+- Finer error handling - report missing attributes
+- (internal) TwoColumnLayout now supports WESTONLY and EASTONLY
+- (internal) made the ResourceManager a singleton
+- Add new kind of script parsing: shell - used %{variable} syntax to
+  avoid clashes within shell scripts
+
+  > 3.0.9 (build 2003.06.29)
+
+- New Romanian language pack (Dani Orza).
+- Absolute paths problems patch (Tom Moore).
+- DTD, documentation fixes.
+
+  > 3.0.8a (build 2003.05.02)
+
+- A bug had been introduced in 3.0.8 during the files extraction. Fixed.
+- Polish langpacks update.
+
+  > 3.0.8 (build 2003.04.26)
+
+- Packs OS-targeting (Fran Taylor).
+- OS selection improved accuracy (Sanjay Linganna).
+- The standard installers can now use the native look and feel if the
+  'useNativeLAF' resource is specified (nice feature especially with the
+  incoming JDK 1.4.2).
+- The standard installers get back the button icons and highlighting effects.
+- Russian langpack update (Igor Anikeev).
+- Directory creation patch (Jonathan Halliday).
+
+  > 3.0.7 (build 2003.04.04)
+
+- Slovakian langpack thanks to Milan Madzia.
+- Japanese, Russian and Dutch langpacks updates.
+- The uninstallers can now run scripts thanks to a patch from Hani Suleiman.
+
+  > 3.0.6 (build 2003.02.27)
+
+- Updated the French and German langpacks.
+- Fixed the building process to take care of all classes related to the InputPanel.
+- Made some fixes on the installers DTD.
+- Elmar Grom / UserInputPanel:
+  o Fixed a bug with the drop down box that always return the value for the last
+    option in it, regardless of what had been selected during installation.
+  o Implemented the automated installer mode.
+  o RuleInputTextField can now be validated and processed with custom code
+    (documentation to come soon).
+  o A password field is now available and can also be validated and processed
+    with custom code (documentation to come soon).
+
+  > 3.0.5 (build 2003.02.14)
+
+- This release becomes the new stable version, waiting for the 3.1 release which
+  is not yet ready. The stable/unstable versions separation is suspended.
+- Fixed a TargetPanel inconsistency when the target directory is empty.
+- Fixed Ant filesets-related problems.
+- UI fonts fixes for Linux/Sun JDK-1.4.
+- Empty directories can now be included.
+- IzPack's own installer now makes uses of the Ant-style filesets.
+- Splitted the documentation pack into several ones.
+- MacOS X UI fixes (Hani Suleiman).
+
+  > 3.1.0 pre5 (build 2003.01.12)
+
+- Included Elmar's new UserInputPanel documentation.
+- A panel can now be added several times in an installation. This is mostly
+  useful for the new UserInputPanel.
+- Separated the installer generation from the 'dist' target in the Ant building
+  process. The new target is 'generate.installer'.
+- Move the com.izforge.izpack.util.EtchedBorder class to com.izforge.izpack.gui.
+  The class has also been rewritten because the original code was introduced
+  with a proprietary license notice.
+
+  > 3.1.0 pre4 (build 2002.12.08)
+
+- A lot of installer GUI improvements by Jan Blok :
+  o an image can be shown in the installer left side
+  o buttons will look great under OSX
+  o HelloPanel : don't display authors if not present
+  o InstallPanel : immediate installation launching (the silly install button
+    has gone to heaven)
+  o LicencePanel : better GUI
+  o PackPanel : use table and display description, complete rewrite of this
+    panel
+  o IzPackMetalTheme : Tahoma is used if present on the target machine.
+- New UserInputPanel that allows to prompt the users for some values that can
+  later be stored as variables that can be parsed for in files (Elmar Grom).
+  Sorry but I did not have time to include the related documentation at the
+  release time.
+
+  > 3.1.0 pre3 (build 2002.11.24)
+
+- Restyled, cleaned, javadoc'ed the whole IzPack source code.
+- The full IzPack source code Javadocs are generated when making a release.
+- Wiped the Enroll* classes that were polluting IzPack.
+- Added the creation of shortcuts for the IzPack documentation and the
+uninstaller.
+
+  > 3.1.0 pre2 (build 2002.10.19)
+
+- New (and clean) ResourceManager thanks to Marcus Stursberg.
+- Shorcut fixes by Elmar Grom.
+
+  > 3.1.0 pre1 (build 2002.09.21)
+
+- When InstallPanel was the last panel, it unlocked the next button and this was
+  of course not the desired behaviour.
+- ImgPacksPanel and PacksPanel can now display the total disk space required
+  (Adam Barclay for this task).
+- MacOSX GUI fix thanks to Hani Suleiman.
+- GUI Frontend fixes by Andrew De Torres.
+- Support for files overriding behaviour (override or keep old version if
+  present) by Adam Barclay.
+- New Italian langpack thanks to Franco Graziosi.
+
+  > 3.0.0 (build 2002.08.13)
+
+- First stable release of the 3.x series ;-)
+- Ant task : the trailing '/' is appended on the IzPack directory when it is
+  omitted (Gareth Cronin).
+- Many improvements on the documentation which should be quite fine - Elmar Grom
+  helped a lot on this.
+- Updated ant.jar from the Ant 1.5 stable release.
+- German language pack fixes by Jonelo.
+
+  > 3.0.0 rc3 (build 2002.07.28)
+
+- The Japanese langpack has been fixed by Akky Akimoto (now Windows shortcuts
+  compliant).
+- Windows shortcuts counterpart is now fully working thanks to the big efforts
+  of Elmar Grom with the additional help of Marcus Stursberg.
+- Documentation mispelling fixes and additions by Elmar Grom.
+
+  > 3.0.0 rc2 (build 2002.07.06)
+
+- Added some documentation on the *LicencePanel and *InfoPanel panels.
+- Bugfix in HTMLLicencePanel.
+- The uninstaller is now able to take care of the jar new location (under the
+  install path) and wipes everything cleanly.
+- The 'create shortcut' button in ShortcutPanel is now disabled after the
+  shortcuts are created.
+
+  > 3.0.0 rc1 (build 2002.07.03)
+
+- Fixes on the shortcuts sytem.
+- New Hungarian language pack thanks to Harsan Peter.
+- New Japanese language pack thanks to Hiroki Akimoto.
+- New documentation.
+- Fixed many source coding style errors.
+- Coding guidelines publication.
+- Some Javadoc text is now generated for those who need to make panels.
+
+  > 3.0.0 pre4 (build 2002.06.15)
+
+- Polish language pack thanks to Piotr Bzdyl.
+- Shortcut system fixes.
+- The IzPack installer is now able to create shortcuts on Windows systems
+  while not creating any problem on another Operating System.
+- Catalan language pack thanks to Oscar Aubareda Fernandez.
+- The uninstaller is now copied under $INSTALL_PATH/Uninstaller.
+- Closing the language selection box of an installer will (finally !) close
+  the installer.
+- Removed the same named directories and files from the installers jars.
+- The ShortcutPanel now uses the IzPack highlighted buttons.
+- Many improvements from the e-xmlmedia.fr people including the Ant fileset
+  support, all these features will be documented in the coming new
+  documentation.
+
+  > 3.0.0 pre3 (build 2002.05.19)
+
+- HTML licence panel agreement system fix by Jonelo.
+- Official inclusion of Elmar Grom's Windows library to create some shortcuts on
+  this operating system.
+( following : Johannes Lehtinen )
+- Cleaned up the InstallData interface and added utility methods.
+- Made the special variables (such as $INSTALL_PATH) available to panels using
+  the standard interface.
+- Made InstallData a singleton class.
+- Added InstallData properties for Panel interoptability.
+- Added a new variable : $FILE_SEPARATOR.
+
+  > 3.0.0 pre2 (build 2002.04.27)
+
+- Fixes & enhancements in the executable files support (Olexij Tkatchenko).
+- 2 new splash screens by Nicolas Deschaume.
+- The launching scripts of the pre1 were corrupted.
+
+  > 3.0.0 pre1 (build 2002.04.21)
+
+- Enhanced splash #5 by Nicolas Deschaume.
+- Improved uninstalling system giving an access to the panels.
+- Image support at the language selection dialog through an optionnal resource
+  (installer.langsel.img).
+- Added executable element support (Olexij Tkatchenko).
+- /usr/local is now the default installation directory only for root user,
+  normal users will have $HOME instead (Unix* - Olexij Tkatchenko).
+- New Ukrainian language support (Olexij Tkatchenko).
+- The uninstaller now deletes itself after the uninstallation job is done.
+- Modified the IzPack Ant building process to integrate IzPack itself in order
+  to generate a ready-to-distribute installer.
+
+  > 2.12.0 (build 2002.03.31)
+
+- Removed the JScrollPane for the panels container.
+- Improved panels sizing policy due to the JScrollPane removing.
+
+  > 2.12.0 pre3 (build 2002.03.02)
+
+- Fixed a problem with the default compiler output file naming.
+- Added the Dutch language packs thanks to Fridjof Jansen.
+- Modified the Ant makefile so that any inner class of a panel can be
+  copied too.
+
+  > 2.12.0 pre2 (build 2002.02.22)
+
+- Changed the font sizes to 12 as it really looks better.
+- Removed the "All rights reserved" portions in the frontend languages
+  packs as it is not really usefull and it now makes the About Box look
+  better.
+- Fix in PacksPanel thanks to Marcus Wolschon.
+- Fixes in both Unix and Windows new startup scripts.
+- Paul Wilkinson added the integration with Ant.
+- Native libraries can now be specified to be added to the IzPack
+  installers through a new optionnal tag.
+
+  > 2.12.0 pre1 (build 2002.02.15)
+
+- Made some modifications to get the source code pass through the
+  IBM Jikes compiler checkings successfully.
+- Updated the Readme.txt file (I forgot to make it reflect the fact that
+  IzPack has a GUI frontend :-)
+- Updated the installer english langpack file so that 'installer.quit.message'
+  is not wrong anymore.
+- Added a complete Javadoc comments set to com.izforge.izpack.installer.IzPanel
+.
+- Inclusion of the IzPack installer XML file in the source directory.
+- The compiler and the frontend can now be invoked outside of the bin/ directory
+  without any problem. This provide a *noticeable* improvement ;-)
+
+  > 2.11.1 (build 2002.02.09)
+
+- Inclusion of the Kunststoff Look And Feel version 2.
+
+  > 2.11.0 (build 2002.01.18)
+
+- Pre-versions modifications have been validated.
+- Improved documentation HTML version.
+- IzPack's own installer : use the ImgPacksPanel instead of the classic
+  PacksPanel.
+- 2 new frontend splash screens thanks to Nicolas Deschaume.
+- HelloPanel : displays the email adresses enclosed by '<' and '>'.
+- This version is compiled with IBM Jikes.
+
+  > 2.11.0 pre2 (build 2001.12.17)
+
+- Frontend : added a toolbar.
+- Ant makefile : removed the 'clean' dependency for the 'all' target.
+- Installer : the next button will automatically lock if the last panel is
+  reached but does not already lock it.
+
+  > 2.11.0 pre1 (build 2001.12.09)
+
+- Installer : cached languages flags.
+- Installer : the languages flags are now grayed when not active (it creates
+  a rollover-effect when choosing the language in the list).
+- Frontend : the about box can't be resized.
+- Errors : now reported on the error output stream (System.err) instead of
+  the output stream (System.out).
+- Frontend : better GUI interaction.
+- ImgPacksPanel : fixed the bug that caused the snapshots not to switch as
+  expected when using the keyboard.
+- Updated Brazilian and Russian flags to conform with the other flags.
+
+  > 2.10.0 (build 2001.12.02)
+
+- Pre-versions modifications have been validated.
+- A panel can now specify some custom variables (Serge Sivkov).
+- New Brazilian-Portuguese translation thanks to Joao Marcelo Pereira Alves.
+- New Russian translation thanks to Serge Sivkov.
+
+  > 2.10.0 pre 2 (build 2001.11.25)
+
+- TargetPanel : it is now possible to specify a specific default installation
+  directory for a specific Operating System thanks to Michael Peterson.
+- Ant makefile : generation of the lib/ directory if not present (Michael
+  Peterson).
+- Documentation : updated to reflect the TargetPanel enhancements.
+
+  > 2.10.0 pre 1 (build 2001.11.11)
+
+- A CVS server is now available thanks to TuxFamily.org .
+- 2 New frontend splash screens pictures by Nicolas Deschaume.
+- Safer command-line compiler invocation.
+- New variable substitution backend by Johannes Lehtinen (backward compatible).
+- Better exceptions reporting system to the end-user.
+- Installer : centered labels at the language selection prompt.
+- LicencePanel : now locks the 'next' button if the 'yes' radio is not selected.
+- TargetPanel : now warns if the specified target is an empty string.
+- InstallPanel : now removes the last processed file path when the installation
+  is over.
+
+  > 2.9.0 (build 2001.10.26)
+
+- Faster and safer I/O thanks to Johannes Lehtinen.
+- Faster frontend splash screen.
+- Removed the finalizers in the code.
+- Windows icon file added.
+
+  > 2.8.0 (build 2001.10.20)
+
+- New Frontend splash screen.
+- New file saving stupid bug fix in the Frontend.
+- FinishPanel : tooltip for the script button.
+- InstallPanel : new animated icon for the install button.
+- XInfoPanel : adaptative text panel.
+- Frontend : recent files list (support for the imported files also).
+- Fixed some size problems with the installer language selection dialog.
+- XML Frontend preferences file spec auto-upgrade.
+- New Finnish language pack thanks to Johannes Lehtinen.
+
+  > 2.7.0 (build 2001.09.26)
+
+- Frontend localisation support.
+- The Frontend remembers the last opened directory.
+- Flags for the language selection for the installers.
+- Language pre-selection for the installers.
+- TargetPanel : warns when the selected directory exists.
+- InstallPanel : animated icon for the install button.
+- New spanish langpack thanks to Carlos Rueda.
+
+  > 2.6.1 (build 2001.09.22)
+
+- Added an image to the frontend about box.
+- Fix in the Ant Makefile that caused it to fail in case of a first-time build.
+
+  > 2.6.0 (build 2001.09.20)
+
+- Cleaner installer icons loading using an XML file.
+- Installation DTD mistake fix.
+- New GUI Frontend.
+- Sample installation XML comment fix.
+- German langpack small fixes.
+- Better internationalisation on Swing-specific strings.
+- Minor bug fixes.
+- Threaded compiling process.
+- Fix in the packs panel.
+- Better installer navigation buttons locking/unlocking.
+
+  > 2.5.0 (build 2001.09.07)
+
+- New web installers support.
+
+  > 2.4.0 (build 2001.09.05)
+
+- Automated installations support.
+- New XPM icons.
+- Improved build.xml.
+- MacOS and MacOSX installation paths support.
+- Minor bug fix in the TargetPanel path selection.
+
+  > 2.3.0 (build 2001.08.29)
+
+- Uninstaller support.
+- Fix on InstallPanel : it does not change its size each time that a new
+  file is processed.
+- Bug fix in the IzPack variables translation system.
+- German langpack thanks to Klaus Hartlage.
+- Made a real documentation (it was time to do it :-) .
+
+  > 2.2.0 (build 2001.08.18)
+
+- New panels available : ImgPacksPanel, HTMLInfoPanel, HTMLLicencePanel.
+- Use of Kunststoff 1.1.1 instead of 1.0.
+- Jakarta Ant script thanks to Pierre Dittgen.
+- API changes to allow a panel to ask for being skipped.
+- Wheights for some panels components fixed.
+- Added a Thanks.txt file :-)
+
+  > 2.1.0 (build 2001.08.14)
+
+- Fixed a problem with the base path and the installation xml file, they don't
+  need to be in the same directory anymore.
+- 2 tips in the source code from Brad Cox have been included.
+- A new kind of installer is available : standard-kunststoff (same as standard
+  but with the Kunststoff Look and Feel support).
+- Fix in TargetPanel : you can specify the installation path by typing it
+  without having to validate it with the enter key.
+- Fixed the bottom components wheights in the installer frame : now it looks
+  much better.
+
+  > 2.0.1 (build 2001.08.11)
+
+- No more warnings when the user wants to quit the installer and the
+  installation is done with the panel InstallPanel.
+
+  > 2.0.0 (build 2001.08.10)
+
+- ... a brand new IzPack !
+- Now it is an XML-based compiler.
+- A more modular architecture (you can create your own panels for instance).
+- No GUI builder for the moment, it will come in the next versions.
+- More kinds of installers to come.
+_______________________________________________________________________________
+
+  > 1.1.1 (build 2001.04.21)
+
+- Faster installer building / installation process.
+- String comparisons are now using the equalsIgnoreCase method instead of an
+  objects equality test '==' (safest).
+- Modified the about box.
+- Clearly made a difference between images & icons in the jar files
+  (restructuration).
+- Tested successfully on BlackDown Linux JVM.
+
+  > 1.1 (build 2001.04.10)
+
+- Adds the extensions to the filenames in the builder if it was omited.
+- Adjusted the fonts in the Metal theme; now it should look right.
+- Adjusted the thread priority of the splash & progress windows, it should be
+  faster.
+- The setup now recognizes the os so that the default installation path is
+  appropriated.
+- Editors now place the caret at the beginning when a need (ex : a new text
+  is loaded).
+- Enhanced the language packs selection in the builder.
+- Added the french language packs.
+- Parses the script files for special variables.
+- Now comes along with a documentation.
+
+  > 1.0 (build 2001.03.18)
+
+- Adjusted the fonts in the Metal theme.
+- Fixed the very stupid bugs with the files in pack deletion.
+- Improved the behaviour of the packs tab functions.
+- Made some small optimizations on various gui code parts.
+- Changed the text editors from JEditorPane to JTextArea : no more lines
+  wrappings problems.
+- Gained 5kb on Setup.jar.
+- Blocks user interaction in the builder during the installer creation.
+
+  > 1.0 beta 1 (build 2001.03.11)
+
+- The first public release :-)
+- There are a lot of features to add and enhance in the next releases, of
+  course.

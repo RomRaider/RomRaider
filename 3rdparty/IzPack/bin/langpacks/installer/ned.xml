@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<!-- The Dutch langpack -->
+
+<langpack>
+    <!-- Heading messages START -->
+    <str id="CheckedHelloPanel.headline" txt="Welkom" />
+    <str id="CompilePanel.headline" txt="Compileer Java Sources" />
+    <str id="ConditionalUserInputPanel.headline"
+        txt="Gebruikersgegevens" />
+    <str id="ExtendedInstallPanel.headline"
+        txt="Installatie en Configuratie" />
+    <str id="FinishPanel.headline" txt="Installatie Gereed" />
+    <str id="HelloPanel.headline" txt="Welkom" />
+    <str id="HTMLInfoPanel.headline" txt="Informatie" />
+    <str id="HTMLLicencePanel.headline" txt="Licentieovereenkomst" />
+    <str id="ImgPacksPanel.headline"
+        txt="Selecteer Installatie pakketten" />
+    <str id="InfoPanel.headline" txt="Informatie" />
+    <str id="InstallPanel.headline" txt="Installatie" />
+    <str id="JDKPathPanel.headline" txt="JDK pad" />
+    <str id="LicencePanel.headline" txt="Licentieovereenkomst" />
+    <str id="PacksPanel.headline" txt="Selecteer Installatie Pakketten" />
+    <str id="ProcessPanel.headline" txt="Uitvoeren externe programma's" />
+    <str id="ShortcutPanel.headline" txt="Snelkoppelingen" />
+    <str id="SimpleFinishPanel.headline" txt="Installatie Gereed" />
+    <str id="SummaryPanel.headline"
+        txt="Overzicht configuratie gegevens" />
+    <str id="TargetPanel.headline" txt="Installatie pad" />
+    <str id="UserInputPanel.headline" txt="Gebruikersgegevens" />
+
+    <!-- General installer strings -->
+    <str id="installer.title" txt="IzPack - Installatie van " />
+    <str id="installer.next" txt="Verder" />
+    <str id="installer.prev" txt="Terug" />
+    <str id="installer.quit" txt="Afsluiten" />
+    <str id="installer.madewith"
+        txt="(Installatie gemaakt met IzPack - http://izpack.org/)" />
+    <str id="installer.quit.title"
+        txt="Weet u zeker dat u wilt afsluiten?" />
+    <str id="installer.quit.message"
+        txt="Dit zal de installatie afbreken" />
+    <str id="installer.warning" txt="Waarschuwing !" />
+    <str id="installer.yes" txt="Ja" />
+    <str id="installer.no" txt="Nee" />
+    <str id="installer.cancel" txt="Annuleer" />
+    <str id="installer.error" txt="Fout" />
+    <str id="installer.help" txt="Help" />
+    <str id="installer.step" txt="Stap" />
+    <str id="installer.of" txt="van" />
+    <str id="installer.Message" txt="Bericht"/> 
+
+
+    <!-- Uninstaller specific strings -->
+    <str id="uninstaller.warning"
+        txt="Dit zal de geïnstalleerde programma(s) verwijderen !" />
+    <str id="uninstaller.destroytarget"
+        txt=" Forceer het verwijderen van " />
+    <str id="uninstaller.uninstall" txt="Deïnstalleer" />
+
+    <!-- The strings for the 'official' IzPack plugins -->
+    <str id="HelloPanel.welcome1" txt="Welkom bij de installatie van " />
+    <str id="HelloPanel.welcome2" txt=" !" />
+    <str id="HelloPanel.authors"
+        txt="Deze software is ontwikkeld door : " />
+    <str id="HelloPanel.url" txt="De homepagina staat op : " />
+
+    <str id="PrinterSelectPanel.select_printer"
+        txt="Selecteer een printer." />
+
+    <str id="CheckedHelloPanel.productAlreadyExist0"
+        txt="Dit product is al geinstalleerd op deze computer in de map " />
+    <str id="CheckedHelloPanel.productAlreadyExist1"
+        txt=" . Weet u zeker dat u een extra versie wilt installeren?" />
+    <str id="CheckedHelloPanel.infoOverUninstallKey"
+        txt="De de-installatie zal als naam krijgen: " />
+
+    <str id="LicencePanel.info"
+        txt="Lees a.u.b. de volgende licentie overeenkomst :" />
+    <str id="LicencePanel.agree"
+        txt="Ik accepteer de voorwaarden van deze licentie" />
+    <str id="LicencePanel.notagree"
+        txt="Ik accepteer de voorwaarden van deze licentie niet" />
+    <str id="LicencePanel.yes" txt="Ja" />
+    <str id="LicencePanel.no" txt="Nee" />
+
+    <str id="InfoPanel.info" txt="Lees a.u.b. de volgende informatie :" />
+
+    <str id="PathInputPanel.required"
+        txt="De gekozen map moet reeds bestaan." />
+    <str id="PathInputPanel.notValid"
+        txt="De gekozen map bevat niet het vereiste product." />
+
+    <str id="TargetPanel.info" txt="Selecteer de installatiemap:" />
+    <str id="TargetPanel.browse" txt="Bladeren ..." />
+    <str id="TargetPanel.warn"
+        txt="Deze map bestaat al. Wilt u doorgaan en het risico lopen dat bestanden worden overschreven?" />
+    <str id="TargetPanel.empty_target"
+        txt="U heeft geen installatiemap ingevuld. Wilt u toch doorgaan?" />
+    <str id="TargetPanel.createdir"
+        txt="De installatiemap zal worden aangemaakt :" />
+    <str id="TargetPanel.nodir"
+        txt="Uw keuze is geen map! Kies s.v.p. een map!" />
+    <str id="TargetPanel.notwritable"
+        txt="Schrijven in deze map niet mogelijk! Kies s.v.p. een andere map!" />
+
+    <str id="JDKPathPanel.extendedIntro"
+        txt="Het programma heeft een Java Development Kit (JDK) met een versienummer tussen ${JDKPathPanel.minVersion} en ${JDKPathPanel.maxVersion}. Een Java Runtime Environment (JRE) is niet voldoende." />
+    <str id="JDKPathPanel.intro"
+        txt="Het programma heeft een JDK nodig. Een Java Runtime omgeving (JRE) zal niet voldoende zijn." />
+    <str id="JDKPathPanel.info" txt="Selecteer het JDK pad:" />
+    <str id="JDKPathPanel.badVersion1"
+        txt="De JDK van uw keuze heeft een verkeerde versie (beschikbaar: " />
+    <str id="JDKPathPanel.badVersion2" txt=" vereist: " />
+    <str id="JDKPathPanel.badVersion3"
+        txt=") wilt u toch deze JDK gebruiken?" />
+    <str id="JDKPathPanel.nonValidPathInReg" txt="Het Windows register bevat een ongeldig pad voor deze JDK. Wilt u deze JDK toch gebruiken?"/>
+
+
+    <str id="PacksPanel.info"
+        txt="Selecteer de pakketten die u wilt installeren :" />
+    <str id="PacksPanel.tip"
+        txt="NB: Uitgegrijsde pakketten zijn verplicht." />
+    <str id="PacksPanel.space" txt="Totaal benodigde ruimte: " />
+    <str id="PacksPanel.freespace" txt="Beschikbare ruimte: " />
+    <str id="PacksPanel.description" txt="Omschrijving" />
+    <str id="PacksPanel.dependencyList"
+        txt="Het geselecteerde pakket vereist installatie van de volgende pakketten" />
+    <str id="PacksPanel.dependencies" txt="Afhankelijkheden: "/>
+    <str id="PacksPanel.excludes" txt="Uitsluitingen: "/>
+    <str id="ImgPacksPanel.dependencyList" txt="Afhankelijkheden en/of uitsluitingen"/>
+    <str id="PacksPanel.notEnoughSpace"
+        txt="Schijfruimte nodig voor installatie overtreft beschikbare schijfruimte." />
+    <str id="PacksPanel.notAscertainable" txt="niet vast te stellen" />
+
+    <str id="InstallPanel.info"
+        txt="Klik 'Installeer' om de installatie te beginnen." />
+    <str id="InstallPanel.install" txt="Installeer !" />
+    <str id="InstallPanel.tip" txt="Pakket installatie voortgang:" />
+    <str id="InstallPanel.begin" txt="[Niks]" />
+    <str id="InstallPanel.finished" txt="[Klaar]" />
+    <str id="InstallPanel.progress"
+        txt="Voortgang installatieprocedure:" />
+    <str id="InstallPanel.overwrite.title" txt="Bestand bestaat al" />
+    <str id="InstallPanel.overwrite.question"
+        txt="Het volgende bestand bestaat al. Moet het worden overschreven?" />
+
+    <str id="FinishPanel.success" txt="Installatie is geslaagd." />
+    <str id="FinishPanel.done" txt="Gereed" />
+    <str id="FinishPanel.fail" txt="Installatie is mislukt!" />
+    <str id="FinishPanel.uninst.info"
+        txt="Een deïnstallatie programma is geïnstalleerd in:" />
+    <str id="FinishPanel.auto"
+        txt="Maak een automatisch installatie-script." />
+    <str id="FinishPanel.auto.tip"
+        txt="Gebruik dit script om de installatie te herhalen op andere computers." />
+
+    <str id="ImgPacksPanel.packs"
+        txt="The volgende pakketten zijn beschikbaar :" />
+    <str id="ImgPacksPanel.snap" txt="Pakket schermafdruk:" />
+    <str id="ImgPacksPanel.checkbox" txt=" Installeer dit pakket" />
+    <str id="ImgPacksPanel.dependencyList" txt="Afhankelijkheden" />
+
+    <str id="ShortcutPanel.headline" txt="Instellen snelkoppelingen" />
+    <str id="ShortcutPanel.regular.list"
+        txt="Selecteer een programma groep voor de snelkoppelingen:" />
+    <str id="ShortcutPanel.regular.default" txt="Standaardwaarde" />
+    <str id="ShortcutPanel.regular.desktop"
+        txt="Maak snelkoppelingen op de desktop." />
+    <str id="ShortcutPanel.regular.StartMenu:Start-Menu"
+        txt="Start-Menu" />
+    <str id="ShortcutPanel.regular.StartMenu:K-Menu" txt="K-Menu" />
+
+    <str id="ShortcutPanel.regular.create" txt="Maak Snelkoppelingen" />
+    <str id="ShortcutPanel.regular.userIntro"
+        txt="Maak snelkoppeling voor:" />
+    <str id="ShortcutPanel.regular.currentUser"
+        txt="huidige gebruiker " />
+    <str id="ShortcutPanel.regular.allUsers" txt="alle gebruikers " />
+
+    <str id="ShortcutPanel.alternate.apology"
+        txt="Helaas ondersteunt IzPack het maken van snelkoppelingen op dit besturingssysteem niet. Raadpleeg de handleiding van uw besturingssysteem voor het aanmaken van de snelkoppelingen." />
+    <str id="ShortcutPanel.alternate.targetsLabel"
+        txt="Hier volgt een lijst van snelkoppelingen die de maker van de software u wilde geven" />
+    <str id="ShortcutPanel.alternate.textFileExplanation"
+        txt="U kunt gedetailleerde informatie over de snelkoppelingen opslaan in een tekstbestand voor toekomstig gebruik." />
+    <str id="ShortcutPanel.alternate.saveButton"
+        txt="Tekstbestand opslaan" />
+
+    <str id="ShortcutPanel.textFile.header"
+        txt="Snelkoppeling informatie\n========================\n\nHier volgt een lijst van alle relevante informatie over de gewenste\nsnelkoppelingen. Deze informatie zou het u mogelijk moeten maken om de\nsnelkoppelingen handmatig aan te brengen\n" />
+
+    <str id="ShortcutPanel.textFile.name" txt="Snelkoppeling     : " />
+    <str id="ShortcutPanel.textFile.location"
+        txt="Gewenste Locatie  : " />
+    <str id="ShortcutPanel.textFile.description"
+        txt="Omschrijving      : " />
+    <str id="ShortcutPanel.textFile.target" txt="Doelbestand       : " />
+    <str id="ShortcutPanel.textFile.command" txt="Opdrachtregel     : " />
+    <str id="ShortcutPanel.textFile.iconName"
+        txt="Icoon Bestand     : " />
+    <str id="ShortcutPanel.textFile.iconIndex"
+        txt="Icoon Index       : " />
+    <str id="ShortcutPanel.textFile.work" txt="Werkmap           : " />
+
+    <str id="ShortcutPanel.location.desktop" txt="Bureaublad" />
+    <str id="ShortcutPanel.location.applications" txt="Programma Menu" />
+    <str id="ShortcutPanel.location.startMenu" txt="Start Menu" />
+    <str id="ShortcutPanel.location.startup" txt="Opstart Groep" />
+
+    <str id="UserInputPanel.error.caption" txt="Invoer Probleem" />
+    <str id="UserInputPanel.search.autodetect" txt="Automatisch zoeken" />
+
+    <!-- more descriptive error message would be cool, like specifying what file we looked for -->
+    <str id="UserInputPanel.search.autodetect.failed.message"
+        txt="Het automatisch zoeken is mislukt." />
+    <str id="UserInputPanel.search.autodetect.failed.caption"
+        txt="Automatisch zoeken mislukt" />
+    <str id="UserInputPanel.search.autodetect.tooltip"
+        txt="Zoek naar het bestand of de map in de hierboven aangegeven paden." />
+    <str id="UserInputPanel.search.location"
+        txt="Geef de locatie van {0}" />
+    <str id="UserInputPanel.search.location.checkedfile"
+        txt="Het bestaan van {0} is gecontroleerd." />
+    <str id="UserInputPanel.search.browse" txt="Bladeren..." />
+    <str id="UserInputPanel.search.wrongselection.message"
+        txt="Het bestand of de map die u gekozen hebt bestaat niet of is niet bruikbaar." />
+    <str id="UserInputPanel.search.wrongselection.caption"
+        txt="Ongeldige selectie" />
+
+    <str id="CompilePanel.heading" txt="Compilatie" />
+    <str id="CompilePanel.tip" txt="Voortgang compilatie taak:" />
+    <str id="CompilePanel.browse" txt="Bladeren..." />
+    <str id="CompilePanel.browse.approve" txt="Gebruik als compiler" />
+    <str id="CompilePanel.start" txt="Start" />
+    <str id="CompilePanel.progress.initial"
+        txt="[Druk op de start knop]" />
+    <str id="CompilePanel.progress.finished" txt="[gereed]" />
+    <str id="CompilePanel.progress.overall" txt="Voortgang compilatie:" />
+    <str id="CompilePanel.error" txt="Compilatie mislukt" />
+    <str id="CompilePanel.error.reconfigure" txt="Herconfigureer" />
+    <str id="CompilePanel.error.ignore" txt="Negeren" />
+    <str id="CompilePanel.error.abort" txt="Afbreken" />
+    <str id="CompilePanel.error.seebelow"
+        txt="Zie onderstaande voor het mislukte commando en de uitvoer." />
+    <str id="CompilePanel.error.nofiles"
+        txt="Fout bij het zoeken naar bestanden voor compilatie." />
+    <str id="CompilePanel.error.compilernotfound"
+        txt="De compiler kon niet worden gestart." />
+    <str id="CompilePanel.error.invalidarguments"
+        txt="Ongeldige parameters meegegeven aan de compiler." />
+    <str id="CompilePanel.error.noclassfile"
+        txt="De compiler heeft geen class-bestand gemaakt voor het source-bestand " />
+    <str id="CompilePanel.choose_compiler" txt="Te gebruiken compiler:" />
+    <str id="CompilePanel.additional_arguments"
+        txt="Extra compiler parameters:" />
+
+    <str id="ProcessPanel.heading" txt="Bezig" />
+
+    <!-- Strings for the summary of panels - START -->
+    <str id="SummaryPanel.info"
+        txt="Gereed voor installatie. Belangrijke gegevens staan hieronder opgesomd. Druk op &quot;Volgende&quot; om de installatie te starten." />
+    <str id="TargetPanel.summaryCaption" txt="Installatie pad" />
+    <str id="JDKPathPanel.summaryCaption" txt="JDK pad" />
+    <str id="PacksPanel.summaryCaption"
+        txt="Gekozen installatiepakketten" />
+    <str id="ImgPacksPanel.summaryCaption"
+        txt="Gekozen installatie pakketten" />
+    <!-- Strings for the summary of panels - END -->
+
+    <!-- Strings for the Registry -->
+    <str id="functionFailed.RegOpenKeyEx"
+        txt="Kan registersleutel {0}\\{1} niet openen." />
+
+    <str id="nextmedia.title" txt="Volgend installatie media"/>
+  	<str id="nextmedia.msg" txt="Kies het volgend installatie media." />
+	  <str id="nextmedia.browsebtn" txt="Bladeren" />
+  	<str id="nextmedia.okbtn" txt="Toepassen" />
+	  <str id="nextmedia.cancelbtn" txt="Annuleren" />	
+    <str id="nextmedia.choosertitle" txt="Kies installatie media" />
+    <str id="nextmedia.filedesc" rdid="Installatie pakketten (.pak*)" />
+
+    <!-- Strings for the loggin/reporting system (Messenger) -->
+
+    <!-- This string defines the time stamp format in the installation report.
+         The format details are documented in java.text.SimpleDateFormat -->
+    <str id="log.timeStamp"               txt="dd-MM-yyyy [HH:mm:ss]  zzzz"/>
+
+    <!-- Strings for various purposes in the logging/reporting system  -->
+    <str id="log.reportHeading"           txt="                           IzPack INSTALLATIE RAPPORT"/>
+    <str id="log.installFailed"           txt="WAARSCHUWING!!! De installatie is niet gelukt!"/>
+    <str id="log.partialInstall"          txt="WAARSCHUWING!!! De installatie is mogelijk niet volledig gelukt!"/>
+    <str id="log.messageCount"            txt="Dit rapport bevat {0} bericht(en), {1} waarschuwing(en) and {2} fout(en)"/>
+    <str id="log.application"             txt="Installatie rapport voor : {0} Versie {1}"/>
+    <str id="log.timePrefix"              txt="Installatie tijd         : {0}"/>
+    <str id="log.pathPrefix"              txt="Installatie map          : {0}"/>
+    <str id="log.messageHeading"          txt="                         --- Installatie berichten ---"/>
+    <str id="log.warningHeading"          txt="                             --- Waarschuwingen ---"/>
+    <str id="log.errorHeading"            txt="                                --- Fouten ---"/>
+    <str id="log.exceptionPrefix"         txt="                 >> Exception: {0}"/>
+    <str id="log.messagePrefix"           txt="Bericht  [{0}] - "/>
+    <str id="log.warningPrefix"           txt="Waarschuwing [{0}] - "/>
+    <str id="log.errorPrefix"             txt="Fout [{0}] - "/>
+    <str id="log.reportWriteErrorTitle"   txt="Fout bij het schrijven van het rapport"/>
+    <str id="log.reportWriteError"        txt="Kan het installatie rapport niet schrijven naar ''{0}''"/>
+    <str id="log.informUserTitle"         txt="Installatie problemen"/>
+    <str id="log.saveLogTitle"            txt="Log bestand opslaan"/>
+    <str id="log.LogFileName"             txt="installatieLog.txt"/>
+    <str id="log.informUserFail"          txt="&lt;html&gt;De installatie is niet gelukt!&lt;br&gt;Wilt u een log-bestand opslaan?&lt;/html&gt;"/>
+    <str id="log.informUserPartial"       txt="&lt;html&gt;De installatie is mogelijk niet volledig gelukt!&lt;br&gt;Wilt u een log-bestand opslaan?&lt;/html&gt;"/>
+
+    <!-- Strings for individual messages in the logging/reporting system.
+         Numbers for each category (message/warning/error) start at 0  -->
+    <str id="log.message_"                txt=""/>
+
+    <str id="log.warning_"                txt=""/>
+
+    <str id="log.error_0"                 txt="Kan ''{0}'' niet wegschrijven"/>
+    
+    <str id="InstallationGroupPanel.colNameSelected" txt="Geselecteerd" />
+    <str id="InstallationGroupPanel.colNameInstallType" txt="Installatie Type" />
+    <str id="InstallationGroupPanel.colNameSize" txt="Grootte" />
+
+    <!-- Add your own panels specific strings here if you need or use a custom
+         langpack with the same syntax referred as resoure CustomLangpack.xml_[ISO3]"
+    -->     
+
+</langpack>
