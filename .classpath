@@ -22,9 +22,9 @@
 	<classpathentry kind="lib" path="lib/tts/en_us.jar"/>
 	<classpathentry kind="lib" path="lib/tts/freetts.jar"/>
 	<classpathentry kind="lib" path="lib/logger/rxtx/RXTXcomm.jar"/>
-	<classpathentry kind="lib" path="lib/logger/jcommon-1.0.7.jar"/>
-	<classpathentry kind="lib" path="lib/logger/jfreechart-1.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/jdic/windows/jdic_stub.jar"/>
 	<classpathentry kind="lib" path="lib/jdic/jdic.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="lib/logger/jfreechart-1.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/logger/jcommon-1.0.11.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
 </classpath>
