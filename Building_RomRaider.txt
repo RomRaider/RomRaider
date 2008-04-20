@@ -1,0 +1,67 @@
+Apr. 20, 2008
+Steve Wadsworth (lizzardo on RomRaider forum)
+
+This file is an attempt to consolidate available information on setting up, building,
+and packaging RomRaider.  All instructions assume the use of Eclipse for development.
+
+----------------------------------------------
+Setting up the project (from romraider.com)
+
+As an open source project, RomRaider depends on Java developers like you for 
+enhancements, bug fixes and general maintenance. This page is meant to be a 
+guide to setting up a development environment from scratch. The guide was 
+originally written by Tgui in this thread and has been adapted and revised.
+
+RomRaider’s official IDE is Eclipse. You are free to use any Java IDE you 
+choose, but due to the extremely simple process of setting up the environment 
+and the power of Eclipse, it’s probably your best choice.
+
+    * Installing Eclipse and Subclipse
+          o Install the latest version of the Java Development Kit
+          o Get and Install Eclipse for your platform
+          o Install Subclipse for Subversion (SVN) integration, following the 
+              steps outlined here. 
+    * Setting up the RomRaider project
+          o Open the Java perspective in Eclipse by clicking 
+              Window > Open Perspective > Java
+          o Right click in the package explorer and select “Import…”
+          o Select “Checkout Projects from SVN” and click “Next”
+          o Select “Use a new repository location:” and click “Next”
+          o Enter “http://svn.romraider.com/enginuity” and click “Next”
+          o Highlight “trunk” in the folder tree and click “Next”
+          o Name the project “enginuity” and click “Finish” 
+
+Now all you have to do is add the Jars within your libs dir to the project 
+java build path. You should read this.
+
+http://www.eclipse.org/documentation/main.html
+
+----------------------------------------------
+
+Notes on the above:  
+
+1)  Make sure the build path for the Java builder is set correctly.  On the top menu:
+
+        Project -> Properties -> Java Build Path
+
+    On the Source tab, the default output folder should be set to
+
+        enginuity/build/classes
+
+2)  The jars in the java build path mentioned above should be correct in the SVN
+    repository. 
+
+The ant build file is in the main directory and uses the default name of "build.xml".
+
+The Java builder is set as the default.  During development it's convenient to have
+the "Problems" pane show warning and errors.  The ant build does not send warnings
+or errors there.  The ant build is primarily for automation of the complete build 
+process for packaging.   
+
+To build using ant, right-click on the build
+file in the Package Explorer (Java perspective) and select 
+
+Run As -> Ant Build
+
+The "help" target lists available targets with a brief description of each.
+
