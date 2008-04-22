@@ -177,7 +177,7 @@
         <javac failonerror="true" srcdir="${src.dir}" destdir="${classes.dir}" target="1.5">
             <classpath refid="classpath"/>
         </javac>
-        <!-- don't use the build path for jar file - we need to the paths to
+        <!-- don't use the build path for jar file - we need the paths to
                 point to the relative location after installation -->
         <manifestclasspath property="jar.classpath" jarfile="${jar.package}">
             <classpath refid="classpath"/>
