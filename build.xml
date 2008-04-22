@@ -24,7 +24,7 @@
 <project default="help" basedir=".">
 
     <!-- get the environment -->
-    <property environment="env" />
+    <property environment="env"/>
 
     <!-- =================================================================== -->
     <!-- Help                                                                -->
@@ -32,116 +32,120 @@
     <!--   with common property overrides                                    -->
     <!-- =================================================================== -->
     <target name="help" depends="-init">
-        <echo message="help        [Print this message                     ]" />
-        <echo message="clean       [Clean generated files                  ]" />
-        <echo message="prepare     [Create directories for output files    ]" />
-        <echo message="            [  and generate files from templates    ]" />
-        <echo message="build       [Compile the Java source files          ]" />
-        <echo message="rebuild     [Call the clean and build targets       ]" />
-        <echo message="javadoc     [Generate the API documentation of the  ]" />
-        <echo message="            [Java source code                       ]" />
-        <echo message="dist        [Create the distribution packages       ]" />
-        <echo message="all         [Complete rebuild and packaging         ]" />
+        <echo message="help        [Print this message                     ]"/>
+        <echo message="clean       [Clean generated files                  ]"/>
+        <echo message="prepare     [Create directories for output files    ]"/>
+        <echo message="            [  and generate files from templates    ]"/>
+        <echo message="build       [Compile the Java source files          ]"/>
+        <echo message="rebuild     [Call the clean and build targets       ]"/>
+        <echo message="javadoc     [Generate the API documentation of the  ]"/>
+        <echo message="            [Java source code                       ]"/>
+        <echo message="dist        [Create the distribution packages       ]"/>
+        <echo message="all         [Complete rebuild and packaging         ]"/>
     </target>
 
     <!-- =================================================================== -->
     <!-- Initialization target - only callable internally                    -->
     <!-- =================================================================== -->
     <target name="-init" unless="initialized">
-        <property name="initialized" value="true" />
+        <property name="initialized" value="true"/>
         <!-- set the various timestamp properties we may need -->
         <tstamp>
-            <format property="time.rfc822" pattern="EEE, dd MMM yyyy HH:mm:ss Z" />
-            <format property="time.year" pattern="yyyy" />
+            <format property="time.rfc822" pattern="EEE, dd MMM yyyy HH:mm:ss Z"/>
+            <format property="time.year" pattern="yyyy"/>
         </tstamp>
 
         <!-- java compiler properties -->
-        <property name="debug" value="off" />
-        <property name="optimize" value="on" />
-        <property name="deprecation" value="on" />
+        <property name="debug" value="off"/>
+        <property name="optimize" value="on"/>
+        <property name="deprecation" value="on"/>
+
+        <!-- get the current svn revision (needed by version.properties) -->
+        <macro_svn_revision repository="https://svn2.assembla.com/svn/enginuity" property="svn.revision"/>
 
         <!-- version properties are set in this file, both for the product itself and
 		    for some of the external dependencies (jar files and such) -->
-        <property file="version.properties" />
+        <property file="version.properties"/>
 
         <!-- basic project properties -->
-        <property name="src.dir" value="${basedir}/src" />
-        <property name="docs.dir" value="${basedir}/docs" />
-        <property name="build.dir" value="${basedir}/build" />
-        <property name="template.dir" value="${basedir}/templates" />
-        <property name="3rdparty.dir" value="${basedir}/3rdparty" />
+        <property name="src.dir" value="${basedir}/src"/>
+        <property name="docs.dir" value="${basedir}/docs"/>
+        <property name="build.dir" value="${basedir}/build"/>
+        <property name="template.dir" value="${basedir}/templates"/>
+        <property name="3rdparty.dir" value="${basedir}/3rdparty"/>
 
         <!-- all generated files should go to somewhere in the build directory -->
-        <property name="classes.dir" value="${build.dir}/classes" />
-        <property name="javadoc.dir" value="${build.dir}/javadoc" />
-        <property name="dist.dir" value="${build.dir}/dist" />
+        <property name="classes.dir" value="${build.dir}/classes"/>
+        <property name="javadoc.dir" value="${build.dir}/javadoc"/>
+        <property name="dist.dir" value="${build.dir}/dist"/>
 
-        <property name="jar.package" value="${name.package}.jar" />
+        <property name="jar.package" value="${name.package}.jar"/>
 
         <!-- support tools -->
         <!-- creates EXE wrappers around java apps -->
-        <property name="launch4j.dir" location="${3rdparty.dir}/launch4j" />
+        <property name="launch4j.dir" location="${3rdparty.dir}/launch4j"/>
         <!-- installer packager -->
-        <property name="izpack.dir" value="${3rdparty.dir}/IzPack" />
+        <property name="izpack.dir" value="${3rdparty.dir}/IzPack"/>
 
         <!-- define custome tasks -->
-        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"
+                 classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
 
         <!-- jar file dependencies that have versions specified in their names -->
-        <property name="jar.jcommon" value="jcommon-1.0.11.jar" />
-        <property name="jar.jfreechart" value="jfreechart-1.0.6.jar" />
-        <property name="jar.jama" value="jama-1.0.2.jar" />
-        <property name="jar.log4j" value="log4j-1.2.14.jar" />
-        <property name="jar.swing-layout" value="swing-layout-1.0.jar" />
+        <property name="jar.jcommon" value="jcommon-1.0.11.jar"/>
+        <property name="jar.jfreechart" value="jfreechart-1.0.6.jar"/>
+        <property name="jar.jama" value="jama-1.0.2.jar"/>
+        <property name="jar.log4j" value="log4j-1.2.14.jar"/>
+        <property name="jar.swing-layout" value="swing-layout-1.0.jar"/>
 
         <!-- common classpath for building, javadoc, execution -->
         <path id="classpath">
-            <pathelement location="lib/Graph3d/windows/lib/j3dcore.jar" />
-            <pathelement location="lib/Graph3d/windows/lib/j3dutils.jar" />
-            <pathelement location="lib/Graph3d/windows/lib/vecmath.jar" />
-            <pathelement location="lib/Graph3d/windows/Graph3d.jar" />
-            <pathelement location="lib/Graph3d/${jar.jama}" />
-            <pathelement location="lib/BareBonesBrowserLaunch.jar" />
-            <pathelement location="lib/jep.jar" />
-            <pathelement location="lib/Jama.jar" />
-            <pathelement location="lib/jamlab.jar" />
-            <pathelement location="lib/JFontChooser.jar" />
-            <pathelement location="lib/${jar.log4j}" />
-            <pathelement location="lib/${jar.swing-layout}" />
-            <pathelement location="lib/tts/cmu_time_awb.jar" />
-            <pathelement location="lib/tts/cmu_us_kal.jar" />
-            <pathelement location="lib/tts/cmudict04.jar" />
-            <pathelement location="lib/tts/cmulex.jar" />
-            <pathelement location="lib/tts/cmutimelex.jar" />
-            <pathelement location="lib/tts/en_us.jar" />
-            <pathelement location="lib/tts/freetts.jar" />
-            <pathelement location="lib/logger/rxtx/RXTXcomm.jar" />
-            <pathelement location="lib/jdic/windows/jdic_stub.jar" />
-            <pathelement location="lib/jdic/jdic.jar" />
-            <pathelement location="lib/logger/${jar.jcommon}" />
-            <pathelement location="lib/logger/${jar.jfreechart}" />
+            <pathelement location="lib/Graph3d/windows/lib/j3dcore.jar"/>
+            <pathelement location="lib/Graph3d/windows/lib/j3dutils.jar"/>
+            <pathelement location="lib/Graph3d/windows/lib/vecmath.jar"/>
+            <pathelement location="lib/Graph3d/windows/Graph3d.jar"/>
+            <pathelement location="lib/Graph3d/${jar.jama}"/>
+            <pathelement location="lib/BareBonesBrowserLaunch.jar"/>
+            <pathelement location="lib/jep.jar"/>
+            <pathelement location="lib/Jama.jar"/>
+            <pathelement location="lib/jamlab.jar"/>
+            <pathelement location="lib/JFontChooser.jar"/>
+            <pathelement location="lib/${jar.log4j}"/>
+            <pathelement location="lib/${jar.swing-layout}"/>
+            <pathelement location="lib/tts/cmu_time_awb.jar"/>
+            <pathelement location="lib/tts/cmu_us_kal.jar"/>
+            <pathelement location="lib/tts/cmudict04.jar"/>
+            <pathelement location="lib/tts/cmulex.jar"/>
+            <pathelement location="lib/tts/cmutimelex.jar"/>
+            <pathelement location="lib/tts/en_us.jar"/>
+            <pathelement location="lib/tts/freetts.jar"/>
+            <pathelement location="lib/logger/rxtx/RXTXcomm.jar"/>
+            <pathelement location="lib/jdic/windows/jdic_stub.jar"/>
+            <pathelement location="lib/jdic/jdic.jar"/>
+            <pathelement location="lib/logger/${jar.jcommon}"/>
+            <pathelement location="lib/logger/${jar.jfreechart}"/>
         </path>
 
         <!-- this set of filters should contain all the substitutions needed -->
         <filterset id="version.filterset">
-            <filter token="warning.generated-file" value="${warning.generated-file}" />
-            <filter token="name.package" value="${name.package}" />
-            <filter token="description.package" value="${description.package}" />
-            <filter token="name.organization" value="${name.organization}" />
-            <filter token="name.maintainer" value="${name.maintainer}" />
-            <filter token="email.maintainer" value="${email.maintainer}" />
-            <filter token="supporturl" value="${supporturl}" />
-            <filter token="version.major" value="${version.major}" />
-            <filter token="version.minor" value="${version.minor}" />
-            <filter token="version.patch" value="${version.patch}" />
-            <filter token="version.buildnumber" value="${version.buildnumber}" />
-            <filter token="version.extra" value="${version.extra}" />
-            <filter token="version.extra1" value="${version.extra1}" />
-            <filter token="jar.jcommon" value="${jar.jcommon}" />
-            <filter token="jar.jfreechart" value="${jar.jfreechart}" />
-            <filter token="jar.jama" value="${jar.jama}" />
-            <filter token="jar.log4j" value="${jar.log4j}" />
-            <filter token="jar.swing-layout" value="${jar.swing-layout}" />
+            <filter token="warning.generated-file" value="${warning.generated-file}"/>
+            <filter token="name.package" value="${name.package}"/>
+            <filter token="description.package" value="${description.package}"/>
+            <filter token="name.organization" value="${name.organization}"/>
+            <filter token="name.maintainer" value="${name.maintainer}"/>
+            <filter token="email.maintainer" value="${email.maintainer}"/>
+            <filter token="supporturl" value="${supporturl}"/>
+            <filter token="version.major" value="${version.major}"/>
+            <filter token="version.minor" value="${version.minor}"/>
+            <filter token="version.patch" value="${version.patch}"/>
+            <filter token="version.buildnumber" value="${version.buildnumber}"/>
+            <filter token="version.extra" value="${version.extra}"/>
+            <filter token="version.extra1" value="${version.extra1}"/>
+            <filter token="jar.jcommon" value="${jar.jcommon}"/>
+            <filter token="jar.jfreechart" value="${jar.jfreechart}"/>
+            <filter token="jar.jama" value="${jar.jama}"/>
+            <filter token="jar.log4j" value="${jar.log4j}"/>
+            <filter token="jar.swing-layout" value="${jar.swing-layout}"/>
         </filterset>
     </target>
 
@@ -149,15 +153,15 @@
     <!-- cleans all generated files                                          -->
     <!-- =================================================================== -->
     <target name="clean" depends="-init">
-        <delete dir="${build.dir}" failonerror="false" />
+        <delete dir="${build.dir}" failonerror="false"/>
     </target>
 
     <!-- =================================================================== -->
     <!-- pre-build preparation                                               -->
     <!-- =================================================================== -->
     <target name="prepare" depends="-init">
-        <mkdir dir="${build.dir}/classes" />
-        <mkdir dir="${build.dir}/lib" />
+        <mkdir dir="${build.dir}/classes"/>
+        <mkdir dir="${build.dir}/lib"/>
     </target>
 
     <!-- =================================================================== -->
@@ -171,33 +175,34 @@
     <!-- =================================================================== -->
     <target name="build" depends="prepare">
         <javac failonerror="true" srcdir="${src.dir}" destdir="${classes.dir}" target="1.5">
-            <classpath refid="classpath" />
+            <classpath refid="classpath"/>
         </javac>
-        <!-- don't use the build path for jar file - we need to the paths to 
+        <!-- don't use the build path for jar file - we need to the paths to
                 point to the relative location after installation -->
         <manifestclasspath property="jar.classpath" jarfile="${jar.package}">
-            <classpath refid="classpath" />
+            <classpath refid="classpath"/>
         </manifestclasspath>
         <manifest file="${build.dir}/MANIFEST.MF">
-            <attribute name="Built-By" value="${user.name}" />
-            <attribute name="Main-Class" value="${class.start}" />
-            <attribute name="Class-Path" value="${jar.classpath}" />
+            <attribute name="Built-By" value="${user.name}"/>
+            <attribute name="Main-Class" value="${class.start}"/>
+            <attribute name="Class-Path" value="${jar.classpath}"/>
         </manifest>
-        <jar basedir="${classes.dir}" destfile="${build.dir}/lib/${jar.package}" manifest="${build.dir}/MANIFEST.MF" />
+        <jar basedir="${classes.dir}" destfile="${build.dir}/lib/${jar.package}" manifest="${build.dir}/MANIFEST.MF"/>
     </target>
 
     <!-- ================================================================== -->
     <!-- generate javadoc                                                   -->
     <!-- ================================================================== -->
     <target name="javadoc" depends="-init">
-        <delete quiet="true" dir="${javadoc.dir}" />
-        <mkdir dir="${javadoc.dir}" />
-        <javadoc windowtitle="${name.package}" header="${javadoc.header}" sourcepath="${src.dir}" author="yes" version="yes" destdir="${javadoc.dir}" breakiterator="yes" maxmemory="96m">
+        <delete quiet="true" dir="${javadoc.dir}"/>
+        <mkdir dir="${javadoc.dir}"/>
+        <javadoc windowtitle="${name.package}" header="${javadoc.header}" sourcepath="${src.dir}" author="yes" version="yes" destdir="${javadoc.dir}"
+                 breakiterator="yes" maxmemory="96m">
             <packageset dir="src">
-                <include name="enginuity/**" />
+                <include name="enginuity/**"/>
             </packageset>
             <bottom>${javadoc.footer}</bottom>
-            <classpath refid="classpath" />
+            <classpath refid="classpath"/>
         </javadoc>
     </target>
 
@@ -205,40 +210,40 @@
     <!-- create distribution                                                 -->
     <!-- =================================================================== -->
     <target name="dist" depends="-init">
-        <delete dir="${dist.dir}" failonerror="false" />
-        <mkdir dir="${dist.dir}/windows" />
-        <mkdir dir="${dist.dir}/linux" />
+        <delete dir="${dist.dir}" failonerror="false"/>
+        <mkdir dir="${dist.dir}/windows"/>
+        <mkdir dir="${dist.dir}/linux"/>
         <!-- generate installer scripts from templates -->
         <copy overwrite="true" tofile="${dist.dir}/install-win.xml" file="${template.dir}/install-win.xml.template">
-            <filterset refid="version.filterset" />
+            <filterset refid="version.filterset"/>
         </copy>
         <copy overwrite="true" tofile="${dist.dir}/install-linux.xml" file="${template.dir}/install-linux.xml.template">
-            <filterset refid="version.filterset" />
+            <filterset refid="version.filterset"/>
         </copy>
         <copy overwrite="true" tofile="${dist.dir}/shortcutSpec-win.xml" file="${template.dir}/shortcutSpec-win.xml.template">
-            <filterset refid="version.filterset" />
+            <filterset refid="version.filterset"/>
         </copy>
         <copy overwrite="true" tofile="${dist.dir}/shortcutSpec-linux.xml" file="${template.dir}/shortcutSpec-linux.xml.template">
-            <filterset refid="version.filterset" />
+            <filterset refid="version.filterset"/>
         </copy>
         <!-- generate the launch4j scripts from templates -->
         <copy overwrite="true" tofile="${dist.dir}/l4j-installer.xml" file="${template.dir}/l4j-installer.xml.template">
-            <filterset refid="version.filterset" />
+            <filterset refid="version.filterset"/>
         </copy>
         <copy overwrite="true" tofile="${dist.dir}/l4j-package.xml" file="${template.dir}/l4j-package.xml.template">
-            <filterset refid="version.filterset" />
+            <filterset refid="version.filterset"/>
         </copy>
         <!-- create the exe launcher of the package for Windows -->
-        <launch4j configFile="${dist.dir}/l4j-package.xml" />
+        <launch4j configFile="${dist.dir}/l4j-package.xml"/>
         <!-- generate the installers -->
         <exec dir="${basedir}" executable="${izpack.dir}/bin/compile.bat">
-            <arg line="${dist.dir}/install-win.xml -b . -o ${dist.dir}/windows/${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}-win.jar -k standard" />
+            <arg line="${dist.dir}/install-win.xml -b . -o ${dist.dir}/windows/${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}-win.jar -k standard"/>
         </exec>
         <exec dir="${basedir}" executable="${izpack.dir}/bin/compile.bat">
-            <arg line="${dist.dir}/install-linux.xml -b . -o ${dist.dir}/linux/${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}-linux.jar -k standard" />
+            <arg line="${dist.dir}/install-linux.xml -b . -o ${dist.dir}/linux/${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}-linux.jar -k standard"/>
         </exec>
         <!-- create the exe launcher of the installer for Windows -->
-        <launch4j configFile="${dist.dir}/l4j-installer.xml" />
+        <launch4j configFile="${dist.dir}/l4j-installer.xml"/>
     </target>
 
     <!-- =================================================================== -->
@@ -246,5 +251,30 @@
     <!-- =================================================================== -->
     <target name="all" depends="rebuild, dist">
     </target>
+
+    <!-- =================================================================== -->
+    <!-- Macros                                                                 -->
+    <!-- =================================================================== -->
+    <macrodef name="macro_svn_revision">
+        <attribute name="revision" default="HEAD"/>
+        <attribute name="repository"/>
+        <attribute name="property"/>
+        <sequential>
+            <tempfile property="svninfo.log"/>
+            <exec executable="svn" output="${svninfo.log}">
+                <arg line="info @{repository}"/>
+            </exec>
+            <loadfile property="@{property}" srcFile="${svninfo.log}">
+                <filterchain>
+                    <linecontainsregexp>
+                        <regexp pattern="Last Changed Rev: "/>
+                    </linecontainsregexp>
+                    <deletecharacters chars="Last Changed Rev: "/>
+                    <striplinebreaks/>
+                </filterchain>
+            </loadfile>
+            <delete file="${svninfo.log}"/>
+        </sequential>
+    </macrodef>
 
 </project>
