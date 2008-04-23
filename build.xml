@@ -79,15 +79,17 @@
         <property name="javadoc.dir" value="${build.dir}/javadoc"/>
         <property name="dist.dir" value="${build.dir}/dist"/>
 
+        <!-- package naming properties -->
         <property name="jar.package" value="${name.package}.jar"/>
-
+        <property name="jar.installer-prefix" value="${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}"/>
+        
         <!-- support tools -->
         <!-- creates EXE wrappers around java apps -->
         <property name="launch4j.dir" location="${3rdparty.dir}/launch4j"/>
         <!-- installer packager -->
         <property name="izpack.dir" value="${3rdparty.dir}/IzPack"/>
 
-        <!-- define custome tasks -->
+        <!-- define custom tasks -->
         <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"
                  classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
 
@@ -98,7 +100,7 @@
         <property name="jar.log4j" value="log4j-1.2.14.jar"/>
         <property name="jar.swing-layout" value="swing-layout-1.0.jar"/>
 
-        <!-- common classpath for building, javadoc, execution -->
+        <!-- common classpath for building, javadoc -->
         <path id="classpath">
             <pathelement location="lib/Graph3d/windows/lib/j3dcore.jar"/>
             <pathelement location="lib/Graph3d/windows/lib/j3dutils.jar"/>
@@ -124,6 +126,33 @@
             <pathelement location="lib/jdic/jdic.jar"/>
             <pathelement location="lib/logger/${jar.jcommon}"/>
             <pathelement location="lib/logger/${jar.jfreechart}"/>
+        </path>
+        <!-- classpath for execution -->
+        <path id="classpath.installed">
+            <pathelement location="lib/j3dcore.jar"/>
+            <pathelement location="lib/j3dutils.jar"/>
+            <pathelement location="lib/vecmath.jar"/>
+            <pathelement location="lib/Graph3d.jar"/>
+            <pathelement location="lib/${jar.jama}"/>
+            <pathelement location="lib/BareBonesBrowserLaunch.jar"/>
+            <pathelement location="lib/jep.jar"/>
+            <pathelement location="lib/Jama.jar"/>
+            <pathelement location="lib/jamlab.jar"/>
+            <pathelement location="lib/JFontChooser.jar"/>
+            <pathelement location="lib/${jar.log4j}"/>
+            <pathelement location="lib/${jar.swing-layout}"/>
+            <pathelement location="lib/cmu_time_awb.jar"/>
+            <pathelement location="lib/cmu_us_kal.jar"/>
+            <pathelement location="lib/cmudict04.jar"/>
+            <pathelement location="lib/cmulex.jar"/>
+            <pathelement location="lib/cmutimelex.jar"/>
+            <pathelement location="lib/en_us.jar"/>
+            <pathelement location="lib/freetts.jar"/>
+            <pathelement location="lib/RXTXcomm.jar"/>
+            <pathelement location="lib/jdic_stub.jar"/>
+            <pathelement location="lib/jdic.jar"/>
+            <pathelement location="lib/${jar.jcommon}"/>
+            <pathelement location="lib/${jar.jfreechart}"/>
         </path>
 
         <!-- this set of filters should contain all the substitutions needed -->
@@ -180,7 +209,7 @@
         <!-- don't use the build path for jar file - we need the paths to
                 point to the relative location after installation -->
         <manifestclasspath property="jar.classpath" jarfile="${jar.package}">
-            <classpath refid="classpath"/>
+            <classpath refid="classpath.installed"/>
         </manifestclasspath>
         <manifest file="${build.dir}/MANIFEST.MF">
             <attribute name="Built-By" value="${user.name}"/>
@@ -237,10 +266,10 @@
         <launch4j configFile="${dist.dir}/l4j-package.xml"/>
         <!-- generate the installers -->
         <exec dir="${basedir}" executable="${izpack.dir}/bin/compile.bat">
-            <arg line="${dist.dir}/install-win.xml -b . -o ${dist.dir}/windows/${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}-win.jar -k standard"/>
+            <arg line="${dist.dir}/install-win.xml -b . -o ${dist.dir}/windows/${jar.installer-prefix}-win.jar -k standard"/>
         </exec>
         <exec dir="${basedir}" executable="${izpack.dir}/bin/compile.bat">
-            <arg line="${dist.dir}/install-linux.xml -b . -o ${dist.dir}/linux/${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}-linux.jar -k standard"/>
+            <arg line="${dist.dir}/install-linux.xml -b . -o ${dist.dir}/linux/${jar.installer-prefix}-linux.jar -k standard"/>
         </exec>
         <!-- create the exe launcher of the installer for Windows -->
         <launch4j configFile="${dist.dir}/l4j-installer.xml"/>
@@ -253,7 +282,7 @@
     </target>
 
     <!-- =================================================================== -->
-    <!-- Macros                                                                 -->
+    <!-- Macros                                                              -->
     <!-- =================================================================== -->
     <macrodef name="macro_svn_revision">
         <attribute name="revision" default="HEAD"/>
