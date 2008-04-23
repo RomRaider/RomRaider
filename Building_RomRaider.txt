@@ -1,8 +1,9 @@
-Apr. 20, 2008
 Steve Wadsworth (lizzardo on RomRaider forum)
 
 This file is an attempt to consolidate available information on setting up, building,
-and packaging RomRaider.  All instructions assume the use of Eclipse for development.
+and packaging RomRaider.  All instructions assume a Windows environment and the use 
+of Eclipse for development.  Apologies for the Windows-centricity, but some of the 
+tools inherited from the Enginuity project are Windows-based. 
 
 ----------------------------------------------
 Setting up the project (from romraider.com)
@@ -50,6 +51,10 @@ Notes on the above:
 
 2)  The jars in the java build path mentioned above should be correct in the SVN
     repository. 
+    
+3)  A command line Subversion client needs to be installed and available in the default 
+    path.  To verify this, open a command prompt and run "svn".  If this is not recognized
+    as an executable, the ant build will fail.
 
 The ant build file is in the main directory and uses the default name of "build.xml".
 
@@ -64,4 +69,6 @@ file in the Package Explorer (Java perspective) and select
 Run As -> Ant Build
 
 The "help" target lists available targets with a brief description of each.
+
+
 
