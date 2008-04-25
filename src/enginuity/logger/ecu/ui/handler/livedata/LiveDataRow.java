@@ -1,7 +1,7 @@
 /*
  *
- * Enginuity Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006 Enginuity.org
+ * RomRaider Open-Source Tuning, Logging and Reflashing
+ * Copyright (C) 2006-2008 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
