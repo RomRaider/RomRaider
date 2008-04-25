@@ -9,7 +9,7 @@ public final class Lm1DataItem implements ExternalDataItem, DataListener {
     private byte[] bytes;
 
     public String getName() {
-        return "LM-1";
+        return "Innovate LM-1";
     }
 
     public String getDescription() {
