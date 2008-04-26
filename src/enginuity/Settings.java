@@ -67,7 +67,7 @@ public class Settings implements Serializable {
     private Color warningColor = new Color(255, 0, 0);
     private int tableClickCount = 1; // number of clicks to open table
 
-    private String loggerPort = "COM4";
+    private String loggerPort = "";
     private String loggerProtocol = "SSM";
     private String loggerConfigFilePath = "logger.xml";
     private String loggerProfileFilePath = "profile.xml";

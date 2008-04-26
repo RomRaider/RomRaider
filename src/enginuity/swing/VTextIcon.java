@@ -121,8 +121,8 @@ public class VTextIcon extends Component implements Icon, PropertyChangeListener
 
     void calcDimensions() {
         //FontMetrics fm = fComponent.getFontMetrics(fComponent.getFont());
-       // fCharHeight = fm.getAscent() + fm.getDescent();
-       // fDescent = fm.getDescent();
+        // fCharHeight = fm.getAscent() + fm.getDescent();
+        // fDescent = fm.getDescent();
         if (fRotation == ROTATE_NONE) {
             int len = fLabel.length();
             char data[] = new char[len];
@@ -136,7 +136,7 @@ public class VTextIcon extends Component implements Icon, PropertyChangeListener
             char ch;
             for (int i = 0; i < len; i++) {
                 ch = data[i];
-               // fCharWidths[i] = fm.charWidth(ch);
+                // fCharWidths[i] = fm.charWidth(ch);
                 if (fCharWidths[i] > fWidth) {
                     fWidth = fCharWidths[i];
                 }
@@ -237,9 +237,9 @@ public class VTextIcon extends Component implements Icon, PropertyChangeListener
      * from http://www.unicode.org/unicode/reports/tr9/tr9-3.html
      * When setting text using the Arabic script in vertical lines,
      * it is more common to employ a horizontal baseline that
-     * is rotated by 90¡ counterclockwise so that the characters
+     * is rotated by 90deg counterclockwise so that the characters
      * are ordered from top to bottom. Latin text and numbers
-     * may be rotated 90¡ clockwise so that the characters
+     * may be rotated 90deg clockwise so that the characters
      * are also ordered from top to bottom.
      * <p/>
      * Rotation rules

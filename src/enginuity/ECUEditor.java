@@ -72,7 +72,7 @@ import java.util.Vector;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
     private static final String NEW_LINE = System.getProperty("line.separator");
-    public static final String VERSION = "0.4.1 Beta";
+    public static final String VERSION = "0.4.2 Beta";
     private final SettingsManager settingsManager = new SettingsManagerImpl();
     private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private RomTree imageList = new RomTree(imageRoot);

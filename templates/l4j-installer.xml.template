@@ -1,44 +1,44 @@
 <!-- @warning.generated-file@ -->
 
 <launch4jConfig>
-  <dontWrapJar>false</dontWrapJar>
-  <headerType>gui</headerType>
-  <jar>windows\@name.package@@version.major@.@version.minor@.@version.patch@-@version.buildnumber@-win.jar</jar>
-  <outfile>windows\@name.package@Setup@version.major@.@version.minor@.@version.patch@@version.extra@.exe</outfile>
-  <errTitle></errTitle>
-  <cmdLine></cmdLine>
-  <chdir>.</chdir>
-  <priority>normal</priority>
-  <downloadUrl>http://java.com/download</downloadUrl>
-  <supportUrl></supportUrl>
-  <customProcName>false</customProcName>
-  <stayAlive>false</stayAlive>
-  <icon>..\..\graphics\enginuity-ico.ico</icon>
-  <jre>
-    <path></path>
-    <minVersion>1.5.0</minVersion>
-    <maxVersion></maxVersion>
-    <dontUsePrivateJres>false</dontUsePrivateJres>
-    <initialHeapSize>0</initialHeapSize>
-    <maxHeapSize>0</maxHeapSize>
-    <opt>-Djava.library.path=lib -Xmx256M -Dswing.aatext=true</opt>
-  </jre>
-  <splash>
-    <file>..\..\graphics\splash.bmp</file>
-    <waitForWindow>true</waitForWindow>
-    <timeout>60</timeout>
-    <timeoutErr>true</timeoutErr>
-  </splash>
-  <versionInfo>
-    <fileVersion>@version.major@.@version.minor@.@version.patch@.@version.buildnumber@</fileVersion>
-    <txtFileVersion>@version.major@.@version.minor@.@version.patch@ @version.extra@</txtFileVersion>
-    <fileDescription>@name.package@</fileDescription>
-    <copyright>@name.organization@</copyright>
-    <productVersion>@version.major@.@version.minor@.@version.patch@.@version.buildnumber@</productVersion>
-    <txtProductVersion>@version.major@.@version.minor@.@version.patch@ @version.extra@</txtProductVersion>
-    <productName>@name.package@</productName>
-    <companyName>@name.organization@</companyName>
-    <internalName>@version.major@.@version.minor@.@version.patch@@version.extra1@</internalName>
-    <originalFilename>@name.package@.exe</originalFilename>
-  </versionInfo>
+    <dontWrapJar>false</dontWrapJar>
+    <headerType>gui</headerType>
+    <jar>windows/@name.package@@version.major@.@version.minor@.@version.patch@-@version.buildnumber@-win.jar</jar>
+    <outfile>windows/@name.package@Setup@version.major@.@version.minor@.@version.patch@@version.extra@.exe</outfile>
+    <errTitle></errTitle>
+    <cmdLine></cmdLine>
+    <chdir>.</chdir>
+    <priority>normal</priority>
+    <downloadUrl>http://java.com/download</downloadUrl>
+    <supportUrl></supportUrl>
+    <customProcName>false</customProcName>
+    <stayAlive>false</stayAlive>
+    <icon>../../graphics/enginuity-ico.ico</icon>
+    <jre>
+        <path></path>
+        <minVersion>1.5.0</minVersion>
+        <maxVersion></maxVersion>
+        <dontUsePrivateJres>false</dontUsePrivateJres>
+        <initialHeapSize>0</initialHeapSize>
+        <maxHeapSize>0</maxHeapSize>
+        <opt>-Djava.library.path=lib -Xmx256M -Dswing.aatext=true</opt>
+    </jre>
+    <splash>
+        <file>../../graphics/splash.bmp</file>
+        <waitForWindow>true</waitForWindow>
+        <timeout>60</timeout>
+        <timeoutErr>true</timeoutErr>
+    </splash>
+    <versionInfo>
+        <fileVersion>@version.major@.@version.minor@.@version.patch@.@version.buildnumber@</fileVersion>
+        <txtFileVersion>@version.major@.@version.minor@.@version.patch@ @version.extra@</txtFileVersion>
+        <fileDescription>@name.package@</fileDescription>
+        <copyright>@name.organization@</copyright>
+        <productVersion>@version.major@.@version.minor@.@version.patch@.@version.buildnumber@</productVersion>
+        <txtProductVersion>@version.major@.@version.minor@.@version.patch@ @version.extra@</txtProductVersion>
+        <productName>@name.package@</productName>
+        <companyName>@name.organization@</companyName>
+        <internalName>@version.major@.@version.minor@.@version.patch@@version.extra1@</internalName>
+        <originalFilename>@name.package@.exe</originalFilename>
+    </versionInfo>
 </launch4jConfig>
