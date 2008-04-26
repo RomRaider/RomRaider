@@ -40,10 +40,6 @@ public class Settings implements Serializable {
     private int splitPaneLocation = 150;
     private boolean windowMaximized = false;
 
-    private String romRevisionURL = "http://www.scoobypedia.co.uk/index.php/Knowledge/ECUVersionCompatibilityList";
-    private String ecuDefsURL = "http://www.romraider.com/forum/forum8.html";
-    private String supportURL = "http://www.romraider.com";
-    private String releaseNotes = "release notes.txt";
     private String recentVersion = "x";
 
     private Vector<File> ecuDefinitionFiles = new Vector<File>();
@@ -147,11 +143,11 @@ public class Settings implements Serializable {
     }
 
     public String getRomRevisionURL() {
-        return romRevisionURL;
+        return Version.ROM_REVISION_URL;
     }
 
     public String getSupportURL() {
-        return supportURL;
+        return Version.SUPPORT_URL;
     }
 
     public Font getTableFont() {
@@ -273,7 +269,7 @@ public class Settings implements Serializable {
     }
 
     public String getReleaseNotes() {
-        return releaseNotes;
+        return Version.RELEASE_NOTES;
     }
 
     public boolean isSaveDebugTables() {
@@ -365,11 +361,7 @@ public class Settings implements Serializable {
     }
 
     public String getEcuDefsURL() {
-        return ecuDefsURL;
-    }
-
-    public void setEcuDefsURL(String ecuDefsURL) {
-        this.ecuDefsURL = ecuDefsURL;
+        return Version.ECU_DEFS_URL;
     }
 
     public String getFileLoggingControllerSwitchId() {

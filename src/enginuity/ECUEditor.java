@@ -24,6 +24,7 @@ package enginuity;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
 import enginuity.logger.ecu.ui.handler.table.TableUpdateHandler;
+import enginuity.Version;	// this is a generated class - see build.xml
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
 import enginuity.net.URL;
@@ -71,12 +72,12 @@ import java.io.IOException;
 import java.util.Vector;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
+    private String titleText = Version.PRODUCT_NAME + " v" + Version.VERSION;
+
     private static final String NEW_LINE = System.getProperty("line.separator");
-    public static final String VERSION = "0.4.2 Beta";
     private final SettingsManager settingsManager = new SettingsManagerImpl();
     private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private RomTree imageList = new RomTree(imageRoot);
-    private String titleText = "RomRaider v" + VERSION;
     public MDIDesktopPane rightPanel = new MDIDesktopPane();
     private JProgressPane statusPanel = new JProgressPane();
     private JSplitPane splitPane = new JSplitPane();
@@ -90,7 +91,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         // get settings from xml
         settings = settingsManager.load("A new file will be created.");
 
-        if (!settings.getRecentVersion().equalsIgnoreCase(VERSION)) {
+        if (!settings.getRecentVersion().equalsIgnoreCase(Version.VERSION)) {
             showReleaseNotes();
         }
 
@@ -154,7 +155,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
                 releaseNotes.setText(sb.toString());
 
                 JOptionPane.showMessageDialog(this, scroller,
-                        "RomRaider " + VERSION + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
+                		Version.PRODUCT_NAME + Version.VERSION + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
             } finally {
                 br.close();
             }
@@ -197,7 +198,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     }
 
     public String getVersion() {
-        return VERSION;
+        return Version.VERSION;
     }
 
     public Settings getSettings() {

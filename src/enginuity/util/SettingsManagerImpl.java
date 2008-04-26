@@ -1,7 +1,7 @@
 package enginuity.util;
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import static enginuity.ECUEditor.VERSION;
+import static enginuity.Version.VERSION;	// this is a generated class - see build.xml
 import enginuity.Settings;
 import enginuity.swing.JProgressPane;
 import enginuity.xml.DOMSettingsBuilder;
