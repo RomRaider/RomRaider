@@ -62,7 +62,7 @@
 
         <!-- get the current svn revision (needed by version.properties) -->
         <macro_svn_revision repository="https://svn2.assembla.com/svn/enginuity" property="svn.revision"/>
-
+    	
         <!-- version properties are set in this file, both for the product itself and
 		    for some of the external dependencies (jar files and such) -->
         <property file="version.properties"/>
@@ -164,6 +164,10 @@
             <filter token="name.maintainer" value="${name.maintainer}"/>
             <filter token="email.maintainer" value="${email.maintainer}"/>
             <filter token="supporturl" value="${supporturl}"/>
+            <filter token="romrevisionurl" value="${romrevisionurl}"/>
+            <filter token="ecudefsurl" value="${ecudefsurl}"/>
+            <filter token="loggerdefsurl" value="${loggerdefsurl}"/>
+            <filter token="release_notes" value="${release_notes}"/>
             <filter token="version.major" value="${version.major}"/>
             <filter token="version.minor" value="${version.minor}"/>
             <filter token="version.patch" value="${version.patch}"/>
@@ -191,6 +195,11 @@
     <target name="prepare" depends="-init">
         <mkdir dir="${build.dir}/classes"/>
         <mkdir dir="${build.dir}/lib"/>
+    	<!-- generate the Version class -->
+        <copy overwrite="true" tofile="${src.dir}/enginuity/Version.java" file="${src.dir}/enginuity/Version.java.template">
+            <filterset refid="version.filterset"/>
+        </copy>
+
     </target>
 
     <!-- =================================================================== -->
