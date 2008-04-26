@@ -22,11 +22,11 @@
 package enginuity.newmaps.ecudata;
 
 public class ECUData {
-    
+
     byte[] data;
-    
+
     public ECUData(byte[] data) {
         this.data = data;
     }
-    
+
 }

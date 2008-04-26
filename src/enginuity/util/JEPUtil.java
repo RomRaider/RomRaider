@@ -22,7 +22,6 @@
 package enginuity.util;
 
 import org.nfunk.jep.JEP;
-
 import java.util.Map;
 
 public final class JEPUtil {

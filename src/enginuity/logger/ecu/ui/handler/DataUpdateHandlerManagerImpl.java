@@ -22,7 +22,6 @@
 package enginuity.logger.ecu.ui.handler;
 
 import enginuity.logger.ecu.definition.LoggerData;
-
 import java.util.ArrayList;
 import java.util.List;
 

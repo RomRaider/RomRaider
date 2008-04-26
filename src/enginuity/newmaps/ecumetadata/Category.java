@@ -23,18 +23,18 @@ package enginuity.newmaps.ecumetadata;
 
 import enginuity.util.Nameable;
 import enginuity.util.NamedSet;
-
 import java.io.Serializable;
 import java.util.Iterator;
 
 public class Category extends NamedSet implements Nameable, Serializable {
-    
+
     private String name;
     private String description;
     private NamedSet<TableMetadata> tables = new NamedSet<TableMetadata>();
-    
-    private Category() { }
-    
+
+    private Category() {
+    }
+
     public Category(String name) {
         this.name = name;
     }
@@ -54,20 +54,20 @@ public class Category extends NamedSet implements Nameable, Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public String toString() {
         StringBuffer output = new StringBuffer();
         output.append(" --- CATEGORY: " + name + " ---\n");
-            
-        Iterator it = iterator();        
+
+        Iterator it = iterator();
         while (it.hasNext()) {
             output.append("  " + it.next().toString() + "\n");
-        }   
-        
+        }
+
         it = tables.iterator();
         while (it.hasNext()) {
             output.append(it.next().toString() + "\n");
-        }                            
+        }
 
         return output + " --- END CATEGORY: " + name + " ---\n";
     }
@@ -75,18 +75,18 @@ public class Category extends NamedSet implements Nameable, Serializable {
     public void addTable(TableMetadata table) {
         tables.add(table);
     }
-    
+
     public void removeTable(TableMetadata table) {
         try {
             tables.remove(table);
         } catch (Exception ex) {
-            
+
         } finally {
             Iterator it = iterator();
             while (it.hasNext()) {
-                ((Category)it.next()).removeTable(table);
+                ((Category) it.next()).removeTable(table);
             }
         }
     }
-    
+
 }

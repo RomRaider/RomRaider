@@ -22,7 +22,6 @@
 package enginuity.swing;
 
 import enginuity.ECUEditor;
-
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -64,7 +63,7 @@ public class RomTree extends JTree implements MouseListener {
                 TableTreeNode node = (TableTreeNode) selectedRow;
 
                 //if (!(node.getTable().getUserLevel() > container.getSettings().getUserLevel())) {
-                    container.displayTable(node.getFrame());
+                container.displayTable(node.getFrame());
                 //}
 
             }

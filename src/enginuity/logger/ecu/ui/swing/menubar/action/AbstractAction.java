@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.ui.swing.menubar.action;
 
 import enginuity.logger.ecu.EcuLogger;
-
 import javax.swing.Action;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;

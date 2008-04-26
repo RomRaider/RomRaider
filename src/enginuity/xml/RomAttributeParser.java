@@ -4,8 +4,14 @@ package enginuity.xml;
 
 import static enginuity.maps.Scale.INVERSE;
 import static enginuity.maps.Scale.LINEAR;
-import static enginuity.maps.Table.*;
-
+import static enginuity.maps.Table.ENDIAN_BIG;
+import static enginuity.maps.Table.ENDIAN_LITTLE;
+import static enginuity.maps.Table.STORAGE_TYPE_FLOAT;
+import static enginuity.maps.Table.TABLE_1D;
+import static enginuity.maps.Table.TABLE_2D;
+import static enginuity.maps.Table.TABLE_3D;
+import static enginuity.maps.Table.TABLE_X_AXIS;
+import static enginuity.maps.Table.TABLE_Y_AXIS;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 

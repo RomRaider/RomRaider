@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.comms.query;
 
 import enginuity.logger.ecu.definition.LoggerData;
-
 import java.util.Set;
 
 public interface Response {

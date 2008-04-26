@@ -3,7 +3,6 @@ package enginuity.logger.ecu.ui.swing.menubar.action;
 import enginuity.logger.ecu.EcuLogger;
 import static enginuity.logger.ecu.ui.swing.menubar.util.FileHelper.getFile;
 import static enginuity.logger.ecu.ui.swing.menubar.util.FileHelper.getProfileFileChooser;
-
 import javax.swing.JFileChooser;
 import java.awt.event.ActionEvent;
 import java.io.File;

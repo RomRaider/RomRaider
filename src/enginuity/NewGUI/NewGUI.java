@@ -350,6 +350,6 @@ public class NewGUI extends JFrame implements WindowListener, ActionListener,
     public void windowOpened(WindowEvent e) {
         // TODO Auto-generated method stub
         LOGGER.info("Window Opened.");
-	}
+    }
 
 }

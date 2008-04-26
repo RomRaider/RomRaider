@@ -30,7 +30,6 @@ import enginuity.maps.Table;
 import enginuity.maps.Table1D;
 import enginuity.maps.Table3D;
 import org.apache.log4j.Logger;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import static javax.swing.BorderFactory.createLineBorder;

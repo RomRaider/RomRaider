@@ -22,17 +22,17 @@
 package enginuity.newmaps.ecudata;
 
 public class SwitchData extends TableData {
-    
+
     public SwitchData() {
     }
-    
+
     public boolean populate(byte[] data) {
         return true;
     }
-    
+
     public byte[] returnValues() {
         // TODO: Find return values (using ECUDataUtil)
         return null;
     }
-    
+
 }

@@ -25,7 +25,6 @@ import enginuity.logger.ecu.comms.controller.LoggerController;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandlerManager;
 import static enginuity.util.ParamChecker.checkNotNull;
-
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;
 import java.util.List;

@@ -4,7 +4,6 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import enginuity.Settings;
 import enginuity.swing.JProgressPane;
-
 import javax.imageio.metadata.IIOMetadataNode;
 import java.io.File;
 import java.io.FileOutputStream;

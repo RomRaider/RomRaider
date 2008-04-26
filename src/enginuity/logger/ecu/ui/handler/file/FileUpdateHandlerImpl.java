@@ -28,7 +28,6 @@ import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.MessageListener;
 import enginuity.logger.ecu.ui.StatusChangeListener;
 import static enginuity.util.ParamChecker.checkNotNull;
-
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;

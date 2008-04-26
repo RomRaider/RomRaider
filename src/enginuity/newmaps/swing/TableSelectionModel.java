@@ -30,30 +30,27 @@ import javax.swing.DefaultListSelectionModel;
  * @author Stefan Taranu
  * @date 19.01.2007
  */
-public class TableSelectionModel extends DefaultListSelectionModel
-{
+public class TableSelectionModel extends DefaultListSelectionModel {
 
 
+    public static final int MULTIPLE_SELECTION = 3;
 
-	 public static final int MULTIPLE_SELECTION = 3;
+    private int selectionMode = MULTIPLE_INTERVAL_SELECTION;
 
-	 private int selectionMode = MULTIPLE_INTERVAL_SELECTION;
-
-		/* (non-Javadoc)
-		 * @see javax.swing.ListSelectionModel#setSelectionMode(int)
-		 */
-		public void setSelectionMode( int selectionMode )
-		{
-	    	switch (selectionMode) {
-	    	case SINGLE_SELECTION:
-	    	case SINGLE_INTERVAL_SELECTION:
-	    	case MULTIPLE_INTERVAL_SELECTION:
-	    	case MULTIPLE_SELECTION:
-	    	    this.selectionMode = selectionMode;
-	    	    break;
-	    	default:
-	    	    throw new IllegalArgumentException("invalid selectionMode");
-	    	}
+    /* (non-Javadoc)
+          * @see javax.swing.ListSelectionModel#setSelectionMode(int)
+          */
+    public void setSelectionMode(int selectionMode) {
+        switch (selectionMode) {
+            case SINGLE_SELECTION:
+            case SINGLE_INTERVAL_SELECTION:
+            case MULTIPLE_INTERVAL_SELECTION:
+            case MULTIPLE_SELECTION:
+                this.selectionMode = selectionMode;
+                break;
+            default:
+                throw new IllegalArgumentException("invalid selectionMode");
         }
+    }
 
 }

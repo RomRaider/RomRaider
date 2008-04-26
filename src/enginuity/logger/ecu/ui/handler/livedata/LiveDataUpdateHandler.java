@@ -25,7 +25,6 @@ import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.definition.ConvertorUpdateListener;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
-
 import javax.swing.SwingUtilities;
 
 public final class LiveDataUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {

@@ -59,39 +59,39 @@ public class DataCell extends Number {
     }
 
     public String toString() {
-    	if (storageType == Scale.STORAGE_TYPE_CHAR) {
+        if (storageType == Scale.STORAGE_TYPE_CHAR) {
 
-    		return new String(bytes);
-
-
-    	} else if (storageType == Scale.STORAGE_TYPE_FLOAT) {
-
-    		return ByteUtil.asFloat(bytes, endian)+"";
+            return new String(bytes);
 
 
-    	} else if (storageType == Scale.STORAGE_TYPE_HEX) {
+        } else if (storageType == Scale.STORAGE_TYPE_FLOAT) {
 
-    		// TODO: Hex..
-    		return "Hex";
-
-
-    	} else if (storageType == Scale.STORAGE_TYPE_INT8 ||
-    				storageType == Scale.STORAGE_TYPE_INT16 ||
-    				storageType == Scale.STORAGE_TYPE_INT32) {
-
-    		return ByteUtil.asSignedInt(bytes, endian)+"";
+            return ByteUtil.asFloat(bytes, endian) + "";
 
 
-    	} else if (storageType == Scale.STORAGE_TYPE_UINT8 ||
-					storageType == Scale.STORAGE_TYPE_UINT16 ||
-					storageType == Scale.STORAGE_TYPE_UINT32) {
+        } else if (storageType == Scale.STORAGE_TYPE_HEX) {
 
-    		return ByteUtil.asUnsignedInt(bytes, endian)+"";
+            // TODO: Hex..
+            return "Hex";
 
 
-    	} else {
-    		return "Blah";
-    	}
+        } else if (storageType == Scale.STORAGE_TYPE_INT8 ||
+                storageType == Scale.STORAGE_TYPE_INT16 ||
+                storageType == Scale.STORAGE_TYPE_INT32) {
+
+            return ByteUtil.asSignedInt(bytes, endian) + "";
+
+
+        } else if (storageType == Scale.STORAGE_TYPE_UINT8 ||
+                storageType == Scale.STORAGE_TYPE_UINT16 ||
+                storageType == Scale.STORAGE_TYPE_UINT32) {
+
+            return ByteUtil.asUnsignedInt(bytes, endian) + "";
+
+
+        } else {
+            return "Blah";
+        }
     }
 
 }

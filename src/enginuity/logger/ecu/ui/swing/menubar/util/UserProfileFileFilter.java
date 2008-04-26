@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.ui.swing.menubar.util;
 
 import enginuity.swing.GenericFileFilter;
-
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
 

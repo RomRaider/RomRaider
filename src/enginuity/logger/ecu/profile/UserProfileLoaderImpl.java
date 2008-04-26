@@ -25,7 +25,6 @@ import enginuity.logger.ecu.profile.xml.UserProfileHandler;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.SaxParserFactory.getSaxParser;
 import org.apache.log4j.Logger;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;

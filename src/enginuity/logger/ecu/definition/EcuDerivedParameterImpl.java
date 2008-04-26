@@ -24,7 +24,6 @@ package enginuity.logger.ecu.definition;
 import static enginuity.logger.ecu.definition.EcuDataType.PARAMETER;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
-
 import java.util.HashSet;
 import java.util.Set;
 

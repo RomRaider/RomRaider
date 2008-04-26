@@ -24,13 +24,13 @@ package enginuity.newmaps.ecumetadata;
 import java.io.Serializable;
 
 public class ParameterMetadata extends TableMetadata implements Serializable {
-    
+
     public ParameterMetadata(String name) {
         super(name);
     }
-    
+
     public int getSize() {
         return 1;
     }
-    
+
 }

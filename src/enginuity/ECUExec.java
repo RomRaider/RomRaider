@@ -24,7 +24,6 @@ package enginuity;
 import enginuity.swing.LookAndFeelManager;
 import enginuity.util.LogManager;
 import org.apache.log4j.Logger;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;

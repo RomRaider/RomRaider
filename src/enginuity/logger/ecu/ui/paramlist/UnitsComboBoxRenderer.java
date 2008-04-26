@@ -23,7 +23,6 @@ package enginuity.logger.ecu.ui.paramlist;
 
 import enginuity.logger.ecu.definition.EcuData;
 import enginuity.logger.ecu.definition.EcuDataConvertor;
-
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;

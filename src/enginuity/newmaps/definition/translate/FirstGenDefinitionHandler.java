@@ -42,7 +42,6 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
-
 import javax.management.modelmbean.XMLParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -270,7 +269,7 @@ public final class FirstGenDefinitionHandler {
 
     private Table unmarshallTable(Node tableNode, Table table, Rom rom) throws Exception {
 
-        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase("none")) { // copy base table for inheritance      
+        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase("none")) { // copy base table for inheritance
             table = (Table) ObjectCloner.deepCopy((Object) rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
         }
 
@@ -304,7 +303,7 @@ public final class FirstGenDefinitionHandler {
             }
         }
 
-        // unmarshall table attributes                    
+        // unmarshall table attributes
         table.setName(unmarshallAttribute(tableNode, "name", table.getName()));
         table.setType(RomAttributeParser.parseTableType(unmarshallAttribute(tableNode, "type", String.valueOf(table.getType()))));
         if (unmarshallAttribute(tableNode, "beforeram", "false").equalsIgnoreCase("true")) {

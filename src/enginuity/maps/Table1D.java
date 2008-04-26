@@ -22,7 +22,6 @@
 package enginuity.maps;
 
 import enginuity.Settings;
-
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;

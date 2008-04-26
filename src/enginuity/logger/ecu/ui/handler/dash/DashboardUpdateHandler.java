@@ -26,7 +26,6 @@ import enginuity.logger.ecu.definition.ConvertorUpdateListener;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import static enginuity.util.ThreadUtil.run;
-
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import static java.util.Collections.synchronizedMap;

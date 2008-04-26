@@ -3,8 +3,8 @@ package enginuity.NewGUI;
 import enginuity.util.LogManager;
 
 public class TestNewGUI {
-	public static void main(String[] args){
+    public static void main(String[] args) {
         LogManager.initLogging();
-		NewGUI.getInstance().setVisible(true);
-	}
+        NewGUI.getInstance().setVisible(true);
+    }
 }

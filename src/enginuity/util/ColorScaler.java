@@ -22,7 +22,6 @@
 package enginuity.util;
 
 import enginuity.Settings;
-
 import java.awt.Color;
 
 public final class ColorScaler {

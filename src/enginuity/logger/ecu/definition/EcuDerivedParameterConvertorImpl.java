@@ -24,7 +24,6 @@ package enginuity.logger.ecu.definition;
 import static enginuity.util.JEPUtil.evaluate;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
-
 import java.text.DecimalFormat;
 import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;

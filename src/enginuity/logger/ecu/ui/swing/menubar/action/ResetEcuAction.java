@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.ui.swing.menubar.action;
 
 import enginuity.logger.ecu.EcuLogger;
-
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.OK_OPTION;

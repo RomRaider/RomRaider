@@ -37,7 +37,6 @@ import gnu.io.SerialPort;
 import static gnu.io.SerialPort.FLOWCONTROL_NONE;
 import gnu.io.UnsupportedCommOperationException;
 import org.apache.log4j.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

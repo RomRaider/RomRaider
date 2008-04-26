@@ -28,7 +28,6 @@ import enginuity.maps.Table;
 import enginuity.maps.Table2D;
 import enginuity.maps.Table3D;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
-
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;

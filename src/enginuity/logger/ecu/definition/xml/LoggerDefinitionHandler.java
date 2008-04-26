@@ -40,7 +40,6 @@ import enginuity.logger.ecu.definition.EcuSwitchImpl;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -233,7 +232,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                             conversionExpression, conversionFormat, replaceMap));
                 } else {
                     convertorList.add(new EcuParameterConvertorImpl(conversionUnits, conversionExpression, conversionFormat, address.getBit(),
-                                FLOAT.equalsIgnoreCase(conversionStorageType), replaceMap));
+                            FLOAT.equalsIgnoreCase(conversionStorageType), replaceMap));
                 }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {

@@ -24,7 +24,6 @@ package enginuity.io.port;
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;
 import static gnu.io.CommPortIdentifier.getPortIdentifiers;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;

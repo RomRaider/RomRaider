@@ -22,7 +22,6 @@
 package enginuity.swing;
 
 import enginuity.maps.Rom;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class CategoryTreeNode extends DefaultMutableTreeNode {

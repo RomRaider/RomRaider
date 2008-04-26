@@ -23,7 +23,6 @@ package enginuity.swing;
 
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.Enumeration;
 import java.util.Vector;

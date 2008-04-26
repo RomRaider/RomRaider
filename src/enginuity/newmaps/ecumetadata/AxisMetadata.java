@@ -24,13 +24,13 @@ package enginuity.newmaps.ecumetadata;
 import java.io.Serializable;
 
 public class AxisMetadata extends TableMetadata implements Serializable {
-    
+
     protected int size;
 
     public AxisMetadata(String name) {
         super(name);
     }
-    
+
     public int getSize() {
         return size;
     }
@@ -38,23 +38,23 @@ public class AxisMetadata extends TableMetadata implements Serializable {
     public void setSize(int size) {
         this.size = size;
     }
-    
-    public String toString() { 
+
+    public String toString() {
         String scaleName = "";
-        
+
         try {
             scaleName = scale.getName();
         } catch (NullPointerException ex) {
             scaleName = "Not found";
         }
-        
+
         String output = "         --- Axis: " + name + " ---" +
                 "\n         - Scale: " + scaleName +
                 "\n         - Address: " + address;
-                
-        
+
+
         return output;
-                       
+
     }
- 
+
 }

@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.ui.swing.menubar.action;
 
 import enginuity.logger.ecu.EcuLogger;
-
 import java.awt.event.ActionEvent;
 
 public final class ResetConnectionAction extends AbstractAction {

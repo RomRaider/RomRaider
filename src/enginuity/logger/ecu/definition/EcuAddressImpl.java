@@ -5,7 +5,6 @@ import static enginuity.util.HexUtil.hexToInt;
 import static enginuity.util.HexUtil.intToHexString;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
-
 import java.util.LinkedList;
 import java.util.List;
 

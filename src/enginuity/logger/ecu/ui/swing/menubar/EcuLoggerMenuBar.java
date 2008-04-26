@@ -14,7 +14,6 @@ import enginuity.logger.ecu.ui.swing.menubar.action.ResetConnectionAction;
 import enginuity.logger.ecu.ui.swing.menubar.action.ResetEcuAction;
 import enginuity.logger.ecu.ui.swing.menubar.action.SaveProfileAction;
 import enginuity.logger.ecu.ui.swing.menubar.action.SaveProfileAsAction;
-
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

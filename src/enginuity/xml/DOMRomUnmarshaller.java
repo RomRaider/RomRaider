@@ -4,7 +4,15 @@ package enginuity.xml;
 
 import enginuity.ECUEditor;
 import enginuity.Settings;
-import enginuity.maps.*;
+import enginuity.maps.DataCell;
+import enginuity.maps.Rom;
+import enginuity.maps.RomID;
+import enginuity.maps.Scale;
+import enginuity.maps.Table;
+import enginuity.maps.Table1D;
+import enginuity.maps.Table2D;
+import enginuity.maps.Table3D;
+import enginuity.maps.TableSwitch;
 import enginuity.swing.DebugPanel;
 import enginuity.swing.JProgressPane;
 import enginuity.util.LogManager;
@@ -15,9 +23,8 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
-
 import javax.management.modelmbean.XMLParseException;
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -295,7 +302,7 @@ public final class DOMRomUnmarshaller {
             throw new TableIsOmittedException();
         }
 
-        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase("none")) { // copy base table for inheritance            
+        if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase("none")) { // copy base table for inheritance
             try {
                 table = (Table) ObjectCloner.deepCopy((Object) rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
 
@@ -337,7 +344,7 @@ public final class DOMRomUnmarshaller {
             }
         }
 
-        // unmarshall table attributes                    
+        // unmarshall table attributes
         table.setName(unmarshallAttribute(tableNode, "name", table.getName()));
         table.setType(RomAttributeParser.parseTableType(unmarshallAttribute(tableNode, "type", String.valueOf(table.getType()))));
         if (unmarshallAttribute(tableNode, "beforeram", "false").equalsIgnoreCase("true")) {

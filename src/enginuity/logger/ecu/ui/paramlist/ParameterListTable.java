@@ -23,7 +23,6 @@ package enginuity.logger.ecu.ui.paramlist;
 
 import enginuity.logger.ecu.definition.EcuData;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
-
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;

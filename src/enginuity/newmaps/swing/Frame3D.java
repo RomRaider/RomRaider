@@ -30,7 +30,6 @@ import enginuity.newmaps.ecumetadata.Unit;
 import enginuity.newmaps.exception.DataPopulationException;
 import enginuity.util.LogManager;
 import org.apache.log4j.Logger;
-
 import javax.swing.JScrollPane;
 
 

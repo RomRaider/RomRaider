@@ -27,7 +27,6 @@ import enginuity.logger.ecu.profile.UserProfileItem;
 import enginuity.logger.ecu.profile.UserProfileItemImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-
 import java.util.HashMap;
 import java.util.Map;
 

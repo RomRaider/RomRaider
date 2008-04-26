@@ -31,36 +31,36 @@ public class IndexHandler extends DefaultHandler {
     private static final String ATTR_NAME = "name";
     private static final String ATTR_BASE = "base";
     private static final String ATTR_ADDRESS = "idaddress";
-    private static final String ATTR_ID = "idstring";    
-    private static final String ATTR_ABSTRACT = "abstract";  
-    
-    IndexItem item = new IndexItem();       
+    private static final String ATTR_ID = "idstring";
+    private static final String ATTR_ABSTRACT = "abstract";
 
-    public void startElement(String uri, String localName, String qName, Attributes attr) {        
-        
+    IndexItem item = new IndexItem();
+
+    public void startElement(String uri, String localName, String qName, Attributes attr) {
+
         if (qName.equalsIgnoreCase(TAG_ROM)) {
-            
+
             // Set all attributes if they exist
             item.setName(attr.getValue(ATTR_NAME));
-                
-            if (attr.getIndex(ATTR_BASE) > -1 && attr.getValue(ATTR_BASE).length() > 0) 
+
+            if (attr.getIndex(ATTR_BASE) > -1 && attr.getValue(ATTR_BASE).length() > 0)
                 item.setBase(attr.getValue(ATTR_BASE));
-            
-            if (attr.getIndex(ATTR_ADDRESS) > -1 && attr.getValue(ATTR_ADDRESS).length() > 0) 
+
+            if (attr.getIndex(ATTR_ADDRESS) > -1 && attr.getValue(ATTR_ADDRESS).length() > 0)
                 item.setIdAddress(HexUtil.hexToInt(attr.getValue(ATTR_ADDRESS)));
-            
-            if (attr.getIndex(ATTR_ID) > -1 && attr.getValue(ATTR_ID).length() > 0) 
+
+            if (attr.getIndex(ATTR_ID) > -1 && attr.getValue(ATTR_ID).length() > 0)
                 item.setIdString(attr.getValue(ATTR_ID));
-            
-            if (attr.getIndex(ATTR_ABSTRACT) > -1 && attr.getValue(ATTR_ABSTRACT).length() > 0) 
-                item.setAbstract(Boolean.parseBoolean(attr.getValue(ATTR_ABSTRACT)));           
-            
-        }  
-        
+
+            if (attr.getIndex(ATTR_ABSTRACT) > -1 && attr.getValue(ATTR_ABSTRACT).length() > 0)
+                item.setAbstract(Boolean.parseBoolean(attr.getValue(ATTR_ABSTRACT)));
+
+        }
+
     }
-    
+
     public IndexItem getItem() {
         return item;
     }
-    
+
 }

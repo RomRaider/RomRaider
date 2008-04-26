@@ -24,7 +24,6 @@ package enginuity.logger.ecu.ui;
 import enginuity.Settings;
 import enginuity.io.port.SerialPortRefreshListener;
 import static enginuity.util.ParamChecker.checkNotNull;
-
 import javax.swing.JComboBox;
 import java.util.Set;
 import java.util.TreeSet;

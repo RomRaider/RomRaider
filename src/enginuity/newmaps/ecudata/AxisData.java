@@ -26,7 +26,7 @@ import enginuity.newmaps.util.ECUDataUtil;
 
 public class AxisData extends TableData {
 
-	DataCell[] values;
+    DataCell[] values;
 
     public AxisData(byte[] data, AxisMetadata metadata) {
         this.metadata = metadata;
@@ -34,16 +34,16 @@ public class AxisData extends TableData {
     }
 
     public boolean populate(byte[] data) {
-    	values = ECUDataUtil.buildValues(data, metadata);
+        values = ECUDataUtil.buildValues(data, metadata);
         return true;
     }
 
     public int getSize() {
-    	return metadata.getSize();
+        return metadata.getSize();
     }
 
     public byte[] returnValues() {
-    	return null;
+        return null;
     }
 
 }

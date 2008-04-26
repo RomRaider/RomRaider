@@ -3,7 +3,6 @@ package enginuity.logger.ecu.external;
 import enginuity.logger.ecu.EcuLogger;
 import static enginuity.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
-
 import javax.swing.Action;
 import java.util.List;
 

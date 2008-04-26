@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -192,7 +191,7 @@ public class DefinitionBuilder {
             parentRom = get(rom.getParent());
             child = true;
         } catch (Exception ex) {
-            // Rom wasn't found, not a child            
+            // Rom wasn't found, not a child
         }
         LOGGER.debug("Building " + rom.getRomID().getXmlid() + " (#" + ++num + ") ...");
 
@@ -267,7 +266,7 @@ public class DefinitionBuilder {
 
         //
         // Do attributes common to all table types
-        //    
+        //
         node.setAttribute("name", table.getName());
 
         if (table.getRom().isAbstract() || table.getUserLevel() != parentTable.getUserLevel()) {

@@ -5,7 +5,6 @@ import enginuity.io.port.SerialPortDiscovererImpl;
 import enginuity.logger.ecu.EcuLogger;
 import enginuity.logger.ecu.external.ExternalDataSource;
 import gnu.io.CommPortIdentifier;
-
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.showInputDialog;
 import java.awt.event.ActionEvent;

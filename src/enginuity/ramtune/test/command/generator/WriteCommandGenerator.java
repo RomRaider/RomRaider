@@ -2,7 +2,6 @@ package enginuity.ramtune.test.command.generator;
 
 import enginuity.io.protocol.Protocol;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
-
 import static java.util.Arrays.asList;
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.comms.query;
 
 import enginuity.logger.ecu.definition.LoggerData;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;

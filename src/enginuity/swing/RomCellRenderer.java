@@ -23,7 +23,6 @@ package enginuity.swing;
 
 import enginuity.maps.Rom;
 import enginuity.maps.Table;
-
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;

@@ -1,12 +1,12 @@
 package enginuity.logger.ecu.ui.playback;
 
-import java.io.File;
-import java.util.List;
 import enginuity.logger.ecu.comms.query.Response;
 import enginuity.logger.ecu.comms.query.ResponseImpl;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.handler.DataUpdateHandler;
 import static enginuity.util.ThreadUtil.sleep;
+import java.io.File;
+import java.util.List;
 
 //TODO: Finish me.
 public final class PlaybackManagerImpl implements PlaybackManager {

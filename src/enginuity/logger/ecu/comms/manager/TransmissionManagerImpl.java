@@ -29,7 +29,6 @@ import enginuity.logger.ecu.exception.NotConnectedException;
 import enginuity.logger.ecu.exception.SerialCommunicationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
-
 import java.util.Collection;
 
 public final class TransmissionManagerImpl implements TransmissionManager {

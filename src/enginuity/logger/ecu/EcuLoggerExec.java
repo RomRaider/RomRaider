@@ -25,7 +25,6 @@ import enginuity.Settings;
 import enginuity.swing.LookAndFeelManager;
 import enginuity.util.LogManager;
 import enginuity.util.SettingsManagerImpl;
-
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public final class EcuLoggerExec {

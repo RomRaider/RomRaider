@@ -22,7 +22,6 @@
 package enginuity.logger.ecu.profile;
 
 import enginuity.swing.GenericFileFilter;
-
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
 

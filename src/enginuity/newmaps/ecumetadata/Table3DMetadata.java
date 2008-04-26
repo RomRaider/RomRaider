@@ -24,11 +24,11 @@ package enginuity.newmaps.ecumetadata;
 import java.io.Serializable;
 
 public class Table3DMetadata extends TableMetadata implements Serializable {
-    
+
     protected AxisMetadata xaxis;
     protected AxisMetadata yaxis;
-    
-    
+
+
     public Table3DMetadata(String name) {
         super(name);
     }
@@ -44,15 +44,15 @@ public class Table3DMetadata extends TableMetadata implements Serializable {
     public AxisMetadata getYaxis() {
         return yaxis;
     }
-    
+
     public int getSize() {
         return xaxis.getSize() * yaxis.getSize();
     }
-    
+
     public int getSizeX() {
         return xaxis.getSize();
     }
-    
+
     public int getSizeY() {
         return yaxis.getSize();
     }
@@ -60,11 +60,11 @@ public class Table3DMetadata extends TableMetadata implements Serializable {
     public void setYaxis(AxisMetadata yaxis) {
         this.yaxis = yaxis;
     }
-    
+
     public String toString() {
-        return super.toString() + 
-                "\n" + xaxis + 
+        return super.toString() +
+                "\n" + xaxis +
                 "\n" + yaxis;
     }
-    
+
 }

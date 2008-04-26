@@ -1,12 +1,11 @@
 package enginuity.ramtune.test.command.generator;
 
 import enginuity.io.protocol.Protocol;
-
 import static java.util.Arrays.asList;
 import java.util.List;
 
 public final class EcuInitCommandGenerator extends AbstractCommandGenerator {
-    
+
     public EcuInitCommandGenerator(Protocol protocol) {
         super(protocol);
     }

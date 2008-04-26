@@ -22,7 +22,6 @@
 package enginuity.swing;
 
 import enginuity.maps.Table;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class TableChooserTreeNode extends DefaultMutableTreeNode {

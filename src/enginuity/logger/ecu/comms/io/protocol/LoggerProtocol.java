@@ -22,7 +22,6 @@
 package enginuity.logger.ecu.comms.io.protocol;
 
 import enginuity.logger.ecu.comms.query.EcuQuery;
-
 import java.util.Collection;
 
 public interface LoggerProtocol {

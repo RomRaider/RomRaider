@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.jdesktop.jdic.filetypes.Action;
 import org.jdesktop.jdic.filetypes.Association;
 import org.jdesktop.jdic.filetypes.AssociationService;
-
 import java.io.File;
 
 
@@ -37,7 +36,7 @@ public final class FileAssociator {
     }
 
     public static boolean addAssociation(String extension, String command, /*String iconFileName,*/ String description) {
-        // Add association 
+        // Add association
         // StringTokenizer osName = new StringTokenizer(System.getProperties().getProperty("os.name"));
 
         // remove association if it already exists

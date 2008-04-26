@@ -23,7 +23,6 @@ package enginuity.swing;
 
 import enginuity.ECUEditor;
 import enginuity.maps.Rom;
-
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

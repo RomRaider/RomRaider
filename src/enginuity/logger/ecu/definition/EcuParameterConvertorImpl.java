@@ -26,7 +26,6 @@ import static enginuity.util.JEPUtil.evaluate;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.ParamChecker.isValidBit;
-
 import static java.lang.Float.intBitsToFloat;
 import java.text.DecimalFormat;
 import java.util.HashMap;

@@ -22,7 +22,6 @@
 package enginuity.util;
 
 import org.apache.log4j.Logger;
-
 import java.util.concurrent.TimeUnit;
 
 public final class ThreadUtil {

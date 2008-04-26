@@ -22,9 +22,9 @@
 package enginuity.newmaps.exception;
 
 public class DataPopulationException extends Exception {
-    
+
     public DataPopulationException(String msg) {
         super(msg);
     }
-    
+
 }

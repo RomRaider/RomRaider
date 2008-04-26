@@ -3,7 +3,6 @@ package enginuity.NewGUI.desktop;
 import enginuity.NewGUI.data.TableMetaData;
 import enginuity.NewGUI.etable.EInternalFrame;
 import org.apache.log4j.Logger;
-
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -17,7 +16,7 @@ import java.awt.Point;
 import java.beans.PropertyVetoException;
 
 
-public class EDesktopPane extends JDesktopPane{
+public class EDesktopPane extends JDesktopPane {
     private static final Logger LOGGER = Logger.getLogger(EDesktopPane.class);
     private static int FRAME_OFFSET = 20;
     private MDIDesktopManager manager;
@@ -32,22 +31,22 @@ public class EDesktopPane extends JDesktopPane{
         super.setBounds(x, y, w, h);
         checkDesktopSize();
     }
-    
+
     /**
      * Removed the internal frames associated with the passed tunign group.
-     * 
+     *
      * @param tuningGroup
      */
-    public void removeInternalFrames(String tuningGroup){
-    	JInternalFrame[] allFrames = getAllFrames();
-    	
-    	EInternalFrame tempFrame = null;
-        for(int i = 0; i < allFrames.length ; i++){
-        	tempFrame = (EInternalFrame)allFrames[i];
-        	if(tempFrame.getTableMetaData().getTableGroup().equals(tuningGroup)){
-        		LOGGER.debug("EDesktopPane: removing internal frame.");
-        		this.remove(tempFrame);
-        	}
+    public void removeInternalFrames(String tuningGroup) {
+        JInternalFrame[] allFrames = getAllFrames();
+
+        EInternalFrame tempFrame = null;
+        for (int i = 0; i < allFrames.length; i++) {
+            tempFrame = (EInternalFrame) allFrames[i];
+            if (tempFrame.getTableMetaData().getTableGroup().equals(tuningGroup)) {
+                LOGGER.debug("EDesktopPane: removing internal frame.");
+                this.remove(tempFrame);
+            }
         }
     }
 
@@ -57,22 +56,22 @@ public class EDesktopPane extends JDesktopPane{
         int h;
 
         JInternalFrame[] allFrames = getAllFrames();
-    	boolean addFrame = true;
-    	EInternalFrame tempFrame = null;
-        for(int i = 0; i < allFrames.length ; i++){
-    		tempFrame = (EInternalFrame)allFrames[i];
-    		
-    		//Does the fram we're adding already exist?
-    		if(tempFrame.getTableMetaData().getTableIdentifier() == tableMetaData.getTableIdentifier()){
-    			addFrame = false;
-    			break;
-    		}
-    	}
-        
+        boolean addFrame = true;
+        EInternalFrame tempFrame = null;
+        for (int i = 0; i < allFrames.length; i++) {
+            tempFrame = (EInternalFrame) allFrames[i];
+
+            //Does the fram we're adding already exist?
+            if (tempFrame.getTableMetaData().getTableIdentifier() == tableMetaData.getTableIdentifier()) {
+                addFrame = false;
+                break;
+            }
+        }
+
         // Frame does not exist already, now add
-        if(addFrame){
-        	EInternalFrame frame = new EInternalFrame(tableMetaData, data);
-        	Component retval = super.add(frame);
+        if (addFrame) {
+            EInternalFrame frame = new EInternalFrame(tableMetaData, data);
+            Component retval = super.add(frame);
             checkDesktopSize();
             if (allFrames.length > 0) {
                 p = allFrames[0].getLocation();
@@ -102,18 +101,18 @@ public class EDesktopPane extends JDesktopPane{
             }
             return retval;
         }
-        
+
         // Since frame already exists, toggle its visibility
-        else{
-        	boolean isVisible = tempFrame.isVisible();
-        	// Toggle the visibility of the frame
-        	if(isVisible){
-        		tempFrame.setVisible(false);
-        	}else{
-        		tempFrame.setVisible(true);
-        	}
+        else {
+            boolean isVisible = tempFrame.isVisible();
+            // Toggle the visibility of the frame
+            if (isVisible) {
+                tempFrame.setVisible(false);
+            } else {
+                tempFrame.setVisible(true);
+            }
         }
-        
+
         return null;
     }
 

@@ -23,17 +23,16 @@ package enginuity.newmaps.definition;
 
 import enginuity.newmaps.ecumetadata.Scale;
 import enginuity.newmaps.ecumetadata.Unit;
-
 import java.util.StringTokenizer;
 import java.util.Vector;
 
 public final class AttributeParser {
-    
-    public static int parseEndian(String s) {        
+
+    public static int parseEndian(String s) {
         if (s.equalsIgnoreCase("big")) return Scale.ENDIAN_BIG;
         else return Scale.ENDIAN_LITTLE;
     }
-    
+
     public static int parseStorageType(String s) {
         if (s.equalsIgnoreCase("int8")) {
             return Scale.STORAGE_TYPE_INT8;
@@ -51,36 +50,36 @@ public final class AttributeParser {
             return Scale.STORAGE_TYPE_CHAR;
         }
     }
-    
-    
+
+
     public static String[] stringToStringArray(String s, String delim) {
         StringTokenizer t = new StringTokenizer(s, delim);
         Vector<String> values = new Vector<String>();
         while (t.hasMoreTokens()) {
             values.add(t.nextToken());
         }
-        return (String[])values.toArray();
-    }   
-    
-    
+        return (String[]) values.toArray();
+    }
+
+
     public static byte[] stringToByteArray(String s, String delim) {
         StringTokenizer t = new StringTokenizer(s, delim);
         Vector<Byte> values = new Vector<Byte>();
-        
+
         while (t.hasMoreTokens()) {
             values.add(Byte.parseByte(t.nextToken()));
         }
-        
+
         byte[] bytes = new byte[values.size()];
-     
-        for (int i = 0; i < values.size(); i++) {            
+
+        for (int i = 0; i < values.size(); i++) {
             bytes[i] = values.get(i);
         }
-        
+
         return bytes;
-    }   
-    
-    
+    }
+
+
     public static int parseUnitSystem(String s) {
         if (s.equalsIgnoreCase("metric")) return Unit.SYSTEM_METRIC;
         else if (s.equalsIgnoreCase("standard")) return Unit.SYSTEM_STANDARD;

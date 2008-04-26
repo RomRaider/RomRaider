@@ -31,7 +31,6 @@ import static enginuity.io.protocol.SSMResponseProcessor.extractResponseData;
 import static enginuity.io.protocol.SSMResponseProcessor.filterRequestFromResponse;
 import enginuity.logger.ecu.comms.query.EcuQuery;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

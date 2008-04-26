@@ -28,6 +28,7 @@ public abstract class TableData {
     protected TableMetadata metadata;
 
     public abstract boolean populate(byte[] data);
+
     public abstract byte[] returnValues();
 
     private void setMetadata(TableMetadata metadata) {
@@ -35,7 +36,7 @@ public abstract class TableData {
     }
 
     public TableMetadata getMetadata() {
-    	return metadata;
+        return metadata;
     }
 
 }

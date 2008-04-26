@@ -4,7 +4,6 @@ import static enginuity.logger.ecu.definition.EcuDataType.EXTERNAL;
 import enginuity.logger.ecu.external.ExternalDataItem;
 import enginuity.logger.ecu.external.ExternalDataSource;
 import static enginuity.util.ParamChecker.checkNotNull;
-
 import java.text.DecimalFormat;
 import java.text.Format;
 

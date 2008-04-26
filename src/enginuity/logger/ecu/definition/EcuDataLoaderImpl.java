@@ -29,7 +29,6 @@ import enginuity.logger.ecu.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
 import static enginuity.util.SaxParserFactory.getSaxParser;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class EcuDataLoaderImpl implements EcuDataLoader {
-    private Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>(); 
+    private Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
     private EcuSwitch fileLoggingControllerSwitch;

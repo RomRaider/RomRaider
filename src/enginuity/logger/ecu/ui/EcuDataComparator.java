@@ -22,7 +22,6 @@
 package enginuity.logger.ecu.ui;
 
 import enginuity.logger.ecu.definition.LoggerData;
-
 import java.util.Comparator;
 
 public final class EcuDataComparator implements Comparator<LoggerData> {

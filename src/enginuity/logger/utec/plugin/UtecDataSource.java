@@ -10,7 +10,6 @@ import static enginuity.logger.utec.commInterface.UtecInterface.openConnection;
 import static enginuity.logger.utec.commInterface.UtecInterface.resetUtec;
 import static enginuity.logger.utec.commInterface.UtecInterface.setPortChoice;
 import static enginuity.logger.utec.commInterface.UtecInterface.startLoggerDataFlow;
-
 import javax.swing.Action;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +19,10 @@ public final class UtecDataSource implements ExternalDataSource {
     private ArrayList<ExternalDataItem> externalDataItems = new ArrayList<ExternalDataItem>();
 
     public UtecDataSource() {
-		externalDataItems.add(new AfrExternalDataItem());
-		externalDataItems.add(new PsiExternalDataItem());
-		externalDataItems.add(new KnockExternalDataItem());
-		externalDataItems.add(new LoadExternalDataItem());
+        externalDataItems.add(new AfrExternalDataItem());
+        externalDataItems.add(new PsiExternalDataItem());
+        externalDataItems.add(new KnockExternalDataItem());
+        externalDataItems.add(new LoadExternalDataItem());
     }
 
     public String getName() {

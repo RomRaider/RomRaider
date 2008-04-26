@@ -2,7 +2,6 @@ package enginuity.logger.ecu.ui.swing.menubar.action;
 
 import enginuity.logger.ecu.EcuLogger;
 import static enginuity.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
-
 import java.awt.event.ActionEvent;
 import java.io.File;
 

@@ -23,7 +23,6 @@ package enginuity.maps;
 
 import enginuity.util.JEPUtil;
 import org.apache.log4j.Logger;
-
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.JLabel;
 import javax.swing.border.Border;

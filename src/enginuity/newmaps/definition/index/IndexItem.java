@@ -23,12 +23,11 @@ package enginuity.newmaps.definition.index;
 
 import static enginuity.util.MD5Checksum.getMD5Checksum;
 import enginuity.util.Nameable;
-
 import java.io.File;
 import java.io.Serializable;
 
 public class IndexItem implements Nameable, Serializable {
-    
+
     private String name = "";
     private String base = "";
     private File file = new File("");
@@ -36,7 +35,7 @@ public class IndexItem implements Nameable, Serializable {
     private String idString = "";
     private boolean isAbstract = false;
     private String checksum = "";
-    
+
 
     public String getName() {
         return name;
@@ -62,7 +61,8 @@ public class IndexItem implements Nameable, Serializable {
         this.file = file;
         try {
             this.checksum = getMD5Checksum(file.getAbsolutePath());
-        } catch (Exception ex) { }
+        } catch (Exception ex) {
+        }
     }
 
     public int getIdAddress() {
@@ -88,13 +88,13 @@ public class IndexItem implements Nameable, Serializable {
     public void setAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
     }
-    
+
     public String toString() {
         return "Name: " + name +
-                "\tBase: " + base + 
+                "\tBase: " + base +
                 "\tFile: " + file +
                 "\tAddress: " + idAddress +
-                "\tID: " + idString + 
+                "\tID: " + idString +
                 "\tAbstract: " + isAbstract +
                 "\tChecksum: " + checksum;
     }
@@ -106,5 +106,5 @@ public class IndexItem implements Nameable, Serializable {
     public void setChecksum(String checksum) {
         this.checksum = checksum;
     }
-    
+
 }

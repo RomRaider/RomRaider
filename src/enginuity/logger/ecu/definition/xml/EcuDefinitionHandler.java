@@ -5,7 +5,6 @@ import enginuity.logger.ecu.definition.EcuDefinitionImpl;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-
 import java.util.HashMap;
 import java.util.Map;
 

@@ -47,7 +47,6 @@ import static enginuity.util.ParamChecker.checkNotNull;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
-
 import javax.swing.SwingUtilities;
 import java.text.DecimalFormat;
 import java.util.ArrayList;

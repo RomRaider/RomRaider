@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.ui.swing.menubar;
 
 import enginuity.logger.ecu.ui.swing.menubar.util.SelectionStateAdaptor;
-
 import javax.swing.Action;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;

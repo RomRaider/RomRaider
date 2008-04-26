@@ -22,7 +22,6 @@
 package enginuity.swing;
 
 import enginuity.ECUEditor;
-
 import javax.swing.JFileChooser;
 import javax.swing.ListSelectionModel;
 import java.awt.Font;

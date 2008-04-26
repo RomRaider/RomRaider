@@ -23,7 +23,6 @@ package enginuity.maps;
 
 import enginuity.Settings;
 import enginuity.xml.RomAttributeParser;
-
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;

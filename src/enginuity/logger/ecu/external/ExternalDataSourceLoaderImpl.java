@@ -4,7 +4,6 @@ import enginuity.logger.ecu.definition.plugin.PluginFilenameFilter;
 import enginuity.logger.ecu.exception.ConfigurationException;
 import static enginuity.util.ParamChecker.isNullOrEmpty;
 import org.apache.log4j.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;

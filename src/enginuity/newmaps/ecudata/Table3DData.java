@@ -62,7 +62,7 @@ public class Table3DData extends TableData {
         yAxis.populate(data);
 
         // Now populate the table itself
-        values = ECUDataUtil.buildValues(data, (Table3DMetadata)metadata);
+        values = ECUDataUtil.buildValues(data, (Table3DMetadata) metadata);
         return true;
     }
 

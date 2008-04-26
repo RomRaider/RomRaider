@@ -8,7 +8,6 @@ import enginuity.xml.DOMSettingsBuilder;
 import enginuity.xml.DOMSettingsUnmarshaller;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import java.io.File;

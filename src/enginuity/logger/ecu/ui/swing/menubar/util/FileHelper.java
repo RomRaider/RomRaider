@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.ui.swing.menubar.util;
 
 import enginuity.logger.ecu.profile.UserProfile;
-
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
 import java.io.File;

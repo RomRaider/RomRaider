@@ -7,5 +7,5 @@ public interface Query {
     LoggerData getLoggerData();
 
     double getResponse();
-    
+
 }

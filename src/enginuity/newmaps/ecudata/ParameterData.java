@@ -22,17 +22,17 @@
 package enginuity.newmaps.ecudata;
 
 public class ParameterData extends TableData {
-    
+
     public ParameterData() {
     }
-    
+
     public boolean populate(byte[] data) {
         return true;
     }
-    
+
     public byte[] returnValues() {
         // TODO: Find return values (using ECUDataUtil)
         return null;
     }
-    
+
 }

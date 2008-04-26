@@ -22,7 +22,6 @@
 package enginuity.logger.ecu.ui.handler.livedata;
 
 import enginuity.logger.ecu.definition.LoggerData;
-
 import javax.swing.table.AbstractTableModel;
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;

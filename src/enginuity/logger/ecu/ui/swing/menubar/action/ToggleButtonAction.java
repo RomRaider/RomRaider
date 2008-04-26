@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.ui.swing.menubar.action;
 
 import enginuity.logger.ecu.EcuLogger;
-
 import javax.swing.JToggleButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

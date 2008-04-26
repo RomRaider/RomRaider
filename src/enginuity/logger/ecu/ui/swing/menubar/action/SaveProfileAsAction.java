@@ -4,7 +4,6 @@ import enginuity.logger.ecu.EcuLogger;
 import static enginuity.logger.ecu.ui.swing.menubar.util.FileHelper.getFile;
 import static enginuity.logger.ecu.ui.swing.menubar.util.FileHelper.getProfileFileChooser;
 import static enginuity.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
-
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JOptionPane.OK_OPTION;

@@ -5,5 +5,5 @@ public interface EcuDefinition {
     String getEcuId();
 
     String getCalId();
-    
+
 }

@@ -2,7 +2,6 @@ package enginuity.NewGUI.etable;
 
 import enginuity.NewGUI.data.TableMetaData;
 import org.apache.log4j.Logger;
-
 import javax.swing.table.AbstractTableModel;
 import java.text.DecimalFormat;
 
@@ -110,6 +109,6 @@ public class ETableModel extends AbstractTableModel {
 
     public void refresh() {
         this.fireTableDataChanged();
-	}
-	
+    }
+
 }

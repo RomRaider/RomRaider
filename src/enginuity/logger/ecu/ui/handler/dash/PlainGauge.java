@@ -24,7 +24,6 @@ package enginuity.logger.ecu.ui.handler.dash;
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.tts.Speaker;
 import static enginuity.util.ParamChecker.checkNotNull;
-
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;

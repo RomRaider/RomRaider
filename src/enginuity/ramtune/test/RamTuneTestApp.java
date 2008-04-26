@@ -19,7 +19,6 @@ import static enginuity.util.HexUtil.asHex;
 import enginuity.util.LogManager;
 import static enginuity.util.ThreadUtil.runAsDaemon;
 import static enginuity.util.ThreadUtil.sleep;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -79,8 +78,8 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     private final JTextArea responseField = new JTextArea(15, 80);
     private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
     private final JComboBox commandComboBox = new JComboBox(new CommandGenerator[]{new EcuInitCommandGenerator(protocol),
-                                                                                   new ReadCommandGenerator(protocol),
-                                                                                   new WriteCommandGenerator(protocol)});
+            new ReadCommandGenerator(protocol),
+            new WriteCommandGenerator(protocol)});
 
     public RamTuneTestApp(String title) {
         super(title);

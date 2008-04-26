@@ -3,7 +3,6 @@ package enginuity.ramtune.test.command.generator;
 import enginuity.io.protocol.Protocol;
 import static enginuity.util.ParamChecker.checkGreaterThanZero;
 import static enginuity.util.ParamChecker.checkNotNullOrEmpty;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import static java.util.Arrays.asList;

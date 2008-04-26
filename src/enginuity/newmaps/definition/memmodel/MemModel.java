@@ -24,9 +24,9 @@ package enginuity.newmaps.definition.memmodel;
 import enginuity.util.NamedSet;
 
 public class MemModel extends NamedSet<Segment> {
-    
+
     private String name;
-    
+
     public MemModel(String name) {
         setName(name);
     }
@@ -38,5 +38,5 @@ public class MemModel extends NamedSet<Segment> {
     public void setName(String name) {
         this.name = name;
     }
-    
+
 }

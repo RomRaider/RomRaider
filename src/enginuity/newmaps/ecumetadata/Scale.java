@@ -22,7 +22,6 @@
 package enginuity.newmaps.ecumetadata;
 
 import enginuity.util.Nameable;
-
 import java.io.Serializable;
 
 public class Scale implements Nameable, Serializable {

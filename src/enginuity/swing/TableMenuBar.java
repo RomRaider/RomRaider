@@ -22,7 +22,6 @@
 package enginuity.swing;
 
 import enginuity.maps.Table;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

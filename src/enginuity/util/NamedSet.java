@@ -22,7 +22,6 @@
 package enginuity.util;
 
 import enginuity.util.exception.NameableNotFoundException;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
@@ -30,10 +29,10 @@ import java.util.Set;
 import java.util.Vector;
 
 public class NamedSet<E> implements Set<E>, Serializable {
-    
+
     Vector<Nameable> objects = new Vector<Nameable>();
-    
-    public void add(Nameable n) {        
+
+    public void add(Nameable n) {
         for (int i = 0; i < objects.size(); i++) {
             if (objects.get(i).getName().equalsIgnoreCase(n.getName())) {
                 objects.remove(i);
@@ -43,43 +42,43 @@ public class NamedSet<E> implements Set<E>, Serializable {
         }
         objects.add(n);
     }
-    
+
     public Nameable get(int i) {
         return objects.get(i);
     }
-    
+
     public Nameable get(String name) throws NameableNotFoundException {
         for (int i = 0; i < objects.size(); i++) {
             if (objects.get(i).getName().equalsIgnoreCase(name)) {
                 return objects.get(i);
             }
-        }    
+        }
         // Name not found, throw exception
         throw new NameableNotFoundException(name);
     }
-    
+
     public Nameable get(Nameable n) throws NameableNotFoundException {
         return get(n.getName());
     }
-    
+
     public int size() {
         return objects.size();
     }
-    
-    public void remove(Nameable n) throws NameableNotFoundException { 
+
+    public void remove(Nameable n) throws NameableNotFoundException {
         remove(n.getName());
     }
-    
+
     public void remove(String name) throws NameableNotFoundException {
         for (int i = 0; i < objects.size(); i++) {
             if (objects.get(i).getName().equalsIgnoreCase(name)) {
                 objects.remove(i);
                 return;
             }
-        }            
+        }
         // Name not found, throw exception
         throw new NameableNotFoundException(name);
-    }    
+    }
 
     public boolean isEmpty() {
         return objects.isEmpty();
@@ -90,7 +89,7 @@ public class NamedSet<E> implements Set<E>, Serializable {
     }
 
     public Iterator<E> iterator() {
-        return (Iterator<E>)objects.iterator();
+        return (Iterator<E>) objects.iterator();
     }
 
     public Object[] toArray() {
@@ -113,7 +112,7 @@ public class NamedSet<E> implements Set<E>, Serializable {
     public boolean addAll(Collection<? extends E> c) {
         Iterator it = c.iterator();
         while (it.hasNext()) {
-            add((E)it.next());
+            add((E) it.next());
         }
         return true;
     }
@@ -133,26 +132,26 @@ public class NamedSet<E> implements Set<E>, Serializable {
     public <T> T[] toArray(T[] a) {
         return null;
     }
-    
+
     public String toString() {
         StringBuffer output = new StringBuffer();
         Iterator it = objects.iterator();
         while (it.hasNext()) {
             output.append(it.next().toString() + "\n");
         }
-        return output+"";
+        return output + "";
     }
-    
+
     public void move(int src, int dest) {
-        Nameable obj = (Nameable)objects.get(src);
+        Nameable obj = (Nameable) objects.get(src);
         objects.remove(obj);
         objects.insertElementAt(obj, dest);
-    }    
-    
-    public void moveBefore(Nameable moving, Nameable anchor) {
-        move(objects.indexOf(moving), objects.indexOf(anchor) - 1);        
     }
-    
+
+    public void moveBefore(Nameable moving, Nameable anchor) {
+        move(objects.indexOf(moving), objects.indexOf(anchor) - 1);
+    }
+
     public int indexOf(Nameable obj) {
         return objects.indexOf(obj);
     }

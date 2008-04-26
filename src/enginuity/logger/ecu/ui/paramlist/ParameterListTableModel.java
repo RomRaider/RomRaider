@@ -23,7 +23,6 @@ package enginuity.logger.ecu.ui.paramlist;
 
 import enginuity.logger.ecu.definition.LoggerData;
 import enginuity.logger.ecu.ui.DataRegistrationBroker;
-
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;

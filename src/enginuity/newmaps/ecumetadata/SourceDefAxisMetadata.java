@@ -22,13 +22,12 @@
 package enginuity.newmaps.ecumetadata;
 
 import static enginuity.newmaps.definition.AttributeParser.stringToStringArray;
-
 import java.io.Serializable;
 
 public class SourceDefAxisMetadata extends AxisMetadata implements Serializable {
-    
+
     private String[] values;
-    
+
     public SourceDefAxisMetadata(String name) {
         super(name);
     }
@@ -40,9 +39,9 @@ public class SourceDefAxisMetadata extends AxisMetadata implements Serializable 
     public void setValues(String s, String delim) {
         values = stringToStringArray(s, delim);
     }
-    
+
     public int getSize() {
         return 0;
     }
-    
+
 }

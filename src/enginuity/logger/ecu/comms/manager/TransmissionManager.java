@@ -22,7 +22,6 @@
 package enginuity.logger.ecu.comms.manager;
 
 import enginuity.logger.ecu.comms.query.EcuQuery;
-
 import java.util.Collection;
 
 public interface TransmissionManager {

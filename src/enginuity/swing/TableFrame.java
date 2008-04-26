@@ -22,7 +22,6 @@
 package enginuity.swing;
 
 import enginuity.maps.Table;
-
 import static javax.swing.BorderFactory.createBevelBorder;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;

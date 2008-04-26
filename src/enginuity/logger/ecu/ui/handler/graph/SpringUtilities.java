@@ -1,7 +1,6 @@
 package enginuity.logger.ecu.ui.handler.graph;
 
 import org.apache.log4j.Logger;
-
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import java.awt.Component;
