@@ -348,7 +348,7 @@
         <attribute name="os"/>
         <attribute name="target.os"/>
         <sequential>
-            <chmod file="${izpack.dir}/bin/${izpack.compile.@{os}}" perm="+x" osfamily="linux"/>
+            <chmod file="${izpack.dir}/bin/${izpack.compile.@{os}}" perm="+x" osfamily="unix"/>
             <exec executable="${izpack.dir}/bin/${izpack.compile.@{os}}">
                 <arg line="${dist.dir}/install-@{target.os}.xml -b . -o ${dist.dir}/@{target.os}/${jar.installer-prefix}-@{target.os}.jar -k standard"/>
             </exec>
