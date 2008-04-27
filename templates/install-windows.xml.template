@@ -20,7 +20,7 @@
     <resources>
         <res id="LicencePanel.licence" src="license.txt"/>
         <res id="InfoPanel.info" src="release_notes.txt"/>
-        <res id="shortcutSpec.xml" src="build/dist/shortcutSpec-win.xml"/>
+        <res id="shortcutSpec.xml" src="build/dist/shortcutSpec-windows.xml"/>
     </resources>
 
     <panels>

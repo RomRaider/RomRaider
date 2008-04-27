@@ -55,6 +55,21 @@
             <format property="time.year" pattern="yyyy"/>
         </tstamp>
 
+        <!-- set os specific properties -->
+        <property name="os.windows" value="windows"/>
+        <property name="os.linux" value="linux"/>
+
+        <condition property="os" value="${os.windows}" else="${os.linux}">
+            <os family="windows"/>
+        </condition>
+
+        <condition property="is.windows">
+            <equals arg1="${os}" arg2="${os.windows}"/>
+        </condition>
+
+        <property name="izpack.compile.${os.windows}" value="compile.bat"/>
+        <property name="izpack.compile.${os.linux}" value="compile"/>
+
         <!-- java compiler properties -->
         <property name="debug" value="off"/>
         <property name="optimize" value="on"/>
@@ -62,7 +77,7 @@
 
         <!-- get the current svn revision (needed by version.properties) -->
         <macro_svn_revision repository="https://svn2.assembla.com/svn/enginuity" property="svn.revision"/>
-    	
+
         <!-- version properties are set in this file, both for the product itself and
 		    for some of the external dependencies (jar files and such) -->
         <property file="version.properties"/>
@@ -82,7 +97,7 @@
         <!-- package naming properties -->
         <property name="jar.package" value="${name.package}.jar"/>
         <property name="jar.installer-prefix" value="${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}"/>
-        
+
         <!-- support tools -->
         <!-- creates EXE wrappers around java apps -->
         <property name="launch4j.dir" location="${3rdparty.dir}/launch4j"/>
@@ -179,6 +194,7 @@
             <filter token="jar.jama" value="${jar.jama}"/>
             <filter token="jar.log4j" value="${jar.log4j}"/>
             <filter token="jar.swing-layout" value="${jar.swing-layout}"/>
+            <filter token="jvm.args" value="${jvm.args}"/>
         </filterset>
     </target>
 
@@ -195,7 +211,7 @@
     <target name="prepare" depends="-init">
         <mkdir dir="${build.dir}/classes"/>
         <mkdir dir="${build.dir}/lib"/>
-    	<!-- generate the Version class -->
+        <!-- generate the Version class -->
         <copy overwrite="true" tofile="${src.dir}/enginuity/Version.java" file="${src.dir}/enginuity/Version.java.template">
             <filterset refid="version.filterset"/>
         </copy>
@@ -252,13 +268,13 @@
         <mkdir dir="${dist.dir}/windows"/>
         <mkdir dir="${dist.dir}/linux"/>
         <!-- generate installer scripts from templates -->
-        <copy overwrite="true" tofile="${dist.dir}/install-win.xml" file="${template.dir}/install-win.xml.template">
+        <copy overwrite="true" tofile="${dist.dir}/install-windows.xml" file="${template.dir}/install-windows.xml.template">
             <filterset refid="version.filterset"/>
         </copy>
         <copy overwrite="true" tofile="${dist.dir}/install-linux.xml" file="${template.dir}/install-linux.xml.template">
             <filterset refid="version.filterset"/>
         </copy>
-        <copy overwrite="true" tofile="${dist.dir}/shortcutSpec-win.xml" file="${template.dir}/shortcutSpec-win.xml.template">
+        <copy overwrite="true" tofile="${dist.dir}/shortcutSpec-windows.xml" file="${template.dir}/shortcutSpec-windows.xml.template">
             <filterset refid="version.filterset"/>
         </copy>
         <copy overwrite="true" tofile="${dist.dir}/shortcutSpec-linux.xml" file="${template.dir}/shortcutSpec-linux.xml.template">
@@ -271,17 +287,8 @@
         <copy overwrite="true" tofile="${dist.dir}/l4j-package.xml" file="${template.dir}/l4j-package.xml.template">
             <filterset refid="version.filterset"/>
         </copy>
-        <!-- create the exe launcher of the package for Windows -->
-        <launch4j configFile="${dist.dir}/l4j-package.xml"/>
-        <!-- generate the installers -->
-        <exec dir="${basedir}" executable="${izpack.dir}/bin/compile.bat">
-            <arg line="${dist.dir}/install-win.xml -b . -o ${dist.dir}/windows/${jar.installer-prefix}-win.jar -k standard"/>
-        </exec>
-        <exec dir="${basedir}" executable="${izpack.dir}/bin/compile.bat">
-            <arg line="${dist.dir}/install-linux.xml -b . -o ${dist.dir}/linux/${jar.installer-prefix}-linux.jar -k standard"/>
-        </exec>
-        <!-- create the exe launcher of the installer for Windows -->
-        <launch4j configFile="${dist.dir}/l4j-installer.xml"/>
+
+        <macro_generate_executables/>
     </target>
 
     <!-- =================================================================== -->
@@ -312,6 +319,39 @@
                 </filterchain>
             </loadfile>
             <delete file="${svninfo.log}"/>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="macro_generate_executables">
+        <sequential>
+            <!-- create the exe launcher of the package for Windows -->
+            <antcall target="-launch4j">
+                <param name="type" value="package"/>
+            </antcall>
+
+            <!-- generate the installers -->
+            <macro_izpack_compile os="${os}" target.os="${os.windows}"/>
+            <macro_izpack_compile os="${os}" target.os="${os.linux}"/>
+
+            <!-- create the exe launcher of the installer for Windows -->
+            <antcall target="-launch4j">
+                <param name="type" value="installer"/>
+            </antcall>
+        </sequential>
+    </macrodef>
+
+    <target name="-launch4j" if="is.windows">
+        <launch4j configFile="${dist.dir}/l4j-${type}.xml"/>
+    </target>
+
+    <macrodef name="macro_izpack_compile">
+        <attribute name="os"/>
+        <attribute name="target.os"/>
+        <sequential>
+            <chmod file="${izpack.dir}/bin/${izpack.compile.@{os}}" perm="+x" osfamily="linux"/>
+            <exec executable="${izpack.dir}/bin/${izpack.compile.@{os}}">
+                <arg line="${dist.dir}/install-@{target.os}.xml -b . -o ${dist.dir}/@{target.os}/${jar.installer-prefix}-@{target.os}.jar -k standard"/>
+            </exec>
         </sequential>
     </macrodef>
 

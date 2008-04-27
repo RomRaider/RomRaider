@@ -48,13 +48,9 @@ public final class LookAndFeelManager {
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", "RomRaider");
             }
 
-            try {
-                setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-            } catch (Exception e) {
-                // Linux has issues with the gtk look and feel themes.
-                if (isPlatform(LINUX)) setLookAndFeel(getCrossPlatformLookAndFeelClassName());
-                else setLookAndFeel(getSystemLookAndFeelClassName());
-            }
+            // Linux has issues with the gtk look and feel themes.
+            if (isPlatform(LINUX)) setLookAndFeel(getCrossPlatformLookAndFeelClassName());
+            else setLookAndFeel(getSystemLookAndFeelClassName());
 
             // make sure we have nice window decorations.
             JFrame.setDefaultLookAndFeelDecorated(true);

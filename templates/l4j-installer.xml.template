@@ -3,7 +3,7 @@
 <launch4jConfig>
     <dontWrapJar>false</dontWrapJar>
     <headerType>gui</headerType>
-    <jar>windows/@name.package@@version.major@.@version.minor@.@version.patch@-@version.buildnumber@-win.jar</jar>
+    <jar>windows/@name.package@@version.major@.@version.minor@.@version.patch@-@version.buildnumber@-windows.jar</jar>
     <outfile>windows/@name.package@Setup@version.major@.@version.minor@.@version.patch@@version.extra@.exe</outfile>
     <errTitle></errTitle>
     <cmdLine></cmdLine>
@@ -21,7 +21,7 @@
         <dontUsePrivateJres>false</dontUsePrivateJres>
         <initialHeapSize>0</initialHeapSize>
         <maxHeapSize>0</maxHeapSize>
-        <opt>-Djava.library.path=lib -Xmx256M -Dswing.aatext=true</opt>
+        <opt>@jvm.args@</opt>
     </jre>
     <splash>
         <file>../../graphics/splash.bmp</file>

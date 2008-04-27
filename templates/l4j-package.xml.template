@@ -21,7 +21,7 @@
         <dontUsePrivateJres>false</dontUsePrivateJres>
         <initialHeapSize>0</initialHeapSize>
         <maxHeapSize>0</maxHeapSize>
-        <opt>-Djava.library.path=lib -Xmx256M -Dswing.aatext=true</opt>
+        <opt>@jvm.args@</opt>
     </jre>
     <splash>
         <file>../../graphics/splash.bmp</file>
