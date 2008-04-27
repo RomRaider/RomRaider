@@ -1,6 +1,6 @@
 /*
  *
- * RomRaider Open-Source Tuning, Logging and Reflashing
+ * RomRaider Open-Source Tuning, Logging, and Reflashing
  * Copyright (C) 2006-2008 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,12 +21,10 @@
 
 package enginuity.swing;
 
-import com.centerkey.utils.BareBonesBrowserLaunch;
-import enginuity.ECUEditor;
-import enginuity.logger.ecu.EcuLogger;
-import enginuity.logger.utec.gui.JutecGUI;
-import enginuity.maps.Rom;
-import enginuity.ramtune.test.RamTuneTestApp;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
@@ -40,10 +38,13 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
+import com.centerkey.utils.BareBonesBrowserLaunch;
+import enginuity.Version;
+import enginuity.ECUEditor;
+import enginuity.logger.ecu.EcuLogger;
+import enginuity.logger.utec.gui.JutecGUI;
+import enginuity.maps.Rom;
+import enginuity.ramtune.test.RamTuneTestApp;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
@@ -61,7 +62,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem updateDefinition = new JMenuItem("Update ECU Definitions...");
 
     private JMenu editMenu = new JMenu("Edit");
-    private JMenuItem settings = new JMenuItem("RomRaider Settings...");
+    private JMenuItem settings = new JMenuItem(Version.PRODUCT_NAME + " Settings...");
 
     private JMenu viewMenu = new JMenu("View");
     private JMenuItem romProperties = new JMenuItem("ECU Image Properties");
@@ -81,7 +82,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem launchRamTuneTestApp = new JMenuItem("Launch Test App...");
 
     private JMenu helpMenu = new JMenu("Help");
-    private JMenuItem about = new JMenuItem("About RomRaider");
+    private JMenuItem about = new JMenuItem("About " + Version.PRODUCT_NAME);
 
     private ECUEditor parent;
 
@@ -188,7 +189,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         launchRamTuneTestApp.setMnemonic('L');
         ramTuneMenu.add(launchRamTuneTestApp);
         launchRamTuneTestApp.addActionListener(this);
-
+        
         // help menu stuff
         add(helpMenu);
         helpMenu.setMnemonic('H');
@@ -197,7 +198,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         about.addActionListener(this);
 
         // disable unused buttons! 0.3.1
-        about.setEnabled(false);
         editDefinition.setEnabled(false);
         this.updateMenu();
     }
@@ -291,7 +291,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent);
 
         } else if (e.getSource() == utecLogger) {
-            JutecGUI.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
+        	JutecGUI.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
 
         } else if (e.getSource() == updateDefinition) {
             BareBonesBrowserLaunch.openURL(parent.getSettings().getEcuDefsURL());
@@ -299,6 +299,13 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         } else if (e.getSource() == launchRamTuneTestApp) {
             RamTuneTestApp.startTestApp(DISPOSE_ON_CLOSE);
 
+        } else if (e.getSource() == about) {
+        	//TODO:  make a separate About class to get a better dialog box
+        	//       with graphic, hyperlink, etc.
+        	showMessageDialog(this, 
+        			Version.PRODUCT_NAME + " ECU Editor\n" + "Version " + Version.VERSION + "\n" + Version.SUPPORT_URL,
+        			"About " + Version.PRODUCT_NAME, 
+        			INFORMATION_MESSAGE);
         }
     }
 
