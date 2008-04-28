@@ -1,1 +1,1 @@
-datasource.class=enginuity.logger.utec.plugin.UtecDataSource
+datasource.class=com.romraider.logger.utec.plugin.UtecDataSource

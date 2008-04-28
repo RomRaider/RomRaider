@@ -1,35 +1,35 @@
-                      - Enginuity 0.4.2 Beta -
-            Open-Source ECU Tuning -- www.enginuity.org
+                      - RomRaider 0.4.2 Beta -
+            Open-Source ECU Tuning -- www.romraider.com
 
 
 PLEASE MAKE SURE TO READ RELEASE _NOTES.TXT_ EACH TIME YOU DOWNLOAD
-A NEW VERSION OF ENGINUITY. IMPORTANT NOTICES, KNOWN ISSUES AND
+A NEW VERSION OF ROMRAIDER. IMPORTANT NOTICES, KNOWN ISSUES AND
 NEW FEATURES WILL BE DISCUSSED.
 
-Enginuity is a full featured Engine Control Unit editing application 
+RomRaider is a full featured Engine Control Unit editing application
 for tuning virtually any manufacturer, meant to be used in conjuction
-with ECU flash and dump utilities. Enginuity will give you full 
-control over timing, fuel, boost and many other parameters in your 
-ECU, competing with very expensive and proprietary software. Enginuity 
-will remove your need for piggyback systems designed to control these 
-functions, and, in most cases, work as well as or better than any 
-stand alone engine management. Reflashing your stock ECU also has the 
-added benefit of a manufacturer tested base map, giving you top notch 
+with ECU flash and dump utilities. RomRaider will give you full
+control over timing, fuel, boost and many other parameters in your
+ECU, competing with very expensive and proprietary software. RomRaider
+will remove your need for piggyback systems designed to control these
+functions, and, in most cases, work as well as or better than any
+stand alone engine management. Reflashing your stock ECU also has the
+added benefit of a manufacturer tested base map, giving you top notch
 performance and saving time tuning idle and low throttle applications
 while retaining all of the benefit of the research and development
 manufacturer's spend millions of dollars on.
 
-Enginuity is currently in BETA TEST status, meaning it is not 
-thoroughly tested and not intended for use by inexperienced users. In 
-addition to being incomplete and untested, only experienced tuners 
-with the required tools (ie, wideband oxygen sensor) should modify an 
-ECU image. As with any engine management, changes could result in 
+RomRaider is currently in BETA TEST status, meaning it is not
+thoroughly tested and not intended for use by inexperienced users. In
+addition to being incomplete and untested, only experienced tuners
+with the required tools (ie, wideband oxygen sensor) should modify an
+ECU image. As with any engine management, changes could result in
 severe engine damage. Use at your own risk.
 
-Documentation is available at http://wiki.enginuity.org and the
-official Enginuity FAQ can be found at
-http://www.enginuity.org/about444.html. Please be aware that as 
-Enginuity is still in beta status and changing frequently, 
+Documentation is available at http://wiki.romraider.com and the
+official RomRaider FAQ can be found at
+http://www.romraider.com/about444.html. Please be aware that as
+RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 
@@ -47,7 +47,7 @@ major enhancements to the datalogger.
 -----------------------
 - 3d graph
   - Java3d over most VNC implementations will show a blank JFrame
-  - You MUST have up to date graphics drivers that support OpenGL 1.2 
+  - You MUST have up to date graphics drivers that support OpenGL 1.2
   - Expect ~200 megs of usage when using 3d graphing
   - Expect possible memory leaks when using 3d graphing
   - There are some problems with cell selection in 3d graphs
@@ -65,34 +65,34 @@ major enhancements to the datalogger.
 -----------------
 
 --- Tuning ---
-- Fix frame sizes too small on 2d tables 
-- Fix switch tables displaying wrong icon in table tree 
+- Fix frame sizes too small on 2d tables
+- Fix switch tables displaying wrong icon in table tree
 
 --- Datalogging ---
-- Autoconnect 
-- Reset, disconnect buttons 
-- Reset data buttons per tab 
+- Autoconnect
+- Reset, disconnect buttons
+- Reset data buttons per tab
 - Updated dash tab with warning levels (warning levels not currently
-  saved to profile) 
+  saved to profile)
 - Fixed "Manifold Relative Pressure (Corrected)" parameter
 - Fixed profile save/load problems
-- ECU id display in status bar 
+- ECU id display in status bar
 - Updated address format in logger.xml (length attribute added to
-  replace multiple <byte> tags. length defauilts to 1 if not specified) 
+  replace multiple <byte> tags. length defauilts to 1 if not specified)
 - Autodetection of ecu specific parameters via new <ecuparam> tags in
   logger.xml (IAM, engine load)
-- ECU connection status indicator added to interface (stopped, 
-  connecting, reading data, logging to file) 
-- Auto filtering of parameter list based on ECU init response (should 
-  only display now what your car says it supports) 
-- Enable defogger switch based file logging via menu bar (don't need to 
-  select it in switch list anymore) 
+- ECU connection status indicator added to interface (stopped,
+  connecting, reading data, logging to file)
+- Auto filtering of parameter list based on ECU init response (should
+  only display now what your car says it supports)
+- Enable defogger switch based file logging via menu bar (don't need to
+  select it in switch list anymore)
 - Defogger switch is only logged to file when explicitly enabled
 - Absolute timestamp option added for file logging
 - Relative timestamp now reset to zero at the beginning of each log file
-  (unless absolute timestamp is selected) 
-- Graph tab color scheme updated 
-- Enhancements to the map overlay feature, including display of the live 
+  (unless absolute timestamp is selected)
+- Graph tab color scheme updated
+- Enhancements to the map overlay feature, including display of the live
   data and overlay of the live data values on the map cells.
 - Tooltips added to parameter list showing parameter description (not all
   parameters have a description yet though)
@@ -132,8 +132,8 @@ major enhancements to the datalogger.
 0.3.1b (7/11/2006)
 ------------------
 - Change year attribute to string from int
-- Fix incrementing in compare mode 
-- Fix refresh tables working improperly with multiple ROMs open 
+- Fix incrementing in compare mode
+- Fix refresh tables working improperly with multiple ROMs open
 - Update table property panel
 - Fix float values not incrementing properly in axiis
 - Fix values not incrementing if increment amount is less than LSB
@@ -206,7 +206,7 @@ major enhancements to the datalogger.
 - Fix rounding problems causing false conflicts for conversion expressions
 - Fix set value not updating borders
 - Reset default settings option
-- Fix cell border not saving 
+- Fix cell border not saving
 - Improve warning messages
 - Fix ECU definition file settings not saving
 - Fix last image directory resetting
@@ -252,9 +252,9 @@ major enhancements to the datalogger.
 - Remove "copy" from table menu -- its in the edit menu
 - Fix vertical overhead on table size for new graphical buttons
 - Fix rounding issues with set value
-- Fix ctrl-click on tables  
+- Fix ctrl-click on tables
 - Resize cells to make best use of screen
-- Prevent simultaneous selection of axiis and table values 
+- Prevent simultaneous selection of axiis and table values
 - Map copying
 - Graphical icons
 - Cascade windows (MDI)
@@ -305,7 +305,7 @@ BUG FIXES:
 0.2.1a (2/13/2006)
 ------------------
 - Handles storage addresses that are out of range
-- Fixed conflicting parent/child table sizes (done) 
+- Fixed conflicting parent/child table sizes (done)
 - Replaced "<Table Name>" menu with "Table" -- makes it more obviously a menu
 - Fixed 3D table sizing problem
 - Fixed colorizing exception

@@ -13,7 +13,7 @@
     <supportUrl></supportUrl>
     <customProcName>false</customProcName>
     <stayAlive>false</stayAlive>
-    <icon>../../graphics/enginuity-ico.ico</icon>
+    <icon>../../graphics/romraider-ico.ico</icon>
     <jre>
         <path></path>
         <minVersion>1.5.0</minVersion>

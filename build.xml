@@ -212,7 +212,7 @@
         <mkdir dir="${build.dir}/classes"/>
         <mkdir dir="${build.dir}/lib"/>
         <!-- generate the Version class -->
-        <copy overwrite="true" tofile="${src.dir}/enginuity/Version.java" file="${src.dir}/enginuity/Version.java.template">
+        <copy overwrite="true" tofile="${src.dir}/com/romraider/Version.java" file="src/com/romraider/Version.java.template">
             <filterset refid="version.filterset"/>
         </copy>
 
@@ -253,7 +253,7 @@
         <javadoc windowtitle="${name.package}" header="${javadoc.header}" sourcepath="${src.dir}" author="yes" version="yes" destdir="${javadoc.dir}"
                  breakiterator="yes" maxmemory="96m">
             <packageset dir="src">
-                <include name="enginuity/**"/>
+                <include name="**"/>
             </packageset>
             <bottom>${javadoc.footer}</bottom>
             <classpath refid="classpath"/>

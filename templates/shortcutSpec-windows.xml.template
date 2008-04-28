@@ -14,7 +14,7 @@
             target="$INSTALL_PATH/@name.package@.exe"
             commandLine=""
             initialState="noShow"
-            iconFile="$INSTALL_PATH/graphics/enginuity-ico.ico"
+            iconFile="$INSTALL_PATH/graphics/romraider-ico.ico"
             workingDirectory="$INSTALL_PATH"
             type="Application"
             encoding="UTF-8"

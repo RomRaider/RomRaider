@@ -38,7 +38,7 @@
 
     <packs>
         <pack name="Base" required="yes">
-            <description>Enginuity binary files</description>
+            <description>RomRaider binary files</description>
             <file src="build/lib/@name.package@.jar" targetdir="$INSTALL_PATH"/>
             <file src="license.txt" targetdir="$INSTALL_PATH"/>
             <file src="release_notes.txt" targetdir="$INSTALL_PATH"/>
