@@ -24,6 +24,7 @@ package com.romraider;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.logger.ecu.definition.EcuDefinition;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import com.romraider.Version;	// this is a generated class - see build.xml
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;

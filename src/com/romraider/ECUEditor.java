@@ -35,6 +35,7 @@ import com.romraider.swing.RomTreeRootNode;
 import com.romraider.swing.TableFrame;
 import com.romraider.util.SettingsManager;
 import com.romraider.util.SettingsManagerImpl;
+import com.romraider.Version;	// this is a generated class - see build.xml
 import com.romraider.xml.DOMRomUnmarshaller;
 import com.romraider.xml.RomNotFoundException;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;

@@ -39,7 +39,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 import com.centerkey.utils.BareBonesBrowserLaunch;
-import com.romraider.Version;
+import com.romraider.Version;	// this is a generated class - see build.xml
 import com.romraider.ECUEditor;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.utec.gui.JutecGUI;
