@@ -1,5 +1,18 @@
 <roms>
- <!--ENGINUITY STANDARD UNITS ECU DEFINITION FILE (VERSION 0.8.0b) 12-03-07-->
+
+<!--RomRaider standard units ECU definitions (version 0.8.0b) 12-04-07 
+
+This program and associated definitions are distributed in the hope
+that it will be useful, but WITHOUT ANY WARRANTY; without even the
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+RomRaider is created for FREE without any sort of guarantee. The
+developers cannot be held liable for any damage or injury incurred as
+a result of using RomRaider. USE AT YOUR OWN RISK.
+
+Copyright (C) 2007 RomRaider.com-->
+
  <rom>
   <romid>
    <xmlid>16BITBASE</xmlid>
@@ -139,7 +152,7 @@
   <table type="3D" name="Boost Compensation (Intake Temp)" category="Boost" storagetype="uint8" endian="big" sizex="2" sizey="2" userlevel="2">
    <scaling units="Target Boost (psia) Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="X Axis" name="Intake Temperature" storagetype="uint16" endian="big" logparam="P11">
-    <scaling units="C" expression="(x*.00244140625)-40" to_byte="(x+40)/.00244140625" format="0.0" fineincrement="1" coarseincrement="5" />
+    <scaling units="F" expression="x*.00439453125-40" to_byte="(x+40)/.00439453125" format="0.0" fineincrement="1" coarseincrement="5" />
    </table>
    <table type="Y Axis" name="Engine Speed" storagetype="uint16" endian="big" logparam="P8">
     <scaling units="RPM" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
@@ -148,23 +161,23 @@
   </table>
   <table type="2D" name="Boost Compensation (Coolant Temp)" category="Boost" storagetype="uint8" endian="big" sizey="16" userlevel="2">
    <scaling units="Target Boost (psia) Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in target boost at different coolant temperatures.</description>
   </table>
@@ -191,7 +204,7 @@
    <description>This is the change in target boost based on automatic transmission gear selection.</description>
   </table>
   <table type="2D" name="Per Gear Compensation (Maximum Speed)" category="Boost" storagetype="uint8" endian="big" sizey="1" userlevel="2">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Enable Per Gear Compensations" sizey="1">
     <data>Below</data>
    </table>
@@ -367,45 +380,45 @@
   </table>
   <table type="2D" name="Wastegate Compensation (Intake Temp)" category="Wastegate" storagetype="uint8" endian="big" sizey="16" userlevel="2">
    <scaling units="Wastegate Duty Compensation (% relative)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
-   <table type="Static Y Axis" name="Intake Temperature (C)" sizey="16" logparam="P11">
+   <table type="Static Y Axis" name="Intake Temperature (F)" sizey="16" logparam="P11">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in initial (if supported) and max wastegate duties at different intake temperatures.</description>
   </table>
   <table type="2D" name="Wastegate Compensation (Coolant Temp)" category="Wastegate" storagetype="uint8" endian="big" sizey="16" userlevel="2">
    <scaling units="Wastegate Duty Compensation (% relative)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in initial and max wastegate duties at different coolant temperatures.</description>
   </table>
@@ -593,23 +606,23 @@
   </table>
   <table type="2D" name="Primary Open Loop Fueling Compensation (Coolant Temp)" category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="4">
    <scaling units="'Primary Open Loop Fueling' Enrichment Offset Compensation (%)" expression="(x*0.003051758)-100" to_byte="(x+100)/0.003051758" format="0.00" fineincrement=".1" coarseincrement="1" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>Compensation to the primary fuel enrichment offset as determined from the 'Primary Open Loop Fueling' table(s).</description>
   </table>
@@ -632,7 +645,7 @@
    <description>This table is the fuel injector constant represented with an estimated flow rating. Because the methods for measuring the flow rating of injectors varies, this value may not exactly match the ratings for OEM and non-OEM injectors, but should be used as a starting point to tune from.</description>
   </table>
   <table type="2D" name="Fuel Temp Sensor Scaling" category="Fuel" storagetype="uint16" endian="big" sizey="30" userlevel="3">
-   <scaling units="Fuel Temp (Degrees C)" expression="(x*.00244140625)-40" to_byte="(x+40)/.00244140625" format="0.0" fineincrement=".1" coarseincrement="1" />
+   <scaling units="Fuel Temp (Degrees F)" expression="x*.00439453125-40" to_byte="(x+40)/.00439453125" format="0.0" fineincrement=".1" coarseincrement="1" />
    <table type="Static Y Axis" name="Fuel Temp Sensor (volts)" sizey="30">
     <data>0.21</data>
     <data>0.36</data>
@@ -745,67 +758,67 @@
   </table>
   <table type="2D" name="Tip-in Enrichment Compensation (Coolant Temp)" category="Fuel" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Throttle Tip-in Enrichment Compensation (%)" expression="(x*3.125)-100" to_byte="(x+100)/3.125" format="0.00" fineincrement="1.6" coarseincrement="5" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in 'Throttle Tip-in Enrichment' based on coolant temperature.</description>
   </table>
   <table type="2D" name="Tip-in Enrichment Compensation A (Coolant Temp)" category="Fuel" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Throttle Tip-in Enrichment Compensation (%)" expression="(x*3.125)-100" to_byte="(x+100)/3.125" format="0.00" fineincrement="1.6" coarseincrement="5" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in 'Throttle Tip-in Enrichment' based on coolant temperature.</description>
   </table>
   <table type="2D" name="Tip-in Enrichment Compensation B (Coolant Temp)" category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="3">
    <scaling units="Throttle Tip-in Enrichment Compensation (%)" expression="(x*.01220703125)-100" to_byte="(x+100)/.01220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in 'Throttle Tip-in Enrichment' based on coolant temperature. This additional compensation table is only active when throttle tip-in is greater than the value specified by the 'Tip-in Enrichment Compensation B (Coolant Temp) Activation' table.</description>
   </table>
@@ -917,23 +930,23 @@
   </table>
   <table type="2D" name="Timing Compensation (Intake Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
-   <table type="Static Y Axis" name="Intake Temperature (C)" sizey="16" logparam="P11">
+   <table type="Static Y Axis" name="Intake Temperature (F)" sizey="16" logparam="P11">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in total ignition timing based on input from the air intake temperature sensor.</description>
   </table>
@@ -946,97 +959,97 @@
   </table>
   <table type="2D" name="Timing Compensation (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in total ignition timing based on input from the coolant temp sensor.</description>
   </table>
   <table type="2D" name="Timing Compensation Idle (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in total ignition timing at idle based on input from the coolant temp sensor.</description>
   </table>
   <table type="2D" name="Timing Compensation Idle A (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in total ignition timing at idle based on input from the coolant temp sensor.</description>
   </table>
   <table type="2D" name="Timing Compensation Idle A (Coolant Temp) " category="Timing" storagetype="uint8" endian="big" sizey="2" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="2" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="2" logparam="P2">
     <data>-40</data>
-    <data>40</data>
+    <data>104</data>
    </table>
    <description>This is the change in total ignition timing at idle based on input from the coolant temp sensor.</description>
   </table>
   <table type="2D" name="Timing Compensation Idle B (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the change in total ignition timing at idle based on input from the coolant temp sensor.</description>
   </table>
@@ -1207,7 +1220,7 @@
    <description>This is the maximum engine speed for which the 'Timing Compensation Per Cylinder' tables are active. Active per cylinder compensation is also dependent on the 'Timing Comp Minimum Load (Per Cylinder)' and 'Timing Comp Minimum Coolant Temp (Per Cylinder)' tables.</description>
   </table>
   <table type="2D" name="Timing Comp Minimum Coolant Temp (Per Cylinder)" category="Timing" storagetype="uint16" endian="big" sizey="1" userlevel="5">
-   <scaling units="Coolant Temperature (Degrees C)" expression="(x*.00244140625)-40" to_byte="(x+40)/.00244140625" format="0.0" fineincrement="1" coarseincrement="5" />
+   <scaling units="Coolant Temperature (Degrees F)" expression="x*.00439453125-40" to_byte="(x+40)/.00439453125" format="0.0" fineincrement=".1" coarseincrement="1" />
    <table type="Static Y Axis" name="Per Cylinder Timing Compensation" sizey="1">
     <data>Enable Above</data>
    </table>
@@ -1443,7 +1456,7 @@
   <table type="3D" name="MAF Compensation (Intake Temp)" category="MAF" storagetype="uint8" endian="big" sizex="5" sizey="8" userlevel="3">
    <scaling units="Mass Air Flow Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="X Axis" name="Intake Temperature" storagetype="uint8" endian="big" logparam="P11">
-    <scaling units="C" expression="(x*.625)-40" to_byte="(x+40)/.625" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="F" expression="x*1.125-40" to_byte="(x+40)/1.125" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <table type="Y Axis" name="MAF" storagetype="uint8" endian="big" logparam="P12">
     <scaling units="g/s" expression="x*1.171875072" to_byte="x/1.171875072" format="0.0" fineincrement=".6" coarseincrement="1" />
@@ -1453,7 +1466,7 @@
   <table type="3D" name="MAF Compensation (Intake Temp) " category="MAF" storagetype="uint8" endian="big" sizex="5" sizey="8" userlevel="3">
    <scaling units="Mass Air Flow Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="X Axis" name="Intake Temperature" storagetype="uint8" endian="big" logparam="P11">
-    <scaling units="C" expression="(x*.625)-40" to_byte="(x+40)/.625" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="F" expression="x*1.125-40" to_byte="(x+40)/1.125" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <table type="Y Axis" name="MAF" storagetype="uint8" endian="big" logparam="P12">
     <scaling units="g/s" expression="x*1.5625" to_byte="x/1.5625" format="0.0" fineincrement=".6" coarseincrement="1" />
@@ -1486,7 +1499,7 @@
    <description>Change in total ignition timing when hitting the rev limiter.</description>
   </table>
   <table type="2D" name="Speed Limiting (Fuel Cut)" category="Misc" storagetype="uint8" endian="big" sizey="4" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Fuel Cut - Transmission Type" sizey="4">
     <data>On Above - AT</data>
     <data>On Above - MT</data>
@@ -1501,7 +1514,7 @@
    <state name="off" data="29" />
   </table>
   <table type="2D" name="Speed Limiting (Wastegate)" category="Misc" storagetype="uint8" endian="big" sizey="3" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Wastegate Duty" sizey="3">
     <data>Max Reduction Above</data>
     <data>Partial Reduction Below</data>
@@ -1522,7 +1535,7 @@
    <description>Misfire count per cylinder that will trigger the P0301, P0302, P0303, or P0304 CEL.</description>
   </table>
   <table type="2D" name="EGT Sensor Scaling" category="Misc" storagetype="uint16" endian="big" sizey="30" userlevel="3">
-   <scaling units="Exhaust Gas Temperature (Degrees C)" expression="(x*.062255859375)+.78125" to_byte="(x-.78125)/.062255859375" format="0.0" fineincrement="1" coarseincrement="5" />
+   <scaling units="Exhaust Gas Temperature (Degrees F)" expression="x*.112060546875+33.40625" to_byte="(x-33.40625)/.112060546875" format="0.0" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Exhaust Gas Temperature Sensor (volts)" sizey="30">
     <data>0.21</data>
     <data>0.36</data>
@@ -1558,7 +1571,7 @@
    <description>This is the scaling for the exhaust gas temperature sensor.</description>
   </table>
   <table type="2D" name="Intake Temp Sensor Scaling" category="Misc" storagetype="uint16" endian="big" sizey="30" userlevel="3">
-   <scaling units="Intake Temperature (Degrees C)" expression="(x*.00244140625)-40" to_byte="(x+40)/.00244140625" format="0.0" fineincrement=".1" coarseincrement="1" />
+   <scaling units="Intake Temperature (Degrees F)" expression="x*.00439453125-40" to_byte="(x+40)/.00439453125" format="0.0" fineincrement=".1" coarseincrement="1" />
    <table type="Static Y Axis" name="Intake Temperature Sensor (volts)" sizey="30">
     <data>0.21</data>
     <data>0.36</data>
@@ -1594,7 +1607,7 @@
    <description>This is the scaling for the intake temperature sensor.</description>
   </table>
   <table type="2D" name="Coolant Temp Sensor Scaling" category="Misc" storagetype="uint16" endian="big" sizey="28" userlevel="3">
-   <scaling units="Coolant Temperature (Degrees C)" expression="(x*.00244140625)-40" to_byte="(x+40)/.00244140625" format="0.0" fineincrement="1" coarseincrement="5" />
+   <scaling units="Coolant Temperature (Degrees F)" expression="x*.00439453125-40" to_byte="(x+40)/.00439453125" format="0.0" fineincrement=".1" coarseincrement="1" />
    <table type="Static Y Axis" name="Coolant Temperature Sensor (volts)" sizey="28">
     <data>0.45</data>
     <data>0.61</data>
@@ -1628,7 +1641,7 @@
    <description>This is the scaling for the coolant temperature sensor.</description>
   </table>
   <table type="2D" name="Radiator Fan Modes (Coolant Temp)" category="Misc" storagetype="uint8" endian="big" sizey="4" userlevel="3">
-   <scaling units="Coolant Temperature (Degrees C)" expression="(x*.625)-40" to_byte="(x+40)/.625" format="#.0" fineincrement=".1" coarseincrement="1" />
+   <scaling units="Coolant Temperature (Degrees F)" expression="(x*1.125)-40" to_byte="(x+40)/1.125" format="#.0" fineincrement=".1" coarseincrement="1" />
    <table type="Static Y Axis" name="Mode Determination (coolant temp change)" sizey="4">
     <data>M0 max|M1 min(dec)</data>
     <data>M1 min(inc)</data>
@@ -1638,7 +1651,7 @@
    <description>These are thresholds based on coolant temp which, along with the mode specified by the vehicle speed threshold table, are involved in determining radiator fan control. Radiator fan modes for coolant temp range from 0 to 2. Current mode thresholds are dependent on whether the coolant temperature is increasing or decreasing. Generally, as the coolant temp mode is higher and the vehicle speed mode is lower, the more likely the radiator fan(s) will come on. Whether the A/C is on or not also impacts the fan control.</description>
   </table>
   <table type="2D" name="Radiator Fan Modes (Vehicle Speed)" category="Misc" storagetype="uint8" endian="big" sizey="6" userlevel="3">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Mode Determination (vehicle speed change)" sizey="6">
     <data>M0 max|M1 min(dec)</data>
     <data>M1 min(inc)</data>
@@ -1691,193 +1704,193 @@
   </table>
   <table type="2D" name="Idle Speed Target A (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
   <table type="2D" name="Idle Speed Target B (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
   <table type="2D" name="Idle Speed Target C (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
   <table type="2D" name="Idle Speed Target D (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
   <table type="2D" name="Idle Speed Target A (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
   <table type="2D" name="Idle Speed Target A (AT) " category="Idle" storagetype="uint16" endian="big" sizey="2" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="2" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="2" logparam="P2">
     <data>-40</data>
-    <data>40</data>
+    <data>104</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
   <table type="2D" name="Idle Speed Target B (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
   <table type="2D" name="Idle Speed Target B (AT) " category="Idle" storagetype="uint16" endian="big" sizey="2" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="2" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="2" logparam="P2">
     <data>-40</data>
-    <data>40</data>
+    <data>104</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
   <table type="2D" name="Idle Speed Target C (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
   <table type="2D" name="Idle Speed Target D (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
-   <table type="Static Y Axis" name="Coolant Temperature (C)" sizey="16" logparam="P2">
+   <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16" logparam="P2">
     <data>-40</data>
-    <data>-30</data>
-    <data>-20</data>
-    <data>-10</data>
-    <data>0</data>
-    <data>10</data>
-    <data>20</data>
-    <data>30</data>
-    <data>40</data>
+    <data>-22</data>
+    <data>-4</data>
+    <data>14</data>
+    <data>32</data>
     <data>50</data>
-    <data>60</data>
-    <data>70</data>
-    <data>80</data>
-    <data>90</data>
-    <data>100</data>
-    <data>110</data>
+    <data>68</data>
+    <data>86</data>
+    <data>104</data>
+    <data>122</data>
+    <data>140</data>
+    <data>158</data>
+    <data>176</data>
+    <data>194</data>
+    <data>212</data>
+    <data>230</data>
    </table>
    <description>This is the target engine speed at idle based on coolant temperature.</description>
   </table>
@@ -1932,7 +1945,7 @@
    <description>This is the threshold boost for intercooler autowash. When target boost rises above first value, autowash is on. When target boost falls below second value, autowash is off.</description>
   </table>
   <table type="2D" name="Intercooler Autowash Threshold (Coolant Temp)" category="Intercooler" storagetype="uint16" endian="big" sizey="2" userlevel="2">
-   <scaling units="Degrees C" expression="(x*.00244140625)-40" to_byte="(x+40)/.00244140625" format="0.0" fineincrement="1" coarseincrement="5" />
+   <scaling units="Degrees F" expression="x*.00439453125-40" to_byte="(x+40)/.00439453125" format="0.0" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Autowash" sizey="2">
     <data>On Above</data>
     <data>Off Below</data>
@@ -1948,7 +1961,7 @@
    <description>This is the threshold engine speed for intercooler autowash. When engine speed rises above first value, autowash is on. When engine speed falls below second value, autowash is off.</description>
   </table>
   <table type="2D" name="Intercooler Autowash Threshold (Vehicle Speed)" category="Intercooler" storagetype="uint8" endian="big" sizey="2" userlevel="2">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Autowash" sizey="2">
     <data>On Above</data>
     <data>Off Below</data>
@@ -1956,7 +1969,7 @@
    <description>This is the threshold vehicle speed for intercooler autowash. When vehicle speed rises above first value, autowash is on. When vehicle speed falls below second value, autowash is off.</description>
   </table>
   <table type="2D" name="Intercooler Autowash Threshold (Intake Air Temp)" category="Intercooler" storagetype="uint16" endian="big" sizey="2" userlevel="2">
-   <scaling units="Degrees C" expression="(x*.00244140625)-40" to_byte="(x+40)/.00244140625" format="0.0" fineincrement="1" coarseincrement="5" />
+   <scaling units="Degrees F" expression="x*.00439453125-40" to_byte="(x+40)/.00439453125" format="0.0" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Autowash" sizey="2">
     <data>On Above</data>
     <data>Off Below</data>
@@ -2058,7 +2071,7 @@
    <description>When the CL to OL Delay value is non-zero, this table will be used to determine the transition from closed loop to open loop and back again. When calculated load, ((2707090/Injector Flow Scaling) * Engine Load (g/rev))), rises above the threshold in this table, the process to exit closed loop begins. The current delay value is used to determine the pause in this transition to open loop. When calculated load drops below the threshold (and below a predetermined delta), fueling will transition from open loop to closed loop.</description>
   </table>
   <table type="2D" name="CL Delay Maximum EGT" category="CL/OL Fueling Transition" storagetype="uint8" endian="big" sizey="2" userlevel="2">
-   <scaling units="Degrees C" expression="(x*3.984375)+200" to_byte="(x-200)/3.984375" format="#" fineincrement="10" coarseincrement="100" />
+   <scaling units="Degrees F" expression="(x*7.171875)+392" to_byte="(x-392)/7.171875" format="#" fineincrement="5" coarseincrement="50" />
    <table type="Static Y Axis" name="(Condition) - Result" sizey="2">
     <data>(Below) - Check Other CL Tables</data>
     <data>(Above) - Clear CL Delay</data>
@@ -2066,7 +2079,7 @@
    <description>When the EGT is the same or greater than the second value, the CL to OL Delay value is set to zero which can result in switching from closed loop to open loop depending on the current enrichment value as determined by the 'Open Loop Fueling' map. When the EGT drops below the first value, other specific closed loop triggers are reviewed. If all these triggers are below their thresholds, then the CL to OL Delay is determined from the 'CL to OL Delay' table. In this case, assuming a non-zero delay value, the 'CL to OL Transition with Delay (Calculated Load)' and 'CL to OL Transition with Delay (Throttle)' are used to determine the open loop to close loop transition and vice versa.</description>
   </table>
   <table type="2D" name="CL Delay Maximum EGT (IAM)" category="CL/OL Fueling Transition" storagetype="uint8" endian="big" sizey="4" userlevel="2">
-   <scaling units="Exhaust Gas Temperature (Degrees C)" expression="(x*3.984375)+200" to_byte="(x-200)/3.984375" format="#" fineincrement="10" coarseincrement="100" />
+   <scaling units="Exhaust Gas Temperature (Degrees F)" expression="(x*7.171875)+392" to_byte="(x-392)/7.171875" format="#" fineincrement="10" coarseincrement="100" />
    <table type="Static Y Axis" name="(Condition) - Result - (Current IAM)" sizey="4">
     <data>(Below) - Check Other CL Tables - (8-16)</data>
     <data>(Above) - Clear CL Delay - (8-16)</data>
@@ -2101,7 +2114,7 @@
    <description>When engine speed is the same or greater than the second value, the CL to OL Delay value is set to zero which can result in switching from closed loop to open loop depending on the current enrichment value as determined by the 'Open Loop Fueling' map. When engine speed drops below the first value, other specific closed loop triggers are reviewed. If all these triggers are below their thresholds, then the CL to OL Delay is determined from the 'CL to OL Delay' table. In this case, assuming a non-zero delay value, the 'CL to OL Transition with Delay (Calculated Load)' and 'CL to OL Transition with Delay (Throttle)' are used to determine the open loop to close loop transition and vice versa.</description>
   </table>
   <table type="2D" name="CL Delay Maximum Vehicle Speed" category="CL/OL Fueling Transition" storagetype="uint8" endian="big" sizey="2" userlevel="2">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="(Condition) - Result" sizey="2">
     <data>(Below) - Check Other CL Tables</data>
     <data>(Above) - Clear CL Delay</data>
@@ -2109,7 +2122,7 @@
    <description>When vehicle speed is the same or greater than the second value, the CL to OL Delay value is set to zero which can result in switching from closed loop to open loop depending on the current enrichment value as determined by the 'Open Loop Fueling' map. When vehicle speed drops below the first value, other specific closed loop triggers are reviewed. If all these triggers are below their thresholds, then the CL to OL Delay is determined from the 'CL to OL Delay' table. In this case, depending on the delay value, the 'CL to OL Transition with Delay (Calculated Load)' and 'CL to OL Transition with Delay (Throttle)' are used to determine the open loop to close loop transition and vice versa.</description>
   </table>
   <table type="2D" name="CL Delay Minimum Coolant Temperature" category="CL/OL Fueling Transition" storagetype="uint16" endian="big" sizey="1" userlevel="2">
-   <scaling units="Degrees C" expression="(x*.00244140625)-40" to_byte="(x+40)/.00244140625" format="0.0" fineincrement="1" coarseincrement="5" />
+   <scaling units="Degrees F" expression="x*.00439453125-40" to_byte="(x+40)/.00439453125" format="0.0" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="(Condition) - Result" sizey="1">
     <data>(Below) - Clear CL Delay</data>
    </table>
@@ -2140,7 +2153,7 @@
    <description>When throttle position is the same or greater than the second value, the CL to OL Delay value is set to zero which can result in switching from closed loop to open loop depending on the current enrichment value as determined by the 'Open Loop Fueling' map. When throttle position drops below the first value, other specific closed loop triggers are reviewed. If all these triggers are below their thresholds, then the CL to OL Delay is determined from the 'CL to OL Delay' table. In this case, depending on the delay value, the 'CL to OL Transition with Delay (Calculated Load)' and 'CL to OL Transition with Delay (Throttle)' are used to determine the open loop to close loop transition and vice versa.</description>
   </table>
   <table type="3D" name="EGT Limit (Failsafe)" category="Emissions" storagetype="uint8" endian="big" sizex="2" sizey="2" userlevel="2" logparam="P79">
-   <scaling units="Exhaust Gas Temperature (Degrees C)" expression="(x*3.984375)+200" to_byte="(x-200)/3.984375" format="#" fineincrement="10" coarseincrement="100" />
+   <scaling units="Exhaust Gas Temperature (Degrees F)" expression="(x*7.171875)+392" to_byte="(x-392)/7.171875" format="#" fineincrement="10" coarseincrement="100" />
    <table type="X Axis" name="Engine Load" storagetype="uint16" endian="big" logparam="E2">
     <scaling units="g/rev" expression="x*.00006103515625" to_byte="x/.00006103515625" format="0.00" fineincrement=".01" coarseincrement=".1" />
    </table>
@@ -15014,7 +15027,7 @@
    <description>Change in target boost (absolute pressure) at vehicle speeds below the 'Boost Compensation (Vehicle Speed) Disable' value.</description>
   </table>
   <table type="2D" name="Boost Compensation (Vehicle Speed) Disable" category="Boost" storagetype="float" endian="little" sizey="1" userlevel="2">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Boost Compensation (Vehicle Speed)" sizey="1">
     <data>Disable Compensation Above</data>
    </table>
@@ -15023,14 +15036,14 @@
   <table type="2D" name="Boost Compensation (Coolant Temp)" category="Boost" storagetype="uint8" endian="big" sizey="16" userlevel="2">
    <scaling units="Target Boost (psia) Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in target boost at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Boost Compensation (Intake Temp)" category="Boost" storagetype="uint8" endian="big" sizey="16" userlevel="2">
    <scaling units="Target Boost (psia) Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in target boost at different intake temp temperatures.</description>
   </table>
@@ -15276,28 +15289,28 @@
   <table type="2D" name="Wastegate Compensation (Intake Temp)" category="Wastegate" storagetype="uint8" endian="big" sizey="16" userlevel="2">
    <scaling units="Wastegate Duty Compensation (% relative)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in wastegate duty at different intake temperatures. This is applied to both the initial and max wastegate duty values.</description>
   </table>
   <table type="2D" name="Wastegate Compensation A (Intake Temp)" category="Wastegate" storagetype="uint8" endian="big" sizey="16" userlevel="2">
    <scaling units="Wastegate Duty Compensation (% relative)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in wastegate duty at different intake temperatures. This is applied to both the initial and max wastegate duty values.</description>
   </table>
   <table type="2D" name="Wastegate Compensation B (Intake Temp)" category="Wastegate" storagetype="uint8" endian="big" sizey="16" userlevel="2">
    <scaling units="Alternate Wastegate Duty Compensation (% relative)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in wastegate duty (alternate table) at different intake temperatures.</description>
   </table>
   <table type="2D" name="Wastegate Compensation (Coolant Temp)" category="Wastegate" storagetype="uint8" endian="big" sizey="16" userlevel="2">
    <scaling units="Wastegate Duty Compensation (% relative)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in wastegate duty at different coolant temperatures. This is applied to both the initial and max wastegate duty values.</description>
   </table>
@@ -15335,21 +15348,21 @@
   <table type="2D" name="TD Proportional Compensation (Intake Temp)" category="Turbo Dynamics" storagetype="uint8" endian="big" sizey="4" userlevel="3">
    <scaling units="TD Proportional Map Target Compensation (% relative)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in wastegate correction for the 'Turbo Dynamics Proportional' table at different intake temperatures.</description>
   </table>
   <table type="2D" name="TD Integral Positive Compensation (Intake Temp)" category="Turbo Dynamics" storagetype="uint8" endian="big" sizey="4" userlevel="3">
    <scaling units="TD Integral Positive Map Target Compensation (% relative)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in wastegate correction for the 'Turbo Dynamics Integral Positive' table at different intake temperatures.</description>
   </table>
   <table type="2D" name="TD Integral Negative Compensation (Intake Temp)" category="Turbo Dynamics" storagetype="uint8" endian="big" sizey="4" userlevel="3">
    <scaling units="TD Integral Negative Map Target Compensation (% relative)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.0" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in wastegate correction for the 'Turbo Dynamics Integral Negative' table at different intake temperatures.</description>
   </table>
@@ -15489,7 +15502,7 @@
   <table type="2D" name="Primary Open Loop Fueling Compensation (Coolant Temp)" category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="4">
    <scaling units="'Primary Open Loop Fueling' Enrichment Offset Compensation (%)" expression="(x*0.003051758)-100" to_byte="(x+100)/0.003051758" format="0.00" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Compensation to fuel enrichment as determined from the 'Primary Open Loop Fueling' table(s) after 'Minimum Active Primary Open Loop Enrichment' threshold is met and compensation/limit by the 'Primary Open Loop Fueling Compensation (Timing Compensation)' and 'Minimum Primary Open Loop Enrichment (Throttle)' tables are applied.</description>
   </table>
@@ -15510,14 +15523,14 @@
   <table type="2D" name="Minimum Open Loop Enrichment (Coolant Temp)" category="Fuel" storagetype="uint8" endian="big" sizey="16" userlevel="5">
    <scaling units="Estimated Air/Fuel Ratio" expression="14.7/(1+x*.00390625)" to_byte="(14.7/x-1)/.00390625" format="0.00" fineincrement=".06" coarseincrement=".5" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the minimum fuel enrichment in open loop based on coolant temp. Regardless of the 'Primary Open Loop Fueling' table value, enrichment will not be lower (leaner estimated AFR) than the minimum enrichment in this table (although there is an additional undefined factor which could influence the actual minimum).</description>
   </table>
   <table type="3D" name="Minimum Open Loop Enrichment A (Coolant Temp)" category="Fuel" storagetype="uint8" endian="big" sizex="16" sizey="8" userlevel="5">
    <scaling units="Estimated Air/Fuel Ratio" expression="14.7/(1+x*.00390625)" to_byte="(14.7/x-1)/.00390625" format="0.00" fineincrement=".06" coarseincrement=".5" />
    <table type="X Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <table type="Y Axis" name="Engine Load" storagetype="float" endian="little" logparam="E32">
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".01" coarseincrement=".1" />
@@ -15527,7 +15540,7 @@
   <table type="3D" name="Minimum Open Loop Enrichment B (Coolant Temp)" category="Fuel" storagetype="uint8" endian="big" sizex="16" sizey="8" userlevel="5">
    <scaling units="Estimated Air/Fuel Ratio" expression="14.7/(1+x*.00390625)" to_byte="(14.7/x-1)/.00390625" format="0.00" fineincrement=".06" coarseincrement=".5" />
    <table type="X Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <table type="Y Axis" name="Engine Load" storagetype="float" endian="little" logparam="E32">
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".01" coarseincrement=".1" />
@@ -15537,7 +15550,7 @@
   <table type="3D" name="Minimum Open Loop Enrichment Idle (Coolant Temp)" category="Fuel" storagetype="uint8" endian="big" sizex="10" sizey="3" userlevel="5">
    <scaling units="Estimated Air/Fuel Ratio" expression="14.7/(1+x*.00390625)" to_byte="(14.7/x-1)/.00390625" format="0.00" fineincrement=".06" coarseincrement=".5" />
    <table type="X Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <table type="Y Axis" name="Engine Load" storagetype="float" endian="little" logparam="E32">
     <scaling units="g/rev" expression="x" to_byte="x" format="0.00" fineincrement=".01" coarseincrement=".1" />
@@ -15616,14 +15629,14 @@
   <table type="2D" name="A/F Learning Max Limit (Coolant Temp)" category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="4">
    <scaling units="A/F Learning #1 and #2 Max (%)" expression="(x*.001525879)-50" to_byte="(x+50)/.001525879" format="0.00" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>These are the maximum limits for A/F Learning #1 and #2 referenced by coolant temperature. A/F Learning #1/#2 is the long-term correction applied to fueling based on feedback from the oxygen sensors during closed loop operation.</description>
   </table>
   <table type="2D" name="A/F Learning Min Limit (Coolant Temp)" category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="4">
    <scaling units="A/F Learning #1 and #2 Min (%)" expression="(x*.001525879)-50" to_byte="(x+50)/.001525879" format="0.00" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>These are the minimum limits for A/F Learning #1 and #2 referenced by coolant temperature. A/F Learning #1/#2 is the long-term correction applied to fueling based on feedback from the oxygen sensors during closed loop operation.</description>
   </table>
@@ -15646,7 +15659,7 @@
    <description>These are the airflow ranges in which the different long-term fuel trims are calculated in closed loop and applied to the same airflow ranges for both closed loop and open loop.</description>
   </table>
   <table type="2D" name="Fuel Temp Sensor Scaling" category="Fuel" storagetype="float" endian="little" sizey="30" userlevel="3">
-   <scaling units="Fuel Temp (Degrees C)" expression="x" to_byte="x" format="0.0" fineincrement=".1" coarseincrement="1" />
+   <scaling units="Fuel Temp (Degrees F)" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="0.0" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Fuel Temp Sensor" storagetype="float" endian="little">
     <scaling units="volts" expression="x" to_byte="x" format="0.00" fineincrement=".01" coarseincrement=".1" />
    </table>
@@ -15746,35 +15759,35 @@
   <table type="2D" name="Tip-in Enrichment Compensation (Coolant Temp)" category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="3">
    <scaling units="Throttle Tip-in Enrichment Compensation (%)" expression="(x*.01220703125)-100" to_byte="(x+100)/.01220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in 'Throttle Tip-in Enrichment' based on coolant temperature.</description>
   </table>
   <table type="2D" name="Tip-in Enrichment Compensation A (Coolant Temp)" category="Fuel" storagetype="uint8" endian="big" sizey="16" userlevel="4">
    <scaling units="Throttle Tip-in Enrichment Compensation (%)" expression="(x*.78125)-100" to_byte="(x+100)/.78125" format="0.00" fineincrement=".4" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in 'Throttle Tip-in Enrichment' based on coolant temperature.</description>
   </table>
   <table type="2D" name="Tip-in Enrichment Compensation B (Coolant Temp)" category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="4">
    <scaling units="Throttle Tip-in Enrichment Compensation (%)" expression="(x*.01220703125)-100" to_byte="(x+100)/.01220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in 'Throttle Tip-in Enrichment' based on coolant temperature.</description>
   </table>
   <table type="2D" name="Tip-in Enrichment Compensation C (Coolant Temp)" category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="4">
    <scaling units="Throttle Tip-in Enrichment Compensation (%)" expression="(x*.01220703125)-100" to_byte="(x+100)/.01220703125" format="0.00" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in 'Throttle Tip-in Enrichment' based on coolant temperature.</description>
   </table>
   <table type="2D" name="Tip-in Enrichment Compensation D (Coolant Temp)" category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="4">
    <scaling units="Throttle Tip-in Enrichment Compensation (%)" expression="(x*.04882812)-99.99998976" to_byte="(x+99.99998976)/.04882812" format="0.00" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in 'Throttle Tip-in Enrichment' based on coolant temperature.</description>
   </table>
@@ -15788,7 +15801,7 @@
   <table type="2D" name="Tip-in Enrichment Compensation D (Coolant Temp) " category="Fuel" storagetype="uint16" endian="big" sizey="16" userlevel="5">
    <scaling units="Throttle Tip-in Enrichment Compensation (%)" expression="(x*.04882812)-99.99998976" to_byte="(x+99.99998976)/.04882812" format="0.00" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in 'Throttle Tip-in Enrichment' based on coolant temperature.</description>
   </table>
@@ -15892,7 +15905,7 @@
   <table type="2D" name="Base Timing Alternate (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3" logparam="E53">
    <scaling units="Base Ignition Timing (degrees BTDC)" expression="(x*.3515625)-20" to_byte="(x+20)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>The timing indicated in this table is used as base timing when the target for this table exceeds the normal base timing target after compensations.</description>
   </table>
@@ -16009,14 +16022,14 @@
   <table type="2D" name="Timing Compensation (Intake Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in total ignition timing based on input from the air intake temperature sensor.</description>
   </table>
   <table type="2D" name="Timing Compensation A (Intake Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in total ignition timing based on input from the air intake temperature sensor.</description>
   </table>
@@ -16043,7 +16056,7 @@
   <table type="2D" name="Timing Compensation B (Intake Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in total ignition timing based on input from the air intake temperature sensor.</description>
   </table>
@@ -16057,35 +16070,35 @@
   <table type="2D" name="Timing Compensation (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in total ignition timing based on input from the coolant temperature sensor.</description>
   </table>
   <table type="2D" name="Timing Compensation A (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in total ignition timing based on input from the coolant temperature sensor.</description>
   </table>
   <table type="2D" name="Timing Compensation B (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in total ignition timing based on input from the coolant temperature sensor.</description>
   </table>
   <table type="2D" name="Timing Compensation C (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in total ignition timing based on input from the coolant temperature sensor.</description>
   </table>
   <table type="2D" name="Timing Compensation D (Coolant Temp)" category="Timing" storagetype="uint8" endian="big" sizey="16" userlevel="3">
    <scaling units="Ignition Timing Correction (degrees)" expression="(x*.3515625)-45" to_byte="(x+45)/.3515625" format="0.00" fineincrement=".2" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>This is the change in total ignition timing based on input from the coolant temperature sensor.</description>
   </table>
@@ -16210,7 +16223,7 @@
    <description>This is the maximum engine speed for which the 'Timing Compensation Per Cylinder' tables are active. Active per cylinder compensation is also dependent on the 'Timing Comp Minimum Load (Per Cylinder)' and 'Timing Comp Minimum Coolant Temp (Per Cylinder)' tables.</description>
   </table>
   <table type="2D" name="Timing Comp Minimum Coolant Temp (Per Cylinder)" category="Timing" storagetype="float" endian="little" sizey="1" userlevel="5">
-   <scaling units="Coolant Temp (Degrees C)" expression="x" to_byte="x" format="0.0" fineincrement=".1" coarseincrement="1" />
+   <scaling units="Coolant Temp (Degrees F)" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="0.0" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Per Cylinder Timing Compensation" sizey="1">
     <data>Enable Above</data>
    </table>
@@ -16498,7 +16511,7 @@
   <table type="3D" name="MAF Compensation (Intake Temp)" category="MAF" storagetype="uint8" endian="big" sizex="5" sizey="8" userlevel="3">
    <scaling units="Mass Air Flow Compensation (%)" expression="(x*.390625)-50" to_byte="(x+50)/.390625" format="0.0" fineincrement=".2" coarseincrement="1" />
    <table type="X Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <table type="Y Axis" name="MAF" storagetype="float" endian="little" logparam="P12">
     <scaling units="g/s" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -16508,7 +16521,7 @@
   <table type="3D" name="MAF Compensation A (Intake Temp)" category="MAF" storagetype="uint8" endian="big" sizex="5" sizey="8" userlevel="3">
    <scaling units="Mass Air Flow Compensation (%)" expression="(x*.390625)-50" to_byte="(x+50)/.390625" format="0.0" fineincrement=".2" coarseincrement="1" />
    <table type="X Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <table type="Y Axis" name="MAF" storagetype="float" endian="little" logparam="P12">
     <scaling units="g/s" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -16518,7 +16531,7 @@
   <table type="3D" name="MAF Compensation B (Intake Temp)" category="MAF" storagetype="uint8" endian="big" sizex="5" sizey="8" userlevel="3">
    <scaling units="Mass Air Flow Compensation (%)" expression="(x*.390625)-50" to_byte="(x+50)/.390625" format="0.0" fineincrement=".2" coarseincrement="1" />
    <table type="X Axis" name="Intake Temperature" storagetype="float" endian="little" logparam="P11">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <table type="Y Axis" name="MAF" storagetype="float" endian="little" logparam="P12">
     <scaling units="g/s" expression="x" to_byte="x" format="0.00" fineincrement=".1" coarseincrement="1" />
@@ -16614,21 +16627,21 @@
    <description>After the rev limiter is engaged and engine speed drops below the 'Off' RPM, fueling will not resume until manifold pressure drops below this table's value.</description>
   </table>
   <table type="2D" name="Speed Limiting A" category="Misc" storagetype="float" endian="little" sizey="1" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Speed Limiter" sizey="1">
     <data>On Above</data>
    </table>
    <description>The speed limiter is engaged when vehicle speed is greater than this value.</description>
   </table>
   <table type="2D" name="Speed Limiting B" category="Misc" storagetype="float" endian="little" sizey="1" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Speed Limiter" sizey="1">
     <data>Off Below</data>
    </table>
    <description>The speed limiter is disengaged when vehicle speed is equal to or drops below this value after already engaging the limiter.</description>
   </table>
   <table type="2D" name="Speed Limiting C" category="Misc" storagetype="float" endian="little" sizey="2" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Throttle Reduction" sizey="2">
     <data>None Below</data>
     <data>High Above</data>
@@ -16636,7 +16649,7 @@
    <description>The vehicle speed at which throttle is reduced.</description>
   </table>
   <table type="2D" name="Speed Limiting C " category="Misc" storagetype="float" endian="little" sizey="4" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Throttle Reduction" sizey="4">
     <data>None Below</data>
     <data>High Above</data>
@@ -16646,7 +16659,7 @@
    <description>The vehicle speed at which throttle is reduced.</description>
   </table>
   <table type="2D" name="Speed Limiting" category="Misc" storagetype="float" endian="little" sizey="4" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Speed Limiter (Transmission)" sizey="4">
     <data>On Above (AT)</data>
     <data>On Above (MT)</data>
@@ -16656,7 +16669,7 @@
    <description>The vehicle speeds at which the speed limiter is engaged or disengaged which varies by transmission type.</description>
   </table>
   <table type="2D" name="Speed Limiting (Throttle)" category="Misc" storagetype="float" endian="little" sizey="2" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Throttle Reduction" sizey="2">
     <data>None Below</data>
     <data>High Above</data>
@@ -16664,7 +16677,7 @@
    <description>The vehicle speed at which throttle is reduced.</description>
   </table>
   <table type="2D" name="Speed Limiting A (Throttle)" category="Misc" storagetype="float" endian="little" sizey="2" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Throttle Reduction" sizey="2">
     <data>None Below</data>
     <data>High Above</data>
@@ -16672,7 +16685,7 @@
    <description>The vehicle speed at which throttle is reduced.</description>
   </table>
   <table type="2D" name="Speed Limiting B (Throttle)" category="Misc" storagetype="float" endian="little" sizey="2" userlevel="1">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="Throttle Reduction" sizey="2">
     <data>None Below</data>
     <data>High Above</data>
@@ -16680,21 +16693,21 @@
    <description>The vehicle speed at which throttle is reduced.</description>
   </table>
   <table type="2D" name="EGT Sensor Scaling" category="Misc" storagetype="float" endian="little" sizey="30" userlevel="3">
-   <scaling units="Exhaust Gas Temperature (Degrees C)" expression="x" to_byte="x" format="0.0" fineincrement="1" coarseincrement="5" />
+   <scaling units="Exhaust Gas Temperature (Degrees F)" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="0.0" fineincrement="1" coarseincrement="5" />
    <table type="Y Axis" name="Exhaust Gas Temperature Sensor" storagetype="float" endian="little">
     <scaling units="volts" expression="x" to_byte="x" format="0.00" fineincrement=".01" coarseincrement=".1" />
    </table>
    <description>This is the scaling of the exhaust gas temperature sensor.</description>
   </table>
   <table type="2D" name="Intake Temp Sensor Scaling" category="Misc" storagetype="float" endian="little" sizey="30" userlevel="4">
-   <scaling units="Intake Temp (Degrees C)" expression="x" to_byte="x" format="0.0" fineincrement=".1" coarseincrement="1" />
+   <scaling units="Intake Temp (Degrees F)" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="0.0" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Intake Temp Sensor" storagetype="float" endian="little">
     <scaling units="volts" expression="x" to_byte="x" format="0.00" fineincrement=".01" coarseincrement=".1" />
    </table>
    <description>This is the scaling of the intake temp sensor.</description>
   </table>
   <table type="2D" name="Coolant Temp Sensor Scaling" category="Misc" storagetype="float" endian="little" sizey="28" userlevel="4">
-   <scaling units="Coolant Temp (Degrees C)" expression="x" to_byte="x" format="0.0" fineincrement=".1" coarseincrement="1" />
+   <scaling units="Coolant Temp (Degrees F)" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="0.0" fineincrement=".1" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temp Sensor" storagetype="float" endian="little">
     <scaling units="volts" expression="x" to_byte="x" format="0.00" fineincrement=".01" coarseincrement=".1" />
    </table>
@@ -16888,126 +16901,126 @@
   <table type="2D" name="Idle Speed A (Coolant Temp)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed B (Coolant Temp)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed C (Coolant Temp)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed D (Coolant Temp)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed E (Coolant Temp)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed F (Coolant Temp)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed A (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed B (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed C (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed D (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed E (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed F (MT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed A (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed B (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed C (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed D (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed E (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
   <table type="2D" name="Idle Speed F (AT)" category="Idle" storagetype="uint16" endian="big" sizey="16" userlevel="1" logparam="P8">
    <scaling units="Engine Speed (RPM)" expression="x*.1953125" to_byte="x/.1953125" format="#" fineincrement="50" coarseincrement="100" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>Idle speed target at different coolant temperatures.</description>
   </table>
@@ -17111,7 +17124,7 @@
    <description>When the closed loop delay value is non-zero, this table will be used to determine the transition from closed loop to open loop and back again. When calculated load, (raw injector flow scaling x engine load), is equal to or rises above the threshold in this table, the process to exit closed loop begins. The current delay value is used to determine the pause in this transition to open loop. When calculated load drops below the threshold (and below a predetermined delta), fueling will transition from open loop to closed loop.</description>
   </table>
   <table type="2D" name="CL Delay Maximum EGT" category="CL/OL Fueling Transition" storagetype="float" endian="little" sizey="2" userlevel="2">
-   <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="(Condition) - Result" sizey="2">
     <data>(Below) - Check Other CL Tables</data>
     <data>(Above) - Clear CL Delay</data>
@@ -17126,7 +17139,7 @@
    <description>When throttle position is greater than or equal to this value, the closed loop delay value is set to zero which can result in switching from closed loop to open loop depending on the current enrichment value as determined by the 'Open Loop Fueling' map. When throttle position is less than this value, other specific closed loop triggers are reviewed. If all these triggers are below their thresholds, then the closed loop delay is determined from the 'CL to OL Delay' table. In this case, assuming a non-zero delay value, the 'CL to OL Transition with Delay (Calculated Load)' and 'CL to OL Transition with Delay (Throttle)' are used to determine the open loop to close loop transition and vice versa.</description>
   </table>
   <table type="2D" name="CL Delay Maximum Vehicle Speed" category="CL/OL Fueling Transition" storagetype="float" endian="little" sizey="2" userlevel="2">
-   <scaling units="Vehicle Speed (KMH)" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+   <scaling units="Vehicle Speed (MPH)" expression="x*.621" to_byte="x/.621" format="#" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="(Condition) - Result" sizey="2">
     <data>(Below) - Check Other CL Tables</data>
     <data>(Above) - Clear CL Delay</data>
@@ -17134,7 +17147,7 @@
    <description>When vehicle speed is the same or greater than the second value, the closed loop delay value is set to zero which can result in switching from closed loop to open loop depending on the current enrichment value as determined by the 'Open Loop Fueling' map. When vehicle speed drops below the first value, other specific closed loop triggers are reviewed. If all these triggers are below their thresholds, then the closed loop delay is determined from the 'CL to OL Delay' table. In this case, depending on the delay value, the 'CL to OL Transition with Delay (Calculated Load)' and 'CL to OL Transition with Delay (Throttle)' are used to determine the open loop to close loop transition and vice versa.</description>
   </table>
   <table type="2D" name="CL Delay Minimum Coolant Temperature" category="CL/OL Fueling Transition" storagetype="float" endian="little" sizey="1" userlevel="2">
-   <scaling units="Coolant Temp (Degrees C)" expression="x" to_byte="x" format="0.0" fineincrement=".1" coarseincrement="1" />
+   <scaling units="Coolant Temp (Degrees F)" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="0.0" fineincrement="1" coarseincrement="5" />
    <table type="Static Y Axis" name="(Condition) - Result" sizey="1">
     <data>(Below) - Clear CL Delay</data>
    </table>
@@ -17218,7 +17231,7 @@
   <table type="2D" name="CL Delay Maximum Throttle B (Coolant Temp)" category="CL/OL Fueling Transition" storagetype="uint8" endian="big" sizey="16" userlevel="2" logparam="P30">
    <scaling units="Accelerator Pedal Angle (%)" expression="x*.4882812" to_byte="x/.4882812" format="0.0" fineincrement=".3" coarseincrement="1" />
    <table type="Y Axis" name="Coolant Temperature" storagetype="float" endian="little" logparam="P2">
-    <scaling units="Degrees C" expression="x" to_byte="x" format="#" fineincrement="1" coarseincrement="5" />
+    <scaling units="Degrees F" expression="(x*1.8)+32" to_byte="(x-32)/1.8" format="#" fineincrement="1" coarseincrement="5" />
    </table>
    <description>When the accelerator pedal opening % is the same or greater than the second value, the closed loop delay value is set to zero which can result in switching from closed loop to open loop depending on the current enrichment value as determined by the 'Open Loop Fueling' map. When the accelerator pedal opening % below the first value, other specific closed loop triggers are reviewed. If all these triggers are below their thresholds, then the closed loop delay is determined from the 'CL to OL Delay' table. In this case, depending on the delay value, the 'CL to OL Transition with Delay (Calculated Load)' and 'CL to OL Transition with Delay (Throttle)' are used to determine the open loop to close loop transition and vice versa.</description>
   </table>
@@ -46229,7 +46242,7 @@
   <table name="(P2228) BARO. PRESSURE CIRCUIT LOW INPUT" storageaddress="0x8943F" />
   <table name="(P2229) BARO. PRESSURE CIRCUIT HIGH INPUT" storageaddress="0x8943E" />
  </rom>
- <rom base="E2VH102C">
+ <rom base="E2VH102C (ALPHA)">
   <romid>
    <xmlid>E2VH112C (ALPHA)</xmlid>
    <internalidaddress>2000</internalidaddress>
@@ -46598,7 +46611,7 @@
   <table name="(P2228) BARO. PRESSURE CIRCUIT LOW INPUT" storageaddress="0x7E961" />
   <table name="(P2229) BARO. PRESSURE CIRCUIT HIGH INPUT" storageaddress="0x7E960" />
  </rom>
- <rom base="E2ZJ101G">
+ <rom base="E2ZJ101G (ALPHA)">
   <romid>
    <xmlid>E2ZJ103G (ALPHA)</xmlid>
    <internalidaddress>2000</internalidaddress>
@@ -46965,7 +46978,7 @@
   <table name="(P2228) BARO. PRESSURE CIRCUIT LOW INPUT" storageaddress="0x7E04E" />
   <table name="(P2229) BARO. PRESSURE CIRCUIT HIGH INPUT" storageaddress="0x7E04D" />
  </rom>
- <rom base="E2ZJ111G">
+ <rom base="E2ZJ111G (ALPHA)">
   <romid>
    <xmlid>E2ZJ113G (ALPHA)</xmlid>
    <internalidaddress>2000</internalidaddress>
@@ -46979,7 +46992,7 @@
    <flashmethod>sti05</flashmethod>
   </romid>
  </rom>
- <rom base="E2ZJ111G">
+ <rom base="E2ZJ111G (ALPHA)">
   <romid>
    <xmlid>E2ZJ123G (ALPHA)</xmlid>
    <internalidaddress>2000</internalidaddress>
