@@ -1,4 +1,4 @@
-                      - RomRaider 0.4.2 Beta -
+                      - RomRaider 0.5.0 Beta -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,31 +35,44 @@ documentation may be incomplete or out of date.
 
 
 -----------------------------
-- 0.4.1b Notes (2/8/2007) -
+- 0.5.0b Notes (5/1/2008) -
 -----------------------------
-This release includes a couple minor fixes to the tuning interface and
-major enhancements to the datalogger.
+This release includes minor fixes to the editor and major
+enhancements to the logger.
 
 
 
 -----------------------
-- 0.4.1b Known Issues -
+- 0.5.0b Known Issues -
 -----------------------
-- 3d graph
-  - Java3d over most VNC implementations will show a blank JFrame
-  - You MUST have up to date graphics drivers that support OpenGL 1.2
-  - Expect ~200 megs of usage when using 3d graphing
-  - Expect possible memory leaks when using 3d graphing
-  - There are some problems with cell selection in 3d graphs
-  - Numerical interpolation can take some time on slower machines
-- Other
-  - File associations will work only in Windows systems
-
+- Editor
+  - Pasting table data can cause hangs under certain circumstances
+- Logger
+  - AEM UEGO support is a bit flaky
+- UTEC Logger incomplete
 
 
 --------------
 - Change Log -
 --------------
+
+0.5.0b (5/1/2008)
+-----------------
+
+--- Editor ---
+- Minor bug fixes
+- RAMTune test application
+
+--- Logger ---
+- Plugin interface added including plugins for,
+  - Innovate LC-1
+  - Innovate LM-1
+  - AEM UEGO
+  - UTEC
+- New MAF scaler tab
+- New injector scaler tab
+- Reset ECU
+
 
 0.4.1b (2/8/2007)
 -----------------
