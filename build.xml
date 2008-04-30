@@ -76,7 +76,7 @@
         <property name="deprecation" value="on"/>
 
         <!-- get the current svn revision (needed by version.properties) -->
-        <macro_svn_revision repository="https://svn2.assembla.com/svn/enginuity" property="svn.revision"/>
+        <macro_svn_revision repository="http://svn2.assembla.com/svn/romraider" property="svn.revision"/>
 
         <!-- version properties are set in this file, both for the product itself and
 		    for some of the external dependencies (jar files and such) -->
