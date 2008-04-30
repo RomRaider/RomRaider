@@ -303,9 +303,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         	//TODO:  make a separate About class to get a better dialog box
         	//       with graphic, hyperlink, etc.
         	showMessageDialog(this,
-        			Version.PRODUCT_NAME + " ECU Editor\n" + "Version " + Version.VERSION + "\n" + Version.SUPPORT_URL,
-        			"About " + Version.PRODUCT_NAME,
-        			INFORMATION_MESSAGE);
+        			Version.PRODUCT_NAME + " ECU Editor\n" + "Version " + Version.VERSION + "\n" + 
+        			"Build ID: " + Version.BUILDNUMBER + "\n" + Version.SUPPORT_URL, 
+        			"About " + Version.PRODUCT_NAME, INFORMATION_MESSAGE);
         }
     }
 
