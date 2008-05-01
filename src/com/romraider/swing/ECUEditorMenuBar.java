@@ -28,6 +28,7 @@ import static com.romraider.Version.ECU_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.SUPPORT_URL;
 import static com.romraider.Version.VERSION;
+import static com.romraider.Version.ABOUT_ICON;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.utec.gui.JutecGUI;
 import com.romraider.maps.Rom;
@@ -304,12 +305,12 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             RamTuneTestApp.startTestApp(DISPOSE_ON_CLOSE);
 
         } else if (e.getSource() == about) {
-            //TODO:  make a separate About class to get a better dialog box with graphic, hyperlink, etc.
+            //TODO:  make a separate About class to get a better dialog box with hyperlink, etc.
             String message = PRODUCT_NAME + " ECU Editor\n"
                     + "Version: " + VERSION + " [build #" + BUILDNUMBER + "]\n"
                     + SUPPORT_URL;
             String title = "About " + PRODUCT_NAME;
-            showMessageDialog(parent, message, title, INFORMATION_MESSAGE);
+            showMessageDialog(parent, message, title, INFORMATION_MESSAGE, ABOUT_ICON);
         }
     }
 

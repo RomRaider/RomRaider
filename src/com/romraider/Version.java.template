@@ -23,6 +23,8 @@
 
 package com.romraider;
 
+import javax.swing.ImageIcon;
+
 public final class Version {
 	public static final String PRODUCT_NAME = "@name.package@";
 	public static final String VERSION = "@version.major@.@version.minor@.@version.patch@ @version.extra@";
@@ -32,6 +34,7 @@ public final class Version {
 	public static final String ECU_DEFS_URL = "@ecudefsurl@";
 	public static final String LOGGER_DEFS_URL = "@loggerdefsurl@";
 	public static final String RELEASE_NOTES = "@release_notes@";
+	public static final ImageIcon ABOUT_ICON = new ImageIcon("graphics/romraider-ico-large.gif");
 
     private Version() {
     }
