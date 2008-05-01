@@ -546,7 +546,7 @@ public class SettingsForm extends JFrame implements MouseListener {
             }
 
             if (extensionBin.isSelected()) {
-                FileAssociator.removeAssociation("HEX");
+                FileAssociator.removeAssociation("BIN");
             }
 
         }
