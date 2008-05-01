@@ -14,6 +14,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.ResetConnectionAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ResetEcuAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.SaveProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.SaveProfileAsAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.UpdateLoggerDefAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -33,6 +34,7 @@ import static java.awt.event.KeyEvent.VK_P;
 import static java.awt.event.KeyEvent.VK_R;
 import static java.awt.event.KeyEvent.VK_S;
 import static java.awt.event.KeyEvent.VK_T;
+import static java.awt.event.KeyEvent.VK_U;
 import static java.awt.event.KeyEvent.VK_X;
 import java.util.List;
 
@@ -82,6 +84,8 @@ public class EcuLoggerMenuBar extends JMenuBar {
 
         // help menu stuff
         JMenu helpMenu = new EcuLoggerMenu("Help", VK_H);
+        helpMenu.add(new EcuLoggerMenuItem("Update Logger Definition...", new UpdateLoggerDefAction(logger), VK_U));
+        helpMenu.add(new JSeparator());
         helpMenu.add(new EcuLoggerMenuItem("About", new AboutAction(logger), VK_A));
         add(helpMenu);
 

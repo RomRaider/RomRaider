@@ -21,6 +21,7 @@
 
 package com.romraider.swing;
 
+import static com.romraider.Version.PRODUCT_NAME;
 import org.apache.log4j.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -45,7 +46,7 @@ public final class LookAndFeelManager {
                 System.setProperty("apple.awt.brushMetalLook", "true");
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
                 System.setProperty("apple.awt.window.position.forceSafeCreation", "true");
-                System.setProperty("com.apple.mrj.application.apple.menu.about.name", "RomRaider");
+                System.setProperty("com.apple.mrj.application.apple.menu.about.name", PRODUCT_NAME);
             }
 
             // Linux has issues with the gtk look and feel themes.

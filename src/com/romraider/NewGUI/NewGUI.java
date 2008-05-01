@@ -8,6 +8,8 @@ import com.romraider.NewGUI.interfaces.TuningEntity;
 import com.romraider.NewGUI.interfaces.TuningEntityListener;
 import com.romraider.NewGUI.tree.ETree;
 import com.romraider.NewGUI.tree.ETreeNode;
+import static com.romraider.Version.PRODUCT_NAME;
+import static com.romraider.Version.VERSION;
 import com.romraider.logger.utec.impl.UtecTuningEntityImpl;
 import com.romraider.swing.LookAndFeelManager;
 import org.apache.log4j.Logger;
@@ -35,7 +37,7 @@ import java.util.Vector;
 public class NewGUI extends JFrame implements WindowListener, ActionListener,
         TreeSelectionListener, TuningEntityListener {
     private static final Logger LOGGER = Logger.getLogger(NewGUI.class);
-    private final String romRaiderVersionTitle = "RomRaider v0.5.0 alpha 1";
+    private final String romRaiderVersionTitle = PRODUCT_NAME + " v" + VERSION;
 
     private JPanel mainJPanel = new JPanel();
 
@@ -45,7 +47,7 @@ public class NewGUI extends JFrame implements WindowListener, ActionListener,
     private JSplitPane splitPane = new JSplitPane();
     private EDesktopPane rightDesktopPane = new EDesktopPane();
 
-    private ETreeNode rootNode = new ETreeNode("RomRaider", new TableMetaData(
+    private ETreeNode rootNode = new ETreeNode(PRODUCT_NAME, new TableMetaData(
             TableMetaData.RESERVED_ROOT, 0.0, 0.0, new Object[0], null, null,
             false, "", "", "", "", "", null));
     private ETree leftJTree = new ETree(rootNode);
@@ -286,7 +288,7 @@ public class NewGUI extends JFrame implements WindowListener, ActionListener,
     }
 
     /**
-     * Getter that returns the title of RomRaider
+     * Getter that returns the title
      *
      * @return
      */
@@ -300,7 +302,7 @@ public class NewGUI extends JFrame implements WindowListener, ActionListener,
       * @see com.romraider.NewGUI.interfaces.TuningEntityListener#readyForExit()
       */
     public void readyForExit() {
-        LOGGER.info("RomRaider is now exiting as per tuning entity notification: " + ApplicationStateManager.getCurrentTuningEntity().getName());
+        LOGGER.info(PRODUCT_NAME + " is now exiting as per tuning entity notification: " + ApplicationStateManager.getCurrentTuningEntity().getName());
         System.exit(0);
     }
 
@@ -317,14 +319,14 @@ public class NewGUI extends JFrame implements WindowListener, ActionListener,
     }
 
     public void windowClosing(WindowEvent e) {
-        LOGGER.info("Preparing RomRaider for exit.");
+        LOGGER.info("Preparing " + PRODUCT_NAME + " for exit.");
 
         TuningEntity currentTuningEntity = ApplicationStateManager
                 .getCurrentTuningEntity();
 
         if (currentTuningEntity == null) {
             LOGGER.debug("No Tuning Entity ever selected.");
-            LOGGER.info("RomRaider exiting immediately.");
+            LOGGER.info(PRODUCT_NAME + " exiting immediately.");
             System.exit(0);
         } else {
             LOGGER.debug("Notify current tuning entity of pending exit.");

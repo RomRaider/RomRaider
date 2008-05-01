@@ -2,7 +2,7 @@
 
 <shortcuts>
     <skipIfNotSupported/>
-    <programGroup defaultName="RomRaider" location="programGroup"/>
+    <programGroup defaultName="@name.package@" location="programGroup"/>
 
     <shortcut
             name="@name.package@"

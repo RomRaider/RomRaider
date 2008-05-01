@@ -24,6 +24,7 @@ package com.romraider.swing;
 import ZoeloeSoft.projects.JFontChooser.JFontChooser;
 import com.romraider.ECUEditor;
 import com.romraider.Settings;
+import static com.romraider.Version.PRODUCT_NAME;
 import com.romraider.util.FileAssociator;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -32,6 +33,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import static java.io.File.separator;
 import java.util.StringTokenizer;
 
 public class SettingsForm extends JFrame implements MouseListener {
@@ -149,7 +151,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         tableClickCount = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("RomRaider Settings");
+        setTitle(PRODUCT_NAME + " Settings");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setFont(new java.awt.Font("Tahoma", 0, 11));
         obsoleteWarning.setText("Warn me when opening out of date ECU image revision");
@@ -528,11 +530,11 @@ public class SettingsForm extends JFrame implements MouseListener {
             // add file associations for selected file types
             try {
                 if (extensionHex.isSelected()) {
-                    FileAssociator.addAssociation("HEX", new File(".").getCanonicalPath() + "\\RomRaider.exe", "ECU Image");
+                    FileAssociator.addAssociation("HEX", new File(".").getCanonicalPath() + separator + PRODUCT_NAME + ".exe", "ECU Image");
                 }
 
                 if (extensionBin.isSelected()) {
-                    FileAssociator.addAssociation("BIN", new File(".").getCanonicalPath() + "\\RomRaider.exe", "ECU Image");
+                    FileAssociator.addAssociation("BIN", new File(".").getCanonicalPath() + separator + PRODUCT_NAME + ".exe", "ECU Image");
                 }
             } catch (Exception ex) {
             }

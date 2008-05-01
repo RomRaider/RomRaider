@@ -21,10 +21,17 @@
 
 package com.romraider.swing;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileOutputStream;
+import com.centerkey.utils.BareBonesBrowserLaunch;
+import com.romraider.ECUEditor;
+import static com.romraider.Version.BUILDNUMBER;
+import static com.romraider.Version.ECU_DEFS_URL;
+import static com.romraider.Version.PRODUCT_NAME;
+import static com.romraider.Version.SUPPORT_URL;
+import static com.romraider.Version.VERSION;
+import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.utec.gui.JutecGUI;
+import com.romraider.maps.Rom;
+import com.romraider.ramtune.test.RamTuneTestApp;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
@@ -38,13 +45,10 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
-import com.centerkey.utils.BareBonesBrowserLaunch;
-import com.romraider.Version;	// this is a generated class - see build.xml
-import com.romraider.ECUEditor;
-import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.utec.gui.JutecGUI;
-import com.romraider.maps.Rom;
-import com.romraider.ramtune.test.RamTuneTestApp;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
@@ -62,7 +66,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem updateDefinition = new JMenuItem("Update ECU Definitions...");
 
     private JMenu editMenu = new JMenu("Edit");
-    private JMenuItem settings = new JMenuItem(Version.PRODUCT_NAME + " Settings...");
+    private JMenuItem settings = new JMenuItem(PRODUCT_NAME + " Settings...");
 
     private JMenu viewMenu = new JMenu("View");
     private JMenuItem romProperties = new JMenuItem("ECU Image Properties");
@@ -82,7 +86,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem launchRamTuneTestApp = new JMenuItem("Launch Test App...");
 
     private JMenu helpMenu = new JMenu("Help");
-    private JMenuItem about = new JMenuItem("About " + Version.PRODUCT_NAME);
+    private JMenuItem about = new JMenuItem("About " + PRODUCT_NAME);
 
     private ECUEditor parent;
 
@@ -291,21 +295,21 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent);
 
         } else if (e.getSource() == utecLogger) {
-        	JutecGUI.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
+            JutecGUI.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
 
         } else if (e.getSource() == updateDefinition) {
-            BareBonesBrowserLaunch.openURL(parent.getSettings().getEcuDefsURL());
+            BareBonesBrowserLaunch.openURL(ECU_DEFS_URL);
 
         } else if (e.getSource() == launchRamTuneTestApp) {
             RamTuneTestApp.startTestApp(DISPOSE_ON_CLOSE);
 
         } else if (e.getSource() == about) {
-        	//TODO:  make a separate About class to get a better dialog box
-        	//       with graphic, hyperlink, etc.
-        	showMessageDialog(this,
-        			Version.PRODUCT_NAME + " ECU Editor\n" + "Version " + Version.VERSION + "\n" + 
-        			"Build ID: " + Version.BUILDNUMBER + "\n" + Version.SUPPORT_URL, 
-        			"About " + Version.PRODUCT_NAME, INFORMATION_MESSAGE);
+            //TODO:  make a separate About class to get a better dialog box with graphic, hyperlink, etc.
+            String message = PRODUCT_NAME + " ECU Editor\n"
+                    + "Version: " + VERSION + " [build #" + BUILDNUMBER + "]\n"
+                    + SUPPORT_URL;
+            String title = "About " + PRODUCT_NAME;
+            showMessageDialog(parent, message, title, INFORMATION_MESSAGE);
         }
     }
 

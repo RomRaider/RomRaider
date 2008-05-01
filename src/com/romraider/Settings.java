@@ -21,10 +21,12 @@
 
 package com.romraider;
 
+import static com.romraider.Version.RELEASE_NOTES;
+import static com.romraider.Version.ROM_REVISION_URL;
+import static com.romraider.Version.SUPPORT_URL;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.logger.ecu.definition.EcuDefinition;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import com.romraider.Version;	// this is a generated class - see build.xml
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -144,11 +146,11 @@ public class Settings implements Serializable {
     }
 
     public String getRomRevisionURL() {
-        return Version.ROM_REVISION_URL;
+        return ROM_REVISION_URL;
     }
 
     public String getSupportURL() {
-        return Version.SUPPORT_URL;
+        return SUPPORT_URL;
     }
 
     public Font getTableFont() {
@@ -270,7 +272,7 @@ public class Settings implements Serializable {
     }
 
     public String getReleaseNotes() {
-        return Version.RELEASE_NOTES;
+        return RELEASE_NOTES;
     }
 
     public boolean isSaveDebugTables() {
@@ -359,10 +361,6 @@ public class Settings implements Serializable {
 
     public void setLoggerOutputDirPath(String loggerOutputDirPath) {
         this.loggerOutputDirPath = loggerOutputDirPath;
-    }
-
-    public String getEcuDefsURL() {
-        return Version.ECU_DEFS_URL;
     }
 
     public String getFileLoggingControllerSwitchId() {

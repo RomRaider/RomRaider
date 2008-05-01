@@ -23,6 +23,8 @@ package com.romraider.logger.ecu;
 
 import com.romraider.ECUEditor;
 import com.romraider.Settings;
+import static com.romraider.Version.PRODUCT_NAME;
+import static com.romraider.Version.VERSION;
 import com.romraider.io.port.SerialPortRefresher;
 import com.romraider.logger.ecu.comms.controller.LoggerController;
 import com.romraider.logger.ecu.comms.controller.LoggerControllerImpl;
@@ -149,7 +151,7 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
-    private static final String ECU_LOGGER_TITLE = "RomRaider ECU Logger";
+    private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU Logger";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";

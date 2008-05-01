@@ -1,6 +1,9 @@
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
-import com.romraider.Version;
+import static com.romraider.Version.BUILDNUMBER;
+import static com.romraider.Version.PRODUCT_NAME;
+import static com.romraider.Version.SUPPORT_URL;
+import static com.romraider.Version.VERSION;
 import com.romraider.logger.ecu.EcuLogger;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -13,9 +16,10 @@ public final class AboutAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-    	showMessageDialog(logger,
-    			Version.PRODUCT_NAME + " RomRaider ECU logger\n" + "Version " + Version.VERSION + "\n" + 
-    			"Build ID: " + Version.BUILDNUMBER + "\n" + Version.SUPPORT_URL, 
-    			"About " + Version.PRODUCT_NAME, INFORMATION_MESSAGE);
+        String message = PRODUCT_NAME + " ECU Logger\n"
+                + "Version: " + VERSION + " [build #" + BUILDNUMBER + "]\n"
+                + SUPPORT_URL;
+        String title = "About " + PRODUCT_NAME;
+        showMessageDialog(logger, message, title, INFORMATION_MESSAGE);
     }
 }

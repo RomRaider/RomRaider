@@ -30,10 +30,9 @@ public final class Version {
 	public static final String SUPPORT_URL = "@supporturl@";
 	public static final String ROM_REVISION_URL = "@romrevisionurl@";
 	public static final String ECU_DEFS_URL = "@ecudefsurl@";
-	// logger defs URL not currently used, but added for completeness
 	public static final String LOGGER_DEFS_URL = "@loggerdefsurl@";
 	public static final String RELEASE_NOTES = "@release_notes@";
 
-    public Version() {
+    private Version() {
     }
 }
