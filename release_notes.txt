@@ -48,6 +48,8 @@ enhancements to the logger.
 - Editor
   - Pasting table data can cause hangs under certain circumstances
 - Logger
+  - ECU connections under Linux are flaky (start the logger after
+      you've started the engine)
   - AEM UEGO support is a bit flaky
 - UTEC Logger incomplete
 
