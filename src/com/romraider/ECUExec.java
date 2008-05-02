@@ -21,102 +21,67 @@
 
 package com.romraider;
 
-import com.romraider.swing.LookAndFeelManager;
-import com.romraider.util.LogManager;
-import com.romraider.ECUEditor;
+import static com.romraider.ECUEditorManager.getECUEditor;
+import static com.romraider.logger.ecu.EcuLogger.startLogger;
+import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
+import static com.romraider.util.LogManager.initDebugLogging;
+import com.romraider.util.SettingsManager;
+import com.romraider.util.SettingsManagerImpl;
 import org.apache.log4j.Logger;
-import java.io.BufferedReader;
+import static org.apache.log4j.Logger.getLogger;
+import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import java.io.File;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 public class ECUExec {
-    private static final Logger LOGGER = Logger.getLogger(ECUExec.class);
+    private static final Logger LOGGER = getLogger(ECUExec.class);
+    private static final String START_LOGGER_ARG = "-logger";
 
     private ECUExec() {
         throw new UnsupportedOperationException();
     }
 
     public static void main(String args[]) {
-        // init debug loging
-        LogManager.initLogging();
+        // init debug logging
+        initDebugLogging();
 
         // check for dodgy threading - dev only
 //        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));
 
-        // try create socket listener for shell opening new files
-        ServerSocket sock = null; // original server socket
-        String serverName = "localhost";
-        Socket clientSocket = null; // socket created by accept
-        PrintWriter pw = null; // socket output stream
-        BufferedReader br = null; // socket input stream
-        int serverPort = 8753;
-
-        try {
-            sock = new java.net.ServerSocket(serverPort);               // create socket and bind to port
-            sock.close();
-
-        } catch (Exception ex) {
-            // pass filename if file present
-            if (args.length > 0) {
-
-                try {
-                    Socket socket = new java.net.Socket(serverName, serverPort);       // create socket and connect
-                    pw = new java.io.PrintWriter(socket.getOutputStream(), true);  // create reader and writer
-                    br = new java.io.BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
-                    pw.println(args[0]);                      // send msg to the server
-                    String answer = br.readLine();                              // get data from the server
-
-                    pw.close();                                                 // close everything
-                    br.close();
-                    socket.close();
-
-                } catch (Throwable e) {
-                    LOGGER.error("Error occurred", e);
-                }
-                // after sending filename, exit
-                System.exit(0);
-            }
-        }
-
         // set look and feel
-        LookAndFeelManager.initLookAndFeel();
+        initLookAndFeel();
 
-        // launch editor
-        ECUEditor editor = ECUEditorManager.getECUEditor();
+        // open editor or logger
+        if (containsLoggerArg(args)) openLogger();
+        else openEditor(args);
+    }
 
-        // open files, if passed
-        try {
-            if (args.length > 0) {
-                editor.openImage(new File(args[0]).getCanonicalFile());
+    private static boolean containsLoggerArg(String[] args) {
+        if (args.length == 0) return false;
+        return args[0].equals(START_LOGGER_ARG);
+    }
+
+    private static void openLogger() {
+        SettingsManager manager = new SettingsManagerImpl();
+        Settings settings = manager.load();
+        startLogger(EXIT_ON_CLOSE, settings);
+    }
+
+    private static void openEditor(String[] args) {
+        ECUEditor editor = getECUEditor();
+        if (args.length > 0) openRom(editor, args[0]);
+    }
+
+    private static void openRom(final ECUEditor editor, final String rom) {
+        invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    File file = new File(rom);
+                    editor.openImage(file);
+                } catch (Exception ex) {
+                    LOGGER.error("Error opening rom", ex);
+                }
             }
-        } catch (Exception ex) {
-            LOGGER.error("Error opening file", ex);
-        }
-
-        // listen for files
-        try {
-
-            while (true) {
-                sock = new java.net.ServerSocket(serverPort); // create socket and bind to port
-                clientSocket = sock.accept(); // wait for client to connect
-                pw = new java.io.PrintWriter(clientSocket.getOutputStream(), true);
-                br = new java.io.BufferedReader(
-                        new java.io.InputStreamReader(clientSocket.getInputStream()));
-                String msg = br.readLine(); // read msg from client
-
-                // open file from client
-                editor.openImage(new File(msg));
-
-                pw.close();  // close everything
-                br.close();
-                clientSocket.close();
-                sock.close();
-            }
-
-        } catch (Throwable e) {
-            LOGGER.error("Error occurred", e);
-        }
+        });
     }
 }

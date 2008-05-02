@@ -139,7 +139,7 @@ public final class DOMRomUnmarshaller {
     }
 
     public static void main(String args[]) {
-        LogManager.initLogging();
+        LogManager.initDebugLogging();
         DOMRomUnmarshaller um = new DOMRomUnmarshaller(new Settings(), new ECUEditor());
         um.parent.dispose();
         RomID romID = new RomID();

@@ -4,7 +4,7 @@ import com.romraider.Settings;
 import com.romraider.swing.JProgressPane;
 
 public interface SettingsManager {
-    Settings load(String settingsNotFoundMessage);
+    Settings load();
 
     void save(Settings settings);
 

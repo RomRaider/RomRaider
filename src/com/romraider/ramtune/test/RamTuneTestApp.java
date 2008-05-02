@@ -391,7 +391,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     //**********************************************************************
 
     public static void main(String[] args) {
-        LogManager.initLogging();
+        LogManager.initDebugLogging();
         LookAndFeelManager.initLookAndFeel();
         startTestApp(EXIT_ON_CLOSE);
     }

@@ -90,7 +90,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
     public ECUEditor() {
 
         // get settings from xml
-        settings = settingsManager.load("A new file will be created.");
+        settings = settingsManager.load();
 
         if (!settings.getRecentVersion().equalsIgnoreCase(VERSION)) {
             showReleaseNotes();

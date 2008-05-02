@@ -21,7 +21,6 @@
 
 package com.romraider;
 
-import com.romraider.ECUEditor;
 import javax.swing.SwingUtilities;
 
 public class ECUEditorManager {
@@ -33,13 +32,16 @@ public class ECUEditorManager {
 
     public static ECUEditor getECUEditor() {
         if (editor == null) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    editor = new ECUEditor();
-                }
-            });
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                        editor = new ECUEditor();
+                    }
+                });
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-
         return editor;
     }
 }

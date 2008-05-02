@@ -1,6 +1,6 @@
 package com.romraider.util;
 
-import org.apache.log4j.PropertyConfigurator;
+import static org.apache.log4j.PropertyConfigurator.configureAndWatch;
 
 public final class LogManager {
 
@@ -8,7 +8,7 @@ public final class LogManager {
         throw new UnsupportedOperationException();
     }
 
-    public static void initLogging() {
-        PropertyConfigurator.configure("log4j.properties");
+    public static void initDebugLogging() {
+        configureAndWatch("log4j.properties");
     }
 }
