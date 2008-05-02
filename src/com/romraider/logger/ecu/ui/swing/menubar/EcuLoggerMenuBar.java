@@ -1,5 +1,6 @@
 package com.romraider.logger.ecu.ui.swing.menubar;
 
+import static com.romraider.Version.PRODUCT_NAME;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.ecu.ui.swing.menubar.action.AboutAction;
@@ -86,7 +87,7 @@ public class EcuLoggerMenuBar extends JMenuBar {
         JMenu helpMenu = new EcuLoggerMenu("Help", VK_H);
         helpMenu.add(new EcuLoggerMenuItem("Update Logger Definition...", new UpdateLoggerDefAction(logger), VK_U));
         helpMenu.add(new JSeparator());
-        helpMenu.add(new EcuLoggerMenuItem("About", new AboutAction(logger), VK_A));
+        helpMenu.add(new EcuLoggerMenuItem("About " + PRODUCT_NAME, new AboutAction(logger), VK_A));
         add(helpMenu);
 
     }
