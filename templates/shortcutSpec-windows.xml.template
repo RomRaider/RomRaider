@@ -5,7 +5,7 @@
     <programGroup defaultName="@name.package@" location="programGroup"/>
 
     <shortcut
-            name="@name.package@"
+            name="@name.package@ ECU Editor"
             programGroup="yes"
             desktop="yes"
             applications="no"
@@ -13,6 +13,24 @@
             startup="no"
             target="$INSTALL_PATH/@name.package@.exe"
             commandLine=""
+            initialState="noShow"
+            iconFile="$INSTALL_PATH/graphics/romraider-ico.ico"
+            workingDirectory="$INSTALL_PATH"
+            type="Application"
+            encoding="UTF-8"
+            description="@description.package@">
+        <createForPack name="Base"/>
+    </shortcut>
+
+    <shortcut
+            name="@name.package@ Logger"
+            programGroup="yes"
+            desktop="yes"
+            applications="no"
+            startMenu="no"
+            startup="no"
+            target="$INSTALL_PATH/@name.package@.exe"
+            commandLine="-logger"
             initialState="noShow"
             iconFile="$INSTALL_PATH/graphics/romraider-ico.ico"
             workingDirectory="$INSTALL_PATH"
