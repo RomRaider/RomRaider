@@ -22,13 +22,19 @@
 package com.romraider;
 
 import static com.romraider.ECUEditorManager.getECUEditor;
+import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.logger.ecu.EcuLogger.startLogger;
 import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
 import static com.romraider.util.LogManager.initDebugLogging;
+import static com.romraider.util.RomServer.isRunning;
+import static com.romraider.util.RomServer.sendRomToOpenInstance;
+import static com.romraider.util.RomServer.waitForRom;
 import com.romraider.util.SettingsManager;
 import com.romraider.util.SettingsManagerImpl;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import java.io.File;
@@ -51,9 +57,19 @@ public class ECUExec {
         // set look and feel
         initLookAndFeel();
 
-        // open editor or logger
-        if (containsLoggerArg(args)) openLogger();
-        else openEditor(args);
+        // check if already running
+        if (isRunning()) {
+            if (args.length == 0 || containsLoggerArg(args)) showAlreadyRunningMessage();
+            else sendRomToOpenInstance(args[0]);
+        } else {
+            // open editor or logger
+            if (containsLoggerArg(args)) openLogger();
+            else openEditor(args);
+        }
+    }
+
+    private static void showAlreadyRunningMessage() {
+        showMessageDialog(null, PRODUCT_NAME + " is already running.", PRODUCT_NAME, INFORMATION_MESSAGE);
     }
 
     private static boolean containsLoggerArg(String[] args) {
@@ -67,11 +83,6 @@ public class ECUExec {
         startLogger(EXIT_ON_CLOSE, settings);
     }
 
-    private static void openEditor(String[] args) {
-        ECUEditor editor = getECUEditor();
-        if (args.length > 0) openRom(editor, args[0]);
-    }
-
     private static void openRom(final ECUEditor editor, final String rom) {
         invokeLater(new Runnable() {
             public void run() {
@@ -83,5 +94,22 @@ public class ECUExec {
                 }
             }
         });
+    }
+
+    private static void openEditor(String[] args) {
+        ECUEditor editor = getECUEditor();
+        if (args.length > 0) openRom(editor, args[0]);
+        startRomListener(editor);
+    }
+
+    private static void startRomListener(ECUEditor editor) {
+        try {
+            while (true) {
+                String rom = waitForRom();
+                openRom(editor, rom);
+            }
+        } catch (Throwable e) {
+            LOGGER.error("Error occurred", e);
+        }
     }
 }
