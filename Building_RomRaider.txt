@@ -53,8 +53,23 @@ Notes on the above:
     repository.
 
 3)  A command line Subversion client needs to be installed and available in the default
-    path.  To verify this, open a command prompt and run "svn".  If this is not recognized
-    as an executable, the ant build will fail.
+    path.  To verify this, open a command prompt and run 
+    
+        svn info https://svn2.assembla.com/svn/romraider
+        
+    You should get a response of the form
+    
+        Path: romraider
+        URL: https://svn2.assembla.com/svn/romraider
+        Repository Root: https://svn2.assembla.com/svn/romraider
+        Repository UUID: 38686702-15cf-42e4-a595-3071df8bf5ea
+        Revision: 78
+        Node Kind: directory
+        Last Changed Author: kascade
+        Last Changed Rev: 78
+        Last Changed Date: 2008-05-02 15:50:23 -0700 (Fri, 02 May 2008)
+
+    If this does not work correctly, the ant build will fail.
 
 The ant build file is in the main directory and uses the default name of "build.xml".
 
@@ -69,6 +84,8 @@ file in the Package Explorer (Java perspective) and select
 Run As -> Ant Build
 
 The "help" target lists available targets with a brief description of each.
+
+The "all" target does just that.  It rebuilds everything, finishing with the installers.
 
 
 
