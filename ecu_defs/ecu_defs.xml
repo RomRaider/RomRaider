@@ -1,18 +1,5 @@
 <roms>
-
-<!--RomRaider standard units ECU definitions (version 0.8.0b) 12-04-07 
-
-This program and associated definitions are distributed in the hope
-that it will be useful, but WITHOUT ANY WARRANTY; without even the
-implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License for more details.
-
-RomRaider is created for FREE without any sort of guarantee. The
-developers cannot be held liable for any damage or injury incurred as
-a result of using RomRaider. USE AT YOUR OWN RISK.
-
-Copyright (C) 2007 RomRaider.com-->
-
+ <!--ENGINUITY STANDARD UNITS ECU DEFINITION FILE (VERSION 0.8.0b) 12-04-07-->
  <rom>
   <romid>
    <xmlid>16BITBASE</xmlid>
