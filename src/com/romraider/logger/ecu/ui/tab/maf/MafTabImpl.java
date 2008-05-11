@@ -27,8 +27,6 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
-import com.romraider.logger.ecu.ui.tab.XYTrendline;
-import org.jfree.data.xy.XYSeries;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
@@ -39,24 +37,15 @@ import static java.awt.BorderLayout.WEST;
 import java.util.List;
 
 public final class MafTabImpl extends JPanel implements MafTab {
-    private final XYSeries series = new XYSeries("MAF Analysis");
-    private final XYTrendline trendline = new XYTrendline();
+    private final LoggerChartPanel chartPanel = new LoggerChartPanel("MAF (v)", "Total Correction (%)");
     private final MafControlPanel controlPanel;
 
     public MafTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
         super(new BorderLayout(2, 2));
-        controlPanel = buildControlPanel(broker, ecuEditor);
+        controlPanel = new MafControlPanel(this, broker, ecuEditor, chartPanel);
         JScrollPane scrollPane = new JScrollPane(controlPanel, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
         add(scrollPane, WEST);
-        add(buildGraphPanel(), CENTER);
-    }
-
-    private MafControlPanel buildControlPanel(DataRegistrationBroker broker, ECUEditor ecuEditor) {
-        return new MafControlPanel(this, trendline, series, broker, ecuEditor);
-    }
-
-    private LoggerChartPanel buildGraphPanel() {
-        return new LoggerChartPanel(trendline, series, "MAF (v)", "Total Correction (%)");
+        add(chartPanel, CENTER);
     }
 
     public boolean isRecordData() {
@@ -96,7 +85,7 @@ public final class MafTabImpl extends JPanel implements MafTab {
     }
 
     public void addData(double mafv, double correction) {
-        series.add(mafv, correction);
+        chartPanel.addData(mafv, correction);
     }
 
     public void setEcuParams(List<EcuParameter> params) {

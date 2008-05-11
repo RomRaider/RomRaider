@@ -27,15 +27,14 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
+import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
 import static com.romraider.logger.ecu.ui.tab.TableFinder.findTableStartsWith;
-import com.romraider.logger.ecu.ui.tab.XYTrendline;
 import com.romraider.maps.DataCell;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
-import org.jfree.data.xy.XYSeries;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -87,21 +86,19 @@ public final class MafControlPanel extends JPanel {
     private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
     private final JTextField mafvChangeMax = new JTextField("0.2", 3);
-    private final Component parent;
-    private final XYTrendline trendline;
-    private final XYSeries series;
-    private final ECUEditor ecuEditor;
     private final DataRegistrationBroker broker;
+    private final LoggerChartPanel chartPanel;
+    private final ECUEditor ecuEditor;
+    private final Component parent;
+    private List<ExternalData> externals;
     private List<EcuParameter> params;
     private List<EcuSwitch> switches;
-    private List<ExternalData> externals;
 
-    public MafControlPanel(Component parent, XYTrendline trendline, XYSeries series, DataRegistrationBroker broker, ECUEditor ecuEditor) {
-        checkNotNull(parent, trendline, series, broker);
-        this.broker = broker;
+    public MafControlPanel(Component parent, DataRegistrationBroker broker, ECUEditor ecuEditor, LoggerChartPanel chartPanel) {
+        checkNotNull(parent, broker, chartPanel);
         this.parent = parent;
-        this.trendline = trendline;
-        this.series = series;
+        this.broker = broker;
+        this.chartPanel = chartPanel;
         this.ecuEditor = ecuEditor;
         addControls();
     }
@@ -328,8 +325,7 @@ public final class MafControlPanel extends JPanel {
         JButton resetButton = new JButton("Reset Data");
         resetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                trendline.clear();
-                series.clear();
+                chartPanel.clear();
                 parent.repaint();
             }
         });
@@ -340,7 +336,7 @@ public final class MafControlPanel extends JPanel {
         JButton interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                trendline.update(series, (Integer) orderComboBox.getSelectedItem());
+                chartPanel.interpolate((Integer) orderComboBox.getSelectedItem());
                 parent.repaint();
             }
         });
@@ -368,7 +364,7 @@ public final class MafControlPanel extends JPanel {
                                     DataCell cell = axisCells[i];
                                     x[i] = cell.getValue();
                                 }
-                                double[] percentChange = trendline.calculate(x);
+                                double[] percentChange = chartPanel.calculate(x);
                                 DataCell[] dataCells = table.getData();
                                 for (int i = 0; i < dataCells.length; i++) {
                                     if (inRange(axisCells[i].getValue(), mafvMin, mafvMax)) {

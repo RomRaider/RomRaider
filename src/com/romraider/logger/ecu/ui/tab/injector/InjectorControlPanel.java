@@ -27,16 +27,14 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
+import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
 import static com.romraider.logger.ecu.ui.tab.TableFinder.findTableStartsWith;
-import com.romraider.logger.ecu.ui.tab.XYTrendline;
 import com.romraider.maps.DataCell;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
 import static com.romraider.util.ParamChecker.checkNotNull;
-import jamlab.Polyfit;
 import org.apache.log4j.Logger;
-import org.jfree.data.xy.XYSeries;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -94,21 +92,19 @@ public final class InjectorControlPanel extends JPanel {
     private final JTextField fuelDensity = new JTextField("732", 5);
     private final JTextField flowScaling = new JTextField("", 5);
     private final JTextField latencyOffset = new JTextField("", 5);
-    private final Component parent;
-    private final XYTrendline trendline;
-    private final XYSeries series;
-    private final ECUEditor ecuEditor;
     private final DataRegistrationBroker broker;
+    private final LoggerChartPanel chartPanel;
+    private final ECUEditor ecuEditor;
+    private final Component parent;
     private List<EcuParameter> params;
     private List<EcuSwitch> switches;
     private List<ExternalData> externals;
 
-    public InjectorControlPanel(Component parent, XYTrendline trendline, XYSeries series, DataRegistrationBroker broker, ECUEditor ecuEditor) {
-        checkNotNull(parent, trendline, series, broker);
+    public InjectorControlPanel(Component parent, DataRegistrationBroker broker, ECUEditor ecuEditor, LoggerChartPanel chartPanel) {
+        checkNotNull(parent, broker, chartPanel);
         this.broker = broker;
         this.parent = parent;
-        this.trendline = trendline;
-        this.series = series;
+        this.chartPanel = chartPanel;
         this.ecuEditor = ecuEditor;
         addControls();
     }
@@ -368,8 +364,7 @@ public final class InjectorControlPanel extends JPanel {
         JButton resetButton = new JButton("Reset Data");
         resetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                trendline.clear();
-                series.clear();
+                chartPanel.clear();
                 parent.repaint();
             }
         });
@@ -380,9 +375,8 @@ public final class InjectorControlPanel extends JPanel {
         JButton interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                trendline.update(series, 1);
-                Polyfit polyFit = trendline.getPolyFit();
-                double[] coefficients = polyFit.getPolynomialCoefficients();
+                chartPanel.interpolate(1);
+                double[] coefficients = chartPanel.getPolynomialCoefficients();
                 double scaling = coefficients[0] * 1000 * 60;
                 DecimalFormat format = new DecimalFormat("0.00");
                 flowScaling.setText(format.format(scaling));

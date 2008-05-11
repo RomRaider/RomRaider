@@ -21,6 +21,7 @@
 
 package com.romraider.logger.ecu.ui.tab;
 
+import static com.romraider.util.ParamChecker.checkNotNull;
 import jamlab.Polyfit;
 import jamlab.Polyval;
 import org.jfree.data.xy.AbstractXYDataset;
@@ -34,7 +35,13 @@ public final class XYTrendline extends AbstractXYDataset {
     private List<XYDataItem> items = new ArrayList<XYDataItem>();
     private double[] xVals = new double[0];
     private double[] yPoly = new double[0];
+    private final XYSeries series;
     private Polyfit polyfit;
+
+    public XYTrendline(XYSeries series) {
+        checkNotNull(series);
+        this.series = series;
+    }
 
     public int getSeriesCount() {
         return 1;
@@ -56,7 +63,7 @@ public final class XYTrendline extends AbstractXYDataset {
         return xVals[item];
     }
 
-    public synchronized void update(XYSeries series, int order) {
+    public synchronized void update(int order) {
         if (series.getItemCount() <= order) return;
         items = new ArrayList<XYDataItem>(series.getItems());
         xVals = new double[items.size()];

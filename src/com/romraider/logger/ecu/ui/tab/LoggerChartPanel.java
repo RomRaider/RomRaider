@@ -23,37 +23,70 @@ package com.romraider.logger.ecu.ui.tab;
 
 import com.romraider.logger.ecu.ui.handler.graph.SpringUtilities;
 import static com.romraider.util.ParamChecker.checkNotNull;
-import org.jfree.chart.ChartFactory;
+import jamlab.Polyfit;
+import static org.jfree.chart.ChartFactory.createScatterPlot;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import static org.jfree.chart.plot.PlotOrientation.VERTICAL;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYDotRenderer;
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import java.awt.Color;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.BLUE;
+import static java.awt.Color.GREEN;
+import static java.awt.Color.RED;
+import static java.awt.Color.WHITE;
 import java.awt.Dimension;
 
 public final class LoggerChartPanel extends JPanel {
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
-    private final XYTrendline trendline;
-    private final XYSeries series;
+    private final XYSeries data = new XYSeries("Data");
+    private final XYTrendline trendline = new XYTrendline(data);
+    private final XYSeries hilite = new XYSeries("Hilite");
     private final String labelX;
     private final String labelY;
 
-    public LoggerChartPanel(XYTrendline trendline, XYSeries series, String labelX, String labelY) {
+    public LoggerChartPanel(String labelX, String labelY) {
         super(new SpringLayout());
-        checkNotNull(trendline, series, labelX, labelY);
-        this.trendline = trendline;
-        this.series = series;
+        checkNotNull(labelX, labelY);
         this.labelX = labelX;
         this.labelY = labelY;
         addChart();
+    }
+
+    public synchronized void addData(double x, double y) {
+        if (hilite.getItemCount() == 1) {
+            XYDataItem item = hilite.remove(0);
+            data.add(item);
+        }
+        hilite.add(x, y);
+    }
+
+    public void clear() {
+        trendline.clear();
+        hilite.clear();
+        data.clear();
+    }
+
+    public void interpolate(int order) {
+        trendline.update(order);
+    }
+
+    public double[] calculate(double[] x) {
+        return trendline.calculate(x);
+    }
+
+    public double[] getPolynomialCoefficients() {
+        Polyfit fit = trendline.getPolyFit();
+        return fit.getPolynomialCoefficients();
     }
 
     private void addChart() {
@@ -65,49 +98,52 @@ public final class LoggerChartPanel extends JPanel {
     }
 
     private JFreeChart createChart() {
-        XYDataset dataset = buildDataset();
-        return buildChart(dataset);
-    }
-
-    private XYSeriesCollection buildDataset() {
-        return new XYSeriesCollection(series);
-    }
-
-    private JFreeChart buildChart(XYDataset dataset) {
-        JFreeChart chart = ChartFactory.createScatterPlot(null, labelX, labelY, dataset, VERTICAL, false, true, false);
-        chart.setBackgroundPaint(Color.BLACK);
+        JFreeChart chart = createScatterPlot(null, labelX, labelY, null, VERTICAL, false, true, false);
+        chart.setBackgroundPaint(BLACK);
         configurePlot(chart);
-        addTrendLine(chart);
+        addSeries(chart, 0, hilite, 4, GREEN);
+        addTrendLine(chart, 1, trendline, BLUE);
+        addSeries(chart, 2, data, 2, RED);
         return chart;
     }
 
     private void configurePlot(JFreeChart chart) {
         XYPlot plot = chart.getXYPlot();
-        plot.setBackgroundPaint(Color.BLACK);
-        plot.getDomainAxis().setLabelPaint(Color.WHITE);
-        plot.getRangeAxis().setLabelPaint(Color.WHITE);
+        plot.setBackgroundPaint(BLACK);
+        plot.getDomainAxis().setLabelPaint(WHITE);
+        plot.getRangeAxis().setLabelPaint(WHITE);
         plot.getDomainAxis().setTickLabelPaint(LIGHT_GREY);
         plot.getRangeAxis().setTickLabelPaint(LIGHT_GREY);
         plot.setDomainGridlinePaint(DARK_GREY);
         plot.setRangeGridlinePaint(DARK_GREY);
         plot.setOutlinePaint(DARK_GREY);
-        plot.setRenderer(buildScatterRenderer());
+        plot.setRenderer(buildScatterRenderer(2, RED));
     }
 
-    private XYDotRenderer buildScatterRenderer() {
+    private XYDotRenderer buildScatterRenderer(int size, Color color) {
         XYDotRenderer renderer = new XYDotRenderer();
-        renderer.setDotHeight(2);
-        renderer.setDotWidth(2);
+        renderer.setDotHeight(size);
+        renderer.setDotWidth(size);
+        renderer.setSeriesPaint(0, color);
         return renderer;
     }
 
-    private void addTrendLine(JFreeChart chart) {
+    private void addTrendLine(JFreeChart chart, int index, XYTrendline trendline, Color color) {
         XYPlot plot = chart.getXYPlot();
-        plot.setDataset(1, trendline);
-        plot.setRenderer(1, buildTrendLineRenderer());
+        plot.setDataset(index, trendline);
+        plot.setRenderer(index, buildTrendLineRenderer(color));
     }
 
-    private StandardXYItemRenderer buildTrendLineRenderer() {
-        return new StandardXYItemRenderer();
+    private void addSeries(JFreeChart chart, int index, XYSeries series, int size, Color color) {
+        XYDataset dataset = new XYSeriesCollection(series);
+        XYPlot plot = chart.getXYPlot();
+        plot.setDataset(index, dataset);
+        plot.setRenderer(index, buildScatterRenderer(size, color));
+    }
+
+    private StandardXYItemRenderer buildTrendLineRenderer(Color color) {
+        StandardXYItemRenderer renderer = new StandardXYItemRenderer();
+        renderer.setSeriesPaint(0, color);
+        return renderer;
     }
 }

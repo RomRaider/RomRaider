@@ -27,8 +27,6 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
-import com.romraider.logger.ecu.ui.tab.XYTrendline;
-import org.jfree.data.xy.XYSeries;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
@@ -39,16 +37,15 @@ import static java.awt.BorderLayout.WEST;
 import java.util.List;
 
 public final class InjectorTabImpl extends JPanel implements InjectorTab {
-    private final XYSeries series = new XYSeries("Injector Analysis");
-    private final XYTrendline trendline = new XYTrendline();
+    private final LoggerChartPanel chartPanel = new LoggerChartPanel("Pulse Width (ms)", "Fuel per Combustion Event (cc)");
     private final InjectorControlPanel controlPanel;
 
     public InjectorTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
         super(new BorderLayout(2, 2));
-        controlPanel = buildControlPanel(broker, ecuEditor);
+        controlPanel = new InjectorControlPanel(this, broker, ecuEditor, chartPanel);
         JScrollPane scrollPane = new JScrollPane(controlPanel, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
         add(scrollPane, WEST);
-        add(buildGraphPanel(), CENTER);
+        add(chartPanel, CENTER);
     }
 
     public double getFuelStoichAfr() {
@@ -96,7 +93,7 @@ public final class InjectorTabImpl extends JPanel implements InjectorTab {
     }
 
     public void addData(double mafv, double correction) {
-        series.add(mafv, correction);
+        chartPanel.addData(mafv, correction);
     }
 
     public void setEcuParams(List<EcuParameter> params) {
@@ -115,11 +112,4 @@ public final class InjectorTabImpl extends JPanel implements InjectorTab {
         return this;
     }
 
-    private InjectorControlPanel buildControlPanel(DataRegistrationBroker broker, ECUEditor ecuEditor) {
-        return new InjectorControlPanel(this, trendline, series, broker, ecuEditor);
-    }
-
-    private LoggerChartPanel buildGraphPanel() {
-        return new LoggerChartPanel(trendline, series, "Pulse Width (ms)", "Fuel per Combustion Event (cc)");
-    }
 }
