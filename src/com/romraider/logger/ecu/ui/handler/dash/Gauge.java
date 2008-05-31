@@ -22,13 +22,37 @@
 package com.romraider.logger.ecu.ui.handler.dash;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
-public abstract class Gauge extends JPanel {
+public final class Gauge extends JPanel {
+    private GaugeStyle style;
 
-    public abstract void refreshTitle();
+    public Gauge(GaugeStyle style) {
+        super();
+        setGaugeStyle(style);
+    }
 
-    public abstract void updateValue(double value);
+    public void refreshTitle() {
+        style.refreshTitle();
+    }
 
-    public abstract void resetValue();
+    public void updateValue(double value) {
+        style.updateValue(value);
+    }
+
+    public void resetValue() {
+        style.resetValue();
+    }
+
+    public void setGaugeStyle(final GaugeStyle style) {
+        this.style = style;
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                removeAll();
+                style.apply(Gauge.this);
+            }
+        });
+    }
 
 }

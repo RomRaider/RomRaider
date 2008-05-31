@@ -18,22 +18,22 @@ public final class SmallGauge extends PlainGauge {
         super(loggerData);
     }
 
-    protected void initGaugeLayout() {
+    protected void doApply(JPanel panel) {
         refreshTitle();
         resetValue();
-        setPreferredSize(new Dimension(150, 78));
-        setBackground(LIGHT_GREY);
-        setLayout(new BorderLayout(1, 0));
+        panel.setPreferredSize(new Dimension(150, 78));
+        panel.setBackground(LIGHT_GREY);
+        panel.setLayout(new BorderLayout(1, 0));
 
         // title
-        title.setFont(getFont().deriveFont(PLAIN, 10F));
+        title.setFont(panel.getFont().deriveFont(PLAIN, 10F));
         title.setForeground(WHITE);
-        add(title, NORTH);
+        panel.add(title, NORTH);
 
         // data panel
         JPanel data = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 1));
         data.setBackground(BLACK);
-        liveValueLabel.setFont(getFont().deriveFont(PLAIN, 20F));
+        liveValueLabel.setFont(panel.getFont().deriveFont(PLAIN, 20F));
         liveValueLabel.setForeground(WHITE);
         liveValuePanel.setBackground(LIGHT_GREY);
         liveValuePanel.setPreferredSize(new Dimension(85, 60));
@@ -58,17 +58,17 @@ public final class SmallGauge extends PlainGauge {
         data.add(progressBar);
 
         // add panels
-        add(data, CENTER);
+        panel.add(data, CENTER);
     }
 
     private JPanel buildMaxMinPanel(String title, JLabel label) {
-        label.setFont(getFont().deriveFont(PLAIN, 10F));
-        label.setForeground(WHITE);
         JPanel panel = new JPanel(new BorderLayout(1, 1));
+        label.setFont(panel.getFont().deriveFont(PLAIN, 10F));
+        label.setForeground(WHITE);
         panel.setPreferredSize(new Dimension(45, 28));
         panel.setBackground(LIGHT_GREY);
         JLabel titleLabel = new JLabel(title, JLabel.CENTER);
-        titleLabel.setFont(getFont().deriveFont(PLAIN, 10F));
+        titleLabel.setFont(panel.getFont().deriveFont(PLAIN, 10F));
         titleLabel.setForeground(WHITE);
         JPanel dataPanel = new JPanel(new BorderLayout());
         dataPanel.setBackground(DARK_GREY);

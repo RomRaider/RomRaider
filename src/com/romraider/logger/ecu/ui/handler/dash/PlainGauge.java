@@ -46,7 +46,7 @@ import static java.awt.Font.PLAIN;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PlainGauge extends Gauge implements ActionListener {
+public class PlainGauge implements GaugeStyle, ActionListener {
     private static final String BLANK = "";
     private static final String ABOVE = "above";
     private static final String BELOW = "below";
@@ -68,12 +68,12 @@ public class PlainGauge extends Gauge implements ActionListener {
     private final LoggerData loggerData;
     private double max = Double.MIN_VALUE;
     private double min = Double.MAX_VALUE;
+    private JPanel panel = new JPanel();
 
     public PlainGauge(LoggerData loggerData) {
         checkNotNull(loggerData, "loggerData");
         this.loggerData = loggerData;
-        zeroText = format(0.0);
-        initGaugeLayout();
+        zeroText = format(loggerData, 0.0);
     }
 
     public void refreshTitle() {
@@ -110,22 +110,27 @@ public class PlainGauge extends Gauge implements ActionListener {
         }
     }
 
-    protected void initGaugeLayout() {
+    public void apply(JPanel panel) {
+        this.panel = panel;
+        doApply(panel);
+    }
+
+    protected void doApply(JPanel panel) {
         refreshTitle();
         resetValue();
-        setPreferredSize(new Dimension(236, 144));
-        setBackground(LIGHT_GREY);
-        setLayout(new BorderLayout(3, 0));
+        panel.setPreferredSize(new Dimension(236, 144));
+        panel.setBackground(LIGHT_GREY);
+        panel.setLayout(new BorderLayout(3, 0));
 
         // title
-        title.setFont(getFont().deriveFont(BOLD, 12F));
+        title.setFont(panel.getFont().deriveFont(BOLD, 12F));
         title.setForeground(WHITE);
-        add(title, NORTH);
+        panel.add(title, NORTH);
 
         // data panel
         JPanel data = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 1));
         data.setBackground(BLACK);
-        liveValueLabel.setFont(getFont().deriveFont(PLAIN, 40F));
+        liveValueLabel.setFont(panel.getFont().deriveFont(PLAIN, 40F));
         liveValueLabel.setForeground(WHITE);
         liveValuePanel.setBackground(LIGHT_GREY);
         liveValuePanel.setPreferredSize(new Dimension(140, 80));
@@ -156,13 +161,13 @@ public class PlainGauge extends Gauge implements ActionListener {
         warnFormPanel.setPreferredSize(new Dimension(226, 34));
         warnFormPanel.setBackground(BLACK);
         warnFormPanel.setBorder(createLineBorder(LIGHT_GREY, 1));
-        warnCheckBox.setFont(getFont().deriveFont(PLAIN, 10F));
+        warnCheckBox.setFont(panel.getFont().deriveFont(PLAIN, 10F));
         warnCheckBox.setBackground(BLACK);
         warnCheckBox.setForeground(LIGHTER_GREY);
         warnCheckBox.setSelected(false);
         warnCheckBox.addActionListener(this);
         warnType.setPreferredSize(new Dimension(60, 20));
-        warnType.setFont(getFont().deriveFont(PLAIN, 10F));
+        warnType.setFont(panel.getFont().deriveFont(PLAIN, 10F));
         warnType.setBackground(BLACK);
         warnType.setForeground(LIGHTER_GREY);
         warnTextField.setColumns(4);
@@ -175,18 +180,18 @@ public class PlainGauge extends Gauge implements ActionListener {
         warnPanel.add(warnFormPanel);
 
         // add panels
-        add(data, CENTER);
-        add(warnPanel, SOUTH);
+        panel.add(data, CENTER);
+        panel.add(warnPanel, SOUTH);
     }
 
     private JPanel buildMaxMinPanel(String title, JLabel label) {
-        label.setFont(getFont().deriveFont(PLAIN, 12F));
-        label.setForeground(WHITE);
         JPanel panel = new JPanel(new BorderLayout(1, 1));
+        label.setFont(panel.getFont().deriveFont(PLAIN, 12F));
+        label.setForeground(WHITE);
         panel.setPreferredSize(new Dimension(60, 38));
         panel.setBackground(LIGHT_GREY);
         JLabel titleLabel = new JLabel(title, JLabel.CENTER);
-        titleLabel.setFont(getFont().deriveFont(BOLD, 12F));
+        titleLabel.setFont(panel.getFont().deriveFont(BOLD, 12F));
         titleLabel.setForeground(WHITE);
         JPanel dataPanel = new JPanel(new BorderLayout());
         dataPanel.setBackground(DARK_GREY);
@@ -197,7 +202,7 @@ public class PlainGauge extends Gauge implements ActionListener {
     }
 
     private void refreshValue(final double value) {
-        final String text = format(value);
+        final String text = format(loggerData, value);
         final int scaledValue = scaleForProgressBar(value);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -234,12 +239,12 @@ public class PlainGauge extends Gauge implements ActionListener {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 if (enabled) {
-                    setBackground(RED);
+                    panel.setBackground(RED);
                     liveValuePanel.setBackground(RED);
                     progressBar.setForeground(RED);
                     Speaker.say("Warning!");
                 } else {
-                    setBackground(LIGHT_GREY);
+                    panel.setBackground(LIGHT_GREY);
                     liveValuePanel.setBackground(LIGHT_GREY);
                     progressBar.setForeground(GREEN);
                 }
@@ -247,7 +252,7 @@ public class PlainGauge extends Gauge implements ActionListener {
         });
     }
 
-    private String format(double value) {
+    private String format(LoggerData loggerData, double value) {
         return loggerData.getSelectedConvertor().format(value);
     }
 
