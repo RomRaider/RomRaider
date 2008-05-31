@@ -46,26 +46,26 @@ import static java.awt.Font.PLAIN;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public final class PlainGauge extends Gauge implements ActionListener {
-    private static final Color RED = new Color(190, 30, 30);
-    private static final Color GREEN = new Color(34, 139, 34);
-    private static final Color DARK_GREY = new Color(40, 40, 40);
-    private static final Color LIGHT_GREY = new Color(56, 56, 56);
-    private static final Color LIGHTER_GREY = new Color(120, 120, 120);
+public class PlainGauge extends Gauge implements ActionListener {
     private static final String BLANK = "";
     private static final String ABOVE = "above";
     private static final String BELOW = "below";
+    protected static final Color RED = new Color(190, 30, 30);
+    protected static final Color GREEN = new Color(34, 139, 34);
+    protected static final Color DARK_GREY = new Color(40, 40, 40);
+    protected static final Color LIGHT_GREY = new Color(56, 56, 56);
+    protected static final Color LIGHTER_GREY = new Color(120, 120, 120);
+    protected final JPanel liveValuePanel = new JPanel(new BorderLayout());
+    protected final JLabel liveValueLabel = new JLabel(BLANK, JLabel.CENTER);
+    protected final JLabel maxLabel = new JLabel(BLANK, JLabel.CENTER);
+    protected final JLabel minLabel = new JLabel(BLANK, JLabel.CENTER);
+    protected final JLabel title = new JLabel(BLANK, JLabel.CENTER);
+    protected final JProgressBar progressBar = new JProgressBar(JProgressBar.VERTICAL);
+    protected final JCheckBox warnCheckBox = new JCheckBox("Warn");
+    protected final JComboBox warnType = new JComboBox(new Object[]{ABOVE, BELOW});
+    protected final JTextField warnTextField = new JTextField();
     private final String zeroText;
     private final LoggerData loggerData;
-    private final JPanel liveValuePanel = new JPanel(new BorderLayout());
-    private final JLabel liveValueLabel = new JLabel(BLANK, JLabel.CENTER);
-    private final JLabel maxLabel = new JLabel(BLANK, JLabel.CENTER);
-    private final JLabel minLabel = new JLabel(BLANK, JLabel.CENTER);
-    private final JLabel title = new JLabel(BLANK, JLabel.CENTER);
-    private final JProgressBar progressBar = new JProgressBar(JProgressBar.VERTICAL);
-    private final JCheckBox warnCheckBox = new JCheckBox("Warn");
-    private final JComboBox warnType = new JComboBox(new Object[]{ABOVE, BELOW});
-    private final JTextField warnTextField = new JTextField();
     private double max = Double.MIN_VALUE;
     private double min = Double.MAX_VALUE;
 
@@ -110,7 +110,7 @@ public final class PlainGauge extends Gauge implements ActionListener {
         }
     }
 
-    private void initGaugeLayout() {
+    protected void initGaugeLayout() {
         refreshTitle();
         resetValue();
         setPreferredSize(new Dimension(236, 144));

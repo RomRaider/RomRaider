@@ -43,6 +43,7 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
 
     public synchronized void registerData(LoggerData loggerData) {
         Gauge gauge = new PlainGauge(loggerData);
+//        Gauge gauge = new SmallGauge(loggerData);
         gauges.put(loggerData, gauge);
         dashboardPanel.add(gauge);
         repaintDashboardPanel();
