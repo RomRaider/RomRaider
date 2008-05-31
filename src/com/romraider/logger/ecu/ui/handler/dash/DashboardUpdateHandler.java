@@ -28,13 +28,14 @@ import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import static com.romraider.util.ThreadUtil.run;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import java.awt.Container;
 import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class DashboardUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
-    private final JPanel dashboardPanel;
     private final Map<LoggerData, Gauge> gauges = synchronizedMap(new HashMap<LoggerData, Gauge>());
+    private final JPanel dashboardPanel;
 
     public DashboardUpdateHandler(JPanel dashboardPanel) {
         this.dashboardPanel = dashboardPanel;
@@ -51,7 +52,8 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
         for (LoggerData loggerData : response.getData()) {
             Gauge gauge = gauges.get(loggerData);
             if (gauge != null) {
-                gauge.updateValue(response.getDataValue(loggerData));
+                double value = response.getDataValue(loggerData);
+                gauge.updateValue(value);
             }
         }
     }
@@ -84,11 +86,9 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
             public void run() {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        dashboardPanel.doLayout();
-                        for (Gauge gauge : gauges.values()) {
-                            gauge.doLayout();
-                            gauge.repaint();
-                        }
+                        Container parent = dashboardPanel.getParent();
+                        if (parent != null) parent.validate();
+                        else dashboardPanel.validate();
                         dashboardPanel.repaint();
                     }
                 });

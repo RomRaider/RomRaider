@@ -72,6 +72,7 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterListTable;
 import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.logger.ecu.ui.playback.PlaybackManagerImpl;
+import com.romraider.logger.ecu.ui.swing.layout.BetterFlowLayout;
 import com.romraider.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTab;
@@ -258,7 +259,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         liveDataUpdateHandler = new LiveDataUpdateHandler(dataTableModel);
         graphPanel = new JPanel(new BorderLayout(2, 2));
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
-        dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
+        dashboardPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
         mafUpdateHandler = new MafUpdateHandler();
         injectorUpdateHandler = new InjectorUpdateHandler();
@@ -848,7 +849,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         });
         panel.add(resetButton, NORTH);
-        panel.add(dashboardPanel, CENTER);
+        JScrollPane sp = new JScrollPane(dashboardPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        panel.add(sp, CENTER);
         return panel;
     }
 
