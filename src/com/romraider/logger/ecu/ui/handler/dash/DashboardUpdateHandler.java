@@ -26,24 +26,36 @@ import com.romraider.logger.ecu.definition.ConvertorUpdateListener;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import static com.romraider.util.ThreadUtil.run;
+import javax.swing.AbstractAction;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import javax.swing.JPanel;
+import static javax.swing.KeyStroke.getKeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.lang.reflect.Constructor;
 import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class DashboardUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
+    private static final Class[] STYLES = {PlainGauge.class, SmallGauge.class, NoFrillsGauge.class};
     private final Map<LoggerData, Gauge> gauges = synchronizedMap(new HashMap<LoggerData, Gauge>());
     private final JPanel dashboardPanel;
-    private boolean smallGauges;
+    private int styleIndex;
 
     public DashboardUpdateHandler(JPanel dashboardPanel) {
         this.dashboardPanel = dashboardPanel;
+        dashboardPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
+        dashboardPanel.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                toggleGaugeStyle();
+            }
+        });
     }
 
     public synchronized void registerData(final LoggerData loggerData) {
-        GaugeStyle style = getGaugeStyle(loggerData);
+        GaugeStyle style = getGaugeStyle(STYLES[styleIndex], loggerData);
         Gauge gauge = new Gauge(style);
         gauges.put(loggerData, gauge);
         dashboardPanel.add(gauge);
@@ -84,16 +96,26 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
     }
 
     public synchronized void toggleGaugeStyle() {
-        smallGauges = !smallGauges;
+        Class<? extends GaugeStyle> styleClass = getNextStyleClass();
         for (Map.Entry<LoggerData, Gauge> entry : gauges.entrySet()) {
-            GaugeStyle style = getGaugeStyle(entry.getKey());
+            GaugeStyle style = getGaugeStyle(styleClass, entry.getKey());
             entry.getValue().setGaugeStyle(style);
         }
         repaintDashboardPanel();
     }
 
-    private PlainGauge getGaugeStyle(LoggerData loggerData) {
-        return smallGauges ? new SmallGauge(loggerData) : new PlainGauge(loggerData);
+    private Class<? extends GaugeStyle> getNextStyleClass() {
+        styleIndex = styleIndex == STYLES.length - 1 ? 0 : styleIndex + 1;
+        return STYLES[styleIndex];
+    }
+
+    private GaugeStyle getGaugeStyle(Class<? extends GaugeStyle> styleClass, LoggerData loggerData) {
+        try {
+            Constructor<? extends GaugeStyle> constructor = styleClass.getDeclaredConstructor(LoggerData.class);
+            return constructor.newInstance(loggerData);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private void repaintDashboardPanel() {

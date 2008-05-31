@@ -873,13 +873,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JScrollPane sp = new JScrollPane(dashboardPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
         sp.getVerticalScrollBar().setUnitIncrement(40);
         panel.add(sp, CENTER);
-
-        panel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
-        panel.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                dashboardUpdateHandler.toggleGaugeStyle();
-            }
-        });
         return panel;
     }
 
