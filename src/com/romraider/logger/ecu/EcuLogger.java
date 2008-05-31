@@ -86,6 +86,7 @@ import com.romraider.util.ThreadUtil;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
+import javax.swing.AbstractAction;
 import static javax.swing.BorderFactory.createLoweredBevelBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -612,12 +613,30 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JComponent buildTabbedPane() {
-        tabbedPane.add("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel, dataTabExternalListTableModel), buildDataTab()));
-        tabbedPane.add("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()));
-        tabbedPane.add("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()));
+        addSplitPaneTab("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel, dataTabExternalListTableModel), buildDataTab()));
+        addSplitPaneTab("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()));
+        addSplitPaneTab("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()));
         tabbedPane.add("MAF", mafTab.getPanel());
         tabbedPane.add("Injector", injectorTab.getPanel());
         return tabbedPane;
+    }
+
+    private void addSplitPaneTab(String name, final JSplitPane splitPane) {
+        splitPane.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F2"), "toggleHideParams");
+        splitPane.getActionMap().put("toggleHideParams", new AbstractAction() {
+            private final int min = splitPane.getMinimumDividerLocation();
+            private int size = splitPane.getDividerLocation();
+
+            public void actionPerformed(ActionEvent e) {
+                int current = splitPane.getDividerLocation();
+                if (current <= min) splitPane.setDividerLocation(size);
+                else {
+                    splitPane.setDividerLocation(min);
+                    size = current;
+                }
+            }
+        });
+        tabbedPane.add(name, splitPane);
     }
 
     private JComponent buildParamListPane(ParameterListTableModel paramListTableModel, ParameterListTableModel switchListTableModel, ParameterListTableModel externalListTableModel) {
