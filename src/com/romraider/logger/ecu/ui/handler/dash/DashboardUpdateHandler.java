@@ -36,14 +36,15 @@ import java.util.Map;
 public final class DashboardUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
     private final Map<LoggerData, Gauge> gauges = synchronizedMap(new HashMap<LoggerData, Gauge>());
     private final JPanel dashboardPanel;
+    private boolean smallGauges;
 
     public DashboardUpdateHandler(JPanel dashboardPanel) {
         this.dashboardPanel = dashboardPanel;
     }
 
     public synchronized void registerData(final LoggerData loggerData) {
-        Gauge gauge = new Gauge(new PlainGauge(loggerData));
-//        final Gauge gauge = new Gauge(new SmallGauge(loggerData));
+        GaugeStyle style = getGaugeStyle(loggerData);
+        Gauge gauge = new Gauge(style);
         gauges.put(loggerData, gauge);
         dashboardPanel.add(gauge);
         repaintDashboardPanel();
@@ -80,6 +81,19 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
             gauge.resetValue();
             gauge.refreshTitle();
         }
+    }
+
+    public synchronized void toggleGaugeStyle() {
+        smallGauges = !smallGauges;
+        for (Map.Entry<LoggerData, Gauge> entry : gauges.entrySet()) {
+            GaugeStyle style = getGaugeStyle(entry.getKey());
+            entry.getValue().setGaugeStyle(style);
+        }
+        repaintDashboardPanel();
+    }
+
+    private PlainGauge getGaugeStyle(LoggerData loggerData) {
+        return smallGauges ? new SmallGauge(loggerData) : new PlainGauge(loggerData);
     }
 
     private void repaintDashboardPanel() {

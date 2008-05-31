@@ -622,7 +622,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void addSplitPaneTab(String name, final JSplitPane splitPane) {
-        splitPane.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F2"), "toggleHideParams");
+        splitPane.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         splitPane.getActionMap().put("toggleHideParams", new AbstractAction() {
             private final int min = splitPane.getMinimumDividerLocation();
             private int size = splitPane.getDividerLocation();
@@ -840,7 +840,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         });
         panel.add(resetButton, NORTH);
-        panel.add(new JScrollPane(new JTable(dataTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER), CENTER);
+        JScrollPane sp = new JScrollPane(new JTable(dataTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        sp.getVerticalScrollBar().setUnitIncrement(40);
+        panel.add(sp, CENTER);
         return panel;
     }
 
@@ -853,9 +855,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         });
         panel.add(resetButton, NORTH);
-        JScrollPane scrollPane = new JScrollPane(graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(40);
-        panel.add(scrollPane, CENTER);
+        JScrollPane sp = new JScrollPane(graphPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp.getVerticalScrollBar().setUnitIncrement(40);
+        panel.add(sp, CENTER);
         return panel;
     }
 
@@ -869,7 +871,15 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         });
         panel.add(resetButton, NORTH);
         JScrollPane sp = new JScrollPane(dashboardPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        sp.getVerticalScrollBar().setUnitIncrement(40);
         panel.add(sp, CENTER);
+
+        panel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
+        panel.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                dashboardUpdateHandler.toggleGaugeStyle();
+            }
+        });
         return panel;
     }
 

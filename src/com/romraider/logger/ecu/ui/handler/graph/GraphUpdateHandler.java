@@ -36,9 +36,12 @@ import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import static javax.swing.KeyStroke.getKeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import static java.awt.BorderLayout.CENTER;
@@ -70,7 +73,7 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
 
     public GraphUpdateHandler(final JPanel panel) {
         this.graphPanel = new JPanel(new SpringLayout());
-        JCheckBox combinedCheckbox = new JCheckBox("Combine Graphs", combinedChart);
+        final JCheckBox combinedCheckbox = new JCheckBox("Combine Graphs", combinedChart);
         combinedCheckbox.addActionListener(new CombinedActionListener(combinedCheckbox));
         JToggleButton playPauseButton = new JToggleButton("Pause Graphs");
         playPauseButton.addActionListener(new ActionListener() {
@@ -81,6 +84,12 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
                 } else {
                     startTime = startTime + (System.currentTimeMillis() - pauseStartTime);
                 }
+            }
+        });
+        panel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleCombineGraphs");
+        panel.getActionMap().put("toggleCombineGraphs", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                combinedCheckbox.doClick();
             }
         });
         JPanel controlPanel = new JPanel();
