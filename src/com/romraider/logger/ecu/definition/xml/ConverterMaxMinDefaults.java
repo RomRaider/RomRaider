@@ -64,6 +64,13 @@ public final class ConverterMaxMinDefaults {
         return DEFAULT;
     }
 
+    public static GaugeMinMax getMaxMin(String units) {
+        double min = getMin(units);
+        double max = getMax(units);
+        double step = getStep(units);
+        return new GaugeMinMax(min, max, step);
+    }
+
     private static void add(String units, double min, double max, double step) {
         String key = units.toLowerCase();
         GaugeMinMax value = new GaugeMinMax(min, max, step);

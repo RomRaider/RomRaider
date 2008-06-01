@@ -36,7 +36,7 @@ public class PsiExternalDataItem implements ExternalDataItem {
     }
 
     public String getUnits() {
-        return "lb/in^2";
+        return "psi";
     }
 
     public double getData() {

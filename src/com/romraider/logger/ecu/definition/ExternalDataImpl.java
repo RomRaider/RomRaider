@@ -22,7 +22,7 @@
 package com.romraider.logger.ecu.definition;
 
 import static com.romraider.logger.ecu.definition.EcuDataType.EXTERNAL;
-import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getDefault;
+import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMaxMin;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
@@ -58,7 +58,7 @@ public final class ExternalDataImpl implements ExternalData {
             }
 
             public GaugeMinMax getGaugeMinMax() {
-                return getDefault();
+                return getMaxMin(getUnits());
             }
         };
     }
