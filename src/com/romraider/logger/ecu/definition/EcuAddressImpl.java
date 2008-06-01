@@ -72,7 +72,6 @@ public final class EcuAddressImpl implements EcuAddress {
         for (int i = 0; i < addressLength; i++) {
             addresses.add(padAddress(intToHexString(start + i), startAddress.length()));
         }
-//        LOGGER.(startAddress + ":" + addressLength + " => " + addresses);
         return addresses.toArray(new String[addresses.size()]);
     }
 
