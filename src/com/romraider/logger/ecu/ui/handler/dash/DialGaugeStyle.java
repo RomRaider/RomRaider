@@ -91,6 +91,7 @@ public final class DialGaugeStyle implements GaugeStyle {
         DialValueIndicator dvi = new DialValueIndicator(0);
         plot.addLayer(dvi);
 
+        // FIX - Get gauge min/max from logger.xml (needs to be added per converter)
         StandardDialScale scale = new StandardDialScale(0.0, 100.0, 210.0, -240.0, 10.0, 5);
         scale.setTickRadius(0.88);
         scale.setTickLabelOffset(0.15);
