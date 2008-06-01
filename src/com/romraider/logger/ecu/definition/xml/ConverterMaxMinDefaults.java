@@ -18,8 +18,8 @@ public final class ConverterMaxMinDefaults {
         add("psi", -20.0, 40.0, 5.0);
         add("bar", -1.5, 3.0, 0.5);
         add("rpm", 0, 8000, 1000.0);
-        add("mph", 0.0, 200.0, 10.0);
-        add("kph", 0.0, 300.0, 10.0);
+        add("mph", 0.0, 200.0, 20.0);
+        add("kph", 0.0, 300.0, 20.0);
         add("degrees", -15, 60.0, 5.0);
         add("g/s", 0.0, 300.0, 10.0);
         add("v", 0.0, 20.0, 5.0);
