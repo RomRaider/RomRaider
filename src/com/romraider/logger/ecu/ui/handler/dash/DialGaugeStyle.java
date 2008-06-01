@@ -29,13 +29,13 @@ import static java.awt.Font.PLAIN;
 import java.awt.GradientPaint;
 import java.awt.Point;
 
-public final class DialGauge implements GaugeStyle {
+public final class DialGaugeStyle implements GaugeStyle {
     private final DefaultValueDataset dataset = new DefaultValueDataset(0.0);
     private final DialTextAnnotation unitsLabel = new DialTextAnnotation("");
     private final JFreeChart chart = buildChart(dataset, unitsLabel);
     private final LoggerData loggerData;
 
-    public DialGauge(LoggerData loggerData) {
+    public DialGaugeStyle(LoggerData loggerData) {
         checkNotNull(loggerData);
         this.loggerData = loggerData;
     }
@@ -43,14 +43,10 @@ public final class DialGauge implements GaugeStyle {
     public void apply(JPanel panel) {
         refreshTitle();
         resetValue();
-        int width = 200;
-        int height = 200;
         ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(width, height));
-        panel.setPreferredSize(new Dimension(width + 20, height + 20));
+        chartPanel.setPreferredSize(new Dimension(200, 220));
         panel.add(chartPanel);
     }
-
 
     public void refreshTitle() {
         chart.setTitle(loggerData.getName());

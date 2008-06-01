@@ -13,8 +13,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import static java.awt.Font.PLAIN;
 
-public final class SmallGauge extends PlainGauge {
-    public SmallGauge(LoggerData loggerData) {
+public final class SmallGaugeStyle extends PlainGaugeStyle {
+    public SmallGaugeStyle(LoggerData loggerData) {
         super(loggerData);
     }
 

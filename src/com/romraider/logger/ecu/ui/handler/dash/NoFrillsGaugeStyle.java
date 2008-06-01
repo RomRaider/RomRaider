@@ -11,8 +11,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import static java.awt.Font.PLAIN;
 
-public final class NoFrillsGauge extends PlainGauge {
-    public NoFrillsGauge(LoggerData loggerData) {
+public final class NoFrillsGaugeStyle extends PlainGaugeStyle {
+    public NoFrillsGaugeStyle(LoggerData loggerData) {
         super(loggerData);
     }
 

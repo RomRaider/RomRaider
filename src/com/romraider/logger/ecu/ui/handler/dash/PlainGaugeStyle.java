@@ -46,7 +46,7 @@ import static java.awt.Font.PLAIN;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PlainGauge implements GaugeStyle, ActionListener {
+public class PlainGaugeStyle implements GaugeStyle, ActionListener {
     private static final String BLANK = "";
     private static final String ABOVE = "above";
     private static final String BELOW = "below";
@@ -70,7 +70,7 @@ public class PlainGauge implements GaugeStyle, ActionListener {
     private double min = Double.MAX_VALUE;
     private JPanel panel = new JPanel();
 
-    public PlainGauge(LoggerData loggerData) {
+    public PlainGaugeStyle(LoggerData loggerData) {
         checkNotNull(loggerData, "loggerData");
         this.loggerData = loggerData;
         zeroText = format(loggerData, 0.0);
