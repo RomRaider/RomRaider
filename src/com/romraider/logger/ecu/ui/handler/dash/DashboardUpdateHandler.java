@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class DashboardUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
-    private static final Class[] STYLES = {PlainGauge.class, SmallGauge.class, NoFrillsGauge.class};
+    private static final Class[] STYLES = {PlainGauge.class, SmallGauge.class, NoFrillsGauge.class, DialGauge.class};
     private final Map<LoggerData, Gauge> gauges = synchronizedMap(new HashMap<LoggerData, Gauge>());
     private final JPanel dashboardPanel;
     private int styleIndex;

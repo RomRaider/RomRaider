@@ -109,8 +109,8 @@
                  classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
 
         <!-- jar file dependencies that have versions specified in their names -->
-        <property name="jar.jcommon" value="jcommon-1.0.11.jar"/>
-        <property name="jar.jfreechart" value="jfreechart-1.0.6.jar"/>
+        <property name="jar.jcommon" value="jcommon-1.0.12.jar"/>
+        <property name="jar.jfreechart" value="jfreechart-1.0.9.jar"/>
         <property name="jar.jama" value="jama-1.0.2.jar"/>
         <property name="jar.log4j" value="log4j-1.2.14.jar"/>
         <property name="jar.swing-layout" value="swing-layout-1.0.jar"/>
