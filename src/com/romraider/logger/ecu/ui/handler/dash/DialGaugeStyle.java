@@ -18,6 +18,7 @@ import org.jfree.data.general.DefaultValueDataset;
 import static org.jfree.ui.GradientPaintTransformType.VERTICAL;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import static java.awt.Color.GREEN;
 import static java.awt.Color.ORANGE;
@@ -49,16 +50,24 @@ public final class DialGaugeStyle implements GaugeStyle {
     }
 
     public void refreshTitle() {
-        chart.setTitle(loggerData.getName());
-        unitsLabel.setLabel(loggerData.getSelectedConvertor().getUnits());
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                chart.setTitle(loggerData.getName());
+                unitsLabel.setLabel(loggerData.getSelectedConvertor().getUnits());
+            }
+        });
     }
 
-    public void updateValue(double value) {
-        dataset.setValue(value);
+    public void updateValue(final double value) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                dataset.setValue(value);
+            }
+        });
     }
 
     public void resetValue() {
-        dataset.setValue(0);
+        updateValue(0.0);
     }
 
     private JFreeChart buildChart(DefaultValueDataset dataset, DialTextAnnotation unitsLabel) {
@@ -82,7 +91,7 @@ public final class DialGaugeStyle implements GaugeStyle {
         DialValueIndicator dvi = new DialValueIndicator(0);
         plot.addLayer(dvi);
 
-        StandardDialScale scale = new StandardDialScale();
+        StandardDialScale scale = new StandardDialScale(0.0, 100.0, 210.0, -240.0, 10.0, 5);
         scale.setTickRadius(0.88);
         scale.setTickLabelOffset(0.15);
         scale.setTickLabelFont(new Font("Dialog", PLAIN, 14));

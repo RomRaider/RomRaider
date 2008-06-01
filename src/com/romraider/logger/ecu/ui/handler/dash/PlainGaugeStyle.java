@@ -77,7 +77,11 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
     }
 
     public void refreshTitle() {
-        title.setText(loggerData.getName() + " (" + loggerData.getSelectedConvertor().getUnits() + ')');
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                title.setText(loggerData.getName() + " (" + loggerData.getSelectedConvertor().getUnits() + ')');
+            }
+        });
     }
 
     public void updateValue(double value) {
@@ -92,14 +96,18 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
     }
 
     public void resetValue() {
-        liveValueLabel.setText(zeroText);
-        max = Double.MIN_VALUE;
-        maxLabel.setText(zeroText);
-        min = Double.MAX_VALUE;
-        minLabel.setText(zeroText);
-        progressBar.setMinimum(scaleForProgressBar(min));
-        progressBar.setMaximum(scaleForProgressBar(max));
-        progressBar.setValue(scaleForProgressBar(min));
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                liveValueLabel.setText(zeroText);
+                max = Double.MIN_VALUE;
+                maxLabel.setText(zeroText);
+                min = Double.MAX_VALUE;
+                minLabel.setText(zeroText);
+                progressBar.setMinimum(scaleForProgressBar(min));
+                progressBar.setMaximum(scaleForProgressBar(max));
+                progressBar.setValue(scaleForProgressBar(min));
+            }
+        });
     }
 
     public void actionPerformed(ActionEvent e) {
