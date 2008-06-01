@@ -21,6 +21,7 @@
 
 package com.romraider.logger.ecu.definition;
 
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import static com.romraider.util.JEPUtil.evaluate;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
@@ -36,16 +37,19 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
     private final DecimalFormat format;
     private final Map<String, String> replaceMap;
     private final Map<String, ExpressionInfo> expressionInfoMap = synchronizedMap(new HashMap<String, ExpressionInfo>());
+    private final GaugeMinMax gaugeMinMax;
 
-    public EcuDerivedParameterConvertorImpl(String units, String expression, String format, Map<String, String> replaceMap) {
+    public EcuDerivedParameterConvertorImpl(String units, String expression, String format, Map<String, String> replaceMap, GaugeMinMax gaugeMinMax) {
         checkNotNullOrEmpty(units, "units");
         checkNotNullOrEmpty(expression, "expression");
         checkNotNullOrEmpty(format, "format");
         checkNotNull(replaceMap, "replaceMap");
+        checkNotNull(gaugeMinMax, "gaugeMinMax");
         this.units = units;
         this.expression = expression;
         this.format = new DecimalFormat(format);
         this.replaceMap = replaceMap;
+        this.gaugeMinMax = gaugeMinMax;
     }
 
     public double convert(byte[] bytes) {
@@ -67,6 +71,10 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
 
     public String getUnits() {
         return units;
+    }
+
+    public GaugeMinMax getGaugeMinMax() {
+        return gaugeMinMax;
     }
 
     public String format(double value) {

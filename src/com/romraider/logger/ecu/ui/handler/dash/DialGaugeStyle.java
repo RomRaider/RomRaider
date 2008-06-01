@@ -1,5 +1,6 @@
 package com.romraider.logger.ecu.ui.handler.dash;
 
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.LoggerData;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import org.jfree.chart.ChartPanel;
@@ -33,8 +34,8 @@ import java.awt.Point;
 public final class DialGaugeStyle implements GaugeStyle {
     private final DefaultValueDataset dataset = new DefaultValueDataset(0.0);
     private final DialTextAnnotation unitsLabel = new DialTextAnnotation("");
-    private final JFreeChart chart = buildChart(dataset, unitsLabel);
     private final LoggerData loggerData;
+    private JPanel panel;
 
     public DialGaugeStyle(LoggerData loggerData) {
         checkNotNull(loggerData);
@@ -42,20 +43,26 @@ public final class DialGaugeStyle implements GaugeStyle {
     }
 
     public void apply(JPanel panel) {
-        refreshTitle();
+        this.panel = panel;
         resetValue();
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(200, 220));
-        panel.add(chartPanel);
+        refreshChart(panel);
+    }
+
+    private void refreshChart(final JPanel panel) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JFreeChart chart = buildChart(dataset, unitsLabel);
+                ChartPanel chartPanel = new ChartPanel(chart);
+                chartPanel.setPreferredSize(new Dimension(200, 220));
+                panel.removeAll();
+                panel.add(chartPanel);
+                panel.revalidate();
+            }
+        });
     }
 
     public void refreshTitle() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                chart.setTitle(loggerData.getName());
-                unitsLabel.setLabel(loggerData.getSelectedConvertor().getUnits());
-            }
-        });
+        refreshChart(panel);
     }
 
     public void updateValue(final double value) {
@@ -67,13 +74,16 @@ public final class DialGaugeStyle implements GaugeStyle {
     }
 
     public void resetValue() {
-        updateValue(0.0);
+        EcuDataConvertor convertor = loggerData.getSelectedConvertor();
+        GaugeMinMax minMax = convertor.getGaugeMinMax();
+        double min = minMax.min;
+        updateValue(min);
     }
 
     private JFreeChart buildChart(DefaultValueDataset dataset, DialTextAnnotation unitsLabel) {
         DialPlot plot = new DialPlot(dataset);
         plot.setView(0.0, 0.0, 1.0, 1.0);
-        plot.setDataset(this.dataset);
+        plot.setDataset(dataset);
         DialFrame dialFrame = new StandardDialFrame();
         plot.setDialFrame(dialFrame);
 
@@ -86,29 +96,31 @@ public final class DialGaugeStyle implements GaugeStyle {
 
         unitsLabel.setFont(new Font("Dialog", BOLD, 14));
         unitsLabel.setRadius(0.7);
+        unitsLabel.setLabel(loggerData.getSelectedConvertor().getUnits());
         plot.addLayer(unitsLabel);
 
         DialValueIndicator dvi = new DialValueIndicator(0);
         plot.addLayer(dvi);
 
-        // FIX - Get gauge min/max from logger.xml (needs to be added per converter)
-        StandardDialScale scale = new StandardDialScale(0.0, 100.0, 210.0, -240.0, 10.0, 5);
+        EcuDataConvertor convertor = loggerData.getSelectedConvertor();
+        GaugeMinMax minMax = convertor.getGaugeMinMax();
+        StandardDialScale scale = new StandardDialScale(minMax.min, minMax.max, 210.0, -240.0, minMax.step, 5);
         scale.setTickRadius(0.88);
         scale.setTickLabelOffset(0.15);
         scale.setTickLabelFont(new Font("Dialog", PLAIN, 14));
         plot.addScale(0, scale);
 
-        StandardDialRange range = new StandardDialRange(75.0, 100.0, RED);
+        StandardDialRange range = new StandardDialRange(rangeLimit(minMax, 0.75), minMax.max, RED);
         range.setInnerRadius(0.52);
         range.setOuterRadius(0.55);
         plot.addLayer(range);
 
-        StandardDialRange range2 = new StandardDialRange(50.0, 75.0, ORANGE);
+        StandardDialRange range2 = new StandardDialRange(rangeLimit(minMax, 0.5), rangeLimit(minMax, 0.75), ORANGE);
         range2.setInnerRadius(0.52);
         range2.setOuterRadius(0.55);
         plot.addLayer(range2);
 
-        StandardDialRange range3 = new StandardDialRange(0.0, 50.0, GREEN);
+        StandardDialRange range3 = new StandardDialRange(minMax.min, rangeLimit(minMax, 0.5), GREEN);
         range3.setInnerRadius(0.52);
         range3.setOuterRadius(0.55);
         plot.addLayer(range3);
@@ -120,6 +132,13 @@ public final class DialGaugeStyle implements GaugeStyle {
         cap.setRadius(0.10);
         plot.setCap(cap);
 
-        return new JFreeChart(plot);
+        JFreeChart chart = new JFreeChart(plot);
+        chart.setTitle(loggerData.getName());
+
+        return chart;
+    }
+
+    private double rangeLimit(GaugeMinMax minMax, double fraction) {
+        return minMax.min + (minMax.max - minMax.min) * fraction;
     }
 }

@@ -21,6 +21,8 @@
 
 package com.romraider.logger.ecu.definition;
 
+import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getDefault;
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import static com.romraider.util.ByteUtil.asUnsignedInt;
 import static com.romraider.util.JEPUtil.evaluate;
 import static com.romraider.util.ParamChecker.checkNotNull;
@@ -38,12 +40,14 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
     private final int bit;
     private final boolean isFloat;
     private final Map<String, String> replaceMap;
+    private final GaugeMinMax gaugeMinMax;
 
     public EcuParameterConvertorImpl() {
-        this("Raw data", "x", "0", -1, false, new HashMap<String, String>());
+        this("Raw data", "x", "0", -1, false, new HashMap<String, String>(), getDefault());
     }
 
-    public EcuParameterConvertorImpl(String units, String expression, String format, int bit, boolean isFloat, Map<String, String> replaceMap) {
+    public EcuParameterConvertorImpl(String units, String expression, String format, int bit, boolean isFloat, Map<String, String> replaceMap,
+                                     GaugeMinMax gaugeMinMax) {
         checkNotNullOrEmpty(units, "units");
         checkNotNullOrEmpty(expression, "expression");
         checkNotNullOrEmpty(format, "format");
@@ -54,6 +58,7 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
         this.bit = bit;
         this.isFloat = isFloat;
         this.replaceMap = replaceMap;
+        this.gaugeMinMax = gaugeMinMax;
     }
 
     public double convert(byte[] bytes) {
@@ -68,6 +73,10 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
 
     public String getUnits() {
         return units;
+    }
+
+    public GaugeMinMax getGaugeMinMax() {
+        return gaugeMinMax;
     }
 
     public String format(double value) {

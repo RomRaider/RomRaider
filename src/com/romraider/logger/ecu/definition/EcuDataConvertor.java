@@ -21,6 +21,9 @@
 
 package com.romraider.logger.ecu.definition;
 
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
+
+
 public interface EcuDataConvertor {
 
     double convert(byte[] bytes);
@@ -28,5 +31,7 @@ public interface EcuDataConvertor {
     String format(double value);
 
     String getUnits();
+
+    GaugeMinMax getGaugeMinMax();
 
 }

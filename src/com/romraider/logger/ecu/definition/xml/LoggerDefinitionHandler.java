@@ -37,9 +37,15 @@ import com.romraider.logger.ecu.definition.EcuParameterImpl;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.EcuSwitchConvertorImpl;
 import com.romraider.logger.ecu.definition.EcuSwitchImpl;
+import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMax;
+import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMin;
+import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getStep;
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+import static java.lang.Double.parseDouble;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -110,6 +116,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String conversionExpression;
     private String conversionFormat;
     private String conversionStorageType;
+    private GaugeMinMax conversionGauge;
 
     public LoggerDefinitionHandler(String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(protocol, "protocol");
@@ -158,6 +165,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 conversionExpression = attributes.getValue(ATTR_EXPRESSION);
                 conversionFormat = attributes.getValue(ATTR_FORMAT);
                 conversionStorageType = attributes.getValue(ATTR_STORAGETYPE);
+                double gaugeMin = getConversionMin(attributes, conversionUnits);
+                double gaugeMax = getConversionMax(attributes, conversionUnits);
+                double gaugeStep = getConversionStep(attributes, conversionUnits);
+                conversionGauge = new GaugeMinMax(gaugeMin, gaugeMax, gaugeStep);
                 replaceMap = new HashMap<String, String>();
             } else if (TAG_REPLACE.equals(qName)) {
                 replaceMap.put(attributes.getValue(ATTR_VALUE), attributes.getValue(ATTR_WITH));
@@ -229,10 +240,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             } else if (TAG_CONVERSION.equals(qName)) {
                 if (derived) {
                     derivedConvertorList.add(new EcuDerivedParameterConvertorImpl(conversionUnits,
-                            conversionExpression, conversionFormat, replaceMap));
+                            conversionExpression, conversionFormat, replaceMap, conversionGauge));
                 } else {
                     convertorList.add(new EcuParameterConvertorImpl(conversionUnits, conversionExpression, conversionFormat, address.getBit(),
-                            FLOAT.equalsIgnoreCase(conversionStorageType), replaceMap));
+                            FLOAT.equalsIgnoreCase(conversionStorageType), replaceMap, conversionGauge));
                 }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
@@ -283,5 +294,23 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         } else {
             return false;
         }
+    }
+
+    private double getConversionMin(Attributes attributes, String units) {
+        String value = attributes.getValue("gauge_min");
+        if (!isNullOrEmpty(value)) return parseDouble(value);
+        return getMin(units);
+    }
+
+    private double getConversionMax(Attributes attributes, String units) {
+        String value = attributes.getValue("gauge_max");
+        if (!isNullOrEmpty(value)) return parseDouble(value);
+        return getMax(units);
+    }
+
+    private double getConversionStep(Attributes attributes, String units) {
+        String value = attributes.getValue("gauge_step");
+        if (!isNullOrEmpty(value)) return parseDouble(value);
+        return getStep(units);
     }
 }

@@ -22,8 +22,10 @@
 package com.romraider.logger.ecu.definition;
 
 import static com.romraider.logger.ecu.definition.EcuDataType.EXTERNAL;
+import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getDefault;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import java.text.DecimalFormat;
 import java.text.Format;
@@ -53,6 +55,10 @@ public final class ExternalDataImpl implements ExternalData {
 
             public String getUnits() {
                 return dataItem.getUnits();
+            }
+
+            public GaugeMinMax getGaugeMinMax() {
+                return getDefault();
             }
         };
     }

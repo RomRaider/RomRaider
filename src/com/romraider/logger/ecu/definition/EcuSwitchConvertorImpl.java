@@ -21,9 +21,11 @@
 
 package com.romraider.logger.ecu.definition;
 
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import static com.romraider.util.ParamChecker.checkBit;
 
 public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
+    private static final GaugeMinMax GAUGE_MIN_MAX = new GaugeMinMax(0.0, 1.0, 1.0);
     private final int bit;
 
     public EcuSwitchConvertorImpl(int bit) {
@@ -37,6 +39,10 @@ public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
 
     public String getUnits() {
         return "On/Off";
+    }
+
+    public GaugeMinMax getGaugeMinMax() {
+        return GAUGE_MIN_MAX;
     }
 
     public String format(double value) {
