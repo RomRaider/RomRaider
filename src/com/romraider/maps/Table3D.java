@@ -23,7 +23,7 @@ package com.romraider.maps;
 
 import com.romraider.Settings;
 import com.romraider.swing.TableFrame;
-import com.romraider.swing.VTextIcon;
+import com.romraider.swing.VerticalLabelUI;
 import com.romraider.util.AxisRange;
 import static com.romraider.util.ColorScaler.getScaledColor;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
@@ -205,9 +205,8 @@ public class Table3D extends Table {
         topPanel.add(new JLabel(name, JLabel.CENTER), BorderLayout.NORTH);
         topPanel.add(new JLabel(xAxis.getName() + " (" + xAxis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
 
-        JLabel yLabel = new JLabel();
-        VTextIcon icon = new VTextIcon(yLabel, yAxis.getName() + " (" + yAxis.getScale().getUnit() + ")", VTextIcon.ROTATE_LEFT);
-        yLabel.setIcon(icon);
+        JLabel yLabel = new JLabel(yAxis.getName() + " (" + yAxis.getScale().getUnit() + ")");
+        yLabel.setUI(new VerticalLabelUI(false));
         add(yLabel, BorderLayout.WEST);
 
         add(new JLabel(getScale().getUnit(), JLabel.CENTER), BorderLayout.SOUTH);
