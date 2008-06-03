@@ -624,7 +624,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void addSplitPaneTab(String name, final JSplitPane splitPane) {
         splitPane.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         splitPane.getActionMap().put("toggleHideParams", new AbstractAction() {
-            private final int min = splitPane.getMinimumDividerLocation();
+            private final int min = 1;
             private int size = splitPane.getDividerLocation();
 
             public void actionPerformed(ActionEvent e) {
