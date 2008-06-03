@@ -133,7 +133,7 @@ public final class TestSSMConnectionImpl implements SerialConnection {
             throw new SerialCommunicationException("*** TEST *** Unsupported request: " + asHex(request));
         }
         //LOGGER.("*** TEST *** Read bytes  = " + asHex(bytes));
-        sleep(500);
+        sleep(200);
     }
 
     public byte[] readAvailable() {

@@ -21,7 +21,7 @@ public final class ConverterMaxMinDefaults {
         add("mph", 0.0, 200.0, 20.0);
         add("kph", 0.0, 300.0, 20.0);
         add("degrees", -15, 60.0, 5.0);
-        add("g/s", 0.0, 300.0, 10.0);
+        add("g/s", 0.0, 300.0, 20.0);
         add("v", 0.0, 20.0, 5.0);
         add("ms", 0.0, 100.0, 10.0);
         add("a", 0.0, 20.0, 5.0);
