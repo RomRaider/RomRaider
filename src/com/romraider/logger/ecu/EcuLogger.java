@@ -626,8 +626,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JButton buildToggleGaugeStyleButton() {
         final JButton button = new JButton("Gauge Style");
         button.setUI(new VerticalButtonUI(false));
-        dashboardPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
-        dashboardPanel.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
+        button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
+        button.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 button.doClick();
             }
