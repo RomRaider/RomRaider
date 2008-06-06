@@ -75,8 +75,7 @@ import com.romraider.logger.ecu.ui.playback.PlaybackManagerImpl;
 import com.romraider.logger.ecu.ui.swing.layout.BetterFlowLayout;
 import com.romraider.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
-import com.romraider.logger.ecu.ui.swing.vertical.VerticalButtonUI;
-import com.romraider.logger.ecu.ui.swing.vertical.VerticalToggleButtonUI;
+import com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTab;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTabImpl;
 import com.romraider.logger.ecu.ui.tab.maf.MafTab;
@@ -624,8 +623,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private JButton buildToggleGaugeStyleButton() {
-        final JButton button = new JButton("Gauge Style");
-        button.setUI(new VerticalButtonUI(false));
+        final JButton button = new JButton();
+        VerticalTextIcon textIcon = new VerticalTextIcon(button, "Gauge Style", VerticalTextIcon.ROTATE_LEFT);
+        button.setIcon(textIcon);
+        button.setPreferredSize(new Dimension(25, 90));
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
         button.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
@@ -641,8 +642,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void addSplitPaneTab(String name, final JSplitPane splitPane, JComponent... extraControls) {
-        final JToggleButton toggleListButton = new JToggleButton("Parameter List", true);
-        toggleListButton.setUI(new VerticalToggleButtonUI(false));
+        final JToggleButton toggleListButton = new JToggleButton();
+        toggleListButton.setSelected(true);
+        VerticalTextIcon textIcon = new VerticalTextIcon(toggleListButton, "Parameter List", VerticalTextIcon.ROTATE_LEFT);
+        toggleListButton.setIcon(textIcon);
+        toggleListButton.setPreferredSize(new Dimension(25, 90));
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         toggleListButton.getActionMap().put("toggleHideParams", new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
