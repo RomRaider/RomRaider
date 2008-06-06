@@ -26,13 +26,9 @@ import com.romraider.logger.ecu.definition.ConvertorUpdateListener;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import static com.romraider.util.ThreadUtil.run;
-import javax.swing.AbstractAction;
-import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import javax.swing.JPanel;
-import static javax.swing.KeyStroke.getKeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
 import java.lang.reflect.Constructor;
 import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
@@ -46,12 +42,6 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
 
     public DashboardUpdateHandler(JPanel dashboardPanel) {
         this.dashboardPanel = dashboardPanel;
-        dashboardPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
-        dashboardPanel.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                toggleGaugeStyle();
-            }
-        });
     }
 
     public synchronized void registerData(final LoggerData loggerData) {

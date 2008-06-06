@@ -75,6 +75,7 @@ import com.romraider.logger.ecu.ui.playback.PlaybackManagerImpl;
 import com.romraider.logger.ecu.ui.swing.layout.BetterFlowLayout;
 import com.romraider.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
+import com.romraider.logger.ecu.ui.swing.vertical.VerticalButtonUI;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalToggleButtonUI;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTab;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTabImpl;
@@ -616,13 +617,30 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JComponent buildTabbedPane() {
         addSplitPaneTab("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel, dataTabExternalListTableModel), buildDataTab()));
         addSplitPaneTab("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()));
-        addSplitPaneTab("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()));
+        addSplitPaneTab("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()), buildToggleGaugeStyleButton());
         tabbedPane.add("MAF", mafTab.getPanel());
         tabbedPane.add("Injector", injectorTab.getPanel());
         return tabbedPane;
     }
 
-    private void addSplitPaneTab(String name, final JSplitPane splitPane) {
+    private JButton buildToggleGaugeStyleButton() {
+        final JButton button = new JButton("Gauge Style");
+        button.setUI(new VerticalButtonUI(false));
+        dashboardPanel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
+        dashboardPanel.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                button.doClick();
+            }
+        });
+        button.addActionListener(new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                dashboardUpdateHandler.toggleGaugeStyle();
+            }
+        });
+        return button;
+    }
+
+    private void addSplitPaneTab(String name, final JSplitPane splitPane, JComponent... extraControls) {
         final JToggleButton toggleListButton = new JToggleButton("Parameter List", true);
         toggleListButton.setUI(new VerticalToggleButtonUI(false));
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
@@ -645,11 +663,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         });
 
-        JPanel listControlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 1, 1));
-        listControlPanel.add(toggleListButton);
+        JPanel tabControlPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 1, 1));
+        tabControlPanel.setPreferredSize(new Dimension(25, 25));
+        tabControlPanel.add(toggleListButton);
+        for (JComponent control : extraControls) tabControlPanel.add(control);
 
         JPanel panel = new JPanel(new BorderLayout(0, 0));
-        panel.add(listControlPanel, BorderLayout.WEST);
+        panel.add(tabControlPanel, BorderLayout.WEST);
         panel.add(splitPane, BorderLayout.CENTER);
 
         tabbedPane.add(name, panel);

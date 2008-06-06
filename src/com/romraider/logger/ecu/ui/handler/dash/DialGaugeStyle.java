@@ -136,7 +136,7 @@ public class DialGaugeStyle implements GaugeStyle {
         db.setGradientPaintTransformer(new StandardGradientPaintTransformer(VERTICAL));
         plot.setBackground(db);
 
-        unitsLabel.setFont(new Font("Dialog", BOLD, 14));
+        unitsLabel.setFont(new Font("Dialog", BOLD, 15));
         unitsLabel.setRadius(0.7);
         unitsLabel.setLabel(loggerData.getSelectedConvertor().getUnits());
         plot.addLayer(unitsLabel);
