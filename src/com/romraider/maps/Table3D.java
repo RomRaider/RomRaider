@@ -22,8 +22,8 @@
 package com.romraider.maps;
 
 import com.romraider.Settings;
+import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.swing.TableFrame;
-import com.romraider.swing.VerticalLabelUI;
 import com.romraider.util.AxisRange;
 import static com.romraider.util.ColorScaler.getScaledColor;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;

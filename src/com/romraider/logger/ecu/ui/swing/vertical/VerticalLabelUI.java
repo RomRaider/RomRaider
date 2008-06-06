@@ -19,7 +19,7 @@
  *
  */
 
-package com.romraider.swing;
+package com.romraider.logger.ecu.ui.swing.vertical;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;

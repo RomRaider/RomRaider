@@ -75,6 +75,7 @@ import com.romraider.logger.ecu.ui.playback.PlaybackManagerImpl;
 import com.romraider.logger.ecu.ui.swing.layout.BetterFlowLayout;
 import com.romraider.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
+import com.romraider.logger.ecu.ui.swing.vertical.VerticalToggleButtonUI;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTab;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTabImpl;
 import com.romraider.logger.ecu.ui.tab.maf.MafTab;
@@ -622,21 +623,36 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void addSplitPaneTab(String name, final JSplitPane splitPane) {
-        splitPane.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
-        splitPane.getActionMap().put("toggleHideParams", new AbstractAction() {
+        final JToggleButton toggleListButton = new JToggleButton("Parameter List", true);
+        toggleListButton.setUI(new VerticalToggleButtonUI(false));
+        toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
+        toggleListButton.getActionMap().put("toggleHideParams", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                toggleListButton.doClick();
+            }
+        });
+        toggleListButton.addActionListener(new AbstractAction() {
             private final int min = 1;
             private int size = splitPane.getDividerLocation();
 
             public void actionPerformed(ActionEvent e) {
                 int current = splitPane.getDividerLocation();
-                if (current <= min) splitPane.setDividerLocation(size);
+                if (toggleListButton.isSelected()) splitPane.setDividerLocation(size);
                 else {
                     splitPane.setDividerLocation(min);
                     size = current;
                 }
             }
         });
-        tabbedPane.add(name, splitPane);
+
+        JPanel listControlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 1, 1));
+        listControlPanel.add(toggleListButton);
+
+        JPanel panel = new JPanel(new BorderLayout(0, 0));
+        panel.add(listControlPanel, BorderLayout.WEST);
+        panel.add(splitPane, BorderLayout.CENTER);
+
+        tabbedPane.add(name, panel);
     }
 
     private JComponent buildParamListPane(ParameterListTableModel paramListTableModel, ParameterListTableModel switchListTableModel, ParameterListTableModel externalListTableModel) {
