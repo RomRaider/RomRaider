@@ -76,6 +76,7 @@ import com.romraider.logger.ecu.ui.swing.layout.BetterFlowLayout;
 import com.romraider.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon;
+import static com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon.ROTATE_LEFT;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTab;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTabImpl;
 import com.romraider.logger.ecu.ui.tab.maf.MafTab;
@@ -624,7 +625,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private JButton buildToggleGaugeStyleButton() {
         final JButton button = new JButton();
-        VerticalTextIcon textIcon = new VerticalTextIcon(button, "Gauge Style", VerticalTextIcon.ROTATE_LEFT);
+        VerticalTextIcon textIcon = new VerticalTextIcon(button, "Gauge Style", ROTATE_LEFT);
         button.setIcon(textIcon);
         button.setPreferredSize(new Dimension(25, 90));
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
@@ -644,7 +645,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void addSplitPaneTab(String name, final JSplitPane splitPane, JComponent... extraControls) {
         final JToggleButton toggleListButton = new JToggleButton();
         toggleListButton.setSelected(true);
-        VerticalTextIcon textIcon = new VerticalTextIcon(toggleListButton, "Parameter List", VerticalTextIcon.ROTATE_LEFT);
+        VerticalTextIcon textIcon = new VerticalTextIcon(toggleListButton, "Parameter List", ROTATE_LEFT);
         toggleListButton.setIcon(textIcon);
         toggleListButton.setPreferredSize(new Dimension(25, 90));
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
@@ -673,8 +674,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         for (JComponent control : extraControls) tabControlPanel.add(control);
 
         JPanel panel = new JPanel(new BorderLayout(0, 0));
-        panel.add(tabControlPanel, BorderLayout.WEST);
-        panel.add(splitPane, BorderLayout.CENTER);
+        panel.add(tabControlPanel, WEST);
+        panel.add(splitPane, CENTER);
 
         tabbedPane.add(name, panel);
     }
