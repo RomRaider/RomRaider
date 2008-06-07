@@ -24,7 +24,6 @@ package com.romraider.io.port;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ThreadUtil.sleep;
 import gnu.io.CommPortIdentifier;
-import javax.swing.SwingUtilities;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -57,11 +56,11 @@ public final class SerialPortRefresher implements Runnable {
 
     private void refreshPortList() {
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    listener.refreshPortList(listSerialPorts(), defaultLoggerPort);
-                }
-            });
+//            SwingUtilities.invokeAndWait(new Runnable() {
+//                public void run() {
+            listener.refreshPortList(listSerialPorts(), defaultLoggerPort);
+//                }
+//            });
         } catch (Exception ignored) {
         }
     }
