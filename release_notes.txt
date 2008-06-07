@@ -1,4 +1,4 @@
-                      - RomRaider 0.5.0 Beta -
+                    - RomRaider 0.5.1 Beta RC1 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -34,20 +34,18 @@ documentation may be incomplete or out of date.
 
 
 
------------------------------
-- 0.5.0b Notes (5/1/2008) -
------------------------------
-This release includes minor fixes to the editor and major
-enhancements to the logger.
+-------------------------------
+- 0.5.1b RC1 Notes (6/7/2008) -
+-------------------------------
+This is the first release candidate before a full 0.5.1b release.
 
-
-
------------------------
-- 0.5.0b Known Issues -
------------------------
+---------------------------
+- 0.5.1b RC1 Known Issues -
+---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
 - Logger
+  - New gauge min/max/step limits incomplete (logger.xml)
   - ECU connections under Linux are flaky (start the logger after
       you've started the engine)
   - AEM UEGO support is a bit flaky
@@ -57,6 +55,17 @@ enhancements to the logger.
 --------------
 - Change Log -
 --------------
+
+0.5.1b RC1 (6/7/2008)
+---------------------
+
+--- Logger ---
+- Connection handling updated
+- User profile loading updated
+- Hide/show parameter list (F11) on data, graph, dash tabs
+- Switchable (F12) dash gauge styles
+- Scrollable dash pane
+
 
 0.5.0b (5/1/2008)
 -----------------
