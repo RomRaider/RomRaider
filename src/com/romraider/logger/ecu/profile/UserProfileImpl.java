@@ -36,20 +36,14 @@ public final class UserProfileImpl implements UserProfile {
     private final Map<String, UserProfileItem> params;
     private final Map<String, UserProfileItem> switches;
     private final Map<String, UserProfileItem> external;
-    private final String serialPort;
 
-    public UserProfileImpl(String serialPort, Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches, Map<String, UserProfileItem> external) {
+    public UserProfileImpl(Map<String, UserProfileItem> params, Map<String, UserProfileItem> switches, Map<String, UserProfileItem> external) {
         checkNotNull(params, "params");
         checkNotNull(switches, "switches");
         checkNotNull(external, "external");
-        this.serialPort = serialPort;
         this.params = params;
         this.switches = switches;
         this.external = external;
-    }
-
-    public String getSerialPort() {
-        return serialPort;
     }
 
     public boolean contains(LoggerData loggerData) {
@@ -78,9 +72,7 @@ public final class UserProfileImpl implements UserProfile {
             String defaultUnits = getUserProfileItem(loggerData).getUnits();
             if (defaultUnits != null && loggerData.getConvertors().length > 1) {
                 for (EcuDataConvertor convertor : loggerData.getConvertors()) {
-                    if (defaultUnits.equals(convertor.getUnits())) {
-                        return convertor;
-                    }
+                    if (defaultUnits.equals(convertor.getUnits())) return convertor;
                 }
                 throw new ConfigurationException("Unknown default units, '" + defaultUnits + "', specified for [" + loggerData.getId() + "] " + loggerData.getName());
             }
@@ -97,9 +89,6 @@ public final class UserProfileImpl implements UserProfile {
         builder.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>").append(NEW_LINE);
         builder.append("<!DOCTYPE profile SYSTEM \"profile.dtd\">").append(NEW_LINE).append(NEW_LINE);
         builder.append("<profile>").append(NEW_LINE);
-        if (!isNullOrEmpty(serialPort)) {
-            builder.append("    <serial port=\"").append(serialPort).append("\"/>").append(NEW_LINE);
-        }
         if (!params.isEmpty()) {
             builder.append("    <parameters>").append(NEW_LINE);
             appendLoggerDataElements(builder, "parameter", params, true);
@@ -123,18 +112,10 @@ public final class UserProfileImpl implements UserProfile {
         for (String id : dataMap.keySet()) {
             UserProfileItem item = dataMap.get(id);
             builder.append("        <").append(dataType).append(" id=\"").append(id).append("\"");
-            if (item.isLiveDataSelected()) {
-                builder.append(" livedata=\"selected\"");
-            }
-            if (item.isGraphSelected()) {
-                builder.append(" graph=\"selected\"");
-            }
-            if (item.isDashSelected()) {
-                builder.append(" dash=\"selected\"");
-            }
-            if (showUnits && !isNullOrEmpty(item.getUnits())) {
-                builder.append(" units=\"").append(item.getUnits()).append("\"");
-            }
+            if (item.isLiveDataSelected()) builder.append(" livedata=\"selected\"");
+            if (item.isGraphSelected()) builder.append(" graph=\"selected\"");
+            if (item.isDashSelected()) builder.append(" dash=\"selected\"");
+            if (showUnits && !isNullOrEmpty(item.getUnits())) builder.append(" units=\"").append(item.getUnits()).append("\"");
             builder.append("/>").append(NEW_LINE);
         }
     }
@@ -144,15 +125,10 @@ public final class UserProfileImpl implements UserProfile {
     }
 
     private Map<String, UserProfileItem> getMap(LoggerData loggerData) {
-        if (loggerData instanceof EcuParameter) {
-            return params;
-        } else if (loggerData instanceof EcuSwitch) {
-            return switches;
-        } else if (loggerData instanceof ExternalData) {
-            return external;
-        } else {
-            throw new UnsupportedOperationException("Unknown LoggerData type: " + loggerData.getClass());
-        }
+        if (loggerData instanceof EcuParameter) return params;
+        else if (loggerData instanceof EcuSwitch) return switches;
+        else if (loggerData instanceof ExternalData) return external;
+        else throw new UnsupportedOperationException("Unknown LoggerData type: " + loggerData.getClass());
     }
 
 }

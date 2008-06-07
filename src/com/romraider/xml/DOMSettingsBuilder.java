@@ -21,10 +21,10 @@
 
 package com.romraider.xml;
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import com.romraider.Settings;
 import com.romraider.swing.JProgressPane;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import javax.imageio.metadata.IIOMetadataNode;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -232,6 +232,11 @@ public final class DOMSettingsBuilder {
 
     private IIOMetadataNode buildLogger(Settings settings) {
         IIOMetadataNode loggerSettings = new IIOMetadataNode("logger");
+
+        // serial connection
+        IIOMetadataNode serial = new IIOMetadataNode("serial");
+        serial.setAttribute("port", settings.getLoggerPortDefault());
+        loggerSettings.appendChild(serial);
 
         // window maximized
         IIOMetadataNode maximized = new IIOMetadataNode("maximized");

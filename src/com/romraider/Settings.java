@@ -67,6 +67,7 @@ public class Settings implements Serializable {
     private int tableClickCount = 1; // number of clicks to open table
 
     private String loggerPort = "";
+    private String loggerPortDefault = "";
     private String loggerProtocol = "SSM";
     private String loggerConfigFilePath = "logger.xml";
     private String loggerProfileFilePath = "profile.xml";
@@ -313,6 +314,14 @@ public class Settings implements Serializable {
 
     public void setLoggerPort(String loggerPort) {
         this.loggerPort = loggerPort;
+    }
+
+    public String getLoggerPortDefault() {
+        return loggerPortDefault;
+    }
+
+    public void setLoggerPortDefault(String loggerPortDefault) {
+        this.loggerPortDefault = loggerPortDefault;
     }
 
     public String getLoggerProtocol() {

@@ -66,7 +66,7 @@ public final class UserProfileHandler extends DefaultHandler {
     }
 
     public UserProfile getUserProfile() {
-        return new UserProfileImpl(serialPort, params, switches, external);
+        return new UserProfileImpl(params, switches, external);
     }
 
     private UserProfileItem getUserProfileItem(Attributes attributes) {

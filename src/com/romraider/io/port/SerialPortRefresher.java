@@ -56,11 +56,14 @@ public final class SerialPortRefresher implements Runnable {
     }
 
     private void refreshPortList() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                listener.refreshPortList(listSerialPorts(), defaultLoggerPort);
-            }
-        });
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    listener.refreshPortList(listSerialPorts(), defaultLoggerPort);
+                }
+            });
+        } catch (Exception ignored) {
+        }
     }
 
     private Set<String> listSerialPorts() {

@@ -40,6 +40,7 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.ecu.external.ExternalDataSourceLoader;
@@ -49,6 +50,7 @@ import com.romraider.logger.ecu.profile.UserProfileImpl;
 import com.romraider.logger.ecu.profile.UserProfileItem;
 import com.romraider.logger.ecu.profile.UserProfileItemImpl;
 import com.romraider.logger.ecu.profile.UserProfileLoader;
+import static com.romraider.logger.ecu.profile.UserProfileLoader.BACKUP_PATH;
 import com.romraider.logger.ecu.profile.UserProfileLoaderImpl;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.DataRegistrationBrokerImpl;
@@ -75,6 +77,7 @@ import com.romraider.logger.ecu.ui.playback.PlaybackManagerImpl;
 import com.romraider.logger.ecu.ui.swing.layout.BetterFlowLayout;
 import com.romraider.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
+import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon;
 import static com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon.ROTATE_LEFT;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTab;
@@ -135,6 +138,7 @@ import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import static java.lang.System.currentTimeMillis;
 import java.util.ArrayList;
 import static java.util.Collections.sort;
 import java.util.HashMap;
@@ -204,7 +208,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private EcuInit ecuInit;
     private JToggleButton logToFileButton;
     private List<ExternalDataSource> externalDataSources;
-
     private List<EcuParameter> ecuParams;
 
     public EcuLogger(Settings settings) {
@@ -252,6 +255,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                             ecuIdLabel.setText(buildEcuInfoLabelText(ECU_ID_LABEL, ecuId));
                             LOGGER.info("Loading logger config for new ECU (ecuid: " + ecuId + ")...");
                             loadLoggerParams();
+                            loadUserProfile(settings.getLoggerProfileFilePath());
                         }
                     });
                 }
@@ -313,12 +317,18 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void startPortRefresherThread() {
-        SerialPortRefresher serialPortRefresher = new SerialPortRefresher(portsComboBox, settings.getLoggerPort());
+        SerialPortRefresher serialPortRefresher = new SerialPortRefresher(portsComboBox, settings.getLoggerPortDefault());
         runAsDaemon(serialPortRefresher);
         // wait until port refresher fully started before continuing
+        long start = currentTimeMillis();
         while (!serialPortRefresher.isStarted()) {
+            checkSerialPortRefresherTimeout(start);
             sleep(100);
         }
+    }
+
+    private void checkSerialPortRefresherTimeout(long start) {
+        if (currentTimeMillis() - start > 5000) throw new PortNotFoundException("Timeout while finding serial ports");
     }
 
     private void initUserInterface() {
@@ -390,14 +400,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void loadUserProfile(String profileFilePath) {
         try {
             UserProfileLoader profileLoader = new UserProfileLoaderImpl();
-            UserProfile profile = profileLoader.loadProfile(profileFilePath);
-            setSelectedPort(profile);
-            if (isLogging()) restartLogging();
+            String path = isNullOrEmpty(profileFilePath) ? UserProfileLoader.BACKUP_PATH : profileFilePath;
+            UserProfile profile = profileLoader.loadProfile(path);
             applyUserProfile(profile);
-            File profileFile = new File(profileFilePath);
-            if (profileFile.exists()) {
-                reportMessageInTitleBar("Profile: " + profileFile.getAbsolutePath());
-            }
+            File profileFile = new File(path);
+            if (profileFile.exists()) reportMessageInTitleBar("Profile: " + profileFile.getAbsolutePath());
         } catch (Exception e) {
             reportError(e);
         }
@@ -460,13 +467,6 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             LoggerData loggerData = row.getLoggerData();
             setDefaultUnits(profile, loggerData);
             paramListTableModel.selectParam(loggerData, isSelectedOnDashTab(profile, loggerData));
-        }
-    }
-
-    private void setSelectedPort(UserProfile profile) {
-        if (profile != null) {
-            settings.setLoggerPort(profile.getSerialPort());
-            portsComboBox.setSelectedItem(profile.getSerialPort());
         }
     }
 
@@ -578,7 +578,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 graphTabSwitchListTableModel.getParameterRows(), dashboardTabSwitchListTableModel.getParameterRows());
         Map<String, UserProfileItem> externalProfileItems = getProfileItems(dataTabExternalListTableModel.getParameterRows(),
                 graphTabExternalListTableModel.getParameterRows(), dashboardTabExternalListTableModel.getParameterRows());
-        return new UserProfileImpl((String) portsComboBox.getSelectedItem(), paramProfileItems, switchProfileItems, externalProfileItems);
+        return new UserProfileImpl(paramProfileItems, switchProfileItems, externalProfileItems);
     }
 
     private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows, List<ParameterRow> graphTabRows, List<ParameterRow> dashTabRows) {
@@ -948,9 +948,8 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void startLogging() {
-        String port = (String) portsComboBox.getSelectedItem();
+        String port = settings.getLoggerPort();
         if (isNullOrEmpty(port)) return;
-        settings.setLoggerPort(port);
         controller.start();
     }
 
@@ -987,19 +986,25 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         } catch (Exception e) {
             LOGGER.warn("Error stopping logger", e);
         } finally {
-            rememberWindowProperties();
             saveSettings();
+            backupCurrentProfile();
         }
     }
 
     private void saveSettings() {
-        new SettingsManagerImpl().save(settings);
-    }
-
-    private void rememberWindowProperties() {
+        settings.setLoggerPortDefault((String) portsComboBox.getSelectedItem());
         settings.setLoggerWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
         settings.setLoggerWindowSize(getSize());
         settings.setLoggerWindowLocation(getLocation());
+        new SettingsManagerImpl().save(settings);
+    }
+
+    private void backupCurrentProfile() {
+        try {
+            saveProfileToFile(getCurrentProfile(), new File(BACKUP_PATH));
+        } catch (Exception e) {
+            LOGGER.warn("Error backing up profile", e);
+        }
     }
 
     private void cleanUpUpdateHandlers() {

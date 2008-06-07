@@ -26,8 +26,6 @@ import com.romraider.logger.ecu.definition.LoggerData;
 
 public interface UserProfile {
 
-    String getSerialPort();
-
     boolean contains(LoggerData loggerData);
 
     boolean isSelectedOnLiveDataTab(LoggerData loggerData);

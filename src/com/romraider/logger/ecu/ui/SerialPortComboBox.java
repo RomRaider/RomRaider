@@ -70,10 +70,8 @@ public final class SerialPortComboBox extends JComboBox implements SerialPortRef
                 for (String port : ports) {
                     addItem(port);
                 }
-                if (selectedPort != null) {
-                    if (ports.contains(selectedPort)) {
-                        setSelectedItem(selectedPort);
-                    }
+                if (selectedPort != null && ports.contains(selectedPort)) {
+                    setSelectedItem(selectedPort);
                     settings.setLoggerPort(selectedPort);
                 } else {
                     setSelectedIndex(0);

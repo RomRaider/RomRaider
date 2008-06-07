@@ -213,7 +213,10 @@ public final class DOMSettingsUnmarshaller {
         for (int i = 0; i < nodes.getLength(); i++) {
             n = nodes.item(i);
 
-            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
+            if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
+                settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
                 settings.setLoggerWindowMaximized(unmarshallAttribute(n, "value", false));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("size")) {

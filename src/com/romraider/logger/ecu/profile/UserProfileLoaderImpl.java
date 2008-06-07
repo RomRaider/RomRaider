@@ -35,6 +35,7 @@ public final class UserProfileLoaderImpl implements UserProfileLoader {
 
     public UserProfile loadProfile(String userProfileFilePath) {
         checkNotNullOrEmpty(userProfileFilePath, "userProfileFilePath");
+        LOGGER.info("Loading profile: " + userProfileFilePath);
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(userProfileFilePath)));
             try {

@@ -22,5 +22,7 @@
 package com.romraider.logger.ecu.profile;
 
 public interface UserProfileLoader {
+    String BACKUP_PATH = "profile_backup.xml";
+
     UserProfile loadProfile(String filePath);
 }
