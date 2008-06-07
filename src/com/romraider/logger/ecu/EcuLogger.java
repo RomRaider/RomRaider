@@ -948,7 +948,9 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void startLogging() {
-        settings.setLoggerPort((String) portsComboBox.getSelectedItem());
+        String port = (String) portsComboBox.getSelectedItem();
+        if (isNullOrEmpty(port)) return;
+        settings.setLoggerPort(port);
         controller.start();
     }
 
