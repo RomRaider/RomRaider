@@ -392,6 +392,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             UserProfileLoader profileLoader = new UserProfileLoaderImpl();
             UserProfile profile = profileLoader.loadProfile(profileFilePath);
             setSelectedPort(profile);
+            if (isLogging()) restartLogging();
             applyUserProfile(profile);
             File profileFile = new File(profileFilePath);
             if (profileFile.exists()) {
