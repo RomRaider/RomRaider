@@ -19,44 +19,44 @@
                 <parameter id="P2" name="Coolant Temperature" desc="" ecubyteindex="8" ecubit="6">
                     <address>0x000008</address>
                     <conversions>
-                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
-                        <conversion units="C" expr="x-40" format="0"/>
+                        <conversion units="F" expr="32+9*(x-40)/5" format="0" gauge_min="0" gauge_max="240" gauge_step="30"/>
+                        <conversion units="C" expr="x-40" format="0" gauge_min="-20" gauge_max="120" gauge_step="20"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P3" name="A/F Correction #1" desc="" ecubyteindex="8" ecubit="5">
                     <address>0x000009</address>
                     <conversions>
-                        <conversion units="%" expr="(x-128)*100/128" format="0.00"/>
+                        <conversion units="%" expr="(x-128)*100/128" format="0.00" gauge_min="-20" gauge_max="20" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P4" name="A/F Learning #1" desc="" ecubyteindex="8" ecubit="4">
                     <address>0x00000A</address>
                     <conversions>
-                        <conversion units="%" expr="(x-128)*100/128" format="0.00"/>
+                        <conversion units="%" expr="(x-128)*100/128" format="0.00" gauge_min="-20" gauge_max="20" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P5" name="A/F Correction #2" desc="" ecubyteindex="8" ecubit="3">
                     <address>0x00000B</address>
                     <conversions>
-                        <conversion units="%" expr="(x-128)*100/128" format="0.00"/>
+                        <conversion units="%" expr="(x-128)*100/128" format="0.00" gauge_min="-20" gauge_max="20" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P6" name="A/F Learning #2" desc="" ecubyteindex="8" ecubit="2">
                     <address>0x00000C</address>
                     <conversions>
-                        <conversion units="%" expr="(x-128)*100/128" format="0.00"/>
+                        <conversion units="%" expr="(x-128)*100/128" format="0.00" gauge_min="-20" gauge_max="20" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P7" name="Manifold Absolute Pressure" desc="" ecubyteindex="8" ecubit="1">
                     <address>0x00000D</address>
                     <conversions>
-                        <conversion units="psi" expr="x*37/255" format="0.00"/>
-                        <conversion units="bar" expr="x*37/255/14.50377" format="0.000"/>
+                        <conversion units="psi" expr="x*37/255" format="0.00" gauge_min="-20" gauge_max="40" gauge_step="5"/>
+                        <conversion units="bar" expr="x*37/255/14.50377" format="0.000" gauge_min="-1.2" gauge_max="2.8" gauge_step="0.4"/>
                     </conversions>
                 </parameter>
 
@@ -78,22 +78,22 @@
                 <parameter id="P10" name="Ignition Total Timing" desc="" ecubyteindex="9" ecubit="6">
                     <address>0x000011</address>
                     <conversions>
-                        <conversion units="degrees" expr="(x-128)/2" format="0.00"/>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.00" gauge_min="20" gauge_max="60" gauge_step="10"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P11" name="Intake Air Temperature" desc="" ecubyteindex="9" ecubit="5">
                     <address>0x000012</address>
                     <conversions>
-                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
-                        <conversion units="C" expr="x-40" format="0"/>
+                        <conversion units="F" expr="32+9*(x-40)/5" format="0" gauge_min="0" gauge_max="140" gauge_step="20"/>
+                        <conversion units="C" expr="x-40" format="0" gauge_min="-20" gauge_max="60" gauge_step="10"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P12" name="Mass Airflow" desc="" ecubyteindex="9" ecubit="4">
                     <address length="2">0x000013</address>
                     <conversions>
-                        <conversion units="g/s" expr="x/100" format="0.00"/>
+                        <conversion units="g/s" expr="x/100" format="0.00" gauge_min="0" gauge_max="400" gauge_step="20"/>
                     </conversions>
                 </parameter>
 
@@ -128,7 +128,7 @@
                 <parameter id="P17" name="Battery Voltage" desc="" ecubyteindex="10" ecubit="7">
                     <address>0x00001C</address>
                     <conversions>
-                        <conversion units="V" expr="x*8/100" format="0.00"/>
+                        <conversion units="V" expr="x*8/100" format="0.00" gauge_min="0" gauge_max="20" gauge_step="2"/>
                     </conversions>
                 </parameter>
 
@@ -170,23 +170,23 @@
                 <parameter id="P23" name="Knock Correction Advance" desc="" ecubyteindex="10" ecubit="1">
                     <address>0x000022</address>
                     <conversions>
-                        <conversion units="degrees" expr="(x-128)/2" format="0.00"/>
+                        <conversion units="degrees" expr="(x-128)/2" format="0.00" gauge_min="-15" gauge_max="20" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P24" name="Atmospheric Pressure" desc="" ecubyteindex="10" ecubit="0">
                     <address>0x000023</address>
                     <conversions>
-                        <conversion units="psi" expr="x*37/255" format="0.00"/>
-                        <conversion units="bar" expr="x*37/255/14.50377" format="0.000"/>
+                        <conversion units="psi" expr="x*37/255" format="0.00" gauge_min="0" gauge_max="20" gauge_step="2"/>
+                        <conversion units="bar" expr="x*37/255/14.50377" format="0.000" gauge_min="0" gauge_max="1.5" gauge_step="0.1"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P25" name="Manifold Relative Pressure" desc="" ecubyteindex="11" ecubit="7">
                     <address>0x000024</address>
                     <conversions>
-                        <conversion units="psi" expr="(x-128)*37/255" format="0.00"/>
-                        <conversion units="bar" expr="(x-128)*37/255/14.50377" format="0.000"/>
+                        <conversion units="psi" expr="(x-128)*37/255" format="0.00" gauge_min="-30" gauge_max="30" gauge_step="5"/>
+                        <conversion units="bar" expr="(x-128)*37/255/14.50377" format="0.000" gauge_min="-2" gauge_max="2" gauge_step="0.4"/>
                     </conversions>
                 </parameter>
 
@@ -230,8 +230,8 @@
                 <parameter id="P31" name="Fuel Temperature" desc="" ecubyteindex="11" ecubit="1">
                     <address>0x00002A</address>
                     <conversions>
-                        <conversion units="F" expr="32+9*(x-40)/5" format="0"/>
-                        <conversion units="C" expr="x-40" format="0"/>
+                        <conversion units="F" expr="32+9*(x-40)/5" format="0" gauge_min="0" gauge_max="140" gauge_step="20"/>
+                        <conversion units="C" expr="x-40" format="0" gauge_min="-20" gauge_max="60" gauge_step="10"/>
                     </conversions>
                 </parameter>
 
@@ -350,14 +350,14 @@
                 <parameter id="P48" name="Intake VVT Advance Angle Right" desc="" ecubyteindex="14" ecubit="7">
                     <address>0x00003C</address>
                     <conversions>
-                        <conversion units="degrees" expr="x-50" format="0.00"/>
+                        <conversion units="degrees" expr="x-50" format="0.00" gauge_min="0" gauge_max="50" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P49" name="Intake VVT Advance Angle Left" desc="" ecubyteindex="14" ecubit="6">
                     <address>0x00003D</address>
                     <conversions>
-                        <conversion units="degrees" expr="x-50" format="0.00"/>
+                        <conversion units="degrees" expr="x-50" format="0.00" gauge_min="0" gauge_max="50" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
@@ -471,14 +471,14 @@
                 <parameter id="P65" name="A/F Correction #3" desc="" ecubyteindex="15" ecubit="3">
                     <address>0x0000D0</address>
                     <conversions>
-                        <conversion units="%" expr="(x-128)*100/128" format="0.00"/>
+                        <conversion units="%" expr="(x-128)*100/128" format="0.00" gauge_min="-20" gauge_max="20" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P66" name="A/F Learning #3" desc="" ecubyteindex="15" ecubit="2">
                     <address>0x0000D1</address>
                     <conversions>
-                        <conversion units="%" expr="(x-128)*100/128" format="0.00"/>
+                        <conversion units="%" expr="(x-128)*100/128" format="0.00" gauge_min="-20" gauge_max="20" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
@@ -572,8 +572,8 @@
                 <parameter id="P79" name="Exhaust Gas Temperature" desc="Exhaust gas temperature reading." ecubyteindex="40" ecubit="1">
                     <address>0x000106</address>
                     <conversions>
-                        <conversion units="F" expr="32+9*(x+40)" format="0"/>
-                        <conversion units="C" expr="(x+40)*5" format="0"/>
+                        <conversion units="F" expr="32+9*(x+40)" format="0" gauge_min="0" gauge_max="2000" gauge_step="200"/>
+                        <conversion units="C" expr="(x+40)*5" format="0" gauge_min="0" gauge_max="1000" gauge_step="100"/>
                     </conversions>
                 </parameter>
 
@@ -602,14 +602,14 @@
                 <parameter id="P83" name="Exhaust VVT Advance Angle Right" desc="" ecubyteindex="43" ecubit="7">
                     <address>0x000118</address>
                     <conversions>
-                        <conversion units="degrees" expr="x-50" format="0.00"/>
+                        <conversion units="degrees" expr="x-50" format="0.00" gauge_min="0" gauge_max="50" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
                 <parameter id="P84" name="Exhaust VVT Advance Angle Left" desc="" ecubyteindex="43" ecubit="6">
                     <address>0x000119</address>
                     <conversions>
-                        <conversion units="degrees" expr="x-50" format="0.00"/>
+                        <conversion units="degrees" expr="x-50" format="0.00" gauge_min="0" gauge_max="50" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
@@ -641,7 +641,7 @@
                     </conversions>
                 </parameter>
 
-                
+
                 <!-- Derived parameters must be specified after standard parameters or parsing of xml will fail!! -->
                 <!-- Be careful of cyclic dependencies! -->
 
@@ -674,8 +674,8 @@
                         <ref parameter="P24"/> <!-- Atmos. Pressure -->
                     </depends>
                     <conversions>
-                        <conversion units="psi" expr="[P7:psi]-[P24:psi]" format="0.00"/>
-                        <conversion units="bar" expr="[P7:bar]-[P24:bar]" format="0.000"/>
+                        <conversion units="psi" expr="[P7:psi]-[P24:psi]" format="0.00" gauge_min="-30" gauge_max="30" gauge_step="5"/>
+                        <conversion units="bar" expr="[P7:bar]-[P24:bar]" format="0.000" gauge_min="-2" gauge_max="2" gauge_step="0.4"/>
                     </conversions>
                 </parameter>
 
@@ -687,10 +687,10 @@
                         <ref parameter="P58"/> <!-- AFR-->
                     </depends>
                     <conversions>
-                        <conversion units="mpg (US)" expr="([P9:mph]/3600)/((P12/[P58:AFR])/2880)" format="0.00"/>
-                        <conversion units="mpg (UK)" expr="([P9:mph]/3600)/((P12/[P58:AFR])/3459)" format="0.00"/>
-                        <conversion units="km/l" expr="([P9:kph]/3600)/((P12/[P58:AFR])/761)" format="0.00"/>
-                        <conversion units="l/100km" expr="(3600/[P9:kph])*((P12/[P58:AFR])/761)*100" format="0.00"/>
+                        <conversion units="mpg (US)" expr="([P9:mph]/3600)/((P12/[P58:AFR])/2880)" format="0.00" gauge_min="0" gauge_max="60" gauge_step="5"/>
+                        <conversion units="mpg (UK)" expr="([P9:mph]/3600)/((P12/[P58:AFR])/3459)" format="0.00" gauge_min="0" gauge_max="60" gauge_step="5"/>
+                        <conversion units="km/l" expr="([P9:kph]/3600)/((P12/[P58:AFR])/761)" format="0.00" gauge_min="0" gauge_max="20" gauge_step="2"/>
+                        <conversion units="l/100km" expr="(3600/[P9:kph])*((P12/[P58:AFR])/761)*100" format="0.00" gauge_min="0" gauge_max="60" gauge_step="5"/>
                     </conversions>
                 </parameter>
 
@@ -1494,7 +1494,7 @@
 <address>0x20E98</address>
 </ecu>
 <conversions>
-<conversion units="status" expr="x+6" format="0" />
+<conversion units="status" expr="x+6" format="0" gauge_min="0" gauge_max="10" gauge_step="1"/>
 </conversions>
 </ecuparam>
 <ecuparam id="E4" name="Turbo Dynamics Integral Cumulative*" desc="Turbo dynamics integral cumulative wastegate duty correction.">
@@ -1604,7 +1604,7 @@
 <address length="2">0x20D36</address>
 </ecu>
 <conversions>
-<conversion units="absolute %" expr="(x*.00390625)-50" format="0.00" />
+<conversion units="absolute %" expr="(x*.00390625)-50" format="0.00" gauge_min="0" gauge_max="20" gauge_step="2" />
 </conversions>
 </ecuparam>
 <ecuparam id="E5" name="Boost Error*" desc="The difference between target boost and actual boost.">
@@ -1828,9 +1828,9 @@
 <address length="2">0x20D3C</address>
 </ecu>
 <conversions>
-<conversion units="psi" expr="(x-32768)*.01933677" format="0.00" />
-<conversion units="bar" expr="(x-32768)*.001333224" format="0.000" />
-<conversion units="mmHg" expr="(x-32768)" format="0" />
+<conversion units="psi" expr="(x-32768)*.01933677" format="0.00" gauge_min="-20" gauge_max="20" gauge_step="5" />
+<conversion units="bar" expr="(x-32768)*.001333224" format="0.000" gauge_min="-1.5" gauge_max="1.5" gauge_step="0.25" />
+<conversion units="mmHg" expr="(x-32768)" format="0" gauge_min="-1200" gauge_max="1200" gauge_step="200" />
 </conversions>
 </ecuparam>
 <ecuparam id="E6" name="Target Boost*" desc="Target boost map target after compensations are applied.">

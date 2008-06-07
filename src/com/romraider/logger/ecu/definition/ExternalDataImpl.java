@@ -28,7 +28,6 @@ import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import java.text.DecimalFormat;
-import java.text.Format;
 
 public final class ExternalDataImpl implements ExternalData {
     private final EcuDataConvertor[] convertors = new EcuDataConvertor[1];
@@ -43,7 +42,8 @@ public final class ExternalDataImpl implements ExternalData {
         this.dataSource = dataSource;
         id = createId(dataItem);
         convertors[0] = new EcuDataConvertor() {
-            Format format = new DecimalFormat("0.##");
+            private static final String FORMAT = "0.##";
+            private DecimalFormat format = new DecimalFormat(FORMAT);
 
             public double convert(byte[] bytes) {
                 return dataItem.getData();
@@ -59,6 +59,10 @@ public final class ExternalDataImpl implements ExternalData {
 
             public GaugeMinMax getGaugeMinMax() {
                 return getMaxMin(getUnits());
+            }
+
+            public String getFormat() {
+                return FORMAT;
             }
         };
     }

@@ -141,7 +141,10 @@ public class DialGaugeStyle implements GaugeStyle {
         unitsLabel.setLabel(loggerData.getSelectedConvertor().getUnits());
         plot.addLayer(unitsLabel);
 
+        DecimalFormat format = new DecimalFormat(loggerData.getSelectedConvertor().getFormat());
+
         DialValueIndicator dvi = new DialValueIndicator(0);
+        dvi.setNumberFormat(format);
         plot.addLayer(dvi);
 
         EcuDataConvertor convertor = loggerData.getSelectedConvertor();
@@ -150,7 +153,7 @@ public class DialGaugeStyle implements GaugeStyle {
         scale.setTickRadius(0.88);
         scale.setTickLabelOffset(0.15);
         scale.setTickLabelFont(new Font("Dialog", PLAIN, 12));
-        scale.setTickLabelFormatter(new DecimalFormat("0.0"));
+        scale.setTickLabelFormatter(format);
         plot.addScale(0, scale);
         plot.addScale(1, scale);
         plot.addScale(2, scale);

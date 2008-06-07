@@ -26,6 +26,7 @@ import static com.romraider.util.ParamChecker.checkBit;
 
 public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
     private static final GaugeMinMax GAUGE_MIN_MAX = new GaugeMinMax(0.0, 1.0, 1.0);
+    private static final String FORMAT = "0";
     private final int bit;
 
     public EcuSwitchConvertorImpl(int bit) {
@@ -43,6 +44,10 @@ public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
 
     public GaugeMinMax getGaugeMinMax() {
         return GAUGE_MIN_MAX;
+    }
+
+    public String getFormat() {
+        return FORMAT;
     }
 
     public String format(double value) {

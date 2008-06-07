@@ -87,6 +87,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_SEND_TIMEOUT = "send_timeout";
     private static final String ATTR_VALUE = "value";
     private static final String ATTR_WITH = "with";
+    private static final String ATTR_GAUGE_MIN = "gauge_min";
+    private static final String ATTR_GAUGE_MAX = "gauge_max";
+    private static final String ATTR_GAUGE_STEP = "gauge_step";
     private final String protocol;
     private final String fileLoggingControllerSwitchId;
     private final EcuInit ecuInit;
@@ -297,19 +300,19 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     }
 
     private double getConversionMin(Attributes attributes, String units) {
-        String value = attributes.getValue("gauge_min");
+        String value = attributes.getValue(ATTR_GAUGE_MIN);
         if (!isNullOrEmpty(value)) return parseDouble(value);
         return getMin(units);
     }
 
     private double getConversionMax(Attributes attributes, String units) {
-        String value = attributes.getValue("gauge_max");
+        String value = attributes.getValue(ATTR_GAUGE_MAX);
         if (!isNullOrEmpty(value)) return parseDouble(value);
         return getMax(units);
     }
 
     private double getConversionStep(Attributes attributes, String units) {
-        String value = attributes.getValue("gauge_step");
+        String value = attributes.getValue(ATTR_GAUGE_STEP);
         if (!isNullOrEmpty(value)) return parseDouble(value);
         return getStep(units);
     }

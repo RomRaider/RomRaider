@@ -19,9 +19,12 @@
 
 <!ELEMENT conversion ( replace* ) >
 <!ATTLIST conversion expr CDATA #REQUIRED >
-<!ATTLIST conversion format ( 0 | 0.0 | 0.00 | 0.000 ) #REQUIRED >
+<!ATTLIST conversion format ( 0 | 0.0 | 0.00 | 0.000 | 0.0000 ) #REQUIRED >
 <!ATTLIST conversion storagetype ( uint8 | uint16 | float ) #IMPLIED >
 <!ATTLIST conversion units CDATA #REQUIRED >
+<!ATTLIST conversion gauge_min CDATA #IMPLIED >
+<!ATTLIST conversion gauge_max CDATA #IMPLIED >
+<!ATTLIST conversion gauge_step CDATA #IMPLIED >
 
 <!ELEMENT conversions ( conversion+ ) >
 

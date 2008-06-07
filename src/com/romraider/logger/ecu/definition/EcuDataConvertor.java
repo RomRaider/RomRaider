@@ -34,4 +34,6 @@ public interface EcuDataConvertor {
 
     GaugeMinMax getGaugeMinMax();
 
+    String getFormat();
+
 }

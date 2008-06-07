@@ -79,6 +79,10 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
         return gaugeMinMax;
     }
 
+    public String getFormat() {
+        return format.toPattern();
+    }
+
     public String format(double value) {
         String formattedValue = format.format(value);
         if (replaceMap.containsKey(formattedValue)) {
