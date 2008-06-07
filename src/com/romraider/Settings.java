@@ -70,7 +70,7 @@ public class Settings implements Serializable {
     private String loggerPortDefault = "";
     private String loggerProtocol = "SSM";
     private String loggerConfigFilePath = "logger.xml";
-    private String loggerProfileFilePath = "profile.xml";
+    private String loggerProfileFilePath = "";
     private String loggerOutputDirPath = System.getProperty("user.home");
     private String fileLoggingControllerSwitchId = "S20"; // defogger switch by default
     private boolean fileLoggingControllerSwitchActive = true;

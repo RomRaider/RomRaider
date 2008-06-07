@@ -22,6 +22,7 @@
 package com.romraider.logger.ecu.ui.swing.menubar.util;
 
 import com.romraider.logger.ecu.profile.UserProfile;
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
 import java.io.File;
@@ -36,7 +37,7 @@ public final class FileHelper {
     }
 
     public static File getFile(String filePath) {
-        return filePath == null ? new File(USER_HOME_DIR) : new File(filePath);
+        return isNullOrEmpty(filePath) ? new File(USER_HOME_DIR) : new File(filePath);
     }
 
     public static JFileChooser getProfileFileChooser(File lastProfileFile) {

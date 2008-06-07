@@ -400,7 +400,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     public void loadUserProfile(String profileFilePath) {
         try {
             UserProfileLoader profileLoader = new UserProfileLoaderImpl();
-            String path = isNullOrEmpty(profileFilePath) ? UserProfileLoader.BACKUP_PATH : profileFilePath;
+            String path = isNullOrEmpty(profileFilePath) ? BACKUP_PATH : profileFilePath;
             UserProfile profile = profileLoader.loadProfile(path);
             applyUserProfile(profile);
             File profileFile = new File(path);
