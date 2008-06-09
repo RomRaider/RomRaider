@@ -918,6 +918,11 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         return panel;
     }
 
+    private void selectTab(int tabIndex) {
+        int count = tabbedPane.getComponentCount();
+        if (tabIndex >= 0 && tabIndex < count) tabbedPane.setSelectedIndex(tabIndex);
+    }
+
     public void windowOpened(WindowEvent windowEvent) {
     }
 
@@ -996,6 +1001,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         settings.setLoggerWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
         settings.setLoggerWindowSize(getSize());
         settings.setLoggerWindowLocation(getLocation());
+        settings.setLoggerSelectedTabIndex(tabbedPane.getSelectedIndex());
         new SettingsManagerImpl().save(settings);
     }
 
@@ -1029,9 +1035,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     public void reportMessageInTitleBar(String message) {
-        if (!isNullOrEmpty(message)) {
-            setTitle(message);
-        }
+        if (!isNullOrEmpty(message)) setTitle(message);
     }
 
     public void reportStats(final String message) {
@@ -1066,18 +1070,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         if (e != null) {
             LOGGER.error("Error occurred", e);
             String error = e.getMessage();
-            if (!isNullOrEmpty(error)) {
-                reportError(error);
-            } else {
-                reportError(e.toString());
-            }
+            if (!isNullOrEmpty(error)) reportError(error);
+            else reportError(e.toString());
         }
     }
 
     public void reportError(String error, Exception e) {
-        if (e != null) {
-            LOGGER.error(error, e);
-        }
+        if (e != null) LOGGER.error(error, e);
         reportError(error);
     }
 
@@ -1122,14 +1121,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         // set remaining window properties
         ecuLogger.pack();
         ecuLogger.setSize(settings.getLoggerWindowSize());
+        ecuLogger.selectTab(settings.getLoggerSelectedTabIndex());
         ecuLogger.setIconImage(new ImageIcon("./graphics/romraider-ico.gif").getImage());
         ecuLogger.addWindowListener(ecuLogger);
 
         // display the window
         ecuLogger.setLocation(settings.getLoggerWindowLocation());
-        if (settings.isLoggerWindowMaximized()) {
-            ecuLogger.setExtendedState(MAXIMIZED_BOTH);
-        }
+        if (settings.isLoggerWindowMaximized()) ecuLogger.setExtendedState(MAXIMIZED_BOTH);
         ecuLogger.setVisible(true);
     }
 }

@@ -227,6 +227,9 @@ public final class DOMSettingsUnmarshaller {
                 settings.setLoggerWindowLocation(new Point(unmarshallAttribute(n, "x", 150),
                         unmarshallAttribute(n, "y", 150)));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tabs")) {
+                settings.setLoggerSelectedTabIndex(unmarshallAttribute(n, "selected", 0));
+
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("profile")) {
                 settings.setLoggerProfileFilePath(unmarshallAttribute(n, "path", ""));
 

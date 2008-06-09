@@ -79,6 +79,7 @@ public class Settings implements Serializable {
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();
     private boolean loggerWindowMaximized = false;
+    private int loggerSelectedTabIndex = 0;
     private ConnectionProperties loggerConnectionProperties;
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
 
@@ -411,5 +412,13 @@ public class Settings implements Serializable {
 
     public void setLoggerEcuDefinitionMap(Map<String, EcuDefinition> loggerEcuDefinitionMap) {
         this.loggerEcuDefinitionMap = loggerEcuDefinitionMap;
+    }
+
+    public void setLoggerSelectedTabIndex(int loggerSelectedTabIndex) {
+        this.loggerSelectedTabIndex = loggerSelectedTabIndex;
+    }
+
+    public int getLoggerSelectedTabIndex() {
+        return loggerSelectedTabIndex;
     }
 }

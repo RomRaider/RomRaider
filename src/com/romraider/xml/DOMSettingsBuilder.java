@@ -255,6 +255,11 @@ public final class DOMSettingsBuilder {
         location.setAttribute("y", String.valueOf(((int) settings.getLoggerWindowLocation().getY())));
         loggerSettings.appendChild(location);
 
+        // last tab index
+        IIOMetadataNode tabs = new IIOMetadataNode("tabs");
+        tabs.setAttribute("selected", String.valueOf(settings.getLoggerSelectedTabIndex()));
+        loggerSettings.appendChild(tabs);
+
         // profile path
         IIOMetadataNode profile = new IIOMetadataNode("profile");
         profile.setAttribute("path", settings.getLoggerProfileFilePath());
