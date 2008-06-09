@@ -59,12 +59,17 @@ This is the first release candidate before a full 0.5.1b release.
 0.5.1b RC1 (6/7/2008)
 ---------------------
 
+--- Editor ---
+- Vertical axis label restored on 3D tables
+
 --- Logger ---
 - Connection handling updated
 - User profile loading updated
 - Hide/show parameter list (F11) on data, graph, dash tabs
 - Switchable (F12) dash gauge styles
 - Scrollable dash pane
+- Latest data point on MAF and injector scaling tabs displayed
+    as a different colour.
 
 
 0.5.0b (5/1/2008)
