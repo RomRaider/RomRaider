@@ -129,6 +129,8 @@ import static java.awt.Color.RED;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -139,6 +141,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import static java.lang.System.currentTimeMillis;
+import static java.lang.System.getProperty;
 import java.util.ArrayList;
 import static java.util.Collections.sort;
 import java.util.HashMap;
@@ -1118,16 +1121,32 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         // set default close operation
         ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
 
-        // set remaining window properties
+        // set window properties
         ecuLogger.pack();
-        ecuLogger.setSize(settings.getLoggerWindowSize());
         ecuLogger.selectTab(settings.getLoggerSelectedTabIndex());
         ecuLogger.setIconImage(new ImageIcon("./graphics/romraider-ico.gif").getImage());
         ecuLogger.addWindowListener(ecuLogger);
 
-        // display the window
-        ecuLogger.setLocation(settings.getLoggerWindowLocation());
-        if (settings.isLoggerWindowMaximized()) ecuLogger.setExtendedState(MAXIMIZED_BOTH);
-        ecuLogger.setVisible(true);
+        if (displayFullScreen()) {
+            // display full screen
+            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice device = env.getDefaultScreenDevice();
+            JFrame frame = new JFrame(ecuLogger.getTitle());
+            frame.setIconImage(ecuLogger.getIconImage());
+            frame.setContentPane(ecuLogger.getContentPane());
+            frame.setUndecorated(true);
+            frame.setResizable(false);
+            device.setFullScreenWindow(frame);
+        } else {
+            // display window
+            ecuLogger.setSize(settings.getLoggerWindowSize());
+            ecuLogger.setLocation(settings.getLoggerWindowLocation());
+            if (settings.isLoggerWindowMaximized()) ecuLogger.setExtendedState(MAXIMIZED_BOTH);
+            ecuLogger.setVisible(true);
+        }
+    }
+
+    private static boolean displayFullScreen() {
+        return "true".equalsIgnoreCase(getProperty("logger.fullscreen"));
     }
 }
