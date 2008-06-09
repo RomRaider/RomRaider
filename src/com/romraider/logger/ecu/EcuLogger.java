@@ -163,6 +163,7 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
     private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU Logger";
+    private static final String ICON_PATH = "./graphics/romraider-ico.gif";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
@@ -1118,30 +1119,30 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private static void doCreateAndShowGui(int defaultCloseOperation, EcuLogger ecuLogger) {
         Settings settings = ecuLogger.getSettings();
 
-        // set default close operation
-        ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
-
         // set window properties
         ecuLogger.pack();
         ecuLogger.selectTab(settings.getLoggerSelectedTabIndex());
-        ecuLogger.setIconImage(new ImageIcon("./graphics/romraider-ico.gif").getImage());
-        ecuLogger.addWindowListener(ecuLogger);
 
         if (displayFullScreen()) {
             // display full screen
             GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice device = env.getDefaultScreenDevice();
             JFrame frame = new JFrame(ecuLogger.getTitle());
-            frame.setIconImage(ecuLogger.getIconImage());
+            frame.setIconImage(new ImageIcon(ICON_PATH).getImage());
             frame.setContentPane(ecuLogger.getContentPane());
+            frame.addWindowListener(ecuLogger);
+            frame.setDefaultCloseOperation(defaultCloseOperation);
             frame.setUndecorated(true);
             frame.setResizable(false);
             device.setFullScreenWindow(frame);
         } else {
-            // display window
+            // display in window
+            ecuLogger.addWindowListener(ecuLogger);
+            ecuLogger.setIconImage(new ImageIcon(ICON_PATH).getImage());
             ecuLogger.setSize(settings.getLoggerWindowSize());
             ecuLogger.setLocation(settings.getLoggerWindowLocation());
             if (settings.isLoggerWindowMaximized()) ecuLogger.setExtendedState(MAXIMIZED_BOTH);
+            ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
             ecuLogger.setVisible(true);
         }
     }
