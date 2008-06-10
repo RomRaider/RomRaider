@@ -63,7 +63,7 @@ public class ECUExec {
             else sendRomToOpenInstance(args[0]);
         } else {
             // open editor or logger
-            if (containsLoggerArg(args)) openLogger();
+            if (containsLoggerArg(args)) openLogger(args);
             else openEditor(args);
         }
     }
@@ -73,14 +73,16 @@ public class ECUExec {
     }
 
     private static boolean containsLoggerArg(String[] args) {
-        if (args.length == 0) return false;
-        return args[0].equals(START_LOGGER_ARG);
+        for (String arg : args) {
+            if (arg.equals(START_LOGGER_ARG)) return true;
+        }
+        return false;
     }
 
-    private static void openLogger() {
+    private static void openLogger(String[] args) {
         SettingsManager manager = new SettingsManagerImpl();
         Settings settings = manager.load();
-        startLogger(EXIT_ON_CLOSE, settings);
+        startLogger(EXIT_ON_CLOSE, settings, args);
     }
 
     private static void openRom(final ECUEditor editor, final String rom) {

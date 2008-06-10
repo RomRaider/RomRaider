@@ -141,7 +141,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import static java.lang.System.currentTimeMillis;
-import static java.lang.System.getProperty;
 import java.util.ArrayList;
 import static java.util.Collections.sort;
 import java.util.HashMap;
@@ -163,6 +162,7 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
     private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU Logger";
+    private static final String LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
     private static final String ICON_PATH = "./graphics/romraider-ico.gif";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
@@ -1097,33 +1097,39 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
 
     public static void startLogger(int defaultCloseOperation, ECUEditor ecuEditor) {
-        // instantiate the controlling class.
         final EcuLogger ecuLogger = new EcuLogger(ecuEditor);
-        createAndShowGui(defaultCloseOperation, ecuLogger);
+        createAndShowGui(defaultCloseOperation, ecuLogger, false);
     }
 
-    public static void startLogger(int defaultCloseOperation, Settings settings) {
-        // instantiate the controlling class.
-        final EcuLogger ecuLogger = new EcuLogger(settings);
-        createAndShowGui(defaultCloseOperation, ecuLogger);
+    public static void startLogger(int defaultCloseOperation, Settings settings, String... args) {
+        EcuLogger ecuLogger = new EcuLogger(settings);
+        boolean fullscreen = containsFullScreenArg(args);
+        createAndShowGui(defaultCloseOperation, ecuLogger, fullscreen);
     }
 
-    private static void createAndShowGui(final int defaultCloseOperation, final EcuLogger ecuLogger) {
+    private static boolean containsFullScreenArg(String... args) {
+        for (String arg : args) {
+            if (LOGGER_FULLSCREEN_ARG.equals(arg)) return true;
+        }
+        return false;
+    }
+
+    private static void createAndShowGui(final int defaultCloseOperation, final EcuLogger ecuLogger, final boolean fullscreen) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                doCreateAndShowGui(defaultCloseOperation, ecuLogger);
+                doCreateAndShowGui(defaultCloseOperation, ecuLogger, fullscreen);
             }
         });
     }
 
-    private static void doCreateAndShowGui(int defaultCloseOperation, EcuLogger ecuLogger) {
+    private static void doCreateAndShowGui(int defaultCloseOperation, EcuLogger ecuLogger, boolean fullscreen) {
         Settings settings = ecuLogger.getSettings();
 
         // set window properties
         ecuLogger.pack();
         ecuLogger.selectTab(settings.getLoggerSelectedTabIndex());
 
-        if (displayFullScreen()) {
+        if (fullscreen) {
             // display full screen
             GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice device = env.getDefaultScreenDevice();
@@ -1145,9 +1151,5 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
             ecuLogger.setVisible(true);
         }
-    }
-
-    private static boolean displayFullScreen() {
-        return "true".equalsIgnoreCase(getProperty("logger.fullscreen"));
     }
 }

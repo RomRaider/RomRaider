@@ -49,7 +49,7 @@ public final class EcuLoggerExec {
         Settings settings = manager.load();
 
         // start logger
-        EcuLogger.startLogger(EXIT_ON_CLOSE, settings);
+        EcuLogger.startLogger(EXIT_ON_CLOSE, settings, args);
     }
 
 }
