@@ -83,7 +83,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem openLogger = new JMenuItem("Launch ECU Logger...");
     private JMenuItem utecLogger = new JMenuItem("Launch UTEC Logger...");
 
-    private JMenu ramTuneMenu = new JMenu("RAMTune");
+    private JMenu ramTuneMenu = new JMenu("SSM");
     private JMenuItem launchRamTuneTestApp = new JMenuItem("Launch Test App...");
 
     private JMenu helpMenu = new JMenu("Help");

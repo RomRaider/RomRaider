@@ -441,7 +441,7 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
     public static void startTestApp(final int defaultCloseOperation) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("RAMTune - Test App");
+                RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("SSM Read/Write");
                 ramTuneTestApp.setIconImage(new ImageIcon("./graphics/romraider-ico.gif").getImage());
                 ramTuneTestApp.setDefaultCloseOperation(defaultCloseOperation);
                 ramTuneTestApp.addWindowListener(ramTuneTestApp);
