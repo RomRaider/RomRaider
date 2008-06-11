@@ -110,7 +110,6 @@ import javax.swing.JSeparator;
 import static javax.swing.JSeparator.VERTICAL;
 import javax.swing.JSplitPane;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
-import static javax.swing.JSplitPane.VERTICAL_SPLIT;
 import javax.swing.JTabbedPane;
 import static javax.swing.JTabbedPane.BOTTOM;
 import javax.swing.JTable;
@@ -687,15 +686,13 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private JComponent buildParamListPane(ParameterListTableModel paramListTableModel, ParameterListTableModel switchListTableModel, ParameterListTableModel externalListTableModel) {
         JScrollPane paramList = new JScrollPane(buildParamListTable(paramListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane externalList = new JScrollPane(buildParamListTable(externalListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JSplitPane subSplitPane = new JSplitPane(VERTICAL_SPLIT, paramList, externalList);
-        subSplitPane.setDividerSize(2);
-        subSplitPane.setDividerLocation(360);
-        JSplitPane splitPane = new JSplitPane(VERTICAL_SPLIT, subSplitPane, switchList);
-        splitPane.setDividerSize(2);
-        splitPane.setDividerLocation(410);
-        return splitPane;
+        JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        tabs.addTab("ECU Parameters", paramList);
+        tabs.addTab("ECU Switches", switchList);
+        tabs.addTab("External Sensors", externalList);
+        return tabs;
     }
 
     private JTable buildParamListTable(ParameterListTableModel tableModel) {
