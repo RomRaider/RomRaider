@@ -765,7 +765,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
         JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
         splitPane.setDividerSize(2);
-        splitPane.setDividerLocation(300);
+        splitPane.setDividerLocation(450);
         splitPane.addPropertyChangeListener(this);
         return splitPane;
     }
