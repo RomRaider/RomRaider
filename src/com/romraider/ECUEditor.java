@@ -107,7 +107,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         JScrollPane leftScrollPane = new JScrollPane(imageList,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
-        splitPane.setDividerSize(2);
+        splitPane.setDividerSize(3);
         splitPane.setDividerLocation(getSettings().getSplitPaneLocation());
         splitPane.addPropertyChangeListener(this);
 

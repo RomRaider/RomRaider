@@ -698,7 +698,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JTable buildParamListTable(ParameterListTableModel tableModel) {
         JTable paramListTable = new ParameterListTable(tableModel);
         changeColumnWidth(paramListTable, 0, 20, 55, 55);
-        changeColumnWidth(paramListTable, 2, 50, 250, 80);
+        changeColumnWidth(paramListTable, 2, 50, 250, 130);
         return paramListTable;
     }
 
@@ -762,7 +762,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
         JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
         splitPane.setDividerSize(2);
-        splitPane.setDividerLocation(450);
+        splitPane.setDividerLocation(500);
         splitPane.addPropertyChangeListener(this);
         return splitPane;
     }
@@ -800,7 +800,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private Component buildLogToFileButton() {
-        logToFileButton = new JToggleButton("Log to file");
+        logToFileButton = new JToggleButton("Log to file", new ImageIcon("./graphics/logger_log_to_file.png"));
         logToFileButton.setToolTipText("Start/stop file logging (F1)");
         logToFileButton.setPreferredSize(new Dimension(100, 25));
         logToFileButton.addActionListener(new ActionListener() {
@@ -830,10 +830,10 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
-        JButton resetConnectionButton = new JButton(new ImageIcon("./graphics/logger_restart.png"));
-        resetConnectionButton.setPreferredSize(new Dimension(25, 25));
-        resetConnectionButton.setToolTipText("Reset ECU Connection");
-        resetConnectionButton.addActionListener(new ActionListener() {
+        JButton reconnectButton = new JButton(new ImageIcon("./graphics/logger_restart.png"));
+        reconnectButton.setPreferredSize(new Dimension(25, 25));
+        reconnectButton.setToolTipText("Reconnect to ECU");
+        reconnectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     restartLogging();
@@ -842,7 +842,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 }
             }
         });
-        comboBoxPanel.add(resetConnectionButton);
+        comboBoxPanel.add(reconnectButton);
         JButton disconnectButton = new JButton(new ImageIcon("./graphics/logger_stop.png"));
         disconnectButton.setPreferredSize(new Dimension(25, 25));
         disconnectButton.setToolTipText("Disconnect from ECU");
@@ -855,7 +855,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
                 }
             }
         });
-        comboBoxPanel.add(resetConnectionButton);
+        comboBoxPanel.add(reconnectButton);
         comboBoxPanel.add(disconnectButton);
         comboBoxPanel.add(new JSeparator(VERTICAL));
         comboBoxPanel.add(buildLogToFileButton());
