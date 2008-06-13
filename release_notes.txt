@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.1 Beta RC1 -
+                    - RomRaider 0.5.1 Beta RC2 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,12 +35,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.1b RC1 Notes (6/7/2008) -
+- 0.5.1b RC2 Notes (6/14/2008) -
 -------------------------------
-This is the first release candidate before a full 0.5.1b release.
+This is the second release candidate before a full 0.5.1b release.
 
 ---------------------------
-- 0.5.1b RC1 Known Issues -
+- 0.5.1b RC2 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -55,6 +55,19 @@ This is the first release candidate before a full 0.5.1b release.
 --------------
 - Change Log -
 --------------
+
+0.5.1b RC2 (6/14/2008)
+---------------------
+
+--- Editor ---
+- Ramtune Test app menu item name changed to SSM
+
+--- Logger ---
+- Vertical control panel added for tab specific functions
+- Parameter list converted from split panes to tabs and widened
+    by default
+- Last open tab now remembered
+- Icon added to log to file button
 
 0.5.1b RC1 (6/7/2008)
 ---------------------
