@@ -46,11 +46,11 @@ public final class DOMSettingsUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("window")) {
                 settings = unmarshallWindow(n, settings);
 
-            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("options")) {
-                settings = unmarshallOptions(n, settings);
-
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("files")) {
                 settings = unmarshallFiles(n, settings);
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("options")) {
+                settings = unmarshallOptions(n, settings);
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tabledisplay")) {
                 settings = unmarshallTableDisplay(n, settings);
@@ -161,8 +161,8 @@ public final class DOMSettingsUnmarshaller {
                         unmarshallAttribute(n, "size", 12)));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("cellsize")) {
-                settings.setCellSize(new Dimension(unmarshallAttribute(n, "x", 42),
-                        unmarshallAttribute(n, "y", 18)));
+                settings.setCellSize(new Dimension(unmarshallAttribute(n, "width", 42),
+                        unmarshallAttribute(n, "height", 18)));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("colors")) {
                 settings = unmarshallColors(n, settings);
