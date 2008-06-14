@@ -69,6 +69,7 @@ This is the second release candidate before a full 0.5.1b release.
 - Last open tab now remembered
 - Icon added to log to file button
 - Fullscreen mode via startup parameter '-logger.fullscreen'
+- Fixed save/restore of cell height/width bug
 
 0.5.1b RC1 (6/7/2008)
 ---------------------
