@@ -26,5 +26,10 @@
 	<classpathentry kind="lib" path="lib/jdic/jdic.jar"/>
 	<classpathentry kind="lib" path="lib/logger/jfreechart-1.0.9.jar"/>
 	<classpathentry kind="lib" path="lib/logger/jcommon-1.0.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/logger/rxtx/win32/rxtxSerial.dll"/>
+	<classpathentry kind="lib" path="lib/Graph3d/windows/lib/j3dcore-ogl-cg.dll"/>
+	<classpathentry kind="lib" path="lib/Graph3d/windows/lib/j3dcore-ogl.dll"/>
+	<classpathentry kind="lib" path="lib/jdic/windows/x86/jdic.dll"/>
+	<classpathentry kind="lib" path="lib/jdic/windows/x86/tray.dll"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

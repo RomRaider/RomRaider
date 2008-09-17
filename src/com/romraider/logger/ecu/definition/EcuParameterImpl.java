@@ -36,6 +36,7 @@ public final class EcuParameterImpl implements EcuParameter {
     private final Set<ConvertorUpdateListener> listeners = new HashSet<ConvertorUpdateListener>();
     private int selectedConvertorIndex;
     private boolean selected;
+    private EcuParameterWarning warning;
 
     public EcuParameterImpl(String id, String name, String description, EcuAddress address, EcuDataConvertor[] convertors) {
         checkNotNullOrEmpty(name, "id");
@@ -48,6 +49,7 @@ public final class EcuParameterImpl implements EcuParameter {
         this.description = description;
         this.address = address;
         this.convertors = convertors;
+        this.warning = new EcuParameterWarning();
     }
 
     public String getId() {
@@ -97,7 +99,7 @@ public final class EcuParameterImpl implements EcuParameter {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
-
+    
     public void addConvertorUpdateListener(ConvertorUpdateListener listener) {
         checkNotNull(listener, "listener");
         listeners.add(listener);
@@ -107,5 +109,13 @@ public final class EcuParameterImpl implements EcuParameter {
         for (ConvertorUpdateListener listener : listeners) {
             listener.notifyConvertorUpdate(this);
         }
+    }
+    
+    public EcuParameterWarning getWarning() {
+    	return warning;
+    }
+    
+    public void setWarning(EcuParameterWarning warning) {
+    	this.warning = warning;
     }
 }

@@ -40,4 +40,9 @@ public interface LoggerData {
     boolean isSelected();
 
     void setSelected(boolean selected);
+    
+    EcuParameterWarning getWarning();
+    
+    void setWarning(EcuParameterWarning warning);
+   
 }

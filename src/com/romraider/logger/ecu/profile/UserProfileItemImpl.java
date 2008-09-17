@@ -21,17 +21,22 @@
 
 package com.romraider.logger.ecu.profile;
 
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
+
+
 public final class UserProfileItemImpl implements UserProfileItem {
     private final String units;
     private final boolean liveDataSelected;
     private final boolean graphSelected;
     private final boolean dashSelected;
+    private final EcuParameterWarning warning;
 
-    public UserProfileItemImpl(String units, boolean liveDataSelected, boolean graphSelected, boolean dashSelected) {
+    public UserProfileItemImpl(String units, boolean liveDataSelected, boolean graphSelected, boolean dashSelected, EcuParameterWarning warning) {
         this.units = units;
         this.liveDataSelected = liveDataSelected;
         this.graphSelected = graphSelected;
         this.dashSelected = dashSelected;
+        this.warning = warning;
     }
 
     public boolean isDashSelected() {
@@ -48,6 +53,10 @@ public final class UserProfileItemImpl implements UserProfileItem {
 
     public String getUnits() {
         return units;
+    }
+    
+    public EcuParameterWarning getWarning() {
+    	return warning;
     }
 
 }

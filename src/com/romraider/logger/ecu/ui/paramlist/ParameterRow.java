@@ -22,11 +22,14 @@
 package com.romraider.logger.ecu.ui.paramlist;
 
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
+
 import static com.romraider.util.ParamChecker.checkNotNull;
 
 public final class ParameterRow {
     private final LoggerData loggerData;
     private boolean selected = false;
+    private EcuParameterWarning warning;
 
     public ParameterRow(LoggerData loggerData) {
         checkNotNull(loggerData, "loggerData");
@@ -45,4 +48,14 @@ public final class ParameterRow {
         this.selected = selected;
         loggerData.setSelected(selected);
     }
+    
+    public EcuParameterWarning getWarning()
+    {
+    	return warning;
+    }
+    
+    public void setWarning(EcuParameterWarning warning) {
+    	this.warning = warning;
+    }
+
 }

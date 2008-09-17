@@ -21,8 +21,11 @@
 
 package com.romraider.logger.ecu.ui.handler.dash;
 
+import com.romraider.logger.ecu.definition.EcuParameterWarningType;
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.tts.Speaker;
+import com.romraider.swing.GaugeWarningSettingsDialog;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.JCheckBox;
@@ -45,11 +48,12 @@ import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class PlainGaugeStyle implements GaugeStyle, ActionListener {
-    private static final String BLANK = "";
-    private static final String ABOVE = "above";
-    private static final String BELOW = "below";
+
+public class PlainGaugeStyle implements GaugeStyle, ActionListener, MouseListener {
+	private static final String BLANK = "";
     protected static final Color RED = new Color(190, 30, 30);
     protected static final Color GREEN = new Color(34, 139, 34);
     protected static final Color DARK_GREY = new Color(40, 40, 40);
@@ -61,9 +65,6 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
     protected final JLabel minLabel = new JLabel(BLANK, JLabel.CENTER);
     protected final JLabel title = new JLabel(BLANK, JLabel.CENTER);
     protected final JProgressBar progressBar = new JProgressBar(JProgressBar.VERTICAL);
-    protected final JCheckBox warnCheckBox = new JCheckBox("Warn");
-    protected final JComboBox warnType = new JComboBox(new Object[]{ABOVE, BELOW});
-    protected final JTextField warnTextField = new JTextField();
     private final String zeroText;
     private final LoggerData loggerData;
     private double max = Double.MIN_VALUE;
@@ -74,6 +75,7 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
         checkNotNull(loggerData, "loggerData");
         this.loggerData = loggerData;
         zeroText = format(loggerData, 0.0);
+        liveValueLabel.addMouseListener(this);
     }
 
     public void refreshTitle() {
@@ -86,11 +88,11 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
 
     public void updateValue(double value) {
         refreshValue(value);
-        if (warnCheckBox.isSelected() && isValidWarnThreshold()) {
-            if (warnType.getSelectedItem() == ABOVE) {
-                setWarning(value >= getWarnThreshold());
-            } else if (warnType.getSelectedItem() == BELOW) {
-                setWarning(value <= getWarnThreshold());
+        if (loggerData.getWarning().getWarningType() != EcuParameterWarningType.WARN_NONE) {
+            if (loggerData.getWarning().getWarningType() == EcuParameterWarningType.WARN_ABOVE) {
+                setWarningFlag(value >= getWarnThreshold());
+            } else if (loggerData.getWarning().getWarningType() == EcuParameterWarningType.WARN_BELOW) {
+                setWarningFlag(value <= getWarnThreshold());
             }
         }
     }
@@ -111,11 +113,6 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == warnCheckBox) {
-            if (!warnCheckBox.isSelected()) {
-                setWarning(false);
-            }
-        }
     }
 
     public void apply(JPanel panel) {
@@ -169,22 +166,6 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
         warnFormPanel.setPreferredSize(new Dimension(226, 34));
         warnFormPanel.setBackground(BLACK);
         warnFormPanel.setBorder(createLineBorder(LIGHT_GREY, 1));
-        warnCheckBox.setFont(panel.getFont().deriveFont(PLAIN, 10F));
-        warnCheckBox.setBackground(BLACK);
-        warnCheckBox.setForeground(LIGHTER_GREY);
-        warnCheckBox.setSelected(false);
-        warnCheckBox.addActionListener(this);
-        warnType.setPreferredSize(new Dimension(60, 20));
-        warnType.setFont(panel.getFont().deriveFont(PLAIN, 10F));
-        warnType.setBackground(BLACK);
-        warnType.setForeground(LIGHTER_GREY);
-        warnTextField.setColumns(4);
-        warnTextField.setBackground(BLACK);
-        warnTextField.setForeground(LIGHTER_GREY);
-        warnTextField.setCaretColor(LIGHTER_GREY);
-        warnFormPanel.add(warnCheckBox);
-        warnFormPanel.add(warnType);
-        warnFormPanel.add(warnTextField);
         warnPanel.add(warnFormPanel);
 
         // add panels
@@ -230,20 +211,11 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
         });
     }
 
-    private boolean isValidWarnThreshold() {
-        try {
-            getWarnThreshold();
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     private double getWarnThreshold() {
-        return Double.parseDouble(warnTextField.getText());
+        return Double.valueOf(loggerData.getWarning().getWarningValue());
     }
 
-    private void setWarning(final boolean enabled) {
+    private void setWarningFlag(final boolean enabled) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 if (enabled) {
@@ -267,4 +239,27 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
     private int scaleForProgressBar(double value) {
         return (int) (value * 1000.0);
     }
+
+	public void mouseClicked(MouseEvent arg0) {
+		if(arg0.getButton() == MouseEvent.BUTTON1)
+		{
+			GaugeWarningSettingsDialog setDiag = new GaugeWarningSettingsDialog(loggerData.getWarning());
+			setDiag.setModal(true);
+			setDiag.setVisible(true);
+			loggerData.setWarning(setDiag.getWarningSettings());
+			setDiag.dispose();
+		}
+	}
+
+	public void mouseEntered(MouseEvent arg0) {
+	}
+
+	public void mouseExited(MouseEvent arg0) {
+	}
+
+	public void mousePressed(MouseEvent arg0) {
+	}
+
+	public void mouseReleased(MouseEvent arg0) {
+	}
 }

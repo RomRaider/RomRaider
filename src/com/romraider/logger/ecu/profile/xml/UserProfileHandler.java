@@ -21,10 +21,13 @@
 
 package com.romraider.logger.ecu.profile.xml;
 
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
+import com.romraider.logger.ecu.definition.EcuParameterWarningType;
 import com.romraider.logger.ecu.profile.UserProfile;
 import com.romraider.logger.ecu.profile.UserProfileImpl;
 import com.romraider.logger.ecu.profile.UserProfileItem;
 import com.romraider.logger.ecu.profile.UserProfileItemImpl;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import java.util.HashMap;
@@ -42,6 +45,10 @@ public final class UserProfileHandler extends DefaultHandler {
     private static final String ATTR_LIVE_DATA = "livedata";
     private static final String ATTR_GRAPH = "graph";
     private static final String ATTR_DASH = "dash";
+    private static final String ATTR_WARNING_TYPE = "warningtype";
+    private static final String ATTR_WARNING_VALUE = "warningvalue";
+    private static final String ATTR_WARNING_AUDIBLE = "warningaudible";
+    private static final String ATTR_WARNING_VISIBLE = "warningVisible";
     private String serialPort;
     private Map<String, UserProfileItem> params;
     private Map<String, UserProfileItem> switches;
@@ -74,7 +81,12 @@ public final class UserProfileHandler extends DefaultHandler {
                 attributes.getValue(ATTR_UNITS),
                 SELECTED.equalsIgnoreCase(attributes.getValue(ATTR_LIVE_DATA)),
                 SELECTED.equalsIgnoreCase(attributes.getValue(ATTR_GRAPH)),
-                SELECTED.equalsIgnoreCase(attributes.getValue(ATTR_DASH))
+                SELECTED.equalsIgnoreCase(attributes.getValue(ATTR_DASH)),
+                new EcuParameterWarning(
+                		EcuParameterWarningType.valueOf(attributes.getValue(ATTR_WARNING_TYPE)), 
+                		Double.valueOf(attributes.getValue(ATTR_WARNING_VALUE)).doubleValue(),
+                		Boolean.valueOf(attributes.getValue(ATTR_WARNING_AUDIBLE)).booleanValue(),
+                		Boolean.valueOf(attributes.getValue(ATTR_WARNING_VISIBLE)).booleanValue())
         );
     }
 

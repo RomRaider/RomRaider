@@ -24,6 +24,7 @@ package com.romraider.logger.ecu.ui.handler.dash;
 import com.romraider.logger.ecu.comms.query.Response;
 import com.romraider.logger.ecu.definition.ConvertorUpdateListener;
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import static com.romraider.util.ThreadUtil.run;
 import javax.swing.JPanel;

@@ -40,6 +40,7 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
@@ -469,6 +470,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         for (ParameterRow row : rows) {
             LoggerData loggerData = row.getLoggerData();
             setDefaultUnits(profile, loggerData);
+            setWarningDetails(profile, loggerData);
             paramListTableModel.selectParam(loggerData, isSelectedOnDashTab(profile, loggerData));
         }
     }
@@ -561,6 +563,12 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             }
         }
     }
+    
+    private void setWarningDetails(UserProfile profile, LoggerData loggerData) {
+        if (profile != null) {
+        	loggerData.setWarning(profile.getWarning(loggerData));
+        }
+    }
 
     private boolean isSelectedOnLiveDataTab(UserProfile profile, LoggerData loggerData) {
         return profile != null && profile.isSelectedOnLiveDataTab(loggerData);
@@ -592,7 +600,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             boolean dataTabSelected = dataTabRow.isSelected();
             boolean graphTabSelected = isEcuDataSelected(id, graphTabRows);
             boolean dashTabSelected = isEcuDataSelected(id, dashTabRows);
-            profileItems.put(id, new UserProfileItemImpl(units, dataTabSelected, graphTabSelected, dashTabSelected));
+            profileItems.put(id, new UserProfileItemImpl(units, dataTabSelected, graphTabSelected, dashTabSelected, new EcuParameterWarning()));
         }
         return profileItems;
     }
@@ -605,7 +613,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         }
         return false;
     }
-
+    
     private void initDataUpdateHandlers() {
         dataHandlerManager.addHandler(liveDataUpdateHandler);
         dataHandlerManager.addHandler(fileUpdateHandler);
@@ -699,6 +707,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         JTable paramListTable = new ParameterListTable(tableModel);
         changeColumnWidth(paramListTable, 0, 20, 55, 55);
         changeColumnWidth(paramListTable, 2, 50, 250, 130);
+        changeColumnWidth(paramListTable, 3, 50, 75, 50);
         return paramListTable;
     }
 

@@ -35,12 +35,14 @@ public final class ExternalDataImpl implements ExternalData {
     private final ExternalDataSource dataSource;
     private final String id;
     private boolean selected;
+    private EcuParameterWarning warning;
 
     public ExternalDataImpl(final ExternalDataItem dataItem, ExternalDataSource dataSource) {
         checkNotNull(dataItem, dataSource);
         this.dataItem = dataItem;
         this.dataSource = dataSource;
         id = createId(dataItem);
+        this.warning = new EcuParameterWarning();
         convertors[0] = new EcuDataConvertor() {
             private static final String FORMAT = "0.##";
             private DecimalFormat format = new DecimalFormat(FORMAT);
@@ -114,4 +116,13 @@ public final class ExternalDataImpl implements ExternalData {
             dataSource.disconnect();
         }
     }
+
+    public EcuParameterWarning getWarning() {
+    	return warning;
+    }
+    
+    public void setWarning(EcuParameterWarning warning) {
+    	this.warning = warning;
+    }
+
 }

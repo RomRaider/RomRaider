@@ -21,6 +21,8 @@
 
 package com.romraider.logger.ecu.ui.handler.dash;
 
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
@@ -28,7 +30,7 @@ import static java.awt.BorderLayout.CENTER;
 
 public final class Gauge extends JPanel {
     private GaugeStyle style;
-
+    
     public Gauge(GaugeStyle style) {
         super();
         setLayout(new BorderLayout(0, 0));
@@ -59,5 +61,5 @@ public final class Gauge extends JPanel {
             }
         });
     }
-
+    
 }

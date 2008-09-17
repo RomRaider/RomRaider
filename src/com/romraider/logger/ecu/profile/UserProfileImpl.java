@@ -23,6 +23,7 @@ package com.romraider.logger.ecu.profile;
 
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.EcuParameter;
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.LoggerData;
@@ -64,6 +65,10 @@ public final class UserProfileImpl implements UserProfile {
     public boolean isSelectedOnDashTab(LoggerData loggerData) {
         checkNotNull(loggerData, "loggerData");
         return contains(loggerData) && getUserProfileItem(loggerData).isDashSelected();
+    }
+    
+    public EcuParameterWarning getWarning(LoggerData loggerData) {
+    	return getUserProfileItem(loggerData).getWarning();
     }
 
     public EcuDataConvertor getSelectedConvertor(LoggerData loggerData) {
@@ -116,6 +121,10 @@ public final class UserProfileImpl implements UserProfile {
             if (item.isGraphSelected()) builder.append(" graph=\"selected\"");
             if (item.isDashSelected()) builder.append(" dash=\"selected\"");
             if (showUnits && !isNullOrEmpty(item.getUnits())) builder.append(" units=\"").append(item.getUnits()).append("\"");
+            builder.append(" warningtype=\"").append(item.getWarning().getWarningType()).append("\"");
+            builder.append(" warningvalue=\"").append(item.getWarning().getWarningValue()).append("\"");
+            builder.append(" warningaudible=\"").append(item.getWarning().isAudible()).append("\"");
+            builder.append(" warningvisible=\"").append(item.getWarning().isVisible()).append("\"");
             builder.append("/>").append(NEW_LINE);
         }
     }

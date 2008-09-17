@@ -21,6 +21,9 @@
 
 package com.romraider.logger.ecu.profile;
 
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
+
+
 public interface UserProfileItem {
 
     boolean isDashSelected();
@@ -30,5 +33,7 @@ public interface UserProfileItem {
     boolean isLiveDataSelected();
 
     String getUnits();
+    
+    EcuParameterWarning getWarning();
 
 }

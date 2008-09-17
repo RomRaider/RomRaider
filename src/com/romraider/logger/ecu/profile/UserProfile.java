@@ -23,6 +23,7 @@ package com.romraider.logger.ecu.profile;
 
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.definition.EcuParameterWarning;
 
 public interface UserProfile {
 
@@ -33,6 +34,8 @@ public interface UserProfile {
     boolean isSelectedOnGraphTab(LoggerData loggerData);
 
     boolean isSelectedOnDashTab(LoggerData loggerData);
+    
+    EcuParameterWarning getWarning(LoggerData loggerData);
 
     EcuDataConvertor getSelectedConvertor(LoggerData loggerData);
 

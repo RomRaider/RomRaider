@@ -36,6 +36,7 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
     private final Set<ConvertorUpdateListener> listeners = new HashSet<ConvertorUpdateListener>();
     private int selectedConvertorIndex;
     private boolean selected;
+    private EcuParameterWarning warning;
 
     public EcuDerivedParameterImpl(String id, String name, String description, EcuData[] ecuDatas,
                                    EcuDerivedParameterConvertor[] convertors) {
@@ -50,6 +51,7 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
         this.convertors = convertors;
         this.address = buildCombinedAddress(ecuDatas);
         setEcuDatas(ecuDatas);
+        this.warning = new EcuParameterWarning();
     }
 
     public String getId() {
@@ -128,4 +130,12 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
             listener.notifyConvertorUpdate(this);
         }
     }
+    public EcuParameterWarning getWarning() {
+    	return warning;
+    }
+    
+    public void setWarning(EcuParameterWarning warning) {
+    	this.warning = warning;
+    }
+
 }

@@ -34,6 +34,7 @@ public final class EcuSwitchImpl implements EcuSwitch {
     private int selectedConvertorIndex;
     private boolean fileLogController;
     private boolean selected;
+    private EcuParameterWarning warning;
 
     public EcuSwitchImpl(String id, String name, String description, EcuAddress address, EcuDataConvertor[] convertors) {
         checkNotNullOrEmpty(id, "id");
@@ -46,6 +47,7 @@ public final class EcuSwitchImpl implements EcuSwitch {
         this.description = description;
         this.address = address;
         this.convertors = convertors;
+        warning = new EcuParameterWarning();
     }
 
     public String getId() {
@@ -100,4 +102,13 @@ public final class EcuSwitchImpl implements EcuSwitch {
     public boolean isFileLogController() {
         return fileLogController;
     }
+    
+    public EcuParameterWarning getWarning() {
+    	return warning;
+    }
+    
+    public void setWarning(EcuParameterWarning warning) {
+    	this.warning = warning;
+    }
+
 }

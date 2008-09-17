@@ -21,6 +21,7 @@
 
 package com.romraider.logger.ecu.ui.paramlist;
 
+import com.romraider.logger.ecu.definition.EcuParameterWarningType;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import javax.swing.table.AbstractTableModel;
@@ -40,7 +41,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
 
     public ParameterListTableModel(DataRegistrationBroker broker, String dataType) {
         this.broker = broker;
-        columnNames = new String[]{"Selected?", dataType, "Units"};
+       	columnNames = new String[]{"Selected?", dataType, "Units", "Warn"};
     }
 
     public synchronized int getRowCount() {
@@ -69,6 +70,19 @@ public final class ParameterListTableModel extends AbstractTableModel {
             case 2:
                 LoggerData loggerData = paramRow.getLoggerData();
                 return loggerData.getConvertors().length > 1 ? loggerData : loggerData.getSelectedConvertor().getUnits();
+            case 3:
+            	String warnStr = "";
+            	LoggerData lData = paramRow.getLoggerData();
+            	if(lData.getWarning().getWarningType() == EcuParameterWarningType.WARN_NONE) {
+            		warnStr = "None";
+            	} else if(lData.getWarning().getWarningType() == EcuParameterWarningType.WARN_ABOVE) {
+            		warnStr = "+";
+            		warnStr += " " + lData.getWarning().getWarningValue();
+            	} else if(lData.getWarning().getWarningType() == EcuParameterWarningType.WARN_BELOW) {
+            		warnStr = "-";
+            		warnStr += " " + lData.getWarning().getWarningValue();
+            	}
+            	return warnStr;
             default:
                 return "Error!";
         }
