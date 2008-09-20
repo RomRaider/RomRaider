@@ -28,7 +28,7 @@ public final class TestJ2534 {
                     byte[] ecuInit = {(byte) 0x80, (byte) 0x10, (byte) 0xF0, (byte) 0x01, (byte) 0xBF, (byte) 0x40};
 
                     api.writeMsg(channelId, ecuInit);
-                    byte[] response = api.readMsg(channelId, 2000);
+                    byte[] response = api.readMsg(channelId, 2000L);
 
                     System.out.println("Request  = " + asHex(ecuInit));
                     System.out.println("Response = " + asHex(response));
