@@ -6,7 +6,7 @@ import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P3_MIN;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P4_MIN;
 import static com.romraider.io.j2534.op20.OpenPort20.FLAG_ISO9141_NO_CHECKSUM;
 import static com.romraider.io.j2534.op20.OpenPort20.PROTOCOL_ISO9141;
-import com.romraider.util.HexUtil;
+import static com.romraider.util.HexUtil.asHex;
 
 public final class TestJ2534 {
     private static final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
@@ -30,8 +30,8 @@ public final class TestJ2534 {
                     api.writeMsg(channelId, ecuInit);
                     byte[] response = api.readMsg(channelId);
 
-                    System.out.println("Request  = " + HexUtil.asHex(ecuInit));
-                    System.out.println("Response = " + HexUtil.asHex(response));
+                    System.out.println("Request  = " + asHex(ecuInit));
+                    System.out.println("Response = " + asHex(response));
 
                 } finally {
                     api.stopMsgFilter(channelId, msgId);
