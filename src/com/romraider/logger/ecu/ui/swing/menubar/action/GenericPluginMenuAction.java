@@ -21,8 +21,8 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
-import com.romraider.io.port.SerialPortDiscoverer;
-import com.romraider.io.port.SerialPortDiscovererImpl;
+import com.romraider.io.serial.port.SerialPortDiscoverer;
+import com.romraider.io.serial.port.SerialPortDiscovererImpl;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataSource;
 import gnu.io.CommPortIdentifier;

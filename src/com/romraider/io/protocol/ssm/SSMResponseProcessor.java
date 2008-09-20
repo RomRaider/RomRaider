@@ -19,18 +19,18 @@
  *
  */
 
-package com.romraider.io.protocol;
+package com.romraider.io.protocol.ssm;
 
-import static com.romraider.io.protocol.SSMChecksumCalculator.calculateChecksum;
-import static com.romraider.io.protocol.SSMProtocol.DIAGNOSTIC_TOOL_ID;
-import static com.romraider.io.protocol.SSMProtocol.ECU_ID;
-import static com.romraider.io.protocol.SSMProtocol.ECU_INIT_RESPONSE;
-import static com.romraider.io.protocol.SSMProtocol.HEADER;
-import static com.romraider.io.protocol.SSMProtocol.READ_ADDRESS_RESPONSE;
-import static com.romraider.io.protocol.SSMProtocol.READ_MEMORY_RESPONSE;
-import static com.romraider.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
-import static com.romraider.io.protocol.SSMProtocol.WRITE_ADDRESS_RESPONSE;
-import static com.romraider.io.protocol.SSMProtocol.WRITE_MEMORY_RESPONSE;
+import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
+import static com.romraider.io.protocol.ssm.SSMProtocol.DIAGNOSTIC_TOOL_ID;
+import static com.romraider.io.protocol.ssm.SSMProtocol.ECU_ID;
+import static com.romraider.io.protocol.ssm.SSMProtocol.ECU_INIT_RESPONSE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.HEADER;
+import static com.romraider.io.protocol.ssm.SSMProtocol.READ_ADDRESS_RESPONSE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.READ_MEMORY_RESPONSE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.RESPONSE_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_ADDRESS_RESPONSE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_MEMORY_RESPONSE;
 import com.romraider.logger.ecu.exception.InvalidResponseException;
 import static com.romraider.util.ByteUtil.asByte;
 import static com.romraider.util.HexUtil.asHex;

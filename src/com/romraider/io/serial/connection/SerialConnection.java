@@ -19,13 +19,18 @@
  *
  */
 
-package com.romraider.io.port;
+package com.romraider.io.serial.connection;
 
-import gnu.io.CommPortIdentifier;
-import java.util.List;
+public interface SerialConnection {
+    void write(byte[] bytes);
 
-public interface SerialPortDiscoverer {
+    int available();
 
-    List<CommPortIdentifier> listPorts();
+    void read(byte[] bytes);
 
+    byte[] readAvailable();
+
+    void readStaleData();
+
+    void close();
 }

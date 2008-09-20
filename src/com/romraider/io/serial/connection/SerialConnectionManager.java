@@ -19,12 +19,13 @@
  *
  */
 
-package com.romraider.io.port;
+package com.romraider.io.serial.connection;
 
-import java.util.Set;
+public interface SerialConnectionManager {
 
-public interface SerialPortRefreshListener {
+    void send(byte[] request, byte[] response, long sendTimeout);
 
-    void refreshPortList(Set<String> ports, String defaultSelectedPort);
+    byte[] send(byte[] bytes, long maxWait);
 
+    void close();
 }

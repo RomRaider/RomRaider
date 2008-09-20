@@ -22,8 +22,8 @@
 package com.romraider.logger.aem.io;
 
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.connection.SerialConnection;
-import com.romraider.io.connection.SerialConnectionImpl;
+import com.romraider.io.serial.connection.SerialConnection;
+import com.romraider.io.serial.connection.SerialConnectionImpl;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;

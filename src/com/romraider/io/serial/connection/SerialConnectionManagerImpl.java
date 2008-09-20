@@ -19,8 +19,9 @@
  *
  */
 
-package com.romraider.io.connection;
+package com.romraider.io.serial.connection;
 
+import com.romraider.io.connection.ConnectionProperties;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
@@ -36,9 +37,9 @@ public final class SerialConnectionManagerImpl implements SerialConnectionManage
     public SerialConnectionManagerImpl(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
-        // Use TestSSMConnectionImpl for testing!!
+        // Use TestSerialConnection for testing!!
         connection = new SerialConnectionImpl(portName, connectionProperties);
-//        connection = new TestSSMConnectionImpl(portName, connectionProperties);
+//        connection = new TestSerialConnection(portName, connectionProperties);
     }
 
     // Send request and wait for response with known length

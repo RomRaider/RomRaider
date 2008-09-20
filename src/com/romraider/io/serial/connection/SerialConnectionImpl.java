@@ -19,8 +19,9 @@
  *
  */
 
-package com.romraider.io.connection;
+package com.romraider.io.serial.connection;
 
+import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.logger.ecu.exception.NotConnectedException;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;

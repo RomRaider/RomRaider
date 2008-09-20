@@ -24,21 +24,21 @@ package com.romraider.io.protocol;
 import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
 
 public final class ProtocolFactory {
-    private static final ProtocolFactory INSTANCE = new ProtocolFactory();
-
-    public static ProtocolFactory getInstance() {
-        return INSTANCE;
-    }
-
     private ProtocolFactory() {
     }
 
-    public Protocol getProtocol(String protocolName) {
+    public static Protocol getProtocol(String protocol) {
+        String className = getClassName(protocol);
         try {
-            Class<?> cls = Class.forName(this.getClass().getPackage().getName() + "." + protocolName + "Protocol");
+            Class<?> cls = Class.forName(className);
             return (Protocol) cls.newInstance();
         } catch (Exception e) {
-            throw new UnsupportedProtocolException("'" + protocolName + "' is not a supported protocol", e);
+            throw new UnsupportedProtocolException("Protocol class for " + protocol + " not found: " + className);
         }
+    }
+
+    private static String getClassName(String protocol) {
+        Package pkg = ProtocolFactory.class.getPackage();
+        return pkg.getName() + "." + protocol.toLowerCase() + "." + protocol + "Protocol";
     }
 }

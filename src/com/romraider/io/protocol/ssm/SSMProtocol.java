@@ -19,13 +19,11 @@
  *
  */
 
-package com.romraider.io.protocol;
+package com.romraider.io.protocol.ssm;
 
 import com.romraider.io.connection.ConnectionProperties;
-import static com.romraider.io.protocol.SSMChecksumCalculator.calculateChecksum;
-import static com.romraider.io.protocol.SSMResponseProcessor.extractResponseData;
-import static com.romraider.io.protocol.SSMResponseProcessor.filterRequestFromResponse;
-import static com.romraider.io.protocol.SSMResponseProcessor.validateResponse;
+import com.romraider.io.protocol.Protocol;
+import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.SSMEcuInit;
 import com.romraider.logger.ecu.exception.InvalidResponseException;
@@ -88,19 +86,19 @@ public final class SSMProtocol implements Protocol {
     }
 
     public byte[] preprocessResponse(byte[] request, byte[] response) {
-        return filterRequestFromResponse(request, response);
+        return SSMResponseProcessor.filterRequestFromResponse(request, response);
     }
 
     public byte[] parseResponseData(byte[] processedResponse) {
         checkNotNullOrEmpty(processedResponse, "processedResponse");
-        return extractResponseData(processedResponse);
+        return SSMResponseProcessor.extractResponseData(processedResponse);
     }
 
     public void checkValidEcuInitResponse(byte[] processedResponse) {
         // response_header 3_unknown_bytes 5_ecu_id_bytes readable_params_switches... checksum
         // 80F01039FF A21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E10000000000000000 59
         checkNotNullOrEmpty(processedResponse, "processedResponse");
-        validateResponse(processedResponse);
+        SSMResponseProcessor.validateResponse(processedResponse);
         byte responseType = processedResponse[4];
         if (responseType != ECU_INIT_RESPONSE) {
             throw new InvalidResponseException("Unexpected ECU Init response type: " + asHex(new byte[]{responseType}));
@@ -121,7 +119,7 @@ public final class SSMProtocol implements Protocol {
     public void checkValidEcuResetResponse(byte[] processedResponse) {
         // 80 F0 10 02 F8 40 BA
         checkNotNullOrEmpty(processedResponse, "processedResponse");
-        validateResponse(processedResponse);
+        SSMResponseProcessor.validateResponse(processedResponse);
         byte responseType = processedResponse[4];
         if (responseType != WRITE_ADDRESS_RESPONSE || processedResponse[5] != (byte) 0x40) {
             throw new InvalidResponseException("Unexpected ECU Reset response: " + asHex(processedResponse));

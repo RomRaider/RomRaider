@@ -25,7 +25,7 @@ import com.romraider.ECUEditor;
 import com.romraider.Settings;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
-import com.romraider.io.port.SerialPortRefresher;
+import com.romraider.io.serial.port.SerialPortRefresher;
 import com.romraider.logger.ecu.comms.controller.LoggerController;
 import com.romraider.logger.ecu.comms.controller.LoggerControllerImpl;
 import com.romraider.logger.ecu.comms.query.EcuInit;

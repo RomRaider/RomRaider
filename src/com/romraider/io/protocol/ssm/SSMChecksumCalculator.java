@@ -19,7 +19,7 @@
  *
  */
 
-package com.romraider.io.protocol;
+package com.romraider.io.protocol.ssm;
 
 import static com.romraider.util.ByteUtil.asByte;
 import static com.romraider.util.ByteUtil.asInt;

@@ -19,7 +19,7 @@
  *
  */
 
-package com.romraider.io.port;
+package com.romraider.io.serial.port;
 
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;

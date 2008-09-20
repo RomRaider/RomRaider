@@ -22,7 +22,7 @@
 package com.romraider.logger.ecu.ui;
 
 import com.romraider.Settings;
-import com.romraider.io.port.SerialPortRefreshListener;
+import com.romraider.io.serial.port.SerialPortRefreshListener;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import javax.swing.JComboBox;
 import java.util.Set;

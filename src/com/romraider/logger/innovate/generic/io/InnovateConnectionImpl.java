@@ -22,8 +22,8 @@
 package com.romraider.logger.innovate.generic.io;
 
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.connection.SerialConnection;
-import com.romraider.io.connection.SerialConnectionImpl;
+import com.romraider.io.serial.connection.SerialConnection;
+import com.romraider.io.serial.connection.SerialConnectionImpl;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
 import static com.romraider.util.ByteUtil.matchOnes;
 import static com.romraider.util.ByteUtil.matchZeroes;

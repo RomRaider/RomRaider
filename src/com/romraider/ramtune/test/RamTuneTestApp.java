@@ -44,9 +44,9 @@ package com.romraider.ramtune.test;
 
 import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.port.SerialPortRefresher;
 import com.romraider.io.protocol.Protocol;
-import com.romraider.io.protocol.SSMProtocol;
+import com.romraider.io.protocol.ssm.SSMProtocol;
+import com.romraider.io.serial.port.SerialPortRefresher;
 import com.romraider.logger.ecu.ui.SerialPortComboBox;
 import com.romraider.ramtune.test.command.executor.CommandExecutor;
 import com.romraider.ramtune.test.command.executor.CommandExecutorImpl;

@@ -19,23 +19,24 @@
  *
  */
 
-package com.romraider.io.connection;
+package com.romraider.io.serial.connection;
 
-import static com.romraider.io.protocol.SSMChecksumCalculator.calculateChecksum;
-import static com.romraider.io.protocol.SSMProtocol.ADDRESS_SIZE;
-import static com.romraider.io.protocol.SSMProtocol.DATA_SIZE;
-import static com.romraider.io.protocol.SSMProtocol.DIAGNOSTIC_TOOL_ID;
-import static com.romraider.io.protocol.SSMProtocol.ECU_ID;
-import static com.romraider.io.protocol.SSMProtocol.ECU_INIT_COMMAND;
-import static com.romraider.io.protocol.SSMProtocol.HEADER;
-import static com.romraider.io.protocol.SSMProtocol.READ_ADDRESS_COMMAND;
-import static com.romraider.io.protocol.SSMProtocol.READ_ADDRESS_RESPONSE;
-import static com.romraider.io.protocol.SSMProtocol.READ_MEMORY_COMMAND;
-import static com.romraider.io.protocol.SSMProtocol.READ_MEMORY_RESPONSE;
-import static com.romraider.io.protocol.SSMProtocol.REQUEST_NON_DATA_BYTES;
-import static com.romraider.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
-import static com.romraider.io.protocol.SSMProtocol.WRITE_MEMORY_COMMAND;
-import static com.romraider.io.protocol.SSMProtocol.WRITE_MEMORY_RESPONSE;
+import com.romraider.io.connection.ConnectionProperties;
+import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
+import static com.romraider.io.protocol.ssm.SSMProtocol.ADDRESS_SIZE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.DATA_SIZE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.DIAGNOSTIC_TOOL_ID;
+import static com.romraider.io.protocol.ssm.SSMProtocol.ECU_ID;
+import static com.romraider.io.protocol.ssm.SSMProtocol.ECU_INIT_COMMAND;
+import static com.romraider.io.protocol.ssm.SSMProtocol.HEADER;
+import static com.romraider.io.protocol.ssm.SSMProtocol.READ_ADDRESS_COMMAND;
+import static com.romraider.io.protocol.ssm.SSMProtocol.READ_ADDRESS_RESPONSE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.READ_MEMORY_COMMAND;
+import static com.romraider.io.protocol.ssm.SSMProtocol.READ_MEMORY_RESPONSE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.REQUEST_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ssm.SSMProtocol.RESPONSE_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_MEMORY_COMMAND;
+import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_MEMORY_RESPONSE;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
 import static com.romraider.util.ByteUtil.asInt;
 import static com.romraider.util.HexUtil.asBytes;
@@ -47,8 +48,8 @@ import org.apache.log4j.Logger;
 import java.util.Random;
 
 @SuppressWarnings({"PointlessArithmeticExpression"})
-public final class TestSSMConnectionImpl implements SerialConnection {
-    private static final Logger LOGGER = Logger.getLogger(TestSSMConnectionImpl.class);
+public final class TestSerialConnection implements SerialConnection {
+    private static final Logger LOGGER = Logger.getLogger(TestSerialConnection.class);
     private static final Random RANDOM = new Random(System.currentTimeMillis());
     private static final String ECU_INIT_RESPONSE_01_UP = "8010F001BF4080F01039FFA21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E1000000000000000059";
     private static final String ECU_INIT_RESPONSE_PRE_01 = "8010F001BF4080F01029FFA1100B195458050561C4EB800808000000000070CE64F8BA080000E00000000000DC0000108000007B";
@@ -56,7 +57,7 @@ public final class TestSSMConnectionImpl implements SerialConnection {
     //    private static final String ECU_INIT_RESPONSE = ECU_INIT_RESPONSE_PRE_01;
     private byte[] request = new byte[0];
 
-    public TestSSMConnectionImpl(String portName, ConnectionProperties connectionProperties) {
+    public TestSerialConnection(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
         LOGGER.info("*** TEST *** Opening connection: " + portName);

@@ -22,8 +22,8 @@
 package com.romraider.logger.ecu.comms.io.connection;
 
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.connection.SerialConnectionManager;
-import com.romraider.io.connection.SerialConnectionManagerImpl;
+import com.romraider.io.serial.connection.SerialConnectionManager;
+import com.romraider.io.serial.connection.SerialConnectionManagerImpl;
 import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
 import com.romraider.logger.ecu.comms.io.protocol.SSMLoggerProtocol;
 import com.romraider.logger.ecu.comms.query.EcuQuery;

@@ -22,13 +22,13 @@
 package com.romraider.logger.ecu.comms.io.protocol;
 
 import com.romraider.io.protocol.Protocol;
-import com.romraider.io.protocol.SSMProtocol;
-import static com.romraider.io.protocol.SSMProtocol.ADDRESS_SIZE;
-import static com.romraider.io.protocol.SSMProtocol.DATA_SIZE;
-import static com.romraider.io.protocol.SSMProtocol.REQUEST_NON_DATA_BYTES;
-import static com.romraider.io.protocol.SSMProtocol.RESPONSE_NON_DATA_BYTES;
-import static com.romraider.io.protocol.SSMResponseProcessor.extractResponseData;
-import static com.romraider.io.protocol.SSMResponseProcessor.filterRequestFromResponse;
+import com.romraider.io.protocol.ssm.SSMProtocol;
+import static com.romraider.io.protocol.ssm.SSMProtocol.ADDRESS_SIZE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.DATA_SIZE;
+import static com.romraider.io.protocol.ssm.SSMProtocol.REQUEST_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ssm.SSMProtocol.RESPONSE_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ssm.SSMResponseProcessor.extractResponseData;
+import static com.romraider.io.protocol.ssm.SSMResponseProcessor.filterRequestFromResponse;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import java.util.ArrayList;

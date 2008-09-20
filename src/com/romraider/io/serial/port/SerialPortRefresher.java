@@ -19,7 +19,7 @@
  *
  */
 
-package com.romraider.io.port;
+package com.romraider.io.serial.port;
 
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ThreadUtil.sleep;

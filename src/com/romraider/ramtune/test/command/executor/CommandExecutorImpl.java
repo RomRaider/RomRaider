@@ -22,8 +22,8 @@
 package com.romraider.ramtune.test.command.executor;
 
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.connection.SerialConnectionManager;
-import com.romraider.io.connection.SerialConnectionManagerImpl;
+import com.romraider.io.serial.connection.SerialConnectionManager;
+import com.romraider.io.serial.connection.SerialConnectionManagerImpl;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
