@@ -19,6 +19,8 @@ import static com.romraider.io.j2534.op20.OpenPort20.PassThruStartMsgFilter;
 import static com.romraider.io.j2534.op20.OpenPort20.PassThruStopMsgFilter;
 import static com.romraider.io.j2534.op20.OpenPort20.PassThruWriteMsgs;
 import static com.romraider.io.j2534.op20.OpenPort20.STATUS_NOERROR;
+import static com.romraider.util.HexUtil.asHex;
+import static java.lang.System.currentTimeMillis;
 
 public final class J2534OpenPort20 implements J2534 {
     private final boolean supported = OpenPort20.isSupported();
@@ -89,12 +91,27 @@ public final class J2534OpenPort20 implements J2534 {
     }
 
     // FIX - Needs to check msg type and retry until msg received
-    public byte[] readMsg(int channelId) {
+    public byte[] readMsg(int channelId, long timeout) {
+        long end = currentTimeMillis() + timeout;
+        do {
+            PassThruMessage msg = doReadMsg(channelId);
+            System.out.println("Response: [ProtocolID=" + msg.ProtocolID + "|RxStatus=" + msg.RxStatus + "|TxFlags=" + msg.TxFlags + "|Timestamp=" + msg.Timestamp + "|DataSize=" + msg.DataSize + "|Data=" + asHex(msg.Data) + "]");
+            if (isResponse(msg)) return data(msg);
+        } while (currentTimeMillis() <= end);
+        throw new J2534Exception("Read timeout.");
+    }
+
+    private boolean isResponse(PassThruMessage msg) {
+        // FIX - Complete!
+        return false;
+    }
+
+    private PassThruMessage doReadMsg(int channelId) {
         PassThruMessage msg = passThruMessage();
         int[] pNumMsgs = {1};
         int status = PassThruReadMsgs(channelId, msg, pNumMsgs, 0);
         if (status != STATUS_NOERROR) handleError(status);
-        return data(msg);
+        return msg;
     }
 
     public void stopMsgFilter(int channelId, int msgId) {
