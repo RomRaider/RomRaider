@@ -15,9 +15,10 @@ public interface J2534 {
 
     int startPassMsgFilter(int channelId, byte mask, byte pattern);
 
-    void writeMsgs(int channelId, byte[] data);
+    void writeMsg(int channelId, byte[] data);
 
-    byte[] readMsgs(int channelId);
+    // FIX - Needs to return msg type, etc. Create Response object.
+    byte[] readMsg(int channelId);
 
     void stopMsgFilter(int channelId, int msgId);
 

@@ -78,14 +78,14 @@ public final class J2534OpenPort20 implements J2534 {
         return msgId[0];
     }
 
-    public void writeMsgs(int channelId, byte[] data) {
+    public void writeMsg(int channelId, byte[] data) {
         PassThruMessage msg = passThruMessage(data);
         int[] pNumMsgs = {1};
         int status = PassThruWriteMsgs(channelId, msg, pNumMsgs, 55);
         if (status != STATUS_NOERROR) handleError(status);
     }
 
-    public byte[] readMsgs(int channelId) {
+    public byte[] readMsg(int channelId) {
         PassThruMessage msg = passThruMessage();
         int[] pNumMsgs = {1};
         int status = PassThruReadMsgs(channelId, msg, pNumMsgs, 0);

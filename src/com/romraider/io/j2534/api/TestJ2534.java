@@ -24,7 +24,7 @@ public final class TestJ2534 {
                 try {
 
                     byte[] ecuInit = {(byte) 0x80, (byte) 0x10, (byte) 0xF0, (byte) 0x01, (byte) 0xBF};
-                    api.writeMsgs(channelId, ecuInit);
+                    api.writeMsg(channelId, ecuInit);
 
                 } finally {
                     api.stopMsgFilter(channelId, msgId);
