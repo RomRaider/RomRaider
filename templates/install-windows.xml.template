@@ -104,6 +104,8 @@
                   targetdir="$INSTALL_PATH/lib"/>
             <file src="lib/logger/@jar.jfreechart@"
                   targetdir="$INSTALL_PATH/lib"/>
+            <file src="lib/logger/@jar.jinvoke@"
+                  targetdir="$INSTALL_PATH/lib"/>
             <file src="lib/logger/rxtx/RXTXcomm.jar"
                   targetdir="$INSTALL_PATH/lib"/>
             <file src="lib/logger/rxtx/win32/rxtxSerial.dll"

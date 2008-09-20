@@ -114,6 +114,7 @@
         <property name="jar.jama" value="jama-1.0.2.jar"/>
         <property name="jar.log4j" value="log4j-1.2.14.jar"/>
         <property name="jar.swing-layout" value="swing-layout-1.0.jar"/>
+        <property name="jar.jinvoke" value="jinvoke-3.0.3.jar"/>
 
         <!-- common classpath for building, javadoc -->
         <path id="classpath">
@@ -141,6 +142,7 @@
             <pathelement location="lib/jdic/jdic.jar"/>
             <pathelement location="lib/logger/${jar.jcommon}"/>
             <pathelement location="lib/logger/${jar.jfreechart}"/>
+            <pathelement location="lib/logger/${jar.jinvoke}"/>
         </path>
         <!-- classpath for execution -->
         <path id="classpath.installed">
@@ -168,6 +170,7 @@
             <pathelement location="lib/jdic.jar"/>
             <pathelement location="lib/${jar.jcommon}"/>
             <pathelement location="lib/${jar.jfreechart}"/>
+            <pathelement location="lib/${jar.jinvoke}"/>
         </path>
 
         <!-- this set of filters should contain all the substitutions needed -->
@@ -191,6 +194,7 @@
             <filter token="version.extra1" value="${version.extra1}"/>
             <filter token="jar.jcommon" value="${jar.jcommon}"/>
             <filter token="jar.jfreechart" value="${jar.jfreechart}"/>
+            <filter token="jar.jinvoke" value="${jar.jinvoke}"/>
             <filter token="jar.jama" value="${jar.jama}"/>
             <filter token="jar.log4j" value="${jar.log4j}"/>
             <filter token="jar.swing-layout" value="${jar.swing-layout}"/>

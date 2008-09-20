@@ -12,6 +12,7 @@ Class-Path:
  lib/swing-layout-1.0.jar
  lib/jcommon-1.0.12.jar
  lib/jfreechart-1.0.9.jar
+ lib/jinvoke-3.0.3.jar
  lib/RXTXcomm.jar
  lib/jdic.jar
  lib/jama-1.0.2.jar
