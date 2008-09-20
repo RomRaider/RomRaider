@@ -37,50 +37,65 @@ import gnu.io.SerialPort;
 import static gnu.io.SerialPort.FLOWCONTROL_NONE;
 import gnu.io.UnsupportedCommOperationException;
 import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored"})
 public final class SerialConnectionImpl implements SerialConnection {
-    private static final Logger LOGGER = Logger.getLogger(SerialConnectionImpl.class);
+    private static final Logger LOGGER = getLogger(SerialConnectionImpl.class);
     private final SerialPort serialPort;
     private final OutputStream os;
     private final InputStream is;
 
-    public SerialConnectionImpl(ConnectionProperties connectionProperties, String portName) {
-        checkNotNull(connectionProperties, "connectionProperties");
+    public SerialConnectionImpl(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
-        serialPort = connect(connectionProperties, portName);
+        checkNotNull(connectionProperties, "connectionProperties");
+        serialPort = connect(portName, connectionProperties);
         os = initOutputStream();
         is = initInputStream();
     }
 
-    public void write(byte[] bytes) throws IOException {
-        os.write(bytes, 0, bytes.length);
-        os.flush();
+    public void write(byte[] bytes) {
+        try {
+            os.write(bytes, 0, bytes.length);
+            os.flush();
+        } catch (IOException e) {
+            close();
+            throw new SerialCommunicationException(e);
+        }
     }
 
-    public int available() throws IOException {
-        return is.available();
+    public int available() {
+        try {
+            return is.available();
+        } catch (IOException e) {
+            close();
+            throw new SerialCommunicationException(e);
+        }
     }
 
-    public void read(byte[] bytes) throws IOException {
-        is.read(bytes, 0, bytes.length);
+    public void read(byte[] bytes) {
+        try {
+            is.read(bytes, 0, bytes.length);
+        } catch (IOException e) {
+            close();
+            throw new SerialCommunicationException(e);
+        }
     }
 
-    public byte[] readAvailable() throws IOException {
+    public byte[] readAvailable() {
         byte[] response = new byte[available()];
         read(response);
         return response;
     }
 
-    public void readStaleData() throws IOException {
-        if (is.available() > 0) {
-            byte[] staleBytes = new byte[is.available()];
-            read(staleBytes);
-            LOGGER.debug("Stale data read: " + asHex(staleBytes));
-        }
+    public void readStaleData() {
+        if (available() <= 0) return;
+        byte[] staleBytes = new byte[available()];
+        read(staleBytes);
+        LOGGER.debug("Stale data read: " + asHex(staleBytes));
     }
 
     public void close() {
@@ -126,7 +141,7 @@ public final class SerialConnectionImpl implements SerialConnection {
         }
     }
 
-    private SerialPort connect(ConnectionProperties connectionProperties, String portName) {
+    private SerialPort connect(String portName, ConnectionProperties connectionProperties) {
         CommPortIdentifier portIdentifier = resolvePortIdentifier(portName);
         SerialPort serialPort = openPort(portIdentifier, connectionProperties.getConnectTimeout());
         initSerialPort(serialPort, connectionProperties.getBaudRate(), connectionProperties.getDataBits(), connectionProperties.getStopBits(),

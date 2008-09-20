@@ -22,10 +22,11 @@
 package com.romraider.logger.ecu.comms.manager;
 
 import com.romraider.Settings;
+import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.connection.SerialConnectionManager;
+import com.romraider.io.connection.SerialConnectionManagerImpl;
 import com.romraider.io.protocol.Protocol;
 import com.romraider.io.protocol.ProtocolFactory;
-import com.romraider.logger.ecu.comms.io.connection.EcuConnection;
-import com.romraider.logger.ecu.comms.io.connection.EcuConnectionImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
@@ -141,12 +142,13 @@ public final class QueryManagerImpl implements QueryManager {
     private boolean doEcuInit() {
         try {
             Protocol protocol = ProtocolFactory.getInstance().getProtocol(settings.getLoggerProtocol());
-            EcuConnection ecuConnection = new EcuConnectionImpl(settings.getLoggerConnectionProperties(), settings.getLoggerPort());
+            ConnectionProperties connectionProperties = settings.getLoggerConnectionProperties();
+            SerialConnectionManager connectionManager = new SerialConnectionManagerImpl(settings.getLoggerPort(), connectionProperties);
             try {
                 messageListener.reportMessage("Sending ECU Init...");
                 byte[] request = protocol.constructEcuInitRequest();
                 LOGGER.debug("Ecu Init Request  ---> " + asHex(request));
-                byte[] response = ecuConnection.send(request);
+                byte[] response = connectionManager.send(request, connectionProperties.getSendTimeout());
                 byte[] processedResponse = protocol.preprocessResponse(request, response);
                 protocol.checkValidEcuInitResponse(processedResponse);
                 LOGGER.debug("Ecu Init Response <--- " + asHex(processedResponse));
@@ -154,7 +156,7 @@ public final class QueryManagerImpl implements QueryManager {
                 messageListener.reportMessage("Sending ECU Init...done.");
                 return true;
             } finally {
-                ecuConnection.close();
+                connectionManager.close();
             }
         } catch (Exception e) {
             messageListener.reportMessage("Unable to send ECU init - check correct serial port has been selected, cable is connected and ignition is on.");

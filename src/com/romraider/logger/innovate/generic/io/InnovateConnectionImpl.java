@@ -34,44 +34,45 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import java.io.IOException;
 import static java.lang.Math.min;
 import static java.lang.System.arraycopy;
 import static java.lang.System.currentTimeMillis;
 
 public final class InnovateConnectionImpl implements InnovateConnection {
-    private static final Logger LOGGER = Logger.getLogger(InnovateConnectionImpl.class);
+    private static final Logger LOGGER = getLogger(InnovateConnectionImpl.class);
     private static final byte[] INNOVATE_HEADER = asBytes("0xB280");
-    private final String device;
-    private final long sendTimeout;
-    private final SerialConnection serialConnection;
+    private final SerialConnection connection;
     private final int responseLength;
+    private final long sendTimeout;
+    private final String device;
 
-    public InnovateConnectionImpl(String device, ConnectionProperties connectionProperties, String portName, int responseLength) {
+    public InnovateConnectionImpl(String device, String portName, ConnectionProperties connectionProperties, int responseLength) {
         checkNotNullOrEmpty(device, "device");
-        checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
+        checkNotNull(connectionProperties, "connectionProperties");
         checkGreaterThanZero(responseLength, "responseLength");
         this.device = device;
         this.sendTimeout = connectionProperties.getSendTimeout();
         this.responseLength = responseLength;
-        serialConnection = new SerialConnectionImpl(connectionProperties, portName);
+        connection = new SerialConnectionImpl(portName, connectionProperties);
         LOGGER.info(device + " connected");
     }
 
     // FIX - YIKES!!
     public byte[] read() {
         try {
-            serialConnection.readStaleData();
+            connection.readStaleData();
             byte[] response = new byte[responseLength];
             int bufferLength = responseLength + INNOVATE_HEADER.length - 1;
             long start = currentTimeMillis();
             while (currentTimeMillis() - start <= sendTimeout) {
                 sleep(1);
-                int available = serialConnection.available();
+                int available = connection.available();
                 if (available < bufferLength) continue;
                 byte[] buffer = new byte[bufferLength];
-                serialConnection.read(buffer);
+                connection.read(buffer);
                 LOGGER.trace(device + " input: " + asHex(buffer));
                 int responseBeginIndex = 0;
                 int bufferBeginIndex = findHeader(buffer);
@@ -104,10 +105,10 @@ public final class InnovateConnectionImpl implements InnovateConnection {
     private byte[] remainder(int remainderLength, long start) throws IOException {
         while (currentTimeMillis() - start <= sendTimeout) {
             sleep(1);
-            int available = serialConnection.available();
+            int available = connection.available();
             if (available >= remainderLength) {
                 byte[] remainder = new byte[remainderLength];
-                serialConnection.read(remainder);
+                connection.read(remainder);
                 return remainder;
             }
         }
@@ -115,7 +116,7 @@ public final class InnovateConnectionImpl implements InnovateConnection {
     }
 
     public void close() {
-        serialConnection.close();
+        connection.close();
         LOGGER.info(device + " disconnected");
     }
 

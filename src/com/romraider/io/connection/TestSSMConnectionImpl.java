@@ -56,9 +56,9 @@ public final class TestSSMConnectionImpl implements SerialConnection {
     //    private static final String ECU_INIT_RESPONSE = ECU_INIT_RESPONSE_PRE_01;
     private byte[] request = new byte[0];
 
-    public TestSSMConnectionImpl(ConnectionProperties connectionProperties, String portName) {
-        checkNotNull(connectionProperties, "connectionProperties");
+    public TestSSMConnectionImpl(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
+        checkNotNull(connectionProperties, "connectionProperties");
         LOGGER.info("*** TEST *** Opening connection: " + portName);
     }
 

@@ -30,31 +30,32 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import static java.lang.System.currentTimeMillis;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class AemConnectionImpl implements AemConnection {
-    private static final Logger LOGGER = Logger.getLogger(AemConnectionImpl.class);
+    private static final Logger LOGGER = getLogger(AemConnectionImpl.class);
+    private final SerialConnection connection;
     private final long sendTimeout;
-    private final SerialConnection serialConnection;
 
-    public AemConnectionImpl(ConnectionProperties connectionProperties, String portName) {
+    public AemConnectionImpl(String portName, ConnectionProperties connectionProperties) {
         checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
         this.sendTimeout = connectionProperties.getSendTimeout();
-        serialConnection = new SerialConnectionImpl(connectionProperties, portName);
+        connection = new SerialConnectionImpl(portName, connectionProperties);
         LOGGER.info("AEM connected");
     }
 
     //TODO: This a guess!!...untested!!
     public byte[] read() {
         try {
-            serialConnection.readStaleData();
+            connection.readStaleData();
             long start = currentTimeMillis();
             while (currentTimeMillis() - start <= sendTimeout) {
-                if (serialConnection.available() > 10) {
-                    byte[] bytes = serialConnection.readAvailable();
+                if (connection.available() > 10) {
+                    byte[] bytes = connection.readAvailable();
                     LOGGER.trace("AEM UEGO input: " + asHex(bytes));
                     int startIndex = findStart(bytes);
                     LOGGER.trace("AEM UEGO start index: " + startIndex);
@@ -89,7 +90,7 @@ public final class AemConnectionImpl implements AemConnection {
     }
 
     public void close() {
-        serialConnection.close();
+        connection.close();
         LOGGER.info("AEM disconnected");
     }
 

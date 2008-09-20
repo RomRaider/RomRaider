@@ -30,7 +30,7 @@ public final class AemRunnerImpl implements AemRunner {
     private boolean stop;
 
     public AemRunnerImpl(AemSettings aemSettings, DataListener listener) {
-        connection = new AemConnectionImpl(new AemConnectionProperties(), aemSettings.getPort());
+        connection = new AemConnectionImpl(aemSettings.getPort(), new AemConnectionProperties());
         this.listener = listener;
     }
 

@@ -27,11 +27,11 @@ import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
 public final class LoggerConnectionFactory {
     private static final LoggerConnectionFactory INSTANCE = new LoggerConnectionFactory();
 
-    public static LoggerConnectionFactory getInstance() {
-        return INSTANCE;
+    private LoggerConnectionFactory() {
     }
 
-    private LoggerConnectionFactory() {
+    public static LoggerConnectionFactory getInstance() {
+        return INSTANCE;
     }
 
     public LoggerConnection getLoggerConnection(String protocolName, String portName, ConnectionProperties connectionProperties) {

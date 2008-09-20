@@ -19,12 +19,13 @@
  *
  */
 
-package com.romraider.logger.ecu.comms.io.connection;
+package com.romraider.io.connection;
 
-public interface EcuConnection {
+public interface SerialConnectionManager {
 
-    byte[] send(byte[] bytes);
+    void send(byte[] request, byte[] response, long sendTimeout);
+
+    byte[] send(byte[] bytes, long maxWait);
 
     void close();
-
 }

@@ -22,8 +22,8 @@
 package com.romraider.ramtune.test.command.executor;
 
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.logger.ecu.comms.io.connection.EcuConnection;
-import com.romraider.logger.ecu.comms.io.connection.EcuConnectionImpl;
+import com.romraider.io.connection.SerialConnectionManager;
+import com.romraider.io.connection.SerialConnectionManagerImpl;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -39,11 +39,12 @@ public final class CommandExecutorImpl implements CommandExecutor {
     }
 
     public byte[] executeCommand(byte[] command) {
-        EcuConnection ecuConnection = new EcuConnectionImpl(connectionProperties, port);
+        SerialConnectionManager connectionManager = new SerialConnectionManagerImpl(port, connectionProperties);
         try {
-            return ecuConnection.send(command);
+            int timeout = connectionProperties.getSendTimeout();
+            return connectionManager.send(command, timeout);
         } finally {
-            ecuConnection.close();
+            connectionManager.close();
         }
     }
 

@@ -30,7 +30,7 @@ public final class InnovateRunnerImpl implements InnovateRunner {
     private boolean stop;
 
     public InnovateRunnerImpl(String device, InnovateSettings innovateSettings, DataListener listener, int responseLength) {
-        connection = new InnovateConnectionImpl(device, new InnovateConnectionProperties(), innovateSettings.getPort(), responseLength);
+        connection = new InnovateConnectionImpl(device, innovateSettings.getPort(), new InnovateConnectionProperties(), responseLength);
         this.listener = listener;
     }
 
