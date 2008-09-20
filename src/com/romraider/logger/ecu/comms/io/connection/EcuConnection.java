@@ -19,7 +19,7 @@
  *
  */
 
-package com.romraider.io.connection;
+package com.romraider.logger.ecu.comms.io.connection;
 
 public interface EcuConnection {
 

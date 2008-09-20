@@ -19,13 +19,17 @@
  *
  */
 
-package com.romraider.io.connection;
+package com.romraider.logger.ecu.comms.io.connection;
 
+import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.connection.SerialConnection;
+import com.romraider.io.connection.SerialConnectionImpl;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
 
+// FIX - Merge with SSMLoggerConnection
 public final class EcuConnectionImpl implements EcuConnection {
     private final long sendTimeout;
     private final SerialConnection serialConnection;

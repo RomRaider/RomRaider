@@ -22,8 +22,8 @@
 package com.romraider.ramtune.test.command.executor;
 
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.connection.EcuConnection;
-import com.romraider.io.connection.EcuConnectionImpl;
+import com.romraider.logger.ecu.comms.io.connection.EcuConnection;
+import com.romraider.logger.ecu.comms.io.connection.EcuConnectionImpl;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 

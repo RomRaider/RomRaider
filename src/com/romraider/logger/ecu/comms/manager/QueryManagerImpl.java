@@ -22,10 +22,10 @@
 package com.romraider.logger.ecu.comms.manager;
 
 import com.romraider.Settings;
-import com.romraider.io.connection.EcuConnection;
-import com.romraider.io.connection.EcuConnectionImpl;
 import com.romraider.io.protocol.Protocol;
 import com.romraider.io.protocol.ProtocolFactory;
+import com.romraider.logger.ecu.comms.io.connection.EcuConnection;
+import com.romraider.logger.ecu.comms.io.connection.EcuConnectionImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
