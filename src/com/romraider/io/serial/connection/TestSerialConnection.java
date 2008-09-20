@@ -45,12 +45,14 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
+import static java.lang.System.currentTimeMillis;
 import java.util.Random;
 
 @SuppressWarnings({"PointlessArithmeticExpression"})
-public final class TestSerialConnection implements SerialConnection {
-    private static final Logger LOGGER = Logger.getLogger(TestSerialConnection.class);
-    private static final Random RANDOM = new Random(System.currentTimeMillis());
+final class TestSerialConnection implements SerialConnection {
+    private static final Logger LOGGER = getLogger(TestSerialConnection.class);
+    private static final Random RANDOM = new Random(currentTimeMillis());
     private static final String ECU_INIT_RESPONSE_01_UP = "8010F001BF4080F01039FFA21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E1000000000000000059";
     private static final String ECU_INIT_RESPONSE_PRE_01 = "8010F001BF4080F01029FFA1100B195458050561C4EB800808000000000070CE64F8BA080000E00000000000DC0000108000007B";
     private static final String ECU_INIT_RESPONSE = ECU_INIT_RESPONSE_01_UP;
