@@ -63,16 +63,8 @@ public final class ResetManagerImpl implements ResetManager {
             }
         } catch (Exception e) {
             messageListener.reportMessage("Unable to reset ecu - check correct serial port has been selected, cable is connected and ignition is on.");
-            logError(e);
+            LOGGER.error("Error sending ecu reset", e);
             return false;
-        }
-    }
-
-    private void logError(Exception e) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Error sending ecu reset", e);
-        } else {
-            LOGGER.info("Error sending ecu reset: " + e.getMessage());
         }
     }
 }
