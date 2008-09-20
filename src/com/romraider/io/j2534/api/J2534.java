@@ -17,7 +17,6 @@ public interface J2534 {
 
     void writeMsg(int channelId, byte[] data);
 
-    // FIX - Needs to return msg type, etc. Create Response object.
     byte[] readMsg(int channelId);
 
     void stopMsgFilter(int channelId, int msgId);

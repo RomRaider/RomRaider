@@ -88,6 +88,7 @@ public final class J2534OpenPort20 implements J2534 {
         if (status != STATUS_NOERROR) handleError(status);
     }
 
+    // FIX - Needs to check msg type and retry until msg received
     public byte[] readMsg(int channelId) {
         PassThruMessage msg = passThruMessage();
         int[] pNumMsgs = {1};
