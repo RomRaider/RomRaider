@@ -5,10 +5,8 @@ import com.romraider.io.j2534.api.J2534;
 import com.romraider.io.j2534.api.J2534Exception;
 import com.romraider.io.j2534.api.Version;
 import static com.romraider.io.j2534.op20.OpenPort20.FILTER_PASS;
-import static com.romraider.io.j2534.op20.OpenPort20.FLAG_NONE;
 import static com.romraider.io.j2534.op20.OpenPort20.IOCTL_GET_CONFIG;
 import static com.romraider.io.j2534.op20.OpenPort20.IOCTL_SET_CONFIG;
-import static com.romraider.io.j2534.op20.OpenPort20.PROTOCOL_ISO9141;
 import static com.romraider.io.j2534.op20.OpenPort20.PassThruClose;
 import static com.romraider.io.j2534.op20.OpenPort20.PassThruConnect;
 import static com.romraider.io.j2534.op20.OpenPort20.PassThruDisconnect;
@@ -24,6 +22,11 @@ import static com.romraider.io.j2534.op20.OpenPort20.STATUS_NOERROR;
 
 public final class J2534OpenPort20 implements J2534 {
     private final boolean supported = OpenPort20.isSupported();
+    private final int protocol;
+
+    public J2534OpenPort20(int protocol) {
+        this.protocol = protocol;
+    }
 
     public boolean isSupported() {
         return supported;
@@ -45,9 +48,9 @@ public final class J2534OpenPort20 implements J2534 {
         return new Version(toString(firmware), toString(dll), toString(api));
     }
 
-    public int connect(int deviceId) {
+    public int connect(int deviceId, int flags, int baud) {
         int[] channelId = {0};
-        int status = PassThruConnect(deviceId, PROTOCOL_ISO9141, FLAG_NONE, 4800, channelId);
+        int status = PassThruConnect(deviceId, protocol, flags, baud, channelId);
         if (status != STATUS_NOERROR) handleError(status);
         return channelId[0];
     }
@@ -145,33 +148,33 @@ public final class J2534OpenPort20 implements J2534 {
         return input;
     }
 
-    private static PassThruMessage passThruMessage(byte... data) {
+    private PassThruMessage passThruMessage(byte... data) {
         PassThruMessage msg = passThruMessage();
         System.arraycopy(data, 0, msg.Data, 0, data.length);
         msg.DataSize = data.length;
         return msg;
     }
 
-    private static PassThruMessage passThruMessage() {
+    private PassThruMessage passThruMessage() {
         PassThruMessage msg = new PassThruMessage();
-        msg.ProtocolID = PROTOCOL_ISO9141;
+        msg.ProtocolID = protocol;
         return msg;
     }
 
-    private static byte[] data(PassThruMessage msg) {
+    private byte[] data(PassThruMessage msg) {
         int length = msg.DataSize;
         byte[] data = new byte[length];
         System.arraycopy(msg.Data, 0, data, 0, length);
         return data;
     }
 
-    private static void handleError(int status) {
+    private void handleError(int status) {
         byte[] error = new byte[80];
         PassThruGetLastError(error);
         throw new J2534Exception("Error: [" + status + "] " + toString(error));
     }
 
-    private static String toString(byte[] bytes) {
+    private String toString(byte[] bytes) {
         String msg = "";
         for (int b : bytes) {
             if (b == 0x00) continue;

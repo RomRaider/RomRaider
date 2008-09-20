@@ -4,9 +4,11 @@ import com.romraider.io.j2534.op20.J2534OpenPort20;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P1_MAX;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P3_MIN;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P4_MIN;
+import static com.romraider.io.j2534.op20.OpenPort20.FLAG_NONE;
+import static com.romraider.io.j2534.op20.OpenPort20.PROTOCOL_ISO9141;
 
 public final class TestJ2534 {
-    private static final J2534 api = new J2534OpenPort20();
+    private static final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
 
     public static void main(String[] args) {
         if (!api.isSupported()) return;
@@ -17,7 +19,7 @@ public final class TestJ2534 {
         int deviceId = api.open();
         try {
             version(deviceId);
-            int channelId = api.connect(deviceId);
+            int channelId = api.connect(deviceId, FLAG_NONE, 4800);
             try {
                 setConfig(channelId);
                 int msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);

@@ -7,7 +7,7 @@ public interface J2534 {
 
     Version readVersion(int deviceId);
 
-    int connect(int deviceId);
+    int connect(int deviceId, int flags, int baud);
 
     void setConfig(int channelId, ConfigItem... items);
 
