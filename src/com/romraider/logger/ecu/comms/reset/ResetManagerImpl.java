@@ -22,11 +22,11 @@
 package com.romraider.logger.ecu.comms.reset;
 
 import com.romraider.Settings;
+import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
 import static com.romraider.io.protocol.ProtocolFactory.getProtocol;
 import com.romraider.io.serial.connection.SerialConnectionManager;
-import com.romraider.io.serial.connection.SerialConnectionManagerImpl;
 import com.romraider.logger.ecu.ui.MessageListener;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
@@ -47,7 +47,7 @@ public final class ResetManagerImpl implements ResetManager {
         try {
             Protocol protocol = getProtocol(settings.getLoggerProtocol());
             ConnectionProperties connectionProperties = settings.getLoggerConnectionProperties();
-            SerialConnectionManager connectionManager = new SerialConnectionManagerImpl(settings.getLoggerPort(), connectionProperties);
+            ConnectionManager connectionManager = new SerialConnectionManager(settings.getLoggerPort(), connectionProperties);
             try {
                 messageListener.reportMessage("Sending ECU Reset...");
                 byte[] request = protocol.constructEcuResetRequest();

@@ -22,11 +22,11 @@
 package com.romraider.logger.ecu.comms.manager;
 
 import com.romraider.Settings;
+import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.j2534.api.J2534ConnectionManager;
 import com.romraider.io.protocol.Protocol;
 import static com.romraider.io.protocol.ProtocolFactory.getProtocol;
-import com.romraider.io.serial.connection.SerialConnectionManager;
-import com.romraider.io.serial.connection.SerialConnectionManagerImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
@@ -143,12 +143,13 @@ public final class QueryManagerImpl implements QueryManager {
         try {
             Protocol protocol = getProtocol(settings.getLoggerProtocol());
             ConnectionProperties connectionProperties = settings.getLoggerConnectionProperties();
-            SerialConnectionManager connectionManager = new SerialConnectionManagerImpl(settings.getLoggerPort(), connectionProperties);
+//            ConnectionManager connectionManager = new SerialConnectionManager(settings.getLoggerPort(), connectionProperties);
+            ConnectionManager connectionManager = new J2534ConnectionManager(connectionProperties);
             try {
                 messageListener.reportMessage("Sending ECU Init...");
                 byte[] request = protocol.constructEcuInitRequest();
                 LOGGER.debug("Ecu Init Request  ---> " + asHex(request));
-                byte[] response = connectionManager.send(request, connectionProperties.getSendTimeout());
+                byte[] response = connectionManager.send(request, 500L);
                 byte[] processedResponse = protocol.preprocessResponse(request, response);
                 protocol.checkValidEcuInitResponse(processedResponse);
                 LOGGER.debug("Ecu Init Response <--- " + asHex(processedResponse));

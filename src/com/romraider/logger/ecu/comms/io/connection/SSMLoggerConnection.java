@@ -21,9 +21,9 @@
 
 package com.romraider.logger.ecu.comms.io.connection;
 
+import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.serial.connection.SerialConnectionManager;
-import com.romraider.io.serial.connection.SerialConnectionManagerImpl;
 import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
 import com.romraider.logger.ecu.comms.io.protocol.SSMLoggerProtocol;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
@@ -34,12 +34,12 @@ import java.util.Collection;
 public final class SSMLoggerConnection implements LoggerConnection {
     private static final long SEND_TIMEOUT = 2000L;
     private final LoggerProtocol protocol = new SSMLoggerProtocol();
-    private final SerialConnectionManager manager;
+    private final ConnectionManager manager;
 
     public SSMLoggerConnection(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties);
-        this.manager = new SerialConnectionManagerImpl(portName, connectionProperties);
+        this.manager = new SerialConnectionManager(portName, connectionProperties);
     }
 
     public void sendAddressReads(Collection<EcuQuery> queries) {
