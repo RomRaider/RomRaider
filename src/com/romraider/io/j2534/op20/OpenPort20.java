@@ -9,6 +9,7 @@ public final class OpenPort20 {
 
     // FIX - Split out and separate these
     public static final int STATUS_NOERROR = 0x00;
+    public static final int STATUS_ERR_TIMEOUT = 0x09;
     public static final int PROTOCOL_ISO9141 = 3;
     public static final int FLAG_NONE = 0x00;
     public static final int FLAG_ISO9141_NO_CHECKSUM = 0x00000200;

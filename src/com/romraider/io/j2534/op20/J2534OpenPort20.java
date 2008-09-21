@@ -18,11 +18,18 @@ import static com.romraider.io.j2534.op20.OpenPort20.PassThruReadVersion;
 import static com.romraider.io.j2534.op20.OpenPort20.PassThruStartMsgFilter;
 import static com.romraider.io.j2534.op20.OpenPort20.PassThruStopMsgFilter;
 import static com.romraider.io.j2534.op20.OpenPort20.PassThruWriteMsgs;
+import static com.romraider.io.j2534.op20.OpenPort20.STATUS_ERR_TIMEOUT;
 import static com.romraider.io.j2534.op20.OpenPort20.STATUS_NOERROR;
 import static com.romraider.util.HexUtil.asHex;
+import static com.romraider.util.ThreadUtil.sleep;
+import org.apache.log4j.Logger;
+import static java.lang.System.arraycopy;
 import static java.lang.System.currentTimeMillis;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class J2534OpenPort20 implements J2534 {
+    private static final Logger LOGGER = Logger.getLogger(J2534OpenPort20.class);
     private final boolean supported = OpenPort20.isSupported();
     private final int protocol;
 
@@ -83,34 +90,55 @@ public final class J2534OpenPort20 implements J2534 {
         return msgId[0];
     }
 
-    public void writeMsg(int channelId, byte[] data) {
+    public void writeMsg(int channelId, byte[] data, long timeout) {
         PassThruMessage msg = passThruMessage(data);
+        LOGGER.trace("Write Msg: " + toString(msg));
         int[] pNumMsgs = {1};
-        int status = PassThruWriteMsgs(channelId, msg, pNumMsgs, 55);
+        int status = PassThruWriteMsgs(channelId, msg, pNumMsgs, (int) timeout);
         if (status != STATUS_NOERROR) handleError(status);
     }
 
-    // FIX - Needs to check msg type and retry until msg received
     public byte[] readMsg(int channelId, long timeout) {
+        List<byte[]> responses = new ArrayList<byte[]>();
         long end = currentTimeMillis() + timeout;
         do {
             PassThruMessage msg = doReadMsg(channelId);
-            System.out.println("Response: [ProtocolID=" + msg.ProtocolID + "|RxStatus=" + msg.RxStatus + "|TxFlags=" + msg.TxFlags + "|Timestamp=" + msg.Timestamp + "|DataSize=" + msg.DataSize + "|Data=" + asHex(msg.Data) + "]");
-            if (isResponse(msg)) return data(msg);
+            LOGGER.trace("Read Msg: " + toString(msg));
+            if (isResponse(msg)) responses.add(data(msg));
+            sleep(10);
         } while (currentTimeMillis() <= end);
-        throw new J2534Exception("Read timeout.");
+        return concat(responses);
+    }
+
+    private byte[] concat(List<byte[]> responses) {
+        int length = 0;
+        for (byte[] response : responses) length += response.length;
+        byte[] result = new byte[length];
+        int index = 0;
+        for (byte[] response : responses) {
+            if (response.length == 0) continue;
+            System.arraycopy(response, 0, result, index, response.length);
+            index += response.length;
+        }
+        return result;
+    }
+
+    private String toString(PassThruMessage msg) {
+        byte[] bytes = new byte[msg.DataSize];
+        arraycopy(msg.Data, 0, bytes, 0, bytes.length);
+        return "[ProtocolID=" + msg.ProtocolID + "|RxStatus=" + msg.RxStatus + "|TxFlags=" + msg.TxFlags + "|Timestamp=" + msg.Timestamp + "|DataSize=" + msg.DataSize + "|Data=" + asHex(bytes) + "]";
     }
 
     private boolean isResponse(PassThruMessage msg) {
-        // FIX - Complete!
-        return false;
+        if (msg.RxStatus != 0x00) return false;
+        return msg.Timestamp > 0;
     }
 
     private PassThruMessage doReadMsg(int channelId) {
         PassThruMessage msg = passThruMessage();
         int[] pNumMsgs = {1};
         int status = PassThruReadMsgs(channelId, msg, pNumMsgs, 0);
-        if (status != STATUS_NOERROR) handleError(status);
+        if (status != STATUS_NOERROR && status != STATUS_ERR_TIMEOUT) handleError(status);
         return msg;
     }
 
@@ -168,7 +196,7 @@ public final class J2534OpenPort20 implements J2534 {
 
     private PassThruMessage passThruMessage(byte... data) {
         PassThruMessage msg = passThruMessage();
-        System.arraycopy(data, 0, msg.Data, 0, data.length);
+        arraycopy(data, 0, msg.Data, 0, data.length);
         msg.DataSize = data.length;
         return msg;
     }
@@ -182,7 +210,7 @@ public final class J2534OpenPort20 implements J2534 {
     private byte[] data(PassThruMessage msg) {
         int length = msg.DataSize;
         byte[] data = new byte[length];
-        System.arraycopy(msg.Data, 0, data, 0, length);
+        arraycopy(msg.Data, 0, data, 0, length);
         return data;
     }
 
