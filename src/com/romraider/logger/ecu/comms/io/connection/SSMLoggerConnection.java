@@ -23,7 +23,7 @@ package com.romraider.logger.ecu.comms.io.connection;
 
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.serial.connection.SerialConnectionManager;
+import com.romraider.io.j2534.api.J2534ConnectionManager;
 import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
 import com.romraider.logger.ecu.comms.io.protocol.SSMLoggerProtocol;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
@@ -39,7 +39,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
     public SSMLoggerConnection(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties);
-        this.manager = new SerialConnectionManager(portName, connectionProperties);
+//        this.manager = new SerialConnectionManager(portName, connectionProperties);
+        this.manager = new J2534ConnectionManager(connectionProperties);
     }
 
     public void sendAddressReads(Collection<EcuQuery> queries) {

@@ -98,9 +98,21 @@ public final class J2534OpenPort20 implements J2534 {
         if (status != STATUS_NOERROR) handleError(status);
     }
 
-    public byte[] readMsg(int channelId, long timeout) {
-        List<byte[]> responses = new ArrayList<byte[]>();
+    public void readMsg(int channelId, byte[] response, long timeout) {
+        int index = 0;
         long end = currentTimeMillis() + timeout;
+        do {
+            PassThruMessage msg = doReadMsg(channelId);
+            LOGGER.trace("Read Msg: " + toString(msg));
+            if (!isResponse(msg)) continue;
+            arraycopy(msg.Data, 0, response, index, msg.DataSize);
+            index += msg.DataSize;
+        } while (currentTimeMillis() <= end && index < response.length - 1);
+    }
+
+    public byte[] readMsg(int channelId, long maxWait) {
+        List<byte[]> responses = new ArrayList<byte[]>();
+        long end = currentTimeMillis() + maxWait;
         do {
             PassThruMessage msg = doReadMsg(channelId);
             LOGGER.trace("Read Msg: " + toString(msg));

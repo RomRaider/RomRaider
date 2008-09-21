@@ -24,9 +24,9 @@ package com.romraider.logger.ecu.comms.reset;
 import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.j2534.api.J2534ConnectionManager;
 import com.romraider.io.protocol.Protocol;
 import static com.romraider.io.protocol.ProtocolFactory.getProtocol;
-import com.romraider.io.serial.connection.SerialConnectionManager;
 import com.romraider.logger.ecu.ui.MessageListener;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
@@ -47,12 +47,13 @@ public final class ResetManagerImpl implements ResetManager {
         try {
             Protocol protocol = getProtocol(settings.getLoggerProtocol());
             ConnectionProperties connectionProperties = settings.getLoggerConnectionProperties();
-            ConnectionManager connectionManager = new SerialConnectionManager(settings.getLoggerPort(), connectionProperties);
+//            ConnectionManager connectionManager = new SerialConnectionManager(settings.getLoggerPort(), connectionProperties);
+            ConnectionManager connectionManager = new J2534ConnectionManager(connectionProperties);
             try {
                 messageListener.reportMessage("Sending ECU Reset...");
                 byte[] request = protocol.constructEcuResetRequest();
                 LOGGER.debug("Ecu Reset Request  ---> " + asHex(request));
-                byte[] response = connectionManager.send(request, connectionProperties.getSendTimeout());
+                byte[] response = connectionManager.send(request, 500L);
                 byte[] processedResponse = protocol.preprocessResponse(request, response);
                 protocol.checkValidEcuResetResponse(processedResponse);
                 LOGGER.debug("Ecu Reset Response <--- " + asHex(processedResponse));

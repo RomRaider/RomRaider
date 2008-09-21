@@ -17,7 +17,9 @@ public interface J2534 {
 
     void writeMsg(int channelId, byte[] data, long timeout);
 
-    byte[] readMsg(int channelId, long timeout);
+    byte[] readMsg(int channelId, long maxWait);
+
+    void readMsg(int channelId, byte[] response, long timeout);
 
     void stopMsgFilter(int channelId, int msgId);
 

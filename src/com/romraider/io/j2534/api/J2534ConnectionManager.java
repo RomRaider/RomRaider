@@ -59,13 +59,18 @@ public final class J2534ConnectionManager implements ConnectionManager {
     public void send(byte[] request, byte[] response, long timeout) {
         checkNotNull(request, "request");
         checkNotNull(request, "response");
-        // FIX - Complete!
+//        api.writeMsg(channelId, request, connectionProperties.getSendTimeout());
+        api.writeMsg(channelId, request, timeout);
+        // FIX - should timeout be connectionProperties.getReadTimeout() ??
+        api.readMsg(channelId, response, timeout);
     }
 
     // Send request and wait specified time for response with unknown length
     public byte[] send(byte[] bytes, long maxWait) {
         checkNotNull(bytes, "bytes");
-        api.writeMsg(channelId, bytes, connectionProperties.getSendTimeout());
+//        api.writeMsg(channelId, bytes, connectionProperties.getSendTimeout());
+        api.writeMsg(channelId, bytes, maxWait);
+        // FIX - should maxWait be connectionProperties.getReadTimeout() ??
         return api.readMsg(channelId, maxWait);
     }
 
@@ -77,7 +82,7 @@ public final class J2534ConnectionManager implements ConnectionManager {
 
     private void version(int deviceId) {
         Version version = api.readVersion(deviceId);
-        System.out.println("Version => firmware: " + version.firmware + ", dll: " + version.dll + ", api: " + version.api);
+        LOGGER.info("J2534 Version => firmware: " + version.firmware + ", dll: " + version.dll + ", api: " + version.api);
     }
 
     private void setConfig(int channelId) {
