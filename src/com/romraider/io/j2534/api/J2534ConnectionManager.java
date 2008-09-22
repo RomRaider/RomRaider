@@ -75,14 +75,15 @@ public final class J2534ConnectionManager implements ConnectionManager {
     }
 
     public void close() {
-        api.stopMsgFilter(channelId, msgId);
-        api.disconnect(channelId);
-        api.close(deviceId);
+        stopMsgFilter();
+        disconnectChannel();
+        closeDevice();
     }
 
     private void version(int deviceId) {
+        if (!LOGGER.isDebugEnabled()) return;
         Version version = api.readVersion(deviceId);
-        LOGGER.info("J2534 Version => firmware: " + version.firmware + ", dll: " + version.dll + ", api: " + version.api);
+        LOGGER.debug("J2534 Version => firmware: " + version.firmware + ", dll: " + version.dll + ", api: " + version.api);
     }
 
     private void setConfig(int channelId) {
@@ -90,5 +91,29 @@ public final class J2534ConnectionManager implements ConnectionManager {
         ConfigItem p3Min = new ConfigItem(CONFIG_P3_MIN, 0);
         ConfigItem p4Min = new ConfigItem(CONFIG_P4_MIN, 0);
         api.setConfig(channelId, p1Max, p3Min, p4Min);
+    }
+
+    private void stopMsgFilter() {
+        try {
+            api.stopMsgFilter(channelId, msgId);
+        } catch (Exception e) {
+            LOGGER.warn("Error stopping msg filter");
+        }
+    }
+
+    private void disconnectChannel() {
+        try {
+            api.disconnect(channelId);
+        } catch (Exception e) {
+            LOGGER.warn("Error disconnecting channel");
+        }
+    }
+
+    private void closeDevice() {
+        try {
+            api.close(deviceId);
+        } catch (Exception e) {
+            LOGGER.warn("Error closing device");
+        }
     }
 }
