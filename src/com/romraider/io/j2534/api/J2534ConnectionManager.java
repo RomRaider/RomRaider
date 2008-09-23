@@ -36,15 +36,13 @@ import static org.apache.log4j.Logger.getLogger;
 public final class J2534ConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = getLogger(J2534ConnectionManager.class);
     private final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
-    private final ConnectionProperties connectionProperties;
     private int channelId;
     private int deviceId;
     private int msgId;
 
     public J2534ConnectionManager(ConnectionProperties connectionProperties) {
         checkNotNull(connectionProperties, "connectionProperties");
-        this.connectionProperties = connectionProperties;
-        initJ2534(connectionProperties);
+        initJ2534(connectionProperties.getBaudRate());
     }
 
     // Send request and wait for response with known length
@@ -70,10 +68,10 @@ public final class J2534ConnectionManager implements ConnectionManager {
         closeDevice();
     }
 
-    private void initJ2534(ConnectionProperties connectionProperties) {
+    private void initJ2534(int baudRate) {
         this.deviceId = api.open();
         version(deviceId);
-        this.channelId = api.connect(deviceId, FLAG_ISO9141_NO_CHECKSUM, connectionProperties.getBaudRate());
+        this.channelId = api.connect(deviceId, FLAG_ISO9141_NO_CHECKSUM, baudRate);
         setConfig(channelId);
         this.msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
     }
