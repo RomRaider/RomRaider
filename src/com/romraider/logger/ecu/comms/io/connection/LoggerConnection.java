@@ -21,13 +21,16 @@
 
 package com.romraider.logger.ecu.comms.io.connection;
 
+import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import java.util.Collection;
 
 public interface LoggerConnection {
+    void ecuReset();
+
+    void ecuInit(EcuInitCallback callback);
 
     void sendAddressReads(Collection<EcuQuery> queries);
 
     void close();
-
 }

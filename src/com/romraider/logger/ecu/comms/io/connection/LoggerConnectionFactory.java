@@ -21,23 +21,38 @@
 
 package com.romraider.logger.ecu.comms.io.connection;
 
+import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.j2534.api.J2534ConnectionManager;
+import com.romraider.io.serial.connection.SerialConnectionManager;
 import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 
 public final class LoggerConnectionFactory {
-    private static final LoggerConnectionFactory INSTANCE = new LoggerConnectionFactory();
+    private static final Logger LOGGER = getLogger(LoggerConnectionFactory.class);
 
     private LoggerConnectionFactory() {
     }
 
-    public static LoggerConnectionFactory getInstance() {
-        return INSTANCE;
+    public static LoggerConnection getConnection(String protocolName, String portName, ConnectionProperties connectionProperties) {
+        ConnectionManager manager = getManager(portName, connectionProperties);
+        return instantiateConnection(protocolName, manager);
     }
 
-    public LoggerConnection getLoggerConnection(String protocolName, String portName, ConnectionProperties connectionProperties) {
+    private static ConnectionManager getManager(String portName, ConnectionProperties connectionProperties) {
         try {
-            Class<?> cls = Class.forName(this.getClass().getPackage().getName() + "." + protocolName + "LoggerConnection");
-            return (LoggerConnection) cls.getConstructor(String.class, ConnectionProperties.class).newInstance(portName, connectionProperties);
+            return new J2534ConnectionManager(connectionProperties);
+        } catch (Exception e) {
+            LOGGER.info("J2534 connection not available [" + e.getMessage() + "], trying serial connection...");
+            return new SerialConnectionManager(portName, connectionProperties);
+        }
+    }
+
+    private static LoggerConnection instantiateConnection(String protocolName, ConnectionManager manager) {
+        try {
+            Class<?> cls = Class.forName(LoggerConnectionFactory.class.getPackage().getName() + "." + protocolName + "LoggerConnection");
+            return (LoggerConnection) cls.getConstructor(ConnectionManager.class).newInstance(manager);
         } catch (Exception e) {
             throw new UnsupportedProtocolException("'" + protocolName + "' is not a supported protocol", e);
         }

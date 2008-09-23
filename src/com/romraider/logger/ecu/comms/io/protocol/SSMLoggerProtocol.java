@@ -29,7 +29,10 @@ import static com.romraider.io.protocol.ssm.SSMProtocol.REQUEST_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.SSMResponseProcessor.extractResponseData;
 import static com.romraider.io.protocol.ssm.SSMResponseProcessor.filterRequestFromResponse;
+import com.romraider.logger.ecu.comms.query.EcuInit;
+import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +41,14 @@ import java.util.Map;
 
 public final class SSMLoggerProtocol implements LoggerProtocol {
     private final Protocol protocol = new SSMProtocol();
+
+    public byte[] constructEcuInitRequest() {
+        return protocol.constructEcuInitRequest();
+    }
+
+    public byte[] constructEcuResetRequest() {
+        return protocol.constructEcuResetRequest();
+    }
 
     public byte[] constructReadAddressRequest(Collection<EcuQuery> queries) {
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
@@ -58,6 +69,19 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
 
     public byte[] preprocessResponse(byte[] request, byte[] response) {
         return filterRequestFromResponse(request, response);
+    }
+
+    public void processEcuInitResponse(EcuInitCallback callback, byte[] response) {
+        checkNotNull(callback, "callback");
+        checkNotNullOrEmpty(response, "response");
+        protocol.checkValidEcuInitResponse(response);
+        EcuInit ecuInit = protocol.parseEcuInitResponse(response);
+        callback.callback(ecuInit);
+    }
+
+    public void processEcuResetResponse(byte[] response) {
+        checkNotNullOrEmpty(response, "response");
+        protocol.checkValidEcuResetResponse(response);
     }
 
     // processes the response bytes and sets individual responses on corresponding query objects

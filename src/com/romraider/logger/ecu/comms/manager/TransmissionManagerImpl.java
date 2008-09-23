@@ -23,16 +23,16 @@ package com.romraider.logger.ecu.comms.manager;
 
 import com.romraider.Settings;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
-import com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory;
+import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.exception.NotConnectedException;
-import com.romraider.logger.ecu.exception.SerialCommunicationException;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import java.util.Collection;
 
 public final class TransmissionManagerImpl implements TransmissionManager {
-    private static final Logger LOGGER = Logger.getLogger(TransmissionManagerImpl.class);
+    private static final Logger LOGGER = getLogger(TransmissionManagerImpl.class);
     private final Settings settings;
     private LoggerConnection connection;
 
@@ -43,30 +43,21 @@ public final class TransmissionManagerImpl implements TransmissionManager {
 
     public void start() {
         try {
-            connection = LoggerConnectionFactory.getInstance().getLoggerConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
-                    settings.getLoggerConnectionProperties());
-            LOGGER.info("Connected to: " + settings.getLoggerPort() + "; using protocol: " + settings.getLoggerProtocol() + "; conn props: "
-                    + settings.getLoggerConnectionProperties());
+            connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(), settings.getLoggerConnectionProperties());
+            LOGGER.info("Connected.");
         } catch (Throwable e) {
             stop();
-            throw new SerialCommunicationException("Unable to connect to port: " + settings.getLoggerPort() + ", with protocol: "
-                    + settings.getLoggerProtocol(), e);
         }
     }
 
     public void sendQueries(Collection<EcuQuery> queries) {
         checkNotNull(queries, "queries");
-        if (connection != null) {
-            connection.sendAddressReads(queries);
-        } else {
-            throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
-        }
+        if (connection == null) throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
+        connection.sendAddressReads(queries);
     }
 
     public void stop() {
-        if (connection != null) {
-            connection.close();
-        }
+        if (connection != null) connection.close();
         LOGGER.info("Disconnected.");
     }
 

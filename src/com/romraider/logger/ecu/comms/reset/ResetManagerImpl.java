@@ -22,13 +22,9 @@
 package com.romraider.logger.ecu.comms.reset;
 
 import com.romraider.Settings;
-import com.romraider.io.connection.ConnectionManager;
-import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.j2534.api.J2534ConnectionManager;
-import com.romraider.io.protocol.Protocol;
-import static com.romraider.io.protocol.ProtocolFactory.getProtocol;
+import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
+import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
 import com.romraider.logger.ecu.ui.MessageListener;
-import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
 
@@ -45,22 +41,15 @@ public final class ResetManagerImpl implements ResetManager {
 
     public boolean resetEcu() {
         try {
-            Protocol protocol = getProtocol(settings.getLoggerProtocol());
-            ConnectionProperties connectionProperties = settings.getLoggerConnectionProperties();
-//            ConnectionManager connectionManager = new SerialConnectionManager(settings.getLoggerPort(), connectionProperties);
-            ConnectionManager connectionManager = new J2534ConnectionManager(connectionProperties);
+            LoggerConnection connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
+                    settings.getLoggerConnectionProperties());
             try {
                 messageListener.reportMessage("Sending ECU Reset...");
-                byte[] request = protocol.constructEcuResetRequest();
-                LOGGER.debug("Ecu Reset Request  ---> " + asHex(request));
-                byte[] response = connectionManager.send(request, 500L);
-                byte[] processedResponse = protocol.preprocessResponse(request, response);
-                protocol.checkValidEcuResetResponse(processedResponse);
-                LOGGER.debug("Ecu Reset Response <--- " + asHex(processedResponse));
+                connection.ecuReset();
                 messageListener.reportMessage("Sending ECU Reset...done.");
                 return true;
             } finally {
-                connectionManager.close();
+                connection.close();
             }
         } catch (Exception e) {
             messageListener.reportMessage("Unable to reset ecu - check correct serial port has been selected, cable is connected and ignition is on.");

@@ -43,6 +43,7 @@ public final class J2534ConnectionManager implements ConnectionManager {
     public J2534ConnectionManager(ConnectionProperties connectionProperties) {
         checkNotNull(connectionProperties, "connectionProperties");
         initJ2534(connectionProperties.getBaudRate());
+        LOGGER.info("J2534 connection initialised");
     }
 
     // Send request and wait for response with known length
@@ -66,14 +67,21 @@ public final class J2534ConnectionManager implements ConnectionManager {
         stopMsgFilter();
         disconnectChannel();
         closeDevice();
+        resetHandles();
+        LOGGER.info("J2534 connection closed");
     }
 
     private void initJ2534(int baudRate) {
-        this.deviceId = api.open();
-        version(deviceId);
-        this.channelId = api.connect(deviceId, FLAG_ISO9141_NO_CHECKSUM, baudRate);
-        setConfig(channelId);
-        this.msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
+        deviceId = api.open();
+        try {
+            version(deviceId);
+            channelId = api.connect(deviceId, FLAG_ISO9141_NO_CHECKSUM, baudRate);
+            setConfig(channelId);
+            msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
+        } catch (Exception e) {
+            close();
+            throw new J2534Exception("Error during J2534 init: " + e.getMessage(), e);
+        }
     }
 
     private void version(int deviceId) {
@@ -91,25 +99,31 @@ public final class J2534ConnectionManager implements ConnectionManager {
 
     private void stopMsgFilter() {
         try {
-            api.stopMsgFilter(channelId, msgId);
+            if (channelId > 0 && msgId > 0) api.stopMsgFilter(channelId, msgId);
         } catch (Exception e) {
-            LOGGER.warn("Error stopping msg filter");
+            LOGGER.warn("Error stopping msg filter: " + e.getMessage());
         }
     }
 
     private void disconnectChannel() {
         try {
-            api.disconnect(channelId);
+            if (channelId > 0) api.disconnect(channelId);
         } catch (Exception e) {
-            LOGGER.warn("Error disconnecting channel");
+            LOGGER.warn("Error disconnecting channel: " + e.getMessage());
         }
     }
 
     private void closeDevice() {
         try {
-            api.close(deviceId);
+            if (deviceId > 0) api.close(deviceId);
         } catch (Exception e) {
-            LOGGER.warn("Error closing device");
+            LOGGER.warn("Error closing device: " + e.getMessage());
         }
+    }
+
+    private void resetHandles() {
+        channelId = 0;
+        deviceId = 0;
+        msgId = 0;
     }
 }

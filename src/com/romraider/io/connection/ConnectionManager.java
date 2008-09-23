@@ -22,7 +22,6 @@
 package com.romraider.io.connection;
 
 public interface ConnectionManager {
-
     void send(byte[] request, byte[] response, long sendTimeout);
 
     byte[] send(byte[] bytes, long maxWait);
