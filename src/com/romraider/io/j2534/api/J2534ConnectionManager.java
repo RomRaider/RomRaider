@@ -47,30 +47,20 @@ public final class J2534ConnectionManager implements ConnectionManager {
         initJ2534(connectionProperties);
     }
 
-    private void initJ2534(ConnectionProperties connectionProperties) {
-        this.deviceId = api.open();
-        version(deviceId);
-        this.channelId = api.connect(deviceId, FLAG_ISO9141_NO_CHECKSUM, connectionProperties.getBaudRate());
-        setConfig(channelId);
-        this.msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
-    }
-
     // Send request and wait for response with known length
     public void send(byte[] request, byte[] response, long timeout) {
         checkNotNull(request, "request");
         checkNotNull(request, "response");
-//        api.writeMsg(channelId, request, connectionProperties.getSendTimeout());
-        api.writeMsg(channelId, request, timeout);
         // FIX - should timeout be connectionProperties.getReadTimeout() ??
+        api.writeMsg(channelId, request, timeout);
         api.readMsg(channelId, response, timeout);
     }
 
     // Send request and wait specified time for response with unknown length
     public byte[] send(byte[] bytes, long maxWait) {
         checkNotNull(bytes, "bytes");
-//        api.writeMsg(channelId, bytes, connectionProperties.getSendTimeout());
-        api.writeMsg(channelId, bytes, maxWait);
         // FIX - should maxWait be connectionProperties.getReadTimeout() ??
+        api.writeMsg(channelId, bytes, maxWait);
         return api.readMsg(channelId, maxWait);
     }
 
@@ -78,6 +68,14 @@ public final class J2534ConnectionManager implements ConnectionManager {
         stopMsgFilter();
         disconnectChannel();
         closeDevice();
+    }
+
+    private void initJ2534(ConnectionProperties connectionProperties) {
+        this.deviceId = api.open();
+        version(deviceId);
+        this.channelId = api.connect(deviceId, FLAG_ISO9141_NO_CHECKSUM, connectionProperties.getBaudRate());
+        setConfig(channelId);
+        this.msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
     }
 
     private void version(int deviceId) {
