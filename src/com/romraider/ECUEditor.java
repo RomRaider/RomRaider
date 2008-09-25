@@ -40,7 +40,6 @@ import com.romraider.util.SettingsManagerImpl;
 import com.romraider.xml.DOMRomUnmarshaller;
 import com.romraider.xml.RomNotFoundException;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import com.sun.org.apache.xerces.internal.xni.parser.XMLParseException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import javax.swing.ImageIcon;
@@ -354,7 +353,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         imageList.repaint();
     }
 
-    public void openImage(File inputFile) throws XMLParseException, Exception {
+    public void openImage(File inputFile) throws Exception {
 
         try {
             update(getGraphics());
