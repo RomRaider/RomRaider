@@ -26,6 +26,6 @@
 	<classpathentry kind="lib" path="lib/jdic/jdic.jar"/>
 	<classpathentry kind="lib" path="lib/logger/jfreechart-1.0.9.jar"/>
 	<classpathentry kind="lib" path="lib/logger/jcommon-1.0.12.jar"/>
-	<classpathentry kind="lib" path="lib/logger/jinvoke.jar"/>
+	<classpathentry kind="lib" path="lib/logger/jinvoke-3.0.3.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
