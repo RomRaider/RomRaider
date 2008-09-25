@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.1 Beta RC2 -
+                    - RomRaider 0.5.1 Beta RC3 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,20 +35,22 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.1b RC2 Notes (6/14/2008) -
+- 0.5.1b RC3 Notes (9/25/2008) -
 -------------------------------
-This is the second release candidate before a full 0.5.1b release.
+This is the third release candidate before a full 0.5.1b release.
 
 ---------------------------
-- 0.5.1b RC2 Known Issues -
+- 0.5.1b RC3 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
+  - Table compare is sometimes broken
 - Logger
   - New gauge min/max/step limits incomplete (logger.xml)
   - ECU connections under Linux are flaky (start the logger after
       you've started the engine)
   - AEM UEGO support is a bit flaky
+  - Update latency via injector tab broken for some models (eg. 2007 2.5i)
 - UTEC Logger incomplete
 
 
@@ -56,8 +58,14 @@ This is the second release candidate before a full 0.5.1b release.
 - Change Log -
 --------------
 
+0.5.1b RC3 (9/25/2008)
+----------------------
+
+--- Logger ---
+- OpenPort 2.0 cable integration
+
 0.5.1b RC2 (6/14/2008)
----------------------
+----------------------
 
 --- Editor ---
 - Ramtune Test app menu item name changed to SSM
