@@ -23,13 +23,14 @@ import static com.romraider.io.j2534.op20.OpenPort20.STATUS_NOERROR;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import static java.lang.System.arraycopy;
 import static java.lang.System.currentTimeMillis;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class J2534OpenPort20 implements J2534 {
-    private static final Logger LOGGER = Logger.getLogger(J2534OpenPort20.class);
+    private static final Logger LOGGER = getLogger(J2534OpenPort20.class);
     private final boolean supported = OpenPort20.isSupported();
     private final int protocol;
 
