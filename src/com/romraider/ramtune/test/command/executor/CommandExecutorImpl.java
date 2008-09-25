@@ -22,12 +22,13 @@
 package com.romraider.ramtune.test.command.executor;
 
 import com.romraider.io.connection.ConnectionManager;
+import static com.romraider.io.connection.ConnectionManagerFactory.getManager;
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.serial.connection.SerialConnectionManager;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class CommandExecutorImpl implements CommandExecutor {
+    private static final long SEND_TIMEOUT = 2000L;
     private final ConnectionProperties connectionProperties;
     private final String port;
 
@@ -39,13 +40,11 @@ public final class CommandExecutorImpl implements CommandExecutor {
     }
 
     public byte[] executeCommand(byte[] command) {
-        ConnectionManager connectionManager = new SerialConnectionManager(port, connectionProperties);
+        ConnectionManager connectionManager = getManager(port, connectionProperties);
         try {
-            int timeout = connectionProperties.getSendTimeout();
-            return connectionManager.send(command, timeout);
+            return connectionManager.send(command, SEND_TIMEOUT);
         } finally {
             connectionManager.close();
         }
     }
-
 }

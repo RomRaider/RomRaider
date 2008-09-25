@@ -22,31 +22,17 @@
 package com.romraider.logger.ecu.comms.io.connection;
 
 import com.romraider.io.connection.ConnectionManager;
+import static com.romraider.io.connection.ConnectionManagerFactory.getManager;
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.j2534.api.J2534ConnectionManager;
-import com.romraider.io.serial.connection.SerialConnectionManager;
 import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
-import org.apache.log4j.Logger;
-import static org.apache.log4j.Logger.getLogger;
 
 public final class LoggerConnectionFactory {
-    private static final Logger LOGGER = getLogger(LoggerConnectionFactory.class);
-
     private LoggerConnectionFactory() {
     }
 
     public static LoggerConnection getConnection(String protocolName, String portName, ConnectionProperties connectionProperties) {
         ConnectionManager manager = getManager(portName, connectionProperties);
         return instantiateConnection(protocolName, manager);
-    }
-
-    private static ConnectionManager getManager(String portName, ConnectionProperties connectionProperties) {
-        try {
-            return new J2534ConnectionManager(connectionProperties);
-        } catch (Exception e) {
-            LOGGER.info("J2534 connection not available [" + e.getMessage() + "], trying serial connection...");
-            return new SerialConnectionManager(portName, connectionProperties);
-        }
     }
 
     private static LoggerConnection instantiateConnection(String protocolName, ConnectionManager manager) {

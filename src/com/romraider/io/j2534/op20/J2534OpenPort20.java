@@ -117,7 +117,7 @@ public final class J2534OpenPort20 implements J2534 {
             PassThruMessage msg = doReadMsg(channelId);
             LOGGER.trace("Read Msg: " + toString(msg));
             if (isResponse(msg)) responses.add(data(msg));
-            sleep(10);
+            sleep(2);
         } while (currentTimeMillis() <= end);
         return concat(responses);
     }
