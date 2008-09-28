@@ -35,6 +35,7 @@ import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
+import static java.lang.Math.abs;
 import java.text.DecimalFormat;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
@@ -87,12 +88,15 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                                 calcDisplayValue(compareValue, table.getScale().getExpression()));
 
             } else if (getCompareDisplay() == Table.COMPARE_PERCENT) {
-                double difference = calcDisplayValue(binValue, table.getScale().getExpression()) -
-                        calcDisplayValue(compareValue, table.getScale().getExpression());
+                String expression = table.getScale().getExpression();
+                double thisValue = calcDisplayValue(binValue, expression);
+                double thatValue = calcDisplayValue(compareValue, expression);
+                double difference = thisValue - thatValue;
                 if (difference == 0) {
                     displayValue = "0%";
                 } else {
-                    displayValue = (int) (difference / calcDisplayValue(binValue, table.getScale().getExpression()) * 100) + "%";
+                    double denominator = thisValue == 0.0 ? abs(difference) : thisValue;
+                    displayValue = (int) (difference / denominator * 100) + "%";
                 }
             }
         }
@@ -148,8 +152,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.selected = selected;
         if (selected) {
             this.setBackground(getHighlightColor());
-            table.getFrame().getToolBar().setFineValue(Math.abs(table.getScale().getFineIncrement()));
-            table.getFrame().getToolBar().setCoarseValue(Math.abs(table.getScale().getCoarseIncrement()));
+            table.getFrame().getToolBar().setFineValue(abs(table.getScale().getFineIncrement()));
+            table.getFrame().getToolBar().setCoarseValue(abs(table.getScale().getCoarseIncrement()));
         } else {
             this.setBackground(scaledColor);
         }
