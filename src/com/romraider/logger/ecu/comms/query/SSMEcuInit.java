@@ -23,6 +23,7 @@ package com.romraider.logger.ecu.comms.query;
 
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import static java.lang.System.arraycopy;
 
 public final class SSMEcuInit implements EcuInit {
     private byte[] ecuInitBytes;
@@ -32,7 +33,7 @@ public final class SSMEcuInit implements EcuInit {
         checkNotNullOrEmpty(ecuInitBytes, "ecuInitBytes");
         this.ecuInitBytes = ecuInitBytes;
         byte[] ecuIdBytes = new byte[5];
-        System.arraycopy(ecuInitBytes, 3, ecuIdBytes, 0, 5);
+        arraycopy(ecuInitBytes, 3, ecuIdBytes, 0, 5);
         ecuId = asHex(ecuIdBytes);
     }
 

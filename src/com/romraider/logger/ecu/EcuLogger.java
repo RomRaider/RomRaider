@@ -115,7 +115,7 @@ import static javax.swing.JTabbedPane.BOTTOM;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import static javax.swing.KeyStroke.getKeyStroke;
-import javax.swing.SwingUtilities;
+import static javax.swing.SwingUtilities.invokeLater;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
@@ -243,22 +243,26 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         this.settings = settings;
         EcuInitCallback ecuInitCallback = new EcuInitCallback() {
             public void callback(EcuInit newEcuInit) {
-                LOGGER.info("ECU ID = " + newEcuInit.getEcuId());
-                if (ecuInit == null || !ecuInit.getEcuId().equals(newEcuInit.getEcuId())) {
+                final String ecuId = newEcuInit.getEcuId();
+                LOGGER.info("ECU ID = " + ecuId);
+                if (ecuInit == null || !ecuInit.getEcuId().equals(ecuId)) {
                     ecuInit = newEcuInit;
-                    SwingUtilities.invokeLater(new Runnable() {
+                    invokeLater(new Runnable() {
                         public void run() {
-                            String ecuId = ecuInit.getEcuId();
-                            Map<String, EcuDefinition> ecuDefinitionMap = settings.getLoggerEcuDefinitionMap();
-                            if (!isNullOrEmpty(ecuDefinitionMap)) {
-                                String calId = ecuDefinitionMap.get(ecuId).getCalId();
-                                LOGGER.info("CAL ID = " + calId);
-                                calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
-                            }
+                            String calId = getCalId(ecuId);
+                            LOGGER.info("CAL ID = " + calId);
+                            calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
                             ecuIdLabel.setText(buildEcuInfoLabelText(ECU_ID_LABEL, ecuId));
                             LOGGER.info("Loading logger config for new ECU (ecuid: " + ecuId + ")...");
                             loadLoggerParams();
                             loadUserProfile(settings.getLoggerProfileFilePath());
+                        }
+
+                        private String getCalId(String ecuId) {
+                            Map<String, EcuDefinition> ecuDefinitionMap = settings.getLoggerEcuDefinitionMap();
+                            if (ecuDefinitionMap == null) return null;
+                            EcuDefinition def = ecuDefinitionMap.get(ecuId);
+                            return def == null ? null : def.getCalId();
                         }
                     });
                 }
@@ -1026,7 +1030,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportMessage(final String message) {
         if (message != null) {
-            SwingUtilities.invokeLater(new Runnable() {
+            invokeLater(new Runnable() {
                 public void run() {
                     messageLabel.setText(message);
                     messageLabel.setForeground(BLACK);
@@ -1041,7 +1045,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportStats(final String message) {
         if (!isNullOrEmpty(message)) {
-            SwingUtilities.invokeLater(new Runnable() {
+            invokeLater(new Runnable() {
                 public void run() {
                     statsLabel.setText(message);
                 }
@@ -1058,7 +1062,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     public void reportError(final String error) {
         if (!isNullOrEmpty(error)) {
-            SwingUtilities.invokeLater(new Runnable() {
+            invokeLater(new Runnable() {
                 public void run() {
                     messageLabel.setText("Error: " + error);
                     messageLabel.setForeground(RED);
@@ -1112,7 +1116,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private static void createAndShowGui(final int defaultCloseOperation, final EcuLogger ecuLogger, final boolean fullscreen) {
-        SwingUtilities.invokeLater(new Runnable() {
+        invokeLater(new Runnable() {
             public void run() {
                 doCreateAndShowGui(defaultCloseOperation, ecuLogger, fullscreen);
             }
