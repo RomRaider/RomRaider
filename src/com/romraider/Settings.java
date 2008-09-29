@@ -51,7 +51,7 @@ public class Settings implements Serializable {
     private boolean calcConflictWarning = true;
     private boolean debug = false;
     private int userLevel = 1;
-    private boolean saveDebugTables = false;
+    private boolean saveDebugTables = true;
     private boolean displayHighTables = true;
     private boolean valueLimitWarning = true;
 

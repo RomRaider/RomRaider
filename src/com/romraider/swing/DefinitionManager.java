@@ -233,7 +233,9 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
     }
 
     public void removeSelection() {
-        fileNames.remove(definitionList.getSelectedIndex());
+        int index = definitionList.getSelectedIndex();
+        if (index < 0) return;
+        fileNames.remove(index);
         updateListModel();
 
     }
