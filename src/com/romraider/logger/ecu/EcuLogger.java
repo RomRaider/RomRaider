@@ -233,9 +233,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         initUserInterface();
         initDataUpdateHandlers();
         startPortRefresherThread();
-        if (!isLogging()) {
-            startLogging();
-        }
+        if (!isLogging()) startLogging();
     }
 
     private void bootstrap(final Settings settings) {
@@ -1098,7 +1096,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
 
     public static void startLogger(int defaultCloseOperation, ECUEditor ecuEditor) {
-        final EcuLogger ecuLogger = new EcuLogger(ecuEditor);
+        EcuLogger ecuLogger = new EcuLogger(ecuEditor);
         createAndShowGui(defaultCloseOperation, ecuLogger, false);
     }
 

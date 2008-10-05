@@ -24,11 +24,14 @@ package com.romraider.io.serial.port;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ThreadUtil.sleep;
 import gnu.io.CommPortIdentifier;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 public final class SerialPortRefresher implements Runnable {
+    private static final Logger LOGGER = getLogger(SerialPortRefresher.class);
     private static final long PORT_REFRESH_INTERVAL = 15000L;
     private final SerialPortDiscoverer serialPortDiscoverer = new SerialPortDiscovererImpl();
     private final SerialPortRefreshListener listener;
@@ -57,7 +60,8 @@ public final class SerialPortRefresher implements Runnable {
     private void refreshPortList() {
         try {
             listener.refreshPortList(listSerialPorts(), defaultLoggerPort);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            LOGGER.error("Error refreshing serial ports", e);
         }
     }
 
@@ -72,5 +76,4 @@ public final class SerialPortRefresher implements Runnable {
         }
         return portNames;
     }
-
 }

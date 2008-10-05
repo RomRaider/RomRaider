@@ -29,7 +29,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 public final class SerialPortDiscovererImpl implements SerialPortDiscoverer {
-
     @SuppressWarnings({"unchecked"})
     public List<CommPortIdentifier> listPorts() {
         List<CommPortIdentifier> serialPortIdentifiers = new ArrayList<CommPortIdentifier>();
