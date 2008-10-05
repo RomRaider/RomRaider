@@ -22,6 +22,7 @@
 package com.romraider.logger.ecu.ui.swing.menubar.util;
 
 import com.romraider.logger.ecu.profile.UserProfile;
+import com.romraider.swing.GenericFileFilter;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import javax.swing.JFileChooser;
 import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
@@ -41,14 +42,11 @@ public final class FileHelper {
     }
 
     public static JFileChooser getProfileFileChooser(File lastProfileFile) {
-        JFileChooser fc;
-        if (lastProfileFile.exists() && lastProfileFile.isFile() && lastProfileFile.getParentFile() != null) {
-            fc = new JFileChooser(lastProfileFile.getParentFile().getAbsolutePath());
-        } else {
-            fc = new JFileChooser();
-        }
-        fc.setFileFilter(new UserProfileFileFilter());
-        return fc;
+        return getFileChooser(lastProfileFile, "ECU Logger User Profiles", "xml");
+    }
+
+    public static JFileChooser getDefinitionFileChooser(File lastDefFile) {
+        return getFileChooser(lastDefFile, "ECU Logger Definitions", "xml");
     }
 
     public static String saveProfileToFile(UserProfile profile, File destinationFile) throws IOException {
@@ -75,5 +73,18 @@ public final class FileHelper {
         }
         fc.setFileSelectionMode(DIRECTORIES_ONLY);
         return fc;
+    }
+
+    private static JFileChooser getFileChooser(File file, String description, String... extensions) {
+        JFileChooser fc = getFileChooser(file);
+        fc.setFileFilter(new GenericFileFilter(description, extensions));
+        return fc;
+    }
+
+    private static JFileChooser getFileChooser(File file) {
+        if (file.exists() && file.isFile() && file.getParentFile() != null) {
+            return new JFileChooser(file.getParentFile().getAbsolutePath());
+        }
+        return new JFileChooser();
     }
 }

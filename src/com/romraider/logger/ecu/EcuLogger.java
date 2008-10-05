@@ -310,7 +310,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         dashboardTabExternalListTableModel = new ParameterListTableModel(dashboardTabBroker, HEADING_EXTERNAL);
     }
 
-    private void loadLoggerParams() {
+    public void loadLoggerParams() {
         loadLoggerConfig();
         loadFromExternalDataSources();
     }
@@ -370,7 +370,7 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void loadLoggerConfig() {
         try {
             EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-            dataLoader.loadConfigFromXml(settings.getLoggerConfigFilePath(), settings.getLoggerProtocol(),
+            dataLoader.loadConfigFromXml(settings.getLoggerDefinitionFilePath(), settings.getLoggerProtocol(),
                     settings.getFileLoggingControllerSwitchId(), ecuInit);
             List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
             addConvertorUpdateListeners(ecuParams);

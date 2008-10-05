@@ -31,6 +31,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.LoadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileAbsoluteTimestampAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileControllerSwitchAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileLocationAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDefinitionLocationAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ReloadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ResetConnectionAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ResetEcuAction;
@@ -76,6 +77,7 @@ public class EcuLoggerMenuBar extends JMenuBar {
 
         // settings menu items
         JMenu settingsMenu = new EcuLoggerMenu("Settings", VK_S);
+        settingsMenu.add(new EcuLoggerMenuItem("Logger Definition Location...", new LoggerDefinitionLocationAction(logger), VK_D, getKeyStroke(VK_D, CTRL_MASK)));
         settingsMenu.add(new EcuLoggerMenuItem("Log File Output Location...", new LogFileLocationAction(logger), VK_O, getKeyStroke(VK_O, CTRL_MASK)));
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new EcuLoggerRadioButtonMenuItem("Control File Logging With Defogger Switch", VK_C, getKeyStroke(VK_C, CTRL_MASK), new LogFileControllerSwitchAction(logger), logger.getSettings().isFileLoggingControllerSwitchActive()));

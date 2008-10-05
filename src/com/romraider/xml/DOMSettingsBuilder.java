@@ -260,6 +260,11 @@ public final class DOMSettingsBuilder {
         tabs.setAttribute("selected", String.valueOf(settings.getLoggerSelectedTabIndex()));
         loggerSettings.appendChild(tabs);
 
+        // definition path
+        IIOMetadataNode definition = new IIOMetadataNode("definition");
+        definition.setAttribute("path", settings.getLoggerDefinitionFilePath());
+        loggerSettings.appendChild(definition);
+
         // profile path
         IIOMetadataNode profile = new IIOMetadataNode("profile");
         profile.setAttribute("path", settings.getLoggerProfileFilePath());
