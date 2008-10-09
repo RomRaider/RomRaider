@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.1 Beta RC3 -
+                    - RomRaider 0.5.1 Beta RC4 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,16 +35,15 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.1b RC3 Notes (9/25/2008) -
+- 0.5.1b RC4 Notes (10/9/2008) -
 -------------------------------
-This is the third release candidate before a full 0.5.1b release.
+This is the fourth release candidate before a full 0.5.1b release.
 
 ---------------------------
-- 0.5.1b RC3 Known Issues -
+- 0.5.1b RC4 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
-  - Table compare is sometimes broken
 - Logger
   - New gauge min/max/step limits incomplete (logger.xml)
   - ECU connections under Linux are flaky (start the logger after
@@ -57,6 +56,18 @@ This is the third release candidate before a full 0.5.1b release.
 --------------
 - Change Log -
 --------------
+
+0.5.1b RC4 (10/9/2008)
+----------------------
+
+--- Editor ---
+- Table compare bug fixed.
+- Debug save mode enabled by default.
+
+--- Logger ---
+- Some refactoring around serial port handling.
+- Fix display of unknown rom ids.
+- Add config item for logger definition location.
 
 0.5.1b RC3 (9/25/2008)
 ----------------------
