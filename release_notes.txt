@@ -63,6 +63,7 @@ This is the fourth release candidate before a full 0.5.1b release.
 --- Editor ---
 - Table compare bug fixed.
 - Debug save mode enabled by default.
+- Already running detection port changed to 50001.
 
 --- Logger ---
 - Some refactoring around serial port handling.
