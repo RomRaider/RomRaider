@@ -83,7 +83,10 @@ public final class FileHelper {
 
     private static JFileChooser getFileChooser(File file) {
         if (file.exists() && file.isFile() && file.getParentFile() != null) {
-            return new JFileChooser(file.getParentFile().getAbsolutePath());
+            String dir = file.getParentFile().getAbsolutePath();
+            JFileChooser fc = new JFileChooser(dir);
+            fc.setSelectedFile(file);
+            return fc;
         }
         return new JFileChooser();
     }

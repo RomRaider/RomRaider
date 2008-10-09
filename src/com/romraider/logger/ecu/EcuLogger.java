@@ -322,18 +322,30 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void startPortRefresherThread() {
-        SerialPortRefresher serialPortRefresher = new SerialPortRefresher(portsComboBox, settings.getLoggerPortDefault());
-        runAsDaemon(serialPortRefresher);
+        SerialPortRefresher refresher = new SerialPortRefresher(portsComboBox, settings.getLoggerPortDefault());
+        runAsDaemon(refresher);
         // wait until port refresher fully started before continuing
+        waitForSerialPortRefresher(refresher);
+    }
+
+    private void waitForSerialPortRefresher(SerialPortRefresher refresher) {
+        try {
+            doWait(refresher);
+        } catch (PortNotFoundException e) {
+            LOGGER.warn("Timeout while waiting for serial port refresher - continuing anyway...");
+        }
+    }
+
+    private void doWait(SerialPortRefresher refresher) {
         long start = currentTimeMillis();
-        while (!serialPortRefresher.isStarted()) {
+        while (!refresher.isStarted()) {
             checkSerialPortRefresherTimeout(start);
             sleep(100);
         }
     }
 
     private void checkSerialPortRefresherTimeout(long start) {
-        if (currentTimeMillis() - start > 5000) throw new PortNotFoundException("Timeout while finding serial ports");
+        if (currentTimeMillis() - start > 2000) throw new PortNotFoundException("Timeout while finding serial ports");
     }
 
     private void initUserInterface() {
