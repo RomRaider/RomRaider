@@ -108,10 +108,6 @@ public class Settings implements Serializable {
     }
 
     public Vector<File> getEcuDefinitionFiles() {
-        if (ecuDefinitionFiles.isEmpty()) {
-            // if no files defined, add default
-            ecuDefinitionFiles.add(new File("ecu_defs.xml"));
-        }
         return ecuDefinitionFiles;
     }
 

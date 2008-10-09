@@ -50,7 +50,7 @@
                      excludes="*.bmp"/>
 
             <!-- Logger files -->
-            <file src="logger.xml" targetdir="$INSTALL_PATH"/>
+            <!--<file src="logger.xml" targetdir="$INSTALL_PATH"/>-->
             <file src="logger.dtd" targetdir="$INSTALL_PATH"/>
             <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
             <file src="utec/utec.properties" targetdir="$INSTALL_PATH/utec"/>
@@ -127,12 +127,12 @@
         </pack>
         <!-- END Base Pack -->
 
-        <pack name="ECU Definitions" required="no">
-            <description>
-                The latest official ECU definitions
-            </description>
-            <file src="ecu_defs/ecu_defs.xml" targetdir="$INSTALL_PATH"/>
-        </pack>
+        <!--<pack name="ECU Definitions" required="no">-->
+        <!--<description>-->
+        <!--The latest official ECU definitions-->
+        <!--</description>-->
+        <!--<file src="ecu_defs/ecu_defs.xml" targetdir="$INSTALL_PATH"/>-->
+        <!--</pack>-->
 
         <pack name="Source Files" required="no">
             <description>@name.package@ Source Files</description>
