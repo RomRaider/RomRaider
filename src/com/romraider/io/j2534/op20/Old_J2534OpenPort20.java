@@ -21,18 +21,20 @@ import static com.romraider.io.j2534.op20.OpenPort20.PassThruWriteMsgs;
 import static com.romraider.io.j2534.op20.OpenPort20.STATUS_ERR_TIMEOUT;
 import static com.romraider.io.j2534.op20.OpenPort20.STATUS_NOERROR;
 import static com.romraider.util.HexUtil.asHex;
+import static com.romraider.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import static java.lang.System.arraycopy;
+import static java.lang.System.currentTimeMillis;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class J2534OpenPort20 implements J2534 {
+public final class Old_J2534OpenPort20 implements J2534 {
     private static final Logger LOGGER = getLogger(J2534OpenPort20.class);
     private final boolean supported = OpenPort20.isSupported();
     private final int protocol;
 
-    public J2534OpenPort20(int protocol) {
+    public Old_J2534OpenPort20(int protocol) {
         this.protocol = protocol;
     }
 
@@ -98,27 +100,26 @@ public final class J2534OpenPort20 implements J2534 {
     }
 
     public void readMsg(int channelId, byte[] response, long timeout) {
-        byte[] data = readMsg(channelId, timeout);
-        arraycopy(data, 0, response, 0, response.length);
+        int index = 0;
+        long end = currentTimeMillis() + timeout;
+        do {
+            PassThruMessage msg = doReadMsg(channelId);
+            LOGGER.trace("Read Msg: " + toString(msg));
+            if (!isResponse(msg)) continue;
+            arraycopy(msg.Data, 0, response, index, msg.DataSize);
+            index += msg.DataSize;
+        } while (currentTimeMillis() <= end && index < response.length - 1);
     }
 
     public byte[] readMsg(int channelId, long maxWait) {
-        byte[] data = doReadMsg(channelId, (int) maxWait);
-        LOGGER.trace("Response: " + asHex(data));
-        return data;
-    }
-
-    private byte[] doReadMsg(int channelId, int timeout) {
-        PassThruMessage msg = passThruMessage();
-        int[] pNumMsgs = {1};
         List<byte[]> responses = new ArrayList<byte[]>();
-        for (int i = 0; i < 4; i++) {
-            int status = PassThruReadMsgs(channelId, msg, pNumMsgs, timeout);
-            if (status != STATUS_NOERROR && status != STATUS_ERR_TIMEOUT) handleError(status);
+        long end = currentTimeMillis() + maxWait;
+        do {
+            PassThruMessage msg = doReadMsg(channelId);
             LOGGER.trace("Read Msg: " + toString(msg));
-            if (!isResponse(msg)) continue;
-            responses.add(data(msg));
-        }
+            if (isResponse(msg)) responses.add(data(msg));
+            sleep(2);
+        } while (currentTimeMillis() <= end);
         return concat(responses);
     }
 
@@ -144,6 +145,14 @@ public final class J2534OpenPort20 implements J2534 {
     private boolean isResponse(PassThruMessage msg) {
         if (msg.RxStatus != 0x00) return false;
         return msg.Timestamp != 0;
+    }
+
+    private PassThruMessage doReadMsg(int channelId) {
+        PassThruMessage msg = passThruMessage();
+        int[] pNumMsgs = {1};
+        int status = PassThruReadMsgs(channelId, msg, pNumMsgs, 0);
+        if (status != STATUS_NOERROR && status != STATUS_ERR_TIMEOUT) handleError(status);
+        return msg;
     }
 
     public void stopMsgFilter(int channelId, int msgId) {
