@@ -108,17 +108,20 @@ public final class J2534OpenPort20 implements J2534 {
         return data;
     }
 
+    // FIX - Optimise & cleanup!!!
     private byte[] doReadMsg(int channelId, int timeout) {
-        PassThruMessage msg = passThruMessage();
-        int[] pNumMsgs = {1};
+        PassThruMessage msg1 = passThruMessage();
+        PassThruMessage msg2 = passThruMessage();
+        PassThruMessage msg3 = passThruMessage();
+        PassThruMessage msg4 = passThruMessage();
+        PassThruMessage[] msgs = {msg1, msg2, msg3, msg4};
+        int[] pNumMsgs = {4};
+        int status = PassThruReadMsgs(channelId, msgs, pNumMsgs, timeout);
+        if (status != STATUS_NOERROR && status != STATUS_ERR_TIMEOUT) handleError(status);
+        LOGGER.trace("Read Msg: " + toString(msg2) + toString(msg4));
         List<byte[]> responses = new ArrayList<byte[]>();
-        for (int i = 0; i < 4; i++) {
-            int status = PassThruReadMsgs(channelId, msg, pNumMsgs, timeout);
-            if (status != STATUS_NOERROR && status != STATUS_ERR_TIMEOUT) handleError(status);
-            LOGGER.trace("Read Msg: " + toString(msg));
-            if (!isResponse(msg)) continue;
-            responses.add(data(msg));
-        }
+        responses.add(data(msg2));
+        responses.add(data(msg4));
         return concat(responses);
     }
 
