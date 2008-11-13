@@ -14,8 +14,8 @@ public final class ConnectionManagerFactory {
     public static ConnectionManager getManager(String portName, ConnectionProperties connectionProperties) {
         try {
             return new J2534ConnectionManager(connectionProperties);
-        } catch (Exception e) {
-            LOGGER.info("J2534 connection not available [" + e.getMessage() + "], trying serial connection...");
+        } catch (Throwable t) {
+            LOGGER.info("J2534 connection not available [" + t.getClass().getName() + ": " + t.getMessage() + "], trying serial connection...");
             return new SerialConnectionManager(portName, connectionProperties);
         }
     }
