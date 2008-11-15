@@ -6,10 +6,9 @@
 
     <info>
         <appname>@name.package@</appname>
-        <appversion>@version.major@.@version.minor@.@version.patch@ @version.extra@</appversion>
+        <appversion>@version.major@.@version.minor@.@version.patch@ @version.extra@ @version.extra1@</appversion>
         <authors>
-            <author name="@name.maintainer@"
-                    email="@email.maintainer@"/>
+            <author name="@name.maintainer@" email="@email.maintainer@"/>
         </authors>
         <url>@supporturl@</url>
     </info>

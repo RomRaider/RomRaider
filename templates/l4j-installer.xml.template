@@ -4,7 +4,7 @@
     <dontWrapJar>false</dontWrapJar>
     <headerType>gui</headerType>
     <jar>windows/@name.package@@version.major@.@version.minor@.@version.patch@-@version.buildnumber@-windows.jar</jar>
-    <outfile>windows/@name.package@Setup@version.major@.@version.minor@.@version.patch@@version.extra@.exe</outfile>
+    <outfile>windows/@name.package@@version.major@.@version.minor@.@version.patch@@version.extra@@version.extra1@-setup.exe</outfile>
     <errTitle></errTitle>
     <cmdLine></cmdLine>
     <chdir>.</chdir>
@@ -31,14 +31,14 @@
     </splash>
     <versionInfo>
         <fileVersion>@version.major@.@version.minor@.@version.patch@.@version.buildnumber@</fileVersion>
-        <txtFileVersion>@version.major@.@version.minor@.@version.patch@ @version.extra@</txtFileVersion>
+        <txtFileVersion>@version.major@.@version.minor@.@version.patch@ @version.extra@ @version.extra1@</txtFileVersion>
         <fileDescription>@name.package@</fileDescription>
         <copyright>@name.organization@</copyright>
         <productVersion>@version.major@.@version.minor@.@version.patch@.@version.buildnumber@</productVersion>
-        <txtProductVersion>@version.major@.@version.minor@.@version.patch@ @version.extra@</txtProductVersion>
+        <txtProductVersion>@version.major@.@version.minor@.@version.patch@ @version.extra@ @version.extra1@</txtProductVersion>
         <productName>@name.package@</productName>
         <companyName>@name.organization@</companyName>
-        <internalName>@version.major@.@version.minor@.@version.patch@@version.extra1@</internalName>
+        <internalName>@version.major@.@version.minor@.@version.patch@ @version.extra@</internalName>
         <originalFilename>@name.package@.exe</originalFilename>
     </versionInfo>
 </launch4jConfig>
