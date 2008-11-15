@@ -49,9 +49,7 @@ public final class LookAndFeelManager {
                 System.setProperty("com.apple.mrj.application.apple.menu.about.name", PRODUCT_NAME);
             }
 
-            // Linux has issues with the gtk look and feel themes.
-            if (isPlatform(LINUX)) setLookAndFeel(getCrossPlatformLookAndFeelClassName());
-            else setLookAndFeel(getSystemLookAndFeelClassName());
+            setLookAndFeel(getLookAndFeel());
 
             // make sure we have nice window decorations.
             JFrame.setDefaultLookAndFeelDecorated(true);
@@ -62,7 +60,14 @@ public final class LookAndFeelManager {
         }
     }
 
-    private static boolean isPlatform(final String platform) {
+    private static boolean isPlatform(String platform) {
         return System.getProperties().getProperty(OS_NAME).toLowerCase().contains(platform.toLowerCase());
+    }
+
+    private static String getLookAndFeel() {
+//        if (true) return "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+        // Linux has issues with the gtk look and feel themes.
+        if (isPlatform(LINUX)) return getCrossPlatformLookAndFeelClassName();
+        return getSystemLookAndFeelClassName();
     }
 }
