@@ -26,9 +26,8 @@ public final class TimerWrapper implements Wrapper {
     }
 
     private void log(Method method, long time) {
-        if (!LOGGER.isTraceEnabled()) return;
         String c = delegate.getClass().getSimpleName();
         String m = method.getName();
-        LOGGER.trace("[TIMER] - " + c + "." + m + ": " + time + "ms");
+        LOGGER.error("[TIMER] - " + c + "." + m + ": " + time + "ms");
     }
 }

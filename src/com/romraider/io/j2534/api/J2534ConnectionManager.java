@@ -23,22 +23,22 @@ package com.romraider.io.j2534.api;
 
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.j2534.op20.J2534OpenPort20;
+import com.romraider.io.j2534.op20.Old_J2534OpenPort20;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P1_MAX;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P3_MIN;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P4_MIN;
 import static com.romraider.io.j2534.op20.OpenPort20.FLAG_ISO9141_NO_CHECKSUM;
 import static com.romraider.io.j2534.op20.OpenPort20.PROTOCOL_ISO9141;
 import static com.romraider.util.ParamChecker.checkNotNull;
-import static com.romraider.util.proxy.Proxifier.proxy;
-import com.romraider.util.proxy.TimerWrapper;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 
 public final class J2534ConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = getLogger(J2534ConnectionManager.class);
+    private final J2534 api = new Old_J2534OpenPort20(PROTOCOL_ISO9141);
+//    private final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
     //    private final J2534 api = proxy(new Old_J2534OpenPort20(PROTOCOL_ISO9141), TimerWrapper.class);
-    private final J2534 api = proxy(new J2534OpenPort20(PROTOCOL_ISO9141), TimerWrapper.class);
+    //    private final J2534 api = proxy(new J2534OpenPort20(PROTOCOL_ISO9141), TimerWrapper.class);
     private int channelId;
     private int deviceId;
     private int msgId;
