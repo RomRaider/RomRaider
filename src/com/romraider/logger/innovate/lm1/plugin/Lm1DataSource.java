@@ -24,7 +24,6 @@ package com.romraider.logger.innovate.lm1.plugin;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
-import com.romraider.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
 import com.romraider.logger.innovate.generic.io.InnovateRunnerImpl;
 import com.romraider.logger.innovate.generic.plugin.InnovateSettings;
 import com.romraider.logger.innovate.generic.plugin.InnovateSettingsImpl;
@@ -51,7 +50,7 @@ public final class Lm1DataSource implements ExternalDataSource {
     }
 
     public Action getMenuAction(EcuLogger logger) {
-        return new GenericPluginMenuAction(logger, this);
+        throw new UnsupportedOperationException();
     }
 
     public void setPort(String port) {
@@ -68,8 +67,6 @@ public final class Lm1DataSource implements ExternalDataSource {
     }
 
     public void disconnect() {
-        if (runner != null) {
-            runner.stop();
-        }
+        if (runner != null) runner.stop();
     }
 }

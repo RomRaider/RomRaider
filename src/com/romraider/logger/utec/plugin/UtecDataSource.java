@@ -24,7 +24,6 @@ package com.romraider.logger.utec.plugin;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
-import com.romraider.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
 import static com.romraider.logger.utec.commInterface.UtecInterface.closeConnection;
 import static com.romraider.logger.utec.commInterface.UtecInterface.getPortChoiceUsed;
 import static com.romraider.logger.utec.commInterface.UtecInterface.openConnection;
@@ -60,7 +59,7 @@ public final class UtecDataSource implements ExternalDataSource {
     }
 
     public Action getMenuAction(EcuLogger logger) {
-        return new GenericPluginMenuAction(logger, this);
+        throw new UnsupportedOperationException();
     }
 
     public void setPort(String port) {

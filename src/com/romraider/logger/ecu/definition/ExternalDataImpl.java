@@ -108,10 +108,7 @@ public final class ExternalDataImpl implements ExternalData {
     }
 
     private void updateConnection(boolean connect) {
-        if (connect) {
-            dataSource.connect();
-        } else {
-            dataSource.disconnect();
-        }
+        if (connect) dataSource.connect();
+        else dataSource.disconnect();
     }
 }

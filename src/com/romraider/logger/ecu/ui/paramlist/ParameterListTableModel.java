@@ -117,10 +117,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
 
     private void setSelected(ParameterRow paramRow, boolean selected) {
         paramRow.setSelected(selected);
-        if (selected) {
-            broker.registerLoggerDataForLogging(paramRow.getLoggerData());
-        } else {
-            broker.deregisterLoggerDataFromLogging(paramRow.getLoggerData());
-        }
+        if (selected) broker.registerLoggerDataForLogging(paramRow.getLoggerData());
+        else broker.deregisterLoggerDataFromLogging(paramRow.getLoggerData());
     }
 }

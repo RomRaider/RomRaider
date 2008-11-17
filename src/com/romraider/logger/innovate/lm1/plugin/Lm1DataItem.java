@@ -42,11 +42,8 @@ public final class Lm1DataItem implements ExternalDataItem, DataListener {
     }
 
     public double getData() {
-        if (bytes != null) {
-            return convertor.convert(bytes);
-        } else {
-            return 0.0;
-        }
+        if (bytes == null) return 0.0;
+        return convertor.convert(bytes);
     }
 
     public void setBytes(byte[] bytes) {

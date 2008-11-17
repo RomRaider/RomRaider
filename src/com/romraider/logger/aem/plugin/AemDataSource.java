@@ -25,7 +25,6 @@ import com.romraider.logger.aem.io.AemRunnerImpl;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
-import com.romraider.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import javax.swing.Action;
 import static java.util.Arrays.asList;
@@ -49,7 +48,7 @@ public final class AemDataSource implements ExternalDataSource {
     }
 
     public Action getMenuAction(EcuLogger logger) {
-        return new GenericPluginMenuAction(logger, this);
+        throw new UnsupportedOperationException();
     }
 
     public void setPort(String port) {
@@ -66,8 +65,6 @@ public final class AemDataSource implements ExternalDataSource {
     }
 
     public void disconnect() {
-        if (runner != null) {
-            runner.stop();
-        }
+        if (runner != null) runner.stop();
     }
 }

@@ -22,13 +22,19 @@
 package com.romraider.logger.ecu.external;
 
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.ecu.ui.swing.menubar.action.GenericPluginMenuAction;
 import static com.romraider.util.ParamChecker.checkNotNull;
+import com.romraider.util.Stoppable;
+import static com.romraider.util.ThreadUtil.runAsDaemon;
 import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import javax.swing.Action;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class GenericDataSourceManager implements ExternalDataSource {
-    private static final Logger LOGGER = Logger.getLogger(GenericDataSourceManager.class);
+    private static final Logger LOGGER = getLogger(GenericDataSourceManager.class);
+    private final List<Stoppable> connectors = new ArrayList<Stoppable>();
     private final ExternalDataSource dataSource;
     private int connectCount;
 
@@ -50,13 +56,14 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     public Action getMenuAction(EcuLogger logger) {
-        return dataSource.getMenuAction(logger);
+        return new GenericPluginMenuAction(logger, this);
     }
 
-    public void setPort(String port) {
+    public synchronized void setPort(String port) {
+        String old = getPort();
+        if (port == old || port != null && port.equals(old)) return;
         LOGGER.info(dataSource.getName() + ": port " + port + " selected");
-        dataSource.setPort(port);
-        reconnect();
+        reconnect(port);
     }
 
     public String getPort() {
@@ -64,33 +71,35 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     public synchronized void connect() {
-        try {
-            if (connectCount == 0) {
-                LOGGER.info(dataSource.getName() + ": connecting");
-                dataSource.connect();
-            }
-            connectCount++;
-            LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
-        } catch (Exception e) {
-            LOGGER.error("External Datasource [" + dataSource.getName() + "] connect error", e);
-        }
+        if (connectCount++ == 0) doConnect();
+        LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
     }
 
     public synchronized void disconnect() {
+        if (connectCount-- == 1) doDisconnect();
+        if (connectCount < 0) connectCount = 0;
+        LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
+    }
+
+    private void doConnect() {
+        Stoppable connector = new GenericDataSourceConnector(dataSource);
+        connectors.add(connector);
+        runAsDaemon(connector);
+    }
+
+    private void doDisconnect() {
         try {
-            if (connectCount == 1) {
-                LOGGER.info(dataSource.getName() + ": disconnecting");
-                dataSource.disconnect();
-            }
-            connectCount = connectCount > 0 ? connectCount - 1 : 0;
-            LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
+            LOGGER.info(dataSource.getName() + ": disconnecting");
+            while (!connectors.isEmpty()) connectors.remove(0).stop();
+            dataSource.disconnect();
         } catch (Exception e) {
             LOGGER.error("External Datasource [" + dataSource.getName() + "] disconnect error", e);
         }
     }
 
-    private synchronized void reconnect() {
-        disconnect();
-        connect();
+    private void reconnect(String port) {
+        dataSource.setPort(port);
+        doDisconnect();
+        doConnect();
     }
 }
