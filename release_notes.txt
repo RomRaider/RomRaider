@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.1 Beta RC4 -
+                    - RomRaider 0.5.1 Beta RC5 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,12 +35,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.1b RC4 Notes (10/9/2008) -
+- 0.5.1b RC5 Notes (10/9/2008) -
 -------------------------------
-This is the fourth release candidate before a full 0.5.1b release.
+This is the fifth release candidate before a full 0.5.1b release.
 
 ---------------------------
-- 0.5.1b RC4 Known Issues -
+- 0.5.1b RC5 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -56,6 +56,13 @@ This is the fourth release candidate before a full 0.5.1b release.
 --------------
 - Change Log -
 --------------
+
+0.5.1b RC5 (11/17/2008)
+----------------------
+
+--- Logger ---
+- J2534 api tweaks.
+- External sensor connection handling updated.
 
 0.5.1b RC4 (10/9/2008)
 ----------------------
