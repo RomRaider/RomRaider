@@ -40,6 +40,7 @@ import java.text.DecimalFormat;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final Logger LOGGER = Logger.getLogger(DataCell.class);
+    private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
     private final Border defaultBorder = createLineBorder(BLACK, 1);
     private final Border modifiedBorder = createLineBorder(RED, 3);
     private final Font defaultFont = new Font("Arial", Font.BOLD, 12);
@@ -93,10 +94,12 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                 double thatValue = calcDisplayValue(compareValue, expression);
                 double difference = thisValue - thatValue;
                 if (difference == 0) {
-                    displayValue = "0%";
+                    displayValue = PERCENT_FORMAT.format(0.0);
+                } else if (thatValue == 0.0) {
+                    displayValue = '\u221e' + "%";
                 } else {
-                    double denominator = thisValue == 0.0 ? abs(difference) : thisValue;
-                    displayValue = (int) (difference / denominator * 100) + "%";
+                    double d = difference / abs(thatValue);
+                    displayValue = PERCENT_FORMAT.format(d);
                 }
             }
         }

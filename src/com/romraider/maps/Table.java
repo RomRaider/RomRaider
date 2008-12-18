@@ -997,11 +997,9 @@ public abstract class Table extends JPanel implements Serializable {
         if ("[Table1D]".equalsIgnoreCase(pasteType)) { // copied entire table
             int i = 0;
             while (st.hasMoreTokens()) {
-                String currentToken = st.nextToken();
                 try {
-                    if (!data[i].getText().equalsIgnoreCase(currentToken)) {
-                        data[i].setCompareRealValue(currentToken);
-                    }
+                    String currentToken = st.nextToken();
+                    data[i].setCompareRealValue(currentToken);
                 } catch (ArrayIndexOutOfBoundsException ex) { /* table larger than target, ignore*/ }
                 i++;
             }
