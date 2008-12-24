@@ -28,7 +28,6 @@ import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.SUPPORT_URL;
 import static com.romraider.Version.VERSION;
 import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.utec.gui.JutecGUI;
 import com.romraider.maps.Rom;
 import com.romraider.ramtune.test.RamTuneTestApp;
 import javax.swing.ButtonGroup;
@@ -79,7 +78,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private JMenu loggerMenu = new JMenu("Logger");
     private JMenuItem openLogger = new JMenuItem("Launch ECU Logger...");
-    private JMenuItem utecLogger = new JMenuItem("Launch UTEC Logger...");
 
     private JMenu ramTuneMenu = new JMenu("SSM");
     private JMenuItem launchRamTuneTestApp = new JMenuItem("Launch Test App...");
@@ -182,9 +180,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         loggerMenu.setMnemonic('L');
         openLogger.setMnemonic('O');
         loggerMenu.add(openLogger);
-        loggerMenu.add(utecLogger);
         openLogger.addActionListener(this);
-        utecLogger.addActionListener(this);
 
         // ramtune menu stuff
         add(ramTuneMenu);
@@ -292,9 +288,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == openLogger) {
             EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent);
-
-        } else if (e.getSource() == utecLogger) {
-            JutecGUI.startLogger(DISPOSE_ON_CLOSE, parent.getSettings());
 
         } else if (e.getSource() == updateDefinition) {
             BareBonesBrowserLaunch.openURL(ECU_DEFS_URL);

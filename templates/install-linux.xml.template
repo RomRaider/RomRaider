@@ -49,11 +49,9 @@
             <!--<file src="logger.xml" targetdir="$INSTALL_PATH"/>-->
             <file src="logger.dtd" targetdir="$INSTALL_PATH"/>
             <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
-            <file src="utec/utec.properties" targetdir="$INSTALL_PATH/utec"/>
             <file src="plugins/aem.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/lc1.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/lm1.plugin" targetdir="$INSTALL_PATH/plugins"/>
-            <file src="plugins/utec.plugin" targetdir="$INSTALL_PATH/plugins"/>
 
             <file src="lib/BareBonesBrowserLaunch.jar"
                   targetdir="$INSTALL_PATH/lib"/>

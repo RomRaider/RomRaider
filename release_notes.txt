@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.1 Beta RC5 -
+                    - RomRaider 0.5.1 Beta -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,12 +35,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.1b RC5 Notes (10/9/2008) -
+- 0.5.1b Notes (12/24/2008) -
 -------------------------------
-This is the fifth release candidate before a full 0.5.1b release.
+This is the official 0.5.1b release.
 
 ---------------------------
-- 0.5.1b RC5 Known Issues -
+- 0.5.1b Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -50,12 +50,21 @@ This is the fifth release candidate before a full 0.5.1b release.
       you've started the engine)
   - AEM UEGO support is a bit flaky
   - Update latency via injector tab broken for some models (eg. 2007 2.5i)
-- UTEC Logger incomplete
 
 
 --------------
 - Change Log -
 --------------
+
+0.5.1b (12/24/2008)
+----------------------
+
+--- Editor ---
+- Table compare bug fixed.
+- Table drag speed improvements (disabled D3D use).
+
+--- Logger ---
+- Removed all UTEC integration.
 
 0.5.1b RC5 (11/17/2008)
 ----------------------
