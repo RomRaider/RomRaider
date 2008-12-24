@@ -1,5 +1,4 @@
 /*
- *
  * RomRaider Open-Source Tuning, Logging and Reflashing
  * Copyright (C) 2006-2008 RomRaider.com
  *
@@ -16,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
  */
 
 // Parses attributes from ROM XML
@@ -84,11 +82,9 @@ public final class RomAttributeParser {
             return TABLE_3D;
         } else if (input.equalsIgnoreCase("2D") || input.equalsIgnoreCase(String.valueOf(TABLE_2D))) {
             return TABLE_2D;
-        } else
-        if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_X_AXIS))) {
+        } else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_X_AXIS))) {
             return TABLE_X_AXIS;
-        } else
-        if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_Y_AXIS))) {
+        } else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_Y_AXIS))) {
             return TABLE_Y_AXIS;
         } else {
             return TABLE_1D;

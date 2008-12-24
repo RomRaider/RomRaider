@@ -1,5 +1,4 @@
 /*
- *
  * RomRaider Open-Source Tuning, Logging and Reflashing
  * Copyright (C) 2006-2008 RomRaider.com
  *
@@ -16,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
  */
 
 package com.romraider.io.j2534.api;
@@ -36,7 +34,7 @@ import static org.apache.log4j.Logger.getLogger;
 public final class J2534ConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = getLogger(J2534ConnectionManager.class);
     private final J2534 api = new Old_J2534OpenPort20(PROTOCOL_ISO9141);
-//    private final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
+    //    private final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
     //    private final J2534 api = proxy(new Old_J2534OpenPort20(PROTOCOL_ISO9141), TimerWrapper.class);
     //    private final J2534 api = proxy(new J2534OpenPort20(PROTOCOL_ISO9141), TimerWrapper.class);
     private int channelId;

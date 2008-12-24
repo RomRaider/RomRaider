@@ -1,5 +1,4 @@
 /*
- *
  * RomRaider Open-Source Tuning, Logging and Reflashing
  * Copyright (C) 2006-2008 RomRaider.com
  *
@@ -16,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
  */
 
 package com.romraider.NewGUI.tree;
@@ -85,8 +83,7 @@ public class ETreeCellRenderer implements TreeCellRenderer {
                 namedJPanel.setEnabled(tree.isEnabled());
                 returnValue = namedJPanel;
 
-            } else
-            if (eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA_3D || eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA_2D || eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA_1D) {
+            } else if (eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA_3D || eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA_2D || eTreeNode.getTableMetaData().getNodeType() == TableMetaData.DATA_1D) {
 
                 namedJPanel.add(nodeName);
                 nodeName.setFont(new Font("Tahoma", Font.PLAIN, 11));

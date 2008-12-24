@@ -1,5 +1,4 @@
 /*
- *
  * RomRaider Open-Source Tuning, Logging and Reflashing
  * Copyright (C) 2006-2008 RomRaider.com
  *
@@ -16,14 +15,13 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
  */
 
 package com.romraider.tts;
 
+import static com.romraider.util.ThreadUtil.runAsDaemon;
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
-import static com.romraider.util.ThreadUtil.runAsDaemon;
 
 public class Speaker {
     private static final String VOICE_NAME = "kevin16";
