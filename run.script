@@ -1,0 +1,1 @@
+java -Djava.library.path=.;lib/@os@ -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms32M -Xmx384M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar 1>>romraider_sout.log 2>&1

@@ -57,7 +57,9 @@
 
         <!-- set os specific properties -->
         <property name="os.windows" value="windows"/>
+        <property name="ext.windows" value="bat"/>
         <property name="os.linux" value="linux"/>
+        <property name="ext.linux" value="sh"/>
 
         <condition property="os" value="${os.windows}" else="${os.linux}">
             <os family="windows"/>
@@ -108,69 +110,16 @@
         <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"
                  classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
 
-        <!-- jar file dependencies that have versions specified in their names -->
-        <property name="jar.jcommon" value="jcommon-1.0.12.jar"/>
-        <property name="jar.jfreechart" value="jfreechart-1.0.9.jar"/>
-        <property name="jar.jama" value="jama-1.0.2.jar"/>
-        <property name="jar.log4j" value="log4j-1.2.14.jar"/>
-        <property name="jar.swing-layout" value="swing-layout-1.0.jar"/>
-        <property name="jar.jinvoke" value="jinvoke-3.0.3.jar"/>
-
-        <!-- common classpath for building, javadoc -->
-        <path id="classpath">
-            <pathelement location="lib/Graph3d/windows/lib/j3dcore.jar"/>
-            <pathelement location="lib/Graph3d/windows/lib/j3dutils.jar"/>
-            <pathelement location="lib/Graph3d/windows/lib/vecmath.jar"/>
-            <pathelement location="lib/Graph3d/windows/Graph3d.jar"/>
-            <pathelement location="lib/Graph3d/${jar.jama}"/>
-            <pathelement location="lib/BareBonesBrowserLaunch.jar"/>
-            <pathelement location="lib/jep.jar"/>
-            <pathelement location="lib/Jama.jar"/>
-            <pathelement location="lib/jamlab.jar"/>
-            <pathelement location="lib/JFontChooser.jar"/>
-            <pathelement location="lib/${jar.log4j}"/>
-            <pathelement location="lib/${jar.swing-layout}"/>
-            <pathelement location="lib/tts/cmu_time_awb.jar"/>
-            <pathelement location="lib/tts/cmu_us_kal.jar"/>
-            <pathelement location="lib/tts/cmudict04.jar"/>
-            <pathelement location="lib/tts/cmulex.jar"/>
-            <pathelement location="lib/tts/cmutimelex.jar"/>
-            <pathelement location="lib/tts/en_us.jar"/>
-            <pathelement location="lib/tts/freetts.jar"/>
-            <pathelement location="lib/logger/rxtx/RXTXcomm.jar"/>
-            <pathelement location="lib/jdic/windows/jdic_stub.jar"/>
-            <pathelement location="lib/jdic/jdic.jar"/>
-            <pathelement location="lib/logger/${jar.jcommon}"/>
-            <pathelement location="lib/logger/${jar.jfreechart}"/>
-            <pathelement location="lib/logger/${jar.jinvoke}"/>
+        <!-- windows classpath -->
+        <path id="windows.classpath">
+            <fileset dir="lib/common" includes="*.jar"/>
+            <fileset dir="lib/windows" includes="*.jar"/>
         </path>
-        <!-- classpath for execution -->
-        <path id="classpath.installed">
-            <pathelement location="lib/j3dcore.jar"/>
-            <pathelement location="lib/j3dutils.jar"/>
-            <pathelement location="lib/vecmath.jar"/>
-            <pathelement location="lib/Graph3d.jar"/>
-            <pathelement location="lib/${jar.jama}"/>
-            <pathelement location="lib/BareBonesBrowserLaunch.jar"/>
-            <pathelement location="lib/jep.jar"/>
-            <pathelement location="lib/Jama.jar"/>
-            <pathelement location="lib/jamlab.jar"/>
-            <pathelement location="lib/JFontChooser.jar"/>
-            <pathelement location="lib/${jar.log4j}"/>
-            <pathelement location="lib/${jar.swing-layout}"/>
-            <pathelement location="lib/cmu_time_awb.jar"/>
-            <pathelement location="lib/cmu_us_kal.jar"/>
-            <pathelement location="lib/cmudict04.jar"/>
-            <pathelement location="lib/cmulex.jar"/>
-            <pathelement location="lib/cmutimelex.jar"/>
-            <pathelement location="lib/en_us.jar"/>
-            <pathelement location="lib/freetts.jar"/>
-            <pathelement location="lib/RXTXcomm.jar"/>
-            <pathelement location="lib/jdic_stub.jar"/>
-            <pathelement location="lib/jdic.jar"/>
-            <pathelement location="lib/${jar.jcommon}"/>
-            <pathelement location="lib/${jar.jfreechart}"/>
-            <pathelement location="lib/${jar.jinvoke}"/>
+
+        <!-- linux classpath -->
+        <path id="linux.classpath">
+            <fileset dir="lib/common" includes="*.jar"/>
+            <fileset dir="lib/linux" includes="*.jar"/>
         </path>
 
         <!-- this set of filters should contain all the substitutions needed -->
@@ -192,12 +141,6 @@
             <filter token="version.buildnumber" value="${version.buildnumber}"/>
             <filter token="version.extra" value="${version.extra}"/>
             <filter token="version.extra1" value="${version.extra1}"/>
-            <filter token="jar.jcommon" value="${jar.jcommon}"/>
-            <filter token="jar.jfreechart" value="${jar.jfreechart}"/>
-            <filter token="jar.jinvoke" value="${jar.jinvoke}"/>
-            <filter token="jar.jama" value="${jar.jama}"/>
-            <filter token="jar.log4j" value="${jar.log4j}"/>
-            <filter token="jar.swing-layout" value="${jar.swing-layout}"/>
             <filter token="jvm.args" value="${jvm.args}"/>
         </filterset>
     </target>
@@ -213,39 +156,24 @@
     <!-- pre-build preparation                                               -->
     <!-- =================================================================== -->
     <target name="prepare" depends="-init">
-        <mkdir dir="${build.dir}/classes"/>
-        <mkdir dir="${build.dir}/lib"/>
         <!-- generate the Version class -->
         <copy overwrite="true" tofile="${src.dir}/com/romraider/Version.java" file="src/com/romraider/Version.java.template">
             <filterset refid="version.filterset"/>
         </copy>
-
     </target>
 
     <!-- =================================================================== -->
     <!-- complete rebuild                                                    -->
     <!-- =================================================================== -->
-    <target name="rebuild" depends="clean, build">
-    </target>
+    <target name="rebuild" depends="clean, build"/>
 
     <!-- =================================================================== -->
     <!-- Compiles the source directory                                       -->
     <!-- =================================================================== -->
     <target name="build" depends="prepare">
-        <javac failonerror="true" srcdir="${src.dir}" destdir="${classes.dir}" target="1.5">
-            <classpath refid="classpath"/>
-        </javac>
-        <!-- don't use the build path for jar file - we need the paths to
-                point to the relative location after installation -->
-        <manifestclasspath property="jar.classpath" jarfile="${jar.package}">
-            <classpath refid="classpath.installed"/>
-        </manifestclasspath>
-        <manifest file="${build.dir}/MANIFEST.MF">
-            <attribute name="Built-By" value="${user.name}"/>
-            <attribute name="Main-Class" value="${class.start}"/>
-            <attribute name="Class-Path" value="${jar.classpath}"/>
-        </manifest>
-        <jar basedir="${classes.dir}" destfile="${build.dir}/lib/${jar.package}" manifest="${build.dir}/MANIFEST.MF"/>
+        <macro_compile os="${os.windows}"/>
+        <macro_jar os="${os.windows}"/>
+        <macro_jar os="${os.linux}"/>
     </target>
 
     <!-- ================================================================== -->
@@ -260,7 +188,7 @@
                 <include name="**"/>
             </packageset>
             <bottom>${javadoc.footer}</bottom>
-            <classpath refid="classpath"/>
+            <classpath refid="${os.windows}.classpath"/>
         </javadoc>
     </target>
 
@@ -293,13 +221,15 @@
         </copy>
 
         <macro_generate_executables/>
+
+        <macro_standalone os="${os.windows}"/>
+        <macro_standalone os="${os.linux}"/>
     </target>
 
     <!-- =================================================================== -->
     <!-- all                                                                 -->
     <!-- =================================================================== -->
-    <target name="all" depends="rebuild, dist">
-    </target>
+    <target name="all" depends="rebuild, dist"/>
 
     <!-- =================================================================== -->
     <!-- Macros                                                              -->
@@ -359,4 +289,57 @@
         </sequential>
     </macrodef>
 
+    <macrodef name="macro_jar">
+        <attribute name="os"/>
+        <sequential>
+            <mkdir dir="${build.dir}/@{os}/lib"/>
+            <manifestclasspath property="@{os}.jar.classpath" jarfile="${jar.package}">
+                <classpath>
+                    <fileset dir="lib/common" includes="*.jar"/>
+                    <fileset dir="lib/@{os}" includes="*.jar"/>
+                </classpath>
+            </manifestclasspath>
+            <manifest file="${build.dir}/@{os}/MANIFEST.MF">
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="${class.start}"/>
+                <attribute name="Class-Path" value="${@{os}.jar.classpath}"/>
+            </manifest>
+            <jar basedir="${classes.dir}" destfile="${build.dir}/@{os}/lib/${jar.package}" manifest="${build.dir}/@{os}/MANIFEST.MF"/>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="macro_compile">
+        <attribute name="os"/>
+        <sequential>
+            <mkdir dir="${classes.dir}"/>
+            <javac failonerror="true" srcdir="${src.dir}" destdir="${classes.dir}" target="1.5">
+                <classpath refid="@{os}.classpath"/>
+            </javac>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="macro_standalone">
+        <attribute name="os"/>
+        <sequential>
+            <copy file="run.script" tofile="${dist.dir}/run.${ext.@{os}}">
+                <filterset>
+                    <filter token="os" value="@{os}"/>
+                </filterset>
+            </copy>
+            <zip destfile="${dist.dir}/@{os}/${name.package}${version.major}.${version.minor}.${version.patch}${version.extra}${version.extra1}-@{os}.zip">
+                <zipfileset file="build/@{os}/lib/${jar.package}" prefix="${name.package}"/>
+                <zipfileset file="${dist.dir}/run.${ext.@{os}}" prefix="${name.package}" filemode="755"/>
+                <zipfileset file="license.txt" prefix="${name.package}"/>
+                <zipfileset file="release_notes.txt" prefix="${name.package}"/>
+                <zipfileset file="log4j.properties" prefix="${name.package}"/>
+                <zipfileset file="logger.dtd" prefix="${name.package}"/>
+                <zipfileset file="profile.dtd" prefix="${name.package}"/>
+                <zipfileset dir="graphics" prefix="${name.package}/graphics" excludes="*.bmp"/>
+                <zipfileset dir="plugins" prefix="${name.package}/plugins"/>
+                <zipfileset dir="lib/common" prefix="${name.package}/lib/common"/>
+                <zipfileset dir="lib/@{os}" prefix="${name.package}/lib/@{os}"/>
+                <zipfileset dir="src" prefix="${name.package}/src" excludes="**/*.template"/>
+            </zip>
+        </sequential>
+    </macrodef>
 </project>
