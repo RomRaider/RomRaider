@@ -321,14 +321,9 @@
     <macrodef name="macro_standalone">
         <attribute name="os"/>
         <sequential>
-            <copy file="run.script" tofile="${dist.dir}/run.${ext.@{os}}">
-                <filterset>
-                    <filter token="os" value="@{os}"/>
-                </filterset>
-            </copy>
             <zip destfile="${dist.dir}/@{os}/${name.package}${version.major}.${version.minor}.${version.patch}${version.extra}${version.extra1}-@{os}.zip">
                 <zipfileset file="build/@{os}/lib/${jar.package}" prefix="${name.package}"/>
-                <zipfileset file="${dist.dir}/run.${ext.@{os}}" prefix="${name.package}" filemode="755"/>
+                <zipfileset file="run.${ext.@{os}}" prefix="${name.package}" filemode="755"/>
                 <zipfileset file="license.txt" prefix="${name.package}"/>
                 <zipfileset file="release_notes.txt" prefix="${name.package}"/>
                 <zipfileset file="log4j.properties" prefix="${name.package}"/>
