@@ -42,13 +42,8 @@ import static java.awt.Color.GREEN;
 import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
 import java.awt.Dimension;
-import java.util.Vector;
-import java.lang.Number;
 
 public final class LoggerChartPanel extends JPanel {
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -6579979878171615665L;
 	private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
@@ -72,23 +67,6 @@ public final class LoggerChartPanel extends JPanel {
             data.add(item);
         }
         hilite.add(x, y);
-    }
-
-    public double[][] getDataSet() {
-    	XYDataItem item;
-    	// hilite item is never actually in the data set - account for adding it later
-    	int size = data.getItemCount() + 1;
-    	double[][] dataSet = new double[size][2];
-    	int i;
-    	for (i = 0; i < size - 1; i++) {
-        	item = data.getDataItem(i);
-        	dataSet[i][0] = item.getX().doubleValue();
-        	dataSet[i][1] = item.getY().doubleValue();
-        }
-    	item = hilite.getDataItem(0);
-    	dataSet[i][0] = item.getX().doubleValue();
-    	dataSet[i][1] = item.getY().doubleValue();
-        return dataSet;
     }
 
     public void clear() {
