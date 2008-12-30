@@ -47,7 +47,6 @@ import static org.apache.log4j.Logger.getLogger;
 import static java.lang.System.currentTimeMillis;
 import java.util.Random;
 
-@SuppressWarnings({"PointlessArithmeticExpression"})
 final class TestSerialConnection implements SerialConnection {
     private static final Logger LOGGER = getLogger(TestSerialConnection.class);
     private static final Random RANDOM = new Random(currentTimeMillis());

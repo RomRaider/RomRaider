@@ -53,7 +53,6 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         return protocol.constructReadAddressRequest(convertToByteAddresses(filteredQueries));
     }
 
-    @SuppressWarnings({"PointlessArithmeticExpression"})
     public byte[] constructReadAddressResponse(Collection<EcuQuery> queries) {
         checkNotNullOrEmpty(queries, "queries");
         // 0x80 0xF0 0x10 data_length 0xE8 value1 value2 ... valueN checksum
@@ -83,7 +82,6 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
     }
 
     // processes the response bytes and sets individual responses on corresponding query objects
-    @SuppressWarnings({"PointlessArithmeticExpression"})
     public void processReadAddressResponses(Collection<EcuQuery> queries, byte[] response) {
         checkNotNullOrEmpty(queries, "queries");
         checkNotNullOrEmpty(response, "response");

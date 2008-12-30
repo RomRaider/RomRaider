@@ -70,7 +70,9 @@ import java.io.IOException;
 import java.util.Vector;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
-    private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
+	private static final long serialVersionUID = -7826850987392016292L;
+
+	private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
 
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final SettingsManager settingsManager = new SettingsManagerImpl();

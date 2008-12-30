@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-@SuppressWarnings({"ResultOfMethodCallIgnored"})
 public final class SerialConnectionImpl implements SerialConnection {
     private static final Logger LOGGER = getLogger(SerialConnectionImpl.class);
     private final SerialPort serialPort;

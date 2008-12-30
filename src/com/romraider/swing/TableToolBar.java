@@ -286,7 +286,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         int valueCount = 0;
 
         //Pull data into format 3d graph understands
-        Vector graphValues = new Vector();
+        Vector<float[]> graphValues = new Vector<float[]>();
         if (table.getType() == Table.TABLE_3D) {
             Table3D table3d = (Table3D) table;
             DataCell[][] tableData = table3d.get3dData();

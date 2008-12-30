@@ -47,7 +47,7 @@ public final class XYTrendline extends AbstractXYDataset {
         return 1;
     }
 
-    public Comparable getSeriesKey(int seriesIndex) {
+    public Comparable<String> getSeriesKey(int seriesIndex) {
         return "foo";
     }
 

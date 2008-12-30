@@ -35,7 +35,8 @@ import static java.awt.BorderLayout.WEST;
 import java.util.List;
 
 public final class MafTabImpl extends JPanel implements MafTab {
-    private final LoggerChartPanel chartPanel = new LoggerChartPanel("MAF (v)", "Total Correction (%)");
+	private static final long serialVersionUID = -6978027421649432740L;
+	private final LoggerChartPanel chartPanel = new LoggerChartPanel("MAF (v)", "Total Correction (%)");
     private final MafControlPanel controlPanel;
 
     public MafTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
