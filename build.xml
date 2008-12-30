@@ -77,11 +77,17 @@
         <property name="optimize" value="on"/>
         <property name="deprecation" value="on"/>
 
-        <!-- get the current svn revision (needed by version.properties) -->
+        <!-- get the current svn revision (needed by version.properties) - if repository is unavailable, this will be zero -->
         <macro_svn_revision repository="https://svn2.assembla.com/svn/romraider" property="svn.revision"/>
 
-        <!-- version properties are set in this file, both for the product itself and
-		    for some of the external dependencies (jar files and such) -->
+        <!-- Set the buildnumber to be the revision fetched from the repository, but default to zero for 
+                offline work -->
+    	<condition property="buildnumber" value="${svn.revision}" else="0">
+    		<isset property="svn.revision"/>
+    	</condition>
+
+    	<!-- version properties are set in this file, both for the product itself and
+		        for some of the external dependencies (jar files and such) -->
         <property file="version.properties"/>
 
         <!-- basic project properties -->
@@ -240,7 +246,7 @@
         <attribute name="property"/>
         <sequential>
             <tempfile property="svninfo.log"/>
-            <exec executable="svn" output="${svninfo.log}">
+            <exec executable="svn" output="${svninfo.log}" failonerror="false">
                 <arg line="info @{repository}"/>
             </exec>
             <loadfile property="@{property}" srcFile="${svninfo.log}">
