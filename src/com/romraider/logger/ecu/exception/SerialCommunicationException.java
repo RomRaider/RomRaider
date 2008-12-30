@@ -21,7 +21,9 @@ package com.romraider.logger.ecu.exception;
 
 public final class SerialCommunicationException extends RuntimeException {
 
-    public SerialCommunicationException() {
+	private static final long serialVersionUID = -3468947970939582263L;
+
+	public SerialCommunicationException() {
     }
 
     public SerialCommunicationException(String msg) {

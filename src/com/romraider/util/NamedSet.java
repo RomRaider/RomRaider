@@ -28,7 +28,8 @@ import java.util.Vector;
 
 public class NamedSet<E> implements Set<E>, Serializable {
 
-    Vector<Nameable> objects = new Vector<Nameable>();
+	private static final long serialVersionUID = 3700068171618250762L;
+	Vector<Nameable> objects = new Vector<Nameable>();
 
     public void add(Nameable n) {
         for (int i = 0; i < objects.size(); i++) {

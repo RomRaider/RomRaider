@@ -28,7 +28,8 @@ import static java.awt.BorderLayout.WEST;
 import static java.awt.Font.BOLD;
 
 public final class StatusIndicator extends JPanel implements StatusChangeListener {
-    private final JLabel statusLabel = new JLabel();
+	private static final long serialVersionUID = -3244690866698807677L;
+	private final JLabel statusLabel = new JLabel();
     private static final String TEXT_CONNECTING = "Connecting to ECU...";
     private static final String TEXT_READING = "Reading data...";
     private static final String TEXT_LOGGING = "Logging data to file...";

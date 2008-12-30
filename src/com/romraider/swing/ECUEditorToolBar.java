@@ -33,7 +33,8 @@ import java.awt.event.ActionListener;
 
 public class ECUEditorToolBar extends JToolBar implements ActionListener {
 
-    private ECUEditor parent;
+	private static final long serialVersionUID = 7778170684606193919L;
+	private ECUEditor parent;
     private JButton openImage = new JButton(new ImageIcon("./graphics/icon-open.png"));
     private JButton saveImage = new JButton(new ImageIcon("./graphics/icon-save.png"));
     private JButton refreshImage = new JButton(new ImageIcon("./graphics/icon-refresh.png"));

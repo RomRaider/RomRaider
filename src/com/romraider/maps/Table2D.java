@@ -37,7 +37,8 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 public class Table2D extends Table {
-    private static final String NEW_LINE = System.getProperty("line.separator");
+	private static final long serialVersionUID = -7684570967109324784L;
+	private static final String NEW_LINE = System.getProperty("line.separator");
     private Table1D axis = new Table1D(new Settings());
 
     public Table2D(Settings settings) {

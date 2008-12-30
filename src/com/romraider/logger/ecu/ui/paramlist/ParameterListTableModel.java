@@ -31,7 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public final class ParameterListTableModel extends AbstractTableModel {
-    private final String[] columnNames;
+	private static final long serialVersionUID = -2556400867696538881L;
+	private final String[] columnNames;
     private final List<LoggerData> registeredLoggerData = synchronizedList(new LinkedList<LoggerData>());
     private final Map<LoggerData, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<LoggerData, ParameterRow>());
     private final DataRegistrationBroker broker;

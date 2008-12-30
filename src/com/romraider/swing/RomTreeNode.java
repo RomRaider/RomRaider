@@ -27,7 +27,8 @@ import java.util.Vector;
 
 public class RomTreeNode extends DefaultMutableTreeNode {
 
-    private Rom rom = new Rom();
+	private static final long serialVersionUID = -5534315445738460608L;
+	private Rom rom = new Rom();
 
     public RomTreeNode(Rom rom, int userLevel, boolean isDisplayHighTables) {
         setRom(rom);

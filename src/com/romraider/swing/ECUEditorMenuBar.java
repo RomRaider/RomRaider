@@ -50,7 +50,8 @@ import java.io.FileOutputStream;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
-    private JMenu fileMenu = new JMenu("File");
+	private static final long serialVersionUID = -4777040428837855236L;
+	private JMenu fileMenu = new JMenu("File");
     private JMenuItem openImage = new JMenuItem("Open Image...");
     private JMenuItem saveImage = new JMenuItem("Save Image...");
     private JMenuItem refreshImage = new JMenuItem("Refresh Image");

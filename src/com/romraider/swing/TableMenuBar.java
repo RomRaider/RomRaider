@@ -32,7 +32,8 @@ import java.awt.event.ActionListener;
 
 public class TableMenuBar extends JMenuBar implements ActionListener {
 
-    private Table table;
+	private static final long serialVersionUID = -695692646459410510L;
+	private Table table;
     private JMenu fileMenu = new JMenu("Table");
     private JMenuItem graph = new JMenuItem("View Graph");
     //private JRadioButtonMenuItem overlay = new JRadioButtonMenuItem("Overlay Log");

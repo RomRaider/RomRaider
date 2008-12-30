@@ -23,7 +23,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class RomTreeRootNode extends DefaultMutableTreeNode {
 
-    public RomTreeRootNode(String name) {
+	private static final long serialVersionUID = 6810217325725782803L;
+
+	public RomTreeRootNode(String name) {
         super(name);
     }
 

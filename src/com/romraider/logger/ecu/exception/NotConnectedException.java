@@ -20,7 +20,9 @@
 package com.romraider.logger.ecu.exception;
 
 public final class NotConnectedException extends RuntimeException {
-    public NotConnectedException() {
+	private static final long serialVersionUID = -7287379536144468034L;
+
+	public NotConnectedException() {
     }
 
     public NotConnectedException(String string) {

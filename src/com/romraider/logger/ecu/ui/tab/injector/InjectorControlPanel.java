@@ -59,7 +59,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class InjectorControlPanel extends JPanel {
-    private static final Logger LOGGER = Logger.getLogger(InjectorControlPanel.class);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3570410894599258706L;
+	private static final Logger LOGGER = Logger.getLogger(InjectorControlPanel.class);
     private static final String COOLANT_TEMP = "P2";
     private static final String ENGINE_SPEED = "P8";
     private static final String INTAKE_AIR_TEMP = "P11";

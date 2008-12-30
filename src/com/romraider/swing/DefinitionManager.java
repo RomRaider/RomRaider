@@ -30,7 +30,8 @@ import java.util.Vector;
 
 public class DefinitionManager extends javax.swing.JFrame implements ActionListener {
 
-    public static int MOVE_UP = 0;
+	private static final long serialVersionUID = -3920843496218196737L;
+	public static int MOVE_UP = 0;
     public static int MOVE_DOWN = 1;
 
     ECUEditor parent;

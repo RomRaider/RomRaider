@@ -30,7 +30,8 @@ import java.util.Enumeration;
 
 public class RomTree extends JTree implements MouseListener {
 
-    public static ECUEditor container;
+	private static final long serialVersionUID = 1630446543383498886L;
+	public static ECUEditor container;
 
     public RomTree(DefaultMutableTreeNode input) {
         super(input);
@@ -46,7 +47,7 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     public void setContainer(ECUEditor container) {
-        this.container = container;
+        RomTree.container = container;
     }
 
     public void mouseClicked(MouseEvent e) {

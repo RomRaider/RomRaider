@@ -21,7 +21,9 @@ package com.romraider.logger.ecu.exception;
 
 public final class UnsupportedProtocolException extends RuntimeException {
 
-    public UnsupportedProtocolException() {
+	private static final long serialVersionUID = -5005888534387937344L;
+
+	public UnsupportedProtocolException() {
     }
 
     public UnsupportedProtocolException(String string) {

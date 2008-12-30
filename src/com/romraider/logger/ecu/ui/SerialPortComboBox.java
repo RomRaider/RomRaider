@@ -27,7 +27,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public final class SerialPortComboBox extends JComboBox implements SerialPortRefreshListener {
-    private final Settings settings;
+	private static final long serialVersionUID = 5693976713268676676L;
+	private final Settings settings;
 
     public SerialPortComboBox(Settings settings) {
         checkNotNull(settings);

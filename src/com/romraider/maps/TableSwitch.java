@@ -30,7 +30,8 @@ import java.util.StringTokenizer;
 
 public class TableSwitch extends Table {
 
-    private byte[] on = new byte[0];
+	private static final long serialVersionUID = -4887718305447362308L;
+	private byte[] on = new byte[0];
     private byte[] off = new byte[0];
     private JCheckBox checkbox = new JCheckBox("Enabled", true); // checkbox selected by default
 

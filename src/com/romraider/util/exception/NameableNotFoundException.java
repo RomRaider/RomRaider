@@ -21,7 +21,8 @@ package com.romraider.util.exception;
 
 public class NameableNotFoundException extends Exception {
 
-    private String name;
+	private static final long serialVersionUID = -8462061030545068171L;
+	private String name;
 
     public NameableNotFoundException(String name) {
         super(name);

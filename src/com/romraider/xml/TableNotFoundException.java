@@ -20,7 +20,10 @@
 package com.romraider.xml;
 
 public final class TableNotFoundException extends Exception {
-    public String getMessage() {
+
+	private static final long serialVersionUID = -7492075561444288417L;
+
+	public String getMessage() {
         return "Table not found.";
     }
 }

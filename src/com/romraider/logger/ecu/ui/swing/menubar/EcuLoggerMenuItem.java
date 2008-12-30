@@ -25,7 +25,9 @@ import javax.swing.KeyStroke;
 
 public final class EcuLoggerMenuItem extends JMenuItem {
 
-    public EcuLoggerMenuItem(String text, Action action) {
+	private static final long serialVersionUID = 8944116003490787227L;
+
+	public EcuLoggerMenuItem(String text, Action action) {
         super(action);
         setText(text);
     }

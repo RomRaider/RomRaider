@@ -25,7 +25,8 @@ import java.io.Serializable;
 
 public class RomID implements Serializable {
 
-    private String xmlid = "";//ID stored in XML
+	private static final long serialVersionUID = 7272741253665400643L;
+	private String xmlid = "";//ID stored in XML
     private int internalIdAddress = 0;//address of ECU version in image
     private String internalIdString = "";//ID stored in image
     private String caseId = "";//ECU hardware version

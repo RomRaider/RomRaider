@@ -24,7 +24,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class TableChooserTreeNode extends DefaultMutableTreeNode {
 
-    private Table table;
+	private static final long serialVersionUID = 6660923635216155045L;
+	private Table table;
 
     public TableChooserTreeNode(String text, Table table) {
         super(text);

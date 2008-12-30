@@ -28,7 +28,8 @@ import java.awt.Font;
 
 public class JProgressPane extends JPanel {
 
-    JLabel label = new JLabel();
+	private static final long serialVersionUID = -6827936662738014543L;
+	JLabel label = new JLabel();
     JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
 
     public JProgressPane() {

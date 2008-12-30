@@ -25,7 +25,8 @@ import java.io.Serializable;
 
 public class Scale implements Serializable {
 
-    public static final int LINEAR = 1;
+	private static final long serialVersionUID = 5836610685159474795L;
+	public static final int LINEAR = 1;
     public static final int INVERSE = 2;
 
     private String name = "Default";

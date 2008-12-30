@@ -21,7 +21,9 @@ package com.romraider.xml;
 
 public final class TableIsOmittedException extends Exception {
 
-    public TableIsOmittedException() {
+	private static final long serialVersionUID = -2128531751395058602L;
+
+	public TableIsOmittedException() {
     }
 
     public String getMessage() {

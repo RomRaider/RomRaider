@@ -157,7 +157,8 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
-    private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
+	private static final long serialVersionUID = 7145423251696282784L;
+	private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
     private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU Logger";
     private static final String LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
     private static final String ICON_PATH = "./graphics/romraider-ico.gif";
@@ -646,12 +647,22 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         button.setPreferredSize(new Dimension(25, 90));
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
         button.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 6913964758354638587L;
+
+			public void actionPerformed(ActionEvent e) {
                 button.doClick();
             }
         });
         button.addActionListener(new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 123232894767995264L;
+
+			public void actionPerformed(ActionEvent e) {
                 dashboardUpdateHandler.toggleGaugeStyle();
             }
         });
@@ -666,12 +677,21 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         toggleListButton.setPreferredSize(new Dimension(25, 90));
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         toggleListButton.getActionMap().put("toggleHideParams", new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -276854997788647306L;
+
+			public void actionPerformed(ActionEvent e) {
                 toggleListButton.doClick();
             }
         });
         toggleListButton.addActionListener(new AbstractAction() {
-            private final int min = 1;
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -1595098685575657317L;
+			private final int min = 1;
             private int size = splitPane.getDividerLocation();
 
             public void actionPerformed(ActionEvent e) {

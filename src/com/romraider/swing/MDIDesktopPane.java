@@ -37,7 +37,9 @@ import java.beans.PropertyVetoException;
  * bottom, providing the MDIDesktopPane is in a ScrollPane.
  */
 public class MDIDesktopPane extends JDesktopPane {
-    private static int FRAME_OFFSET = 20;
+
+	private static final long serialVersionUID = -1839360490978587035L;
+	private static int FRAME_OFFSET = 20;
     private MDIDesktopManager manager;
 
     public MDIDesktopPane() {
@@ -157,7 +159,11 @@ public class MDIDesktopPane extends JDesktopPane {
  * Used to provide scrollbar functionality.
  */
 class MDIDesktopManager extends DefaultDesktopManager {
-    private MDIDesktopPane desktop;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7668105643849176819L;
+	private MDIDesktopPane desktop;
 
     public MDIDesktopManager(MDIDesktopPane desktop) {
         this.desktop = desktop;

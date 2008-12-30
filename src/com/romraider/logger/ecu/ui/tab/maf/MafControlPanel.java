@@ -59,7 +59,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class MafControlPanel extends JPanel {
-    private static final Logger LOGGER = Logger.getLogger(MafControlPanel.class);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5787020251107365950L;
+	private static final Logger LOGGER = Logger.getLogger(MafControlPanel.class);
     private static final String COOLANT_TEMP = "P2";
     private static final String AF_CORRECTION_1 = "P3";
     private static final String AF_LEARNING_1 = "P4";
@@ -181,6 +185,7 @@ public final class MafControlPanel extends JPanel {
         add(panel, gridBagLayout, buildInterpolatePanel(), 0, 1, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildUpdateMafPanel(), 0, 2, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildResetPanel(), 0, 3, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildLoadSavePanel(), 0, 4, 1, HORIZONTAL);
 
         add(panel);
     }
@@ -196,6 +201,17 @@ public final class MafControlPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setBorder(new TitledBorder("Reset"));
         panel.add(buildResetButton());
+        return panel;
+    }
+
+    private JPanel buildLoadSavePanel() {
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder("Load/Save"));
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        panel.setLayout(gridBagLayout);
+
+        addComponent(panel, gridBagLayout, buildLoadButton(), 0);
+        addComponent(panel, gridBagLayout, buildSaveButton(), 1);
         return panel;
     }
 
@@ -328,6 +344,40 @@ public final class MafControlPanel extends JPanel {
             }
         });
         return resetButton;
+    }
+
+    private JButton buildLoadButton() {
+    	JButton loadButton = new JButton("Load Data");
+        loadButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	LOGGER.info("Loading chart dataSet:");
+            	//TODO: read data from file
+            	chartPanel.addData(0.05, 0.05);
+            	chartPanel.addData(0.15, 0.15);
+            	chartPanel.addData(0.25, 0.25);
+            	chartPanel.addData(0.35, 0.35);
+            	chartPanel.addData(0.55, 0.55);
+            	chartPanel.addData(0.25, -0.25);
+            	chartPanel.addData(0.25, -0.35);
+            	chartPanel.addData(0.25, -0.05);
+            }
+        });
+        return loadButton;
+    }
+
+    private JButton buildSaveButton() {
+    	JButton saveButton = new JButton("Save Data");
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	LOGGER.info("Getting chart dataSet:");
+            	double[][] dataSet  =  chartPanel.getDataSet();
+            	//TODO: save data to file
+          		for (int i = 0; i < dataSet.length; i++) {
+           			LOGGER.info(dataSet[i][0] + "," + dataSet[i][1]);
+           		}
+            }
+        });
+        return saveButton;
     }
 
     private JButton buildInterpolateButton(final JComboBox orderComboBox) {

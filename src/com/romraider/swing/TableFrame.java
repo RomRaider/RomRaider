@@ -28,7 +28,8 @@ import java.awt.BorderLayout;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener {
 
-    private Table table;
+	private static final long serialVersionUID = -2651279694660392351L;
+	private Table table;
     private TableToolBar toolBar;
 
     public TableFrame(Table table) {

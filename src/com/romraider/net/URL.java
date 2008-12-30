@@ -28,7 +28,8 @@ import java.awt.event.MouseListener;
 
 public class URL extends JLabel implements MouseListener {
 
-    String url = "";
+	private static final long serialVersionUID = 8972482185527165793L;
+	String url = "";
 
     public URL(String url) {
         super(url);

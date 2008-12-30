@@ -21,7 +21,9 @@ package com.romraider.logger.ecu.exception;
 
 public final class InvalidResponseException extends RuntimeException {
 
-    public InvalidResponseException() {
+	private static final long serialVersionUID = 296093377055913575L;
+
+	public InvalidResponseException() {
     }
 
     public InvalidResponseException(String string) {

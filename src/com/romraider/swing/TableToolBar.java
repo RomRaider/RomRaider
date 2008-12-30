@@ -59,7 +59,9 @@ import java.text.ParseException;
 import java.util.Vector;
 
 public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ActionListener, GraphDataListener {
-    private static final Logger LOGGER = Logger.getLogger(TableToolBar.class);
+
+	private static final long serialVersionUID = 8697645329367637930L;
+	private static final Logger LOGGER = Logger.getLogger(TableToolBar.class);
     private JButton incrementFine = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
     private JButton decrementFine = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
     private JButton incrementCoarse = new JButton(new ImageIcon("./graphics/icon-inccoarse.png"));
@@ -183,7 +185,12 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         // key binding actions
         Action enterAction = new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -6008026264821746092L;
+
+			public void actionPerformed(ActionEvent e) {
                 getTable().requestFocus();
                 setValue();
             }

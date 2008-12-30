@@ -25,7 +25,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class TableTreeNode extends DefaultMutableTreeNode {
 
-    private String type;
+	private static final long serialVersionUID = 2824050968863990871L;
+	private String type;
     private Rom rom;
     private Table table;
     private String toolTip;

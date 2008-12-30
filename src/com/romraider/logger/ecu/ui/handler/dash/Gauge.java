@@ -25,7 +25,8 @@ import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 
 public final class Gauge extends JPanel {
-    private GaugeStyle style;
+	private static final long serialVersionUID = 7354117571944547043L;
+	private GaugeStyle style;
 
     public Gauge(GaugeStyle style) {
         super();

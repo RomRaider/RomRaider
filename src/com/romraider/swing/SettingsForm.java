@@ -36,7 +36,8 @@ import java.util.StringTokenizer;
 
 public class SettingsForm extends JFrame implements MouseListener {
 
-    Settings settings;
+	private static final long serialVersionUID = 3910602424260147767L;
+	Settings settings;
     ECUEditor parent;
 
     public SettingsForm(ECUEditor parent) {

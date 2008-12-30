@@ -32,7 +32,8 @@ import java.util.Vector;
 
 public class JTableChooser extends JOptionPane {
 
-    JPanel displayPanel = new JPanel();
+	private static final long serialVersionUID = 5611729002131147882L;
+	JPanel displayPanel = new JPanel();
     DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Open Images");
     JTree displayTree = new JTree(rootNode);
 

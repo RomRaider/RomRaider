@@ -23,7 +23,8 @@ import com.romraider.maps.Rom;
 
 public class RomPropertyPanel extends javax.swing.JPanel {
 
-    Rom rom = new Rom();
+	private static final long serialVersionUID = 5583360728106071942L;
+	Rom rom = new Rom();
 
     public RomPropertyPanel(Rom rom) {
         initComponents();
@@ -129,7 +130,11 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         transmission.setText("Transmission");
 
         tableList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -8498656966410761726L;
+			String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
             public int getSize() {
                 return strings.length;

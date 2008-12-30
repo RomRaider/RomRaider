@@ -21,7 +21,9 @@ package com.romraider.logger.ecu.exception;
 
 public final class ConfigurationException extends RuntimeException {
 
-    public ConfigurationException() {
+	private static final long serialVersionUID = 2021993520731842524L;
+
+	public ConfigurationException() {
     }
 
     public ConfigurationException(String string) {

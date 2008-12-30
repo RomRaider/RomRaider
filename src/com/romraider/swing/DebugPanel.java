@@ -29,7 +29,9 @@ import java.awt.GridLayout;
 
 public class DebugPanel extends JPanel {
 
-    public DebugPanel(Exception ex, String url) {
+	private static final long serialVersionUID = -7159385694793030962L;
+
+	public DebugPanel(Exception ex, String url) {
         setLayout(new BorderLayout());
 
         JPanel top = new JPanel(new GridLayout(7, 1));

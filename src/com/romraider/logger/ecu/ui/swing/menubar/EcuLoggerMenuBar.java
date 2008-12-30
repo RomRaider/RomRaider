@@ -61,7 +61,9 @@ import java.util.List;
 
 public class EcuLoggerMenuBar extends JMenuBar {
 
-    public EcuLoggerMenuBar(EcuLogger logger, List<ExternalDataSource> externalDataSources) {
+	private static final long serialVersionUID = 7081586516953740186L;
+
+	public EcuLoggerMenuBar(EcuLogger logger, List<ExternalDataSource> externalDataSources) {
 
         // file menu items
         JMenu fileMenu = new EcuLoggerMenu("File", VK_F);

@@ -28,7 +28,9 @@ import java.awt.Component;
 
 public final class UnitsComboBoxRenderer extends JComboBox implements TableCellRenderer {
 
-    public Component getTableCellRendererComponent(JTable table, Object ecuData, boolean isSelected, boolean hasFocus, int row, int column) {
+	private static final long serialVersionUID = -6288079743431509778L;
+
+	public Component getTableCellRendererComponent(JTable table, Object ecuData, boolean isSelected, boolean hasFocus, int row, int column) {
         EcuData currentEcuData = (EcuData) ecuData;
         EcuDataConvertor[] convertors = currentEcuData.getConvertors();
         JComboBox comboBox = new JComboBox();

@@ -86,7 +86,8 @@ import java.util.List;
  * It is also a bit of a mess and needs to be cleaned up...
  */
 public final class RamTuneTestApp extends JFrame implements WindowListener {
-    private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
+	private static final long serialVersionUID = 7140513114169019846L;
+	private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
     private static final String REGEX_VALID_DATA_BYTES = "[0-9a-fA-F]{2,}";
     private final Protocol protocol = new SSMProtocol();
     private final Settings settings = new Settings();

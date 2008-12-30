@@ -21,6 +21,8 @@ package com.romraider.xml;
 
 public final class RomNotFoundException extends Exception {
 
-    public RomNotFoundException() {
+	private static final long serialVersionUID = -5434546006966986885L;
+
+	public RomNotFoundException() {
     }
 }

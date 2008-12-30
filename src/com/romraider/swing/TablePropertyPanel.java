@@ -23,7 +23,8 @@ import com.romraider.maps.Table;
 
 public class TablePropertyPanel extends javax.swing.JPanel {
 
-    public TablePropertyPanel(Table table) {
+	private static final long serialVersionUID = -5817685772039277602L;
+	public TablePropertyPanel(Table table) {
         initComponents();
         setVisible(true);
 

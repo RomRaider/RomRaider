@@ -21,7 +21,9 @@ package com.romraider.logger.ecu.exception;
 
 public final class UnsupportedPortTypeException extends RuntimeException {
 
-    public UnsupportedPortTypeException() {
+	private static final long serialVersionUID = 5398746954800909391L;
+
+	public UnsupportedPortTypeException() {
     }
 
     public UnsupportedPortTypeException(String string) {

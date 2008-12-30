@@ -26,7 +26,9 @@ import javax.swing.KeyStroke;
 
 public final class EcuLoggerRadioButtonMenuItem extends JRadioButtonMenuItem {
 
-    public EcuLoggerRadioButtonMenuItem(String text, int mnemonic, KeyStroke accelerator, Action action, boolean selected) {
+	private static final long serialVersionUID = -7872873697564909545L;
+
+	public EcuLoggerRadioButtonMenuItem(String text, int mnemonic, KeyStroke accelerator, Action action, boolean selected) {
         super(action);
         initSelectionStateAdaptor(action);
         setText(text);

@@ -21,7 +21,9 @@ package com.romraider.logger.ecu.exception;
 
 public final class PortNotFoundException extends RuntimeException {
 
-    public PortNotFoundException() {
+	private static final long serialVersionUID = -523838685805525387L;
+
+	public PortNotFoundException() {
     }
 
     public PortNotFoundException(String string) {

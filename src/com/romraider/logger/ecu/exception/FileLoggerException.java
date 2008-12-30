@@ -21,7 +21,9 @@ package com.romraider.logger.ecu.exception;
 
 public final class FileLoggerException extends RuntimeException {
 
-    public FileLoggerException() {
+	private static final long serialVersionUID = -7851192938290131460L;
+
+	public FileLoggerException() {
     }
 
     public FileLoggerException(String string) {

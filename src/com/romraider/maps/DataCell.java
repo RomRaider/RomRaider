@@ -37,7 +37,8 @@ import static java.lang.Math.abs;
 import java.text.DecimalFormat;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
-    private static final Logger LOGGER = Logger.getLogger(DataCell.class);
+	private static final long serialVersionUID = -2904293227148940937L;
+	private static final Logger LOGGER = Logger.getLogger(DataCell.class);
     private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
     private final Border defaultBorder = createLineBorder(BLACK, 1);
     private final Border modifiedBorder = createLineBorder(RED, 3);

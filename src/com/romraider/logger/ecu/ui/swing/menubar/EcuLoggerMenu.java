@@ -23,7 +23,9 @@ import javax.swing.JMenu;
 
 public final class EcuLoggerMenu extends JMenu {
 
-    public EcuLoggerMenu(String text, int mnemonic) {
+	private static final long serialVersionUID = -5058943622469501273L;
+
+	public EcuLoggerMenu(String text, int mnemonic) {
         setText(text);
         setMnemonic(mnemonic);
     }

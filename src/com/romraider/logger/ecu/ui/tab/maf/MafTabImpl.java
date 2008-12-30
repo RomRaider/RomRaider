@@ -25,10 +25,12 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
+import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
@@ -40,10 +42,19 @@ public final class MafTabImpl extends JPanel implements MafTab {
 
     public MafTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
         super(new BorderLayout(2, 2));
+        Dimension controlPanelMinimumSize = new Dimension(0, 0);
+        Dimension controlPanelSize = new Dimension(140,0);
         controlPanel = new MafControlPanel(this, broker, ecuEditor, chartPanel);
-        JScrollPane scrollPane = new JScrollPane(controlPanel, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
-        add(scrollPane, WEST);
-        add(chartPanel, CENTER);
+        JScrollPane scrollPane = new JScrollPane(controlPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(controlPanelSize);
+        scrollPane.setMaximumSize(controlPanelSize);
+        scrollPane.setMinimumSize(controlPanelMinimumSize);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, chartPanel);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setDividerSize(10);
+        add(splitPane);        
+        //add(scrollPane, WEST);
+        //add(chartPanel, CENTER);
     }
 
     public boolean isRecordData() {

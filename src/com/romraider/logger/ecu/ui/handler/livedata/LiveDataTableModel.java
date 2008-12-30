@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 public final class LiveDataTableModel extends AbstractTableModel {
-    private final String[] columnNames = {"Logger Data", "Min Value", "Current Value", "Max Value", "Units"};
+	private static final long serialVersionUID = 3712433453224086342L;
+	private final String[] columnNames = {"Logger Data", "Min Value", "Current Value", "Max Value", "Units"};
     private final List<LoggerData> registeredLoggerData = synchronizedList(new LinkedList<LoggerData>());
     private final Map<LoggerData, LiveDataRow> dataRowMap = synchronizedMap(new LinkedHashMap<LoggerData, LiveDataRow>());
 

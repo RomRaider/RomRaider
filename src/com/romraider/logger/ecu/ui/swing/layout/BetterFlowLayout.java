@@ -26,7 +26,9 @@ import java.awt.FlowLayout;
 import java.awt.Insets;
 
 public final class BetterFlowLayout extends FlowLayout {
-    public BetterFlowLayout() {
+	private static final long serialVersionUID = -6784712723817241270L;
+
+	public BetterFlowLayout() {
         super();
     }
 
