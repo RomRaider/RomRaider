@@ -27,40 +27,24 @@ import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
 import java.util.List;
 
 public final class InjectorTabImpl extends JPanel implements InjectorTab {
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 5365322624406058883L;
 	private final LoggerChartPanel chartPanel = new LoggerChartPanel("Pulse Width (ms)", "Fuel per Combustion Event (cc)");
     private final InjectorControlPanel controlPanel;
 
     public InjectorTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
         super(new BorderLayout(2, 2));
-        Dimension controlPanelMinimumSize = new Dimension(0, 0);
-        Dimension controlPanelSize = new Dimension(140,0);
         controlPanel = new InjectorControlPanel(this, broker, ecuEditor, chartPanel);
-        JScrollPane scrollPane = new JScrollPane(controlPanel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setPreferredSize(controlPanelSize);
-        scrollPane.setMaximumSize(controlPanelSize);
-        scrollPane.setMinimumSize(controlPanelMinimumSize);
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollPane, chartPanel);
-        splitPane.setOneTouchExpandable(true);
-        splitPane.setDividerSize(10);
-        add(splitPane);        
-        //add(scrollPane, WEST);
-        //add(chartPanel, CENTER);
+        JScrollPane scrollPane = new JScrollPane(controlPanel, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
+        add(scrollPane, WEST);
+        add(chartPanel, CENTER);
     }
 
     public double getFuelStoichAfr() {
