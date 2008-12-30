@@ -36,7 +36,8 @@ import java.util.Vector;
 
 public class Settings implements Serializable {
 
-    private Dimension windowSize = new Dimension(800, 600);
+	private static final long serialVersionUID = 1026542922680475190L;
+	private Dimension windowSize = new Dimension(800, 600);
     private Point windowLocation = new Point();
     private int splitPaneLocation = 150;
     private boolean windowMaximized = false;

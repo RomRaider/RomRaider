@@ -30,9 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class XYTrendline extends AbstractXYDataset {
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1375705537694372443L;
 	private List<XYDataItem> items = new ArrayList<XYDataItem>();
     private double[] xVals = new double[0];

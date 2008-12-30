@@ -57,12 +57,18 @@ public class ECUExec {
 
         // check if already running
         if (isRunning()) {
-            if (args.length == 0 || containsLoggerArg(args)) showAlreadyRunningMessage();
-            else sendRomToOpenInstance(args[0]);
+            if (args.length == 0 || containsLoggerArg(args)) {
+            	showAlreadyRunningMessage();
+            } else {
+            	sendRomToOpenInstance(args[0]);
+            }
         } else {
             // open editor or logger
-            if (containsLoggerArg(args)) openLogger(args);
-            else openEditor(args);
+            if (containsLoggerArg(args)) {
+            	openLogger(args);
+            } else {
+            	openEditor(args);
+            }
         }
     }
 
@@ -72,7 +78,9 @@ public class ECUExec {
 
     private static boolean containsLoggerArg(String[] args) {
         for (String arg : args) {
-            if (arg.equals(START_LOGGER_ARG)) return true;
+            if (arg.equals(START_LOGGER_ARG)) {
+            	return true;
+            }
         }
         return false;
     }
@@ -98,7 +106,9 @@ public class ECUExec {
 
     private static void openEditor(String[] args) {
         ECUEditor editor = getECUEditor();
-        if (args.length > 0) openRom(editor, args[0]);
+        if (args.length > 0) {
+        	openRom(editor, args[0]);
+        }
         startRomListener(editor);
     }
 

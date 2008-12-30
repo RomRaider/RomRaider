@@ -86,7 +86,9 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         });
         panel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleCombineGraphs");
         panel.getActionMap().put("toggleCombineGraphs", new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
+			private static final long serialVersionUID = 1540427179539775534L;
+
+			public void actionPerformed(ActionEvent e) {
                 combinedCheckbox.doClick();
             }
         });
