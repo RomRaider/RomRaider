@@ -32,7 +32,8 @@
 #include "resource.h"
 #include "head.h"
 
-BOOL debug = FALSE;
+HMODULE hModule;
+FILE* hLog;
 BOOL console = FALSE;
 BOOL wow64 = FALSE;
 int foundJava = NO_JAVA_FOUND;
@@ -40,7 +41,6 @@ int foundJava = NO_JAVA_FOUND;
 struct _stat statBuf;
 PROCESS_INFORMATION pi;
 DWORD priority;
-DWORD regWow64Option = 0;
 
 char mutexName[STR] = {0};
 
@@ -58,14 +58,27 @@ char workingDir[_MAX_PATH] = {0};
 char cmd[_MAX_PATH] = {0};
 char args[MAX_ARGS] = {0};
 
-void setWow64Flag()
-{
+FILE* openLogFile(const char* exePath, const int pathLen) {
+	char path[_MAX_PATH] = {0};
+	strncpy(path, exePath, pathLen);
+	strcat(path, "\\launch4j.log");
+	return fopen(path, "a");
+}
+
+void closeLogFile() {
+	if (hLog != NULL) {
+		fclose(hLog);	
+	}
+}
+
+void setWow64Flag() {
 	LPFN_ISWOW64PROCESS fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(
 			GetModuleHandle(TEXT("kernel32")), "IsWow64Process");
 
 	if (fnIsWow64Process != NULL) {
 		fnIsWow64Process(GetCurrentProcess(), &wow64);
 	}
+	debug("WOW64:\t\t%s\n", wow64 ? "yes" : "no"); 
 }
 
 void setConsoleFlag() {
@@ -93,6 +106,7 @@ void signalError() {
 			    (LPTSTR) &lpMsgBuf,
 			    0,
 			    NULL);
+		debug("Error:\t\t%s\n", (LPCTSTR) lpMsgBuf);
 		strcat(errMsg, "\n\n");
 		strcat(errMsg, (LPCTSTR) lpMsgBuf);
 		msgBox(errMsg);
@@ -101,19 +115,21 @@ void signalError() {
 		msgBox(errMsg);
 	}
 	if (*errUrl) {
+		debug("Open URL:\t%s\n", errUrl);
 		ShellExecute(NULL, "open", errUrl, NULL, NULL, SW_SHOWNORMAL);
 	}
+	closeLogFile();
 }
 
-BOOL loadString(const HMODULE hLibrary, const int resID, char* buffer) {
+BOOL loadString(const int resID, char* buffer) {
 	HRSRC hResource;
 	HGLOBAL hResourceLoaded;
 	LPBYTE lpBuffer;
 
-	hResource = FindResourceEx(hLibrary, RT_RCDATA, MAKEINTRESOURCE(resID),
+	hResource = FindResourceEx(hModule, RT_RCDATA, MAKEINTRESOURCE(resID),
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
 	if (NULL != hResource) {
-		hResourceLoaded = LoadResource(hLibrary, hResource);
+		hResourceLoaded = LoadResource(hModule, hResource);
 		if (NULL != hResourceLoaded) {
 			lpBuffer = (LPBYTE) LockResource(hResourceLoaded);            
 			if (NULL != lpBuffer) {     
@@ -121,6 +137,7 @@ BOOL loadString(const HMODULE hLibrary, const int resID, char* buffer) {
 				do {
 					buffer[x] = (char) lpBuffer[x];
 				} while (buffer[x++] != 0);
+				// debug("Resource %d:\t%s\n", resID, buffer);
 				return TRUE;
 			}
 		}    
@@ -130,15 +147,15 @@ BOOL loadString(const HMODULE hLibrary, const int resID, char* buffer) {
 	return FALSE;
 }
 
-BOOL loadBool(const HMODULE hLibrary, const int resID) {
+BOOL loadBool(const int resID) {
 	char boolStr[20] = {0};
-	loadString(hLibrary, resID, boolStr);
+	loadString(resID, boolStr);
 	return strcmp(boolStr, TRUE_STR) == 0;
 }
 
-int loadInt(const HMODULE hLibrary, const int resID) {
+int loadInt(const int resID) {
 	char intStr[20] = {0};
-	loadString(hLibrary, resID, intStr);
+	loadString(resID, intStr);
 	return atoi(intStr);
 }
 
@@ -168,14 +185,14 @@ BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 	unsigned long datatype;
 	BOOL result = FALSE;
 	if ((wow64 && RegOpenKeyEx(hRootKey,
-								TEXT(key),
+								key,
 								0,
-	        					KEY_WOW64_64KEY | KEY_QUERY_VALUE,
+	        					KEY_READ | KEY_WOW64_64KEY,
 								&hKey) == ERROR_SUCCESS)
 			|| RegOpenKeyEx(hRootKey,
-								TEXT(key),
+								key,
 								0,
-	        					KEY_QUERY_VALUE,
+	        					KEY_READ,
 								&hKey) == ERROR_SUCCESS) {
 		result = RegQueryValueEx(hKey, value, NULL, &datatype, buffer, &bufferLength)
 				== ERROR_SUCCESS;
@@ -199,14 +216,17 @@ void regSearch(const HKEY hKey, const char* keyName, const int searchType) {
 				NULL,			// address of buffer for class string
 				NULL,			// address for size of class buffer
 				&time) == ERROR_SUCCESS) {
+		
 		if (strcmp(buffer, javaMinVer) >= 0
 				&& (!*javaMaxVer || strcmp(buffer, javaMaxVer) <= 0)
 				&& strcmp(buffer, foundJavaVer) > 0) {
 			strcpy(foundJavaVer, buffer);
 			strcpy(foundJavaKey, keyName);
-			strcat(foundJavaKey, "\\");
-			strcat(foundJavaKey, buffer);	
+			appendPath(foundJavaKey, buffer);	
 			foundJava = searchType;
+			debug("Match:\t\t%s\\%s\n", keyName, buffer);
+		} else {
+			debug("Ignore:\t\t%s\\%s\n", keyName, buffer);
 		}
 		size = BIG_STR;
 	}
@@ -214,23 +234,26 @@ void regSearch(const HKEY hKey, const char* keyName, const int searchType) {
 
 void regSearchWow(const char* keyName, const int searchType) {
 	HKEY hKey;
+	debug("64-bit search:\t%s...\n", keyName);
 	if (wow64 && RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-			TEXT(keyName),
+			keyName,
 			0,
-            KEY_WOW64_64KEY | KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS,
+            KEY_READ | KEY_WOW64_64KEY,
 			&hKey) == ERROR_SUCCESS) {
-		regSearch(hKey, keyName, searchType);
+		
+		regSearch(hKey, keyName, searchType | KEY_WOW64_64KEY);
 		RegCloseKey(hKey);
-		if (foundJava != NO_JAVA_FOUND)
+		if ((foundJava & KEY_WOW64_64KEY) != NO_JAVA_FOUND)
 		{
-			regWow64Option = KEY_WOW64_64KEY;
+			debug("Using 64-bit runtime.\n");
 			return;
 		}
 	}
+	debug("32-bit search:\t%s...\n", keyName);
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-			TEXT(keyName),
+			keyName,
 			0,
-            KEY_QUERY_VALUE | KEY_ENUMERATE_SUB_KEYS,
+            KEY_READ,
 			&hKey) == ERROR_SUCCESS) {
 		regSearch(hKey, keyName, searchType);
 		RegCloseKey(hKey);
@@ -264,9 +287,9 @@ BOOL findJavaHome(char* path, const int jdkPreference) {
 	if (foundJava != NO_JAVA_FOUND) {
 		HKEY hKey;
 		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-				TEXT(foundJavaKey),
+				foundJavaKey,
 				0,
-	            regWow64Option | KEY_QUERY_VALUE,
+	            KEY_READ | (foundJava & KEY_WOW64_64KEY),
 				&hKey) == ERROR_SUCCESS) {
 			unsigned char buffer[BIG_STR] = {0};
 			unsigned long bufferlength = BIG_STR;
@@ -277,8 +300,8 @@ BOOL findJavaHome(char* path, const int jdkPreference) {
 				do {
 					path[i] = buffer[i];
 				} while (path[i++] != 0);
-				if (foundJava == FOUND_SDK) {
-					strcat(path, "\\jre");
+				if (foundJava & FOUND_SDK) {
+					appendPath(path, "jre");
 				}
 				RegCloseKey(hKey);
 				return TRUE;
@@ -293,19 +316,24 @@ BOOL findJavaHome(char* path, const int jdkPreference) {
  * Extract the executable name, returns path length.
  */
 int getExePath(char* exePath) {
-	HMODULE hModule = GetModuleHandle(NULL);
-    if (hModule == 0
-			|| GetModuleFileName(hModule, exePath, _MAX_PATH) == 0) {
+    if (GetModuleFileName(hModule, exePath, _MAX_PATH) == 0) {
         return -1;
     }
 	return strrchr(exePath, '\\') - exePath;
 }
 
+void appendPath(char* basepath, const char* path) {
+	if (basepath[strlen(basepath) - 1] != '\\') {
+		strcat(basepath, "\\");
+	}
+	strcat(basepath, path);
+}
+
 void appendJavaw(char* jrePath) {
     if (console) {
-	    strcat(jrePath, "\\bin\\java.exe");
+	    appendPath(jrePath, "bin\\java.exe");
     } else {
-        strcat(jrePath, "\\bin\\javaw.exe");
+        appendPath(jrePath, "bin\\javaw.exe");
     }
 }
 
@@ -321,21 +349,24 @@ void appendLauncher(const BOOL setProcName, char* exePath,
 			// Remove temp launchers and manifests
 			struct _finddata_t c_file;
 			long hFile;
-			strcat(tmpspec, "\\*.exe");
+			appendPath(tmpspec, "*.exe");
 			strcpy(tmpfile, cmd);
 			strcat(tmpfile, LAUNCH4J_TMP_DIR);
 			char* filename = tmpfile + strlen(tmpfile);
 			if ((hFile = _findfirst(tmpspec, &c_file)) != -1L) {
 				do {
 					strcpy(filename, c_file.name);
+					debug("Unlink:\t\t%s\n", tmpfile);
 					_unlink(tmpfile);
 					strcat(tmpfile, MANIFEST);
+					debug("Unlink:\t\t%s\n", tmpfile);
 					_unlink(tmpfile);
 				} while (_findnext(hFile, &c_file) == 0);
 			}
 			_findclose(hFile);
 		} else {
 			if (_mkdir(tmpspec) != 0) {
+				debug("Mkdir failed:\t%s\n", tmpspec);
 				appendJavaw(cmd);
 				return;
 			}
@@ -355,17 +386,20 @@ void appendLauncher(const BOOL setProcName, char* exePath,
 		if (_stat(manifest, &statBuf) == 0) {
 			strcat(tmpfile, exeFilePart);
 			strcat(tmpfile, MANIFEST);
+			debug("Copy:\t\t%s -> %s\n", manifest, tmpfile);
 			CopyFile(manifest, tmpfile, FALSE);
 		}
 
 		// Copy launcher
 		strcpy(tmpfilename, exeFilePart);
+		debug("Copy:\t\t%s -> %s\n", javaw, tmpfile);
 		if (CopyFile(javaw, tmpfile, FALSE)) {
 			strcpy(cmd, tmpfile);
 			return;
 		} else if (_stat(javaw, &statBuf) == 0) {
 			long fs = statBuf.st_size;
 			if (_stat(tmpfile, &statBuf) == 0 && fs == statBuf.st_size) {
+				debug("Reusing:\t\t%s\n", tmpfile);
 				strcpy(cmd, tmpfile);
 				return;
 			}
@@ -382,13 +416,15 @@ void appendAppClasspath(char* dst, const char* src, const char* classpath) {
 }
 
 BOOL isJrePathOk(const char* path) {
-	if (!*path) {
-		return FALSE;
-	}
 	char javaw[_MAX_PATH];
-	strcpy(javaw, path);
-	appendJavaw(javaw);
-	return _stat(javaw, &statBuf) == 0;
+	BOOL result = FALSE;
+	if (*path) {
+		strcpy(javaw, path);
+		appendJavaw(javaw);
+		result = _stat(javaw, &statBuf) == 0;
+	}	
+	debug("Check launcher:\t%s %s\n", javaw, result ? "(OK)" : "(n/a)");
+	return result;
 }
 
 /* 
@@ -409,6 +445,8 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
             // Insert value of %VAR%
             *varName = 0;
             strncat(varName, start + 1, end - start - 1);
+            // Remember value start for logging
+            char *varValue = dst + strlen(dst);
             if (strcmp(varName, "EXEDIR") == 0) {
                 strncat(dst, exePath, pathLen);
             } else if (strcmp(varName, "EXEFILE") == 0) {
@@ -422,6 +460,7 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
             } else if (GetEnvironmentVariable(varName, varValue, MAX_VAR_SIZE) > 0) {
                 strcat(dst, varValue);
             }
+            debug("Substitute:\t%s = %s\n", varName, varValue);
             src = end + 1;
         } else {
             // Copy remaining content
@@ -432,57 +471,68 @@ BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathL
 	return TRUE;
 }
 
-void appendHeapSizes(const HMODULE hLibrary, char *dst) {
+void appendHeapSizes(char *dst) {
 	MEMORYSTATUS m;
 	memset(&m, 0, sizeof(m));
 	GlobalMemoryStatus(&m);
 
-	appendHeapSize(hLibrary, dst, INITIAL_HEAP_SIZE, INITIAL_HEAP_PERCENT,
+	appendHeapSize(dst, INITIAL_HEAP_SIZE, INITIAL_HEAP_PERCENT,
 			m.dwAvailPhys, "-Xms");
-	appendHeapSize(hLibrary, dst, MAX_HEAP_SIZE, MAX_HEAP_PERCENT,
+	appendHeapSize(dst, MAX_HEAP_SIZE, MAX_HEAP_PERCENT,
 			m.dwAvailPhys, "-Xmx");
 }
 
-void appendHeapSize(const HMODULE hLibrary, char *dst,
-		const int absID, const int percentID,
+void appendHeapSize(char *dst, const int absID, const int percentID,
 		const DWORD freeMemory, const char *option) {
-
-	int abs = loadInt(hLibrary, absID);
-	int percent = loadInt(hLibrary, percentID);
-	int free = (long long) freeMemory * percent / (100 * 1048576);	// 100% * 1 MB
+	
+	const int mb = 1048576;		// 1 MB
+	int abs = loadInt(absID);
+	int percent = loadInt(percentID);
+	int free = (long long) freeMemory * percent / (100 * mb);	// 100% * 1 MB
 	int size = free > abs ? free : abs;
 	if (size > 0) {
+		debug("Heap %s:\t%d MB / %d%%, Free: %d MB, Heap size: %d MB\n",
+				option, abs, percent, freeMemory / mb, size);
 		strcat(dst, option);
-		_itoa(size, dst + strlen(dst), 10);							// 10 -- radix
+		_itoa(size, dst + strlen(dst), 10);						// 10 -- radix
 		strcat(dst, "m ");
-	}	
+	}
 }
 
-int prepare(HMODULE hLibrary, const char *lpCmdLine) {
-    char tmp[MAX_ARGS] = {0};
-    debug = strstr(lpCmdLine, "--l4j-debug") != NULL;
-    setWow64Flag();
+int prepare(const char *lpCmdLine) {
+	char tmp[MAX_ARGS] = {0};
+	hModule = GetModuleHandle(NULL);
+	if (hModule == NULL) {
+		return FALSE;
+	}
 
-	// Open executable
+	// Get executable path
 	char exePath[_MAX_PATH] = {0};
 	int pathLen = getExePath(exePath);
 	if (pathLen == -1) {
 		return FALSE;
 	}
-	hLibrary = LoadLibrary(exePath + pathLen + 1);
-	if (hLibrary == NULL) {
-		return FALSE;
+
+	// Initialize logging 
+    if (strstr(lpCmdLine, "--l4j-debug") != NULL) {
+		hLog = openLogFile(exePath, pathLen);
+		if (hLog == NULL) {
+			return FALSE;
+		}
+		debug("\n\nCmdLine:\t%s %s\n", exePath, lpCmdLine);
 	}
 
+    setWow64Flag();
+
 	// Set default error message, title and optional support web site url.
-	loadString(hLibrary, SUPPORT_URL, errUrl);
-	loadString(hLibrary, ERR_TITLE, errTitle);
-	if (!loadString(hLibrary, STARTUP_ERR, errMsg)) {
+	loadString(SUPPORT_URL, errUrl);
+	loadString(ERR_TITLE, errTitle);
+	if (!loadString(STARTUP_ERR, errMsg)) {
 		return FALSE;			
 	}
 
 	// Single instance
-	loadString(hLibrary, MUTEX_NAME, mutexName);
+	loadString(MUTEX_NAME, mutexName);
 	if (*mutexName) {
 		SECURITY_ATTRIBUTES security;
 		security.nLength = sizeof(SECURITY_ATTRIBUTES);
@@ -490,6 +540,7 @@ int prepare(HMODULE hLibrary, const char *lpCmdLine) {
 		security.lpSecurityDescriptor = NULL;
 		CreateMutexA(&security, FALSE, mutexName);
 		if (GetLastError() == ERROR_ALREADY_EXISTS) {
+			debug("Instance already exists.");
 			return ERROR_ALREADY_EXISTS;
 		}
 	}
@@ -497,46 +548,46 @@ int prepare(HMODULE hLibrary, const char *lpCmdLine) {
 	// Working dir
 	char tmp_path[_MAX_PATH] = {0};
 	GetCurrentDirectory(_MAX_PATH, oldPwd);
-	if (loadString(hLibrary, CHDIR, tmp_path)) {
+	if (loadString(CHDIR, tmp_path)) {
 		strncpy(workingDir, exePath, pathLen);
-		strcat(workingDir, "\\");
-		strcat(workingDir, tmp_path);
+		appendPath(workingDir, tmp_path);
 		_chdir(workingDir);
+		debug("Working dir:\t%s\n", workingDir);
 	}
 
 	// Use bundled jre or find java
-	if (loadString(hLibrary, JRE_PATH, tmp_path)) {
+	if (loadString(JRE_PATH, tmp_path)) {
 		char jrePath[MAX_ARGS] = {0};
 		expandVars(jrePath, tmp_path, exePath, pathLen);
+		debug("Bundled JRE:\t%s\n", jrePath);
 		if (jrePath[0] == '\\' || jrePath[1] == ':') {
 			// Absolute
 			strcpy(cmd, jrePath);
 		} else {
 			// Relative
 			strncpy(cmd, exePath, pathLen);
-			strcat(cmd, "\\");
-			strcat(cmd, jrePath);
+			appendPath(cmd, jrePath);
 		}
     }
 	if (!isJrePathOk(cmd)) {
-		if (!loadString(hLibrary, JAVA_MIN_VER, javaMinVer)) {
-			loadString(hLibrary, BUNDLED_JRE_ERR, errMsg);
+		if (!loadString(JAVA_MIN_VER, javaMinVer)) {
+			loadString(BUNDLED_JRE_ERR, errMsg);
 			return FALSE;
 		}
-		loadString(hLibrary, JAVA_MAX_VER, javaMaxVer);
-		if (!findJavaHome(cmd, loadInt(hLibrary, JDK_PREFERENCE))) {
-			loadString(hLibrary, JRE_VERSION_ERR, errMsg);
+		loadString(JAVA_MAX_VER, javaMaxVer);
+		if (!findJavaHome(cmd, loadInt(JDK_PREFERENCE))) {
+			loadString(JRE_VERSION_ERR, errMsg);
 			strcat(errMsg, " ");
 			strcat(errMsg, javaMinVer);
 			if (*javaMaxVer) {
 				strcat(errMsg, " - ");
 				strcat(errMsg, javaMaxVer);
 			}
-			loadString(hLibrary, DOWNLOAD_URL, errUrl);
+			loadString(DOWNLOAD_URL, errUrl);
 			return FALSE;
 		}
 		if (!isJrePathOk(cmd)) {
-			loadString(hLibrary, LAUNCHER_ERR, errMsg);
+			loadString(LAUNCHER_ERR, errMsg);
 			return FALSE;
 		}
 	}
@@ -551,33 +602,34 @@ int prepare(HMODULE hLibrary, const char *lpCmdLine) {
 
 	// Set environment variables
 	char envVars[MAX_VAR_SIZE] = {0};
-	loadString(hLibrary, ENV_VARIABLES, envVars);
+	loadString(ENV_VARIABLES, envVars);
 	char *var = strtok(envVars, "\t");
 	while (var != NULL) {
 		char *varValue = strchr(var, '=');
 		*varValue++ = 0;
 		*tmp = 0;
 		expandVars(tmp, varValue, exePath, pathLen);
+		debug("Set var:\t%s = %s\n", var, tmp);
 		SetEnvironmentVariable(var, tmp);
 		var = strtok(NULL, "\t"); 
 	}
 	*tmp = 0;
 
 	// Process priority
-	priority = loadInt(hLibrary, PRIORITY_CLASS);
+	priority = loadInt(PRIORITY_CLASS);
 
 	// Custom process name
-	const BOOL setProcName = loadBool(hLibrary, SET_PROC_NAME)
+	const BOOL setProcName = loadBool(SET_PROC_NAME)
 			&& strstr(lpCmdLine, "--l4j-default-proc") == NULL;
-	const BOOL wrapper = loadBool(hLibrary, WRAPPER);
+	const BOOL wrapper = loadBool(WRAPPER);
 
 	appendLauncher(setProcName, exePath, pathLen, cmd);
 
 	// Heap sizes
-	appendHeapSizes(hLibrary, args);
+	appendHeapSizes(args);
 	
     // JVM options
-	if (loadString(hLibrary, JVM_OPTIONS, tmp)) {
+	if (loadString(JVM_OPTIONS, tmp)) {
 		strcat(tmp, " ");
 	} else {
         *tmp = 0;
@@ -622,9 +674,9 @@ int prepare(HMODULE hLibrary, const char *lpCmdLine) {
 	// MainClass + Classpath or Jar
 	char mainClass[STR] = {0};
 	char jar[_MAX_PATH] = {0};
-	loadString(hLibrary, JAR, jar);
-	if (loadString(hLibrary, MAIN_CLASS, mainClass)) {
-		if (!loadString(hLibrary, CLASSPATH, tmp)) {
+	loadString(JAR, jar);
+	if (loadString(MAIN_CLASS, mainClass)) {
+		if (!loadString(CLASSPATH, tmp)) {
 			return FALSE;
 		}
 		char exp[MAX_ARGS] = {0};
@@ -639,6 +691,7 @@ int prepare(HMODULE hLibrary, const char *lpCmdLine) {
 		// Deal with wildcards or >> strcat(args, exp); <<
 		char* cp = strtok(exp, ";");
 		while(cp != NULL) {
+			debug("Add classpath:\t%s\n", cp);
 			if (strpbrk(cp, "*?") != NULL) {
 				int len = strrchr(cp, '\\') - cp + 1;
 				strncpy(tmp_path, cp, len);
@@ -651,6 +704,7 @@ int prepare(HMODULE hLibrary, const char *lpCmdLine) {
 						strcpy(filename, c_file.name);
 						strcat(args, tmp_path);
 						strcat(args, ";");
+						debug("      \"      :\t%s\n", tmp_path);
 					} while (_findnext(hFile, &c_file) == 0);
 				}
 				_findclose(hFile);
@@ -671,13 +725,12 @@ int prepare(HMODULE hLibrary, const char *lpCmdLine) {
     } else {
        	strcat(args, "-jar \"");
         strncat(args, exePath, pathLen);
-        strcat(args, "\\");
-        strcat(args, jar);
+        appendPath(args, jar);
        	strcat(args, "\"");
     }
 
 	// Constant command line args
-	if (loadString(hLibrary, CMD_LINE, tmp)) {
+	if (loadString(CMD_LINE, tmp)) {
 		strcat(args, " ");
 		strcat(args, tmp);
 	}
@@ -700,27 +753,16 @@ int prepare(HMODULE hLibrary, const char *lpCmdLine) {
 		}
 	}
 
-    if (debug) {
-		strncpy(tmp, exePath, pathLen);
-		*(tmp + pathLen) = 0;
-		strcat(tmp, "\\launch4j.log");
-		FILE *hFile = fopen(tmp, "a");
-		if (hFile == NULL) {
-			return FALSE;
-		}
-		fprintf(hFile, "Working dir:\t%s\n", workingDir);
-		fprintf(hFile, "Launcher:\t%s\n", cmd);
-        _itoa(strlen(args), tmp, 10);     // 10 -- radix
-		fprintf(hFile, "Args length:\t%s/32768 chars\n", tmp);
-		fprintf(hFile, "Launcher args:\t%s\n\n\n", args);
-		fclose(hFile);
-    }
+	debug("Launcher:\t%s\n", cmd);
+	debug("Launcher args:\t%s\n", args);
+	debug("Args length:\t%d/32768 chars\n", strlen(args));
 	return TRUE;
 }
 
 void closeHandles() {
 	CloseHandle(pi.hThread);
 	CloseHandle(pi.hProcess);
+	closeLogFile();
 }
 
 /*
@@ -755,6 +797,7 @@ DWORD execute(const BOOL wait) {
 		if (wait) {
 			WaitForSingleObject(pi.hProcess, INFINITE);
 			GetExitCodeProcess(pi.hProcess, &dwExitCode);
+			debug("Exit code:\t%d\n", dwExitCode);
 			closeHandles();
 		} else {
 			dwExitCode = 0;

@@ -11,7 +11,7 @@
 	<body>
 		<div id="container">
 			<div id="top">
-				<img style="width: 249px; height: 58px;" src="launch4j.gif" alt="launch4j"> <span class="version">3.0.0</span>
+				<img style="width: 249px; height: 58px;" src="launch4j.gif" alt="launch4j"> <span class="version">3.0.1</span>
 			</div>
 			<div id="leftnav">
 				<ul>
@@ -36,6 +36,14 @@
 			<div id="content">
 <h2>Changelog</h2>
 
+<h4>Changes in version 3.0.1 (20-07-2008)</h4>
+<ul class="changes">
+	<li>Enhanced the runtime logging (--l4j-debug).</li>
+	<li>Fixed critical bug #1925387 64-bit JDK detection problem caused a runtime search error (found by Stivo).</li>
+	<li>Fixed bug #1919406, #1989479 Not every option is loaded from saved xml file (found by Robert Lachner, Jan-Philipp Rathje).</li>
+	<li>Fixed bug #1930222 Simple typo (found by Daniel).</li>
+</ul>
+
 <h4>Changes in version 3.0.0 (16-03-2008)</h4>
 <ul class="changes">
 	<li>FR #1390075 Added dynamic initial/max heap values.</li>
@@ -43,11 +51,11 @@
 	<li>FR #1730245 Allow to run only a single aplication instance (Sylvain Mina).</li>
 	<li>FR #1391610 Added IBM JRE/JDK support.</li>
 	<li>Added environment variable expansion in bundled JRE path.</li>
+	<li>Fixed critical bug #1882524 JRE detection problem on 64-bit Windows.</li>
 	<li>Fixed bug #1758912 Vista elevation to full administrator privileges.</li>
 	<li>Fixed bug #1784341 Problems with spaces in paths under linux (Michael Piefel).</li>
 	<li>Fixed bug where /bin was appended to path environment variable instead of jre_path/bin.</li>
 </ul>
-<h4>
 
 <h4>Changed license to BSD, MIT (26-01-2008)</h4>
 <ul class="changes">
@@ -57,7 +65,6 @@
 		will be licensed under the similar MIT license.
 	</li>
 </ul>
-<h4>
 
 <h4>Changes in version 3.0.0-pre2 (29-10-2006)</h4>
 <ul class="changes">

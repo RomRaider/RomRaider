@@ -283,6 +283,8 @@ public class MainFrame extends JFrame {
 				}
 			} catch (ConfigPersisterException ex) {
 				warn(ex.getMessage());
+			} catch (BindingException ex) {
+				warn(ex.getMessage());
 			}
 		}
 	}

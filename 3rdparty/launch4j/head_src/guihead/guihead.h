@@ -31,7 +31,7 @@
 #define DEFAULT_SPLASH_TIMEOUT	60			/* 60 seconds */
 #define MAX_SPLASH_TIMEOUT		60 * 15		/* 15 minutes */
 
-HWND getInstanceWindow(const HMODULE hLibrary);
+HWND getInstanceWindow();
 
 BOOL CALLBACK enumwndfn(HWND hwnd, LPARAM lParam);
 

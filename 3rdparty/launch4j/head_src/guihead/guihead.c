@@ -32,6 +32,7 @@
 #include "../head.h"
 #include "guihead.h"
 
+extern FILE* hLog;
 extern PROCESS_INFORMATION pi;
 
 HWND hWnd;
@@ -46,26 +47,22 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow) {
-	HMODULE hLibrary = NULL;
-	int result = prepare(hLibrary, lpCmdLine);
+	int result = prepare(lpCmdLine);
 	if (result == ERROR_ALREADY_EXISTS) {
-		HWND handle = getInstanceWindow(hLibrary);
-		FreeLibrary(hLibrary);
+		HWND handle = getInstanceWindow();
 		ShowWindow(handle, SW_SHOW);
 		SetForegroundWindow(handle);
+		closeLogFile();
 		return 2;
 	}
 	if (result != TRUE) {
 		signalError();
-		if (hLibrary != NULL) {
-			FreeLibrary(hLibrary);
-		}
 		return 1;
 	}
 
-	splash = loadBool(hLibrary, SHOW_SPLASH)
+	splash = loadBool(SHOW_SPLASH)
 			&& strstr(lpCmdLine, "--l4j-no-splash") == NULL;
-	stayAlive = loadBool(hLibrary, GUI_HEADER_STAYS_ALIVE)
+	stayAlive = loadBool(GUI_HEADER_STAYS_ALIVE)
 			&& strstr(lpCmdLine, "--l4j-dont-wait") == NULL;
 	if (splash || stayAlive) {
 		hWnd = CreateWindowEx(WS_EX_TOOLWINDOW, "STATIC", "",
@@ -73,15 +70,15 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 				0, 0, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
 		if (splash) {
 			char timeout[10] = {0};
-			if (loadString(hLibrary, SPLASH_TIMEOUT, timeout)) {
+			if (loadString(SPLASH_TIMEOUT, timeout)) {
 				splashTimeout = atoi(timeout);
 				if (splashTimeout <= 0 || splashTimeout > MAX_SPLASH_TIMEOUT) {
 					splashTimeout = DEFAULT_SPLASH_TIMEOUT;
 				}
 			}
-			splashTimeoutErr = loadBool(hLibrary, SPLASH_TIMEOUT_ERR)
+			splashTimeoutErr = loadBool(SPLASH_TIMEOUT_ERR)
 					&& strstr(lpCmdLine, "--l4j-no-splash-err") == NULL;
-			waitForWindow = loadBool(hLibrary, SPLASH_WAITS_FOR_WINDOW);
+			waitForWindow = loadBool(SPLASH_WAITS_FOR_WINDOW);
 			HANDLE hImage = LoadImage(hInstance,	// handle of the instance containing the image
 					MAKEINTRESOURCE(SPLASH_BITMAP),	// name or identifier of image
 					IMAGE_BITMAP,					// type of image
@@ -102,31 +99,34 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			UpdateWindow (hWnd);
 		}
 		if (!SetTimer (hWnd, ID_TIMER, 1000 /* 1s */, TimerProc)) {
+			signalError();
 			return 1;
 		}
 	}
-	FreeLibrary(hLibrary);
 	if (execute(FALSE) == -1) {
 		signalError();
 		return 1;
 	}
 	if (!(splash || stayAlive)) {
+		debug("Exit code:\t0\n");
 		closeHandles();
 		return 0;
 	}
+
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+	debug("Exit code:\t%d\n", dwExitCode);
 	closeHandles();
 	return dwExitCode;
 }
 
-HWND getInstanceWindow(const HMODULE hLibrary) {
+HWND getInstanceWindow() {
 	char windowTitle[STR];
 	char instWindowTitle[STR] = {0};
-	if (loadString(hLibrary, INSTANCE_WINDOW_TITLE, instWindowTitle)) {
+	if (loadString(INSTANCE_WINDOW_TITLE, instWindowTitle)) {
 		HWND handle = FindWindowEx(NULL, NULL, NULL, NULL); 
 		while (handle != NULL) {
 			GetWindowText(handle, windowTitle, STR - 1);
@@ -180,7 +180,6 @@ VOID CALLBACK TimerProc(
 	if (dwExitCode != STILL_ACTIVE
 			|| !(splash || stayAlive)) {
 		KillTimer(hWnd, ID_TIMER);
-		PostQuitMessage(0);	
-		return;
+		PostQuitMessage(0);
 	}
 }

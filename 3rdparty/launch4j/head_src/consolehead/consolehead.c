@@ -43,23 +43,18 @@ int main(int argc, char* argv[])
 	} else {
 		cmdLine = "";
 	}
-	HMODULE hLibrary = NULL;
-	int result = prepare(hLibrary, cmdLine);
+	int result = prepare(cmdLine);
 	if (result == ERROR_ALREADY_EXISTS) {
 		char errMsg[BIG_STR] = {0};
-		loadString(hLibrary, INSTANCE_ALREADY_EXISTS_MSG, errMsg);
+		loadString(INSTANCE_ALREADY_EXISTS_MSG, errMsg);
 		msgBox(errMsg);
-		FreeLibrary(hLibrary);
+		closeLogFile();
 		return 2;
 	}
 	if (result != TRUE) {
 		signalError();
-		if (hLibrary != NULL) {
-			FreeLibrary(hLibrary);
-		}
 		return 1;
 	}
-	FreeLibrary(hLibrary);
 
 	result = (int) execute(TRUE);
 	if (result == -1) {

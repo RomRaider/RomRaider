@@ -52,7 +52,7 @@ public class MessagesFormImpl extends MessagesForm {
 				.add("messages.bundledJreErr", _bundledJreErrTextArea, m.getBundledJreErr())
 				.add("messages.jreVersionErr", _jreVersionErrTextArea, m.getJreVersionErr())
 				.add("messages.launcherErr", _launcherErrTextArea, m.getLauncherErr())
-				.add("messages.instanceAlreadyExists", _instanceAlreadyExistsMsgTextArea,
+				.add("messages.instanceAlreadyExistsMsg", _instanceAlreadyExistsMsgTextArea,
 						m.getInstanceAlreadyExistsMsg());
 	}
 }

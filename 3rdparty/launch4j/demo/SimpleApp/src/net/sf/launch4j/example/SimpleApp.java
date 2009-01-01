@@ -63,7 +63,7 @@ public class SimpleApp extends JFrame {
 
 		this.addWindowListener(new WindowAdapter() {
 	    	public void windowClosing(WindowEvent e) {
-				System.exit(0);
+				System.exit(123);
 		}});
 		setVisible(true);
 

@@ -61,7 +61,6 @@
 #define LAUNCH4J_TMP_DIR "\\launch4j-tmp\\"
 #define MANIFEST ".manifest"
 
-#define KEY_WOW64_32KEY 0x0200
 #define KEY_WOW64_64KEY 0x0100
 
 #define HKEY_STR "HKEY"
@@ -79,13 +78,17 @@
 #define TRUE_STR "true"
 #define FALSE_STR "false"
 
+#define debug(args...) if (hLog != NULL) fprintf(hLog, ## args); 
+
 typedef void (WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
 
+FILE* openLogFile(const char* exePath, const int pathLen);
+void closeLogFile();
 void msgBox(const char* text);
 void signalError();
-BOOL loadString(const HMODULE hLibrary, const int resID, char* buffer);
-BOOL loadBool(const HMODULE hLibrary, const int resID);
-int loadInt(const HMODULE hLibrary, const int resID);
+BOOL loadString(const int resID, char* buffer);
+BOOL loadBool(const int resID);
+int loadInt(const int resID);
 BOOL regQueryValue(const char* regPath, unsigned char* buffer,
 		unsigned long bufferLength);
 void regSearch(const HKEY hKey, const char* keyName, const int searchType);
@@ -94,15 +97,15 @@ void regSearchJreSdk(const char* jreKeyName, const char* sdkKeyName,
 		const int jdkPreference);
 BOOL findJavaHome(char* path, const int jdkPreference);
 int getExePath(char* exePath);
-void catJavaw(char* jrePath);
+void appendPath(char* basepath, const char* path);
+void appendJavaw(char* jrePath);
 void appendAppClasspath(char* dst, const char* src, const char* classpath);
 BOOL isJrePathOk(const char* path);
 BOOL expandVars(char *dst, const char *src, const char *exePath, const int pathLen);
-void appendHeapSizes(const HMODULE hLibrary, char *dst);
-void appendHeapSize(const HMODULE hLibrary, char *dst,
-		const int absID, const int percentID,
+void appendHeapSizes(char *dst);
+void appendHeapSize(char *dst, const int absID, const int percentID,
 		const DWORD freeMemory, const char *option);
-int prepare(HMODULE hLibrary, const char *lpCmdLine);
+int prepare(const char *lpCmdLine);
 void closeHandles();
 BOOL appendToPathVar(const char* path);
 DWORD execute(const BOOL wait);
