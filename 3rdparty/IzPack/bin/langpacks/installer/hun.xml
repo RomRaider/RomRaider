@@ -3,103 +3,136 @@
 <!-- The Hungarian langpack -->
 
 <langpack>
+    <!-- Heading messages START -->
+    <str id="CheckedHelloPanel.headline" txt="Üdvözlöm"/>
+    <str id="CompilePanel.headline" txt="Java Forrás-fájlokat fordítani"/>
+    <str id="FinishPanel.headline" txt="Telepítés befejezõdött"/>
+    <str id="HelloPanel.headline" txt="Üdvözlöm"/>
+    <str id="HTMLInfoPanel.headline" txt="Információk"/>
+    <str id="HTMLLicencePanel.headline" txt="Licenc-szerzõdés"/>
+    <str id="ImgPacksPanel.headline" txt="Telepítési csomagok kiválasztása"/>
+    <str id="InfoPanel.headline" txt="Információk"/>
+    <str id="InstallPanel.headline" txt="Telepítés"/>
+    <str id="JDKPathPanel.headline" txt="JDK-Pfad"/>
+    <str id="LicencePanel.headline" txt="Licenc-szerzõdés"/>
+    <str id="PacksPanel.headline" txt="Telepítési csomagok kiválasztása"/>
+    <str id="ProcessPanel.headline" txt="Külsõ folyamatok végrehajtása"/>
+    <str id="ShortcutPanel.headline" txt="Kapcsolatok"/>
+    <str id="SimpleFinishPanel.headline" txt="Telepítés befejezõdött"/>
+    <str id="SummaryPanel.headline" txt="Konfigurációs fájlok összefoglalása"/>
+    <str id="TargetPanel.headline" txt="Telepítési ösvény"/>
+    <str id="UserInputPanel.headline" txt="Fölhasználói adatok"/>
+    <str id="InstallationTypePanel.headline" txt="Telepítés módja"/>
 
     <!-- General installer strings -->
     <str id="installer.title" txt="IzPack - telepítés - "/>
     <str id="installer.next" txt="Következõ"/>
-    <str id="installer.prev" txt="Elözõ"/>
+    <str id="installer.prev" txt="Elõzõ"/>
     <str id="installer.quit" txt="Kilépés"/>
     <str id="installer.madewith" txt="(Készült az IzPack-vel - http://izpack.org/)"/>
     <str id="installer.quit.title" txt="A telepítés megszakítása"/>
     <str id="installer.quit.message" txt="Biztos benne, hogy ki akar lépni ?"/>
-    <str id="installer.warning" txt="Figylem !"/>
+    <str id="installer.warning" txt="Figyelem !"/>
     <str id="installer.yes" txt="Igen"/>
     <str id="installer.no" txt="Nem"/>
-    <str id="installer.cancel" txt="Megszakít"/> 
+    <str id="installer.cancel" txt="Megszakít"/>
     <str id="installer.error" txt="Hiba"/>
     <str id="installer.help" txt="Súgó"/>
-    <str id="installer.step" txt="Step"/>
-    <str id="installer.of" txt="of"/>
-    
+    <str id="installer.step" txt="Lépés"/>
+    <str id="installer.of" txt="-nak/nek"/>
+    <str id="installer.Message" txt="Kijelzés"/>
+
     <!-- Uninstaller specific strings -->
     <str id="uninstaller.warning" txt="A telepített alkalmazás eltávolítása következik !"/>
     <str id="uninstaller.destroytarget" txt=" Megerõsíti a törlését a(z) "/>
     <str id="uninstaller.uninstall" txt="Eltávolítás"/>
-    
+
     <!-- The strings for the 'official' IzPack plugins -->
     <str id="HelloPanel.welcome1" txt="Üdvözöljuk a(z) "/>
     <str id="HelloPanel.welcome2" txt=" telepítésekor !"/>
     <str id="HelloPanel.authors" txt="A program szerzõje(i) : "/>
     <str id="HelloPanel.url" txt="A program honlapja : "/>
-    
+
     <str id="LicencePanel.info" txt="Kérem olvassa el a következõ licence megállapodást :"/>
-    <str id="LicencePanel.agree" txt="Elfogadja a licence feltételeket ?"/>
-    <str id="LicencePanel.notagree" txt="NEM fogadom el a megadott licence feltételeket."/>
+    <str id="LicencePanel.agree" txt="Elfogadja a licence feltételeit ?"/>
+    <str id="LicencePanel.notagree" txt="NEM fogadom el a megadott licence feltételeit."/>
     <str id="LicencePanel.yes" txt="Igen"/>
     <str id="LicencePanel.no" txt="Nem"/>
-    
+
     <str id="InfoPanel.info" txt="Kérem olvassa el a következõ információt :"/>
-    
+
     <str id="TargetPanel.info" txt="Adja meg a telepítési mappát :"/>
     <str id="TargetPanel.browse" txt="Tallózás ..."/>
-    <str id="TargetPanel.warn" 
-         txt="A mappa már létezik ! Akarja az ott esetleg létezõ állományok felülírását ?"/>
+    <str id="TargetPanel.warn"
+         txt="A mappa már létezik ! Akarja az ott esetleg létezõ állományok fölülírását ?"/>
     <str id="TargetPanel.empty_target"
-         txt="Nem adott meg cél mappát! Megfelelõ ez így?"/>
-    <str id="TargetPanel.createdir" txt="A cél mappát a tetelepítõ létrehozza :" />
-         
-    
+         txt="Nem adott meg célmappát! Megfelelõ ez így?"/>
+    <str id="TargetPanel.createdir" txt="A célmappát a tetelepítõ létrehozza :"/>
+
+
     <str id="PacksPanel.info" txt="Válassza ki az telepítendõ csomagokat :"/>
     <str id="PacksPanel.tip" txt="Megjegyzés: a szürke csomagok telepítése elengedhetetlen."/>
     <str id="PacksPanel.space" txt="Összesen szükséges hely a lemezen: "/>
     <str id="PacksPanel.description" txt="Leírás"/>
     <str id="PacksPanel.freespace" txt="Rendelkezésre álló hely a lemezen: "/>
-    
+
     <str id="InstallPanel.info" txt="Kattintson az 'Telepítés !' gombra a telepítés megkezdéséhez!"/>
     <str id="InstallPanel.install" txt="Telepítés !"/>
     <str id="InstallPanel.tip" txt="Telepítési folyamat :"/>
     <str id="InstallPanel.begin" txt="[Nincs megkezdve]"/>
     <str id="InstallPanel.finished" txt="[Befejezve]"/>
     <str id="InstallPanel.progress" txt="Összefoglaló telepítési folyamat:"/>
-    
+
     <str id="FinishPanel.success" txt="A telepítés sikeresen lezajlott."/>
     <str id="FinishPanel.fail" txt="A telepítés sikertelen!"/>
     <str id="FinishPanel.uninst.info" txt="Az eltávolító program létrehozva:"/>
-    <str id="FinishPanel.auto" txt="Automatikus installációs script létrehozása"/>
-    <str id="FinishPanel.auto.tip" 
-         txt="A script at installációs folyamat másik gépen való futtatását támogatja."/>
-    
+    <str id="FinishPanel.auto" txt="Automatikus installációs szkript létrehozása"/>
+    <str id="FinishPanel.auto.tip"
+         txt="A szkript at installációs folyamat másik gépen való futtatását támogatja."/>
+
     <str id="ImgPacksPanel.packs" txt="A következõ csomagok érhetõek el :"/>
     <str id="ImgPacksPanel.snap" txt="Csomag snapshot  :"/>
     <str id="ImgPacksPanel.checkbox" txt=" A csomag telepítése"/>
-    
-    <str id="ShortcutPanel.regular.list" txt="Válasszon program csoportot az indító ikon számára:"/>
+
+    <str id="ShortcutPanel.regular.list" txt="Válasszon programcsoportot az indító ikon számára:"/>
     <str id="ShortcutPanel.regular.default" txt="Reset"/>
-    <str id="ShortcutPanel.regular.desktop" txt="Indító icon létrehozása az asztalon"/>
-    <str id="ShortcutPanel.regular.create" txt="Indító icon létrehozása"/>
-    <str id="ShortcutPanel.regular.userIntro" txt="indító icon létrehozása a program számára:"/>
-    <str id="ShortcutPanel.regular.currentUser" txt="aktuális felhasználó          "/>
-    <str id="ShortcutPanel.regular.allUsers" txt="összes felhasználó            "/>
+    <str id="ShortcutPanel.regular.desktop" txt="Indító ikon létrehozása az asztalon"/>
+    <str id="ShortcutPanel.regular.create" txt="Indító ikon létrehozása"/>
+    <str id="ShortcutPanel.regular.userIntro" txt="Indító ikon létrehozása a program számára:"/>
+    <str id="ShortcutPanel.regular.currentUser" txt="Aktuális felhasználó          "/>
+    <str id="ShortcutPanel.regular.allUsers" txt="Összes felhasználó            "/>
 
-    <str id="ShortcutPanel.alternate.apology" txt="Sajnos az IzPack nem támogatja parancsikon lértehozását az Ön operációs rendszerén! Parancs ikon készítésének módjáról tájékozódjon az operációs rendszer kézikönyvébõl!"/>
-    <str id="ShortcutPanel.alternate.targetsLabel" txt="A következõ listában a gyártó által megjelölt belépési pontok láthatók:"/>
-    <str id="ShortcutPanel.alternate.textFileExplanation" txt="Késöbbi felhasználás céljából szöveg file-ba mentheti a belépési pontok részletes leírását"/>
-    <str id="ShortcutPanel.alternate.saveButton" txt="A szöveg file mentése"/>
-    
-    <str id="ShortcutPanel.textFile.header" txt="Parancsikon Információk\n=======================\n\nAz alábbi lista tartalmazza a tervezett parancsikonok kézi létrehozásához szükséges információkat.\n"/>
-    
-    <str id="ShortcutPanel.textFile.name"         txt="Parancsikon       : "/>
-    <str id="ShortcutPanel.textFile.description"  txt="Leírás            : "/>
-    <str id="ShortcutPanel.textFile.target"       txt="Parancsikon célja : "/>
-    <str id="ShortcutPanel.textFile.command"      txt="Parancssor        : "/>
-    <str id="ShortcutPanel.textFile.iconName"     txt="Icon File         : "/>
-    <str id="ShortcutPanel.textFile.iconIndex"    txt="Icon Index        : "/>
-    <str id="ShortcutPanel.textFile.work"         txt="Munka könyvtár    : "/>
+    <str id="ShortcutPanel.alternate.apology"
+         txt="Sajnos az IzPack nem támogatja parancsikon lértehozását az Ön operációs rendszerén! Parancsikon készítésének módjáról tájékozódjon az operációs rendszer kézikönyvébõl!"/>
+    <str id="ShortcutPanel.alternate.targetsLabel"
+         txt="A következõ listában a gyártó által megjelölt belépési pontok láthatók:"/>
+    <str id="ShortcutPanel.alternate.textFileExplanation"
+         txt="Késõbbi felhasználás céljából szövegfájlba mentheti a belépési pontok részletes leírását"/>
+    <str id="ShortcutPanel.alternate.saveButton" txt="A szövegfájl mentése"/>
 
-    <str id="UserInputPanel.error.caption"        txt="Adathiba"/>
+    <str id="ShortcutPanel.textFile.header"
+         txt="Parancsikon Információk\n=======================\n\nAz alábbi lista tartalmazza a tervezett parancsikonok kézi létrehozásához szükséges információkat.\n"/>
 
-    <str id="JDKPathPanel.extendedIntro" txt="A telepített alkalmazásnak szüksége van egy JDK-ra, mely verziószáma ${JDKPathPanel.minVersion} és ${JDKPathPanel.maxVersion} között kell legyen. Csak (JRE) nem elegendõ."/>
-    <str id="JDKPathPanel.intro" txt="A telepített alkalmazásnak szüksége van egy JDK-ra. Egy java runtime environment (JRE) nem elegendõ."/>
+    <str id="ShortcutPanel.textFile.name" txt="Parancsikon       : "/>
+    <str id="ShortcutPanel.textFile.description" txt="Leírás            : "/>
+    <str id="ShortcutPanel.textFile.target" txt="Parancsikon célja : "/>
+    <str id="ShortcutPanel.textFile.command" txt="Parancssor        : "/>
+    <str id="ShortcutPanel.textFile.iconName" txt="Ikonfájl         : "/>
+    <str id="ShortcutPanel.textFile.iconIndex" txt="Ikonindex        : "/>
+    <str id="ShortcutPanel.textFile.work" txt="Munkakönyvtár    : "/>
+
+    <str id="ShortcutPanel.location.desktop" txt="Munkaasztal"/>
+    <str id="ShortcutPanel.location.applications" txt="Program-Menü"/>
+    <str id="ShortcutPanel.location.startMenu" txt="Start-Menü"/>
+    <str id="ShortcutPanel.location.startup" txt="Kezdési csoport"/>
+
+    <str id="UserInputPanel.error.caption" txt="Adathiba"/>
+    <str id="UserInputPanel.search.autodetect" txt="Automatikusan fölismerni"/>
+
+    <str id="JDKPathPanel.extendedIntro"
+         txt="A telepített alkalmazásnak szüksége van egy JDK-ra, mely verziószáma ${JDKPathPanel.minVersion} és ${JDKPathPanel.maxVersion} között kell legyen. Csak (JRE) nem elegendõ."/>
+    <str id="JDKPathPanel.intro"
+         txt="A telepített alkalmazásnak szüksége van egy JDK-ra. Egy java runtime environment (JRE) nem elegendõ."/>
     <str id="JDKPathPanel.info" txt="Válassza ki a JDK helyét:"/>
     <str id="JDKPathPanel.badVersion1" txt="A megadott JDK nem megfelelõ (elérhetõ: "/>
     <str id="JDKPathPanel.badVersion2" txt=" szükséges: "/>
@@ -108,15 +141,18 @@
     <str id="PathInputPanel.required" txt="A kiválasztott könyvtár nem létezik."/>
     <str id="PathInputPanel.notValid" txt="A kiválasztott könyvtár nem tartalmazza a szükséges Java terméket."/>
 
-    <str id="SummaryPanel.info" txt="Készen állunk a telepítésre. A fontosabb beállítások listája. Kattintson az 'Következõ' gombra a telepítés megkezdéséhez, "/>
-    <str id="TargetPanel.summaryCaption" txt="Cél mappa"/>
+    <str id="SummaryPanel.info"
+         txt="Készen állunk a telepítésre. A fontosabb beállítások listája. Kattintson az 'Következõ' gombra a telepítés megkezdéséhez, "/>
+    <str id="TargetPanel.summaryCaption" txt="Célmappa"/>
     <str id="JDKPathPanel.summaryCaption" txt="JDK elérési út"/>
     <str id="PacksPanel.summaryCaption" txt="Kiválasztott telepítési csomagok"/>
     <str id="ImgPacksPanel.summaryCaption" txt="Kiválasztott telepítési csomagok"/>
+    <str id="TreePacksPanel.summaryCaption" txt="Kiválasztott telepítési csomagok"/>
 
     <str id="CheckedHelloPanel.productAlreadyExist0" txt="Ez a program már telepítve van a következõ mappában "/>
-    <str id="CheckedHelloPanel.productAlreadyExist1" txt=" . Bzitos benne, hogy még egy példányban telepíteni akarja?"/>
-    <str id="CheckedHelloPanel.infoOverUninstallKey" txt="A program eltávolításához szükséges kulcs a következõ lesz: " />
+    <str id="CheckedHelloPanel.productAlreadyExist1" txt=" . Biztos benne, hogy még egy példányban telepíteni akarja?"/>
+    <str id="CheckedHelloPanel.infoOverUninstallKey"
+         txt="A program eltávolításához szükséges kulcs a következõ lesz: "/>
     <!-- Add your own panels specific strings here if you need -->
 
 </langpack>

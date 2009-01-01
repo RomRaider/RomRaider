@@ -1,5 +1,234 @@
 [ The list of the different public versions of IzPack ]
 
+
+Release Notes - IzPack - Version 4.2.0
+
+
+** Sub-task
+    * [IZPACK-194] - Remove ConditionalUserInputPanel
+
+** Bug
+    * [IZPACK-101] - Rules not corrected evaluated when performing an automated install
+    * [IZPACK-103] - ConditionalUserInputPanel missing AutomationHelper
+    * [IZPACK-188] - Localisation key for caption not looked up in UserInputPanel.java
+    * [IZPACK-191] - Installer Requirements Broken
+    * [IZPACK-199] - Conditions not evaluated in InstallPanel while doing automated installation
+    * [IZPACK-201] - Shortcut creation on non-english Linux (Ubuntu 8.10)
+    * [IZPACK-204] - Interface com.izforge.izpack.panels.Validator is missing in official Jar
+    * [IZPACK-208] - image in the HTMLInfoPanel does not show
+    * [IZPACK-213] - AutomatedInstaller complains about "invalid pack index"
+    * [IZPACK-216] - Izpack installer for SVN fails to start because of wrong ant file
+    * [IZPACK-221] - HTMLInfoPanel does not display html text that contains a meta content tag in its head area
+
+** Improvement
+    * [IZPACK-140] - Registry access functionality shall allow creating registry items of type REG_EXPAND_SZ 
+    * [IZPACK-164] - Validating Data on every panel
+    * [IZPACK-170] - Italian langpack update
+    * [IZPACK-187] - Improve visual look of installer UI
+    * [IZPACK-214] - resource/parsable types are missing in docs
+    * [IZPACK-215] - Since mac and linux does not want ctrl-m (carriage return) in shell script, make sure they are gone if marked as shell type
+    * [IZPACK-220] - Document hidden feature of HTMLInfoPanel
+
+** New Feature
+    * [IZPACK-80] - Ignore errors on execution of external executable programs
+    * [IZPACK-163] - Possibility of registering Helps
+    * [IZPACK-177] - Fileset for Refpacks
+    * [IZPACK-184] - JNLP (java Web Start) generator
+    * [IZPACK-190] - Run an installer with privileged permissions
+    * [IZPACK-200] - Multiple packsLang.xml files
+
+** Task
+    * [IZPACK-207] - Reformat Finnish LangPack
+
+** Test
+    * [IZPACK-150] - Add integration tests
+
+
+
+Release Notes - IzPack - Version 4.1.1
+
+
+** Bug
+    * [IZPACK-107] - Creation of the uninstaller is still unconditional
+    * [IZPACK-172] - Unable to interpolate @{variable}
+    * [IZPACK-173] - Desktop icon not created in Gnome (created in wrong folder)
+    * [IZPACK-175] - izpack2app runtime error
+    * [IZPACK-178] - Conditions on packs do not work properly
+    * [IZPACK-181] - In UserInputPanel the search field doesn't substitute variables
+    * [IZPACK-189] - izpack2app.py fails with error "File exists"
+    * [IZPACK-192] - In UserPathPanel variables aren't substituted
+    * [IZPACK-193] - HTMLInfoPanel does not show html files
+    * [IZPACK-225] - parsable, executable crash with MultiVolumePackager
+
+** Improvement
+    * [IZPACK-170] - Italian langpack update
+
+** New Feature
+    * [IZPACK-174] - Support for izpack2exe and izpack2app
+
+** Task
+    * [IZPACK-171] - Release izpack-standalone-4.1.0 to maven repository
+    * [IZPACK-180] - Update French LangPack
+    * [IZPACK-182] - Reformat Eng LangPack
+    * [IZPACK-219] - Need to update the link on the webpage to download latest source only
+
+
+
+Release Notes - IzPack - Version 4.1.0
+
+
+** Bug
+    * [IZPACK-72] - PortProcessor does not catch invalid error
+    * [IZPACK-93] - Re-enabled button does not gain focus
+    * [IZPACK-126] - Lost input data when navigating forward/backward in installer
+    * [IZPACK-127] - Conditionid used instead of condition for job definitions
+    * [IZPACK-141] - Information defined in info section are not available as build-in variable during compile time
+    * [IZPACK-142] - Custom panel jars are not found with maven plugin
+    * [IZPACK-151] - file unpack does not work with war files
+    * [IZPACK-152] - UserPathPanel prints debug messages to console
+    * [IZPACK-159] - IzPack2App: executable bit should be forced to be set on the Java application stub
+    * [IZPACK-160] - Documention for file's override attribute missing "false" value
+    * [IZPACK-167] - izpack2exe crashes when called from a different directory than where it resides
+    * [IZPACK-168] - izpack2app does not properly work when called from the same folder as the script
+
+** Improvement
+    * [IZPACK-63] - Reduce the installers size
+    * [IZPACK-112] - Registry interaction: allow string key values to be extended
+    * [IZPACK-114] - Ability to set environment variables when using ProcessPanel
+    * [IZPACK-123] - Multiple HTMLInfo Panels showing different html files...
+    * [IZPACK-124] - Parsing/Variable substitution of the content in HTMLInfoPanel
+    * [IZPACK-130] - TestLangPacks: build.xml update: Added distribution dir and files and some other tasks. Added zip creation.
+    * [IZPACK-149] - support encoding when interpolating izpack descriptor
+    * [IZPACK-155] - InstallPanel overall progress bar should be indeterminate if there is only one pack to install
+    * [IZPACK-157] - Raise the JVM heap size in IzPack scripts
+
+** New Feature
+    * [IZPACK-82] - Pack200 support
+    * [IZPACK-84] - Install Script Locator Framework
+    * [IZPACK-110] - User Condition
+    * [IZPACK-145] - Ablility to disable the attaching of the artifact in maven plugin
+    * [IZPACK-147] - ability to customize the final name
+
+** Task
+    * [IZPACK-129] - TestLangPacks: Added directory for distribution files.
+    * [IZPACK-131] - TestLangPacks: Added version stamping into use for various files.
+    * [IZPACK-132] - TestLangPacks: application name and version are taken from Manifest.mf file. Documentation update.
+    * [IZPACK-134] - TestLangPacks: Tag for version 1.0-beta1
+    * [IZPACK-137] - TestLangPacks: Added license file.
+    * [IZPACK-139] - Italian langpack update.
+    * [IZPACK-143] - TestLangPacks: Documentation update.
+    * [IZPACK-144] - TestLangPacks: Tag for version 1.0.
+
+
+Release Notes - IzPack - Version 4.0.1
+
+
+** Bug
+    * [IZPACK-97] - UserPathPanel default dir not shown on mac
+    * [IZPACK-98] - UserPathPanel: browse button clipped
+    * [IZPACK-100] - Resize problem
+    * [IZPACK-106] - The packs list in PacksPanel does not behave correctly on clicks
+    * [IZPACK-109] - Web installer: NoClassDefFoundError: com/izforge/izpack/compiler/CompilerException when downloading packs
+    * [IZPACK-113] - Scandinavian characters (едц) in packet name will cause installation fail
+
+** Improvement
+    * [IZPACK-117] - Improve German Language Pack
+    * [IZPACK-120] - TestLangPacks: Added new feature: find same strings and updates.
+
+** New Feature
+    * [IZPACK-111] - Add Installer Conditions
+
+** Task
+    * [IZPACK-121] - TestLangPacks: Documentation addition. Update build.xml encoding.
+    * [IZPACK-128] - TestLangPacks: Changed found item recognising during the printing the result. Minor text updates.
+
+
+
+Release Notes - IzPack - Version 4.0.0
+
+
+** Bug
+    * [IZPACK-13] - It appears that the "parsexml" resource attribute support does not read the resource that is to be parsed
+    * [IZPACK-14] - Language XML file contains "rdid" (not "txt")
+    * [IZPACK-15] - The <xinclude> directive does not work when trying include relative resources where the compile is not run from the same directory as the installation file.  
+    * [IZPACK-16] - Some panels are displayed although suitable conditions are not met
+    * [IZPACK-20] - The launcher will never prompt you to install a JRE if there is no JRE on the system
+    * [IZPACK-24] - Installer recursively removes install directory when cancelled.
+    * [IZPACK-25] - Dutch langpack out of date
+    * [IZPACK-27] - Indonesian Langpack out of date
+    * [IZPACK-28] - Logic to show the next panel can cause the current panel's isValidated method to be invoked more than once
+    * [IZPACK-30] - Launch windows native when has file association
+    * [IZPACK-31] - TestLangPacks: Flag settings in wrong place. Code conventions not as guided.  (Reported by Hans Aikema)
+    * [IZPACK-42] - Ant Task documentation problem
+    * [IZPACK-43] - RefCondition is not resolve referenced condition 
+    * [IZPACK-46] - Missing resource for id userInputLang.xml_xxx   cause nullpointer when inputValidator send error message
+    * [IZPACK-47] - summaryCaption  text for TreePacksPanel  shows fully cqualified classname instead of proper description
+    * [IZPACK-49] - Windows shortcuts can not be created on userless installs
+    * [IZPACK-50] - Commandline install fails due to ShortcutPanelAutomationHelper error
+    * [IZPACK-51] - NullPointerException occurring in MultiVolumePackager
+    * [IZPACK-52] - UserInputPanel: NPE in  showMessage()
+    * [IZPACK-53] - PortValidator throws exception
+    * [IZPACK-57] - User installation fails with enabled registry support
+    * [IZPACK-58] - Clarify support status for Win9x
+    * [IZPACK-59] - Fix display of localized pack names in PackPanel
+    * [IZPACK-60] - resolveIzPackHome fails when standalone-compiler.jar resides in directory with spaces
+    * [IZPACK-66] - UserInputPanel checkbox does not set properly
+    * [IZPACK-68] - izpack2app cannot be run outside of its parent folder context
+    * [IZPACK-69] - If a InstallerListener throws an exception during installation, the registered CleanupClient instances are not invoked
+    * [IZPACK-70] - After a ProcessPanel has been executed, the previous button should not be abled to allow it to be executed again.
+    * [IZPACK-71] - Debugger not showing up
+    * [IZPACK-73] - DynamicVariables does not work as expected/documented.
+    * [IZPACK-79] - IzPack 3.11.0 seems to ignore resources declared with the 'parse' attribute
+
+** Improvement
+    * [IZPACK-11] - Option for writing installation information
+    * [IZPACK-12] - Target Java 5 instead of Java 1.4 
+    * [IZPACK-22] - Update of the Hungarian translation
+    * [IZPACK-34] - TestLangPacks: batch files won't fit for IzPack directory structure.
+    * [IZPACK-35] - Error message if configuration file not readable can be misleading
+    * [IZPACK-44] - ~ directory is not understood
+    * [IZPACK-56] - Fix typos in language selection dialog
+    * [IZPACK-61] - UserInputPanel JFileChooser should save current directory
+    * [IZPACK-62] - To be able to choose creation of uninstaller based on some parameter/condition (e.g. type of install)
+    * [IZPACK-67] - Corrections for italian translation
+    * [IZPACK-74] - Deprecate the Kunststoff and IzPack Metal themes
+    * [IZPACK-75] - Heading Image on Left
+    * [IZPACK-76] - Revise FinishPanel and SimpleFinishPanel Icons and Spacing
+    * [IZPACK-83] - XML File Filter For Automated Installation Scripts
+    * [IZPACK-85] - LocaleDatabase Refactoring
+    * [IZPACK-88] - Updating Galician language
+    * [IZPACK-95] - Galician language file updated for izpack 4.0.0
+
+** New Feature
+    * [IZPACK-10] - Single Instance
+    * [IZPACK-29] - Adding new tool: TestLangPacks
+    * [IZPACK-64] - Mandatory Default Installation Directory
+    * [IZPACK-65] - Password Encryption
+
+** Task
+    * [IZPACK-17] - Finnish translation is not updated.
+    * [IZPACK-21] - Bundle the native launcher in the IzPack installer 'utilities' pack.
+    * [IZPACK-23] - Update the project URL references in files
+    * [IZPACK-26] - Archive the lists on Google Groups
+    * [IZPACK-32] - Need for runnable jar for TestLangPacks.
+    * [IZPACK-33] - TestLangPacks: Remove jar file which sources are found in SVN.
+    * [IZPACK-36] - Global source code reformating
+    * [IZPACK-37] - Subversion branch for 4.0.x releases
+    * [IZPACK-38] - Subversion tag for 4.0.0
+    * [IZPACK-39] - Add HTML release notes in the distribution.
+    * [IZPACK-40] - Tag for TestLangPacks version 0.2
+    * [IZPACK-45] - TestLangPacks: Take Ant build file in use.
+    * [IZPACK-54] - Set svn:eol-style=native on text files
+    * [IZPACK-55] - Fix documentation about JRE minimum requirement to state 1.5
+    * [IZPACK-77] - Wrong attribute in Finnish langpack.
+    * [IZPACK-89] - Update for Finnish langpack.
+    * [IZPACK-91] - Fix Dutch and Indonesian Langpacks
+
+
+** Wish
+    * [IZPACK-18] - Should there be component for translations?
+
+
   > 3.11.0 (build 2008.02.12)
 
 - Added ignore as possible value for failure argument in executables (Dennis Reil)

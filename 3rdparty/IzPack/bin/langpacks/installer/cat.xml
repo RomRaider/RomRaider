@@ -43,8 +43,8 @@
          txt="El directori ja existeix! Confirma que vol fer la instal.lació en l'esmentat directori?"/>
     <str id="TargetPanel.empty_target"
          txt="Ha fet una designació sense nom! Desitja fer-ho així?"/>
-	  <str id="TargetPanel.createdir" txt="El directori serà creat:" />
-	  
+    <str id="TargetPanel.createdir" txt="El directori serà creat:"/>
+
     <str id="PacksPanel.info" txt="Seleccioni els paquets que desitja instal.lar:"/>
     <str id="PacksPanel.tip" txt="Nota: els paquets en gris no són opcionals."/>
     <str id="PacksPanel.space" txt="Espai total requerit: "/>
@@ -66,7 +66,7 @@
     <str id="ImgPacksPanel.packs" txt="Paquets disponibles:"/>
     <str id="ImgPacksPanel.snap" txt="Captura de pantalla associada:"/>
     <str id="ImgPacksPanel.checkbox" txt=" Instal.lar aquest paquet"/>
-    
+
     <str id="ShortcutPanel.regular.list" txt="Seleccioni un grup de programes pels accessos directes:"/>
     <str id="ShortcutPanel.regular.default" txt="Valor original"/>
     <str id="ShortcutPanel.regular.desktop" txt="Crear accés directe a l'escriptori"/>
@@ -75,28 +75,32 @@
     <str id="ShortcutPanel.regular.currentUser" txt="Usuari actual"/>
     <str id="ShortcutPanel.regular.allUsers" txt="Tots els usuaris"/>
 
-    <str id="ShortcutPanel.alternate.apology" txt="Ho sentim, IzPack no pot crear accessos directes en aquest sistema operatiu. Per crear-los, si us plau consulti el seu manual del sistema operatiu."/>
-    <str id="ShortcutPanel.alternate.targetsLabel" txt="La següent és una llista d'arxius executables als que el creador d'aquest producte voldria que vostè tingués accés mitjançant accessos directes."/>
-    <str id="ShortcutPanel.alternate.textFileExplanation" txt="Pot guardar informació detallada sobre els arxius executables de l'aplicació en un arxiu de text per referència posterior."/>
+    <str id="ShortcutPanel.alternate.apology"
+         txt="Ho sentim, IzPack no pot crear accessos directes en aquest sistema operatiu. Per crear-los, si us plau consulti el seu manual del sistema operatiu."/>
+    <str id="ShortcutPanel.alternate.targetsLabel"
+         txt="La següent és una llista d'arxius executables als que el creador d'aquest producte voldria que vostè tingués accés mitjançant accessos directes."/>
+    <str id="ShortcutPanel.alternate.textFileExplanation"
+         txt="Pot guardar informació detallada sobre els arxius executables de l'aplicació en un arxiu de text per referència posterior."/>
     <str id="ShortcutPanel.alternate.saveButton" txt="Guardar text"/>
-    
-    <str id="ShortcutPanel.textFile.header" txt="Informació d'accessos directes\n===============================\n\nEl següent es un llistat de tota la informació rellevant sobre els accessos\ndirectes desitjats. Aquesta informació pot ajudar en la seva creació manual.\n"/>
-    
-    <str id="ShortcutPanel.textFile.name"         txt="Accés directe         : "/>
-    <str id="ShortcutPanel.textFile.location"     txt="Ubicació desitjada    : "/>
-    <str id="ShortcutPanel.textFile.description"  txt="Descripció            : "/>
-    <str id="ShortcutPanel.textFile.target"       txt="Arxiu executable      : "/>
-    <str id="ShortcutPanel.textFile.command"      txt="Línia de comandes     : "/>
-    <str id="ShortcutPanel.textFile.iconName"     txt="Arxiu de la icona     : "/>
-    <str id="ShortcutPanel.textFile.iconIndex"    txt="Índex de la icona     : "/>
-    <str id="ShortcutPanel.textFile.work"         txt="Directori de treball  : "/>
 
-    <str id="ShortcutPanel.location.desktop"      txt="Escriptori"/>
+    <str id="ShortcutPanel.textFile.header"
+         txt="Informació d'accessos directes\n===============================\n\nEl següent es un llistat de tota la informació rellevant sobre els accessos\ndirectes desitjats. Aquesta informació pot ajudar en la seva creació manual.\n"/>
+
+    <str id="ShortcutPanel.textFile.name" txt="Accés directe         : "/>
+    <str id="ShortcutPanel.textFile.location" txt="Ubicació desitjada    : "/>
+    <str id="ShortcutPanel.textFile.description" txt="Descripció            : "/>
+    <str id="ShortcutPanel.textFile.target" txt="Arxiu executable      : "/>
+    <str id="ShortcutPanel.textFile.command" txt="Línia de comandes     : "/>
+    <str id="ShortcutPanel.textFile.iconName" txt="Arxiu de la icona     : "/>
+    <str id="ShortcutPanel.textFile.iconIndex" txt="Índex de la icona     : "/>
+    <str id="ShortcutPanel.textFile.work" txt="Directori de treball  : "/>
+
+    <str id="ShortcutPanel.location.desktop" txt="Escriptori"/>
     <str id="ShortcutPanel.location.applications" txt="Menú d'aplicacions"/>
-    <str id="ShortcutPanel.location.startMenu"    txt="Menú d'inici"/>
-    <str id="ShortcutPanel.location.startup"      txt="Grup d'inici"/>
+    <str id="ShortcutPanel.location.startMenu" txt="Menú d'inici"/>
+    <str id="ShortcutPanel.location.startup" txt="Grup d'inici"/>
 
-    <str id="UserInputPanel.error.caption"        txt="Problema d'entrada"/>
+    <str id="UserInputPanel.error.caption" txt="Problema d'entrada"/>
 
     <!-- Add your own panels specific strings here if you need -->
 

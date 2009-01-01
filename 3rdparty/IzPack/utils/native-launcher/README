@@ -1,0 +1,11 @@
+This is a native launcher for IzPack installers.
+
+The source code can be compiled to any platform supported by Qt
+from Trolltech with no changes:
+- cd src
+- qmake
+- make
+
+Enjoy!
+
+-- Julien Ponge

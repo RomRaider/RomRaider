@@ -46,13 +46,14 @@
          txt="Katalogen existerar! Är du säker att du vill installera här och möjligen skriva över existerande filer?"/>
     <str id="TargetPanel.empty_target"
          txt="Du har inte specificerat en målkatalog! Är det korrekt?"/>
-    <str id="TargetPanel.createdir" txt="Målkatalogen kommer att skapas:" />
-    <str id="TargetPanel.nodir" 
+    <str id="TargetPanel.createdir" txt="Målkatalogen kommer att skapas:"/>
+    <str id="TargetPanel.nodir"
          txt="Den valda sökvägen är inte en mapp! Vänligen välj en annan mapp!"/>
-    <str id="TargetPanel.notwritable" 
+    <str id="TargetPanel.notwritable"
          txt="Den valda mappen kan inte skrivas! Vänligen välj en annan mapp!"/>
 
-    <str id="JDKPathPanel.intro" txt="Den installerade applikationen behöver en JDK. Java runtime environment (JRE) är inte tillräckligt."/>
+    <str id="JDKPathPanel.intro"
+         txt="Den installerade applikationen behöver en JDK. Java runtime environment (JRE) är inte tillräckligt."/>
     <str id="JDKPathPanel.info" txt="Ange sökvägen till en JDK:"/>
     <str id="JDKPathPanel.badVersion1" txt="Den valda JDK är fel version (tillgänglig: "/>
     <str id="JDKPathPanel.badVersion2" txt=" behövd: "/>
@@ -63,9 +64,11 @@
     <str id="PacksPanel.space" txt="Totalt utrymme som krävs: "/>
     <str id="PacksPanel.freespace" txt="Ledigt utrymme: "/>
     <str id="PacksPanel.description" txt="Beskrivning"/>
-    <str id="PacksPanel.dependencyList" txt="För att installera det valda paketet krävs att följande paket installeras"/>
+    <str id="PacksPanel.dependencyList"
+         txt="För att installera det valda paketet krävs att följande paket installeras"/>
     <str id="ImgPacksPanel.dependencyList" txt="Beroenden"/>
-    <str id="PacksPanel.notEnoughSpace" txt="Det finns inte tillräckligt med utrymme för att genomföra installationen."/>
+    <str id="PacksPanel.notEnoughSpace"
+         txt="Det finns inte tillräckligt med utrymme för att genomföra installationen."/>
     <str id="PacksPanel.notAscertainable" txt="Inte tillgängligt"/>
 
     <str id="InstallPanel.info" txt="Klicka på 'Installera!' för att starta installationsprocessen"/>
@@ -97,68 +100,76 @@
     <str id="ShortcutPanel.regular.currentUser" txt="nuvarande användare"/>
     <str id="ShortcutPanel.regular.allUsers" txt="alla användare"/>
 
-    <str id="ShortcutPanel.alternate.apology" txt="Vi ber om ursäkt men IzPack har inte stöd för skapandet av genvägar på det här operativsystemet. För att skapa genvägar, vänligen se handboken till ditt operativsystem."/>
-    <str id="ShortcutPanel.alternate.targetsLabel" txt="Följande är en lista med de mål som tillverkaren av denna mjukvara ville att du skulle ha tillgång till."/>
-    <str id="ShortcutPanel.alternate.textFileExplanation" txt="Du kan spara detaljerad information om applikationens mål i en textfil för senare referens."/>
+    <str id="ShortcutPanel.alternate.apology"
+         txt="Vi ber om ursäkt men IzPack har inte stöd för skapandet av genvägar på det här operativsystemet. För att skapa genvägar, vänligen se handboken till ditt operativsystem."/>
+    <str id="ShortcutPanel.alternate.targetsLabel"
+         txt="Följande är en lista med de mål som tillverkaren av denna mjukvara ville att du skulle ha tillgång till."/>
+    <str id="ShortcutPanel.alternate.textFileExplanation"
+         txt="Du kan spara detaljerad information om applikationens mål i en textfil för senare referens."/>
     <str id="ShortcutPanel.alternate.saveButton" txt="Spara textfil"/>
 
-    <str id="ShortcutPanel.textFile.header" txt="Genvägsinformation\n====================\n\nHär följer en lista med all relevant information om de tänkta\ngenvägarna. Den här informationen bör göra det möjligt att skapa genvägar manuellt.\n"/>
+    <str id="ShortcutPanel.textFile.header"
+         txt="Genvägsinformation\n====================\n\nHär följer en lista med all relevant information om de tänkta\ngenvägarna. Den här informationen bör göra det möjligt att skapa genvägar manuellt.\n"/>
 
-    <str id="ShortcutPanel.textFile.name"         txt="Genväg            : "/>
-    <str id="ShortcutPanel.textFile.location"     txt="Tänkt placering   : "/>
-    <str id="ShortcutPanel.textFile.description"  txt="Beskrivning       : "/>
-    <str id="ShortcutPanel.textFile.target"       txt="Mål för genvägen  : "/>
-    <str id="ShortcutPanel.textFile.command"      txt="Kommandorad       : "/>
-    <str id="ShortcutPanel.textFile.iconName"     txt="Ikonfil           : "/>
-    <str id="ShortcutPanel.textFile.iconIndex"    txt="Ikonindex         : "/>
-    <str id="ShortcutPanel.textFile.work"         txt="Arbetskatalog     : "/>
+    <str id="ShortcutPanel.textFile.name" txt="Genväg            : "/>
+    <str id="ShortcutPanel.textFile.location" txt="Tänkt placering   : "/>
+    <str id="ShortcutPanel.textFile.description" txt="Beskrivning       : "/>
+    <str id="ShortcutPanel.textFile.target" txt="Mål för genvägen  : "/>
+    <str id="ShortcutPanel.textFile.command" txt="Kommandorad       : "/>
+    <str id="ShortcutPanel.textFile.iconName" txt="Ikonfil           : "/>
+    <str id="ShortcutPanel.textFile.iconIndex" txt="Ikonindex         : "/>
+    <str id="ShortcutPanel.textFile.work" txt="Arbetskatalog     : "/>
 
-    <str id="ShortcutPanel.location.desktop"      txt="Skrivbord"/>
+    <str id="ShortcutPanel.location.desktop" txt="Skrivbord"/>
     <str id="ShortcutPanel.location.applications" txt="Applikationsmeny"/>
-    <str id="ShortcutPanel.location.startMenu"    txt="Startmeny"/>
-    <str id="ShortcutPanel.location.startup"      txt="Autostart gruppen"/>
+    <str id="ShortcutPanel.location.startMenu" txt="Startmeny"/>
+    <str id="ShortcutPanel.location.startup" txt="Autostart gruppen"/>
 
-    <str id="UserInputPanel.error.caption"        txt="Problem med input"/>
-    <str id="UserInputPanel.search.autodetect"    txt="Upptäck automatiskt"/>
+    <str id="UserInputPanel.error.caption" txt="Problem med input"/>
+    <str id="UserInputPanel.search.autodetect" txt="Upptäck automatiskt"/>
 
     <!-- more descriptive error message would be cool, like specifying what file we looked for -->
-    <str id="UserInputPanel.search.autodetect.failed.message"    txt="Automatisk upptäckt misslyckades."/>
-    <str id="UserInputPanel.search.autodetect.failed.caption"    txt="Automatisk upptäckt misslyckades."/>
-    <str id="UserInputPanel.search.autodetect.tooltip"           txt="Försök att automatiskt hitta filen eller mappen i de angivna sökvägarna ovan."/>
-    <str id="UserInputPanel.search.location"           txt="Ange sökväg för {0}."/>
+    <str id="UserInputPanel.search.autodetect.failed.message" txt="Automatisk upptäckt misslyckades."/>
+    <str id="UserInputPanel.search.autodetect.failed.caption" txt="Automatisk upptäckt misslyckades."/>
+    <str id="UserInputPanel.search.autodetect.tooltip"
+         txt="Försök att automatiskt hitta filen eller mappen i de angivna sökvägarna ovan."/>
+    <str id="UserInputPanel.search.location" txt="Ange sökväg för {0}."/>
     <str id="UserInputPanel.search.location.checkedfile" txt="Existensen för {0} är bekräftad."/>
-    <str id="UserInputPanel.search.browse"           txt="Bläddra..."/>
-    <str id="UserInputPanel.search.wrongselection.message"   txt="Den fil eller mapp du har angivit finns inte, eller så är den inte lämplig."/>
-    <str id="UserInputPanel.search.wrongselection.caption"   txt="Felaktigt val."/>
+    <str id="UserInputPanel.search.browse" txt="Bläddra..."/>
+    <str id="UserInputPanel.search.wrongselection.message"
+         txt="Den fil eller mapp du har angivit finns inte, eller så är den inte lämplig."/>
+    <str id="UserInputPanel.search.wrongselection.caption" txt="Felaktigt val."/>
 
-    <str id="CompilePanel.heading" txt="Kompilering" />
-    <str id="CompilePanel.tip" txt="Kompileringsstatus för jobb:" />
-    <str id="CompilePanel.browse" txt="Bläddra..." />
-    <str id="CompilePanel.browse.approve" txt="Använd denna kompilator" />
-    <str id="CompilePanel.start" txt="Start" />
-    <str id="CompilePanel.progress.initial" txt="[Tryck på Start knappen]" />
-    <str id="CompilePanel.progress.finished" txt="[Klar]" />
-    <str id="CompilePanel.progress.overall" txt="Övergripande kompileringsstatus:" />
-    <str id="CompilePanel.error" txt="Kompilering misslyckades" />
-    <str id="CompilePanel.error.reconfigure" txt="Omkonfigurera" />
-    <str id="CompilePanel.error.ignore" txt="Ignorera" />
-    <str id="CompilePanel.error.abort" txt="Avbryt" />
-    <str id="CompilePanel.error.seebelow" txt="Det misslyckade kommandot samt dess utskrift återfinns nedan." />
-    <str id="CompilePanel.error.nofiles" txt="Ett fel inträffade när filer för kompilering eftersöktes." />
-    <str id="CompilePanel.error.compilernotfound" txt="Kunde inte köra kompilatorn." />
-    <str id="CompilePanel.error.invalidarguments" txt="Felaktiga argument givna till kompilatorn." />
-    <str id="CompilePanel.error.noclassfile" txt="Kompilatorn genererade ingen klassfil för kodfilen" />
-    <str id="CompilePanel.choose_compiler" txt="Använd kompilator:" />
-    <str id="CompilePanel.additional_arguments" txt="Extra kompilator-argument:" />
+    <str id="CompilePanel.heading" txt="Kompilering"/>
+    <str id="CompilePanel.tip" txt="Kompileringsstatus för jobb:"/>
+    <str id="CompilePanel.browse" txt="Bläddra..."/>
+    <str id="CompilePanel.browse.approve" txt="Använd denna kompilator"/>
+    <str id="CompilePanel.start" txt="Start"/>
+    <str id="CompilePanel.progress.initial" txt="[Tryck på Start knappen]"/>
+    <str id="CompilePanel.progress.finished" txt="[Klar]"/>
+    <str id="CompilePanel.progress.overall" txt="Övergripande kompileringsstatus:"/>
+    <str id="CompilePanel.error" txt="Kompilering misslyckades"/>
+    <str id="CompilePanel.error.reconfigure" txt="Omkonfigurera"/>
+    <str id="CompilePanel.error.ignore" txt="Ignorera"/>
+    <str id="CompilePanel.error.abort" txt="Avbryt"/>
+    <str id="CompilePanel.error.seebelow" txt="Det misslyckade kommandot samt dess utskrift återfinns nedan."/>
+    <str id="CompilePanel.error.nofiles" txt="Ett fel inträffade när filer för kompilering eftersöktes."/>
+    <str id="CompilePanel.error.compilernotfound" txt="Kunde inte köra kompilatorn."/>
+    <str id="CompilePanel.error.invalidarguments" txt="Felaktiga argument givna till kompilatorn."/>
+    <str id="CompilePanel.error.noclassfile" txt="Kompilatorn genererade ingen klassfil för kodfilen"/>
+    <str id="CompilePanel.choose_compiler" txt="Använd kompilator:"/>
+    <str id="CompilePanel.additional_arguments" txt="Extra kompilator-argument:"/>
 
-    <str id="ProcessPanel.heading" txt="Processar" />
+    <str id="ProcessPanel.heading" txt="Processar"/>
 
     <!-- Strings for the summary of panels - START -->
-    <str id="SummaryPanel.info" txt="Färdig att installera. Viktiga inställningar anges nedan. Tryck &quot;Nästa&quot; för att starta installationen, "/>
+    <str id="SummaryPanel.info"
+         txt="Färdig att installera. Viktiga inställningar anges nedan. Tryck &quot;Nästa&quot; för att starta installationen, "/>
     <str id="TargetPanel.summaryCaption" txt="Sökväg för installationen"/>
     <str id="JDKPathPanel.summaryCaption" txt="Sökväg till JDK"/>
     <str id="PacksPanel.summaryCaption" txt="Valda paket för installering"/>
     <str id="ImgPacksPanel.summaryCaption" txt="Valda paket för installering"/>
+    <str id="TreePacksPanel.summaryCaption" txt="Valda paket för installering"/>
     <!-- Strings for the summary of panels - END -->
 
     <!-- Add your own panels specific strings here if you need -->

@@ -135,7 +135,7 @@ fi
 
 MAIN_CLASS=com.izforge.izpack.compiler.Compiler
 
-"$JAVACMD" \
+"$JAVACMD" -Xmx512m \
   $IZPACK_OPTS \
   -classpath "${IZPACK_HOME}/lib/standalone-compiler.jar" \
   "-Dtools.jar=$TOOLS_JAR" \
