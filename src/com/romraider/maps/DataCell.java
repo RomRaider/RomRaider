@@ -277,13 +277,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         // create parser
         if (!"x".equalsIgnoreCase(input)) {
             double result = JEPUtil.evaluate(table.getScale().getByteExpression(), Double.parseDouble(input));
-
             if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
                 this.setBinValue(result);
-
             } else {
                 this.setBinValue((int) Math.round(result));
-
             }
         }
     }
@@ -334,7 +331,11 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setCompareRealValue(String input) {
         double result = JEPUtil.evaluate(table.getScale().getByteExpression(), Double.parseDouble(input));
-        this.setCompareValue((int) Math.round(result));
+        if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
+            this.setCompareValue(result);
+        } else {
+            this.setCompareValue((int) Math.round(result));
+        }
     }
 
     public void setCompareDisplay(int compareDisplay) {
