@@ -21,6 +21,7 @@ package com.romraider.logger.ecu;
 
 import com.romraider.ECUEditor;
 import com.romraider.Settings;
+import static com.romraider.Version.LOGGER_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
 import com.romraider.io.serial.port.SerialPortRefresher;
@@ -38,6 +39,7 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.exception.ConfigurationException;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
@@ -88,12 +90,14 @@ import com.romraider.util.SettingsManagerImpl;
 import com.romraider.util.ThreadUtil;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
+import com.centerkey.utils.BareBonesBrowserLaunch;
 import org.apache.log4j.Logger;
 import javax.swing.AbstractAction;
 import static javax.swing.BorderFactory.createLoweredBevelBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -362,19 +366,32 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void loadEcuDefs() {
-        try {
-            Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
-            Vector<File> ecuDefFiles = settings.getEcuDefinitionFiles();
-            if (!ecuDefFiles.isEmpty()) {
-                EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-                for (File ecuDefFile : ecuDefFiles) {
-                    dataLoader.loadEcuDefsFromXml(ecuDefFile);
-                    ecuDefinitionMap.putAll(dataLoader.getEcuDefinitionMap());
-                }
-            }
-            settings.setLoggerEcuDefinitionMap(ecuDefinitionMap);
-        } catch (Exception e) {
-            reportError(e);
+
+        if (settings.getEcuDefinitionFiles().size() <= 0) {
+        	// no ECU definitions configured - let user choose to get latest or configure later
+        	// This will appear before the logger window does.  Not ideal, but checking before we  
+        	// create the Map of the definitions seems appropriate. 
+        	JOptionPane.showMessageDialog(null, 
+        			"No ECU Definitions Found.\nYou will need to configure these through\nthe ECU Editor before connecting.", 
+        			"Configuration Warning",
+        			JOptionPane.WARNING_MESSAGE);
+        } else {
+
+        	try {
+        		Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
+        		Vector<File> ecuDefFiles = settings.getEcuDefinitionFiles();
+        		if (!ecuDefFiles.isEmpty()) {
+        			EcuDataLoader dataLoader = new EcuDataLoaderImpl();
+        			for (File ecuDefFile : ecuDefFiles) {
+        				dataLoader.loadEcuDefsFromXml(ecuDefFile);
+        				ecuDefinitionMap.putAll(dataLoader.getEcuDefinitionMap());
+        			}
+        		}
+        		settings.setLoggerEcuDefinitionMap(ecuDefinitionMap);
+        	} catch (Exception e) {
+        		reportError(e);
+        	}
+
         }
     }
 
@@ -389,6 +406,29 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
             loadEcuSwitches(dataLoader.getEcuSwitches());
             initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
             settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
+        } catch (ConfigurationException ce) {
+        	// TODO: is this assumption safe?  Could anything else here throw a ConfigurationException?
+        	// assume that the configuration exception is from failure to load logger defs
+        	// no logger definition configured - let user choose to get latest or configure later
+        	Object[] options = { "YES", "NO" };
+        	int answer = JOptionPane.showOptionDialog(null, 
+        			"Logger definition file not found.  Go online to get latest definition file?", 
+        			"Configuration Warning",
+        			JOptionPane.DEFAULT_OPTION, 
+        			JOptionPane.WARNING_MESSAGE,
+        			null, 
+        			options, 
+        			options[0]);
+        	if (answer == 0) {
+        		BareBonesBrowserLaunch.openURL(LOGGER_DEFS_URL);
+        	} else { 
+            	JOptionPane.showMessageDialog(this, 
+            			"You will need to configure Logger definitions before connecting to the ECU.\n\nTo configure, go to the menu bar and select\nSettings -> Logger Definition Location.", 
+            			"Configuration Information", 
+            			JOptionPane.INFORMATION_MESSAGE);
+                reportError("No Logger Definition file found");
+        	}
+
         } catch (Exception e) {
             reportError(e);
         }

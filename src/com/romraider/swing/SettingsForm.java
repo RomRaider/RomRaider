@@ -64,7 +64,7 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         tableClickCount.setBackground(Color.WHITE);
 
-        // disable file assocation buttons if user is not in Windows
+        // disable file association buttons if user is not in Windows
         StringTokenizer osName = new StringTokenizer(System.getProperties().getProperty("os.name"));
         if (!osName.nextToken().equalsIgnoreCase("windows")) {
             btnAddAssocs.setEnabled(false);
