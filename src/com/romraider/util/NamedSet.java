@@ -87,7 +87,7 @@ public class NamedSet<E> implements Set<E>, Serializable {
         return objects.contains(o);
     }
 
-    public Iterator<E> iterator() {
+	public Iterator<E> iterator() {
         return (Iterator<E>) objects.iterator();
     }
 
@@ -109,7 +109,7 @@ public class NamedSet<E> implements Set<E>, Serializable {
     }
 
     public boolean addAll(Collection<? extends E> c) {
-        Iterator it = c.iterator();
+        Iterator<? extends E> it = c.iterator();
         while (it.hasNext()) {
             add((E) it.next());
         }
@@ -134,7 +134,7 @@ public class NamedSet<E> implements Set<E>, Serializable {
 
     public String toString() {
         StringBuffer output = new StringBuffer();
-        Iterator it = objects.iterator();
+        Iterator<?> it = objects.iterator();
         while (it.hasNext()) {
             output.append(it.next().toString() + "\n");
         }
@@ -142,7 +142,7 @@ public class NamedSet<E> implements Set<E>, Serializable {
     }
 
     public void move(int src, int dest) {
-        Nameable obj = (Nameable) objects.get(src);
+        Nameable obj = objects.get(src);
         objects.remove(obj);
         objects.insertElementAt(obj, dest);
     }
