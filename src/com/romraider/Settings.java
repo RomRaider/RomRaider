@@ -36,8 +36,8 @@ import java.util.Vector;
 
 public class Settings implements Serializable {
 
-	private static final long serialVersionUID = 1026542922680475190L;
-	private Dimension windowSize = new Dimension(800, 600);
+    private static final long serialVersionUID = 1026542922680475190L;
+    private Dimension windowSize = new Dimension(800, 600);
     private Point windowLocation = new Point();
     private int splitPaneLocation = 150;
     private boolean windowMaximized = false;
@@ -68,7 +68,7 @@ public class Settings implements Serializable {
     private String loggerPort = "";
     private String loggerPortDefault = "";
     private String loggerProtocol = "SSM";
-    private String loggerDefinitionFilePath = "logger.xml";
+    private String loggerDefinitionFilePath = "";
     private String loggerProfileFilePath = "";
     private String loggerOutputDirPath = System.getProperty("user.home");
     private String fileLoggingControllerSwitchId = "S20"; // defogger switch by default

@@ -22,6 +22,7 @@ package com.romraider.io.j2534.api;
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.j2534.op20.Old_J2534OpenPort20;
+import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_LOOPBACK;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P1_MAX;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P3_MIN;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P4_MIN;
@@ -95,7 +96,8 @@ public final class J2534ConnectionManager implements ConnectionManager {
         ConfigItem p1Max = new ConfigItem(CONFIG_P1_MAX, 2);
         ConfigItem p3Min = new ConfigItem(CONFIG_P3_MIN, 0);
         ConfigItem p4Min = new ConfigItem(CONFIG_P4_MIN, 0);
-        api.setConfig(channelId, p1Max, p3Min, p4Min);
+        ConfigItem loopback = new ConfigItem(CONFIG_LOOPBACK, 1);
+        api.setConfig(channelId, p1Max, p3Min, p4Min, loopback);
     }
 
     private void stopMsgFilter() {

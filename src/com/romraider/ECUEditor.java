@@ -19,10 +19,10 @@
 
 package com.romraider;
 
+import com.centerkey.utils.BareBonesBrowserLaunch;
 import static com.romraider.Version.ECU_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
-import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
@@ -72,9 +72,9 @@ import java.io.IOException;
 import java.util.Vector;
 
 public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
-	private static final long serialVersionUID = -7826850987392016292L;
+    private static final long serialVersionUID = -7826850987392016292L;
 
-	private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
+    private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
 
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final SettingsManager settingsManager = new SettingsManagerImpl();
@@ -130,26 +130,26 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         addWindowListener(this);
         setTitle(titleText);
         setVisible(true);
-        
+
         if (settings.getEcuDefinitionFiles().size() <= 0) {
-        	// no ECU definitions configured - let user choose to get latest or configure later
-        	Object[] options = { "YES", "NO" };
-        	int answer = JOptionPane.showOptionDialog(null, 
-        			"No ECU Definitions Found.  Go online to get latest definition file?", 
-        			"Configuration Warning",
-        			JOptionPane.DEFAULT_OPTION, 
-        			JOptionPane.WARNING_MESSAGE,
-        			null, 
-        			options, 
-        			options[0]);
-        	if (answer == 0) {
-        		BareBonesBrowserLaunch.openURL(ECU_DEFS_URL);
-        	} else { 
-            	JOptionPane.showMessageDialog(this, 
-            			"You will need to configure ECU definitions before ROM images can be opened.\n\nTo configure, go to the menu bar and select\nECU Definitions\nFrom there, you can choose to go online or select the location of existing definition files.", 
-            			"Configuration Information", 
-            			JOptionPane.INFORMATION_MESSAGE);
-        	}
+            // no ECU definitions configured - let user choose to get latest or configure later
+            Object[] options = {"Yes", "No"};
+            int answer = JOptionPane.showOptionDialog(null,
+                    "No ECU Definitions Found.  Go online to get latest definition file?",
+                    "Configuration Warning",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+            if (answer == 0) {
+                BareBonesBrowserLaunch.openURL(ECU_DEFS_URL);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "You will need to configure ECU definitions before ROM images can be opened.\n\nTo configure, go to the menu bar and select \"ECU Definitions\".\nFrom there, you can choose to go online or select the location of existing definition files.",
+                        "Configuration Information",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
         }
 
     }

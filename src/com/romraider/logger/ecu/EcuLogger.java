@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu;
 
+import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.romraider.ECUEditor;
 import com.romraider.Settings;
 import static com.romraider.Version.LOGGER_DEFS_URL;
@@ -39,7 +40,6 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
-import com.romraider.logger.ecu.exception.ConfigurationException;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
@@ -90,19 +90,18 @@ import com.romraider.util.SettingsManagerImpl;
 import com.romraider.util.ThreadUtil;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
-import com.centerkey.utils.BareBonesBrowserLaunch;
 import org.apache.log4j.Logger;
 import javax.swing.AbstractAction;
 import static javax.swing.BorderFactory.createLoweredBevelBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JOptionPane;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import static javax.swing.JLabel.RIGHT;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
@@ -161,8 +160,8 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 */
 
 public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
-	private static final long serialVersionUID = 7145423251696282784L;
-	private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
+    private static final long serialVersionUID = 7145423251696282784L;
+    private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
     private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU Logger";
     private static final String LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
     private static final String ICON_PATH = "./graphics/romraider-ico.gif";
@@ -368,69 +367,71 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     private void loadEcuDefs() {
 
         if (settings.getEcuDefinitionFiles().size() <= 0) {
-        	// no ECU definitions configured - let user choose to get latest or configure later
-        	// This will appear before the logger window does.  Not ideal, but checking before we  
-        	// create the Map of the definitions seems appropriate. 
-        	JOptionPane.showMessageDialog(null, 
-        			"No ECU Definitions Found.\nYou will need to configure these through\nthe ECU Editor before connecting.", 
-        			"Configuration Warning",
-        			JOptionPane.WARNING_MESSAGE);
+            // no ECU definitions configured - let user choose to get latest or configure later
+            // This will appear before the logger window does.  Not ideal, but checking before we
+            // create the Map of the definitions seems appropriate.
+            JOptionPane.showMessageDialog(null,
+                    "No ECU Definitions Found.\nYou will need to configure these through\nthe ECU Editor before connecting.",
+                    "Configuration Warning",
+                    JOptionPane.WARNING_MESSAGE);
         } else {
 
-        	try {
-        		Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
-        		Vector<File> ecuDefFiles = settings.getEcuDefinitionFiles();
-        		if (!ecuDefFiles.isEmpty()) {
-        			EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-        			for (File ecuDefFile : ecuDefFiles) {
-        				dataLoader.loadEcuDefsFromXml(ecuDefFile);
-        				ecuDefinitionMap.putAll(dataLoader.getEcuDefinitionMap());
-        			}
-        		}
-        		settings.setLoggerEcuDefinitionMap(ecuDefinitionMap);
-        	} catch (Exception e) {
-        		reportError(e);
-        	}
+            try {
+                Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
+                Vector<File> ecuDefFiles = settings.getEcuDefinitionFiles();
+                if (!ecuDefFiles.isEmpty()) {
+                    EcuDataLoader dataLoader = new EcuDataLoaderImpl();
+                    for (File ecuDefFile : ecuDefFiles) {
+                        dataLoader.loadEcuDefsFromXml(ecuDefFile);
+                        ecuDefinitionMap.putAll(dataLoader.getEcuDefinitionMap());
+                    }
+                }
+                settings.setLoggerEcuDefinitionMap(ecuDefinitionMap);
+            } catch (Exception e) {
+                reportError(e);
+            }
 
         }
     }
 
     private void loadLoggerConfig() {
-        try {
-            EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-            dataLoader.loadConfigFromXml(settings.getLoggerDefinitionFilePath(), settings.getLoggerProtocol(),
-                    settings.getFileLoggingControllerSwitchId(), ecuInit);
-            List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
-            addConvertorUpdateListeners(ecuParams);
-            loadEcuParams(ecuParams);
-            loadEcuSwitches(dataLoader.getEcuSwitches());
-            initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
-            settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
-        } catch (ConfigurationException ce) {
-        	// TODO: is this assumption safe?  Could anything else here throw a ConfigurationException?
-        	// assume that the configuration exception is from failure to load logger defs
-        	// no logger definition configured - let user choose to get latest or configure later
-        	Object[] options = { "YES", "NO" };
-        	int answer = JOptionPane.showOptionDialog(null, 
-        			"Logger definition file not found.  Go online to get latest definition file?", 
-        			"Configuration Warning",
-        			JOptionPane.DEFAULT_OPTION, 
-        			JOptionPane.WARNING_MESSAGE,
-        			null, 
-        			options, 
-        			options[0]);
-        	if (answer == 0) {
-        		BareBonesBrowserLaunch.openURL(LOGGER_DEFS_URL);
-        	} else { 
-            	JOptionPane.showMessageDialog(this, 
-            			"You will need to configure Logger definitions before connecting to the ECU.\n\nTo configure, go to the menu bar and select\nSettings -> Logger Definition Location.", 
-            			"Configuration Information", 
-            			JOptionPane.INFORMATION_MESSAGE);
-                reportError("No Logger Definition file found");
-        	}
+        String loggerConfigFilePath = settings.getLoggerDefinitionFilePath();
+        if (isNullOrEmpty(loggerConfigFilePath)) showMissingConfigDialog();
+        else {
+            try {
+                EcuDataLoader dataLoader = new EcuDataLoaderImpl();
+                dataLoader.loadConfigFromXml(loggerConfigFilePath, settings.getLoggerProtocol(),
+                        settings.getFileLoggingControllerSwitchId(), ecuInit);
+                List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
+                addConvertorUpdateListeners(ecuParams);
+                loadEcuParams(ecuParams);
+                loadEcuSwitches(dataLoader.getEcuSwitches());
+                initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
+                settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
+            } catch (Exception e) {
+                reportError(e);
+            }
+        }
+    }
 
-        } catch (Exception e) {
-            reportError(e);
+    private void showMissingConfigDialog() {
+        Object[] options = {"Yes", "No"};
+        int answer = JOptionPane.showOptionDialog(null,
+                "Logger definition file not found.  Go online to get latest definition file?",
+                "Configuration Warning",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                options,
+                options[0]);
+        if (answer == 0) {
+            BareBonesBrowserLaunch.openURL(LOGGER_DEFS_URL);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "You will need to configure Logger definitions before connecting to the ECU.\n\nTo configure, go to the menu bar and select\nSettings -> Logger Definition Location.",
+                    "Configuration Information",
+                    JOptionPane.INFORMATION_MESSAGE);
+            reportError("No Logger Definition file found");
         }
     }
 
@@ -688,21 +689,21 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
         button.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
             /**
-			 * 
-			 */
-			private static final long serialVersionUID = 6913964758354638587L;
+             *
+             */
+            private static final long serialVersionUID = 6913964758354638587L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 button.doClick();
             }
         });
         button.addActionListener(new AbstractAction() {
             /**
-			 * 
-			 */
-			private static final long serialVersionUID = 123232894767995264L;
+             *
+             */
+            private static final long serialVersionUID = 123232894767995264L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 dashboardUpdateHandler.toggleGaugeStyle();
             }
         });
@@ -718,20 +719,20 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         toggleListButton.getActionMap().put("toggleHideParams", new AbstractAction() {
             /**
-			 * 
-			 */
-			private static final long serialVersionUID = -276854997788647306L;
+             *
+             */
+            private static final long serialVersionUID = -276854997788647306L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 toggleListButton.doClick();
             }
         });
         toggleListButton.addActionListener(new AbstractAction() {
             /**
-			 * 
-			 */
-			private static final long serialVersionUID = -1595098685575657317L;
-			private final int min = 1;
+             *
+             */
+            private static final long serialVersionUID = -1595098685575657317L;
+            private final int min = 1;
             private int size = splitPane.getDividerLocation();
 
             public void actionPerformed(ActionEvent e) {
