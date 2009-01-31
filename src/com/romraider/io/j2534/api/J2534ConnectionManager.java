@@ -89,7 +89,7 @@ public final class J2534ConnectionManager implements ConnectionManager {
     private void version(int deviceId) {
         if (!LOGGER.isDebugEnabled()) return;
         Version version = api.readVersion(deviceId);
-        LOGGER.debug("J2534 Version => firmware: " + version.firmware + ", dll: " + version.dll + ", api: " + version.api);
+        LOGGER.info("J2534 Version => firmware: " + version.firmware + ", dll: " + version.dll + ", api: " + version.api);
     }
 
     private void setConfig(int channelId) {
