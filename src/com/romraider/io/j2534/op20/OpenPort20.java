@@ -23,7 +23,7 @@ import com.jinvoke.JInvoke;
 import com.jinvoke.NativeImport;
 
 public final class OpenPort20 {
-    private static final String OP20PT32_DLL = "C:/windows/system32/op20pt32.dll";
+    private static final String OP20PT32_DLL = "op20pt32";
 
     // FIX - Split out and separate these
     public static final int STATUS_NOERROR = 0x00;
@@ -41,12 +41,7 @@ public final class OpenPort20 {
     public static final int CONFIG_P4_MIN = 0x0C;
 
     static {
-        OpenPort20Manager.init();
         JInvoke.initialize();
-    }
-
-    public static boolean isSupported() {
-        return OpenPort20Manager.isSupported();
     }
 
     @NativeImport(library = OP20PT32_DLL)

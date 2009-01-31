@@ -20,6 +20,7 @@
 package com.romraider.io.j2534.api;
 
 import com.romraider.io.j2534.op20.J2534OpenPort20;
+import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_LOOPBACK;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P1_MAX;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P3_MIN;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P4_MIN;
@@ -33,7 +34,7 @@ public final class TestJ2534 {
 
     public static void main(String[] args) {
         initDebugLogging();
-        if (api.isSupported()) ecuInit();
+        ecuInit();
     }
 
     private static void ecuInit() {
@@ -74,6 +75,7 @@ public final class TestJ2534 {
         ConfigItem p1Max = new ConfigItem(CONFIG_P1_MAX, 2);
         ConfigItem p3Min = new ConfigItem(CONFIG_P3_MIN, 0);
         ConfigItem p4Min = new ConfigItem(CONFIG_P4_MIN, 0);
-        api.setConfig(channelId, p1Max, p3Min, p4Min);
+        ConfigItem loopback = new ConfigItem(CONFIG_LOOPBACK, 1);
+        api.setConfig(channelId, p1Max, p3Min, p4Min, loopback);
     }
 }

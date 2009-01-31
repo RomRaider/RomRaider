@@ -20,8 +20,6 @@
 package com.romraider.io.j2534.api;
 
 public interface J2534 {
-    boolean isSupported();
-
     int open();
 
     Version readVersion(int deviceId);

@@ -48,15 +48,10 @@ import java.util.List;
 
 public final class J2534OpenPort20 implements J2534 {
     private static final Logger LOGGER = getLogger(J2534OpenPort20.class);
-    private final boolean supported = OpenPort20.isSupported();
     private final int protocol;
 
     public J2534OpenPort20(int protocol) {
         this.protocol = protocol;
-    }
-
-    public boolean isSupported() {
-        return supported;
     }
 
     public int open() {

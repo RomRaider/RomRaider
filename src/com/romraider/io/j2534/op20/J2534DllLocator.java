@@ -31,39 +31,15 @@ import static com.romraider.util.ByteUtil.asUnsignedInt;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.Enumeration;
 
-public final class OpenPort20Manager {
-    private static final Logger LOGGER = getLogger(OpenPort20Manager.class);
-    private static final String OP20PT32_DLL_LOCATION = "lib/windows/j2534.dll";
-    private static boolean SUPPORTED;
+public final class J2534DllLocator {
+    private static final Logger LOGGER = getLogger(J2534DllLocator.class);
 
-    private OpenPort20Manager() {
+    private J2534DllLocator() {
     }
 
-    public static void init() {
-        SUPPORTED = init2();
-    }
-
-    private static boolean init2() {
-        File dll = findLibrary();
-        if (dll == null) return false;
-        try {
-            copy(dll, new File(OP20PT32_DLL_LOCATION));
-            return true;
-        } catch (Exception e) {
-            LOGGER.warn("Error initialising OP20 dll", e);
-            return false;
-        }
-    }
-
-    public static boolean isSupported() {
-        return SUPPORTED;
-    }
-
-    private static File findLibrary() {
+    public static File locate() {
         try {
             RegistryKey software = openSubkey(HKEY_LOCAL_MACHINE, "SOFTWARE", ACCESS_READ);
             RegistryKey passThruSupport = software.openSubKey("PassThruSupport.04.04");
@@ -111,26 +87,6 @@ public final class OpenPort20Manager {
             return false;
         } catch (Exception e) {
             return false;
-        }
-    }
-
-    private static void copy(File from, File to) {
-        LOGGER.info("Copying: " + from.getAbsolutePath() + " => " + to.getAbsolutePath());
-        try {
-            FileReader in = new FileReader(from);
-            try {
-                FileWriter out = new FileWriter(to);
-                try {
-                    int c;
-                    while ((c = in.read()) != -1) out.write(c);
-                } finally {
-                    out.close();
-                }
-            } finally {
-                in.close();
-            }
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
         }
     }
 }
