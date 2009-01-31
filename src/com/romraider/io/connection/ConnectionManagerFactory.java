@@ -43,7 +43,7 @@ public final class ConnectionManagerFactory {
         try {
             return new J2534ConnectionManager(connectionProperties);
         } catch (Throwable t) {
-            LOGGER.info("J2534 connection not available [" + t.getClass().getName() + ": " + t.getMessage() + "], trying serial connection...");
+            LOGGER.info("J2534 connection not available [" + t.getClass().getName() + ": " + t.getMessage() + "], trying serial connection...", t);
             return new SerialConnectionManager(portName, connectionProperties);
         }
     }

@@ -37,14 +37,26 @@ import java.util.Enumeration;
 
 public final class OpenPort20Manager {
     private static final Logger LOGGER = getLogger(OpenPort20Manager.class);
-    private static final boolean SUPPORTED;
+    private static final String OP20PT32_DLL_LOCATION = "lib/windows/j2534.dll";
+    private static boolean SUPPORTED;
 
     private OpenPort20Manager() {
     }
 
-    static {
-        File library = findLibrary();
-        SUPPORTED = library != null;
+    public static void init() {
+        SUPPORTED = init2();
+    }
+
+    private static boolean init2() {
+        File dll = findLibrary();
+        if (dll == null) return false;
+        try {
+            copy(dll, new File(OP20PT32_DLL_LOCATION));
+            return true;
+        } catch (Exception e) {
+            LOGGER.warn("Error initialising OP20 dll", e);
+            return false;
+        }
     }
 
     public static boolean isSupported() {
