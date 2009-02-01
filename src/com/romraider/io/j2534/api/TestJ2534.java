@@ -30,6 +30,7 @@ import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.LogManager.initDebugLogging;
 
 public final class TestJ2534 {
+    //    private static final J2534 api = new Old_J2534OpenPort20(PROTOCOL_ISO9141);
     private static final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
 
     public static void main(String[] args) {

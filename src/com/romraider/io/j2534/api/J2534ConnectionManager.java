@@ -35,7 +35,7 @@ import static org.apache.log4j.Logger.getLogger;
 public final class J2534ConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = getLogger(J2534ConnectionManager.class);
     private final J2534 api = new Old_J2534OpenPort20(PROTOCOL_ISO9141);
-    //    private final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
+    //        private final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
     //    private final J2534 api = proxy(new Old_J2534OpenPort20(PROTOCOL_ISO9141), TimerWrapper.class);
     //    private final J2534 api = proxy(new J2534OpenPort20(PROTOCOL_ISO9141), TimerWrapper.class);
     private int channelId;
