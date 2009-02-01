@@ -58,10 +58,10 @@ public final class J2534ConnectionManager implements ConnectionManager {
     }
 
     // Send request and wait specified time for response with unknown length
-    public byte[] send(byte[] bytes, long maxWait) {
-        checkNotNull(bytes, "bytes");
+    public byte[] send(byte[] request, long maxWait) {
+        checkNotNull(request, "request");
         // FIX - should maxWait be connectionProperties.getReadTimeout() ??
-        api.writeMsg(channelId, bytes, maxWait);
+        api.writeMsg(channelId, request, maxWait);
         return api.readMsg(channelId, maxWait);
     }
 

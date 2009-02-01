@@ -157,9 +157,9 @@ public final class Old_J2534OpenPort20 implements J2534 {
     }
 
     private boolean isResponse(PassThruMessage msg) {
+        if (msg.Timestamp == 0) return false;
         if (msg.RxStatus == 0x00) return true;
-        if (msg.RxStatus == 0x01) return true;
-        return msg.Timestamp != 0;
+        return msg.RxStatus == 0x01;
     }
 
     private PassThruMessage doReadMsg(int channelId) {
