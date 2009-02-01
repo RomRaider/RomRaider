@@ -153,7 +153,7 @@ public final class Old_J2534OpenPort20 implements J2534 {
     private String toString(PassThruMessage msg) {
         byte[] bytes = new byte[msg.DataSize];
         arraycopy(msg.Data, 0, bytes, 0, bytes.length);
-        return "[ProtocolID=" + msg.ProtocolID + "|RxStatus=" + msg.RxStatus + "|TxFlags=" + msg.TxFlags + "|Timestamp=" + msg.Timestamp + "|DataSize=" + msg.DataSize + "|Data=" + asHex(bytes) + "]";
+        return "[ProtocolID=" + msg.ProtocolID + "|RxStatus=" + msg.RxStatus + "|TxFlags=" + msg.TxFlags + "|Timestamp=" + msg.Timestamp + "|ExtraDataIndex=" + msg.ExtraDataIndex + "|DataSize=" + msg.DataSize + "|Data=" + asHex(bytes) + "]";
     }
 
     private boolean isResponse(PassThruMessage msg) {
