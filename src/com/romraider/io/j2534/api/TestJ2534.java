@@ -19,7 +19,7 @@
 
 package com.romraider.io.j2534.api;
 
-import com.romraider.io.j2534.op20.J2534OpenPort20;
+import com.romraider.io.j2534.op20.Old_J2534OpenPort20;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_LOOPBACK;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P1_MAX;
 import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P3_MIN;
@@ -30,8 +30,8 @@ import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.LogManager.initDebugLogging;
 
 public final class TestJ2534 {
-    //    private static final J2534 api = new Old_J2534OpenPort20(PROTOCOL_ISO9141);
-    private static final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
+    private static final J2534 api = new Old_J2534OpenPort20(PROTOCOL_ISO9141);
+//    private static final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
 
     public static void main(String[] args) {
         initDebugLogging();
