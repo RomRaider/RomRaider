@@ -28,7 +28,7 @@ import static org.apache.log4j.Logger.getLogger;
 
 public final class ConnectionManagerFactory {
     private static final Logger LOGGER = getLogger(ConnectionManagerFactory.class);
-    private static final boolean ENABLE_TIMER = true;
+    private static final boolean ENABLE_TIMER = false;
 
     private ConnectionManagerFactory() {
     }
