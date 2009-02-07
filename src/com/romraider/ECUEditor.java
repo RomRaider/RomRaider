@@ -46,7 +46,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.DEFAULT_OPTION;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.JOptionPane.showOptionDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -134,21 +139,21 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         if (settings.getEcuDefinitionFiles().size() <= 0) {
             // no ECU definitions configured - let user choose to get latest or configure later
             Object[] options = {"Yes", "No"};
-            int answer = JOptionPane.showOptionDialog(null,
-                    "No ECU Definitions Found.  Go online to get latest definition file?",
-                    "Configuration Warning",
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.WARNING_MESSAGE,
+            int answer = showOptionDialog(null,
+                    "ECU definitions not configured.\nGo online to download the latest definition files?",
+                    "Editor Configuration",
+                    DEFAULT_OPTION,
+                    WARNING_MESSAGE,
                     null,
                     options,
                     options[0]);
             if (answer == 0) {
                 BareBonesBrowserLaunch.openURL(ECU_DEFS_URL);
             } else {
-                JOptionPane.showMessageDialog(this,
-                        "You will need to configure ECU definitions before ROM images can be opened.\n\nTo configure, go to the menu bar and select \"ECU Definitions\".\nFrom there, you can choose to go online or select the location of existing definition files.",
-                        "Configuration Information",
-                        JOptionPane.INFORMATION_MESSAGE);
+                showMessageDialog(this,
+                        "ECU definition files need to be configured before ROM images can be opened.\nMenu: ECU Definitions > ECU Definition Manager...",
+                        "Editor Configuration",
+                        INFORMATION_MESSAGE);
             }
         }
 
@@ -177,8 +182,8 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
 
                 releaseNotes.setText(sb.toString());
 
-                JOptionPane.showMessageDialog(this, scroller,
-                        PRODUCT_NAME + VERSION + " Release Notes", JOptionPane.INFORMATION_MESSAGE);
+                showMessageDialog(this, scroller,
+                        PRODUCT_NAME + VERSION + " Release Notes", INFORMATION_MESSAGE);
             } finally {
                 br.close();
             }
@@ -256,7 +261,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             );
 
             infoPanel.add(check);
-            JOptionPane.showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", JOptionPane.INFORMATION_MESSAGE);
+            showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", INFORMATION_MESSAGE);
         }
         input.setContainer(this);
         imageList.updateUI();
@@ -416,11 +421,11 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
             }
 
             // if code executes to this point, no ROM was found, report to user
-            JOptionPane.showMessageDialog(this, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), JOptionPane.ERROR_MESSAGE);
+            showMessageDialog(this, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
 
         } catch (StackOverflowError ex) {
             // handles looped inheritance, which will use up all available memory
-            JOptionPane.showMessageDialog(this, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", JOptionPane.ERROR_MESSAGE);
+            showMessageDialog(this, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", ERROR_MESSAGE);
 
         } finally {
             // remove progress bar

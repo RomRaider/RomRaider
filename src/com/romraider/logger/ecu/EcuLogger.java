@@ -19,7 +19,7 @@
 
 package com.romraider.logger.ecu;
 
-import com.centerkey.utils.BareBonesBrowserLaunch;
+import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
 import com.romraider.ECUEditor;
 import com.romraider.Settings;
 import static com.romraider.Version.LOGGER_DEFS_URL;
@@ -101,7 +101,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import static javax.swing.JLabel.RIGHT;
 import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.DEFAULT_OPTION;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.JOptionPane.showOptionDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
@@ -365,32 +369,19 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
     }
 
     private void loadEcuDefs() {
-
-        if (settings.getEcuDefinitionFiles().size() <= 0) {
-            // no ECU definitions configured - let user choose to get latest or configure later
-            // This will appear before the logger window does.  Not ideal, but checking before we
-            // create the Map of the definitions seems appropriate.
-            JOptionPane.showMessageDialog(null,
-                    "No ECU Definitions Found.\nYou will need to configure these through\nthe ECU Editor before connecting.",
-                    "Configuration Warning",
-                    JOptionPane.WARNING_MESSAGE);
-        } else {
-
-            try {
-                Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
-                Vector<File> ecuDefFiles = settings.getEcuDefinitionFiles();
-                if (!ecuDefFiles.isEmpty()) {
-                    EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-                    for (File ecuDefFile : ecuDefFiles) {
-                        dataLoader.loadEcuDefsFromXml(ecuDefFile);
-                        ecuDefinitionMap.putAll(dataLoader.getEcuDefinitionMap());
-                    }
+        try {
+            Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
+            Vector<File> ecuDefFiles = settings.getEcuDefinitionFiles();
+            if (!ecuDefFiles.isEmpty()) {
+                EcuDataLoader dataLoader = new EcuDataLoaderImpl();
+                for (File ecuDefFile : ecuDefFiles) {
+                    dataLoader.loadEcuDefsFromXml(ecuDefFile);
+                    ecuDefinitionMap.putAll(dataLoader.getEcuDefinitionMap());
                 }
-                settings.setLoggerEcuDefinitionMap(ecuDefinitionMap);
-            } catch (Exception e) {
-                reportError(e);
             }
-
+            settings.setLoggerEcuDefinitionMap(ecuDefinitionMap);
+        } catch (Exception e) {
+            reportError(e);
         }
     }
 
@@ -416,22 +407,16 @@ public final class EcuLogger extends JFrame implements WindowListener, PropertyC
 
     private void showMissingConfigDialog() {
         Object[] options = {"Yes", "No"};
-        int answer = JOptionPane.showOptionDialog(null,
-                "Logger definition file not found.  Go online to get latest definition file?",
-                "Configuration Warning",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.WARNING_MESSAGE,
-                null,
-                options,
-                options[0]);
+        int answer = showOptionDialog(this,
+                "Logger definition not configured.\nGo online to download the latest definition file?",
+                "Configuration", DEFAULT_OPTION, WARNING_MESSAGE, null, options, options[0]);
         if (answer == 0) {
-            BareBonesBrowserLaunch.openURL(LOGGER_DEFS_URL);
+            openURL(LOGGER_DEFS_URL);
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "You will need to configure Logger definitions before connecting to the ECU.\n\nTo configure, go to the menu bar and select\nSettings -> Logger Definition Location.",
-                    "Configuration Information",
-                    JOptionPane.INFORMATION_MESSAGE);
-            reportError("No Logger Definition file found");
+            showMessageDialog(this,
+                    "The Logger definition file needs to be configured before connecting to the ECU.\nMenu: Settings > Logger Definition Location...",
+                    "Configuration", INFORMATION_MESSAGE);
+            reportError("Logger definition file not found");
         }
     }
 

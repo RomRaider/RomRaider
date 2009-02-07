@@ -50,8 +50,8 @@ import java.io.FileOutputStream;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
-	private static final long serialVersionUID = -4777040428837855236L;
-	private JMenu fileMenu = new JMenu("File");
+    private static final long serialVersionUID = -4777040428837855236L;
+    private JMenu fileMenu = new JMenu("File");
     private JMenuItem openImage = new JMenuItem("Open Image...");
     private JMenuItem saveImage = new JMenuItem("Save Image...");
     private JMenuItem refreshImage = new JMenuItem("Refresh Image");
@@ -61,8 +61,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private JMenu definitionMenu = new JMenu("ECU Definitions");
     private JMenuItem defManager = new JMenuItem("ECU Definition Manager...");
-    private JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions...");
-    private JMenuItem updateDefinition = new JMenuItem("Update ECU Definitions...");
+    //    private JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions...");
+    private JMenuItem updateDefinition = new JMenuItem("Get ECU Definitions...");
 
     private JMenu editMenu = new JMenu("Edit");
     private JMenuItem settings = new JMenuItem(PRODUCT_NAME + " Settings...");
@@ -125,14 +125,14 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         add(definitionMenu);
         definitionMenu.setMnemonic('D');
         defManager.setMnemonic('D');
-        editDefinition.setMnemonic('E');
+//        editDefinition.setMnemonic('E');
         updateDefinition.setMnemonic('U');
         settings.setMnemonic('S');
         definitionMenu.add(defManager);
-        definitionMenu.add(editDefinition);
+//        definitionMenu.add(editDefinition);
         definitionMenu.add(updateDefinition);
         defManager.addActionListener(this);
-        editDefinition.addActionListener(this);
+//        editDefinition.addActionListener(this);
         updateDefinition.addActionListener(this);
 
         // view menu items
@@ -198,8 +198,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         about.addActionListener(this);
 
         // disable unused buttons! 0.3.1
-        editDefinition.setEnabled(false);
-        this.updateMenu();
+//        editDefinition.setEnabled(false);
+        updateMenu();
     }
 
     public void updateMenu() {
