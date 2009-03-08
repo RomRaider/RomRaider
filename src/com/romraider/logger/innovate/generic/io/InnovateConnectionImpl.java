@@ -55,7 +55,6 @@ public final class InnovateConnectionImpl implements InnovateConnection {
         this.sendTimeout = connectionProperties.getSendTimeout();
         this.responseLength = responseLength;
         connection = new SerialConnectionImpl(portName, connectionProperties);
-        LOGGER.info(device + " connected");
     }
 
     // FIX - YIKES!!
@@ -115,7 +114,6 @@ public final class InnovateConnectionImpl implements InnovateConnection {
 
     public void close() {
         connection.close();
-        LOGGER.info(device + " disconnected");
     }
 
     private int findHeader(byte[] bytes) {

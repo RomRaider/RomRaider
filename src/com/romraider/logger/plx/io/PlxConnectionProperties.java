@@ -17,13 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.aem.io;
+package com.romraider.logger.plx.io;
 
 import com.romraider.io.connection.ConnectionProperties;
 
-public final class AemConnectionProperties implements ConnectionProperties {
+public final class PlxConnectionProperties implements ConnectionProperties {
     public int getBaudRate() {
-        return 9600;
+        return 19200;
     }
 
     public int getDataBits() {

@@ -43,7 +43,6 @@ public final class AemConnectionImpl implements AemConnection {
         checkNotNullOrEmpty(portName, "portName");
         this.sendTimeout = connectionProperties.getSendTimeout();
         connection = new SerialConnectionImpl(portName, connectionProperties);
-        LOGGER.info("AEM connected");
     }
 
     //TODO: This a guess!!...untested!!
@@ -89,7 +88,6 @@ public final class AemConnectionImpl implements AemConnection {
 
     public void close() {
         connection.close();
-        LOGGER.info("AEM disconnected");
     }
 
     private byte[] toArray(List<Byte> buffer) {

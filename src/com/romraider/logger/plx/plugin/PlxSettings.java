@@ -17,32 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.aem.io;
+package com.romraider.logger.plx.plugin;
 
-import com.romraider.io.connection.ConnectionProperties;
+public interface PlxSettings {
+    void setPort(String port);
 
-public final class AemConnectionProperties implements ConnectionProperties {
-    public int getBaudRate() {
-        return 9600;
-    }
-
-    public int getDataBits() {
-        return 8;
-    }
-
-    public int getStopBits() {
-        return 1;
-    }
-
-    public int getParity() {
-        return 0;
-    }
-
-    public int getConnectTimeout() {
-        return 2000;
-    }
-
-    public int getSendTimeout() {
-        return 500;
-    }
+    String getPort();
 }
