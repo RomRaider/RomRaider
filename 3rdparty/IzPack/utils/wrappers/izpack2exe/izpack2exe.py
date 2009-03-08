@@ -19,6 +19,7 @@
 # ........................................................................... #
 
 import os
+import sys
 from shutil import *
 from optparse import OptionParser
 
@@ -57,7 +58,7 @@ def create_exe(settings):
     config.close()
 
     if settings.p7z == '7za':
-        sfx = os.path.join(os.path.dirname(__file__), '7zS.sfx')
+        sfx = os.path.join(os.path.dirname(sys.argv[0]), '7zS.sfx')
     else:    
         sfx = os.path.join(os.path.dirname(settings.p7z), '7zS.sfx')
     files = [sfx, 'config.txt', 'installer.7z']

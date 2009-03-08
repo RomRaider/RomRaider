@@ -23,7 +23,7 @@ import sys
 from shutil import *
 
 def main():
-	base = os.path.dirname(__file__)
+	base = os.path.dirname(sys.argv[0])
 	jar = sys.argv[1]
 	jar_name = os.path.basename(jar)
 	app = sys.argv[2]

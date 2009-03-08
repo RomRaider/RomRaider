@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
 <!-- The Galician langpack -->
+
 <langpack>
 
     <!-- Heading messages START -->
@@ -9,10 +11,10 @@
     <str id="ExtendedInstallPanel.headline" txt="Instalación e Configuración"/>
     <str id="FinishPanel.headline" txt="Instalación Finalizada"/>
     <str id="HelloPanel.headline" txt="Benvido"/>
-    <str id="HTMLInfoPanel.headline" txt="Informacións"/>
+    <str id="HTMLInfoPanel.headline" txt="Información"/>
     <str id="HTMLLicencePanel.headline" txt="Acordos da Licenza"/>
     <str id="ImgPacksPanel.headline" txt="Seleccionar Paquetes de Instalación"/>
-    <str id="InfoPanel.headline" txt="Informacións"/>
+    <str id="InfoPanel.headline" txt="Información"/>
     <str id="InstallPanel.headline" txt="Instalación"/>
     <str id="JDKPathPanel.headline" txt="Ruta do JDK"/>
     <str id="LicencePanel.headline" txt="Acordos da Licenza"/>
@@ -30,11 +32,11 @@
     <str id="installer.title" txt="IzPack - Instalación de "/>
     <str id="installer.next" txt="Seguinte"/>
     <str id="installer.prev" txt="Anterior"/>
-    <str id="installer.quit" txt="Saór"/>
+    <str id="installer.quit" txt="Saír"/>
     <str id="installer.madewith" txt="(Feito con izPack - http://izpack.org/)"/>
     <str id="installer.quit.title" txt="¿Confirmar que quere saír?"/>
     <str id="installer.quit.message" txt="¿Esto cancelará a instalación!"/>
-    <str id="installer.warning" txt="¡Atención!"/>
+    <str id="installer.warning" txt="¡Aviso!"/>
     <str id="installer.yes" txt="Si"/>
     <str id="installer.no" txt="Non"/>
     <str id="installer.cancel" txt="Cancelar"/>
@@ -46,37 +48,35 @@
 
     <!-- Uninstaller specific strings -->
     <str id="uninstaller.warning" txt="¡Esto eliminará a(s) aplicación(s) instalada(s)!"/>
-    <str id="uninstaller.destroytarget" txt=" Forza-la eliminaciín de "/>
+    <str id="uninstaller.destroytarget" txt=" Forza-la eliminación de "/>
     <str id="uninstaller.uninstall" txt="Desinstalar"/>
 
     <!-- The strings for the 'official' IzPack plugins -->
+    <!-- HelloPanel strings -->
     <str id="HelloPanel.welcome1" txt="Benvido á instalaciín de "/>
     <str id="HelloPanel.welcome2" txt="!"/>
     <str id="HelloPanel.authors" txt="Autor(es) deste programa: "/>
     <str id="HelloPanel.url" txt="Páxina deste programa: "/>
-
-    <str id="PrinterSelectPanel.select_printer" txt="Seleccione a impresora a usar na configuración inicial e probas."/>
-
-    <str id="CheckedHelloPanel.productAlreadyExist0" txt="Este produto xa esta instalado neste ordenador no directorio  "/>
-    <str id="CheckedHelloPanel.productAlreadyExist1" txt=" . ¿Está seguro de que desexa instalar outra entidade?"/>
-    <str id="CheckedHelloPanel.infoOverUninstallKey" txt="O código de desinstalación chamarase: "/>
-
+    
+    <!-- LicensePanel strings -->
     <str id="LicencePanel.info" txt="Por favor, lea atentamente o convenio de licenza:"/>
     <str id="LicencePanel.agree" txt="¿Acepta os termos deste convenio de licenza?"/>
     <str id="LicencePanel.notagree" txt="Eu non acepto os termos deste convenio de licenza."/>
     <str id="LicencePanel.yes" txt="Si"/>
     <str id="LicencePanel.no" txt="Non"/>
+    
+    <!-- PrinterSelect Panel -->
+    <str id="PrinterSelectPanel.select_printer" txt="Seleccione a impresora a usar na configuración inicial e probas."/>
 
-    <str id="InstallationTypePanel.info" txt="Por favor escolle o tipo de istalación:"/>
-    <str id="InstallationTypePanel.normal" txt="Nova instalación"/>
-    <str id="InstallationTypePanel.modify" txt="Modificar instalación"/>
-
+    <!-- InfoPanel strings -->
     <str id="InfoPanel.info" txt="Por favor, lea a seguinte información:"/>
-
+    
+    <!-- PathInputPanel strings -->
     <str id="PathInputPanel.required" txt="O directorio seleccionado debe existir"/>
     <str id="PathInputPanel.required.forModificationInstallation" txt="O directorio de saída debe existir."/>
     <str id="PathInputPanel.notValid" txt="O directorio non contén o produto requirido"/>
-
+    
+    <!-- TargetPanel strings -->
     <str id="TargetPanel.info" txt="Seleccione a ruta de instalación:"/>
     <str id="TargetPanel.browse" txt="Escoller ..."/>
     <str id="TargetPanel.warn" txt="¡O directorio xa existe! ¿Confirma o seu desexo de face-la instalación nese directorio e sobreescribi-lo posibles arquivos existentes?"/>
@@ -84,7 +84,8 @@
     <str id="TargetPanel.createdir" txt="O directorio de destino será creado:"/>
     <str id="TargetPanel.nodir" txt="Este arquivo non é un directorio! Por Favor escolle un directorio!"/>
     <str id="TargetPanel.notwritable" txt="Este directorio non pode ser escrito! Por favor escolle outro directorio!"/>
-
+    
+    <!-- JDKPathPanel strings -->
     <str id="JDKPathPanel.extendedIntro" txt="A aplicación instalada necesita un JDK entre a versión ${JDKPathPanel.minVersion} e ${JDKPathPanel.maxVersion}. O java runtime environment (JRE) non será dabondo."/>
     <str id="JDKPathPanel.intro" txt="A aplicación necesita un JDK. Un Java Runtime Environment (JRE) non é dabondo."/>
     <str id="JDKPathPanel.info" txt="Seleccione o directorio do JDK:"/>
@@ -92,7 +93,8 @@
     <str id="JDKPathPanel.badVersion2" txt=" necesaria: "/>
     <str id="JDKPathPanel.badVersion3" txt=" ) desexa usar este JDK de tódolos xeitos?"/>
     <str id="JDKPathPanel.nonValidPathInReg" txt="O rexistro de windows contén unha ruta non válida para este JDK. Será usado este JDK de todas formas?"/>
-
+    
+    <!-- PacksPanel strings -->
     <str id="PacksPanel.info" txt="Seleccione os paquetes que desexa instalar:"/>
     <str id="PacksPanel.tip" txt="Nota: os paquetes en gris non son opcionais."/>
     <str id="PacksPanel.space" txt="Espazo total requirido: "/>
@@ -101,10 +103,10 @@
     <str id="PacksPanel.dependencyList" txt="O paquete escollido require os seguintes paquetes para seren instalados ou excluidos"/>
     <str id="PacksPanel.dependencies" txt="Dependencias: "/>
     <str id="PacksPanel.excludes" txt="Exclusións: "/>
-    <str id="ImgPacksPanel.dependencyList" txt="Dependencias e/ou exclusións"/>
     <str id="PacksPanel.notEnoughSpace" txt="O espazo de disco necesario para a instalación excede o dispoñible."/>
     <str id="PacksPanel.notAscertainable" txt="Non se pode determinar"/>
-
+    
+    <!-- InstallPanel strings -->
     <str id="InstallPanel.info" txt="Faga clic en ¡Instalar! para inicia-lo proceso de instalación"/>
     <str id="InstallPanel.install" txt="¡Instalar!"/>
     <str id="InstallPanel.tip" txt="Progreso da instalación:"/>
@@ -113,36 +115,44 @@
     <str id="InstallPanel.progress" txt="Progreso total da instalación:"/>
     <str id="InstallPanel.overwrite.title" txt="O arquivo xa existe"/>
     <str id="InstallPanel.overwrite.question" txt="O arquivo seguinte xa existe. ¿Desexa sobreescribilo?"/>
-
-    <str id="FinishPanel.success" txt="¡Instalación completada con éxito!"/>
-    <str id="FinishPanel.done" txt="Feito"/>
-    <str id="FinishPanel.fail" txt="A instalación fallou!"/>
-    <str id="FinishPanel.uninst.info" txt="Creouse un programa de desinstalación en:"/>
-    <str id="FinishPanel.auto" txt="Xerar un script automático de instalación"/>
-    <str id="FinishPanel.auto.tip" txt="Usar este script para repetir esta instalación noutras computadoras."/>
-    <str id="FinishPanel.auto.dialog.filterdesc" txt="Arquivos XML"/>
-
+    
+    <!-- InstallationGroupPanel strings -->
+    <str id="InstallationGroupPanel.colNameSelected" txt="Seleccionado"/>
+    <str id="InstallationGroupPanel.colNameInstallType" txt="Tipo de Instalación"/>
+    <str id="InstallationGroupPanel.colNameSize" txt="Tamaño"/>
+    
+    <!-- InstallationTypePanel strings -->
+    <str id="InstallationTypePanel.info" txt="Por favor escolle o tipo de istalación:"/>
+    <str id="InstallationTypePanel.normal" txt="Nova instalación"/>
+    <str id="InstallationTypePanel.modify" txt="Modificar instalación"/>
+    
+    <!-- FinishPanel strings -->
+    <str id="FinishPanel.success" txt="Installation has completed successfully."/>
+    <str id="FinishPanel.done" txt="Done"/>
+    <str id="FinishPanel.fail" txt="Installation has failed!"/>
+    <str id="FinishPanel.uninst.info" txt="An uninstaller program has been created in: "/>
+    <str id="FinishPanel.auto" txt="Generate an automatic installation script"/>
+    <str id="FinishPanel.auto.tip" txt="Use this script to repeat this installation on other computers."/>
+    <str id="FinishPanel.auto.dialog.filterdesc" txt="XML Files"/>
+    
+    <!-- ImgPacksPanel strings -->
+    <str id="ImgPacksPanel.dependencyList" txt="Dependencias e/ou exclusións"/>
     <str id="ImgPacksPanel.packs" txt="Os seguintes paquetes están dispoñibles:"/>
     <str id="ImgPacksPanel.snap" txt="Captura de pantalla asociada:"/>
     <str id="ImgPacksPanel.checkbox" txt=" Instalar este paquete"/>
-
-    <str id="ShortcutPanel.headline" txt="Configuración de atallos"/>
+    
+    <!-- ShortcutPanel strings -->
     <str id="ShortcutPanel.regular.list" txt="Seleccione un grupo de programas para os atallos:"/>
     <str id="ShortcutPanel.regular.default" txt="Por defecto"/>
     <str id="ShortcutPanel.regular.desktop" txt="Crear atallos adicionais no escritorio"/>
-    <str id="ShortcutPanel.regular.StartMenu:Start-Menu" txt="Menú de Inicio"/>
-    <str id="ShortcutPanel.regular.StartMenu:K-Menu" txt="Menú XDG"/>
-    <!-- "StartMenu" is a placeholder will be replaced at runtime -->
     <str id="ShortcutPanel.regular.create" txt="Crear atallos no Menú de Inicio"/>
     <str id="ShortcutPanel.regular.userIntro" txt="crear atallo para:"/>
     <str id="ShortcutPanel.regular.currentUser" txt="usuario actual"/>
     <str id="ShortcutPanel.regular.allUsers" txt="tódolos usuarios"/>
-
     <str id="ShortcutPanel.alternate.apology" txt="Sentímolo, IzPack non pode crea-los atallos neste sistema operativo. Para crealos, por favor consulte o manual do seu sistema operativo."/>
     <str id="ShortcutPanel.alternate.targetsLabel" txt="O seguinte é unha lista de arquivos executables ós que o creador deste producto quere que vostede teña acceso mediante atallos."/>
     <str id="ShortcutPanel.alternate.textFileExplanation" txt="Pode garda-la información detallada sobre os arquivos executables da aplicación nun arquivo de texto para referencias posteriores."/>
     <str id="ShortcutPanel.alternate.saveButton" txt="Gardar texto"/>
-
     <str id="ShortcutPanel.textFile.header" txt="Información de atallos\n===============================\n\nO seguinte é un listado de tódala información destacada sobre os atallos\ndesexados. Esta información pode axudar na súa creación manual.\n"/>
     <str id="ShortcutPanel.textFile.name" txt="Atallo        : "/>
     <str id="ShortcutPanel.textFile.location" txt="Ubicación desexada     : "/>
@@ -152,15 +162,15 @@
     <str id="ShortcutPanel.textFile.iconName" txt="Arquivo da ícona     : "/>
     <str id="ShortcutPanel.textFile.iconIndex" txt="Índice da ícona      : "/>
     <str id="ShortcutPanel.textFile.work" txt="Directorio de traballo : "/>
-
     <str id="ShortcutPanel.location.desktop" txt="Escritorio"/>
     <str id="ShortcutPanel.location.applications" txt="Menú de aplicacións"/>
     <str id="ShortcutPanel.location.startMenu" txt="Menú de inicio"/>
     <str id="ShortcutPanel.location.startup" txt="Grupo de inicio"/>
-
+    <str id="ShortcutPanel.regular.StartMenu:Start-Menu" txt="Menú de Inicio"/>
+    <str id="ShortcutPanel.regular.StartMenu:K-Menu" txt="Menú XDG"/>
+    
+    <!-- UserInputPanel strings -->
     <str id="UserInputPanel.error.caption" txt="Erro"/>
-    <str id="UserInputPanel.search.autodetect" txt="Autodetectar"/>
-
     <str id="UserInputPanel.dir.nodirectory.message" txt="Debes escoller un directorio válido."/>
     <str id="UserInputPanel.dir.nodirectory.caption" txt="Directorio sen Seleccionar"/>
     <str id="UserInputPanel.dir.notdirectory.message" txt="O directorio escollido non existe ou non é válido."/>
@@ -169,9 +179,8 @@
     <str id="UserInputPanel.file.nofile.caption" txt="Arquivo sen Seleccionar"/>
     <str id="UserInputPanel.file.notfile.message" txt="O arquivo escollido non existe ou non é válido."/>
     <str id="UserInputPanel.file.notfile.caption" txt="Arquivo non válido"/>
-
-
     <!-- more descriptive error message would be cool, like specifying what file we looked for -->
+    <str id="UserInputPanel.search.autodetect" txt="Autodetectar"/>
     <str id="UserInputPanel.search.autodetect.failed.message" txt="Erro na Auto-detección."/>
     <str id="UserInputPanel.search.autodetect.failed.caption" txt="Erro na Auto-Detección"/>
     <str id="UserInputPanel.search.autodetect.tooltip" txt="Busca polo arquivo ou directorio nas ruta amosadas embaixo."/>
@@ -181,15 +190,17 @@
     <str id="UserInputPanel.search.wrongselection.message" txt="O arquivo ou directorio que escolliches non existe ou non é apropiado."/>
     <str id="UserInputPanel.search.wrongselection.caption" txt="Selección non Válida"/>
 
-    <str id="UserPathPanel.required" txt="O directorio escollido debe existir."/>
+    <!-- UserPathPanel strings -->
+     <str id="UserPathPanel.required" txt="O directorio escollido debe existir."/>
     <str id="UserPathPanel.info" txt="Selecciona a ruta: "/>
     <str id="UserPathPanel.browse" txt="Ir a"/>
     <str id="UserPathPanel.exists_warn" txt="O directorio xa existe! ¿Estás seguro de que queres instalalo aqui e posiblemente sobreescribi-los arquivos existentes?"/>
     <str id="UserPathPanel.empty_target" txt="Non especificaches unha localización de destino! ¿É esto correcto?"/>
     <str id="UserPathPanel.createdir" txt="O directorio de destino será creado: "/>
     <str id="UserPathPanel.nodir" txt="Este arquivo non é un directorio! Por favor escolle un directorio!"/>
-    <str id="UserPathPanel.notwritable" txt="Este directorio non ten permisos de escritura! Por favor escolle outro directorio!"/>
-
+    <str id="UserPathPanel.notwritable" txt="Este directorio non ten permisos de escritura! Por favor escolle outro directorio!"/> 
+     
+    <!-- CompilePanel strings -->  
     <str id="CompilePanel.heading" txt="Compilación"/>
     <str id="CompilePanel.tip" txt="Progreso da compilación:"/>
     <str id="CompilePanel.browse" txt="Buscar..."/>
@@ -209,10 +220,11 @@
     <str id="CompilePanel.error.noclassfile" txt="O compilador fixo un arquivo class a partires do arquivo fonte."/>
     <str id="CompilePanel.choose_compiler" txt="Compilador a usar:"/>
     <str id="CompilePanel.additional_arguments" txt="Argumentos adicionais de compilación:"/>
-
+     
+    <!-- ProcessPanel strings -->
     <str id="ProcessPanel.heading" txt="Procesando"/>
-
-    <!-- Strings for the summary of panels - START -->
+    
+    <!-- SummaryPanel strings -->
     <str id="SummaryPanel.info" txt="A instalación procederá coas seguintes preseleccións. Presiona en Seguinte para comeza-la instalación, "/>
     <str id="TargetPanel.summaryCaption" txt="Ruta de Instalación"/>
     <str id="JDKPathPanel.summaryCaption" txt="Ruta do JDK"/>
@@ -220,15 +232,16 @@
     <str id="ImgPacksPanel.summaryCaption" txt="Paquetes de instalación escollidos"/>
     <str id="TreePacksPanel.summaryCaption" txt="Paquetes de instalación escollidos"/>
     <str id="UserPathPanel.summaryCaption" txt="Ruta Seleccionada"/>
-    <!-- Strings for the summary of panels - END -->
-
+     
     <!-- Strings for the Registry -->
     <str id="functionFailed.RegOpenKeyEx" txt="Non se puido abri-lo código do  rexistro{0}\\{1} ."/>
-
-    <!-- Add your own panels specific strings here if you need or use a custom
-         langpack with the same syntax referred as resoure CustomLangpack.xml_[ISO3]"
-    -->
-
+    
+    <!-- CheckedHelloPanel strings -->
+    <str id="CheckedHelloPanel.productAlreadyExist0" txt="Este produto xa esta instalado neste ordenador no directorio  "/>
+    <str id="CheckedHelloPanel.productAlreadyExist1" txt=" . ¿Está seguro de que desexa instalar outra entidade?"/>
+    <str id="CheckedHelloPanel.infoOverUninstallKey" txt="O código de desinstalación chamarase: "/>    
+       
+    <!-- Next Media Strings -->
     <str id="nextmedia.title" txt="Seguinte instalación de medios"/>
     <str id="nextmedia.msg" txt="Escolle-la seguinte instalación de medios."/>
     <str id="nextmedia.browsebtn" txt="Buscar"/>
@@ -236,13 +249,11 @@
     <str id="nextmedia.cancelbtn" txt="Cancelar"/>
     <str id="nextmedia.choosertitle" txt="Escolle-la instalación de medios"/>
     <str id="nextmedia.filedesc" txt="paquetes de instalación (.pak*)"/>
-
-    <!-- Strings for the logging/reporting system (Messenger) -->
-
+        
     <!-- This string defines the time stamp format in the installation report.
          The format details are documented in java.text.SimpleDateFormat -->
     <str id="log.timeStamp" txt="MM-dd-yyyy [HH:mm:ss]  zzzz"/>
-
+    
     <!-- Strings for various purposes in the logging/reporting system  -->
     <str id="log.reportHeading" txt="                           INFORME DE ISTALACIÓN de IzPack"/>
     <str id="log.installFailed" txt="AVISO!!! A instalación non tivo éxito!"/>
@@ -265,18 +276,12 @@
     <str id="log.LogFileName" txt="installLog.txt"/>
     <str id="log.informUserFail" txt="&lt;html&gt;A instalación non foi exitosa!&lt;br&gt;Pode que queiras escribir un arquivo log?&lt;/html&gt;"/>
     <str id="log.informUserPartial" txt="&lt;html&gt;A instalación non foi completamente satisfactoria!&lt;br&gt;Pode que queiras escribir un arquivo log??&lt;/html&gt;"/>
-
+    
     <!-- Strings for individual messages in the logging/reporting system.
          Numbers for each category (message/warning/error) start at 0  -->
     <str id="log.message_" txt=""/>
-
     <str id="log.warning_" txt=""/>
-
     <str id="log.error_0" txt="imposible escribir ''{0}''"/>
-
-    <str id="InstallationGroupPanel.colNameSelected" txt="Seleccionado"/>
-    <str id="InstallationGroupPanel.colNameInstallType" txt="Tipo de Instalación"/>
-    <str id="InstallationGroupPanel.colNameSize" txt="Tamaño"/>
-
     <str id="debug.changevariable" txt="modificar valor"/>
+ 
 </langpack>
