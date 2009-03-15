@@ -21,8 +21,8 @@
 
 package com.romraider.xml;
 
-import com.romraider.ECUEditor;
 import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.maps.DataCell;
 import com.romraider.maps.Rom;
 import com.romraider.maps.RomID;

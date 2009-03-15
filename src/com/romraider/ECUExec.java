@@ -19,14 +19,15 @@
 
 package com.romraider;
 
-import static com.romraider.ECUEditorManager.getECUEditor;
 import static com.romraider.Version.PRODUCT_NAME;
+import static com.romraider.editor.ecu.ECUEditorManager.getECUEditor;
 import static com.romraider.logger.ecu.EcuLogger.startLogger;
 import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
 import static com.romraider.util.LogManager.initDebugLogging;
 import static com.romraider.util.RomServer.isRunning;
 import static com.romraider.util.RomServer.sendRomToOpenInstance;
 import static com.romraider.util.RomServer.waitForRom;
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.util.SettingsManager;
 import com.romraider.util.SettingsManagerImpl;
 import org.apache.log4j.Logger;

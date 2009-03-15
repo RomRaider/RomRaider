@@ -20,6 +20,7 @@
 package com.romraider.ramtune.test;
 
 import com.romraider.Settings;
+import com.romraider.swing.AbstractFrame;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
 import com.romraider.io.protocol.ssm.SSMProtocol;
@@ -41,7 +42,6 @@ import static com.romraider.util.ThreadUtil.sleep;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
@@ -72,8 +72,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -85,7 +83,7 @@ import java.util.List;
  *
  * It is also a bit of a mess and needs to be cleaned up...
  */
-public final class RamTuneTestApp extends JFrame implements WindowListener {
+public final class RamTuneTestApp extends AbstractFrame {
 	private static final long serialVersionUID = 7140513114169019846L;
 	private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
     private static final String REGEX_VALID_DATA_BYTES = "[0-9a-fA-F]{2,}";
@@ -385,27 +383,6 @@ public final class RamTuneTestApp extends JFrame implements WindowListener {
 
     private void showErrorDialog(String message) {
         showMessageDialog(this, message, "Error", ERROR_MESSAGE);
-    }
-
-    public void windowOpened(WindowEvent e) {
-    }
-
-    public void windowClosing(WindowEvent e) {
-    }
-
-    public void windowClosed(WindowEvent e) {
-    }
-
-    public void windowIconified(WindowEvent e) {
-    }
-
-    public void windowDeiconified(WindowEvent e) {
-    }
-
-    public void windowActivated(WindowEvent e) {
-    }
-
-    public void windowDeactivated(WindowEvent e) {
     }
 
     //**********************************************************************

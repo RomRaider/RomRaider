@@ -78,7 +78,7 @@ public class RomTreeNode extends DefaultMutableTreeNode {
             DefaultMutableTreeNode category = getChildAt(i);
 
             // loop through tables in each category
-            for (Enumeration j = category.children(); j.hasMoreElements();) {
+            for (Enumeration<?> j = category.children(); j.hasMoreElements();) {
                 ((TableTreeNode) j.nextElement()).getFrame().dispose();
 
             }

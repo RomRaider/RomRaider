@@ -19,7 +19,8 @@
 
 package com.romraider.swing;
 
-import com.romraider.ECUEditor;
+import com.romraider.editor.ecu.ECUEditor;
+
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;

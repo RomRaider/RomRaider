@@ -19,10 +19,31 @@
 
 package com.romraider.logger.ecu.ui.tab;
 
+import java.util.List;
+
 import javax.swing.JPanel;
 
+import com.romraider.logger.ecu.definition.EcuParameter;
+import com.romraider.logger.ecu.definition.EcuSwitch;
+import com.romraider.logger.ecu.definition.ExternalData;
+
+/**
+ * Interface for Logger tabs that have the following:
+ * 
+ * Control panel where logging information and constraints are set
+ * ChartPanel where graph of data is displayed
+ *
+ */
 public interface Tab {
     JPanel getPanel();
 
-    boolean isValidMafvChange(double value);
+    boolean isRecordData();
+
+    void addData(double xData, double yData);
+
+    void setEcuParams(List<EcuParameter> params);
+
+    void setEcuSwitches(List<EcuSwitch> switches);
+
+    void setExternalDatas(List<ExternalData> external);
 }

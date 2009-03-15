@@ -19,7 +19,7 @@
 
 package com.romraider.logger.ecu.ui.tab.injector;
 
-import com.romraider.ECUEditor;
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
@@ -91,8 +91,8 @@ public final class InjectorTabImpl extends JPanel implements InjectorTab {
         return controlPanel.isValidTipInThrottle(value);
     }
 
-    public void addData(double mafv, double correction) {
-        chartPanel.addData(mafv, correction);
+    public void addData(double pulseWidth, double fuelcc) {
+        chartPanel.addData(pulseWidth, fuelcc);
     }
 
     public void setEcuParams(List<EcuParameter> params) {

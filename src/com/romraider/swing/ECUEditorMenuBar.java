@@ -20,13 +20,14 @@
 package com.romraider.swing;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
-import com.romraider.ECUEditor;
 import static com.romraider.Version.ABOUT_ICON;
 import static com.romraider.Version.BUILDNUMBER;
 import static com.romraider.Version.ECU_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.SUPPORT_URL;
 import static com.romraider.Version.VERSION;
+
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
 import com.romraider.ramtune.test.RamTuneTestApp;

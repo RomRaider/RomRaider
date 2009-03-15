@@ -19,7 +19,7 @@
 
 package com.romraider.swing;
 
-import com.romraider.ECUEditor;
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.maps.Rom;
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.ImageIcon;

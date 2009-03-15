@@ -17,16 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider;
+package com.romraider.editor.ecu;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import static com.romraider.Version.ECU_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
+import com.romraider.Settings;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.net.URL;
+import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.ECUEditorMenuBar;
 import com.romraider.swing.ECUEditorToolBar;
 import com.romraider.swing.JProgressPane;
@@ -44,7 +46,6 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import static javax.swing.JOptionPane.DEFAULT_OPTION;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -65,9 +66,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -76,10 +75,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
 
-public class ECUEditor extends JFrame implements WindowListener, PropertyChangeListener {
-    private static final long serialVersionUID = -7826850987392016292L;
+public class ECUEditor extends AbstractFrame {
+	private static final long serialVersionUID = -7826850987392016292L;
 
-    private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
+	private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
 
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final SettingsManager settingsManager = new SettingsManagerImpl();
@@ -135,7 +134,7 @@ public class ECUEditor extends JFrame implements WindowListener, PropertyChangeL
         addWindowListener(this);
         setTitle(titleText);
         setVisible(true);
-
+        
         if (settings.getEcuDefinitionFiles().size() <= 0) {
             // no ECU definitions configured - let user choose to get latest or configure later
             Object[] options = {"Yes", "No"};

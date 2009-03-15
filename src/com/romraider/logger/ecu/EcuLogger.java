@@ -20,11 +20,12 @@
 package com.romraider.logger.ecu;
 
 import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
-import com.romraider.ECUEditor;
 import com.romraider.Settings;
 import static com.romraider.Version.LOGGER_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
+import com.romraider.swing.AbstractFrame;
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.io.serial.port.SerialPortRefresher;
 import com.romraider.logger.ecu.comms.controller.LoggerController;
 import com.romraider.logger.ecu.comms.controller.LoggerControllerImpl;
@@ -140,9 +141,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import static java.lang.System.currentTimeMillis;
 import java.util.ArrayList;
@@ -163,7 +162,7 @@ TODO: Add custom graph tab (eg. engine speed vs. boost, etc.)
 TODO: Add log analysis tab (or maybe new window?), including log playback, custom graphs, map compare, etc
 */
 
-public final class EcuLogger extends JFrame implements WindowListener, PropertyChangeListener, MessageListener {
+public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final long serialVersionUID = 7145423251696282784L;
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
     private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU Logger";

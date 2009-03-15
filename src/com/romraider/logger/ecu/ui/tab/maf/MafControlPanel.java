@@ -19,7 +19,7 @@
 
 package com.romraider.logger.ecu.ui.tab.maf;
 
-import com.romraider.ECUEditor;
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;

@@ -17,9 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider;
+package com.romraider.editor.ecu;
 
 import javax.swing.SwingUtilities;
+
 
 public class ECUEditorManager {
     private static ECUEditor editor = null;
