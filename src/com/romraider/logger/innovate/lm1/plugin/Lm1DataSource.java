@@ -48,7 +48,7 @@ public final class Lm1DataSource implements ExternalDataSource {
     }
 
     public Action getMenuAction(EcuLogger logger) {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     public void setPort(String port) {

@@ -30,17 +30,14 @@ import java.util.Map;
 
 public final class UserProfileHandler extends DefaultHandler {
     private static final String SELECTED = "selected";
-    private static final String TAG_SERIAL = "serial";
     private static final String TAG_PARAMETER = "parameter";
     private static final String TAG_SWITCH = "switch";
     private static final String TAG_EXTERNAL = "external";
-    private static final String ATTR_PORT = "port";
     private static final String ATTR_ID = "id";
     private static final String ATTR_UNITS = "units";
     private static final String ATTR_LIVE_DATA = "livedata";
     private static final String ATTR_GRAPH = "graph";
     private static final String ATTR_DASH = "dash";
-    private String serialPort;
     private Map<String, UserProfileItem> params;
     private Map<String, UserProfileItem> switches;
     private Map<String, UserProfileItem> external;
@@ -52,9 +49,7 @@ public final class UserProfileHandler extends DefaultHandler {
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if (TAG_SERIAL.equals(qName)) {
-            serialPort = attributes.getValue(ATTR_PORT);
-        } else if (TAG_PARAMETER.equals(qName)) {
+        if (TAG_PARAMETER.equals(qName)) {
             params.put(attributes.getValue(ATTR_ID), getUserProfileItem(attributes));
         } else if (TAG_SWITCH.equals(qName)) {
             switches.put(attributes.getValue(ATTR_ID), getUserProfileItem(attributes));

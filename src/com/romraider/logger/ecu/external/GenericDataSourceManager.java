@@ -54,7 +54,8 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     public Action getMenuAction(EcuLogger logger) {
-        return new GenericPluginMenuAction(logger, this);
+        Action action = dataSource.getMenuAction(logger);
+        return action == null ? new GenericPluginMenuAction(logger, this) : action;
     }
 
     public synchronized void setPort(String port) {
