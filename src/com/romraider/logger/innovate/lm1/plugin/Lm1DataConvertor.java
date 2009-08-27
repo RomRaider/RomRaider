@@ -70,9 +70,15 @@ public final class Lm1DataConvertor implements DataConvertor {
         return matchOnes(bytes[0], 178) && matchOnes(bytes[1], 128);
     }
 
-    // 1x00000x
+    // 1x00000x or 1x00010x
     private boolean isOk(byte[] bytes) {
-        return matchOnes(bytes[2], 128) && matchZeroes(bytes[2], 62);
+        if (matchOnes(bytes[2], 128) && matchZeroes(bytes[2], 62)) return true;
+        return matchOnes(bytes[2], 132) && matchZeroes(bytes[2], 58);
+    }
+
+    // xxx001xx
+    private boolean isOneTenth(byte[] bytes) {
+        return matchOnes(bytes[2], 4) && matchZeroes(bytes[2], 24);
     }
 
     // 1x01100x
@@ -86,7 +92,8 @@ public final class Lm1DataConvertor implements DataConvertor {
     }
 
     public static void main(String[] args) {
-        byte[] bytes = asBytes("0xB2808113036F1E650124007000470039003A");
+        byte[] bytes = asBytes("B280851301371E04004C003A002800260034");
+//        byte[] bytes = asBytes("0xB2808113036F1E650124007000470039003A");
         DataConvertor convertor = new Lm1DataConvertor();
         double result = convertor.convert(bytes);
         System.out.println("result = " + result);

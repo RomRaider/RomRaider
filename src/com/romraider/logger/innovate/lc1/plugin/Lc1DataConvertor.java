@@ -71,9 +71,10 @@ public final class Lc1DataConvertor implements DataConvertor {
         return matchOnes(bytes[0], 178) && matchOnes(bytes[1], 128);
     }
 
-    // 0100001x
+    // 0100001x or 0100011x
     private boolean isOk(byte[] bytes) {
-        return matchOnes(bytes[2], 66) && matchZeroes(bytes[2], 188);
+        if (matchOnes(bytes[2], 66) && matchZeroes(bytes[2], 188)) return true;
+        return matchOnes(bytes[2], 70) && matchZeroes(bytes[2], 184);
     }
 
     // 0101101x

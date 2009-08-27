@@ -33,6 +33,7 @@ import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
+import org.jfree.ui.KeyedComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -59,8 +60,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class MafControlPanel extends JPanel {
-	private static final long serialVersionUID = 5787020251107365950L;
-	private static final Logger LOGGER = Logger.getLogger(MafControlPanel.class);
+    private static final long serialVersionUID = 5787020251107365950L;
+    private static final Logger LOGGER = Logger.getLogger(MafControlPanel.class);
     private static final String COOLANT_TEMP = "P2";
     private static final String AF_CORRECTION_1 = "P3";
     private static final String AF_LEARNING_1 = "P4";
@@ -85,13 +86,14 @@ public final class MafControlPanel extends JPanel {
     private final JTextField iatMax = new JTextField("35", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
     private final JTextField mafvChangeMax = new JTextField("0.2", 3);
+    private final JComboBox afrSourceList = new JComboBox();
     private final DataRegistrationBroker broker;
     private final LoggerChartPanel chartPanel;
     private final ECUEditor ecuEditor;
     private final Component parent;
-    private List<ExternalData> externals;
-    private List<EcuParameter> params;
-    private List<EcuSwitch> switches;
+    private List<ExternalData> externals = new ArrayList<ExternalData>();
+    private List<EcuParameter> params = new ArrayList<EcuParameter>();
+    private List<EcuSwitch> switches = new ArrayList<EcuSwitch>();
 
     public MafControlPanel(Component parent, DataRegistrationBroker broker, ECUEditor ecuEditor, LoggerChartPanel chartPanel) {
         checkNotNull(parent, broker, chartPanel);
@@ -178,6 +180,12 @@ public final class MafControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
+//        add(panel, gridBagLayout, buildAfrSourcePanel(), 0, 0, 1, HORIZONTAL);
+//        add(panel, gridBagLayout, buildFilterPanel(), 0, 1, 1, HORIZONTAL);
+//        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 2, 1, HORIZONTAL);
+//        add(panel, gridBagLayout, buildUpdateMafPanel(), 0, 3, 1, HORIZONTAL);
+//        add(panel, gridBagLayout, buildResetPanel(), 0, 4, 1, HORIZONTAL);
+
         add(panel, gridBagLayout, buildFilterPanel(), 0, 0, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildInterpolatePanel(), 0, 1, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildUpdateMafPanel(), 0, 2, 1, HORIZONTAL);
@@ -191,6 +199,13 @@ public final class MafControlPanel extends JPanel {
         updateConstraints(constraints, x, y, spanX, 1, 1, 1, fillType);
         gridBagLayout.setConstraints(component, constraints);
         panel.add(component);
+    }
+
+    private JPanel buildAfrSourcePanel() {
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder("AFR Source"));
+        panel.add(afrSourceList);
+        return panel;
     }
 
     private JPanel buildResetPanel() {
@@ -254,13 +269,32 @@ public final class MafControlPanel extends JPanel {
         recordDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (recordDataButton.isSelected()) {
-                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+//                    afrSourceList.setEnabled(false);
+//                    registerAfr();
+                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
                 } else {
-                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+//                    deregisterAfr();
+                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+//                    afrSourceList.setEnabled(true);
                 }
             }
         });
         return recordDataButton;
+    }
+
+    private void registerAfr() {
+        LoggerData data = getSelectedAfrSource();
+        if (data != null) broker.registerLoggerDataForLogging(data);
+    }
+
+    private void deregisterAfr() {
+        LoggerData data = getSelectedAfrSource();
+        if (data != null) broker.deregisterLoggerDataFromLogging(data);
+    }
+
+    private LoggerData getSelectedAfrSource() {
+        KeyedComboBoxModel model = (KeyedComboBoxModel) afrSourceList.getModel();
+        return (LoggerData) model.getSelectedKey();
     }
 
     private void registerData(String... ids) {
@@ -287,7 +321,6 @@ public final class MafControlPanel extends JPanel {
         for (ExternalData external : externals) {
             if (id.equals(external.getId())) return external;
         }
-        LOGGER.warn("Logger data not found for id: " + id);
         return null;
     }
 
@@ -318,6 +351,17 @@ public final class MafControlPanel extends JPanel {
         constraints.weightx = weightx;
         constraints.weighty = weighty;
         constraints.fill = fill;
+    }
+
+    private void updateAfrSourceList() {
+        List<LoggerData> sources = new ArrayList<LoggerData>();
+        LoggerData afr = findData(AFR);
+        if (afr != null) sources.add(afr);
+        sources.addAll(externals);
+        List<String> keys = new ArrayList<String>();
+        for (LoggerData source : sources) keys.add(source.getName());
+        afrSourceList.setModel(new KeyedComboBoxModel(sources.toArray(new LoggerData[sources.size()]), keys.toArray(new String[keys.size()])));
+        afrSourceList.setSelectedIndex(0);
     }
 
     private JButton buildResetButton() {
@@ -441,6 +485,7 @@ public final class MafControlPanel extends JPanel {
 
     public void setEcuParams(List<EcuParameter> params) {
         this.params = new ArrayList<EcuParameter>(params);
+//        updateAfrSourceList();
     }
 
     public void setEcuSwitches(List<EcuSwitch> switches) {
@@ -449,5 +494,6 @@ public final class MafControlPanel extends JPanel {
 
     public void setExternalDatas(List<ExternalData> externals) {
         this.externals = new ArrayList<ExternalData>(externals);
+//        updateAfrSourceList();
     }
 }

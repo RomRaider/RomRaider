@@ -24,7 +24,6 @@ import com.romraider.Settings;
 import static com.romraider.Version.LOGGER_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
-import com.romraider.swing.AbstractFrame;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.io.serial.port.SerialPortRefresher;
 import com.romraider.logger.ecu.comms.controller.LoggerController;
@@ -85,6 +84,7 @@ import com.romraider.logger.ecu.ui.tab.injector.InjectorTab;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTabImpl;
 import com.romraider.logger.ecu.ui.tab.maf.MafTab;
 import com.romraider.logger.ecu.ui.tab.maf.MafTabImpl;
+import com.romraider.swing.AbstractFrame;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import com.romraider.util.SettingsManagerImpl;
@@ -230,7 +230,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void construct(Settings settings) {
-        bootstrap(settings);
+        checkNotNull(settings);
+        this.settings = settings;
+        bootstrap();
         loadEcuDefs();
         loadLoggerPlugins();
         loadLoggerParams();
@@ -241,9 +243,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         if (!isLogging()) startLogging();
     }
 
-    private void bootstrap(final Settings settings) {
-        checkNotNull(settings);
-        this.settings = settings;
+    private void bootstrap() {
         EcuInitCallback ecuInitCallback = new EcuInitCallback() {
             public void callback(EcuInit newEcuInit) {
                 final String ecuId = newEcuInit.getEcuId();
@@ -672,9 +672,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         button.setPreferredSize(new Dimension(25, 90));
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
         button.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 6913964758354638587L;
 
             public void actionPerformed(ActionEvent e) {
@@ -682,9 +679,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
         });
         button.addActionListener(new AbstractAction() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 123232894767995264L;
 
             public void actionPerformed(ActionEvent e) {
@@ -702,9 +696,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         toggleListButton.setPreferredSize(new Dimension(25, 90));
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         toggleListButton.getActionMap().put("toggleHideParams", new AbstractAction() {
-            /**
-             *
-             */
             private static final long serialVersionUID = -276854997788647306L;
 
             public void actionPerformed(ActionEvent e) {
@@ -712,9 +703,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
         });
         toggleListButton.addActionListener(new AbstractAction() {
-            /**
-             *
-             */
             private static final long serialVersionUID = -1595098685575657317L;
             private final int min = 1;
             private int size = splitPane.getDividerLocation();
