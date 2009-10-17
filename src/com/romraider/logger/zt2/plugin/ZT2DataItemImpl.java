@@ -36,11 +36,11 @@ public final class ZT2DataItemImpl implements ZT2DataItem {
     }
 
     public String getName() {
-        return "ZT2 " + name;
+        return "Zeitronix ZT-2 " + name;
     }
 
     public String getDescription() {
-        return "ZT2 " + name + " data";
+        return "Zeitronix ZT-2 " + name + " data";
     }
 
     public String getUnits() {

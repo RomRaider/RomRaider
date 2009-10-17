@@ -50,6 +50,9 @@
             <file src="plugins/aem.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/lc1.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/lm1.plugin" targetdir="$INSTALL_PATH/plugins"/>
+            <file src="plugins/lm2.plugin" targetdir="$INSTALL_PATH/plugins"/>
+            <file src="plugins/plx.plugin" targetdir="$INSTALL_PATH/plugins"/>
+            <file src="plugins/zt2.plugin" targetdir="$INSTALL_PATH/plugins"/>
 
             <fileset dir="lib/common" targetdir="$INSTALL_PATH/lib/common"/>
             <fileset dir="lib/linux" targetdir="$INSTALL_PATH/lib/linux"/>

@@ -46,14 +46,14 @@ public final class ZT2DataSource implements ExternalDataSource {
         dataItems.put(AFR, new ZT2DataItemImpl("Wideband AFR", "AFR", AFR));
         dataItems.put(TPS, new ZT2DataItemImpl("TPS", "Percent", TPS));
         dataItems.put(RPM, new ZT2DataItemImpl("RPM", "RPM", RPM));
-        dataItems.put(MAP, new ZT2DataItemImpl("MAP", "Vacuum/Boost", MAP));
-        dataItems.put(EGT, new ZT2DataItemImpl("EGT", "Fahrenheit/Celsius", EGT));
+        dataItems.put(MAP, new ZT2DataItemImpl("MAP", "Vacuum(inHg)/Boost(PSI)", MAP));
+        dataItems.put(EGT, new ZT2DataItemImpl("EGT", "Celsius", EGT));
     }
 
     private ZT2RunnerImpl runner;
 
     public String getName() {
-        return "Zeitronix ZT2";
+        return "Zeitronix ZT-2";
     }
 
     public String getVersion() {
