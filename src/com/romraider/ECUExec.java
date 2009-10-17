@@ -49,6 +49,9 @@ public class ECUExec {
     public static void main(String args[]) {
         // init debug logging
         initDebugLogging();
+        // dump the system properties to the log file as early as practical to help debugging/support
+        LOGGER.info("System Properties: \n\t" 
+        		+ System.getProperties().toString().replace(",", "\n\t"));
 
         // check for dodgy threading - dev only
 //        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));
