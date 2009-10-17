@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.2 Beta -
+                    - RomRaider 0.5.3 Beta RC1 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,12 +35,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.2b Notes (02/07/2009) -
+- 0.5.3b RC1 Notes (02/07/2009) -
 -------------------------------
-This is the official 0.5.2b release.
+This is a beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.2b Known Issues -
+- 0.5.3b RC1 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -48,13 +48,19 @@ This is the official 0.5.2b release.
   - New gauge min/max/step limits incomplete (logger.xml)
   - ECU connections under Linux are flaky (start the logger after
       you've started the engine)
-  - AEM UEGO support is a bit flaky
   - Update latency via injector tab broken for some models (eg. 2007 2.5i)
 
 
 --------------
 - Change Log -
 --------------
+
+0.5.3b RC1 (10/17/2009)
+----------------------
+
+--- Logger ---
+- PLX and Zeitronix sensor support added
+- AEM UEGO support improved
 
 0.5.2b (02/07/2009)
 ----------------------
