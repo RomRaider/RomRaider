@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC1 -
+                    - RomRaider 0.5.3 Beta RC2 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,12 +35,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b RC1 Notes (02/07/2009) -
+- 0.5.3b RC2 Notes (10/17/2009) -
 -------------------------------
-This is a beta release of the upcoming official 0.5.3b release.
+This is the second beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.3b RC1 Known Issues -
+- 0.5.3b RC2 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -55,7 +55,7 @@ This is a beta release of the upcoming official 0.5.3b release.
 - Change Log -
 --------------
 
-0.5.3b RC1 (10/17/2009)
+0.5.3b RC2 (10/17/2009)
 ----------------------
 
 --- Logger ---
