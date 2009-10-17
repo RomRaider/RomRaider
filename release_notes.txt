@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC2 -
+                    - RomRaider 0.5.3 Beta RC3 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,12 +35,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b RC2 Notes (10/17/2009) -
+- 0.5.3b RC3 Notes (10/18/2009) -
 -------------------------------
-This is the second beta release of the upcoming official 0.5.3b release.
+This is the third beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.3b RC2 Known Issues -
+- 0.5.3b RC3 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -54,6 +54,13 @@ This is the second beta release of the upcoming official 0.5.3b release.
 --------------
 - Change Log -
 --------------
+
+0.5.3b RC3 (10/18/2009)
+----------------------
+
+--- Logger ---
+- Update Zeitronix item labels
+- Update installer config
 
 0.5.3b RC2 (10/17/2009)
 ----------------------
