@@ -58,6 +58,9 @@ This is the third beta release of the upcoming official 0.5.3b release.
 0.5.3b RC3 (10/18/2009)
 ----------------------
 
+--- Editor ---
+- Dump system props to log at startup
+
 --- Logger ---
 - Update Zeitronix item labels
 - Update installer config
