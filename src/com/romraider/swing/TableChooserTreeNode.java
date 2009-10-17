@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class TableChooserTreeNode extends DefaultMutableTreeNode {
 
-	private static final long serialVersionUID = 6660923635216155045L;
-	private Table table;
+    private static final long serialVersionUID = 6660923635216155045L;
+    private Table table;
 
     public TableChooserTreeNode(String text, Table table) {
         super(text);

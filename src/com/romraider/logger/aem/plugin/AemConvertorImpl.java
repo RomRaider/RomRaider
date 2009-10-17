@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,16 +17,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+
 package com.romraider.logger.aem.plugin;
 
 import static com.romraider.util.HexUtil.asHex;
 import org.apache.log4j.Logger;
+import static java.lang.Double.parseDouble;
+import java.nio.charset.Charset;
 
 public final class AemConvertorImpl implements AemConvertor {
     private static final Logger LOGGER = Logger.getLogger(AemConvertorImpl.class);
+    private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
 
     public double convert(byte[] bytes) {
-        String value = new String(bytes);
+        String value = new String(bytes, CHARSET_UTF8);
         double result = convert(value);
         LOGGER.trace("Converting AEM response: " + asHex(bytes) + " --> \"" + value + "\" --> " + result);
         return result;
@@ -34,7 +38,7 @@ public final class AemConvertorImpl implements AemConvertor {
 
     private double convert(String value) {
         try {
-            return Double.valueOf(value);
+            return parseDouble(value);
         } catch (NumberFormatException e) {
             LOGGER.error("Error converting AEM response to double: \"" + value + "\"", e);
             return -1.0;

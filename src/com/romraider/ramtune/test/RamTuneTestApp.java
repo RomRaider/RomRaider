@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 package com.romraider.ramtune.test;
 
 import com.romraider.Settings;
-import com.romraider.swing.AbstractFrame;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
 import com.romraider.io.protocol.ssm.SSMProtocol;
@@ -33,6 +32,7 @@ import com.romraider.ramtune.test.command.generator.EcuInitCommandGenerator;
 import com.romraider.ramtune.test.command.generator.ReadCommandGenerator;
 import com.romraider.ramtune.test.command.generator.WriteCommandGenerator;
 import com.romraider.ramtune.test.io.RamTuneTestAppConnectionProperties;
+import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.LookAndFeelManager;
 import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.HexUtil.asHex;
@@ -84,8 +84,8 @@ import java.util.List;
  * It is also a bit of a mess and needs to be cleaned up...
  */
 public final class RamTuneTestApp extends AbstractFrame {
-	private static final long serialVersionUID = 7140513114169019846L;
-	private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
+    private static final long serialVersionUID = 7140513114169019846L;
+    private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
     private static final String REGEX_VALID_DATA_BYTES = "[0-9a-fA-F]{2,}";
     private final Protocol protocol = new SSMProtocol();
     private final Settings settings = new Settings();

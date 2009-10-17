@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,78 +23,35 @@ import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.serial.connection.SerialConnection;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
-import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import static com.romraider.util.ThreadUtil.sleep;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
-import static java.lang.System.currentTimeMillis;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.Charset;
 
 public final class AemConnectionImpl implements AemConnection {
     private static final Logger LOGGER = getLogger(AemConnectionImpl.class);
+    private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
     private final SerialConnection connection;
-    private final long sendTimeout;
 
     public AemConnectionImpl(String portName, ConnectionProperties connectionProperties) {
         checkNotNull(connectionProperties, "connectionProperties");
         checkNotNullOrEmpty(portName, "portName");
-        this.sendTimeout = connectionProperties.getSendTimeout();
         connection = new SerialConnectionImpl(portName, connectionProperties);
     }
 
-    //TODO: This a guess!!...untested!!
     public byte[] read() {
         try {
-            connection.readStaleData();
-            long start = currentTimeMillis();
-            while (currentTimeMillis() - start <= sendTimeout) {
-                if (connection.available() > 10) {
-                    byte[] bytes = connection.readAvailable();
-                    LOGGER.trace("AEM UEGO input: " + asHex(bytes));
-                    int startIndex = findStart(bytes);
-                    LOGGER.trace("AEM UEGO start index: " + startIndex);
-                    if (startIndex < 0 || startIndex >= bytes.length) continue;
-                    List<Byte> buffer = new ArrayList<Byte>();
-                    for (int i = startIndex; i < bytes.length; i++) {
-                        byte b = bytes[i];
-                        if (b == (byte) 0x0D) {
-                            byte[] response = toArray(buffer);
-                            LOGGER.trace("AEM UEGO Response: " + asHex(response));
-                            return response;
-                        } else {
-                            buffer.add(b);
-                        }
-                    }
-                }
-                sleep(1);
-            }
-            LOGGER.warn("AEM UEGO Response [read timeout]");
-            return new byte[0];
+            String s = connection.readLine();
+            LOGGER.trace("AEM UEGO Response: " + s);
+            return s.getBytes(CHARSET_UTF8);
         } catch (Exception e) {
             close();
             throw new SerialCommunicationException(e);
         }
     }
 
-    private int findStart(byte[] bytes) {
-        for (int i = 0; i < bytes.length; i++) {
-            if (bytes[i] == (byte) 0x0D) return i + 1;
-        }
-        return -1;
-    }
-
     public void close() {
         connection.close();
-    }
-
-    private byte[] toArray(List<Byte> buffer) {
-        byte[] result = new byte[buffer.size()];
-        for (int j = 0; j < buffer.size(); j++) {
-            result[j] = buffer.get(j);
-        }
-        return result;
     }
 }

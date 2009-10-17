@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,9 +86,9 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
         });
         panel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleCombineGraphs");
         panel.getActionMap().put("toggleCombineGraphs", new AbstractAction() {
-			private static final long serialVersionUID = 1540427179539775534L;
+            private static final long serialVersionUID = 1540427179539775534L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 combinedCheckbox.doClick();
             }
         });

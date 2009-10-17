@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public final class UnitsComboBoxEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
-	private static final long serialVersionUID = -3472910399604360821L;
-	private static final String EDIT_COMMAND = "EDIT";
+    private static final long serialVersionUID = -3472910399604360821L;
+    private static final String EDIT_COMMAND = "EDIT";
     private EcuData currentEcuData;
 
     public Object getCellEditorValue() {

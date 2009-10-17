@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@ import java.beans.PropertyVetoException;
  */
 public class MDIDesktopPane extends JDesktopPane {
 
-	private static final long serialVersionUID = -1839360490978587035L;
-	private static int FRAME_OFFSET = 20;
+    private static final long serialVersionUID = -1839360490978587035L;
+    private static int FRAME_OFFSET = 20;
     private MDIDesktopManager manager;
 
     public MDIDesktopPane() {
@@ -160,10 +160,10 @@ public class MDIDesktopPane extends JDesktopPane {
  */
 class MDIDesktopManager extends DefaultDesktopManager {
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -7668105643849176819L;
-	private MDIDesktopPane desktop;
+     *
+     */
+    private static final long serialVersionUID = -7668105643849176819L;
+    private MDIDesktopPane desktop;
 
     public MDIDesktopManager(MDIDesktopPane desktop) {
         this.desktop = desktop;

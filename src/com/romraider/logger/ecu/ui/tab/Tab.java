@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,20 +19,17 @@
 
 package com.romraider.logger.ecu.ui.tab;
 
-import java.util.List;
-
-import javax.swing.JPanel;
-
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
+import javax.swing.JPanel;
+import java.util.List;
 
 /**
  * Interface for Logger tabs that have the following:
- * 
+ * <p/>
  * Control panel where logging information and constraints are set
  * ChartPanel where graph of data is displayed
- *
  */
 public interface Tab {
     JPanel getPanel();

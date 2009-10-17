@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,13 +77,13 @@ public final class MafControlPanel extends JPanel {
     private final JToggleButton recordDataButton = new JToggleButton("Record Data");
     private final JTextField mafvMin = new JTextField("1.20", 3);
     private final JTextField mafvMax = new JTextField("2.60", 3);
-    private final JTextField afrMin = new JTextField("14.0", 3);
+    private final JTextField afrMin = new JTextField("13.0", 3);
     private final JTextField afrMax = new JTextField("16.0", 3);
     private final JTextField rpmMin = new JTextField("0", 3);
     private final JTextField rpmMax = new JTextField("4500", 3);
     private final JTextField mafMin = new JTextField("0", 3);
     private final JTextField mafMax = new JTextField("100", 3);
-    private final JTextField iatMax = new JTextField("35", 3);
+    private final JTextField iatMax = new JTextField("45", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
     private final JTextField mafvChangeMax = new JTextField("0.2", 3);
     private final JComboBox afrSourceList = new JComboBox();

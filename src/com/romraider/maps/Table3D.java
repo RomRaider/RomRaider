@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,8 @@ import java.util.StringTokenizer;
 
 public class Table3D extends Table {
 
-	private static final long serialVersionUID = 3103448753263606599L;
-	private Table1D xAxis = new Table1D(new Settings());
+    private static final long serialVersionUID = 3103448753263606599L;
+    private Table1D xAxis = new Table1D(new Settings());
     private Table1D yAxis = new Table1D(new Settings());
     private DataCell[][] data = new DataCell[1][1];
     private boolean swapXY = false;

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 package com.romraider.swing;
 
 import com.romraider.editor.ecu.ECUEditor;
-
 import javax.swing.JFileChooser;
 import javax.swing.ListSelectionModel;
 import java.awt.Font;
@@ -31,8 +30,8 @@ import java.util.Vector;
 
 public class DefinitionManager extends javax.swing.JFrame implements ActionListener {
 
-	private static final long serialVersionUID = -3920843496218196737L;
-	public static int MOVE_UP = 0;
+    private static final long serialVersionUID = -3920843496218196737L;
+    public static int MOVE_UP = 0;
     public static int MOVE_DOWN = 1;
 
     ECUEditor parent;

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,9 +29,9 @@ import java.awt.GridLayout;
 
 public class DebugPanel extends JPanel {
 
-	private static final long serialVersionUID = -7159385694793030962L;
+    private static final long serialVersionUID = -7159385694793030962L;
 
-	public DebugPanel(Exception ex, String url) {
+    public DebugPanel(Exception ex, String url) {
         setLayout(new BorderLayout());
 
         JPanel top = new JPanel(new GridLayout(7, 1));

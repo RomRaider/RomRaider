@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@ package com.romraider.logger.ecu.exception;
 
 public final class InvalidResponseException extends RuntimeException {
 
-	private static final long serialVersionUID = 296093377055913575L;
+    private static final long serialVersionUID = 296093377055913575L;
 
-	public InvalidResponseException() {
+    public InvalidResponseException() {
     }
 
     public InvalidResponseException(String string) {

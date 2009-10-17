@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 public class Table1D extends Table {
-	private static final long serialVersionUID = -8747180767803835631L;
-	private Color axisColor = new Color(255, 255, 255);
+    private static final long serialVersionUID = -8747180767803835631L;
+    private Color axisColor = new Color(255, 255, 255);
 
     public Table1D(Settings settings) {
         super(settings);

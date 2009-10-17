@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ import java.io.Serializable;
 
 public class RomID implements Serializable {
 
-	private static final long serialVersionUID = 7272741253665400643L;
-	private String xmlid = "";//ID stored in XML
+    private static final long serialVersionUID = 7272741253665400643L;
+    private String xmlid = "";//ID stored in XML
     private int internalIdAddress = 0;//address of ECU version in image
     private String internalIdString = "";//ID stored in image
     private String caseId = "";//ECU hardware version

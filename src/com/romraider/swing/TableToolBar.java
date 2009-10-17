@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,8 +60,8 @@ import java.util.Vector;
 
 public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ActionListener, GraphDataListener {
 
-	private static final long serialVersionUID = 8697645329367637930L;
-	private static final Logger LOGGER = Logger.getLogger(TableToolBar.class);
+    private static final long serialVersionUID = 8697645329367637930L;
+    private static final Logger LOGGER = Logger.getLogger(TableToolBar.class);
     private JButton incrementFine = new JButton(new ImageIcon("./graphics/icon-incfine.png"));
     private JButton decrementFine = new JButton(new ImageIcon("./graphics/icon-decfine.png"));
     private JButton incrementCoarse = new JButton(new ImageIcon("./graphics/icon-inccoarse.png"));
@@ -186,11 +186,11 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         // key binding actions
         Action enterAction = new AbstractAction() {
             /**
-			 * 
-			 */
-			private static final long serialVersionUID = -6008026264821746092L;
+             *
+             */
+            private static final long serialVersionUID = -6008026264821746092L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getTable().requestFocus();
                 setValue();
             }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,156 +125,156 @@ public abstract class Table extends JPanel implements Serializable {
 
         // key binding actions
         Action rightAction = new AbstractAction() {
-			private static final long serialVersionUID = 1042884198300385041L;
+            private static final long serialVersionUID = 1042884198300385041L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 cursorRight();
             }
         };
         Action leftAction = new AbstractAction() {
-			private static final long serialVersionUID = -4970441255677214171L;
+            private static final long serialVersionUID = -4970441255677214171L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 cursorLeft();
             }
         };
         Action downAction = new AbstractAction() {
-			private static final long serialVersionUID = -7898502951121825984L;
+            private static final long serialVersionUID = -7898502951121825984L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 cursorDown();
             }
         };
         Action upAction = new AbstractAction() {
-			private static final long serialVersionUID = 6937621541727666631L;
+            private static final long serialVersionUID = 6937621541727666631L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 cursorUp();
             }
         };
         Action incCoarseAction = new AbstractAction() {
-			private static final long serialVersionUID = -8308522736529183148L;
+            private static final long serialVersionUID = -8308522736529183148L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().incrementCoarse();
             }
         };
         Action decCoarseAction = new AbstractAction() {
-			private static final long serialVersionUID = -7407628920997400915L;
+            private static final long serialVersionUID = -7407628920997400915L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().decrementCoarse();
             }
         };
         Action incFineAction = new AbstractAction() {
-			private static final long serialVersionUID = 7261463425941761433L;
+            private static final long serialVersionUID = 7261463425941761433L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().incrementFine();
             }
         };
         Action decFineAction = new AbstractAction() {
-			private static final long serialVersionUID = 8929400237520608035L;
+            private static final long serialVersionUID = 8929400237520608035L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().decrementFine();
             }
         };
         Action num0Action = new AbstractAction() {
-			private static final long serialVersionUID = -6310984176739090034L;
+            private static final long serialVersionUID = -6310984176739090034L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('0');
             }
         };
         Action num1Action = new AbstractAction() {
-			private static final long serialVersionUID = -6187220355403883499L;
+            private static final long serialVersionUID = -6187220355403883499L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('1');
             }
         };
         Action num2Action = new AbstractAction() {
-			private static final long serialVersionUID = -8745505977907325720L;
+            private static final long serialVersionUID = -8745505977907325720L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('2');
             }
         };
         Action num3Action = new AbstractAction() {
-			private static final long serialVersionUID = 4694872385823448942L;
+            private static final long serialVersionUID = 4694872385823448942L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('3');
             }
         };
         Action num4Action = new AbstractAction() {
-			private static final long serialVersionUID = 4005741329254221678L;
+            private static final long serialVersionUID = 4005741329254221678L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('4');
             }
         };
         Action num5Action = new AbstractAction() {
-			private static final long serialVersionUID = -5846094949106279884L;
+            private static final long serialVersionUID = -5846094949106279884L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('5');
             }
         };
         Action num6Action = new AbstractAction() {
-			private static final long serialVersionUID = -5338656374925334150L;
+            private static final long serialVersionUID = -5338656374925334150L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('6');
             }
         };
         Action num7Action = new AbstractAction() {
-			private static final long serialVersionUID = 1959983381590509303L;
+            private static final long serialVersionUID = 1959983381590509303L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('7');
             }
         };
         Action num8Action = new AbstractAction() {
-			private static final long serialVersionUID = 7442763278699460648L;
+            private static final long serialVersionUID = 7442763278699460648L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('8');
             }
         };
         Action num9Action = new AbstractAction() {
-			private static final long serialVersionUID = 7475171864584215094L;
+            private static final long serialVersionUID = 7475171864584215094L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('9');
             }
         };
         Action numPointAction = new AbstractAction() {
-			private static final long serialVersionUID = -4729135055857591830L;
+            private static final long serialVersionUID = -4729135055857591830L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('.');
             }
         };
         Action copyAction = new AbstractAction() {
-			private static final long serialVersionUID = -6978981449261938672L;
+            private static final long serialVersionUID = -6978981449261938672L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 copySelection();
             }
         };
         Action pasteAction = new AbstractAction() {
-			private static final long serialVersionUID = 2026817603236490899L;
+            private static final long serialVersionUID = 2026817603236490899L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 paste();
             }
         };
         Action multiplyAction = new AbstractAction() {
-			private static final long serialVersionUID = -2350912575392447149L;
+            private static final long serialVersionUID = -2350912575392447149L;
 
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().multiply();
             }
         };
@@ -868,14 +868,14 @@ public abstract class Table extends JPanel implements Serializable {
                 // determine output byte values
                 byte[] output;
                 if (storageType != STORAGE_TYPE_FLOAT) {
-                    // calculate byte values
+                    // convert byte values
                     output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
                     for (int z = 0; z < storageType; z++) { // insert into file
                         binData[i * storageType + z + storageAddress - ramOffset] = output[z];
                     }
 
                 } else { // float
-                    // calculate byte values
+                    // convert byte values
                     output = RomAttributeParser.floatToByte((float) data[i].getBinValue(), endian);
                     for (int z = 0; z < 4; z++) { // insert in to file
                         binData[i * 4 + z + storageAddress - ramOffset] = output[z];
@@ -1099,7 +1099,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
 
             double startValue = 5;
-            double toReal = JEPUtil.evaluate(scales.get(scaleIndex).getExpression(), startValue); // calculate real world value of "5"
+            double toReal = JEPUtil.evaluate(scales.get(scaleIndex).getExpression(), startValue); // convert real world value of "5"
             double endValue = JEPUtil.evaluate(scales.get(scaleIndex).getByteExpression(), toReal);
 
             // if real to byte doesn't equal 5, report conflict

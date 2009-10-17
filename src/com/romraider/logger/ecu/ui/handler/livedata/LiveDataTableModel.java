@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 public final class LiveDataTableModel extends AbstractTableModel {
-	private static final long serialVersionUID = 3712433453224086342L;
-	private final String[] columnNames = {"Logger Data", "Min Value", "Current Value", "Max Value", "Units"};
+    private static final long serialVersionUID = 3712433453224086342L;
+    private final String[] columnNames = {"Logger Data", "Min Value", "Current Value", "Max Value", "Units"};
     private final List<LoggerData> registeredLoggerData = synchronizedList(new LinkedList<LoggerData>());
     private final Map<LoggerData, LiveDataRow> dataRowMap = synchronizedMap(new LinkedHashMap<LoggerData, LiveDataRow>());
 

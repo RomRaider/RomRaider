@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ import java.util.Vector;
 
 public class RomTreeNode extends DefaultMutableTreeNode {
 
-	private static final long serialVersionUID = -5534315445738460608L;
-	private Rom rom = new Rom();
+    private static final long serialVersionUID = -5534315445738460608L;
+    private Rom rom = new Rom();
 
     public RomTreeNode(Rom rom, int userLevel, boolean isDisplayHighTables) {
         setRom(rom);

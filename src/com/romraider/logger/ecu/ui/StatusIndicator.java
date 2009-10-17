@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@ import static java.awt.BorderLayout.WEST;
 import static java.awt.Font.BOLD;
 
 public final class StatusIndicator extends JPanel implements StatusChangeListener {
-	private static final long serialVersionUID = -3244690866698807677L;
-	private final JLabel statusLabel = new JLabel();
+    private static final long serialVersionUID = -3244690866698807677L;
+    private final JLabel statusLabel = new JLabel();
     private static final String TEXT_CONNECTING = "Connecting to ECU...";
     private static final String TEXT_READING = "Reading data...";
     private static final String TEXT_LOGGING = "Logging data to file...";

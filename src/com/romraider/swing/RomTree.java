@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 package com.romraider.swing;
 
 import com.romraider.editor.ecu.ECUEditor;
-
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -31,8 +30,8 @@ import java.util.Enumeration;
 
 public class RomTree extends JTree implements MouseListener {
 
-	private static final long serialVersionUID = 1630446543383498886L;
-	public static ECUEditor container;
+    private static final long serialVersionUID = 1630446543383498886L;
+    public static ECUEditor container;
 
     public RomTree(DefaultMutableTreeNode input) {
         super(input);

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,8 @@ import java.util.StringTokenizer;
 
 public class TableSwitch extends Table {
 
-	private static final long serialVersionUID = -4887718305447362308L;
-	private byte[] on = new byte[0];
+    private static final long serialVersionUID = -4887718305447362308L;
+    private byte[] on = new byte[0];
     private byte[] off = new byte[0];
     private JCheckBox checkbox = new JCheckBox("Enabled", true); // checkbox selected by default
 

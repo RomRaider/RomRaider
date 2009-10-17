@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,8 @@ import static java.awt.Color.WHITE;
 import java.awt.Dimension;
 
 public final class LoggerChartPanel extends JPanel {
-	private static final long serialVersionUID = -6579979878171615665L;
-	private static final Color DARK_GREY = new Color(80, 80, 80);
+    private static final long serialVersionUID = -6579979878171615665L;
+    private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
     private final XYSeries data = new XYSeries("Data");
     private final XYTrendline trendline = new XYTrendline(data);

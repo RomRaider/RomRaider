@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 package com.romraider.io.j2534.api;
 
 public final class J2534Exception extends RuntimeException {
-	private static final long serialVersionUID = 7824233877963155502L;
+    private static final long serialVersionUID = 7824233877963155502L;
 
-	public J2534Exception(String msg) {
+    public J2534Exception(String msg) {
         super(msg);
     }
 

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 public class Table2D extends Table {
-	private static final long serialVersionUID = -7684570967109324784L;
-	private static final String NEW_LINE = System.getProperty("line.separator");
+    private static final long serialVersionUID = -7684570967109324784L;
+    private static final String NEW_LINE = System.getProperty("line.separator");
     private Table1D axis = new Table1D(new Settings());
 
     public Table2D(Settings settings) {

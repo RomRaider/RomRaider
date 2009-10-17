@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@ import java.awt.event.MouseListener;
 
 public class URL extends JLabel implements MouseListener {
 
-	private static final long serialVersionUID = 8972482185527165793L;
-	String url = "";
+    private static final long serialVersionUID = 8972482185527165793L;
+    String url = "";
 
     public URL(String url) {
         super(url);

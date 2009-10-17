@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Vector;
 
 public class Rom implements Serializable {
-	private static final long serialVersionUID = 7865405179738828128L;
-	private static final Logger LOGGER = Logger.getLogger(Rom.class);
+    private static final long serialVersionUID = 7865405179738828128L;
+    private static final Logger LOGGER = Logger.getLogger(Rom.class);
     private RomID romID = new RomID();
     private String fileName = "";
     private File fullFileName = new File(".");

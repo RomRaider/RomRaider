@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,9 @@ import com.romraider.maps.Table;
 
 public class TablePropertyPanel extends javax.swing.JPanel {
 
-	private static final long serialVersionUID = -5817685772039277602L;
-	public TablePropertyPanel(Table table) {
+    private static final long serialVersionUID = -5817685772039277602L;
+
+    public TablePropertyPanel(Table table) {
         initComponents();
         setVisible(true);
 

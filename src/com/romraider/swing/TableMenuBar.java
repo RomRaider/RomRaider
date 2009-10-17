@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,8 @@ import java.awt.event.ActionListener;
 
 public class TableMenuBar extends JMenuBar implements ActionListener {
 
-	private static final long serialVersionUID = -695692646459410510L;
-	private Table table;
+    private static final long serialVersionUID = -695692646459410510L;
+    private Table table;
     private JMenu fileMenu = new JMenu("Table");
     private JMenuItem graph = new JMenuItem("View Graph");
     //private JRadioButtonMenuItem overlay = new JRadioButtonMenuItem("Overlay Log");

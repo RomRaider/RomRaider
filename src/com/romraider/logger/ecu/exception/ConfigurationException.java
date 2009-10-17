@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@ package com.romraider.logger.ecu.exception;
 
 public final class ConfigurationException extends RuntimeException {
 
-	private static final long serialVersionUID = 2021993520731842524L;
+    private static final long serialVersionUID = 2021993520731842524L;
 
-	public ConfigurationException() {
+    public ConfigurationException() {
     }
 
     public ConfigurationException(String string) {

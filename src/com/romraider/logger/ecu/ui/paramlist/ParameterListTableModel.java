@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public final class ParameterListTableModel extends AbstractTableModel {
-	private static final long serialVersionUID = -2556400867696538881L;
-	private final String[] columnNames;
+    private static final long serialVersionUID = -2556400867696538881L;
+    private final String[] columnNames;
     private final List<LoggerData> registeredLoggerData = synchronizedList(new LinkedList<LoggerData>());
     private final Map<LoggerData, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<LoggerData, ParameterRow>());
     private final DataRegistrationBroker broker;

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ import java.awt.FlowLayout;
 import java.awt.Insets;
 
 public final class BetterFlowLayout extends FlowLayout {
-	private static final long serialVersionUID = -6784712723817241270L;
+    private static final long serialVersionUID = -6784712723817241270L;
 
-	public BetterFlowLayout() {
+    public BetterFlowLayout() {
         super();
     }
 

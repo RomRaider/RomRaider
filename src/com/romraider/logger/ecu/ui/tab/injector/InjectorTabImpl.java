@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@ import static java.awt.BorderLayout.WEST;
 import java.util.List;
 
 public final class InjectorTabImpl extends JPanel implements InjectorTab {
-	private static final long serialVersionUID = 5365322624406058883L;
-	private final LoggerChartPanel chartPanel = new LoggerChartPanel("Pulse Width (ms)", "Fuel per Combustion Event (cc)");
+    private static final long serialVersionUID = 5365322624406058883L;
+    private final LoggerChartPanel chartPanel = new LoggerChartPanel("Pulse Width (ms)", "Fuel per Combustion Event (cc)");
     private final InjectorControlPanel controlPanel;
 
     public InjectorTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {

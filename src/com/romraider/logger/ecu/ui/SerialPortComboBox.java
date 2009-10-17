@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public final class SerialPortComboBox extends JComboBox implements SerialPortRefreshListener {
-	private static final long serialVersionUID = 5693976713268676676L;
-	private final Settings settings;
+    private static final long serialVersionUID = 5693976713268676676L;
+    private final Settings settings;
 
     public SerialPortComboBox(Settings settings) {
         checkNotNull(settings);

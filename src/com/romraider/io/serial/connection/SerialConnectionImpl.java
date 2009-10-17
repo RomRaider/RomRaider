@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,22 +37,32 @@ import static gnu.io.SerialPort.FLOWCONTROL_NONE;
 import gnu.io.UnsupportedCommOperationException;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 public final class SerialConnectionImpl implements SerialConnection {
     private static final Logger LOGGER = getLogger(SerialConnectionImpl.class);
     private final SerialPort serialPort;
-    private final OutputStream os;
-    private final InputStream is;
+    private final BufferedOutputStream os;
+    private final BufferedInputStream is;
+    private final BufferedReader reader;
 
     public SerialConnectionImpl(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
         serialPort = connect(portName, connectionProperties);
-        os = initOutputStream();
-        is = initInputStream();
+        os = initOutputStream(serialPort);
+        is = initInputStream(serialPort);
+        reader = reader(is);
+    }
+
+    private BufferedReader reader(BufferedInputStream is) {
+        return new BufferedReader(new InputStreamReader(this.is));
     }
 
     public void write(byte[] bytes) {
@@ -89,6 +99,15 @@ public final class SerialConnectionImpl implements SerialConnection {
         return response;
     }
 
+    public String readLine() {
+        try {
+            return reader.readLine();
+        } catch (IOException e) {
+            close();
+            throw new SerialCommunicationException(e);
+        }
+    }
+
     public void readStaleData() {
         if (available() <= 0) return;
         byte[] staleBytes = new byte[available()];
@@ -102,6 +121,13 @@ public final class SerialConnectionImpl implements SerialConnection {
                 os.close();
             } catch (IOException e) {
                 LOGGER.error("Error closing output stream", e);
+            }
+        }
+        if (reader != null) {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                LOGGER.error("Error closing input stream reader", e);
             }
         }
         if (is != null) {
@@ -121,18 +147,20 @@ public final class SerialConnectionImpl implements SerialConnection {
         LOGGER.info("Connection closed.");
     }
 
-    private OutputStream initOutputStream() {
+    private BufferedOutputStream initOutputStream(SerialPort serialPort) {
         try {
-            return serialPort.getOutputStream();
+            OutputStream os = serialPort.getOutputStream();
+            return new BufferedOutputStream(os);
         } catch (IOException e) {
             close();
             throw new NotConnectedException(e);
         }
     }
 
-    private InputStream initInputStream() {
+    private BufferedInputStream initInputStream(SerialPort serialPort) {
         try {
-            return serialPort.getInputStream();
+            InputStream is = serialPort.getInputStream();
+            return new BufferedInputStream(is);
         } catch (IOException e) {
             close();
             throw new NotConnectedException(e);
@@ -181,5 +209,4 @@ public final class SerialConnectionImpl implements SerialConnection {
             throw new PortNotFoundException("Unable to resolve port: " + portName);
         }
     }
-
 }

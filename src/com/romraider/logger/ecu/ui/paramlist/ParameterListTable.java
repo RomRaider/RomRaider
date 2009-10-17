@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 
 public final class ParameterListTable extends JTable {
-	private static final long serialVersionUID = -8489190548281346227L;
-	private UnitsComboBoxEditor comboBoxEditor = new UnitsComboBoxEditor();
+    private static final long serialVersionUID = -8489190548281346227L;
+    private UnitsComboBoxEditor comboBoxEditor = new UnitsComboBoxEditor();
     private UnitsComboBoxRenderer comboBoxRenderer = new UnitsComboBoxRenderer();
     private final ParameterListTableModel tableModel;
 

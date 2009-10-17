@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@ package com.romraider.xml;
 
 public final class TableNotFoundException extends Exception {
 
-	private static final long serialVersionUID = -7492075561444288417L;
+    private static final long serialVersionUID = -7492075561444288417L;
 
-	public String getMessage() {
+    public String getMessage() {
         return "Table not found.";
     }
 }

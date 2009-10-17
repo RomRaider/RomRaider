@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 
 package com.romraider.logger.plx.plugin;
 
-import com.romraider.logger.plx.io.PlxSensorUnits;
 import com.romraider.logger.plx.io.PlxSensorType;
+import com.romraider.logger.plx.io.PlxSensorUnits;
 
 public final class PlxDataItemImpl implements PlxDataItem {
     private final PlxConvertor convertor = new PlxConvertorImpl();

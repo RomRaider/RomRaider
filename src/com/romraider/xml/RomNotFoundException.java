@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@ package com.romraider.xml;
 
 public final class RomNotFoundException extends Exception {
 
-	private static final long serialVersionUID = -5434546006966986885L;
+    private static final long serialVersionUID = -5434546006966986885L;
 
-	public RomNotFoundException() {
+    public RomNotFoundException() {
     }
 }

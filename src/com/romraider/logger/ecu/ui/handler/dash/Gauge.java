@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 
 public final class Gauge extends JPanel {
-	private static final long serialVersionUID = 7354117571944547043L;
-	private GaugeStyle style;
+    private static final long serialVersionUID = 7354117571944547043L;
+    private GaugeStyle style;
 
     public Gauge(GaugeStyle style) {
         super();

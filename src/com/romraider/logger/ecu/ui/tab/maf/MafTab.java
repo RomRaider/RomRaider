@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import com.romraider.logger.ecu.ui.tab.Tab;
 
 public interface MafTab extends Tab {
 
-	boolean isValidClOl(double value);
+    boolean isValidClOl(double value);
 
     boolean isValidAfr(double value);
 

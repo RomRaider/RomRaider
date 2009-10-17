@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@ import java.awt.BorderLayout;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener {
 
-	private static final long serialVersionUID = -2651279694660392351L;
-	private Table table;
+    private static final long serialVersionUID = -2651279694660392351L;
+    private Table table;
     private TableToolBar toolBar;
 
     public TableFrame(Table table) {

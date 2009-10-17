@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@
 package com.romraider.editor.ecu;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
+import com.romraider.Settings;
 import static com.romraider.Version.ECU_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
-import com.romraider.Settings;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
@@ -76,9 +76,9 @@ import java.io.IOException;
 import java.util.Vector;
 
 public class ECUEditor extends AbstractFrame {
-	private static final long serialVersionUID = -7826850987392016292L;
+    private static final long serialVersionUID = -7826850987392016292L;
 
-	private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
+    private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
 
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final SettingsManager settingsManager = new SettingsManagerImpl();
@@ -134,7 +134,7 @@ public class ECUEditor extends AbstractFrame {
         addWindowListener(this);
         setTitle(titleText);
         setVisible(true);
-        
+
         if (settings.getEcuDefinitionFiles().size() <= 0) {
             // no ECU definitions configured - let user choose to get latest or configure later
             Object[] options = {"Yes", "No"};

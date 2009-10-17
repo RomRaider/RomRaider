@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ import com.romraider.maps.Rom;
 
 public class RomPropertyPanel extends javax.swing.JPanel {
 
-	private static final long serialVersionUID = 5583360728106071942L;
-	Rom rom = new Rom();
+    private static final long serialVersionUID = 5583360728106071942L;
+    Rom rom = new Rom();
 
     public RomPropertyPanel(Rom rom) {
         initComponents();
@@ -131,10 +131,10 @@ public class RomPropertyPanel extends javax.swing.JPanel {
 
         tableList.setModel(new javax.swing.AbstractListModel() {
             /**
-			 * 
-			 */
-			private static final long serialVersionUID = -8498656966410761726L;
-			String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+             *
+             */
+            private static final long serialVersionUID = -8498656966410761726L;
+            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
 
             public int getSize() {
                 return strings.length;

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@ import java.awt.Font;
 
 public class JProgressPane extends JPanel {
 
-	private static final long serialVersionUID = -6827936662738014543L;
-	JLabel label = new JLabel();
+    private static final long serialVersionUID = -6827936662738014543L;
+    JLabel label = new JLabel();
     JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
 
     public JProgressPane() {

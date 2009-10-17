@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ import java.io.Serializable;
 
 public class Scale implements Serializable {
 
-	private static final long serialVersionUID = 5836610685159474795L;
-	public static final int LINEAR = 1;
+    private static final long serialVersionUID = 5836610685159474795L;
+    public static final int LINEAR = 1;
     public static final int INVERSE = 2;
 
     private String name = "Default";

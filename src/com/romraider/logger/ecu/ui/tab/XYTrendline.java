@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@ import java.util.List;
 
 public final class XYTrendline extends AbstractXYDataset {
 
-	private static final long serialVersionUID = 1375705537694372443L;
-	private List<XYDataItem> items = new ArrayList<XYDataItem>();
+    private static final long serialVersionUID = 1375705537694372443L;
+    private List<XYDataItem> items = new ArrayList<XYDataItem>();
     private double[] xVals = new double[0];
     private double[] yPoly = new double[0];
     private final XYSeries series;

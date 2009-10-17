@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2009 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,9 +61,9 @@ import java.util.List;
 
 public class EcuLoggerMenuBar extends JMenuBar {
 
-	private static final long serialVersionUID = 7081586516953740186L;
+    private static final long serialVersionUID = 7081586516953740186L;
 
-	public EcuLoggerMenuBar(EcuLogger logger, List<ExternalDataSource> externalDataSources) {
+    public EcuLoggerMenuBar(EcuLogger logger, List<ExternalDataSource> externalDataSources) {
 
         // file menu items
         JMenu fileMenu = new EcuLoggerMenu("File", VK_F);
