@@ -43,7 +43,7 @@ public final class J2534DllLocator {
         try {
             RegistryKey software = openSubkey(HKEY_LOCAL_MACHINE, "SOFTWARE", ACCESS_READ);
             RegistryKey passThruSupport = software.openSubKey("PassThruSupport.04.04");
-            Enumeration vendors = passThruSupport.keyElements();
+            Enumeration<?> vendors = passThruSupport.keyElements();
             while (vendors.hasMoreElements()) {
                 String vendor = (String) vendors.nextElement();
                 RegistryKey vendorKey = passThruSupport.openSubKey(vendor);
@@ -77,7 +77,7 @@ public final class J2534DllLocator {
 
     public static boolean valueExists(RegistryKey key, String name, int type) {
         try {
-            Enumeration elements = key.valueElements();
+            Enumeration<?> elements = key.valueElements();
             while (elements.hasMoreElements()) {
                 String element = (String) elements.nextElement();
                 if (!element.equals(name)) continue;

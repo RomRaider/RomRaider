@@ -51,7 +51,8 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 public abstract class Table extends JPanel implements Serializable {
-    private static final String BLANK = "";
+	private static final long serialVersionUID = 6559256489995552645L;
+	private static final String BLANK = "";
 
     public static final int ENDIAN_LITTLE = 1;
     public static final int ENDIAN_BIG = 2;
