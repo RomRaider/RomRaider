@@ -17,32 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.aem.plugin;
+package com.romraider.logger.innovate.generic.serial.plugin;
 
-import com.romraider.logger.ecu.external.ExternalDataItem;
-
-public final class AemDataItem implements ExternalDataItem, RawDataListener {
-    private final AemConvertor convertor = new AemConvertorImpl();
-    private byte[] bytes;
-
-    public String getName() {
-        return "AEM UEGO";
-    }
-
-    public String getDescription() {
-        return "AEM UEGO AFR data";
-    }
-
-    public String getUnits() {
-        return "AFR";
-    }
-
-    public double getData() {
-        if (bytes == null) return 0.0;
-        return convertor.convert(bytes);
-    }
-
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
-    }
+public interface DataConvertor {
+    double convert(byte[] bytes);
 }

@@ -19,6 +19,7 @@
 
 package com.romraider.logger.aem.plugin;
 
+import com.romraider.logger.aem.io.AemRunner;
 import com.romraider.logger.aem.io.AemRunnerImpl;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
@@ -31,7 +32,7 @@ import java.util.List;
 public final class AemDataSource implements ExternalDataSource {
     private AemSettings settings = new AemSettingsImpl();
     private AemDataItem dataItem = new AemDataItem();
-    private AemRunnerImpl runner;
+    private AemRunner runner;
 
     public String getName() {
         return "AEM UEGO";

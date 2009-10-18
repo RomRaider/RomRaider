@@ -17,35 +17,29 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.plx.plugin;
+package com.romraider.logger.innovate.lm2.mts.plugin;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
-import com.romraider.logger.plx.io.PlxRunner;
-import com.romraider.logger.plx.io.PlxRunnerImpl;
-import com.romraider.logger.plx.io.PlxSensorType;
-import static com.romraider.logger.plx.io.PlxSensorType.WIDEBAND_AFR;
-import static com.romraider.logger.plx.io.PlxSensorUnits.WIDEBAND_AFR_GASOLINE147;
+import com.romraider.logger.innovate.generic.mts.io.MTSRunner;
+import com.romraider.logger.innovate.generic.mts.io.MTSRunnerImpl;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import javax.swing.Action;
-import java.util.ArrayList;
-import java.util.HashMap;
+import static java.lang.Integer.parseInt;
+import static java.util.Arrays.asList;
 import java.util.List;
-import java.util.Map;
 
-public final class PlxDataSource implements ExternalDataSource {
-    private final Map<PlxSensorType, PlxDataItem> dataItems = new HashMap<PlxSensorType, PlxDataItem>();
-    private final PlxSettings settings = new PlxSettingsImpl();
-    private PlxRunner runner;
-
-    {
-        dataItems.put(WIDEBAND_AFR, new PlxDataItemImpl("Wideband AFR", "AFR", WIDEBAND_AFR, WIDEBAND_AFR_GASOLINE147));
-//        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("EGT", "C", EXHAUST_GAS_TEMPERATURE, EXHAUST_GAS_TEMPERATURE_CELSIUS));
-    }
+public final class Lm2MtsDataSource implements ExternalDataSource {
+    private static final Logger LOGGER = getLogger(Lm2MtsDataSource.class);
+    private final Lm2MtsDataItem dataItem = new Lm2MtsDataItem();
+    private MTSRunner runner;
+    private int mtsPort = 0;
 
     public String getName() {
-        return "PLX SM-AFR";
+        return "Innovate LM-2 [mts]";
     }
 
     public String getVersion() {
@@ -53,27 +47,36 @@ public final class PlxDataSource implements ExternalDataSource {
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
-        return new ArrayList<ExternalDataItem>(dataItems.values());
+        return asList(dataItem);
     }
 
     public Action getMenuAction(EcuLogger logger) {
-        return null;
+        return new Lm2MtsPluginMenuAction(logger, this);
     }
 
     public void setPort(String port) {
-        settings.setPort(port);
+        mtsPort = mtsPort(port);
     }
 
     public String getPort() {
-        return settings.getPort();
+        return "" + mtsPort;
     }
 
     public void connect() {
-        runner = new PlxRunnerImpl(settings, dataItems);
+        runner = new MTSRunnerImpl(mtsPort, dataItem);
         runAsDaemon(runner);
     }
 
     public void disconnect() {
         if (runner != null) runner.stop();
+    }
+
+    private int mtsPort(String port) {
+        try {
+            return parseInt(port);
+        } catch (Exception e) {
+            LOGGER.warn("Bad MTS port: " + port);
+            return 0;
+        }
     }
 }

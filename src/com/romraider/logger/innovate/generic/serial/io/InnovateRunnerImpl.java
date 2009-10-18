@@ -17,18 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.aem.io;
+package com.romraider.logger.innovate.generic.serial.io;
 
-import com.romraider.logger.aem.plugin.AemSettings;
-import com.romraider.logger.aem.plugin.RawDataListener;
+import com.romraider.logger.innovate.generic.serial.plugin.InnovateSettings;
+import com.romraider.logger.innovate.generic.serial.plugin.RawDataListener;
 
-public final class AemRunnerImpl implements AemRunner {
-    private final AemConnection connection;
+public final class InnovateRunnerImpl implements InnovateRunner {
+    private final InnovateConnection connection;
     private final RawDataListener listener;
     private boolean stop;
 
-    public AemRunnerImpl(AemSettings aemSettings, RawDataListener listener) {
-        connection = new AemConnectionImpl(aemSettings.getPort(), new AemConnectionProperties());
+    public InnovateRunnerImpl(String device, InnovateSettings innovateSettings, RawDataListener listener, int responseLength) {
+        connection = new InnovateConnectionImpl(device, innovateSettings.getPort(), new InnovateConnectionProperties(), responseLength);
         this.listener = listener;
     }
 

@@ -24,7 +24,6 @@ import javax.swing.Action;
 import java.util.List;
 
 public interface ExternalDataSource {
-
     String getName();
 
     String getVersion();

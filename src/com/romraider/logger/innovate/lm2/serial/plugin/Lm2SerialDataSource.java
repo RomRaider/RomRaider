@@ -17,35 +17,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.plx.plugin;
+package com.romraider.logger.innovate.lm2.serial.plugin;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
-import com.romraider.logger.plx.io.PlxRunner;
-import com.romraider.logger.plx.io.PlxRunnerImpl;
-import com.romraider.logger.plx.io.PlxSensorType;
-import static com.romraider.logger.plx.io.PlxSensorType.WIDEBAND_AFR;
-import static com.romraider.logger.plx.io.PlxSensorUnits.WIDEBAND_AFR_GASOLINE147;
+import com.romraider.logger.innovate.generic.serial.io.InnovateRunner;
+import com.romraider.logger.innovate.generic.serial.io.InnovateRunnerImpl;
+import com.romraider.logger.innovate.generic.serial.plugin.InnovateSettings;
+import com.romraider.logger.innovate.generic.serial.plugin.InnovateSettingsImpl;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import javax.swing.Action;
-import java.util.ArrayList;
-import java.util.HashMap;
+import static java.util.Arrays.asList;
 import java.util.List;
-import java.util.Map;
 
-public final class PlxDataSource implements ExternalDataSource {
-    private final Map<PlxSensorType, PlxDataItem> dataItems = new HashMap<PlxSensorType, PlxDataItem>();
-    private final PlxSettings settings = new PlxSettingsImpl();
-    private PlxRunner runner;
-
-    {
-        dataItems.put(WIDEBAND_AFR, new PlxDataItemImpl("Wideband AFR", "AFR", WIDEBAND_AFR, WIDEBAND_AFR_GASOLINE147));
-//        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("EGT", "C", EXHAUST_GAS_TEMPERATURE, EXHAUST_GAS_TEMPERATURE_CELSIUS));
-    }
+public final class Lm2SerialDataSource implements ExternalDataSource {
+    private InnovateSettings settings = new InnovateSettingsImpl();
+    private Lm2SerialDataItem dataItem = new Lm2SerialDataItem();
+    private InnovateRunner runner;
 
     public String getName() {
-        return "PLX SM-AFR";
+        return "Innovate LM-2 [serial]";
     }
 
     public String getVersion() {
@@ -53,7 +45,7 @@ public final class PlxDataSource implements ExternalDataSource {
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
-        return new ArrayList<ExternalDataItem>(dataItems.values());
+        return asList(dataItem);
     }
 
     public Action getMenuAction(EcuLogger logger) {
@@ -69,7 +61,7 @@ public final class PlxDataSource implements ExternalDataSource {
     }
 
     public void connect() {
-        runner = new PlxRunnerImpl(settings, dataItems);
+        runner = new InnovateRunnerImpl("LM-2", settings, dataItem, 18);
         runAsDaemon(runner);
     }
 

@@ -22,6 +22,7 @@ package com.romraider.logger.zt2.plugin;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
+import com.romraider.logger.zt2.io.ZT2Runner;
 import com.romraider.logger.zt2.io.ZT2RunnerImpl;
 import com.romraider.logger.zt2.io.ZT2SensorType;
 import static com.romraider.logger.zt2.io.ZT2SensorType.AFR;
@@ -38,9 +39,9 @@ import java.util.List;
 import java.util.Map;
 
 public final class ZT2DataSource implements ExternalDataSource {
-    private ZT2Settings settings = new ZT2SettingsImpl();
-
     private final Map<ZT2SensorType, ZT2DataItem> dataItems = new HashMap<ZT2SensorType, ZT2DataItem>();
+    private ZT2Settings settings = new ZT2SettingsImpl();
+    private ZT2Runner runner;
 
     {
         dataItems.put(AFR, new ZT2DataItemImpl("Wideband AFR", "AFR", AFR));
@@ -49,8 +50,6 @@ public final class ZT2DataSource implements ExternalDataSource {
         dataItems.put(MAP, new ZT2DataItemImpl("MAP", "Vacuum(inHg)/Boost(PSI)", MAP));
         dataItems.put(EGT, new ZT2DataItemImpl("EGT", "Celsius", EGT));
     }
-
-    private ZT2RunnerImpl runner;
 
     public String getName() {
         return "Zeitronix ZT-2";

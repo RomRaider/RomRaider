@@ -17,33 +17,31 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.aem.io;
+package com.romraider.logger.innovate.lm2.mts.plugin;
 
-import com.romraider.logger.aem.plugin.AemSettings;
-import com.romraider.logger.aem.plugin.RawDataListener;
+import com.romraider.logger.ecu.external.ExternalDataItem;
+import com.romraider.logger.innovate.generic.mts.plugin.DataListener;
 
-public final class AemRunnerImpl implements AemRunner {
-    private final AemConnection connection;
-    private final RawDataListener listener;
-    private boolean stop;
+public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
+    private double data;
 
-    public AemRunnerImpl(AemSettings aemSettings, RawDataListener listener) {
-        connection = new AemConnectionImpl(aemSettings.getPort(), new AemConnectionProperties());
-        this.listener = listener;
+    public String getName() {
+        return "Innovate LM-2 [mts]";
     }
 
-    public void run() {
-        try {
-            while (!stop) {
-                byte[] bytes = connection.read();
-                listener.setBytes(bytes);
-            }
-        } finally {
-            connection.close();
-        }
+    public String getDescription() {
+        return "Innovate LM-2 AFR data";
     }
 
-    public void stop() {
-        stop = true;
+    public String getUnits() {
+        return "AFR";
+    }
+
+    public double getData() {
+        return data;
+    }
+
+    public void setData(double data) {
+        this.data = data;
     }
 }

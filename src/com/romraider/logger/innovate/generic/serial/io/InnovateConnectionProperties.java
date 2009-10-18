@@ -17,33 +17,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.aem.io;
+package com.romraider.logger.innovate.generic.serial.io;
 
-import com.romraider.logger.aem.plugin.AemSettings;
-import com.romraider.logger.aem.plugin.RawDataListener;
+import com.romraider.io.connection.ConnectionProperties;
 
-public final class AemRunnerImpl implements AemRunner {
-    private final AemConnection connection;
-    private final RawDataListener listener;
-    private boolean stop;
-
-    public AemRunnerImpl(AemSettings aemSettings, RawDataListener listener) {
-        connection = new AemConnectionImpl(aemSettings.getPort(), new AemConnectionProperties());
-        this.listener = listener;
+public final class InnovateConnectionProperties implements ConnectionProperties {
+    public int getBaudRate() {
+        return 19200;
     }
 
-    public void run() {
-        try {
-            while (!stop) {
-                byte[] bytes = connection.read();
-                listener.setBytes(bytes);
-            }
-        } finally {
-            connection.close();
-        }
+    public int getDataBits() {
+        return 8;
     }
 
-    public void stop() {
-        stop = true;
+    public int getStopBits() {
+        return 1;
+    }
+
+    public int getParity() {
+        return 0;
+    }
+
+    public int getConnectTimeout() {
+        return 2000;
+    }
+
+    public int getSendTimeout() {
+        // innovate specifies 82 but this isn't enough...
+        return 200;
     }
 }

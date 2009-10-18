@@ -28,10 +28,11 @@ import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.nio.charset.Charset;
+import static java.nio.charset.Charset.forName;
 
 public final class AemConnectionImpl implements AemConnection {
     private static final Logger LOGGER = getLogger(AemConnectionImpl.class);
-    private static final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
+    private static final Charset CHARSET_UTF8 = forName("UTF-8");
     private final SerialConnection connection;
 
     public AemConnectionImpl(String portName, ConnectionProperties connectionProperties) {
