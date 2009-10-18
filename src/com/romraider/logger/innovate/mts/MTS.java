@@ -23,11 +23,8 @@ import com4j.Com4jObject;
 import com4j.IID;
 import com4j.VTID;
 
-/**
- * IMTS Interface
- */
 @IID("{FCE3DA3F-110C-4781-B751-ABDC039BCF18}")
-public interface IMTS extends Com4jObject {
+public interface MTS extends Com4jObject {
     /**
      * Get number of MTS ports available
      */
@@ -44,14 +41,13 @@ public interface IMTS extends Com4jObject {
      * CurrentMTSPort
      */
     @VTID(9)
-    void currentPort(
-            int pVal);
+    void currentPort(int pVal);
 
     /**
      * MTS Port Name
      */
     @VTID(10)
-    java.lang.String portName();
+    String portName();
 
     /**
      * Attempt an MTS Connection
@@ -81,26 +77,25 @@ public interface IMTS extends Com4jObject {
      * Current MTS Input
      */
     @VTID(15)
-    void currentInput(
-            int pVal);
+    void currentInput(int pVal);
 
     /**
      * Name of Current Input
      */
     @VTID(16)
-    java.lang.String inputName();
+    String inputName();
 
     /**
      * Units used by Input
      */
     @VTID(17)
-    java.lang.String inputUnit();
+    String inputUnit();
 
     /**
      * Name of Device Providing Input
      */
     @VTID(18)
-    java.lang.String inputDeviceName();
+    String inputDeviceName();
 
     /**
      * Type of Device Providing Input
@@ -167,5 +162,4 @@ public interface IMTS extends Com4jObject {
      */
     @VTID(29)
     void startData();
-
 }

@@ -17,39 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.innovate.mts.events;
+package com.romraider.logger.innovate.mts;
 
-import com4j.DISPID;
-import com4j.IID;
+import static com4j.COM4J.createInstance;
 
-/**
- * _IMTSEvents Interface
- */
-@IID("{4A8AA6AC-E180-433E-8871-A2F8D2413F03}")
-public abstract class _IMTSEvents {
-    /**
-     * Triggered to indicate MTS connection result
-     */
-    @DISPID(1)
-    public void connectionEvent(
-            int result) {
-        throw new UnsupportedOperationException();
+public final class MTSFactory {
+    private MTSFactory() {
     }
 
     /**
-     * Triggered when an error occurs on the MTS data stream
+     * MTS SDK v1.0
      */
-    @DISPID(2)
-    public void connectionError() {
-        throw new UnsupportedOperationException();
+    public static MTS createMTS() {
+        return createInstance(MTS.class, "{74087A4E-4AF1-4F8C-BACB-3959C212AAD2}");
     }
-
-    /**
-     * Triggered when new sample data is available
-     */
-    @DISPID(3)
-    public void newData() {
-        throw new UnsupportedOperationException();
-    }
-
 }

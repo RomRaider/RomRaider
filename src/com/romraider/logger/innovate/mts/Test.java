@@ -19,12 +19,11 @@
 
 package com.romraider.logger.innovate.mts;
 
-import com.romraider.logger.innovate.mts.events._IMTSEvents;
 import com4j.EventCookie;
 
-public class Test extends _IMTSEvents {
+public class Test implements MTSEvents {
 
-    private IMTS mts;
+    private MTS mts;
     private EventCookie connectionEventCookie;
 
     public Test() {
@@ -73,7 +72,7 @@ public class Test extends _IMTSEvents {
 
     public void Run() throws InterruptedException {
         // create an instance of the MTSSDK COM component
-        mts = ClassFactory.createMTS();
+        mts = MTSFactory.createMTS();
 
         // Note: you MUST call portCount() at least one before attempting to set
         // the current inputPort or the inputPort(int) will not do anything!
@@ -88,7 +87,7 @@ public class Test extends _IMTSEvents {
         System.out.printf("Set current port to 0; port name = %s\n", portName);
 
         // register for MTS component events
-        connectionEventCookie = mts.advise(_IMTSEvents.class, this);
+        connectionEventCookie = mts.advise(MTSEvents.class, this);
 
         // attempt to connect to the specified device
         System.out.println("connect() called.");

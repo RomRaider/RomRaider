@@ -19,20 +19,26 @@
 
 package com.romraider.logger.innovate.mts;
 
-import com4j.COM4J;
+import com4j.DISPID;
+import com4j.IID;
 
-/**
- * Defines methods to create COM objects
- */
-public abstract class ClassFactory {
-    private ClassFactory() {
-    } // instantiation is not allowed
-
+@IID("{4A8AA6AC-E180-433E-8871-A2F8D2413F03}")
+public interface MTSEvents {
+    /**
+     * Triggered to indicate MTS connection result
+     */
+    @DISPID(1)
+    void connectionEvent(int result);
 
     /**
-     * MTS SDK v1.0
+     * Triggered when an error occurs on the MTS data stream
      */
-    public static IMTS createMTS() {
-        return COM4J.createInstance(IMTS.class, "{74087A4E-4AF1-4F8C-BACB-3959C212AAD2}");
-    }
+    @DISPID(2)
+    void connectionError();
+
+    /**
+     * Triggered when new sample data is available
+     */
+    @DISPID(3)
+    void newData();
 }
