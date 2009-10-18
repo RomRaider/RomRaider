@@ -231,7 +231,8 @@
     <str id="PacksPanel.summaryCaption" txt="Paquet(s) d'installation choisis"/>
     <str id="ImgPacksPanel.summaryCaption" txt="Paquet(s) d'installation choisis"/>
     <str id="TreePacksPanel.summaryCaption" txt="Paquet(s) d'installation choisis"/>
-		<str id="UserPathPanel.summaryCaption" txt="Chemin sélectionné"/>
+	<str id="UserPathPanel.summaryCaption" txt="Chemin sélectionné"/>
+	<str id="DefaultTargetPanel.summaryCaption" txt="Chemin de l'installation"/>
     
     <!-- Strings for the Registry -->
     <str id="functionFailed.RegOpenKeyEx" txt="Impossible d'ouvrir la clé de registre {0}\\{1}."/>

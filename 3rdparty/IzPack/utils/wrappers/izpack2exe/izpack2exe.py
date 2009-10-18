@@ -25,8 +25,8 @@ from optparse import OptionParser
 
 def parse_options():
     parser = OptionParser()
-    parser.add_option("--file", action="store", dest="file",
-                      help="The installer JAR file")
+    parser.add_option("--file", action="append", dest="file",
+                      help="The installer JAR file / files")
     parser.add_option("--output", action="store", dest="output",
                       default="setup.exe",
                       help="The executable file")
@@ -39,16 +39,23 @@ def parse_options():
     parser.add_option("--no-upx", action="store_true", dest="no_upx",
                       default=False,
                       help="Do not use UPX to further compress the output")
+    parser.add_option("--launch-file", action="store", dest="launch",
+                      default="launcher.exe",                      
+                      help="File to launch after extract")
     (options, args) = parser.parse_args()
     if (options.file is None):
         parser.error("no installer file has been given")
     return options    
 
 def create_exe(settings):
-    filename = os.path.basename(settings.file)
-    p7z = '"%s" a -t7z -mx=9 -ms=off installer.7z %s' % (settings.p7z, settings.file)
-    os.system(p7z)
+    filename = os.path.basename(settings.launch)
+    if(len(settings.file) == 1):
+        filename = os.path.basename(settings.file[0])
 
+    files = " ".join(settings.file);  
+    p7z = '"%s" a -t7z -mx=9 -ms=off installer.7z %s' % (settings.p7z, files)
+
+    os.system(p7z)
     config = open('config.txt', 'w')
     config.write(';!@Install@!UTF-8!\r\n')
     config.write('Title="IzPack"\r\n')

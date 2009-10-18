@@ -232,6 +232,7 @@
     <str id="ImgPacksPanel.summaryCaption" txt="Chosen Installation Packs"/>
     <str id="TreePacksPanel.summaryCaption" txt="Chosen Installation Packs"/>
     <str id="UserPathPanel.summaryCaption" txt="Selected Path"/>
+    <str id="DefaultTargetPanel.summaryCaption" txt="Installation Path"/>
     
     <!-- Strings for the Registry -->
     <str id="functionFailed.RegOpenKeyEx" txt="Cannot open registry key {0}\\{1}."/>

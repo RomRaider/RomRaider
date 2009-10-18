@@ -32,5 +32,6 @@ IzPack is part of the Codehaus <http://codehaus.org/>
 * Confluence wiki: <http://docs.codehaus.org/display/IZPACK>
 * News feed: <http://feeds.feedburner.com/IzPack>
 * Subversion repository: <http://svn.codehaus.org/izpack/>
+* Git repository (synchronized from svn): <http://github.com/jponge/izpack/tree/master>
 * FishEye SVN browser: <http://svn.izpack.codehaus.org/>
 * JIRA issues tracker: <http://jira.codehaus.org/browse/IZPACK>

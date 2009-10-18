@@ -115,10 +115,10 @@
 
     <str id="InstallPanel.info" txt="Selezionare 'Installa' per iniziare il processo di installazione"/>
     <str id="InstallPanel.install" txt="Installa"/>
-    <str id="InstallPanel.tip" txt="Progresso di installazione :"/>
+    <str id="InstallPanel.tip" txt="Progresso dell'installazione:"/>
     <str id="InstallPanel.begin" txt=" "/>
     <str id="InstallPanel.finished" txt="[Completato]"/>
-    <str id="InstallPanel.progress" txt="Progressione totale dell'installazione:"/>
+    <str id="InstallPanel.progress" txt="Progresso totale dell'installazione:"/>
     <str id="InstallPanel.overwrite.title" txt="Il file esiste già"/>
     <str id="InstallPanel.overwrite.question" txt="Questo file esiste già. Sovrascriverlo?"/>
 
@@ -208,13 +208,13 @@
     <str id="UserPathPanel.notwritable" txt="Questa cartella non è scrivibile! Scegliere un'altra cartella!"/>
 
     <str id="CompilePanel.heading" txt="Compilazione"/>
-    <str id="CompilePanel.tip" txt="Progressione della compilazione:"/>
+    <str id="CompilePanel.tip" txt="Progresso della compilazione:"/>
     <str id="CompilePanel.browse" txt="Sfoglia..."/>
     <str id="CompilePanel.browse.approve" txt="Utilizzare come compilatore"/>
     <str id="CompilePanel.start" txt="Inizio"/>
     <str id="CompilePanel.progress.initial" txt="[Selezionare 'Inizio']"/>
     <str id="CompilePanel.progress.finished" txt="[Completato]"/>
-    <str id="CompilePanel.progress.overall" txt="Progressione totale della compilazione:"/>
+    <str id="CompilePanel.progress.overall" txt="Progresso totale della compilazione:"/>
     <str id="CompilePanel.error" txt="La compilazione è fallita"/>
     <str id="CompilePanel.error.reconfigure" txt="Configurare di nuovo"/>
     <str id="CompilePanel.error.ignore" txt="Ignora"/>

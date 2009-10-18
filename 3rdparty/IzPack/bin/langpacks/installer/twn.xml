@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+
+<!-- The Tradional Chinese langpack -->
+
+<langpack>
+
+    <!-- General installer strings -->
+    <str id="installer.title" txt="IzPack - 安裝部署 "/>
+    <str id="installer.next" txt="下一步"/>
+    <str id="installer.prev" txt="上一步"/>
+    <str id="installer.quit" txt="退出"/>
+    <str id="installer.madewith" txt="(由IzPack製作產生 - http://izpack.org/)"/>
+    <str id="installer.quit.title" txt="是否確定取消？"/>
+    <str id="installer.quit.message" txt="將取消該安裝過程!"/>
+    <str id="installer.warning" txt="警告 !"/>
+    <str id="installer.yes" txt="是"/>
+    <str id="installer.no" txt="否"/>
+    <str id="installer.cancel" txt="取消"/>
+    <str id="installer.error" txt="錯誤"/>
+
+    <!-- Uninstaller specific strings -->
+    <str id="uninstaller.warning" txt="將卸解已安裝的應用程式!"/>
+    <str id="uninstaller.destroytarget" txt=" 強制刪除 "/>
+    <str id="uninstaller.uninstall" txt="移除"/>
+
+    <!-- The strings for the 'official' IzPack plugins -->
+    <str id="HelloPanel.welcome1" txt="歡迎安裝"/>
+    <str id="HelloPanel.welcome2" txt="!"/>
+    <str id="HelloPanel.authors" txt="該軟體作者 : "/>
+    <str id="HelloPanel.url" txt="主頁 : "/>
+
+    <str id="LicencePanel.info" txt="請仔細閱讀以下許可權限:"/>
+    <str id="LicencePanel.agree" txt="我接受，該許可授權的條款."/>
+    <str id="LicencePanel.notagree" txt="我不接受，該許可授權的條款."/>
+    <str id="LicencePanel.yes" txt="是"/>
+    <str id="LicencePanel.no" txt="否"/>
+
+    <str id="InfoPanel.info" txt="請閱讀以下資訊 :"/>
+
+    <str id="TargetPanel.info" txt="選擇安裝路徑 : (路徑不要有空白或是中文字)"/>
+    <str id="TargetPanel.browse" txt="瀏覽..."/>
+    <str id="TargetPanel.warn"
+         txt="目錄已經存在 ! 可能覆蓋現存檔，是否確定在此安裝?"/>
+    <str id="TargetPanel.empty_target"
+         txt="你沒有指定目標路徑! 是否正確?"/>
+    <str id="TargetPanel.createdir" txt="目標目錄將創建在 :"/>
+    <str id="TargetPanel.nodir"
+         txt="該檔不是目錄! 請選擇一個目錄!"/>
+    <str id="TargetPanel.notwritable"
+         txt="目錄無法寫入! 請選擇其他目錄!"/>
+
+    <str id="PacksPanel.info" txt="選擇你要安裝的套件 :"/>
+    <str id="PacksPanel.tip" txt="注意: 灰色選項是必選的."/>
+    <str id="PacksPanel.space" txt="總需求空間: "/>
+    <str id="PacksPanel.freespace" txt="有效空間: "/>
+    <str id="PacksPanel.description" txt="描述"/>
+    <str id="PacksPanel.dependencyList" txt="所選套件需要安裝以下套件"/>
+    <str id="ImgPacksPanel.dependencyList" txt="依賴"/>
+    <str id="PacksPanel.notEnoughSpace" txt="硬碟空間不足以安裝."/>
+    <str id="PacksPanel.notAscertainable" txt="not ascertainable"/>
+
+    <str id="InstallPanel.info" txt="點擊 '安裝 !' 開始安裝程序"/>
+    <str id="InstallPanel.install" txt="安裝 !"/>
+    <str id="InstallPanel.tip" txt="套件安裝過程 :"/>
+    <str id="InstallPanel.begin" txt="[Nothing]"/>
+    <str id="InstallPanel.finished" txt="[完成]"/>
+    <str id="InstallPanel.progress" txt="Overall installation progress :"/>
+    <str id="InstallPanel.overwrite.title" txt="檔案已經存在"/>
+    <str id="InstallPanel.overwrite.question" txt="以下檔案已經存在. 是否進行覆蓋?"/>
+
+    <str id="FinishPanel.success" txt="安裝成功."/>
+    <str id="FinishPanel.done" txt="完成"/>
+    <str id="FinishPanel.fail" txt="安裝失敗!"/>
+    <str id="FinishPanel.uninst.info" txt="移除程式已經建立於:"/>
+    <str id="FinishPanel.auto" txt="產生自動安裝腳本"/>
+    <str id="FinishPanel.auto.tip"
+         txt="使用該腳本可以在其他電腦上反覆本次安裝."/>
+
+    <str id="ImgPacksPanel.packs" txt="當前可選套件如下 :"/>
+    <str id="ImgPacksPanel.snap" txt="套件快照  :"/>
+    <str id="ImgPacksPanel.checkbox" txt=" 安裝該套件"/>
+
+    <str id="ShortcutPanel.regular.list" txt="選擇捷徑的程式組:"/>
+    <str id="ShortcutPanel.regular.default" txt="重置"/>
+    <str id="ShortcutPanel.regular.desktop" txt="在桌面建立捷徑方式"/>
+    <str id="ShortcutPanel.regular.create" txt="建立捷徑方式"/>
+    <str id="ShortcutPanel.regular.userIntro" txt="建立捷徑方式:"/>
+    <str id="ShortcutPanel.regular.currentUser" txt="當前用戶"/>
+    <str id="ShortcutPanel.regular.allUsers" txt="所有用戶"/>
+
+    <str id="ShortcutPanel.alternate.apology" txt="很遺憾IzPack不支援在當前作業系統上建立捷徑方式. 建立捷徑方式，請參考作業系統手冊."/>
+    <str id="ShortcutPanel.alternate.targetsLabel"
+         txt="The following is a list of targets that the manufacturer of this software product wanted you to have access to."/>
+    <str id="ShortcutPanel.alternate.textFileExplanation" txt="為了以後參考，你可以把應用程式目標的詳細資訊保存在文字檔案."/>
+    <str id="ShortcutPanel.alternate.saveButton" txt="保存文字檔案"/>
+
+    <str id="ShortcutPanel.textFile.header"
+         txt="捷徑方式資訊\n====================\n\nThe following is a listing of all relevant information about the intended\nshortcuts. 該資訊讓手動建立捷徑方式成為可能.\n"/>
+
+    <str id="ShortcutPanel.textFile.name" txt="捷徑方式          : "/>
+    <str id="ShortcutPanel.textFile.location" txt="Intended Location : "/>
+    <str id="ShortcutPanel.textFile.description" txt="描述              : "/>
+    <str id="ShortcutPanel.textFile.target" txt="捷徑目標          : "/>
+    <str id="ShortcutPanel.textFile.command" txt="命令列            : "/>
+    <str id="ShortcutPanel.textFile.iconName" txt="圖示檔          : "/>
+    <str id="ShortcutPanel.textFile.iconIndex" txt="圖示索引          : "/>
+    <str id="ShortcutPanel.textFile.work" txt="工作目錄          : "/>
+
+    <str id="ShortcutPanel.location.desktop" txt="桌面"/>
+    <str id="ShortcutPanel.location.applications" txt="應用程式功能表"/>
+    <str id="ShortcutPanel.location.startMenu" txt="開始選單"/>
+    <str id="ShortcutPanel.location.startup" txt="啟動程式組"/>
+
+    <str id="UserInputPanel.error.caption" txt="輸入問題"/>
+    <str id="UserInputPanel.search.autodetect" txt="自動檢測"/>
+
+    <!-- more descriptive error message would be cool, like specifying what file we looked for -->
+    <str id="UserInputPanel.search.autodetect.failed.message" txt="自動檢測失敗."/>
+    <str id="UserInputPanel.search.autodetect.failed.caption" txt="自動檢測失敗."/>
+    <str id="UserInputPanel.search.autodetect.tooltip" txt="在給定路徑中檢查檔案或目錄."/>
+    <str id="UserInputPanel.search.location" txt="輸入{0}的路徑."/>
+    <str id="UserInputPanel.search.location.checkedfile" txt="The existence of {0} is checked."/>
+    <str id="UserInputPanel.search.browse" txt="瀏覽..."/>
+    <str id="UserInputPanel.search.wrongselection.message" txt="你選擇的檔案或目錄不存在或者不正確."/>
+    <str id="UserInputPanel.search.wrongselection.caption" txt="無效選項."/>
+
+    <str id="CompilePanel.heading" txt="編譯"/>
+    <str id="CompilePanel.tip" txt="任務編譯進程:"/>
+    <str id="CompilePanel.browse" txt="瀏覽..."/>
+    <str id="CompilePanel.browse.approve" txt="作為編譯器使用"/>
+    <str id="CompilePanel.start" txt="開始"/>
+    <str id="CompilePanel.progress.initial" txt="[按開始按鈕]"/>
+    <str id="CompilePanel.progress.finished" txt="[完成]"/>
+    <str id="CompilePanel.progress.overall" txt="Overall compilation progress:"/>
+    <str id="CompilePanel.error" txt="編譯失敗"/>
+    <str id="CompilePanel.error.reconfigure" txt="重新設置"/>
+    <str id="CompilePanel.error.ignore" txt="忽略"/>
+    <str id="CompilePanel.error.abort" txt="放棄"/>
+    <str id="CompilePanel.error.seebelow" txt="以下查看出錯命令和相關輸出."/>
+    <str id="CompilePanel.error.nofiles" txt="查詢編譯檔時出現錯誤."/>
+    <str id="CompilePanel.error.compilernotfound" txt="編譯器不能運行."/>
+    <str id="CompilePanel.error.invalidarguments" txt="編譯器不能處理提供的參數."/>
+    <str id="CompilePanel.error.noclassfile" txt="編譯器沒有為原始碼生成相關類別檔 "/>
+    <str id="CompilePanel.choose_compiler" txt="使用的編譯器:"/>
+    <str id="CompilePanel.additional_arguments" txt="額外的編譯器參數:"/>
+
+    <str id="ProcessPanel.heading" txt="處理中"/>
+
+    <!-- Add your own panels specific strings here if you need -->
+    
+    <str id="InstallationGroupPanel.colNameSelected" txt="安裝套件選擇"/>
+    <str id="InstallationGroupPanel.colNameInstallType" txt="安裝類型"/>
+    <str id="InstallationGroupPanel.colNameSize" txt="所須容量大小"/>
+    
+    <!-- Strings for the summary of panels - START -->
+    <str id="SummaryPanel.info" txt="安裝程式會執行下面設定，請按下一步繼續。"/>
+    <str id="TargetPanel.summaryCaption" txt="安裝路徑"/>
+    <str id="JDKPathPanel.summaryCaption" txt="JDK 路徑"/>
+    <str id="PacksPanel.summaryCaption" txt="選擇安裝的套件"/>
+    <str id="ImgPacksPanel.summaryCaption" txt="選擇安裝的套件"/>
+    <str id="TreePacksPanel.summaryCaption" txt="選擇安裝的套件"/>
+    <str id="UserPathPanel.summaryCaption" txt="選擇路徑"/>
+    <!-- Strings for the summary of panels - END -->
+
+</langpack>
+
