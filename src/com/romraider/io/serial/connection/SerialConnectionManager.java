@@ -37,8 +37,8 @@ public final class SerialConnectionManager implements ConnectionManager {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
         // Use TestSerialConnection for testing!!
-//        connection = new SerialConnectionImpl(portName, connectionProperties);
-        connection = new TestSerialConnection(portName, connectionProperties);
+        connection = new SerialConnectionImpl(portName, connectionProperties);
+//        connection = new TestSerialConnection(portName, connectionProperties);
     }
 
     // Send request and wait for response with known length

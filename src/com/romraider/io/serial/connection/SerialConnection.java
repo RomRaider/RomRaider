@@ -33,4 +33,6 @@ public interface SerialConnection {
     void close();
 
     String readLine();
+
+    int read();
 }

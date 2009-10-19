@@ -23,25 +23,22 @@ import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.innovate.generic.serial.io.InnovateRunner;
-import com.romraider.logger.innovate.generic.serial.io.InnovateRunnerImpl;
-import com.romraider.logger.innovate.generic.serial.plugin.InnovateSettings;
-import com.romraider.logger.innovate.generic.serial.plugin.InnovateSettingsImpl;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import javax.swing.Action;
 import static java.util.Arrays.asList;
 import java.util.List;
 
 public final class Lc1DataSource implements ExternalDataSource {
-    private InnovateSettings settings = new InnovateSettingsImpl();
     private Lc1DataItem dataItem = new Lc1DataItem();
     private InnovateRunner runner;
+    private String port;
 
     public String getName() {
         return "Innovate LC-1";
     }
 
     public String getVersion() {
-        return "0.02";
+        return "0.03";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
@@ -53,15 +50,15 @@ public final class Lc1DataSource implements ExternalDataSource {
     }
 
     public void setPort(String port) {
-        settings.setPort(port);
+        this.port = port;
     }
 
     public String getPort() {
-        return settings.getPort();
+        return port;
     }
 
     public void connect() {
-        runner = new InnovateRunnerImpl("LC-1", settings, dataItem, 6);
+        runner = new InnovateRunner("LC-1", port, dataItem);
         runAsDaemon(runner);
     }
 

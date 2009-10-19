@@ -84,6 +84,15 @@ public final class SerialConnectionImpl implements SerialConnection {
         }
     }
 
+    public int read() {
+        try {
+            return is.read();
+        } catch (IOException e) {
+            close();
+            throw new SerialCommunicationException(e);
+        }
+    }
+
     public void read(byte[] bytes) {
         try {
             is.read(bytes, 0, bytes.length);

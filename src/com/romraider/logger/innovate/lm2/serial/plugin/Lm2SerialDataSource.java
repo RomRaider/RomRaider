@@ -23,25 +23,22 @@ import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.innovate.generic.serial.io.InnovateRunner;
-import com.romraider.logger.innovate.generic.serial.io.InnovateRunnerImpl;
-import com.romraider.logger.innovate.generic.serial.plugin.InnovateSettings;
-import com.romraider.logger.innovate.generic.serial.plugin.InnovateSettingsImpl;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import javax.swing.Action;
 import static java.util.Arrays.asList;
 import java.util.List;
 
 public final class Lm2SerialDataSource implements ExternalDataSource {
-    private InnovateSettings settings = new InnovateSettingsImpl();
     private Lm2SerialDataItem dataItem = new Lm2SerialDataItem();
     private InnovateRunner runner;
+    private String port;
 
     public String getName() {
         return "Innovate LM-2 [serial]";
     }
 
     public String getVersion() {
-        return "0.01";
+        return "0.02";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
@@ -53,15 +50,15 @@ public final class Lm2SerialDataSource implements ExternalDataSource {
     }
 
     public void setPort(String port) {
-        settings.setPort(port);
+        this.port = port;
     }
 
     public String getPort() {
-        return settings.getPort();
+        return port;
     }
 
     public void connect() {
-        runner = new InnovateRunnerImpl("LM-2", settings, dataItem, 18);
+        runner = new InnovateRunner("LM-2", port, dataItem);
         runAsDaemon(runner);
     }
 

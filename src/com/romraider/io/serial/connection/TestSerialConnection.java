@@ -153,6 +153,10 @@ final class TestSerialConnection implements SerialConnection {
         throw new UnsupportedOperationException();
     }
 
+    public int read() {
+        throw new UnsupportedOperationException();
+    }
+
     private int calculateNumResponseDataBytes() {
         return ((request.length - REQUEST_NON_DATA_BYTES) / ADDRESS_SIZE) * DATA_SIZE;
     }

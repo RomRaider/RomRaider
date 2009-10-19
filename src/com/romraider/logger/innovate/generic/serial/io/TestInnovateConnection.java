@@ -17,36 +17,46 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.plx.io;
+package com.romraider.logger.innovate.generic.serial.io;
 
 import com.romraider.io.serial.connection.SerialConnection;
-import static com.romraider.util.ThreadUtil.sleep;
+import static com.romraider.util.HexUtil.asBytes;
 
-public final class TestPlxConnection implements SerialConnection {
-    private final byte[] data = {(byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x01, 0x00, 0x00, 0x0f, 0x40};
-    private int index;
+public final class TestInnovateConnection implements SerialConnection {
+    private final byte[] source;
+    private int i;
+
+    public TestInnovateConnection(String hex) {
+        this.source = asBytes(hex);
+    }
 
     public void write(byte[] bytes) {
         throw new UnsupportedOperationException();
     }
 
     public int available() {
-        return 1;
+        return source.length;
     }
 
     public void read(byte[] bytes) {
-        if (bytes.length != 1) throw new IllegalArgumentException();
-        if (index >= data.length) index = 0;
-        bytes[0] = data[index++];
-        sleep(10);
+        for (int j = 0; j < bytes.length; j++) {
+            bytes[j] = source[(i + j) % source.length];
+        }
+        i = (i + bytes.length);
+        if (i >= source.length) i %= source.length;
     }
 
     public byte[] readAvailable() {
-        throw new UnsupportedOperationException();
+        byte[] result = new byte[available()];
+        read(result);
+        return result;
     }
 
     public void readStaleData() {
         throw new UnsupportedOperationException();
+    }
+
+    public void close() {
     }
 
     public String readLine() {
@@ -54,10 +64,8 @@ public final class TestPlxConnection implements SerialConnection {
     }
 
     public int read() {
-        throw new UnsupportedOperationException();
-    }
-
-    public void close() {
-        index = 0;
+        byte[] result = new byte[1];
+        read(result);
+        return result[0];
     }
 }

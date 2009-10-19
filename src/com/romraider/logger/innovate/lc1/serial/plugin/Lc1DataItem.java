@@ -20,12 +20,10 @@
 package com.romraider.logger.innovate.lc1.serial.plugin;
 
 import com.romraider.logger.ecu.external.ExternalDataItem;
-import com.romraider.logger.innovate.generic.serial.plugin.DataConvertor;
-import com.romraider.logger.innovate.generic.serial.plugin.RawDataListener;
+import com.romraider.logger.innovate.generic.mts.plugin.DataListener;
 
-public final class Lc1DataItem implements ExternalDataItem, RawDataListener {
-    private final DataConvertor convertor = new Lc1DataConvertor();
-    private byte[] bytes;
+public final class Lc1DataItem implements ExternalDataItem, DataListener {
+    private double data;
 
     public String getName() {
         return "Innovate LC-1";
@@ -40,11 +38,10 @@ public final class Lc1DataItem implements ExternalDataItem, RawDataListener {
     }
 
     public double getData() {
-        if (bytes == null) return 0.0;
-        return convertor.convert(bytes);
+        return data;
     }
 
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
+    public void setData(double data) {
+        this.data = data;
     }
 }
