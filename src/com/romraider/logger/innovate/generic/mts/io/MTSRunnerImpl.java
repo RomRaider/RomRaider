@@ -133,7 +133,7 @@ public final class MTSRunnerImpl implements MTSRunner {
                     // report the result
                     listener.setData((double) data);
 
-                    sleep(50L);
+                    sleep(100L);
                 }
             } finally {
                 mts.disconnect();
