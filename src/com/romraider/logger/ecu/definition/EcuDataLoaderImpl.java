@@ -30,6 +30,7 @@ import static com.romraider.util.SaxParserFactory.getSaxParser;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +55,8 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
             } finally {
                 inputStream.close();
             }
+        } catch (FileNotFoundException fnfe) {
+        	throw new ConfigurationException("The specified ECU definition file " + ecuDefsFile + " does not exist.");
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
@@ -75,6 +78,8 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
             } finally {
                 inputStream.close();
             }
+        } catch (FileNotFoundException fnfe) {
+        	throw new ConfigurationException("The specified Logger Config file " + loggerConfigFilePath + " does not exist.");
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
