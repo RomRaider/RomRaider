@@ -21,7 +21,7 @@ package com.romraider.logger.innovate.lm2.mts.plugin;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataSource;
-import com.romraider.logger.ecu.ui.swing.menubar.action.AbstractAction;
+import com.romraider.swing.menubar.action.AbstractAction;
 import com.romraider.logger.innovate.generic.mts.io.MTS;
 import static com.romraider.logger.innovate.generic.mts.io.MTSFactory.createMTS;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;

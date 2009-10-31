@@ -23,6 +23,8 @@ import com.romraider.io.serial.port.SerialPortDiscoverer;
 import com.romraider.io.serial.port.SerialPortDiscovererImpl;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataSource;
+import com.romraider.swing.menubar.action.AbstractAction;
+
 import gnu.io.CommPortIdentifier;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.showInputDialog;

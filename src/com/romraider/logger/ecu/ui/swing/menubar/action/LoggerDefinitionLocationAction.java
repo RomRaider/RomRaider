@@ -20,6 +20,8 @@
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.swing.menubar.action.AbstractAction;
+
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getDefinitionFileChooser;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getFile;
 import javax.swing.JFileChooser;

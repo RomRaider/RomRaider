@@ -19,7 +19,8 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.util;
 
-import static com.romraider.logger.ecu.ui.swing.menubar.action.AbstractAction.SELECTED_KEY;
+import static com.romraider.swing.menubar.action.AbstractAction.SELECTED_KEY;
+
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import java.awt.event.ItemEvent;

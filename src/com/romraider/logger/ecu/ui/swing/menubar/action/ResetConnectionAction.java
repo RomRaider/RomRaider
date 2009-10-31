@@ -20,6 +20,8 @@
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.swing.menubar.action.AbstractAction;
+
 import java.awt.event.ActionEvent;
 
 public final class ResetConnectionAction extends AbstractAction {

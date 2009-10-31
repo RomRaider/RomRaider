@@ -30,8 +30,13 @@ import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
 import com.romraider.ramtune.test.RamTuneTestApp;
+import com.romraider.swing.menubar.MenuItem;
+import com.romraider.swing.menubar.action.AboutAction;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
+
+import static java.awt.event.KeyEvent.VK_A;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -297,7 +302,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             RamTuneTestApp.startTestApp(DISPOSE_ON_CLOSE);
 
         } else if (e.getSource() == about) {
-            //TODO:  make a separate About class to get a better dialog box with hyperlink, etc.
+            //TODO:  change this to use com.romraider.swing.menubar.action.AboutAction
             String message = PRODUCT_NAME + " - ECU Editor\n"
                     + "Version: " + VERSION + "\n"
                     + "Build #: " + BUILDNUMBER + "\n"

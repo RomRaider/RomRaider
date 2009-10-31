@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2008 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.ui.swing.menubar;
+package com.romraider.swing.menubar;
 
-import javax.swing.Action;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import javax.swing.JMenu;
 
-public final class EcuLoggerMenuItem extends JMenuItem {
+public final class Menu extends JMenu {
 
-    private static final long serialVersionUID = 8944116003490787227L;
+	private static final long serialVersionUID = -5058943622469501273L;
 
-    public EcuLoggerMenuItem(String text, Action action) {
-        super(action);
-        setText(text);
-    }
-
-    public EcuLoggerMenuItem(String text, Action action, int mnemonic) {
-        super(action);
+	public Menu(String text, int mnemonic) {
         setText(text);
         setMnemonic(mnemonic);
     }
-
-    public EcuLoggerMenuItem(String text, Action action, int mnemonic, KeyStroke accelerator) {
-        this(text, action, mnemonic);
-        setAccelerator(accelerator);
-    }
-
 }
