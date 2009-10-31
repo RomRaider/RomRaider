@@ -44,6 +44,10 @@ public final class PlxDataSource implements ExternalDataSource {
 //        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("EGT", "C", EXHAUST_GAS_TEMPERATURE, EXHAUST_GAS_TEMPERATURE_CELSIUS));
     }
 
+    public String getId() {
+        return getClass().getName();
+    }
+
     public String getName() {
         return "PLX SM-AFR";
     }

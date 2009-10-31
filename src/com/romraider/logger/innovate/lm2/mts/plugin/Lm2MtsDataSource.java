@@ -25,11 +25,11 @@ import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.innovate.generic.mts.io.MTSRunner;
 import com.romraider.logger.innovate.generic.mts.io.MTSRunnerImpl;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
+import static java.lang.Integer.parseInt;
+import static java.util.Arrays.asList;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import javax.swing.Action;
-import static java.lang.Integer.parseInt;
-import static java.util.Arrays.asList;
 import java.util.List;
 
 public final class Lm2MtsDataSource implements ExternalDataSource {
@@ -37,6 +37,10 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
     private final Lm2MtsDataItem dataItem = new Lm2MtsDataItem();
     private MTSRunner runner;
     private int mtsPort = 0;
+
+    public String getId() {
+        return getClass().getName();
+    }
 
     public String getName() {
         return "Innovate LM-2 [mts]";

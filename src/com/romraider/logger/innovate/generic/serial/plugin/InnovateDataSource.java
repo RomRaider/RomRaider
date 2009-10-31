@@ -33,6 +33,10 @@ public final class InnovateDataSource implements ExternalDataSource {
     private InnovateRunner runner;
     private String port;
 
+    public String getId() {
+        return getClass().getName();
+    }
+
     public String getName() {
         return "Innovate Wideband AFR";
     }

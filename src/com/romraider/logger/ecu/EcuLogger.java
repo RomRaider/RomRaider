@@ -91,39 +91,6 @@ import com.romraider.util.SettingsManagerImpl;
 import com.romraider.util.ThreadUtil;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
-import org.apache.log4j.Logger;
-import javax.swing.AbstractAction;
-import static javax.swing.BorderFactory.createLoweredBevelBorder;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import static javax.swing.JLabel.RIGHT;
-import javax.swing.JMenuBar;
-import static javax.swing.JOptionPane.DEFAULT_OPTION;
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
-import static javax.swing.JOptionPane.WARNING_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
-import static javax.swing.JOptionPane.showOptionDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-import javax.swing.JSeparator;
-import static javax.swing.JSeparator.VERTICAL;
-import javax.swing.JSplitPane;
-import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
-import javax.swing.JTabbedPane;
-import static javax.swing.JTabbedPane.BOTTOM;
-import javax.swing.JTable;
-import javax.swing.JToggleButton;
-import static javax.swing.KeyStroke.getKeyStroke;
-import static javax.swing.SwingUtilities.invokeLater;
-import javax.swing.table.TableColumn;
-import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.NORTH;
@@ -131,6 +98,41 @@ import static java.awt.BorderLayout.SOUTH;
 import static java.awt.BorderLayout.WEST;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.RED;
+import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.sort;
+import static javax.swing.BorderFactory.createLoweredBevelBorder;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
+import static javax.swing.JLabel.RIGHT;
+import static javax.swing.JOptionPane.DEFAULT_OPTION;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.JOptionPane.showOptionDialog;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.JSeparator.VERTICAL;
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+import static javax.swing.JTabbedPane.BOTTOM;
+import static javax.swing.KeyStroke.getKeyStroke;
+import static javax.swing.SwingUtilities.invokeLater;
+import org.apache.log4j.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JToggleButton;
+import javax.swing.table.TableColumn;
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -143,9 +145,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
-import static java.lang.System.currentTimeMillis;
 import java.util.ArrayList;
-import static java.util.Collections.sort;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -422,7 +422,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void loadLoggerPlugins() {
         try {
             ExternalDataSourceLoader dataSourceLoader = new ExternalDataSourceLoaderImpl();
-            dataSourceLoader.loadExternalDataSources();
+            dataSourceLoader.loadExternalDataSources(settings.getLoggerPluginPorts());
             externalDataSources = dataSourceLoader.getExternalDataSources();
         } catch (Exception e) {
             reportError(e);
@@ -620,6 +620,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         Map<String, UserProfileItem> externalProfileItems = getProfileItems(dataTabExternalListTableModel.getParameterRows(),
                 graphTabExternalListTableModel.getParameterRows(), dashboardTabExternalListTableModel.getParameterRows());
         return new UserProfileImpl(paramProfileItems, switchProfileItems, externalProfileItems);
+    }
+
+    private Map<String, String> getPluginPorts(List<ExternalDataSource> externalDataSources) {
+        Map<String, String> plugins = new HashMap<String, String>();
+        for (ExternalDataSource dataSource : externalDataSources) {
+            String id = dataSource.getId();
+            String port = dataSource.getPort();
+            if (port != null && port.trim().length() > 0) plugins.put(id, port.trim());
+        }
+        return plugins;
     }
 
     private Map<String, UserProfileItem> getProfileItems(List<ParameterRow> dataTabRows, List<ParameterRow> graphTabRows, List<ParameterRow> dashTabRows) {
@@ -1048,6 +1058,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         settings.setLoggerWindowSize(getSize());
         settings.setLoggerWindowLocation(getLocation());
         settings.setLoggerSelectedTabIndex(tabbedPane.getSelectedIndex());
+        settings.setLoggerPluginPorts(getPluginPorts(externalDataSources));
         new SettingsManagerImpl().save(settings);
     }
 

@@ -27,6 +27,7 @@ import javax.imageio.metadata.IIOMetadataNode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Vector;
 
 public final class DOMSettingsBuilder {
@@ -275,6 +276,19 @@ public final class DOMSettingsBuilder {
         filelogging.setAttribute("active", String.valueOf(settings.isFileLoggingControllerSwitchActive()));
         filelogging.setAttribute("absolutetimestamp", String.valueOf(settings.isFileLoggingAbsoluteTimestamp()));
         loggerSettings.appendChild(filelogging);
+
+        // plugin ports
+        Map<String, String> pluginPorts = settings.getLoggerPluginPorts();
+        if (!pluginPorts.isEmpty()) {
+            IIOMetadataNode plugins = new IIOMetadataNode("plugins");
+            for (Map.Entry<String, String> entry : pluginPorts.entrySet()) {
+                IIOMetadataNode plugin = new IIOMetadataNode("plugin");
+                plugin.setAttribute("id", entry.getKey());
+                plugin.setAttribute("port", entry.getValue());
+                plugins.appendChild(plugin);
+            }
+            loggerSettings.appendChild(plugins);
+        }
 
         return loggerSettings;
     }

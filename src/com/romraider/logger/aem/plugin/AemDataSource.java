@@ -25,14 +25,18 @@ import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
-import javax.swing.Action;
 import static java.util.Arrays.asList;
+import javax.swing.Action;
 import java.util.List;
 
 public final class AemDataSource implements ExternalDataSource {
     private AemSettings settings = new AemSettingsImpl();
     private AemDataItem dataItem = new AemDataItem();
     private AemRunner runner;
+
+    public String getId() {
+        return getClass().getName();
+    }
 
     public String getName() {
         return "AEM UEGO";

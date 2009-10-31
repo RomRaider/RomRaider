@@ -81,6 +81,7 @@ public class Settings implements Serializable {
     private int loggerSelectedTabIndex = 0;
     private ConnectionProperties loggerConnectionProperties;
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
+    private Map<String, String> loggerPluginPorts;
 
 
     public Settings() {
@@ -419,5 +420,13 @@ public class Settings implements Serializable {
 
     public int getLoggerSelectedTabIndex() {
         return loggerSelectedTabIndex;
+    }
+
+    public Map<String, String> getLoggerPluginPorts() {
+        return loggerPluginPorts;
+    }
+
+    public void setLoggerPluginPorts(Map<String, String> loggerPluginPorts) {
+        this.loggerPluginPorts = loggerPluginPorts;
     }
 }

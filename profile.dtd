@@ -13,7 +13,7 @@
 <!ATTLIST parameter dash ( selected ) #IMPLIED >
 <!ATTLIST parameter units CDATA #IMPLIED >
 
-<!ELEMENT parameters ( parameter+ ) >
+<!ELEMENT parameters ( parameter* ) >
 
 <!ELEMENT switch EMPTY >
 <!ATTLIST switch id ID #REQUIRED >
@@ -21,7 +21,7 @@
 <!ATTLIST switch graph ( selected ) #IMPLIED >
 <!ATTLIST switch dash ( selected ) #IMPLIED >
 
-<!ELEMENT switches ( switch+ ) >
+<!ELEMENT switches ( switch* ) >
 
 <!ELEMENT external EMPTY >
 <!ATTLIST external id ID #REQUIRED >
@@ -29,6 +29,6 @@
 <!ATTLIST external graph ( selected ) #IMPLIED >
 <!ATTLIST external dash ( selected ) #IMPLIED >
 
-<!ELEMENT externals ( external+ ) >
+<!ELEMENT externals ( external* ) >
 
-<!ELEMENT profile ( serial?, logfilelocation?, parameters*, switches*, externals* ) >
+<!ELEMENT profile ( serial?, logfilelocation?, parameters?, switches?, externals? ) >

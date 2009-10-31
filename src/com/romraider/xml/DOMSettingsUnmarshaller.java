@@ -21,15 +21,17 @@ package com.romraider.xml;
 
 import com.romraider.Settings;
 import static com.romraider.xml.DOMHelper.unmarshallAttribute;
+import static java.awt.Font.BOLD;
 import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
 import org.w3c.dom.NodeList;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import static java.awt.Font.BOLD;
 import java.awt.Point;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class DOMSettingsUnmarshaller {
 
@@ -204,12 +206,11 @@ public final class DOMSettingsUnmarshaller {
     }
 
 
-    private Settings unmarshallLogger(Node windowNode, Settings settings) {
-        Node n;
-        NodeList nodes = windowNode.getChildNodes();
+    private Settings unmarshallLogger(Node loggerNode, Settings settings) {
+        NodeList nodes = loggerNode.getChildNodes();
 
         for (int i = 0; i < nodes.getLength(); i++) {
-            n = nodes.item(i);
+            Node n = nodes.item(i);
 
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
@@ -240,6 +241,20 @@ public final class DOMSettingsUnmarshaller {
                 settings.setFileLoggingControllerSwitchActive(unmarshallAttribute(n, "active", true));
                 settings.setFileLoggingAbsoluteTimestamp(unmarshallAttribute(n, "absolutetimestamp", false));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("plugins")) {
+                Map<String, String> pluginPorts = new HashMap<String, String>();
+                NodeList pluginNodes = n.getChildNodes();
+                for (int j = 0; j < pluginNodes.getLength(); j++) {
+                    Node pluginNode = pluginNodes.item(j);
+                    if (pluginNode.getNodeType() == ELEMENT_NODE && pluginNode.getNodeName().equalsIgnoreCase("plugin")) {
+                        String id = unmarshallAttribute(pluginNode, "id", null);
+                        if (id == null || id.trim().length() == 0) continue;
+                        String port = unmarshallAttribute(pluginNode, "port", null);
+                        if (port == null || port.trim().length() == 0) continue;
+                        pluginPorts.put(id.trim(), port.trim());
+                    }
+                }
+                settings.setLoggerPluginPorts(pluginPorts);
             }
         }
         return settings;

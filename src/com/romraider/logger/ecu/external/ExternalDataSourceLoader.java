@@ -20,10 +20,11 @@
 package com.romraider.logger.ecu.external;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ExternalDataSourceLoader {
 
-    void loadExternalDataSources();
+    void loadExternalDataSources(Map<String, String> loggerPluginPorts);
 
     List<ExternalDataSource> getExternalDataSources();
 }

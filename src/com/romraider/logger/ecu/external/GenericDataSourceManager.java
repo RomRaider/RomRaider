@@ -41,6 +41,10 @@ public final class GenericDataSourceManager implements ExternalDataSource {
         this.dataSource = dataSource;
     }
 
+    public String getId() {
+        return dataSource.getId();
+    }
+
     public String getName() {
         return dataSource.getName();
     }
