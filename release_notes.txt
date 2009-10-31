@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC3 -
+                    - RomRaider 0.5.3 Beta RC4 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,12 +35,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b RC3 Notes (10/18/2009) -
+- 0.5.3b RC4 Notes (10/31/2009) -
 -------------------------------
-This is the third beta release of the upcoming official 0.5.3b release.
+This is the fourth beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.3b RC3 Known Issues -
+- 0.5.3b RC4 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -54,6 +54,14 @@ This is the third beta release of the upcoming official 0.5.3b release.
 --------------
 - Change Log -
 --------------
+
+0.5.3b RC4 (10/18/2009)
+----------------------
+
+--- Logger ---
+- LM-2 MTS support added (possibly flaky!)
+- Consolidated Innovate wideband serial plugins (LC-1, LM-1, LM-2)
+- Plugin ports automatically saved and reloaded
 
 0.5.3b RC3 (10/18/2009)
 ----------------------
