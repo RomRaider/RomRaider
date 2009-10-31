@@ -51,9 +51,9 @@ public final class MTSRunnerImpl implements MTSRunner {
     public void stop() {
         stop = true;
 
-        // wait for it to stop running so mts can disconnect/dispose... timeout after 2secs
-        long timeout = currentTimeMillis() + 2000L;
-        while (running && currentTimeMillis() < timeout) sleep(50L);
+        // wait for it to stop running so mts can disconnect/dispose... timeout after 5secs
+        long timeout = currentTimeMillis() + 5000L;
+        while (running && currentTimeMillis() < timeout) sleep(100L);
     }
 
     private void doRun() {
