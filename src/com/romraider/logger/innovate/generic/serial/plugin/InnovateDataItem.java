@@ -17,20 +17,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.innovate.lm1.serial.plugin;
+package com.romraider.logger.innovate.generic.serial.plugin;
 
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.innovate.generic.mts.plugin.DataListener;
 
-public final class Lm1DataItem implements ExternalDataItem, DataListener {
+public final class InnovateDataItem implements ExternalDataItem, DataListener {
     private double data;
 
     public String getName() {
-        return "Innovate LM-1";
+        return "Innovate Wideband AFR";
     }
 
     public String getDescription() {
-        return "Innovate LM-1 AFR data";
+        return "Innovate Wideband AFR data";
     }
 
     public String getUnits() {

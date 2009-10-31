@@ -28,26 +28,24 @@ import static com.romraider.util.ByteUtil.matchZeroes;
 import static com.romraider.util.HexUtil.asHex;
 import com.romraider.util.Stoppable;
 import static com.romraider.util.ThreadUtil.sleep;
+import static java.lang.System.arraycopy;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
-import static java.lang.System.arraycopy;
 
 public final class InnovateRunner implements Stoppable {
     private static final Logger LOGGER = getLogger(InnovateRunner.class);
     private static final double MAX_AFR = 20.33;
     private final SerialConnection connection;
     private final DataListener listener;
-    private final String device;
     private boolean stop;
 
-    public InnovateRunner(String device, String port, DataListener listener) {
+    public InnovateRunner(String port, DataListener listener) {
         this.connection = serialConnection(port);
         // LC-1 & LM-2
 //        this.connection = new TestInnovateConnection("13036B00000000000000000000B2874313036B00000000000000000000B28743");
         // LM-1
 //        this.connection = new TestInnovateConnection("8113037C1E66012600720049003B003B");
         this.listener = listener;
-        this.device = device;
     }
 
     public void run() {
@@ -60,10 +58,10 @@ public final class InnovateRunner implements Stoppable {
                         int numWords = numWords(b0, b1);
                         byte[] bytes = new byte[numWords * 2];
                         connection.read(bytes);
-                        LOGGER.trace(device + " response: " + packet(b0, b1, bytes));
+                        LOGGER.trace("Innovate response: " + packet(b0, b1, bytes));
                         process(bytes);
                     } else {
-                        LOGGER.trace(device + " discarded: " + hex(b1));
+                        LOGGER.trace("Innovate discarded: " + hex(b1));
                     }
                 } else if (isLm1HighByte(b0)) {
                     byte b1 = nextByte();
@@ -74,13 +72,13 @@ public final class InnovateRunner implements Stoppable {
                         bytes[0] = b0;
                         bytes[1] = b1;
                         arraycopy(rest, 0, bytes, 2, rest.length);
-                        LOGGER.trace(device + " response: " + asHex(bytes));
+                        LOGGER.trace("Innovate response: " + asHex(bytes));
                         process(bytes);
                     } else {
-                        LOGGER.trace(device + " discarded: " + hex(b1));
+                        LOGGER.trace("Innovate discarded: " + hex(b1));
                     }
                 } else {
-                    LOGGER.trace(device + " discarded: " + hex(b0));
+                    LOGGER.trace("Innovate discarded: " + hex(b0));
                 }
             }
         } finally {
@@ -91,11 +89,11 @@ public final class InnovateRunner implements Stoppable {
     private void process(byte[] bytes) {
         if (isError(bytes)) {
             double error = -1d * getLambda(bytes);
-            LOGGER.error(device + " error: " + error);
+            LOGGER.error("Innovate error: " + error);
             listener.setData(error);
         } else if (isOk(bytes)) {
             double afr = getAfr(bytes);
-            LOGGER.trace(device + " AFR: " + afr);
+            LOGGER.trace("Innovate AFR: " + afr);
             listener.setData(afr > MAX_AFR ? MAX_AFR : afr);
         }
     }

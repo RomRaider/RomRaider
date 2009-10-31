@@ -59,8 +59,8 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     public synchronized void setPort(String port) {
-        String old = getPort();
-        if (port != null && port.equals(old)) return;
+        if (port == null || port.length() == 0) return;
+        if (port.equals(getPort())) return;
         LOGGER.info(dataSource.getName() + ": port " + port + " selected");
         reconnect(port);
     }

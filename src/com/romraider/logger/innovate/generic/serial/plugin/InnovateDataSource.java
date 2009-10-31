@@ -17,28 +17,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.innovate.lm2.serial.plugin;
+package com.romraider.logger.innovate.generic.serial.plugin;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataItem;
 import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.innovate.generic.serial.io.InnovateRunner;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
-import javax.swing.Action;
 import static java.util.Arrays.asList;
+import javax.swing.Action;
 import java.util.List;
 
-public final class Lm2SerialDataSource implements ExternalDataSource {
-    private Lm2SerialDataItem dataItem = new Lm2SerialDataItem();
+public final class InnovateDataSource implements ExternalDataSource {
+    private InnovateDataItem dataItem = new InnovateDataItem();
     private InnovateRunner runner;
     private String port;
 
     public String getName() {
-        return "Innovate LM-2 [serial]";
+        return "Innovate Wideband AFR";
     }
 
     public String getVersion() {
-        return "0.02";
+        return "0.01";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
@@ -58,7 +58,7 @@ public final class Lm2SerialDataSource implements ExternalDataSource {
     }
 
     public void connect() {
-        runner = new InnovateRunner("LM-2", port, dataItem);
+        runner = new InnovateRunner(port, dataItem);
         runAsDaemon(runner);
     }
 
