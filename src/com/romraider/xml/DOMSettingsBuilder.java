@@ -279,7 +279,7 @@ public final class DOMSettingsBuilder {
 
         // plugin ports
         Map<String, String> pluginPorts = settings.getLoggerPluginPorts();
-        if (!pluginPorts.isEmpty()) {
+        if (pluginPorts != null && !pluginPorts.isEmpty()) {
             IIOMetadataNode plugins = new IIOMetadataNode("plugins");
             for (Map.Entry<String, String> entry : pluginPorts.entrySet()) {
                 IIOMetadataNode plugin = new IIOMetadataNode("plugin");

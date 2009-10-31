@@ -42,17 +42,21 @@ import com.romraider.util.SettingsManagerImpl;
 import com.romraider.xml.DOMRomUnmarshaller;
 import com.romraider.xml.RomNotFoundException;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import static javax.swing.JOptionPane.DEFAULT_OPTION;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.JOptionPane.showOptionDialog;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
+import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -108,9 +112,9 @@ public class ECUEditor extends AbstractFrame {
         }
 
         JScrollPane rightScrollPane = new JScrollPane(rightPanel,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane leftScrollPane = new JScrollPane(imageList,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
         splitPane.setDividerSize(3);
         splitPane.setDividerLocation(getSettings().getSplitPaneLocation());
@@ -169,17 +173,15 @@ public class ECUEditor extends AbstractFrame {
                 releaseNotes.setLineWrap(true);
                 releaseNotes.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
-                JScrollPane scroller = new JScrollPane(releaseNotes,
-                        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-                scroller.setPreferredSize(new Dimension(600, 500));
-
                 StringBuffer sb = new StringBuffer();
                 while (br.ready()) {
                     sb.append(br.readLine()).append(NEW_LINE);
                 }
-
                 releaseNotes.setText(sb.toString());
+                releaseNotes.setCaretPosition(0);
+
+                JScrollPane scroller = new JScrollPane(releaseNotes, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
+                scroller.setPreferredSize(new Dimension(600, 500));
 
                 showMessageDialog(this, scroller,
                         PRODUCT_NAME + VERSION + " Release Notes", INFORMATION_MESSAGE);
