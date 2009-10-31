@@ -22,6 +22,7 @@ package com.romraider.logger.innovate.generic.mts.io;
 import static com.romraider.logger.innovate.generic.mts.io.MTSFactory.createMTS;
 import com.romraider.logger.innovate.generic.mts.plugin.DataListener;
 import static com.romraider.util.ThreadUtil.sleep;
+import static java.lang.System.currentTimeMillis;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 
@@ -30,6 +31,7 @@ public final class MTSRunnerImpl implements MTSRunner {
     private final DataListener listener;
     private final int mtsInput = 0;
     private final int mtsPort;
+    private boolean running;
     private boolean stop;
 
     public MTSRunnerImpl(int mtsPort, DataListener listener) {
@@ -38,6 +40,23 @@ public final class MTSRunnerImpl implements MTSRunner {
     }
 
     public void run() {
+        running = true;
+        try {
+            doRun();
+        } finally {
+            running = false;
+        }
+    }
+
+    public void stop() {
+        stop = true;
+
+        // wait for it to stop running so mts can disconnect/dispose... timeout after 2secs
+        long timeout = currentTimeMillis() + 2000L;
+        while (running && currentTimeMillis() < timeout) sleep(50L);
+    }
+
+    private void doRun() {
         if (mtsPort < 0) return;
 
         MTS mts = createMTS();
@@ -122,9 +141,5 @@ public final class MTSRunnerImpl implements MTSRunner {
         } finally {
             mts.dispose();
         }
-    }
-
-    public void stop() {
-        stop = true;
     }
 }
