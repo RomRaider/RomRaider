@@ -24,6 +24,10 @@ public interface SerialConnection {
 
     int available();
 
+    int read();
+
+    String readLine();
+
     void read(byte[] bytes);
 
     byte[] readAvailable();
@@ -31,8 +35,4 @@ public interface SerialConnection {
     void readStaleData();
 
     void close();
-
-    String readLine();
-
-    int read();
 }

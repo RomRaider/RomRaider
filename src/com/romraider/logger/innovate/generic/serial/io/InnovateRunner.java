@@ -27,7 +27,6 @@ import static com.romraider.util.ByteUtil.matchOnes;
 import static com.romraider.util.ByteUtil.matchZeroes;
 import static com.romraider.util.HexUtil.asHex;
 import com.romraider.util.Stoppable;
-import static com.romraider.util.ThreadUtil.sleep;
 import static java.lang.System.arraycopy;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
@@ -107,14 +106,7 @@ public final class InnovateRunner implements Stoppable {
         return new SerialConnectionImpl(port, properties);
     }
 
-    private void waitForBytes(int numBytes) {
-        while (!stop && connection.available() < numBytes) {
-            sleep(2L);
-        }
-    }
-
     private byte nextByte() {
-        waitForBytes(1);
         return (byte) connection.read();
     }
 

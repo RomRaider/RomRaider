@@ -27,6 +27,7 @@ import com.romraider.logger.ecu.exception.UnsupportedPortTypeException;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import static com.romraider.util.ThreadUtil.sleep;
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;
 import static gnu.io.CommPortIdentifier.getPortIdentifier;
@@ -86,6 +87,7 @@ public final class SerialConnectionImpl implements SerialConnection {
 
     public int read() {
         try {
+            waitForBytes(1);
             return is.read();
         } catch (IOException e) {
             close();
@@ -95,7 +97,17 @@ public final class SerialConnectionImpl implements SerialConnection {
 
     public void read(byte[] bytes) {
         try {
+            waitForBytes(bytes.length);
             is.read(bytes, 0, bytes.length);
+        } catch (IOException e) {
+            close();
+            throw new SerialCommunicationException(e);
+        }
+    }
+
+    public String readLine() {
+        try {
+            return reader.readLine();
         } catch (IOException e) {
             close();
             throw new SerialCommunicationException(e);
@@ -108,19 +120,9 @@ public final class SerialConnectionImpl implements SerialConnection {
         return response;
     }
 
-    public String readLine() {
-        try {
-            return reader.readLine();
-        } catch (IOException e) {
-            close();
-            throw new SerialCommunicationException(e);
-        }
-    }
-
     public void readStaleData() {
         if (available() <= 0) return;
-        byte[] staleBytes = new byte[available()];
-        read(staleBytes);
+        byte[] staleBytes = readAvailable();
         LOGGER.debug("Stale data read: " + asHex(staleBytes));
     }
 
@@ -217,5 +219,9 @@ public final class SerialConnectionImpl implements SerialConnection {
         } catch (NoSuchPortException e) {
             throw new PortNotFoundException("Unable to resolve port: " + portName);
         }
+    }
+
+    private void waitForBytes(int numBytes) {
+        while (available() < numBytes) sleep(2L);
     }
 }

@@ -25,9 +25,9 @@ import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
+import static java.lang.System.currentTimeMillis;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
-import static java.lang.System.currentTimeMillis;
 
 public final class SerialConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = getLogger(SerialConnectionManager.class);
@@ -51,8 +51,7 @@ public final class SerialConnectionManager implements ConnectionManager {
             sleep(1);
             timeout -= 1;
             if (timeout <= 0) {
-                byte[] badBytes = new byte[connection.available()];
-                connection.read(badBytes);
+                byte[] badBytes = connection.readAvailable();
                 LOGGER.debug("Bad response (read timeout): " + asHex(badBytes));
                 break;
             }

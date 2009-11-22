@@ -22,7 +22,6 @@ package com.romraider.logger.zt2.io;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.serial.connection.SerialConnection;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
-import com.romraider.logger.ecu.exception.SerialCommunicationException;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
@@ -36,17 +35,7 @@ public final class ZT2ConnectionImpl implements ZT2Connection {
     }
 
     public byte readByte() {
-        try {
-            byte[] bytes = new byte[1];
-            while (true) {
-                if (connection.available() == 0) continue;
-                connection.read(bytes);
-                return bytes[0];
-            }
-        } catch (Exception e) {
-            close();
-            throw new SerialCommunicationException(e);
-        }
+        return (byte) connection.read();
     }
 
     public void close() {
