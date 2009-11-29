@@ -49,6 +49,7 @@
     <str id="PacksPanel.tip" txt="OBS: grå pakker skal installeres."/>
     <str id="PacksPanel.space" txt="Total plads krævet: "/>
     <str id="PacksPanel.description" txt="Beskrivelse"/>
+    <str id="PacksPanel.freespace" txt="Fri plads: "/>
 
     <str id="InstallPanel.info" txt="Tryk på 'Installer !' for at begynde installationsprocessen"/>
     <str id="InstallPanel.install" txt="Installer !"/>
@@ -65,6 +66,7 @@
     <str id="FinishPanel.auto" txt="Generer et automatisk installationsscript"/>
     <str id="FinishPanel.auto.tip"
          txt="Brug dette script til at gentage installationen på andre computere."/>
+    <str id="FinishPanel.done" txt="Færdig"/>
 
     <str id="ImgPacksPanel.packs" txt="Følgende pakker er tilgængelige :"/>
     <str id="ImgPacksPanel.snap" txt="Pakke øjebliksbillede  :"/>

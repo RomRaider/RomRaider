@@ -126,6 +126,7 @@
     <str id="InstallPanel.overwrite.title" txt="Datei existiert bereits"/>
     <str id="InstallPanel.overwrite.question"
          txt="Die folgende Datei existiert bereits. Soll sie überschrieben werden?"/>
+    <str id="FinishPanel.auto.dialog.filterdesc" txt="XML-Dateien"/>
 
     <str id="FinishPanel.success" txt="Die Installation wurde erfolgreich durchgeführt!"/>
     <str id="FinishPanel.done" txt="Fertig"/>

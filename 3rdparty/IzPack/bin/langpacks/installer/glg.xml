@@ -34,6 +34,10 @@
     <str id="installer.prev" txt="Anterior"/>
     <str id="installer.quit" txt="Saír"/>
     <str id="installer.madewith" txt="(Feito con izPack - http://izpack.org/)"/>
+	<str id="installer.reboot.ask.title" txt="Reinicio requirido"/>
+    <str id="installer.reboot.ask.message" txt="Reinicio requirido para aplicar algúns dos cambios. Quere reiniciar agora?"/>
+    <str id="installer.reboot.notice.title" txt="Reinicio recomendado"/>
+    <str id="installer.reboot.notice.message" txt="Reinicio recomendado para aplicar algúns cambios."/>
     <str id="installer.quit.title" txt="¿Confirmar que quere saír?"/>
     <str id="installer.quit.message" txt="¿Esto cancelará a instalación!"/>
     <str id="installer.warning" txt="¡Aviso!"/>
@@ -127,13 +131,13 @@
     <str id="InstallationTypePanel.modify" txt="Modificar instalación"/>
     
     <!-- FinishPanel strings -->
-    <str id="FinishPanel.success" txt="Installation has completed successfully."/>
-    <str id="FinishPanel.done" txt="Done"/>
-    <str id="FinishPanel.fail" txt="Installation has failed!"/>
-    <str id="FinishPanel.uninst.info" txt="An uninstaller program has been created in: "/>
-    <str id="FinishPanel.auto" txt="Generate an automatic installation script"/>
-    <str id="FinishPanel.auto.tip" txt="Use this script to repeat this installation on other computers."/>
-    <str id="FinishPanel.auto.dialog.filterdesc" txt="XML Files"/>
+    <str id="FinishPanel.success" txt="A instalación foi completada satisfactoriamente."/>
+    <str id="FinishPanel.done" txt="Feito"/>
+    <str id="FinishPanel.fail" txt="A instalación fallou!"/>
+    <str id="FinishPanel.uninst.info" txt="Foi creado un programa de desinstalación en: "/>
+    <str id="FinishPanel.auto" txt="Xerar un script automático de isntalación"/>
+    <str id="FinishPanel.auto.tip" txt="Use este script para repeti-la instalación noutras computadoras."/>
+    <str id="FinishPanel.auto.dialog.filterdesc" txt="Arquivos XML"/>
     
     <!-- ImgPacksPanel strings -->
     <str id="ImgPacksPanel.dependencyList" txt="Dependencias e/ou exclusións"/>
@@ -232,6 +236,7 @@
     <str id="ImgPacksPanel.summaryCaption" txt="Paquetes de instalación escollidos"/>
     <str id="TreePacksPanel.summaryCaption" txt="Paquetes de instalación escollidos"/>
     <str id="UserPathPanel.summaryCaption" txt="Ruta Seleccionada"/>
+	<str id="DefaultTargetPanel.summaryCaption" txt="Ruta de instalación"/>
      
     <!-- Strings for the Registry -->
     <str id="functionFailed.RegOpenKeyEx" txt="Non se puido abri-lo código do  rexistro{0}\\{1} ."/>

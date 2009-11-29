@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<!-- The English langpack -->
+
+<langpack>
+
+    <!-- Heading messages START -->
+    <str id="CheckedHelloPanel.headline" txt="Ongi Etorri"/>
+    <str id="CompilePanel.headline" txt="Java Iturriak Konpilatu"/>
+    <str id="ConditionalUserInputPanel.headline" txt="Erabiltzailearen datuak"/>
+    <str id="ExtendedInstallPanel.headline" txt="Instalazio eta konfigurazioa"/>
+    <str id="FinishPanel.headline" txt="Instalazioa amaitua"/>
+    <str id="HelloPanel.headline" txt="Ongi Etorri"/>
+    <str id="HTMLInfoPanel.headline" txt="Informazioa"/>
+    <str id="HTMLLicencePanel.headline" txt="Lizentzia Akordioa"/>
+    <str id="ImgPacksPanel.headline" txt="Paketeak aukeratu"/>
+    <str id="InfoPanel.headline" txt="Informazioa"/>
+    <str id="InstallPanel.headline" txt="Instalazioa"/>
+    <str id="JDKPathPanel.headline" txt="JDKren bidea"/>
+    <str id="LicencePanel.headline" txt="Lizentzia Akordioa"/>
+    <str id="PacksPanel.headline" txt="Paketeak aukeratu"/>
+    <str id="ProcessPanel.headline" txt="Kanpo-prozesuak burutu"/>
+    <str id="ShortcutPanel.headline" txt="Laburbideak ezarri"/>
+    <str id="SimpleFinishPanel.headline" txt="Instalazioa bukatua"/>
+    <str id="SummaryPanel.headline" txt="Konfigurazio Datuen Laburpena"/>
+    <str id="TargetPanel.headline" txt="Jopunturako bidea"/>
+    <str id="UserInputPanel.headline" txt="Erabiltzailearen datuak"/>
+    <str id="UserPathPanel.headline" txt="Aukeratu Bidea"/>
+    <str id="InstallationTypePanel.headline" txt="Instalazio Mota"/>
+
+    <!-- General installer strings -->
+    <str id="installer.title" txt="Alliaria - Instaladorea: "/>
+    <str id="installer.next" txt="Aurrera"/>
+    <str id="installer.prev" txt="Atzera"/>
+    <str id="installer.quit" txt="Amaitu"/>
+    <str id="installer.madewith" txt="(Alliariak eginda - http://www.alliaria.com/)"/>
+    <str id="installer.quit.title" txt="Ziur al zaude amaitu nahi duzula?"/>
+    <str id="installer.quit.message" txt="Instalazioa amaituko da!"/>
+    <str id="installer.warning" txt="Adi!"/>
+    <str id="installer.yes" txt="Bai"/>
+    <str id="installer.no" txt="Ez"/>
+    <str id="installer.accept" txt="Onartu"/>
+    <str id="installer.cancel" txt="Ezeztatu"/>
+    <str id="installer.error" txt="Errorea"/>
+    <str id="installer.help" txt="Laguntza"/>
+    <str id="installer.step" txt="Pausua"/>
+    <str id="installer.of" txt=" - "/>
+    <str id="installer.Message" txt="Mezua"/>
+
+    <!-- Uninstaller specific strings -->
+    <str id="uninstaller.warning" txt="Instalatutako aplikazioak ezabatuko dira!"/>
+    <!--<str id="uninstaller.warning" txt=""/>-->
+    <str id="uninstaller.destroytarget" txt=" Ezabaketa Behartu "/>
+    <str id="uninstaller.uninstall" txt="Desinstalatzailea"/>
+
+    <!-- The strings for the 'official' IzPack plugins -->
+    <!-- HelloPanel strings -->
+    <str id="HelloPanel.welcome1" txt="Instalatuko da "/>
+        <str id="HelloPanel.welcome2" txt="!"/>
+    <str id="HelloPanel.authors" txt="Programa honen egileak: "/>
+    <str id="HelloPanel.url" txt="Web horria: "/>
+
+    <!-- LicensePanel strings -->
+    <str id="LicencePanel.info" txt="Mesedez, irakurri hurrengo lizentzia akordioa:"/>
+    <str id="LicencePanel.agree" txt="Lizentzia akordioa onartzen dut."/>
+    <str id="LicencePanel.notagree" txt="Lizentzia akordioa ez dut onartzen."/>
+    <str id="LicencePanel.yes" txt="Bai"/>
+    <str id="LicencePanel.no" txt="Ez"/>
+
+		<!-- PrinterSelect Panel -->
+                <str id="PrinterSelectPanel.select_printer" txt="Aukeratu aurreneko instalazio eta frogetarako imprimagailua."/>
+
+		<!-- InfoPanel strings -->
+		<str id="InfoPanel.info" txt="Mesedez, hurrengoa irakurri: "/>
+
+		<!-- PathInputPanel strings -->
+		<str id="PathInputPanel.required" txt="Aukeratutako direktorioa existitu beharko luke."/>
+    <str id="PathInputPanel.required.forModificationInstallation" txt="Aukeratutako direktorioa existitu beharko luke."/>
+    <str id="PathInputPanel.notValid" txt="Aukeratutako direktorioak ez dauka behar den produktua."/>
+
+		<!-- TargetPanel strings -->
+    <str id="TargetPanel.info" txt="Aukeratu instalatzeko bidea: "/>
+    <str id="TargetPanel.browse" txt="Gainbegiratu..."/>
+    <str id="TargetPanel.warn" txt="Direktorioa aurrez existitzen da! Ziur al zaude hemen instalatu nahi duzula? Fitxategiak gainidatzi ditzakezu!"/>
+    <str id="TargetPanel.empty_target" txt="Ez duzu jopuntua aukeratu! Ondo al dago?"/>
+    <str id="TargetPanel.createdir" txt="Jopuntu direktorioa sortuko da: "/>
+    <str id="TargetPanel.nodir" txt="Fitxategi hau ez da direktorioa! Aukeratu direktorio bat!"/>
+    <str id="TargetPanel.notwritable" txt="Ezinezkoa da direktorio honetan idatzi! Aukeratu beste direktorio bat!"/>
+
+    <!-- JDKPathPanel strings -->
+
+    <!--La instalación instalada necesita un JDK cuya versión esté comprendida entre la ${JDKPathPanel.minVersion} y la ${JDKPathPanel.maxVersion}. Un entorno de ejecución de Java (JRE) no es suficiente."/>-->
+
+    <str id="JDKPathPanel.extendedIntro" txt="Instalaturiko aplikazioak JDK-ren bertsioa ${JDKPathPanel.minVersion} eta ${JDKPathPanel.maxVersion} tartean egon behar du, Java runtime environment (JRE)-a soilik ez da nahiko izango."/>
+    <str id="JDKPathPanel.intro" txt="Instalaturiko aplikazioak JDK behar du. Java runtime environment (JRE) bakarrik edukitzea ez da nahiko izango."/>
+    <str id="JDKPathPanel.info" txt="Aukeratu JDKren bidea:"/>
+    <str id="JDKPathPanel.badVersion1" txt="Aukeratutako JDK bertsioa okerra da (erabilgarria: "/>
+    <str id="JDKPathPanel.badVersion2" txt=" beharrezkoa: "/>
+    <str id="JDKPathPanel.badVersion3" txt=") JDK hau erabiliko dugu hala ere?"/>
+    <str id="JDKPathPanel.nonValidPathInReg" txt="Windows-en erregistroak, JDK honentzako jopunturako bide baliogabea du. Erabiliko dugu JDK hau, hala ere?"/>
+
+    <!-- PacksPanel strings -->
+    <str id="PacksPanel.info" txt="Aukeratu instalatzeko paketeak:"/>
+    <str id="PacksPanel.tip" txt="Nota: Pakete grisak beharrezkoak dira."/>
+    <str id="PacksPanel.space" txt="Diskan beharrezkoa den lekua: "/>
+    <str id="PacksPanel.freespace" txt="Diskan dagoen leku erabilgarria: "/>
+    <str id="PacksPanel.description" txt="Deskripzioa"/>
+    <str id="PacksPanel.dependencyList" txt="The selected package has the following dependencies and/or excludes"/>
+    <!--<str id="PacksPanel.dependencyList" txt="Aukeratutako paketeak hurrengoko mendekotasun (dependentzia) eta/edo bazterketak ditu"/>-->
+    <str id="PacksPanel.dependencies" txt="Dependentziak: "/>
+    <str id="PacksPanel.excludes" txt="Bazterketak: "/>
+    <str id="PacksPanel.notEnoughSpace" txt="Instalaziorako behar den lekua, diskan dagoena baino handiagoa da."/>
+    <str id="PacksPanel.notAscertainable" txt="Determinatugabea"/>
+
+		<!-- InstallPanel strings -->
+    <str id="InstallPanel.info" txt="Sakatu 'Instalatu!' Instalazioa hasteko"/>
+    <str id="InstallPanel.install" txt="Instalatu!"/>
+    <str id="InstallPanel.tip" txt="Paketearen instalazio bilakaera:"/>
+    <str id="InstallPanel.begin" txt=" [Hasi gabe]"/>
+    <str id="InstallPanel.finished" txt="[Amaitua]"/>
+    <str id="InstallPanel.progress" txt="Instalazio osoaren bilakaera:"/>
+    <str id="InstallPanel.overwrite.title" txt="Fitxeroa aurrez existitzen da"/>
+    <str id="InstallPanel.overwrite.question" txt="Hurrengo fitxeroa aurrez existitzen da. Berridatzi daiteke?"/>
+
+		<!-- InstallationGroupPanel strings -->
+		<str id="InstallationGroupPanel.colNameSelected" txt="Aukeratua"/>
+    <str id="InstallationGroupPanel.colNameInstallType" txt="Instalazio Mota"/>
+    <str id="InstallationGroupPanel.colNameSize" txt="Tamaina"/>
+
+		<!-- InstallationTypePanel strings -->
+    <str id="InstallationTypePanel.info" txt="Mesedez, aukeratu instalazio mota:"/>
+    <str id="InstallationTypePanel.normal" txt="Instalazio berria"/>
+    <str id="InstallationTypePanel.modify" txt="Instalazioa aldatu"/>
+
+		<!-- FinishPanel strings -->
+		<str id="FinishPanel.success" txt="Instalazio arrakastatsua."/>
+    <str id="FinishPanel.done" txt="Eginda"/>
+    <str id="FinishPanel.fail" txt="Instalazio ezegokia!"/>
+    <str id="FinishPanel.uninst.info" txt="Hurrengoko bidean sortu da desinstaladorea: "/>
+    <str id="FinishPanel.auto" txt="Gidoi automatikoa sortu instalazioa errepikatzeko"/>
+    <str id="FinishPanel.auto.tip" txt="Erabili gidoi hau beste ordenadoreetan instalazioa errepikatzeko."/>
+    <str id="FinishPanel.auto.dialog.filterdesc" txt="XML Fitxeroak"/>
+
+		<!-- ImgPacksPanel strings -->
+		<str id="ImgPacksPanel.dependencyList" txt="Dependentziak eta/edo bazterketak"/>
+    <str id="ImgPacksPanel.packs" txt="Hurrengoak dira pakete erabilgarriak:"/>
+    <str id="ImgPacksPanel.snap" txt="Pantailaren uneko argazkia:"/>
+    <str id="ImgPacksPanel.checkbox" txt=" Pakete hau instalatu"/>
+
+    <!-- ShortcutPanel strings -->
+    <str id="ShortcutPanel.regular.list" txt="Programa Taldea Aukeratu Laburbideentzat:"/>
+    <str id="ShortcutPanel.regular.default" txt="Lehenetsia"/>
+    <str id="ShortcutPanel.regular.desktop" txt="Idazmahaian Laburbide gehiago sortu"/>
+    <str id="ShortcutPanel.regular.create" txt="Menuetan Laburbideak sortu "/>
+    <str id="ShortcutPanel.regular.userIntro" txt="Laburbidea sortu"/>
+    <str id="ShortcutPanel.regular.currentUser" txt="Bertoko erabiltzailearentzat"/>
+    <str id="ShortcutPanel.regular.allUsers" txt="Erabiltzaile guztientzat"/>
+    <str id="ShortcutPanel.alternate.apology" txt="Barkatu baina Sistema Eragile honetan, ezin dira laburbiderik sortu ."/>
+    <str id="ShortcutPanel.alternate.targetsLabel" txt="Hurrengokoa, software honen fabrikatzaileak sortutako helburu zerrenda bat da, sarbidea edukitzeko."/>
+
+    <str id="ShortcutPanel.alternate.textFileExplanation" txt="Aplikazioaren helburuen informazio zehatzagoa gorde dezakezu texto fitxategi batean, datozen hurrengo errefenetziatan."/>
+
+    <str id="ShortcutPanel.alternate.saveButton" txt="Textu Fitxeroa gorde"/>
+    <str id="ShortcutPanel.textFile.header" txt="Laburbide informazioa\n====================\n\nAukeratutako laburbideei buruzko informazio garrantzitsuena hemen daukazue.\n Nahiko izan beharko litzateke laburbideak eskuz sortzeko.\n"/>
+    <str id="ShortcutPanel.textFile.name" txt="Laburbidea          : "/>
+    <str id="ShortcutPanel.textFile.location" txt="Aukeratutako kokapena : "/>
+    <str id="ShortcutPanel.textFile.description" txt="Deskripzioa       : "/>
+    <str id="ShortcutPanel.textFile.target" txt="Laburbidearen jopuntua   : "/>
+    <str id="ShortcutPanel.textFile.command" txt="Komando lerroa      : "/>
+    <str id="ShortcutPanel.textFile.iconName" txt="Ikonoaren Fitxeroa         : "/>
+    <str id="ShortcutPanel.textFile.iconIndex" txt="Ikonoaren Indizea        : "/>
+    <str id="ShortcutPanel.textFile.work" txt="Lanerako Direktorioa: "/>
+    <str id="ShortcutPanel.location.desktop" txt="Idazmahaia"/>
+    <str id="ShortcutPanel.location.applications" txt="Aplikazio Menua"/>
+    <str id="ShortcutPanel.location.startMenu" txt="Hasiera Menua"/>
+    <str id="ShortcutPanel.location.startup" txt="Hasiera Taldea"/>
+		<str id="ShortcutPanel.regular.StartMenu:Start-Menu" txt="Hasiera-Menua"/>
+    <str id="ShortcutPanel.regular.StartMenu:K-Menu" txt="XDG-Menua"/>
+    
+    <!-- UserInputPanel strings -->
+    <str id="UserInputPanel.error.caption" txt="Errorea"/>
+    <str id="UserInputPanel.dir.nodirectory.message" txt="Direktorio egokia aukeratu behar duzu."/>
+    <str id="UserInputPanel.dir.nodirectory.caption" txt="Ez duzu direktoriorik aukeratu"/>
+    <str id="UserInputPanel.dir.notdirectory.message" txt="Aukeratutako direktorioak ez du baliorik edota ez da existitzen."/>
+    <str id="UserInputPanel.dir.notdirectory.caption" txt="Direktorio ezegokia"/>
+    <str id="UserInputPanel.file.nofile.message" txt="Fitxero egokia aukeratu behar duzu."/>
+    <str id="UserInputPanel.file.nofile.caption" txt="Ez duzu fitxerorik aukeratu"/>
+    <str id="UserInputPanel.file.notfile.message" txt="Aukeratutako fitxeroak ez du balio edo ez da existitzen."/>
+    <str id="UserInputPanel.file.notfile.caption" txt="Fitxero ezegokia"/>
+    <!-- more descriptive error message would be cool, like specifying what file we looked for -->
+    <str id="UserInputPanel.search.autodetect" txt="Autodetekzioa"/>
+    <str id="UserInputPanel.search.autodetect.failed.message" txt="Auto-detekzioak huts egin du."/>
+    <str id="UserInputPanel.search.autodetect.failed.caption" txt="Auto-detekzioak huts egin du"/>
+    <str id="UserInputPanel.search.autodetect.tooltip" txt="Fitxero edo direktorioa bilatu aurreko bideetan."/>
+    <str id="UserInputPanel.search.location" txt="Sartu {0}ren kokapena."/>
+    <str id="UserInputPanel.search.location.checkedfile" txt="{0} existitzen den aztertuko da."/>
+    <str id="UserInputPanel.search.browse" txt="Gainbegiratu..."/>
+    <str id="UserInputPanel.search.wrongselection.message" txt="Aukeratutako fitxero edo direktorioa ez da existitzen edo ez da egokia."/>
+    <str id="UserInputPanel.search.wrongselection.caption" txt="Aukeraketa ezegokia"/>
+    
+    <!-- UserPathPanel strings -->
+    <str id="UserPathPanel.required" txt="Aukeratutako direktorioa existitu beharko luke."/>
+    <str id="UserPathPanel.info" txt="Bidea aukeratu: "/>
+    <str id="UserPathPanel.browse" txt="Gainbegiratu"/>
+    <str id="UserPathPanel.exists_warn" txt="Direktorioa aurrez existitzen da! Ziur zaude hemen instalatu nahi duzula aurrez existitzen diren fitxeroak gainidatziz?"/>
+    <str id="UserPathPanel.empty_target" txt="Ez duzu jopuntu kokapenarik sartu! Ondo al dago hau?"/>
+    <str id="UserPathPanel.createdir" txt="Jopuntu direktorioa sortuko da: "/>
+    <str id="UserPathPanel.nodir" txt="Fitxero hau ez da direktorio bat! Mesedez, aukeratu direktorio bat!"/>
+    <str id="UserPathPanel.notwritable" txt="Ez dut fitxategi hauetan idazteko baimenik! Beste direktorio bat aukeratu, mesedez!"/>
+    
+    <!-- CompilePanel strings -->
+    <str id="CompilePanel.heading" txt="Konpilazioa"/>
+    <str id="CompilePanel.tip" txt="Lanen konpilazio progresua:"/>
+    <str id="CompilePanel.browse" txt="Gainbegiratu..."/>
+    <str id="CompilePanel.browse.approve" txt="Erabili hurrengo konpiladorea"/>
+    <str id="CompilePanel.start" txt="Hasi"/>
+    <str id="CompilePanel.progress.initial" txt="[Sakatu Hasi botoia]"/>
+    <str id="CompilePanel.progress.finished" txt="[Amaitua]"/>
+    <str id="CompilePanel.progress.overall" txt="Prozesuaren aurrerabide globala:"/>
+    <str id="CompilePanel.error" txt="Konpilazioak huts egin du"/>
+    <str id="CompilePanel.error.reconfigure" txt="Berkonfiguratu"/>
+    <str id="CompilePanel.error.ignore" txt="Kontutan ez hartu"/>
+    <str id="CompilePanel.error.abort" txt="Utzi"/>
+    <str id="CompilePanel.error.seebelow" txt="Beheko partean begiratu huts egindako komandua eta bere irteera. "/>
+    <str id="CompilePanel.error.nofiles" txt="Eskaneatzerakoan errorea konpilatutako fitxeroetan."/>
+    <str id="CompilePanel.error.compilernotfound" txt="Konpiladorea ezin da exekutatu."/>
+    <str id="CompilePanel.error.invalidarguments" txt="Konpiladoreari pasatutako argumentuak baliogabeak dira. "/>
+    <str id="CompilePanel.error.noclassfile" txt="Konpiladoreak ez ditu class fitxeroak sortu iturri fitxeroetatik. "/>
+    <str id="CompilePanel.choose_compiler" txt="Erabiltzeko konpiladorea:"/>
+    <str id="CompilePanel.additional_arguments" txt="Konpiladorearen argumentu gehigarriak:"/>
+
+    <!-- ProcessPanel strings -->
+    <str id="ProcessPanel.heading" txt="Prozesatu"/>
+
+    <!-- SummaryPanel strings -->
+    <str id="SummaryPanel.info" txt="Instalazioa hurrengoko konfigurazioarekin hasiko da. Sakatu Aurrera jarraitzeko."/>
+    <str id="TargetPanel.summaryCaption" txt="Instalazio bidea"/>
+    <str id="JDKPathPanel.summaryCaption" txt="JDK bidea"/>
+    <str id="PacksPanel.summaryCaption" txt="Aukeratutako instalazio paketeak"/>
+    <str id="ImgPacksPanel.summaryCaption" txt="Aukeratutako Instalazio Paketeak"/>
+    <str id="TreePacksPanel.summaryCaption" txt="Aukeratutako Instalazio Paketeak"/>
+    <str id="UserPathPanel.summaryCaption" txt="Aukeratutako bidea"/>
+    <str id="DefaultTargetPanel.summaryCaption" txt="Instalazio bidea"/>
+
+    <!-- Strings for the Registry -->
+    <str id="functionFailed.RegOpenKeyEx" txt="Cannot open registry key {0}\\{1}."/>
+
+		<!-- CheckedHelloPanel strings -->
+    <str id="CheckedHelloPanel.productAlreadyExist0" txt="Produktu hau bide berberean berinstalatuta dago ordenadore hontan"/>
+    <str id="CheckedHelloPanel.productAlreadyExist1" txt=" . Zihur al zaude, beste entitate bat sortzearekin?"/>
+    <str id="CheckedHelloPanel.infoOverUninstallKey" txt="Desinstalazio giltza berrizendatua izango da: "/>
+
+    <!-- Next Media Strings -->
+    <str id="nextmedia.title" txt="Next install media"/>
+    <str id="nextmedia.msg" txt="Choose the next install media."/>
+    <str id="nextmedia.browsebtn" txt="Browse"/>
+    <str id="nextmedia.okbtn" txt="Apply"/>
+    <str id="nextmedia.cancelbtn" txt="Cancel"/>
+    <str id="nextmedia.choosertitle" txt="Choose install media"/>
+    <str id="nextmedia.filedesc" txt="install packs (.pak*)"/>
+
+		<!-- This string defines the time stamp format in the installation report.
+         The format details are documented in java.text.SimpleDateFormat -->
+    <str id="log.timeStamp" txt="MM-dd-yyyy [HH:mm:ss]  zzzz"/>
+    
+    <!-- Strings for various purposes in the logging/reporting system  -->
+    <str id="log.reportHeading" txt="                           IzPack INSTALLATION REPORT"/>
+    <str id="log.installFailed" txt="WARNING!!! Instalazioa ez du arrakastarik izan!"/>
+    <str id="log.partialInstall" txt="WARNING!!! Instalazioa ez dirudi arrakastarik izan duen!"/>
+    <str id="log.messageCount" txt="Informe honek baditu {0} mezu generalak, {1} abisuak eta {2} erroreak"/>
+    <str id="log.application" txt="Installation report for : {0} Version {1}"/>
+    <str id="log.timePrefix" txt="Install time            : {0}"/>
+    <str id="log.pathPrefix" txt="Install directory       : {0}"/>
+    <str id="log.messageHeading" txt="                         --- Installation Messages ---"/>
+    <str id="log.warningHeading" txt="                               --- Warnings ---"/>
+    <str id="log.errorHeading" txt="                                --- Errors ---"/>
+    <str id="log.exceptionPrefix" txt="                 >> Exception: {0}"/>
+    <str id="log.messagePrefix" txt="Message  [{0}] - "/>
+    <str id="log.warningPrefix" txt="Warning [{0}] - "/>
+    <str id="log.errorPrefix" txt="Error [{0}] - "/>
+    <str id="log.reportWriteErrorTitle" txt="Errorea informea idazten"/>
+    <str id="log.reportWriteError" txt="Ezinezkoa instalazio informea idaztea to ''{0}''"/>
+    <str id="log.informUserTitle" txt="Instalazio arazoak"/>
+    <str id="log.saveLogTitle" txt="Log fitxategia gorde"/>
+    <str id="log.LogFileName" txt="installLog.txt"/>
+    <str id="log.informUserFail" txt="&lt;html&gt;Instalazioa ez da arrakastatsua izan!&lt;br&gt;Gustatuko al litzaizuke log fitxategia idaztea?&lt;/html&gt;"/>
+    <str id="log.informUserPartial" txt="&lt;html&gt;Instalazioa arrakastatsua izan da oso!!&lt;br&gt;Gustatuko al litzaizuke log fitxategia idaztea?&lt;/html&gt;"/>
+
+    <!-- Strings for individual messages in the logging/reporting system.
+         Numbers for each category (message/warning/error) start at 0  -->
+    <str id="log.message_" txt=""/>
+    <str id="log.warning_" txt=""/>
+    <str id="log.error_0" txt="unable to write ''{0}''"/>
+    <str id="debug.changevariable" txt="modify value"/>
+		
+</langpack>

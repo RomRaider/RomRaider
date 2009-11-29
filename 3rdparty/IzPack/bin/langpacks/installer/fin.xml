@@ -34,6 +34,10 @@
     <str id="installer.prev" txt="Edellinen"/>
     <str id="installer.quit" txt="Lopeta"/>
     <str id="installer.madewith" txt="(Tehty IzPackilla - http://izpack.org/)"/>
+    <str id="installer.reboot.ask.title" txt="Uudelleen käynnistys vaaditaan"/>
+    <str id="installer.reboot.ask.message" txt="Tietokoneen uudelleen käynnistys vaaditaan, jotta jotkut muutokset tulevat voimaan. Haluatko käynnistää uudelleen nyt?"/>
+    <str id="installer.reboot.notice.title" txt="Uudelleen käynnistys suositeltua"/>
+    <str id="installer.reboot.notice.message" txt="On suositeltavaa käynnistää tietokone uudelleen, jotta jotkut muutokset tulevat voimaan."/>
     <str id="installer.quit.title" txt="Haluatko varmasti lopettaa?"/>
     <str id="installer.quit.message" txt="Tämä keskeyttää asennuksen!"/>
     <str id="installer.warning" txt="Varoitus!"/>
@@ -233,6 +237,7 @@
     <str id="ImgPacksPanel.summaryCaption" txt="Valitut asennuspaketit"/>
     <str id="TreePacksPanel.summaryCaption" txt="Valitut asennuspaketit"/>
     <str id="UserPathPanel.summaryCaption" txt="Valittu polku"/>
+    <str id="DefaultTargetPanel.summaryCaption" txt="Asennuspolku"/>
     
     <!-- Strings for the Registry -->
     <str id="functionFailed.RegOpenKeyEx" txt="Ei voida avata rekisteriavainta {0}\\{1}."/>
