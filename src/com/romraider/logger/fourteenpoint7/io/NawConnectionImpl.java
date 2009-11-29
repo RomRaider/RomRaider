@@ -17,24 +17,45 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.plx.io;
+package com.romraider.logger.fourteenpoint7.io;
 
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.serial.connection.SerialConnection;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
+import com.romraider.logger.ecu.exception.SerialCommunicationException;
+import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 
-public final class PlxConnectionImpl implements PlxConnection {
+public final class NawConnectionImpl implements NawConnection {
+    private static final Logger LOGGER = getLogger(NawConnectionImpl.class);
     private final SerialConnection connection;
 
-    public PlxConnectionImpl(String port) {
+    public NawConnectionImpl(String port) {
         checkNotNullOrEmpty(port, "port");
         connection = serialConnection(port);
-//        connection = new TestPlxConnection();
     }
 
-    public byte readByte() {
-        return (byte) connection.read();
+    public byte[] readBytes() {
+        try {
+            byte[] bytes = new byte[9];
+            connection.read(bytes);
+            LOGGER.trace("NAW_7S Response: " + asHex(bytes));
+            return bytes;
+        } catch (Exception e) {
+            close();
+            throw new SerialCommunicationException(e);
+        }
+    }
+
+    public void write(byte[] bytes) {
+        try {
+            connection.write(bytes);
+        } catch (Exception e) {
+            close();
+            throw new SerialCommunicationException(e);
+        }
     }
 
     public void close() {
@@ -42,7 +63,7 @@ public final class PlxConnectionImpl implements PlxConnection {
     }
 
     private SerialConnectionImpl serialConnection(String port) {
-        ConnectionProperties connectionProperties = new PlxConnectionProperties();
+        ConnectionProperties connectionProperties = new NawConnectionProperties();
         return new SerialConnectionImpl(port, connectionProperties);
     }
 }

@@ -23,22 +23,20 @@ import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.serial.connection.SerialConnection;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
-import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import static java.nio.charset.Charset.forName;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.nio.charset.Charset;
-import static java.nio.charset.Charset.forName;
 
 public final class AemConnectionImpl implements AemConnection {
     private static final Logger LOGGER = getLogger(AemConnectionImpl.class);
     private static final Charset CHARSET_UTF8 = forName("UTF-8");
     private final SerialConnection connection;
 
-    public AemConnectionImpl(String portName, ConnectionProperties connectionProperties) {
-        checkNotNull(connectionProperties, "connectionProperties");
-        checkNotNullOrEmpty(portName, "portName");
-        connection = new SerialConnectionImpl(portName, connectionProperties);
+    public AemConnectionImpl(String port) {
+        checkNotNullOrEmpty(port, "port");
+        connection = serialConnection(port);
     }
 
     public byte[] read() {
@@ -54,5 +52,10 @@ public final class AemConnectionImpl implements AemConnection {
 
     public void close() {
         connection.close();
+    }
+
+    private SerialConnectionImpl serialConnection(String port) {
+        ConnectionProperties connectionProperties = new AemConnectionProperties();
+        return new SerialConnectionImpl(port, connectionProperties);
     }
 }

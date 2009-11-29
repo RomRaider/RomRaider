@@ -17,16 +17,34 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.zt2.plugin;
+package com.romraider.logger.fourteenpoint7.io;
 
-public final class ZT2SettingsImpl implements ZT2Settings {
-    private String port;
+import com.romraider.logger.fourteenpoint7.plugin.NawDataListener;
 
-    public void setPort(String port) {
-        this.port = port;
+public final class NawRunnerImpl implements NawRunner {
+    private static final byte[] NAW_PROMPT = {0x07};
+    private final NawConnection connection;
+    private final NawDataListener listener;
+    private boolean stop;
+
+    public NawRunnerImpl(String port, NawDataListener listener) {
+        connection = new NawConnectionImpl(port);
+        this.listener = listener;
     }
 
-    public String getPort() {
-        return port;
+    public void run() {
+        try {
+            while (!stop) {
+                connection.write(NAW_PROMPT);
+                byte[] buffer = connection.readBytes();
+                listener.setBytes(buffer);
+            }
+        } finally {
+            connection.close();
+        }
+    }
+
+    public void stop() {
+        stop = true;
     }
 }

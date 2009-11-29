@@ -40,8 +40,8 @@ import java.util.Map;
 
 public final class ZT2DataSource implements ExternalDataSource {
     private final Map<ZT2SensorType, ZT2DataItem> dataItems = new HashMap<ZT2SensorType, ZT2DataItem>();
-    private ZT2Settings settings = new ZT2SettingsImpl();
     private ZT2Runner runner;
+    private String port;
 
     {
         dataItems.put(AFR, new ZT2DataItemImpl("Wideband AFR", "AFR", AFR));
@@ -72,15 +72,15 @@ public final class ZT2DataSource implements ExternalDataSource {
     }
 
     public void setPort(String port) {
-        settings.setPort(port);
+        this.port = port;
     }
 
     public String getPort() {
-        return settings.getPort();
+        return port;
     }
 
     public void connect() {
-        runner = new ZT2RunnerImpl(settings, dataItems);
+        runner = new ZT2RunnerImpl(port, dataItems);
         runAsDaemon(runner);
     }
 

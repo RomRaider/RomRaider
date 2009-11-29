@@ -17,16 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.plx.plugin;
+package com.romraider.logger.fourteenpoint7.plugin;
 
-public final class PlxSettingsImpl implements PlxSettings {
-    private String port;
-
-    public void setPort(String port) {
-        this.port = port;
-    }
-
-    public String getPort() {
-        return port;
-    }
+public interface NawDataListener {
+    void setBytes(byte[] bytes);
 }

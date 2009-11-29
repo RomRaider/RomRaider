@@ -17,16 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.aem.plugin;
+package com.romraider.logger.fourteenpoint7.plugin;
 
-public final class AemSettingsImpl implements AemSettings {
-    private String port;
-
-    public void setPort(String port) {
-        this.port = port;
-    }
-
-    public String getPort() {
-        return port;
-    }
+public interface NawConvertor {
+    double convert(byte[] bytes);
 }

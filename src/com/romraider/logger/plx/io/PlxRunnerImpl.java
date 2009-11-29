@@ -21,7 +21,6 @@ package com.romraider.logger.plx.io;
 
 import static com.romraider.logger.plx.io.PlxSensorType.UNKNOWN;
 import com.romraider.logger.plx.plugin.PlxDataItem;
-import com.romraider.logger.plx.plugin.PlxSettings;
 import java.util.Map;
 
 public final class PlxRunnerImpl implements PlxRunner {
@@ -29,8 +28,8 @@ public final class PlxRunnerImpl implements PlxRunner {
     private final PlxConnection connection;
     private boolean stop;
 
-    public PlxRunnerImpl(PlxSettings plxSettings, Map<PlxSensorType, PlxDataItem> dataItems) {
-        connection = new PlxConnectionImpl(plxSettings.getPort(), new PlxConnectionProperties());
+    public PlxRunnerImpl(String port, Map<PlxSensorType, PlxDataItem> dataItems) {
+        connection = new PlxConnectionImpl(port);
         this.dataItems = dataItems;
     }
 

@@ -26,6 +26,7 @@ import com.romraider.logger.innovate.generic.mts.plugin.DataListener;
 import static com.romraider.util.ByteUtil.matchOnes;
 import static com.romraider.util.ByteUtil.matchZeroes;
 import static com.romraider.util.HexUtil.asHex;
+import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import com.romraider.util.Stoppable;
 import static java.lang.System.arraycopy;
 import org.apache.log4j.Logger;
@@ -39,6 +40,7 @@ public final class InnovateRunner implements Stoppable {
     private boolean stop;
 
     public InnovateRunner(String port, DataListener listener) {
+        checkNotNullOrEmpty(port, "port");
         this.connection = serialConnection(port);
         // LC-1 & LM-2
 //        this.connection = new TestInnovateConnection("13036B00000000000000000000B2874313036B00000000000000000000B28743");

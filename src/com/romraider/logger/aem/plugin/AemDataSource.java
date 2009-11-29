@@ -30,9 +30,9 @@ import javax.swing.Action;
 import java.util.List;
 
 public final class AemDataSource implements ExternalDataSource {
-    private AemSettings settings = new AemSettingsImpl();
     private AemDataItem dataItem = new AemDataItem();
     private AemRunner runner;
+    private String port;
 
     public String getId() {
         return getClass().getName();
@@ -55,15 +55,15 @@ public final class AemDataSource implements ExternalDataSource {
     }
 
     public void setPort(String port) {
-        settings.setPort(port);
+        this.port = port;
     }
 
     public String getPort() {
-        return settings.getPort();
+        return port;
     }
 
     public void connect() {
-        runner = new AemRunnerImpl(settings, dataItem);
+        runner = new AemRunnerImpl(port, dataItem);
         runAsDaemon(runner);
     }
 

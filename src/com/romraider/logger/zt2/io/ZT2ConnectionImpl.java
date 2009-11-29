@@ -22,16 +22,14 @@ package com.romraider.logger.zt2.io;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.serial.connection.SerialConnection;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
-import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class ZT2ConnectionImpl implements ZT2Connection {
     private final SerialConnection connection;
 
-    public ZT2ConnectionImpl(String portName, ConnectionProperties connectionProperties) {
-        checkNotNull(connectionProperties, "connectionProperties");
-        checkNotNullOrEmpty(portName, "portName");
-        connection = new SerialConnectionImpl(portName, connectionProperties);
+    public ZT2ConnectionImpl(String port) {
+        checkNotNullOrEmpty(port, "port");
+        connection = serialConnection(port);
     }
 
     public byte readByte() {
@@ -40,5 +38,10 @@ public final class ZT2ConnectionImpl implements ZT2Connection {
 
     public void close() {
         connection.close();
+    }
+
+    private SerialConnection serialConnection(String port) {
+        ConnectionProperties connectionProperties = new ZT2ConnectionProperties();
+        return new SerialConnectionImpl(port, connectionProperties);
     }
 }

@@ -25,7 +25,6 @@ import static com.romraider.logger.zt2.io.ZT2SensorType.MAP;
 import static com.romraider.logger.zt2.io.ZT2SensorType.RPM;
 import static com.romraider.logger.zt2.io.ZT2SensorType.TPS;
 import com.romraider.logger.zt2.plugin.ZT2DataItem;
-import com.romraider.logger.zt2.plugin.ZT2Settings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +34,8 @@ public final class ZT2RunnerImpl implements ZT2Runner {
     private final ZT2Connection connection;
     private boolean stop;
 
-    public ZT2RunnerImpl(ZT2Settings zt2Settings, Map<ZT2SensorType, ZT2DataItem> dataItems) {
-        connection = new ZT2ConnectionImpl(zt2Settings.getPort(), new ZT2ConnectionProperties());
+    public ZT2RunnerImpl(String port, Map<ZT2SensorType, ZT2DataItem> dataItems) {
+        connection = new ZT2ConnectionImpl(port);
         this.dataItems = dataItems;
     }
 
