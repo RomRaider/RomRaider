@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC4 -
+                    - RomRaider 0.5.3 Beta RC5 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,25 +35,33 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b RC4 Notes (10/31/2009) -
+- 0.5.3b RC5 Notes (11/29/2009) -
 -------------------------------
-This is the fourth beta release of the upcoming official 0.5.3b release.
+This is the fifth beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.3b RC4 Known Issues -
+- 0.5.3b RC5 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
 - Logger
-  - New gauge min/max/step limits incomplete (logger.xml)
+  - Gauge min/max/step limits incomplete (logger.xml)
   - ECU connections under Linux are flaky (start the logger after
       you've started the engine)
   - Update latency via injector tab broken for some models (eg. 2007 2.5i)
+  - LM-2 MTS support incomplete
 
 
 --------------
 - Change Log -
 --------------
+
+0.5.3b RC5 (11/29/2009)
+----------------------
+
+--- Logger ---
+- 14Point7 NAW_7S UEGO support added
+- Improved serial connection handling
 
 0.5.3b RC4 (10/31/2009)
 ----------------------
