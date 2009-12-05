@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.xml.sax.SAXParseException;
 
 public final class EcuDataLoaderImpl implements EcuDataLoader {
     private Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
@@ -55,6 +56,9 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
             } finally {
                 inputStream.close();
             }
+        } catch (SAXParseException spe) {
+            // catch general parsing exception - enough people don't unzip the defs that a better error message is in order
+        	throw new ConfigurationException("Unable to read ECU definition file " + ecuDefsFile + ".  Please make sure the definition file is correct.  If it is in a ZIP archive, unzip the file and try again.");
         } catch (FileNotFoundException fnfe) {
         	throw new ConfigurationException("The specified ECU definition file " + ecuDefsFile + " does not exist.");
         } catch (Exception e) {
@@ -80,6 +84,9 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
             }
         } catch (FileNotFoundException fnfe) {
         	throw new ConfigurationException("The specified Logger Config file " + loggerConfigFilePath + " does not exist.");
+        } catch (SAXParseException spe) {
+            // catch general parsing exception - enough people don't unzip the defs that a better error message is in order
+        	throw new ConfigurationException("Unable to read Logger Config file " + loggerConfigFilePath + ".  Please make sure the configuration file is correct.  If it is in a ZIP archive, unzip the file and try again.");
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }

@@ -78,6 +78,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
+import org.xml.sax.SAXParseException;
 
 public class ECUEditor extends AbstractFrame {
     private static final long serialVersionUID = -7826850987392016292L;
@@ -423,6 +424,10 @@ public class ECUEditor extends AbstractFrame {
 
             // if code executes to this point, no ROM was found, report to user
             showMessageDialog(this, "ECU Definition Not Found", "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
+
+        } catch (SAXParseException spe) {
+            // catch general parsing exception - enough people don't unzip the defs that a better error message is in order
+            showMessageDialog(this, "Unable to read XML definitions.  Please make sure the definition file is correct.  If it is in a ZIP archive, unzip the file and try again.", "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
 
         } catch (StackOverflowError ex) {
             // handles looped inheritance, which will use up all available memory

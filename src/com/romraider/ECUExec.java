@@ -20,6 +20,7 @@
 package com.romraider;
 
 import static com.romraider.Version.PRODUCT_NAME;
+import static com.romraider.Version.SUPPORT_URL;
 import com.romraider.editor.ecu.ECUEditor;
 import static com.romraider.editor.ecu.ECUEditorManager.getECUEditor;
 import static com.romraider.logger.ecu.EcuLogger.startLogger;
@@ -50,6 +51,7 @@ public class ECUExec {
         // init debug logging
         initDebugLogging();
         // dump the system properties to the log file as early as practical to help debugging/support
+        LOGGER.info("When requesting assistance at " + SUPPORT_URL + " please include the System Properties information below:");
         LOGGER.info("System Properties: \n\t" 
         		+ System.getProperties().toString().replace(",", "\n\t"));
 

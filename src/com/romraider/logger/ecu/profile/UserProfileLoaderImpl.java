@@ -23,6 +23,7 @@ import com.romraider.logger.ecu.profile.xml.UserProfileHandler;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.SaxParserFactory.getSaxParser;
 import org.apache.log4j.Logger;
+import org.xml.sax.SAXParseException;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,6 +44,10 @@ public final class UserProfileLoaderImpl implements UserProfileLoader {
             } finally {
                 inputStream.close();
             }
+        } catch (SAXParseException spe) {
+            // catch general parsing exception - enough people don't unzip the defs that a better error message is in order
+            LOGGER.error("Error loading user profile file: " + userProfileFilePath + ".  Please make sure the definition file is correct.  If it is in a ZIP archive, unzip the file and try again.");
+            return null;
         } catch (Exception e) {
             LOGGER.error("Error loading user profile file: " + userProfileFilePath, e);
             return null;
