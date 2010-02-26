@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC5 -
+                    - RomRaider 0.5.3 Beta RC5-rd-v8 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,6 +33,25 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 
+
+-------------------------------
+- 0.5.3b-rd-v8 RC5 Notes (02/26/2010) -
+-------------------------------
+This is the fifth beta release of the upcoming official 0.5.3b release.
+This RC includes the new Road Dyno tab, version 8.
+To use the Road Dyno:
+	- Clear all parameters from the other tabs to achieve the best data
+	  resolution.
+	- On the Dyno tab, select you vehicle and adjust the tire size and
+	  gear you will be using.
+	- Once set, press the Clear & Record Data button.
+	- With the button pressed setup to do your WOT run, no need to hurry.
+	- Hold WOT run to redline.  As soon as WOT is no longer detected the
+	  graph will be updated with your estimated wheel power and torque.
+	- Adjust temperature and humidity if they are not accurate and
+	  "recalculate" the results.
+	- Smoothing, lower is more smooth and higher is less smooth.
+	- Right click on the graph to Save as...
 
 -------------------------------
 - 0.5.3b RC5 Notes (11/29/2009) -

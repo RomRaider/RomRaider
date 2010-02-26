@@ -140,6 +140,7 @@
             <filter token="romrevisionurl" value="${romrevisionurl}"/>
             <filter token="ecudefsurl" value="${ecudefsurl}"/>
             <filter token="loggerdefsurl" value="${loggerdefsurl}"/>
+            <filter token="carsdefsurl" value="${carsdefsurl}"/>
             <filter token="release_notes" value="${release_notes}"/>
             <filter token="version.major" value="${version.major}"/>
             <filter token="version.minor" value="${version.minor}"/>
