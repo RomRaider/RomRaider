@@ -64,6 +64,7 @@ public final class DynoChartPanel extends JPanel {
     private static final Logger LOGGER = getLogger(DynoChartPanel.class);
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
+    private static final String START_PROMPT = "Accelerate using WOT when ready!!";
     private final XYSeries data = new XYSeries("Raw HP");		// series for HorsePower
     private final XYSeries data1 = new XYSeries("Raw TQ");		// series for Torque
     private final XYTrendline trendline = new XYTrendline(data);
@@ -72,18 +73,28 @@ public final class DynoChartPanel extends JPanel {
     private final XYSeries logRpm = new XYSeries("Logger RPM");		// series for raw sample RPM
     private final XYTrendline timeTrend = new XYTrendline(logTime);
     private final XYTrendline rpmTrend = new XYTrendline(logRpm);
+    private final XYSeries hpRef = new XYSeries("HP Ref");		// series for reference HP
+    private final XYSeries tqRef = new XYSeries("TQ Ref");		// series for reference TQ
+    private final XYTrendline hpTrend = new XYTrendline(hpRef);
+    private final XYTrendline tqTrend = new XYTrendline(tqRef);
     private final String labelX;
-    private String labelY1 = "";
-    private String labelY2 = "";
+    private String labelY1 = null;
+    private String labelY2 = null;
+    private String refResults = " ";
+    private StandardXYItemRenderer rendererY1 = new StandardXYItemRenderer();
+    private StandardXYItemRenderer rendererY2 = new StandardXYItemRenderer();
     private NumberAxis hpAxis = new NumberAxis("pwr");
     private NumberAxis tqAxis = new NumberAxis("tq");
     private XYPlot plot;
-//    private CircleDrawer hpCd = new CircleDrawer(RED, new BasicStroke(1.0f), null);
-//    private XYAnnotation bestHp = new XYDrawableAnnotation(1, 1, 10, 10, hpCd);
+    private final CircleDrawer cd = new CircleDrawer(RED, new BasicStroke(1.0f), null);
+    private XYAnnotation bestHp; 
+    private XYAnnotation bestTq; 
     private final XYPointerAnnotation hpPointer = new XYPointerAnnotation(
     										"Max HP", 1, 1, 3.0 * Math.PI / 6.0);
     private final XYPointerAnnotation tqPointer = new XYPointerAnnotation(
 											"Max TQ", 1, 1, 3.0 * Math.PI / 6.0);
+    private final XYTextAnnotation refStat = new XYTextAnnotation(refResults,0,0);
+    
     public DynoChartPanel(String labelX, String labelY1, String labelY2) {
         super(new SpringLayout());
         checkNotNull(labelX, labelY1, labelY2);
@@ -103,29 +114,71 @@ public final class DynoChartPanel extends JPanel {
         data1.add(x, y1);
     }
 
+    public synchronized void setRefTrace(double x, double y1, double y2){
+    	hpRef.add(x, y1);
+    	tqRef.add(x, y2);
+    }
+
+    public void updateRefTrace(int order) {
+    	if (hpRef.getItemCount() > 0) {
+	    	hpTrend.update(order);
+	    	tqTrend.update(order);
+	    	refStat.setText(refResults);
+    		refStat.setX(plot.getDomainAxis().getLowerBound() + 10);
+    		refStat.setY(hpAxis.getUpperBound());
+            plot.addAnnotation(refStat);
+    	}
+    }
+
+    public int getPwrTqCount() {
+    	return (int) data.getItemCount();
+    }
+
+    public String getPwrTq(int x){
+    	String set = data.getX(x) + "," + data.getY(x) + "," + data1.getY(x);
+    	return set;
+    }
+
+    public void setRefResults(String line) {
+    	refResults = "Reference: " + line;
+    }
+
+    public void clearRefTrace() {
+    	refResults = " ";
+    	plot.removeAnnotation(refStat);
+    	hpRef.clear();
+    	tqRef.clear();
+    	hpTrend.clear();
+    	tqTrend.clear();
+    }
+
     public void clear() {
-        hpAxis.setAutoRange(true);
-        tqAxis.setAutoRange(true);
-        trendline.clear();
-        trendline1.clear();
-        data.clear();
-        data1.clear();
     	logTime.clear();
     	logRpm.clear();
         timeTrend.clear();
         rpmTrend.clear();
-        plot.clearAnnotations();
+        clearGraph();
     }
 
     public int getSampleCount() {
-    	trendline.clear();
+    	clearGraph();
+    	return (int) logTime.getItemCount();
+    }
+    
+    public void clearGraph(){
+        trendline.clear();
         trendline1.clear();
         data.clear();
         data1.clear();
+        rendererY1.removeAnnotation(bestHp);
+        rendererY2.removeAnnotation(bestTq);
+		rendererY1.removeAnnotation(hpPointer);
+        rendererY2.removeAnnotation(tqPointer);
+        hpAxis.setAutoRange(true);
+        tqAxis.setAutoRange(true);
         plot.clearAnnotations();
-        return (int) logTime.getItemCount();
     }
-    
+
     public double[] getTimeCoeff(int order) {
         timeTrend.update(order);
         return getPolynomialCoefficients(timeTrend);
@@ -136,8 +189,9 @@ public final class DynoChartPanel extends JPanel {
         return getPolynomialCoefficients(rpmTrend);
     }
 
-    public void interpolate(int order, double min, double max, String carInfo, double fToE, double sToE, double tToS, String units) {
-        hpAxis.setAutoRange(true);
+    public String interpolate(int order, double min, double max, String carInfo, double fToE, double sToE, double tToS, String units) {
+//    	updateRefTrace(order);
+    	hpAxis.setAutoRange(true);
         tqAxis.setAutoRange(true);
     	trendline.update(order);
     	trendline1.update(order);
@@ -180,11 +234,12 @@ public final class DynoChartPanel extends JPanel {
         }
 //        double yMax = Math.max(maxTq, maxHp);
         double rangeMin = Math.min(tqAxis.getLowerBound(), hpAxis.getLowerBound());
-        hpAxis.setRange(Math.round(rangeMin), Math.round(hpAxis.getUpperBound()));
-        tqAxis.setRange(Math.round(rangeMin), Math.round(tqAxis.getUpperBound()));
         double yMin = Math.round(rangeMin);
         double ySpace = (hpAxis.getUpperBound() - hpAxis.getLowerBound()) / 25;
-    	double xMin = (max < 5000) ? 2100 : 2550;
+        double xMin = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 7) + plot.getDomainAxis().getLowerBound();
+//    	double xMin = (max < 5000) ? 2100 : 2550;
+        hpAxis.setRange(Math.round(rangeMin), Math.round(hpAxis.getUpperBound() + ySpace));
+        tqAxis.setRange(Math.round(rangeMin), Math.round(tqAxis.getUpperBound() + ySpace));
 //        LOGGER.trace("yMin:" + yMin + " yMax:" + yMax + " ySpace:" + ySpace);
 
         String hpUnits = " hp(I)";
@@ -208,26 +263,20 @@ public final class DynoChartPanel extends JPanel {
         LOGGER.info("DYNO Results: " + stat1Text);
         LOGGER.info("DYNO Results: " + stat2Text);
         LOGGER.info("DYNO Results: " + stat3Text);
-//        final CircleDrawer hpCd = new CircleDrawer(RED, new BasicStroke(1.0f), null);
-//        final XYAnnotation bestHp = new XYDrawableAnnotation(maxHpRpm, maxHp, 10, 10, hpCd);
-//        final XYAnnotation hpPointer = new XYPointerAnnotation(
-//        					"Max HP", maxHpRpm, maxHp, 3.0 * Math.PI / 6.0);
+        bestHp = new XYDrawableAnnotation(maxHpRpm, maxHp, 10, 10, cd);
         hpPointer.setX(maxHpRpm);
         hpPointer.setY(maxHp);
         hpPointer.setArrowPaint(BLUE);
-        hpPointer.setTipRadius(2.0);
-        hpPointer.setBaseRadius(20.0);
+        hpPointer.setTipRadius(7.0);
+        hpPointer.setBaseRadius(30.0);
         hpPointer.setFont(new Font("SansSerif",Font.BOLD,10));
         hpPointer.setPaint(BLUE);
-//        final CircleDrawer tqCd = new CircleDrawer(RED, new BasicStroke(1.0f), null);
-//        final XYAnnotation bestTq = new XYDrawableAnnotation(maxTqRpm, maxTq, 10, 10, tqCd);
-//        final XYPointerAnnotation tqPointer = new XYPointerAnnotation(
-//        					"Max TQ", maxTqRpm, maxTq, 3.0 * Math.PI / 6.0);
+        bestTq = new XYDrawableAnnotation(maxTqRpm, maxTq, 10, 10, cd);
         tqPointer.setX(maxTqRpm);
         tqPointer.setY(maxTq);
         tqPointer.setArrowPaint(YELLOW);
-        tqPointer.setTipRadius(2.0);
-        tqPointer.setBaseRadius(20.0);
+        tqPointer.setTipRadius(7.0);
+        tqPointer.setBaseRadius(30.0);
         tqPointer.setFont(new Font("SansSerif",Font.BOLD,10));
         tqPointer.setPaint(YELLOW);
         final XYTextAnnotation dynoResults = new XYTextAnnotation(resultsText, xMin, yMin+(ySpace*4));
@@ -250,15 +299,21 @@ public final class DynoChartPanel extends JPanel {
         stat3.setPaint(RED);
         stat3.setTextAnchor(TextAnchor.BOTTOM_LEFT);
         stat3.setFont(new Font("SansSerif", Font.PLAIN,12));
-//		plot.addAnnotation(bestHp);
-//		plot.addAnnotation(bestTq);
-//		plot.addAnnotation(hpPointer);
-//		plot.addAnnotation(tqPointer);
+        if (!refResults.equals(" ")){
+    		refStat.setX(plot.getDomainAxis().getLowerBound() + 10);
+    		refStat.setY(hpAxis.getUpperBound());
+            plot.addAnnotation(refStat);
+        }
+		rendererY1.addAnnotation(bestHp);
+		rendererY2.addAnnotation(bestTq);
+		rendererY1.addAnnotation(hpPointer);
+        rendererY2.addAnnotation(tqPointer);
         plot.addAnnotation(dynoResults);
         plot.addAnnotation(carText);
         plot.addAnnotation(stat1);
         plot.addAnnotation(stat2);
         plot.addAnnotation(stat3);
+        return resultsText;
     }
 
     public double[] calculate(XYTrendline trendSeries, double[] x) {
@@ -285,7 +340,12 @@ public final class DynoChartPanel extends JPanel {
         addTrendLineY1(chart, 0, trendline, BLUE);
         addTrendLineY2(chart, 1, trendline1, YELLOW);
         addSeries(chart, 2, data, 1, RED);
-        addSeries(chart, 3, data1, 1, GREEN);
+        addSeries(chart, 3, data1, 1, MAGENTA);
+        addSeries(chart, 4, hpRef, 1, BLACK);
+        addSeries(chart, 5, tqRef, 1, BLACK);
+        addTrendLine(chart, 6, hpTrend, BLUE);
+        addTrendLine(chart, 7, tqTrend, YELLOW);
+
         return chart;
     }
 
@@ -308,6 +368,8 @@ public final class DynoChartPanel extends JPanel {
         plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_LEFT);
         plot.mapDatasetToRangeAxis(0, 0);
         plot.mapDatasetToRangeAxis(2, 0);
+        plot.mapDatasetToRangeAxis(4, 0);
+        plot.mapDatasetToRangeAxis(6, 0);
         // Y2 axis (right) settings
         tqAxis.setLabel(labelY2);
         tqAxis.setLabelPaint(YELLOW);
@@ -318,12 +380,19 @@ public final class DynoChartPanel extends JPanel {
         plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
         plot.mapDatasetToRangeAxis(1, 1);
         plot.mapDatasetToRangeAxis(3, 1);
+        plot.mapDatasetToRangeAxis(5, 1);
+        plot.mapDatasetToRangeAxis(7, 1);
         plot.setRangeGridlinePaint(DARK_GREY);
-        plot.setRenderer(buildScatterRenderer(2, RED));
+	    refStat.setPaint(WHITE);
+	    refStat.setTextAnchor(TextAnchor.TOP_LEFT);
+	    refStat.setFont(new Font("SansSerif", Font.BOLD,12));
+
     }
 
     public void startPrompt() {
-	    final XYTextAnnotation startMessage = new XYTextAnnotation("Accelerate using WOT now!!", 0.4, 0.55);
+        final double x = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 2) + plot.getDomainAxis().getLowerBound();  
+        final double y = ((hpAxis.getUpperBound() - hpAxis.getLowerBound()) / 2) + hpAxis.getLowerBound();
+    	final XYTextAnnotation startMessage = new XYTextAnnotation(START_PROMPT, x, y);
 	    startMessage.setPaint(GREEN);
 	    startMessage.setTextAnchor(TextAnchor.BOTTOM_CENTER);
 	    startMessage.setFont(new Font("Arial", Font.BOLD,20));
@@ -340,6 +409,12 @@ public final class DynoChartPanel extends JPanel {
         renderer.setDotWidth(size);
         renderer.setSeriesPaint(0, color);
         return renderer;
+    }
+
+    private void addTrendLine(JFreeChart chart, int index, XYTrendline trendline, Color color) {
+        XYPlot plot = chart.getXYPlot();
+        plot.setDataset(index, trendline);
+        plot.setRenderer(index, buildTrendLineRenderer(color));
     }
 
     private void addTrendLineY1(JFreeChart chart, int index, XYTrendline trendline, Color color) {
@@ -361,17 +436,21 @@ public final class DynoChartPanel extends JPanel {
         plot.setRenderer(index, buildScatterRenderer(size, color));
     }
 
-    private StandardXYItemRenderer buildTrendLineRendererY1(Color color) {
-        StandardXYItemRenderer renderer = new StandardXYItemRenderer();
+    private StandardXYItemRenderer buildTrendLineRenderer(Color color) {
+    	StandardXYItemRenderer renderer = new StandardXYItemRenderer();
         renderer.setSeriesPaint(0, color);
-        renderer.addAnnotation(hpPointer); // ties annotation to the Y1 range axis
+        float dash[] = { 2.0f };
+        renderer.setSeriesStroke(0, new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dash, 0.0f));
         return renderer;
     }
 
+    private StandardXYItemRenderer buildTrendLineRendererY1(Color color) {
+        rendererY1.setSeriesPaint(0, color);
+        return rendererY1;
+    }
+
     private StandardXYItemRenderer buildTrendLineRendererY2(Color color) {
-        StandardXYItemRenderer renderer = new StandardXYItemRenderer();
-        renderer.setSeriesPaint(0, color);
-        renderer.addAnnotation(tqPointer);	// ties annotation to the Y2 range axis
-        return renderer;
+        rendererY2.setSeriesPaint(0, color);
+        return rendererY2;
     }
 }

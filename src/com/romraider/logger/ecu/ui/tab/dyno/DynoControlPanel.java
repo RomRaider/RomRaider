@@ -36,7 +36,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,8 +49,10 @@ import java.util.List;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -98,6 +105,17 @@ public final class DynoControlPanel extends JPanel {
     private static final String ELEVATION_TT ="Elevation is calculated from ECU ATM sensor";
     private static final String AMB_TEMP_TT ="Ambient Temperature is updated from IAT sensor";
     private static final String ORDER_TT ="Lower number provides more smoothing";
+    private static final String COLON = ":";
+    private static final String COMMA = ",";
+    private static final String TAB = "\u0009";
+    private static final String RR_LOG_TIME = "Time";
+    private static final String COBB_AP_TIME = "Seconds";
+    private static final String COBB_ATR_TIME = "Time Stamp";
+    private static final String AEM_LOG_TIME = "Time/s";
+    private static final String LOG_RPM = "RPM";
+    private static final String LOG_ES = "Engine Speed";
+    private static final String LOG_VS = "Vehicle Speed";
+    private static final String LOG_TA = "Throttle";
     private final DataRegistrationBroker broker;
     private final DynoChartPanel chartPanel;
     private final Component parent;
@@ -126,7 +144,7 @@ public final class DynoControlPanel extends JPanel {
     private long eTime = 0;
     private long ttTime = 0;
     private long stTime = 0;
-    private int order;
+//    private int order;
     private boolean getEnv = false;
     private boolean wotSet = false;
     private String carInfo;
@@ -173,14 +191,19 @@ public final class DynoControlPanel extends JPanel {
     private String iatLogUnits = "F";
     private String atmLogUnits = "psi";
     private String vsLogUnits = "mph";
+    private String currentResult = null;
 //    private String hpUnits = "hp(I)";
 //    private String tqUnits = "lbf-ft";
 
     private final JComboBox orderComboBox = buildPolyOrderComboBox();
     private final JComboBox carSelectBox = buildCarSelectComboBox();
     private final JComboBox gearSelectBox = buildGearComboBox();
+    private final JButton interpolateButton = new JButton("Recalculate");
     private final JToggleButton recordDataButton = new JToggleButton("Clear & Record Data");
     private final JRadioButton iButton = new JRadioButton(IMPERIAL);
+    private final JRadioButton mButton = new JRadioButton(METRIC);
+    private final JCheckBox loadFileCB = new JCheckBox("Load From File");
+
     
     public DynoControlPanel(Component parent, DataRegistrationBroker broker, ECUEditor ecuEditor, DynoChartPanel chartPanel) {
         checkNotNull(parent, broker, chartPanel);
@@ -317,7 +340,7 @@ public final class DynoControlPanel extends JPanel {
     }
 
     public void updateChart() {
-        order = (Integer) orderComboBox.getSelectedItem();
+        int order = (Integer) orderComboBox.getSelectedItem();
         timeArray = Arrays.copyOf(chartPanel.getTimeCoeff(1), chartPanel.getTimeCoeff(1).length);
         LOGGER.info("DYNO Time Coeffecients: " + Arrays.toString(timeArray));
         speedArray = Arrays.copyOf(chartPanel.getRpmCoeff(order), chartPanel.getRpmCoeff(order).length);
@@ -355,7 +378,7 @@ public final class DynoControlPanel extends JPanel {
             lastRpm = speedSample;
 //            LOGGER.trace("time: " + timeSample + " rpm: " + speedSample + " hp: " + nowHp + " tq: " + nowTq);
         }
-        chartPanel.interpolate(order, parseDouble(rpmMin), parseDouble(rpmMax), carInfo, fToE, sToE, tToS, units);
+        currentResult = chartPanel.interpolate(order, parseDouble(rpmMin), parseDouble(rpmMax), carInfo, fToE, sToE, tToS, units);
         parent.repaint();
     }
 
@@ -409,6 +432,7 @@ public final class DynoControlPanel extends JPanel {
         add(panel, gridBagLayout, buildFilterPanel(), 0, 0, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildRadioPanel(), 0, 1, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildInterpolatePanel(), 0, 2, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildReferencePanel(), 0, 3, 1, HORIZONTAL);
         add(panel);
     }
 
@@ -449,6 +473,19 @@ public final class DynoControlPanel extends JPanel {
         return panel;
     }
 
+    private JPanel buildReferencePanel() {
+    	JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder("Reference Trace"));
+
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        panel.setLayout(gridBagLayout);
+        add(panel, gridBagLayout, buildOpenReferenceButton(), 0, 0, 1, NONE);
+        add(panel, gridBagLayout, buildSaveReferenceButton(), 1, 0, 1, NONE);
+        add(panel, gridBagLayout, buildClearReferenceButton(), 2, 0, 1, NONE);
+
+        return panel;
+    }
+
     private void addLabeledComponent(JPanel panel, GridBagLayout gridBagLayout, String name, JComponent component, int y) {
         add(panel, gridBagLayout, new JLabel(name), 0, y, 3, HORIZONTAL);
         add(panel, gridBagLayout, component, 0, y + 1, 3, NONE);
@@ -474,6 +511,7 @@ public final class DynoControlPanel extends JPanel {
         add(panel, gridBagLayout, carMassLabel, 0, 27, 3, HORIZONTAL);
         add(panel, gridBagLayout, carMass, 1, 28, 1, NONE);
         addComponent(panel, gridBagLayout, buildRecordDataButton(), 31);
+        addComponent(panel, gridBagLayout, buildLoadFileCB(), 32);
 //        addLabeledComponent(panel, gridBagLayout, "Drag Coeff", dragCoeff, 33);
 //        addLabeledComponent(panel, gridBagLayout, "Frontal Area", frontalArea, 36);
 //        addLabeledComponent(panel, gridBagLayout, "Rolling Resist Coeff", rollCoeff, 39);
@@ -500,21 +538,26 @@ public final class DynoControlPanel extends JPanel {
     	if (!carTypeArr[0].trim().equals(MISSING_CAR_DEF)) {
 	        recordDataButton.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent actionEvent) {
-	                if (recordDataButton.isSelected()) {
-	                    chartPanel.clear();
-	                    parent.repaint();
-	                	calculateEnv();
-	                	if (isManual()) {
-	                        registerData(ENGINE_SPEED, THROTTLE_ANGLE);
-	                	}
-	                	else {
-	                        registerData(ENGINE_SPEED, VEHICLE_SPEED, THROTTLE_ANGLE);
-	                	}
-	                    chartPanel.startPrompt();
-	                } else {
-	                	deregister();
-	                	chartPanel.clearPrompt();
-	                }
+	            	if (loadFileCB.isSelected()) {
+	            		loadFromFile();
+	            	}
+	            	else {
+		            	if (recordDataButton.isSelected()) {
+		            		chartPanel.clear();
+		                    parent.repaint();
+		                	calculateEnv();
+		                	if (isManual()) {
+		                        registerData(ENGINE_SPEED, THROTTLE_ANGLE);
+		                	}
+		                	else {
+		                        registerData(ENGINE_SPEED, VEHICLE_SPEED, THROTTLE_ANGLE);
+		                	}
+		                    chartPanel.startPrompt();
+		                } else {
+		                	deregister();
+		                	chartPanel.clearPrompt();
+		                }
+	            	}
 	            }
 	            
 	        });
@@ -525,28 +568,40 @@ public final class DynoControlPanel extends JPanel {
         return recordDataButton;
     }
 
+    private JCheckBox buildLoadFileCB() {
+    	loadFileCB.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (loadFileCB.isSelected()) {
+                	recordDataButton.setText("Clear & Read From File");
+                }
+                else {
+                	recordDataButton.setText("Clear & Record Data");
+                }
+            }
+            
+        });
+        return loadFileCB;
+    }
+
     public boolean isRecordData() {
         return recordDataButton.isSelected();
     }
 
     private void buildRadioButtons(JPanel panel) {
-	    	//Create the radio buttons.
-//		    JRadioButton iButton = new JRadioButton(IMPERIAL);
 		    iButton.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent actionEvent) {
 	            	buttonAction(iButton);
 	            }
 	        });
-		    iButton.setActionCommand(IMPERIAL);
+//		    iButton.setActionCommand(IMPERIAL);
 		    iButton.setSelected(true);
 		
-		    final JRadioButton mButton = new JRadioButton(METRIC);
 		    mButton.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent actionEvent) {
 	            	buttonAction(mButton);
 	            }
 	        });
-		    mButton.setActionCommand(METRIC);
+//		    mButton.setActionCommand(METRIC);
 		
 //		    final JRadioButton sButton = new JRadioButton(SI);
 //		    sButton.addActionListener(new ActionListener() {
@@ -653,10 +708,223 @@ public final class DynoControlPanel extends JPanel {
 //	    	deltaMassLabel.setText("Delta Weight (kg)");
 //	    	carMassLabel.setText("Base Weight (kg)");
 //	    }
+	    if (currentResult != null) interpolateButton.doClick();
 	    LOGGER.info("DYNO: Measurement units selected: " + units);
 	}
 
-	private void registerData(String... ids) {
+	private void loadFromFile() {
+    	final JFileChooser openFile = new JFileChooser();
+        final JButton openButton = new JButton("Open");
+
+        int returnVal = openFile.showOpenDialog(openButton);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            final File traceFile = openFile.getSelectedFile();
+            BufferedReader inputStream = null;
+    		recordDataButton.setSelected(false);
+            chartPanel.clear();
+            parent.repaint();
+
+            try {
+                inputStream = new BufferedReader(new FileReader(traceFile));
+                LOGGER.info("DYNO: Opening log file: " + traceFile.getName());
+                boolean atrTime = false;
+                double timeMult = 1;
+                double startTime = -999999999;
+                int timeCol = 0;
+                int rpmCol = 0;
+                int vsCol = 0;
+                int taCol = 0;
+                int sample = 0;
+                double minSpeed = 3500;
+                double maxSpeed = 0;
+                String delimiter = COMMA;
+                String line = inputStream.readLine();
+                String[] headers;
+                headers = line.split(COMMA);
+                if (headers.length < 3) {
+                    headers = line.split(TAB);
+                    if (headers.length > 2) delimiter = TAB;
+                }
+                for (int x =0; x < headers.length; x++){
+                	if (headers[x].contains(RR_LOG_TIME)) timeCol = x;
+                	if (headers[x].contains(COBB_AP_TIME) || headers[x].contains(AEM_LOG_TIME)) {
+                		timeCol = x;
+                		timeMult = 1000;
+                	 }
+                	if (headers[x].contains(COBB_ATR_TIME)) {
+                		timeCol = x;
+                		timeMult = 1000;
+                		atrTime = true;
+                	 }
+                	if (headers[x].toUpperCase().contains(LOG_RPM) || headers[x].contains(LOG_ES)) rpmCol = x;
+                	if (headers[x].contains(LOG_VS)) vsCol = x;
+                	if (headers[x].contains(LOG_TA)) taCol = x;
+                }
+                while ((line = inputStream.readLine()) != null) {
+                	String[] values = line.split(delimiter);
+            		if (Double.parseDouble(values[taCol]) > 98) {
+            			double logTime = 0;
+            			if (atrTime) {
+            				String[] timeStamp = values[timeCol].split(COLON);
+            				if (timeStamp.length == 3) {
+	            				logTime = ((Double.parseDouble(timeStamp[0]) * 3600) +
+	            						   (Double.parseDouble(timeStamp[1]) * 60) +
+	            						    Double.parseDouble(timeStamp[2])) * timeMult;
+            				}
+            				else {
+	            				logTime = ((Double.parseDouble(timeStamp[0]) * 60) +
+	            						    Double.parseDouble(timeStamp[1])) * timeMult;
+            				}
+            			}
+            			else {
+            				logTime = Double.parseDouble(values[timeCol])  * timeMult;
+            			}
+            			if (startTime == -999999999) startTime = logTime;
+            			logTime = logTime - startTime;
+            			double speed = 0;
+            			if (isManual()){
+            				speed = Double.parseDouble(values[rpmCol]);
+            				minSpeed = Math.min(minSpeed, speed);
+            				maxSpeed = Math.max(maxSpeed, speed);
+            			}
+            			else {
+            				speed = Double.parseDouble(values[vsCol]);
+            				minSpeed = Math.min(minSpeed, (speed * rpm2mph));
+            				maxSpeed = Math.max(maxSpeed, (speed * rpm2mph));
+            			}
+        				chartPanel.addRawData(sample, logTime, speed);
+//        				LOGGER.trace(sample + "," + logTime + "," + speed);
+						sample++;
+            		}
+                }
+                inputStream.close();
+                rpmMin.setText(String.format("%1.0f", minSpeed));
+                rpmMax.setText(String.format("%1.0f", maxSpeed));
+                interpolateButton.doClick();
+            }
+            catch (IOException e) {
+                if (inputStream != null) {
+                    try {
+						inputStream.close();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+                }
+            }
+        }
+        else {
+        	LOGGER.info("DYNO: Open log file command cancelled by user.");
+        }
+	}
+
+	private JButton buildOpenReferenceButton() {
+    	final JFileChooser openFile = new JFileChooser();
+        final JButton openButton = new JButton("Open");
+
+        openButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                int returnVal = openFile.showOpenDialog(openButton);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    final File traceFile = openFile.getSelectedFile();
+                    BufferedReader inputStream = null;
+
+                    try {
+                        inputStream = new BufferedReader(new FileReader(traceFile));
+                        LOGGER.info("DYNO: Opening trace file: " + traceFile.getName());
+
+                        String line = inputStream.readLine();
+                        String[] refStats = line.split(COMMA);
+                        chartPanel.setRefResults(refStats[2]);
+                        while ((line = inputStream.readLine()) != null) {
+                        	String[] values = line.split(COMMA);
+                        	if (Double.parseDouble(values[0]) >= 0 ) {
+                        		chartPanel.setRefTrace(Double.parseDouble(values[0]), Double.parseDouble(values[1]), Double.parseDouble(values[2]));
+                        	}
+                        }
+                        inputStream.close();
+                        if (refStats[0].equalsIgnoreCase(IMPERIAL)) {
+                        	iButton.setSelected(true);
+                        	buttonAction(iButton);
+                        }
+                        if (refStats[0].equalsIgnoreCase(METRIC)) {
+                        	mButton.setSelected(true);
+                        	buttonAction(mButton);
+                        }
+                        chartPanel.updateRefTrace(Integer.parseInt(refStats[1]));
+                    }
+                    catch (IOException e) {
+                        if (inputStream != null) {
+                            try {
+								inputStream.close();
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+                        }
+                    }
+                }
+                else {
+                	LOGGER.info("DYNO: Open trace file command cancelled by user.");
+                }
+            }
+        });
+        return openButton;
+    }
+
+    private JButton buildSaveReferenceButton() {
+    	final JFileChooser openFile = new JFileChooser();
+        final JButton saveButton = new JButton("Save");
+
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                int returnVal = openFile.showSaveDialog(saveButton);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    final File traceFile = openFile.getSelectedFile();
+                    BufferedWriter outputStream = null;
+
+                    try {
+                    	outputStream = new BufferedWriter(new FileWriter(traceFile));
+                        LOGGER.info("DYNO: Saving trace to file: " + traceFile.getName());
+                        String line = units + COMMA + orderComboBox.getSelectedItem() + COMMA + currentResult;
+                    	outputStream.write(line, 0, line.length());
+                    	outputStream.newLine();
+
+                        for (int x = 0; x < chartPanel.getPwrTqCount(); x++) {
+                        	line = chartPanel.getPwrTq(x);
+                        	outputStream.write(line, 0, line.length());
+                        	outputStream.newLine();
+                        }
+                        outputStream.close();
+                    }
+                    catch (IOException e) {
+                        try {
+                        	outputStream.close();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+                    }
+                }
+                else {
+                	LOGGER.info("DYNO: Save trace file command cancelled by user.");
+                }
+            }
+        });
+        return saveButton;
+    }
+
+    private JButton buildClearReferenceButton() {
+    	final JButton clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	chartPanel.clearRefTrace();
+            }
+        });
+    	return clearButton;
+    }
+
+    private void registerData(String... ids) {
         for (String id : ids) {
             LoggerData data = findData(id);
             EcuDataConvertor convertor = data.getSelectedConvertor();
@@ -689,7 +957,7 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private void addComponent(JPanel panel, GridBagLayout gridBagLayout, JComponent component, int y) {
-        add(panel, gridBagLayout, component, 0, y, 3, HORIZONTAL);
+        add(panel, gridBagLayout, component, 0, y, 3, NONE);
     }
 
     private void addMinMaxFilter(JPanel panel, GridBagLayout gridBagLayout, String name, JTextField min, JTextField max, int y) {
@@ -718,7 +986,6 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JButton buildInterpolateButton( final JComboBox orderComboBox) {
-        JButton interpolateButton = new JButton("Recalculate");
         interpolateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
             	if (isValidRange(rpmMin, rpmMax)) {
