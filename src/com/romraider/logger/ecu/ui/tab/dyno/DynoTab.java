@@ -33,11 +33,9 @@ public interface DynoTab extends Tab {
 
     void addData(double xData, double yData, double y1Data);
 
-    void addRawData(double xData, double yData, double y1Data);
+    void addRawData(double xData, double yData);
 
-    double calcHp(double rpm, double lastRpm, long now, long lastupdate);
-
-    double calcTq(double rpm, double hp);
+    double calcMph(double rpm);
 
     int getSampleCount();
 }

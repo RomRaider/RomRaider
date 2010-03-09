@@ -97,7 +97,6 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
 
 
     private int i=0;
-    private int x=0;
     private double rpm;
     private double vs;
     private double ta;
@@ -128,8 +127,8 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
                     ta = findValue(response, TA);
                 }
                 valid = dynoTab.isValidData(rpm, ta);
-                LOGGER.info("DYNO Sample: " + x + " [Time]: " + now + " [RPM:P8]: " + rpm + " [Angle:P13]: " + ta);
-                if (valid) addRawData(x, now, rpm);
+                LOGGER.info("DYNO Sample: [Time]: " + now + " [RPM:P8]: " + rpm + " [Angle:P13]: " + ta);
+                if (valid) addRawData(now, rpm);
             }
             if (valid && containsData(response, RPM) && containsData(response, VS) &&
             			containsData(response, TA) && !dynoTab.isManual()) {
@@ -150,18 +149,17 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
 		            ta = findValue(response, TA);
             	}
 	            valid = dynoTab.isValidData(rpm, ta);
-                LOGGER.info("DYNO Sample: " + x + " [Time]: " + now + " [RPM:P8]: " + rpm + " [Angle:P13]: " + ta + " [VS:P9]: " + vs);
-	            if (valid) addRawData(x, now, vs);
+                LOGGER.info("DYNO Sample: [Time]: " + now + " [RPM:P8]: " + rpm + " [Angle:P13]: " + ta + " [VS:P9]: " + vs);
+	            if (valid) addRawData(now, vs);
             }
         }
         else {
-        	x = 0;
         	startNow = -999999999;
         }
         if (dynoTab.getEnv() && containsData(response, IAT) && containsData(response, ATM)) {
         	if (TEST) {
-        		iat = 60;
-        		atm = 14.65;
+        		iat = 62;
+        		atm = 12.60;
         	}
         	else {
             	iat = findValue(response, IAT);
@@ -172,16 +170,14 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
         }
     }
 
-    private void addRawData(final int sample, final long time, final double speed){
+    private void addRawData(final long time, final double speed){
     	if (startNow == -999999999) startNow = time;
     	final long sampleTime = time - startNow;
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-//                dynoTab.addData(sample, time, speed);
-        	    dynoTab.addRawData(sample, sampleTime, speed);
+        	    dynoTab.addRawData(sampleTime, speed);
             }
         });
-	    x++;
     }
 
     private boolean containsData(Response response, String... ids) {

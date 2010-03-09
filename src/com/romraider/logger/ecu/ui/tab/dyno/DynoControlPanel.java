@@ -114,8 +114,10 @@ public final class DynoControlPanel extends JPanel {
     private static final String AEM_LOG_TIME = "Time/s";
     private static final String LOG_RPM = "RPM";
     private static final String LOG_ES = "Engine Speed";
-    private static final String LOG_VS = "Vehicle Speed";
     private static final String LOG_TA = "Throttle";
+    private static final String LOG_VS = "Vehicle Speed";
+    private static final String LOG_VS_I = "mph";
+    private static final String LOG_VS_M = "kph";
     private final DataRegistrationBroker broker;
     private final DynoChartPanel chartPanel;
     private final Component parent;
@@ -134,19 +136,25 @@ public final class DynoControlPanel extends JPanel {
     private double P_v;
     private double P_d;
     private double airDen;
-    private double[] timeArray;
-    private double[] speedArray;
+    private double[] rpmArray;
+    private double[] accelArray;
     private double fToE = 0;
     private double sToE = 0;
     private double tToS = 0;
+    private double reFfToE = 0;
+    private double reFsToE = 0;
+    private double reFtToS = 0;
+    private double reFauc = 0;
+    private double auc = 0;
+    private double aucStart = 0;
     private long fTime = 0;
     private long sTime = 0;
     private long eTime = 0;
     private long ttTime = 0;
     private long stTime = 0;
-//    private int order;
     private boolean getEnv = false;
     private boolean wotSet = false;
+    private String path = null;
     private String carInfo;
     private String[] carTypeArr;
     private String[] carMassArr;
@@ -191,7 +199,8 @@ public final class DynoControlPanel extends JPanel {
     private String iatLogUnits = "F";
     private String atmLogUnits = "psi";
     private String vsLogUnits = "mph";
-    private String currentResult = null;
+	private double[] results = new double[5];
+	private String[] resultStrings = new String[6];
 //    private String hpUnits = "hp(I)";
 //    private String tqUnits = "lbf-ft";
 
@@ -210,7 +219,6 @@ public final class DynoControlPanel extends JPanel {
         this.parent = parent;
         this.broker = broker;
         this.chartPanel = chartPanel;
-
         addControls();
     }
 
@@ -249,12 +257,10 @@ public final class DynoControlPanel extends JPanel {
 		elevUnits + ", Pres: " + pressText + pressUnits + ", Hum: " + relHumid.getText().trim() + "%, Temp: " + ambTemp.getText().trim() + tempUnits;
     }
     
-    public double calcHp(double speed, double lastSpeed, long now, long lastUpdate) {
-    	double timeDiff = now - lastUpdate; //system time in msec
-    	double mph = calcMph(speed);
-    	double lastMph = calcMph(lastSpeed);
-    	// calculate slope and convert to G's (MPH/msec)
-    	double accelG = ((timeDiff * (mph - lastMph)) / Math.pow(timeDiff, 2))* 45.5486542443;
+    private double calcHp(double rpm, double accel, long now) {
+    	double mph = calcMph(rpm);
+    	// convert RPM acceleration to G's (MPH/msec)
+    	double accelG = accel * 45.5486542443 / rpm2mph;
     	// calculate Drive power = power required to propel vehicle mass at certain speed and acceleration.
     	// =Force*Velocity=Mass*Accel*Velocity
     	// Accel(m/s/s)*Mass(kg)*Velocity(m/s)
@@ -272,20 +278,19 @@ public final class DynoControlPanel extends JPanel {
     	if (units.equals(METRIC)){
     		hp = hp  / 1000;
     	}
-//    	LOGGER.trace(mph + ":" + lastMph + ":" + accelG + ":" + dP + ":" + rP + ":" + aP + ":" + hp);
+    	// Calculate acceleration statistics
     	fTime = (mph <= 50) ? now : fTime;
     	sTime = (mph <= 60) ? now :	sTime;
     	eTime = (mph <= 80) ? now : eTime;
-    	ttTime = (speed <= 3000) ? now : ttTime;
-    	stTime = (speed <= 6000) ? now : stTime;
+    	ttTime = (rpm <= 3000) ? now : ttTime;
+    	stTime = (rpm <= 6000) ? now : stTime;
         fToE = (eTime - fTime) / 1000.0;		// 50-80mph, sec
         sToE = (eTime - sTime) / 1000.0;		// 60-80mph, sec
         tToS = (stTime - ttTime) / 1000.0;	// 3-6k rpm, sec
-//        LOGGER.trace(fToE + " : " + sToE + " : " + tToS + " : " + mph + " : " + rpm  + " : " + now);
     	return hp;
     }
 
-    public double calcTq(double rpm, double hp) {
+    private double calcTq(double rpm, double hp) {
         double tq = 0;
     	if (units.equals(IMPERIAL)){
     		tq = hp / rpm * 5252.113122;
@@ -296,9 +301,15 @@ public final class DynoControlPanel extends JPanel {
 //    	LOGGER.trace(hp + " : " + tq);
     	return tq;
     }
-    private double calcMph(double rpm) {
-		double mph = rpm / rpm2mph;
-		return mph;
+    public double calcMph(double rpm) {
+		return (rpm / rpm2mph);
+    }
+
+    public double calcRpm(double mph) {
+		double logRpm = 0;
+		if (vsLogUnits.equals(LOG_VS_I)) logRpm = (mph * rpm2mph);
+		if (vsLogUnits.equals(LOG_VS_M)) logRpm = (mph * rpm2mph / 1.609344);
+    	return logRpm;
     }
 
     public void updateEnv(double iat, double at_press) {
@@ -334,51 +345,96 @@ public final class DynoControlPanel extends JPanel {
     	}
     	// disable user input if ECU parameters recorded
 //    	ambTemp.setEnabled(false);
-//    	elevation.setEnabled(false);
+    	elevation.setEnabled(false);
     	calculateEnv();
         updateChart();
     }
 
     public void updateChart() {
+    	auc = 0;
+    	aucStart = 0;
+    	double maxHp = 0;
+        double maxHpRpm = 0;
+        double maxTq = 0;
+        double maxTqRpm = 0;
+        double nowHp = 0;
+        double nowTq = 0;
         int order = (Integer) orderComboBox.getSelectedItem();
-        timeArray = Arrays.copyOf(chartPanel.getTimeCoeff(1), chartPanel.getTimeCoeff(1).length);
-        LOGGER.info("DYNO Time Coeffecients: " + Arrays.toString(timeArray));
-        speedArray = Arrays.copyOf(chartPanel.getRpmCoeff(order), chartPanel.getRpmCoeff(order).length);
-        LOGGER.info("DYNO RPM Coeffecients: " + Arrays.toString(speedArray));
+        rpmArray = Arrays.copyOf(chartPanel.getRpmCoeff(order), chartPanel.getRpmCoeff(order).length);
+        LOGGER.info("DYNO RPM Coeffecients: " + Arrays.toString(rpmArray));
+    	accelArray = new double[(order)];
+        for (int x = 0; x < order; x++) {
+        	accelArray[x] = (order-x) * rpmArray[x];
+        }
+    	LOGGER.info("DYNO Accel Coeffecients: " + Arrays.toString(accelArray));
     	int samples = chartPanel.getSampleCount();
     	LOGGER.info("DYNO Sample Count: " + samples);
-        double lastRpm = 0;
-        long lastUpdate = 0;
-        for (int x = 0; x < samples; x++) {
-    		double timeSample = 0;
-        	double speedSample = 0;
-            double nowHp = 0;
-            double nowTq = 0;
-        	for (int i = 0; i < order + 1; i++) {
-//        		int pwr = order - i;
-//        		timeSample = timeSample + (Math.pow(x,order-i) * timeArray[i]);
-        		speedSample = speedSample + (Math.pow(x,order-i) * speedArray[i]);
-//        		LOGGER.trace("sample: " + x + " i " + i + " pwr " + pwr + " coeff_i " + timeArray[i] + " time " + timeSample);
+    	double timeMin = chartPanel.getTimeSample(0);
+    	double timeMax = chartPanel.getTimeSample(samples - 1);
+    	for (double x = timeMin; x <= timeMax; x=x+10) {
+        	double rpmSample = 0;
+        	double accelSample = 0;
+        	// Calculate smoothed RPM from coefficients
+        	for (int i = 0; i <= order; i++) {
+        		int pwr = order - i;
+        		rpmSample = rpmSample + (Math.pow(x,pwr) * rpmArray[i]);
         	}
-        	// this linearizes the time rather than polyfit
-        	timeSample = (x * timeArray[0]) + timeArray[1];
-//    		LOGGER.trace("sample: " + x + " time: " + timeSample);
-        	if ( !isManual()) {	// if auto convert Speed sample to RPM
-        		if (vsLogUnits.equals("mph")) speedSample = speedSample * rpm2mph;
-        		if (vsLogUnits.equals("kph")) speedSample = speedSample * rpm2mph / 1.609344;
+        	// Calculate RPM acceleration from first derivative of RPM coefficients
+        	for (int i = 0; i < order; i++) {
+        		int pwr = order - i - 1;
+        		accelSample = accelSample + (Math.pow(x,pwr) * accelArray[i]);
         	}
-//    		LOGGER.trace("time: " + timeSample + " rpm: " + speedSample);
-            if (x > 0) {
-//        		LOGGER.trace(speedSample + ": " + lastRpm + ": " + timeSample + ": " + lastUpdate);
-	            nowHp = calcHp(speedSample, lastRpm, (long) timeSample, lastUpdate);
-	        	nowTq = calcTq(speedSample, nowHp);
-	        	chartPanel.addData(speedSample, nowHp, nowTq);
-            }
-            lastUpdate = (long) timeSample;
-            lastRpm = speedSample;
-//            LOGGER.trace("time: " + timeSample + " rpm: " + speedSample + " hp: " + nowHp + " tq: " + nowTq);
+        	if (checkInRange("RPM", rpmMin, rpmMax, rpmSample)){
+	            nowHp = calcHp(rpmSample, accelSample, (long) x);
+	        	nowTq = calcTq(rpmSample, nowHp);
+	        	chartPanel.addData(rpmSample, nowHp, nowTq);
+	        	if (nowHp > maxHp){
+	            	maxHp = nowHp;
+	            	maxHpRpm = rpmSample;
+	            }
+	            if (nowTq > maxTq){
+	            	maxTq = nowTq;
+	            	maxTqRpm = rpmSample;
+	            }
+	            if ( rpmSample >= 3000 && rpmSample <= 6000) {
+	            	if (aucStart == 0) aucStart = (nowHp * rpmSample) + (nowTq * rpmSample);
+	            	auc = auc + Math.abs((nowHp * rpmSample) + (nowTq * rpmSample) - aucStart);
+	            }
+        	}
         }
-        currentResult = chartPanel.interpolate(order, parseDouble(rpmMin), parseDouble(rpmMax), carInfo, fToE, sToE, tToS, units);
+    	auc = auc / 1e6 / tToS;
+    	results[0] = maxHp;
+    	results[1] = maxHpRpm;
+    	results[2] = maxTq;
+    	results[3] = maxTqRpm;
+        String hpUnits = " hp(I)";
+        String tqUnits = " lbf-ft";
+        resultStrings[0] = carInfo;
+        resultStrings[1] = "Max Pwr: " + String.format("%1.1f", maxHp) + hpUnits +
+		  " @ " + String.format("%1.0f",maxHpRpm) + 
+		  " RPM / Max TQ: " + String.format("%1.1f", maxTq) + tqUnits +
+		  " @ " + String.format("%1.0f", maxTqRpm) + " RPM";
+        resultStrings[2] = "50-80 MPH: " + fToE + " secs";
+        resultStrings[3] = "60-80 MPH: " + sToE + " secs";
+        if (units.equalsIgnoreCase("Metric")) {
+        	hpUnits = " kW";
+        	tqUnits = " N-m";
+        	resultStrings[2] = "80-130 km/h: " + fToE + " secs";
+        	resultStrings[3] = "100-130 km/h: " + sToE + " secs";
+        }
+        resultStrings[4] = "3000-6000 RPM: " + tToS + " secs";
+        resultStrings[5] = "3000-6000 RPM: " + String.format("%1.2f",auc) + " AUC";
+        if (reFfToE > 0) resultStrings[2] = resultStrings[2] + " (" + String.format("%1.2f", (fToE - reFfToE)) + ")";
+        if (reFsToE > 0) resultStrings[3] = resultStrings[3] + " (" + String.format("%1.2f", (sToE - reFsToE)) + ")";
+        if (reFtToS > 0) resultStrings[4] = resultStrings[4] + " (" + String.format("%1.2f", (tToS - reFtToS)) + ")";
+        if (reFauc > 0) resultStrings[5] = resultStrings[5] + " (" + String.format("%1.2f", (auc - reFauc)) + ")";
+        LOGGER.info("DYNO Results: " + carInfo);
+        LOGGER.info("DYNO Results: " + resultStrings[1]);
+        LOGGER.info("DYNO Results: " + resultStrings[2]);
+        LOGGER.info("DYNO Results: " + resultStrings[3]);
+        LOGGER.info("DYNO Results: " + resultStrings[4]);
+        LOGGER.info("DYNO Results: " + resultStrings[5]);
+        chartPanel.interpolate(results, resultStrings);
         parent.repaint();
     }
 
@@ -538,6 +594,7 @@ public final class DynoControlPanel extends JPanel {
     	if (!carTypeArr[0].trim().equals(MISSING_CAR_DEF)) {
 	        recordDataButton.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent actionEvent) {
+	            	elevation.setEnabled(true);
 	            	if (loadFileCB.isSelected()) {
 	            		loadFromFile();
 	            	}
@@ -708,26 +765,29 @@ public final class DynoControlPanel extends JPanel {
 //	    	deltaMassLabel.setText("Delta Weight (kg)");
 //	    	carMassLabel.setText("Base Weight (kg)");
 //	    }
-	    if (currentResult != null) interpolateButton.doClick();
-	    LOGGER.info("DYNO: Measurement units selected: " + units);
+	    if (resultStrings[0] != null) interpolateButton.doClick();
+	    LOGGER.info("DYNO Measurement units selected: " + units);
 	}
 
 	private void loadFromFile() {
     	final JFileChooser openFile = new JFileChooser();
+    	if (path != null) openFile.setCurrentDirectory(new File(path));
         final JButton openButton = new JButton("Open");
 
         int returnVal = openFile.showOpenDialog(openButton);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            final File traceFile = openFile.getSelectedFile();
+            final File logFile = openFile.getSelectedFile();
+            path = logFile.getParent();
             BufferedReader inputStream = null;
     		recordDataButton.setSelected(false);
             chartPanel.clear();
             parent.repaint();
-
+            calculateEnv();
+            
             try {
-                inputStream = new BufferedReader(new FileReader(traceFile));
-                LOGGER.info("DYNO: Opening log file: " + traceFile.getName());
+                inputStream = new BufferedReader(new FileReader(logFile));
+                LOGGER.info("DYNO Opening log file: " + logFile.getName());
                 boolean atrTime = false;
                 double timeMult = 1;
                 double startTime = -999999999;
@@ -735,9 +795,8 @@ public final class DynoControlPanel extends JPanel {
                 int rpmCol = 0;
                 int vsCol = 0;
                 int taCol = 0;
-                int sample = 0;
-                double minSpeed = 3500;
-                double maxSpeed = 0;
+                double minRpm = 3500;
+                double maxRpm = 0;
                 String delimiter = COMMA;
                 String line = inputStream.readLine();
                 String[] headers;
@@ -758,8 +817,10 @@ public final class DynoControlPanel extends JPanel {
                 		atrTime = true;
                 	 }
                 	if (headers[x].toUpperCase().contains(LOG_RPM) || headers[x].contains(LOG_ES)) rpmCol = x;
-                	if (headers[x].contains(LOG_VS)) vsCol = x;
                 	if (headers[x].contains(LOG_TA)) taCol = x;
+                	if (headers[x].contains(LOG_VS)) vsCol = x;
+                	if (headers[x].contains(LOG_VS_I)) vsLogUnits = LOG_VS_I;
+                	if (headers[x].contains(LOG_VS_M)) vsLogUnits = LOG_VS_M;
                 }
                 while ((line = inputStream.readLine()) != null) {
                 	String[] values = line.split(delimiter);
@@ -782,25 +843,24 @@ public final class DynoControlPanel extends JPanel {
             			}
             			if (startTime == -999999999) startTime = logTime;
             			logTime = logTime - startTime;
-            			double speed = 0;
+            			double logRpm = 0;
             			if (isManual()){
-            				speed = Double.parseDouble(values[rpmCol]);
-            				minSpeed = Math.min(minSpeed, speed);
-            				maxSpeed = Math.max(maxSpeed, speed);
+            				logRpm = Double.parseDouble(values[rpmCol]);
+            				minRpm = Math.min(minRpm, logRpm);
+            				maxRpm = Math.max(maxRpm, logRpm);
             			}
             			else {
-            				speed = Double.parseDouble(values[vsCol]);
-            				minSpeed = Math.min(minSpeed, (speed * rpm2mph));
-            				maxSpeed = Math.max(maxSpeed, (speed * rpm2mph));
+            				logRpm = calcRpm(Double.parseDouble(values[vsCol]));
+            				minRpm = Math.min(minRpm, logRpm);
+            				maxRpm = Math.max(maxRpm, logRpm);
             			}
-        				chartPanel.addRawData(sample, logTime, speed);
+        				chartPanel.addRawData(logTime, logRpm);
 //        				LOGGER.trace(sample + "," + logTime + "," + speed);
-						sample++;
             		}
                 }
                 inputStream.close();
-                rpmMin.setText(String.format("%1.0f", minSpeed));
-                rpmMax.setText(String.format("%1.0f", maxSpeed));
+                rpmMin.setText(String.format("%1.0f", minRpm));
+                rpmMax.setText(String.format("%1.0f", maxRpm));
                 interpolateButton.doClick();
             }
             catch (IOException e) {
@@ -814,12 +874,13 @@ public final class DynoControlPanel extends JPanel {
             }
         }
         else {
-        	LOGGER.info("DYNO: Open log file command cancelled by user.");
+        	LOGGER.info("DYNO Open log file command cancelled by user.");
         }
 	}
 
 	private JButton buildOpenReferenceButton() {
     	final JFileChooser openFile = new JFileChooser();
+    	if (path != null) openFile.setCurrentDirectory(new File(path));
         final JButton openButton = new JButton("Open");
 
         openButton.addActionListener(new ActionListener() {
@@ -828,15 +889,21 @@ public final class DynoControlPanel extends JPanel {
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     final File traceFile = openFile.getSelectedFile();
+                    path = traceFile.getParent();
                     BufferedReader inputStream = null;
+                    chartPanel.clearRefTrace();
 
                     try {
                         inputStream = new BufferedReader(new FileReader(traceFile));
-                        LOGGER.info("DYNO: Opening trace file: " + traceFile.getName());
+                        LOGGER.info("DYNO Opening trace file: " + traceFile.getName());
 
                         String line = inputStream.readLine();
                         String[] refStats = line.split(COMMA);
-                        chartPanel.setRefResults(refStats[2]);
+                        reFfToE = Double.parseDouble(refStats[3]);
+                        reFsToE = Double.parseDouble(refStats[4]);
+                        reFtToS = Double.parseDouble(refStats[5]);
+                        reFauc = Double.parseDouble(refStats[6]);
+                        LOGGER.info("DYNO Reference Stats: " + Arrays.toString(refStats));
                         while ((line = inputStream.readLine()) != null) {
                         	String[] values = line.split(COMMA);
                         	if (Double.parseDouble(values[0]) >= 0 ) {
@@ -852,7 +919,7 @@ public final class DynoControlPanel extends JPanel {
                         	mButton.setSelected(true);
                         	buttonAction(mButton);
                         }
-                        chartPanel.updateRefTrace(Integer.parseInt(refStats[1]));
+                        chartPanel.updateRefTrace(refStats);
                     }
                     catch (IOException e) {
                         if (inputStream != null) {
@@ -865,7 +932,7 @@ public final class DynoControlPanel extends JPanel {
                     }
                 }
                 else {
-                	LOGGER.info("DYNO: Open trace file command cancelled by user.");
+                	LOGGER.info("DYNO Open trace file command cancelled by user.");
                 }
             }
         });
@@ -874,6 +941,7 @@ public final class DynoControlPanel extends JPanel {
 
     private JButton buildSaveReferenceButton() {
     	final JFileChooser openFile = new JFileChooser();
+    	if (path != null) openFile.setCurrentDirectory(new File(path));
         final JButton saveButton = new JButton("Save");
 
         saveButton.addActionListener(new ActionListener() {
@@ -882,12 +950,18 @@ public final class DynoControlPanel extends JPanel {
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     final File traceFile = openFile.getSelectedFile();
+                    path = traceFile.getParent();
                     BufferedWriter outputStream = null;
 
                     try {
                     	outputStream = new BufferedWriter(new FileWriter(traceFile));
-                        LOGGER.info("DYNO: Saving trace to file: " + traceFile.getName());
-                        String line = units + COMMA + orderComboBox.getSelectedItem() + COMMA + currentResult;
+                        LOGGER.info("DYNO Saving trace to file: " + traceFile.getName());
+                        String line = units + COMMA + orderComboBox.getSelectedItem() + 
+                        					  COMMA + resultStrings[1] +
+                        					  COMMA + fToE + 
+                        					  COMMA + sToE + 
+                        					  COMMA + tToS +
+                        					  COMMA + auc;
                     	outputStream.write(line, 0, line.length());
                     	outputStream.newLine();
 
@@ -907,7 +981,7 @@ public final class DynoControlPanel extends JPanel {
                     }
                 }
                 else {
-                	LOGGER.info("DYNO: Save trace file command cancelled by user.");
+                	LOGGER.info("DYNO Save trace file command cancelled by user.");
                 }
             }
         });
@@ -918,7 +992,12 @@ public final class DynoControlPanel extends JPanel {
     	final JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                reFfToE = 0;
+                reFsToE = 0;
+                reFtToS = 0;
+                reFauc = 0;
             	chartPanel.clearRefTrace();
+            	if (results[0] > 0) interpolateButton.doClick();
             }
         });
     	return clearButton;
@@ -1001,7 +1080,7 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JComboBox buildPolyOrderComboBox() {
-        final JComboBox orderComboBox = new JComboBox(new Object[]{5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15 ,16, 17, 18, 19 ,20});
+        final JComboBox orderComboBox = new JComboBox(new Object[]{5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15 ,16, 17, 18, 19});
         orderComboBox.setSelectedItem(9);
         return orderComboBox;
     }
@@ -1013,8 +1092,25 @@ public final class DynoControlPanel extends JPanel {
         return true;
     }
 
+    private boolean checkInRange(String name, JTextField min, JTextField max, double value) {
+        if (isValidRange(min, max)) {
+            return inRange(value, min, max);
+        }
+        else {
+        	return false;
+        }
+    }
+
     private boolean isValidRange(JTextField min, JTextField max) {
         return areNumbers(min, max) && parseDouble(min) < parseDouble(max);
+    }
+
+    private boolean inRange(double value, JTextField min, JTextField max) {
+        return inRange(value, parseDouble(min), parseDouble(max));
+    }
+
+    private boolean inRange(double val, double min, double max) {
+        return val >= min && val <= max;
     }
 
     private boolean isNumber(JTextField textField) {
@@ -1060,7 +1156,7 @@ public final class DynoControlPanel extends JPanel {
         gearSelectBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
             	gearRatio.setText(gearsRatioArr[carSelectBox.getSelectedIndex()][gearSelectBox.getSelectedIndex() + 1]);
-            	LOGGER.info("DYNO: Car: " + carSelectBox.getSelectedItem() +  ", Changed gear to: " + gearSelectBox.getSelectedItem() + " (" + gearRatio.getText() + ")");
+            	LOGGER.info("DYNO Car: " + carSelectBox.getSelectedItem() +  ", Changed gear to: " + gearSelectBox.getSelectedItem() + " (" + gearRatio.getText() + ")");
             }	
         });
         return gearSelectBox;
@@ -1093,7 +1189,7 @@ public final class DynoControlPanel extends JPanel {
 	        tireAspect.setText((String) aspectArr[index]);
 	        tireSize.setText((String) sizeArr[index]);
 	    	makeGearList();
-	       	LOGGER.info("DYNO: New Car Selected: " + carSelectBox.getSelectedItem()  + ", Gears: " + gearsRatioArr[carSelectBox.getSelectedIndex()][0] );	
+	       	LOGGER.info("DYNO New Car Selected: " + carSelectBox.getSelectedItem()  + ", Gears: " + gearsRatioArr[carSelectBox.getSelectedIndex()][0] );	
 			if (gearList == null){
 				gearSelectBox.setModel( new DefaultComboBoxModel() );
 			}
@@ -1197,7 +1293,7 @@ public final class DynoControlPanel extends JPanel {
 		}
 		catch (SAXParseException err) {
 			showMessageDialog(parent, "Parsing error" + ", line " + err.getLineNumber () + ", " + err.getSystemId () + ".\n" + err.getMessage (), "Error", ERROR_MESSAGE);
-			LOGGER.error("DYNO: ** Parsing error" + ", line " + err.getLineNumber () + ", uri " + err.getSystemId ());
+			LOGGER.error("DYNO ** Parsing error" + ", line " + err.getLineNumber () + ", uri " + err.getSystemId ());
 			LOGGER.error(" " + err.getMessage ());
 		}
 		catch (SAXException e) {

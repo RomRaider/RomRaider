@@ -47,12 +47,8 @@ public final class DynoTabImpl extends JPanel implements DynoTab {
         add(chartPanel, CENTER);
     }
 
-    public double calcHp(double rpm, double lastRpm, long now, long lastUpdate) {
-        return controlPanel.calcHp(rpm, lastRpm, now, lastUpdate);
-    }
-
-    public double calcTq(double rpm, double hp) {
-        return controlPanel.calcTq(rpm, hp);
+    public double calcMph(double rpm){
+    	return controlPanel.calcMph(rpm);
     }
 
     public void updateEnv(double iat, double pressure) {
@@ -79,8 +75,8 @@ public final class DynoTabImpl extends JPanel implements DynoTab {
         chartPanel.addData(rpm, hp, tq);
     }
 
-    public void addRawData(double sample, double time, double rpm) {
-        chartPanel.addRawData(sample, time, rpm);
+    public void addRawData(double time, double rpm) {
+        chartPanel.addRawData(time, rpm);
     }
 
     public void addData(double rpm, double hp) {
