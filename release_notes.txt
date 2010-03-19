@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC5-rd-v8 -
+                    - RomRaider 0.5.3 Beta RC5-rd-v11 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,10 +35,10 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b-rd-v8 RC5 Notes (02/26/2010) -
+- 0.5.3b-rd-v11 RC5 Notes (03/19/2010) -
 -------------------------------
 This is the fifth beta release of the upcoming official 0.5.3b release.
-This RC includes the new Road Dyno tab, version 8.
+This RC includes the new Road Dyno tab, version 11.
 To use the Road Dyno:
 	- Clear all parameters from the other tabs to achieve the best data
 	  resolution.

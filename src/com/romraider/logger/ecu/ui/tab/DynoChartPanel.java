@@ -110,12 +110,16 @@ public final class DynoChartPanel extends JPanel {
     }
 
     public void updateRefTrace(String[] line) {
-    	if (hpRef.getItemCount() > 0) {
-	    	refStat.setText("Reference: " + line[2] + " (" + line[3] + ", " + line[4] + ", " + line[5] + ", " + line[6] + ")");
-    		refStat.setX(plot.getDomainAxis().getLowerBound() + 10);
-    		refStat.setY(hpAxis.getUpperBound());
+        if (hpRef.getItemCount() > 0) {
+            refStat.setText("Reference: " + line[2] + " (" +
+                    String.format("%1.2f", Double.parseDouble(line[3])) + ", " +
+                    String.format("%1.2f", Double.parseDouble(line[4])) + ", " +
+                    String.format("%1.2f", Double.parseDouble(line[5])) + ", " +
+                    String.format("%1.2f", Double.parseDouble(line[6])) + ")");
+            refStat.setX(plot.getDomainAxis().getLowerBound() + 10);
+            refStat.setY(hpAxis.getUpperBound());
             plot.addAnnotation(refStat);
-    	}
+        }
     }
 
     public int getPwrTqCount() {
@@ -202,19 +206,19 @@ public final class DynoChartPanel extends JPanel {
         final XYTextAnnotation stat1 = new XYTextAnnotation(resultStrings[2], xMin, yMin+(ySpace*3));
         stat1.setPaint(RED);
         stat1.setTextAnchor(TextAnchor.BOTTOM_LEFT);
-        stat1.setFont(new Font("SansSerif", Font.PLAIN,12));
+        stat1.setFont(new Font("SansSerif", Font.BOLD,12));
         final XYTextAnnotation stat2 = new XYTextAnnotation(resultStrings[3], xMin, yMin+ySpace*2);
         stat2.setPaint(RED);
         stat2.setTextAnchor(TextAnchor.BOTTOM_LEFT);
-        stat2.setFont(new Font("SansSerif", Font.PLAIN,12));
+        stat2.setFont(new Font("SansSerif", Font.BOLD,12));
         final XYTextAnnotation stat3 = new XYTextAnnotation(resultStrings[4], xMin, yMin+ySpace);
         stat3.setPaint(RED);
         stat3.setTextAnchor(TextAnchor.BOTTOM_LEFT);
-        stat3.setFont(new Font("SansSerif", Font.PLAIN,12));
+        stat3.setFont(new Font("SansSerif", Font.BOLD,12));
         final XYTextAnnotation stat4 = new XYTextAnnotation(resultStrings[5], xMin, yMin);
         stat4.setPaint(RED);
         stat4.setTextAnchor(TextAnchor.BOTTOM_LEFT);
-        stat4.setFont(new Font("SansSerif", Font.PLAIN,12));
+        stat4.setFont(new Font("SansSerif", Font.BOLD,12));
         if (!refStat.equals(" ")){
     		refStat.setX(plot.getDomainAxis().getLowerBound() + 10);
     		refStat.setY(hpAxis.getUpperBound());

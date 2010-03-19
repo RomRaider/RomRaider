@@ -36,6 +36,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -59,6 +61,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.JTextComponent;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -118,9 +121,11 @@ public final class DynoControlPanel extends JPanel {
     private static final String LOG_VS = "Vehicle Speed";
     private static final String LOG_VS_I = "mph";
     private static final String LOG_VS_M = "kph";
+    private static final double KPH_2_MPH = 1.609344;
     private final DataRegistrationBroker broker;
     private final DynoChartPanel chartPanel;
     private final Component parent;
+    private static FocusAdapter allTextSelector;
     private List<ExternalData> externals = new ArrayList<ExternalData>();
     private List<EcuParameter> params = new ArrayList<EcuParameter>();
     private List<EcuSwitch> switches = new ArrayList<EcuSwitch>();
@@ -136,8 +141,6 @@ public final class DynoControlPanel extends JPanel {
     private double P_v;
     private double P_d;
     private double airDen;
-    private double[] rpmArray;
-    private double[] accelArray;
     private double fToE = 0;
     private double sToE = 0;
     private double tToS = 0;
@@ -213,7 +216,6 @@ public final class DynoControlPanel extends JPanel {
     private final JRadioButton mButton = new JRadioButton(METRIC);
     private final JCheckBox loadFileCB = new JCheckBox("Load From File");
 
-    
     public DynoControlPanel(Component parent, DataRegistrationBroker broker, ECUEditor ecuEditor, DynoChartPanel chartPanel) {
         checkNotNull(parent, broker, chartPanel);
         this.parent = parent;
@@ -259,8 +261,7 @@ public final class DynoControlPanel extends JPanel {
     
     private double calcHp(double rpm, double accel, long now) {
     	double mph = calcMph(rpm);
-    	// convert RPM acceleration to G's (MPH/msec)
-    	double accelG = accel * 45.5486542443 / rpm2mph;
+    	double accelG = accel * 45.5486542443;
     	// calculate Drive power = power required to propel vehicle mass at certain speed and acceleration.
     	// =Force*Velocity=Mass*Accel*Velocity
     	// Accel(m/s/s)*Mass(kg)*Velocity(m/s)
@@ -301,14 +302,14 @@ public final class DynoControlPanel extends JPanel {
 //    	LOGGER.trace(hp + " : " + tq);
     	return tq;
     }
-    public double calcMph(double rpm) {
+    private double calcMph(double rpm) {
 		return (rpm / rpm2mph);
     }
 
-    public double calcRpm(double mph) {
+    public double calcRpm(double vs) {
 		double logRpm = 0;
-		if (vsLogUnits.equals(LOG_VS_I)) logRpm = (mph * rpm2mph);
-		if (vsLogUnits.equals(LOG_VS_M)) logRpm = (mph * rpm2mph / 1.609344);
+		if (vsLogUnits.equals(LOG_VS_I)) logRpm = (vs * rpm2mph);
+		if (vsLogUnits.equals(LOG_VS_M)) logRpm = (vs * rpm2mph / KPH_2_MPH);
     	return logRpm;
     }
 
@@ -360,11 +361,11 @@ public final class DynoControlPanel extends JPanel {
         double nowHp = 0;
         double nowTq = 0;
         int order = (Integer) orderComboBox.getSelectedItem();
-        rpmArray = Arrays.copyOf(chartPanel.getRpmCoeff(order), chartPanel.getRpmCoeff(order).length);
-        LOGGER.info("DYNO RPM Coeffecients: " + Arrays.toString(rpmArray));
-    	accelArray = new double[(order)];
+        double[] speedArray = Arrays.copyOf(chartPanel.getRpmCoeff(order), chartPanel.getRpmCoeff(order).length);
+        LOGGER.info("DYNO Speed Coeffecients: " + Arrays.toString(speedArray));
+    	double[] accelArray = new double[(order)];
         for (int x = 0; x < order; x++) {
-        	accelArray[x] = (order-x) * rpmArray[x];
+        	accelArray[x] = (order-x) * speedArray[x];
         }
     	LOGGER.info("DYNO Accel Coeffecients: " + Arrays.toString(accelArray));
     	int samples = chartPanel.getSampleCount();
@@ -372,33 +373,40 @@ public final class DynoControlPanel extends JPanel {
     	double timeMin = chartPanel.getTimeSample(0);
     	double timeMax = chartPanel.getTimeSample(samples - 1);
     	for (double x = timeMin; x <= timeMax; x=x+10) {
-        	double rpmSample = 0;
+        	double speedSample = 0;
         	double accelSample = 0;
-        	// Calculate smoothed RPM from coefficients
+        	// Calculate smoothed SPEED from coefficients
         	for (int i = 0; i <= order; i++) {
         		int pwr = order - i;
-        		rpmSample = rpmSample + (Math.pow(x,pwr) * rpmArray[i]);
+        		speedSample = speedSample + (Math.pow(x,pwr) * speedArray[i]);
         	}
-        	// Calculate RPM acceleration from first derivative of RPM coefficients
+        	// Calculate acceleration from first derivative of SPEED coefficients
         	for (int i = 0; i < order; i++) {
         		int pwr = order - i - 1;
         		accelSample = accelSample + (Math.pow(x,pwr) * accelArray[i]);
         	}
-        	if (checkInRange("RPM", rpmMin, rpmMax, rpmSample)){
-	            nowHp = calcHp(rpmSample, accelSample, (long) x);
-	        	nowTq = calcTq(rpmSample, nowHp);
-	        	chartPanel.addData(rpmSample, nowHp, nowTq);
+        	if (isManual()) {
+        		accelSample = accelSample / rpm2mph;	// RPM acceleration from RPM
+        	}
+        	else {
+        		speedSample = calcRpm(speedSample);	// convert logged vs to RPM for AT
+        		if (vsLogUnits.equals(LOG_VS_M)) accelSample = accelSample / KPH_2_MPH; 
+        	}
+        	if (checkInRange("RPM", rpmMin, rpmMax, speedSample)){
+	            nowHp = calcHp(speedSample, accelSample, (long) x);
+	        	nowTq = calcTq(speedSample, nowHp);
+	        	chartPanel.addData(speedSample, nowHp, nowTq);
 	        	if (nowHp > maxHp){
 	            	maxHp = nowHp;
-	            	maxHpRpm = rpmSample;
+	            	maxHpRpm = speedSample;
 	            }
 	            if (nowTq > maxTq){
 	            	maxTq = nowTq;
-	            	maxTqRpm = rpmSample;
+	            	maxTqRpm = speedSample;
 	            }
-	            if ( rpmSample >= 3000 && rpmSample <= 6000) {
-	            	if (aucStart == 0) aucStart = (nowHp * rpmSample) + (nowTq * rpmSample);
-	            	auc = auc + Math.abs((nowHp * rpmSample) + (nowTq * rpmSample) - aucStart);
+	            if ( speedSample >= 3000 && speedSample <= 6000) {
+	            	if (aucStart == 0) aucStart = (nowHp * speedSample) + (nowTq * speedSample);
+	            	auc = auc + Math.abs((nowHp * speedSample) + (nowTq * speedSample) - aucStart);
 	            }
         	}
         }
@@ -409,19 +417,19 @@ public final class DynoControlPanel extends JPanel {
     	results[3] = maxTqRpm;
         String hpUnits = " hp(I)";
         String tqUnits = " lbf-ft";
-        resultStrings[0] = carInfo;
-        resultStrings[1] = "Max Pwr: " + String.format("%1.1f", maxHp) + hpUnits +
-		  " @ " + String.format("%1.0f",maxHpRpm) + 
-		  " RPM / Max TQ: " + String.format("%1.1f", maxTq) + tqUnits +
-		  " @ " + String.format("%1.0f", maxTqRpm) + " RPM";
         resultStrings[2] = "50-80 MPH: " + fToE + " secs";
         resultStrings[3] = "60-80 MPH: " + sToE + " secs";
-        if (units.equalsIgnoreCase("Metric")) {
+        if (units.equals(METRIC)) {
         	hpUnits = " kW";
         	tqUnits = " N-m";
         	resultStrings[2] = "80-130 km/h: " + fToE + " secs";
         	resultStrings[3] = "100-130 km/h: " + sToE + " secs";
         }
+        resultStrings[0] = carInfo;
+        resultStrings[1] = "Max Pwr: " + String.format("%1.1f", maxHp) + hpUnits +
+		  " @ " + String.format("%1.0f",maxHpRpm) + 
+		  " RPM / Max TQ: " + String.format("%1.1f", maxTq) + tqUnits +
+		  " @ " + String.format("%1.0f", maxTqRpm) + " RPM";
         resultStrings[4] = "3000-6000 RPM: " + tToS + " secs";
         resultStrings[5] = "3000-6000 RPM: " + String.format("%1.2f",auc) + " AUC";
         if (reFfToE > 0) resultStrings[2] = resultStrings[2] + " (" + String.format("%1.2f", (fToE - reFfToE)) + ")";
@@ -469,7 +477,7 @@ public final class DynoControlPanel extends JPanel {
 	        deregisterData(ENGINE_SPEED, THROTTLE_ANGLE);
 		}
 		else {
-	        deregisterData(ENGINE_SPEED, VEHICLE_SPEED, THROTTLE_ANGLE);
+	        deregisterData(VEHICLE_SPEED, THROTTLE_ANGLE);
 		}
 	    registerData(IAT, ATM);
 	    getEnv = true;
@@ -525,7 +533,11 @@ public final class DynoControlPanel extends JPanel {
         add(panel, gridBagLayout, tempLabel, 0, 8, 3, HORIZONTAL);
         add(panel, gridBagLayout, ambTemp, 1, 9, 0, NONE);
         addLabeledComponent(panel, gridBagLayout, "Rel Humidity (%)", relHumid, 10);
-
+        setSelectAllFieldText(rpmMin);
+        setSelectAllFieldText(rpmMax);
+        setSelectAllFieldText(elevation);
+        setSelectAllFieldText(ambTemp);
+        setSelectAllFieldText(relHumid);
         return panel;
     }
 
@@ -571,6 +583,11 @@ public final class DynoControlPanel extends JPanel {
 //        addLabeledComponent(panel, gridBagLayout, "Drag Coeff", dragCoeff, 33);
 //        addLabeledComponent(panel, gridBagLayout, "Frontal Area", frontalArea, 36);
 //        addLabeledComponent(panel, gridBagLayout, "Rolling Resist Coeff", rollCoeff, 39);
+        setSelectAllFieldText(tireWidth);
+        setSelectAllFieldText(tireAspect);
+        setSelectAllFieldText(tireSize);
+        setSelectAllFieldText(deltaMass);
+        setSelectAllFieldText(carMass);
         return panel;
     }
 
@@ -607,7 +624,7 @@ public final class DynoControlPanel extends JPanel {
 		                        registerData(ENGINE_SPEED, THROTTLE_ANGLE);
 		                	}
 		                	else {
-		                        registerData(ENGINE_SPEED, VEHICLE_SPEED, THROTTLE_ANGLE);
+		                        registerData(VEHICLE_SPEED, THROTTLE_ANGLE);
 		                	}
 		                    chartPanel.startPrompt();
 		                } else {
@@ -850,9 +867,9 @@ public final class DynoControlPanel extends JPanel {
             				maxRpm = Math.max(maxRpm, logRpm);
             			}
             			else {
-            				logRpm = calcRpm(Double.parseDouble(values[vsCol]));
-            				minRpm = Math.min(minRpm, logRpm);
-            				maxRpm = Math.max(maxRpm, logRpm);
+            				logRpm = Double.parseDouble(values[vsCol]);
+            				minRpm = Math.min(minRpm, calcRpm(logRpm));
+            				maxRpm = Math.max(maxRpm, calcRpm(logRpm));
             			}
         				chartPanel.addRawData(logTime, logRpm);
 //        				LOGGER.trace(sample + "," + logTime + "," + speed);
@@ -1315,4 +1332,18 @@ public final class DynoControlPanel extends JPanel {
 			t.printStackTrace ();
 		}
 	}
+
+    private static void setSelectAllFieldText(JTextComponent comp) {
+        // Ensures that all the text in a JTextComponent will be
+        // selected whenever the cursor is in that field (gains focus):
+        if (allTextSelector == null) {
+            allTextSelector = new java.awt.event.FocusAdapter() {
+                public void focusGained(FocusEvent ev) {
+                    JTextComponent textComp = (JTextComponent) ev.getSource();
+                    textComp.selectAll();
+                }
+            };
+        }
+        comp.addFocusListener(allTextSelector);
+    }
 }

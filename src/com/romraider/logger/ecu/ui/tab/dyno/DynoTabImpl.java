@@ -47,8 +47,8 @@ public final class DynoTabImpl extends JPanel implements DynoTab {
         add(chartPanel, CENTER);
     }
 
-    public double calcMph(double rpm){
-    	return controlPanel.calcMph(rpm);
+    public double calcRpm(double vs){
+    	return controlPanel.calcRpm(vs);
     }
 
     public void updateEnv(double iat, double pressure) {
