@@ -95,6 +95,8 @@ public final class DynoControlPanel extends JPanel {
     private static final String MANUAL = "manual";
     private static final String IMPERIAL = "Imperial";
     private static final String METRIC = "Metric";
+    private static final String DYNO_MODE = "Dyno";
+    private static final String ET_MODE = "ET";
     private static final String CAR_MASS_TT ="Base mass of car from factory";
     private static final String DELTA_MASS_TT ="Mass of all occupants and accessories added";
     private static final String HUMIDITY_TT ="Current relative Humidity";
@@ -108,6 +110,10 @@ public final class DynoControlPanel extends JPanel {
     private static final String ELEVATION_TT ="Elevation is calculated from ECU ATM sensor";
     private static final String AMB_TEMP_TT ="Ambient Temperature is updated from IAT sensor";
     private static final String ORDER_TT ="Lower number provides more smoothing";
+    private static final String RESET_TT ="This clears all recorded or file loaded data";
+    private static final String RECORD_TT ="Press to acquire data, multiple sets of Dyno data can be acquired";
+    private static final String DYNO_TT ="Use this mode to estimate Power & Torque";
+    private static final String ET_TT ="Use this mode to measure trap times";
     private static final String COLON = ":";
     private static final String COMMA = ",";
     private static final String TAB = "\u0009";
@@ -206,12 +212,17 @@ public final class DynoControlPanel extends JPanel {
 	private String[] resultStrings = new String[6];
 //    private String hpUnits = "hp(I)";
 //    private String tqUnits = "lbf-ft";
+	private double distance = 0;
+	private long lastET = 0;
+	private double[] etResults = new double[10];
 
     private final JComboBox orderComboBox = buildPolyOrderComboBox();
     private final JComboBox carSelectBox = buildCarSelectComboBox();
     private final JComboBox gearSelectBox = buildGearComboBox();
     private final JButton interpolateButton = new JButton("Recalculate");
-    private final JToggleButton recordDataButton = new JToggleButton("Clear & Record Data");
+    private final JToggleButton recordDataButton = new JToggleButton("Record Data");
+    private final JRadioButton dButton = new JRadioButton(DYNO_MODE);
+    private final JRadioButton eButton = new JRadioButton(ET_MODE);
     private final JRadioButton iButton = new JRadioButton(IMPERIAL);
     private final JRadioButton mButton = new JRadioButton(METRIC);
     private final JCheckBox loadFileCB = new JCheckBox("Load From File");
@@ -351,7 +362,8 @@ public final class DynoControlPanel extends JPanel {
         updateChart();
     }
 
-    public void updateChart() {
+    private void updateChart() {
+    	chartPanel.quietUpdate(false);
     	auc = 0;
     	aucStart = 0;
     	double maxHp = 0;
@@ -410,6 +422,7 @@ public final class DynoControlPanel extends JPanel {
 	            }
         	}
         }
+    	chartPanel.quietUpdate(true);
     	auc = auc / 1e6 / tToS;
     	results[0] = maxHp;
     	results[1] = maxHpRpm;
@@ -444,6 +457,78 @@ public final class DynoControlPanel extends JPanel {
         LOGGER.info("DYNO Results: " + resultStrings[5]);
         chartPanel.interpolate(results, resultStrings);
         parent.repaint();
+    }
+
+    private void updateET() {
+    	chartPanel.quietUpdate(false);
+        int order = 5;
+        double x1 = 0;
+        distance = 0;
+        lastET = 0;
+        
+        double[] speedArray = Arrays.copyOf(chartPanel.getRpmCoeff(order), chartPanel.getRpmCoeff(order).length);
+        LOGGER.info("DYNO Speed Coeffecients: " + Arrays.toString(speedArray));
+    	int samples = chartPanel.getSampleCount();
+    	LOGGER.info("DYNO Sample Count: " + samples);
+    	double timeMin = chartPanel.getTimeSample(0);
+    	double timeMax = chartPanel.getTimeSample(samples - 1);
+    	for (double x = timeMin; x <= timeMax; x=x+1) {
+        	double speedSample = 0;
+        	// Calculate smoothed SPEED from coefficients
+        	for (int i = 0; i <= order; i++) {
+        		int pwr = order - i;
+        		speedSample = speedSample + (Math.pow(x,pwr) * speedArray[i]);
+        	}
+        	chartPanel.addData((x/1000), speedSample);
+    		if (vsLogUnits.equals(LOG_VS_M)) speedSample = (speedSample / KPH_2_MPH);
+	       	distance = distance + (speedSample * 5280 / 3600 * (x - lastET) / 1000);
+	       	lastET = (long) x;
+	       	x1 = x / 1000;
+	       	if (distance <= 60)		etResults[0] = x1; 
+	       	if (distance <= 60)		etResults[1] = speedSample;
+	       	if (distance <= 330)	etResults[2] = x1; 
+	       	if (distance <= 330)	etResults[3] = speedSample;
+	       	if (distance <= 660)	etResults[4] = x1;
+	       	if (distance <= 660)	etResults[5] = speedSample;
+	       	if (distance <= 1000)	etResults[6] = x1; 
+	       	if (distance <= 1000)	etResults[7] = speedSample;
+	       	if (distance <= 1320)	etResults[8] = x1;
+	       	if (distance <= 1320)	etResults[9] = speedSample;
+        }
+    	if (vsLogUnits.equals(LOG_VS_M)) {
+    		etResults[1] = etResults[1] * KPH_2_MPH;
+    		etResults[3] = etResults[3] * KPH_2_MPH;
+    		etResults[5] = etResults[5] * KPH_2_MPH;
+    		etResults[7] = etResults[7] * KPH_2_MPH;
+    		etResults[9] = etResults[9] * KPH_2_MPH;
+    	}
+    	chartPanel.quietUpdate(true);
+    	LOGGER.info("Split 60: " + String.format("%1.3f", etResults[0]));
+    	LOGGER.info("Split 330: " + String.format("%1.3f", etResults[2]));
+    	LOGGER.info("Split 1/8: " + String.format("%1.3f", etResults[4]) + " @ " + String.format("%1.2f", etResults[5]));
+    	LOGGER.info("Split 1000: " + String.format("%1.3f", etResults[6]));
+    	LOGGER.info("Split 1/4: " + String.format("%1.3f", etResults[8]) + " @ " + String.format("%1.2f", etResults[9]));
+    	chartPanel.updateEtResults(carInfo, etResults, vsLogUnits);
+    	parent.repaint();
+    }
+
+    public boolean isValidET(long now, double vs) {
+    	if (vs > 0.0) {
+			if (vsLogUnits.equals(LOG_VS_M)) vs = (vs / KPH_2_MPH);
+			distance = distance + (vs * 5280 / 3600 * (now - lastET) / 1000);
+	        if (distance > 1330) {
+	        	recordDataButton.setSelected(false);
+	        	deregisterData(VEHICLE_SPEED);
+	        	chartPanel.clearPrompt();
+	        	updateET();
+	        	return false;
+	        }
+	        lastET = now;
+	        return true;
+    	}
+    	else {
+    		return false;
+    	}
     }
 
     public boolean isValidData(double rpm, double ta) {
@@ -493,10 +578,11 @@ public final class DynoControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        add(panel, gridBagLayout, buildFilterPanel(), 0, 0, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildRadioPanel(), 0, 1, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 2, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildReferencePanel(), 0, 3, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildModePanel(), 0, 0, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildFilterPanel(), 0, 1, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildRadioPanel(), 0, 2, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 3, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildReferencePanel(), 0, 4, 1, HORIZONTAL);
         add(panel);
     }
 
@@ -514,6 +600,17 @@ public final class DynoControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
         buildRadioButtons(panel);
+
+        return panel;
+    }
+
+    private JPanel buildModePanel() {
+        JPanel panel = new JPanel();
+        panel.setBorder(new TitledBorder("Mode"));
+
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        panel.setLayout(gridBagLayout);
+        buildModeButtons(panel);
 
         return panel;
     }
@@ -580,6 +677,7 @@ public final class DynoControlPanel extends JPanel {
         add(panel, gridBagLayout, carMass, 1, 28, 1, NONE);
         addComponent(panel, gridBagLayout, buildRecordDataButton(), 31);
         addComponent(panel, gridBagLayout, buildLoadFileCB(), 32);
+        addComponent(panel, gridBagLayout, buildResetButton(), 33);
 //        addLabeledComponent(panel, gridBagLayout, "Drag Coeff", dragCoeff, 33);
 //        addLabeledComponent(panel, gridBagLayout, "Frontal Area", frontalArea, 36);
 //        addLabeledComponent(panel, gridBagLayout, "Rolling Resist Coeff", rollCoeff, 39);
@@ -605,6 +703,21 @@ public final class DynoControlPanel extends JPanel {
         elevation.setToolTipText(ELEVATION_TT);
         ambTemp.setToolTipText(AMB_TEMP_TT);
         orderComboBox.setToolTipText(ORDER_TT);
+    	recordDataButton.setToolTipText(RECORD_TT);
+    	dButton.setToolTipText(DYNO_TT);
+    	eButton.setToolTipText(ET_TT);
+    }
+
+    private JButton buildResetButton() {
+        JButton resetButton = new JButton("Clear Data");
+        resetButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                chartPanel.clear();
+                parent.repaint();
+            }
+        });
+        resetButton.setToolTipText(RESET_TT);
+        return resetButton;
     }
 
     private JToggleButton buildRecordDataButton() {
@@ -612,28 +725,42 @@ public final class DynoControlPanel extends JPanel {
 	        recordDataButton.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent actionEvent) {
 	            	elevation.setEnabled(true);
-	            	if (loadFileCB.isSelected()) {
-	            		loadFromFile();
+	            	if (dButton.isSelected()){
+		            	if (loadFileCB.isSelected()) {
+		            		loadFromFile();
+		            	}
+		            	else {
+			            	if (recordDataButton.isSelected()) {
+			            		chartPanel.clearGraph();
+			                    parent.repaint();
+			                	calculateEnv();
+			                	if (isManual()) {
+			                        registerData(ENGINE_SPEED, THROTTLE_ANGLE);
+			                	}
+			                	else {
+			                        registerData(VEHICLE_SPEED, THROTTLE_ANGLE);
+			                	}
+			                    chartPanel.startPrompt();
+			                } else {
+			                	deregister();
+			                	chartPanel.clearPrompt();
+			                }
+		            	}
 	            	}
-	            	else {
+	            	if (eButton.isSelected()){
 		            	if (recordDataButton.isSelected()) {
 		            		chartPanel.clear();
 		                    parent.repaint();
 		                	calculateEnv();
-		                	if (isManual()) {
-		                        registerData(ENGINE_SPEED, THROTTLE_ANGLE);
-		                	}
-		                	else {
-		                        registerData(VEHICLE_SPEED, THROTTLE_ANGLE);
-		                	}
+		                	registerData(VEHICLE_SPEED);
 		                    chartPanel.startPrompt();
+		                    distance = 0;
 		                } else {
-		                	deregister();
+		                	deregisterData(VEHICLE_SPEED);
 		                	chartPanel.clearPrompt();
 		                }
-	            	}
+	            	}	
 	            }
-	            
 	        });
     	}
     	else {
@@ -646,10 +773,10 @@ public final class DynoControlPanel extends JPanel {
     	loadFileCB.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (loadFileCB.isSelected()) {
-                	recordDataButton.setText("Clear & Read From File");
+                	recordDataButton.setText("Read From File");
                 }
                 else {
-                	recordDataButton.setText("Clear & Record Data");
+                	recordDataButton.setText("Record Data");
                 }
             }
             
@@ -659,6 +786,37 @@ public final class DynoControlPanel extends JPanel {
 
     public boolean isRecordData() {
         return recordDataButton.isSelected();
+    }
+
+    public boolean isRecordET() {
+        return recordDataButton.isSelected()&& eButton.isSelected();
+    }
+
+    private void buildModeButtons(JPanel panel) {
+	    dButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	chartPanel.setDyno();
+            	recordDataButton.setText("Record Data");
+           		interpolateButton.setEnabled(true);
+           		parent.repaint();
+            }
+        });
+	    dButton.setSelected(true);
+	
+	    eButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	chartPanel.setET();
+            	recordDataButton.setText("Record ET");
+            	interpolateButton.setEnabled(false);
+           		parent.repaint();
+            }
+        });
+	    ButtonGroup group = new ButtonGroup();
+	    group.add(dButton);
+	    group.add(eButton);
+	
+	    panel.add(dButton);
+	    panel.add(eButton);
     }
 
     private void buildRadioButtons(JPanel panel) {
@@ -798,7 +956,7 @@ public final class DynoControlPanel extends JPanel {
             path = logFile.getParent();
             BufferedReader inputStream = null;
     		recordDataButton.setSelected(false);
-            chartPanel.clear();
+            chartPanel.clearGraph();
             parent.repaint();
             calculateEnv();
             
@@ -971,22 +1129,46 @@ public final class DynoControlPanel extends JPanel {
                     BufferedWriter outputStream = null;
 
                     try {
-                    	outputStream = new BufferedWriter(new FileWriter(traceFile));
-                        LOGGER.info("DYNO Saving trace to file: " + traceFile.getName());
-                        String line = units + COMMA + orderComboBox.getSelectedItem() + 
-                        					  COMMA + resultStrings[1] +
-                        					  COMMA + fToE + 
-                        					  COMMA + sToE + 
-                        					  COMMA + tToS +
-                        					  COMMA + auc;
-                    	outputStream.write(line, 0, line.length());
-                    	outputStream.newLine();
-
-                        for (int x = 0; x < chartPanel.getPwrTqCount(); x++) {
-                        	line = chartPanel.getPwrTq(x);
+                    	if (dButton.isSelected()) {
+	                    	outputStream = new BufferedWriter(new FileWriter(traceFile));
+	                        LOGGER.info("DYNO Saving trace to file: " + traceFile.getName());
+	                        String line = units + COMMA + orderComboBox.getSelectedItem() + 
+	                        					  COMMA + resultStrings[1] +
+	                        					  COMMA + fToE + 
+	                        					  COMMA + sToE + 
+	                        					  COMMA + tToS +
+	                        					  COMMA + auc;
+	                    	outputStream.write(line, 0, line.length());
+	                    	outputStream.newLine();
+	
+	                        for (int x = 0; x < chartPanel.getPwrTqCount(); x++) {
+	                        	line = chartPanel.getPwrTq(x);
+	                        	outputStream.write(line, 0, line.length());
+	                        	outputStream.newLine();
+	                        }
+                    	}
+                    	if (eButton.isSelected()) {
+	                    	outputStream = new BufferedWriter(new FileWriter(traceFile));
+	                        LOGGER.info("DYNO Saving ET to file: " + traceFile.getName());
+	                        String line = carInfo;
+	                    	outputStream.write(line, 0, line.length());
+	                    	outputStream.newLine();
+	                    	line = "60ft/18.3m:" + TAB + String.format("%1.3f", etResults[0]) + "\" @ " + String.format("%1.2f", etResults[1]) + " " + vsLogUnits;
                         	outputStream.write(line, 0, line.length());
                         	outputStream.newLine();
-                        }
+	                    	line = "330ft/100m:" + TAB + String.format("%1.3f", etResults[2]) + "\" @ " + String.format("%1.2f", etResults[3]) + " " + vsLogUnits;
+                        	outputStream.write(line, 0, line.length());
+                        	outputStream.newLine();
+	                    	line = "1/2 track:" + TAB + String.format("%1.3f", etResults[4]) + "\" @ " + String.format("%1.2f", etResults[5]) + " " + vsLogUnits;
+                        	outputStream.write(line, 0, line.length());
+                        	outputStream.newLine();
+	                    	line = "1,000ft/305m:" + TAB + String.format("%1.3f", etResults[6]) + "\" @ " + String.format("%1.2f", etResults[7]) + " " + vsLogUnits;
+                        	outputStream.write(line, 0, line.length());
+                        	outputStream.newLine();
+        					line = "1/4 mile/402m:" + TAB + String.format("%1.3f", etResults[8]) + "\" @ " + String.format("%1.2f", etResults[9]) + " " + vsLogUnits;
+                        	outputStream.write(line, 0, line.length());
+                        	outputStream.newLine();
+                    	}
                         outputStream.close();
                     }
                     catch (IOException e) {
@@ -1084,12 +1266,15 @@ public final class DynoControlPanel extends JPanel {
     private JButton buildInterpolateButton( final JComboBox orderComboBox) {
         interpolateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-            	if (isValidRange(rpmMin, rpmMax)) {
-	            	calculateEnv();
-	            	updateChart();
-            	}
-            	else {
-            		showMessageDialog(parent, "Invalid PRM range specified.", "Error", ERROR_MESSAGE);
+            	if (dButton.isSelected()) {
+            		interpolateButton.setEnabled(true);
+            		if (isValidRange(rpmMin, rpmMax)) {
+		            	calculateEnv();
+		            	updateChart();
+	            	}
+	            	else {
+	            		showMessageDialog(parent, "Invalid PRM range specified.", "Error", ERROR_MESSAGE);
+	            	}
             	}
             }
         });

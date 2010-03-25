@@ -29,6 +29,10 @@ public interface DynoTab extends Tab {
     
     boolean getEnv();
     
+    boolean isRecordET();
+    
+    boolean isValidET(long now, double vs);
+
     void updateEnv(double iat, double pressure);
 
     void addData(double xData, double yData, double y1Data);

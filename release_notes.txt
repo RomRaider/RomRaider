@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC5-rd-v11 -
+                    - RomRaider 0.5.3 Beta RC5-rd-v12 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,16 +35,17 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b-rd-v11 RC5 Notes (03/19/2010) -
+- 0.5.3b-rd-v12 RC5 Notes (03/25/2010) -
 -------------------------------
 This is the fifth beta release of the upcoming official 0.5.3b release.
-This RC includes the new Road Dyno tab, version 11.
+This RC includes the new Road Dyno/ET tab, version 12.
 To use the Road Dyno:
+	- Set the Mode button to Dyno
 	- Clear all parameters from the other tabs to achieve the best data
 	  resolution.
-	- On the Dyno tab, select you vehicle and adjust the tire size and
+	- On the Dyno tab, select your vehicle and adjust the tire size and
 	  gear you will be using.
-	- Once set, press the Clear & Record Data button.
+	- Once set, press the Record Data button.
 	- With the button pressed setup to do your WOT run, no need to hurry.
 	- Hold WOT run to redline.  As soon as WOT is no longer detected the
 	  graph will be updated with your estimated wheel power and torque.
@@ -52,6 +53,23 @@ To use the Road Dyno:
 	  "recalculate" the results.
 	- Smoothing, lower is more smooth and higher is less smooth.
 	- Right click on the graph to Save as...
+	- If you wish to average two or more consecutive runs, press the
+	  Record Data button again and repeat the WOT run.  At the end of
+	  each run the datasets will be combined and the results displayed.
+	- A Reference Trace can be Saved and displayed at any time for comparison.
+	- The Clear button will delete all recorded data for a fresh start.
+	
+To use the ET feature:
+	- Set the Mode button to ET
+	- Clear all parameters from the other tabs to achieve the best data
+	  resolution.
+	- On the Dyno tab, select the vehicle you will be using.
+	- Once set and the vehicle is stationary, SPEED = 0, press the Record ET button.
+	- With the button pressed complete your 1/4 mile run.
+	- As soon as 1/4 mile distance is covered the graph will be updated with
+	  your elapsed times and speeds.
+	- Right click on the graph to Save as...
+	- Or Save a Reference Trace of your times to a text file.
 
 -------------------------------
 - 0.5.3b RC5 Notes (11/29/2009) -

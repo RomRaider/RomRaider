@@ -95,9 +95,18 @@ public final class DynoChartPanel extends JPanel {
         addChart();
     }
 
+    public void quietUpdate(boolean notify) {
+        data.setNotify(notify);
+        data1.setNotify(notify);
+    }
+
     public synchronized void addRawData(double x, double y) {
     	logRpm.add(x, y);
 	}
+
+    public synchronized void addData(double x, double y) {
+        data.add(x, y);
+    }
 
     public synchronized void addData(double x, double y1, double y2) {
         data.add(x, y1);
@@ -236,6 +245,91 @@ public final class DynoChartPanel extends JPanel {
         plot.addAnnotation(stat4);
     }
 
+    public void updateEtResults(String carInfo, double[] etResults, String units) {
+    	String s60Text = "60 ft";
+    	String s330Text = "330 ft";
+    	String s660Text = "1/2 track";
+    	String s1000Text = "1,000 ft";
+    	String s1320Text = "1/4 mile";
+    	if (units.equalsIgnoreCase("kph")) {
+    		s60Text = "18.3m";
+        	s330Text = "100m";
+        	s1000Text = "305m";
+        	s1320Text = "402m";
+    	}
+    	hpAxis.setLabel("Vehicle Speed (" + units + ")");
+    	String[] car = carInfo.split(",");
+    	car[0] = "LANE 1: " + car[0].substring(0, car[0].length()-3) + " - ET: " + String.format("%1.3f", etResults[8]) + "\" / " + String.format("%1.2f", etResults[9]) + " " + units;
+        double ySpace = hpAxis.getUpperBound() / 25;
+        double xMin = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 7) + plot.getDomainAxis().getLowerBound();
+        tqAxis.setRange(hpAxis.getLowerBound(), hpAxis.getUpperBound());
+        final XYAnnotation s60Marker = new XYDrawableAnnotation(etResults[0], etResults[1], 10, 10, cd);
+        final XYTextAnnotation s60Label = new XYTextAnnotation(s60Text, etResults[0], (etResults[1]+ySpace));
+        s60Label.setPaint(RED);
+        s60Label.setTextAnchor(TextAnchor.TOP_RIGHT);
+        s60Label.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYTextAnnotation s60Time = new XYTextAnnotation(String.format("%1.3f", etResults[0]) + "\" / " + String.format("%1.2f", etResults[1]), etResults[0], (etResults[1]-ySpace));
+        s60Time.setPaint(RED);
+        s60Time.setTextAnchor(TextAnchor.BOTTOM_LEFT);
+        s60Time.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYAnnotation s330Marker = new XYDrawableAnnotation(etResults[2], etResults[3], 10, 10, cd);
+        final XYTextAnnotation s330Label = new XYTextAnnotation(s330Text, etResults[2], (etResults[3]+ySpace));
+        s330Label.setPaint(RED);
+        s330Label.setTextAnchor(TextAnchor.TOP_RIGHT);
+        s330Label.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYTextAnnotation s330Time = new XYTextAnnotation(String.format("%1.3f", etResults[2]) + "\" / " + String.format("%1.2f", etResults[3]), etResults[2], (etResults[3]-ySpace));
+        s330Time.setPaint(RED);
+        s330Time.setTextAnchor(TextAnchor.BOTTOM_LEFT);
+        s330Time.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYAnnotation s660Marker = new XYDrawableAnnotation(etResults[4], etResults[5], 10, 10, cd);
+        final XYTextAnnotation s660Label = new XYTextAnnotation(s660Text, etResults[4], (etResults[5]+ySpace));
+        s660Label.setPaint(RED);
+        s660Label.setTextAnchor(TextAnchor.TOP_RIGHT);
+        s660Label.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYTextAnnotation s660Time = new XYTextAnnotation(String.format("%1.3f", etResults[4]) + "\" / " + String.format("%1.2f", etResults[5]), etResults[4], (etResults[5]-ySpace));
+        s660Time.setPaint(RED);
+        s660Time.setTextAnchor(TextAnchor.BOTTOM_LEFT);
+        s660Time.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYAnnotation s1000Marker = new XYDrawableAnnotation(etResults[6], etResults[7], 10, 10, cd);
+        final XYTextAnnotation s1000Label = new XYTextAnnotation(s1000Text, etResults[6], (etResults[7]+ySpace));
+        s1000Label.setPaint(RED);
+        s1000Label.setTextAnchor(TextAnchor.TOP_RIGHT);
+        s1000Label.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYTextAnnotation s1000Time = new XYTextAnnotation(String.format("%1.3f", etResults[6]) + "\" / " + String.format("%1.2f", etResults[7]), etResults[6], (etResults[7]-ySpace));
+        s1000Time.setPaint(RED);
+        s1000Time.setTextAnchor(TextAnchor.BOTTOM_LEFT);
+        s1000Time.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYAnnotation s1320Marker = new XYDrawableAnnotation(etResults[8], etResults[9], 10, 10, cd);
+        final XYTextAnnotation s1320Label = new XYTextAnnotation(s1320Text, etResults[8], (etResults[9]-ySpace));
+        s1320Label.setPaint(RED);
+        s1320Label.setTextAnchor(TextAnchor.BOTTOM_CENTER);
+        s1320Label.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYTextAnnotation s1320Time = new XYTextAnnotation(String.format("%1.3f", etResults[8]) + "\" / " + String.format("%1.2f", etResults[9]), (etResults[8]-0.2), etResults[9]);
+        s1320Time.setPaint(RED);
+        s1320Time.setTextAnchor(TextAnchor.CENTER_RIGHT);
+        s1320Time.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYTextAnnotation carText = new XYTextAnnotation(car[0], xMin, (hpAxis.getUpperBound()-ySpace));
+        carText.setPaint(RED);
+        carText.setTextAnchor(TextAnchor.TOP_LEFT);
+        carText.setFont(new Font("SansSerif", Font.BOLD,12));
+        plot.addAnnotation(s60Marker);
+        plot.addAnnotation(s60Label);
+        plot.addAnnotation(s60Time);
+        plot.addAnnotation(s330Marker);
+        plot.addAnnotation(s330Label);
+        plot.addAnnotation(s330Time);
+        plot.addAnnotation(s660Marker);
+        plot.addAnnotation(s660Label);
+        plot.addAnnotation(s660Time);
+        plot.addAnnotation(s1000Marker);
+        plot.addAnnotation(s1000Label);
+        plot.addAnnotation(s1000Time);
+        plot.addAnnotation(s1320Marker);
+        plot.addAnnotation(s1320Label);
+        plot.addAnnotation(s1320Time);
+        plot.addAnnotation(carText);
+    }
+
     public double[] getPolynomialCoefficients(XYTrendline trendSeries) {
         Polyfit fit = trendSeries.getPolyFit();
         return fit.getPolynomialCoefficients();
@@ -294,6 +388,20 @@ public final class DynoChartPanel extends JPanel {
 	    refStat.setTextAnchor(TextAnchor.TOP_LEFT);
 	    refStat.setFont(new Font("SansSerif", Font.BOLD,12));
 
+    }
+
+    public void setET() {
+    	clear();
+    	plot.getDomainAxis().setLabel("Time (seconds)");
+    	hpAxis.setLabel("Vehicle Speed");
+    	tqAxis.setLabel(" ");
+    }
+
+    public void setDyno() {
+    	clear();
+    	plot.getDomainAxis().setLabel("Engine Speed (RPM)");
+    	hpAxis.setLabel("Calculated Wheel Power");
+    	tqAxis.setLabel("Calculated Engine Torque");
     }
 
     public void startPrompt() {

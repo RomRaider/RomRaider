@@ -36,7 +36,7 @@ import java.util.List;
 
 public final class DynoTabImpl extends JPanel implements DynoTab {
     private static final long serialVersionUID = 2787020251963102201L;
-    private final DynoChartPanel chartPanel = new DynoChartPanel("Engine Speed (RPM)", "Calculated Wheel Power", "Calculated Wheel Torque");
+    private final DynoChartPanel chartPanel = new DynoChartPanel("Engine Speed (RPM)", "Calculated Wheel Power", "Calculated Engine Torque");
     private final DynoControlPanel controlPanel;
 
     public DynoTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
@@ -53,6 +53,14 @@ public final class DynoTabImpl extends JPanel implements DynoTab {
 
     public void updateEnv(double iat, double pressure) {
     	controlPanel.updateEnv(iat, pressure);
+    }
+
+    public boolean isValidET(long now, double vs) {
+    	return controlPanel.isValidET(now, vs);
+    }
+
+    public boolean isRecordET() {
+        return controlPanel.isRecordET();
     }
 
     public boolean isRecordData() {

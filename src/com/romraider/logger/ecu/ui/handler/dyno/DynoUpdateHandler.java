@@ -44,7 +44,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
     private DynoTab dynoTab;
 
     // 05 OBXT Cobb Stg1 May 2009, 3rd gear, 200 ft, 60F
-    private static final long[] logTime = {0, 250, 490, 750, 1000, 1230, 1480, 1720, 1980, 2220, 2470, 2690, 2940, 3170, 3420, 3660, 3920, 4160, 4400, 4650, 4890, 5120, 5370, 5610, 5860, 6130, 6370, 6620, 6860, 7090, 7330, 7600, 7840, 8090, 8330, 8570, 8820, 9050, 9290, 9580, 9830, 10070, 10330, 10560, 10810, 11050, 11290, 11580, 11790, 12040, 12280, 12560, 12790, 13040, 13320, 13550, 13780};
+    private static final long[] logTime = {1, 250, 490, 750, 1000, 1230, 1480, 1720, 1980, 2220, 2470, 2690, 2940, 3170, 3420, 3660, 3920, 4160, 4400, 4650, 4890, 5120, 5370, 5610, 5860, 6130, 6370, 6620, 6860, 7090, 7330, 7600, 7840, 8090, 8330, 8570, 8820, 9050, 9290, 9580, 9830, 10070, 10330, 10560, 10810, 11050, 11290, 11580, 11790, 12040, 12280, 12560, 12790, 13040, 13320, 13550, 13780};
     private static final double[] logRpm = {1690, 1733, 1776, 1852, 1935, 2004, 2091, 2148, 2241, 2325, 2405, 2496, 2597, 2754, 2871, 2943, 3093, 3243, 3350, 3475, 3617, 3780, 3843, 4025, 4125, 4234, 4355, 4511, 4618, 4720, 4835, 4947, 5067, 5138, 5254, 5351, 5485, 5581, 5642, 5735, 5816, 5939, 6041, 6104, 6183, 6280, 6347, 6406, 6483, 6548, 6651, 6693, 6800, 6870, 6924, 6974, 7079};
     private static final double[] logThrottle = {49.78, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 10};
     private static final double[] logKph = {36, 37, 39, 40, 42, 43, 45, 46, 48, 50, 52, 54, 56, 59, 61, 64, 67, 70, 73, 75, 78, 81, 83, 86, 89, 92, 94, 97, 99, 102, 104, 106, 109, 111, 113, 116, 118, 120, 122, 124, 126, 128, 130, 132, 133, 135, 137, 138, 140, 141, 143, 145, 146, 148, 149, 150, 150};
@@ -107,7 +107,8 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
    
     public synchronized void handleDataUpdate(Response response) {
         if (dynoTab.isRecordData() && (containsData(response, RPM, TA)
-        							|| containsData(response, VS, TA))) {
+        							|| containsData(response, VS, TA)
+        							|| containsData(response, VS))) {
             boolean valid = true;
 
             if (valid && containsData(response, RPM, TA) && 
@@ -151,14 +152,32 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
                 LOGGER.info("DYNO Sample: [Time]: " + now + " [RPM:calc]: " + rpm + " [TA:P13]: " + ta + " [VS:P9]: " + vs);
 	            if (valid) addRawData(now, vs);
             }
+            if (dynoTab.isRecordET() && containsData(response, VS)) {
+	        	if (TEST) {
+	        		if (i >= logTime.length) {
+	        			i = 0;
+	        		}
+					vs = logKph[i];
+					now = logTime[i];
+					i++;
+	        	}
+	        	else {
+		            now = currentTimeMillis();
+		            vs = findValue(response, VS);
+	        	}
+	            valid = dynoTab.isValidET(now, vs);
+	            LOGGER.info("DYNO Sample: [Time]: " + now + " [VS:P9]: " + vs);
+	            if (valid) addRawData(now, vs);
+            }
         }
         else {
         	startNow = -999999999;
         }
+
         if (dynoTab.getEnv() && containsData(response, IAT, ATM)) {
         	if (TEST) {
-        		iat = 62;
-        		atm = 12.60;
+        		iat = 27;
+        		atm = 14.54;
         	}
         	else {
             	iat = findValue(response, IAT);
@@ -167,6 +186,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
             dynoTab.updateEnv(iat, atm);
             LOGGER.info("DYNO Enviornment: [IAT:P11]: " +  iat + " [ATM_Pressure:P24]: " + atm);
         }
+
     }
 
     private void addRawData(final long time, final double speed){
