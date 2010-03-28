@@ -216,11 +216,17 @@ public final class DynoControlPanel extends JPanel {
 	private long lastET = 0;
 	private double[] etResults = new double[10];
 
-    private final JComboBox orderComboBox = buildPolyOrderComboBox();
+	private final JPanel filterPanel = new JPanel();
+	private final JPanel unitsPanel = new JPanel();
+	private final JPanel iPanel = new JPanel();
+	private final JPanel refPanel = new JPanel();
+	private final JPanel etPanel = new JPanel();
+	private final JComboBox orderComboBox = buildPolyOrderComboBox();
     private final JComboBox carSelectBox = buildCarSelectComboBox();
     private final JComboBox gearSelectBox = buildGearComboBox();
     private final JButton interpolateButton = new JButton("Recalculate");
     private final JToggleButton recordDataButton = new JToggleButton("Record Data");
+	private final JToggleButton recordButton = buildRecordDataButton();
     private final JRadioButton dButton = new JRadioButton(DYNO_MODE);
     private final JRadioButton eButton = new JRadioButton(ET_MODE);
     private final JRadioButton iButton = new JRadioButton(IMPERIAL);
@@ -583,6 +589,7 @@ public final class DynoControlPanel extends JPanel {
         add(panel, gridBagLayout, buildRadioPanel(), 0, 2, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildInterpolatePanel(), 0, 3, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildReferencePanel(), 0, 4, 1, HORIZONTAL);
+//        add(panel, gridBagLayout, buildEtPanel(), 0, 5, 1, HORIZONTAL);
         add(panel);
     }
 
@@ -594,14 +601,14 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JPanel buildRadioPanel() {
-        JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Measurement Units"));
+//        JPanel panel = new JPanel();
+    	unitsPanel.setBorder(new TitledBorder("Measurement Units"));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
-        panel.setLayout(gridBagLayout);
-        buildRadioButtons(panel);
+        unitsPanel.setLayout(gridBagLayout);
+        buildRadioButtons(unitsPanel);
 
-        return panel;
+        return unitsPanel;
     }
 
     private JPanel buildModePanel() {
@@ -616,39 +623,50 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JPanel buildInterpolatePanel() {
-    	JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Recalculate"));
+        iPanel.setBorder(new TitledBorder("Recalculate"));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
-        panel.setLayout(gridBagLayout);
+        iPanel.setLayout(gridBagLayout);
 
-        addLabeledComponent(panel, gridBagLayout, "Smoothing Factor", orderComboBox, 0);
-        addComponent(panel, gridBagLayout, buildInterpolateButton(orderComboBox), 2);
-        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 4);
-        add(panel, gridBagLayout, elevLabel, 0, 6, 3, HORIZONTAL);
-        add(panel, gridBagLayout, elevation, 1, 7, 0, NONE);
-        add(panel, gridBagLayout, tempLabel, 0, 8, 3, HORIZONTAL);
-        add(panel, gridBagLayout, ambTemp, 1, 9, 0, NONE);
-        addLabeledComponent(panel, gridBagLayout, "Rel Humidity (%)", relHumid, 10);
+        addLabeledComponent(iPanel, gridBagLayout, "Smoothing Factor", orderComboBox, 0);
+        addComponent(iPanel, gridBagLayout, buildInterpolateButton(orderComboBox), 2);
+        addMinMaxFilter(iPanel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 4);
+        add(iPanel, gridBagLayout, elevLabel, 0, 6, 3, HORIZONTAL);
+        add(iPanel, gridBagLayout, elevation, 1, 7, 0, NONE);
+        add(iPanel, gridBagLayout, tempLabel, 0, 8, 3, HORIZONTAL);
+        add(iPanel, gridBagLayout, ambTemp, 1, 9, 0, NONE);
+        addLabeledComponent(iPanel, gridBagLayout, "Rel Humidity (%)", relHumid, 10);
         setSelectAllFieldText(rpmMin);
         setSelectAllFieldText(rpmMax);
         setSelectAllFieldText(elevation);
         setSelectAllFieldText(ambTemp);
         setSelectAllFieldText(relHumid);
-        return panel;
+        return iPanel;
     }
 
     private JPanel buildReferencePanel() {
-    	JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Reference Trace"));
+        refPanel.setBorder(new TitledBorder("Reference Trace"));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
-        panel.setLayout(gridBagLayout);
-        add(panel, gridBagLayout, buildOpenReferenceButton(), 0, 0, 1, NONE);
-        add(panel, gridBagLayout, buildSaveReferenceButton(), 1, 0, 1, NONE);
-        add(panel, gridBagLayout, buildClearReferenceButton(), 2, 0, 1, NONE);
+        refPanel.setLayout(gridBagLayout);
+        add(refPanel, gridBagLayout, buildOpenReferenceButton(), 0, 0, 1, NONE);
+        add(refPanel, gridBagLayout, buildSaveReferenceButton(), 1, 0, 1, NONE);
+        add(refPanel, gridBagLayout, buildClearReferenceButton(), 2, 0, 1, NONE);
 
-        return panel;
+        return refPanel;
+    }
+
+    private JPanel buildEtPanel() {
+        etPanel.setBorder(new TitledBorder("Elapsed Time"));
+        etPanel.setVisible(false);
+
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        etPanel.setLayout(gridBagLayout);
+        addLabeledComponent(etPanel, gridBagLayout, "Select Car", carSelectBox, 0);
+        addComponent(etPanel, gridBagLayout, recordButton, 2);
+        add(etPanel, gridBagLayout, buildSaveReferenceButton(), 1, 3, 1, NONE);
+
+        return etPanel;
     }
 
     private void addLabeledComponent(JPanel panel, GridBagLayout gridBagLayout, String name, JComponent component, int y) {
@@ -659,25 +677,24 @@ public final class DynoControlPanel extends JPanel {
     private JPanel buildFilterPanel() {
         changeCars(0);
         setToolTips();
-        JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Dyno Settings"));
+        filterPanel.setBorder(new TitledBorder("Dyno Settings"));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
-        panel.setLayout(gridBagLayout);
+        filterPanel.setLayout(gridBagLayout);
 
-        add(panel, gridBagLayout, new JLabel("Wheel (Width/Aspect-Diam.)"), 0, 15, 3, HORIZONTAL);
-        add(panel, gridBagLayout, tireWidth, 0, 16, 1, NONE);
-        add(panel, gridBagLayout, tireAspect, 1, 16, 1, NONE);
-        add(panel, gridBagLayout, tireSize, 2, 16, 1, NONE);
-        addLabeledComponent(panel, gridBagLayout, "Select Car", carSelectBox, 18);
-        addLabeledComponent(panel, gridBagLayout, "Select Gear", gearSelectBox, 21);
-        add(panel, gridBagLayout, deltaMassLabel, 0, 24, 3, HORIZONTAL);
-        add(panel, gridBagLayout, deltaMass, 1, 25, 1, NONE);
-        add(panel, gridBagLayout, carMassLabel, 0, 27, 3, HORIZONTAL);
-        add(panel, gridBagLayout, carMass, 1, 28, 1, NONE);
-        addComponent(panel, gridBagLayout, buildRecordDataButton(), 31);
-        addComponent(panel, gridBagLayout, buildLoadFileCB(), 32);
-        addComponent(panel, gridBagLayout, buildResetButton(), 33);
+        add(filterPanel, gridBagLayout, new JLabel("Wheel (Width/Aspect-Diam.)"), 0, 15, 3, HORIZONTAL);
+        add(filterPanel, gridBagLayout, tireWidth, 0, 16, 1, NONE);
+        add(filterPanel, gridBagLayout, tireAspect, 1, 16, 1, NONE);
+        add(filterPanel, gridBagLayout, tireSize, 2, 16, 1, NONE);
+        addLabeledComponent(filterPanel, gridBagLayout, "Select Car", carSelectBox, 18);
+        addLabeledComponent(filterPanel, gridBagLayout, "Select Gear", gearSelectBox, 21);
+        add(filterPanel, gridBagLayout, deltaMassLabel, 0, 24, 3, HORIZONTAL);
+        add(filterPanel, gridBagLayout, deltaMass, 1, 25, 1, NONE);
+        add(filterPanel, gridBagLayout, carMassLabel, 0, 27, 3, HORIZONTAL);
+        add(filterPanel, gridBagLayout, carMass, 1, 28, 1, NONE);
+        addComponent(filterPanel, gridBagLayout, recordButton, 31);
+        addComponent(filterPanel, gridBagLayout, buildLoadFileCB(), 32);
+        addComponent(filterPanel, gridBagLayout, buildResetButton(), 33);
 //        addLabeledComponent(panel, gridBagLayout, "Drag Coeff", dragCoeff, 33);
 //        addLabeledComponent(panel, gridBagLayout, "Frontal Area", frontalArea, 36);
 //        addLabeledComponent(panel, gridBagLayout, "Rolling Resist Coeff", rollCoeff, 39);
@@ -686,7 +703,7 @@ public final class DynoControlPanel extends JPanel {
         setSelectAllFieldText(tireSize);
         setSelectAllFieldText(deltaMass);
         setSelectAllFieldText(carMass);
-        return panel;
+        return filterPanel;
     }
 
     private void setToolTips() {
@@ -796,8 +813,17 @@ public final class DynoControlPanel extends JPanel {
 	    dButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
             	chartPanel.setDyno();
-            	recordDataButton.setText("Record Data");
-           		interpolateButton.setEnabled(true);
+            	if (loadFileCB.isSelected()) {
+            		recordDataButton.setText("Load From File");
+            	}
+            	else {
+            		recordDataButton.setText("Record Data");
+            	}
+//            	etPanel.setVisible(false);
+//            	filterPanel.setVisible(true);
+            	unitsPanel.setVisible(true);
+            	iPanel.setVisible(true);
+//            	refPanel.setVisible(true);
            		parent.repaint();
             }
         });
@@ -807,7 +833,11 @@ public final class DynoControlPanel extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
             	chartPanel.setET();
             	recordDataButton.setText("Record ET");
-            	interpolateButton.setEnabled(false);
+//            	filterPanel.setVisible(false);
+            	unitsPanel.setVisible(false);
+            	iPanel.setVisible(false);
+//            	refPanel.setVisible(false);
+//            	etPanel.setVisible(true);
            		parent.repaint();
             }
         });
