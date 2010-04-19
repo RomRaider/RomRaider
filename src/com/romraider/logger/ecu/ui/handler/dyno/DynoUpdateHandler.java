@@ -152,7 +152,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
                 LOGGER.info("DYNO Sample: [Time]: " + now + " [RPM:calc]: " + rpm + " [TA:P13]: " + ta + " [VS:P9]: " + vs);
 	            if (valid) addRawData(now, vs);
             }
-            if (dynoTab.isRecordET() && containsData(response, VS)) {
+            if (valid && dynoTab.isRecordET() && containsData(response, VS)) {
 	        	if (TEST) {
 	        		if (i >= logTime.length) {
 	        			i = 0;
@@ -166,7 +166,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
 		            vs = findValue(response, VS);
 	        	}
 	            valid = dynoTab.isValidET(now, vs);
-	            LOGGER.info("DYNO Sample: [Time]: " + now + " [VS:P9]: " + vs);
+	            LOGGER.info("DYNO Sample: [Time]: " + now + " [VS:P9]: " + vs + " valid: " + valid);
 	            if (valid) addRawData(now, vs);
             }
         }

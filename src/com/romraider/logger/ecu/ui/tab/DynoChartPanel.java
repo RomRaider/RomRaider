@@ -63,6 +63,7 @@ public final class DynoChartPanel extends JPanel {
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
     private static final String START_PROMPT = "Accelerate using WOT when ready!!";
+    private static final String ET_PROMPT = "Accelerate for 1/4 mile when ready!!";
     private final XYSeries data = new XYSeries("Raw HP");		// series for HorsePower/RPM
     private final XYSeries data1 = new XYSeries("Raw TQ");		// series for Torque/RPM
     private final XYSeries logRpm = new XYSeries("Logger RPM");		// series for raw sample time/RPM
@@ -404,10 +405,12 @@ public final class DynoChartPanel extends JPanel {
     	tqAxis.setLabel("Calculated Engine Torque");
     }
 
-    public void startPrompt() {
-        final double x = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 2) + plot.getDomainAxis().getLowerBound();  
+    public void startPrompt(Boolean select) {
+    	String startPrompt =  START_PROMPT;
+    	if (select) startPrompt =  ET_PROMPT;
+    	final double x = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 2) + plot.getDomainAxis().getLowerBound();  
         final double y = ((hpAxis.getUpperBound() - hpAxis.getLowerBound()) / 2) + hpAxis.getLowerBound();
-    	final XYTextAnnotation startMessage = new XYTextAnnotation(START_PROMPT, x, y);
+    	final XYTextAnnotation startMessage = new XYTextAnnotation(startPrompt, x, y);
 	    startMessage.setPaint(GREEN);
 	    startMessage.setTextAnchor(TextAnchor.BOTTOM_CENTER);
 	    startMessage.setFont(new Font("Arial", Font.BOLD,20));

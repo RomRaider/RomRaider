@@ -84,9 +84,9 @@ import com.romraider.logger.ecu.ui.tab.DynoChartPanel;
 
 public final class DynoControlPanel extends JPanel {
     private static final long serialVersionUID = 3787020251963102201L;
+    private static final Logger LOGGER = Logger.getLogger(DynoControlPanel.class);
     private static final String CARS_FILE = "cars_def.xml";
     private static final String MISSING_CAR_DEF = "Missing cars_def.xml";
-    private static final Logger LOGGER = Logger.getLogger(DynoControlPanel.class);
     private static final String ENGINE_SPEED = "P8";
     private static final String VEHICLE_SPEED = "P9";
     private static final String IAT = "P11";
@@ -509,19 +509,21 @@ public final class DynoControlPanel extends JPanel {
     		etResults[9] = etResults[9] * KPH_2_MPH;
     	}
     	chartPanel.quietUpdate(true);
-    	LOGGER.info("Split 60: " + String.format("%1.3f", etResults[0]));
-    	LOGGER.info("Split 330: " + String.format("%1.3f", etResults[2]));
-    	LOGGER.info("Split 1/8: " + String.format("%1.3f", etResults[4]) + " @ " + String.format("%1.2f", etResults[5]));
-    	LOGGER.info("Split 1000: " + String.format("%1.3f", etResults[6]));
-    	LOGGER.info("Split 1/4: " + String.format("%1.3f", etResults[8]) + " @ " + String.format("%1.2f", etResults[9]));
+    	LOGGER.info("ET Split 60: " + String.format("%1.3f", etResults[0]));
+    	LOGGER.info("ET Split 330: " + String.format("%1.3f", etResults[2]));
+    	LOGGER.info("ET Split 1/8: " + String.format("%1.3f", etResults[4]) + " @ " + String.format("%1.2f", etResults[5]));
+    	LOGGER.info("ET Split 1000: " + String.format("%1.3f", etResults[6]));
+    	LOGGER.info("ET Split 1/4: " + String.format("%1.3f", etResults[8]) + " @ " + String.format("%1.2f", etResults[9]));
     	chartPanel.updateEtResults(carInfo, etResults, vsLogUnits);
     	parent.repaint();
     }
 
     public boolean isValidET(long now, double vs) {
-    	if (vs > 0.0) {
+//    	LOGGER.trace("lastET: " + lastET + " now: " + now + " VS: " + vs);
+    	if (vs > 0) {
 			if (vsLogUnits.equals(LOG_VS_M)) vs = (vs / KPH_2_MPH);
 			distance = distance + (vs * 5280 / 3600 * (now - lastET) / 1000);
+			LOGGER.info("ET Distance (ft): " + distance);
 	        if (distance > 1330) {
 	        	recordDataButton.setSelected(false);
 	        	deregisterData(VEHICLE_SPEED);
@@ -532,9 +534,8 @@ public final class DynoControlPanel extends JPanel {
 	        lastET = now;
 	        return true;
     	}
-    	else {
-    		return false;
-    	}
+        lastET = now;
+   		return false;
     }
 
     public boolean isValidData(double rpm, double ta) {
@@ -757,7 +758,7 @@ public final class DynoControlPanel extends JPanel {
 			                	else {
 			                        registerData(VEHICLE_SPEED, THROTTLE_ANGLE);
 			                	}
-			                    chartPanel.startPrompt();
+			                    chartPanel.startPrompt(false);
 			                } else {
 			                	deregister();
 			                	chartPanel.clearPrompt();
@@ -770,8 +771,9 @@ public final class DynoControlPanel extends JPanel {
 		                    parent.repaint();
 		                	calculateEnv();
 		                	registerData(VEHICLE_SPEED);
-		                    chartPanel.startPrompt();
+		                    chartPanel.startPrompt(true);
 		                    distance = 0;
+		                    lastET = 0;
 		                } else {
 		                	deregisterData(VEHICLE_SPEED);
 		                	chartPanel.clearPrompt();
