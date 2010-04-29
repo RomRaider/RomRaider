@@ -63,7 +63,8 @@ public final class DynoChartPanel extends JPanel {
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
     private static final String START_PROMPT = "Accelerate using WOT when ready!!";
-    private static final String ET_PROMPT = "Accelerate for 1/4 mile when ready!!";
+    private static final String ET_PROMPT_I = "Accelerate for 1/4 mile when ready!!";
+    private static final String ET_PROMPT_M = "Accelerate for 402 meters when ready!!";
     private final XYSeries data = new XYSeries("Raw HP");		// series for HorsePower/RPM
     private final XYSeries data1 = new XYSeries("Raw TQ");		// series for Torque/RPM
     private final XYSeries logRpm = new XYSeries("Logger RPM");		// series for raw sample time/RPM
@@ -79,6 +80,7 @@ public final class DynoChartPanel extends JPanel {
     private NumberAxis tqAxis = new NumberAxis("tq");
     private XYPlot plot;
     private final CircleDrawer cd = new CircleDrawer(RED, new BasicStroke(1.0f), null);
+    private final CircleDrawer cdGreen = new CircleDrawer(GREEN, new BasicStroke(1.0f), null);
     private XYAnnotation bestHp; 
     private XYAnnotation bestTq; 
     private final XYPointerAnnotation hpPointer = new XYPointerAnnotation(
@@ -252,11 +254,13 @@ public final class DynoChartPanel extends JPanel {
     	String s660Text = "1/2 track";
     	String s1000Text = "1,000 ft";
     	String s1320Text = "1/4 mile";
+    	String zTo60Text = "60 mph";
     	if (units.equalsIgnoreCase("kph")) {
     		s60Text = "18.3m";
         	s330Text = "100m";
         	s1000Text = "305m";
         	s1320Text = "402m";
+        	zTo60Text = "97 kph";
     	}
     	hpAxis.setLabel("Vehicle Speed (" + units + ")");
     	String[] car = carInfo.split(",");
@@ -309,10 +313,19 @@ public final class DynoChartPanel extends JPanel {
         s1320Time.setPaint(RED);
         s1320Time.setTextAnchor(TextAnchor.CENTER_RIGHT);
         s1320Time.setFont(new Font("SansSerif", Font.BOLD,10));
-        final XYTextAnnotation carText = new XYTextAnnotation(car[0], xMin, (hpAxis.getUpperBound()-ySpace));
+        final XYTextAnnotation carText = new XYTextAnnotation(car[0], (plot.getDomainAxis().getUpperBound()-0.2), (hpAxis.getLowerBound()+ySpace));
         carText.setPaint(RED);
-        carText.setTextAnchor(TextAnchor.TOP_LEFT);
+        carText.setTextAnchor(TextAnchor.BOTTOM_RIGHT);
         carText.setFont(new Font("SansSerif", Font.BOLD,12));
+        final XYAnnotation zTo60Marker = new XYDrawableAnnotation(etResults[10], etResults[11], 10, 10, cdGreen);
+        final XYTextAnnotation zTo60Label = new XYTextAnnotation(zTo60Text, etResults[10], (etResults[11]+ySpace));
+        zTo60Label.setPaint(GREEN);
+        zTo60Label.setTextAnchor(TextAnchor.TOP_RIGHT);
+        zTo60Label.setFont(new Font("SansSerif", Font.BOLD,10));
+        final XYTextAnnotation zTo60Time = new XYTextAnnotation((String.format("%1.3f", etResults[10]) + "\""), etResults[10], (etResults[11]-ySpace));
+        zTo60Time.setPaint(GREEN);
+        zTo60Time.setTextAnchor(TextAnchor.BOTTOM_LEFT);
+        zTo60Time.setFont(new Font("SansSerif", Font.BOLD,10));
         plot.addAnnotation(s60Marker);
         plot.addAnnotation(s60Label);
         plot.addAnnotation(s60Time);
@@ -329,6 +342,9 @@ public final class DynoChartPanel extends JPanel {
         plot.addAnnotation(s1320Label);
         plot.addAnnotation(s1320Time);
         plot.addAnnotation(carText);
+        plot.addAnnotation(zTo60Marker);
+        plot.addAnnotation(zTo60Label);
+        plot.addAnnotation(zTo60Time);
     }
 
     public double[] getPolynomialCoefficients(XYTrendline trendSeries) {
@@ -405,9 +421,10 @@ public final class DynoChartPanel extends JPanel {
     	tqAxis.setLabel("Calculated Engine Torque");
     }
 
-    public void startPrompt(Boolean select) {
-    	String startPrompt =  START_PROMPT;
-    	if (select) startPrompt =  ET_PROMPT;
+    public void startPrompt(String select) {
+    	String startPrompt = START_PROMPT;
+    	if (select.equalsIgnoreCase("mph")) startPrompt =  ET_PROMPT_I;
+    	if (select.equalsIgnoreCase("kph")) startPrompt =  ET_PROMPT_M;
     	final double x = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 2) + plot.getDomainAxis().getLowerBound();  
         final double y = ((hpAxis.getUpperBound() - hpAxis.getLowerBound()) / 2) + hpAxis.getLowerBound();
     	final XYTextAnnotation startMessage = new XYTextAnnotation(startPrompt, x, y);

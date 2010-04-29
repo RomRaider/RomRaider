@@ -207,14 +207,14 @@ public final class DynoControlPanel extends JPanel {
     private String pressText = "14.7";
     private String iatLogUnits = "F";
     private String atmLogUnits = "psi";
-    private String vsLogUnits = "mph";
+    private String vsLogUnits = LOG_VS_I;
 	private double[] results = new double[5];
 	private String[] resultStrings = new String[6];
 //    private String hpUnits = "hp(I)";
 //    private String tqUnits = "lbf-ft";
 	private double distance = 0;
 	private long lastET = 0;
-	private double[] etResults = new double[10];
+	private double[] etResults = new double[12];
 
 	private final JPanel filterPanel = new JPanel();
 	private final JPanel unitsPanel = new JPanel();
@@ -500,13 +500,16 @@ public final class DynoControlPanel extends JPanel {
 	       	if (distance <= 1000)	etResults[7] = speedSample;
 	       	if (distance <= 1320)	etResults[8] = x1;
 	       	if (distance <= 1320)	etResults[9] = speedSample;
+	       	if (speedSample <= 60)	etResults[10] = x1;
+	       	if (speedSample <= 60)	etResults[11] = speedSample;
         }
     	if (vsLogUnits.equals(LOG_VS_M)) {
-    		etResults[1] = etResults[1] * KPH_2_MPH;
-    		etResults[3] = etResults[3] * KPH_2_MPH;
-    		etResults[5] = etResults[5] * KPH_2_MPH;
-    		etResults[7] = etResults[7] * KPH_2_MPH;
-    		etResults[9] = etResults[9] * KPH_2_MPH;
+    		etResults[1]  = etResults[1]  * KPH_2_MPH;
+    		etResults[3]  = etResults[3]  * KPH_2_MPH;
+    		etResults[5]  = etResults[5]  * KPH_2_MPH;
+    		etResults[7]  = etResults[7]  * KPH_2_MPH;
+    		etResults[9]  = etResults[9]  * KPH_2_MPH;
+    		etResults[11] = etResults[11] * KPH_2_MPH;
     	}
     	chartPanel.quietUpdate(true);
     	LOGGER.info("ET Split 60: " + String.format("%1.3f", etResults[0]));
@@ -514,6 +517,7 @@ public final class DynoControlPanel extends JPanel {
     	LOGGER.info("ET Split 1/8: " + String.format("%1.3f", etResults[4]) + " @ " + String.format("%1.2f", etResults[5]));
     	LOGGER.info("ET Split 1000: " + String.format("%1.3f", etResults[6]));
     	LOGGER.info("ET Split 1/4: " + String.format("%1.3f", etResults[8]) + " @ " + String.format("%1.2f", etResults[9]));
+    	LOGGER.info("ET 0 to " + String.format("%1.0f", etResults[11]) + " " + vsLogUnits + ": " + String.format("%1.3f", etResults[10]));
     	chartPanel.updateEtResults(carInfo, etResults, vsLogUnits);
     	parent.repaint();
     }
@@ -758,9 +762,15 @@ public final class DynoControlPanel extends JPanel {
 			                	else {
 			                        registerData(VEHICLE_SPEED, THROTTLE_ANGLE);
 			                	}
-			                    chartPanel.startPrompt(false);
+			                    chartPanel.startPrompt("wot");
 			                } else {
-			                	deregister();
+			                    recordDataButton.setSelected(false);
+			                    if (isManual()) {
+			            	        deregisterData(ENGINE_SPEED, THROTTLE_ANGLE);
+			            		}
+			            		else {
+			            	        deregisterData(VEHICLE_SPEED, THROTTLE_ANGLE);
+			            		}
 			                	chartPanel.clearPrompt();
 			                }
 		            	}
@@ -771,11 +781,12 @@ public final class DynoControlPanel extends JPanel {
 		                    parent.repaint();
 		                	calculateEnv();
 		                	registerData(VEHICLE_SPEED);
-		                    chartPanel.startPrompt(true);
+		                    chartPanel.startPrompt(vsLogUnits);
 		                    distance = 0;
 		                    lastET = 0;
 		                } else {
 		                	deregisterData(VEHICLE_SPEED);
+		                    recordDataButton.setSelected(false);
 		                	chartPanel.clearPrompt();
 		                }
 	            	}	

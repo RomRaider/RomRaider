@@ -1028,7 +1028,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     public void startLogging() {
         String port = settings.getLoggerPort();
-        if (isNullOrEmpty(port)) return;
+        if (isNullOrEmpty(port)) {
+            LOGGER.warn("No COM ports found, let's try a J2534 connection");
+        }
         controller.start();
     }
 
