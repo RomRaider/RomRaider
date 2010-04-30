@@ -121,6 +121,7 @@ public final class DynoControlPanel extends JPanel {
     private static final String COBB_AP_TIME = "Seconds";
     private static final String COBB_ATR_TIME = "Time Stamp";
     private static final String AEM_LOG_TIME = "Time/s";
+    private static final String OP2_LOG_TIME = "time";
     private static final String LOG_RPM = "RPM";
     private static final String LOG_ES = "Engine Speed";
     private static final String LOG_TA = "Throttle";
@@ -1025,7 +1026,9 @@ public final class DynoControlPanel extends JPanel {
                 }
                 for (int x =0; x < headers.length; x++){
                 	if (headers[x].contains(RR_LOG_TIME)) timeCol = x;
-                	if (headers[x].contains(COBB_AP_TIME) || headers[x].contains(AEM_LOG_TIME)) {
+                	if (headers[x].contains(COBB_AP_TIME) ||
+                		headers[x].contains(AEM_LOG_TIME) || 
+                		headers[x].contains(OP2_LOG_TIME)) {
                 		timeCol = x;
                 		timeMult = 1000;
                 	 }
