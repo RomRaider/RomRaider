@@ -70,15 +70,11 @@ public final class LoggerControllerImpl implements LoggerController {
     }
 
     public synchronized void start() {
-        if (!isStarted()) {
-            runAsDaemon(queryManager);
-        }
+        if (!isStarted()) runAsDaemon(queryManager);
     }
 
     public synchronized void stop() {
-        if (isStarted()) {
-            queryManager.stop();
-        }
+        if (isStarted()) queryManager.stop();
     }
 
 }

@@ -32,6 +32,7 @@ import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import static java.lang.System.arraycopy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -91,7 +92,7 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         int i = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
             byte[] bytes = new byte[DATA_SIZE * (filteredQuery.getBytes().length / ADDRESS_SIZE)];
-            System.arraycopy(responseData, i, bytes, 0, bytes.length);
+            arraycopy(responseData, i, bytes, 0, bytes.length);
             addressResults.put(filteredQuery.getHex(), bytes);
             i += bytes.length;
         }
@@ -120,7 +121,7 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         for (EcuQuery query : queries) {
             byte[] bytes = query.getBytes();
             for (int j = 0; j < bytes.length / ADDRESS_SIZE; j++) {
-                System.arraycopy(bytes, j * ADDRESS_SIZE, addresses[i++], 0, ADDRESS_SIZE);
+                arraycopy(bytes, j * ADDRESS_SIZE, addresses[i++], 0, ADDRESS_SIZE);
             }
         }
         return addresses;

@@ -61,6 +61,7 @@ import com.romraider.logger.ecu.ui.StatusIndicator;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandlerManager;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandlerManagerImpl;
 import com.romraider.logger.ecu.ui.handler.dash.DashboardUpdateHandler;
+import com.romraider.logger.ecu.ui.handler.dyno.DynoUpdateHandler;
 import com.romraider.logger.ecu.ui.handler.file.FileLoggerControllerSwitchHandler;
 import com.romraider.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitorImpl;
 import com.romraider.logger.ecu.ui.handler.file.FileUpdateHandlerImpl;
@@ -80,6 +81,8 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon;
 import static com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon.ROTATE_LEFT;
+import com.romraider.logger.ecu.ui.tab.dyno.DynoTab;
+import com.romraider.logger.ecu.ui.tab.dyno.DynoTabImpl;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTab;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTabImpl;
 import com.romraider.logger.ecu.ui.tab.maf.MafTab;
@@ -213,6 +216,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private InjectorUpdateHandler injectorUpdateHandler;
     private DataUpdateHandlerManager injectorHandlerManager;
     private DataRegistrationBroker injectorTabBroker;
+    private DynoTab dynoTab;
+    private DynoUpdateHandler dynoUpdateHandler;
+    private DataUpdateHandlerManager dynoHandlerManager;
+    private DataRegistrationBroker dynoTabBroker;
     private EcuInit ecuInit;
     private JToggleButton logToFileButton;
     private List<ExternalDataSource> externalDataSources;
@@ -280,9 +287,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
         mafUpdateHandler = new MafUpdateHandler();
         injectorUpdateHandler = new InjectorUpdateHandler();
+        dynoUpdateHandler = new DynoUpdateHandler();
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this, liveDataUpdateHandler,
                 graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, injectorUpdateHandler,
-                fileUpdateHandler, TableUpdateHandler.getInstance());
+                dynoUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
         mafHandlerManager = new DataUpdateHandlerManagerImpl();
         mafTabBroker = new DataRegistrationBrokerImpl(controller, mafHandlerManager);
         mafTab = new MafTabImpl(mafTabBroker, ecuEditor);
@@ -291,6 +299,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         injectorTabBroker = new DataRegistrationBrokerImpl(controller, injectorHandlerManager);
         injectorTab = new InjectorTabImpl(injectorTabBroker, ecuEditor);
         injectorUpdateHandler.setInjectorTab(injectorTab);
+        dynoHandlerManager = new DataUpdateHandlerManagerImpl();
+        dynoTabBroker = new DataRegistrationBrokerImpl(controller, dynoHandlerManager);
+        dynoTab = new DynoTabImpl(dynoTabBroker, ecuEditor);
+        dynoUpdateHandler.setDynoTab(dynoTab);
         resetManager = new ResetManagerImpl(settings, this);
         messageLabel = new JLabel(ECU_LOGGER_TITLE);
         calIdLabel = new JLabel(buildEcuInfoLabelText(CAL_ID_LABEL, null));
@@ -548,6 +560,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
         mafTab.setEcuParams(ecuParams);
         injectorTab.setEcuParams(ecuParams);
+        dynoTab.setEcuParams(ecuParams);
         this.ecuParams = new ArrayList<EcuParameter>(ecuParams);
     }
 
@@ -561,6 +574,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
         mafTab.setEcuSwitches(ecuSwitches);
         injectorTab.setEcuSwitches(ecuSwitches);
+        dynoTab.setEcuSwitches(ecuSwitches);
     }
 
     private List<ExternalData> getExternalData(List<ExternalDataSource> externalDataSources) {
@@ -588,6 +602,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
         mafTab.setExternalDatas(externalDatas);
         injectorTab.setExternalDatas(externalDatas);
+        dynoTab.setExternalDatas(externalDatas);
     }
 
     private void setDefaultUnits(UserProfile profile, LoggerData loggerData) {
@@ -672,6 +687,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         addSplitPaneTab("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()), buildToggleGaugeStyleButton());
         tabbedPane.add("MAF", mafTab.getPanel());
         tabbedPane.add("Injector", injectorTab.getPanel());
+        tabbedPane.add("Dyno", dynoTab.getPanel());
         return tabbedPane;
     }
 
@@ -841,7 +857,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             public void actionPerformed(ActionEvent actionEvent) {
                 ThreadUtil.runAsDaemon(new Runnable() {
                     public void run() {
-                        PlaybackManagerImpl playbackManager = new PlaybackManagerImpl(ecuParams, liveDataUpdateHandler, graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler,
+                        PlaybackManagerImpl playbackManager = new PlaybackManagerImpl(ecuParams, liveDataUpdateHandler, graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, dynoUpdateHandler,
                                 TableUpdateHandler.getInstance());
                         playbackManager.load(new File("foo.csv"));
                         playbackManager.play();
@@ -1009,8 +1025,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     public void startLogging() {
-        String port = settings.getLoggerPort();
-        if (isNullOrEmpty(port)) return;
         controller.start();
     }
 

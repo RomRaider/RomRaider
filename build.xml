@@ -21,7 +21,7 @@
 
 -->
 
-<project default="help" basedir=".">
+<project name="romraider" default="help" basedir=".">
 
     <!-- get the environment -->
     <property environment="env"/>
@@ -80,14 +80,14 @@
         <!-- get the current svn revision (needed by version.properties) - if repository is unavailable, this will be zero -->
         <macro_svn_revision repository="https://svn2.assembla.com/svn/romraider" property="svn.revision"/>
 
-        <!-- Set the buildnumber to be the revision fetched from the repository, but default to zero for 
+        <!-- Set the buildnumber to be the revision fetched from the repository, but default to zero for
                 offline work -->
-    	<condition property="buildnumber" value="${svn.revision}" else="0">
-    		<isset property="svn.revision"/>
-    	</condition>
+        <condition property="buildnumber" value="${svn.revision}" else="0">
+            <isset property="svn.revision"/>
+        </condition>
 
-    	<!-- version properties are set in this file, both for the product itself and
-		        for some of the external dependencies (jar files and such) -->
+        <!-- version properties are set in this file, both for the product itself and
+                  for some of the external dependencies (jar files and such) -->
         <property file="version.properties"/>
 
         <!-- basic project properties -->
@@ -104,7 +104,8 @@
 
         <!-- package naming properties -->
         <property name="jar.package" value="${name.package}.jar"/>
-        <property name="jar.installer-prefix" value="${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}"/>
+        <property name="jar.installer-prefix"
+                  value="${name.package}${version.major}.${version.minor}.${version.patch}-${version.buildnumber}"/>
 
         <!-- support tools -->
         <!-- creates EXE wrappers around java apps -->
@@ -140,6 +141,7 @@
             <filter token="romrevisionurl" value="${romrevisionurl}"/>
             <filter token="ecudefsurl" value="${ecudefsurl}"/>
             <filter token="loggerdefsurl" value="${loggerdefsurl}"/>
+            <filter token="carsdefsurl" value="${carsdefsurl}"/>
             <filter token="release_notes" value="${release_notes}"/>
             <filter token="version.major" value="${version.major}"/>
             <filter token="version.minor" value="${version.minor}"/>
@@ -163,8 +165,9 @@
     <!-- =================================================================== -->
     <target name="prepare" depends="-init">
         <!-- generate the Version class -->
-        <copy overwrite="true" tofile="${src.dir}/com/romraider/Version.java" file="src/com/romraider/Version.java.template">
-            <filterset refid="version.filterset"/>
+        <copy overwrite="true" tofile="${src.dir}/com/romraider/Version.java"
+              file="src/com/romraider/Version.java.template">
+            <filterset refid="version.filtercarset"/>
         </copy>
     </target>
 
@@ -188,7 +191,8 @@
     <target name="javadoc" depends="-init">
         <delete quiet="true" dir="${javadoc.dir}"/>
         <mkdir dir="${javadoc.dir}"/>
-        <javadoc windowtitle="${name.package}" header="${javadoc.header}" sourcepath="${src.dir}" author="yes" version="yes" destdir="${javadoc.dir}"
+        <javadoc windowtitle="${name.package}" header="${javadoc.header}" sourcepath="${src.dir}" author="yes"
+                 version="yes" destdir="${javadoc.dir}"
                  breakiterator="yes" maxmemory="96m">
             <packageset dir="src">
                 <include name="**"/>
@@ -206,16 +210,19 @@
         <mkdir dir="${dist.dir}/windows"/>
         <mkdir dir="${dist.dir}/linux"/>
         <!-- generate installer scripts from templates -->
-        <copy overwrite="true" tofile="${dist.dir}/install-windows.xml" file="${template.dir}/install-windows.xml.template">
+        <copy overwrite="true" tofile="${dist.dir}/install-windows.xml"
+              file="${template.dir}/install-windows.xml.template">
             <filterset refid="version.filterset"/>
         </copy>
         <copy overwrite="true" tofile="${dist.dir}/install-linux.xml" file="${template.dir}/install-linux.xml.template">
             <filterset refid="version.filterset"/>
         </copy>
-        <copy overwrite="true" tofile="${dist.dir}/shortcutSpec-windows.xml" file="${template.dir}/shortcutSpec-windows.xml.template">
+        <copy overwrite="true" tofile="${dist.dir}/shortcutSpec-windows.xml"
+              file="${template.dir}/shortcutSpec-windows.xml.template">
             <filterset refid="version.filterset"/>
         </copy>
-        <copy overwrite="true" tofile="${dist.dir}/shortcutSpec-linux.xml" file="${template.dir}/shortcutSpec-linux.xml.template">
+        <copy overwrite="true" tofile="${dist.dir}/shortcutSpec-linux.xml"
+              file="${template.dir}/shortcutSpec-linux.xml.template">
             <filterset refid="version.filterset"/>
         </copy>
         <!-- generate the launch4j scripts from templates -->
@@ -310,7 +317,8 @@
                 <attribute name="Main-Class" value="${class.start}"/>
                 <attribute name="Class-Path" value="${@{os}.jar.classpath}"/>
             </manifest>
-            <jar basedir="${classes.dir}" destfile="${build.dir}/@{os}/lib/${jar.package}" manifest="${build.dir}/@{os}/MANIFEST.MF"/>
+            <jar basedir="${classes.dir}" destfile="${build.dir}/@{os}/lib/${jar.package}"
+                 manifest="${build.dir}/@{os}/MANIFEST.MF"/>
         </sequential>
     </macrodef>
 
@@ -335,6 +343,7 @@
                 <zipfileset file="log4j.properties" prefix="${name.package}"/>
                 <zipfileset file="logger.dtd" prefix="${name.package}"/>
                 <zipfileset file="profile.dtd" prefix="${name.package}"/>
+                <zipfileset file="cars_def.dtd" prefix="${name.package}"/>
                 <zipfileset dir="graphics" prefix="${name.package}/graphics" excludes="*.bmp"/>
                 <zipfileset dir="plugins" prefix="${name.package}/plugins"/>
                 <zipfileset dir="lib/common" prefix="${name.package}/lib/common"/>

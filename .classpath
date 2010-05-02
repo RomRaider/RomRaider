@@ -2,30 +2,32 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/Graph3d/windows/lib/j3dcore.jar"/>
-	<classpathentry kind="lib" path="lib/Graph3d/windows/lib/j3dutils.jar"/>
-	<classpathentry kind="lib" path="lib/Graph3d/windows/lib/vecmath.jar"/>
-	<classpathentry kind="lib" path="lib/Graph3d/windows/Graph3d.jar"/>
-	<classpathentry kind="lib" path="lib/Graph3d/jama-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/BareBonesBrowserLaunch.jar"/>
-	<classpathentry kind="lib" path="lib/jep.jar"/>
-	<classpathentry kind="lib" path="lib/Jama.jar"/>
-	<classpathentry kind="lib" path="lib/jamlab.jar"/>
-	<classpathentry kind="lib" path="lib/JFontChooser.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
-	<classpathentry kind="lib" path="lib/swing-layout-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/tts/cmu_time_awb.jar"/>
-	<classpathentry kind="lib" path="lib/tts/cmu_us_kal.jar"/>
-	<classpathentry kind="lib" path="lib/tts/cmudict04.jar"/>
-	<classpathentry kind="lib" path="lib/tts/cmulex.jar"/>
-	<classpathentry kind="lib" path="lib/tts/cmutimelex.jar"/>
-	<classpathentry kind="lib" path="lib/tts/en_us.jar"/>
-	<classpathentry kind="lib" path="lib/tts/freetts.jar"/>
-	<classpathentry kind="lib" path="lib/logger/rxtx/RXTXcomm.jar"/>
-	<classpathentry kind="lib" path="lib/jdic/windows/jdic_stub.jar"/>
-	<classpathentry kind="lib" path="lib/jdic/jdic.jar"/>
-	<classpathentry kind="lib" path="lib/logger/jfreechart-1.0.9.jar"/>
-	<classpathentry kind="lib" path="lib/logger/jcommon-1.0.12.jar"/>
-	<classpathentry kind="lib" path="lib/logger/jinvoke-3.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/common/registry.jar"/>
+	<classpathentry kind="lib" path="lib/common/com4j.jar"/>
+	<classpathentry kind="lib" path="lib/windows/j3dcore.jar"/>
+	<classpathentry kind="lib" path="lib/windows/j3dutils.jar"/>
+	<classpathentry kind="lib" path="lib/windows/vecmath.jar"/>
+	<classpathentry kind="lib" path="lib/windows/Graph3d.jar"/>
+	<classpathentry kind="lib" path="lib/common/jama-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/common/BareBonesBrowserLaunch.jar"/>
+	<classpathentry kind="lib" path="lib/common/jep.jar"/>
+	<classpathentry kind="lib" path="lib/common/Jama.jar"/>
+	<classpathentry kind="lib" path="lib/common/jamlab.jar"/>
+	<classpathentry kind="lib" path="lib/common/JFontChooser.jar"/>
+	<classpathentry kind="lib" path="lib/common/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="lib/common/swing-layout-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/common/cmu_time_awb.jar"/>
+	<classpathentry kind="lib" path="lib/common/cmu_us_kal.jar"/>
+	<classpathentry kind="lib" path="lib/common/cmudict04.jar"/>
+	<classpathentry kind="lib" path="lib/common/cmulex.jar"/>
+	<classpathentry kind="lib" path="lib/common/cmutimelex.jar"/>
+	<classpathentry kind="lib" path="lib/common/en_us.jar"/>
+	<classpathentry kind="lib" path="lib/common/freetts.jar"/>
+	<classpathentry kind="lib" path="lib/common/RXTXcomm.jar"/>
+	<classpathentry kind="lib" path="lib/windows/jdic_stub.jar"/>
+	<classpathentry kind="lib" path="lib/common/jdic.jar"/>
+	<classpathentry kind="lib" path="lib/common/jfreechart-1.0.9.jar"/>
+	<classpathentry kind="lib" path="lib/common/jcommon-1.0.12.jar"/>
+	<classpathentry kind="lib" path="lib/common/jinvoke-3.0.3.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

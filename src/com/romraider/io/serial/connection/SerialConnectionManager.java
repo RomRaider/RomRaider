@@ -39,6 +39,7 @@ public final class SerialConnectionManager implements ConnectionManager {
         // Use TestSerialConnection for testing!!
         connection = new SerialConnectionImpl(portName, connectionProperties);
 //        connection = new TestSerialConnection(portName, connectionProperties);
+        LOGGER.info("Serial connection initialised");
     }
 
     // Send request and wait for response with known length

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT dyno ( car+ ) >
+
+<!ELEMENT car (type,carmass,finalratio,rollcoeff,dragcoeff,frontalarea,transmission,gearratio1,gearratio2,gearratio3,gearratio4,gearratio5?,gearratio6?,tirewidth,tireaspect,wheelsize) >
+<!ELEMENT type (#PCDATA) >
+<!ELEMENT carmass (#PCDATA) >
+<!ELEMENT finalratio (#PCDATA) >
+<!ELEMENT rollcoeff (#PCDATA) >
+<!ELEMENT dragcoeff (#PCDATA) >
+<!ELEMENT frontalarea (#PCDATA) >
+<!ELEMENT transmission (#PCDATA) >
+<!ELEMENT gearratio1 (#PCDATA) >
+<!ELEMENT gearratio2 (#PCDATA) >
+<!ELEMENT gearratio3 (#PCDATA) >
+<!ELEMENT gearratio4 (#PCDATA) >
+<!ELEMENT gearratio5 (#PCDATA) >
+<!ELEMENT gearratio6 (#PCDATA)  >
+<!ELEMENT tirewidth (#PCDATA) >
+<!ELEMENT tireaspect (#PCDATA) >
+<!ELEMENT wheelsize (#PCDATA) >
