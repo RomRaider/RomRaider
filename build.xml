@@ -167,7 +167,7 @@
         <!-- generate the Version class -->
         <copy overwrite="true" tofile="${src.dir}/com/romraider/Version.java"
               file="src/com/romraider/Version.java.template">
-            <filterset refid="version.filtercarset"/>
+            <filterset refid="version.filterset"/>
         </copy>
     </target>
 
