@@ -341,9 +341,10 @@
                 <zipfileset file="license.txt" prefix="${name.package}"/>
                 <zipfileset file="release_notes.txt" prefix="${name.package}"/>
                 <zipfileset file="log4j.properties" prefix="${name.package}"/>
+                <zipfileset file="cars_def.dtd" prefix="${name.package}"/>
+            	<zipfileset file="ecu_defs.dtd" prefix="${name.package}"/>
                 <zipfileset file="logger.dtd" prefix="${name.package}"/>
                 <zipfileset file="profile.dtd" prefix="${name.package}"/>
-                <zipfileset file="cars_def.dtd" prefix="${name.package}"/>
                 <zipfileset dir="graphics" prefix="${name.package}/graphics" excludes="*.bmp"/>
                 <zipfileset dir="plugins" prefix="${name.package}/plugins"/>
                 <zipfileset dir="lib/common" prefix="${name.package}/lib/common"/>
