@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@ import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
 import com.romraider.maps.Table3D;
+import static javax.swing.BorderFactory.createLineBorder;
 import org.apache.log4j.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -444,6 +444,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     // ******************************************
     // Code for listening to graph3d data changes
     // ******************************************
+
     public void newGraphData(int x, int z, float value) {
         Table3D table3d = (Table3D) table;
         table3d.selectCellAt(x, table3d.getSizeY() - z - 1);

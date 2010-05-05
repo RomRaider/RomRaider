@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,9 +40,9 @@ import static com.romraider.io.j2534.op20.OpenPort20.PassThruWriteMsgs;
 import static com.romraider.io.j2534.op20.OpenPort20.STATUS_ERR_TIMEOUT;
 import static com.romraider.io.j2534.op20.OpenPort20.STATUS_NOERROR;
 import static com.romraider.util.HexUtil.asHex;
+import static java.lang.System.arraycopy;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
-import static java.lang.System.arraycopy;
 import java.util.ArrayList;
 import java.util.List;
 

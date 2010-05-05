@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,6 +137,7 @@ public class Test implements MTSEvents {
 
     // generated in response to a call to connect()
     // see the SDK doc for explanation of error codes
+
     public void connectionEvent(int result) {
         System.out.printf("connectionEvent raised.  result = %d\n", result);
     }

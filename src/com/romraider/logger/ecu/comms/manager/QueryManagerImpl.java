@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,13 +41,13 @@ import com.romraider.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonito
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
+import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
 import org.apache.log4j.Logger;
 import javax.swing.SwingUtilities;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import static java.util.Collections.synchronizedList;
-import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

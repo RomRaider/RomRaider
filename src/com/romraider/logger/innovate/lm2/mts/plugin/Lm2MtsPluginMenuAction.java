@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@ package com.romraider.logger.innovate.lm2.mts.plugin;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.external.ExternalDataSource;
-import com.romraider.swing.menubar.action.AbstractAction;
 import com.romraider.logger.innovate.generic.mts.io.MTS;
 import static com.romraider.logger.innovate.generic.mts.io.MTSFactory.createMTS;
+import com.romraider.swing.menubar.action.AbstractAction;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.showInputDialog;
 import java.awt.event.ActionEvent;

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,8 @@ public final class UserProfileImpl implements UserProfile {
             if (item.isLiveDataSelected()) builder.append(" livedata=\"selected\"");
             if (item.isGraphSelected()) builder.append(" graph=\"selected\"");
             if (item.isDashSelected()) builder.append(" dash=\"selected\"");
-            if (showUnits && !isNullOrEmpty(item.getUnits())) builder.append(" units=\"").append(item.getUnits()).append("\"");
+            if (showUnits && !isNullOrEmpty(item.getUnits()))
+                builder.append(" units=\"").append(item.getUnits()).append("\"");
             builder.append("/>").append(NEW_LINE);
         }
     }

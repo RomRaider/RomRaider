@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@ package com.romraider.ramtune.test.command.generator;
 import com.romraider.io.protocol.Protocol;
 import static com.romraider.util.ParamChecker.checkGreaterThanZero;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import static java.util.Arrays.asList;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import static java.util.Arrays.asList;
 import java.util.List;
 
 public final class ReadCommandGenerator extends AbstractCommandGenerator {

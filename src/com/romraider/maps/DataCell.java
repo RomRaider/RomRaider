@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,20 +20,20 @@
 package com.romraider.maps;
 
 import com.romraider.util.JEPUtil;
-import org.apache.log4j.Logger;
-import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.JLabel;
-import javax.swing.border.Border;
-import java.awt.Color;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.RED;
+import static java.lang.Math.abs;
+import static javax.swing.BorderFactory.createLineBorder;
+import org.apache.log4j.Logger;
+import javax.swing.JLabel;
+import javax.swing.border.Border;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
-import static java.lang.Math.abs;
 import java.text.DecimalFormat;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {

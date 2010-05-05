@@ -1,40 +1,20 @@
-/* ===========================================================
- * JFreeChart : a free chart library for the Java(tm) platform
- * ===========================================================
+/*
+ * RomRaider Open-Source Tuning, Logging and Reflashing
+ * Copyright (C) 2006-2010 RomRaider.com
  *
- * (C) Copyright 2000-2004, by Object Refinery Limited and Contributors.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- * Project Info:  http://www.jfree.org/jfreechart/index.html
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * This library is free software; you can redistribute it and/or modify it under the terms
- * of the GNU Lesser General Public License as published by the Free Software Foundation;
- * either version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with this
- * library; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
- *
- * [Java is a trademark or registered trademark of Sun Microsystems, Inc.
- * in the United States and other countries.]
- *
- * -----------------
- * CircleDrawer.java
- * -----------------
- * (C) Copyright 2003, 2004, by Object Refinery Limited and Contributors.
- *
- * Original Author:  David Gilbert (for Object Refinery Limited);
- * Contributor(s):   -;
- *
- * $Id: CircleDrawer.java,v 1.1 2005/04/28 16:29:17 harrym_nu Exp $
- *
- * Changes
- * -------
- * 21-May-2003 : Version 1 (DG);
- *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 package com.romraider.logger.ecu.ui.tab;
 

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,25 +32,25 @@ import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
 import static com.romraider.util.ParamChecker.checkNotNull;
-import org.apache.log4j.Logger;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
+import static java.awt.GridBagConstraints.CENTER;
+import static java.awt.GridBagConstraints.HORIZONTAL;
+import static java.awt.GridBagConstraints.NONE;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
+import org.apache.log4j.Logger;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.TitledBorder;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
-import static java.awt.GridBagConstraints.CENTER;
-import static java.awt.GridBagConstraints.HORIZONTAL;
-import static java.awt.GridBagConstraints.NONE;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

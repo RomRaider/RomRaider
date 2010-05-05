@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,17 +20,17 @@
 package com.romraider.logger.ecu.ui.handler.dash;
 
 import com.romraider.logger.ecu.definition.LoggerData;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.WHITE;
+import static java.awt.Font.PLAIN;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import static java.awt.Font.PLAIN;
 
 public final class SmallGaugeStyle extends PlainGaugeStyle {
     public SmallGaugeStyle(LoggerData loggerData) {

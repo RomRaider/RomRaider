@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import com.romraider.Settings;
 import static com.romraider.Version.PRODUCT_NAME;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.util.FileAssociator;
+import static java.io.File.separator;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import java.awt.Color;
@@ -31,7 +32,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import static java.io.File.separator;
 import java.util.StringTokenizer;
 
 public class SettingsForm extends JFrame implements MouseListener {

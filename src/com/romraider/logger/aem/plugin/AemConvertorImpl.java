@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 package com.romraider.logger.aem.plugin;
 
 import static com.romraider.util.HexUtil.asHex;
-import org.apache.log4j.Logger;
 import static java.lang.Double.parseDouble;
+import org.apache.log4j.Logger;
 import java.nio.charset.Charset;
 
 public final class AemConvertorImpl implements AemConvertor {

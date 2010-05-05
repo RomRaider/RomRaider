@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@ import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
+import static java.lang.System.currentTimeMillis;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
-import static java.lang.System.currentTimeMillis;
 import java.util.Random;
 
 final class TestSerialConnection implements SerialConnection {

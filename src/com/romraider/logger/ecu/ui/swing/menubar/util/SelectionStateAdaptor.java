@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 package com.romraider.logger.ecu.ui.swing.menubar.util;
 
 import static com.romraider.swing.menubar.action.AbstractAction.SELECTED_KEY;
-
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import java.awt.event.ItemEvent;

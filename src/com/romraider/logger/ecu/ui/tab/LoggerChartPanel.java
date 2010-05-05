@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,11 @@ package com.romraider.logger.ecu.ui.tab;
 import com.romraider.logger.ecu.ui.handler.graph.SpringUtilities;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import jamlab.Polyfit;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.BLUE;
+import static java.awt.Color.GREEN;
+import static java.awt.Color.RED;
+import static java.awt.Color.WHITE;
 import static org.jfree.chart.ChartFactory.createScatterPlot;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -36,11 +41,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import java.awt.Color;
-import static java.awt.Color.BLACK;
-import static java.awt.Color.BLUE;
-import static java.awt.Color.GREEN;
-import static java.awt.Color.RED;
-import static java.awt.Color.WHITE;
 import java.awt.Dimension;
 
 public final class LoggerChartPanel extends JPanel {

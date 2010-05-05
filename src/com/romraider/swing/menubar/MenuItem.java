@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +25,9 @@ import javax.swing.KeyStroke;
 
 public final class MenuItem extends JMenuItem {
 
-	private static final long serialVersionUID = 8944116003490787227L;
+    private static final long serialVersionUID = 8944116003490787227L;
 
-	public MenuItem(String text, Action action) {
+    public MenuItem(String text, Action action) {
         super(action);
         setText(text);
     }

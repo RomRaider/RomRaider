@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,10 @@ import com.romraider.swing.JProgressPane;
 import com.romraider.xml.DOMSettingsBuilder;
 import com.romraider.xml.DOMSettingsUnmarshaller;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,47 +19,47 @@
 
 package com.romraider.swing;
 
+import javax.swing.JFrame;
 import java.awt.HeadlessException;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.swing.JFrame;
 
 
 public abstract class AbstractFrame extends JFrame implements WindowListener, PropertyChangeListener {
-	public AbstractFrame() throws HeadlessException {
-		super();
-	}
+    public AbstractFrame() throws HeadlessException {
+        super();
+    }
 
-	public AbstractFrame(String arg0) throws HeadlessException {
-		super(arg0);
-	}
+    public AbstractFrame(String arg0) throws HeadlessException {
+        super(arg0);
+    }
 
-	private static final long serialVersionUID = 7948304087075622157L;
+    private static final long serialVersionUID = 7948304087075622157L;
 
-	public void windowActivated(WindowEvent arg0) {
-	}
+    public void windowActivated(WindowEvent arg0) {
+    }
 
-	public void windowClosed(WindowEvent e) {
-	}
+    public void windowClosed(WindowEvent e) {
+    }
 
-	public void windowClosing(WindowEvent e) {
-	}
+    public void windowClosing(WindowEvent e) {
+    }
 
-	public void windowDeactivated(WindowEvent e) {
-	}
+    public void windowDeactivated(WindowEvent e) {
+    }
 
-	public void windowDeiconified(WindowEvent e) {
-	}
+    public void windowDeiconified(WindowEvent e) {
+    }
 
-	public void windowIconified(WindowEvent e) {
-	}
+    public void windowIconified(WindowEvent e) {
+    }
 
-	public void windowOpened(WindowEvent e) {
-	}
+    public void windowOpened(WindowEvent e) {
+    }
 
-	public void propertyChange(PropertyChangeEvent arg0) {
-	}
+    public void propertyChange(PropertyChangeEvent arg0) {
+    }
 
 }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@
 package com.romraider.util.proxy;
 
 import static com.romraider.util.ParamChecker.checkNotNull;
+import static java.lang.System.currentTimeMillis;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
-import static java.lang.System.currentTimeMillis;
 import java.lang.reflect.Method;
 
 public final class TimerWrapper implements Wrapper {

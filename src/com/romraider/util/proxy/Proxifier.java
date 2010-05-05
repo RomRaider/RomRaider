@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 
 package com.romraider.util.proxy;
 
-import java.lang.reflect.Constructor;
 import static java.lang.reflect.Proxy.newProxyInstance;
+import java.lang.reflect.Constructor;
 
 public final class Proxifier {
     public static <T> T proxy(T t, Class<? extends Wrapper> cls) {

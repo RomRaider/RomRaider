@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,12 +31,12 @@ import static com.romraider.util.RomServer.sendRomToOpenInstance;
 import static com.romraider.util.RomServer.waitForRom;
 import com.romraider.util.SettingsManager;
 import com.romraider.util.SettingsManagerImpl;
-import org.apache.log4j.Logger;
-import static org.apache.log4j.Logger.getLogger;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import java.io.File;
 
 public class ECUExec {
@@ -52,8 +52,8 @@ public class ECUExec {
         initDebugLogging();
         // dump the system properties to the log file as early as practical to help debugging/support
         LOGGER.info("When requesting assistance at " + SUPPORT_URL + " please include the System Properties information below:");
-        LOGGER.info("System Properties: \n\t" 
-        		+ System.getProperties().toString().replace(",", "\n\t"));
+        LOGGER.info("System Properties: \n\t"
+                + System.getProperties().toString().replace(",", "\n\t"));
 
         // check for dodgy threading - dev only
 //        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));

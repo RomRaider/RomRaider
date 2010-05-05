@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@ import javax.swing.JMenu;
 
 public final class Menu extends JMenu {
 
-	private static final long serialVersionUID = -5058943622469501273L;
+    private static final long serialVersionUID = -5058943622469501273L;
 
-	public Menu(String text, int mnemonic) {
+    public Menu(String text, int mnemonic) {
         setText(text);
         setMnemonic(mnemonic);
     }

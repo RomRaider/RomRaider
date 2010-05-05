@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@
 package com.romraider.swing;
 
 import static com.romraider.Version.PRODUCT_NAME;
-import org.apache.log4j.Logger;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
 import static javax.swing.UIManager.setLookAndFeel;
+import org.apache.log4j.Logger;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 public final class LookAndFeelManager {
     private static final Logger LOGGER = Logger.getLogger(LookAndFeelManager.class);

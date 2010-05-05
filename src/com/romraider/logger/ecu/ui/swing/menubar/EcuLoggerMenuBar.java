@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,11 +39,6 @@ import com.romraider.swing.menubar.Menu;
 import com.romraider.swing.menubar.MenuItem;
 import com.romraider.swing.menubar.RadioButtonMenuItem;
 import com.romraider.swing.menubar.action.AboutAction;
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JSeparator;
-import static javax.swing.KeyStroke.getKeyStroke;
 import static java.awt.event.KeyEvent.CTRL_MASK;
 import static java.awt.event.KeyEvent.SHIFT_MASK;
 import static java.awt.event.KeyEvent.VK_A;
@@ -60,6 +55,11 @@ import static java.awt.event.KeyEvent.VK_S;
 import static java.awt.event.KeyEvent.VK_T;
 import static java.awt.event.KeyEvent.VK_U;
 import static java.awt.event.KeyEvent.VK_X;
+import static javax.swing.KeyStroke.getKeyStroke;
+import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JSeparator;
 import java.util.List;
 
 public class EcuLoggerMenuBar extends JMenuBar {

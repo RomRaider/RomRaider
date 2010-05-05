@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@
 
 package com.romraider.logger.ecu.ui.handler.dash;
 
+import static java.awt.BorderLayout.CENTER;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
-import static java.awt.BorderLayout.CENTER;
 
 public final class Gauge extends JPanel {
     private static final long serialVersionUID = 7354117571944547043L;

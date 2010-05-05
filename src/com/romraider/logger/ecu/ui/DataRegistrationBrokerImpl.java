@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ import com.romraider.logger.ecu.comms.controller.LoggerController;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandlerManager;
 import static com.romraider.util.ParamChecker.checkNotNull;
-import java.util.ArrayList;
 import static java.util.Collections.synchronizedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class DataRegistrationBrokerImpl implements DataRegistrationBroker {

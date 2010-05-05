@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,8 @@
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
 import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.swing.menubar.action.AbstractAction;
-
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
+import com.romraider.swing.menubar.action.AbstractAction;
 import java.awt.event.ActionEvent;
 import java.io.File;
 

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,8 @@ public final class TransmissionManagerImpl implements TransmissionManager {
 
     public void sendQueries(Collection<EcuQuery> queries) {
         checkNotNull(queries, "queries");
-        if (connection == null) throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
+        if (connection == null)
+            throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
         connection.sendAddressReads(queries);
     }
 

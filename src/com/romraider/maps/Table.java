@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@ import com.romraider.swing.TableFrame;
 import static com.romraider.util.ColorScaler.getScaledColor;
 import com.romraider.util.JEPUtil;
 import com.romraider.xml.RomAttributeParser;
+import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.InputMap;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -51,8 +51,8 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 public abstract class Table extends JPanel implements Serializable {
-	private static final long serialVersionUID = 6559256489995552645L;
-	private static final String BLANK = "";
+    private static final long serialVersionUID = 6559256489995552645L;
+    private static final String BLANK = "";
 
     public static final int ENDIAN_LITTLE = 1;
     public static final int ENDIAN_BIG = 2;

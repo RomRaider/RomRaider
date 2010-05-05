@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ import javax.swing.KeyStroke;
 
 public final class RadioButtonMenuItem extends JRadioButtonMenuItem {
 
-	private static final long serialVersionUID = -7872873697564909545L;
+    private static final long serialVersionUID = -7872873697564909545L;
 
-	public RadioButtonMenuItem(String text, int mnemonic, KeyStroke accelerator, Action action, boolean selected) {
+    public RadioButtonMenuItem(String text, int mnemonic, KeyStroke accelerator, Action action, boolean selected) {
         super(action);
         initSelectionStateAdaptor(action);
         setText(text);

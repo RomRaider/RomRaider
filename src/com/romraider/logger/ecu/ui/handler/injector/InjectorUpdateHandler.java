@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@ import com.romraider.logger.ecu.comms.query.Response;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import com.romraider.logger.ecu.ui.tab.injector.InjectorTab;
-import org.apache.log4j.Logger;
-import javax.swing.SwingUtilities;
 import static java.lang.Math.abs;
 import static java.lang.System.currentTimeMillis;
+import org.apache.log4j.Logger;
+import javax.swing.SwingUtilities;
 import java.util.Set;
 
 public final class InjectorUpdateHandler implements DataUpdateHandler {

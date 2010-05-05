@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2008 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.SUPPORT_URL;
 import static com.romraider.Version.VERSION;
 import com.romraider.logger.ecu.EcuLogger;
-
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import java.awt.event.ActionEvent;

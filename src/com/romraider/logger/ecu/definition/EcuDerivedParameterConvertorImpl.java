@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import static com.romraider.util.JEPUtil.evaluate;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import java.text.DecimalFormat;
 import static java.util.Collections.synchronizedMap;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 

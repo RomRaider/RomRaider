@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,13 @@ import com.romraider.logger.ecu.definition.ConvertorUpdateListener;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import static com.romraider.logger.ecu.ui.handler.graph.SpringUtilities.makeCompactGrid;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.NORTH;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.WHITE;
+import static java.util.Collections.synchronizedMap;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
+import static javax.swing.KeyStroke.getKeyStroke;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -36,21 +43,14 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
-import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import static javax.swing.KeyStroke.getKeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.NORTH;
 import java.awt.Color;
-import static java.awt.Color.BLACK;
-import static java.awt.Color.WHITE;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import static java.util.Collections.synchronizedMap;
 import java.util.HashMap;
 import java.util.Map;
 

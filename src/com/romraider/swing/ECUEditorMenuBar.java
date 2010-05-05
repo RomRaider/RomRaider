@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,22 +30,17 @@ import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
 import com.romraider.ramtune.test.RamTuneTestApp;
-import com.romraider.swing.menubar.MenuItem;
-import com.romraider.swing.menubar.action.AboutAction;
-
-import javax.swing.ButtonGroup;
-import javax.swing.JFileChooser;
-
-import static java.awt.event.KeyEvent.VK_A;
 import static javax.swing.JFrame.DISPOSE_ON_CLOSE;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import static javax.swing.JOptionPane.CANCEL_OPTION;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
+import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 import java.awt.event.ActionEvent;

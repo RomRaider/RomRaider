@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,35 +39,35 @@ import static com.romraider.util.HexUtil.asHex;
 import com.romraider.util.LogManager;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
+import static java.awt.FlowLayout.LEFT;
+import static java.awt.Font.PLAIN;
+import static java.awt.GridBagConstraints.BOTH;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.YES_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.border.BevelBorder.LOWERED;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
-import static javax.swing.border.BevelBorder.LOWERED;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
-import static java.awt.FlowLayout.LEFT;
 import java.awt.Font;
-import static java.awt.Font.PLAIN;
 import java.awt.GridBagConstraints;
-import static java.awt.GridBagConstraints.BOTH;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;

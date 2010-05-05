@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,13 @@ package com.romraider.logger.ecu.ui.handler.dash;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.tts.Speaker;
 import static com.romraider.util.ParamChecker.checkNotNull;
+import static java.awt.BorderLayout.CENTER;
+import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.SOUTH;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.WHITE;
+import static java.awt.Font.BOLD;
+import static java.awt.Font.PLAIN;
 import static javax.swing.BorderFactory.createLineBorder;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -31,16 +38,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
-import static java.awt.BorderLayout.CENTER;
-import static java.awt.BorderLayout.NORTH;
-import static java.awt.BorderLayout.SOUTH;
 import java.awt.Color;
-import static java.awt.Color.BLACK;
-import static java.awt.Color.WHITE;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import static java.awt.Font.BOLD;
-import static java.awt.Font.PLAIN;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

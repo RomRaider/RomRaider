@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,13 +25,13 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
-import java.awt.BorderLayout;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import java.awt.BorderLayout;
 import java.util.List;
 
 public final class MafTabImpl extends JPanel implements MafTab {

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
 import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -78,7 +79,6 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
-import org.xml.sax.SAXParseException;
 
 public class ECUEditor extends AbstractFrame {
     private static final long serialVersionUID = -7826850987392016292L;

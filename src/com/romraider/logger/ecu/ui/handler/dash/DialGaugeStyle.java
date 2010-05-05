@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2009 RomRaider.com
+ * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,14 @@ package com.romraider.logger.ecu.ui.handler.dash;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.LoggerData;
 import static com.romraider.util.ParamChecker.checkNotNull;
+import static java.awt.Color.BLUE;
+import static java.awt.Color.GREEN;
+import static java.awt.Color.ORANGE;
+import static java.awt.Color.RED;
+import static java.awt.Font.BOLD;
+import static java.awt.Font.PLAIN;
+import static java.lang.Double.MAX_VALUE;
+import static java.lang.Double.MIN_VALUE;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.dial.DialBackground;
@@ -41,18 +49,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import static java.awt.Color.BLUE;
-import static java.awt.Color.GREEN;
-import static java.awt.Color.ORANGE;
-import static java.awt.Color.RED;
 import java.awt.Dimension;
 import java.awt.Font;
-import static java.awt.Font.BOLD;
-import static java.awt.Font.PLAIN;
 import java.awt.GradientPaint;
 import java.awt.Point;
-import static java.lang.Double.MAX_VALUE;
-import static java.lang.Double.MIN_VALUE;
 import java.text.DecimalFormat;
 
 public class DialGaugeStyle implements GaugeStyle {
