@@ -3,7 +3,7 @@
 <!-- Master build file for RomRaider
 
  RomRaider Open-Source Tuning, Logging and Reflashing
- Copyright (C) 2006-2008 RomRaider.com
+ Copyright (C) 2006-2010 RomRaider.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -342,7 +342,7 @@
                 <zipfileset file="release_notes.txt" prefix="${name.package}"/>
                 <zipfileset file="log4j.properties" prefix="${name.package}"/>
                 <zipfileset file="cars_def.dtd" prefix="${name.package}"/>
-            	<zipfileset file="ecu_defs.dtd" prefix="${name.package}"/>
+                <zipfileset file="ecu_defs.dtd" prefix="${name.package}"/>
                 <zipfileset file="logger.dtd" prefix="${name.package}"/>
                 <zipfileset file="profile.dtd" prefix="${name.package}"/>
                 <zipfileset dir="graphics" prefix="${name.package}/graphics" excludes="*.bmp"/>
