@@ -29,6 +29,8 @@ import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.DynoChartPanel;
+import static com.romraider.logger.car.util.TorqueCalculator.calculateTorque;
+import static com.romraider.logger.car.util.SpeedCalculator.*;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static java.awt.GridBagConstraints.CENTER;
 import static java.awt.GridBagConstraints.HORIZONTAL;
@@ -274,7 +276,7 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private double calcHp(double rpm, double accel, long now) {
-        double mph = calcMph(rpm);
+        double mph = calculateMph(rpm, rpm2mph);
         double accelG = accel * 45.5486542443;
         // calculate Drive power = power required to propel vehicle mass at certain speed and acceleration.
         // =Force*Velocity=Mass*Accel*Velocity
@@ -305,27 +307,8 @@ public final class DynoControlPanel extends JPanel {
         return hp;
     }
 
-    private double calcTq(double rpm, double hp) {
-        double tq = 0;
-        if (units.equals(IMPERIAL)) {
-            tq = hp / rpm * 5252.113122;
-        }
-        if (units.equals(METRIC)) {
-            tq = hp / rpm * 9549.296748;
-        }
-//    	LOGGER.trace(hp + " : " + tq);
-        return tq;
-    }
-
-    private double calcMph(double rpm) {
-        return (rpm / rpm2mph);
-    }
-
     public double calcRpm(double vs) {
-        double logRpm = 0;
-        if (vsLogUnits.equals(LOG_VS_I)) logRpm = (vs * rpm2mph);
-        if (vsLogUnits.equals(LOG_VS_M)) logRpm = (vs * rpm2mph / KPH_2_MPH);
-        return logRpm;
+        return calculateRpm(vs, rpm2mph, vsLogUnits);
     }
 
     public void updateEnv(double iat, double at_press) {
@@ -404,12 +387,12 @@ public final class DynoControlPanel extends JPanel {
             if (isManual()) {
                 accelSample = accelSample / rpm2mph;    // RPM acceleration from RPM
             } else {
-                speedSample = calcRpm(speedSample);    // convert logged vs to RPM for AT
+                speedSample = calculateRpm(speedSample, rpm2mph, vsLogUnits);    // convert logged vs to RPM for AT
                 if (vsLogUnits.equals(LOG_VS_M)) accelSample = accelSample / KPH_2_MPH;
             }
             if (checkInRange("RPM", rpmMin, rpmMax, speedSample)) {
                 nowHp = calcHp(speedSample, accelSample, (long) x);
-                nowTq = calcTq(speedSample, nowHp);
+                nowTq = calculateTorque(speedSample, nowHp, units);
                 chartPanel.addData(speedSample, nowHp, nowTq);
                 if (nowHp > maxHp) {
                     maxHp = nowHp;
@@ -520,23 +503,26 @@ public final class DynoControlPanel extends JPanel {
     }
 
     public boolean isValidET(long now, double vs) {
-//    	LOGGER.trace("lastET: " + lastET + " now: " + now + " VS: " + vs);
-        if (vs > 0) {
-            if (vsLogUnits.equals(LOG_VS_M)) vs = (vs / KPH_2_MPH);
-            distance = distance + (vs * 5280 / 3600 * (now - lastET) / 1000);
-            LOGGER.info("ET Distance (ft): " + distance);
-            if (distance > 1330) {
-                recordDataButton.setSelected(false);
-                deregisterData(VEHICLE_SPEED);
-                chartPanel.clearPrompt();
-                updateET();
-                return false;
-            }
+    	try {
+//    		LOGGER.trace("lastET: " + lastET + " now: " + now + " VS: " + vs);
+	        if (vs > 0) {
+	            if (vsLogUnits.equals(LOG_VS_M)) vs = (vs / KPH_2_MPH);
+	            distance = distance + (vs * 5280 / 3600 * (now - lastET) / 1000);
+	            LOGGER.info("ET Distance (ft): " + distance);
+	            if (distance > 1330) {
+	                recordDataButton.setSelected(false);
+	                deregisterData(VEHICLE_SPEED);
+	                chartPanel.clearPrompt();
+	                updateET();
+	                return false;
+	            }
+	            return true;
+	        }
+	        return false;
+    	}
+    	finally {
             lastET = now;
-            return true;
-        }
-        lastET = now;
-        return false;
+    	}
     }
 
     public boolean isValidData(double rpm, double ta) {
@@ -1052,8 +1038,8 @@ public final class DynoControlPanel extends JPanel {
                             maxRpm = Math.max(maxRpm, logRpm);
                         } else {
                             logRpm = Double.parseDouble(values[vsCol]);
-                            minRpm = Math.min(minRpm, calcRpm(logRpm));
-                            maxRpm = Math.max(maxRpm, calcRpm(logRpm));
+                            minRpm = Math.min(minRpm, calculateRpm(logRpm, rpm2mph, vsLogUnits));
+                            maxRpm = Math.max(maxRpm, calculateRpm(logRpm, rpm2mph, vsLogUnits));
                         }
                         chartPanel.addRawData(logTime, logRpm);
 //        				LOGGER.trace(sample + "," + logTime + "," + speed);
