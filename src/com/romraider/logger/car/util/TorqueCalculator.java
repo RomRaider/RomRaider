@@ -19,11 +19,14 @@
 
 package com.romraider.logger.car.util;
 
-import static com.romraider.logger.car.util.Constants.*;;
+import static com.romraider.logger.car.util.Constants.IMPERIAL;
+import static com.romraider.logger.car.util.Constants.METRIC;
+import static com.romraider.logger.car.util.Constants.TQ_CONSTANT_I;
+import static com.romraider.logger.car.util.Constants.TQ_CONSTANT_M;
 
 public class TorqueCalculator {
-	
-	public static double calculateTorque(double rpm, double hp, String units) {
+
+    public static double calculateTorque(double rpm, double hp, String units) {
         double tq = 0;
         if (units.equalsIgnoreCase(IMPERIAL.value())) {
             tq = hp / rpm * Double.parseDouble(TQ_CONSTANT_I.value());

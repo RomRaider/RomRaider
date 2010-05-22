@@ -19,11 +19,13 @@
 
 package com.romraider.logger.car.util;
 
-import static com.romraider.logger.car.util.Constants.*;;
+import static com.romraider.logger.car.util.Constants.IMPERIAL_UNIT;
+import static com.romraider.logger.car.util.Constants.KPH_2_MPH;
+import static com.romraider.logger.car.util.Constants.METRIC_UNIT;
 
 public class SpeedCalculator {
-	private static final double K2M = Double.parseDouble(KPH_2_MPH.value());
-	
+    private static final double K2M = Double.parseDouble(KPH_2_MPH.value());
+
     public static double calculateMph(double rpm, double ratio) {
         return (rpm / ratio);
     }
