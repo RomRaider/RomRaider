@@ -21,7 +21,6 @@ package com.romraider.logger.ecu.ui.swing.menubar;
 
 import static com.romraider.Version.PRODUCT_NAME;
 import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.ecu.ui.swing.menubar.action.DisconnectAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ExitAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoadProfileAction;
@@ -35,6 +34,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.ResetEcuAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.SaveProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.SaveProfileAsAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.UpdateLoggerDefAction;
+import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.swing.menubar.Menu;
 import com.romraider.swing.menubar.MenuItem;
 import com.romraider.swing.menubar.RadioButtonMenuItem;

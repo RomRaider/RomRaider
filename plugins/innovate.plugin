@@ -1,1 +1,1 @@
-datasource.class=com.romraider.logger.innovate.generic.serial.plugin.InnovateDataSource
+datasource.class=com.romraider.logger.external.innovate.generic.serial.plugin.InnovateDataSource

@@ -1,1 +1,1 @@
-datasource.class=com.romraider.logger.innovate.lm2.mts.plugin.Lm2MtsDataSource
+datasource.class=com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2MtsDataSource

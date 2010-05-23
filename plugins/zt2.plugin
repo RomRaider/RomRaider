@@ -1,1 +1,1 @@
-datasource.class=com.romraider.logger.zt2.plugin.ZT2DataSource
+datasource.class=com.romraider.logger.external.zt2.plugin.ZT2DataSource

@@ -17,41 +17,45 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.ui.swing.menubar.action;
+package com.romraider.logger.external.innovate.lm2.mts.plugin;
 
-import com.romraider.io.serial.port.SerialPortDiscoverer;
-import com.romraider.io.serial.port.SerialPortDiscovererImpl;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.external.core.ExternalDataSource;
+import com.romraider.logger.external.innovate.generic.mts.io.MTS;
+import static com.romraider.logger.external.innovate.generic.mts.io.MTSFactory.createMTS;
 import com.romraider.swing.menubar.action.AbstractAction;
-import gnu.io.CommPortIdentifier;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.showInputDialog;
 import java.awt.event.ActionEvent;
-import java.util.List;
 
-public final class GenericPluginMenuAction extends AbstractAction {
-    private final SerialPortDiscoverer portDiscoverer = new SerialPortDiscovererImpl();
+public final class Lm2MtsPluginMenuAction extends AbstractAction {
     private final ExternalDataSource dataSource;
 
-    public GenericPluginMenuAction(EcuLogger logger, ExternalDataSource dataSource) {
+    public Lm2MtsPluginMenuAction(EcuLogger logger, ExternalDataSource dataSource) {
         super(logger);
         this.dataSource = dataSource;
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-        String port = (String) showInputDialog(logger, "Select COM port:", dataSource.getName() + " Plugin Settings", QUESTION_MESSAGE, null,
+        String port = (String) showInputDialog(logger, "Select MTS port:", dataSource.getName() + " Plugin Settings", QUESTION_MESSAGE, null,
                 getPorts(), dataSource.getPort());
         if (port != null && port.length() > 0) dataSource.setPort(port);
     }
 
     private String[] getPorts() {
-        List<CommPortIdentifier> portIdentifiers = portDiscoverer.listPorts();
-        String[] ports = new String[portIdentifiers.size()];
-        for (int i = 0; i < portIdentifiers.size(); i++) {
-            CommPortIdentifier identifier = portIdentifiers.get(i);
-            ports[i] = identifier.getName();
+        MTS mts = createMTS();
+        try {
+            int portCount = mts.portCount();
+            String[] result = new String[portCount];
+            for (int i = 0; i < portCount; i++) {
+                result[i] = "" + i;
+                mts.currentPort(i);
+                String name = mts.portName();
+                System.out.println("MTS: found port [" + i + "]: " + name);
+            }
+            return result;
+        } finally {
+            mts.dispose();
         }
-        return ports;
     }
 }

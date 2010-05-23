@@ -21,9 +21,9 @@ package com.romraider.logger.ecu.definition;
 
 import static com.romraider.logger.ecu.definition.EcuDataType.EXTERNAL;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMaxMin;
-import com.romraider.logger.ecu.external.ExternalDataItem;
-import com.romraider.logger.ecu.external.ExternalDataSource;
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
+import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.core.ExternalDataSource;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import java.text.DecimalFormat;
 
