@@ -49,26 +49,28 @@
             <file src="ecu_defs.dtd" targetdir="$INSTALL_PATH"/>
             <file src="logger.dtd" targetdir="$INSTALL_PATH"/>
             <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
- 
+
             <file src="plugins/aem.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/fourteenpoint7.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/innovate.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/lm2_mts.plugin" targetdir="$INSTALL_PATH/plugins"/>
+            <file src="plugins/mrf.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/plx.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/zt2.plugin" targetdir="$INSTALL_PATH/plugins"/>
 
             <fileset dir="lib/common" targetdir="$INSTALL_PATH/lib/common"/>
             <fileset dir="lib/windows" targetdir="$INSTALL_PATH/lib/windows"/>
 
-			<updatecheck>
-			  <include name="plugins/**" />
-			  <exclude name="plugins/aem.plugin" />
-			  <exclude name="plugins/fourteenpoint7.plugin" />
-			  <exclude name="plugins/innovate.plugin" />
-			  <exclude name="plugins/lm2_mts.plugin" />
-			  <exclude name="plugins/plx.plugin" />
-			  <exclude name="plugins/zt2.plugin" />
-			</updatecheck>
+            <updatecheck>
+                <include name="plugins/**"/>
+                <exclude name="plugins/aem.plugin"/>
+                <exclude name="plugins/fourteenpoint7.plugin"/>
+                <exclude name="plugins/innovate.plugin"/>
+                <exclude name="plugins/lm2_mts.plugin"/>
+                <exclude name="plugins/mrf.plugin"/>
+                <exclude name="plugins/plx.plugin"/>
+                <exclude name="plugins/zt2.plugin"/>
+            </updatecheck>
 
         </pack>
 
