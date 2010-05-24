@@ -24,7 +24,9 @@ public enum MrfSensorType {
     EGT(1),
     MAP(2),
     OIL_PRESS(3),
-    AFR(4);
+    AFR(4),
+    FUEL_PRESS(5),
+    MANIFOLD_TEMP(6);
 
     private final int index;
 

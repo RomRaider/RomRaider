@@ -25,6 +25,8 @@ import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.mrf.io.MrfRunner;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.AFR;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.EGT;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorType.FUEL_PRESS;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorType.MANIFOLD_TEMP;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.MAP;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.OIL_PRESS;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.OIL_TEMP;
@@ -44,9 +46,11 @@ public final class MrfDataSource implements ExternalDataSource {
     {
         dataItems.put(AFR, new MrfDataItem("AFR", "AFR"));
         dataItems.put(MAP, new MrfDataItem("MAP", "Vacuum(inHg)/Boost(PSI)"));
-        dataItems.put(EGT, new MrfDataItem("EGT", "?"));
-        dataItems.put(OIL_TEMP, new MrfDataItem("Oil Temp", "?"));
+        dataItems.put(EGT, new MrfDataItem("EGT", "F"));
+        dataItems.put(OIL_TEMP, new MrfDataItem("Oil Temp", "F"));
         dataItems.put(OIL_PRESS, new MrfDataItem("Oil Press", "PSI"));
+        dataItems.put(FUEL_PRESS, new MrfDataItem("Fuel Press", "PSI"));
+        dataItems.put(MANIFOLD_TEMP, new MrfDataItem("Manifold Temp", "F"));
     }
 
     public String getId() {
