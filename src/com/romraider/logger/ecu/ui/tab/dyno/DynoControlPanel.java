@@ -1012,6 +1012,9 @@ public final class DynoControlPanel extends JPanel {
                     if (headers[x].contains(LOG_VS_I)) vsLogUnits = LOG_VS_I;
                     if (headers[x].contains(LOG_VS_M)) vsLogUnits = LOG_VS_M;
                 }
+                LOGGER.trace("DYNO log file conversions: Time Column: " + timeCol + ", Time X: " + timeMult + 
+                			 ", RPM Column: " + rpmCol + ", TA Column: " + taCol + ", VS Column: " + vsCol +
+                			 ", VS units: " + vsLogUnits);
                 while ((line = inputStream.readLine()) != null) {
                     String[] values = line.split(delimiter);
                     if (Double.parseDouble(values[taCol]) > 98) {
@@ -1042,7 +1045,7 @@ public final class DynoControlPanel extends JPanel {
                             maxRpm = Math.max(maxRpm, calculateRpm(logRpm, rpm2mph, vsLogUnits));
                         }
                         chartPanel.addRawData(logTime, logRpm);
-//        				LOGGER.trace(sample + "," + logTime + "," + speed);
+        				LOGGER.trace("DYNO log file time: " + logTime + ", speed: " + logRpm);
                     }
                 }
                 inputStream.close();
