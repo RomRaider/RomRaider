@@ -21,8 +21,11 @@ package com.romraider.logger.external.fourteenpoint7.io;
 
 import com.romraider.logger.external.core.RawDataListener;
 import com.romraider.logger.external.core.Stoppable;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 
 public final class NawRunner implements Stoppable {
+    private static final Logger LOGGER = getLogger(NawRunner.class);
     private static final byte[] NAW_PROMPT = {0x07};
     private final NawConnection connection;
     private final RawDataListener listener;
@@ -40,6 +43,8 @@ public final class NawRunner implements Stoppable {
                 byte[] buffer = connection.readBytes();
                 listener.setBytes(buffer);
             }
+        } catch (Throwable t) {
+            LOGGER.error("Error occurred", t);
         } finally {
             connection.close();
         }

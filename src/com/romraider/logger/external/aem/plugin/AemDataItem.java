@@ -19,12 +19,11 @@
 
 package com.romraider.logger.external.aem.plugin;
 
+import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
-import com.romraider.logger.external.core.RawDataListener;
 
-public final class AemDataItem implements ExternalDataItem, RawDataListener {
-    private final AemConvertor convertor = new AemConvertorImpl();
-    private byte[] bytes;
+public final class AemDataItem implements ExternalDataItem, DataListener {
+    private double data;
 
     public String getName() {
         return "AEM UEGO";
@@ -39,11 +38,10 @@ public final class AemDataItem implements ExternalDataItem, RawDataListener {
     }
 
     public double getData() {
-        if (bytes == null) return 0.0;
-        return convertor.convert(bytes);
+        return data;
     }
 
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
+    public void setData(double data) {
+        this.data = data;
     }
 }

@@ -20,40 +20,42 @@
 package com.romraider.logger.external.mrf.io;
 
 import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.serial.connection.SerialConnection;
+import com.romraider.io.serial.connection.SerialConnectionImpl;
 import com.romraider.logger.external.core.Stoppable;
-import com.romraider.logger.external.core.TerminalConnection;
-import com.romraider.logger.external.core.TerminalConnectionImpl;
 import com.romraider.logger.external.mrf.plugin.MrfDataItem;
 import com.romraider.logger.external.mrf.plugin.MrfSensorType;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
-import static java.nio.charset.Charset.forName;
-import java.nio.charset.Charset;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import java.util.Map;
 
 public final class MrfRunner implements Stoppable {
+    private static final Logger LOGGER = getLogger(MrfRunner.class);
     private static final ConnectionProperties CONNECTION_PROPS = new MrfConnectionProperties();
-    private static final Charset CHARSET_UTF8 = forName("UTF-8");
     private final Map<MrfSensorType, MrfDataItem> dataItems;
-    private final TerminalConnection connection;
+    private final SerialConnection connection;
     private boolean stop;
 
     public MrfRunner(String port, Map<MrfSensorType, MrfDataItem> dataItems) {
-        this.connection = new TerminalConnectionImpl("Mrf Stealth Gauge", port, CONNECTION_PROPS);
+        this.connection = new SerialConnectionImpl(port, CONNECTION_PROPS);
         this.dataItems = dataItems;
     }
 
     public void run() {
         try {
             while (!stop) {
-                byte[] bytes = connection.read();
-                String response = new String(bytes, CHARSET_UTF8);
+                String response = connection.readLine();
                 if (isNullOrEmpty(response)) continue;
+                LOGGER.trace("Mrf Stealth Gauge Response: " + response);
                 String[] values = response.split(",");
                 for (int i = 0; i < values.length; i++) {
                     MrfDataItem dataItem = dataItems.get(MrfSensorType.valueOf(i));
                     if (dataItem != null) dataItem.setData(parseDouble(values[i]));
                 }
             }
+        } catch (Throwable t) {
+            LOGGER.error("Error occurred", t);
         } finally {
             connection.close();
         }

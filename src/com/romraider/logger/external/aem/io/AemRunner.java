@@ -19,28 +19,35 @@
 
 package com.romraider.logger.external.aem.io;
 
-import com.romraider.logger.external.core.RawDataListener;
+import com.romraider.io.serial.connection.SerialConnection;
+import com.romraider.io.serial.connection.SerialConnectionImpl;
+import com.romraider.logger.external.aem.plugin.AemDataItem;
 import com.romraider.logger.external.core.Stoppable;
-import com.romraider.logger.external.core.TerminalConnection;
-import com.romraider.logger.external.core.TerminalConnectionImpl;
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 
 public final class AemRunner implements Stoppable {
+    private static final Logger LOGGER = getLogger(AemRunner.class);
     private static final AemConnectionProperties CONNECTION_PROPS = new AemConnectionProperties();
-    private final TerminalConnection connection;
-    private final RawDataListener listener;
+    private final SerialConnection connection;
+    private final AemDataItem dataItem;
     private boolean stop;
 
-    public AemRunner(String port, RawDataListener listener) {
-        this.connection = new TerminalConnectionImpl("AEM UEGO", port, CONNECTION_PROPS);
-        this.listener = listener;
+    public AemRunner(String port, AemDataItem dataItem) {
+        this.connection = new SerialConnectionImpl(port, CONNECTION_PROPS);
+        this.dataItem = dataItem;
     }
 
     public void run() {
         try {
             while (!stop) {
-                byte[] bytes = connection.read();
-                listener.setBytes(bytes);
+                String response = connection.readLine();
+                LOGGER.trace("AEM UEGO Response: " + response);
+                if (!isNullOrEmpty(response)) dataItem.setData(parseDouble(response));
             }
+        } catch (Throwable t) {
+            LOGGER.error("Error occurred", t);
         } finally {
             connection.close();
         }
@@ -48,5 +55,13 @@ public final class AemRunner implements Stoppable {
 
     public void stop() {
         stop = true;
+    }
+
+    private double parseDouble(String value) {
+        try {
+            return Double.parseDouble(value);
+        } catch (Exception e) {
+            return 0.0;
+        }
     }
 }

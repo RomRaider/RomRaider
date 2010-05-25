@@ -27,11 +27,14 @@ import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.EGT;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.MAP;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.RPM;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.TPS;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public final class ZT2Runner implements Stoppable {
+    private static final Logger LOGGER = getLogger(ZT2Runner.class);
     private final Map<ZT2SensorType, ZT2DataItem> dataItems;
     private final ZT2Connection connection;
     private boolean stop;
@@ -108,6 +111,8 @@ public final class ZT2Runner implements Stoppable {
                     packetStarted = false;
                 }
             }
+        } catch (Throwable t) {
+            LOGGER.error("Error occurred", t);
         } finally {
             connection.close();
         }

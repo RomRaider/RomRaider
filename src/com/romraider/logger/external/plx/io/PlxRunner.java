@@ -22,9 +22,12 @@ package com.romraider.logger.external.plx.io;
 import com.romraider.logger.external.core.Stoppable;
 import static com.romraider.logger.external.plx.io.PlxSensorType.UNKNOWN;
 import com.romraider.logger.external.plx.plugin.PlxDataItem;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 import java.util.Map;
 
 public final class PlxRunner implements Stoppable {
+    private static final Logger LOGGER = getLogger(PlxRunner.class);
     private final Map<PlxSensorType, PlxDataItem> dataItems;
     private final PlxConnection connection;
     private boolean stop;
@@ -44,6 +47,8 @@ public final class PlxRunner implements Stoppable {
                 PlxDataItem item = dataItems.get(response.sensor);
                 item.setRaw(response.value);
             }
+        } catch (Throwable t) {
+            LOGGER.error("Error occurred", t);
         } finally {
             connection.close();
         }

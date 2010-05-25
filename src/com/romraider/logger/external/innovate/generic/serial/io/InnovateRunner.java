@@ -82,6 +82,8 @@ public final class InnovateRunner implements Stoppable {
                     LOGGER.trace("Innovate discarded: " + hex(b0));
                 }
             }
+        } catch (Throwable t) {
+            LOGGER.error("Error occurred", t);
         } finally {
             connection.close();
         }

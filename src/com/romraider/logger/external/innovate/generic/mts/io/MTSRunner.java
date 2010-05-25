@@ -44,6 +44,8 @@ public final class MTSRunner implements Stoppable {
         running = true;
         try {
             doRun();
+        } catch (Throwable t) {
+            LOGGER.error("Error occurred", t);
         } finally {
             running = false;
         }
