@@ -46,6 +46,7 @@ import java.io.InputStreamReader;
 
 public final class SerialConnectionImpl implements SerialConnection {
     private static final Logger LOGGER = getLogger(SerialConnectionImpl.class);
+    private static final String RXTX_READ_LINE_HACK = "Underlying input stream returned zero bytes";
     private final SerialPort serialPort;
     private final BufferedOutputStream os;
     private final BufferedInputStream is;
@@ -105,6 +106,11 @@ public final class SerialConnectionImpl implements SerialConnection {
             waitForBytes(1);
             return reader.readLine();
         } catch (IOException e) {
+            /*
+            This is a dodgy hack to workaround RXTX seemingly not respecting the request
+            to disable to the receive timeout. ie. gnu.io.SerialPort.disableReceiveTimeout()
+             */
+            if (RXTX_READ_LINE_HACK.equalsIgnoreCase(e.getMessage())) return null;
             throw new SerialCommunicationException(e);
         }
     }
