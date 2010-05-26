@@ -52,5 +52,6 @@ public final class NawRunner implements Stoppable {
 
     public void stop() {
         stop = true;
+        connection.close();
     }
 }

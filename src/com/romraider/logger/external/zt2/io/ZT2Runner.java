@@ -120,6 +120,7 @@ public final class ZT2Runner implements Stoppable {
 
     public void stop() {
         stop = true;
+        connection.close();
     }
 
     private int convertAsUnsignedByteToInt(byte aByte) {

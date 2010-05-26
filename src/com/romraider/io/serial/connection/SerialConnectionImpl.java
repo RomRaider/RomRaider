@@ -42,9 +42,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 public final class SerialConnectionImpl implements SerialConnection {
     private static final Logger LOGGER = getLogger(SerialConnectionImpl.class);
@@ -56,14 +54,15 @@ public final class SerialConnectionImpl implements SerialConnection {
     public SerialConnectionImpl(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
-        serialPort = connect(portName, connectionProperties);
-        os = initOutputStream(serialPort);
-        is = initInputStream(serialPort);
-        reader = reader(is);
-    }
-
-    private BufferedReader reader(BufferedInputStream is) {
-        return new BufferedReader(new InputStreamReader(this.is));
+        try {
+            serialPort = connect(portName, connectionProperties);
+            os = new BufferedOutputStream(serialPort.getOutputStream());
+            is = new BufferedInputStream(serialPort.getInputStream());
+            reader = new BufferedReader(new InputStreamReader(is));
+        } catch (Exception e) {
+            close();
+            throw new NotConnectedException(e);
+        }
     }
 
     public void write(byte[] bytes) {
@@ -71,7 +70,6 @@ public final class SerialConnectionImpl implements SerialConnection {
             os.write(bytes, 0, bytes.length);
             os.flush();
         } catch (IOException e) {
-            close();
             throw new SerialCommunicationException(e);
         }
     }
@@ -80,7 +78,6 @@ public final class SerialConnectionImpl implements SerialConnection {
         try {
             return is.available();
         } catch (IOException e) {
-            close();
             throw new SerialCommunicationException(e);
         }
     }
@@ -90,7 +87,6 @@ public final class SerialConnectionImpl implements SerialConnection {
             waitForBytes(1);
             return is.read();
         } catch (IOException e) {
-            close();
             throw new SerialCommunicationException(e);
         }
     }
@@ -100,16 +96,15 @@ public final class SerialConnectionImpl implements SerialConnection {
             waitForBytes(bytes.length);
             is.read(bytes, 0, bytes.length);
         } catch (IOException e) {
-            close();
             throw new SerialCommunicationException(e);
         }
     }
 
     public String readLine() {
         try {
+            waitForBytes(1);
             return reader.readLine();
         } catch (IOException e) {
-            close();
             throw new SerialCommunicationException(e);
         }
     }
@@ -156,26 +151,6 @@ public final class SerialConnectionImpl implements SerialConnection {
             }
         }
         LOGGER.info("Connection closed.");
-    }
-
-    private BufferedOutputStream initOutputStream(SerialPort serialPort) {
-        try {
-            OutputStream os = serialPort.getOutputStream();
-            return new BufferedOutputStream(os);
-        } catch (IOException e) {
-            close();
-            throw new NotConnectedException(e);
-        }
-    }
-
-    private BufferedInputStream initInputStream(SerialPort serialPort) {
-        try {
-            InputStream is = serialPort.getInputStream();
-            return new BufferedInputStream(is);
-        } catch (IOException e) {
-            close();
-            throw new NotConnectedException(e);
-        }
     }
 
     private SerialPort connect(String portName, ConnectionProperties connectionProperties) {

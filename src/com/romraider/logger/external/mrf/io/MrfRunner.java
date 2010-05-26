@@ -47,7 +47,7 @@ public final class MrfRunner implements Stoppable {
             while (!stop) {
                 String response = connection.readLine();
                 if (isNullOrEmpty(response)) continue;
-                LOGGER.trace("Mrf Stealth Gauge Response: " + response);
+                LOGGER.trace("MRF Stealth Gauge Response: " + response);
                 String[] values = response.split(",");
                 for (int i = 0; i < values.length; i++) {
                     MrfDataItem dataItem = dataItems.get(MrfSensorType.valueOf(i));
@@ -63,6 +63,7 @@ public final class MrfRunner implements Stoppable {
 
     public void stop() {
         stop = true;
+        connection.close();
     }
 
     private double parseDouble(String value) {

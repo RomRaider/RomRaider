@@ -56,6 +56,7 @@ public final class PlxRunner implements Stoppable {
 
     public void stop() {
         stop = true;
+        connection.close();
     }
 
     private boolean isValid(PlxResponse response) {

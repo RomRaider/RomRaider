@@ -20,7 +20,6 @@
 package com.romraider.io.connection;
 
 public interface ConnectionProperties {
-
     int getBaudRate();
 
     int getDataBits();

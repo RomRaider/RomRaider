@@ -33,11 +33,11 @@ public final class MrfDataItem implements ExternalDataItem, DataListener {
     }
 
     public String getName() {
-        return "Mrf Stealth Gauge " + name;
+        return "MRF Stealth Gauge " + name;
     }
 
     public String getDescription() {
-        return "Mrf Stealth Gauge " + name + " data";
+        return "MRF Stealth Gauge " + name + " data";
     }
 
     public String getUnits() {

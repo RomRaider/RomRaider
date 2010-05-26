@@ -89,6 +89,11 @@ public final class InnovateRunner implements Stoppable {
         }
     }
 
+    public void stop() {
+        stop = true;
+        connection.close();
+    }
+
     private void process(byte[] bytes) {
         if (isError(bytes)) {
             double error = -1d * getLambda(bytes);
@@ -99,10 +104,6 @@ public final class InnovateRunner implements Stoppable {
             LOGGER.trace("Innovate AFR: " + afr);
             listener.setData(afr > MAX_AFR ? MAX_AFR : afr);
         }
-    }
-
-    public void stop() {
-        stop = true;
     }
 
     private SerialConnectionImpl serialConnection(String port) {

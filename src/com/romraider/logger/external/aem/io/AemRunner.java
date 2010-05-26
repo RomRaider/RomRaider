@@ -55,6 +55,7 @@ public final class AemRunner implements Stoppable {
 
     public void stop() {
         stop = true;
+        connection.close();
     }
 
     private double parseDouble(String value) {

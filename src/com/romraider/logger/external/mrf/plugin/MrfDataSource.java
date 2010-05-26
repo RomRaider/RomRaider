@@ -58,7 +58,7 @@ public final class MrfDataSource implements ExternalDataSource {
     }
 
     public String getName() {
-        return "Mrf Stealth Gauge";
+        return "MRF Stealth Gauge";
     }
 
     public String getVersion() {
