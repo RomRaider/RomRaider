@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC6 -
+                    - RomRaider 0.5.3 Beta RC7 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -35,9 +35,38 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b RC6 Notes (05/02/2010) -
+- 0.5.3b RC7 Notes (05/02/2010) -
 -------------------------------
-This is the sixth beta release of the upcoming official 0.5.3b release.
+This is the seventh beta release of the upcoming official 0.5.3b release.
+
+---------------------------
+- 0.5.3b RC7 Known Issues -
+---------------------------
+- Editor
+  - Pasting table data can cause hangs under certain circumstances
+- Logger
+  - Gauge min/max/step limits incomplete (logger.xml)
+  - ECU connections under Linux are flaky (start the logger after
+      you've started the engine)
+  - Update latency via injector tab broken for some models (eg. 2007 2.5i)
+  - LM-2 MTS support incomplete
+
+
+--------------
+- Change Log -
+--------------
+
+0.5.3b RC7 (05/27/2009)
+-----------------------
+
+--- Logger ---
+- Improved serial connection handling
+- MRF Stealth Gauge support added
+
+0.5.3b RC6 (05/02/2009)
+-----------------------
+
+--- Logger ---
 This RC includes the new Road Dyno/ET tab, version 16.
 To use the Road Dyno:
 	- Set the Mode button to Dyno
@@ -70,28 +99,6 @@ To use the ET feature:
 	  your elapsed times and speeds.
 	- Right click on the graph to Save as...
 	- Or Save a Reference Trace of your times to a text file.
-
--------------------------------
-- 0.5.3b RC5 Notes (11/29/2009) -
--------------------------------
-This is the fifth beta release of the upcoming official 0.5.3b release.
-
----------------------------
-- 0.5.3b RC5 Known Issues -
----------------------------
-- Editor
-  - Pasting table data can cause hangs under certain circumstances
-- Logger
-  - Gauge min/max/step limits incomplete (logger.xml)
-  - ECU connections under Linux are flaky (start the logger after
-      you've started the engine)
-  - Update latency via injector tab broken for some models (eg. 2007 2.5i)
-  - LM-2 MTS support incomplete
-
-
---------------
-- Change Log -
---------------
 
 0.5.3b RC5 (11/29/2009)
 ----------------------
