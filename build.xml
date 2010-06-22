@@ -86,8 +86,8 @@
             <isset property="svn.revision"/>
         </condition>
 
-        <!-- version properties are set in this file, both for the product itself and
-                  for some of the external dependencies (jar files and such) -->
+    	<!-- version properties are set in this file, both for the product itself and
+		        for some of the external dependencies (jar files and such) -->
         <property file="version.properties"/>
 
         <!-- basic project properties -->
@@ -149,7 +149,8 @@
             <filter token="version.buildnumber" value="${version.buildnumber}"/>
             <filter token="version.extra" value="${version.extra}"/>
             <filter token="version.extra1" value="${version.extra1}"/>
-            <filter token="jvm.args" value="${jvm.args}"/>
+            <filter token="jvm.args.win" value="${jvm.args.win}"/>
+            <filter token="jvm.args.linux" value="${jvm.args.linux}"/>
         </filterset>
     </target>
 

@@ -21,7 +21,7 @@
         <dontUsePrivateJres>false</dontUsePrivateJres>
         <initialHeapSize>0</initialHeapSize>
         <maxHeapSize>0</maxHeapSize>
-        <opt>@jvm.args@</opt>
+        <opt>@jvm.args.win@</opt>
     </jre>
     <splash>
         <file>../../graphics/splash.bmp</file>
