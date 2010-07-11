@@ -35,7 +35,7 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
     private static final Logger LOGGER = getLogger(Lm2MtsDataSource.class);
     private final Lm2MtsDataItem dataItem = new Lm2MtsDataItem();
     private MTSRunner runner;
-    private int mtsPort = 0;
+    private int mtsPort = -1;
 
     public String getId() {
         return getClass().getName();
@@ -46,7 +46,7 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.02";
+        return "0.03";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
@@ -79,7 +79,7 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
             return parseInt(port);
         } catch (Exception e) {
             LOGGER.warn("Bad MTS port: " + port);
-            return 0;
+            return -1;
         }
     }
 }

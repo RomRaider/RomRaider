@@ -43,7 +43,7 @@ public final class GenericDataSourceConnector implements Stoppable {
                 break;
             } catch (Exception e) {
                 LOGGER.error(dataSource.getName() + ": connect error", e);
-                sleep(500L);
+                sleep(1000L);
             }
         }
     }

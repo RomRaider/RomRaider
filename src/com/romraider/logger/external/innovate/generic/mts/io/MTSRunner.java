@@ -30,13 +30,12 @@ import static org.apache.log4j.Logger.getLogger;
 public final class MTSRunner implements Stoppable {
     private static final Logger LOGGER = getLogger(MTSRunner.class);
     private final DataListener listener;
-    private final int mtsInput = 0;
-    private final int mtsPort;
+    private final MTS mts;
     private boolean running;
     private boolean stop;
 
     public MTSRunner(int mtsPort, DataListener listener) {
-        this.mtsPort = mtsPort;
+        this.mts = mts(mtsPort);
         this.listener = listener;
     }
 
@@ -59,24 +58,40 @@ public final class MTSRunner implements Stoppable {
         while (running && currentTimeMillis() < timeout) sleep(100L);
     }
 
-    private void doRun() {
-        if (mtsPort < 0) return;
+    private MTS mts(int mtsPort) {
+        // bail out early if we know specified mts port is invalid
+        if (mtsPort < 0) throw new IllegalArgumentException("Bad MTS port: " + mtsPort);
 
+        // create mts interface
         MTS mts = createMTS();
-        try {
-            int portCount = mts.portCount();
-            LOGGER.debug("MTS: found " + portCount + " ports.");
 
+        try {
+            // check there are ports available
+            int portCount = mts.portCount();
+            if (portCount <= 0) throw new IllegalStateException("No MTS ports found");
+            LOGGER.info("MTS: found " + portCount + " ports.");
+
+            // select the specified port
             mts.currentPort(mtsPort);
             String portName = mts.portName();
-            LOGGER.debug("MTS: current port [" + mtsPort + "]: " + portName);
+            LOGGER.info("MTS: current port [" + mtsPort + "]: " + portName);
 
+            return mts;
+        } catch (RuntimeException t) {
+            // cleanup mts and rethrow exception
+            if (mts != null) mts.dispose();
+            throw t;
+        }
+    }
+
+    private void doRun() {
+        try {
             // attempt to connect to the specified device
             mts.connect();
-            try {
 
+            try {
                 // select the input
-                mts.currentInput(mtsInput);
+                mts.currentInput(0);
 
                 // attempt to get data
                 mts.startData();
