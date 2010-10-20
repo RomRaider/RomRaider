@@ -39,13 +39,19 @@ public class JTableChooser extends JOptionPane {
 
     public boolean showChooser(Vector<Rom> roms, Component parent, Table targetTable) {
 
-        for (int i = 0; i < roms.size(); i++) {
+    	int nameLength = 0;
+    	for (int i = 0; i < roms.size(); i++) {
             Rom rom = roms.get(i);
             DefaultMutableTreeNode romNode = new DefaultMutableTreeNode(rom.getFileName());
             rootNode.add(romNode);
 
             for (int j = 0; j < rom.getTables().size(); j++) {
                 Table table = rom.getTables().get(j);
+                // use the length of the table name to set the width of the displayTree
+                // so the entire name can be read without being cut off on the right
+                if (table.getName().length() > nameLength) {
+                	nameLength = table.getName().length();
+                }
                 TableChooserTreeNode tableNode = new TableChooserTreeNode(table.getName(), table);
 
                 // categories
@@ -66,10 +72,10 @@ public class JTableChooser extends JOptionPane {
             }
         }
 
-        displayPanel.setPreferredSize(new Dimension(350, 400));
-        displayPanel.setMinimumSize(new Dimension(350, 400));
-        displayTree.setPreferredSize(new Dimension(330, 400));
-        displayTree.setMinimumSize(new Dimension(330, 400));
+//        displayPanel.setPreferredSize(new Dimension(400, 400));
+//        displayPanel.setMinimumSize(new Dimension(400, 400));
+        displayTree.setPreferredSize(new Dimension(nameLength*7, 5000));	// setting this breaks the automatic resizing of the scroll bar of the enclosing JScrollPane  
+//        displayTree.setMinimumSize(new Dimension(nameLength*7, 5000));	// the minimum width doesn't seem to be honoured without setting preferred size
 
         displayTree.setRootVisible(true);
         displayTree.updateUI();
