@@ -1176,7 +1176,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private static boolean containsFullScreenArg(String... args) {
         for (String arg : args) {
-            if (LOGGER_FULLSCREEN_ARG.equals(arg)) return true;
+            if (LOGGER_FULLSCREEN_ARG.equalsIgnoreCase(arg)) return true;
         }
         return false;
     }

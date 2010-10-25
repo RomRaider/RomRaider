@@ -42,6 +42,7 @@ import java.io.File;
 public class ECUExec {
     private static final Logger LOGGER = getLogger(ECUExec.class);
     private static final String START_LOGGER_ARG = "-logger";
+    private static final String START_LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
 
     private ECUExec() {
         throw new UnsupportedOperationException();
@@ -84,7 +85,7 @@ public class ECUExec {
 
     private static boolean containsLoggerArg(String[] args) {
         for (String arg : args) {
-            if (arg.equals(START_LOGGER_ARG)) {
+            if (arg.equals(START_LOGGER_ARG) || arg.equals(START_LOGGER_FULLSCREEN_ARG)) {
                 return true;
             }
         }
