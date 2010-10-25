@@ -85,7 +85,7 @@ public class ECUExec {
 
     private static boolean containsLoggerArg(String[] args) {
         for (String arg : args) {
-            if (arg.equals(START_LOGGER_ARG) || arg.equals(START_LOGGER_FULLSCREEN_ARG)) {
+            if (arg.equalsIgnoreCase(START_LOGGER_ARG) || arg.equalsIgnoreCase(START_LOGGER_FULLSCREEN_ARG)) {
                 return true;
             }
         }
