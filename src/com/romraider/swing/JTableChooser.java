@@ -28,9 +28,11 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Vector;
 
-public class JTableChooser extends JOptionPane {
+public class JTableChooser extends JOptionPane implements MouseListener {
 
     private static final long serialVersionUID = 5611729002131147882L;
     JPanel displayPanel = new JPanel();
@@ -72,13 +74,12 @@ public class JTableChooser extends JOptionPane {
             }
         }
 
-//        displayPanel.setPreferredSize(new Dimension(400, 400));
-//        displayPanel.setMinimumSize(new Dimension(400, 400));
-        displayTree.setPreferredSize(new Dimension(nameLength*7, 5000));	// setting this breaks the automatic resizing of the scroll bar of the enclosing JScrollPane  
-//        displayTree.setMinimumSize(new Dimension(nameLength*7, 5000));	// the minimum width doesn't seem to be honoured without setting preferred size
+        displayTree.setPreferredSize(new Dimension(nameLength*7, 400));  
+        displayTree.setMinimumSize(new Dimension(nameLength*7, 400));
 
         displayTree.setRootVisible(true);
         displayTree.updateUI();
+        displayTree.addMouseListener(this);
         displayPanel.add(new JScrollPane(displayTree));
 
         Object[] values = {"Compare", "Cancel"};
@@ -91,4 +92,14 @@ public class JTableChooser extends JOptionPane {
             return false;
         }
     }
+
+    public void mouseReleased(MouseEvent e) {
+    	displayTree.setPreferredSize(new Dimension(displayTree.getWidth(), (displayTree.getRowCount()*displayTree.getRowHeight())));
+    	displayTree.revalidate();
+    }
+    public void mouseClicked(MouseEvent e){}
+    public void mouseEntered(MouseEvent e){}
+    public void mouseExited(MouseEvent e){}
+    public void mousePressed(MouseEvent e){}
+
 }
