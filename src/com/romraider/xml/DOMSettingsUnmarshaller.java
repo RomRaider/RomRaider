@@ -228,6 +228,7 @@ public final class DOMSettingsUnmarshaller {
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tabs")) {
                 settings.setLoggerSelectedTabIndex(unmarshallAttribute(n, "selected", 0));
+                settings.setLoggerParameterListState(unmarshallAttribute(n, "showlist", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("definition")) {
                 settings.setLoggerDefinitionFilePath(unmarshallAttribute(n, "path", settings.getLoggerDefinitionFilePath()));

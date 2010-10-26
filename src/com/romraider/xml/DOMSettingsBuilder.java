@@ -257,6 +257,7 @@ public final class DOMSettingsBuilder {
         // last tab index
         IIOMetadataNode tabs = new IIOMetadataNode("tabs");
         tabs.setAttribute("selected", String.valueOf(settings.getLoggerSelectedTabIndex()));
+        tabs.setAttribute("showlist", String.valueOf(settings.getLoggerParameterListState()));
         loggerSettings.appendChild(tabs);
 
         // definition path

@@ -135,6 +135,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.table.TableColumn;
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -143,8 +144,10 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
@@ -735,10 +738,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
             public void actionPerformed(ActionEvent e) {
                 int current = splitPane.getDividerLocation();
-                if (toggleListButton.isSelected()) splitPane.setDividerLocation(size);
+                if (toggleListButton.isSelected()) {
+                	splitPane.setDividerLocation(size);
+                	settings.setLoggerParameterListState(true);
+                }
                 else {
                     splitPane.setDividerLocation(min);
                     size = current;
+                	settings.setLoggerParameterListState(false);
                 }
             }
         });
@@ -1218,5 +1225,19 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
             ecuLogger.setVisible(true);
         }
+        // simulate F11 key typed based on Parameter List show setting 'showlist' in settings.xml
+        // is this a hack as it may not work in X-server?
+        if (settings.getLoggerSelectedTabIndex() >= 0 && settings.getLoggerSelectedTabIndex() <= 2) {
+	    	if (!settings.getLoggerParameterListState()) { //false setting hides list
+	    		Robot r;
+				try {
+					r = new Robot();
+	        		r.keyPress(KeyEvent.VK_F11);
+	        		r.keyRelease(KeyEvent.VK_F11);
+				} catch (AWTException e) {
+					e.printStackTrace();
+				}
+	    	}
+	    }
     }
 }

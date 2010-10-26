@@ -79,6 +79,7 @@ public class Settings implements Serializable {
     private Point loggerWindowLocation = new Point();
     private boolean loggerWindowMaximized = false;
     private int loggerSelectedTabIndex = 0;
+    private boolean loggerParameterListState = true;
     private ConnectionProperties loggerConnectionProperties;
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
     private Map<String, String> loggerPluginPorts;
@@ -428,5 +429,13 @@ public class Settings implements Serializable {
 
     public void setLoggerPluginPorts(Map<String, String> loggerPluginPorts) {
         this.loggerPluginPorts = loggerPluginPorts;
+    }
+    
+    public void setLoggerParameterListState(boolean ShowListState) {
+    	this.loggerParameterListState = ShowListState;
+    }
+
+    public boolean getLoggerParameterListState() {
+    	return loggerParameterListState;
     }
 }
