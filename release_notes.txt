@@ -56,12 +56,15 @@ This is the seventh beta release of the upcoming official 0.5.3b release.
 - Change Log -
 --------------
 
-0.5.3b RC7 (05/27/2009)
+0.5.3b RC7 (11/20/2010)
 -----------------------
 
 --- Logger ---
 - Improved serial connection handling
 - MRF Stealth Gauge support added
+- Fixed Compare map scroll list
+- Added saving parameter list show/hide to settings
+- Added USER input read ability for ZT2
 
 0.5.3b RC6 (05/02/2009)
 -----------------------

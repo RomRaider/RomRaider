@@ -24,5 +24,6 @@ public enum ZT2SensorType {
     RPM,
     EGT,
     MAP,
-    TPS
+    TPS,
+    USR
 }

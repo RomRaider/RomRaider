@@ -44,6 +44,8 @@ public final class ZT2ConverterImpl implements ZT2Converter {
                 }
             case TPS:
                 return raw[0];
+            case USR:
+                return raw[0]; // input is between 0-5VDC, a conversion may be needed from hex to decimal 
             default:
                 throw new UnsupportedOperationException("Calculation for this particular ZTSensorType is not supported");
         }

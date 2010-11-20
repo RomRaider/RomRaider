@@ -28,6 +28,7 @@ import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.EGT;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.MAP;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.RPM;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.TPS;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.USR;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Collections.unmodifiableList;
 import javax.swing.Action;
@@ -47,6 +48,7 @@ public final class ZT2DataSource implements ExternalDataSource {
         dataItems.put(RPM, new ZT2DataItemImpl("RPM", "RPM", RPM));
         dataItems.put(MAP, new ZT2DataItemImpl("MAP", "Vacuum(inHg)/Boost(PSI)", MAP));
         dataItems.put(EGT, new ZT2DataItemImpl("EGT", "Celsius", EGT));
+        dataItems.put(USR, new ZT2DataItemImpl("User Input", "Volts", USR));
     }
 
     public String getId() {

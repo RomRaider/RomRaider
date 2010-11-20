@@ -30,6 +30,7 @@ public final class ZT2ConnectionImpl implements ZT2Connection {
     public ZT2ConnectionImpl(String port) {
         checkNotNullOrEmpty(port, "port");
         connection = serialConnection(port);
+//      connection = new TestZt2Connection();
     }
 
     public byte readByte() {

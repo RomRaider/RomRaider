@@ -27,7 +27,11 @@ import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.EGT;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.MAP;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.RPM;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.TPS;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.USR;
+import static com.romraider.util.HexUtil.asHex;
 import org.apache.log4j.Logger;
+
+import static java.lang.System.currentTimeMillis;
 import static org.apache.log4j.Logger.getLogger;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +50,7 @@ public final class ZT2Runner implements Stoppable {
 
     public void run() {
         try {
+        	//Runtime rt = Runtime.getRuntime();
             boolean packetStarted = false;
             List<Byte> buffer = new ArrayList<Byte>(14);
             while (!stop) {
@@ -101,7 +106,15 @@ public final class ZT2Runner implements Stoppable {
                                 tpsDataItem.setRaw(raw);
                             }
                             break;
+                        case 12:
+                            ZT2DataItem usrDataItem = dataItems.get(USR);
+                            if (usrDataItem != null) {
+                                int raw = convertAsUnsignedByteToInt(buffer.get(11));
+                                usrDataItem.setRaw(raw);
+                            }
+                            break;
                         case 14:
+                            //LOGGER.info(currentTimeMillis() + ", Pkt: " + buffer + ", TMem: " + rt.totalMemory() + ", FMem: " + rt.freeMemory());
                             buffer.clear();
                             packetStarted = false;
                             break;
