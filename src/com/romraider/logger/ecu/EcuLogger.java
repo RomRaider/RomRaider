@@ -190,7 +190,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JLabel statsLabel;
     private JTabbedPane tabbedPane;
     private SerialPortComboBox portsComboBox;
-    private JCheckBox portScan;
+    private JCheckBox portRefresh;
     private DataUpdateHandlerManager dataHandlerManager;
     private DataRegistrationBroker dataTabBroker;
     private ParameterListTableModel dataTabParamListTableModel;
@@ -911,16 +911,15 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
-        portScan = new JCheckBox("Port Scan");
-        portScan.setToolTipText("Check to enable automatic COM port refreshing");
-        portScan.setSelected(settings.getScanMode());
-        portScan.addActionListener(new ActionListener() {
+        portRefresh = new JCheckBox("Auto Refresh");
+        portRefresh.setToolTipText("Check to enable automatic COM port refreshing");
+        portRefresh.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-            	refresher.setScanMode(portScan.isSelected());
-            	settings.setScanMode(portScan.isSelected());
+            	refresher.setRefreshMode(portRefresh.isSelected());
+            	settings.setRefreshMode(portRefresh.isSelected());
             }
         });
-        comboBoxPanel.add(portScan);
+        comboBoxPanel.add(portRefresh);
         JButton reconnectButton = new JButton(new ImageIcon("./graphics/logger_restart.png"));
         reconnectButton.setPreferredSize(new Dimension(25, 25));
         reconnectButton.setToolTipText("Reconnect to ECU");
@@ -956,10 +955,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     public void restartLogging() {
         stopLogging();
         startLogging();
-    }
-
-    public boolean getScanMode() {
-        return portScan.isSelected();
     }
 
     private StatusIndicator buildStatusIndicator() {
@@ -1219,6 +1214,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         // set window properties
         ecuLogger.pack();
         ecuLogger.selectTab(settings.getLoggerSelectedTabIndex());
+        ecuLogger.setRefreshMode(settings.getRefreshMode());
 
         if (fullscreen) {
             // display full screen
@@ -1257,4 +1253,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 	    	}
 	    }
     }
+
+	private void setRefreshMode(boolean refreshMode) {
+        portRefresh.setSelected(refreshMode);
+       	refresher.setRefreshMode(refreshMode);
+	}
 }

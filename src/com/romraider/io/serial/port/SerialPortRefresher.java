@@ -36,7 +36,7 @@ public final class SerialPortRefresher implements Runnable {
     private final SerialPortRefreshListener listener;
     private final String defaultLoggerPort;
     private boolean started;
-    private boolean scanMode;
+    private boolean refreshMode;
 
     public SerialPortRefresher(SerialPortRefreshListener listener, String defaultLoggerPort) {
         checkNotNull(listener);
@@ -49,7 +49,7 @@ public final class SerialPortRefresher implements Runnable {
         started = true;
         while (true) {
             sleep(PORT_REFRESH_INTERVAL);
-            if (scanMode) {
+            if (refreshMode) {
             	refreshPortList();
             }
         }
@@ -59,9 +59,9 @@ public final class SerialPortRefresher implements Runnable {
         return started;
     }
 
-    public void setScanMode(boolean b) {
-    	scanMode = b;
-        if (scanMode) {
+    public void setRefreshMode(boolean b) {
+    	refreshMode = b;
+        if (refreshMode) {
         	refreshPortList();
         }
     }
