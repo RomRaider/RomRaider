@@ -214,6 +214,7 @@ public final class DOMSettingsUnmarshaller {
 
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
+                settings.setScanMode(unmarshallAttribute(n, "scan", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
                 settings.setLoggerWindowMaximized(unmarshallAttribute(n, "value", false));

@@ -83,6 +83,7 @@ public class Settings implements Serializable {
     private ConnectionProperties loggerConnectionProperties;
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
     private Map<String, String> loggerPluginPorts;
+	private boolean loggerScanMode = true;
 
 
     public Settings() {
@@ -438,4 +439,13 @@ public class Settings implements Serializable {
     public boolean getLoggerParameterListState() {
     	return loggerParameterListState;
     }
+
+	public void setScanMode(boolean selected) {
+    	this.loggerScanMode = selected;
+	}
+
+	public boolean getScanMode() {
+    	return loggerScanMode;
+    }
+
 }

@@ -23,6 +23,7 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ThreadUtil.sleep;
 import gnu.io.CommPortIdentifier;
 import org.apache.log4j.Logger;
+
 import static org.apache.log4j.Logger.getLogger;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,7 @@ public final class SerialPortRefresher implements Runnable {
     private final SerialPortRefreshListener listener;
     private final String defaultLoggerPort;
     private boolean started;
+    private boolean scanMode;
 
     public SerialPortRefresher(SerialPortRefreshListener listener, String defaultLoggerPort) {
         checkNotNull(listener);
@@ -47,12 +49,21 @@ public final class SerialPortRefresher implements Runnable {
         started = true;
         while (true) {
             sleep(PORT_REFRESH_INTERVAL);
-            refreshPortList();
+            if (scanMode) {
+            	refreshPortList();
+            }
         }
     }
 
     public boolean isStarted() {
         return started;
+    }
+
+    public void setScanMode(boolean b) {
+    	scanMode = b;
+        if (scanMode) {
+        	refreshPortList();
+        }
     }
 
     private void refreshPortList() {

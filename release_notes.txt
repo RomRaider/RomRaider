@@ -65,6 +65,7 @@ This is the seventh beta release of the upcoming official 0.5.3b release.
 - Fixed Compare map scroll list
 - Added saving parameter list show/hide to settings
 - Added USER input read ability for ZT2
+- Added check box to enable/disable COM port refreshing and save the setting
 
 0.5.3b RC6 (05/02/2009)
 -----------------------

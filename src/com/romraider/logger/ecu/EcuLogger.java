@@ -123,6 +123,7 @@ import org.apache.log4j.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -189,6 +190,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JLabel statsLabel;
     private JTabbedPane tabbedPane;
     private SerialPortComboBox portsComboBox;
+    private JCheckBox portScan;
     private DataUpdateHandlerManager dataHandlerManager;
     private DataRegistrationBroker dataTabBroker;
     private ParameterListTableModel dataTabParamListTableModel;
@@ -227,6 +229,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JToggleButton logToFileButton;
     private List<ExternalDataSource> externalDataSources;
     private List<EcuParameter> ecuParams;
+    private SerialPortRefresher refresher;
 
     public EcuLogger(Settings settings) {
         super(ECU_LOGGER_TITLE);
@@ -342,7 +345,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void startPortRefresherThread() {
-        SerialPortRefresher refresher = new SerialPortRefresher(portsComboBox, settings.getLoggerPortDefault());
+        refresher = new SerialPortRefresher(portsComboBox, settings.getLoggerPortDefault());
         runAsDaemon(refresher);
         // wait until port refresher fully started before continuing
         waitForSerialPortRefresher(refresher);
@@ -908,6 +911,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
+        portScan = new JCheckBox("Port Scan");
+        portScan.setToolTipText("Check to enable automatic COM port refreshing");
+        portScan.setSelected(settings.getScanMode());
+        portScan.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	refresher.setScanMode(portScan.isSelected());
+            	settings.setScanMode(portScan.isSelected());
+            }
+        });
+        comboBoxPanel.add(portScan);
         JButton reconnectButton = new JButton(new ImageIcon("./graphics/logger_restart.png"));
         reconnectButton.setPreferredSize(new Dimension(25, 25));
         reconnectButton.setToolTipText("Reconnect to ECU");
@@ -943,6 +956,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     public void restartLogging() {
         stopLogging();
         startLogging();
+    }
+
+    public boolean getScanMode() {
+        return portScan.isSelected();
     }
 
     private StatusIndicator buildStatusIndicator() {
