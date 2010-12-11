@@ -173,7 +173,8 @@ public class Table3D extends Table {
                             RomAttributeParser.parseByteValue(input,
                                     endian,
                                     storageAddress + offset * storageType - ramOffset,
-                                    storageType));
+                                    storageType,
+                                    signed));
                 }
 
                 // show locked cell

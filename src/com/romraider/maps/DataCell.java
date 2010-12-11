@@ -19,15 +19,11 @@
 
 package com.romraider.maps;
 
-import com.romraider.util.JEPUtil;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.RED;
 import static java.lang.Math.abs;
 import static javax.swing.BorderFactory.createLineBorder;
-import org.apache.log4j.Logger;
-import javax.swing.JLabel;
-import javax.swing.border.Border;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -35,6 +31,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import javax.swing.JLabel;
+import javax.swing.border.Border;
+import org.apache.log4j.Logger;
+import com.romraider.util.JEPUtil;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final long serialVersionUID = -2904293227148940937L;
@@ -126,15 +126,46 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         // make sure it's in range
         if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
-            if (binValue < 0) {
-                this.setBinValue(0);
-
-            } else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
-                this.setBinValue((int) (Math.pow(256, table.getStorageType()) - 1));
-
-            }
+        	if (table.isSignedData()) {
+        		int minAllowedValue = 0;
+        		int maxAllowedValue = 0;
+//        		int typeStroageLimit = (int) (Math.pow(128, table.getStorageType()) * (Math.pow(2, table.getStorageType())/2));
+//	            if (binValue < typeStroageLimit *-1 ) {
+//	                this.setBinValue(typeStroageLimit *-1);
+//	            }
+//	            else if (binValue > (typeStroageLimit - 1)) {
+//	                this.setBinValue(typeStroageLimit - 1);
+//	            }
+        		switch (table.getStorageType()) {
+        			case 1:
+	        				minAllowedValue = Byte.MIN_VALUE;
+	        				maxAllowedValue = Byte.MAX_VALUE;
+	        				break;
+        			case 2:
+	        				minAllowedValue = Short.MIN_VALUE;
+	        				maxAllowedValue = Short.MAX_VALUE;
+	        				break;
+        			case 4:
+	        				minAllowedValue = Integer.MIN_VALUE;
+	        				maxAllowedValue = Integer.MAX_VALUE;
+	        				break;
+        		}
+	            if (binValue < minAllowedValue ) {
+	            	this.setBinValue(minAllowedValue);
+	            }
+	            else if (binValue > maxAllowedValue) {
+	                this.setBinValue(maxAllowedValue);
+	            }
+        	}
+	        else {
+	            if (binValue < 0) {
+	                this.setBinValue(0);
+	            }
+	            else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
+	                this.setBinValue((int) (Math.pow(256, table.getStorageType()) - 1));
+	            }
+	        }
         }
-
         this.updateDisplayValue();
     }
 

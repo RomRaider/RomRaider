@@ -71,6 +71,7 @@ public abstract class Table extends JPanel implements Serializable {
     public static final int COMPARE_ABSOLUTE = 1;
 
     public static final int STORAGE_TYPE_FLOAT = 99;
+    public static final boolean STORAGE_DATA_SIGNED = false;
 
     protected static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
 
@@ -83,6 +84,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     protected int storageAddress;
     protected int storageType;
+    protected boolean signed;
     protected int endian;
     protected boolean flip;
     protected DataCell[] data = new DataCell[0];
@@ -411,7 +413,8 @@ public abstract class Table extends JPanel implements Serializable {
                                 RomAttributeParser.parseByteValue(input,
                                         endian,
                                         storageAddress + i * storageType - ramOffset,
-                                        storageType));
+                                        storageType,
+                                        signed));
                     }
 
                     data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
@@ -510,6 +513,14 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setStorageType(int storageType) {
         this.storageType = storageType;
+    }
+
+    public boolean isSignedData() {
+        return signed;
+    }
+
+    public void setSignedData(boolean signed) {
+        this.signed = signed;
     }
 
     public int getEndian() {

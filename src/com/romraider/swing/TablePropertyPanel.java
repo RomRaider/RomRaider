@@ -34,7 +34,14 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         unit.setText(table.getScale().getUnit());
         byteToReal.setText(table.getScale().getExpression());
         realToByte.setText(table.getScale().getByteExpression());
-        storageSize.setText("uint" + (table.getStorageType() * 8));
+        String intType;
+        if (table.isSignedData()) {
+        	intType = "int";
+        }
+        else {
+        	intType = "uint";
+        }
+        storageSize.setText(intType + (table.getStorageType() * 8));
         storageAddress.setText("0x" + Integer.toHexString(table.getStorageAddress()));
 
         if (table.getEndian() == Table.ENDIAN_BIG) {
