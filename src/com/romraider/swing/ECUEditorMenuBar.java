@@ -53,7 +53,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private static final long serialVersionUID = -4777040428837855236L;
     private JMenu fileMenu = new JMenu("File");
     private JMenuItem openImage = new JMenuItem("Open Image...");
-    private JMenuItem saveImage = new JMenuItem("Save Image...");
+    private JMenuItem saveImage = new JMenuItem("Save Image As...");
     private JMenuItem refreshImage = new JMenuItem("Refresh Image");
     private JMenuItem closeImage = new JMenuItem("Close Image");
     private JMenuItem closeAll = new JMenuItem("Close All Images");
@@ -209,13 +209,13 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             closeImage.setEnabled(false);
             closeAll.setEnabled(false);
             romProperties.setEnabled(false);
-            saveImage.setText("Save...");
+            saveImage.setText("Save As...");
         } else {
             saveImage.setEnabled(true);
             closeImage.setEnabled(true);
             closeAll.setEnabled(true);
             romProperties.setEnabled(true);
-            saveImage.setText("Save " + file + "...");
+            saveImage.setText("Save " + file + " As...");
         }
         refreshImage.setText("Refresh " + file);
         closeImage.setText("Close " + file);
