@@ -129,13 +129,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         	if (table.isSignedData()) {
         		int minAllowedValue = 0;
         		int maxAllowedValue = 0;
-//        		int typeStroageLimit = (int) (Math.pow(128, table.getStorageType()) * (Math.pow(2, table.getStorageType())/2));
-//	            if (binValue < typeStroageLimit *-1 ) {
-//	                this.setBinValue(typeStroageLimit *-1);
-//	            }
-//	            else if (binValue > (typeStroageLimit - 1)) {
-//	                this.setBinValue(typeStroageLimit - 1);
-//	            }
         		switch (table.getStorageType()) {
         			case 1:
 	        				minAllowedValue = Byte.MIN_VALUE;

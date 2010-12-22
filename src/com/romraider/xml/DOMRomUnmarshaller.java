@@ -380,8 +380,10 @@ public final class DOMRomUnmarshaller {
         }
 
         table.setCategory(unmarshallAttribute(tableNode, "category", table.getCategory()));
+        if (table.getStorageType() < 1) {
+        	table.setSignedData(RomAttributeParser.parseStorageDataSign(unmarshallAttribute(tableNode, "storagetype", String.valueOf(table.getStorageType()))));
+        }
         table.setStorageType(RomAttributeParser.parseStorageType(unmarshallAttribute(tableNode, "storagetype", String.valueOf(table.getStorageType()))));
-        table.setSignedData(RomAttributeParser.parseStorageDataSign(unmarshallAttribute(tableNode, "storagetype", String.valueOf(table.getStorageType()))));
         table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(tableNode, "endian", String.valueOf(table.getEndian()))));
         table.setStorageAddress(RomAttributeParser.parseHexString(unmarshallAttribute(tableNode, "storageaddress", String.valueOf(table.getStorageAddress()))));
         table.setDescription(unmarshallAttribute(tableNode, "description", table.getDescription()));

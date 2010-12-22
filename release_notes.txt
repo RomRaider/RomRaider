@@ -56,17 +56,19 @@ This is the seventh beta release of the upcoming official 0.5.3b release.
 - Change Log -
 --------------
 
-0.5.3b RC7 (12/11/2010)
+0.5.3b RC7 (12/21/2010)
 -----------------------
+
+--- Editor ---
+- Fixed Compare map scroll list
+- Added support for sign integer data (used in diesel ROMs)
 
 --- Logger ---
 - Improved serial connection handling
 - MRF Stealth Gauge support added
-- Fixed Compare map scroll list
 - Added saving parameter list show/hide to settings
 - Added USER input read ability for ZT2
 - Added check box to enable/disable COM port refreshing and save the setting
-- Added support for sign integer data (used in diesel ROMs)
 
 0.5.3b RC6 (05/02/2009)
 -----------------------

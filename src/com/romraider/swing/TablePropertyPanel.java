@@ -205,7 +205,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         endian.setText("little");
         endian.setFocusable(false);
 
-        storageSize.setText("uint16");
+        storageSize.setText("unkn");
         storageSize.setFocusable(false);
 
         storageAddress.setText("0x00");
