@@ -82,6 +82,14 @@ for %%i in ("%IZPACK_HOME%\lib\*.jar") do call "%IZPACK_HOME%\bin\lcp.bat" %%i
 :runIzpack
 set MAIN_CLASS=com.izforge.izpack.compiler.Compiler
 
+echo Jared 20110110
+echo ------------------
+echo IZPACK_CMD_LINE_ARGS: %IZPACK_CMD_LINE_ARGS%
+echo .
+echo Cmd: "%_JAVACMD%" -Xmx512m %IZPACK_OPTS% -classpath "%LOCALCLASSPATH%" %MAIN_CLASS% %IZPACK_CMD_LINE_ARGS%
+echo .
+echo .
+echo .
 "%_JAVACMD%" -Xmx512m %IZPACK_OPTS% -classpath "%LOCALCLASSPATH%" %MAIN_CLASS% %IZPACK_CMD_LINE_ARGS%
 goto end
 
