@@ -1,4 +1,4 @@
-package com.romraider.xml;
+package com.romraider.metadata;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +16,9 @@ import org.xml.sax.InputSource;
 import com.romraider.maps.Rom;
 import com.romraider.swing.JProgressPane;
 import com.romraider.util.FileListing;
+import com.romraider.xml.DOMRomMetadataUnmarshaller;
 
-public final class RomIndex {
+public final class RomMetadataIndexBuilder {
 
 	
 	public static RomID[] createIndex(File path) throws FileNotFoundException {
@@ -29,9 +30,9 @@ public final class RomIndex {
 			// Ignore directories 
 			if (f.isFile()) {
 				
-				System.out.println("Parsing " + f.getName() + " ...");				
+				//System.out.println("Parsing " + f.getName() + " ...");				
 				try {
-					romVector.addAll(DOMRomMetadataUnmarshaller.getRomID(f));
+					romVector.addAll(DOMRomMetadataUnmarshaller.unmarshallRomIDIndex(f));
 					
 				} catch (Exception x) {
 					// TODO: Handle invalid definitions
@@ -45,14 +46,15 @@ public final class RomIndex {
 
 	public static void main(String[] args) {
 		// JG: Testing ...
+		long startTime = System.currentTimeMillis();
 		try {
 			File testdir = new File("c:\\documents and settings\\owner\\desktop\\rommetadata");
 			RomID[] romIndex = createIndex(testdir);		
 			
-			for (int i = 0; i < romIndex.length; i++) {
+			/*for (int i = 0; i < romIndex.length; i++) {
 				System.out.println(romIndex[i]);
-			}
-			System.out.println(romIndex.length + " parsed.");
+			}*/
+			System.out.println(romIndex.length + " parsed in " + (System.currentTimeMillis() - startTime) + "ms");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
