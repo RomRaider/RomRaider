@@ -6,7 +6,7 @@ public final class RomID {
 	
 	private String	xmlid;
 	private String	internalIDString;
-	private int 	internalIDAddress;
+	private int 	internalIDAddress = -1; // Default to -1 to help identify abstract roms
 	private String 	include;
 	private File	definitionFile;
 	private String  ecuid;
@@ -51,9 +51,14 @@ public final class RomID {
 	public void setMemmodel(String memmodel) 				{ this.memmodel = memmodel; }
 	public void setFlashMethod(String flashMethod) 			{ this.flashMethod = flashMethod; }
 	
-	public boolean	isReady() {
+	public boolean isReady() {
 		// TODO: Validate romid is usable
 		return true;
+	}
+	
+	public boolean isAbstract() {
+		if (internalIDString == null || internalIDAddress == -1) return true;
+		else return false;
 	}
 	
 	public String toString() {

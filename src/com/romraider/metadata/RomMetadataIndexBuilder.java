@@ -21,7 +21,7 @@ import com.romraider.xml.DOMRomMetadataUnmarshaller;
 public final class RomMetadataIndexBuilder {
 
 	
-	public static RomID[] createIndex(File path) throws FileNotFoundException {
+	public static RomMetadataIndex createIndex(File path) throws FileNotFoundException {
 		Vector<RomID> romVector = new Vector<RomID>();
 		List<File> files = FileListing.getFileListing(path);
 		
@@ -29,8 +29,7 @@ public final class RomMetadataIndexBuilder {
 		for (File f : files) {
 			// Ignore directories 
 			if (f.isFile()) {
-				
-				//System.out.println("Parsing " + f.getName() + " ...");				
+							
 				try {
 					romVector.addAll(DOMRomMetadataUnmarshaller.unmarshallRomIDIndex(f));
 					
@@ -40,7 +39,8 @@ public final class RomMetadataIndexBuilder {
 			}
 		}
 		
-		return romVector.toArray(new RomID[romVector.size()]);
+		RomID[] romArray = romVector.toArray(new RomID[romVector.size()]);
+		return new RomMetadataIndex(romArray);
 	}
 
 
@@ -48,13 +48,14 @@ public final class RomMetadataIndexBuilder {
 		// JG: Testing ...
 		long startTime = System.currentTimeMillis();
 		try {
+			// Create index
 			File testdir = new File("c:\\documents and settings\\owner\\desktop\\rommetadata");
-			RomID[] romIndex = createIndex(testdir);		
+			RomMetadataIndex romIndex = createIndex(testdir);		
+			System.out.println(romIndex.size() + " defs parsed in " + (System.currentTimeMillis() - startTime) + "ms");
 			
-			/*for (int i = 0; i < romIndex.length; i++) {
-				System.out.println(romIndex[i]);
-			}*/
-			System.out.println(romIndex.length + " parsed in " + (System.currentTimeMillis() - startTime) + "ms");
+			// Open test rom
+			RomHandler.getMetadata(new File("c:\\documents and settings\\owner\\desktop\\test.hex"), romIndex);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

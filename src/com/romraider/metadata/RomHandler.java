@@ -3,6 +3,7 @@ package com.romraider.metadata;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Vector;
 
 import org.xml.sax.SAXException;
@@ -53,9 +54,29 @@ public class RomHandler {
 	private static RomID identifyRom(byte[] buffer, RomMetadataIndex romIndex) throws RomNotFoundException {
         for (int i = 0; i < romIndex.size(); i++) {
         	RomID romid = romIndex.getRomIDByIndex(i);
-        	String testString = new String(buffer, romid.getInternalIDAddress(), romid.getInternalIDString().length());
-        	if (testString.equalsIgnoreCase(romid.getInternalIDString())) {
-        		return romid;
+        	if (!romid.isAbstract()) {
+        		
+	        	/*String testString = new String(buffer, (romid.getInternalIDAddress() & 0xff), 
+	        									romid.getInternalIDString().length());
+	        	
+	        	System.out.println("RomMetadata:" + romid.getXmlid() + 
+	        					   "; ID Address:" + (romid.getInternalIDAddress() & 0xff) + 
+	        					   "; ID String:" + romid.getInternalIDString() + 
+	        					   "; ROM id:" + testString);
+	        	if (testString.equalsIgnoreCase(romid.getInternalIDString())) {
+	        		return romid;
+	        	}*/
+        		
+        		byte[] testString = new String(buffer, (romid.getInternalIDAddress() & 0xff), 
+						romid.getInternalIDString().length()).getBytes();
+
+				System.out.println("RomMetadata:" + romid.getXmlid() + 
+						   "; ID String:" + romid.getInternalIDString() + 
+						   "; ROM id Arrays.toString():" + Arrays.toString(testString) + 
+						   "; ROM id:" + testString);
+				if (testString == romid.getInternalIDString().getBytes()) {
+					return romid;
+				}	        	
         	}
         }	
         // If not found in index, throw exception
