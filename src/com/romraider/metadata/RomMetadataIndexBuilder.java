@@ -46,16 +46,20 @@ public final class RomMetadataIndexBuilder {
 
 	public static void main(String[] args) {
 		// JG: Testing ...
-		long startTime = System.currentTimeMillis();
+		long time1 = System.currentTimeMillis();
 		try {
+			
 			// Create index
 			File testdir = new File("c:\\documents and settings\\owner\\desktop\\rommetadata");
 			RomMetadataIndex romIndex = createIndex(testdir);		
-			System.out.println(romIndex.size() + " defs parsed in " + (System.currentTimeMillis() - startTime) + "ms");
+			long time2 = System.currentTimeMillis();
+			System.out.println(romIndex.size() + " defs parsed in " + (time2 - time1) + "ms");
 			
 			// Open test rom
 			RomHandler.getMetadata(new File("c:\\documents and settings\\owner\\desktop\\test.hex"), romIndex);
-			
+			long time3 = System.currentTimeMillis();
+			System.out.println("ROM identified in " + (time3 - time2) + "ms");
+            
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

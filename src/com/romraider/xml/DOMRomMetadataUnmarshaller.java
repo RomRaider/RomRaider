@@ -109,7 +109,7 @@ public class DOMRomMetadataUnmarshaller {
 				else if (n.getNodeName().equalsIgnoreCase("internalidstring")) 	
 					romid.setInternalIDString(unmarshallText(n));
 				else if (n.getNodeName().equalsIgnoreCase("internalidaddress")) 
-					romid.setInternalIDAddress(Integer.parseInt(unmarshallText(n)));
+					romid.setInternalIDAddress(Integer.parseInt(unmarshallText(n), 16));
 				else if (n.getNodeName().equalsIgnoreCase("ecuid")) 			
 					romid.setEcuid(unmarshallText(n));
 				else if (n.getNodeName().equalsIgnoreCase("year")) 			

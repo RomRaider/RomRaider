@@ -54,29 +54,19 @@ public class RomHandler {
 	private static RomID identifyRom(byte[] buffer, RomMetadataIndex romIndex) throws RomNotFoundException {
         for (int i = 0; i < romIndex.size(); i++) {
         	RomID romid = romIndex.getRomIDByIndex(i);
-        	if (!romid.isAbstract()) {
+        	
+        	if (!romid.isAbstract() && 
+        			buffer.length >= romid.getInternalIDAddress() + romid.getInternalIDString().length()) {
         		
-	        	/*String testString = new String(buffer, (romid.getInternalIDAddress() & 0xff), 
-	        									romid.getInternalIDString().length());
-	        	
-	        	System.out.println("RomMetadata:" + romid.getXmlid() + 
-	        					   "; ID Address:" + (romid.getInternalIDAddress() & 0xff) + 
-	        					   "; ID String:" + romid.getInternalIDString() + 
-	        					   "; ROM id:" + testString);
-	        	if (testString.equalsIgnoreCase(romid.getInternalIDString())) {
-	        		return romid;
-	        	}*/
-        		
-        		byte[] testString = new String(buffer, (romid.getInternalIDAddress() & 0xff), 
-						romid.getInternalIDString().length()).getBytes();
-
-				System.out.println("RomMetadata:" + romid.getXmlid() + 
-						   "; ID String:" + romid.getInternalIDString() + 
-						   "; ROM id Arrays.toString():" + Arrays.toString(testString) + 
-						   "; ROM id:" + testString);
-				if (testString == romid.getInternalIDString().getBytes()) {
-					return romid;
-				}	        	
+        		try {
+	        		String testString = new String(buffer, romid.getInternalIDAddress(), romid.getInternalIDString().length());
+	
+					if (testString.equalsIgnoreCase(romid.getInternalIDString())) {
+						return romid;
+					}	
+        		} catch (Exception x) {
+        			System.out.println("ERROR! " + romid.getDefinitionFile().getAbsoluteFile());
+        		}
         	}
         }	
         // If not found in index, throw exception
