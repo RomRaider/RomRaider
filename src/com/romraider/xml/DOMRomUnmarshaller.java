@@ -32,6 +32,8 @@ import com.romraider.maps.Table1D;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
 import com.romraider.maps.TableSwitch;
+import com.romraider.metadata.RomNotFoundException;
+import com.romraider.metadata.TableNotFoundException;
 import com.romraider.swing.DebugPanel;
 import com.romraider.swing.JProgressPane;
 import com.romraider.util.LogManager;

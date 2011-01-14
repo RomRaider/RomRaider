@@ -62,12 +62,16 @@ public final class RomID {
 	}
 	
 	public String toString() {
-		return 	"xmlid: " + xmlid +	
-				"; internalidstring: " + internalIDString +	
-				"; internalidaddress: " + internalIDAddress + 
-				"; include: " + include +
-				"; file: " + definitionFile.getAbsoluteFile() + 
-				"; ready: " + isReady();
+		return 	"xmlid:" + xmlid +	
+				" ecuid:" + ecuid +
+				" year:" + year +
+				" market:" + market +
+				" make:" + make +
+				" model:" + model +
+				" submodel:" + submodel +
+				" transmission:" + transmission +
+				" memmodel:" + memmodel +
+				" flashmethod:" + flashMethod;
 	}
 	
 }

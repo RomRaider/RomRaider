@@ -56,9 +56,12 @@ public final class RomMetadataIndexBuilder {
 			System.out.println(romIndex.size() + " defs parsed in " + (time2 - time1) + "ms");
 			
 			// Open test rom
-			RomHandler.getMetadata(new File("c:\\documents and settings\\owner\\desktop\\test.hex"), romIndex);
+			RomMetadata r = RomHandler.getMetadata(new File("c:\\documents and settings\\owner\\desktop\\test.hex"), romIndex);
 			long time3 = System.currentTimeMillis();
-			System.out.println("ROM identified in " + (time3 - time2) + "ms");
+			System.out.println("Rom " + r.getRomid().getXmlid() + " identified (and partially parsed) in " + (time3 - time2) + "ms");
+			System.out.println(r.getRomid());
+			System.out.println(r.scalingMetadataSize() + " scaling elements");
+			System.out.println(r.tableMetadataSize() + " tables");
             
 		} catch (Exception e) {
 			e.printStackTrace();

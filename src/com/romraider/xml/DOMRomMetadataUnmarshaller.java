@@ -15,12 +15,15 @@ import org.xml.sax.SAXException;
 import com.romraider.metadata.RomID;
 import com.romraider.metadata.RomMetadata;
 import com.romraider.metadata.ScalingMetadata;
-import com.romraider.metadata.TableMetadata;
+import com.romraider.metadata.AbstractTableMetadata;
+import com.romraider.metadata.ScalingMetadataNotFoundException;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public class DOMRomMetadataUnmarshaller {
 	
-	public static RomMetadata unmarshallRomMetadata(RomID romid, RomMetadata romMetadata) throws SAXException, IOException {
+	public static RomMetadata unmarshallRomMetadata(RomID romid, RomMetadata r) throws SAXException, IOException {
+		
+		System.out.println("Unmarshalling " + romid.getXmlid() + " ...");
 		
 		InputSource src = new InputSource(new FileInputStream(romid.getDefinitionFile()));
 		DOMParser parser = new DOMParser();
@@ -30,20 +33,30 @@ public class DOMRomMetadataUnmarshaller {
 		
 		for (int i = 0; i < children.getLength(); i++) {
 			Node n = children.item(i);
-			if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scaling")) {
-				// TODO: unmarshall scaling
+			if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("romid")) {
+				RomID t;
+				if (r.getRomid() == null) t = new RomID();
+				else t = r.getRomid();
+				r.setRomID(unmarshallRomID(n, t));
+			} else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scaling")) {
+				r.add(unmarshallScalingMetadata(n, r));
 			} else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("table")) {
 				// TODO: unmarshall table
 			}
 		}
-		
-		
-		return null;
-		
+		return r;	
 	}
 	
 	
-	public static ScalingMetadata unmarshallScaling(Node n, ScalingMetadata s) {
+	public static ScalingMetadata unmarshallScalingMetadata(Node n, RomMetadata r) {
+		
+		ScalingMetadata s;
+		try {
+			s = r.getScalingMetadata(unmarshallAttribute(n, "name", "null"));
+		} catch (ScalingMetadataNotFoundException e) {
+			s = new ScalingMetadata();
+		}
+		
 		s.setName(unmarshallAttribute(n, "name", s.getName()));
 		s.setUnits(unmarshallAttribute(n, "units", s.getUnits()));
 		s.setToexpr(unmarshallAttribute(n, "toexpr", s.getToexpr()));
@@ -66,7 +79,7 @@ public class DOMRomMetadataUnmarshaller {
 	}
 	
 	
-	public static TableMetadata unmarshallScaling(Node n, TableMetadata t) {
+	public static AbstractTableMetadata unmarshallScaling(Node n, AbstractTableMetadata t) {
 		// TODO: unmarshall table
 		return null;
 	}

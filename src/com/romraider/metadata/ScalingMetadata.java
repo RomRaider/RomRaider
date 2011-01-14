@@ -75,5 +75,9 @@ public class ScalingMetadata {
 	public void setEndian(int endian) {
 		this.endian = endian;
 	}
+	
+	public String toString() {
+		return name;
+	}
 
 }

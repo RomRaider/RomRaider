@@ -5,16 +5,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Vector;
-
 import org.xml.sax.SAXException;
-
 import com.romraider.xml.DOMRomMetadataUnmarshaller;
-import com.romraider.xml.RomNotFoundException;
 
 public class RomHandler {
 	
 	public static RomMetadata getMetadata(File rom, RomMetadataIndex romIndex) throws IOException, RomNotFoundException, SAXException {
-		
+
+        RomMetadata rm = new RomMetadata();
+        
 		// Read rom file
         FileInputStream fis = new FileInputStream(rom);
         try {
@@ -25,27 +24,26 @@ public class RomHandler {
             RomID romid = identifyRom(buffer, romIndex);
             
             // Build array of rom metadata hierarchy starting with lowest level
-            RomID[] hierarchy = getIncludeHierarchy(romid, romIndex);
+            Vector<RomID> hierarchy = new Vector<RomID>();
+            getIncludeHierarchy(romid, romIndex, hierarchy);
             
             // Pass hierarchy to unmarshaller one at a time
-            RomMetadata romMetadata = new RomMetadata();
             for (RomID r : hierarchy) {
-            	DOMRomMetadataUnmarshaller.unmarshallRomMetadata(r, romMetadata);
+            	DOMRomMetadataUnmarshaller.unmarshallRomMetadata(r, rm);
             }
             
         } finally {
             fis.close();
         }
 		
-		return null;
+		return rm;
 	}
 	
 	
-	private static RomID[] getIncludeHierarchy(RomID base, RomMetadataIndex romIndex) {
-		Vector<RomID> hierarchy = new Vector<RomID>();
-		hierarchy.add(base);
+	private static RomID[] getIncludeHierarchy(RomID base, RomMetadataIndex romIndex, Vector<RomID> hierarchy) throws RomNotFoundException {
+		hierarchy.add(0, base);
 		if (base.getInclude() != null) {
-			
+			getIncludeHierarchy(romIndex.getRomIDByXmlID(base.getInclude()), romIndex, hierarchy);
 		}
 		return hierarchy.toArray(new RomID[hierarchy.size()]);
 	}
@@ -56,17 +54,13 @@ public class RomHandler {
         	RomID romid = romIndex.getRomIDByIndex(i);
         	
         	if (!romid.isAbstract() && 
-        			buffer.length >= romid.getInternalIDAddress() + romid.getInternalIDString().length()) {
-        		
-        		try {
-	        		String testString = new String(buffer, romid.getInternalIDAddress(), romid.getInternalIDString().length());
-	
-					if (testString.equalsIgnoreCase(romid.getInternalIDString())) {
-						return romid;
-					}	
-        		} catch (Exception x) {
-        			System.out.println("ERROR! " + romid.getDefinitionFile().getAbsoluteFile());
-        		}
+    			buffer.length >= romid.getInternalIDAddress() + romid.getInternalIDString().length()) {
+    		
+        		String testString = new String(buffer, romid.getInternalIDAddress(), romid.getInternalIDString().length());
+
+				if (testString.equalsIgnoreCase(romid.getInternalIDString())) {
+					return romid;
+				}	        	
         	}
         }	
         // If not found in index, throw exception

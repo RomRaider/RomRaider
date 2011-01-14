@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.xml;
+package com.romraider.metadata;
 
-public final class TableNotFoundException extends Exception {
+public final class RomNotFoundException extends Exception {
 
-    private static final long serialVersionUID = -7492075561444288417L;
+    private static final long serialVersionUID = -5434546006966986885L;
 
-    public String getMessage() {
-        return "Table not found.";
+    public RomNotFoundException() {
     }
 }
