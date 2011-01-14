@@ -12,11 +12,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.romraider.metadata.AbstractMultiDimensionTableMetadata;
 import com.romraider.metadata.RomID;
 import com.romraider.metadata.RomMetadata;
 import com.romraider.metadata.ScalingMetadata;
 import com.romraider.metadata.AbstractTableMetadata;
 import com.romraider.metadata.ScalingMetadataNotFoundException;
+import com.romraider.metadata.Table1DMetadata;
+import com.romraider.metadata.Table2DMetadata;
+import com.romraider.metadata.Table3DMetadata;
+import com.romraider.metadata.TableMetadataNotFoundException;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public class DOMRomMetadataUnmarshaller {
@@ -41,7 +48,7 @@ public class DOMRomMetadataUnmarshaller {
 			} else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scaling")) {
 				r.add(unmarshallScalingMetadata(n, r));
 			} else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("table")) {
-				// TODO: unmarshall table
+				r.add(unmarshallTableMetadata(n, r, null));
 			}
 		}
 		return r;	
@@ -51,12 +58,7 @@ public class DOMRomMetadataUnmarshaller {
 	public static ScalingMetadata unmarshallScalingMetadata(Node n, RomMetadata r) {
 		
 		ScalingMetadata s;
-		try {
-			s = r.getScalingMetadata(unmarshallAttribute(n, "name", "null"));
-		} catch (ScalingMetadataNotFoundException e) {
-			s = new ScalingMetadata();
-		}
-		
+		s = r.getScalingMetadata(unmarshallAttribute(n, "name", "null"));		
 		s.setName(unmarshallAttribute(n, "name", s.getName()));
 		s.setUnits(unmarshallAttribute(n, "units", s.getUnits()));
 		s.setToexpr(unmarshallAttribute(n, "toexpr", s.getToexpr()));
@@ -79,11 +81,95 @@ public class DOMRomMetadataUnmarshaller {
 	}
 	
 	
-	public static AbstractTableMetadata unmarshallScaling(Node n, AbstractTableMetadata t) {
-		// TODO: unmarshall table
-		return null;
+	public static AbstractTableMetadata unmarshallTableMetadata(Node n, RomMetadata r, AbstractTableMetadata axis) {
+		
+		// Try to find table from parent rom or create new
+		AbstractTableMetadata t;
+		// TODO: How can this raise a NullPointerException?
+		String tableType = unmarshallAttribute(n, "type", "<null>");
+		
+		if (axis != null) {
+			t = axis;
+		} else {
+			
+			try { 
+				t = r.getTableMetadata(unmarshallAttribute(n, "name", "<null>"));
+			} catch (TableMetadataNotFoundException e) {
+				
+				if (tableType.equalsIgnoreCase("3d")) t = new Table3DMetadata();
+				else if (tableType.equalsIgnoreCase("2d")) t = new Table2DMetadata();
+				else if (tableType.equalsIgnoreCase("1d")) t = new Table1DMetadata();
+				else throw new ParseException(tableType, 0);
+			}
+		}
+		
+		// Unmarshall attributes
+		t.setName(unmarshallAttribute(n, "name", t.getName()));
+		t.setCategory(unmarshallAttribute(n, "name", t.getCategory()));
+		t.setDescription(unmarshallAttribute(n, "name", t.getDescription()));
+		
+		if (!unmarshallAttribute(n, "scaling", "<null>").equals("<null>")) {
+			t.setScalingMetadata(r.getScalingMetadata(unmarshallAttribute(n, "scaling", "<null>")));
+		}		
+		
+		NodeList children = n.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++) {
+			Node c = children.item(i);
+			if (c.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scaling")) {
+				t.setDescription(unmarshallText(c));
+			}
+		}
+		
+		// Unmarshall type-specific attributes and elements
+		if (tableType.equalsIgnoreCase("3d")) 		t = unmarshallTable3DMetadata(n, r, t);
+		else if (tableType.equalsIgnoreCase("2d")) 	t = unmarshallTable2DMetadata(n, r, t);
+		//else if (tableType.equalsIgnoreCase("1d"))	t = unmarshallTable1DMetadata(n, r, t);
+		
+		return t;
 	}
 
+
+	public static Table3DMetadata unmarshallTable3DMetadata(Node n, RomMetadata r, AbstractTableMetadata t) {
+		Table3DMetadata output = (Table3DMetadata)t;
+		NodeList children = n.getChildNodes();
+		
+		for (int i = 0; i < children.getLength(); i++) {
+			Node c = children.item(i);
+			Table1DMetadata axis = (Table1DMetadata) unmarshallTableMetadata(c, r, t);			
+			if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_XAXIS) output.setXaxis(axis);
+			else if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_YAXIS) output.setYaxis(axis);
+		}
+		return output;
+	}
+	
+	
+	public static Table2DMetadata unmarshallTable2DMetadata(Node n, RomMetadata r, AbstractTableMetadata t) {
+		Table2DMetadata output = (Table2DMetadata)t;
+		NodeList children = n.getChildNodes();
+		
+		for (int i = 0; i < children.getLength(); i++) {
+			Node c = children.item(i);
+			Table1DMetadata axis = (Table1DMetadata) unmarshallTableMetadata(c, r, t);			
+			if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_AXIS) output.setAxis(axis);
+		}
+		return output;
+	}
+	
+	
+	// TODO: Is this method needed?
+	/*public static Table1DMetadata unmarshallTable1DMetadata(Node n, RomMetadata r, AbstractTableMetadata t) {
+		Table1DMetadata output = (Table1DMetadata)t;
+		return output;
+	}*/
+	
+	
+	public static Table1DMetadata unmarshallTableAxisMetadata(Node n, RomMetadata r, AbstractTableMetadata t) {
+		AbstractMultiDimensionTableMetadata abs = (AbstractMultiDimensionTableMetadata)t;
+		Table1DMetadata axis = abs.getAxisByType(unmarshallAttribute(n, "type", "<null>"));
+		
+		return axis;
+	}
+	
 	
 	public static Vector<RomID> unmarshallRomIDIndex(File file) throws SAXException, IOException {
 		

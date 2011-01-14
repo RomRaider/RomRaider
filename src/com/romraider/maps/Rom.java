@@ -21,7 +21,7 @@ package com.romraider.maps;
 
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
-import com.romraider.metadata.TableNotFoundException;
+import com.romraider.metadata.TableMetadataNotFoundException;
 import com.romraider.swing.JProgressPane;
 import org.apache.log4j.Logger;
 import javax.swing.JOptionPane;
@@ -61,13 +61,13 @@ public class Rom implements Serializable {
         }
     }
 
-    public Table getTable(String tableName) throws TableNotFoundException {
+    public Table getTable(String tableName) throws TableMetadataNotFoundException {
         for (Table table : tables) {
             if (table.getName().equalsIgnoreCase(tableName)) {
                 return table;
             }
         }
-        throw new TableNotFoundException();
+        throw new TableMetadataNotFoundException();
     }
 
     public List<Table> findTables(String regex) {

@@ -19,7 +19,7 @@
 
 package com.romraider.metadata;
 
-public final class TableNotFoundException extends Exception {
+public final class TableMetadataNotFoundException extends Exception {
 
     private static final long serialVersionUID = -7492075561444288417L;
 

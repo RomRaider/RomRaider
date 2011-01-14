@@ -33,7 +33,7 @@ import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
 import com.romraider.maps.TableSwitch;
 import com.romraider.metadata.RomNotFoundException;
-import com.romraider.metadata.TableNotFoundException;
+import com.romraider.metadata.TableMetadataNotFoundException;
 import com.romraider.swing.DebugPanel;
 import com.romraider.swing.JProgressPane;
 import com.romraider.util.LogManager;
@@ -205,7 +205,7 @@ public final class DOMRomUnmarshaller {
                     Table table = null;
                     try {
                         table = rom.getTable(unmarshallAttribute(n, "name", "unknown"));
-                    } catch (TableNotFoundException e) { /* table does not already exist (do nothing) */ }
+                    } catch (TableMetadataNotFoundException e) { /* table does not already exist (do nothing) */ }
 
                     try {
                         table = unmarshallTable(n, table, rom);
@@ -327,7 +327,7 @@ public final class DOMRomUnmarshaller {
             try {
                 table = (Table) ObjectCloner.deepCopy((Object) rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
 
-            } catch (TableNotFoundException ex) { /* table not found, do nothing */
+            } catch (TableMetadataNotFoundException ex) { /* table not found, do nothing */
 
             } catch (NullPointerException ex) {
                 JOptionPane.showMessageDialog(parent, new DebugPanel(ex,

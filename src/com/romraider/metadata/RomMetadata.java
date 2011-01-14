@@ -28,11 +28,11 @@ public class RomMetadata {
 		tableMetadata.add(t);
 	}
 	
-	public AbstractTableMetadata getTableMetadata(String n) throws TableNotFoundException {
+	public AbstractTableMetadata getTableMetadata(String n) throws TableMetadataNotFoundException {
 		for (AbstractTableMetadata t : tableMetadata) {
 			if (t.getName().equalsIgnoreCase(n)) return t;
 		}
-		throw new TableNotFoundException();
+		throw new TableMetadataNotFoundException();
 	}
 	
 	public void add(ScalingMetadata s) {
@@ -47,11 +47,11 @@ public class RomMetadata {
 		scalingMetadata.add(s);
 	}
 	
-	public ScalingMetadata getScalingMetadata(String n) throws ScalingMetadataNotFoundException {
+	public ScalingMetadata getScalingMetadata(String n) {
 		for (ScalingMetadata s: scalingMetadata) {
 			if (s.getName().equalsIgnoreCase(n)) return s;
 		}
-		throw new ScalingMetadataNotFoundException();
+		return new ScalingMetadata();
 	}
 	
 	public ScalingMetadata getScalingMetadata(int i) {

@@ -50,18 +50,19 @@ public final class RomMetadataIndexBuilder {
 		try {
 			
 			// Create index
-			File testdir = new File("c:\\documents and settings\\owner\\desktop\\rommetadata");
+			File testdir = new File("c:\\users\\owner\\desktop\\rommetadata");
 			RomMetadataIndex romIndex = createIndex(testdir);		
 			long time2 = System.currentTimeMillis();
 			System.out.println(romIndex.size() + " defs parsed in " + (time2 - time1) + "ms");
 			
 			// Open test rom
-			RomMetadata r = RomHandler.getMetadata(new File("c:\\documents and settings\\owner\\desktop\\test.hex"), romIndex);
+			RomMetadata r = RomHandler.getMetadata(new File("c:\\users\\owner\\desktop\\test.hex"), romIndex);
 			long time3 = System.currentTimeMillis();
 			System.out.println("Rom " + r.getRomid().getXmlid() + " identified (and partially parsed) in " + (time3 - time2) + "ms");
 			System.out.println(r.getRomid());
 			System.out.println(r.scalingMetadataSize() + " scaling elements");
 			System.out.println(r.tableMetadataSize() + " tables");
+			System.out.println("Memory usage: " + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024) + "kb");
             
 		} catch (Exception e) {
 			e.printStackTrace();
