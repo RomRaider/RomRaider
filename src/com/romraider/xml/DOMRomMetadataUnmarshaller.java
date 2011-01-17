@@ -58,7 +58,7 @@ public class DOMRomMetadataUnmarshaller {
 	public static ScalingMetadata unmarshallScalingMetadata(Node n, RomMetadata r) {
 		
 		ScalingMetadata s;
-		s = r.getScalingMetadata(unmarshallAttribute(n, "name", "null"));		
+		s = r.getScalingMetadata(unmarshallAttribute(n, "name", "<null>"));		
 		s.setName(unmarshallAttribute(n, "name", s.getName()));
 		s.setUnits(unmarshallAttribute(n, "units", s.getUnits()));
 		s.setToexpr(unmarshallAttribute(n, "toexpr", s.getToexpr()));
@@ -81,27 +81,27 @@ public class DOMRomMetadataUnmarshaller {
 	}
 	
 	
-	public static AbstractTableMetadata unmarshallTableMetadata(Node n, RomMetadata r, AbstractTableMetadata axis) {
+	public static AbstractTableMetadata unmarshallTableMetadata(Node n, RomMetadata r, AbstractMultiDimensionTableMetadata p) {
 		
 		// Try to find table from parent rom or create new
 		AbstractTableMetadata t;
-		// TODO: How can this raise a NullPointerException?
 		String tableType = unmarshallAttribute(n, "type", "<null>");
-		
-		if (axis != null) {
-			t = axis;
-		} else {
+	
+		try { 
+			//System.out.println(unmarshallAttribute(n, "name", "<null>"));
+			if (p == null) t = r.getTableMetadata(unmarshallAttribute(n, "name", "<null>"));
+			else t = p.getAxisByName(unmarshallAttribute(n, "name", "<null>"));
+		} catch (TableMetadataNotFoundException e) {
 			
-			try { 
-				t = r.getTableMetadata(unmarshallAttribute(n, "name", "<null>"));
-			} catch (TableMetadataNotFoundException e) {
-				
-				if (tableType.equalsIgnoreCase("3d")) t = new Table3DMetadata();
-				else if (tableType.equalsIgnoreCase("2d")) t = new Table2DMetadata();
-				else if (tableType.equalsIgnoreCase("1d")) t = new Table1DMetadata();
-				else throw new ParseException(tableType, 0);
+			if (tableType.equalsIgnoreCase("3d")) 		t = new Table3DMetadata();
+			else if (tableType.equalsIgnoreCase("2d")) 	t = new Table2DMetadata();
+			else if (tableType.equalsIgnoreCase("1d")) 	t = new Table1DMetadata();
+			else if (tableType.toLowerCase().contains("axis")) t = new Table1DMetadata();
+			else {
+				throw new ParseException(tableType, 0);
 			}
 		}
+
 		
 		// Unmarshall attributes
 		t.setName(unmarshallAttribute(n, "name", t.getName()));
@@ -123,7 +123,6 @@ public class DOMRomMetadataUnmarshaller {
 		// Unmarshall type-specific attributes and elements
 		if (tableType.equalsIgnoreCase("3d")) 		t = unmarshallTable3DMetadata(n, r, t);
 		else if (tableType.equalsIgnoreCase("2d")) 	t = unmarshallTable2DMetadata(n, r, t);
-		//else if (tableType.equalsIgnoreCase("1d"))	t = unmarshallTable1DMetadata(n, r, t);
 		
 		return t;
 	}
@@ -134,10 +133,17 @@ public class DOMRomMetadataUnmarshaller {
 		NodeList children = n.getChildNodes();
 		
 		for (int i = 0; i < children.getLength(); i++) {
-			Node c = children.item(i);
-			Table1DMetadata axis = (Table1DMetadata) unmarshallTableMetadata(c, r, t);			
-			if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_XAXIS) output.setXaxis(axis);
-			else if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_YAXIS) output.setYaxis(axis);
+			Node c = children.item(i);			
+			
+			if (c.hasAttributes() || c.hasChildNodes()) {				
+				// TODO: The line above should not be needed. What are the elements that have no attributes or child nodes??
+				String tableType = unmarshallAttribute(c, "type", "<null>");
+				if (!tableType.equalsIgnoreCase("<null>")) {
+					Table1DMetadata axis = (Table1DMetadata) unmarshallTableMetadata(c, r, (Table3DMetadata) t);				
+					if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_XAXIS) output.setXaxis(axis);
+					else if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_YAXIS) output.setYaxis(axis);
+				}
+			}
 		}
 		return output;
 	}
@@ -146,11 +152,17 @@ public class DOMRomMetadataUnmarshaller {
 	public static Table2DMetadata unmarshallTable2DMetadata(Node n, RomMetadata r, AbstractTableMetadata t) {
 		Table2DMetadata output = (Table2DMetadata)t;
 		NodeList children = n.getChildNodes();
+		//System.out.println(t.getName());
 		
 		for (int i = 0; i < children.getLength(); i++) {
 			Node c = children.item(i);
-			Table1DMetadata axis = (Table1DMetadata) unmarshallTableMetadata(c, r, t);			
-			if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_AXIS) output.setAxis(axis);
+			if (c.hasAttributes() || c.hasChildNodes()) {
+				String tableType = unmarshallAttribute(c, "type", "<null>");
+				if (!tableType.equalsIgnoreCase("<null>")) {
+					Table1DMetadata axis = (Table1DMetadata) unmarshallTableMetadata(c, r, (Table2DMetadata) t);			
+					if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_AXIS) output.setAxis(axis);
+				}
+			}
 		}
 		return output;
 	}

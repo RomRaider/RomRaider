@@ -50,9 +50,17 @@ public class Table3DMetadata extends AbstractMultiDimensionTableMetadata {
 	}
 	
 	public Table1DMetadata getAxisByName(String name) {
-		if (getXaxis().getName().equalsIgnoreCase(name)) return getXaxis();
-		if (getYaxis().getName().equalsIgnoreCase(name)) return getYaxis();
-		else return new Table1DMetadata();
+		try {
+			if (getXaxis().getName().equalsIgnoreCase(name)) return getXaxis();
+			else if (getYaxis().getName().equalsIgnoreCase(name)) return getYaxis();
+			else return new Table1DMetadata();
+		} catch (Exception x) {
+			return new Table1DMetadata();
+		}
+	}
+	
+	public String toString() {
+		return getName() + " xaxis:" + getXaxis() + " yaxis:" + getYaxis();
 	}
 
 }

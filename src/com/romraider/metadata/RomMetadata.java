@@ -70,4 +70,19 @@ public class RomMetadata {
 		return tableMetadata.size();
 	}
 	
+	public String printTables() {
+		StringBuffer output = new StringBuffer();
+		for (AbstractTableMetadata t : tableMetadata) {
+			output.append(t + "\n");
+		}
+		return new String(output);
+	}
+	
+	public String printScaling() {
+		StringBuffer output = new StringBuffer();
+		for (ScalingMetadata t : scalingMetadata) {
+			output.append(t + "\n");
+		}
+		return new String(output);
+	}	
 }

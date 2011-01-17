@@ -12,5 +12,6 @@ public abstract class AbstractMultiDimensionTableMetadata extends AbstractTableM
 	
 	public abstract Table1DMetadata getAxisByType(String type);
 	
-	public abstract Table1DMetadata getAxisByName(String name);
+	public abstract Table1DMetadata getAxisByName(String name);			
+
 }

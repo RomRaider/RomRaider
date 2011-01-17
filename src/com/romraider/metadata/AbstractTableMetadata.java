@@ -70,4 +70,8 @@ public abstract class AbstractTableMetadata {
 		return type;
 	}
 	
+	public String toString() {
+		return getName();
+	}
+	
 }

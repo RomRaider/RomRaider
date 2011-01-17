@@ -38,8 +38,12 @@ public class Table2DMetadata extends AbstractMultiDimensionTableMetadata {
 	}
 	
 	public Table1DMetadata getAxisByName(String name) {
-		if (getAxis().getName().equalsIgnoreCase(name)) return getAxis();
-		else return new Table1DMetadata();
+		try {
+			if (getAxis().getName().equalsIgnoreCase(name)) return getAxis();
+			else return new Table1DMetadata();
+		} finally {
+			return new Table1DMetadata();
+		}
 	}
 	
 }
