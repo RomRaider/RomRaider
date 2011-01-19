@@ -19,6 +19,10 @@
 
 package com.romraider.xml;
 
+import javax.imageio.metadata.IIOMetadataNode;
+
+import org.jdom.Element;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -60,6 +64,14 @@ public final class DOMHelper {
 
     public static boolean unmarshallAttribute(Node node, String name, boolean defaultValue) {
         return Boolean.parseBoolean(unmarshallAttribute(node, name, String.valueOf(defaultValue)));
+    }
+    
+    public static void setAttribute(Node root, String name, String value) {
+    	System.out.println(root.getNodeType());
+    	System.out.println(Node.ELEMENT_NODE);
+    	//Element output = (Element) root;
+    	//output.setAttribute(name, value);
+    	((Element)root).setAttribute(name, value);
     }
 
 }
