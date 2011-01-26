@@ -30,11 +30,11 @@ import static org.apache.log4j.Logger.getLogger;
 import javax.swing.SwingUtilities;
 import java.util.Set;
 
-public final class MafUpdateHandler implements DataUpdateHandler {
-    private static final Logger LOGGER = getLogger(MafUpdateHandler.class);
+public final class OLMafUpdateHandler implements DataUpdateHandler {
+    private static final Logger LOGGER = getLogger(OLMafUpdateHandler.class);
     private static final String MAFV = "P18";
-    private static final String AF_LEARNING_1 = "P4";
-    private static final String AF_CORRECTION_1 = "P3";
+    private static final String OL_FUELING_BASE_16 = "E124";
+    private static final String OL_FUELING_BASE_32 = "E123";
     private MafTab mafTab;
     private double lastMafv;
     private long lastUpdate;
@@ -43,7 +43,7 @@ public final class MafUpdateHandler implements DataUpdateHandler {
     }
 
     public synchronized void handleDataUpdate(Response response) {
-        if (mafTab.isRecordData() && containsData(response, MAFV, AF_LEARNING_1, AF_CORRECTION_1)) {
+        if (mafTab.isRecordData() && ( containsData(response, MAFV, OL_FUELING_BASE_16) || containsData(response, MAFV, OL_FUELING_BASE_32) )) {
             boolean valid = true;
 
             // cl/ol check
@@ -57,7 +57,7 @@ public final class MafUpdateHandler implements DataUpdateHandler {
                     clOl = (int) findValue(response, "E33");
                     LOGGER.trace("MAF:[CL/OL:E33]: " + clOl);
                 }
-                if (mafTab.methodIsCl()) {
+                if (!mafTab.methodIsCl()) {
                 	valid = mafTab.isValidClOl(clOl);
                 } else {
                 	valid = false;
@@ -66,9 +66,10 @@ public final class MafUpdateHandler implements DataUpdateHandler {
             }
 
             // afr check
-            if (valid && containsData(response, "P58")) {
-                double afr = findValue(response, "P58");
-                LOGGER.trace("MAF:[AFR:P58]: " + afr);
+            String afrId = mafTab.getSelectedAfrSource().getId();
+            if (valid && containsData(response, afrId)) {
+                double afr = findValue(response, afrId);
+                LOGGER.trace("MAF:[AFR:" + afrId + "]: " + afr);
                 valid = mafTab.isValidAfr(afr);
                 LOGGER.trace("MAF:[AFR]:     " + valid);
             }
@@ -133,15 +134,23 @@ public final class MafUpdateHandler implements DataUpdateHandler {
             }
 
             if (valid) {
-                final double mafv = findValue(response, MAFV);
-                final double learning = findValue(response, AF_LEARNING_1);
-                final double correction = findValue(response, AF_CORRECTION_1);
-                LOGGER.trace("MAF Data: " + mafv + "v, " + correction + "%");
+                final double mafv = findValue(response, MAFV);                
+                final double afrActual = findValue(response, mafTab.getSelectedAfrSource().getId());
+                double afrTarget = 0.0;
+                if (containsData(response, OL_FUELING_BASE_16)) {
+                	afrTarget = findValue(response, OL_FUELING_BASE_16);
+                } else if (containsData(response, OL_FUELING_BASE_32)) {
+                	afrTarget = findValue(response, OL_FUELING_BASE_32);
+                }                
+                final double afrError = ( afrTarget - afrActual) / afrTarget;
+                
+                LOGGER.trace("MAF Data: " + mafv + "v, " + afrError + "%");
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        mafTab.addData(mafv, learning + correction);
+                        mafTab.addData(mafv, afrError);
                     }
                 });
+                
             }
         }
     }

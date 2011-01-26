@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.tab.maf;
 
+import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.tab.Tab;
 
 public interface MafTab extends Tab {
@@ -38,5 +39,9 @@ public interface MafTab extends Tab {
     boolean isValidIntakeAirTemp(double value);
 
     boolean isValidTipInThrottle(double value);
+    
+    boolean methodIsCl();
+    
+    LoggerData getSelectedAfrSource();
 
 }

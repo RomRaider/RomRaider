@@ -139,6 +139,7 @@ import com.romraider.logger.ecu.ui.handler.injector.InjectorUpdateHandler;
 import com.romraider.logger.ecu.ui.handler.livedata.LiveDataTableModel;
 import com.romraider.logger.ecu.ui.handler.livedata.LiveDataUpdateHandler;
 import com.romraider.logger.ecu.ui.handler.maf.MafUpdateHandler;
+import com.romraider.logger.ecu.ui.handler.maf.OLMafUpdateHandler;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.logger.ecu.ui.paramlist.ParameterListTable;
 import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
@@ -219,6 +220,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private DashboardUpdateHandler dashboardUpdateHandler;
     private MafTab mafTab;
     private MafUpdateHandler mafUpdateHandler;
+    private OLMafUpdateHandler olMafUpdateHandler;
     private DataUpdateHandlerManager mafHandlerManager;
     private DataRegistrationBroker mafTabBroker;
     private InjectorTab injectorTab;
@@ -296,15 +298,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         dashboardPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 3, 3));
         dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
         mafUpdateHandler = new MafUpdateHandler();
+        olMafUpdateHandler = new OLMafUpdateHandler();
         injectorUpdateHandler = new InjectorUpdateHandler();
         dynoUpdateHandler = new DynoUpdateHandler();
         controller = new LoggerControllerImpl(settings, ecuInitCallback, this, liveDataUpdateHandler,
-                graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, injectorUpdateHandler,
+                graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, olMafUpdateHandler, injectorUpdateHandler,
                 dynoUpdateHandler, fileUpdateHandler, TableUpdateHandler.getInstance());
         mafHandlerManager = new DataUpdateHandlerManagerImpl();
         mafTabBroker = new DataRegistrationBrokerImpl(controller, mafHandlerManager);
         mafTab = new MafTabImpl(mafTabBroker, ecuEditor);
         mafUpdateHandler.setMafTab(mafTab);
+        olMafUpdateHandler.setMafTab(mafTab);
         injectorHandlerManager = new DataUpdateHandlerManagerImpl();
         injectorTabBroker = new DataRegistrationBrokerImpl(controller, injectorHandlerManager);
         injectorTab = new InjectorTabImpl(injectorTabBroker, ecuEditor);
@@ -871,7 +875,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             public void actionPerformed(ActionEvent actionEvent) {
                 ThreadUtil.runAsDaemon(new Runnable() {
                     public void run() {
-                        PlaybackManagerImpl playbackManager = new PlaybackManagerImpl(ecuParams, liveDataUpdateHandler, graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, dynoUpdateHandler,
+                        PlaybackManagerImpl playbackManager = new PlaybackManagerImpl(ecuParams, liveDataUpdateHandler, graphUpdateHandler, dashboardUpdateHandler, mafUpdateHandler, olMafUpdateHandler, dynoUpdateHandler,
                                 TableUpdateHandler.getInstance());
                         playbackManager.load(new File("foo.csv"));
                         playbackManager.play();

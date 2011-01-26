@@ -1,5 +1,5 @@
 /*
- * RomRaider Open-Source Tuning, Logging and Reflashing
+* RomRaider Open-Source Tuning, Logging and Reflashing
  * Copyright (C) 2006-2010 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
@@ -65,15 +65,23 @@ public final class MafControlPanel extends JPanel {
     private static final String COOLANT_TEMP = "P2";
     private static final String AF_CORRECTION_1 = "P3";
     private static final String AF_LEARNING_1 = "P4";
+    private static final String OL_FUELING_BASE_16 = "E124";
+    private static final String OL_FUELING_BASE_32 = "E123";
     private static final String ENGINE_SPEED = "P8";
     private static final String INTAKE_AIR_TEMP = "P11";
     private static final String MASS_AIR_FLOW = "P12";
     private static final String MASS_AIR_FLOW_V = "P18";
     private static final String AFR = "P58";
+    private static final String	TGV_LEFT = "P40";
+    private static final String	TGV_RIGHT = "P39";
     private static final String CL_OL_16 = "E3";
     private static final String CL_OL_32 = "E33";
     private static final String TIP_IN_THROTTLE_16 = "E23";
     private static final String TIP_IN_THROTTLE_32 = "E54";
+    public static final int	CLOL_CLOSED_LOOP_NORMAL = 8;
+    public static final int	CLOL_OPEN_LOOP_NORMAL = 10;
+    public static final int	CLOL_OPEN_LOOP_COOLANT = 7;
+    public static final int	CLOL_OPEN_LOOP_SYSTEM = 14;
     private final JToggleButton recordDataButton = new JToggleButton("Record Data");
     private final JTextField mafvMin = new JTextField("1.20", 3);
     private final JTextField mafvMax = new JTextField("2.60", 3);
@@ -86,6 +94,8 @@ public final class MafControlPanel extends JPanel {
     private final JTextField iatMax = new JTextField("45", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
     private final JTextField mafvChangeMax = new JTextField("0.1", 3);
+    private final JTextField mafCorrectionFactor = new JTextField("100", 3);
+    private final JComboBox clolSelect = new JComboBox();
     private final JComboBox afrSourceList = new JComboBox();
     private final DataRegistrationBroker broker;
     private final LoggerChartPanel chartPanel;
@@ -109,7 +119,15 @@ public final class MafControlPanel extends JPanel {
     }
 
     public boolean isValidClOl(double value) {
-        return value == 8;
+        if (afrSourceList.getSelectedItem().equals("Closed Loop")) {
+        	return value == CLOL_CLOSED_LOOP_NORMAL;
+        } else {
+        	return value == CLOL_OPEN_LOOP_NORMAL;
+        }
+    }
+    
+    public boolean methodIsCl() {
+    	return afrSourceList.getSelectedItem().equals("Closed Loop");
     }
 
     public boolean isValidAfr(double value) {
@@ -180,16 +198,11 @@ public final class MafControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-//        add(panel, gridBagLayout, buildAfrSourcePanel(), 0, 0, 1, HORIZONTAL);
-//        add(panel, gridBagLayout, buildFilterPanel(), 0, 1, 1, HORIZONTAL);
-//        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 2, 1, HORIZONTAL);
-//        add(panel, gridBagLayout, buildUpdateMafPanel(), 0, 3, 1, HORIZONTAL);
-//        add(panel, gridBagLayout, buildResetPanel(), 0, 4, 1, HORIZONTAL);
-
-        add(panel, gridBagLayout, buildFilterPanel(), 0, 0, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 1, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildUpdateMafPanel(), 0, 2, 1, HORIZONTAL);
-        add(panel, gridBagLayout, buildResetPanel(), 0, 3, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildAfrSourcePanel(), 0, 0, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildFilterPanel(), 0, 1, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 2, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildUpdateMafPanel(), 0, 3, 1, HORIZONTAL);
+        add(panel, gridBagLayout, buildResetPanel(), 0, 4, 1, HORIZONTAL);
 
         add(panel);
     }
@@ -205,6 +218,19 @@ public final class MafControlPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setBorder(new TitledBorder("AFR Source"));
         panel.add(afrSourceList);
+        afrSourceList.setEnabled(false); // Until clolSelect enables it
+        
+        // Add ECU params
+        /*for (EcuParameter e : params) {
+        	LOGGER.debug("MAF tab internal source " + e.getName() + ":" + e.getName().contains("AFR") + ":" + e.getName().contains("A/F") );
+        	if (e.getName().contains("AFR") || e.getName().contains("A/F")) afrSourceList.addItem(e);
+        }
+        
+        // Add external sensors
+        for (ExternalData e : externals) {
+        	LOGGER.debug("MAF tab external source " + e.getName() + " added");
+        	afrSourceList.addItem(e);
+        }*/
         return panel;
     }
 
@@ -223,7 +249,8 @@ public final class MafControlPanel extends JPanel {
         panel.setLayout(gridBagLayout);
 
         addMinMaxFilter(panel, gridBagLayout, "MAFv Range", mafvMin, mafvMax, 0);
-        addComponent(panel, gridBagLayout, buildUpdateMafButton(), 3);
+        addLabeledComponent(panel, gridBagLayout, "Factor (%)", mafCorrectionFactor, 3);
+        addComponent(panel, gridBagLayout, buildUpdateMafButton(), 6);
 
         return panel;
     }
@@ -254,13 +281,14 @@ public final class MafControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 0);
-        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 3);
-        addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 6);
-        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 9);
-        addLabeledComponent(panel, gridBagLayout, "Max. Intake Temp.", iatMax, 12);
-        addLabeledComponent(panel, gridBagLayout, "Max. dMAFv/dt (V/s)", mafvChangeMax, 15);
-        addComponent(panel, gridBagLayout, buildRecordDataButton(), 18);
+        addComboBoxFilter(panel, gridBagLayout, "Closed/Open Loop", buildClolSelect(), 0);
+        addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 3);
+        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 6);
+        addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 9);
+        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 12);
+        addLabeledComponent(panel, gridBagLayout, "Max. Intake Temp.", iatMax, 15);
+        addLabeledComponent(panel, gridBagLayout, "Max. dMAFv/dt (V/s)", mafvChangeMax, 18);
+        addComponent(panel, gridBagLayout, buildRecordDataButton(), 21);
 
         return panel;
     }
@@ -268,14 +296,26 @@ public final class MafControlPanel extends JPanel {
     private JToggleButton buildRecordDataButton() {
         recordDataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+            	LOGGER.debug("MAF record button pushed");
                 if (recordDataButton.isSelected()) {
-//                    afrSourceList.setEnabled(false);
-//                    registerAfr();
-                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+            		afrSourceList.setEnabled(false);
+                	if (clolSelect.getSelectedItem().equals("Closed Loop")) {
+                		LOGGER.debug("Starting CL MAF scaling");
+                		registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+                	} else {
+                		LOGGER.debug("Starting OL Maf scaling");
+                    	registerAfr();
+                		registerData(COOLANT_TEMP, OL_FUELING_BASE_16, OL_FUELING_BASE_32, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+                	}
                 } else {
-//                    deregisterAfr();
-                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
-//                    afrSourceList.setEnabled(true);
+                	LOGGER.debug("Stopping MAF scaling");
+                	if (clolSelect.getSelectedItem().equals("Closed Loop")) {
+                		deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+                	} else {
+                    	afrSourceList.setEnabled(true);
+                    	deregisterAfr();
+                		deregisterData(COOLANT_TEMP, OL_FUELING_BASE_16, OL_FUELING_BASE_32, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+                	}
                 }
             }
         });
@@ -292,7 +332,7 @@ public final class MafControlPanel extends JPanel {
         if (data != null) broker.deregisterLoggerDataFromLogging(data);
     }
 
-    private LoggerData getSelectedAfrSource() {
+    public LoggerData getSelectedAfrSource() {
         KeyedComboBoxModel model = (KeyedComboBoxModel) afrSourceList.getModel();
         return (LoggerData) model.getSelectedKey();
     }
@@ -335,6 +375,12 @@ public final class MafControlPanel extends JPanel {
         add(panel, gridBagLayout, new JLabel(" - "), 1, y, 1, NONE);
         add(panel, gridBagLayout, max, 2, y, 1, NONE);
     }
+    
+    private void addComboBoxFilter(JPanel panel, GridBagLayout gridBagLayout, String name, JComboBox combo, int y) {
+        add(panel, gridBagLayout, new JLabel(name), 0, y, 3, HORIZONTAL);
+        y += 1;
+        add(panel, gridBagLayout, combo, 0, y, 1, NONE);
+    }    
 
     private GridBagConstraints buildBaseConstraints() {
         GridBagConstraints constraints = new GridBagConstraints();
@@ -355,8 +401,14 @@ public final class MafControlPanel extends JPanel {
 
     private void updateAfrSourceList() {
         List<LoggerData> sources = new ArrayList<LoggerData>();
+        
         LoggerData afr = findData(AFR);
         if (afr != null) sources.add(afr);
+        LoggerData tgvLeft = findData(TGV_LEFT);
+        if (tgvLeft != null && tgvLeft.getName().contains("A/F")) sources.add(tgvLeft);
+        LoggerData tgvRight = findData(TGV_RIGHT);
+        if (tgvRight != null && tgvRight.getName().contains("A/F")) sources.add(tgvRight);
+        
         sources.addAll(externals);
         List<String> keys = new ArrayList<String>();
         for (LoggerData source : sources) keys.add(source.getName());
@@ -390,6 +442,20 @@ public final class MafControlPanel extends JPanel {
         final JComboBox orderComboBox = new JComboBox(new Object[]{3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
         orderComboBox.setSelectedItem(10);
         return orderComboBox;
+    }
+    
+    private JComboBox buildClolSelect() {
+    	final JComboBox output = new JComboBox(new String[] {"Closed Loop", "Open Loop"} );
+    	output.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent actionEvent) {
+    			if (output.getSelectedItem().equals("Closed Loop")) {
+    				afrSourceList.setEnabled(false);
+    			} else {
+    				afrSourceList.setEnabled(true);
+    			}
+    		}    		
+    	});
+    	return output;
     }
 
     private JButton buildUpdateMafButton() {
@@ -485,7 +551,7 @@ public final class MafControlPanel extends JPanel {
 
     public void setEcuParams(List<EcuParameter> params) {
         this.params = new ArrayList<EcuParameter>(params);
-//        updateAfrSourceList();
+        updateAfrSourceList();
     }
 
     public void setEcuSwitches(List<EcuSwitch> switches) {
@@ -494,6 +560,6 @@ public final class MafControlPanel extends JPanel {
 
     public void setExternalDatas(List<ExternalData> externals) {
         this.externals = new ArrayList<ExternalData>(externals);
-//        updateAfrSourceList();
+        updateAfrSourceList();
     }
 }

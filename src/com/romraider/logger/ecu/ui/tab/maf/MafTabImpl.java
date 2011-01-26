@@ -23,6 +23,7 @@ import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
+import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
 import static java.awt.BorderLayout.CENTER;
@@ -53,6 +54,10 @@ public final class MafTabImpl extends JPanel implements MafTab {
 
     public boolean isValidClOl(double value) {
         return controlPanel.isValidClOl(value);
+    }
+    
+    public boolean methodIsCl() {
+    	return controlPanel.methodIsCl();
     }
 
     public boolean isValidAfr(double value) {
@@ -97,6 +102,10 @@ public final class MafTabImpl extends JPanel implements MafTab {
 
     public void setExternalDatas(List<ExternalData> external) {
         controlPanel.setExternalDatas(external);
+    }
+    
+    public LoggerData getSelectedAfrSource() {
+    	return controlPanel.getSelectedAfrSource();
     }
 
     public JPanel getPanel() {
