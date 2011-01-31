@@ -17,13 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.xml;
+package com.romraider.metadata.exception;
 
-public final class TableNotFoundException extends Exception {
+public final class ScalingNotFoundException extends Exception {
 
     private static final long serialVersionUID = -7492075561444288417L;
 
     public String getMessage() {
-        return "Table not found.";
+        return "Scaling not found.";
     }
 }

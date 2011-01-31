@@ -21,8 +21,8 @@ package com.romraider.maps;
 
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
+import com.romraider.metadata.exception.TableNotFoundException;
 import com.romraider.swing.JProgressPane;
-import com.romraider.xml.TableNotFoundException;
 import org.apache.log4j.Logger;
 import javax.swing.JOptionPane;
 import java.io.File;

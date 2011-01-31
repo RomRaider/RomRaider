@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<settings>
+    <window>
+        <maximized value="false"/>
+        <size x="600" y="800"/>
+        <location x="400" y="150"/>
+        <splitpane location="150"/>
+    </window>
+    <files>
+        <image_dir path="C:\workspace\romraider\images"/>
+    </files>
+    <options>
+        <obsoletewarning value="true"/>
+        <calcconflictwarning value="true"/>
+        <debug value="false"/>
+        <userlevel value="1"/>
+        <tableclickcount value="1"/>
+        <version value="0.5.3 Beta RC7"/>
+        <savedebugtables value="true"/>
+        <displayhightables value="true"/>
+        <valuelimitwarning value="true"/>
+    </options>
+    <tabledisplay>
+        <font face="Arial" size="11" decoration="1"/>
+        <cellsize height="18" width="42"/>
+        <colors>
+            <max r="255" g="102" b="102"/>
+            <min r="153" g="153" b="255"/>
+            <highlight r="204" g="204" b="204"/>
+            <increaseborder r="255" g="0" b="0"/>
+            <decreaseborder r="0" g="0" b="255"/>
+            <axis r="255" g="255" b="255"/>
+            <warning r="255" g="0" b="0"/>
+        </colors>
+    </tabledisplay>
+    <logger>
+        <serial port="" refresh="true"/>
+        <maximized value="false"/>
+        <size x="600" y="1000"/>
+        <location x="0" y="0"/>
+        <tabs selected="0" showlist="true"/>
+        <definition path=""/>
+        <profile path=""/>
+        <filelogging path="C:\Users\owner" switchid="S20" active="true" absolutetimestamp="false"/>
+    </logger>
+</settings>

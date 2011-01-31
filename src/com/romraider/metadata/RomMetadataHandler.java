@@ -9,6 +9,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.romraider.metadata.exception.RomNotFoundException;
 import com.romraider.xml.DOMRomMetadataRefactorUtil;
 import com.romraider.xml.DOMRomMetadataUnmarshaller;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;

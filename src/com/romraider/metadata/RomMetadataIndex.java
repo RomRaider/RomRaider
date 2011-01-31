@@ -1,5 +1,7 @@
 package com.romraider.metadata;
 
+import com.romraider.metadata.exception.RomNotFoundException;
+
 
 public class RomMetadataIndex {
 	

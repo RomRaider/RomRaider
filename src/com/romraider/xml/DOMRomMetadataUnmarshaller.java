@@ -12,11 +12,18 @@ import java.util.Vector;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import com.romraider.metadata.RomIndexID;
+import com.romraider.metadata.RomMetadata;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public class DOMRomMetadataUnmarshaller {
+	
+	private RomMetadata r;
+	
+	public DOMRomMetadataUnmarshaller() {
+		r = new RomMetadata();
+	}
 
-	public static Vector<RomIndexID> unmarshallRomIDIndex(File file) throws SAXException, IOException {
+	public Vector<RomIndexID> unmarshallRomIDIndex(File file) throws SAXException, IOException {
 		
 		Vector<RomIndexID> romVector = new Vector<RomIndexID>();
 		InputSource src = new InputSource(new FileInputStream(file));
