@@ -1,4 +1,4 @@
-package com.romraider.metadata;
+package com.romraider.metadata.rom;
 
 public abstract class AbstractTableMetadata {
 	
@@ -7,38 +7,20 @@ public abstract class AbstractTableMetadata {
 	public static int TABLEMETADATA_TYPE_3D 	= 3;
 	public static int TABLEMETADATA_TYPE_XAXIS = 4;
 	public static int TABLEMETADATA_TYPE_YAXIS = 5;
-	public static int TABLEMETADATA_TYPE_AXIS 	= 6;
 	
-	private String 	name;
+	private String 	id;
 	private ScalingMetadata scalingMetadata;
 	private String 	category;
 	private String 	description;
-	private boolean isStatic;
 	private int		type;
 	
-	public AbstractTableMetadata() {
-		setStatic(false);
-	}
-	
-	public AbstractTableMetadata (boolean isStatic) {
-		this.isStatic = isStatic;
-	}
-	
-	public boolean isStatic() {
-		return isStatic;
-	}
-
-	public void setStatic(boolean isStatic) {
-		this.isStatic = isStatic;
-	}
-
 	public abstract int getSize(); // Size of table data in bytes
 	
-	public String getName() {
-		return name;
+	public String getId() {
+		return id;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getCategory() {
 		return category;
@@ -52,6 +34,7 @@ public abstract class AbstractTableMetadata {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
 	public abstract void save();
 	public abstract void load();
 	
@@ -71,7 +54,7 @@ public abstract class AbstractTableMetadata {
 	}
 	
 	public String toString() {
-		return getName();
+		return getId();
 	}
 	
 }

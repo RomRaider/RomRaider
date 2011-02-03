@@ -5,61 +5,99 @@ import static com.romraider.xml.DOMHelper.unmarshallAttribute;
 import static com.romraider.xml.DOMHelper.unmarshallText;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Vector;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import com.romraider.metadata.AbstractMultiDimensionTableMetadata;
-import com.romraider.metadata.RomID;
-import com.romraider.metadata.RomMetadata;
-import com.romraider.metadata.ScalingMetadata;
-import com.romraider.metadata.AbstractTableMetadata;
-import com.romraider.metadata.ScalingMetadataNotFoundException;
-import com.romraider.metadata.Table1DMetadata;
-import com.romraider.metadata.Table2DMetadata;
-import com.romraider.metadata.Table3DMetadata;
-import com.romraider.metadata.TableMetadataNotFoundException;
+import com.romraider.metadata.exception.ScalingMetadataNotFoundException;
+import com.romraider.metadata.exception.TableMetadataNotFoundException;
+import com.romraider.metadata.index.RomIndexID;
+import com.romraider.metadata.index.RomMetadata;
+import com.romraider.metadata.rom.AbstractTableMetadata;
+import com.romraider.metadata.rom.ScalingMetadata;
+import com.romraider.metadata.rom.ScalingMetadataList;
+import com.romraider.metadata.rom.Table1DMetadata;
+import com.romraider.metadata.rom.Table2DMetadata;
+import com.romraider.metadata.rom.Table3DMetadata;
+import com.romraider.metadata.rom.TableAxisMetadata;
+import com.romraider.metadata.rom.TableMetadataList;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public class DOMRomMetadataUnmarshaller {
 	
-	public static RomMetadata unmarshallRomMetadata(RomID romid, RomMetadata r) throws SAXException, IOException {
-		
+	private RomMetadata rom;
+	private TableMetadataList tables;
+	private ScalingMetadataList scalings;
+	
+	public DOMRomMetadataUnmarshaller() {
+		rom = new RomMetadata();
+		tables = new TableMetadataList();
+		scalings = new ScalingMetadataList();
+	}
+	
+	public RomMetadata getRomMetadata() {
+		rom.setScalingMetadata(scalings);
+		rom.setTableMetadata(tables);
+		return rom;
+	}
+	
+	public void unmarshallRomMetadata(RomIndexID romid) throws SAXException, IOException, TransformerFactoryConfigurationError, TransformerException {
 		System.out.println("Unmarshalling " + romid.getXmlid() + " ...");
-		
-		InputSource src = new InputSource(new FileInputStream(romid.getDefinitionFile()));
+
 		DOMParser parser = new DOMParser();
-		parser.parse(src);
-		Node root = parser.getDocument().getDocumentElement();
+		parser.parse(new InputSource(romid.getDefinitionFile().getAbsolutePath()));
+		Transformer t = TransformerFactory.newInstance().newTransformer(new StreamSource("./metadata.xsl"));
+		DOMResult result = new DOMResult();
+		t.transform(new DOMSource(parser.getDocument().getDocumentElement()), result);
+		
+		Node root = result.getNode().getFirstChild();
 		NodeList children = root.getChildNodes();
+		
+		rom.setId(unmarshallAttribute(root, "id", rom.getId()));
+		rom.setInternalidstring(unmarshallAttribute(root, "internalidstring", rom.getInternalidstring()));
+		rom.setInternalidaddress(Integer.parseInt(unmarshallAttribute(root, "internalidaddress", rom.getInternalidaddress()+"")));
+		rom.setYear(unmarshallAttribute(root, "year", rom.getYear()));
+		rom.setMarket(unmarshallAttribute(root, "market", rom.getMarket()));
+		rom.setMake(unmarshallAttribute(root, "make", rom.getMake()));
+		rom.setModel(unmarshallAttribute(root, "model", rom.getModel()));
+		rom.setSubmodel(unmarshallAttribute(root, "submodel", rom.getSubmodel()));
+		rom.setTransmission(unmarshallAttribute(root, "transmission", rom.getTransmission()));
+		rom.setMemmodel(unmarshallAttribute(root, "memmodel", rom.getMemmodel()));
+		rom.setFlashmethod(unmarshallAttribute(root, "flashmethod", rom.getFlashmethod()));
 		
 		for (int i = 0; i < children.getLength(); i++) {
 			Node n = children.item(i);
-			if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("romid")) {
-				RomID t;
-				if (r.getRomid() == null) t = new RomID();
-				else t = r.getRomid();
-				r.setRomID(unmarshallRomID(n, t));
-			} else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scaling")) {
-				r.add(unmarshallScalingMetadata(n, r));
+			if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scaling")) {
+				unmarshallScalingMetadata(n);
 			} else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("table")) {
-				r.add(unmarshallTableMetadata(n, r, null));
+				try {
+					unmarshallTableMetadata(n);
+				} catch (ScalingMetadataNotFoundException x) {
+					// TODO omit tables with invalid scaling
+				}
 			}
-		}
-		return r;	
+		}	
 	}
 	
-	
-	public static ScalingMetadata unmarshallScalingMetadata(Node n, RomMetadata r) {
-		
+	public void unmarshallScalingMetadata(Node n) {
 		ScalingMetadata s;
-		s = r.getScalingMetadata(unmarshallAttribute(n, "name", "<null>"));		
-		s.setName(unmarshallAttribute(n, "name", s.getName()));
+		try {
+			s = scalings.get(unmarshallAttribute(n, "name", "<null>"));
+		} catch (ScalingMetadataNotFoundException x) {
+			s = new ScalingMetadata();
+			scalings.add(s);
+		}
+		s.setId(unmarshallAttribute(n, "id", s.getId()));
 		s.setUnits(unmarshallAttribute(n, "units", s.getUnits()));
 		s.setToexpr(unmarshallAttribute(n, "toexpr", s.getToexpr()));
 		s.setFrexpr(unmarshallAttribute(n, "frexpr", s.getFrexpr()));
@@ -67,132 +105,74 @@ public class DOMRomMetadataUnmarshaller {
 		s.setMin(Double.parseDouble(unmarshallAttribute(n, "min", s.getMin()+"")));
 		s.setMax(Double.parseDouble(unmarshallAttribute(n, "max", s.getMax()+"")));
 		s.setStorageType(unmarshallAttribute(n, "storagetype", s.getStorageType()));
-		
-		// Convert endian to string
 		String scalingEndian;
 		if (s.getEndian() == ScalingMetadata.ENDIAN_LITTLE) scalingEndian = "little";
-		else scalingEndian = "big";
-			
+		else scalingEndian = "big";			
 		scalingEndian = unmarshallAttribute(n, "endian", scalingEndian);
 		if (scalingEndian.equalsIgnoreCase("little")) s.setEndian(ScalingMetadata.ENDIAN_LITTLE);
 		else s.setEndian(ScalingMetadata.ENDIAN_BIG);
-		
-		return s;
 	}
 	
-	
-	public static AbstractTableMetadata unmarshallTableMetadata(Node n, RomMetadata r, AbstractMultiDimensionTableMetadata p) {
-		
-		// Try to find table from parent rom or create new
+	public void unmarshallTableMetadata(Node n) throws ScalingMetadataNotFoundException {	
 		AbstractTableMetadata t;
 		String tableType = unmarshallAttribute(n, "type", "<null>");
-	
+		String tableId = unmarshallAttribute(n, "id","<null>");	
 		try { 
-			//System.out.println(unmarshallAttribute(n, "name", "<null>"));
-			if (p == null) t = r.getTableMetadata(unmarshallAttribute(n, "name", "<null>"));
-			else t = p.getAxisByName(unmarshallAttribute(n, "name", "<null>"));
+			 t = tables.get(tableId);
 		} catch (TableMetadataNotFoundException e) {
 			
 			if (tableType.equalsIgnoreCase("3d")) 		t = new Table3DMetadata();
 			else if (tableType.equalsIgnoreCase("2d")) 	t = new Table2DMetadata();
 			else if (tableType.equalsIgnoreCase("1d")) 	t = new Table1DMetadata();
-			else if (tableType.toLowerCase().contains("axis")) t = new Table1DMetadata();
 			else {
-				throw new ParseException(tableType, 0);
+				System.out.println(tableId);
+				System.out.println(tableType);
+				throw new ParseException(tableId, 0);
 			}
+			tables.add(t);
 		}
-
-		
-		// Unmarshall attributes
-		t.setName(unmarshallAttribute(n, "name", t.getName()));
-		t.setCategory(unmarshallAttribute(n, "name", t.getCategory()));
-		t.setDescription(unmarshallAttribute(n, "name", t.getDescription()));
-		
+		t.setId(unmarshallAttribute(n, "id", t.getId()));
+		t.setCategory(unmarshallAttribute(n, "category", t.getCategory()));
+		t.setDescription(unmarshallAttribute(n, "description", t.getDescription()));
 		if (!unmarshallAttribute(n, "scaling", "<null>").equals("<null>")) {
-			t.setScalingMetadata(r.getScalingMetadata(unmarshallAttribute(n, "scaling", "<null>")));
+			t.setScalingMetadata(scalings.get(unmarshallAttribute(n, "scaling", "<null>")));
+		}				
+		NodeList children = n.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++) {
+			Node c = children.item(i);
+			if (c.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("table")) {
+				unmarshallTableAxis(c, t);
+			}
+		}
+	}
+	
+	public void unmarshallTableAxis(Node n, AbstractTableMetadata t) throws ScalingMetadataNotFoundException {
+		TableAxisMetadata a;
+		String tableAxis = unmarshallAttribute(n, "axis", "<null>");
+		String parentType = t.getClass().getName();
+		if (parentType.equals("com.romraider.metadata.rom.Table3DMetadata")) {
+			if (tableAxis.equalsIgnoreCase("x")) a = ((Table3DMetadata)t).getXaxis();
+			else a = ((Table3DMetadata)t).getYaxis();
+		}
+		else a = ((Table2DMetadata)t).getYaxis();
+
+		a.setId(unmarshallAttribute(n, "id", a.getId()));
+		a.setCategory(unmarshallAttribute(n, "category", a.getCategory()));
+		a.setDescription(unmarshallAttribute(n, "description", a.getDescription()));
+		a.setStatic(Boolean.valueOf(unmarshallAttribute(n, "static", a.isStatic())));
+		if (!unmarshallAttribute(n, "scaling", "<null>").equals("<null>")) {
+			a.setScalingMetadata(scalings.get(unmarshallAttribute(n, "scaling", "<null>")));
 		}		
-		
-		NodeList children = n.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
-			Node c = children.item(i);
-			if (c.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scaling")) {
-				t.setDescription(unmarshallText(c));
-			}
-		}
-		
-		// Unmarshall type-specific attributes and elements
-		if (tableType.equalsIgnoreCase("3d")) 		t = unmarshallTable3DMetadata(n, r, t);
-		else if (tableType.equalsIgnoreCase("2d")) 	t = unmarshallTable2DMetadata(n, r, t);
-		
-		return t;
 	}
 
-
-	public static Table3DMetadata unmarshallTable3DMetadata(Node n, RomMetadata r, AbstractTableMetadata t) {
-		Table3DMetadata output = (Table3DMetadata)t;
-		NodeList children = n.getChildNodes();
-		
-		for (int i = 0; i < children.getLength(); i++) {
-			Node c = children.item(i);			
-			
-			if (c.hasAttributes() || c.hasChildNodes()) {				
-				// TODO: The line above should not be needed. What are the elements that have no attributes or child nodes??
-				String tableType = unmarshallAttribute(c, "type", "<null>");
-				if (!tableType.equalsIgnoreCase("<null>")) {
-					Table1DMetadata axis = (Table1DMetadata) unmarshallTableMetadata(c, r, (Table3DMetadata) t);				
-					if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_XAXIS) output.setXaxis(axis);
-					else if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_YAXIS) output.setYaxis(axis);
-				}
-			}
-		}
-		return output;
-	}
-	
-	
-	public static Table2DMetadata unmarshallTable2DMetadata(Node n, RomMetadata r, AbstractTableMetadata t) {
-		Table2DMetadata output = (Table2DMetadata)t;
-		NodeList children = n.getChildNodes();
-		//System.out.println(t.getName());
-		
-		for (int i = 0; i < children.getLength(); i++) {
-			Node c = children.item(i);
-			if (c.hasAttributes() || c.hasChildNodes()) {
-				String tableType = unmarshallAttribute(c, "type", "<null>");
-				if (!tableType.equalsIgnoreCase("<null>")) {
-					Table1DMetadata axis = (Table1DMetadata) unmarshallTableMetadata(c, r, (Table2DMetadata) t);			
-					if (axis.getType() == AbstractTableMetadata.TABLEMETADATA_TYPE_AXIS) output.setAxis(axis);
-				}
-			}
-		}
-		return output;
-	}
-	
-	
-	// TODO: Is this method needed?
-	/*public static Table1DMetadata unmarshallTable1DMetadata(Node n, RomMetadata r, AbstractTableMetadata t) {
-		Table1DMetadata output = (Table1DMetadata)t;
-		return output;
-	}*/
-	
-	
-	public static Table1DMetadata unmarshallTableAxisMetadata(Node n, RomMetadata r, AbstractTableMetadata t) {
-		AbstractMultiDimensionTableMetadata abs = (AbstractMultiDimensionTableMetadata)t;
-		Table1DMetadata axis = abs.getAxisByType(unmarshallAttribute(n, "type", "<null>"));
-		
-		return axis;
-	}
-	
-	
-	public static Vector<RomID> unmarshallRomIDIndex(File file) throws SAXException, IOException {
-		
-		Vector<RomID> romVector = new Vector<RomID>();
+	public static Vector<RomIndexID> unmarshallRomIDIndex(File file) throws SAXException, IOException {		
+		Vector<RomIndexID> romVector = new Vector<RomIndexID>();
 		InputSource src = new InputSource(new FileInputStream(file));
 		DOMParser parser = new DOMParser();
 		parser.parse(src);
 		Node root = parser.getDocument().getDocumentElement();
-		RomID romid = new RomID();
-		NodeList children = root.getChildNodes();
-		
+		RomIndexID romid = new RomIndexID();
+		NodeList children = root.getChildNodes();		
 		// Iterate through document nodes and find romids
 		for (int i = 0; i < children.getLength(); i++) {
 			Node n = children.item(i);
@@ -203,46 +183,24 @@ public class DOMRomMetadataUnmarshaller {
 			} else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("include")) {
 				romid.setInclude(unmarshallText(n));
 			}
-		}
-	
+		}	
 		return romVector;
 	}
 	
 	
-	public static RomID unmarshallRomID(Node src, RomID romid) {
+	public static RomIndexID unmarshallRomID(Node src, RomIndexID romid) {
 		NodeList children = src.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
-			Node n = children.item(i);
-						
+			Node n = children.item(i);						
 			if (n.getNodeType() == ELEMENT_NODE) {
 				if 		(n.getNodeName().equalsIgnoreCase("xmlid")) 			
-					romid.setXmlID(unmarshallText(n));
+					romid.setXmlid(unmarshallText(n));
 				else if (n.getNodeName().equalsIgnoreCase("internalidstring")) 	
 					romid.setInternalIDString(unmarshallText(n));
 				else if (n.getNodeName().equalsIgnoreCase("internalidaddress")) 
 					romid.setInternalIDAddress(Integer.parseInt(unmarshallText(n), 16));
-				else if (n.getNodeName().equalsIgnoreCase("ecuid")) 			
-					romid.setEcuid(unmarshallText(n));
-				else if (n.getNodeName().equalsIgnoreCase("year")) 			
-					romid.setYear(unmarshallText(n));
-				else if (n.getNodeName().equalsIgnoreCase("market")) 			
-					romid.setMarket(unmarshallText(n));
-				else if (n.getNodeName().equalsIgnoreCase("make")) 			
-					romid.setMake(unmarshallText(n));
-				else if (n.getNodeName().equalsIgnoreCase("model")) 			
-					romid.setModel(unmarshallText(n));
-				else if (n.getNodeName().equalsIgnoreCase("submodel")) 			
-					romid.setSubmodel(unmarshallText(n));
-				else if (n.getNodeName().equalsIgnoreCase("transmission")) 			
-					romid.setTransmission(unmarshallText(n));
-				else if (n.getNodeName().equalsIgnoreCase("memmodel")) 			
-					romid.setMemmodel(unmarshallText(n));
-				else if (n.getNodeName().equalsIgnoreCase("flashmethod")) 			
-					romid.setFlashMethod(unmarshallText(n));
-			}
-			
-		}		
-		
+			}			
+		}				
 		return romid;
 	}
 }

@@ -1,10 +1,10 @@
-package com.romraider.metadata;
+package com.romraider.metadata.rom;
 
 public class ScalingMetadata {
 	
 	public static int ENDIAN_LITTLE = 0;
 	public static int ENDIAN_BIG = 1;
-	private String name			= "Name";
+	private String id			= "<null>";
 	private String units		= "Unit";
 	private String toexpr		= "x";
 	private String frexpr		= "x";
@@ -15,11 +15,11 @@ public class ScalingMetadata {
 	private String storageType	= "uint16";
 	private int	   endian		= ENDIAN_LITTLE;
 	
-	public String getName() {
-		return name;
+	public String getId() {
+		return id;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getUnits() {
 		return units;
@@ -77,7 +77,7 @@ public class ScalingMetadata {
 	}
 	
 	public String toString() {
-		return name;
+		return id;
 	}
 
 }

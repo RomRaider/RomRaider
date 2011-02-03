@@ -1,57 +1,56 @@
-package com.romraider.metadata;
+package com.romraider.metadata.index;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Vector;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import org.xml.sax.SAXException;
+import com.romraider.metadata.exception.RomNotFoundException;
 import com.romraider.xml.DOMRomMetadataUnmarshaller;
 
-public class RomHandler {
+public class RomMetadataHandler {
 	
-	public static RomMetadata getMetadata(File rom, RomMetadataIndex romIndex) throws IOException, RomNotFoundException, SAXException {
-
-        RomMetadata rm = new RomMetadata();
-        
+	public static RomMetadata getMetadata(File rom, RomMetadataIndex romIndex) throws IOException, RomNotFoundException, SAXException, TransformerFactoryConfigurationError, TransformerException {
 		// Read rom file
         FileInputStream fis = new FileInputStream(rom);
+    	DOMRomMetadataUnmarshaller ums = new DOMRomMetadataUnmarshaller();
         try {
         	byte[] buffer = new byte[(int)rom.length()];
             fis.read(buffer);	
             
             // Identify rom and find metadata
-            RomID romid = identifyRom(buffer, romIndex);
+            RomIndexID romid = identifyRom(buffer, romIndex);
             
             // Build array of rom metadata hierarchy starting with lowest level
-            Vector<RomID> hierarchy = new Vector<RomID>();
+            Vector<RomIndexID> hierarchy = new Vector<RomIndexID>();
             getIncludeHierarchy(romid, romIndex, hierarchy);
-            
+        	
             // Pass hierarchy to unmarshaller one at a time
-            for (RomID r : hierarchy) {
-            	DOMRomMetadataUnmarshaller.unmarshallRomMetadata(r, rm);
+            for (RomIndexID r : hierarchy) {
+            	ums.unmarshallRomMetadata(r);
             }
             
         } finally {
             fis.close();
-        }
-		
-		return rm;
+        }		
+		return ums.getRomMetadata();
 	}
 	
 	
-	private static RomID[] getIncludeHierarchy(RomID base, RomMetadataIndex romIndex, Vector<RomID> hierarchy) throws RomNotFoundException {
+	private static RomIndexID[] getIncludeHierarchy(RomIndexID base, RomMetadataIndex romIndex, Vector<RomIndexID> hierarchy) throws RomNotFoundException {
 		hierarchy.add(0, base);
 		if (base.getInclude() != null) {
-			getIncludeHierarchy(romIndex.getRomIDByXmlID(base.getInclude()), romIndex, hierarchy);
+			getIncludeHierarchy(romIndex.getRomIDByID(base.getInclude()), romIndex, hierarchy);
 		}
-		return hierarchy.toArray(new RomID[hierarchy.size()]);
+		return hierarchy.toArray(new RomIndexID[hierarchy.size()]);
 	}
 	
 	
-	private static RomID identifyRom(byte[] buffer, RomMetadataIndex romIndex) throws RomNotFoundException {
+	private static RomIndexID identifyRom(byte[] buffer, RomMetadataIndex romIndex) throws RomNotFoundException {
         for (int i = 0; i < romIndex.size(); i++) {
-        	RomID romid = romIndex.getRomIDByIndex(i);
+        	RomIndexID romid = romIndex.get(i);
         	
         	if (!romid.isAbstract() && 
     			buffer.length >= romid.getInternalIDAddress() + romid.getInternalIDString().length()) {

@@ -29,6 +29,5 @@
 	<classpathentry kind="lib" path="lib/common/jfreechart-1.0.9.jar"/>
 	<classpathentry kind="lib" path="lib/common/jcommon-1.0.12.jar"/>
 	<classpathentry kind="lib" path="lib/common/jinvoke-3.0.3.jar"/>
-	<classpathentry kind="lib" path="lib/common/xmlmerge-full.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -3,37 +3,8 @@ package com.romraider.util;
 import java.util.*;
 import java.io.*;
 
-/**
-* Recursive file listing under a specified directory.
-*  
-* @author javapractices.com
-* @author Alex Wong
-* @author anonymous user
-*/
 public final class FileListing {
-
-  /**
-  * Demonstrate use.
-  * 
-  * @param aArgs - <tt>aArgs[0]</tt> is the full name of an existing 
-  * directory that can be read.
-  */
-  public static void main(String[] aArgs) throws FileNotFoundException {
-    File startingDirectory= new File("c:\\documents and settings\\owner\\desktop\\rommetadata");
-    List<File> files = FileListing.getFileListing(startingDirectory);
-
-    //print out all file names, in the the order of File.compareTo()
-    for(File file : files ){
-      System.out.println(file);
-    }
-  }
   
-  /**
-  * Recursively walk a directory tree and return a List of all
-  * Files found; the List is sorted using File.compareTo().
-  *
-  * @param aStartingDir is a valid directory, which can be read.
-  */
   static public List<File> getFileListing(
     File aStartingDir
   ) throws FileNotFoundException {
@@ -62,9 +33,6 @@ public final class FileListing {
     return result;
   }
 
-  /**
-  * Directory is valid if it exists, does not represent a file, and can be read.
-  */
   static private void validateDirectory (
     File aDirectory
   ) throws FileNotFoundException {

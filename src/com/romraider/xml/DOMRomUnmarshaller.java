@@ -32,8 +32,8 @@ import com.romraider.maps.Table1D;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
 import com.romraider.maps.TableSwitch;
-import com.romraider.metadata.RomNotFoundException;
-import com.romraider.metadata.TableMetadataNotFoundException;
+import com.romraider.metadata.exception.RomNotFoundException;
+import com.romraider.metadata.exception.TableMetadataNotFoundException;
 import com.romraider.swing.DebugPanel;
 import com.romraider.swing.JProgressPane;
 import com.romraider.util.LogManager;
@@ -211,13 +211,11 @@ public final class DOMRomUnmarshaller {
                         table = unmarshallTable(n, table, rom);
                         table.setRom(rom);
                         rom.addTable(table);
-                    } catch (TableIsOmittedException ex) {
+                    } catch (Exception ex) {
                         // table is not supported in inherited def (skip)
                         if (table != null) {
                             rom.removeTable(table.getName());
                         }
-                    } catch (XMLParseException ex) {
-                        LOGGER.error("Error unmarshalling rom", ex);
                     }
 
                 } else { /* unexpected element in Rom (skip)*/ }

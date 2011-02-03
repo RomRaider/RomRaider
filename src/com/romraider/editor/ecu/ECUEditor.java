@@ -27,7 +27,7 @@ import static com.romraider.Version.VERSION;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
-import com.romraider.metadata.RomNotFoundException;
+import com.romraider.metadata.exception.RomNotFoundException;
 import com.romraider.net.URL;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.ECUEditorMenuBar;
