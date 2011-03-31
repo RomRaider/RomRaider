@@ -25,11 +25,11 @@ import java.util.Collection;
 
 public interface LoggerProtocol {
 
-    byte[] constructEcuInitRequest();
+    byte[] constructEcuInitRequest(byte id);
 
     byte[] constructEcuResetRequest();
 
-    byte[] constructReadAddressRequest(Collection<EcuQuery> queries);
+    byte[] constructReadAddressRequest(byte id, Collection<EcuQuery> queries);
 
     byte[] constructReadAddressResponse(Collection<EcuQuery> queries);
 

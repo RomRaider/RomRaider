@@ -23,6 +23,6 @@ import java.util.List;
 
 public interface CommandGenerator {
 
-    List<byte[]> createCommands(byte[] data, byte[] address, int length);
+    List<byte[]> createCommands(byte id, byte[] data, byte[] address, int length);
 
 }

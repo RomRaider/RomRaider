@@ -50,8 +50,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
         protocol.processEcuResetResponse(processedResponse);
     }
 
-    public void ecuInit(EcuInitCallback callback) {
-        byte[] request = protocol.constructEcuInitRequest();
+    public void ecuInit(EcuInitCallback callback, byte id) {
+        byte[] request = protocol.constructEcuInitRequest(id);
         LOGGER.debug("Ecu Init Request  ---> " + asHex(request));
         byte[] response = manager.send(request, SEND_TIMEOUT);
         byte[] processedResponse = protocol.preprocessResponse(request, response);
@@ -59,8 +59,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
         protocol.processEcuInitResponse(callback, processedResponse);
     }
 
-    public void sendAddressReads(Collection<EcuQuery> queries) {
-        byte[] request = protocol.constructReadAddressRequest(queries);
+    public void sendAddressReads(Collection<EcuQuery> queries, byte id) {
+        byte[] request = protocol.constructReadAddressRequest(id, queries);
         byte[] response = protocol.constructReadAddressResponse(queries);
         LOGGER.trace("ECU Request  ---> " + asHex(request));
         manager.send(request, response, SEND_TIMEOUT);

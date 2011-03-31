@@ -117,9 +117,9 @@ public final class QueryManagerImpl implements QueryManager {
             stop = false;
             while (!stop) {
                 notifyConnecting();
-                if (doEcuInit()) {
+                if (doEcuInit(settings.getDestinationId())) {
                     notifyReading();
-                    runLogger();
+                    runLogger(settings.getDestinationId());
                 } else {
                     sleep(1000L);
                 }
@@ -133,20 +133,28 @@ public final class QueryManagerImpl implements QueryManager {
         }
     }
 
-    private boolean doEcuInit() {
+    private boolean doEcuInit(byte id) {
+    	String target = "";
+    	if (id == 0x10){
+    		target = "ECU";
+    	}
+    	if (id == 0x18){
+    		target = "TCU";
+    	}
+    	
         try {
             LoggerConnection connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
-                messageListener.reportMessage("Sending ECU Init...");
-                connection.ecuInit(ecuInitCallback);
-                messageListener.reportMessage("Sending ECU Init...done.");
+                messageListener.reportMessage("Sending " + target + " Init...");
+                connection.ecuInit(ecuInitCallback, id);
+                messageListener.reportMessage("Sending " + target + " Init...done.");
                 return true;
             } finally {
                 connection.close();
             }
         } catch (Exception e) {
-            messageListener.reportMessage("Unable to send ECU init - check cable is connected and ignition is on.");
+            messageListener.reportMessage("Unable to send " + target + " init - check cable is connected and ignition is on.");
             logError(e);
             return false;
         }
@@ -154,13 +162,20 @@ public final class QueryManagerImpl implements QueryManager {
 
     private void logError(Exception e) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Error sending ecu init", e);
+            LOGGER.debug("Error sending init", e);
         } else {
-            LOGGER.info("Error sending ecu init: " + e.getMessage());
+            LOGGER.info("Error sending init: " + e.getMessage());
         }
     }
 
-    private void runLogger() {
+    private void runLogger(byte id) {
+    	String target = "";
+    	if (id == 0x10){
+    		target = "ECU";
+    	}
+    	if (id == 0x18){
+    		target = "TCU";
+    	}
         TransmissionManager txManager = new TransmissionManagerImpl(settings);
         long start = System.currentTimeMillis();
         int count = 0;
@@ -178,7 +193,7 @@ public final class QueryManagerImpl implements QueryManager {
                     sendExternalQueries();
                     handleQueryResponse();
                     count++;
-                    messageListener.reportMessage("Querying ECU...");
+                    messageListener.reportMessage("Querying " + target + "...");
                     messageListener.reportStats(buildStatsMessage(start, count));
                 }
             }

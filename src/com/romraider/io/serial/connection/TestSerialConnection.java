@@ -52,7 +52,9 @@ final class TestSerialConnection implements SerialConnection {
     private static final Random RANDOM = new Random(currentTimeMillis());
     private static final String ECU_INIT_RESPONSE_01_UP = "8010F001BF4080F01039FFA21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E1000000000000000059";
     private static final String ECU_INIT_RESPONSE_PRE_01 = "8010F001BF4080F01029FFA1100B195458050561C4EB800808000000000070CE64F8BA080000E00000000000DC0000108000007B";
-    private static final String ECU_INIT_RESPONSE = ECU_INIT_RESPONSE_01_UP;
+    private static final String ECU_INIT_RESPONSE_OBXT = "8010F001BF4080F01039FFA210112F1279560673FACBA62B81FEA800000060CE54F9B1E4000C200000000000DC00005D1F30C0F226000043FB00E1000000000000C1F02D";
+    private static final String ECU_INIT_RESPONSE_TCU = "8018F001BF4080F01839FFA6102291E02074000100800400000000A1462C000800000000000000DE06000B29C0047E011E003E00000000000080A20000FEFE0000000012";
+    private static final String ECU_INIT_RESPONSE = ECU_INIT_RESPONSE_OBXT;
     //    private static final String ECU_INIT_RESPONSE = ECU_INIT_RESPONSE_PRE_01;
     private byte[] request = new byte[0];
 
@@ -69,7 +71,14 @@ final class TestSerialConnection implements SerialConnection {
 
     public int available() {
         if (isEcuInitRequest()) {
-            return asBytes(ECU_INIT_RESPONSE).length;
+        	String init = "";
+        	if (ECU_ID == 0x10){
+        		init = ECU_INIT_RESPONSE;
+        	}
+        	if (ECU_ID == 0x18){
+        		init = ECU_INIT_RESPONSE_TCU;
+        	}
+    		return asBytes(init).length;
         } else if (isReadAddressRequest()) {
             return request.length + (RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes());
         } else if (isReadMemoryRequest()) {
@@ -83,7 +92,12 @@ final class TestSerialConnection implements SerialConnection {
 
     public void read(byte[] bytes) {
         if (isEcuInitRequest()) {
-            System.arraycopy(asBytes(ECU_INIT_RESPONSE), 0, bytes, 0, bytes.length);
+        	if (ECU_ID == 0x10){
+                System.arraycopy(asBytes(ECU_INIT_RESPONSE), 0, bytes, 0, bytes.length);
+        	}
+        	if (ECU_ID == 0x18){
+                System.arraycopy(asBytes(ECU_INIT_RESPONSE_TCU), 0, bytes, 0, bytes.length);
+        	}
         } else if (isIamRequest()) {
             byte[] response = asBytes("0x80F01006E83F600000000D");
             System.arraycopy(response, 0, bytes, request.length, response.length);

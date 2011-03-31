@@ -78,7 +78,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private JRadioButtonMenuItem level5 = new JRadioButtonMenuItem("5 Debug Mode");
 
     private JMenu loggerMenu = new JMenu("Logger");
-    private JMenuItem openLogger = new JMenuItem("Launch ECU Logger...");
+    private JMenuItem openLogger = new JMenuItem("Launch Logger...");
 
     private JMenu ramTuneMenu = new JMenu("SSM");
     private JMenuItem launchRamTuneTestApp = new JMenuItem("Launch Test App...");

@@ -29,8 +29,8 @@ public final class EcuInitCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public List<byte[]> createCommands(byte[] data, byte[] address, int length) {
-        return asList(protocol.constructEcuInitRequest());
+    public List<byte[]> createCommands(byte id, byte[] data, byte[] address, int length) {
+        return asList(protocol.constructEcuInitRequest(id));
     }
 
     public String toString() {

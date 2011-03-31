@@ -236,6 +236,7 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode serial = new IIOMetadataNode("serial");
         serial.setAttribute("port", settings.getLoggerPortDefault());
         serial.setAttribute("refresh", String.valueOf(settings.getRefreshMode()));
+        serial.setAttribute("ecuid", String.valueOf(settings.getDestinationId()));
         loggerSettings.appendChild(serial);
 
         // window maximized

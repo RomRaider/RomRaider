@@ -84,6 +84,7 @@ public class Settings implements Serializable {
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
     private Map<String, String> loggerPluginPorts;
 	private boolean loggerRefreshMode = true;
+	private byte loggerDestinationId;
 
 
     public Settings() {
@@ -448,4 +449,11 @@ public class Settings implements Serializable {
     	return loggerRefreshMode;
     }
 
+	public void setDestinationId(byte id) {
+    	this.loggerDestinationId = id;
+	}
+
+	public byte getDestinationId() {
+		return loggerDestinationId;
+	}
 }

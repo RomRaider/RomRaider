@@ -29,35 +29,36 @@ import java.util.List;
 
 public final class ReadCommandGenerator extends AbstractCommandGenerator {
     private static final int INCREMENT_SIZE = 32;
-
+    
     public ReadCommandGenerator(Protocol protocol) {
         super(protocol);
     }
 
-    public List<byte[]> createCommands(byte[] data, byte[] address, int length) {
+    public List<byte[]> createCommands(byte id, byte[] data, byte[] address, int length) {
+        checkGreaterThanZero(id, "Target ID");
         checkNotNullOrEmpty(address, "address");
         checkGreaterThanZero(length, "length");
         if (length == 1) {
-            return asList(createCommandForAddress(address));
+            return asList(createCommandForAddress(id, address));
         } else {
-            return createCommandsForRange(address, length);
+            return createCommandsForRange(id, address, length);
         }
     }
 
-    private byte[] createCommandForAddress(byte[] address) {
-        return protocol.constructReadAddressRequest(new byte[][]{address});
+    private byte[] createCommandForAddress(byte id, byte[] address) {
+        return protocol.constructReadAddressRequest(id, new byte[][]{address});
     }
 
-    private List<byte[]> createCommandsForRange(byte[] address, int length) {
+    private List<byte[]> createCommandsForRange(byte id, byte[] address, int length) {
         List<byte[]> commands = new ArrayList<byte[]>();
         byte[] readAddress = copy(address);
         int i = 0;
         while (i < length) {
             int readLength = (length - i) > INCREMENT_SIZE ? INCREMENT_SIZE : length - i;
             if (readLength == 1) {
-                commands.add(createCommandForAddress(readAddress));
+                commands.add(createCommandForAddress(id, readAddress));
             } else {
-                commands.add(protocol.constructReadMemoryRequest(readAddress, readLength));
+                commands.add(protocol.constructReadMemoryRequest(id, readAddress, readLength));
             }
             i += INCREMENT_SIZE;
             System.arraycopy(incrementAddress(readAddress, readLength), 0, readAddress, 0, readAddress.length);
@@ -72,7 +73,23 @@ public final class ReadCommandGenerator extends AbstractCommandGenerator {
     }
 
     private byte[] incrementAddress(byte[] address, int increment) {
-        return new BigInteger(address).add(new BigInteger(String.valueOf(increment))).toByteArray();
+    	BigInteger newAddr = new BigInteger(address);
+    	byte[] incAddr = newAddr.add(new BigInteger(String.valueOf(increment))).toByteArray();
+    	if (incAddr.length == 1){
+    		address[0] = 0;
+    		address[1] = 0;
+    		address[2] = incAddr[0];
+    		return address;
+    	}
+    	if (incAddr.length == 2){
+    		address[0] = 0;
+    		address[1] = incAddr[0];
+    		address[2] = incAddr[1];
+    		return address;
+    	}
+    	else {
+    		return incAddr;
+    	}
     }
 
     public String toString() {

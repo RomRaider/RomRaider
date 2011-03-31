@@ -79,6 +79,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -87,6 +88,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
@@ -176,14 +178,16 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final long serialVersionUID = 7145423251696282784L;
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
-    private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU Logger";
+    private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU/TCU Logger";
     private static final String LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
     private static final String ICON_PATH = "./graphics/romraider-ico.gif";
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
-    private static final String ECU_ID_LABEL = "ECU ID";
+    private static final byte ECU_ID = (byte) 0x10;
+    private static final byte TCU_ID = (byte) 0x18;
+    private static String target = "ECU";
     private ECUEditor ecuEditor;
     private Settings settings;
     private LoggerController controller;
@@ -264,7 +268,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         EcuInitCallback ecuInitCallback = new EcuInitCallback() {
             public void callback(EcuInit newEcuInit) {
                 final String ecuId = newEcuInit.getEcuId();
-                LOGGER.info("ECU ID = " + ecuId);
+                LOGGER.info(target + " ID = " + ecuId);
                 if (ecuInit == null || !ecuInit.getEcuId().equals(ecuId)) {
                     ecuInit = newEcuInit;
                     invokeLater(new Runnable() {
@@ -272,8 +276,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                             String calId = getCalId(ecuId);
                             LOGGER.info("CAL ID = " + calId);
                             calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
-                            ecuIdLabel.setText(buildEcuInfoLabelText(ECU_ID_LABEL, ecuId));
-                            LOGGER.info("Loading logger config for new ECU (ecuid: " + ecuId + ")...");
+                            ecuIdLabel.setText(buildEcuInfoLabelText(target + " ID", ecuId));
+                            LOGGER.info("Loading logger config for new " + target + " ID:" + ecuId + "...");
                             loadLoggerParams();
                             loadUserProfile(settings.getLoggerProfileFilePath());
                         }
@@ -316,7 +320,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         resetManager = new ResetManagerImpl(settings, this);
         messageLabel = new JLabel(ECU_LOGGER_TITLE);
         calIdLabel = new JLabel(buildEcuInfoLabelText(CAL_ID_LABEL, null));
-        ecuIdLabel = new JLabel(buildEcuInfoLabelText(ECU_ID_LABEL, null));
+        ecuIdLabel = new JLabel(buildEcuInfoLabelText(target + " ID", null));
         statsLabel = buildStatsLabel();
         tabbedPane = new JTabbedPane(BOTTOM);
         portsComboBox = new SerialPortComboBox(settings);
@@ -774,8 +778,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         JScrollPane externalList = new JScrollPane(buildParamListTable(externalListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabs.addTab("ECU Parameters", paramList);
-        tabs.addTab("ECU Switches", switchList);
+        tabs.addTab(HEADING_PARAMETERS, paramList);
+        tabs.addTab(HEADING_SWITCHES, switchList);
         tabs.addTab("External Sensors", externalList);
         return tabs;
     }
@@ -924,9 +928,42 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
         });
         comboBoxPanel.add(portRefresh);
+
+        final JCheckBox ecuCheckBox = new JCheckBox("ECU");
+        final JCheckBox tcuCheckBox = new JCheckBox("TCU");
+        ecuCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	stopLogging();
+            	tcuCheckBox.setSelected(false);
+            	setTargetEcu();
+            	startLogging();
+            }
+        });
+        tcuCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	stopLogging();
+            	ecuCheckBox.setSelected(false);
+            	setTargetTcu();
+            	startLogging();
+            }
+        });
+        if (settings.getDestinationId() == 0x10) {
+        	ecuCheckBox.setSelected(true);
+        	tcuCheckBox.setSelected(false);
+        	setTargetEcu();
+        }
+        else {
+        	tcuCheckBox.setSelected(true);
+        	ecuCheckBox.setSelected(false);
+        	setTargetTcu();
+        }
+
+        comboBoxPanel.add(ecuCheckBox);
+        comboBoxPanel.add(tcuCheckBox);
+
         JButton reconnectButton = new JButton(new ImageIcon("./graphics/logger_restart.png"));
         reconnectButton.setPreferredSize(new Dimension(25, 25));
-        reconnectButton.setToolTipText("Reconnect to ECU");
+        reconnectButton.setToolTipText("Reconnect to " + target);
         reconnectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
@@ -939,7 +976,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(reconnectButton);
         JButton disconnectButton = new JButton(new ImageIcon("./graphics/logger_stop.png"));
         disconnectButton.setPreferredSize(new Dimension(25, 25));
-        disconnectButton.setToolTipText("Disconnect from ECU");
+        disconnectButton.setToolTipText("Disconnect from " + target);
         disconnectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
@@ -954,6 +991,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(new JSeparator(VERTICAL));
         comboBoxPanel.add(buildLogToFileButton());
         return comboBoxPanel;
+    }
+
+    private void setTargetEcu() {
+    	settings.setDestinationId(ECU_ID);
+    	target = "ECU";
+    }
+
+    private void setTargetTcu() {
+    	settings.setDestinationId(TCU_ID);
+    	target = "TCU";
     }
 
     public void restartLogging() {

@@ -33,7 +33,7 @@ import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class SSMProtocol implements Protocol {
     public static final byte HEADER = (byte) 0x80;
-    public static final byte ECU_ID = (byte) 0x10;
+    public static byte ECU_ID = (byte) 0x10;
     public static final byte DIAGNOSTIC_TOOL_ID = (byte) 0xF0;
     public static final byte READ_PADDING = (byte) 0x00;
     public static final byte READ_MEMORY_COMMAND = (byte) 0xA0;
@@ -50,15 +50,19 @@ public final class SSMProtocol implements Protocol {
     public static final int DATA_SIZE = 1;
     public static final int RESPONSE_NON_DATA_BYTES = 6;
     public static final int REQUEST_NON_DATA_BYTES = 7;
-
-    public byte[] constructEcuInitRequest() {
+    
+    public byte[] constructEcuInitRequest(byte id) {
+        checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
+    	SSMProtocol.ECU_ID = id;
         // 0x80 0x10 0xF0 0x01 0xBF 0x40
         return buildRequest(ECU_INIT_COMMAND, false, new byte[0]);
     }
 
-    public byte[] constructWriteMemoryRequest(byte[] address, byte[] values) {
+    public byte[] constructWriteMemoryRequest(byte id, byte[] address, byte[] values) {
+        checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(values, "values");
+    	SSMProtocol.ECU_ID = id;
         // 0x80 0x10 0xF0 data_length 0xB0 from_address value1 value2 ... valueN checksum
         return buildRequest(WRITE_MEMORY_COMMAND, false, address, values);
     }
@@ -70,15 +74,19 @@ public final class SSMProtocol implements Protocol {
         return buildRequest(WRITE_ADDRESS_COMMAND, false, address, new byte[]{value});
     }
 
-    public byte[] constructReadMemoryRequest(byte[] address, int numBytes) {
+    public byte[] constructReadMemoryRequest(byte id, byte[] address, int numBytes) {
+        checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
         checkNotNullOrEmpty(address, "address");
         checkGreaterThanZero(numBytes, "numBytes");
+    	SSMProtocol.ECU_ID = id;
         // 0x80 0x10 0xF0 data_length 0xA0 padding from_address num_bytes-1 checksum
         return buildRequest(READ_MEMORY_COMMAND, true, address, new byte[]{asByte(numBytes - 1)});
     }
 
-    public byte[] constructReadAddressRequest(byte[][] addresses) {
+    public byte[] constructReadAddressRequest(byte id, byte[][] addresses) {
+        checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
         checkNotNullOrEmpty(addresses, "addresses");
+    	SSMProtocol.ECU_ID = id;
         // 0x80 0x10 0xF0 data_length 0xA8 padding address1 address2 ... addressN checksum
         return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }

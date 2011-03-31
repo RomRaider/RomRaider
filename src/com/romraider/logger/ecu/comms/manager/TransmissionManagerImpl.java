@@ -51,7 +51,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
     public void sendQueries(Collection<EcuQuery> queries) {
         checkNotNull(queries, "queries");
         if (connection == null) throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
-        connection.sendAddressReads(queries);
+        connection.sendAddressReads(queries, settings.getDestinationId());
     }
 
     public void stop() {

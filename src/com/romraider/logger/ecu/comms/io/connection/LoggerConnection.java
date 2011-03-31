@@ -26,9 +26,9 @@ import java.util.Collection;
 public interface LoggerConnection {
     void ecuReset();
 
-    void ecuInit(EcuInitCallback callback);
+    void ecuInit(EcuInitCallback callback, byte id);
 
-    void sendAddressReads(Collection<EcuQuery> queries);
+    void sendAddressReads(Collection<EcuQuery> queries, byte id);
 
     void close();
 }

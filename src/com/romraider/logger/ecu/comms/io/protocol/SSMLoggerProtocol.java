@@ -41,17 +41,17 @@ import java.util.Map;
 public final class SSMLoggerProtocol implements LoggerProtocol {
     private final Protocol protocol = new SSMProtocol();
 
-    public byte[] constructEcuInitRequest() {
-        return protocol.constructEcuInitRequest();
+    public byte[] constructEcuInitRequest(byte id) {
+        return protocol.constructEcuInitRequest(id);
     }
 
     public byte[] constructEcuResetRequest() {
         return protocol.constructEcuResetRequest();
     }
 
-    public byte[] constructReadAddressRequest(Collection<EcuQuery> queries) {
+    public byte[] constructReadAddressRequest(byte id, Collection<EcuQuery> queries) {
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
-        return protocol.constructReadAddressRequest(convertToByteAddresses(filteredQueries));
+        return protocol.constructReadAddressRequest(id, convertToByteAddresses(filteredQueries));
     }
 
     public byte[] constructReadAddressResponse(Collection<EcuQuery> queries) {

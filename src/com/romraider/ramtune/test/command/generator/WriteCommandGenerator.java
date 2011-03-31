@@ -30,10 +30,10 @@ public final class WriteCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public List<byte[]> createCommands(byte[] data, byte[] address, int length) {
+    public List<byte[]> createCommands(byte id, byte[] data, byte[] address, int length) {
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(data, "data");
-        return asList(protocol.constructWriteMemoryRequest(address, data));
+        return asList(protocol.constructWriteMemoryRequest(id, address, data));
     }
 
     public String toString() {

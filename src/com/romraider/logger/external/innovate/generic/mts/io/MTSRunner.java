@@ -90,69 +90,87 @@ public final class MTSRunner implements Stoppable {
             mts.connect();
 
             try {
-                // select the input
-                mts.currentInput(0);
+            	// get a count of available inputs
+            	int inputCount = mts.inputCount();
+            	LOGGER.info("MTS: found " + inputCount + " inputs.");
 
-                // attempt to get data
-                mts.startData();
-
-                // wait a moment for data acquisition to begin
-                sleep(1000L);
-
-                // start collecting data
-                while (!stop) {
-                    int type = mts.inputType();
-                    int function = mts.inputFunction();
-                    int sample = mts.inputSample();
-
-                    LOGGER.trace("MTS: type = " + type + ", function = " + function + ", sample = " + sample);
-
-                    float data = 0f;
-
-                    // 5V channel
-                    // Determine the range between min and max,
-                    // calculate what percentage of that our sample represents,
-                    // shift back to match our offset from 0.0 for min
-                    if (type == 2) {
-                        // MTS_FUNC_NOTLAMBDA
-                        if (function == 9) {
-                            float min = mts.inputMinValue();
-                            float max = mts.inputMaxValue();
-                            data = ((max - min) * ((float) sample / 1024f)) + min;
-                        }
-
-                    }
-
-                    // AFR
-                    // Take each sample step as .001 Lambda,
-                    // add 0.5 (so our range is 0.5 to 1.523 for our 1024 steps),
-                    // then multiply by the AFR multiplier
-                    if (type == 1) {
-                        // MTS_FUNC_LAMBDA
-                        if (function == 0) {
-                            float multiplier = mts.inputAFRMultiplier();
-                            data = ((float) sample / 1000f + 0.5f) * multiplier;
-                        }
-                        // MTS_FUNC_O2
-                        if (function == 1) {
-                            data = ((float) sample / 10f);
-                        }
-                    }
-
-                    // Lambda
-                    // Identical to AFR, except we do not multiply for AFR.
-                    if (type == 0) {
-                        // MTS_FUNC_LAMBDA
-                        if (function == 0) {
-                            data = (float) sample / 1000f + 0.5f;
-                        }
-                    }
-
-                    // report the result
-                    listener.setData((double) data);
-
-                    sleep(100L);
-                }
+            	// for each input get some info about it
+            	if (inputCount > 0) {
+	            	for (int i = 0; i < inputCount; i++) {
+	                    // report each input found
+	                    mts.currentInput(i);
+	                	LOGGER.info("MTS: InputNo:" + i + ", InputName:" + mts.inputName() +
+	                			", InputType:" + mts.inputType() + ", DeviceName:" + mts.inputDeviceName() +
+	                			", DeviceType:" + mts.inputDeviceType() + ", DeviceChannel:" +
+	                			mts.inputDeviceChannel());
+	            	}
+	                // select the input
+	                mts.currentInput(0);
+	
+	                // attempt to get data
+	                mts.startData();
+	
+	                // wait a moment for data acquisition to begin
+	                sleep(1000L);
+	
+	                // start collecting data
+	                while (!stop) {
+	                    int type = mts.inputType();
+	                    int function = mts.inputFunction();
+	                    int sample = mts.inputSample();
+	
+	                    LOGGER.trace("MTS: type = " + type + ", function = " + function + ", sample = " + sample);
+	
+	                    float data = 0f;
+	
+	                    // 5V channel
+	                    // Determine the range between min and max,
+	                    // calculate what percentage of that our sample represents,
+	                    // shift back to match our offset from 0.0 for min
+	                    if (type == 2) {
+	                        // MTS_FUNC_NOTLAMBDA
+	                        if (function == 9) {
+	                            float min = mts.inputMinValue();
+	                            float max = mts.inputMaxValue();
+	                            data = ((max - min) * ((float) sample / 1024f)) + min;
+	                        }
+	
+	                    }
+	
+	                    // AFR
+	                    // Take each sample step as .001 Lambda,
+	                    // add 0.5 (so our range is 0.5 to 1.523 for our 1024 steps),
+	                    // then multiply by the AFR multiplier
+	                    if (type == 1) {
+	                        // MTS_FUNC_LAMBDA
+	                        if (function == 0) {
+	                            float multiplier = mts.inputAFRMultiplier();
+	                            data = ((float) sample / 1000f + 0.5f) * multiplier;
+	                        }
+	                        // MTS_FUNC_O2
+	                        if (function == 1) {
+	                            data = ((float) sample / 10f);
+	                        }
+	                    }
+	
+	                    // Lambda
+	                    // Identical to AFR, except we do not multiply for AFR.
+	                    if (type == 0) {
+	                        // MTS_FUNC_LAMBDA
+	                        if (function == 0) {
+	                            data = (float) sample / 1000f + 0.5f;
+	                        }
+	                    }
+	
+	                    // report the result
+	                    listener.setData((double) data);
+	
+	                    sleep(100L);
+	                }
+            	}
+            	else {
+                    LOGGER.error("MTS: Error - no input channels found to log from!");
+            	}
             } finally {
                 mts.disconnect();
             }

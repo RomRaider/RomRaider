@@ -53,6 +53,7 @@ import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.border.BevelBorder.LOWERED;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -98,6 +99,7 @@ public final class RamTuneTestApp extends AbstractFrame {
     private final JComboBox commandComboBox = new JComboBox(new CommandGenerator[]{new EcuInitCommandGenerator(protocol),
             new ReadCommandGenerator(protocol),
             new WriteCommandGenerator(protocol)});
+    private static byte ecuId = 0x10;
 
     public RamTuneTestApp(String title) {
         super(title);
@@ -238,7 +240,7 @@ public final class RamTuneTestApp extends AbstractFrame {
                             final CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
                             if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
                                 StringBuilder builder = new StringBuilder();
-                                List<byte[]> commands = commandGenerator.createCommands(getData(), getAddress(), getLength());
+                                List<byte[]> commands = commandGenerator.createCommands(ecuId, getData(), getAddress(), getLength());
                                 for (byte[] command : commands) {
                                     appendResponseLater("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
                                     byte[] response = protocol.preprocessResponse(command, commandExecutor.executeCommand(command));
@@ -351,6 +353,25 @@ public final class RamTuneTestApp extends AbstractFrame {
         JPanel panel = new JPanel(new FlowLayout(LEFT));
         panel.add(buildComPorts());
         panel.add(buildSendTimeout());
+        final JCheckBox ecuCheckBox = new JCheckBox("ECU");
+        final JCheckBox tcuCheckBox = new JCheckBox("TCU");
+        ecuCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	tcuCheckBox.setSelected(false);
+            	ecuId = 0x10;
+             }
+        });
+        tcuCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	ecuCheckBox.setSelected(false);
+            	ecuId = 0x18;
+            }
+        });
+    	ecuCheckBox.setSelected(true);
+
+        panel.add(ecuCheckBox);
+        panel.add(tcuCheckBox);
+
         return panel;
     }
 

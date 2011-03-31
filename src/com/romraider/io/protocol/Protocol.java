@@ -24,15 +24,15 @@ import com.romraider.logger.ecu.comms.query.EcuInit;
 
 public interface Protocol {
 
-    byte[] constructEcuInitRequest();
+    byte[] constructEcuInitRequest(byte id);
 
-    byte[] constructWriteMemoryRequest(byte[] address, byte[] values);
+    byte[] constructWriteMemoryRequest(byte id, byte[] address, byte[] values);
 
     byte[] constructWriteAddressRequest(byte[] address, byte value);
 
-    byte[] constructReadMemoryRequest(byte[] address, int numBytes);
+    byte[] constructReadMemoryRequest(byte id, byte[] address, int numBytes);
 
-    byte[] constructReadAddressRequest(byte[][] addresses);
+    byte[] constructReadAddressRequest(byte id, byte[][] addresses);
 
     byte[] preprocessResponse(byte[] request, byte[] response);
 
