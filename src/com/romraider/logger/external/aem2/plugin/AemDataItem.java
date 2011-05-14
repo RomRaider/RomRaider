@@ -17,37 +17,31 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.innovate.generic.serial.io;
+package com.romraider.logger.external.aem2.plugin;
 
-import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.logger.external.core.DataListener;
+import com.romraider.logger.external.core.ExternalDataItem;
 
-public final class InnovateConnectionProperties implements ConnectionProperties {
-    public int getBaudRate() {
-        return 19200;
+public final class AemDataItem implements ExternalDataItem, DataListener {
+    private double data;
+
+    public String getName() {
+        return "AEM UEGO Lambda [19200]";
     }
 
-    public void setBaudRate(int b) {
-
+    public String getDescription() {
+        return "AEM UEGO Lambda data";
     }
 
-    public int getDataBits() {
-        return 8;
+    public String getUnits() {
+        return "Lambda";
     }
 
-    public int getStopBits() {
-        return 1;
+    public double getData() {
+        return data;
     }
 
-    public int getParity() {
-        return 0;
-    }
-
-    public int getConnectTimeout() {
-        return 2000;
-    }
-
-    public int getSendTimeout() {
-        // innovate specifies 82 but this isn't enough...
-        return 200;
+    public void setData(double data) {
+        this.data = data;
     }
 }

@@ -1,0 +1,1 @@
+datasource.class=com.romraider.logger.external.aem2.plugin.AemDataSource

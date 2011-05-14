@@ -26,7 +26,7 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
     private double data;
 
     public String getName() {
-        return "AEM UEGO";
+        return "AEM UEGO AFR [9600]";
     }
 
     public String getDescription() {

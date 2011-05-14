@@ -26,6 +26,10 @@ public final class PlxConnectionProperties implements ConnectionProperties {
         return 19200;
     }
 
+    public void setBaudRate(int b) {
+
+    }
+
     public int getDataBits() {
         return 8;
     }

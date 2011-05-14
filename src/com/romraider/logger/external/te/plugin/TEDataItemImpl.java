@@ -17,37 +17,39 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.innovate.generic.serial.io;
+package com.romraider.logger.external.te.plugin;
 
-import com.romraider.io.connection.ConnectionProperties;
+public final class TEDataItemImpl implements TEDataItem {
+    private final TEConverter converter = new TEConverterImpl();
+    private final TESensorType sensorType;
+    private final String units;
+    private final String name;
+    private int[] raw;
 
-public final class InnovateConnectionProperties implements ConnectionProperties {
-    public int getBaudRate() {
-        return 19200;
+    public TEDataItemImpl(String name, String units, TESensorType sensorType) {
+        super();
+        this.name = name;
+        this.units = units;
+        this.sensorType = sensorType;
     }
 
-    public void setBaudRate(int b) {
-
+    public String getName() {
+        return "Tech Edge " + name;
     }
 
-    public int getDataBits() {
-        return 8;
+    public String getDescription() {
+        return "Tech Edge " + name + " data";
     }
 
-    public int getStopBits() {
-        return 1;
+    public String getUnits() {
+        return units;
     }
 
-    public int getParity() {
-        return 0;
+    public double getData() {
+        return converter.convert(sensorType, raw);
     }
 
-    public int getConnectTimeout() {
-        return 2000;
-    }
-
-    public int getSendTimeout() {
-        // innovate specifies 82 but this isn't enough...
-        return 200;
+    public void setRaw(int... raw) {
+        this.raw = raw;
     }
 }

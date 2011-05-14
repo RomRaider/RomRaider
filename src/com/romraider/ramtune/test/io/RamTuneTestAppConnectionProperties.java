@@ -34,6 +34,10 @@ public final class RamTuneTestAppConnectionProperties implements ConnectionPrope
         return defaultConnectionProperties.getBaudRate();
     }
 
+    public void setBaudRate(int b) {
+
+    }
+
     public int getDataBits() {
         return defaultConnectionProperties.getDataBits();
     }

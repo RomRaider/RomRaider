@@ -83,7 +83,7 @@ public final class MafControlPanel extends JPanel {
     private final JTextField rpmMax = new JTextField("4500", 3);
     private final JTextField mafMin = new JTextField("0", 3);
     private final JTextField mafMax = new JTextField("100", 3);
-    private final JTextField iatMax = new JTextField("45", 3);
+    private final JTextField iatMax = new JTextField("100", 3);
     private final JTextField coolantMin = new JTextField("70", 3);
     private final JTextField mafvChangeMax = new JTextField("0.1", 3);
     private final JComboBox afrSourceList = new JComboBox();

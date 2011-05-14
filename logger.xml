@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE logger SYSTEM "logger.dtd">
-<!--ROMRAIDER STANDARD UNITS LOGGER DEFINITION FILE (VERSION 34) 20110329_232125
-Identified target for all SSM parameters/switches and Extended parameters with new tag.
+<!--ROMRAIDER STANDARD UNITS LOGGER DEFINITION FILE (VERSION 36) 20110404_222458
+Added ECU ID: 74A2584007 to extended parameters
 -->
 <logger>
     <protocols>
@@ -145,7 +145,7 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                         <conversion units="ms" expr="x*256/1000" format="0.00" />
                     </conversions>
                 </parameter>
-                <parameter id="P23" name="Knock Correction Advance" desc="P23" ecubyteindex="10" ecubit="1" target="1">
+                <parameter id="P23" name="Knock Correction Advance" desc="P23-Retard amount when knocking has occurred. Partial learned value of the learned ignition timing." ecubyteindex="10" ecubit="1" target="1">
                     <address>0x000022</address>
                     <conversions>
                         <conversion units="degrees" expr="(x-128)/2" format="0.00" gauge_min="-15" gauge_max="20" gauge_step="5" />
@@ -189,7 +189,7 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                         <conversion units="V" expr="x/50" format="0.00" />
                     </conversions>
                 </parameter>
-                <parameter id="P29" name="Learned Ignition Timing" desc="P29" ecubyteindex="11" ecubit="3" target="1">
+                <parameter id="P29" name="Learned Ignition Timing" desc="P29-Advance or retard amount when knocking has occurred." ecubyteindex="11" ecubit="3" target="1">
                     <address>0x000028</address>
                     <conversions>
                         <conversion units="degrees" expr="(x-128)/2" format="0.00" />
@@ -748,7 +748,7 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                         <conversion units="ohms" expr="x*4/2" format="0.0" />
                     </conversions>
                 </parameter>
-                <parameter id="P120" name="Odometer" desc="P120" ecubyteindex="41" ecubit="1" target="1">
+                <parameter id="P120" name="Estimated odometer" desc="P120-Estimated odometer - increments every 2km" ecubyteindex="41" ecubit="1" target="1">
                     <address length="2">0x00010E</address>
                     <conversions>
                         <conversion units="miles" expr="x*1.242742384" format="0" />
@@ -978,7 +978,7 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                         <conversion units="misfire count" expr="x" format="0" />
                     </conversions>
                 </parameter>
-                <parameter id="P153" name="Learned Ignition Timing Correction" desc="P153" ecubyteindex="55" ecubit="1" target="1">
+                <parameter id="P153" name="Learned Ignition Timing Correction" desc="P153-Value of only the whole learning value in the ignition timing learning value." ecubyteindex="55" ecubit="1" target="1">
                     <address>0x0000F9</address>
                     <conversions>
                         <conversion units="degrees" expr="x/16" format="0.0" />
@@ -10374,6 +10374,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     <ecu id="7442594007">
                         <address length="4">0xFF2DE4</address>
                     </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF2D28</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF2D38</address>
+                    </ecu>
                     <conversions>
                         <conversion units="multiplier" storagetype="float" expr="x" format="0.0000" />
                     </conversions>
@@ -12474,6 +12480,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     <ecu id="7442594007">
                         <address length="4">0xFF5F0C</address>
                     </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF5F0C</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF5F0C</address>
+                    </ecu>
                     <conversions>
                         <conversion units="absolute %" storagetype="float" expr="x" format="0.00" />
                     </conversions>
@@ -13044,6 +13056,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                         <address length="4">0xFF5EFC</address>
                     </ecu>
                     <ecu id="7442594007">
+                        <address length="4">0xFF5EFC</address>
+                    </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF5EFC</address>
+                    </ecu>
+                    <ecu id="74A2584007">
                         <address length="4">0xFF5EFC</address>
                     </ecu>
                     <conversions>
@@ -13620,6 +13638,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     <ecu id="7442594007">
                         <address length="4">0xFF5F04</address>
                     </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF5F04</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF5F04</address>
+                    </ecu>
                     <conversions>
                         <conversion units="psi relative sea level" storagetype="float" expr="(x-760)*0.01933677" format="0.00" />
                         <conversion units="psi absolute" storagetype="float" expr="x*0.01933677" format="0.00" />
@@ -14194,6 +14218,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                         <address length="4">0xFF5F08</address>
                     </ecu>
                     <ecu id="7442594007">
+                        <address length="4">0xFF5F08</address>
+                    </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF5F08</address>
+                    </ecu>
+                    <ecu id="74A2584007">
                         <address length="4">0xFF5F08</address>
                     </ecu>
                     <conversions>
@@ -14860,6 +14890,9 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF6540</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF6520</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x/.84" format="0.00" />
@@ -15603,6 +15636,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF7BD4</address>
+                    </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF7C78</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF7B60</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
@@ -17095,6 +17134,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF7C70</address>
+                    </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF7D14</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF7BFC</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
@@ -27573,6 +27618,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     <ecu id="7442594007">
                         <address length="4">0xFF7F38</address>
                     </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF7FDC</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF7EC4</address>
+                    </ecu>
                     <conversions>
                         <conversion units="raw ecu value" storagetype="float" expr="x" format="0.00" />
                     </conversions>
@@ -29819,6 +29870,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     </ecu>
                     <ecu id="7442594007">
                         <address>0xFF6A79</address>
+                    </ecu>
+                    <ecu id="7452584007">
+                        <address>0xFF6A31</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address>0xFF6A35</address>
                     </ecu>
                     <conversions>
                         <conversion units="position" expr="x" format="0" />
@@ -50822,6 +50879,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     <ecu id="7432744007">
                         <address length="4">0xFF7A04</address>
                     </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF7A20</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF7908</address>
+                    </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
                     </conversions>
@@ -50839,6 +50902,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     <ecu id="7432744007">
                         <address length="4">0xFF7B30</address>
                     </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF7B40</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF7A28</address>
+                    </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
                     </conversions>
@@ -50855,6 +50924,12 @@ Identified target for all SSM parameters/switches and Extended parameters with n
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7B68</address>
+                    </ecu>
+                    <ecu id="7452584007">
+                        <address length="4">0xFF7B78</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF7A60</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />

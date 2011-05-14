@@ -40,8 +40,14 @@ public final class GenericPluginMenuAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-        String port = (String) showInputDialog(logger, "Select COM port:", dataSource.getName() + " Plugin Settings", QUESTION_MESSAGE, null,
-                getPorts(), dataSource.getPort());
+        String port = (String) showInputDialog(
+        		logger,
+        		"Select COM port:",
+        		dataSource.getName() + " Plugin Settings",
+        		QUESTION_MESSAGE,
+        		null,
+                getPorts(),
+                dataSource.getPort());
         if (port != null && port.length() > 0) dataSource.setPort(port);
     }
 

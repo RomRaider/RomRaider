@@ -41,6 +41,10 @@ public final class ConnectionPropertiesImpl implements ConnectionProperties {
         return baudRate;
     }
 
+    public void setBaudRate(int b) {
+
+    }
+
     public int getDataBits() {
         return dataBits;
     }

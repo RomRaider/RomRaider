@@ -26,6 +26,10 @@ public final class NawConnectionProperties implements ConnectionProperties {
         return 9600;
     }
 
+    public void setBaudRate(int b) {
+
+    }
+
     public int getDataBits() {
         return 8;
     }

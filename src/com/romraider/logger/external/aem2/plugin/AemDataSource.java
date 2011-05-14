@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.aem.plugin;
+package com.romraider.logger.external.aem2.plugin;
 
 import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.external.aem.io.AemRunner;
+import com.romraider.logger.external.aem2.io.AemRunner;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
@@ -38,11 +38,11 @@ public final class AemDataSource implements ExternalDataSource {
     }
 
     public String getName() {
-        return "AEM UEGO AFR [9600]";
+        return "AEM UEGO Lambda [19200]";
     }
 
     public String getVersion() {
-        return "0.04";
+        return "0.01";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

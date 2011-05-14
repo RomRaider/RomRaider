@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.aem.io;
+package com.romraider.logger.external.aem2.io;
 
 import com.romraider.io.serial.connection.SerialConnection;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
-import com.romraider.logger.external.aem.plugin.AemDataItem;
+import com.romraider.logger.external.aem2.plugin.AemDataItem;
 import com.romraider.logger.external.core.Stoppable;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import org.apache.log4j.Logger;
@@ -43,8 +43,8 @@ public final class AemRunner implements Stoppable {
         try {
             while (!stop) {
                 String response = connection.readLine();
-                LOGGER.trace("AEM UEGO AFR Response: " + response);
-                if (!isNullOrEmpty(response)) dataItem.setData(parseDouble(response));
+                LOGGER.trace("AEM UEGO Lambda Response: " + response);
+                if (!isNullOrEmpty(response)) dataItem.setData(parseString(response));
             }
         } catch (Throwable t) {
             LOGGER.error("Error occurred", t);
@@ -58,11 +58,23 @@ public final class AemRunner implements Stoppable {
         connection.close();
     }
 
-    private double parseDouble(String value) {
-        try {
-            return Double.parseDouble(value);
-        } catch (Exception e) {
-            return 0.0;
-        }
-    }
+    /*
+     * http://www.romraider.com/forum/viewtopic.php?f=14&t=7207
+     * The new version uses a baud rate of 19200 and outputs data
+     * in the form "1.000\tReady\tNo-errors\r"
+     * where 1.000 is the lambda value and the two other strings
+     * are status values. The values are separated by a tab and
+     * terminated with a carriage return. I believe the old version
+     * terminated with a carriage return and line feed.  This should
+     * work for either case.
+     */
+        private double parseString(String value){
+        	try{
+        		String[] substr = value.split("\t");
+        		return Double.parseDouble(substr[0]);    
+            }
+        	catch (Exception e){
+        		return 0.0;
+            }
+    	}
 }

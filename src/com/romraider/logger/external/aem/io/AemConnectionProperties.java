@@ -26,6 +26,10 @@ public final class AemConnectionProperties implements ConnectionProperties {
         return 9600;
     }
 
+    public void setBaudRate(int b) {
+
+    }
+
     public int getDataBits() {
         return 8;
     }

@@ -139,6 +139,10 @@ public final class SSMProtocol implements Protocol {
                 return 4800;
             }
 
+            public void setBaudRate(int b) {
+
+            }
+
             public int getDataBits() {
                 return 8;
             }

@@ -22,6 +22,8 @@ package com.romraider.io.connection;
 public interface ConnectionProperties {
     int getBaudRate();
 
+    void setBaudRate(int b);
+
     int getDataBits();
 
     int getStopBits();

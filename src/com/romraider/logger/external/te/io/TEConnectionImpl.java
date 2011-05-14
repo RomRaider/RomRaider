@@ -17,37 +17,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.innovate.generic.serial.io;
+package com.romraider.logger.external.te.io;
 
 import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.serial.connection.SerialConnection;
+import com.romraider.io.serial.connection.SerialConnectionImpl;
+import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
-public final class InnovateConnectionProperties implements ConnectionProperties {
-    public int getBaudRate() {
-        return 19200;
+public final class TEConnectionImpl implements TEConnection {
+    private final SerialConnection connection;
+
+    public TEConnectionImpl(String port) {
+        checkNotNullOrEmpty(port, "port");
+        connection = serialConnection(port);
+//      connection = new TestTEConnection();
     }
 
-    public void setBaudRate(int b) {
-
+    public byte readByte() {
+        return (byte) connection.read();
     }
 
-    public int getDataBits() {
-        return 8;
+    public void close() {
+        connection.close();
     }
 
-    public int getStopBits() {
-        return 1;
-    }
-
-    public int getParity() {
-        return 0;
-    }
-
-    public int getConnectTimeout() {
-        return 2000;
-    }
-
-    public int getSendTimeout() {
-        // innovate specifies 82 but this isn't enough...
-        return 200;
+    private SerialConnection serialConnection(String port) {
+        ConnectionProperties connectionProperties = new TEConnectionProperties();
+        return new SerialConnectionImpl(port, connectionProperties);
     }
 }

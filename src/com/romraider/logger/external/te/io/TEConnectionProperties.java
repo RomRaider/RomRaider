@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.innovate.generic.serial.io;
+package com.romraider.logger.external.te.io;
 
 import com.romraider.io.connection.ConnectionProperties;
 
-public final class InnovateConnectionProperties implements ConnectionProperties {
+public final class TEConnectionProperties implements ConnectionProperties {
     public int getBaudRate() {
         return 19200;
     }
@@ -47,7 +47,6 @@ public final class InnovateConnectionProperties implements ConnectionProperties 
     }
 
     public int getSendTimeout() {
-        // innovate specifies 82 but this isn't enough...
-        return 200;
+        return 500;
     }
 }

@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC7 -
+                    - RomRaider 0.5.3 Beta RC8 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,14 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 
-
 -------------------------------
-- 0.5.3b RC7 Notes (05/02/2010) -
+- 0.5.3b RC8 Notes (05/14/2011) -
 -------------------------------
-This is the seventh beta release of the upcoming official 0.5.3b release.
+This is the eigth beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.3b RC7 Known Issues -
+- 0.5.3b RC8 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -55,6 +54,15 @@ This is the seventh beta release of the upcoming official 0.5.3b release.
 --------------
 - Change Log -
 --------------
+
+0.5.3b RC8 (05/14/2011)
+-----------------------
+
+--- Logger ---
+- Added support to log from ECU or TCU (not both at the same time, yet)
+- New AEM protocol support added (AEM2 plugin works at 19200 baud and reports
+  Lambda values)
+- New Tech Edge support added (currently only supports data format 2.0)
 
 0.5.3b RC7 (12/21/2010)
 -----------------------
