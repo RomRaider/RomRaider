@@ -51,11 +51,13 @@
             <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
 
             <file src="plugins/aem.plugin" targetdir="$INSTALL_PATH/plugins"/>
+            <file src="plugins/aem2.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/fourteenpoint7.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/innovate.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/lm2_mts.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/mrf.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/plx.plugin" targetdir="$INSTALL_PATH/plugins"/>
+            <file src="plugins/te.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/zt2.plugin" targetdir="$INSTALL_PATH/plugins"/>
 
             <fileset dir="lib/common" targetdir="$INSTALL_PATH/lib/common"/>
