@@ -25,6 +25,7 @@ import static com.romraider.util.ThreadUtil.sleep;
 public final class TestPlxConnection implements SerialConnection {
     private final byte[] data = {(byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00, 0x01, 0x00, 0x00, 0x0f, 0x40};
     private int index;
+    private byte[] result = new byte[1];
 
     public void write(byte[] bytes) {
         throw new UnsupportedOperationException();
@@ -54,7 +55,8 @@ public final class TestPlxConnection implements SerialConnection {
     }
 
     public int read() {
-        throw new UnsupportedOperationException();
+        read(result);
+        return result[0];
     }
 
     public void close() {

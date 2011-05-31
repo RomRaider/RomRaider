@@ -42,7 +42,10 @@ public final class TERunner implements Stoppable {
     private final Map<TESensorType, TEDataItem> dataItems;
     private final TEConnection connection;
     private boolean stop;
-
+    private byte byteSum;
+    private int sequenceNo;
+    private int lastSequenceNo = -1;
+    
     public TERunner(String port, Map<TESensorType, TEDataItem> dataItems) {
         this.connection = new TEConnectionImpl(port);
         this.dataItems = dataItems;
@@ -54,102 +57,124 @@ public final class TERunner implements Stoppable {
             List<Byte> buffer = new ArrayList<Byte>(28);
             while (!stop) {
                 byte b = connection.readByte();
-                if (convertAsUnsignedByteToInt(b) == 0xa5
+                if (b == ((byte)0xa5)
                         && buffer.size() >= 1
-                        && buffer.get(buffer.size() - 1) == 0x5a) {
+                        && buffer.get(buffer.size() - 1) == ((byte)0x5a)) {
                     packetStarted = true;
                     buffer.clear();
                     buffer.add((byte) 0x5a);
                     buffer.add(b);
-
-                } else if (packetStarted && buffer.size() <= 28) {
+                }
+                else if (packetStarted && buffer.size() <= 28) {
                     buffer.add(b);
                     switch (buffer.size()) {
-                        case 7:
-                            TEDataItem lambdaDataItem = dataItems.get(Lambda);
-                            if (lambdaDataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(5));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(6));
-                                lambdaDataItem.setRaw(raw1, raw2);
-                            }
+                        case 3:
+                        	sequenceNo = convertAsUnsignedByteToInt(buffer.get(2));
                             break;
-                        case 11:
-                            TEDataItem usr1DataItem = dataItems.get(USR1);
-                            if (usr1DataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(9));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(10));
-                                usr1DataItem.setRaw(raw1, raw2);
-                            }
-                            break;
-                        case 13:
-                            TEDataItem usr2DataItem = dataItems.get(USR2);
-                            if (usr2DataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(11));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(12));
-                                usr2DataItem.setRaw(raw1, raw2);
-                            }
-                            break;
-                        case 15:
-                            TEDataItem usr3DataItem = dataItems.get(USR3);
-                            if (usr3DataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(13));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(14));
-                                usr3DataItem.setRaw(raw1, raw2);
-                            }
-                            break;
-                        case 17:
-                            TEDataItem tc1DataItem = dataItems.get(TC1);
-                            if (tc1DataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(15));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(16));
-                                tc1DataItem.setRaw(raw1, raw2);
-                            }
-                            break;
-                        case 19:
-                            TEDataItem tc2DataItem = dataItems.get(TC2);
-                            if (tc2DataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(17));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(18));
-                                tc2DataItem.setRaw(raw1, raw2);
-                            }
-                            break;
-                        case 21:
-                            TEDataItem tc3DataItem = dataItems.get(TC3);
-                            if (tc3DataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(19));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(20));
-                                tc3DataItem.setRaw(raw1, raw2);
-                            }
-                            break;
-                        case 23:
-                            TEDataItem tOrVssDataItem = dataItems.get(TorVss);
-                            if (tOrVssDataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(21));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(22));
-                                tOrVssDataItem.setRaw(raw1, raw2);
-                            }
-                            break;
-                        case 25:
-                            TEDataItem rpmDataItem = dataItems.get(RPM);
-                            if (rpmDataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(23));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(24));
-                                rpmDataItem.setRaw(raw1, raw2);
-                            }
+                        case 27:
+                        	byteSum = 0;
+                        	for (byte b1 : buffer) {
+                        		byteSum = (byte) (byteSum + b1);
+                        	}
+                        	byteSum = (byte) ~byteSum; // 1's complement of sum
                             break;
                         case 28:
+                        	LOGGER.trace("Tech Edge(2.0) LastSeq:" + lastSequenceNo + " seq:" + sequenceNo + " data:" + buffer);
+                        	if (byteSum != b) {
+                            	LOGGER.error("Tech Edge(2.0) CheckSum Failed, calculated:" + byteSum + ", received:" + b);                        		
+                        	}
+                        	if (lastSequenceNo == -1) {
+                        		lastSequenceNo = sequenceNo;
+                        	}
+                        	else {
+	                        	if (lastSequenceNo == 0xff) {
+	                        		if (sequenceNo != 0x00) {
+	                        	       	LOGGER.error("Tech Edge(2.0) Packet Drop: expected sequence number:0" + ", received:" + sequenceNo);
+	                        			lastSequenceNo = sequenceNo;
+	                        		}
+	                        		else {
+	                        			lastSequenceNo = sequenceNo;
+	                        		}
+	                        	}
+	                        	else {
+		                        	if ((lastSequenceNo + 1) != sequenceNo) {
+	                                	LOGGER.error("Tech Edge(2.0) Packet Drop: expected sequence number:" + (lastSequenceNo + 1) + ", received:" + sequenceNo);
+	                            		lastSequenceNo = sequenceNo;
+		                        	}
+		                        	else {
+		                                TEDataItem dataItem = dataItems.get(Lambda);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(5));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(6));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+		                                dataItem = dataItems.get(USR1);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(9));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(10));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+		                                dataItem = dataItems.get(USR2);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(11));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(12));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+		                                dataItem = dataItems.get(USR3);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(13));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(14));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+		                                dataItem = dataItems.get(TC1);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(15));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(16));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+		                                dataItem = dataItems.get(TC2);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(17));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(18));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+		                                dataItem = dataItems.get(TC3);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(19));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(20));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+		                                dataItem = dataItems.get(TorVss);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(21));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(22));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+		                                dataItem = dataItems.get(RPM);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(23));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(24));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+	                        			lastSequenceNo++;
+		                    		}
+	                        	}
+                        	}
                             buffer.clear();
                             packetStarted = false;
                             break;
                     }
-                } else {
+                }
+                else {
                     buffer.add(b);
                     packetStarted = false;
                 }
             }
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             LOGGER.error("Error occurred", t);
-        } finally {
+        }
+        finally {
             connection.close();
         }
     }

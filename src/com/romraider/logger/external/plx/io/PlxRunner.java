@@ -45,7 +45,12 @@ public final class PlxRunner implements Stoppable {
                 PlxResponse response = parser.pushByte(b);
                 if (!isValid(response)) continue;
                 PlxDataItem item = dataItems.get(response.sensor);
-                item.setRaw(response.value);
+                if (item != null) {
+                	item.setRaw(response.value);
+                }
+                else {
+                	LOGGER.error("plx sensor ^ is not supported");
+                }
             }
         } catch (Throwable t) {
             LOGGER.error("Error occurred", t);

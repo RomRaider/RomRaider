@@ -26,6 +26,8 @@ import com.romraider.logger.external.plx.io.PlxRunner;
 import com.romraider.logger.external.plx.io.PlxSensorType;
 import static com.romraider.logger.external.plx.io.PlxSensorType.WIDEBAND_AFR;
 import static com.romraider.logger.external.plx.io.PlxSensorUnits.WIDEBAND_AFR_GASOLINE147;
+import static com.romraider.logger.external.plx.io.PlxSensorType.EXHAUST_GAS_TEMPERATURE;
+import static com.romraider.logger.external.plx.io.PlxSensorUnits.EXHAUST_GAS_TEMPERATURE_CELSIUS;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import javax.swing.Action;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public final class PlxDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.02";
+        return "0.03";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

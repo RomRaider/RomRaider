@@ -73,6 +73,9 @@ public final class NawConvertorImpl implements NawConvertor {
                 o2conc = 0.210;
             }
             afr = ((o2conc / 3) + 1) / (1 - (4.76 * o2conc)) * 14.7;
+            if (afr > 30) {
+            	afr = 29.9;
+            }
         } else { // Rich
             afr = ((0.00003453 * unCalIp * unCalIp) - (0.00159 * unCalIp) + 0.6368) * 14.7;
         }

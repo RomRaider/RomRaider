@@ -26,11 +26,17 @@ import static com.romraider.logger.external.plx.io.PlxParserImpl.ParserState.EXP
 import static com.romraider.logger.external.plx.io.PlxParserImpl.ParserState.EXPECTING_SECOND_HALF_OF_VALUE;
 import static com.romraider.logger.external.plx.io.PlxParserImpl.ParserState.EXPECTING_START;
 import static com.romraider.logger.external.plx.io.PlxSensorType.valueOf;
+import static org.apache.log4j.Logger.getLogger;
+
+import org.apache.log4j.Logger;
+
 
 public final class PlxParserImpl implements PlxParser {
+    private static final Logger LOGGER = getLogger(PlxParserImpl.class);
     private ParserState state = EXPECTING_START;
     private PlxSensorType sensorType;
     private int partialValue;
+    private byte instance;
 
     public PlxResponse pushByte(byte b) {
         if (b == (byte) 0x80) {
@@ -57,6 +63,7 @@ public final class PlxParserImpl implements PlxParser {
 
             case EXPECTING_INSTANCE:
                 state = EXPECTING_FIRST_HALF_OF_VALUE;
+                instance = b;
                 break;
 
             case EXPECTING_FIRST_HALF_OF_VALUE:
@@ -67,7 +74,8 @@ public final class PlxParserImpl implements PlxParser {
             case EXPECTING_SECOND_HALF_OF_VALUE:
                 state = EXPECTING_FIRST_HALF_OF_SENSOR_TYPE;
                 int rawValue = (partialValue << 6) | b;
-                return new PlxResponse(sensorType, rawValue);
+            	LOGGER.trace("PLX sensor:" + sensorType + " instance:" + instance + " value:" + rawValue );
+           		return new PlxResponse(sensorType, rawValue);	
         }
 
         return null;
