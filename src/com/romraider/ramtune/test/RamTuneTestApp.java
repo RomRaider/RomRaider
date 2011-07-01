@@ -24,6 +24,8 @@ import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
 import com.romraider.io.protocol.ssm.SSMProtocol;
 import com.romraider.io.serial.port.SerialPortRefresher;
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.ui.SerialPortComboBox;
 import com.romraider.ramtune.test.command.executor.CommandExecutor;
 import com.romraider.ramtune.test.command.executor.CommandExecutorImpl;
@@ -88,6 +90,7 @@ public final class RamTuneTestApp extends AbstractFrame {
     private static final long serialVersionUID = 7140513114169019846L;
     private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
     private static final String REGEX_VALID_DATA_BYTES = "[0-9a-fA-F]{2,}";
+    private static final PollingState pollMode = new PollingStateImpl();
     private final Protocol protocol = new SSMProtocol();
     private final Settings settings = new Settings();
     private final JTextField addressField = new JTextField(6);
@@ -243,7 +246,7 @@ public final class RamTuneTestApp extends AbstractFrame {
                                 List<byte[]> commands = commandGenerator.createCommands(ecuId, getData(), getAddress(), getLength());
                                 for (byte[] command : commands) {
                                     appendResponseLater("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
-                                    byte[] response = protocol.preprocessResponse(command, commandExecutor.executeCommand(command));
+                                    byte[] response = protocol.preprocessResponse(command, commandExecutor.executeCommand(command), pollMode);
                                     appendResponseLater("RCV [" + commandGenerator + "]:\t" + asHex(response) + "\n");
                                     builder.append(asHex(protocol.parseResponseData(response)));
                                 }

@@ -27,6 +27,8 @@ import static com.romraider.io.protocol.ssm.SSMProtocol.REQUEST_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.SSMResponseProcessor.extractResponseData;
 import static com.romraider.io.protocol.ssm.SSMResponseProcessor.filterRequestFromResponse;
+
+import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
@@ -54,19 +56,27 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         return protocol.constructReadAddressRequest(id, convertToByteAddresses(filteredQueries));
     }
 
-    public byte[] constructReadAddressResponse(Collection<EcuQuery> queries) {
+    public byte[] constructReadAddressResponse(Collection<EcuQuery> queries, PollingState pollState) {
         checkNotNullOrEmpty(queries, "queries");
+        checkNotNull(pollState, "pollState");
         // 0x80 0xF0 0x10 data_length 0xE8 value1 value2 ... valueN checksum
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
         int numAddresses = 0;
         for (EcuQuery ecuQuery : filteredQueries) {
             numAddresses += (ecuQuery.getBytes().length / ADDRESS_SIZE);
         }
-        return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES) + (numAddresses * ADDRESS_SIZE + REQUEST_NON_DATA_BYTES)];
+        switch (pollState.getCurrentState()) {
+        case 0:
+        	return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES) + (numAddresses * ADDRESS_SIZE + REQUEST_NON_DATA_BYTES)];
+        case 1:
+        	return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES)];
+        default:
+            throw new UnsupportedOperationException("Poll mode not supported:" + pollState.getCurrentState());
+        }
     }
 
-    public byte[] preprocessResponse(byte[] request, byte[] response) {
-        return filterRequestFromResponse(request, response);
+    public byte[] preprocessResponse(byte[] request, byte[] response, PollingState pollState) {
+        return filterRequestFromResponse(request, response, pollState);
     }
 
     public void processEcuInitResponse(EcuInitCallback callback, byte[] response) {
@@ -83,7 +93,7 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
     }
 
     // processes the response bytes and sets individual responses on corresponding query objects
-    public void processReadAddressResponses(Collection<EcuQuery> queries, byte[] response) {
+    public void processReadAddressResponses(Collection<EcuQuery> queries, byte[] response, PollingState pollState) {
         checkNotNullOrEmpty(queries, "queries");
         checkNotNullOrEmpty(response, "response");
         byte[] responseData = extractResponseData(response);

@@ -68,4 +68,7 @@ public final class TestInnovateConnection implements SerialConnection {
         read(result);
         return result[0];
     }
+
+    public void sendBreak(int duration) {
+	}
 }

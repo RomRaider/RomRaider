@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.comms.io.protocol;
 
+import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import java.util.Collection;
@@ -31,13 +32,13 @@ public interface LoggerProtocol {
 
     byte[] constructReadAddressRequest(byte id, Collection<EcuQuery> queries);
 
-    byte[] constructReadAddressResponse(Collection<EcuQuery> queries);
+    byte[] constructReadAddressResponse(Collection<EcuQuery> queries, PollingState pollState);
 
-    byte[] preprocessResponse(byte[] request, byte[] response);
+    byte[] preprocessResponse(byte[] request, byte[] response, PollingState pollState);
 
     void processEcuInitResponse(EcuInitCallback callback, byte[] response);
 
     void processEcuResetResponse(byte[] response);
 
-    void processReadAddressResponses(Collection<EcuQuery> queries, byte[] response);
+    void processReadAddressResponses(Collection<EcuQuery> queries, byte[] response, PollingState pollState);
 }

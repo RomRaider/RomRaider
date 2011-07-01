@@ -237,6 +237,7 @@ public final class DOMSettingsBuilder {
         serial.setAttribute("port", settings.getLoggerPortDefault());
         serial.setAttribute("refresh", String.valueOf(settings.getRefreshMode()));
         serial.setAttribute("ecuid", String.valueOf(settings.getDestinationId()));
+        serial.setAttribute("fastpoll", String.valueOf(settings.getFastPoll()));
         loggerSettings.appendChild(serial);
 
         // window maximized
@@ -248,6 +249,7 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode size = new IIOMetadataNode("size");
         size.setAttribute("x", String.valueOf(((int) settings.getLoggerWindowSize().getHeight())));
         size.setAttribute("y", String.valueOf(((int) settings.getLoggerWindowSize().getWidth())));
+        size.setAttribute("divider", String.valueOf(((int) settings.getDividerLocation())));
         loggerSettings.appendChild(size);
 
         // window location

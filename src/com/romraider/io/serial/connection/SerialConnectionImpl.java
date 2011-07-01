@@ -130,6 +130,7 @@ public final class SerialConnectionImpl implements SerialConnection {
     public void close() {
         if (os != null) {
             try {
+            	readStaleData();
                 os.close();
             } catch (IOException e) {
                 LOGGER.error("Error closing output stream", e);
@@ -157,6 +158,14 @@ public final class SerialConnectionImpl implements SerialConnection {
             }
         }
         LOGGER.info("Connection closed.");
+    }
+
+    public void sendBreak(int duration) {
+        try {
+        	serialPort.sendBreak(duration);
+        } catch (Exception e) {
+            throw new SerialCommunicationException(e);
+        }
     }
 
     private SerialPort connect(String portName, ConnectionProperties connectionProperties) {

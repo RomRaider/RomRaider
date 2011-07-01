@@ -24,11 +24,14 @@ import static com.romraider.io.protocol.ssm.SSMProtocol.DIAGNOSTIC_TOOL_ID;
 import static com.romraider.io.protocol.ssm.SSMProtocol.ECU_ID;
 import static com.romraider.io.protocol.ssm.SSMProtocol.ECU_INIT_RESPONSE;
 import static com.romraider.io.protocol.ssm.SSMProtocol.HEADER;
+import static com.romraider.io.protocol.ssm.SSMProtocol.READ_ADDRESS_COMMAND;
 import static com.romraider.io.protocol.ssm.SSMProtocol.READ_ADDRESS_RESPONSE;
 import static com.romraider.io.protocol.ssm.SSMProtocol.READ_MEMORY_RESPONSE;
 import static com.romraider.io.protocol.ssm.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_ADDRESS_RESPONSE;
 import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_MEMORY_RESPONSE;
+
+import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.exception.InvalidResponseException;
 import static com.romraider.util.ByteUtil.asByte;
 import static com.romraider.util.HexUtil.asHex;
@@ -41,16 +44,20 @@ public final class SSMResponseProcessor {
         throw new UnsupportedOperationException();
     }
 
-    public static byte[] filterRequestFromResponse(byte[] request, byte[] response) {
-        checkNotNull(request, "request");
+    public static byte[] filterRequestFromResponse(byte[] request, byte[] response, PollingState pollState) {
+    	checkNotNull(request, "request");
         checkNotNullOrEmpty(response, "response");
-        //LOGGER.("Raw request        = " + asHex(request));
-        //LOGGER.("Raw response       = " + asHex(response));
-        byte[] filteredResponse = new byte[response.length - request.length];
-        System.arraycopy(response, request.length, filteredResponse, 0, filteredResponse.length);
-        //LOGGER.("Filtered response  = " + asHex(filteredResponse));
-        //LOGGER.();
-        return filteredResponse;
+        checkNotNull(pollState, "pollState");
+        byte[] filteredResponse = new byte[0];
+        if (request[4] != READ_ADDRESS_COMMAND || pollState.getCurrentState() == 0){
+        	filteredResponse = new byte[response.length - request.length];
+	        System.arraycopy(response, request.length, filteredResponse, 0, filteredResponse.length);
+        }
+        if (request[4] == READ_ADDRESS_COMMAND && pollState.getCurrentState() == 1){
+        	filteredResponse = new byte[response.length];
+	        System.arraycopy(response, 0, filteredResponse, 0, filteredResponse.length);
+        }
+		return filteredResponse;
     }
 
     public static void validateResponse(byte[] response) {

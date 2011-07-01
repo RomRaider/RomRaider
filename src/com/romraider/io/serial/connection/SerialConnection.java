@@ -35,4 +35,6 @@ public interface SerialConnection {
     void readStaleData();
 
     void close();
+    
+    void sendBreak(int duration);
 }

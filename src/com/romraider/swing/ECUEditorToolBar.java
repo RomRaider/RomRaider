@@ -69,7 +69,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         String file = getLastSelectedRomFileName();
 
         openImage.setToolTipText("Open Image");
-        saveImage.setToolTipText("Save " + file + " As...");
+        saveImage.setToolTipText("Save " + file + " As New Image...");
         refreshImage.setToolTipText("Refresh " + file + " from saved copy");
         closeImage.setToolTipText("Close " + file);
 

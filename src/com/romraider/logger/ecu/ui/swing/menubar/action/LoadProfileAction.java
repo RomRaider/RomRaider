@@ -49,6 +49,7 @@ public final class LoadProfileAction extends AbstractAction {
             logger.loadUserProfile(profileFilePath);
             logger.getSettings().setLoggerProfileFilePath(profileFilePath);
             logger.reportMessageInTitleBar("Profile: " + profileFilePath);
+            logger.restartLogging();
             logger.reportMessage("Profile succesfully loaded: " + profileFilePath);
         }
     }

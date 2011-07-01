@@ -76,5 +76,4 @@ public final class LoggerControllerImpl implements LoggerController {
     public synchronized void stop() {
         if (isStarted()) queryManager.stop();
     }
-
 }

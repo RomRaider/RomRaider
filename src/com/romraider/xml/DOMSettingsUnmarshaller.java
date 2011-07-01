@@ -214,8 +214,9 @@ public final class DOMSettingsUnmarshaller {
 
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
-                settings.setRefreshMode(unmarshallAttribute(n, "refresh", true));
+                settings.setRefreshMode(unmarshallAttribute(n, "refresh", false));
                 settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
+                settings.setFastPoll(unmarshallAttribute(n, "fastpoll", false));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
                 settings.setLoggerWindowMaximized(unmarshallAttribute(n, "value", false));
@@ -223,6 +224,7 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("size")) {
                 settings.setLoggerWindowSize(new Dimension(unmarshallAttribute(n, "y", 600),
                         unmarshallAttribute(n, "x", 1000)));
+                settings.setLoggerDividerLocation((double) unmarshallAttribute(n, "divider", 500));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("location")) {
                 settings.setLoggerWindowLocation(new Point(unmarshallAttribute(n, "x", 150),

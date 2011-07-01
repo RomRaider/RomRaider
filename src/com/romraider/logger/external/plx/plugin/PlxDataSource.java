@@ -26,6 +26,7 @@ import com.romraider.logger.external.plx.io.PlxRunner;
 import com.romraider.logger.external.plx.io.PlxSensorType;
 import static com.romraider.logger.external.plx.io.PlxSensorType.WIDEBAND_AFR;
 import static com.romraider.logger.external.plx.io.PlxSensorUnits.WIDEBAND_AFR_GASOLINE147;
+import static com.romraider.logger.external.plx.io.PlxSensorUnits.WIDEBAND_AFR_LAMBDA;
 import static com.romraider.logger.external.plx.io.PlxSensorType.EXHAUST_GAS_TEMPERATURE;
 import static com.romraider.logger.external.plx.io.PlxSensorUnits.EXHAUST_GAS_TEMPERATURE_CELSIUS;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
@@ -42,7 +43,8 @@ public final class PlxDataSource implements ExternalDataSource {
 
     {
         dataItems.put(WIDEBAND_AFR, new PlxDataItemImpl("Wideband AFR", "AFR", WIDEBAND_AFR, WIDEBAND_AFR_GASOLINE147));
-//        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("EGT", "C", EXHAUST_GAS_TEMPERATURE, EXHAUST_GAS_TEMPERATURE_CELSIUS));
+//        dataItems.put(WIDEBAND_AFR, new PlxDataItemImpl("Wideband Lambda", "Lambda", WIDEBAND_AFR, WIDEBAND_AFR_LAMBDA));
+        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("EGT", "C", EXHAUST_GAS_TEMPERATURE, EXHAUST_GAS_TEMPERATURE_CELSIUS));
     }
 
     public String getId() {

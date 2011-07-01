@@ -19,6 +19,8 @@
 
 package com.romraider.util;
 
+import java.util.List;
+
 public final class ByteUtil {
 
     private ByteUtil() {
@@ -52,4 +54,9 @@ public final class ByteUtil {
         return (b & mask) == 0;
     }
 
+	public static void byteListToBytes(List<Byte> buffer, byte[] response) {
+		for (int i = 0; i < buffer.size(); i++) {
+			response[i] = buffer.get(i);
+		}
+	}
 }

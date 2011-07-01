@@ -79,9 +79,9 @@ public final class TERunner implements Stoppable {
                         	byteSum = (byte) ~byteSum; // 1's complement of sum
                             break;
                         case 28:
-                        	LOGGER.trace("Tech Edge(2.0) LastSeq:" + lastSequenceNo + " seq:" + sequenceNo + " data:" + buffer);
+                        	LOGGER.trace("Tech Edge (data 2.0): LastSeq:" + lastSequenceNo + " seq:" + sequenceNo + " data:" + buffer);
                         	if (byteSum != b) {
-                            	LOGGER.error("Tech Edge(2.0) CheckSum Failed, calculated:" + byteSum + ", received:" + b);                        		
+                            	LOGGER.error("Tech Edge (data 2.0): CheckSum Failed, calculated:" + byteSum + ", received:" + b);                        		
                         	}
                         	if (lastSequenceNo == -1) {
                         		lastSequenceNo = sequenceNo;
@@ -89,7 +89,7 @@ public final class TERunner implements Stoppable {
                         	else {
 	                        	if (lastSequenceNo == 0xff) {
 	                        		if (sequenceNo != 0x00) {
-	                        	       	LOGGER.error("Tech Edge(2.0) Packet Drop: expected sequence number:0" + ", received:" + sequenceNo);
+	                        	       	LOGGER.error("Tech Edge (data 2.0): Packet Drop: expected sequence number:0" + ", received:" + sequenceNo);
 	                        			lastSequenceNo = sequenceNo;
 	                        		}
 	                        		else {
@@ -98,7 +98,7 @@ public final class TERunner implements Stoppable {
 	                        	}
 	                        	else {
 		                        	if ((lastSequenceNo + 1) != sequenceNo) {
-	                                	LOGGER.error("Tech Edge(2.0) Packet Drop: expected sequence number:" + (lastSequenceNo + 1) + ", received:" + sequenceNo);
+	                                	LOGGER.error("Tech Edge (data 2.0): Packet Drop: expected sequence number:" + (lastSequenceNo + 1) + ", received:" + sequenceNo);
 	                            		lastSequenceNo = sequenceNo;
 		                        	}
 		                        	else {

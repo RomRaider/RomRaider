@@ -22,6 +22,9 @@ package com.romraider.io.protocol.ssm;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
 import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
+
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.SSMEcuInit;
 import com.romraider.logger.ecu.exception.InvalidResponseException;
@@ -35,7 +38,9 @@ public final class SSMProtocol implements Protocol {
     public static final byte HEADER = (byte) 0x80;
     public static byte ECU_ID = (byte) 0x10;
     public static final byte DIAGNOSTIC_TOOL_ID = (byte) 0xF0;
-    public static final byte READ_PADDING = (byte) 0x00;
+    public static final byte READ_ADDRESS_SLOW = (byte) 0x00;
+    public static final byte READ_ADDRESS_FAST = (byte) 0x01;
+    public static final byte READ_MEMORY_PADDING = (byte) 0x00;
     public static final byte READ_MEMORY_COMMAND = (byte) 0xA0;
     public static final byte READ_MEMORY_RESPONSE = (byte) 0xE0;
     public static final byte READ_ADDRESS_COMMAND = (byte) 0xA8;
@@ -50,6 +55,7 @@ public final class SSMProtocol implements Protocol {
     public static final int DATA_SIZE = 1;
     public static final int RESPONSE_NON_DATA_BYTES = 6;
     public static final int REQUEST_NON_DATA_BYTES = 7;
+    private final PollingState pollState = new PollingStateImpl();
     
     public byte[] constructEcuInitRequest(byte id) {
         checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
@@ -91,8 +97,8 @@ public final class SSMProtocol implements Protocol {
         return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }
 
-    public byte[] preprocessResponse(byte[] request, byte[] response) {
-        return SSMResponseProcessor.filterRequestFromResponse(request, response);
+    public byte[] preprocessResponse(byte[] request, byte[] response, PollingState pollState) {
+        return SSMResponseProcessor.filterRequestFromResponse(request, response, pollState);
     }
 
     public byte[] parseResponseData(byte[] processedResponse) {
@@ -182,7 +188,7 @@ public final class SSMProtocol implements Protocol {
         request[i++] = asByte(data.length + (padContent ? 2 : 1));
         request[i++] = command;
         if (padContent) {
-            request[i++] = READ_PADDING;
+            request[i++] = (pollState.isFastPoll() ?  READ_ADDRESS_FAST : READ_ADDRESS_SLOW);
         }
         System.arraycopy(data, 0, request, i, data.length);
         request[request.length - 1] = calculateChecksum(request);

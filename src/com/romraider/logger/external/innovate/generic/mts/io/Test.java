@@ -39,7 +39,7 @@ public class Test implements MTSEvents {
             String inputName = mts.inputName();
             int inputType = mts.inputType();
 
-            System.out.printf("%s : %d\n", inputName, inputType);
+            System.out.printf("%s : %d%n", inputName, inputType);
         }
     }
 
@@ -63,7 +63,7 @@ public class Test implements MTSEvents {
             int function = mts.inputFunction();
 
             // note if the sample data is lambda, you might need to multiply by 14.7 or inputAFRMultiplier()
-            System.out.printf("\tSample %d: data = %d, function = %d\n", sampleCount + 1, data, function);
+            System.out.printf("\tSample %d: data = %d, function = %d%n", sampleCount + 1, data, function);
 
             // wait 200 milliseconds before grabbing the next sample
             waitFor(200);
@@ -78,13 +78,13 @@ public class Test implements MTSEvents {
         // the current inputPort or the inputPort(int) will not do anything!
         int portCount = mts.portCount();
 
-        System.out.printf("Found %d ports.\n", portCount);
+        System.out.printf("Found %d ports.%n", portCount);
 
         // set the current port before attempting to connect
         mts.currentPort(0);
         String portName = mts.portName();
 
-        System.out.printf("Set current port to 0; port name = %s\n", portName);
+        System.out.printf("Set current port to 0; port name = %s%n", portName);
 
         // register for MTS component events
         connectionEventCookie = mts.advise(MTSEvents.class, this);
@@ -139,7 +139,7 @@ public class Test implements MTSEvents {
     // see the SDK doc for explanation of error codes
 
     public void connectionEvent(int result) {
-        System.out.printf("connectionEvent raised.  result = %d\n", result);
+        System.out.printf("connectionEvent raised.  result = %d%n", result);
     }
 
     public void connectionError() {
@@ -150,7 +150,7 @@ public class Test implements MTSEvents {
         //int data = mts.inputSample();
         //float multiplier = mts.inputAFRMultiplier();
         //int sampleMeaning = mts.inputFunction();
-        //System.out.printf("newData raised.  data = %f\n", data * multiplier);
+        //System.out.printf("newData raised.  data = %f%n", data * multiplier);
     }
 
     /**

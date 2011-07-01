@@ -40,6 +40,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.io.File;
+import java.text.DateFormat;
 
 public class ECUExec {
     private static final Logger LOGGER = getLogger(ECUExec.class);
@@ -56,6 +57,7 @@ public class ECUExec {
         // dump the system properties to the log file as early as practical to help debugging/support
         LOGGER.info(PRODUCT_NAME + " " + VERSION + " Build: " + BUILDNUMBER);
         LOGGER.info("When requesting assistance at " + SUPPORT_URL + " please include the System Properties information below:");
+        LOGGER.info(DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.LONG).format(System.currentTimeMillis()));
         LOGGER.info("System Properties: \n\t"
                 + System.getProperties().toString().replace(",", "\n\t"));
 

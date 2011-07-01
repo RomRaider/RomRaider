@@ -17,11 +17,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.te.plugin;
+package com.romraider.logger.ecu.comms.manager;
 
-import com.romraider.logger.external.te.plugin.TESensorType;
-import com.romraider.logger.external.te.plugin.TESensorUnits;
 
-public interface TEConverter {
-    double convert(TESensorType sensorType, TESensorUnits units, int... raw);
-}
+public interface PollingState {
+
+	    int getCurrentState();
+
+	    void setCurrentState(int i);
+
+		int getLastState();
+
+		void setLastState(int i);
+
+	    boolean isNewQuery();
+
+	    void setNewQuery(boolean state);
+	    
+	    boolean isLastQuery();
+	    
+	    void setLastQuery(boolean state);
+
+	    boolean isFastPoll();
+	    
+	    void setFastPoll(boolean state);
+	}

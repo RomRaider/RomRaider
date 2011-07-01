@@ -20,6 +20,7 @@
 package com.romraider.logger.ecu.comms.manager;
 
 import com.romraider.Settings;
+import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
 import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
@@ -59,6 +60,7 @@ public final class QueryManagerImpl implements QueryManager {
     private final Map<String, Query> queryMap = synchronizedMap(new HashMap<String, Query>());
     private final Map<String, Query> addList = new HashMap<String, Query>();
     private final List<String> removeList = new ArrayList<String>();
+    private static final PollingState pollState = new PollingStateImpl();
     private final Settings settings;
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
@@ -97,12 +99,17 @@ public final class QueryManagerImpl implements QueryManager {
             addList.put(queryId, new ExternalQueryImpl((ExternalData) loggerData));
         } else {
             addList.put(queryId, new EcuQueryImpl((EcuData) loggerData));
+        	pollState.setLastQuery(false);
+            pollState.setNewQuery(true);
         }
     }
 
     public synchronized void removeQuery(String callerId, LoggerData loggerData) {
         checkNotNull(callerId, loggerData);
         removeList.add(buildQueryId(callerId, loggerData));
+        if (loggerData.getDataType() != EXTERNAL) {
+        	pollState.setNewQuery(true);
+        }
     }
 
     public boolean isRunning() {
@@ -181,33 +188,63 @@ public final class QueryManagerImpl implements QueryManager {
         int count = 0;
         try {
             txManager.start();
+            boolean lastPollState = settings.getFastPoll();
             while (!stop) {
+            	pollState.setFastPoll(settings.getFastPoll());
                 updateQueryList();
                 if (queryMap.isEmpty()) {
+                	if (pollState.isLastQuery()) endEcuQueries(txManager);
                     start = System.currentTimeMillis();
                     count = 0;
                     messageListener.reportMessage("Select parameters to be logged...");
                     sleep(1000L);
                 } else {
-                    sendEcuQueries(txManager);
+               		sendEcuQueries(txManager);
                     sendExternalQueries();
                     handleQueryResponse();
                     count++;
                     messageListener.reportMessage("Querying " + target + "...");
                     messageListener.reportStats(buildStatsMessage(start, count));
+                    if (!pollState.isFastPoll() && lastPollState) endEcuQueries(txManager);
+                    if (pollState.isFastPoll()) {
+	                    if (pollState.getCurrentState() == 0 && pollState.isNewQuery()) {
+	                    	pollState.setCurrentState(1);
+	                    	pollState.setNewQuery(false);
+	                    }
+	                    if (pollState.getCurrentState() == 0 && !pollState.isNewQuery()) {
+	                    	pollState.setCurrentState(1);
+	                    }
+	                    if (pollState.getCurrentState() == 1 && pollState.isNewQuery()) {
+	                    	pollState.setCurrentState(0);
+	                    	pollState.setLastState(1);
+	                    	pollState.setNewQuery(false);
+	                    }
+	                    if (pollState.getCurrentState() == 1 && !pollState.isNewQuery()) {
+	                    	pollState.setLastState(1);
+	                    }
+	                    pollState.setLastQuery(true);
+                    }
+                    else {
+                    	pollState.setCurrentState(0);
+                    	pollState.setLastState(0);
+                    	pollState.setNewQuery(false);
+                    }
+                    lastPollState = pollState.isFastPoll();
                 }
             }
         } catch (Exception e) {
             messageListener.reportError(e);
         } finally {
             txManager.stop();
+            pollState.setCurrentState(0);
+            pollState.setNewQuery(true);
         }
     }
 
     private void sendEcuQueries(TransmissionManager txManager) {
         List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
-        if (fileLoggerQuery != null) ecuQueries.add(fileLoggerQuery);
-        txManager.sendQueries(ecuQueries);
+        if (fileLoggerQuery != null && settings.isFileLoggingControllerSwitchActive()) ecuQueries.add(fileLoggerQuery);
+        txManager.sendQueries(ecuQueries, pollState);
     }
 
     private void sendExternalQueries() {
@@ -216,6 +253,11 @@ public final class QueryManagerImpl implements QueryManager {
             //FIXME: This is a hack!!
             externalQuery.setResponse(externalQuery.getLoggerData().getSelectedConvertor().convert(null));
         }
+    }
+
+    private void endEcuQueries(TransmissionManager txManager) {
+        txManager.endQueries();
+        pollState.setLastQuery(false);
     }
 
     private void handleQueryResponse() {

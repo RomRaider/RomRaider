@@ -35,6 +35,9 @@ import static com.romraider.io.protocol.ssm.SSMProtocol.REQUEST_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_MEMORY_COMMAND;
 import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_MEMORY_RESPONSE;
+
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
 import static com.romraider.util.ByteUtil.asInt;
 import static com.romraider.util.HexUtil.asBytes;
@@ -47,8 +50,8 @@ import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.util.Random;
 
-final class TestSerialConnection implements SerialConnection {
-    private static final Logger LOGGER = getLogger(TestSerialConnection.class);
+final class TestSerialConnection2 implements SerialConnection {
+    private static final Logger LOGGER = getLogger(TestSerialConnection2.class);
     private static final Random RANDOM = new Random(currentTimeMillis());
     private static final String ECU_INIT_RESPONSE_01_UP = "8010F001BF4080F01039FFA21011315258400673FACB842B83FEA800000060CED4FDB060000F200000000000DC0000551E30C0F222000040FB00E1000000000000000059";
     private static final String ECU_INIT_RESPONSE_PRE_01 = "8010F001BF4080F01029FFA1100B195458050561C4EB800808000000000070CE64F8BA080000E00000000000DC0000108000007B";
@@ -56,9 +59,14 @@ final class TestSerialConnection implements SerialConnection {
     private static final String ECU_INIT_RESPONSE_TCU = "8018F001BF4080F01839FFA6102291E02074000100800400000000A1462C000800000000000000DE06000B29C0047E011E003E00000000000080A20000FEFE0000000012";
     private static final String ECU_INIT_RESPONSE = ECU_INIT_RESPONSE_OBXT;
     //    private static final String ECU_INIT_RESPONSE = ECU_INIT_RESPONSE_PRE_01;
+    private static final PollingState pollState = new PollingStateImpl();
     private byte[] request = new byte[0];
+    private byte[] readResponse = new byte[0];
+    private byte[] result = new byte[1];
+	private int index;
 
-    public TestSerialConnection(String portName, ConnectionProperties connectionProperties) {
+
+    public TestSerialConnection2(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
         LOGGER.info("*** TEST *** Opening connection: " + portName);
@@ -70,6 +78,8 @@ final class TestSerialConnection implements SerialConnection {
     }
 
     public int available() {
+    	if (pollState.isLastQuery() && !pollState.isNewQuery() && 
+    			pollState.getCurrentState() == 0 && pollState.getLastState() == 1) return 0;
         if (isEcuInitRequest()) {
         	String init = "";
         	if (ECU_ID == 0x10){
@@ -91,63 +101,83 @@ final class TestSerialConnection implements SerialConnection {
     }
 
     public void read(byte[] bytes) {
-        if (isEcuInitRequest()) {
-        	if (ECU_ID == 0x10){
-                System.arraycopy(asBytes(ECU_INIT_RESPONSE), 0, bytes, 0, bytes.length);
-        	}
-        	if (ECU_ID == 0x18){
-                System.arraycopy(asBytes(ECU_INIT_RESPONSE_TCU), 0, bytes, 0, bytes.length);
-        	}
-        } else if (isIamRequest()) {
-            byte[] response = asBytes("0x80F01006E83F600000000D");
-            System.arraycopy(response, 0, bytes, request.length, response.length);
-        } else if (isEngineLoadRequest()) {
-            byte[] response = asBytes("0x80F01006E83EC74A760033");
-            System.arraycopy(response, 0, bytes, request.length, response.length);
-        } else if (isReadAddressRequest()) {
-            byte[] responseData = generateResponseData(calculateNumResponseDataBytes());
-            int i = 0;
-            byte[] response = new byte[RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes()];
-            response[i++] = HEADER;
-            response[i++] = DIAGNOSTIC_TOOL_ID;
-            response[i++] = ECU_ID;
-            response[i++] = (byte) (1 + responseData.length);
-            response[i++] = READ_ADDRESS_RESPONSE;
-            System.arraycopy(responseData, 0, response, i, responseData.length);
-            response[i += responseData.length] = calculateChecksum(response);
-            System.arraycopy(request, 0, bytes, 0, request.length);
-            System.arraycopy(response, 0, bytes, request.length, response.length);
-        } else if (isReadMemoryRequest()) {
-            byte[] responseData = generateResponseData(asInt(request[9]) + 1);
-            int i = 0;
-            byte[] response = new byte[RESPONSE_NON_DATA_BYTES + responseData.length];
-            response[i++] = HEADER;
-            response[i++] = DIAGNOSTIC_TOOL_ID;
-            response[i++] = ECU_ID;
-            response[i++] = (byte) (1 + responseData.length);
-            response[i++] = READ_MEMORY_RESPONSE;
-            System.arraycopy(responseData, 0, response, i, responseData.length);
-            response[i += responseData.length] = calculateChecksum(response);
-            System.arraycopy(request, 0, bytes, 0, request.length);
-            System.arraycopy(response, 0, bytes, request.length, response.length);
-        } else if (isWriteMemoryRequest()) {
-            int numDataBytes = request.length - 6 - ADDRESS_SIZE;
-            byte[] response = new byte[RESPONSE_NON_DATA_BYTES + numDataBytes];
-            int i = 0;
-            response[i++] = HEADER;
-            response[i++] = DIAGNOSTIC_TOOL_ID;
-            response[i++] = ECU_ID;
-            response[i++] = (byte) (numDataBytes + 1);
-            response[i++] = WRITE_MEMORY_RESPONSE;
-            System.arraycopy(request, 8, response, i, numDataBytes);
-            response[i += numDataBytes] = calculateChecksum(response);
-            System.arraycopy(request, 0, bytes, 0, request.length);
-            System.arraycopy(response, 0, bytes, request.length, response.length);
-        } else {
-            throw new SerialCommunicationException("*** TEST *** Unsupported request: " + asHex(request));
-        }
-        //LOGGER.("*** TEST *** Read bytes  = " + asHex(bytes));
-        sleep(200);
+//    	if (readResponse.length == 0) {
+	        if (isEcuInitRequest()) {
+	        	if (ECU_ID == 0x10){
+	                System.arraycopy(asBytes(ECU_INIT_RESPONSE), 0, bytes, 0, bytes.length);
+	        	}
+	        	if (ECU_ID == 0x18){
+	                System.arraycopy(asBytes(ECU_INIT_RESPONSE_TCU), 0, bytes, 0, bytes.length);
+	        	}
+	        } else if (isIamRequest()) {
+	            byte[] response = asBytes("0x80F01006E83F600000000D");
+	            System.arraycopy(response, 0, bytes, request.length, response.length);
+	        } else if (isEngineLoadRequest()) {
+	        	byte[] response = asBytes("0x80F01006E83EC74A760033");
+	            System.arraycopy(response, 0, bytes, request.length, response.length);
+	        } else if (isReadAddressRequest()) {
+	            byte[] responseData = generateResponseData(calculateNumResponseDataBytes());
+	            int i = 0;
+	            byte[] response = new byte[RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes()];
+	            response[i++] = HEADER;
+	            response[i++] = DIAGNOSTIC_TOOL_ID;
+	            response[i++] = ECU_ID;
+	            response[i++] = (byte) (1 + responseData.length);
+	            response[i++] = READ_ADDRESS_RESPONSE;
+	            System.arraycopy(responseData, 0, response, i, responseData.length);
+	            response[i += responseData.length] = calculateChecksum(response);
+	            if (pollState.getCurrentState() == 0) {
+	            	readResponse = new byte[request.length + response.length];
+	                System.arraycopy(request, 0, readResponse, 0, request.length);
+	                System.arraycopy(response, 0, readResponse, request.length, response.length);
+	            }
+	            if (pollState.getCurrentState() == 1) {
+	            	readResponse = new byte[response.length];
+	            	System.arraycopy(response, 0, readResponse, 0, response.length);
+	            }
+	            //bytes[0] = readResponse[0];
+	            System.arraycopy(readResponse, 0, bytes, 0, readResponse.length);
+	            } else if (isReadMemoryRequest()) {
+	            byte[] responseData = generateResponseData(asInt(request[9]) + 1);
+	            int i = 0;
+	            byte[] response = new byte[RESPONSE_NON_DATA_BYTES + responseData.length];
+	            response[i++] = HEADER;
+	            response[i++] = DIAGNOSTIC_TOOL_ID;
+	            response[i++] = ECU_ID;
+	            response[i++] = (byte) (1 + responseData.length);
+	            response[i++] = READ_MEMORY_RESPONSE;
+	            System.arraycopy(responseData, 0, response, i, responseData.length);
+	            response[i += responseData.length] = calculateChecksum(response);
+	            System.arraycopy(request, 0, bytes, 0, request.length);
+	            System.arraycopy(response, 0, bytes, request.length, response.length);
+	        } else if (isWriteMemoryRequest()) {
+	            int numDataBytes = request.length - 6 - ADDRESS_SIZE;
+	            byte[] response = new byte[RESPONSE_NON_DATA_BYTES + numDataBytes];
+	            int i = 0;
+	            response[i++] = HEADER;
+	            response[i++] = DIAGNOSTIC_TOOL_ID;
+	            response[i++] = ECU_ID;
+	            response[i++] = (byte) (numDataBytes + 1);
+	            response[i++] = WRITE_MEMORY_RESPONSE;
+	            System.arraycopy(request, 8, response, i, numDataBytes);
+	            response[i += numDataBytes] = calculateChecksum(response);
+	            System.arraycopy(request, 0, bytes, 0, request.length);
+	            System.arraycopy(response, 0, bytes, request.length, response.length);
+	        } else {
+	            throw new SerialCommunicationException("*** TEST *** Unsupported request: " + asHex(request));
+	        }
+	        //LOGGER.("*** TEST *** Read bytes  = " + asHex(bytes));
+	        sleep(100);
+//    	}
+//    	else {
+//            if (bytes.length != 1) throw new IllegalArgumentException();
+//            if (index >= readResponse.length) {
+//            	genNewRandomResponseData();
+//            	index = 0;
+//            }
+//            bytes[0] = readResponse[index++];
+//            sleep(1);
+//        }
     }
 
     public byte[] readAvailable() {
@@ -168,13 +198,14 @@ final class TestSerialConnection implements SerialConnection {
     }
 
     public int read() {
-        throw new UnsupportedOperationException();
+        read(result);
+        return result[0];
     }
 
 	public void sendBreak(int duration) {
 	}
 
-	private int calculateNumResponseDataBytes() {
+    private int calculateNumResponseDataBytes() {
         return ((request.length - REQUEST_NON_DATA_BYTES) / ADDRESS_SIZE) * DATA_SIZE;
     }
 
@@ -215,5 +246,20 @@ final class TestSerialConnection implements SerialConnection {
 
     private boolean isCommand(byte command) {
         return request[4] == command;
+    }
+
+    private void genNewRandomResponseData() {
+        byte[] responseData = generateResponseData(calculateNumResponseDataBytes());
+        int i = 0;
+        byte[] response = new byte[RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes()];
+        response[i++] = HEADER;
+        response[i++] = DIAGNOSTIC_TOOL_ID;
+        response[i++] = ECU_ID;
+        response[i++] = (byte) (1 + responseData.length);
+        response[i++] = READ_ADDRESS_RESPONSE;
+        System.arraycopy(responseData, 0, response, i, responseData.length);
+        response[i += responseData.length] = calculateChecksum(response);
+       	readResponse = new byte[response.length];
+       	System.arraycopy(response, 0, readResponse, 0, response.length);
     }
 }

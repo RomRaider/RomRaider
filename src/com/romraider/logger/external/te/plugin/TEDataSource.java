@@ -32,6 +32,10 @@ import static com.romraider.logger.external.te.plugin.TESensorType.TC2;
 import static com.romraider.logger.external.te.plugin.TESensorType.TC3;
 import static com.romraider.logger.external.te.plugin.TESensorType.TorVss;
 import static com.romraider.logger.external.te.plugin.TESensorType.RPM;
+import static com.romraider.logger.external.te.plugin.TESensorUnits.WIDEBAND_AFR_LAMBDA;
+import static com.romraider.logger.external.te.plugin.TESensorUnits.VDC;
+import static com.romraider.logger.external.te.plugin.TESensorUnits.RAW;
+import static com.romraider.logger.external.te.plugin.TESensorUnits.ENGINE_SPEED;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Collections.unmodifiableList;
 import javax.swing.Action;
@@ -46,15 +50,15 @@ public final class TEDataSource implements ExternalDataSource {
     private String port;
 
     {
-        dataItems.put(Lambda, new TEDataItemImpl("Wideband Lambda", "Lambda", Lambda));
-        dataItems.put(USR1, new TEDataItemImpl("User 1", "VDC", USR1));
-        dataItems.put(USR2, new TEDataItemImpl("User 2", "VDC", USR2));
-        dataItems.put(USR3, new TEDataItemImpl("User 3", "VDC", USR3));
-        dataItems.put(TC1, new TEDataItemImpl("Thermocouple 1", "raw", TC1));
-        dataItems.put(TC2, new TEDataItemImpl("Thermocouple 2", "raw", TC2));
-        dataItems.put(TC3, new TEDataItemImpl("Thermocouple 3", "raw", TC3));
-        dataItems.put(TorVss, new TEDataItemImpl("Thermistor or Vss", "raw", TorVss));
-        dataItems.put(RPM, new TEDataItemImpl("RPM", "RPM", RPM));
+        dataItems.put(Lambda, new TEDataItemImpl("Wideband Lambda", "Lambda", Lambda, WIDEBAND_AFR_LAMBDA));
+        dataItems.put(USR1, new TEDataItemImpl("User 1", "VDC", USR1, VDC));
+        dataItems.put(USR2, new TEDataItemImpl("User 2", "VDC", USR2, VDC));
+        dataItems.put(USR3, new TEDataItemImpl("User 3", "VDC", USR3, VDC));
+        dataItems.put(TC1, new TEDataItemImpl("Thermocouple 1", "raw", TC1, RAW));
+        dataItems.put(TC2, new TEDataItemImpl("Thermocouple 2", "raw", TC2, RAW));
+        dataItems.put(TC3, new TEDataItemImpl("Thermocouple 3", "raw", TC3, RAW));
+        dataItems.put(TorVss, new TEDataItemImpl("Thermistor or Vss", "raw", TorVss, RAW));
+        dataItems.put(RPM, new TEDataItemImpl("Engine Speed (4-cyl)", "RPM", RPM, ENGINE_SPEED));
     }
 
     public String getId() {
@@ -62,11 +66,11 @@ public final class TEDataSource implements ExternalDataSource {
     }
 
     public String getName() {
-        return "Tech Edge (mode 2.0)";
+        return "Tech Edge (Format 2.0)";
     }
 
     public String getVersion() {
-        return "0.01";
+        return "0.02";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

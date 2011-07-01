@@ -20,6 +20,7 @@
 package com.romraider.io.protocol;
 
 import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 
 public interface Protocol {
@@ -34,7 +35,7 @@ public interface Protocol {
 
     byte[] constructReadAddressRequest(byte id, byte[][] addresses);
 
-    byte[] preprocessResponse(byte[] request, byte[] response);
+    byte[] preprocessResponse(byte[] request, byte[] response, PollingState pollState);
 
     byte[] parseResponseData(byte[] processedResponse);
 

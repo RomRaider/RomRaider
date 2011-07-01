@@ -53,7 +53,6 @@ import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.SwingConstants.BOTTOM;
 import static javax.swing.SwingConstants.RIGHT;
-import static javax.swing.SwingConstants.VERTICAL;
 import static javax.swing.SwingUtilities.invokeLater;
 
 import java.awt.AWTException;
@@ -68,6 +67,8 @@ import java.awt.GridBagLayout;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
@@ -79,7 +80,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -87,13 +87,14 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.table.TableColumn;
 
@@ -116,6 +117,7 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.exception.ConfigurationException;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.profile.UserProfile;
 import com.romraider.logger.ecu.profile.UserProfileImpl;
@@ -148,6 +150,7 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.logger.ecu.ui.playback.PlaybackManagerImpl;
 import com.romraider.logger.ecu.ui.swing.layout.BetterFlowLayout;
 import com.romraider.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
+import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileNameFieldAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon;
 import com.romraider.logger.ecu.ui.tab.dyno.DynoTab;
@@ -185,6 +188,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
+    private static final String FILE_NAME_EXTENTION = "Text to add to the saved logfile name";
+    private static final String ECU_TEXT = "Engine Control Unit Polling";
+    private static final String TCU_TEXT = "Transmission Control Unit Polling";
     private static final byte ECU_ID = (byte) 0x10;
     private static final byte TCU_ID = (byte) 0x18;
     private static String target = "ECU";
@@ -199,6 +205,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JTabbedPane tabbedPane;
     private SerialPortComboBox portsComboBox;
     private JCheckBox portRefresh;
+    private JCheckBox fastPoll;
     private DataUpdateHandlerManager dataHandlerManager;
     private DataRegistrationBroker dataTabBroker;
     private ParameterListTableModel dataTabParamListTableModel;
@@ -217,6 +224,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private FileUpdateHandlerImpl fileUpdateHandler;
     private LiveDataTableModel dataTableModel;
     private LiveDataUpdateHandler liveDataUpdateHandler;
+    private JSplitPane splitPane;
     private JPanel graphPanel;
     private GraphUpdateHandler graphUpdateHandler;
     private JPanel dashboardPanel;
@@ -424,7 +432,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 loadEcuSwitches(dataLoader.getEcuSwitches());
                 initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
                 settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
-            } catch (Exception e) {
+            } catch (ConfigurationException cfe) {
+            	reportError(cfe);
+            	showMissingConfigDialog();
+            }	
+            catch (Exception e) {
                 reportError(e);
             }
         }
@@ -745,11 +757,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         toggleListButton.addActionListener(new AbstractAction() {
             private static final long serialVersionUID = -1595098685575657317L;
             private final int min = 1;
-            private int size = splitPane.getDividerLocation();
+            public int size = splitPane.getDividerLocation();
 
             public void actionPerformed(ActionEvent e) {
                 int current = splitPane.getDividerLocation();
-                if (toggleListButton.isSelected()) {
+            	if (toggleListButton.isSelected()) {
                 	splitPane.setDividerLocation(size);
                 	settings.setLoggerParameterListState(true);
                 }
@@ -849,9 +861,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
-        JSplitPane splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
+        splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
         splitPane.setDividerSize(2);
-        splitPane.setDividerLocation(500);
+        splitPane.setDividerLocation((int) settings.getDividerLocation());
         splitPane.addPropertyChangeListener(this);
         return splitPane;
     }
@@ -885,6 +897,44 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         });
         JPanel panel = new JPanel();
         panel.add(playButton);
+        return panel;
+    }
+
+    private Component buildFileNameExtention() {
+    	JLabel fileNameLabel = new JLabel("Logfile Text");
+    	final JTextField fileNameExtention = new JTextField("",8);
+    	fileNameExtention.setToolTipText(FILE_NAME_EXTENTION);
+    	fileNameExtention.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent arg0) {
+			}
+
+			public void focusLost(FocusEvent arg0) {
+				settings.setLogfileNameText(fileNameExtention.getText());
+			}
+          });
+    	
+    	JPopupMenu fileNamePopup = new JPopupMenu();
+        JMenuItem ecuIdItem1 = new JMenuItem("Use Current " + target + " ID");
+        ecuIdItem1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fileNameExtention.setText(ecuInit.getEcuId());
+				settings.setLogfileNameText(fileNameExtention.getText());
+            }
+          });
+        JMenuItem ecuIdItem2 = new JMenuItem("Clear Logfile Text");
+        ecuIdItem2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fileNameExtention.setText("");
+				settings.setLogfileNameText(fileNameExtention.getText());
+            }
+          });
+        fileNamePopup.add(ecuIdItem1);
+        fileNamePopup.add(ecuIdItem2);
+    	fileNameExtention.addMouseListener(new LogFileNameFieldAction(fileNamePopup));
+
+        JPanel panel = new JPanel();
+        panel.add(fileNameLabel);
+        panel.add(fileNameExtention);
         return panel;
     }
 
@@ -931,6 +981,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
         final JCheckBox ecuCheckBox = new JCheckBox("ECU");
         final JCheckBox tcuCheckBox = new JCheckBox("TCU");
+        ecuCheckBox.setToolTipText(ECU_TEXT);
+        tcuCheckBox.setToolTipText(TCU_TEXT);
         ecuCheckBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
             	stopLogging();
@@ -961,6 +1013,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(ecuCheckBox);
         comboBoxPanel.add(tcuCheckBox);
 
+        fastPoll = new JCheckBox("Fast Poll");
+        fastPoll.setToolTipText("Check to enable faster polling of the ECU");
+        fastPoll.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+            	setFastPoll(fastPoll.isSelected());
+            }
+        });
+        fastPoll.setSelected(settings.getFastPoll());
+        comboBoxPanel.add(fastPoll);
+
         JButton reconnectButton = new JButton(new ImageIcon("./graphics/logger_restart.png"));
         reconnectButton.setPreferredSize(new Dimension(25, 25));
         reconnectButton.setToolTipText("Reconnect to " + target);
@@ -988,8 +1050,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         });
         comboBoxPanel.add(reconnectButton);
         comboBoxPanel.add(disconnectButton);
-        comboBoxPanel.add(new JSeparator(VERTICAL));
+//        comboBoxPanel.add(new JSeparator(VERTICAL));
         comboBoxPanel.add(buildLogToFileButton());
+        comboBoxPanel.add(buildFileNameExtention());
         return comboBoxPanel;
     }
 
@@ -1001,6 +1064,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void setTargetTcu() {
     	settings.setDestinationId(TCU_ID);
     	target = "TCU";
+    }
+
+    private void setFastPoll(boolean state) {
+    	settings.setFastPoll(state);
     }
 
     public void restartLogging() {
@@ -1141,6 +1208,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         settings.setLoggerWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
         settings.setLoggerWindowSize(getSize());
         settings.setLoggerWindowLocation(getLocation());
+        if (settings.getLoggerParameterListState()) settings.setLoggerDividerLocation(splitPane.getDividerLocation());
         settings.setLoggerSelectedTabIndex(tabbedPane.getSelectedIndex());
         settings.setLoggerPluginPorts(getPluginPorts(externalDataSources));
         new SettingsManagerImpl().save(settings);

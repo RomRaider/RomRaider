@@ -19,12 +19,16 @@
 
 package com.romraider.io.serial.connection;
 
+import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.logger.ecu.comms.manager.PollingState;
+
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
+import static java.lang.System.arraycopy;
 import static java.lang.System.currentTimeMillis;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
@@ -32,32 +36,60 @@ import static org.apache.log4j.Logger.getLogger;
 public final class SerialConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = getLogger(SerialConnectionManager.class);
     private final SerialConnection connection;
+    private final ConnectionProperties connectionProperties;
+    private byte[] lastResponse;
 
     public SerialConnectionManager(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
+        this.connectionProperties = connectionProperties;
         // Use TestSerialConnection for testing!!
         connection = new SerialConnectionImpl(portName, connectionProperties);
-//        connection = new TestSerialConnection(portName, connectionProperties);
+//        connection = new TestSerialConnection2(portName, connectionProperties);
         LOGGER.info("Serial connection initialised");
     }
 
     // Send request and wait for response with known length
-    public void send(byte[] request, byte[] response, long timeout) {
+    public void send(byte[] request, byte[] response, long timeout, PollingState pollState) {
         checkNotNull(request, "request");
-        checkNotNull(request, "response");
-        connection.readStaleData();
-        connection.write(request);
+        checkNotNull(response, "response");
+        checkNotNull(pollState, "pollState");
+
+        if (pollState.getCurrentState() == 0 && pollState.getLastState() == 1) {
+        	clearLine();
+        }
+
+        if (pollState.getCurrentState() == 0) {
+           	connection.readStaleData();
+            connection.write(request);
+        }
         while (connection.available() < response.length) {
             sleep(1);
             timeout -= 1;
             if (timeout <= 0) {
                 byte[] badBytes = connection.readAvailable();
-                LOGGER.debug("Bad response (read timeout): " + asHex(badBytes));
-                break;
+                LOGGER.debug("SSM Bad read response (read timeout): " + asHex(badBytes));
+                return; // this will reinitialize the connection
             }
         }
         connection.read(response);
+
+        if (pollState.getCurrentState() == 1){
+	        if (    response[0] == (byte) 0x80
+	        	&&  response[1] == (byte) 0xF0
+	        	&& (response[2] == (byte) 0x10 || response[2] == (byte) 0x18)
+	        	&&  response[3] == (response.length - 5)
+	        	&&  response[response.length - 1] == calculateChecksum(response)) {
+	
+	        	lastResponse = new byte[response.length];
+	        	arraycopy(response, 0, lastResponse, 0, response.length);
+	        }
+	        else{
+                LOGGER.error("SSM Bad Data response: " + asHex(response));
+	        	arraycopy(lastResponse, 0, response, 0, response.length);
+	        	pollState.setNewQuery(true);
+	        }
+        }
     }
 
     // Send request and wait specified time for response with unknown length
@@ -79,6 +111,21 @@ public final class SerialConnectionManager implements ConnectionManager {
         return connection.readAvailable();
     }
 
+    public void clearLine() {
+    	LOGGER.debug("SSM sending line break");
+        connection.sendBreak( 1 / 
+        		(connectionProperties.getBaudRate() *
+        		(connectionProperties.getDataBits() +
+        		 connectionProperties.getStopBits() +
+        		 connectionProperties.getParity() + 1)));
+        do {
+        	sleep(2);
+            byte[] badBytes = connection.readAvailable();
+            LOGGER.debug("SSM clearing line (stale data): " + asHex(badBytes));
+            sleep(10);
+        } while (connection.available() > 0 ); 
+    }
+    
     public void close() {
         connection.close();
     }

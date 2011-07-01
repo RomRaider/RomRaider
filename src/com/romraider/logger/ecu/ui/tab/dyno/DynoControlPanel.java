@@ -78,7 +78,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 public final class DynoControlPanel extends JPanel {
     private static final long serialVersionUID = 3787020251963102201L;
@@ -114,6 +118,7 @@ public final class DynoControlPanel extends JPanel {
     private static final String ET_TT = "Use this mode to measure trap times";
     private static final String COLON = ":";
     private static final String COMMA = ",";
+    private static final String SEMICOLON = ";";
     private static final String TAB = "\u0009";
     private static final String RR_LOG_TIME = "Time";
     private static final String COBB_AP_TIME = "Seconds";
@@ -203,7 +208,7 @@ public final class DynoControlPanel extends JPanel {
     private String tempUnits = "\u00b0F";
     private double atm = 0;
     private String pressUnits = "psi";
-    private String pressText = "14.7";
+    private String pressText = String.format("%1.2f", 14.7);
     private String iatLogUnits = "F";
     private String atmLogUnits = "psi";
     private String vsLogUnits = LOG_VS_I;
@@ -271,8 +276,8 @@ public final class DynoControlPanel extends JPanel {
         P_v = humidity * pSat;
         P_d = pressure - P_v;
         airDen = P_d / (287.05 * airTemp) + P_v / (461.495 * airTemp);    //air density with humidity included [kg/m^3]
-        carInfo = carSelectBox.getSelectedItem() + "(" + gearSelectBox.getSelectedItem() + "), Elev: " + elevation.getText().trim() +
-                elevUnits + ", Pres: " + pressText + pressUnits + ", Hum: " + relHumid.getText().trim() + "%, Temp: " + ambTemp.getText().trim() + tempUnits;
+        carInfo = carSelectBox.getSelectedItem() + "(" + gearSelectBox.getSelectedItem() + "); Elev: " + elevation.getText().trim() +
+                elevUnits + "; Pres: " + pressText + pressUnits + "; Hum: " + relHumid.getText().trim() + "%; Temp: " + ambTemp.getText().trim() + tempUnits;
     }
 
     private double calcHp(double rpm, double accel, long now) {
@@ -416,20 +421,20 @@ public final class DynoControlPanel extends JPanel {
         results[3] = maxTqRpm;
         String hpUnits = " hp(I)";
         String tqUnits = " lbf-ft";
-        resultStrings[2] = "50-80 MPH: " + fToE + " secs";
-        resultStrings[3] = "60-80 MPH: " + sToE + " secs";
+        resultStrings[2] = "50-80 MPH: " + String.format("%1.2f", fToE) + " secs";
+        resultStrings[3] = "60-80 MPH: " + String.format("%1.2f", sToE) + " secs";
         if (units.equals(METRIC)) {
             hpUnits = " kW";
             tqUnits = " N-m";
-            resultStrings[2] = "80-130 km/h: " + fToE + " secs";
-            resultStrings[3] = "100-130 km/h: " + sToE + " secs";
+            resultStrings[2] = "80-130 km/h: " + String.format("%1.2f", fToE) + " secs";
+            resultStrings[3] = "100-130 km/h: " + String.format("%1.2f", sToE) + " secs";
         }
         resultStrings[0] = carInfo;
         resultStrings[1] = "Max Pwr: " + String.format("%1.1f", maxHp) + hpUnits +
                 " @ " + String.format("%1.0f", maxHpRpm) +
                 " RPM / Max TQ: " + String.format("%1.1f", maxTq) + tqUnits +
                 " @ " + String.format("%1.0f", maxTqRpm) + " RPM";
-        resultStrings[4] = "3000-6000 RPM: " + tToS + " secs";
+        resultStrings[4] = "3000-6000 RPM: " + String.format("%1.2f", tToS) + " secs";
         resultStrings[5] = "3000-6000 RPM: " + String.format("%1.2f", auc) + " AUC";
         if (reFfToE > 0) resultStrings[2] = resultStrings[2] + " (" + String.format("%1.2f", (fToE - reFfToE)) + ")";
         if (reFsToE > 0) resultStrings[3] = resultStrings[3] + " (" + String.format("%1.2f", (sToE - reFsToE)) + ")";
@@ -991,7 +996,13 @@ public final class DynoControlPanel extends JPanel {
                 headers = line.split(COMMA);
                 if (headers.length < 3) {
                     headers = line.split(TAB);
-                    if (headers.length > 2) delimiter = TAB;
+                    if (headers.length > 2) {
+                    	delimiter = TAB;
+                    }
+                    else {
+                        headers = line.split(SEMICOLON);
+                        if (headers.length > 2) delimiter = SEMICOLON;
+                    }
                 }
                 for (int x = 0; x < headers.length; x++) {
                     if (headers[x].contains(RR_LOG_TIME)) timeCol = x;
@@ -1012,9 +1023,9 @@ public final class DynoControlPanel extends JPanel {
                     if (headers[x].contains(LOG_VS_I)) vsLogUnits = LOG_VS_I;
                     if (headers[x].contains(LOG_VS_M)) vsLogUnits = LOG_VS_M;
                 }
-                LOGGER.trace("DYNO log file conversions: Time Column: " + timeCol + ", Time X: " + timeMult + 
-                			 ", RPM Column: " + rpmCol + ", TA Column: " + taCol + ", VS Column: " + vsCol +
-                			 ", VS units: " + vsLogUnits);
+                LOGGER.trace("DYNO log file conversions: Time Column: " + timeCol + "; Time X: " + timeMult + 
+                			 "; RPM Column: " + rpmCol + "; TA Column: " + taCol + "; VS Column: " + vsCol +
+                			 "; VS units: " + vsLogUnits);
                 while ((line = inputStream.readLine()) != null) {
                     String[] values = line.split(delimiter);
                     if (Double.parseDouble(values[taCol]) > 98) {
@@ -1045,7 +1056,7 @@ public final class DynoControlPanel extends JPanel {
                             maxRpm = Math.max(maxRpm, calculateRpm(logRpm, rpm2mph, vsLogUnits));
                         }
                         chartPanel.addRawData(logTime, logRpm);
-        				LOGGER.trace("DYNO log file time: " + logTime + ", speed: " + logRpm);
+        				LOGGER.trace("DYNO log file time: " + logTime + "; speed: " + logRpm);
                     }
                 }
                 inputStream.close();
@@ -1087,7 +1098,7 @@ public final class DynoControlPanel extends JPanel {
                         LOGGER.info("DYNO Opening trace file: " + traceFile.getName());
 
                         String line = inputStream.readLine();
-                        String[] refStats = line.split(COMMA);
+                        String[] refStats = line.split(TAB);
                         reFfToE = Double.parseDouble(refStats[3]);
                         reFsToE = Double.parseDouble(refStats[4]);
                         reFtToS = Double.parseDouble(refStats[5]);
@@ -1145,12 +1156,12 @@ public final class DynoControlPanel extends JPanel {
                         if (dButton.isSelected()) {
                             outputStream = new BufferedWriter(new FileWriter(traceFile));
                             LOGGER.info("DYNO Saving trace to file: " + traceFile.getName());
-                            String line = units + COMMA + orderComboBox.getSelectedItem() +
-                                    COMMA + resultStrings[1] +
-                                    COMMA + fToE +
-                                    COMMA + sToE +
-                                    COMMA + tToS +
-                                    COMMA + auc;
+                            String line = units + TAB + orderComboBox.getSelectedItem() +
+                            TAB + resultStrings[1] +
+                            TAB + fToE +
+                            TAB + sToE +
+                            TAB + tToS +
+                            TAB + auc;
                             outputStream.write(line, 0, line.length());
                             outputStream.newLine();
 

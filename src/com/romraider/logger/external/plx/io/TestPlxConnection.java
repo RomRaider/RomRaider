@@ -62,4 +62,7 @@ public final class TestPlxConnection implements SerialConnection {
     public void close() {
         index = 0;
     }
+
+    public void sendBreak(int duration) {
+	}
 }

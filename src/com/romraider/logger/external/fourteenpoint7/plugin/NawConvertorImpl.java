@@ -73,15 +73,15 @@ public final class NawConvertorImpl implements NawConvertor {
                 o2conc = 0.210;
             }
             afr = ((o2conc / 3) + 1) / (1 - (4.76 * o2conc)) * 14.7;
-            if (afr > 30) {
-            	afr = 29.9;
+            if (afr >= 21) {
+            	afr = 20.99;
             }
         } else { // Rich
             afr = ((0.00003453 * unCalIp * unCalIp) - (0.00159 * unCalIp) + 0.6368) * 14.7;
         }
         temp = (0x000000FF & ((int) bytes[8])); // convert signed byte to unsigned byte
         if (temp < 11) { // check sensor temperature range for valid reading
-            afr = 999.99;    // sensor too hot
+            afr = 99.99;    // sensor too hot
         } else if (temp > 19) {
             afr = -99.99;    // sensor too cold
         }

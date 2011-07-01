@@ -42,21 +42,29 @@ public final class TransmissionManagerImpl implements TransmissionManager {
     public void start() {
         try {
             connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(), settings.getLoggerConnectionProperties());
-            LOGGER.info("Connected.");
+            LOGGER.info("TX Manager Started.");
         } catch (Throwable e) {
             stop();
         }
     }
 
-    public void sendQueries(Collection<EcuQuery> queries) {
+    public void sendQueries(Collection<EcuQuery> queries, PollingState pollState) {
         checkNotNull(queries, "queries");
+        checkNotNull(pollState, "pollState");
         if (connection == null) throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
-        connection.sendAddressReads(queries, settings.getDestinationId());
+        connection.sendAddressReads(queries, settings.getDestinationId(), pollState);
+    }
+
+    public void endQueries() {
+        if (connection == null) throw new NotConnectedException("TransmissionManager must be started before ending queries!");
+        connection.clearLine();
     }
 
     public void stop() {
-        if (connection != null) connection.close();
-        LOGGER.info("Disconnected.");
+        if (connection != null) {
+        	endQueries();
+        	connection.close();
+        }
+        LOGGER.info("TX Manager Stopped.");
     }
-
 }

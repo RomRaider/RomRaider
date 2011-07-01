@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC8 -
+                    - RomRaider 0.5.3 Beta RC9 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -34,12 +34,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b RC8 Notes (05/14/2011) -
+- 0.5.3b RC9 Notes (06/30/2011) -
 -------------------------------
-This is the eigth beta release of the upcoming official 0.5.3b release.
+This is the nineth beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.3b RC8 Known Issues -
+- 0.5.3b RC9 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -54,6 +54,22 @@ This is the eigth beta release of the upcoming official 0.5.3b release.
 --------------
 - Change Log -
 --------------
+
+0.5.3b RC9 (06/30/2011)
+-----------------------
+
+--- Logger ---
+- log4j.properties updated with new name for romraider.log --> rr_system.log
+- new logger field to allow arbitrary text to be added to log file name (right-
+  click on field for options)
+- Tech Edge plugin updates
+- PLX plugin update to ignore unsupported data items
+- Innovate MTS plugin updated to ignore unsupported data items
+- Logging data error handling improved and hang condition eliminated
+- Logging performance improved (fast poll may not work with 16 bit ECU, untested)
+- Log file field value delimiter changed from comma to semicolon when values use
+  comma as decimal place holder
+- Start of support for international numbers and text
 
 0.5.3b RC8 (05/14/2011)
 -----------------------

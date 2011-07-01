@@ -120,9 +120,9 @@ public final class DynoChartPanel extends JPanel {
     public void updateRefTrace(String[] line) {
         if (hpRef.getItemCount() > 0) {
             refStat.setText("Reference: " + line[2] + " (" +
-                    String.format("%1.2f", Double.parseDouble(line[3])) + ", " +
-                    String.format("%1.2f", Double.parseDouble(line[4])) + ", " +
-                    String.format("%1.2f", Double.parseDouble(line[5])) + ", " +
+                    String.format("%1.2f", Double.parseDouble(line[3])) + "; " +
+                    String.format("%1.2f", Double.parseDouble(line[4])) + "; " +
+                    String.format("%1.2f", Double.parseDouble(line[5])) + "; " +
                     String.format("%1.2f", Double.parseDouble(line[6])) + ")");
             refStat.setX(plot.getDomainAxis().getLowerBound() + 10);
             refStat.setY(hpAxis.getUpperBound());
@@ -259,7 +259,7 @@ public final class DynoChartPanel extends JPanel {
             zTo60Text = "97 kph";
         }
         hpAxis.setLabel("Vehicle Speed (" + units + ")");
-        String[] car = carInfo.split(",");
+        String[] car = carInfo.split(";");
         car[0] = "LANE 1: " + car[0].substring(0, car[0].length() - 3) + " - ET: " + String.format("%1.3f", etResults[8]) + "\" / " + String.format("%1.2f", etResults[9]) + " " + units;
         double ySpace = hpAxis.getUpperBound() / 25;
         double xMin = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 7) + plot.getDomainAxis().getLowerBound();

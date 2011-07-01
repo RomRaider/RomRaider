@@ -22,6 +22,8 @@ package com.romraider.logger.ecu.comms.io.connection;
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
 import com.romraider.logger.ecu.comms.io.protocol.SSMLoggerProtocol;
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import static com.romraider.util.HexUtil.asHex;
@@ -45,7 +47,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
         byte[] request = protocol.constructEcuResetRequest();
         LOGGER.debug("Ecu Reset Request  ---> " + asHex(request));
         byte[] response = manager.send(request, SEND_TIMEOUT);
-        byte[] processedResponse = protocol.preprocessResponse(request, response);
+        byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
         LOGGER.debug("Ecu Reset Response <--- " + asHex(processedResponse));
         protocol.processEcuResetResponse(processedResponse);
     }
@@ -54,19 +56,23 @@ public final class SSMLoggerConnection implements LoggerConnection {
         byte[] request = protocol.constructEcuInitRequest(id);
         LOGGER.debug("Ecu Init Request  ---> " + asHex(request));
         byte[] response = manager.send(request, SEND_TIMEOUT);
-        byte[] processedResponse = protocol.preprocessResponse(request, response);
+        byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
         LOGGER.debug("Ecu Init Response <--- " + asHex(processedResponse));
         protocol.processEcuInitResponse(callback, processedResponse);
     }
 
-    public void sendAddressReads(Collection<EcuQuery> queries, byte id) {
+    public void sendAddressReads(Collection<EcuQuery> queries, byte id, PollingState pollState) {
         byte[] request = protocol.constructReadAddressRequest(id, queries);
-        byte[] response = protocol.constructReadAddressResponse(queries);
-        LOGGER.trace("ECU Request  ---> " + asHex(request));
-        manager.send(request, response, SEND_TIMEOUT);
-        byte[] processedResponse = protocol.preprocessResponse(request, response);
-        LOGGER.trace("ECU Response <--- " + asHex(processedResponse));
-        protocol.processReadAddressResponses(queries, processedResponse);
+        if (pollState.getCurrentState() == 0) LOGGER.debug("Mode:" + pollState.getCurrentState() + " ECU Request  ---> " + asHex(request));
+        byte[] response = protocol.constructReadAddressResponse(queries, pollState);
+        manager.send(request, response, SEND_TIMEOUT, pollState);
+        byte[] processedResponse = protocol.preprocessResponse(request, response, pollState);
+        LOGGER.debug("Mode:" + pollState.getCurrentState() + " ECU Response <--- " + asHex(processedResponse));
+        protocol.processReadAddressResponses(queries, processedResponse, pollState);
+    }
+
+    public void clearLine() {
+        manager.clearLine();
     }
 
     public void close() {

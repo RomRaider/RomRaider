@@ -74,6 +74,7 @@ public class Settings implements Serializable {
     private String fileLoggingControllerSwitchId = "S20"; // defogger switch by default
     private boolean fileLoggingControllerSwitchActive = true;
     private boolean fileLoggingAbsoluteTimestamp = false;
+    private String logfileNameText = "";
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();
@@ -83,8 +84,10 @@ public class Settings implements Serializable {
     private ConnectionProperties loggerConnectionProperties;
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
     private Map<String, String> loggerPluginPorts;
-	private boolean loggerRefreshMode = true;
-	private byte loggerDestinationId;
+	private boolean loggerRefreshMode = false;
+	private byte loggerDestinationId = 0x10;
+	private boolean fastPoll = false;
+	private double loggerDividerLocation = 400;
 
 
     public Settings() {
@@ -364,6 +367,14 @@ public class Settings implements Serializable {
         this.loggerWindowSize = loggerWindowSize;
     }
 
+    public double getDividerLocation() {
+        return loggerDividerLocation;
+    }
+
+    public void setLoggerDividerLocation(double dividerLocation) {
+        this.loggerDividerLocation = dividerLocation;
+    }
+
     public String getLoggerProfileFilePath() {
         return loggerProfileFilePath;
     }
@@ -455,5 +466,21 @@ public class Settings implements Serializable {
 
 	public byte getDestinationId() {
 		return loggerDestinationId;
+	}
+
+	public void setFastPoll(boolean state) {
+    	this.fastPoll = state;
+	}
+
+	public boolean getFastPoll() {
+		return fastPoll;
+	}
+
+	public void setLogfileNameText(String text) {
+		this.logfileNameText = text;
+	}
+
+	public String getLogfileNameText() {
+		return logfileNameText;
 	}
 }

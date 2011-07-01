@@ -28,9 +28,13 @@ import com.romraider.logger.ecu.ui.StatusChangeListener;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -131,8 +135,30 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
     }
 
     private final class Line {
-        private static final char DELIMITER = ',';
+        private final Locale userLocale = Locale.getDefault();
+        private static final char COMMA = ',';
+        private static final char SEMICOLON = ';';
+        private final Set<String> locales = new HashSet<String>(
+        		Arrays.asList(new String[] {
+        			"be_BY","bg_BG","ca_ES","cs_CZ","da_DK","de_AT","de_CH","de_DE","de_LU",
+        			"el_CY","el_GR","es_AR","es_BO","es_CL","es_CO","es_EC","es_ES","es_PE",
+        			"es_PY","es_UY","es_VE","et_EE","fi_FI","fr_BE","fr_CA","fr_CH","fr_FR",
+        			"fr_LU","hr_HR","hu_HU","in_ID","is_IS","it_CH","it_IT","lt_LT","lv_LV",
+        			"mk_MK","nl_BE","nl_NL","no_NO","no_NO_NY","pl_PL","pt_BR","pt_PT",
+        			"ro_RO","ru_RU","sk_SK","sl_SI","sq_AL","sr_BA","sr_CS","sr_ME","sr_RS",
+        			"sv_SE","tr_TR","uk_UA","vi_VN"
+        		}
+        		));
         private final Map<LoggerData, String> loggerDataValues;
+        private final char delimiter;
+        {
+        	if (locales.contains(userLocale.toString())) {
+        		delimiter = SEMICOLON;
+        	}
+        	else {
+        		delimiter = COMMA;
+        	}
+        }
 
         public Line(Set<LoggerData> loggerDatas) {
             this.loggerDataValues = new LinkedHashMap<LoggerData, String>();
@@ -159,7 +185,7 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         public synchronized String headers() {
             StringBuilder buffer = new StringBuilder();
             for (LoggerData loggerData : loggerDataValues.keySet()) {
-                buffer.append(DELIMITER).append(loggerData.getName()).append(" (")
+                buffer.append(delimiter).append(loggerData.getName()).append(" (")
                         .append(loggerData.getSelectedConvertor().getUnits()).append(')');
             }
             return buffer.toString();
@@ -169,11 +195,9 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
             StringBuilder buffer = new StringBuilder();
             for (LoggerData loggerData : loggerDataValues.keySet()) {
                 String value = loggerDataValues.get(loggerData);
-                buffer.append(DELIMITER).append(value);
+                buffer.append(delimiter).append(value);
             }
             return buffer.toString();
         }
-
     }
-
 }

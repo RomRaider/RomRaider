@@ -26,7 +26,9 @@ public interface TransmissionManager {
 
     void start();
 
-    void sendQueries(Collection<EcuQuery> queries);
+    void sendQueries(Collection<EcuQuery> queries, PollingState pollMode);
+    
+    void endQueries();
 
     void stop();
 
