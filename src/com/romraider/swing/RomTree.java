@@ -51,8 +51,11 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
+    	showHideTable(e);
+    }
 
-        try {
+    private void showHideTable(MouseEvent e) {
+    try {
 
             Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
 

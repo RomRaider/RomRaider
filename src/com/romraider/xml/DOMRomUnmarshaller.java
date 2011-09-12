@@ -469,14 +469,13 @@ public final class DOMRomUnmarshaller {
                     table.setDescription(unmarshallText(n));
 
                 } else if (n.getNodeName().equalsIgnoreCase("state")) {
-                    // set on/off values for switch type
                     if (unmarshallAttribute(n, "name", "").equalsIgnoreCase("on")) {
                         ((TableSwitch) table).setOnValues(unmarshallAttribute(n, "data", "0"));
 
                     } else if (unmarshallAttribute(n, "name", "").equalsIgnoreCase("off")) {
                         ((TableSwitch) table).setOffValues(unmarshallAttribute(n, "data", "0"));
 
-                    }
+                    } else ((TableSwitch) table).setValues(unmarshallAttribute(n, "name", ""), unmarshallAttribute(n, "data", "0"));
 
                 } else { /*unexpected element in Table (skip) */ }
             } else { /* unexpected node-type in Table (skip) */ }

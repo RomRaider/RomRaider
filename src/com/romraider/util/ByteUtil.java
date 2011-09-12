@@ -59,4 +59,36 @@ public final class ByteUtil {
 			response[i] = buffer.get(i);
 		}
 	}
+
+    public static int indexOfBytes(byte[] bytes, byte[] pattern) {
+        int[] failure = computeFailure(pattern);
+        int j = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            while (j > 0 && pattern[j] != bytes[i]) {
+                j = failure[j - 1];
+            }
+            if (pattern[j] == bytes[i]) {
+                j++;
+            }
+            if (j == pattern.length) {
+                return i - pattern.length + 1;
+            }
+        }
+        return -1;
+    }
+
+    private static int[] computeFailure(byte[] pattern) {
+        int[] failure = new int[pattern.length];
+        int j = 0;
+        for (int i = 1; i < pattern.length; i++) {
+            while (j>0 && pattern[j] != pattern[i]) {
+                j = failure[j - 1];
+            }
+            if (pattern[j] == pattern[i]) {
+                j++;
+            }
+            failure[i] = j;
+        }
+        return failure;
+    }
 }

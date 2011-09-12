@@ -1061,22 +1061,24 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void applyColorSettings(Settings settings) {
-        this.setSettings(settings);
-
-        // apply settings to cells
-        for (int i = 0; i < getDataSize(); i++) {
-            this.setMaxColor(settings.getMaxColor());
-            this.setMinColor(settings.getMinColor());
-            data[i].setHighlightColor(settings.getHighlightColor());
-            data[i].setIncreaseBorder(settings.getIncreaseBorder());
-            data[i].setDecreaseBorder(settings.getDecreaseBorder());
-            data[i].setFont(settings.getTableFont());
-            data[i].repaint();
-        }
-        cellHeight = (int) settings.getCellSize().getHeight();
-        cellWidth = (int) settings.getCellSize().getWidth();
-        colorize();
-        validateScaling();
+    	if (this.getType() != TABLE_SWITCH) {
+	        this.setSettings(settings);
+	
+	        // apply settings to cells
+	        for (int i = 0; i < getDataSize(); i++) {
+	            this.setMaxColor(settings.getMaxColor());
+	            this.setMinColor(settings.getMinColor());
+	            data[i].setHighlightColor(settings.getHighlightColor());
+	            data[i].setIncreaseBorder(settings.getIncreaseBorder());
+	            data[i].setDecreaseBorder(settings.getDecreaseBorder());
+	            data[i].setFont(settings.getTableFont());
+	            data[i].repaint();
+	        }
+	        cellHeight = (int) settings.getCellSize().getHeight();
+	        cellWidth = (int) settings.getCellSize().getWidth();
+	        colorize();
+	        validateScaling();
+    	}
     }
 
     public void resize() {

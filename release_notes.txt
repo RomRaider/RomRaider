@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC9 -
+                    - RomRaider 0.5.3 Beta RC10 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -34,12 +34,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b RC9 Notes (06/30/2011) -
+- 0.5.3b RC10 Notes (09/12/2011) -
 -------------------------------
-This is the nineth beta release of the upcoming official 0.5.3b release.
+This is the tenth beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.3b RC9 Known Issues -
+- 0.5.3b RC10 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -54,6 +54,27 @@ This is the nineth beta release of the upcoming official 0.5.3b release.
 --------------
 - Change Log -
 --------------
+
+0.5.3b RC10 (09/12/2011)
+-----------------------
+
+--- Editor ---
+- Added support for multiple-state switches.  This will result in a Switch Table
+  being rendered with Radio Buttons rather than a checkbox.
+- Added ECU defintion data validation for Switch Tables.  If the ROM image data
+  does not match one of the switch states according to the definition then a
+  warning is presented and the table is locked from editing.
+- Added ROM Checksum validation on image open for 32 bit ROMs.  An ERROR message
+  is presented warning not to use the ROM image as it may be corrupt.
+- Added ROM Checksum calculation for 32 bit ROMs.  Upon file save the new
+  Checksums (if not previously disabled) are written to the ROM.
+- Added a ROM Edit Stamp to 32 bit ROMs consisting of the YYMMDD and an
+  incremental count value.  This Edit Stamp is displayed in the View->ROM
+  properties menu item.
+--- Logger ---
+- Added more selection to the Right-click menu associated with the LogFile text
+  field.
+
 
 0.5.3b RC9 (06/30/2011)
 -----------------------

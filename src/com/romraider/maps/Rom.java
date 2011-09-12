@@ -23,11 +23,15 @@ import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.swing.JProgressPane;
 import com.romraider.xml.TableNotFoundException;
+import static com.romraider.maps.RomChecksum.calculateRomChecksum;
+import static com.romraider.util.HexUtil.asBytes;
 import org.apache.log4j.Logger;
 import javax.swing.JOptionPane;
 import java.io.File;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -179,8 +183,32 @@ public class Rom implements Serializable {
     }
 
     public byte[] saveFile() {
+    	Table checksum = null;
         for (Table table : tables) {
             table.saveFile(binData);
+            if (table.getName().equalsIgnoreCase("Checksum Fix"))
+            	checksum = table;
+        }
+        if (checksum != null && !checksum.isLocked()) {
+        	calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
+        }
+        if (checksum != null) {
+	    	byte count = binData[checksum.getStorageAddress() + 207];
+	    	if (count == -1) {
+	    		count = 1;
+	    	}
+	    	else {
+	    		count++;
+	    	}
+	    	String currentDate = new SimpleDateFormat("yyMMdd").format(new Date());
+	    	String stamp = String.format("%s%02d", currentDate, count);
+	    	byte[] romStamp = asBytes(stamp);
+	    	System.arraycopy(
+	    			romStamp,
+	    			0,
+	    			binData,
+	    			checksum.getStorageAddress() + 204,
+	    			4);
         }
         return binData;
     }

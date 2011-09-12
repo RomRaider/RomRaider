@@ -196,7 +196,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         lblStorageAddress.setText("Storage Address:");
         lblStorageAddress.setFocusable(false);
 
-        lblStorageSize.setText("Storage Size:");
+        lblStorageSize.setText("Data Type:");
         lblStorageSize.setFocusable(false);
 
         lblEndian.setText("Endian:");
