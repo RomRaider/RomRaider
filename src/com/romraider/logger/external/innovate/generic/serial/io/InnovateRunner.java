@@ -46,6 +46,7 @@ public final class InnovateRunner implements Stoppable {
 //        this.connection = new TestInnovateConnection("13036B00000000000000000000B2874313036B00000000000000000000B28743");
         // LM-1
 //        this.connection = new TestInnovateConnection("8113037C1E66012600720049003B003B");
+//        this.connection = new TestInnovateConnection("B28242310024B28242310000"); // bad data?
         this.listener = listener;
     }
 

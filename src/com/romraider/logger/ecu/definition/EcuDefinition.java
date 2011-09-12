@@ -25,4 +25,5 @@ public interface EcuDefinition {
 
     String getCalId();
 
+    String getCarString();
 }

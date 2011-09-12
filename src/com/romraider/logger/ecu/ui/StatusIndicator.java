@@ -65,7 +65,7 @@ public final class StatusIndicator extends JPanel implements StatusChangeListene
     private void updateStatusLabel(final String text, final ImageIcon icon) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                statusLabel.setText(text);
+                statusLabel.setText("  ");
                 statusLabel.setIcon(icon);
             }
         });

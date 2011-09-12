@@ -359,7 +359,7 @@ public final class DOMRomUnmarshaller {
                 table = new TableSwitch(settings);
 
             } else {
-                throw new XMLParseException("Error loading table.");
+                throw new XMLParseException("Error loading table, " + tableNode.getAttributes().getNamedItem("name"));
             }
         }
 

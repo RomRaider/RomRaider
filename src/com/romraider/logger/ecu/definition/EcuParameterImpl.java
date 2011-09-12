@@ -36,7 +36,7 @@ public final class EcuParameterImpl implements EcuParameter {
     private boolean selected;
 
     public EcuParameterImpl(String id, String name, String description, EcuAddress address, EcuDataConvertor[] convertors) {
-        checkNotNullOrEmpty(name, "id");
+        checkNotNullOrEmpty(id, "id");
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");
         checkNotNull(address, "address");

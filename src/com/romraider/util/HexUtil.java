@@ -97,5 +97,4 @@ public final class HexUtil {
     public static String intToHexString(int input) {
         return "0x" + Integer.toHexString(input).toUpperCase();
     }
-
 }

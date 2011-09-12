@@ -38,12 +38,25 @@ import java.util.Map;
 </romid>
 */
 public final class EcuDefinitionHandler extends DefaultHandler {
-    private static final String TAG_ROMID = "romid";
-    private static final String TAG_CALID = "internalidstring";
-    private static final String TAG_ECUID = "ecuid";
+    private static final String TAG_ROMID    = "romid";
+    private static final String TAG_CALID    = "internalidstring";
+    private static final String TAG_ECUID    = "ecuid";
+    private static final String TAG_YEAR     = "year";
+    private static final String TAG_MARKET   = "market";
+    private static final String TAG_MAKE     = "make";
+    private static final String TAG_MODEL    = "model";
+    private static final String TAG_SUBMODEL = "submodel";
+    private static final String TAG_TRANS    = "transmission";
     private Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
     private String calId;
     private String ecuId;
+    private String year;
+    private String market;
+    private String make;
+    private String model;
+    private String submodel;
+    private String transmission;
+    private String carString;
     private StringBuilder charBuffer;
 
     public void startDocument() {
@@ -52,8 +65,15 @@ public final class EcuDefinitionHandler extends DefaultHandler {
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if (TAG_ROMID.equals(qName)) {
-            calId = "";
-            ecuId = "";
+            calId        = "";
+            ecuId        = "";
+            year         = "";
+            market       = "";
+            make         = "";
+            model        = "";
+            submodel     = "";
+            transmission = "";
+            carString    = "";
         }
         charBuffer = new StringBuilder();
     }
@@ -64,13 +84,58 @@ public final class EcuDefinitionHandler extends DefaultHandler {
 
     public void endElement(String uri, String localName, String qName) {
         if (TAG_ROMID.equals(qName)) {
-            if (!isNullOrEmpty(ecuId) && !isNullOrEmpty(calId)) {
-                ecuDefinitionMap.put(ecuId, new EcuDefinitionImpl(ecuId, calId));
+            if (!isNullOrEmpty(ecuId)    && 
+            	!isNullOrEmpty(calId)    &&
+            	!isNullOrEmpty(year)     &&
+            	!isNullOrEmpty(market)   &&
+            	!isNullOrEmpty(make)     &&
+            	!isNullOrEmpty(model)    &&
+            	!isNullOrEmpty(submodel) &&
+            	!isNullOrEmpty(transmission)
+            	) {
+            	carString = String.format("%s %s %s %s %s %s",
+            			year, market, make, model, submodel, transmission);
+                ecuDefinitionMap.put(ecuId, new EcuDefinitionImpl(ecuId, calId, carString));
             }
-        } else if (TAG_CALID.equals(qName)) {
-            calId = charBuffer.toString();
-        } else if (TAG_ECUID.equals(qName)) {
+        }
+        else if (TAG_CALID.equals(qName)) {
+        	calId = charBuffer.toString();
+        }
+        else if (TAG_ECUID.equals(qName)) {
             ecuId = charBuffer.toString();
+        }
+        else if (TAG_YEAR.equals(qName)) {
+        	year = charBuffer.toString();
+        	if (!year.isEmpty()) {
+	        	try {
+		        	if (Integer.parseInt(year) < 90) {
+		        		year = "20" + year;
+		        	}
+		       	}
+	        	catch (NumberFormatException e) {
+		        	if ((year.contains("/") || year.contains("-")) &&
+		        			year.length() < 6 )
+		        		year = "20" + year;        		
+	        	}
+        	}
+        	else {
+        		year = "20xx";
+        	}
+        }
+        else if (TAG_MARKET.equals(qName)) {
+        	market = charBuffer.toString();
+        }
+        else if (TAG_MAKE.equals(qName)) {
+        	make = charBuffer.toString();
+        }
+        else if (TAG_MODEL.equals(qName)) {
+        	model = charBuffer.toString();
+        }
+        else if (TAG_SUBMODEL.equals(qName)) {
+        	submodel = charBuffer.toString();
+        }
+        else if (TAG_TRANS.equals(qName)) {
+        	transmission = charBuffer.toString();
         }
     }
 

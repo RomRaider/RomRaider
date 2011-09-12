@@ -20,16 +20,23 @@
 package com.romraider.logger.ecu.definition;
 
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import org.apache.log4j.Logger;
+
 
 public final class EcuDefinitionImpl implements EcuDefinition {
+    private static final Logger LOGGER = Logger.getLogger(EcuDefinitionImpl.class);
     private final String ecuId;
     private final String calId;
+    private final String carString;
 
-    public EcuDefinitionImpl(String ecuId, String calId) {
+    public EcuDefinitionImpl(String ecuId, String calId, String carString) {
         checkNotNullOrEmpty(ecuId, "ecuId");
         checkNotNullOrEmpty(calId, "calId");
+        checkNotNullOrEmpty(carString, "carString");
         this.ecuId = ecuId;
         this.calId = calId;
+        this.carString = carString;
+        LOGGER.trace(ecuId + "\t" + calId + "\t" + carString);
     }
 
     public String getEcuId() {
@@ -38,5 +45,9 @@ public final class EcuDefinitionImpl implements EcuDefinition {
 
     public String getCalId() {
         return calId;
+    }
+
+    public String getCarString() {
+        return carString;
     }
 }

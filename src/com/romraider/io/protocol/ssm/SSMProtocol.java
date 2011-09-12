@@ -38,8 +38,8 @@ public final class SSMProtocol implements Protocol {
     public static final byte HEADER = (byte) 0x80;
     public static byte ECU_ID = (byte) 0x10;
     public static final byte DIAGNOSTIC_TOOL_ID = (byte) 0xF0;
-    public static final byte READ_ADDRESS_SLOW = (byte) 0x00;
-    public static final byte READ_ADDRESS_FAST = (byte) 0x01;
+    public static final byte READ_ADDRESS_ONCE = (byte) 0x00;
+    public static final byte READ_ADDRESS_CONTINUOUS = (byte) 0x01;
     public static final byte READ_MEMORY_PADDING = (byte) 0x00;
     public static final byte READ_MEMORY_COMMAND = (byte) 0xA0;
     public static final byte READ_MEMORY_RESPONSE = (byte) 0xE0;
@@ -188,7 +188,7 @@ public final class SSMProtocol implements Protocol {
         request[i++] = asByte(data.length + (padContent ? 2 : 1));
         request[i++] = command;
         if (padContent) {
-            request[i++] = (pollState.isFastPoll() ?  READ_ADDRESS_FAST : READ_ADDRESS_SLOW);
+            request[i++] = (pollState.isFastPoll() ?  READ_ADDRESS_CONTINUOUS : READ_ADDRESS_ONCE);
         }
         System.arraycopy(data, 0, request, i, data.length);
         request[request.length - 1] = calculateChecksum(request);

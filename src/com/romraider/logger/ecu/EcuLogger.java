@@ -282,7 +282,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                     invokeLater(new Runnable() {
                         public void run() {
                             String calId = getCalId(ecuId);
-                            LOGGER.info("CAL ID = " + calId);
+                            String carString = getCarString(ecuId);
+                            LOGGER.info("CAL ID: " + calId + "Car: " + carString);
                             calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
                             ecuIdLabel.setText(buildEcuInfoLabelText(target + " ID", ecuId));
                             LOGGER.info("Loading logger config for new " + target + " ID:" + ecuId + "...");
@@ -295,6 +296,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                             if (ecuDefinitionMap == null) return null;
                             EcuDefinition def = ecuDefinitionMap.get(ecuId);
                             return def == null ? null : def.getCalId();
+                        }
+
+                        private String getCarString(String ecuId) {
+                            Map<String, EcuDefinition> ecuDefinitionMap = settings.getLoggerEcuDefinitionMap();
+                            if (ecuDefinitionMap == null) return null;
+                            EcuDefinition def = ecuDefinitionMap.get(ecuId);
+                            return def == null ? null : def.getCarString();
                         }
                     });
                 }
@@ -921,8 +929,57 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 				settings.setLogfileNameText(fileNameExtention.getText());
             }
           });
-        JMenuItem ecuIdItem2 = new JMenuItem("Clear Logfile Text");
+        JMenuItem ecuIdItem2 = new JMenuItem("1st WOT");
         ecuIdItem2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fileNameExtention.setText("1st_WOT");
+				settings.setLogfileNameText(fileNameExtention.getText());
+            }
+          });
+        JMenuItem ecuIdItem3 = new JMenuItem("2nd WOT");
+        ecuIdItem3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fileNameExtention.setText("2nd_WOT");
+				settings.setLogfileNameText(fileNameExtention.getText());
+            }
+          });
+        JMenuItem ecuIdItem4 = new JMenuItem("3rd WOT");
+        ecuIdItem4.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fileNameExtention.setText("3rd_WOT");
+				settings.setLogfileNameText(fileNameExtention.getText());
+            }
+          });
+        JMenuItem ecuIdItem5 = new JMenuItem("4th WOT");
+        ecuIdItem5.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fileNameExtention.setText("4th_WOT");
+				settings.setLogfileNameText(fileNameExtention.getText());
+            }
+          });
+        JMenuItem ecuIdItem6 = new JMenuItem("5th WOT");
+        ecuIdItem6.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fileNameExtention.setText("5th_WOT");
+				settings.setLogfileNameText(fileNameExtention.getText());
+            }
+          });
+        JMenuItem ecuIdItem7 = new JMenuItem("6th WOT");
+        ecuIdItem7.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fileNameExtention.setText("6th_WOT");
+				settings.setLogfileNameText(fileNameExtention.getText());
+            }
+          });
+        JMenuItem ecuIdItem8 = new JMenuItem("cruising");
+        ecuIdItem8.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	fileNameExtention.setText("cruising");
+				settings.setLogfileNameText(fileNameExtention.getText());
+            }
+          });
+        JMenuItem ecuIdItem9 = new JMenuItem("Clear Logfile Text");
+        ecuIdItem9.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	fileNameExtention.setText("");
 				settings.setLogfileNameText(fileNameExtention.getText());
@@ -930,6 +987,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
           });
         fileNamePopup.add(ecuIdItem1);
         fileNamePopup.add(ecuIdItem2);
+        fileNamePopup.add(ecuIdItem3);
+        fileNamePopup.add(ecuIdItem4);
+        fileNamePopup.add(ecuIdItem5);
+        fileNamePopup.add(ecuIdItem6);
+        fileNamePopup.add(ecuIdItem7);
+        fileNamePopup.add(ecuIdItem8);
+        fileNamePopup.add(ecuIdItem9);
     	fileNameExtention.addMouseListener(new LogFileNameFieldAction(fileNamePopup));
 
         JPanel panel = new JPanel();
