@@ -39,6 +39,7 @@ public class RomID implements Serializable {
     private String year = "Unknown";
     private String flashMethod = "";//flash method string used for ecuflash
     private String memModel = "";//model used for reflashing with ecuflash
+    private String editStamp = "";//YYYY-MM-DD and v, the save count for this ROM
     private int fileSize = 0;
     private int ramOffset = 0;
     private boolean obsolete = false; // whether a more recent revision exists
@@ -190,4 +191,13 @@ public class RomID implements Serializable {
     public void setObsolete(boolean obsolete) {
         this.obsolete = obsolete;
     }
+
+    public String getEditStamp() {
+        return editStamp;
+    }
+
+    public void setEditStamp(String editStamp) {
+        this.editStamp = editStamp;
+    }
+
 }

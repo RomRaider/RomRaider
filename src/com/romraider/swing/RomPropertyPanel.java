@@ -43,6 +43,7 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         model.setText(rom.getRomID().getModel());
         submodel.setText(rom.getRomID().getSubModel());
         transmission.setText(rom.getRomID().getTransmission());
+        editStamp.setText(rom.getRomID().getEditStamp());
 
         tableList.setListData(rom.getTables());
     }
@@ -80,7 +81,13 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableList = new javax.swing.JList();
         lblTables = new javax.swing.JLabel();
+        lblEditStamp = new javax.swing.JLabel();
+        editStamp = new javax.swing.JLabel();
 
+        lblEditStamp.setText("Edit Stamp:");
+        
+        editStamp.setText("stamp");
+        
         lblFilename.setText("Filename:");
 
         fileName.setText("Filename");
@@ -195,11 +202,13 @@ public class RomPropertyPanel extends javax.swing.JPanel {
                                 .add(layout.createSequentialGroup()
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                                 .add(lblInternalId)
-                                                .add(lblStorageAddress))
+                                                .add(lblStorageAddress)
+                                                .add(lblEditStamp))
                                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 53, Short.MAX_VALUE)
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                                 .add(internalID)
-                                                .add(storageAddress))
+                                                .add(storageAddress)
+                                                .add(editStamp))
                                         .add(36, 36, 36))
                                 .add(lblTables)
                                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 226, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
@@ -229,7 +238,9 @@ public class RomPropertyPanel extends javax.swing.JPanel {
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                                 .add(lblFilesize)
-                                .add(fileSize))))
+                                .add(fileSize)
+                                .add(lblEditStamp)
+                                .add(editStamp))))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(lblTables)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -291,6 +302,8 @@ public class RomPropertyPanel extends javax.swing.JPanel {
     private javax.swing.JLabel transmission;
     private javax.swing.JLabel xmlID;
     private javax.swing.JLabel year;
+    private javax.swing.JLabel lblEditStamp;
+    private javax.swing.JLabel editStamp;
     // End of variables declaration//GEN-END:variables
 
 }

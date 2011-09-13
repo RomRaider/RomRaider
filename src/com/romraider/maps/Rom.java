@@ -25,6 +25,7 @@ import com.romraider.swing.JProgressPane;
 import com.romraider.xml.TableNotFoundException;
 import static com.romraider.maps.RomChecksum.calculateRomChecksum;
 import static com.romraider.util.HexUtil.asBytes;
+import static com.romraider.util.HexUtil.asHex;
 import org.apache.log4j.Logger;
 import javax.swing.JOptionPane;
 import java.io.File;
@@ -106,6 +107,7 @@ public class Rom implements Serializable {
                     try {
                         table.populateTable(binData);
                         TableUpdateHandler.getInstance().registerTable(table);
+                        if (table.getName().equalsIgnoreCase("Checksum Fix")) setEditStamp(binData, table.getStorageAddress());
                     } catch (ArrayIndexOutOfBoundsException ex) {
 
                         LOGGER.error(table.getName() +
@@ -133,7 +135,24 @@ public class Rom implements Serializable {
         }
     }
 
-    public void setRomID(RomID romID) {
+    private void setEditStamp(byte[] binData, int address) {
+    	byte[] stampData = new byte[4];
+    	System.arraycopy(binData, address+204, stampData, 0, stampData.length);
+    	String stamp = asHex(stampData);
+    	if (stamp.equalsIgnoreCase("FFFFFFFF")) {
+    		romID.setEditStamp("");
+    	}
+    	else {
+    		StringBuilder niceStamp = new StringBuilder(stamp);
+    		niceStamp.insert(6, " v");
+    		niceStamp.insert(4, "-");
+    		niceStamp.insert(2, "-");
+    		niceStamp.insert(0, "20");
+    		romID.setEditStamp(niceStamp.toString());
+    	}
+	}
+
+	public void setRomID(RomID romID) {
         this.romID = romID;
     }
 
