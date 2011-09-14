@@ -91,7 +91,6 @@ public class TableSwitch extends Table {
     	        		"ERROR - Checksums Failed",
     	        		ERROR_MESSAGE);
     	        setButtonsUnselected(buttonGroup);
-    	        return;
         	}
         	else if (result == -1){
         		message = "All Checksums are disabled.";
@@ -99,12 +98,11 @@ public class TableSwitch extends Table {
     	        		message,
     	        		"Warning - Checksum Status",
     	        		WARNING_MESSAGE);
-        	}
+            	getButtonByText(buttonGroup, "on").setSelected(true);        	}
         	else {
         		getButtonByText(buttonGroup, "off").setSelected(true);
         		locked = false;
         	}
-        	getButtonByText(buttonGroup, "on").setSelected(true);
         	return;
         }
 

@@ -144,6 +144,7 @@ public class Rom implements Serializable {
     	}
     	else {
     		StringBuilder niceStamp = new StringBuilder(stamp);
+    		niceStamp.replace(6, 9, String.valueOf((int)0xFF & stampData[3]));
     		niceStamp.insert(6, " v");
     		niceStamp.insert(4, "-");
     		niceStamp.insert(2, "-");
@@ -220,7 +221,7 @@ public class Rom implements Serializable {
 	    		count++;
 	    	}
 	    	String currentDate = new SimpleDateFormat("yyMMdd").format(new Date());
-	    	String stamp = String.format("%s%02d", currentDate, count);
+	    	String stamp = String.format("%s%02x", currentDate, count);
 	    	byte[] romStamp = asBytes(stamp);
 	    	System.arraycopy(
 	    			romStamp,
@@ -228,6 +229,7 @@ public class Rom implements Serializable {
 	    			binData,
 	    			checksum.getStorageAddress() + 204,
 	    			4);
+	    	setEditStamp(binData, checksum.getStorageAddress());
         }
         return binData;
     }
