@@ -188,7 +188,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
-    private static final String FILE_NAME_EXTENTION = "Text to add to the saved logfile name";
+    private static final String FILE_NAME_EXTENTION = "Text to add to the saved logfile name. PT = Part Throttle";
     private static final String ECU_TEXT = "Engine Control Unit Polling";
     private static final String TCU_TEXT = "Transmission Control Unit Polling";
     private static final String[] logFileText = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
