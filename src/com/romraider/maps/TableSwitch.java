@@ -34,7 +34,6 @@ import java.util.Map;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -48,11 +47,9 @@ import static com.romraider.maps.RomChecksum.validateRomChecksum;
 public class TableSwitch extends Table {
  
     private static final long serialVersionUID = -4887718305447362308L;
-    private JCheckBox checkbox = new JCheckBox("Enabled", true); // checkbox selected by default
     private ButtonGroup buttonGroup = new ButtonGroup();
-    private Map<String, byte[]> states = new HashMap<String, byte[]>();
+    private Map<String, byte[]> switchStates = new HashMap<String, byte[]>();
     private int dataSize = 0;
-    private boolean isButtons = false;
  
     public TableSwitch(Settings settings) {
         super(settings);
@@ -72,24 +69,17 @@ public class TableSwitch extends Table {
     }
 
     public void populateTable(byte[] input) {
-        if (states.size() < 3) {
-            checkbox.setText("Enable " + name);
-            add(checkbox, BorderLayout.CENTER);
+        JPanel radioPanel = new JPanel(new GridLayout(0, 1));
+        radioPanel.add(new JLabel("  " + name));
+        for (String stateName : switchStates.keySet()) {
+            JRadioButton button = new JRadioButton(stateName);
+            buttonGroup.add(button);
+            radioPanel.add(button);
         }
-        else {
-            isButtons = true;
-            JPanel radioPanel = new JPanel(new GridLayout(0, 1));
-            radioPanel.add(new JLabel("  " + name));
-            for (String stateName : states.keySet()) {
-                JRadioButton button = new JRadioButton(stateName);
-                buttonGroup.add(button);
-                radioPanel.add(button);
-            }
-            add(radioPanel, BorderLayout.CENTER);
-        }
+        add(radioPanel, BorderLayout.CENTER);
        
         // Validate the ROM image checksums.
-        // If the result is  1: any checksum failed
+        // if the result is  1: any checksum failed
         // if the result is  0: all the checksums matched
         // if the result is -1: all the checksums have been previously disabled
         if (super.getName().equalsIgnoreCase("Checksum Fix")) {
@@ -97,24 +87,24 @@ public class TableSwitch extends Table {
 	        String message = String.format("One or more Checksums is invalid.%nThe ROM image may be corrupt.%nUse of this ROM image is not advised!");
         	if (result == 1) {
     	        showMessageDialog(this,
-    	        	message,
-    	            "ERROR - Checksums Failed",
-    	            ERROR_MESSAGE);
-            	checkbox.setSelected(false);
-            	checkbox.setEnabled(false);
+    	        		message,
+    	        		"ERROR - Checksums Failed",
+    	        		ERROR_MESSAGE);
+    	        setButtonsUnselected(buttonGroup);
+    	        return;
         	}
         	else if (result == -1){
         		message = "All Checksums are disabled.";
     	        showMessageDialog(this,
-      				message,
-                    "Warning - Checksum Status",
-                    WARNING_MESSAGE);
-            	checkbox.setSelected(true);
-            	checkbox.setEnabled(false);
+    	        		message,
+    	        		"Warning - Checksum Status",
+    	        		WARNING_MESSAGE);
         	}
         	else {
+        		getButtonByText(buttonGroup, "off").setSelected(true);
         		locked = false;
         	}
+        	getButtonByText(buttonGroup, "on").setSelected(true);
         	return;
         }
 
@@ -123,7 +113,7 @@ public class TableSwitch extends Table {
         // mismatch and disable this table's editing ability.
         if (!beforeRam) ramOffset = container.getRomID().getRamOffset();
         Map<String, Integer> sourceStatus = new HashMap<String, Integer>();
-        for (String stateName : states.keySet()) {
+        for (String stateName : switchStates.keySet()) {
             byte[] sourceData = new byte[dataSize];
             System.arraycopy(
             		input,
@@ -133,12 +123,10 @@ public class TableSwitch extends Table {
             		dataSize);
             int compareResult = indexOfBytes(sourceData, getValues(stateName));
             if (compareResult == -1) {
-                if (isButtons) getButtonByText(buttonGroup, stateName).setSelected(false);
-                checkbox.setSelected(false);
+                getButtonByText(buttonGroup, stateName).setSelected(false);
             }
             else {
-                if (isButtons) getButtonByText(buttonGroup, stateName).setSelected(true);
-                    checkbox.setSelected(true);
+                getButtonByText(buttonGroup, stateName).setSelected(true);
             }
             sourceStatus.put(stateName, compareResult);
         }
@@ -151,16 +139,12 @@ public class TableSwitch extends Table {
         }
 
         if (locked) {
-	        checkbox.setEnabled(false);
 	        String mismatch = String.format("Table: %s%nTable editing has been disabled.%nDefinition file or ROM image may be corrupt.", super.getName());
 	        showMessageDialog(this,
 	                          mismatch,
 	                          "ERROR - Data Mismatch",
 	                          ERROR_MESSAGE);
-	        if (isButtons) {
-	            for (String source : states.keySet())
-	            	setButtonUnselected(buttonGroup, source);
-	        }
+            setButtonsUnselected(buttonGroup);
         }
     }
  
@@ -187,59 +171,24 @@ public class TableSwitch extends Table {
     public byte[] saveFile(byte[] input) {
     	if (!super.getName().equalsIgnoreCase("Checksum Fix")) {
 	    	if (!locked) {
-		    	if (isButtons) {
-		    		JRadioButton button = getSelectedButton(buttonGroup);
-		    		System.arraycopy(
-		    				states.get(button.getText()),
-		    				0,
-		    				input,
-		    				storageAddress - ramOffset,
-		    				dataSize);
-		    	}
-		    	else {
-			        if (checkbox.isSelected()) { // switch is on
-			    		System.arraycopy(
-			    				getOnValues(),
-			    				0,
-			    				input,
-			    				storageAddress - ramOffset,
-			    				dataSize);
-			        } else if (!checkbox.isSelected()) { // switch is off
-			    		System.arraycopy(
-			    				getOffValues(),
-			    				0,
-			    				input,
-			    				storageAddress - ramOffset,
-			    				dataSize);
-			        }
-		    	}
+	    		JRadioButton selectedButton = getSelectedButton(buttonGroup);
+	    		System.arraycopy(
+	    				switchStates.get(selectedButton.getText()),
+	    				0,
+	    				input,
+	    				storageAddress - ramOffset,
+	    				dataSize);
 	    	}
     	}
         return input;
     }
  
     public void setValues(String name, String input) {
-        states.put(name, asBytes(input));
-    }
- 
-    public void setOnValues(String input) {
-            setValues("on", input);
-    }
- 
-    public void setOffValues(String input) {
-            setValues("off", input);
+    	switchStates.put(name, asBytes(input));
     }
  
     public byte[] getValues(String key) {
-            return states.get(key);
-    }
- 
-    public byte[] getOnValues() {
-            return states.get("on");
-    }
- 
-    public byte[] getOffValues() {
-            return states.get("off");
+            return switchStates.get(key);
     }
  
     public Dimension getFrameSize() {
@@ -289,7 +238,7 @@ public class TableSwitch extends Table {
     }
  
     // Unselects & disables all radio buttons in the specified group
-    private static void setButtonUnselected(ButtonGroup group, String text) {
+    private static void setButtonsUnselected(ButtonGroup group) {
         for (Enumeration<AbstractButton> e = group.getElements(); e.hasMoreElements(); ) {
             JRadioButton b = (JRadioButton)e.nextElement();
             b.setSelected(false);
