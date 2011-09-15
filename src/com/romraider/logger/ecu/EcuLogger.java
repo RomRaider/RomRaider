@@ -188,7 +188,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
-    private static final String FILE_NAME_EXTENTION = "Text to add to the saved logfile name. PT = Part Throttle";
+    private static final String FILE_NAME_EXTENTION = "Right-click to select or type text to add to the saved logfile name.";
     private static final String ECU_TEXT = "Engine Control Unit Polling";
     private static final String TCU_TEXT = "Transmission Control Unit Polling";
     private static final String[] logFileText = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
@@ -937,6 +937,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         fileNamePopup.add(ecuIdItem);
         for (final String item : logFileText) {
             ecuIdItem = new JMenuItem(item);
+            if (item.endsWith("PT"))  ecuIdItem.setToolTipText("Part Throttle");
+            if (item.endsWith("WOT")) ecuIdItem.setToolTipText("Wide Open Throttle");
             ecuIdItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 	fileNameExtention.setText(item.replaceAll(" ", "_"));

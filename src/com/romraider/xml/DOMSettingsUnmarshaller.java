@@ -216,7 +216,7 @@ public final class DOMSettingsUnmarshaller {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
                 settings.setRefreshMode(unmarshallAttribute(n, "refresh", false));
                 settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
-                settings.setFastPoll(unmarshallAttribute(n, "fastpoll", false));
+                settings.setFastPoll(unmarshallAttribute(n, "fastpoll", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
                 settings.setLoggerWindowMaximized(unmarshallAttribute(n, "value", false));
