@@ -238,6 +238,7 @@ public class ECUEditor extends AbstractFrame {
     public void addRom(Rom input) {
         // add to ecu image list pane
         RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel(), settings.isDisplayHighTables());
+        imageList.setRootVisible(true);
         imageRoot.add(romNode);
         imageList.updateUI();
 
@@ -266,6 +267,7 @@ public class ECUEditor extends AbstractFrame {
             showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", INFORMATION_MESSAGE);
         }
         input.setContainer(this);
+        imageList.setRootVisible(false);
         imageList.updateUI();
     }
 

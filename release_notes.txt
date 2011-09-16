@@ -59,8 +59,8 @@ This is the tenth beta release of the upcoming official 0.5.3b release.
 -----------------------
 
 --- Editor ---
-- Added support for multiple-state switches.  This will result in a Switch Table
-  being rendered with Radio Buttons rather than a checkbox.
+- Added support for multiple-state switches.  Switch Tables will now use
+  Radio Buttons rather than a Checkbox.
 - Added ECU defintion data validation for Switch Tables.  If the ROM image data
   does not match one of the switch states according to the definition then a
   warning is presented and the table is locked from editing.
@@ -71,10 +71,12 @@ This is the tenth beta release of the upcoming official 0.5.3b release.
 - Added a ROM Edit Stamp to 32 bit ROMs consisting of the YYMMDD and an
   incremental count value.  This Edit Stamp is displayed in the View->ROM
   properties menu item.
+- Fixed the missing Table Tree problem when running RomRaider on systems
+  using IcedTea or OpenJDK JVM.
 --- Logger ---
-- Added more selection to the Right-click menu associated with the LogFile text
+- Added more selections to the Right-click menu associated with the LogFile text
   field.
-
+- Made Fast Polling the default mode for the Logger connection.
 
 0.5.3b RC9 (06/30/2011)
 -----------------------
