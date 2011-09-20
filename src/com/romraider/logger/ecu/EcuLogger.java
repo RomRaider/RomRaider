@@ -199,6 +199,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final byte ECU_ID = (byte) 0x10;
     private static final byte TCU_ID = (byte) 0x18;
     private static String target = "ECU";
+    private static String loadResult  = "";
     private ECUEditor ecuEditor;
     private Settings settings;
     private LoggerController controller;
@@ -288,10 +289,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                         public void run() {
                             String calId = getCalId(ecuId);
                             String carString = getCarString(ecuId);
-                            LOGGER.info("CAL ID: " + calId + "Car: " + carString);
+                            LOGGER.info("CAL ID: " + calId + ", Car: " + carString);
                             calIdLabel.setText(buildEcuInfoLabelText(CAL_ID_LABEL, calId));
                             ecuIdLabel.setText(buildEcuInfoLabelText(target + " ID", ecuId));
-                            LOGGER.info("Loading logger config for new " + target + " ID:" + ecuId + "...");
+                            loadResult = String.format("Loading logger config for new %s ID: %s, ", target, ecuId);
                             loadLoggerParams();
                             loadUserProfile(settings.getLoggerProfileFilePath());
                         }
@@ -443,8 +444,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 addConvertorUpdateListeners(ecuParams);
                 loadEcuParams(ecuParams);
                 loadEcuSwitches(dataLoader.getEcuSwitches());
-                initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
+                if (target.equals("ECU")) initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
                 settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
+                loadResult = String.format("%sloaded %d parameters, %d switches.",loadResult, ecuParams.size(), dataLoader.getEcuSwitches().size());
+                LOGGER.info(loadResult);
             } catch (ConfigurationException cfe) {
             	reportError(cfe);
             	showMissingConfigDialog();
