@@ -80,7 +80,11 @@ public final class FileLoggerImpl implements FileLogger {
     }
 
     public void writeHeaders(String headers) {
-        writeText("Time" + headers);
+    	String timeHeader = "Time";
+    	if (!settings.isFileLoggingAbsoluteTimestamp()) {
+    		timeHeader = timeHeader  + " (msec)";
+    	}
+        writeText(timeHeader + headers);
     }
 
     public void writeLine(String line, long timestamp) {

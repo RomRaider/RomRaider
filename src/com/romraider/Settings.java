@@ -86,7 +86,7 @@ public class Settings implements Serializable {
     private Map<String, String> loggerPluginPorts;
 	private boolean loggerRefreshMode = false;
 	private byte loggerDestinationId = 0x10;
-	private boolean fastPoll = false;
+	private boolean fastPoll = true;
 	private double loggerDividerLocation = 400;
 
 
