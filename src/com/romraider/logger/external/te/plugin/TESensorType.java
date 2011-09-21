@@ -20,6 +20,7 @@
 package com.romraider.logger.external.te.plugin;
 
 public enum TESensorType {
+	AFR,
     Lambda,
     USR1,
     USR2,

@@ -22,6 +22,7 @@ package com.romraider.logger.external.te.io;
 import com.romraider.logger.external.core.Stoppable;
 import com.romraider.logger.external.te.plugin.TEDataItem;
 import com.romraider.logger.external.te.plugin.TESensorType;
+import static com.romraider.logger.external.te.plugin.TESensorType.AFR;
 import static com.romraider.logger.external.te.plugin.TESensorType.Lambda;
 import static com.romraider.logger.external.te.plugin.TESensorType.USR1;
 import static com.romraider.logger.external.te.plugin.TESensorType.USR2;
@@ -103,6 +104,12 @@ public final class TERunner implements Stoppable {
 		                        	}
 		                        	else {
 		                                TEDataItem dataItem = dataItems.get(Lambda);
+		                                if (dataItem != null) {
+		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(5));
+		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(6));
+		                                    dataItem.setRaw(raw1, raw2);
+		                                }
+		                                dataItem = dataItems.get(AFR);
 		                                if (dataItem != null) {
 		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(5));
 		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(6));

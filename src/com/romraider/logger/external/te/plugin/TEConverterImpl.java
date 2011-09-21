@@ -26,9 +26,9 @@ public final class TEConverterImpl implements TEConverter {
     public double convert(TESensorType sensorType, TESensorUnits sensorUnits, int... raw) {
         switch (sensorType) {
             case Lambda:
-                // Lambda = 0.5 to 5.0 (normal usage range of unleaded AFR = 7.35 to AFR = 73.5)
+                // Lambda = 0.5 to 5.0
             	if (sensorUnits == WIDEBAND_AFR_LAMBDA) return ((((raw[0] * 256d) + raw[1]) / 8192) + 0.5 );
-            	if (sensorUnits == WIDEBAND_AFR_GASOLINE147) return ((((raw[0] * 256d) + raw[1]) / 8192) + 0.5 ) * 14.7;
+        		if (sensorUnits == WIDEBAND_AFR_GASOLINE147) return ((((raw[0] * 256d) + raw[1]) / 8192) + 0.5 ) * 14.7;
             case USR1:
                 // inputs are sampled at 10 bit accuracy, the result is multiplied by 8 giving 1024 steps
                 return ((raw[0] * 256d) + raw[1]) * 0.000610948;

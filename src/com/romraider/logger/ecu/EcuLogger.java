@@ -77,6 +77,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -109,12 +110,14 @@ import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.reset.ResetManager;
 import com.romraider.logger.ecu.comms.reset.ResetManagerImpl;
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.EcuDataLoader;
 import com.romraider.logger.ecu.definition.EcuDataLoaderImpl;
 import com.romraider.logger.ecu.definition.EcuDefinition;
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
+import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.exception.ConfigurationException;
@@ -624,6 +627,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         for (ExternalDataSource dataSource : externalDataSources) {
             try {
                 List<? extends ExternalDataItem> dataItems = dataSource.getDataItems();
+
                 for (ExternalDataItem item : dataItems) {
                     externalDatas.add(new ExternalDataImpl(item, dataSource));
                 }

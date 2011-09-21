@@ -185,13 +185,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 target = attributes.getValue(ATTR_TARGET);
                 address = new EcuAddressImpl(attributes.getValue(ATTR_BYTE), 1, Integer.valueOf(attributes.getValue(ATTR_BIT)));
                 resetConvertorLists();
-//                EcuDataConvertor[] convertors = new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())};
-//                EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
-//                switches.add(ecuSwitch);
-//                ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
-//                if (id.equalsIgnoreCase(fileLoggingControllerSwitchId)) {
-//                    fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
-//                }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);

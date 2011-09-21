@@ -107,7 +107,12 @@ public final class ParameterListTableModel extends AbstractTableModel {
         broker.clear();
         paramRowMap.clear();
         registeredLoggerData.clear();
-        fireTableDataChanged();
+        try {
+        	fireTableDataChanged();
+        }
+        catch (Exception e) {
+        	// Swallow complaints from TableRowSorter when the table is empty
+        }
     }
 
     public List<ParameterRow> getParameterRows() {

@@ -24,6 +24,8 @@ import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
+
 import java.awt.event.MouseEvent;
 import java.util.List;
 
@@ -36,6 +38,15 @@ public final class ParameterListTable extends JTable {
     public ParameterListTable(ParameterListTableModel tableModel) {
         super(tableModel);
         this.tableModel = tableModel;
+        this.getTableHeader().setReorderingAllowed(false);
+        for (int column = 0; column < tableModel.getColumnCount(); column++) {
+	        if (tableModel.getColumnName(2).equalsIgnoreCase("units")) {
+	        	setColumnSortable(column, false);
+	        }
+	        else {
+		        setColumnSortable(column, true);
+	        }
+        }
     }
 
     public TableCellRenderer getCellRenderer(int row, int col) {
@@ -69,5 +80,12 @@ public final class ParameterListTable extends JTable {
             }
         }
         return false;
+    }
+
+    private void setColumnSortable(int column, boolean state) {
+    	TableRowSorter<ParameterListTableModel> sorter =
+    		new TableRowSorter<ParameterListTableModel>(tableModel);
+    	sorter.setSortable(column, state);
+    	setRowSorter(sorter);
     }
 }

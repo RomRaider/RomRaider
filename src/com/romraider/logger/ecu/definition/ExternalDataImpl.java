@@ -20,49 +20,31 @@
 package com.romraider.logger.ecu.definition;
 
 import static com.romraider.logger.ecu.definition.EcuDataType.EXTERNAL;
-import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMaxMin;
-import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
+import static com.romraider.util.ParamChecker.checkNotNull;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
-import static com.romraider.util.ParamChecker.checkNotNull;
-import java.text.DecimalFormat;
 
 public final class ExternalDataImpl implements ExternalData {
-    private final EcuDataConvertor[] convertors = new EcuDataConvertor[1];
-    private final ExternalDataItem dataItem;
-    private final ExternalDataSource dataSource;
     private final String id;
+    private final String name;
+    private final String description;
+    private final ExternalDataSource dataSource;
+    private final EcuDataConvertor[] convertors;
+    private final Set<ConvertorUpdateListener> listeners = new HashSet<ConvertorUpdateListener>();
+    private int selectedConvertorIndex;
     private boolean selected;
 
     public ExternalDataImpl(final ExternalDataItem dataItem, ExternalDataSource dataSource) {
         checkNotNull(dataItem, dataSource);
-        this.dataItem = dataItem;
         this.dataSource = dataSource;
+        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(dataItem)};
+        this.convertors = convertors;            
         id = createId(dataItem);
-        convertors[0] = new EcuDataConvertor() {
-            private static final String FORMAT = "0.##";
-            private DecimalFormat format = new DecimalFormat(FORMAT);
-
-            public double convert(byte[] bytes) {
-                return dataItem.getData();
-            }
-
-            public String format(double value) {
-                return format.format(value);
-            }
-
-            public String getUnits() {
-                return dataItem.getUnits();
-            }
-
-            public GaugeMinMax getGaugeMinMax() {
-                return getMaxMin(getUnits());
-            }
-
-            public String getFormat() {
-                return FORMAT;
-            }
-        };
+        name = dataItem.getName();
+        description = dataItem.getDescription();
     }
 
     public String getId() {
@@ -70,15 +52,19 @@ public final class ExternalDataImpl implements ExternalData {
     }
 
     public String getName() {
-        return dataItem.getName();
+        return name;
     }
 
     public String getDescription() {
-        return dataItem.getDescription();
+        return description;
+    }
+
+    public EcuAddress getAddress() {
+		return null;
     }
 
     public EcuDataConvertor getSelectedConvertor() {
-        return convertors[0];
+        return convertors[selectedConvertorIndex];
     }
 
     public EcuDataConvertor[] getConvertors() {
@@ -86,6 +72,15 @@ public final class ExternalDataImpl implements ExternalData {
     }
 
     public void selectConvertor(EcuDataConvertor convertor) {
+        if (convertor != getSelectedConvertor()) {
+            for (int i = 0; i < convertors.length; i++) {
+                EcuDataConvertor dataConvertor = convertors[i];
+                if (convertor == dataConvertor) {
+                    selectedConvertorIndex = i;
+                }
+            }
+            notifyUpdateListeners();
+        }
     }
 
     public EcuDataType getDataType() {
@@ -105,6 +100,16 @@ public final class ExternalDataImpl implements ExternalData {
         return "X_" + dataItem.getName().replaceAll(" ", "_");
     }
 
+    public void addConvertorUpdateListener(ConvertorUpdateListener listener) {
+        checkNotNull(listener, "listener");
+        listeners.add(listener);
+    }
+
+    private void notifyUpdateListeners() {
+        for (ConvertorUpdateListener listener : listeners) {
+            listener.notifyConvertorUpdate(this);
+        }
+    }
     private void updateConnection(boolean connect) {
         if (connect) dataSource.connect();
         else dataSource.disconnect();

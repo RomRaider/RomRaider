@@ -28,9 +28,7 @@ import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ParamChecker.isValidBit;
 import static java.lang.Float.intBitsToFloat;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public final class EcuParameterConvertorImpl implements EcuDataConvertor {
