@@ -34,12 +34,12 @@ documentation may be incomplete or out of date.
 
 
 -------------------------------
-- 0.5.3b RC10 Notes (09/12/2011) -
+- 0.5.3b RC11 Notes (??/??/????) -
 -------------------------------
-This is the tenth beta release of the upcoming official 0.5.3b release.
+This is the eleventh beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.3b RC10 Known Issues -
+- 0.5.3b RC11 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -54,6 +54,15 @@ This is the tenth beta release of the upcoming official 0.5.3b release.
 --------------
 - Change Log -
 --------------
+
+0.5.3b RC11 (??/??/????)
+-----------------------
+
+--- Logger ---
+- TXS Tuner Wideband plugin added curtosy of, nitros
+- Added support for ECU/TCU Switch filtering
+- Added (msec) designation to logged CSV column heading
+- Added support for sorting the Selected? & Description paramater list entries.
 
 0.5.3b RC10 (09/12/2011)
 -----------------------

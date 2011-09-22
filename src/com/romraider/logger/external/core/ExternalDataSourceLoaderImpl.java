@@ -38,7 +38,7 @@ public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoa
         try {
             File pluginsDir = new File("./plugins");
             if (pluginsDir.exists() && pluginsDir.isDirectory()) {
-                externalDataSources = new ArrayList<ExternalDataSource>();
+//                externalDataSources = new ArrayList<ExternalDataSource>();
                 File[] pluginPropertyFiles = pluginsDir.listFiles(new PluginFilenameFilter());
                 for (File pluginPropertyFile : pluginPropertyFiles) {
                     Properties pluginProps = new Properties();

@@ -23,4 +23,8 @@ import com.romraider.logger.external.core.ExternalDataItem;
 
 public interface TEDataItem extends ExternalDataItem {
     void setRaw(int... raw);
+    
+    String getFormat();
+    
+    String getExpression();
 }

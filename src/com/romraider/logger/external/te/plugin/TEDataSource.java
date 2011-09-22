@@ -52,16 +52,26 @@ public final class TEDataSource implements ExternalDataSource {
     private String port;
 
     {
-        dataItems.put(Lambda, new TEDataItemImpl("Wideband", new String[]{"Lambda", "AFR"}, Lambda, WIDEBAND_AFR_LAMBDA));
-        dataItems.put(AFR, new TEDataItemImpl("Wideband", new String[]{"AFR"}, Lambda, WIDEBAND_AFR_GASOLINE147));
-        dataItems.put(USR1, new TEDataItemImpl("User 1", new String[]{"VDC"}, USR1, VDC));
-        dataItems.put(USR2, new TEDataItemImpl("User 2", new String[]{"VDC"}, USR2, VDC));
-        dataItems.put(USR3, new TEDataItemImpl("User 3", new String[]{"VDC"}, USR3, VDC));
-        dataItems.put(TC1, new TEDataItemImpl("Thermocouple 1", new String[]{"raw"}, TC1, RAW));
-        dataItems.put(TC2, new TEDataItemImpl("Thermocouple 2", new String[]{"raw"}, TC2, RAW));
-        dataItems.put(TC3, new TEDataItemImpl("Thermocouple 3", new String[]{"raw"}, TC3, RAW));
-        dataItems.put(TorVss, new TEDataItemImpl("Thermistor or Vss", new String[]{"raw"}, TorVss, RAW));
-        dataItems.put(RPM, new TEDataItemImpl("Engine Speed (4-cyl)", new String[]{"RPM"}, RPM, ENGINE_SPEED));
+//        dataItems.put(Lambda, new TEDataItemImpl("Wideband", new String[]{"Lambda", "AFR"}, Lambda, WIDEBAND_AFR_LAMBDA));
+//        dataItems.put(AFR, new TEDataItemImpl("Wideband", new String[]{"AFR"}, Lambda, WIDEBAND_AFR_GASOLINE147));
+//        dataItems.put(USR1, new TEDataItemImpl("User 1", new String[]{"VDC"}, USR1, VDC));
+//        dataItems.put(USR2, new TEDataItemImpl("User 2", new String[]{"VDC"}, USR2, VDC));
+//        dataItems.put(USR3, new TEDataItemImpl("User 3", new String[]{"VDC"}, USR3, VDC));
+//        dataItems.put(TC1, new TEDataItemImpl("Thermocouple 1", new String[]{"raw"}, TC1, RAW));
+//        dataItems.put(TC2, new TEDataItemImpl("Thermocouple 2", new String[]{"raw"}, TC2, RAW));
+//        dataItems.put(TC3, new TEDataItemImpl("Thermocouple 3", new String[]{"raw"}, TC3, RAW));
+//        dataItems.put(TorVss, new TEDataItemImpl("Thermistor or Vss", new String[]{"raw"}, TorVss, RAW));
+//        dataItems.put(RPM, new TEDataItemImpl("Engine Speed (4-cyl)", new String[]{"RPM"}, RPM, ENGINE_SPEED));
+        dataItems.put(Lambda, new TEDataItemImpl("Wideband", "Lambda", Lambda, WIDEBAND_AFR_LAMBDA, "x", "0.##"));
+        dataItems.put(AFR, new TEDataItemImpl("Wideband", "AFR", Lambda, WIDEBAND_AFR_GASOLINE147, "x", "0.##"));
+        dataItems.put(USR1, new TEDataItemImpl("User 1", "VDC", USR1, VDC, "x", "0.##"));
+        dataItems.put(USR2, new TEDataItemImpl("User 2", "VDC", USR2, VDC, "x", "0.##"));
+        dataItems.put(USR3, new TEDataItemImpl("User 3", "VDC", USR3, VDC, "x", "0.##"));
+        dataItems.put(TC1, new TEDataItemImpl("Thermocouple 1", "raw", TC1, RAW, "x", "0.##"));
+        dataItems.put(TC2, new TEDataItemImpl("Thermocouple 2", "raw", TC2, RAW, "x", "0.##"));
+        dataItems.put(TC3, new TEDataItemImpl("Thermocouple 3", "raw", TC3, RAW, "x", "0.##"));
+        dataItems.put(TorVss, new TEDataItemImpl("Thermistor or Vss", "raw", TorVss, RAW, "x", "0.##"));
+        dataItems.put(RPM, new TEDataItemImpl("Engine Speed (4-cyl)", "RPM", RPM, ENGINE_SPEED, "x", "0.##"));
     }
 
     public String getId() {

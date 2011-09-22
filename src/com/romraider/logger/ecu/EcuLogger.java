@@ -627,7 +627,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         for (ExternalDataSource dataSource : externalDataSources) {
             try {
                 List<? extends ExternalDataItem> dataItems = dataSource.getDataItems();
-
                 for (ExternalDataItem item : dataItems) {
                     externalDatas.add(new ExternalDataImpl(item, dataSource));
                 }

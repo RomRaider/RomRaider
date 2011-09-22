@@ -25,16 +25,21 @@ public final class TEDataItemImpl implements TEDataItem {
     private final TEConverter converter = new TEConverterImpl();
     private final TESensorUnits sensorUnits;
     private final TESensorType sensorType;
-    private final String[] units;
+    private final String units;
     private final String name;
+    private final String format;
+    private final String expression;
     private int[] raw;
 
-    public TEDataItemImpl(String name, String[] units, TESensorType sensorType, TESensorUnits sensorUnits) {
+//    public TEDataItemImpl(String name, String[] units, TESensorType sensorType, TESensorUnits sensorUnits) {
+    public TEDataItemImpl(String name, String units, TESensorType sensorType, TESensorUnits sensorUnits, String format, String expression) {
         super();
         this.name = name;
         this.units = units;
         this.sensorType = sensorType;
         this.sensorUnits = sensorUnits;
+        this.format = format;
+        this.expression = expression;
     }
 
     public String getName() {
@@ -46,7 +51,15 @@ public final class TEDataItemImpl implements TEDataItem {
     }
 
     public String getUnits() {
-        return units[0];
+        return units;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public String getExpression() {
+        return expression;
     }
 
     public double getData() {
