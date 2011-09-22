@@ -19,6 +19,8 @@
 
 package com.romraider.logger.external.fourteenpoint7.plugin;
 
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.RawDataListener;
 
@@ -31,12 +33,12 @@ public final class NawDataItem implements ExternalDataItem, RawDataListener {
     }
 
     public String getDescription() {
-        return "14Point7 NAW_7S AFR data";
+        return "14Point7 NAW_7S Wideband data";
     }
 
-    public String getUnits() {
-        return "AFR";
-    }
+//    public String getUnits() {
+//        return "AFR";
+//    }
 
     public double getData() {
         if (bytes == null) return 0.0;
@@ -46,4 +48,20 @@ public final class NawDataItem implements ExternalDataItem, RawDataListener {
     public void setBytes(byte[] bytes) {
         this.bytes = bytes;
     }
+
+//	public String getFormat() {
+//		return "0.##";
+//	}
+//
+//	public String getExpression() {
+//		return "x";
+//	}
+
+	public EcuDataConvertor[] getConvertors() {
+		String units = "AFR";
+		String expression = "x";
+		String format = "0.##";
+        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
+		return convertors;
+	}
 }

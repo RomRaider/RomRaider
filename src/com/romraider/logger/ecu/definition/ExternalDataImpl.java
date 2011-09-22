@@ -40,8 +40,7 @@ public final class ExternalDataImpl implements ExternalData {
     public ExternalDataImpl(final ExternalDataItem dataItem, ExternalDataSource dataSource) {
         checkNotNull(dataItem, dataSource);
         this.dataSource = dataSource;
-        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(dataItem)};
-        this.convertors = convertors;            
+        this.convertors = dataItem.getConvertors();            
         id = createId(dataItem);
         name = dataItem.getName();
         description = dataItem.getDescription();

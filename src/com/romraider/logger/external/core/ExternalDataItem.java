@@ -19,12 +19,20 @@
 
 package com.romraider.logger.external.core;
 
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
+
 public interface ExternalDataItem {
     String getName();
 
     String getDescription();
 
-    String getUnits();
+//    String getUnits();
+//
+//    String getFormat();
+//
+//    String getExpression();
 
     double getData();
+
+	EcuDataConvertor[] getConvertors();
 }

@@ -19,6 +19,8 @@
 
 package com.romraider.logger.external.aem2.plugin;
 
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
 
@@ -26,16 +28,16 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
     private double data;
 
     public String getName() {
-        return "AEM UEGO Lambda [19200]";
+        return "AEM UEGO [19200 baud]";
     }
 
     public String getDescription() {
-        return "AEM UEGO Lambda data";
+        return "AEM UEGO Wideband data";
     }
 
-    public String getUnits() {
-        return "Lambda";
-    }
+//    public String getUnits() {
+//        return "Lambda";
+//    }
 
     public double getData() {
         return data;
@@ -44,4 +46,20 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
     public void setData(double data) {
         this.data = data;
     }
+
+//	public String getFormat() {
+//		return "0.##";
+//	}
+//
+//	public String getExpression() {
+//		return "x";
+//	}
+
+	public EcuDataConvertor[] getConvertors() {
+		String units = "Lambda";
+		String expression = "x";
+		String format = "0.##";
+        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
+		return convertors;
+	}
 }

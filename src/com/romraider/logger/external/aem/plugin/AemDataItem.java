@@ -19,6 +19,8 @@
 
 package com.romraider.logger.external.aem.plugin;
 
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
 
@@ -33,9 +35,9 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
         return "AEM UEGO AFR data";
     }
 
-    public String getUnits() {
-        return "AFR";
-    }
+//    public String getUnits() {
+//        return "AFR";
+//    }
 
     public double getData() {
         return data;
@@ -44,4 +46,20 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
     public void setData(double data) {
         this.data = data;
     }
+
+//	public String getFormat() {
+//		return "0.##";
+//	}
+//
+//	public String getExpression() {
+//		return "x";
+//	}
+
+	public EcuDataConvertor[] getConvertors() {
+		String units = "AFR";
+		String expression = "x";
+		String format = "0.##";
+        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
+		return convertors;
+	}
 }

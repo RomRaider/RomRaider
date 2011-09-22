@@ -20,21 +20,16 @@
 package com.romraider.logger.ecu.definition;
 
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMaxMin;
-import static com.romraider.util.ByteUtil.asUnsignedInt;
 import static com.romraider.util.JEPUtil.evaluate;
-import static com.romraider.util.ParamChecker.isValidBit;
-import static java.lang.Float.intBitsToFloat;
-
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import com.romraider.logger.external.core.ExternalDataItem;
 
 import java.text.DecimalFormat;
-import java.util.Map;
 
 public final class ExternalDataConvertorImpl implements EcuDataConvertor {
     private final String units;
     private final String expression;
-    private final GaugeMinMax gaugeMinMax;
+    private final GaugeMinMax gaugeMinMax = new GaugeMinMax(0,0,0);
 	private final ExternalDataItem dataItem; 
     private DecimalFormat format;
     
@@ -43,16 +38,19 @@ public final class ExternalDataConvertorImpl implements EcuDataConvertor {
 //    <conversion units="hPa" expr="x*37/255/14.50377*1000" format="0" gauge_min="-1200" gauge_max="2800" gauge_step="400" />
 //    <conversion units="bar" expr="x*37/255/14.50377" format="0.000" gauge_min="-1.2" gauge_max="2.8" gauge_step="0.4" />
 	
-	public ExternalDataConvertorImpl(ExternalDataItem dataItem) {
+	public ExternalDataConvertorImpl(ExternalDataItem dataItem, String units, String expression,
+									 String format
+//									 GaugeMinMax gaugeMinMax
+									 ) {
 		this.dataItem = dataItem;
-		this.units = dataItem.getUnits();
-		this.expression = "x";
-		this.gaugeMinMax = new GaugeMinMax(0,0,0);
-		this.format = new DecimalFormat("0.##");
+		this.units = units;
+		this.expression = expression;
+		this.format = new DecimalFormat(format);
 	}
 
     public double convert(byte[] bytes) {
         double value = dataItem.getData();
+//    	int value = asUnsignedInt(bytes);
         double result = evaluate(expression, value);
         return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
     }
@@ -71,5 +69,9 @@ public final class ExternalDataConvertorImpl implements EcuDataConvertor {
 
     public String getFormat() {
         return format.toPattern();
+    }
+
+    public String toString() {
+        return getUnits();
     }
 }

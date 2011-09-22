@@ -19,6 +19,9 @@
 
 package com.romraider.logger.external.zt2.plugin;
 
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
+
 public final class ZT2DataItemImpl implements ZT2DataItem {
     private final ZT2Converter converter = new ZT2ConverterImpl();
     private final ZT2SensorType sensorType;
@@ -41,9 +44,9 @@ public final class ZT2DataItemImpl implements ZT2DataItem {
         return "Zeitronix ZT-2 " + name + " data";
     }
 
-    public String getUnits() {
-        return units;
-    }
+//    public String getUnits() {
+//        return units;
+//    }
 
     public double getData() {
         return converter.convert(sensorType, raw);
@@ -52,4 +55,19 @@ public final class ZT2DataItemImpl implements ZT2DataItem {
     public void setRaw(int... raw) {
         this.raw = raw;
     }
+
+//	public String getFormat() {
+//		return "0.##";
+//	}
+//
+//	public String getExpression() {
+//		return "x";
+//	}
+
+	public EcuDataConvertor[] getConvertors() {
+		String expression = "x";
+		String format = "0.##";
+        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
+		return convertors;
+	}
 }

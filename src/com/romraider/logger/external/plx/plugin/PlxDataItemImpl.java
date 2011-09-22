@@ -19,6 +19,8 @@
 
 package com.romraider.logger.external.plx.plugin;
 
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.plx.io.PlxSensorType;
 import com.romraider.logger.external.plx.io.PlxSensorUnits;
 
@@ -45,9 +47,9 @@ public final class PlxDataItemImpl implements PlxDataItem {
         return "PLX " + name + " data";
     }
 
-    public String getUnits() {
-        return units;
-    }
+//    public String getUnits() {
+//        return units;
+//    }
 
     public double getData() {
         return convertor.convert(raw, sensorType, sensorUnits);
@@ -56,4 +58,19 @@ public final class PlxDataItemImpl implements PlxDataItem {
     public void setRaw(int raw) {
         this.raw = raw;
     }
+
+//	public String getFormat() {
+//		return "0.##";
+//	}
+//
+//	public String getExpression() {
+//		return "x";
+//	}
+
+	public EcuDataConvertor[] getConvertors() {
+		String expression = "x";
+		String format = "0.##";
+        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
+		return convertors;
+	}
 }

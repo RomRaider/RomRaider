@@ -19,27 +19,27 @@
 
 package com.romraider.logger.external.te.plugin;
 
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.te.plugin.TESensorUnits;
 
 public final class TEDataItemImpl implements TEDataItem {
     private final TEConverter converter = new TEConverterImpl();
+    private final EcuDataConvertor[] convertors;
     private final TESensorUnits sensorUnits;
     private final TESensorType sensorType;
-    private final String units;
     private final String name;
-    private final String format;
-    private final String expression;
     private int[] raw;
 
-//    public TEDataItemImpl(String name, String[] units, TESensorType sensorType, TESensorUnits sensorUnits) {
-    public TEDataItemImpl(String name, String units, TESensorType sensorType, TESensorUnits sensorUnits, String format, String expression) {
+    public TEDataItemImpl(String name, String units, TESensorType sensorType, TESensorUnits sensorUnits, String expression, String format) {
         super();
         this.name = name;
-        this.units = units;
         this.sensorType = sensorType;
         this.sensorUnits = sensorUnits;
-        this.format = format;
-        this.expression = expression;
+        convertors = new EcuDataConvertor[] {
+        		new ExternalDataConvertorImpl(this, units, expression, format)
+//        		new ExternalDataConvertorImpl(this, "foo", "x", "0")
+        	};
     }
 
     public String getName() {
@@ -50,16 +50,8 @@ public final class TEDataItemImpl implements TEDataItem {
         return "Tech Edge " + name + " data";
     }
 
-    public String getUnits() {
-        return units;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public String getExpression() {
-        return expression;
+    public EcuDataConvertor[] getConvertors() {
+        return convertors;
     }
 
     public double getData() {
