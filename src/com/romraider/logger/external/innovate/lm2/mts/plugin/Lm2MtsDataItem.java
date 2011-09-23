@@ -35,10 +35,6 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
         return "Innovate LM-2 AFR data";
     }
 
-//    public String getUnits() {
-//        return "AFR";
-//    }
-
     public double getData() {
         return data;
     }
@@ -46,14 +42,6 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
     public void setData(double data) {
         this.data = data;
     }
-
-//	public String getFormat() {
-//		return "0.##";
-//	}
-//
-//	public String getExpression() {
-//		return "x";
-//	}
 
 	public EcuDataConvertor[] getConvertors() {
 		String units = "AFR";

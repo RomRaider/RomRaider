@@ -19,9 +19,9 @@ and the power of Eclipse, it’s probably your best choice.
 
     * Installing Eclipse and Subclipse
           o Install the latest version of the Java Development Kit
-          o Get and Install Eclipse for your platform
+          o Get and Install Eclipse JDT for your platform
           o Install Subclipse for Subversion (SVN) integration, following the
-              steps outlined here.
+              steps outlined in #3 below.
     * Setting up the RomRaider project
           o Open the Java perspective in Eclipse by clicking
               Window > Open Perspective > Java
@@ -32,10 +32,19 @@ and the power of Eclipse, it’s probably your best choice.
           o Highlight “trunk” in the folder tree and click “Next”
           o Name the project “romraider” and click “Finish”
 
-Now all you have to do is add the Jars within your libs dir to the project
-java build path. You should read this.
+    * Setting the library path 
+          o You may need to change the path to the Jars within your
+          	libs dir (ex: Linux). See Note #1 below or you should read this
+          	to set the Build Paths: 
+			http://help.eclipse.org/indigo/topic/org.eclipse.jdt.doc.user/reference/ref-properties-build-path.htm
 
-http://www.eclipse.org/documentation/main.html
+    * Building the Project for the First Time 
+          o First complete a build using ant. Right-click on build.xml and
+            select Run As -> 2 Ant build then select all in the targets tab.
+            More info in Note #4 below.
+          o When the build is finished (successfully I hope), Right-click on
+            the root romraider project and select Refresh. This should clear
+            all the errors and warnings you may have seen.
 
 ----------------------------------------------
 
@@ -50,7 +59,7 @@ Notes on the above:
         romraider/build/classes
 
 2)  The jars in the java build path mentioned above should be correct in the SVN
-    repository.
+    repository for a Windows environment.
 
 3)  A command line Subversion client needs to be installed and available in the default
     path.  To verify this, open a command prompt and run 
@@ -71,21 +80,24 @@ Notes on the above:
 
     If this does not work correctly, the ant build will fail.
 
-The ant build file is in the main directory and uses the default name of "build.xml".
+4) 	The ant build file is in the main directory and uses the default name of
+  	"build.xml".
 
-The Java builder is set as the default.  During development it's convenient to have
-the "Problems" pane show warning and errors.  The ant build does not send warnings
-or errors there.  The ant build is primarily for automation of the complete build
-process for packaging.
+	The Java builder is set as the default.  During development it's convenient to have
+	the "Problems" pane show warning and errors.  The ant build does not send warnings
+	or errors there.  The ant build is primarily for automation of the complete build
+	process for packaging.
+	
+	To build using ant, right-click on the build.xml
+	file in the Package Explorer (Java perspective) and select
+	
+	Run As -> 2 Ant build, then select "all" in the targets tab. To get more verbose
+	output from ant set the -v option in the arguments field on the Main tab.
+	
+	The "help" target lists available targets with a brief description of each.
+	
+	The "all" target does just that.  It rebuilds everything, finishing with the installers.
 
-To build using ant, right-click on the build
-file in the Package Explorer (Java perspective) and select
-
-Run As -> Ant Build
-
-The "help" target lists available targets with a brief description of each.
-
-The "all" target does just that.  It rebuilds everything, finishing with the installers.
 
 
 

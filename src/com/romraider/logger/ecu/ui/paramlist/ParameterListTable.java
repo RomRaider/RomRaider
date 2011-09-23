@@ -20,6 +20,8 @@
 package com.romraider.logger.ecu.ui.paramlist;
 
 import com.romraider.logger.ecu.definition.EcuData;
+import com.romraider.logger.ecu.definition.ExternalData;
+
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
@@ -75,9 +77,13 @@ public final class ParameterListTable extends JTable {
         Object value = getValueAt(row, col);
         if (EcuData.class.isAssignableFrom(value.getClass())) {
             EcuData ecuData = (EcuData) value;
-            if (ecuData.getConvertors().length > 1) {
+            if (ecuData.getConvertors().length > 1)
                 return true;
-            }
+        }
+        if (ExternalData.class.isAssignableFrom(value.getClass())) {
+        	ExternalData externalData = (ExternalData) value;
+            if (externalData.getConvertors().length > 1)
+                return true;
         }
         return false;
     }

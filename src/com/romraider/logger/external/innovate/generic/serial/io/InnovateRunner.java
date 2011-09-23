@@ -63,7 +63,7 @@ public final class InnovateRunner implements Stoppable {
                         LOGGER.trace("Innovate response: " + packet(b0, b1, bytes));
                         process(bytes);
                     } else {
-                        LOGGER.trace("Innovate discarded: " + hex(b1));
+                        LOGGER.trace("Innovate discarded: " + asHex(b1));
                     }
                 } else if (isLm1HighByte(b0)) {
                     byte b1 = nextByte();
@@ -77,10 +77,10 @@ public final class InnovateRunner implements Stoppable {
                         LOGGER.trace("Innovate response: " + asHex(bytes));
                         process(bytes);
                     } else {
-                        LOGGER.trace("Innovate discarded: " + hex(b1));
+                        LOGGER.trace("Innovate discarded: " + asHex(b1));
                     }
                 } else {
-                    LOGGER.trace("Innovate discarded: " + hex(b0));
+                    LOGGER.trace("Innovate discarded: " + asHex(b0));
                 }
             }
         } catch (Throwable t) {
@@ -178,10 +178,5 @@ public final class InnovateRunner implements Stoppable {
         result[1] = b1;
         arraycopy(bytes, 0, result, 2, bytes.length);
         return asHex(result);
-    }
-
-    // FIX - Push this on to HexUtil
-    private String hex(byte b) {
-        return asHex(new byte[]{b});
     }
 }

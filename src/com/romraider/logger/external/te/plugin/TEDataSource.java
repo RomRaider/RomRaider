@@ -23,8 +23,7 @@ import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.te.io.TERunner;
-import static com.romraider.logger.external.te.plugin.TESensorType.AFR;
-import static com.romraider.logger.external.te.plugin.TESensorType.Lambda;
+import static com.romraider.logger.external.te.plugin.TESensorType.WBO2;
 import static com.romraider.logger.external.te.plugin.TESensorType.USR1;
 import static com.romraider.logger.external.te.plugin.TESensorType.USR2;
 import static com.romraider.logger.external.te.plugin.TESensorType.USR3;
@@ -33,11 +32,18 @@ import static com.romraider.logger.external.te.plugin.TESensorType.TC2;
 import static com.romraider.logger.external.te.plugin.TESensorType.TC3;
 import static com.romraider.logger.external.te.plugin.TESensorType.TorVss;
 import static com.romraider.logger.external.te.plugin.TESensorType.RPM;
-import static com.romraider.logger.external.te.plugin.TESensorUnits.WIDEBAND_AFR_LAMBDA;
-import static com.romraider.logger.external.te.plugin.TESensorUnits.WIDEBAND_AFR_GASOLINE147;
-import static com.romraider.logger.external.te.plugin.TESensorUnits.VDC;
-import static com.romraider.logger.external.te.plugin.TESensorUnits.RAW;
-import static com.romraider.logger.external.te.plugin.TESensorUnits.ENGINE_SPEED;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.LAMBDA;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.AFR_147;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.AFR_146;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.AFR_90;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.AFR_64;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.AFR_155;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.AFR_172;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.AFR_34;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.VDC;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.TC;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.THERM;
+import static com.romraider.logger.external.te.plugin.TESensorConversions.RPM_4;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Collections.unmodifiableList;
 import javax.swing.Action;
@@ -52,26 +58,15 @@ public final class TEDataSource implements ExternalDataSource {
     private String port;
 
     {
-//        dataItems.put(Lambda, new TEDataItemImpl("Wideband", new String[]{"Lambda", "AFR"}, Lambda, WIDEBAND_AFR_LAMBDA));
-//        dataItems.put(AFR, new TEDataItemImpl("Wideband", new String[]{"AFR"}, Lambda, WIDEBAND_AFR_GASOLINE147));
-//        dataItems.put(USR1, new TEDataItemImpl("User 1", new String[]{"VDC"}, USR1, VDC));
-//        dataItems.put(USR2, new TEDataItemImpl("User 2", new String[]{"VDC"}, USR2, VDC));
-//        dataItems.put(USR3, new TEDataItemImpl("User 3", new String[]{"VDC"}, USR3, VDC));
-//        dataItems.put(TC1, new TEDataItemImpl("Thermocouple 1", new String[]{"raw"}, TC1, RAW));
-//        dataItems.put(TC2, new TEDataItemImpl("Thermocouple 2", new String[]{"raw"}, TC2, RAW));
-//        dataItems.put(TC3, new TEDataItemImpl("Thermocouple 3", new String[]{"raw"}, TC3, RAW));
-//        dataItems.put(TorVss, new TEDataItemImpl("Thermistor or Vss", new String[]{"raw"}, TorVss, RAW));
-//        dataItems.put(RPM, new TEDataItemImpl("Engine Speed (4-cyl)", new String[]{"RPM"}, RPM, ENGINE_SPEED));
-        dataItems.put(Lambda, new TEDataItemImpl("Wideband", "Lambda", Lambda, WIDEBAND_AFR_LAMBDA, "x", "0.##"));
-        dataItems.put(AFR, new TEDataItemImpl("Wideband", "AFR", Lambda, WIDEBAND_AFR_GASOLINE147, "x", "0.##"));
-        dataItems.put(USR1, new TEDataItemImpl("User 1", "VDC", USR1, VDC, "x", "0.##"));
-        dataItems.put(USR2, new TEDataItemImpl("User 2", "VDC", USR2, VDC, "x", "0.##"));
-        dataItems.put(USR3, new TEDataItemImpl("User 3", "VDC", USR3, VDC, "x", "0.##"));
-        dataItems.put(TC1, new TEDataItemImpl("Thermocouple 1", "raw", TC1, RAW, "x", "0.##"));
-        dataItems.put(TC2, new TEDataItemImpl("Thermocouple 2", "raw", TC2, RAW, "x", "0.##"));
-        dataItems.put(TC3, new TEDataItemImpl("Thermocouple 3", "raw", TC3, RAW, "x", "0.##"));
-        dataItems.put(TorVss, new TEDataItemImpl("Thermistor or Vss", "raw", TorVss, RAW, "x", "0.##"));
-        dataItems.put(RPM, new TEDataItemImpl("Engine Speed (4-cyl)", "RPM", RPM, ENGINE_SPEED, "x", "0.##"));
+        dataItems.put(WBO2, new TEDataItemImpl("Wideband", LAMBDA, AFR_147, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+        dataItems.put(USR1, new TEDataItemImpl("User 1", VDC));
+        dataItems.put(USR2, new TEDataItemImpl("User 2", VDC));
+        dataItems.put(USR3, new TEDataItemImpl("User 3", VDC));
+        dataItems.put(TC1, new TEDataItemImpl("Thermocouple 1", TC));
+        dataItems.put(TC2, new TEDataItemImpl("Thermocouple 2", TC));
+        dataItems.put(TC3, new TEDataItemImpl("Thermocouple 3", TC));
+        dataItems.put(TorVss, new TEDataItemImpl("Thermistor or Vss", THERM));
+        dataItems.put(RPM, new TEDataItemImpl("Engine Speed (4-cyl)", RPM_4));
     }
 
     public String getId() {
@@ -83,7 +78,7 @@ public final class TEDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.02";
+        return "0.03";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

@@ -19,8 +19,9 @@
 
 package com.romraider.logger.ecu.ui.paramlist;
 
-import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.LoggerData;
+
 import javax.swing.AbstractCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
@@ -32,14 +33,14 @@ import java.awt.event.ActionListener;
 public final class UnitsComboBoxEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
     private static final long serialVersionUID = -3472910399604360821L;
     private static final String EDIT_COMMAND = "EDIT";
-    private EcuData currentEcuData;
+    private LoggerData currentEcuData;
 
     public Object getCellEditorValue() {
         return currentEcuData.getSelectedConvertor();
     }
 
     public Component getTableCellEditorComponent(JTable table, Object ecuData, boolean isSelected, int row, int column) {
-        currentEcuData = (EcuData) ecuData;
+        currentEcuData = (LoggerData) ecuData;
         EcuDataConvertor[] convertors = currentEcuData.getConvertors();
         JComboBox comboBox = new JComboBox();
         for (EcuDataConvertor convertor : convertors) {

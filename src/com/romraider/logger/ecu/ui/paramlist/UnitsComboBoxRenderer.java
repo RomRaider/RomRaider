@@ -19,8 +19,9 @@
 
 package com.romraider.logger.ecu.ui.paramlist;
 
-import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.LoggerData;
+
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
@@ -31,7 +32,7 @@ public final class UnitsComboBoxRenderer extends JComboBox implements TableCellR
     private static final long serialVersionUID = -6288079743431509778L;
 
     public Component getTableCellRendererComponent(JTable table, Object ecuData, boolean isSelected, boolean hasFocus, int row, int column) {
-        EcuData currentEcuData = (EcuData) ecuData;
+        LoggerData currentEcuData = (LoggerData) ecuData;
         EcuDataConvertor[] convertors = currentEcuData.getConvertors();
         JComboBox comboBox = new JComboBox();
         for (EcuDataConvertor convertor : convertors) {

@@ -22,8 +22,7 @@ package com.romraider.logger.external.te.io;
 import com.romraider.logger.external.core.Stoppable;
 import com.romraider.logger.external.te.plugin.TEDataItem;
 import com.romraider.logger.external.te.plugin.TESensorType;
-import static com.romraider.logger.external.te.plugin.TESensorType.AFR;
-import static com.romraider.logger.external.te.plugin.TESensorType.Lambda;
+import static com.romraider.logger.external.te.plugin.TESensorType.WBO2;
 import static com.romraider.logger.external.te.plugin.TESensorType.USR1;
 import static com.romraider.logger.external.te.plugin.TESensorType.USR2;
 import static com.romraider.logger.external.te.plugin.TESensorType.USR3;
@@ -32,6 +31,7 @@ import static com.romraider.logger.external.te.plugin.TESensorType.TC2;
 import static com.romraider.logger.external.te.plugin.TESensorType.TC3;
 import static com.romraider.logger.external.te.plugin.TESensorType.TorVss;
 import static com.romraider.logger.external.te.plugin.TESensorType.RPM;
+import static com.romraider.util.ByteUtil.asUnsignedInt;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public final class TERunner implements Stoppable {
                     buffer.add(b);
                     switch (buffer.size()) {
                         case 3:
-                        	sequenceNo = convertAsUnsignedByteToInt(buffer.get(2));
+                        	sequenceNo = asUnsignedInt(buffer.get(2));
                             break;
                         case 27:
                         	byteSum = 0;
@@ -103,64 +103,58 @@ public final class TERunner implements Stoppable {
 	                            		lastSequenceNo = sequenceNo;
 		                        	}
 		                        	else {
-		                                TEDataItem dataItem = dataItems.get(Lambda);
+		                                TEDataItem dataItem = dataItems.get(WBO2);
 		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(5));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(6));
-		                                    dataItem.setRaw(raw1, raw2);
-		                                }
-		                                dataItem = dataItems.get(AFR);
-		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(5));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(6));
+		                                    int raw1 = asUnsignedInt(buffer.get(5));
+		                                    int raw2 = asUnsignedInt(buffer.get(6));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
 		                                dataItem = dataItems.get(USR1);
 		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(9));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(10));
+		                                    int raw1 = asUnsignedInt(buffer.get(9));
+		                                    int raw2 = asUnsignedInt(buffer.get(10));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
 		                                dataItem = dataItems.get(USR2);
 		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(11));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(12));
+		                                    int raw1 = asUnsignedInt(buffer.get(11));
+		                                    int raw2 = asUnsignedInt(buffer.get(12));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
 		                                dataItem = dataItems.get(USR3);
 		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(13));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(14));
+		                                    int raw1 = asUnsignedInt(buffer.get(13));
+		                                    int raw2 = asUnsignedInt(buffer.get(14));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
 		                                dataItem = dataItems.get(TC1);
 		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(15));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(16));
+		                                    int raw1 = asUnsignedInt(buffer.get(15));
+		                                    int raw2 = asUnsignedInt(buffer.get(16));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
 		                                dataItem = dataItems.get(TC2);
 		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(17));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(18));
+		                                    int raw1 = asUnsignedInt(buffer.get(17));
+		                                    int raw2 = asUnsignedInt(buffer.get(18));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
 		                                dataItem = dataItems.get(TC3);
 		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(19));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(20));
+		                                    int raw1 = asUnsignedInt(buffer.get(19));
+		                                    int raw2 = asUnsignedInt(buffer.get(20));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
 		                                dataItem = dataItems.get(TorVss);
 		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(21));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(22));
+		                                    int raw1 = asUnsignedInt(buffer.get(21));
+		                                    int raw2 = asUnsignedInt(buffer.get(22));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
 		                                dataItem = dataItems.get(RPM);
 		                                if (dataItem != null) {
-		                                    int raw1 = convertAsUnsignedByteToInt(buffer.get(23));
-		                                    int raw2 = convertAsUnsignedByteToInt(buffer.get(24));
+		                                    int raw1 = asUnsignedInt(buffer.get(23));
+		                                    int raw2 = asUnsignedInt(buffer.get(24));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
 	                        			lastSequenceNo++;
@@ -189,12 +183,5 @@ public final class TERunner implements Stoppable {
     public void stop() {
         stop = true;
         connection.close();
-    }
-
-    private int convertAsUnsignedByteToInt(byte aByte) {
-        // A byte in java is signed, so -128 to 128
-        // unlike in other platforms where it's
-        // normally unsigned, so 0-255
-        return (int) aByte & 0xFF;
     }
 }

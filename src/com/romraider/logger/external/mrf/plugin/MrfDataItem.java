@@ -25,13 +25,23 @@ import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
 
 public final class MrfDataItem implements ExternalDataItem, DataListener {
-    private final String units;
+    private final EcuDataConvertor[] convertors;
     private final String name;
     private double data;
 
-    public MrfDataItem(String name, String units) {
+    public MrfDataItem(String name, MrfSensorConversions... convertorList) {
         this.name = name;
-        this.units = units;
+        convertors = new EcuDataConvertor[convertorList.length];
+        int i = 0;
+        for (MrfSensorConversions convertor : convertorList) {
+        	convertors[i] = new ExternalDataConvertorImpl(
+        			this,
+        			convertor.units(),
+        			convertor.expression(),
+        			convertor.format()
+        	);
+        	i++;
+        }
     }
 
     public String getName() {
@@ -42,10 +52,6 @@ public final class MrfDataItem implements ExternalDataItem, DataListener {
         return "MRF Stealth Gauge " + name + " data";
     }
 
-//    public String getUnits() {
-//        return units;
-//    }
-
     public double getData() {
         return data;
     }
@@ -54,18 +60,7 @@ public final class MrfDataItem implements ExternalDataItem, DataListener {
         this.data = data;
     }
 
-//	public String getFormat() {
-//		return "0.##";
-//	}
-//
-//	public String getExpression() {
-//		return "x";
-//	}
-
 	public EcuDataConvertor[] getConvertors() {
-		String expression = "x";
-		String format = "0.##";
-        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
 		return convertors;
 	}
 }

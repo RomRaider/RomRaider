@@ -21,25 +21,26 @@ package com.romraider.logger.external.te.plugin;
 
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
-import com.romraider.logger.external.te.plugin.TESensorUnits;
 
 public final class TEDataItemImpl implements TEDataItem {
-    private final TEConverter converter = new TEConverterImpl();
     private final EcuDataConvertor[] convertors;
-    private final TESensorUnits sensorUnits;
-    private final TESensorType sensorType;
     private final String name;
     private int[] raw;
 
-    public TEDataItemImpl(String name, String units, TESensorType sensorType, TESensorUnits sensorUnits, String expression, String format) {
+    public TEDataItemImpl(String name, TESensorConversions... convertorList) {
         super();
         this.name = name;
-        this.sensorType = sensorType;
-        this.sensorUnits = sensorUnits;
-        convertors = new EcuDataConvertor[] {
-        		new ExternalDataConvertorImpl(this, units, expression, format)
-//        		new ExternalDataConvertorImpl(this, "foo", "x", "0")
-        	};
+        convertors = new EcuDataConvertor[convertorList.length];
+        int i = 0;
+        for (TESensorConversions convertor :convertorList) {
+        	convertors[i] = new ExternalDataConvertorImpl(
+        			this,
+        			convertor.units(),
+        			convertor.expression(),
+        			convertor.format()
+        	);
+        	i++;
+        }
     }
 
     public String getName() {
@@ -55,7 +56,7 @@ public final class TEDataItemImpl implements TEDataItem {
     }
 
     public double getData() {
-        return converter.convert(sensorType, sensorUnits, raw);
+    	return raw[0] * 256d + raw[1];
     }
 
     public void setRaw(int... raw) {

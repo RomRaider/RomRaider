@@ -25,7 +25,23 @@ import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
 
 public final class InnovateDataItem implements ExternalDataItem, DataListener {
+    private final EcuDataConvertor[] convertors;
     private double data;
+
+    public InnovateDataItem(InnovateSensorConversions... convertorList) {
+        super();
+        convertors = new EcuDataConvertor[convertorList.length];
+        int i = 0;
+        for (InnovateSensorConversions convertor :convertorList) {
+        	convertors[i] = new ExternalDataConvertorImpl(
+        			this,
+        			convertor.units(),
+        			convertor.expression(),
+        			convertor.format()
+        	);
+        	i++;
+        }
+    }
 
     public String getName() {
         return "Innovate Wideband AFR";
@@ -35,10 +51,6 @@ public final class InnovateDataItem implements ExternalDataItem, DataListener {
         return "Innovate Wideband AFR data";
     }
 
-//    public String getUnits() {
-//        return "AFR";
-//    }
-
     public double getData() {
         return data;
     }
@@ -47,19 +59,7 @@ public final class InnovateDataItem implements ExternalDataItem, DataListener {
         this.data = data;
     }
 
-//	public String getFormat() {
-//		return "0.##";
-//	}
-//
-//	public String getExpression() {
-//		return "x";
-//	}
-
 	public EcuDataConvertor[] getConvertors() {
-		String units = "AFR";
-		String expression = "x";
-		String format = "0.##";
-        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
 		return convertors;
 	}
 }

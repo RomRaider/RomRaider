@@ -19,12 +19,17 @@
 
 package com.romraider.util;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 public final class ByteUtil {
 
     private ByteUtil() {
         throw new UnsupportedOperationException();
+    }
+
+    public static int asUnsignedInt(byte b) {
+    	return asUnsignedInt(new byte[]{b});
     }
 
     public static int asUnsignedInt(byte[] bytes) {
@@ -40,6 +45,11 @@ public final class ByteUtil {
 
     public static byte asByte(int i) {
         return Integer.valueOf(i).byteValue();
+    }
+
+    public static float asFloat(byte[] b, int offset, int length) {
+        ByteBuffer buf = ByteBuffer.wrap(b, offset, length);
+        return buf.getFloat();
     }
 
     public static int asInt(byte b) {

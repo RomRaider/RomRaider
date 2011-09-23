@@ -20,6 +20,7 @@
 package com.romraider.logger.external.fourteenpoint7.plugin;
 
 import static com.romraider.util.HexUtil.asHex;
+import static com.romraider.util.ByteUtil.asFloat;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.nio.ByteBuffer;
@@ -62,36 +63,31 @@ public final class NawConvertorImpl implements NawConvertor {
 
     public double convert(byte[] bytes) {
         int temp = 0;
-        double afr = 0.0;
+        double lambda = 0.0;
         double unCalIp = 0.0;
-//        float facpc = bytearray2float(bytes, 0, 4);
-        float upc = bytearray2float(bytes, 4, 4);
+//        float facpc = asFloat(bytes, 0, 4);
+        float upc = asFloat(bytes, 4, 4);
         unCalIp = upc;    // uncalibrated pump current cast to double
         if (unCalIp > 128) { // Lean
             double o2conc = (-0.00000359 * unCalIp * unCalIp) + (0.003894 * unCalIp) - 0.4398;
             if (o2conc > 0.210) { // O2 concentration 20.9% this is equal to 207 lambda
                 o2conc = 0.210;
             }
-            afr = ((o2conc / 3) + 1) / (1 - (4.76 * o2conc)) * 14.7;
-            if (afr >= 21) {
-            	afr = 20.99;
+            lambda = ((o2conc / 3) + 1) / (1 - (4.76 * o2conc));
+            if (lambda >= 1.43) {
+            	lambda = 1.43;
             }
         } else { // Rich
-            afr = ((0.00003453 * unCalIp * unCalIp) - (0.00159 * unCalIp) + 0.6368) * 14.7;
+        	lambda = ((0.00003453 * unCalIp * unCalIp) - (0.00159 * unCalIp) + 0.6368);
         }
         temp = (0x000000FF & ((int) bytes[8])); // convert signed byte to unsigned byte
         if (temp < 11) { // check sensor temperature range for valid reading
-            afr = 99.99;    // sensor too hot
+        	lambda = 99.99;    // sensor too hot
         } else if (temp > 19) {
-            afr = -99.99;    // sensor too cold
+        	lambda = -99.99;    // sensor too cold
         }
         temp = 1500 / temp;  // temperature in percent, 100% is best
-        LOGGER.trace("Converting NAW_7S response: " + asHex(bytes) + " --> Ip:" + unCalIp + " --> temp:" + temp + "% --> afr:" + afr);
-        return afr;
-    }
-
-    private static float bytearray2float(byte[] b, int offset, int length) {
-        ByteBuffer buf = ByteBuffer.wrap(b, offset, length);
-        return buf.getFloat();
+        LOGGER.trace("Converting NAW_7S response: " + asHex(bytes) + " --> Ip:" + unCalIp + " --> temp:" + temp + "% --> lambda:" + lambda);
+        return lambda;
     }
 }

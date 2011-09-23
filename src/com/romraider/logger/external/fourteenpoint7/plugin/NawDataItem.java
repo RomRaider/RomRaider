@@ -26,7 +26,23 @@ import com.romraider.logger.external.core.RawDataListener;
 
 public final class NawDataItem implements ExternalDataItem, RawDataListener {
     private final NawConvertor convertor = new NawConvertorImpl();
+    private final EcuDataConvertor[] convertors;
     private byte[] bytes;
+
+    public NawDataItem(NawSensorConversions... convertorList) {
+        super();
+        convertors = new EcuDataConvertor[convertorList.length];
+        int i = 0;
+        for (NawSensorConversions convertor :convertorList) {
+        	convertors[i] = new ExternalDataConvertorImpl(
+        			this,
+        			convertor.units(),
+        			convertor.expression(),
+        			convertor.format()
+        	);
+        	i++;
+        }
+    }
 
     public String getName() {
         return "14Point7 NAW_7S UEGO";
@@ -35,10 +51,6 @@ public final class NawDataItem implements ExternalDataItem, RawDataListener {
     public String getDescription() {
         return "14Point7 NAW_7S Wideband data";
     }
-
-//    public String getUnits() {
-//        return "AFR";
-//    }
 
     public double getData() {
         if (bytes == null) return 0.0;
@@ -49,19 +61,7 @@ public final class NawDataItem implements ExternalDataItem, RawDataListener {
         this.bytes = bytes;
     }
 
-//	public String getFormat() {
-//		return "0.##";
-//	}
-//
-//	public String getExpression() {
-//		return "x";
-//	}
-
 	public EcuDataConvertor[] getConvertors() {
-		String units = "AFR";
-		String expression = "x";
-		String format = "0.##";
-        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
 		return convertors;
 	}
 }

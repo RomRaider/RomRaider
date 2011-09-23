@@ -30,6 +30,19 @@ import static com.romraider.logger.external.mrf.plugin.MrfSensorType.MANIFOLD_TE
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.MAP;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.OIL_PRESS;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.OIL_TEMP;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_146;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_147;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_155;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_172;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_34;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_64;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_90;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.LAMBDA;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.DEG_F;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.DEG_C;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.PSI;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.BAR;
+import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.KPA;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Collections.unmodifiableList;
 import javax.swing.Action;
@@ -44,13 +57,13 @@ public final class MrfDataSource implements ExternalDataSource {
     private String port;
 
     {
-        dataItems.put(AFR, new MrfDataItem("AFR", "AFR"));
-        dataItems.put(MAP, new MrfDataItem("MAP", "Vacuum(inHg)/Boost(PSI)"));
-        dataItems.put(EGT, new MrfDataItem("EGT", "F"));
-        dataItems.put(OIL_TEMP, new MrfDataItem("Oil Temp", "F"));
-        dataItems.put(OIL_PRESS, new MrfDataItem("Oil Press", "PSI"));
-        dataItems.put(FUEL_PRESS, new MrfDataItem("Fuel Press", "PSI"));
-        dataItems.put(MANIFOLD_TEMP, new MrfDataItem("Manifold Temp", "F"));
+        dataItems.put(AFR, new MrfDataItem("Wideband", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+        dataItems.put(MAP, new MrfDataItem("MAP", PSI, BAR, KPA));
+        dataItems.put(EGT, new MrfDataItem("EGT", DEG_F, DEG_C));
+        dataItems.put(OIL_TEMP, new MrfDataItem("Oil Temp", DEG_F, DEG_C));
+        dataItems.put(OIL_PRESS, new MrfDataItem("Oil Press", PSI, KPA, BAR));
+        dataItems.put(FUEL_PRESS, new MrfDataItem("Fuel Press", PSI, KPA, BAR));
+        dataItems.put(MANIFOLD_TEMP, new MrfDataItem("Manifold Temp", DEG_F, DEG_C));
     }
 
     public String getId() {
@@ -62,7 +75,7 @@ public final class MrfDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.01";
+        return "0.02";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

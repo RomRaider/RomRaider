@@ -24,6 +24,10 @@ public final class HexUtil {
     private HexUtil() {
     }
 
+    public static String asHex(byte b) {
+        return asHex(new byte[]{b});
+    }
+
     public static String asHex(byte in[]) {
         return bytesToHex(in).toUpperCase();
     }
