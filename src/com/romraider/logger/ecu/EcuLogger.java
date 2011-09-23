@@ -490,6 +490,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         try {
             List<ExternalData> externalDatas = getExternalData(externalDataSources);
             loadExternalDatas(externalDatas);
+            addExternalConvertorUpdateListeners(externalDatas);
         } catch (Exception e) {
             reportError(e);
         }
@@ -577,6 +578,15 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
+    private void addExternalConvertorUpdateListeners(List<ExternalData> externalDatas) {
+        for (ExternalData externalData : externalDatas) {
+        	externalData.addConvertorUpdateListener(fileUpdateHandler);
+        	externalData.addConvertorUpdateListener(liveDataUpdateHandler);
+        	externalData.addConvertorUpdateListener(graphUpdateHandler);
+        	externalData.addConvertorUpdateListener(dashboardUpdateHandler);
+        }
+    }
+
     private void clearParamTableModels() {
         dataTabParamListTableModel.clear();
         graphTabParamListTableModel.clear();
@@ -628,7 +638,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             try {
                 List<? extends ExternalDataItem> dataItems = dataSource.getDataItems();
                 for (ExternalDataItem item : dataItems) {
-                    externalDatas.add(new ExternalDataImpl(item, dataSource));
+                	// need a converter list here to implement in the new ExternalDataImpl(item, dataSource, convertors[]) 
+                	externalDatas.add(new ExternalDataImpl(item, dataSource));
                 }
             } catch (Exception e) {
                 reportError("Error loading plugin: " + dataSource.getName() + " v" + dataSource.getVersion(), e);
