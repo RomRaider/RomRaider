@@ -19,14 +19,14 @@
 
 package com.romraider.logger.external.aem.plugin;
 
-import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_146;
-import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_147;
-import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_155;
-import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_172;
-import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_34;
-import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_64;
-import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_90;
-import static com.romraider.logger.external.aem.plugin.AemSensorConversions.LAMBDA;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_146;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_147;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_155;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_172;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_34;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_64;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_90;
+import static com.romraider.logger.external.core.SensorConversionsAFR.LAMBDA;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Arrays.asList;
 

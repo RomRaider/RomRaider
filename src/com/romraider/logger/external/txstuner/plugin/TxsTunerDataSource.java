@@ -19,14 +19,14 @@
 
 package com.romraider.logger.external.txstuner.plugin;
 
-import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_146;
-import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_147;
-import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_155;
-import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_172;
-import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_34;
-import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_64;
-import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_90;
-import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.LAMBDA;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_146;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_147;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_155;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_172;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_34;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_64;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_90;
+import static com.romraider.logger.external.core.SensorConversionsAFR.LAMBDA;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Arrays.asList;
 

@@ -22,15 +22,7 @@ package com.romraider.logger.external.innovate.lm2.mts.plugin;
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public enum Lm2SensorConversions implements ExternalSensorConversions {
-	// AFR conversion assumes reported DATA value is Gas AFR
-	LAMBDA	("Lambda", "x*0.0680272108843537", "0.00"),
-	AFR_147	("AFR Gasoline", "x", "0.00"),	   		         // gasoline
-	AFR_90	("AFR Ethonal", "x*0.6122448979591837", "0.00"), // ethanol
-	AFR_146	("AFR Diesel", "x*0.9931972789115646", "0.00"),  // diesel
-	AFR_64	("AFR Methonal", "x*0.4353741496598639", "0.00"),// methanol
-	AFR_155	("AFR LPG", "x*1.054421768707483", "0.00"), 	 // LPG
-	AFR_172	("AFR CNG", "x*1.170068027210884", "0.00"), 	 // CNG
-	AFR_34	("AFR Hydrogen", "x*2.312925170068027", "0.00"); // Hydrogen
+	AFR_xx	("AFR Hydrogen", "x*2.312925170068027", "0.00"); // Hydrogen
 
 	private final String units;
 	private final String expression;

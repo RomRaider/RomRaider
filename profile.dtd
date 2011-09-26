@@ -28,6 +28,7 @@
 <!ATTLIST external livedata ( selected ) #IMPLIED >
 <!ATTLIST external graph ( selected ) #IMPLIED >
 <!ATTLIST external dash ( selected ) #IMPLIED >
+<!ATTLIST external units CDATA #IMPLIED >
 
 <!ELEMENT externals ( external* ) >
 

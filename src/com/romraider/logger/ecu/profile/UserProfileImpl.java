@@ -102,7 +102,7 @@ public final class UserProfileImpl implements UserProfile {
             // Comment out the next line to disable Externals from being saved
             // as there seems to be a bug when a profile is reloaded, the 
             // Logger tries to connect twice causing one or both to fail. 
-            appendLoggerDataElements(builder, "external", external, false);
+            appendLoggerDataElements(builder, "external", external, true);
             builder.append("    </externals>").append(NEW_LINE);
         }
         builder.append("</profile>").append(NEW_LINE);

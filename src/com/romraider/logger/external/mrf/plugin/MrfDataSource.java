@@ -19,19 +19,19 @@
 
 package com.romraider.logger.external.mrf.plugin;
 
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_146;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_147;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_155;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_172;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_34;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_64;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.AFR_90;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.BAR;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.DEG_C;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.DEG_F;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.KPA;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.LAMBDA;
-import static com.romraider.logger.external.mrf.plugin.MrfSensorConversions.PSI;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_146;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_147;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_155;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_172;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_34;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_64;
+import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_90;
+import static com.romraider.logger.external.core.SensorConversionsAFR.LAMBDA;
+import static com.romraider.logger.external.core.SensorConversionsOther.DEG_F;
+import static com.romraider.logger.external.core.SensorConversionsOther.DEG_F2C;
+import static com.romraider.logger.external.core.SensorConversionsOther.PSI;
+import static com.romraider.logger.external.core.SensorConversionsOther.PSI2BAR;
+import static com.romraider.logger.external.core.SensorConversionsOther.PSI2KPA;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.AFR;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.EGT;
 import static com.romraider.logger.external.mrf.plugin.MrfSensorType.FUEL_PRESS;
@@ -61,12 +61,12 @@ public final class MrfDataSource implements ExternalDataSource {
 
     {
         dataItems.put(AFR, new MrfDataItem("Wideband", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-        dataItems.put(MAP, new MrfDataItem("MAP", PSI, BAR, KPA));
-        dataItems.put(EGT, new MrfDataItem("EGT", DEG_F, DEG_C));
-        dataItems.put(OIL_TEMP, new MrfDataItem("Oil Temp", DEG_F, DEG_C));
-        dataItems.put(OIL_PRESS, new MrfDataItem("Oil Press", PSI, KPA, BAR));
-        dataItems.put(FUEL_PRESS, new MrfDataItem("Fuel Press", PSI, KPA, BAR));
-        dataItems.put(MANIFOLD_TEMP, new MrfDataItem("Manifold Temp", DEG_F, DEG_C));
+        dataItems.put(MAP, new MrfDataItem("MAP", PSI, PSI2BAR, PSI2KPA));
+        dataItems.put(EGT, new MrfDataItem("EGT", DEG_F, DEG_F2C));
+        dataItems.put(OIL_TEMP, new MrfDataItem("Oil Temp", DEG_F, DEG_F2C));
+        dataItems.put(OIL_PRESS, new MrfDataItem("Oil Press", PSI, PSI2BAR, PSI2KPA));
+        dataItems.put(FUEL_PRESS, new MrfDataItem("Fuel Press", PSI, PSI2BAR, PSI2KPA));
+        dataItems.put(MANIFOLD_TEMP, new MrfDataItem("Manifold Temp", DEG_F, DEG_F2C));
     }
 
     public String getId() {

@@ -59,11 +59,13 @@ This is the eleventh beta release of the upcoming official 0.5.3b release.
 -----------------------
 
 --- Logger ---
-- TXS Tuner Wideband plugin added curtosy of, nitros
+- TXS Tuner Wideband plugin added courtesy of, nitros
 - Added support for ECU/TCU Switch filtering
 - Added (msec) designation to logged CSV column heading
-- Added support for sorting the Selected? & Description paramater list entries.
-
+- Added support for sorting the Selected? & Description parameter list entries.
+- Added support for convertors on External data items (F/C, lambda/AFR, etc.)
+- Added all defined PLX Sensors according to their documentation
+ 
 0.5.3b RC10 (09/12/2011)
 -----------------------
 

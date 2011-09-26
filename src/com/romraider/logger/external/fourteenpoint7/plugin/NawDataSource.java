@@ -19,14 +19,14 @@
 
 package com.romraider.logger.external.fourteenpoint7.plugin;
 
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_146;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_147;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_155;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_172;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_34;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_64;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_90;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.LAMBDA;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_146;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_147;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_155;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_172;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_34;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_64;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_90;
+import static com.romraider.logger.external.core.SensorConversionsLambda.LAMBDA;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Arrays.asList;
 

@@ -31,14 +31,10 @@ public enum ZT2SensorConversions implements ExternalSensorConversions {
 	AFR_155	("AFR LPG", "x*0.1054421768707483", "0.00"), 	  // LPG
 	AFR_172	("AFR CNG", "x*0.1170068027210884", "0.00"), 	  // CNG
 	AFR_34	("AFR Hydrogen", "x*0.2312925170068027", "0.00"), // Hydrogen
-	PERCENT	("%", "x", "0.0"),
-	DEG_C	("C", "x", "0.0"),
-	DEG_F	("F", "(x/.555+32)", "0.0"),
 	BOOST_PSI	("psi", "x*0.1", "0.00"),
 	BOOST_BAR	("bar", "x*0.0068947573", "0.00"),		 // converts from PSI
 	BOOST_KPA	("kPa", "x*0.6894757282", "0.0"),  		 // converts from PSI
 	BOOST_KGCM2	("kg/cm^2", "x*0.0070306958", "0.00"),	 // converts from PSI
-	VDC		("vdc", "x", "0.00"),
 	RPM		("rpm", "round(((1000000/x)*4.59)/2)", "0");
 
 	private final String units;

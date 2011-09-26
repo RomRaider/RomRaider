@@ -25,6 +25,10 @@ import static com.romraider.logger.external.core.ExternalSensorType.MAP;
 import static com.romraider.logger.external.core.ExternalSensorType.TPS;
 import static com.romraider.logger.external.core.ExternalSensorType.USER1;
 import static com.romraider.logger.external.core.ExternalSensorType.WIDEBAND;
+import static com.romraider.logger.external.core.SensorConversionsOther.DEG_C;
+import static com.romraider.logger.external.core.SensorConversionsOther.DEG_C2F;
+import static com.romraider.logger.external.core.SensorConversionsOther.PERCENT;
+import static com.romraider.logger.external.core.SensorConversionsOther.VOLTS_DC;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_146;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_147;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_155;
@@ -36,12 +40,8 @@ import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.BOOS
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.BOOST_KGCM2;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.BOOST_KPA;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.BOOST_PSI;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.DEG_C;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.DEG_F;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.LAMBDA;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.PERCENT;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.RPM;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.VDC;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Collections.unmodifiableList;
 
@@ -68,8 +68,8 @@ public final class ZT2DataSource implements ExternalDataSource {
         dataItems.put(TPS, new ZT2DataItemImpl("Throttle Poistion", PERCENT));
         dataItems.put(ENGINE_SPEED, new ZT2DataItemImpl("Engine Speed", RPM));
         dataItems.put(MAP, new ZT2DataItemImpl("MAP", BOOST_PSI, BOOST_BAR, BOOST_KPA, BOOST_KGCM2));
-        dataItems.put(EGT, new ZT2DataItemImpl("EGT", DEG_C, DEG_F));
-        dataItems.put(USER1, new ZT2DataItemImpl("User Input", VDC));
+        dataItems.put(EGT, new ZT2DataItemImpl("EGT", DEG_C, DEG_C2F));
+        dataItems.put(USER1, new ZT2DataItemImpl("User Input", VOLTS_DC));
     }
 
     public String getId() {

@@ -19,6 +19,10 @@
 
 package com.romraider.logger.external.plx.plugin;
 
+import static com.romraider.logger.external.core.SensorConversionsOther.KPA;
+import static com.romraider.logger.external.core.SensorConversionsOther.KPA2BAR;
+import static com.romraider.logger.external.core.SensorConversionsOther.KPA2KGCM2;
+import static com.romraider.logger.external.core.SensorConversionsOther.KPA2PSI;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_146;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_147;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_155;
@@ -46,10 +50,6 @@ import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.KPH;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.LAMBDA;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAF_GS;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAF_LB;
-import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAP_BAR;
-import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAP_KGCM2;
-import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAP_KPA;
-import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAP_PSI;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MPH;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.NB_P;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.NB_V;
@@ -110,7 +110,7 @@ public final class PlxDataSource implements ExternalDataSource {
         dataItems.put(ENGINE_LOAD, new PlxDataItemImpl("Engine Load", 0, PERCENT));
         dataItems.put(FLUID_PRESSURE, new PlxDataItemImpl("Fuel/0il Pressure", 0, FLUID_PSI, FLUID_BAR, FLUID_KPA, FLUID_KGCM2));
         dataItems.put(TIMING, new PlxDataItemImpl("Engine Timing", 0, DEGREES));
-        dataItems.put(MANIFOLD_ABSOLUTE_PRESSURE, new PlxDataItemImpl("Manifold Absolute Pressure", 0, MAP_PSI, MAP_BAR, MAP_KPA, MAP_KGCM2));
+        dataItems.put(MANIFOLD_ABSOLUTE_PRESSURE, new PlxDataItemImpl("Manifold Absolute Pressure", 0, KPA2PSI, KPA2BAR, KPA, KPA2KGCM2));
         dataItems.put(MASS_AIR_FLOW, new PlxDataItemImpl("Mass Air Flow", 0, MAF_GS, MAF_LB));
         dataItems.put(SHORT_TERM_FUEL_TRIM, new PlxDataItemImpl("Fuel Trim - Short Term", 0, FUEL_TRIM));
         dataItems.put(LONG_TERM_FUEL_TRIM, new PlxDataItemImpl("Fuel Trim - Long Term", 0, FUEL_TRIM));

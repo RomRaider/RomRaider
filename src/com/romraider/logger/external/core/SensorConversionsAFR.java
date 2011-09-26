@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.txstuner.plugin;
+package com.romraider.logger.external.core;
 
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
-public enum TxsTunerSensorConversions implements ExternalSensorConversions {
+public enum SensorConversionsAFR implements ExternalSensorConversions {
 	// AFR conversion assumes reported DATA value is Gas AFR
 	LAMBDA	("Lambda", "x*0.0680272108843537", "0.00"),
 	AFR_147	("AFR Gasoline", "x", "0.00"),	   		         // gasoline
@@ -36,7 +36,7 @@ public enum TxsTunerSensorConversions implements ExternalSensorConversions {
 	private final String expression;
 	private final String format;
 	
-	TxsTunerSensorConversions(String units, String expression, String format) {
+	SensorConversionsAFR(String units, String expression, String format) {
 		this.units = units;
 		this.expression = expression;
 		this.format = format;

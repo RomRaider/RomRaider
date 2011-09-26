@@ -47,10 +47,6 @@ public enum PlxSensorConversions implements ExternalSensorConversions {
 	FLUID_KPA	("kPa", "x*1.34794864", "0.00"), 	 // converts from PSI to kpa
 	FLUID_KGCM2	("kg/cm^2", "x/72.73", "0.00"),
 	DEGREES	("deg", "x-64", "0.00"),
-	MAP_PSI	("psi", "x*0.14503774", "0.00"), 		 // converts from kPa
-	MAP_BAR	("bar", "x*0.01", "0.00"), 		 		 // converts from kPa
-	MAP_KPA	("kPa", "x", "0.0"),
-	MAP_KGCM2	("kg/cm^2", "x*0.01019716", "0.00"), // converts from kPa
 	MAF_GS	("g/sec", "x", "0.00"),
 	MAF_LB	("lb/min", "x/7.54", "0.00"),
 	FUEL_TRIM	("%", "x-100", "0.00"),
