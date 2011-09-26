@@ -19,29 +19,22 @@
 
 package com.romraider.logger.external.fourteenpoint7.plugin;
 
+import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
+
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
-import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.core.ExternalSensorConversions;
 import com.romraider.logger.external.core.RawDataListener;
 
 public final class NawDataItem implements ExternalDataItem, RawDataListener {
     private final NawConvertor convertor = new NawConvertorImpl();
-    private final EcuDataConvertor[] convertors;
+    private EcuDataConvertor[] convertors;
     private byte[] bytes;
 
-    public NawDataItem(NawSensorConversions... convertorList) {
+    public NawDataItem(ExternalSensorConversions... convertorList) {
         super();
         convertors = new EcuDataConvertor[convertorList.length];
-        int i = 0;
-        for (NawSensorConversions convertor :convertorList) {
-        	convertors[i] = new ExternalDataConvertorImpl(
-        			this,
-        			convertor.units(),
-        			convertor.expression(),
-        			convertor.format()
-        	);
-        	i++;
-        }
+        convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {

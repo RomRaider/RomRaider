@@ -19,7 +19,9 @@
 
 package com.romraider.logger.external.innovate.generic.serial.plugin;
 
-public enum InnovateSensorConversions {
+import com.romraider.logger.external.core.ExternalSensorConversions;
+
+public enum InnovateSensorConversions implements ExternalSensorConversions {
 	// AFR conversion assumes reported DATA value is Gas AFR
 	LAMBDA	("Lambda", "x*0.0680272108843537", "0.00"),
 	AFR_147	("AFR Gasoline", "x", "0.00"),	   		         // gasoline

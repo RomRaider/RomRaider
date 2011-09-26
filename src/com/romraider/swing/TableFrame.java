@@ -38,6 +38,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         add(table);
         setFrameIcon(null);
         setBorder(createBevelBorder(0));
+       	putClientProperty("JInternalFrame.isPalette", true);
         setVisible(false);
         setJMenuBar(new TableMenuBar(table));
         toolBar = new TableToolBar(table, this);

@@ -20,8 +20,12 @@
 package com.romraider.logger.external.plx.io;
 
 import com.romraider.logger.external.core.Stoppable;
-import static com.romraider.logger.external.plx.io.PlxSensorType.UNKNOWN;
+
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.UNKNOWN;
+
 import com.romraider.logger.external.plx.plugin.PlxDataItem;
+import com.romraider.logger.external.plx.plugin.PlxSensorType;
+
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.util.Map;
@@ -45,11 +49,8 @@ public final class PlxRunner implements Stoppable {
                 PlxResponse response = parser.pushByte(b);
                 if (!isValid(response)) continue;
                 PlxDataItem item = dataItems.get(response.sensor);
-                if (item != null) {
+                if (item != null && (response.instance == item.getInstance())) {
                 	item.setRaw(response.value);
-                }
-                else {
-                	LOGGER.error("plx sensor ^ is not supported");
                 }
             }
         } catch (Throwable t) {

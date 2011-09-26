@@ -19,18 +19,29 @@
 
 package com.romraider.logger.external.txstuner.plugin;
 
-import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.external.txstuner.io.TxsTunerRunner;
-import com.romraider.logger.external.core.ExternalDataItem;
-import com.romraider.logger.external.core.ExternalDataSource;
+import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_146;
+import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_147;
+import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_155;
+import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_172;
+import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_34;
+import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_64;
+import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.AFR_90;
+import static com.romraider.logger.external.txstuner.plugin.TxsTunerSensorConversions.LAMBDA;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Arrays.asList;
-import javax.swing.Action;
+
 import java.util.List;
+
+import javax.swing.Action;
+
+import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.core.ExternalDataSource;
+import com.romraider.logger.external.txstuner.io.TxsTunerRunner;
 
 public class TxsTunerDataSource implements ExternalDataSource {
 
-    private TxsTunerDataItem dataItem = new TxsTunerDataItem();
+    private TxsTunerDataItem dataItem = new TxsTunerDataItem(AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34);
     private TxsTunerRunner runner;
     private String port;
 
@@ -43,7 +54,7 @@ public class TxsTunerDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.01";
+        return "0.02";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

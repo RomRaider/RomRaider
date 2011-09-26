@@ -19,21 +19,21 @@
 
 package com.romraider.logger.external.zt2.plugin;
 
+import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
+
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
-import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
+import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public final class ZT2DataItemImpl implements ZT2DataItem {
-    private final ZT2Converter converter = new ZT2ConverterImpl();
-    private final ZT2SensorType sensorType;
-    private final String units;
+    private EcuDataConvertor[] convertors;
     private final String name;
     private int[] raw;
 
-    public ZT2DataItemImpl(String name, String units, ZT2SensorType sensorType) {
-        super();
+    public ZT2DataItemImpl(String name, ExternalSensorConversions... convertorList) {
+    	super();
         this.name = name;
-        this.units = units;
-        this.sensorType = sensorType;
+        convertors = new EcuDataConvertor[convertorList.length];
+        convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {
@@ -44,30 +44,26 @@ public final class ZT2DataItemImpl implements ZT2DataItem {
         return "Zeitronix ZT-2 " + name + " data";
     }
 
-//    public String getUnits() {
-//        return units;
-//    }
-
     public double getData() {
-        return converter.convert(sensorType, raw);
+		if (name.equalsIgnoreCase("MAP") && ((raw[1] & 128) == 128)) {
+		    // special handling on high byte - if 8th bit is 1 (means that it's negative)
+	        // We are supposed to clear the 8 bit, calc, then restore the sign.
+	        return 0 - (raw[0] + (raw[1] & ~(1 << 7)) * 256d);
+		}
+		else {
+			if (raw.length == 1)
+				return raw[0];
+			if (raw.length == 2)
+				return raw[0] + (raw[1] * 256d);
+		}
+		return 0;
     }
 
     public void setRaw(int... raw) {
         this.raw = raw;
     }
 
-//	public String getFormat() {
-//		return "0.##";
-//	}
-//
-//	public String getExpression() {
-//		return "x";
-//	}
-
 	public EcuDataConvertor[] getConvertors() {
-		String expression = "x";
-		String format = "0.##";
-        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
 		return convertors;
 	}
 }

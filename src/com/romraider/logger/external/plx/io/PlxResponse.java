@@ -19,12 +19,16 @@
 
 package com.romraider.logger.external.plx.io;
 
+import com.romraider.logger.external.plx.plugin.PlxSensorType;
+
 public final class PlxResponse {
     public PlxSensorType sensor;
+    public int instance;
     public int value;
 
-    public PlxResponse(PlxSensorType sensor, int value) {
+    public PlxResponse(PlxSensorType sensor, int instance, int value) {
         this.sensor = sensor;
+        this.instance = instance;
         this.value = value;
     }
 }

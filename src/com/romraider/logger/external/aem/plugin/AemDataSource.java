@@ -19,17 +19,28 @@
 
 package com.romraider.logger.external.aem.plugin;
 
+import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_146;
+import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_147;
+import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_155;
+import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_172;
+import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_34;
+import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_64;
+import static com.romraider.logger.external.aem.plugin.AemSensorConversions.AFR_90;
+import static com.romraider.logger.external.aem.plugin.AemSensorConversions.LAMBDA;
+import static com.romraider.util.ThreadUtil.runAsDaemon;
+import static java.util.Arrays.asList;
+
+import java.util.List;
+
+import javax.swing.Action;
+
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.external.aem.io.AemRunner;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
-import static com.romraider.util.ThreadUtil.runAsDaemon;
-import static java.util.Arrays.asList;
-import javax.swing.Action;
-import java.util.List;
 
 public final class AemDataSource implements ExternalDataSource {
-    private AemDataItem dataItem = new AemDataItem();
+    private AemDataItem dataItem = new AemDataItem(AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34);
     private AemRunner runner;
     private String port;
 
@@ -42,7 +53,7 @@ public final class AemDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.04";
+        return "0.05";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

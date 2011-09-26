@@ -19,7 +19,9 @@
 
 package com.romraider.logger.external.te.plugin;
 
-public enum TESensorConversions {
+import com.romraider.logger.external.core.ExternalSensorConversions;
+
+public enum TESensorConversions implements ExternalSensorConversions {
 	LAMBDA	("Lambda", "x/8192+0.5", "0.00"),
 	AFR_147	("AFR Gasoline", "(x/8192+0.5)*14.7", "0.00"),// gasoline
 	AFR_90	("AFR Ethonal", "(x/8192+0.5)*9.0", "0.00"),  // ethanol

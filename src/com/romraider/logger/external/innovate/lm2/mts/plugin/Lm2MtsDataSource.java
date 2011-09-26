@@ -19,21 +19,33 @@
 
 package com.romraider.logger.external.innovate.lm2.mts.plugin;
 
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorConversions.AFR_146;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorConversions.AFR_147;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorConversions.AFR_155;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorConversions.AFR_172;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorConversions.AFR_34;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorConversions.AFR_64;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorConversions.AFR_90;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorConversions.LAMBDA;
+import static com.romraider.util.ThreadUtil.runAsDaemon;
+import static java.lang.Integer.parseInt;
+import static java.util.Arrays.asList;
+import static org.apache.log4j.Logger.getLogger;
+
+import java.util.List;
+
+import javax.swing.Action;
+
+import org.apache.log4j.Logger;
+
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSRunner;
-import static com.romraider.util.ThreadUtil.runAsDaemon;
-import static java.lang.Integer.parseInt;
-import static java.util.Arrays.asList;
-import org.apache.log4j.Logger;
-import static org.apache.log4j.Logger.getLogger;
-import javax.swing.Action;
-import java.util.List;
 
 public final class Lm2MtsDataSource implements ExternalDataSource {
     private static final Logger LOGGER = getLogger(Lm2MtsDataSource.class);
-    private final Lm2MtsDataItem dataItem = new Lm2MtsDataItem();
+    private final Lm2MtsDataItem dataItem = new Lm2MtsDataItem(AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34);
     private MTSRunner runner;
     private int mtsPort = -1;
 

@@ -19,22 +19,25 @@
 
 package com.romraider.logger.external.fourteenpoint7.plugin;
 
+import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_146;
+import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_147;
+import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_155;
+import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_172;
+import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_34;
+import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_64;
+import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_90;
+import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.LAMBDA;
+import static com.romraider.util.ThreadUtil.runAsDaemon;
+import static java.util.Arrays.asList;
+
+import java.util.List;
+
+import javax.swing.Action;
+
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.fourteenpoint7.io.NawRunner;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.LAMBDA;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_147;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_90;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_146;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_64;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_155;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_172;
-import static com.romraider.logger.external.fourteenpoint7.plugin.NawSensorConversions.AFR_34;
-import static com.romraider.util.ThreadUtil.runAsDaemon;
-import static java.util.Arrays.asList;
-import javax.swing.Action;
-import java.util.List;
 
 public final class NawDataSource implements ExternalDataSource {
     private NawDataItem dataItem = new NawDataItem(LAMBDA, AFR_147, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34);

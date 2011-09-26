@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.fourteenpoint7.plugin;
+package com.romraider.logger.external.aem2.plugin;
 
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
-public enum NawSensorConversions implements ExternalSensorConversions {
+public enum AemSensorConversions implements ExternalSensorConversions {
 	LAMBDA	("Lambda", "x", "0.00"),
 	AFR_147	("AFR Gasoline", "x*14.7", "0.00"),// gasoline
 	AFR_90	("AFR Ethonal", "x*9.0", "0.00"),  // ethanol
@@ -35,7 +35,7 @@ public enum NawSensorConversions implements ExternalSensorConversions {
 	private final String expression;
 	private final String format;
 	
-	NawSensorConversions(String units, String expression, String format) {
+	AemSensorConversions(String units, String expression, String format) {
 		this.units = units;
 		this.expression = expression;
 		this.format = format;

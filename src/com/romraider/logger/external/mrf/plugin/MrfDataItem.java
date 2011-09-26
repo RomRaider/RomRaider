@@ -19,29 +19,23 @@
 
 package com.romraider.logger.external.mrf.plugin;
 
+import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
+
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
-import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public final class MrfDataItem implements ExternalDataItem, DataListener {
-    private final EcuDataConvertor[] convertors;
+    private EcuDataConvertor[] convertors;
     private final String name;
     private double data;
 
-    public MrfDataItem(String name, MrfSensorConversions... convertorList) {
+    public MrfDataItem(String name, ExternalSensorConversions... convertorList) {
+    	super();
         this.name = name;
         convertors = new EcuDataConvertor[convertorList.length];
-        int i = 0;
-        for (MrfSensorConversions convertor : convertorList) {
-        	convertors[i] = new ExternalDataConvertorImpl(
-        			this,
-        			convertor.units(),
-        			convertor.expression(),
-        			convertor.format()
-        	);
-        	i++;
-        }
+        convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {

@@ -19,38 +19,38 @@
 
 package com.romraider.logger.external.zt2.io;
 
-import com.romraider.logger.external.core.Stoppable;
-import com.romraider.logger.external.zt2.plugin.ZT2DataItem;
-import com.romraider.logger.external.zt2.plugin.ZT2SensorType;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.AFR;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.EGT;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.MAP;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.RPM;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.TPS;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.USR;
-import static com.romraider.util.HexUtil.asHex;
-import org.apache.log4j.Logger;
-
-import static java.lang.System.currentTimeMillis;
+import static com.romraider.logger.external.core.ExternalSensorType.EGT;
+import static com.romraider.logger.external.core.ExternalSensorType.ENGINE_SPEED;
+import static com.romraider.logger.external.core.ExternalSensorType.MAP;
+import static com.romraider.logger.external.core.ExternalSensorType.TPS;
+import static com.romraider.logger.external.core.ExternalSensorType.USER1;
+import static com.romraider.logger.external.core.ExternalSensorType.WIDEBAND;
+import static com.romraider.util.ByteUtil.asUnsignedInt;
 import static org.apache.log4j.Logger.getLogger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
+import com.romraider.logger.external.core.ExternalSensorType;
+import com.romraider.logger.external.core.Stoppable;
+import com.romraider.logger.external.zt2.plugin.ZT2DataItem;
+
 public final class ZT2Runner implements Stoppable {
     private static final Logger LOGGER = getLogger(ZT2Runner.class);
-    private final Map<ZT2SensorType, ZT2DataItem> dataItems;
+    private final Map<ExternalSensorType, ZT2DataItem> dataItems;
     private final ZT2Connection connection;
     private boolean stop;
 
-    public ZT2Runner(String port, Map<ZT2SensorType, ZT2DataItem> dataItems) {
+    public ZT2Runner(String port, Map<ExternalSensorType, ZT2DataItem> dataItems) {
         this.connection = new ZT2ConnectionImpl(port);
         this.dataItems = dataItems;
     }
 
     public void run() {
         try {
-        	//Runtime rt = Runtime.getRuntime();
             boolean packetStarted = false;
             List<Byte> buffer = new ArrayList<Byte>(14);
             while (!stop) {
@@ -67,54 +67,53 @@ public final class ZT2Runner implements Stoppable {
 
                 } else if (packetStarted && buffer.size() <= 14) {
                     buffer.add(b);
+                    ZT2DataItem dataItem = dataItems.get(WIDEBAND);
                     switch (buffer.size()) {
                         case 4:
-                            ZT2DataItem afrDataItem = dataItems.get(AFR);
-                            if (afrDataItem != null) {
-                                int raw = convertAsUnsignedByteToInt(buffer.get(3));
-                                afrDataItem.setRaw(raw);
+                            if (dataItem != null) {
+                                int raw = asUnsignedInt(buffer.get(3));
+                                dataItem.setRaw(raw);
                             }
                             break;
                         case 6:
-                            ZT2DataItem egtDataItem = dataItems.get(EGT);
-                            if (egtDataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(4));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(5));
-                                egtDataItem.setRaw(raw1, raw2);
+                        	dataItem = dataItems.get(EGT);
+                            if (dataItem != null) {
+                                int raw1 = asUnsignedInt(buffer.get(4));
+                                int raw2 = asUnsignedInt(buffer.get(5));
+                                dataItem.setRaw(raw1, raw2);
                             }
                             break;
                         case 8:
-                            ZT2DataItem rpmDataItem = dataItems.get(RPM);
-                            if (rpmDataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(6));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(7));
-                                rpmDataItem.setRaw(raw1, raw2);
+                        	dataItem = dataItems.get(ENGINE_SPEED);
+                            if (dataItem != null) {
+                                int raw1 = asUnsignedInt(buffer.get(6));
+                                int raw2 = asUnsignedInt(buffer.get(7));
+                                dataItem.setRaw(raw1, raw2);
                             }
                             break;
                         case 10:
-                            ZT2DataItem mapDataItem = dataItems.get(MAP);
-                            if (mapDataItem != null) {
-                                int raw1 = convertAsUnsignedByteToInt(buffer.get(8));
-                                int raw2 = convertAsUnsignedByteToInt(buffer.get(9));
-                                mapDataItem.setRaw(raw1, raw2);
+                        	dataItem = dataItems.get(MAP);
+                            if (dataItem != null) {
+                                int raw1 = asUnsignedInt(buffer.get(8));
+                                int raw2 = asUnsignedInt(buffer.get(9));
+                                dataItem.setRaw(raw1, raw2);
                             }
                             break;
                         case 11:
-                            ZT2DataItem tpsDataItem = dataItems.get(TPS);
-                            if (tpsDataItem != null) {
-                                int raw = convertAsUnsignedByteToInt(buffer.get(10));
-                                tpsDataItem.setRaw(raw);
+                        	dataItem = dataItems.get(TPS);
+                            if (dataItem != null) {
+                                int raw = asUnsignedInt(buffer.get(10));
+                                dataItem.setRaw(raw);
                             }
                             break;
                         case 12:
-                            ZT2DataItem usrDataItem = dataItems.get(USR);
-                            if (usrDataItem != null) {
-                                int raw = convertAsUnsignedByteToInt(buffer.get(11));
-                                usrDataItem.setRaw(raw);
+                        	dataItem = dataItems.get(USER1);
+                            if (dataItem != null) {
+                                int raw = asUnsignedInt(buffer.get(11));
+                                dataItem.setRaw(raw);
                             }
                             break;
                         case 14:
-                            //LOGGER.info(currentTimeMillis() + ", Pkt: " + buffer + ", TMem: " + rt.totalMemory() + ", FMem: " + rt.freeMemory());
                             buffer.clear();
                             packetStarted = false;
                             break;
@@ -125,7 +124,7 @@ public final class ZT2Runner implements Stoppable {
                 }
             }
         } catch (Throwable t) {
-            LOGGER.error("Error occurred", t);
+            LOGGER.error("ZT2 error occurred", t);
         } finally {
             connection.close();
         }
@@ -134,12 +133,5 @@ public final class ZT2Runner implements Stoppable {
     public void stop() {
         stop = true;
         connection.close();
-    }
-
-    private int convertAsUnsignedByteToInt(byte aByte) {
-        // A byte in java is signed, so -128 to 128
-        // unlike in other platforms where it's
-        // normally unsigned, so 0-255
-        return (int) aByte & 0xFF;
     }
 }

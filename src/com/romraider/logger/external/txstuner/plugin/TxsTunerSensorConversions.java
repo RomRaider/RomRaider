@@ -17,25 +17,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.fourteenpoint7.plugin;
+package com.romraider.logger.external.txstuner.plugin;
 
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
-public enum NawSensorConversions implements ExternalSensorConversions {
-	LAMBDA	("Lambda", "x", "0.00"),
-	AFR_147	("AFR Gasoline", "x*14.7", "0.00"),// gasoline
-	AFR_90	("AFR Ethonal", "x*9.0", "0.00"),  // ethanol
-	AFR_146	("AFR Diesel", "x*14.6", "0.00"),  // diesel
-	AFR_64	("AFR Methonal", "x*6.4", "0.00"), // methanol
-	AFR_155	("AFR LPG", "x*15.5", "0.00"), 	   // LPG
-	AFR_172	("AFR CNG", "x*17.2", "0.00"), 	   // CNG
-	AFR_34	("AFR Hydrogen", "x*34", "0.00");  // Hydrogen
-	
+public enum TxsTunerSensorConversions implements ExternalSensorConversions {
+	// AFR conversion assumes reported DATA value is Gas AFR
+	LAMBDA	("Lambda", "x*0.0680272108843537", "0.00"),
+	AFR_147	("AFR Gasoline", "x", "0.00"),	   		         // gasoline
+	AFR_90	("AFR Ethonal", "x*0.6122448979591837", "0.00"), // ethanol
+	AFR_146	("AFR Diesel", "x*0.9931972789115646", "0.00"),  // diesel
+	AFR_64	("AFR Methonal", "x*0.4353741496598639", "0.00"),// methanol
+	AFR_155	("AFR LPG", "x*1.054421768707483", "0.00"), 	 // LPG
+	AFR_172	("AFR CNG", "x*1.170068027210884", "0.00"), 	 // CNG
+	AFR_34	("AFR Hydrogen", "x*2.312925170068027", "0.00"); // Hydrogen
+
 	private final String units;
 	private final String expression;
 	private final String format;
 	
-	NawSensorConversions(String units, String expression, String format) {
+	TxsTunerSensorConversions(String units, String expression, String format) {
 		this.units = units;
 		this.expression = expression;
 		this.format = format;

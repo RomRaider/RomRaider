@@ -19,24 +19,23 @@
 
 package com.romraider.logger.external.plx.plugin;
 
+import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
+
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
-import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
-import com.romraider.logger.external.plx.io.PlxSensorType;
-import com.romraider.logger.external.plx.io.PlxSensorUnits;
+import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public final class PlxDataItemImpl implements PlxDataItem {
-    private final PlxConvertor convertor = new PlxConvertorImpl();
-    private final PlxSensorUnits sensorUnits;
-    private final PlxSensorType sensorType;
-    private final String units;
+    private EcuDataConvertor[] convertors;
     private final String name;
+    private int instance;
     private int raw;
 
-    public PlxDataItemImpl(String name, String units, PlxSensorType sensorType, PlxSensorUnits sensorUnits) {
-        this.sensorType = sensorType;
-        this.sensorUnits = sensorUnits;
-        this.units = units;
-        this.name = name;
+    public PlxDataItemImpl(String name, int instance, ExternalSensorConversions... convertorList) {
+		super();
+		this.name = name;
+		this.instance = instance;
+		convertors = new EcuDataConvertor[convertorList.length];
+		convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {
@@ -47,30 +46,19 @@ public final class PlxDataItemImpl implements PlxDataItem {
         return "PLX " + name + " data";
     }
 
-//    public String getUnits() {
-//        return units;
-//    }
-
+    public int getInstance() {
+    	return instance;
+    }
+    
     public double getData() {
-        return convertor.convert(raw, sensorType, sensorUnits);
+        return raw;
     }
 
     public void setRaw(int raw) {
         this.raw = raw;
     }
 
-//	public String getFormat() {
-//		return "0.##";
-//	}
-//
-//	public String getExpression() {
-//		return "x";
-//	}
-
 	public EcuDataConvertor[] getConvertors() {
-		String expression = "x";
-		String format = "0.##";
-        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
 		return convertors;
 	}
 }

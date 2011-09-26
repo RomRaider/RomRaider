@@ -19,36 +19,57 @@
 
 package com.romraider.logger.external.zt2.plugin;
 
-import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.external.core.ExternalDataItem;
-import com.romraider.logger.external.core.ExternalDataSource;
-import com.romraider.logger.external.zt2.io.ZT2Runner;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.AFR;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.EGT;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.MAP;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.RPM;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.TPS;
-import static com.romraider.logger.external.zt2.plugin.ZT2SensorType.USR;
+import static com.romraider.logger.external.core.ExternalSensorType.EGT;
+import static com.romraider.logger.external.core.ExternalSensorType.ENGINE_SPEED;
+import static com.romraider.logger.external.core.ExternalSensorType.MAP;
+import static com.romraider.logger.external.core.ExternalSensorType.TPS;
+import static com.romraider.logger.external.core.ExternalSensorType.USER1;
+import static com.romraider.logger.external.core.ExternalSensorType.WIDEBAND;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_146;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_147;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_155;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_172;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_34;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_64;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_90;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.BOOST_BAR;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.BOOST_KGCM2;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.BOOST_KPA;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.BOOST_PSI;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.DEG_C;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.DEG_F;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.LAMBDA;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.PERCENT;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.RPM;
+import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.VDC;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Collections.unmodifiableList;
-import javax.swing.Action;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Action;
+
+import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.core.ExternalDataSource;
+import com.romraider.logger.external.core.ExternalSensorType;
+import com.romraider.logger.external.zt2.io.ZT2Runner;
+
 public final class ZT2DataSource implements ExternalDataSource {
-    private final Map<ZT2SensorType, ZT2DataItem> dataItems = new HashMap<ZT2SensorType, ZT2DataItem>();
+    private final Map<ExternalSensorType, ZT2DataItem> dataItems = new HashMap<ExternalSensorType, ZT2DataItem>();
     private ZT2Runner runner;
     private String port;
 
     {
-        dataItems.put(AFR, new ZT2DataItemImpl("Wideband AFR", "AFR", AFR));
-        dataItems.put(TPS, new ZT2DataItemImpl("TPS", "Percent", TPS));
-        dataItems.put(RPM, new ZT2DataItemImpl("RPM", "RPM", RPM));
-        dataItems.put(MAP, new ZT2DataItemImpl("MAP", "Vacuum(inHg)/Boost(PSI)", MAP));
-        dataItems.put(EGT, new ZT2DataItemImpl("EGT", "Celsius", EGT));
-        dataItems.put(USR, new ZT2DataItemImpl("User Input", "Volts", USR));
+        dataItems.put(WIDEBAND, new ZT2DataItemImpl("Wideband O2", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+        dataItems.put(TPS, new ZT2DataItemImpl("Throttle Poistion", PERCENT));
+        dataItems.put(ENGINE_SPEED, new ZT2DataItemImpl("Engine Speed", RPM));
+        dataItems.put(MAP, new ZT2DataItemImpl("MAP", BOOST_PSI, BOOST_BAR, BOOST_KPA, BOOST_KGCM2));
+        dataItems.put(EGT, new ZT2DataItemImpl("EGT", DEG_C, DEG_F));
+        dataItems.put(USER1, new ZT2DataItemImpl("User Input", VDC));
     }
 
     public String getId() {
@@ -60,7 +81,7 @@ public final class ZT2DataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.02";
+        return "0.03";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

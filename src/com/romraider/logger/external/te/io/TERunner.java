@@ -19,18 +19,18 @@
 
 package com.romraider.logger.external.te.io;
 
+import com.romraider.logger.external.core.ExternalSensorType;
 import com.romraider.logger.external.core.Stoppable;
 import com.romraider.logger.external.te.plugin.TEDataItem;
-import com.romraider.logger.external.te.plugin.TESensorType;
-import static com.romraider.logger.external.te.plugin.TESensorType.WBO2;
-import static com.romraider.logger.external.te.plugin.TESensorType.USR1;
-import static com.romraider.logger.external.te.plugin.TESensorType.USR2;
-import static com.romraider.logger.external.te.plugin.TESensorType.USR3;
-import static com.romraider.logger.external.te.plugin.TESensorType.TC1;
-import static com.romraider.logger.external.te.plugin.TESensorType.TC2;
-import static com.romraider.logger.external.te.plugin.TESensorType.TC3;
-import static com.romraider.logger.external.te.plugin.TESensorType.TorVss;
-import static com.romraider.logger.external.te.plugin.TESensorType.RPM;
+import static com.romraider.logger.external.core.ExternalSensorType.WIDEBAND;
+import static com.romraider.logger.external.core.ExternalSensorType.USER1;
+import static com.romraider.logger.external.core.ExternalSensorType.USER2;
+import static com.romraider.logger.external.core.ExternalSensorType.USER3;
+import static com.romraider.logger.external.core.ExternalSensorType.THERMACOUPLE1;
+import static com.romraider.logger.external.core.ExternalSensorType.THERMACOUPLE2;
+import static com.romraider.logger.external.core.ExternalSensorType.THERMACOUPLE3;
+import static com.romraider.logger.external.core.ExternalSensorType.TorVss;
+import static com.romraider.logger.external.core.ExternalSensorType.ENGINE_SPEED;
 import static com.romraider.util.ByteUtil.asUnsignedInt;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
@@ -40,14 +40,14 @@ import java.util.Map;
 
 public final class TERunner implements Stoppable {
     private static final Logger LOGGER = getLogger(TERunner.class);
-    private final Map<TESensorType, TEDataItem> dataItems;
+    private final Map<ExternalSensorType, TEDataItem> dataItems;
     private final TEConnection connection;
     private boolean stop;
     private byte byteSum;
     private int sequenceNo;
     private int lastSequenceNo = -1;
     
-    public TERunner(String port, Map<TESensorType, TEDataItem> dataItems) {
+    public TERunner(String port, Map<ExternalSensorType, TEDataItem> dataItems) {
         this.connection = new TEConnectionImpl(port);
         this.dataItems = dataItems;
     }
@@ -103,43 +103,43 @@ public final class TERunner implements Stoppable {
 	                            		lastSequenceNo = sequenceNo;
 		                        	}
 		                        	else {
-		                                TEDataItem dataItem = dataItems.get(WBO2);
+		                                TEDataItem dataItem = dataItems.get(WIDEBAND);
 		                                if (dataItem != null) {
 		                                    int raw1 = asUnsignedInt(buffer.get(5));
 		                                    int raw2 = asUnsignedInt(buffer.get(6));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
-		                                dataItem = dataItems.get(USR1);
+		                                dataItem = dataItems.get(USER1);
 		                                if (dataItem != null) {
 		                                    int raw1 = asUnsignedInt(buffer.get(9));
 		                                    int raw2 = asUnsignedInt(buffer.get(10));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
-		                                dataItem = dataItems.get(USR2);
+		                                dataItem = dataItems.get(USER2);
 		                                if (dataItem != null) {
 		                                    int raw1 = asUnsignedInt(buffer.get(11));
 		                                    int raw2 = asUnsignedInt(buffer.get(12));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
-		                                dataItem = dataItems.get(USR3);
+		                                dataItem = dataItems.get(USER3);
 		                                if (dataItem != null) {
 		                                    int raw1 = asUnsignedInt(buffer.get(13));
 		                                    int raw2 = asUnsignedInt(buffer.get(14));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
-		                                dataItem = dataItems.get(TC1);
+		                                dataItem = dataItems.get(THERMACOUPLE1);
 		                                if (dataItem != null) {
 		                                    int raw1 = asUnsignedInt(buffer.get(15));
 		                                    int raw2 = asUnsignedInt(buffer.get(16));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
-		                                dataItem = dataItems.get(TC2);
+		                                dataItem = dataItems.get(THERMACOUPLE2);
 		                                if (dataItem != null) {
 		                                    int raw1 = asUnsignedInt(buffer.get(17));
 		                                    int raw2 = asUnsignedInt(buffer.get(18));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
-		                                dataItem = dataItems.get(TC3);
+		                                dataItem = dataItems.get(THERMACOUPLE3);
 		                                if (dataItem != null) {
 		                                    int raw1 = asUnsignedInt(buffer.get(19));
 		                                    int raw2 = asUnsignedInt(buffer.get(20));
@@ -151,7 +151,7 @@ public final class TERunner implements Stoppable {
 		                                    int raw2 = asUnsignedInt(buffer.get(22));
 		                                    dataItem.setRaw(raw1, raw2);
 		                                }
-		                                dataItem = dataItems.get(RPM);
+		                                dataItem = dataItems.get(ENGINE_SPEED);
 		                                if (dataItem != null) {
 		                                    int raw1 = asUnsignedInt(buffer.get(23));
 		                                    int raw2 = asUnsignedInt(buffer.get(24));

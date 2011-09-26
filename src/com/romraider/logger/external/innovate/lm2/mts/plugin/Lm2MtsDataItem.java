@@ -19,20 +19,29 @@
 
 package com.romraider.logger.external.innovate.lm2.mts.plugin;
 
+import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
+
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
-import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
+    private EcuDataConvertor[] convertors;
     private double data;
+
+    public Lm2MtsDataItem(ExternalSensorConversions... convertorList) {
+    	super();
+        convertors = new EcuDataConvertor[convertorList.length];
+        convertors = loadConvertors(this, convertors, convertorList);
+    }
 
     public String getName() {
         return "Innovate LM-2 [mts]";
     }
 
     public String getDescription() {
-        return "Innovate LM-2 AFR data";
+        return "Innovate LM-2 Wideband data";
     }
 
     public double getData() {
@@ -44,10 +53,6 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
     }
 
 	public EcuDataConvertor[] getConvertors() {
-		String units = "AFR";
-		String expression = "x";
-		String format = "0.##";
-        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
 		return convertors;
 	}
 }

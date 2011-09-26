@@ -19,25 +19,30 @@
 
 package com.romraider.logger.external.aem.plugin;
 
+import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
+
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
-import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public final class AemDataItem implements ExternalDataItem, DataListener {
+	private EcuDataConvertor[] convertors;
     private double data;
 
+    public AemDataItem(ExternalSensorConversions... convertorList) {
+		super();
+		convertors = new EcuDataConvertor[convertorList.length];
+		convertors = loadConvertors(this, convertors, convertorList);
+    }
+
     public String getName() {
-        return "AEM UEGO AFR [9600]";
+        return "AEM UEGO Wideband [9600]";
     }
 
     public String getDescription() {
-        return "AEM UEGO AFR data";
+        return "AEM UEGO Wideband data";
     }
-
-//    public String getUnits() {
-//        return "AFR";
-//    }
 
     public double getData() {
         return data;
@@ -47,19 +52,7 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
         this.data = data;
     }
 
-//	public String getFormat() {
-//		return "0.##";
-//	}
-//
-//	public String getExpression() {
-//		return "x";
-//	}
-
 	public EcuDataConvertor[] getConvertors() {
-		String units = "AFR";
-		String expression = "x";
-		String format = "0.##";
-        EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, expression, format)};
 		return convertors;
 	}
 }

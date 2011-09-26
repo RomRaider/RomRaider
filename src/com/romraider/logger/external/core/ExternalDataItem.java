@@ -26,12 +26,6 @@ public interface ExternalDataItem {
 
     String getDescription();
 
-//    String getUnits();
-//
-//    String getFormat();
-//
-//    String getExpression();
-
     double getData();
 
 	EcuDataConvertor[] getConvertors();

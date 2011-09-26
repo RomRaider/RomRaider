@@ -17,13 +17,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.zt2.plugin;
+package com.romraider.logger.external.core;
 
-public enum ZT2SensorType {
-    AFR,
-    RPM,
+public enum ExternalSensorType {
     EGT,
+    ENGINE_SPEED,
     MAP,
+    THERMACOUPLE1,
+    THERMACOUPLE2,
+    THERMACOUPLE3,
+    TorVss,
     TPS,
-    USR
+    USER1,
+    USER2,
+    USER3,
+    WIDEBAND,
 }

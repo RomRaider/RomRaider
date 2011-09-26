@@ -19,22 +19,78 @@
 
 package com.romraider.logger.external.plx.plugin;
 
-import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.external.core.ExternalDataItem;
-import com.romraider.logger.external.core.ExternalDataSource;
-import com.romraider.logger.external.plx.io.PlxRunner;
-import com.romraider.logger.external.plx.io.PlxSensorType;
-import static com.romraider.logger.external.plx.io.PlxSensorType.WIDEBAND_AFR;
-import static com.romraider.logger.external.plx.io.PlxSensorUnits.WIDEBAND_AFR_GASOLINE147;
-import static com.romraider.logger.external.plx.io.PlxSensorUnits.WIDEBAND_AFR_LAMBDA;
-import static com.romraider.logger.external.plx.io.PlxSensorType.EXHAUST_GAS_TEMPERATURE;
-import static com.romraider.logger.external.plx.io.PlxSensorUnits.EXHAUST_GAS_TEMPERATURE_CELSIUS;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_146;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_147;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_155;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_172;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_34;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_64;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_90;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.BATTERY;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.BOOST_BAR;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.BOOST_KGCM2;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.BOOST_KPA;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.BOOST_PSI;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DC_NEG;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DC_POS;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DEGREES;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DEG_C;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DEG_F;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.FLUID_BAR;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.FLUID_KGCM2;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.FLUID_KPA;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.FLUID_PSI;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.FUEL_TRIM;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.KNOCK_VDC;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.KPH;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.LAMBDA;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAF_GS;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAF_LB;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAP_BAR;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAP_KGCM2;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAP_KPA;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAP_PSI;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MPH;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.NB_P;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.NB_V;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.PERCENT;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.RPM;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.VACUUM_IN;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.VACUUM_MM;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.AIR_INTAKE_TEMPERATURE;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.BOOST;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.DUTY_CYCLE;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.ENGINE_LOAD;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.ENGINE_SPEED;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.EXHAUST_GAS_TEMPERATURE;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.FLUID_PRESSURE;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.FLUID_TEMPERATURE;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.FUEL_LEVEL;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.KNOCK;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.LONG_TERM_FUEL_TRIM;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.MANIFOLD_ABSOLUTE_PRESSURE;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.MASS_AIR_FLOW;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.NARROWBAND_AFR;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.SHORT_TERM_FUEL_TRIM;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.THROTTLE_POSITION;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.TIMING;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.VACUUM;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.VEHICLE_SPEED;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.VOLTAGE;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.WIDEBAND;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
-import javax.swing.Action;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.Action;
+
+import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.core.ExternalDataSource;
+import com.romraider.logger.external.plx.io.PlxRunner;
 
 public final class PlxDataSource implements ExternalDataSource {
     private final Map<PlxSensorType, PlxDataItem> dataItems = new HashMap<PlxSensorType, PlxDataItem>();
@@ -42,9 +98,27 @@ public final class PlxDataSource implements ExternalDataSource {
     private String port;
 
     {
-        dataItems.put(WIDEBAND_AFR, new PlxDataItemImpl("Wideband AFR", "AFR", WIDEBAND_AFR, WIDEBAND_AFR_GASOLINE147));
-//        dataItems.put(WIDEBAND_AFR, new PlxDataItemImpl("Wideband Lambda", "Lambda", WIDEBAND_AFR, WIDEBAND_AFR_LAMBDA));
-        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("EGT", "C", EXHAUST_GAS_TEMPERATURE, EXHAUST_GAS_TEMPERATURE_CELSIUS));
+        dataItems.put(WIDEBAND, new PlxDataItemImpl("O2 - Wideband", 0, AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("EGT", 0, DEG_C, DEG_F));
+        dataItems.put(FLUID_TEMPERATURE, new PlxDataItemImpl("Oil/H20 Temperature", 0, DEG_C, DEG_F));
+        dataItems.put(VACUUM, new PlxDataItemImpl("Manifold Vaccum", 0, VACUUM_IN, VACUUM_MM)); 
+        dataItems.put(BOOST, new PlxDataItemImpl("Manifold Boost", 0, BOOST_PSI, BOOST_BAR, BOOST_KPA, BOOST_KGCM2));
+        dataItems.put(AIR_INTAKE_TEMPERATURE, new PlxDataItemImpl("Intake Air Temperature", 0, DEG_C, DEG_F));
+        dataItems.put(ENGINE_SPEED, new PlxDataItemImpl("Engine Speed", 0, RPM));
+        dataItems.put(VEHICLE_SPEED, new PlxDataItemImpl("Vehicle Speed", 0, MPH, KPH));
+        dataItems.put(THROTTLE_POSITION, new PlxDataItemImpl("Throttle Position", 0, PERCENT));
+        dataItems.put(ENGINE_LOAD, new PlxDataItemImpl("Engine Load", 0, PERCENT));
+        dataItems.put(FLUID_PRESSURE, new PlxDataItemImpl("Fuel/0il Pressure", 0, FLUID_PSI, FLUID_BAR, FLUID_KPA, FLUID_KGCM2));
+        dataItems.put(TIMING, new PlxDataItemImpl("Engine Timing", 0, DEGREES));
+        dataItems.put(MANIFOLD_ABSOLUTE_PRESSURE, new PlxDataItemImpl("Manifold Absolute Pressure", 0, MAP_PSI, MAP_BAR, MAP_KPA, MAP_KGCM2));
+        dataItems.put(MASS_AIR_FLOW, new PlxDataItemImpl("Mass Air Flow", 0, MAF_GS, MAF_LB));
+        dataItems.put(SHORT_TERM_FUEL_TRIM, new PlxDataItemImpl("Fuel Trim - Short Term", 0, FUEL_TRIM));
+        dataItems.put(LONG_TERM_FUEL_TRIM, new PlxDataItemImpl("Fuel Trim - Long Term", 0, FUEL_TRIM));
+        dataItems.put(NARROWBAND_AFR, new PlxDataItemImpl("O2 - Narrowband", 0, NB_P, NB_V));
+        dataItems.put(FUEL_LEVEL, new PlxDataItemImpl("Fuel Level", 0, PERCENT));
+        dataItems.put(VOLTAGE, new PlxDataItemImpl("Battery Voltage", 0, BATTERY));
+        dataItems.put(KNOCK, new PlxDataItemImpl("Knock", 0, KNOCK_VDC));
+        dataItems.put(DUTY_CYCLE, new PlxDataItemImpl("Duty Cycle", 0, DC_POS, DC_NEG));
     }
 
     public String getId() {
@@ -56,7 +130,7 @@ public final class PlxDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.03";
+        return "0.04";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

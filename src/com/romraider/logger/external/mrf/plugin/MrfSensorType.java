@@ -28,19 +28,19 @@ public enum MrfSensorType {
     FUEL_PRESS(5),
     MANIFOLD_TEMP(6);
 
-    private final int index;
+    private final int value;
 
-    private MrfSensorType(int index) {
-        this.index = index;
+    private MrfSensorType(int value) {
+        this.value = value;
     }
 
-    public int getIndex() {
-        return index;
+    public int getValue() {
+        return value;
     }
 
-    public static MrfSensorType valueOf(int index) {
+    public static MrfSensorType valueOf(int value) {
         for (MrfSensorType type : values()) {
-            if (type.getIndex() == index) return type;
+            if (type.getValue() == value) return type;
         }
         return null;
     }

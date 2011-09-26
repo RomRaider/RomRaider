@@ -17,16 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.plx.io;
+package com.romraider.logger.external.plx.plugin;
 
 public enum PlxSensorType {
-    WIDEBAND_AFR(0),
+    WIDEBAND(0),
     EXHAUST_GAS_TEMPERATURE(1),
     FLUID_TEMPERATURE(2),
     VACUUM(3),
     BOOST(4),
     AIR_INTAKE_TEMPERATURE(5),
-    RPM(6),
+    ENGINE_SPEED(6),
     VEHICLE_SPEED(7),
     THROTTLE_POSITION(8),
     ENGINE_LOAD(9),
@@ -41,7 +41,7 @@ public enum PlxSensorType {
     VOLTAGE(18),
     KNOCK(19),
     DUTY_CYCLE(20),
-    UNKNOWN(4032);
+    UNKNOWN(-1);
 
     private final int value;
 
@@ -54,8 +54,7 @@ public enum PlxSensorType {
     }
 
     public static PlxSensorType valueOf(int value) {
-        PlxSensorType[] types = values();
-        for (PlxSensorType type : types) {
+        for (PlxSensorType type : values()) {
             if (type.v() == value) return type;
         }
         throw new IllegalArgumentException("Unknown PLX Sensor Type: " + value);

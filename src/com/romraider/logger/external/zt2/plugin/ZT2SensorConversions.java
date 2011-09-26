@@ -17,25 +17,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.fourteenpoint7.plugin;
+package com.romraider.logger.external.zt2.plugin;
 
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
-public enum NawSensorConversions implements ExternalSensorConversions {
-	LAMBDA	("Lambda", "x", "0.00"),
-	AFR_147	("AFR Gasoline", "x*14.7", "0.00"),// gasoline
-	AFR_90	("AFR Ethonal", "x*9.0", "0.00"),  // ethanol
-	AFR_146	("AFR Diesel", "x*14.6", "0.00"),  // diesel
-	AFR_64	("AFR Methonal", "x*6.4", "0.00"), // methanol
-	AFR_155	("AFR LPG", "x*15.5", "0.00"), 	   // LPG
-	AFR_172	("AFR CNG", "x*17.2", "0.00"), 	   // CNG
-	AFR_34	("AFR Hydrogen", "x*34", "0.00");  // Hydrogen
-	
+public enum ZT2SensorConversions implements ExternalSensorConversions {
+	// AFR conversion assumes reported DATA value is Gas AFR
+	LAMBDA	("Lambda", "x*0.00680272108843537", "0.00"),
+	AFR_147	("AFR Gasoline", "x*0.1", "0.00"),	   		      // gasoline
+	AFR_90	("AFR Ethonal", "x*0.06122448979591837", "0.00"), // ethanol
+	AFR_146	("AFR Diesel", "x*0.09931972789115646", "0.00"),  // diesel
+	AFR_64	("AFR Methonal", "x*0.04353741496598639", "0.00"),// methanol
+	AFR_155	("AFR LPG", "x*0.1054421768707483", "0.00"), 	  // LPG
+	AFR_172	("AFR CNG", "x*0.1170068027210884", "0.00"), 	  // CNG
+	AFR_34	("AFR Hydrogen", "x*0.2312925170068027", "0.00"), // Hydrogen
+	PERCENT	("%", "x", "0.0"),
+	DEG_C	("C", "x", "0.0"),
+	DEG_F	("F", "(x/.555+32)", "0.0"),
+	BOOST_PSI	("psi", "x*0.1", "0.00"),
+	BOOST_BAR	("bar", "x*0.0068947573", "0.00"),		 // converts from PSI
+	BOOST_KPA	("kPa", "x*0.6894757282", "0.0"),  		 // converts from PSI
+	BOOST_KGCM2	("kg/cm^2", "x*0.0070306958", "0.00"),	 // converts from PSI
+	VDC		("vdc", "x", "0.00"),
+	RPM		("rpm", "round(((1000000/x)*4.59)/2)", "0");
+
 	private final String units;
 	private final String expression;
 	private final String format;
 	
-	NawSensorConversions(String units, String expression, String format) {
+	ZT2SensorConversions(String units, String expression, String format) {
 		this.units = units;
 		this.expression = expression;
 		this.format = format;

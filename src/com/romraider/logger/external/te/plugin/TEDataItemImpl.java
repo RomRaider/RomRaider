@@ -20,27 +20,19 @@
 package com.romraider.logger.external.te.plugin;
 
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
-import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
+import com.romraider.logger.external.core.ExternalSensorConversions;
+import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
 
 public final class TEDataItemImpl implements TEDataItem {
-    private final EcuDataConvertor[] convertors;
+    private EcuDataConvertor[] convertors;
     private final String name;
     private int[] raw;
 
-    public TEDataItemImpl(String name, TESensorConversions... convertorList) {
-        super();
+    public TEDataItemImpl(String name, ExternalSensorConversions... convertorList) {
+    	super();
         this.name = name;
         convertors = new EcuDataConvertor[convertorList.length];
-        int i = 0;
-        for (TESensorConversions convertor :convertorList) {
-        	convertors[i] = new ExternalDataConvertorImpl(
-        			this,
-        			convertor.units(),
-        			convertor.expression(),
-        			convertor.format()
-        	);
-        	i++;
-        }
+        convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {

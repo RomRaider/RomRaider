@@ -20,14 +20,15 @@
 
 package com.romraider.logger.external.txstuner.io;
 
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
+import static org.apache.log4j.Logger.getLogger;
+
+import org.apache.log4j.Logger;
+
 import com.romraider.io.serial.connection.SerialConnection;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
-import com.romraider.logger.external.txstuner.plugin.TxsTunerDataItem;
 import com.romraider.logger.external.core.Stoppable;
-
-import static com.romraider.util.ParamChecker.isNullOrEmpty;
-import org.apache.log4j.Logger;
-import static org.apache.log4j.Logger.getLogger;
+import com.romraider.logger.external.txstuner.plugin.TxsTunerDataItem;
 
 public final class TxsTunerRunner implements Stoppable {
     private static final Logger LOGGER = getLogger(TxsTunerRunner.class);
