@@ -49,7 +49,7 @@ public final class AemDataSource implements ExternalDataSource {
     }
 
     public String getName() {
-        return "AEM UEGO AFR [9600]";
+        return "AEM UEGO AFR [9600 baud]";
     }
 
     public String getVersion() {

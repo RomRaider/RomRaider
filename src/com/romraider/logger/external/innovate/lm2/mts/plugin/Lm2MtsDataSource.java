@@ -19,20 +19,29 @@
 
 package com.romraider.logger.external.innovate.lm2.mts.plugin;
 
-import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_146;
-import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_147;
-import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_155;
-import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_172;
-import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_34;
-import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_64;
-import static com.romraider.logger.external.core.SensorConversionsAFR.AFR_90;
-import static com.romraider.logger.external.core.SensorConversionsAFR.LAMBDA;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_146;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_147;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_155;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_172;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_34;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_64;
+import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_90;
+import static com.romraider.logger.external.core.SensorConversionsLambda.LAMBDA;
+import static com.romraider.logger.external.core.SensorConversionsOther.VOLTS_DC;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.THERMALCOUPLE1;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.THERMALCOUPLE2;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.THERMALCOUPLE3;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.THERMALCOUPLE4;
+import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.WIDEBAND0;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.lang.Integer.parseInt;
-import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static org.apache.log4j.Logger.getLogger;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.Action;
 
@@ -45,24 +54,32 @@ import com.romraider.logger.external.innovate.generic.mts.io.MTSRunner;
 
 public final class Lm2MtsDataSource implements ExternalDataSource {
     private static final Logger LOGGER = getLogger(Lm2MtsDataSource.class);
-    private final Lm2MtsDataItem dataItem = new Lm2MtsDataItem(AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34);
+    private final Map<Lm2SensorType, Lm2MtsDataItem> dataItems = new HashMap<Lm2SensorType, Lm2MtsDataItem>();
     private MTSRunner runner;
     private int mtsPort = -1;
+
+    {
+        dataItems.put(WIDEBAND0, new Lm2MtsDataItem("LM-2", 0, LAMBDA, AFR_147, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+        dataItems.put(THERMALCOUPLE1, new Lm2MtsDataItem("TC-4", 1, VOLTS_DC));
+        dataItems.put(THERMALCOUPLE2, new Lm2MtsDataItem("TC-4", 2, VOLTS_DC));
+        dataItems.put(THERMALCOUPLE3, new Lm2MtsDataItem("TC-4", 3, VOLTS_DC));
+        dataItems.put(THERMALCOUPLE4, new Lm2MtsDataItem("TC-4", 4, VOLTS_DC));
+    }
 
     public String getId() {
         return getClass().getName();
     }
 
     public String getName() {
-        return "Innovate LM-2 [mts]";
+        return "Innovate MTS";
     }
 
     public String getVersion() {
-        return "0.03";
+        return "0.04";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
-        return asList(dataItem);
+    	return unmodifiableList(new ArrayList<Lm2MtsDataItem>(dataItems.values()));
     }
 
     public Action getMenuAction(EcuLogger logger) {
@@ -78,7 +95,7 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
     }
 
     public void connect() {
-        runner = new MTSRunner(mtsPort, dataItem);
+        runner = new MTSRunner(mtsPort, dataItems);
         runAsDaemon(runner);
     }
 

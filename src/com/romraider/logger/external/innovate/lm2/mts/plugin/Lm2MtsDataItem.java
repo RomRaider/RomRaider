@@ -28,22 +28,30 @@ import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
     private EcuDataConvertor[] convertors;
+    private final String name;
+    private int channel;
     private double data;
 
-    public Lm2MtsDataItem(ExternalSensorConversions... convertorList) {
+    public Lm2MtsDataItem(String name, int channel, ExternalSensorConversions... convertorList) {
     	super();
+        this.name = name;
+        this.channel = channel;
         convertors = new EcuDataConvertor[convertorList.length];
         convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {
-        return "Innovate LM-2 [mts]";
+        return "Innovate MTS " + name + " CH" + channel;
     }
 
     public String getDescription() {
-        return "Innovate LM-2 Wideband data";
+        return "Innovate MTS " + name + " CH" +channel + " data";
     }
 
+    public int getChannel() {
+    	return channel;
+    }
+    
     public double getData() {
         return data;
     }

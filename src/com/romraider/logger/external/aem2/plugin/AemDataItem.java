@@ -37,7 +37,7 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
     }
 
     public String getName() {
-        return "AEM UEGO [19200 baud]";
+        return "AEM UEGO Wideband [19200 baud]";
     }
 
     public String getDescription() {

@@ -19,8 +19,15 @@
 
 package com.romraider.logger.external.innovate.generic.mts.io;
 
+import java.util.Map;
+
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.Stoppable;
+import com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2MtsDataItem;
+import com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType;
+import com.romraider.logger.external.mrf.plugin.MrfDataItem;
+import com.romraider.logger.external.mrf.plugin.MrfSensorType;
+
 import static com.romraider.logger.external.innovate.generic.mts.io.MTSFactory.createMTS;
 import static com.romraider.util.ThreadUtil.sleep;
 import static java.lang.System.currentTimeMillis;
@@ -29,14 +36,14 @@ import static org.apache.log4j.Logger.getLogger;
 
 public final class MTSRunner implements Stoppable {
     private static final Logger LOGGER = getLogger(MTSRunner.class);
-    private final DataListener listener;
+    private final Map<Lm2SensorType, Lm2MtsDataItem> dataItems;
     private final MTS mts;
     private boolean running;
     private boolean stop;
 
-    public MTSRunner(int mtsPort, DataListener listener) {
+    public MTSRunner(int mtsPort, Map<Lm2SensorType, Lm2MtsDataItem> dataItems) {
         this.mts = mts(mtsPort);
-        this.listener = listener;
+        this.dataItems = dataItems;
     }
 
     public void run() {
@@ -94,27 +101,31 @@ public final class MTSRunner implements Stoppable {
             	int inputCount = mts.inputCount();
             	LOGGER.info("MTS: found " + inputCount + " inputs.");
 
-            	// for each input get some info about it
             	if (inputCount > 0) {
+                // attempt to get data
+                mts.startData();
+
+                // for each input get some info about it
+            	while (!stop) {
 	            	for (int i = 0; i < inputCount; i++) {
 	                    // report each input found
-	                    mts.currentInput(i);
-	                	LOGGER.info("MTS: InputNo:" + i + ", InputName:" + mts.inputName() +
-	                			", InputType:" + mts.inputType() + ", DeviceName:" + mts.inputDeviceName() +
-	                			", DeviceType:" + mts.inputDeviceType() + ", DeviceChannel:" +
-	                			mts.inputDeviceChannel());
-	            	}
+//	                    mts.currentInput(i);
+//	                	LOGGER.info("MTS: InputNo:" + i + ", InputName:" + mts.inputName() +
+//	                			", InputType:" + mts.inputType() + ", DeviceName:" + mts.inputDeviceName() +
+//	                			", DeviceType:" + mts.inputDeviceType() + ", DeviceChannel:" +
+//	                			mts.inputDeviceChannel());
+//	            	}
 	                // select the input
-	                mts.currentInput(0);
+	                mts.currentInput(i);
 	
 	                // attempt to get data
-	                mts.startData();
+//	                mts.startData();
 	
 	                // wait a moment for data acquisition to begin
-	                sleep(1000L);
+//	                sleep(1000L);
 	
 	                // start collecting data
-	                while (!stop) {
+//	                while (!stop) {
 	                    int type = mts.inputType();
 	                    int function = mts.inputFunction();
 	                    int sample = mts.inputSample();
@@ -122,7 +133,12 @@ public final class MTSRunner implements Stoppable {
 	                    LOGGER.trace("MTS: type = " + type + ", function = " + function + ", sample = " + sample);
 	
 	                    float data = 0f;
-	
+
+	                    // Input Types
+	                    // 0 = Lambda 
+	                    // 1 = AFR 
+	                    // 2 = 5V
+
 	                    // 5V channel
 	                    // Determine the range between min and max,
 	                    // calculate what percentage of that our sample represents,
@@ -133,19 +149,35 @@ public final class MTSRunner implements Stoppable {
 	                            float min = mts.inputMinValue();
 	                            float max = mts.inputMaxValue();
 	                            data = ((max - min) * ((float) sample / 1024f)) + min;
+	                            Lm2SensorType[] sensors = Lm2SensorType.values();
+	                            for (Lm2SensorType sensorType : sensors) {
+	                            	if (sensorType.getValue() == function &&
+		                            	sensorType.getChannel() == mts.inputDeviceChannel()) {
+			                            Lm2MtsDataItem dataItem = dataItems.get(sensorType);
+			                            dataItem.setData(data);
+		                            }
+	                            }
 	                        }
-	
 	                    }
 	
 	                    // AFR
 	                    // Take each sample step as .001 Lambda,
 	                    // add 0.5 (so our range is 0.5 to 1.523 for our 1024 steps),
 	                    // then multiply by the AFR multiplier
-	                    if (type == 1) {
+	                    if (type == 0 || type == 1) {
 	                        // MTS_FUNC_LAMBDA
 	                        if (function == 0) {
-	                            float multiplier = mts.inputAFRMultiplier();
-	                            data = ((float) sample / 1000f + 0.5f) * multiplier;
+	                            //float multiplier = mts.inputAFRMultiplier();
+	                            //data = ((float) sample / 1000f + 0.5f) * multiplier;
+	                            data = ((float) sample / 1000f + 0.5f);
+	                            Lm2SensorType[] sensors = Lm2SensorType.values();
+	                            for (Lm2SensorType sensorType : sensors) {
+	                            	if (sensorType.getValue() == function &&
+		                            	sensorType.getChannel() == mts.inputDeviceChannel()) {
+			                            Lm2MtsDataItem dataItem = dataItems.get(sensorType);
+			                            dataItem.setData(data);
+		                            }
+	                            }
 	                        }
 	                        // MTS_FUNC_O2
 	                        if (function == 1) {
@@ -155,18 +187,15 @@ public final class MTSRunner implements Stoppable {
 	
 	                    // Lambda
 	                    // Identical to AFR, except we do not multiply for AFR.
-	                    if (type == 0) {
-	                        // MTS_FUNC_LAMBDA
-	                        if (function == 0) {
-	                            data = (float) sample / 1000f + 0.5f;
-	                        }
-	                    }
-	
-	                    // report the result
-	                    listener.setData((double) data);
-	
-	                    sleep(100L);
+//	                    if (type == 0) {
+//	                        // MTS_FUNC_LAMBDA
+//	                        if (function == 0) {
+//	                            data = (float) sample / 1000f + 0.5f;
+//	                        }
+//	                    }	
 	                }
+                    sleep(10L);
+            	}
             	}
             	else {
                     LOGGER.error("MTS: Error - no input channels found to log from!");

@@ -99,11 +99,11 @@ public final class PlxDataSource implements ExternalDataSource {
 
     {
         dataItems.put(WIDEBAND, new PlxDataItemImpl("O2 - Wideband", 0, AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("EGT", 0, DEG_C, DEG_F));
-        dataItems.put(FLUID_TEMPERATURE, new PlxDataItemImpl("Oil/H20 Temperature", 0, DEG_C, DEG_F));
+        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("Temperature - Exhaust Gas", 0, DEG_C, DEG_F));
+        dataItems.put(FLUID_TEMPERATURE, new PlxDataItemImpl("Temperature - Oil/H20", 0, DEG_C, DEG_F));
         dataItems.put(VACUUM, new PlxDataItemImpl("Manifold Vaccum", 0, VACUUM_IN, VACUUM_MM)); 
         dataItems.put(BOOST, new PlxDataItemImpl("Manifold Boost", 0, BOOST_PSI, BOOST_BAR, BOOST_KPA, BOOST_KGCM2));
-        dataItems.put(AIR_INTAKE_TEMPERATURE, new PlxDataItemImpl("Intake Air Temperature", 0, DEG_C, DEG_F));
+        dataItems.put(AIR_INTAKE_TEMPERATURE, new PlxDataItemImpl("Temperature - Intake Air", 0, DEG_C, DEG_F));
         dataItems.put(ENGINE_SPEED, new PlxDataItemImpl("Engine Speed", 0, RPM));
         dataItems.put(VEHICLE_SPEED, new PlxDataItemImpl("Vehicle Speed", 0, MPH, KPH));
         dataItems.put(THROTTLE_POSITION, new PlxDataItemImpl("Throttle Position", 0, PERCENT));
