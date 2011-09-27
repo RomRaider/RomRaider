@@ -97,7 +97,7 @@ public class Test implements MTSEvents {
         printAvailableInputs();
 
         // attempt to get data
-        mts.currentInput(0);
+//        mts.currentInput(0);
         mts.startData();
 
         // notes:
@@ -122,7 +122,8 @@ public class Test implements MTSEvents {
         // MTS_FUNC_INVALID 10
 
         // retrieve 10 samples
-        getSamples(10);
+//        getSamples(10);
+       	waitFor(20000);
 
         // dispose of the event handler instance
         connectionEventCookie.close();
@@ -147,10 +148,19 @@ public class Test implements MTSEvents {
     }
 
     public void newData() {
-        //int data = mts.inputSample();
-        //float multiplier = mts.inputAFRMultiplier();
-        //int sampleMeaning = mts.inputFunction();
-        //System.out.printf("newData raised.  data = %f%n", data * multiplier);
+    	int i;
+    	float data = 0f;
+//    	for (i = 0; i < mts.inputCount(); i++) {
+    		i=0;
+    		mts.currentInput(i);
+        	float min = mts.inputMinValue();
+            float max = mts.inputMaxValue();
+	        data = mts.inputSample();
+            data = ((max - min) * ((float) data / 1024f)) + min;
+	        float multiplier = mts.inputAFRMultiplier();
+	        int sampleMeaning = mts.inputFunction();
+	        System.out.printf("newData raised for Input: %02d, Function: %d, Data: %f,\tMultiplier: %f%n", i, sampleMeaning, data, multiplier);
+//    	}
     }
 
     /**
