@@ -19,20 +19,6 @@
 
 package com.romraider.logger.external.innovate.lm2.mts.plugin;
 
-import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_146;
-import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_147;
-import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_155;
-import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_172;
-import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_34;
-import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_64;
-import static com.romraider.logger.external.core.SensorConversionsLambda.AFR_90;
-import static com.romraider.logger.external.core.SensorConversionsLambda.LAMBDA;
-import static com.romraider.logger.external.core.SensorConversionsOther.VOLTS_DC;
-import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.THERMALCOUPLE1;
-import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.THERMALCOUPLE2;
-import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.THERMALCOUPLE3;
-import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.THERMALCOUPLE4;
-import static com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType.WIDEBAND0;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.lang.Integer.parseInt;
 import static java.util.Collections.unmodifiableList;
@@ -42,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.Action;
 
@@ -50,20 +37,27 @@ import org.apache.log4j.Logger;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
+import com.romraider.logger.external.innovate.generic.mts.io.MTSConnector;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSRunner;
 
 public final class Lm2MtsDataSource implements ExternalDataSource {
     private static final Logger LOGGER = getLogger(Lm2MtsDataSource.class);
-    private final Map<Lm2SensorType, Lm2MtsDataItem> dataItems = new HashMap<Lm2SensorType, Lm2MtsDataItem>();
+    private final Map<Integer, Lm2MtsDataItem> dataItems = new HashMap<Integer, Lm2MtsDataItem>();
     private MTSRunner runner;
-    private int mtsPort = -1;
+    private int mtsPort = 0;
 
     {
-        dataItems.put(WIDEBAND0, new Lm2MtsDataItem("LM-2", 0, LAMBDA, AFR_147, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-        dataItems.put(THERMALCOUPLE1, new Lm2MtsDataItem("TC-4", 1, VOLTS_DC));
-        dataItems.put(THERMALCOUPLE2, new Lm2MtsDataItem("TC-4", 2, VOLTS_DC));
-        dataItems.put(THERMALCOUPLE3, new Lm2MtsDataItem("TC-4", 3, VOLTS_DC));
-        dataItems.put(THERMALCOUPLE4, new Lm2MtsDataItem("TC-4", 4, VOLTS_DC));
+    	MTSConnector mts = new MTSConnector(mtsPort);
+    	Set<Lm2Sensor> sensors = mts.getSensors();
+    	dataItems.put(0, new Lm2MtsDataItem("LM-2", 0, "AFR")); // a default entry
+    	for (Lm2Sensor sensor : sensors) {
+    		dataItems.put(sensor.getInputNumber(), new Lm2MtsDataItem(sensor.getDeviceName(), sensor.getDeviceChannel(), sensor.getUnits()));
+    	}
+//        dataItems.put(LC_1_0, new Lm2MtsDataItem("LM-2", 0, LAMBDA, AFR_147, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+//        dataItems.put(TC_4_1, new Lm2MtsDataItem("TC-4", 1, DEG_F));
+//        dataItems.put(TC_4_2, new Lm2MtsDataItem("TC-4", 2, DEG_C));
+//        dataItems.put(TC_4_3, new Lm2MtsDataItem("TC-4", 3, DEG_C));
+//        dataItems.put(TC_4_4, new Lm2MtsDataItem("TC-4", 4, DEG_C));
     }
 
     public String getId() {

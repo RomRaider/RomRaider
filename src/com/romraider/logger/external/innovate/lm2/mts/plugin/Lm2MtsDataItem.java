@@ -22,22 +22,25 @@ package com.romraider.logger.external.innovate.lm2.mts.plugin;
 import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
 
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
-    private EcuDataConvertor[] convertors;
+    //private EcuDataConvertor[] convertors;
     private final String name;
     private int channel;
     private double data;
+    private String units;
 
-    public Lm2MtsDataItem(String name, int channel, ExternalSensorConversions... convertorList) {
+    public Lm2MtsDataItem(String name, int channel, String units) {
     	super();
         this.name = name;
         this.channel = channel;
-        convertors = new EcuDataConvertor[convertorList.length];
-        convertors = loadConvertors(this, convertors, convertorList);
+        this.units = units;
+//        convertors = new EcuDataConvertor[convertorList.length];
+//        convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {
@@ -56,11 +59,15 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
         return data;
     }
 
+    public String getUnits() {
+        return units;
+    }
+
     public void setData(double data) {
         this.data = data;
     }
 
 	public EcuDataConvertor[] getConvertors() {
-		return convertors;
-	}
+		EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, "x", "0.00")};
+		return convertors;	}
 }

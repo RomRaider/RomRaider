@@ -20,33 +20,26 @@
 package com.romraider.logger.external.innovate.lm2.mts.plugin;
 
 public enum Lm2SensorType {
-	//<sensor#>(function, channel)
-    WIDEBAND0(0, 0),
-    THERMALCOUPLE1(9, 1),
-    THERMALCOUPLE2(9, 2),
-    THERMALCOUPLE3(9, 3),
-    THERMALCOUPLE4(9, 4);
+	//SENSOR_NAME(InputNumber)
+    LC_1_0(0),
+    TC_4_1(17),
+    TC_4_2(18),
+    TC_4_3(19),
+    TC_4_4(20);
 
-    private final int value;
-    private final int channel;
+    private final int inputNumber;
 
-    private Lm2SensorType(int value, int channel) {
-        this.value = value;
-        this.channel = channel;
+    private Lm2SensorType(int inputNumber) {
+        this.inputNumber = inputNumber;
     }
 
-    public int getValue() {
-        return value;
+    public int getInputNumber() {
+        return inputNumber;
     }
 
-    public int getChannel() {
-        return channel;
-    }
-
-    public static Lm2SensorType valueOf(int value, int channel) {
+   public static Lm2SensorType valueOf(int inputNumber) {
         for (Lm2SensorType type : values()) {
-            	if (type.getValue() == value &&
-            		type.getChannel() == channel)
+            	if (type.getInputNumber() == inputNumber)
             			return type;
         }
         return null;

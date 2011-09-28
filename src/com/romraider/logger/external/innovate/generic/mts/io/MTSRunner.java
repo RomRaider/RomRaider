@@ -30,17 +30,18 @@ import org.apache.log4j.Logger;
 
 import com.romraider.logger.external.core.Stoppable;
 import com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2MtsDataItem;
-import com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2SensorType;
 
 public final class MTSRunner implements Stoppable {
     private static final Logger LOGGER = getLogger(MTSRunner.class);
-    private final Map<Lm2SensorType, Lm2MtsDataItem> dataItems;
+    private final Map<Integer, Lm2MtsDataItem> dataItems;
     private final MTS mts;
     private boolean running;
     private boolean stop;
 
-    public MTSRunner(int mtsPort, Map<Lm2SensorType, Lm2MtsDataItem> dataItems) {
-        this.mts = mts(mtsPort);
+    public MTSRunner(int mtsPort, Map<Integer, Lm2MtsDataItem> dataItems) {
+//        this.mts = mts(mtsPort);
+    	MTSConnector connection = new MTSConnector(mtsPort);
+    	this.mts = connection.getMts();
         this.dataItems = dataItems;
     }
 
@@ -63,31 +64,32 @@ public final class MTSRunner implements Stoppable {
         while (running && currentTimeMillis() < timeout) sleep(100L);
     }
 
-    private MTS mts(int mtsPort) {
-        // bail out early if we know specified mts port is invalid
-        if (mtsPort < 0) throw new IllegalArgumentException("Bad MTS port: " + mtsPort);
-
-        // create mts interface
-        MTS mts = createMTS();
-
-        try {
-            // check there are ports available
-            int portCount = mts.portCount();
-            if (portCount <= 0) throw new IllegalStateException("No MTS ports found");
-            LOGGER.info("MTS: found " + portCount + " ports.");
-
-            // select the specified port
-            mts.currentPort(mtsPort);
-            String portName = mts.portName();
-            LOGGER.info("MTS: current port [" + mtsPort + "]: " + portName);
-
-            return mts;
-        } catch (RuntimeException t) {
-            // cleanup mts and rethrow exception
-            if (mts != null) mts.dispose();
-            throw t;
-        }
-    }
+//    private MTS mts(int mtsPort) {
+//        // bail out early if we know specified mts port is invalid
+//        if (mtsPort < 0) throw new IllegalArgumentException("Bad MTS port: " + mtsPort);
+//
+//        // create mts interface
+//        MTS mts = createMTS();
+//        mts.disconnect();
+//
+//        try {
+//            // check there are ports available
+//            int portCount = mts.portCount();
+//            if (portCount <= 0) throw new IllegalStateException("No MTS ports found");
+//            //LOGGER.info("MTS: found " + portCount + " ports.");
+//
+//            // select the specified port
+//            mts.currentPort(mtsPort);
+//            String portName = mts.portName();
+//            //LOGGER.info("MTS: current port [" + mtsPort + "]: " + portName);
+//
+//            return mts;
+//        } catch (RuntimeException t) {
+//            // cleanup mts and rethrow exception
+//            if (mts != null) mts.dispose();
+//            throw t;
+//        }
+//    }
 
     private void doRun() {
         try {
@@ -97,13 +99,13 @@ public final class MTSRunner implements Stoppable {
             try {
             	// get a count of available inputs
             	int inputCount = mts.inputCount();
-            	LOGGER.info("MTS: found " + inputCount + " inputs.");
+            	//LOGGER.info("MTS: found " + inputCount + " inputs.");
 
             	if (inputCount > 0) {
                 	for (int i = 0; i < inputCount; i++) {
                         // report each input found
                         mts.currentInput(i);
-                		LOGGER.info(String.format(
+                		LOGGER.debug(String.format(
                 			"MTS: InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f, MinVolts: %f, MaxVolts: %f",
                 			i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue(), mts.inputMinVolt(), mts.inputMaxVolt()));
                 	}
@@ -118,7 +120,7 @@ public final class MTSRunner implements Stoppable {
 		                    int function = mts.inputFunction();
 		                    int sample = mts.inputSample();
 		
-		                    LOGGER.trace("MTS: type = " + type + ", function = " + function + ", sample = " + sample);
+		                    LOGGER.trace("MTS input: " + i + ", type = " + type + ", function = " + function + ", sample = " + sample);
 		
 		                    float data = 0f;
 	
@@ -136,7 +138,12 @@ public final class MTSRunner implements Stoppable {
 		                        if (function == 9) {
 		                            float min = mts.inputMinValue();
 		                            float max = mts.inputMaxValue();
-		                            data = ((max - min) * ((float) sample / 1024f)) + min;
+		                            float range = max - min;
+		                            data = (((float) sample / 1024f) * range) + min;
+		                            if (mts.inputDeviceChannel() == -1)
+		                        		LOGGER.debug(String.format(
+	                            			"MTS: InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f, MinVolts: %f, MaxVolts: %f, Function: %d, data: %f",
+	                            			i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue(), mts.inputMinVolt(), mts.inputMaxVolt(), mts.inputFunction(), data));
 		                        }
 		                    }
 		
@@ -144,20 +151,28 @@ public final class MTSRunner implements Stoppable {
 		                    // Take each sample step as .001 Lambda,
 		                    // add 0.5 (so our range is 0.5 to 1.523 for our 1024 steps),
 		                    // then multiply by the AFR multiplier
-		                    if (type == 0 || type == 1) {
+		                    if (type == 1) {
 		                        // MTS_FUNC_LAMBDA
 		                        if (function == 0) {
-		                            //float multiplier = mts.inputAFRMultiplier();
-		                            //data = ((float) sample / 1000f + 0.5f) * multiplier;
-		                            data = ((float) sample / 1000f + 0.5f);
+		                            float multiplier = mts.inputAFRMultiplier();
+		                            data = ((float) sample / 1000f + 0.5f) * multiplier;
 		                        }
 		                        // MTS_FUNC_O2
 		                        if (function == 1) {
 		                            data = ((float) sample / 10f);
 		                        }
 		                    }
-	                        Lm2SensorType sensor = Lm2SensorType.valueOf(function, mts.inputDeviceChannel());
-	                        Lm2MtsDataItem dataItem = dataItems.get(sensor);
+
+		                    // Lambda
+		                    // Identical to AFR, except we do not multiply for AFR.
+		                    if (type == 0) {
+		                        // MTS_FUNC_LAMBDA
+		                        if (function == 0) {
+		                            data = (float) sample / 1000f + 0.5f;
+		                        }
+		                    }
+		                    // set data for this sensor based on inputNumber
+	                        Lm2MtsDataItem dataItem = dataItems.get(i);
 	                        if (dataItem != null) dataItem.setData(data);
 		                }
 	                    sleep(10L);
