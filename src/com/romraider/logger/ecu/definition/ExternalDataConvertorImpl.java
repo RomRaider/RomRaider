@@ -19,38 +19,33 @@
 
 package com.romraider.logger.ecu.definition;
 
-import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMaxMin;
 import static com.romraider.util.JEPUtil.evaluate;
-import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
-import com.romraider.logger.external.core.ExternalDataItem;
 
 import java.text.DecimalFormat;
+
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
+import com.romraider.logger.external.core.ExternalDataItem;
 
 public final class ExternalDataConvertorImpl implements EcuDataConvertor {
     private final String units;
     private final String expression;
-    private final GaugeMinMax gaugeMinMax = new GaugeMinMax(0,0,0);
+    private final GaugeMinMax gaugeMinMax;
 	private final ExternalDataItem dataItem; 
     private DecimalFormat format;
     
-//    <conversion units="psi" expr="x*37/255" format="0.00" gauge_min="-20" gauge_max="40" gauge_step="5" />
-//    <conversion units="kPa" expr="x*37/255/14.50377*100" format="0" gauge_min="-120" gauge_max="280" gauge_step="40" />
-//    <conversion units="hPa" expr="x*37/255/14.50377*1000" format="0" gauge_min="-1200" gauge_max="2800" gauge_step="400" />
-//    <conversion units="bar" expr="x*37/255/14.50377" format="0.000" gauge_min="-1.2" gauge_max="2.8" gauge_step="0.4" />
-	
 	public ExternalDataConvertorImpl(ExternalDataItem dataItem, String units, String expression,
-									 String format
-//									 GaugeMinMax gaugeMinMax
+									 String format,
+									 GaugeMinMax gaugeMinMax
 									 ) {
 		this.dataItem = dataItem;
 		this.units = units;
 		this.expression = expression;
 		this.format = new DecimalFormat(format);
+		this.gaugeMinMax = gaugeMinMax;
 	}
 
     public double convert(byte[] bytes) {
         double value = dataItem.getData();
-//    	int value = asUnsignedInt(bytes);
         double result = evaluate(expression, value);
         return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
     }
@@ -64,7 +59,7 @@ public final class ExternalDataConvertorImpl implements EcuDataConvertor {
     }
 
     public GaugeMinMax getGaugeMinMax() {
-        return getMaxMin(getUnits());
+        return gaugeMinMax;
     }
 
     public String getFormat() {

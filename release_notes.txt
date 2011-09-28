@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.3 Beta RC10 -
+                    - RomRaider 0.5.4 Beta RC1 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -7,7 +7,7 @@ A NEW VERSION OF ROMRAIDER. IMPORTANT NOTICES, KNOWN ISSUES AND
 NEW FEATURES WILL BE DISCUSSED.
 
 RomRaider is a full featured Engine Control Unit editing application
-for tuning virtually any manufacturer, meant to be used in conjuction
+for tuning virtually any manufacturer, meant to be used in conjunction
 with ECU flash and dump utilities. RomRaider will give you full
 control over timing, fuel, boost and many other parameters in your
 ECU, competing with very expensive and proprietary software. RomRaider
@@ -33,29 +33,28 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 
--------------------------------
-- 0.5.3b RC11 Notes (??/??/????) -
--------------------------------
+---------------------------------
+- 0.5.4b RC1 Notes (??/??/????) -
+---------------------------------
 This is the eleventh beta release of the upcoming official 0.5.3b release.
 
 ---------------------------
-- 0.5.3b RC11 Known Issues -
+- 0.5.4b RC1 Known Issues -
 ---------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
 - Logger
-  - Gauge min/max/step limits incomplete (logger.xml)
+  - Gauge min/max/step limits incomplete in logger.xml and External plug-ins
   - ECU connections under Linux are flaky (start the logger after
       you've started the engine)
   - Update latency via injector tab broken for some models (eg. 2007 2.5i)
-  - LM-2 MTS support incomplete
 
 
 --------------
 - Change Log -
 --------------
 
-0.5.3b RC11 (??/??/????)
+0.5.4b RC1 (??/??/????)
 -----------------------
 
 --- Logger ---
@@ -65,14 +64,22 @@ This is the eleventh beta release of the upcoming official 0.5.3b release.
 - Added support for sorting the Selected? & Description parameter list entries.
 - Added support for convertors on External data items (F/C, lambda/AFR, etc.)
 - Added all defined PLX Sensors according to their documentation
- 
+- Added more Innovate MTS LM-2 support for additional sensors.  Sensors are now
+  loaded dynamically when the Logger starts.  Sensor units are set via LogWorks.
+- Updated library COM4J to version: com4j-20110322. This affects Innovate MTS
+  and Tactrix Openport 2.0 support.
+--- Editor ---
+- Fixed JInternalFrame.isPalette in TableFarme so table titles are visible on
+  Mac OS.
+  
+
 0.5.3b RC10 (09/12/2011)
------------------------
+------------------------
 
 --- Editor ---
 - Added support for multiple-state switches.  Switch Tables will now use
   Radio Buttons rather than a Checkbox.
-- Added ECU defintion data validation for Switch Tables.  If the ROM image data
+- Added ECU definition data validation for Switch Tables.  If the ROM image data
   does not match one of the switch states according to the definition then a
   warning is presented and the table is locked from editing.
 - Added ROM Checksum validation on image open for 32 bit ROMs.  An ERROR message

@@ -16,7 +16,8 @@ public class ExternalDataConvertorLoader {
         			dataItem,
         			convertor.units(),
         			convertor.expression(),
-        			convertor.format()
+        			convertor.format(),
+        			convertor.gaugeMinMax()
         	);
         	i++;
         }

@@ -44,6 +44,7 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
 
     private String[] getPorts() {
         MTS mts = createMTS();
+        mts.disconnect();
         try {
             int portCount = mts.portCount();
             String[] result = new String[portCount];

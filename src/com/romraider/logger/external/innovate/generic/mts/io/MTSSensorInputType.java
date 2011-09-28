@@ -17,29 +17,30 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.innovate.lm2.mts.plugin;
+package com.romraider.logger.external.innovate.generic.mts.io;
 
-public enum Lm2SensorType {
-	//SENSOR_NAME(InputNumber)
-    LC_1_0(0),
-    TC_4_1(17),
-    TC_4_2(18),
-    TC_4_3(19),
-    TC_4_4(20);
+public enum MTSSensorInputType {
+    MTS_TYPE_LAMBDA(0),
+    MTS_TYPE_AFR(1),
+    MTS_TYPE_VDC(2);
 
-    private final int inputNumber;
+    private final int inputType;
 
-    private Lm2SensorType(int inputNumber) {
-        this.inputNumber = inputNumber;
+    private MTSSensorInputType(int inputType) {
+        this.inputType = inputType;
     }
 
-    public int getInputNumber() {
-        return inputNumber;
+    /**
+     * MTSSensorInputType contains the values associated with the various
+     * types of sensors reported to be in the MTS stream.
+     */
+    public int getType() {
+        return inputType;
     }
 
-   public static Lm2SensorType valueOf(int inputNumber) {
-        for (Lm2SensorType type : values()) {
-            	if (type.getInputNumber() == inputNumber)
+   public static MTSSensorInputType valueOf(int inputType) {
+        for (MTSSensorInputType type : values()) {
+            	if (type.getType() == inputType)
             			return type;
         }
         return null;

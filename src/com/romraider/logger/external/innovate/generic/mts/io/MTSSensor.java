@@ -17,9 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.innovate.lm2.mts.plugin;
+package com.romraider.logger.external.innovate.generic.mts.io;
 
-public class Lm2Sensor {
+public class MTSSensor {
     private int inputNumber = 0;
     private String inputName = "";
     private String deviceName = "";
@@ -28,7 +28,12 @@ public class Lm2Sensor {
     private float minValue = 0f;
     private float maxValue = 0f;
 
-    public Lm2Sensor() {
+    /**
+     * MTSSensor contains all the relevant information about a sensor as
+     * reported from information gathered from the MTS stream.  A MTSSensor is
+     * created for each input found in the MTS stream.
+     */
+    public MTSSensor() {
     }
 
     public int getInputNumber() {

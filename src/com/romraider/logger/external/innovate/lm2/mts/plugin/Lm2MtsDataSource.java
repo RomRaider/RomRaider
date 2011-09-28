@@ -37,27 +37,44 @@ import org.apache.log4j.Logger;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
+import com.romraider.logger.external.innovate.generic.mts.io.MTSSensor;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSConnector;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSRunner;
+
 
 public final class Lm2MtsDataSource implements ExternalDataSource {
     private static final Logger LOGGER = getLogger(Lm2MtsDataSource.class);
     private final Map<Integer, Lm2MtsDataItem> dataItems = new HashMap<Integer, Lm2MtsDataItem>();
     private MTSRunner runner;
-    private int mtsPort = 0;
+    private int mtsPort = -1;
 
+    /**
+     * The Lm2MtsDataSource class is called when the Logger starts up and the 
+     * call to load the external plug-ins is made.  The class with its helpers
+     * will open the MTS SDK and find all available ports.  It will interrogate
+     * the ports for available streams then dynamically build a list of sensors
+     * reported in the MTS streams.  If there is more than one MTS stream, only
+     * one stream can be processed.
+     */
     {
-    	MTSConnector mts = new MTSConnector(mtsPort);
-    	Set<Lm2Sensor> sensors = mts.getSensors();
-    	dataItems.put(0, new Lm2MtsDataItem("LM-2", 0, "AFR")); // a default entry
-    	for (Lm2Sensor sensor : sensors) {
-    		dataItems.put(sensor.getInputNumber(), new Lm2MtsDataItem(sensor.getDeviceName(), sensor.getDeviceChannel(), sensor.getUnits()));
+    	final MTSConnector connector = new MTSConnector();
+    	int[] ports = connector.getMtsPorts();
+    	for (int i = 0; i < ports.length; i++) {
+    		connector.usePort(i);
+	    	Set<MTSSensor> sensors = connector.getSensors();
+	    	dataItems.put(0, new Lm2MtsDataItem("LM-2", 0, "AFR", 20, 9)); // a default entry
+	    	for (MTSSensor sensor : sensors) {
+	    		dataItems.put(
+    				sensor.getInputNumber(),
+    				new Lm2MtsDataItem(
+						sensor.getDeviceName(),
+						sensor.getDeviceChannel(),
+						sensor.getUnits(),
+						sensor.getMinValue(),
+						sensor.getMaxValue()
+    				));
+	    	}
     	}
-//        dataItems.put(LC_1_0, new Lm2MtsDataItem("LM-2", 0, LAMBDA, AFR_147, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-//        dataItems.put(TC_4_1, new Lm2MtsDataItem("TC-4", 1, DEG_F));
-//        dataItems.put(TC_4_2, new Lm2MtsDataItem("TC-4", 2, DEG_C));
-//        dataItems.put(TC_4_3, new Lm2MtsDataItem("TC-4", 3, DEG_C));
-//        dataItems.put(TC_4_4, new Lm2MtsDataItem("TC-4", 4, DEG_C));
     }
 
     public String getId() {
@@ -101,7 +118,7 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
         try {
             return parseInt(port);
         } catch (Exception e) {
-            LOGGER.warn("Bad MTS port: " + port);
+            LOGGER.warn("Bad Innovate MTS port: " + port);
             return -1;
         }
     }

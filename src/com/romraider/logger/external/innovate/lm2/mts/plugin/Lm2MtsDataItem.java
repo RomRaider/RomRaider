@@ -19,28 +19,32 @@
 
 package com.romraider.logger.external.innovate.lm2.mts.plugin;
 
-import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
-
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
-import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
-    //private EcuDataConvertor[] convertors;
     private final String name;
+    private final GaugeMinMax gaugeMinMax;
     private int channel;
     private double data;
     private String units;
 
-    public Lm2MtsDataItem(String name, int channel, String units) {
+    public Lm2MtsDataItem(String name, int channel, String units, float minValue, float maxValue) {
     	super();
         this.name = name;
         this.channel = channel;
         this.units = units;
-//        convertors = new EcuDataConvertor[convertorList.length];
-//        convertors = loadConvertors(this, convertors, convertorList);
+        float step = (Math.abs(maxValue) + Math.abs(minValue)) / 10f;
+        if (step > 0.5f) {
+        	step = (float) Math.round(step);
+        }
+        else {
+        	step = 0.5f;
+        }
+        gaugeMinMax = new GaugeMinMax(minValue, maxValue, step);
     }
 
     public String getName() {
@@ -48,7 +52,7 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
     }
 
     public String getDescription() {
-        return "Innovate MTS " + name + " CH" +channel + " data";
+        return "Innovate MTS " + name + " CH" + channel + " data";
     }
 
     public int getChannel() {
@@ -68,6 +72,13 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
     }
 
 	public EcuDataConvertor[] getConvertors() {
-		EcuDataConvertor[] convertors = {new ExternalDataConvertorImpl(this, units, "x", "0.00")};
-		return convertors;	}
+		EcuDataConvertor[] convertors = {
+				new ExternalDataConvertorImpl(
+						this,
+						units,
+						"x",
+						"0.##",
+						gaugeMinMax)};
+		return convertors;
+	}
 }

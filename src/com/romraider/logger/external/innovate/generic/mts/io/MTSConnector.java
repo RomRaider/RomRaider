@@ -27,40 +27,81 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2Sensor;
 
 public final class MTSConnector {
     private static final Logger LOGGER = getLogger(MTSConnector.class);
-    private final MTS mts;
+    private MTS mts;
+    private int[] ports;
+    {
+    	createMts();
+    }
+    
+    /**
+     * MTS Connector is a set of methods to create the MTS connection,
+     * retrieve a set of available ports and the sensor inputs available
+     * across all the found ports.
+     */
+    public MTSConnector() {
+        setMtsPorts();
+    }
 
     public MTSConnector(int mtsPort) {
-        this.mts = mts(mtsPort);
+        if (mtsPort != -1) mts(mtsPort);
     }
 
     public MTS getMts() {
     	return mts;
     }
     
-    private MTS mts(int mtsPort) {
-        // bail out early if we know specified mts port is invalid
-        if (mtsPort < 0) throw new IllegalArgumentException("Bad MTS port: " + mtsPort);
+    public int[] getMtsPorts() {
+    	return ports;
+    }
+    
+    public void usePort(int mtsPort) {
+    	mts(mtsPort);
+    }
 
-        // create mts interface
-        MTS mts = createMTS();
-        mts.disconnect();
+    private void createMts() {
+      // create mts interface
+      this.mts = createMTS();
+      mts.disconnect();
+    }
+
+    private void setMtsPorts() {
 
         try {
             // check there are ports available
             int portCount = mts.portCount();
-            if (portCount <= 0) throw new IllegalStateException("No MTS ports found");
-            LOGGER.info("MTS: found " + portCount + " ports.");
+            if (portCount <= 0) throw new IllegalStateException("No Innovate MTS ports found");
+            ports = new int[portCount];
+            String names = "";
+            for (int i = 0; i < portCount; i++) {
+            	ports[i] = i;
+            	mts.currentPort(i);
+                names = names + " " + mts.portName();
+            }
+        	LOGGER.info("Innovate MTS: found " + portCount + " ports," + names);
+        }
+        catch (RuntimeException t) {
+            // cleanup mts and rethrow exception
+            if (mts != null) mts.dispose();
+            throw t;
+        }
+    }
+    
+    public void mts(int mtsPort) {
+        // bail out early if we know specified mts port is invalid
+        if (mtsPort < 0) throw new IllegalArgumentException("Bad Innovate MTS port: " + mtsPort);
 
+        try {
+            int portCount = mts.portCount();
+            if (portCount <= 0) throw new IllegalStateException("No Innovate MTS ports found");
+        	
             // select the specified port
             mts.currentPort(mtsPort);
             String portName = mts.portName();
-            LOGGER.info("MTS: current port [" + mtsPort + "]: " + portName);
+            LOGGER.info("Innovate MTS: current port [" + mtsPort + "]: " + portName);
 
-            return mts;
         } catch (RuntimeException t) {
             // cleanup mts and rethrow exception
             if (mts != null) mts.dispose();
@@ -68,8 +109,8 @@ public final class MTSConnector {
         }
     }
 
-    public Set<Lm2Sensor> getSensors() {
-    	Set<Lm2Sensor> sensors = new HashSet<Lm2Sensor>();
+    public Set<MTSSensor> getSensors() {
+    	Set<MTSSensor> sensors = new HashSet<MTSSensor>();
         try {
             // attempt to connect to the specified device
             mts.connect();
@@ -77,13 +118,13 @@ public final class MTSConnector {
             try {
             	// get a count of available inputs
             	int inputCount = mts.inputCount();
-            	LOGGER.info("MTS: found " + inputCount + " inputs.");
+            	LOGGER.info("Innovate MTS: found " + inputCount + " inputs.");
 
             	if (inputCount > 0) {
                 	for (int i = 0; i < inputCount; i++) {
                         // report each input found
                         mts.currentInput(i);
-                        Lm2Sensor sensor = new Lm2Sensor();
+                        MTSSensor sensor = new MTSSensor();
                         sensor.setInputNumber(i);
                         sensor.setInputName(mts.inputName());
                         sensor.setDeviceName(mts.inputDeviceName());
@@ -93,18 +134,19 @@ public final class MTSConnector {
                         sensor.setMaxValue(mts.inputMaxValue());
                         sensors.add(sensor);
                 		LOGGER.debug(String.format(
-                			"MTS: InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f",
+                			"Innovate MTS: InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f",
                 			i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue()));
                 	}
             	}
             	else {
-                    LOGGER.error("MTS: Error - no input channels found to log from!");
+                    LOGGER.error("Innovate MTS: Error - no input channels found to log from!");
             	}
-            } finally {
+            }
+            finally {
                 mts.disconnect();
             }
-        } finally {
-            mts.dispose();
+        }
+        finally {
         }
     	return sensors;
     }
