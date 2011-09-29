@@ -77,7 +77,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -110,14 +109,12 @@ import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.reset.ResetManager;
 import com.romraider.logger.ecu.comms.reset.ResetManagerImpl;
-import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.EcuDataLoader;
 import com.romraider.logger.ecu.definition.EcuDataLoaderImpl;
 import com.romraider.logger.ecu.definition.EcuDefinition;
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
-import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.exception.ConfigurationException;
@@ -199,6 +196,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 		 										 "1st WOT","2nd WOT","3rd WOT",
     											 "4th WOT","5th WOT","6th WOT",
     											 "cruising"};
+    private static final String TOGGLE_LIST_TT_TEXT = "Hides the parameter list and saves the state on exit (F11)";
+    private static final String UNSELECT_ALL_TT_TEXT = "Un-select all selected parameters/switches on all tabs! (F9)";
     private static final byte ECU_ID = (byte) 0x10;
     private static final byte TCU_ID = (byte) 0x18;
     private static String target = "ECU";
@@ -737,9 +736,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private JComponent buildTabbedPane() {
-        addSplitPaneTab("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel, dataTabExternalListTableModel), buildDataTab()));
-        addSplitPaneTab("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()));
-        addSplitPaneTab("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()), buildToggleGaugeStyleButton());
+        addSplitPaneTab("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel, dataTabExternalListTableModel), buildDataTab()), buildUnselectAllButton());
+        addSplitPaneTab("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()), buildUnselectAllButton());
+        addSplitPaneTab("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()), buildUnselectAllButton(), buildToggleGaugeStyleButton());
         tabbedPane.add("MAF", mafTab.getPanel());
         tabbedPane.add("Injector", injectorTab.getPanel());
         tabbedPane.add("Dyno", dynoTab.getPanel());
@@ -769,8 +768,51 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return button;
     }
 
+    private void clearAllSelectedParameters(ParameterListTableModel paramListTableModel) {
+        List<ParameterRow> rows = paramListTableModel.getParameterRows();
+        for (ParameterRow row : rows) {
+            LoggerData loggerData = row.getLoggerData();
+            if (loggerData.isSelected() && row.isSelected()) {
+                paramListTableModel.selectParam(loggerData, false);
+            }
+        }
+    }
+
+    private JButton buildUnselectAllButton() {
+        final JButton button = new JButton();
+        VerticalTextIcon textIcon = new VerticalTextIcon(button, "Un-select ALL", ROTATE_LEFT);
+        button.setToolTipText(UNSELECT_ALL_TT_TEXT);
+        button.setIcon(textIcon);
+        button.setPreferredSize(new Dimension(25, 90));
+        button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F9"), "un-selectAll");
+        button.getActionMap().put("un-selectAll", new AbstractAction() {
+            private static final long serialVersionUID = 4913964758354638588L;
+
+            public void actionPerformed(ActionEvent e) {
+                button.doClick();
+            }
+        });
+        button.addActionListener(new AbstractAction() {
+            private static final long serialVersionUID = 723232894767995265L;
+
+            public void actionPerformed(ActionEvent e) {
+            	clearAllSelectedParameters(dataTabParamListTableModel);
+            	clearAllSelectedParameters(dataTabSwitchListTableModel);
+            	clearAllSelectedParameters(dataTabExternalListTableModel);
+            	clearAllSelectedParameters(graphTabParamListTableModel);
+            	clearAllSelectedParameters(graphTabSwitchListTableModel);
+            	clearAllSelectedParameters(graphTabExternalListTableModel);
+            	clearAllSelectedParameters(dashboardTabParamListTableModel);
+            	clearAllSelectedParameters(dashboardTabSwitchListTableModel);
+            	clearAllSelectedParameters(dashboardTabExternalListTableModel);
+            }
+        });
+        return button;
+    }
+
     private void addSplitPaneTab(String name, final JSplitPane splitPane, JComponent... extraControls) {
         final JToggleButton toggleListButton = new JToggleButton();
+        toggleListButton.setToolTipText(TOGGLE_LIST_TT_TEXT);
         toggleListButton.setSelected(true);
         VerticalTextIcon textIcon = new VerticalTextIcon(toggleListButton, "Parameter List", ROTATE_LEFT);
         toggleListButton.setIcon(textIcon);
