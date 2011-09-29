@@ -62,7 +62,9 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
     	for (int i = 0; i < ports.length; i++) {
     		connector.usePort(i);
 	    	Set<MTSSensor> sensors = connector.getSensors();
-	    	dataItems.put(0, new Lm2MtsDataItem("LM-2", 0, "AFR", 20, 9)); // a default entry
+	    	if (sensors.isEmpty())
+	    		continue;
+	    	dataItems.put(0, new Lm2MtsDataItem("LM-2", 0, "AFR", 9, 20)); // a default entry
 	    	for (MTSSensor sensor : sensors) {
 	    		dataItems.put(
     				sensor.getInputNumber(),

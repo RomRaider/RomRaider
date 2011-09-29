@@ -24,7 +24,7 @@ import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public enum SensorConversionsLambda implements ExternalSensorConversions {
 	// AFR conversion assumes reported DATA value is Lambda
-	LAMBDA	("Lambda", "x", "0.00", new GaugeMinMax(0.6,1.4,0.08)),
+	LAMBDA	("Lambda", "x", "0.00", new GaugeMinMax(0.6,1.4,0.1)),
 	AFR_147	("AFR Gasoline", "x*14.7", "0.00", new GaugeMinMax(9,20,1)),// gasoline
 	AFR_90	("AFR Ethonal", "x*9.0", "0.00", new GaugeMinMax(5,12,1)),  // ethanol
 	AFR_146	("AFR Diesel", "x*14.6", "0.00", new GaugeMinMax(9,20,1)),  // diesel

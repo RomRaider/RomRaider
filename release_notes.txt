@@ -66,10 +66,13 @@ This is the eleventh beta release of the upcoming official 0.5.3b release.
 - Added all defined PLX Sensors according to their documentation
 - Added more Innovate MTS LM-2 support for additional sensors.  Sensors are now
   loaded dynamically when the Logger starts.  Sensor units are set via LogWorks.
+  Wideband errors are reported as the negative value of the error number.  For
+  example, if an LC-1 is in need of calibration -3 will be reported to the Logger.
+  See MTSSensorInputFunction.java for more state values.
 - Updated library COM4J to version: com4j-20110322. This affects Innovate MTS
   and Tactrix Openport 2.0 support.
 --- Editor ---
-- Fixed JInternalFrame.isPalette in TableFarme so table titles are visible on
+- Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.
   
 
