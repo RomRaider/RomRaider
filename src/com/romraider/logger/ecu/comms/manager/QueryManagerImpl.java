@@ -188,9 +188,9 @@ public final class QueryManagerImpl implements QueryManager {
         int count = 0;
         try {
             txManager.start();
-            boolean lastPollState = settings.getFastPoll();
+            boolean lastPollState = settings.isFastPoll();
             while (!stop) {
-            	pollState.setFastPoll(settings.getFastPoll());
+            	pollState.setFastPoll(settings.isFastPoll());
                 updateQueryList();
                 if (queryMap.isEmpty()) {
                 	if (pollState.isLastQuery()) endEcuQueries(txManager);

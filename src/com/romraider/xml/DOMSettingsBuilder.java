@@ -237,7 +237,7 @@ public final class DOMSettingsBuilder {
         serial.setAttribute("port", settings.getLoggerPortDefault());
         serial.setAttribute("refresh", String.valueOf(settings.getRefreshMode()));
         serial.setAttribute("ecuid", String.valueOf(settings.getDestinationId()));
-        serial.setAttribute("fastpoll", String.valueOf(settings.getFastPoll()));
+        serial.setAttribute("fastpoll", String.valueOf(settings.isFastPoll()));
         loggerSettings.appendChild(serial);
 
         // window maximized

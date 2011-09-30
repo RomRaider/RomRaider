@@ -472,7 +472,7 @@ public class Settings implements Serializable {
     	this.fastPoll = state;
 	}
 
-	public boolean getFastPoll() {
+	public boolean isFastPoll() {
 		return fastPoll;
 	}
 

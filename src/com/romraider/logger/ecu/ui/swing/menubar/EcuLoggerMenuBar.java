@@ -23,6 +23,7 @@ import static com.romraider.Version.PRODUCT_NAME;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.ui.swing.menubar.action.DisconnectAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ExitAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.FastPollModeAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileAbsoluteTimestampAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileControllerSwitchAction;
@@ -48,6 +49,7 @@ import static java.awt.event.KeyEvent.VK_F;
 import static java.awt.event.KeyEvent.VK_F7;
 import static java.awt.event.KeyEvent.VK_H;
 import static java.awt.event.KeyEvent.VK_L;
+import static java.awt.event.KeyEvent.VK_M;
 import static java.awt.event.KeyEvent.VK_O;
 import static java.awt.event.KeyEvent.VK_P;
 import static java.awt.event.KeyEvent.VK_R;
@@ -84,6 +86,9 @@ public class EcuLoggerMenuBar extends JMenuBar {
         settingsMenu.add(new MenuItem("Log File Output Location...", new LogFileLocationAction(logger), VK_O, getKeyStroke(VK_O, CTRL_MASK)));
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Control File Logging With Defogger Switch", VK_C, getKeyStroke(VK_C, CTRL_MASK), new LogFileControllerSwitchAction(logger), logger.getSettings().isFileLoggingControllerSwitchActive()));
+        RadioButtonMenuItem fastPoll = new RadioButtonMenuItem("Fast polling mode", VK_M, getKeyStroke(VK_M, CTRL_MASK), new FastPollModeAction(logger), logger.getSettings().isFastPoll());
+        fastPoll.setToolTipText("Select to enable faster polling of the ECU");
+        settingsMenu.add(fastPoll);
         settingsMenu.add(new RadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));
         add(settingsMenu);
 

@@ -72,7 +72,9 @@ This is the eleventh beta release of the upcoming official 0.5.3b release.
 - Updated library COM4J to version: com4j-20110322. This affects Innovate MTS
   and Tactrix Openport 2.0 support.
 - Added a button to un-select all selected parameters on all tabs.  Selections
-  can be restored by reloading the current profile or loading a different profile. 
+  can be restored by reloading the current profile or loading a different profile.
+- Moved the Fast Poll checkbox to a selection item in the Settings menu, selected
+  by default.
 --- Editor ---
 - Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.

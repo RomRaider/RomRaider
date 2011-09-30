@@ -53,6 +53,7 @@ import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.SwingConstants.BOTTOM;
 import static javax.swing.SwingConstants.RIGHT;
+import static javax.swing.SwingConstants.VERTICAL;
 import static javax.swing.SwingUtilities.invokeLater;
 
 import java.awt.AWTException;
@@ -91,6 +92,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -191,7 +193,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String FILE_NAME_EXTENTION = "Right-click to select or type text to add to the saved logfile name.";
     private static final String ECU_TEXT = "Engine Control Unit Polling";
     private static final String TCU_TEXT = "Transmission Control Unit Polling";
-    private static final String[] logFileText = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
+    private static final String[] LOG_FILE_TEXT = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
     											 "4th PT","5th PT","6th PT",
 		 										 "1st WOT","2nd WOT","3rd WOT",
     											 "4th WOT","5th WOT","6th WOT",
@@ -213,7 +215,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JTabbedPane tabbedPane;
     private SerialPortComboBox portsComboBox;
     private JCheckBox portRefresh;
-    private JCheckBox fastPoll;
     private DataUpdateHandlerManager dataHandlerManager;
     private DataRegistrationBroker dataTabBroker;
     private ParameterListTableModel dataTabParamListTableModel;
@@ -993,7 +994,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
           });
         fileNamePopup.add(ecuIdItem);
-        for (final String item : logFileText) {
+        for (final String item : LOG_FILE_TEXT) {
             ecuIdItem = new JMenuItem(item);
             if (item.endsWith("PT"))  ecuIdItem.setToolTipText("Part Throttle");
             if (item.endsWith("WOT")) ecuIdItem.setToolTipText("Wide Open Throttle");
@@ -1096,16 +1097,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(ecuCheckBox);
         comboBoxPanel.add(tcuCheckBox);
 
-        fastPoll = new JCheckBox("Fast Poll");
-        fastPoll.setToolTipText("Check to enable faster polling of the ECU");
-        fastPoll.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-            	setFastPoll(fastPoll.isSelected());
-            }
-        });
-        fastPoll.setSelected(settings.getFastPoll());
-        comboBoxPanel.add(fastPoll);
-
         JButton reconnectButton = new JButton(new ImageIcon("./graphics/logger_restart.png"));
         reconnectButton.setPreferredSize(new Dimension(25, 25));
         reconnectButton.setToolTipText("Reconnect to " + target);
@@ -1133,7 +1124,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         });
         comboBoxPanel.add(reconnectButton);
         comboBoxPanel.add(disconnectButton);
-//        comboBoxPanel.add(new JSeparator(VERTICAL));
+        comboBoxPanel.add(new JSeparator(VERTICAL));
         comboBoxPanel.add(buildLogToFileButton());
         comboBoxPanel.add(buildFileNameExtention());
         return comboBoxPanel;
@@ -1147,10 +1138,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void setTargetTcu() {
     	settings.setDestinationId(TCU_ID);
     	target = "TCU";
-    }
-
-    private void setFastPoll(boolean state) {
-    	settings.setFastPoll(state);
     }
 
     public void restartLogging() {
