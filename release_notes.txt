@@ -36,7 +36,7 @@ documentation may be incomplete or out of date.
 ---------------------------------
 - 0.5.4b RC1 Notes (??/??/????) -
 ---------------------------------
-This is the eleventh beta release of the upcoming official 0.5.3b release.
+This is the first beta release of the upcoming official 0.5.4b release.
 
 ---------------------------
 - 0.5.4b RC1 Known Issues -
@@ -44,7 +44,7 @@ This is the eleventh beta release of the upcoming official 0.5.3b release.
 - Editor
   - Pasting table data can cause hangs under certain circumstances
 - Logger
-  - Gauge min/max/step limits incomplete in logger.xml and External plug-ins
+  - Gauge min/max/step limits incomplete in logger.xml
   - ECU connections under Linux are flaky (start the logger after
       you've started the engine)
   - Update latency via injector tab broken for some models (eg. 2007 2.5i)

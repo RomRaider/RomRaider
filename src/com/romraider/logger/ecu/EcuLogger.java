@@ -1280,6 +1280,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         } finally {
             saveSettings();
             backupCurrentProfile();
+            LOGGER.info("Logger shutdown successful");
         }
     }
 

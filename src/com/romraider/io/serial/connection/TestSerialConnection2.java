@@ -101,6 +101,7 @@ final class TestSerialConnection2 implements SerialConnection {
     }
 
     public void read(byte[] bytes) {
+    	long sleepTime = 200L;
 //    	if (readResponse.length == 0) {
 	        if (isEcuInitRequest()) {
 	        	if (ECU_ID == 0x10){
@@ -134,6 +135,7 @@ final class TestSerialConnection2 implements SerialConnection {
 	            if (pollState.getCurrentState() == 1) {
 	            	readResponse = new byte[response.length];
 	            	System.arraycopy(response, 0, readResponse, 0, response.length);
+	            	sleepTime = 50L;
 	            }
 	            //bytes[0] = readResponse[0];
 	            System.arraycopy(readResponse, 0, bytes, 0, readResponse.length);
@@ -167,7 +169,7 @@ final class TestSerialConnection2 implements SerialConnection {
 	            throw new SerialCommunicationException("*** TEST *** Unsupported request: " + asHex(request));
 	        }
 	        //LOGGER.("*** TEST *** Read bytes  = " + asHex(bytes));
-	        sleep(100);
+	        sleep(sleepTime);
 //    	}
 //    	else {
 //            if (bytes.length != 1) throw new IllegalArgumentException();

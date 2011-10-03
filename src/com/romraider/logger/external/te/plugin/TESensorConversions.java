@@ -19,8 +19,6 @@
 
 package com.romraider.logger.external.te.plugin;
 
-import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getDefault;
-
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
@@ -34,8 +32,8 @@ public enum TESensorConversions implements ExternalSensorConversions {
 	AFR_172	("AFR CNG", "(x/8192+0.5)*17.2", "0.00", new GaugeMinMax(9,20,1)), 	  // CNG
 	AFR_34	("AFR Hydrogen", "(x/8192+0.5)*34", "0.00", new GaugeMinMax(20,46,2.5)),  // Hydrogen
 	VDC		("VDC", "x*0.000610948", "0.00", new GaugeMinMax(0,12,1)),
-	TC		("raw", "x*0.004887586", "0.00", getDefault()),
-	THERM	("raw", "x", "0.00", getDefault()),
+	TC		("raw", "x*0.004887586", "0.00", new GaugeMinMax(0,1000,100)),
+	THERM	("raw", "x", "0.00", new GaugeMinMax(0,1000,100)),
 	RPM_4	("RPM", "60/(x*0.00001)", "0", new GaugeMinMax(0,10000,1000));
 	
 	private final String units;

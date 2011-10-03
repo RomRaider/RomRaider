@@ -333,8 +333,18 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private String buildStatsMessage(long start, int count) {
+    	String state = "Slow:";
+    	if (pollState.isFastPoll()) {
+    		state = "Fast:";
+    	}
         double duration = ((double) (System.currentTimeMillis() - start)) / 1000.0;
-        return "[ " + format.format(((double) count) / duration) + " queries/sec, " + format.format(duration / ((double) count)) + " sec/query ]";
+        String result = String.format(
+        				"%s[ %.2f queries/sec, %.2f sec/query ]",
+        				state,
+        				((double) count) / duration,
+        				duration / ((double) count)
+        				);
+        return result;
     }
 
     private void notifyConnecting() {

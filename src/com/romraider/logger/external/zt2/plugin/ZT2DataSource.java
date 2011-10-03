@@ -25,10 +25,10 @@ import static com.romraider.logger.external.core.ExternalSensorType.MAP;
 import static com.romraider.logger.external.core.ExternalSensorType.TPS;
 import static com.romraider.logger.external.core.ExternalSensorType.USER1;
 import static com.romraider.logger.external.core.ExternalSensorType.WIDEBAND;
-import static com.romraider.logger.external.core.SensorConversionsOther.DEG_C;
-import static com.romraider.logger.external.core.SensorConversionsOther.DEG_C2F;
+import static com.romraider.logger.external.core.SensorConversionsOther.EXHAUST_DEG_C;
+import static com.romraider.logger.external.core.SensorConversionsOther.EXHAUST_DEG_C2F;
 import static com.romraider.logger.external.core.SensorConversionsOther.PERCENT;
-import static com.romraider.logger.external.core.SensorConversionsOther.VOLTS_DC;
+import static com.romraider.logger.external.core.SensorConversionsOther.VOLTS_5DC;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_146;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_147;
 import static com.romraider.logger.external.zt2.plugin.ZT2SensorConversions.AFR_155;
@@ -68,8 +68,8 @@ public final class ZT2DataSource implements ExternalDataSource {
         dataItems.put(TPS, new ZT2DataItemImpl("Throttle Poistion", PERCENT));
         dataItems.put(ENGINE_SPEED, new ZT2DataItemImpl("Engine Speed", RPM));
         dataItems.put(MAP, new ZT2DataItemImpl("MAP", BOOST_PSI, BOOST_BAR, BOOST_KPA, BOOST_KGCM2));
-        dataItems.put(EGT, new ZT2DataItemImpl("EGT", DEG_C, DEG_C2F));
-        dataItems.put(USER1, new ZT2DataItemImpl("User Input", VOLTS_DC));
+        dataItems.put(EGT, new ZT2DataItemImpl("EGT", EXHAUST_DEG_C, EXHAUST_DEG_C2F));
+        dataItems.put(USER1, new ZT2DataItemImpl("User Input", VOLTS_5DC));
     }
 
     public String getId() {

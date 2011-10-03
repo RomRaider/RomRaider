@@ -35,7 +35,7 @@ public enum ZT2SensorConversions implements ExternalSensorConversions {
 	BOOST_PSI	("psi", "x*0.1", "0.00", new GaugeMinMax(-10,30,5)),
 	BOOST_BAR	("bar", "x*0.0068947573", "0.00", new GaugeMinMax(-0.5,4,0.5)),		 // converts from PSI
 	BOOST_KPA	("kPa", "x*0.6894757282", "0.0", new GaugeMinMax(98,120,2)),  		 // converts from PSI
-	BOOST_KGCM2	("kg/cm^2", "x*0.0070306958", "0.00", new GaugeMinMax(-0.5,2.5,0.5)),	 // converts from PSI
+	BOOST_KGCM2	("kg/cm^2", "x*0.0070306958", "0.00", new GaugeMinMax(-0.5,4,0.5)),	 // converts from PSI
 	RPM		("rpm", "round(((1000000/x)*4.59)/2)", "0", new GaugeMinMax(0,10000,1000));
 
 	private final String units;

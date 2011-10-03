@@ -37,8 +37,15 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-        String port = (String) showInputDialog(logger, "Select MTS port:", dataSource.getName() + " Plugin Settings", QUESTION_MESSAGE, null,
-                getPorts(), dataSource.getPort());
+        String port = (String) showInputDialog(
+        		logger,
+        		"Select MTS port:",
+        		dataSource.getName() + " Plugin Settings",
+        		QUESTION_MESSAGE,
+        		null,
+                getPorts(),
+                dataSource.getPort());
+        port = port.substring(0, 1);
         if (port != null && port.length() > 0) dataSource.setPort(port);
     }
 
@@ -49,10 +56,9 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
             int portCount = mts.portCount();
             String[] result = new String[portCount];
             for (int i = 0; i < portCount; i++) {
-                result[i] = "" + i;
                 mts.currentPort(i);
                 String name = mts.portName();
-                System.out.println("MTS: found port [" + i + "]: " + name);
+                result[i] = i + " - " + name;
             }
             return result;
         } finally {

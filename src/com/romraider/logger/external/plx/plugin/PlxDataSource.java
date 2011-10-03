@@ -19,10 +19,17 @@
 
 package com.romraider.logger.external.plx.plugin;
 
-import static com.romraider.logger.external.core.SensorConversionsOther.KPA;
-import static com.romraider.logger.external.core.SensorConversionsOther.KPA2BAR;
-import static com.romraider.logger.external.core.SensorConversionsOther.KPA2KGCM2;
-import static com.romraider.logger.external.core.SensorConversionsOther.KPA2PSI;
+import static com.romraider.logger.external.core.SensorConversionsOther.AIR_ABS_KPA;
+import static com.romraider.logger.external.core.SensorConversionsOther.AIR_ABS_KPA2BAR;
+import static com.romraider.logger.external.core.SensorConversionsOther.AIR_ABS_KPA2KGCM2;
+import static com.romraider.logger.external.core.SensorConversionsOther.AIR_ABS_KPA2PSI;
+import static com.romraider.logger.external.core.SensorConversionsOther.AIR_DEG_C;
+import static com.romraider.logger.external.core.SensorConversionsOther.AIR_DEG_C2F;
+import static com.romraider.logger.external.core.SensorConversionsOther.EXHAUST_DEG_C;
+import static com.romraider.logger.external.core.SensorConversionsOther.EXHAUST_DEG_C2F;
+import static com.romraider.logger.external.core.SensorConversionsOther.FLUID_DEG_C;
+import static com.romraider.logger.external.core.SensorConversionsOther.FLUID_DEG_C2F;
+import static com.romraider.logger.external.core.SensorConversionsOther.PERCENT;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_146;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_147;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.AFR_155;
@@ -38,8 +45,6 @@ import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.BOOS
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DC_NEG;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DC_POS;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DEGREES;
-import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DEG_C;
-import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.DEG_F;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.FLUID_BAR;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.FLUID_KGCM2;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.FLUID_KPA;
@@ -48,12 +53,11 @@ import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.FUEL
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.KNOCK_VDC;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.KPH;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.LAMBDA;
-import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAF_GS;
-import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MAF_LB;
+import static com.romraider.logger.external.core.SensorConversionsOther.MAF_GS;
+import static com.romraider.logger.external.core.SensorConversionsOther.MAF_GS2LB;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.MPH;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.NB_P;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.NB_V;
-import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.PERCENT;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.RPM;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.VACUUM_IN;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.VACUUM_MM;
@@ -99,19 +103,19 @@ public final class PlxDataSource implements ExternalDataSource {
 
     {
         dataItems.put(WIDEBAND, new PlxDataItemImpl("O2 - Wideband", 0, AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("Temperature - Exhaust Gas", 0, DEG_C, DEG_F));
-        dataItems.put(FLUID_TEMPERATURE, new PlxDataItemImpl("Temperature - Oil/H20", 0, DEG_C, DEG_F));
+        dataItems.put(EXHAUST_GAS_TEMPERATURE, new PlxDataItemImpl("Temperature - Exhaust Gas", 0, EXHAUST_DEG_C, EXHAUST_DEG_C2F));
+        dataItems.put(FLUID_TEMPERATURE, new PlxDataItemImpl("Temperature - Oil/H20", 0, FLUID_DEG_C, FLUID_DEG_C2F));
         dataItems.put(VACUUM, new PlxDataItemImpl("Manifold Vaccum", 0, VACUUM_IN, VACUUM_MM)); 
         dataItems.put(BOOST, new PlxDataItemImpl("Manifold Boost", 0, BOOST_PSI, BOOST_BAR, BOOST_KPA, BOOST_KGCM2));
-        dataItems.put(AIR_INTAKE_TEMPERATURE, new PlxDataItemImpl("Temperature - Intake Air", 0, DEG_C, DEG_F));
+        dataItems.put(AIR_INTAKE_TEMPERATURE, new PlxDataItemImpl("Temperature - Intake Air", 0, AIR_DEG_C, AIR_DEG_C2F));
         dataItems.put(ENGINE_SPEED, new PlxDataItemImpl("Engine Speed", 0, RPM));
         dataItems.put(VEHICLE_SPEED, new PlxDataItemImpl("Vehicle Speed", 0, MPH, KPH));
         dataItems.put(THROTTLE_POSITION, new PlxDataItemImpl("Throttle Position", 0, PERCENT));
         dataItems.put(ENGINE_LOAD, new PlxDataItemImpl("Engine Load", 0, PERCENT));
         dataItems.put(FLUID_PRESSURE, new PlxDataItemImpl("Fuel/0il Pressure", 0, FLUID_PSI, FLUID_BAR, FLUID_KPA, FLUID_KGCM2));
         dataItems.put(TIMING, new PlxDataItemImpl("Engine Timing", 0, DEGREES));
-        dataItems.put(MANIFOLD_ABSOLUTE_PRESSURE, new PlxDataItemImpl("Manifold Absolute Pressure", 0, KPA2PSI, KPA2BAR, KPA, KPA2KGCM2));
-        dataItems.put(MASS_AIR_FLOW, new PlxDataItemImpl("Mass Air Flow", 0, MAF_GS, MAF_LB));
+        dataItems.put(MANIFOLD_ABSOLUTE_PRESSURE, new PlxDataItemImpl("Manifold Absolute Pressure", 0, AIR_ABS_KPA2PSI, AIR_ABS_KPA2BAR, AIR_ABS_KPA, AIR_ABS_KPA2KGCM2));
+        dataItems.put(MASS_AIR_FLOW, new PlxDataItemImpl("Mass Air Flow", 0, MAF_GS, MAF_GS2LB));
         dataItems.put(SHORT_TERM_FUEL_TRIM, new PlxDataItemImpl("Fuel Trim - Short Term", 0, FUEL_TRIM));
         dataItems.put(LONG_TERM_FUEL_TRIM, new PlxDataItemImpl("Fuel Trim - Long Term", 0, FUEL_TRIM));
         dataItems.put(NARROWBAND_AFR, new PlxDataItemImpl("O2 - Narrowband", 0, NB_P, NB_V));

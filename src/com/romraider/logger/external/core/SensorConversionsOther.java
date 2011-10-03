@@ -20,23 +20,57 @@
 package com.romraider.logger.external.core;
 
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
-import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public enum SensorConversionsOther implements ExternalSensorConversions {
-	DEG_C	("C", "x", "0.0", new GaugeMinMax(-40,1000,100)),
-	DEG_F	("F", "x", "0.0", new GaugeMinMax(-40,2000,200)),
-	DEG_F2C	("C", "(x-32)*5/9", "0.0", new GaugeMinMax(-40,1000,100)),
-	DEG_C2F	("F", "x*9/5+32 ", "0.0", new GaugeMinMax(-40,2000,200)),
-	PSI		("psi", "x", "0.00", new GaugeMinMax(-10,30,5)),
-	PSI2BAR	("bar", "x*0.0689475728", "0.00", new GaugeMinMax(-0.5,4,0.5)),			// converts from PSI to bar
-	PSI2KPA	("kPa", "x*6.89475728", "0.0", new GaugeMinMax(98,120,2)),				// converts from PSI to kpa
-	PSI2KGCM2	("kg/cm^2", "x*0.0703068835943", "0.0", new GaugeMinMax(-0.5,2.5,0.5)),// converts from PSI to kpa
-	KPA2PSI	("psi", "x*0.14503774", "0.00", new GaugeMinMax(-10,30,5)), 			// converts from kPa
-	KPA2BAR	("bar", "x*0.01", "0.00", new GaugeMinMax(-0.5,4,0.5)), 		 		 	// converts from kPa
-	KPA		("kPa", "x", "0.0", new GaugeMinMax(98,120,2)),
-	KPA2KGCM2	("kg/cm^2", "x*0.01019716", "0.00", new GaugeMinMax(-0.5,2.5,0.5)), 	// converts from kPa
+	AIR_DEG_C	("C", "x", "0.0", new GaugeMinMax(-40,60,10)),
+	AIR_DEG_F	("F", "x", "0.0", new GaugeMinMax(-40,140,20)),
+	AIR_DEG_F2C	("C", "(x-32)*5/9", "0.0", new GaugeMinMax(-40,60,10)),
+	AIR_DEG_C2F	("F", "x*9/5+32 ", "0.0", new GaugeMinMax(-40,140,20)),
+	EXHAUST_DEG_C	("C", "x", "0.0", new GaugeMinMax(-40,1000,100)),
+	EXHAUST_DEG_F	("F", "x", "0.0", new GaugeMinMax(-40,2000,200)),
+	EXHAUST_DEG_F2C	("C", "(x-32)*5/9", "0.0", new GaugeMinMax(-40,1000,100)),
+	EXHAUST_DEG_C2F	("F", "x*9/5+32 ", "0.0", new GaugeMinMax(-40,2000,200)),
+	FLUID_DEG_C	("C", "x", "0.0", new GaugeMinMax(-40,160,20)),
+	FLUID_DEG_F	("F", "x", "0.0", new GaugeMinMax(-40,320,40)),
+	FLUID_DEG_F2C	("C", "(x-32)*5/9", "0.0", new GaugeMinMax(-40,160,20)),
+	FLUID_DEG_C2F	("F", "x*9/5+32 ", "0.0", new GaugeMinMax(-40,320,40)),
+	AIR_ABS_PSI		("psi", "x", "0.00", new GaugeMinMax(10,40,5)),
+	AIR_ABS_PSI2BAR	("bar", "x*0.0689475728", "0.00", new GaugeMinMax(0.5,4.5,0.5)),		  // converts from PSI to bar
+	AIR_ABS_PSI2KPA	("kPa", "x*6.89475728", "0.0", new GaugeMinMax(100,300,20)),			  // converts from PSI to kpa
+	AIR_ABS_PSI2KGCM2	("kg/cm^2", "x*0.0703068835943", "0.0", new GaugeMinMax(0.5,4.5,0.5)),// converts from PSI to kpa
+	AIR_ABS_KPA2PSI	("psi", "x*0.14503774", "0.00", new GaugeMinMax(10,40,5)), 			  // converts from kPa
+	AIR_ABS_KPA2BAR	("bar", "x*0.01", "0.00", new GaugeMinMax(0.5,4.5,0.5)), 		 		  // converts from kPa
+	AIR_ABS_KPA		("kPa", "x", "0.0", new GaugeMinMax(100,300,20)),
+	AIR_ABS_KPA2KGCM2	("kg/cm^2", "x*0.01019716", "0.00", new GaugeMinMax(0.5,4.5,0.5)), 	// converts from kPa
+	AIR_REL_PSI		("psi", "x", "0.00", new GaugeMinMax(-10,30,5)),
+	AIR_REL_PSI2BAR	("bar", "x*0.0689475728", "0.00", new GaugeMinMax(-0.5,2.5,0.3)),			// converts from PSI to bar
+	AIR_REL_PSI2KPA	("kPa", "x*6.89475728", "0.0", new GaugeMinMax(98,120,2)),				// converts from PSI to kpa
+	AIR_REL_PSI2KGCM2	("kg/cm^2", "x*0.0703068835943", "0.0", new GaugeMinMax(-0.5,2.5,0.3)),// converts from PSI to kpa
+	AIR_REL_KPA2PSI	("psi", "x*0.14503774", "0.00", new GaugeMinMax(-10,30,5)), 			// converts from kPa
+	AIR_REL_KPA2BAR	("bar", "x*0.01", "0.00", new GaugeMinMax(-0.5,2.5,0.3)), 		 		 	// converts from kPa
+	AIR_REL_KPA		("kPa", "x", "0.0", new GaugeMinMax(98,120,2)),
+	AIR_REL_KPA2KGCM2	("kg/cm^2", "x*0.01019716", "0.00", new GaugeMinMax(-0.5,2.5,0.3)), 	// converts from kPa
+	FUEL_PSI		("psi", "x", "0.00", new GaugeMinMax(0,50,5)),
+	FUEL_PSI2BAR	("bar", "x*0.0689475728", "0.00", new GaugeMinMax(0,4,0.5)),			// converts from PSI to bar
+	FUEL_PSI2KPA	("kPa", "x*6.89475728", "0.0", new GaugeMinMax(0,350,50)),				// converts from PSI to kpa
+	FUEL_PSI2KGCM2	("kg/cm^2", "x*0.0703068835943", "0.0", new GaugeMinMax(0,4,0.5)),// converts from PSI to kpa
+	FUEL_KPA2PSI	("psi", "x*0.14503774", "0.00", new GaugeMinMax(0,50,5)), 			// converts from kPa
+	FUEL_KPA2BAR	("bar", "x*0.01", "0.00", new GaugeMinMax(0,4,0.5)), 		 		 	// converts from kPa
+	FUEL_KPA		("kPa", "x", "0.0", new GaugeMinMax(0,350,50)),
+	FUEL_KPA2KGCM2	("kg/cm^2", "x*0.01019716", "0.00", new GaugeMinMax(0,4,0.5)), 	// converts from kPa
+	OIL_PSI		("psi", "x", "0.00", new GaugeMinMax(0,150,15)),
+	OIL_PSI2BAR	("bar", "x*0.0689475728", "0.00", new GaugeMinMax(0,10,1)),			// converts from PSI to bar
+	OIL_PSI2KPA	("kPa", "x*6.89475728", "0.0", new GaugeMinMax(0,1035,100)),				// converts from PSI to kpa
+	OIL_PSI2KGCM2	("kg/cm^2", "x*0.0703068835943", "0.0", new GaugeMinMax(0,11,1)),// converts from PSI to kpa
+	OIL_KPA2PSI	("psi", "x*0.14503774", "0.00", new GaugeMinMax(0,150,15)), 			// converts from kPa
+	OIL_KPA2BAR	("bar", "x*0.01", "0.00", new GaugeMinMax(0,10,1)), 		 		 	// converts from kPa
+	OIL_KPA		("kPa", "x", "0.0", new GaugeMinMax(0,1035,100)),
+	OIL_KPA2KGCM2	("kg/cm^2", "x*0.01019716", "0.00", new GaugeMinMax(0,11,1)), 	// converts from kPa
+	MAF_GS	("g/sec", "x", "0.00", new GaugeMinMax(0,400,50)),
+	MAF_GS2LB	("lb/min", "x/7.54", "0.00", new GaugeMinMax(0,50,5)),
 	PERCENT	("%", "x", "0.0", new GaugeMinMax(0,100,10)),
-	VOLTS_DC("vdc", "x", "0.0", new GaugeMinMax(0,5,0.5));
+	VOLTS_5DC("vdc", "x", "0.0", new GaugeMinMax(0,5,0.5)),
+	VOLTS_12DC("vdc", "x", "0.0", new GaugeMinMax(0,15,1.5));
 
 	
 	private final String units;
