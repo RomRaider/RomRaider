@@ -61,6 +61,11 @@ public final class MTSConnector {
     	mts(mtsPort);
     }
 
+    public void dispose() {
+    	mts.disconnect();
+    	mts.dispose();
+    }
+
     private void createMts() {
       // create mts interface
       this.mts = createMTS();

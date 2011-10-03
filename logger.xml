@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE logger SYSTEM "logger.dtd">
-<!--ROMRAIDER STANDARD UNITS LOGGER DEFINITION FILE (VERSION 36) 20110404_222458
-Added ECU ID: 74A2584007 to extended parameters
--->
+<!--ROMRAIDER STANDARD UNITS LOGGER DEFINITION FILE (VERSION 44) 20110814_001620
+Updated ECU ID: 6642784007 added extended parameters E51, E88
+
+TERMS, CONDITIONS, AND DISCLAIMERS
+- - - - - - - - - - - - - - - - - - - - - - - - -
+WARNING: These definition files are created as the result of the extremely complex and time consuming process
+of reverse-engineering the factory ECU. Because of this complexity, it is necessary to make certain assumptions
+and, therefore, it is impossible to always deal in absolutes in regards to representations made by these
+definitions. In addition, due to this complexity and the numerous variations among different ECUs, it is also
+impossible to guarantee that the definitions will not contain errors or other bugs. What this all means is that
+there is the potential for bugs, errors and misrepresentations which can result in damage to your motor, your
+ECU as well the possibility of causing your vehicle to behave unexpectedly on the road, increasing the risk of
+death or injury. Modifications to your vehicle's ECU may also be in violation of local, state and federal laws.
+By using these definition files, either directly or indirectly, you agree to assume 100% of all risk and
+RomRaider's creators and contributors shall not be held responsible for any damages or injuries you receive.
+This product is for advanced users only. There are no safeguards in place when tuning with RomRaider. As such,
+the potential for serious damage and injury still exists, even if the user does not experience any bugs or errors.
+As always, use at your own risk.
+
+These definitions are created for FREE without any sort of guarantee. The developers cannot be held liable for
+any damage or injury incurred as a result of these definitions. USE AT YOUR OWN RISK! -->
 <logger>
     <protocols>
         <protocol id="SSM" baud="4800" databits="8" stopbits="1" parity="0" connect_timeout="2000" send_timeout="55">
@@ -1514,178 +1532,178 @@ Added ECU ID: 74A2584007 to extended parameters
                 </parameter>
             </parameters>
             <switches>
-                <switch id="S1" name="AT Vehicle ID" desc="(E) S1" byte="0x000061" bit="6" ecubyteindex="20" target="1" />
-                <switch id="S2" name="Test Mode Signal" desc="(E) S2" byte="0x000061" bit="5" ecubyteindex="20" target="1" />
-                <switch id="S3" name="Read Memory Signal" desc="(E) S3" byte="0x000061" bit="4" ecubyteindex="20" target="1" />
-                <switch id="S4" name="Neutral Position Switch" desc="(B) S4" byte="0x000062" bit="7" ecubyteindex="21" target="3" />
-                <switch id="S5" name="Idle Switch" desc="(E) S5" byte="0x000062" bit="6" ecubyteindex="21" target="1" />
-                <switch id="S6" name="Intercooler Auto Washer Switch" desc="(E) S6" byte="0x000062" bit="4" ecubyteindex="21" target="1" />
-                <switch id="S7" name="Ignition Switch" desc="(B) S7" byte="0x000062" bit="3" ecubyteindex="21" target="3" />
-                <switch id="S8" name="Power Steering Switch" desc="(E) S8" byte="0x000062" bit="2" ecubyteindex="21" target="1" />
-                <switch id="S9" name="Air Conditioning Switch" desc="(E) S9" byte="0x000062" bit="1" ecubyteindex="21" target="1" />
-                <switch id="S10" name="Handle Switch" desc="(E) S10" byte="0x000063" bit="7" ecubyteindex="22" target="1" />
-                <switch id="S11" name="Starter Switch" desc="(E) S11" byte="0x000063" bit="6" ecubyteindex="22" target="1" />
-                <switch id="S12" name="Front O2 Sensor #1 Rich Signal" desc="(E) S12" byte="0x000063" bit="5" ecubyteindex="22" target="1" />
-                <switch id="S13" name="Rear O2 Sensor Rich Signal" desc="(E) S13" byte="0x000063" bit="4" ecubyteindex="22" target="1" />
-                <switch id="S14" name="Front O2 Sensor #2 Rich Signal" desc="(E) S14" byte="0x000063" bit="3" ecubyteindex="22" target="1" />
-                <switch id="S15" name="Knocking Signal #1" desc="(E) S15" byte="0x000063" bit="2" ecubyteindex="22" target="1" />
-                <switch id="S16" name="Knocking Signal #2" desc="(E) S16" byte="0x000063" bit="1" ecubyteindex="22" target="1" />
-                <switch id="S17" name="Electrical Load Signal" desc="(E) S17" byte="0x000063" bit="0" ecubyteindex="22" target="1" />
-                <switch id="S18" name="Crankshaft Position Signal" desc="(E) S18" byte="0x000064" bit="7" ecubyteindex="23" target="1" />
-                <switch id="S19" name="Camshaft Position Signal" desc="(E) S19" byte="0x000064" bit="6" ecubyteindex="23" target="1" />
-                <switch id="S20" name="Rear Defogger Switch" desc="(E) S20" byte="0x000064" bit="5" ecubyteindex="23" target="1" />
-                <switch id="S21" name="Blower Fan Switch" desc="(E) S21" byte="0x000064" bit="4" ecubyteindex="23" target="1" />
-                <switch id="S22" name="Light Switch" desc="(E) S22" byte="0x000064" bit="3" ecubyteindex="23" target="1" />
-                <switch id="S23" name="Wiper Switch" desc="(E) S23" byte="0x000064" bit="2" ecubyteindex="23" target="1" />
-                <switch id="S24" name="Air Conditioning Lock Signal" desc="(E) S24" byte="0x000064" bit="1" ecubyteindex="23" target="1" />
-                <switch id="S25" name="Air Conditioning Mid Pressure Switch" desc="(E) S25" byte="0x000064" bit="0" ecubyteindex="23" target="1" />
-                <switch id="S26" name="Air Conditioning Compressor Signal" desc="(E) S26" byte="0x000065" bit="7" ecubyteindex="24" target="1" />
-                <switch id="S27" name="Radiator Fan Relay #3" desc="(E) S27" byte="0x000065" bit="6" ecubyteindex="24" target="1" />
-                <switch id="S28" name="Radiator Fan Relay #1" desc="(E) S28" byte="0x000065" bit="5" ecubyteindex="24" target="1" />
-                <switch id="S29" name="Radiator Fan Relay #2" desc="(E) S29" byte="0x000065" bit="4" ecubyteindex="24" target="1" />
-                <switch id="S30" name="Fuel Pump Relay" desc="(E) S30" byte="0x000065" bit="3" ecubyteindex="24" target="1" />
-                <switch id="S31" name="Intercooler Auto Washer Relay" desc="(E) S31" byte="0x000065" bit="2" ecubyteindex="24" target="1" />
-                <switch id="S32" name="Canister Purge Control (CPC) Solenoid Valve" desc="(E) S32" byte="0x000065" bit="1" ecubyteindex="24" target="1" />
-                <switch id="S33" name="Blow-By Leak Connector" desc="(E) S33" byte="0x000065" bit="0" ecubyteindex="24" target="1" />
-                <switch id="S34" name="Positive Crankcase Ventilation (PCV) Solenoid Valv" desc="(E) S34" byte="0x000066" bit="7" ecubyteindex="25" target="1" />
-                <switch id="S35" name="Tumble Generator Valve (TGV) Output" desc="(E) S35" byte="0x000066" bit="6" ecubyteindex="25" target="1" />
-                <switch id="S36" name="Tumble Generator Valve (TGV) Drive" desc="(E) S36" byte="0x000066" bit="5" ecubyteindex="25" target="1" />
-                <switch id="S37" name="Variable Intake Air Solenoid" desc="(E) S37" byte="0x000066" bit="4" ecubyteindex="25" target="1" />
-                <switch id="S38" name="Pressure Sources Change" desc="(E) S38" byte="0x000066" bit="3" ecubyteindex="25" target="1" />
-                <switch id="S39" name="Ventilation Solenoid Valve" desc="(E) S39" byte="0x000066" bit="2" ecubyteindex="25" target="1" />
-                <switch id="S40" name="Power Steering Solenoid Valve" desc="(E) S40" byte="0x000066" bit="1" ecubyteindex="25" target="1" />
-                <switch id="S41" name="Assist Air Solenoid Valve" desc="(E) S41" byte="0x000066" bit="0" ecubyteindex="25" target="1" />
-                <switch id="S42" name="Tank Sensor Control Valve" desc="(E) S42" byte="0x000067" bit="7" ecubyteindex="26" target="1" />
-                <switch id="S43" name="Relief Valve Solenoid #1" desc="(E) S43" byte="0x000067" bit="6" ecubyteindex="26" target="1" />
-                <switch id="S44" name="Relief Valve Solenoid #2" desc="(E) S44" byte="0x000067" bit="5" ecubyteindex="26" target="1" />
-                <switch id="S45" name="Traction Control System (TCS) Relief Valve Solenoi" desc="(E) S45" byte="0x000067" bit="4" ecubyteindex="26" target="1" />
-                <switch id="S46" name="Exhaust Gas Positive Pressure" desc="(E) S46" byte="0x000067" bit="3" ecubyteindex="26" target="1" />
-                <switch id="S47" name="Exhaust Gas Negative Pressure" desc="(E) S47" byte="0x000067" bit="2" ecubyteindex="26" target="1" />
-                <switch id="S48" name="Intake Air Solenoid" desc="(E) S48" byte="0x000067" bit="1" ecubyteindex="26" target="1" />
-                <switch id="S49" name="Muffler Control" desc="(E) S49" byte="0x000067" bit="0" ecubyteindex="26" target="1" />
-                <switch id="S50" name="Retard Signal From AT" desc="(E) S50" byte="0x000068" bit="3" ecubyteindex="27" target="1" />
-                <switch id="S51" name="Fuel Cut Signal From AT" desc="(E) S51" byte="0x000068" bit="2" ecubyteindex="27" target="1" />
-                <switch id="S52" name="Ban of Torque Down" desc="(E) S52" byte="0x000068" bit="1" ecubyteindex="27" target="1" />
-                <switch id="S53" name="Request Torque Down VDC" desc="(E) S53" byte="0x000068" bit="0" ecubyteindex="27" target="1" />
-                <switch id="S54" name="Torque Control Signal #1" desc="(E) S54" byte="0x000069" bit="7" ecubyteindex="28" target="1" />
-                <switch id="S55" name="Torque Control Signal #2" desc="(E) S55" byte="0x000069" bit="6" ecubyteindex="28" target="1" />
-                <switch id="S56" name="Torque Permission Signal" desc="(E) S56" byte="0x000069" bit="5" ecubyteindex="28" target="1" />
-                <switch id="S57" name="Engine AT Masking Flag (EAM) Signal" desc="(E) S57" byte="0x000069" bit="4" ecubyteindex="28" target="1" />
-                <switch id="S58" name="AT Cooperation Lock Up Signal" desc="(E) S58" byte="0x000069" bit="3" ecubyteindex="28" target="1" />
-                <switch id="S59" name="AT Cooperation Lean Burn Signal" desc="(E) S59" byte="0x000069" bit="2" ecubyteindex="28" target="1" />
-                <switch id="S60" name="AT Cooperation Rich Spike Signal" desc="(E) S60" byte="0x000069" bit="1" ecubyteindex="28" target="1" />
-                <switch id="S61" name="AT Engine Torque Request (AET) Signal" desc="(E) S61" byte="0x000069" bit="0" ecubyteindex="28" target="1" />
-                <switch id="S62" name="Electronic Throttle Control (ETC) Motor Relay" desc="(E) S62" byte="0x000120" bit="6" ecubyteindex="45" target="1" />
-                <switch id="S63" name="Clutch Switch" desc="(E) S63" byte="0x000121" bit="7" ecubyteindex="46" target="1" />
-                <switch id="S64" name="Stop Light Switch" desc="(E) S64" byte="0x000121" bit="6" ecubyteindex="46" target="1" />
-                <switch id="S65" name="Cruise Control Set/Coast Switch" desc="(E) S65" byte="0x000121" bit="5" ecubyteindex="46" target="1" />
-                <switch id="S66" name="Cruise Control Resume/Accelerate Switch" desc="(E) S66" byte="0x000121" bit="4" ecubyteindex="46" target="1" />
-                <switch id="S67" name="Brake Switch" desc="(E) S67" byte="0x000121" bit="3" ecubyteindex="46" target="1" />
-                <switch id="S68" name="Cruise Control Main Toggle Switch" desc="(E) S68" byte="0x000121" bit="1" ecubyteindex="46" target="1" />
-                <switch id="S69" name="D-Check Require Flag" desc="(E) S69" byte="0x000061" bit="2" ecubyteindex="20" target="1" />
-                <switch id="S70" name="Delivery Mode (Test Mode) Connector" desc="(E) S70" byte="0x000061" bit="1" ecubyteindex="20" target="1" />
-                <switch id="S71" name="Clear Memory Terminal" desc="(E) S71" byte="0x000061" bit="0" ecubyteindex="20" target="1" />
-                <switch id="S72" name="Exhaust By-Pass Valve" desc="(E) S72-Not Used." byte="0x000068" bit="7" ecubyteindex="27" target="1" />
-                <switch id="S73" name="Engine Oil Pressure Switch #1" desc="(E) S73" byte="0x000068" bit="6" ecubyteindex="27" target="1" />
-                <switch id="S74" name="Engine Oil Pressure Switch #2" desc="(E) S74" byte="0x000068" bit="5" ecubyteindex="27" target="1" />
-                <switch id="S75" name="Canister Purge Control (CPC) Solenoid Valve #2" desc="(E) S75" byte="0x000068" bit="4" ecubyteindex="27" target="1" />
-                <switch id="S76" name="Tiptronic Mode Switch" desc="(T) S76" byte="0x00006A" bit="7" ecubyteindex="29" target="2" />
-                <switch id="S77" name="Cruise Control Signal" desc="(T) S77-TCU input." byte="0x00006A" bit="6" ecubyteindex="29" target="2" />
-                <switch id="S78" name="ABS Signal" desc="(T) S78" byte="0x00006A" bit="5" ecubyteindex="29" target="2" />
-                <switch id="S79" name="Downshift Switch" desc="(T) S79" byte="0x00006A" bit="4" ecubyteindex="29" target="2" />
-                <switch id="S80" name="Stop Light Switch" desc="(T) S80" byte="0x00006A" bit="3" ecubyteindex="29" target="2" />
-                <switch id="S81" name="Upshift Switch" desc="(T) S81" byte="0x00006A" bit="2" ecubyteindex="29" target="2" />
-                <switch id="S82" name="Kick Down Switch" desc="(B) S82" byte="0x00006A" bit="1" ecubyteindex="29" target="3" />
-                <switch id="S83" name="Front Wheel Drive (FWD) Switch" desc="(T) S83-Becomes ON(1) when fuse is inserted into FWD fuse holder. TCU input." byte="0x00006A" bit="0" ecubyteindex="29" target="2" />
-                <switch id="S84" name="Power Mode Switch" desc="(T) S84" byte="0x00006B" bit="7" ecubyteindex="30" target="2" />
-                <switch id="S85" name="Hold Mode Switch" desc="(T) S85" byte="0x00006B" bit="6" ecubyteindex="30" target="2" />
-                <switch id="S86" name="1st Range Signal" desc="(T) S86" byte="0x00006B" bit="5" ecubyteindex="30" target="2" />
-                <switch id="S87" name="2nd Range Signal" desc="(T) S87" byte="0x00006B" bit="4" ecubyteindex="30" target="2" />
-                <switch id="S88" name="3rd Range Signal" desc="(T) S88" byte="0x00006B" bit="3" ecubyteindex="30" target="2" />
-                <switch id="S89" name="D Range Signal" desc="(T) S89" byte="0x00006B" bit="2" ecubyteindex="30" target="2" />
-                <switch id="S90" name="R Range Signal" desc="(T) S90" byte="0x00006B" bit="1" ecubyteindex="30" target="2" />
-                <switch id="S91" name="N/P Range Signal" desc="(T) S91" byte="0x00006B" bit="0" ecubyteindex="30" target="2" />
-                <switch id="S92" name="4th Range Signal" desc="(T) S92" byte="0x00006C" bit="7" ecubyteindex="31" target="2" />
-                <switch id="S93" name="Tiptronic Solenoid" desc="(T) S93" byte="0x00006C" bit="6" ecubyteindex="31" target="2" />
-                <switch id="S94" name="Torque Control Signal #1" desc="(T) S94" byte="0x00006C" bit="5" ecubyteindex="31" target="2" />
-                <switch id="S95" name="Torque Control Signal #2" desc="(T) S95" byte="0x00006C" bit="4" ecubyteindex="31" target="2" />
-                <switch id="S96" name="2-4 Brake Timing Solenoid" desc="(T) S96" byte="0x00006C" bit="3" ecubyteindex="31" target="2" />
-                <switch id="S97" name="Low Clutch Timing Solenoid" desc="(T) S97" byte="0x00006C" bit="2" ecubyteindex="31" target="2" />
-                <switch id="S98" name="Shift Solenoid #2" desc="(T) S98" byte="0x00006C" bit="1" ecubyteindex="31" target="2" />
-                <switch id="S99" name="Shift Solenoid #1" desc="(T) S99" byte="0x00006C" bit="0" ecubyteindex="31" target="2" />
-                <switch id="S100" name="Shift Output 4" desc="(T) S100" byte="0x00006D" bit="7" ecubyteindex="32" target="2" />
-                <switch id="S101" name="Shift Output 3" desc="(T) S101" byte="0x00006D" bit="6" ecubyteindex="32" target="2" />
-                <switch id="S102" name="Shift Output 2" desc="(T) S102" byte="0x00006D" bit="5" ecubyteindex="32" target="2" />
-                <switch id="S103" name="Shift Output 1" desc="(T) S103" byte="0x00006D" bit="4" ecubyteindex="32" target="2" />
-                <switch id="S104" name="Diagnosis Lamp" desc="(T) S104" byte="0x00006D" bit="3" ecubyteindex="32" target="2" />
-                <switch id="S105" name="Rear Differential Oil Temperature Switch" desc="(T) S105" byte="0x00006D" bit="2" ecubyteindex="32" target="2" />
-                <switch id="S106" name="ATF Temperature Lamp" desc="(T) S106" byte="0x00006D" bit="1" ecubyteindex="32" target="2" />
-                <switch id="S107" name="Shift Lock Solenoid" desc="(T) S107" byte="0x00006D" bit="0" ecubyteindex="32" target="2" />
-                <switch id="S108" name="Economy Switch" desc="(B) S108" byte="0x00006E" bit="7" ecubyteindex="33" target="3" />
-                <switch id="S109" name="Power Mode Lamp" desc="(T) S109" byte="0x00006E" bit="6" ecubyteindex="33" target="2" />
-                <switch id="S110" name="P Range" desc="(T) S110" byte="0x00006E" bit="5" ecubyteindex="33" target="2" />
-                <switch id="S111" name="Torque Control Cut Signal" desc="(T) S111" byte="0x00006E" bit="4" ecubyteindex="33" target="2" />
-                <switch id="S112" name="P/N Signal" desc="(T) S112" byte="0x00006E" bit="3" ecubyteindex="33" target="2" />
-                <switch id="S113" name="Traction Control System (TCS) Switch" desc="(T) S113" byte="0x00006E" bit="2" ecubyteindex="33" target="2" />
-                <switch id="S114" name="Hold Lamp" desc="(T) S114" byte="0x00006E" bit="1" ecubyteindex="33" target="2" />
-                <switch id="S115" name="N Range" desc="(T) S115" byte="0x00006E" bit="0" ecubyteindex="33" target="2" />
-                <switch id="S116" name="Judgement of All Wheel Drive (AWD)" desc="(T) S116" byte="0x0000D4" bit="7" ecubyteindex="36" target="2" />
-                <switch id="S117" name="Inhibitor Switch #1" desc="(T) S117" byte="0x0000D4" bit="6" ecubyteindex="36" target="2" />
-                <switch id="S118" name="Inhibitor Switch #2" desc="(T) S118" byte="0x0000D4" bit="5" ecubyteindex="36" target="2" />
-                <switch id="S119" name="Inhibitor Switch #3" desc="(T) S119" byte="0x0000D4" bit="4" ecubyteindex="36" target="2" />
-                <switch id="S120" name="Inhibitor Switch #4" desc="(T) S120" byte="0x0000D4" bit="3" ecubyteindex="36" target="2" />
-                <switch id="S121" name="Inhibitor Switch #3 Monitor" desc="(T) S121" byte="0x0000D4" bit="2" ecubyteindex="36" target="2" />
-                <switch id="S122" name="Back Lamp Relay" desc="(T) S122" byte="0x0000D4" bit="1" ecubyteindex="36" target="2" />
-                <switch id="S123" name="AT Power Relay" desc="(T) S123" byte="0x0000D4" bit="0" ecubyteindex="36" target="2" />
-                <switch id="S124" name="H and LR/C Fluid Pressure" desc="(T) S124" byte="0x0000D5" bit="5" ecubyteindex="40" target="2" />
-                <switch id="S125" name="D/C Fluid Pressure" desc="(T) S125" byte="0x0000D5" bit="4" ecubyteindex="40" target="2" />
-                <switch id="S126" name="F/B Fluid Pressure" desc="(T) S126" byte="0x0000D5" bit="3" ecubyteindex="40" target="2" />
-                <switch id="S127" name="I/C Fluid Pressure" desc="(T) S127" byte="0x0000D5" bit="2" ecubyteindex="40" target="2" />
-                <switch id="S128" name="LC/B Fluid Pressure" desc="(T) S128" byte="0x0000D5" bit="1" ecubyteindex="40" target="2" />
-                <switch id="S129" name="Signal of Identified Electronic Control Module (EC" desc="(T) S129-DCCD shows ON(1) if AUTO mode is Yes. DCCD output." byte="0x0000D5" bit="0" ecubyteindex="40" target="2" />
-                <switch id="S130" name="Idle Switch" desc="(E) S130" byte="0x000120" bit="7" ecubyteindex="45" target="1" />
-                <switch id="S131" name="Injector Driver Relay" desc="(E) S131" byte="0x000120" bit="5" ecubyteindex="45" target="1" />
-                <switch id="S132" name="Cruise Control Inhibitor Switch" desc="(E) S132-Becomes ON(1) in Park or Neutral. ECU input." byte="0x000121" bit="2" ecubyteindex="46" target="1" />
-                <switch id="S133" name="Cruise Control System Status" desc="(B) S133" byte="0x000121" bit="0" ecubyteindex="46" target="3" />
-                <switch id="S134" name="LC/B Solenoid Valve" desc="(T) S134" byte="0x000122" bit="7" ecubyteindex="47" target="2" />
-                <switch id="S135" name="LU and FWD/B Solenoid Valve" desc="(T) S135" byte="0x000122" bit="6" ecubyteindex="47" target="2" />
-                <switch id="S136" name="Center Differential Lamp 1" desc="(T) S136" byte="0x000122" bit="5" ecubyteindex="47" target="2" />
-                <switch id="S137" name="Center Differential Lamp 2" desc="(T) S137" byte="0x000122" bit="4" ecubyteindex="47" target="2" />
-                <switch id="S138" name="Center Differential Lamp 3" desc="(T) S138" byte="0x000122" bit="3" ecubyteindex="47" target="2" />
-                <switch id="S139" name="Center Differential Lamp 4" desc="(T) S139" byte="0x000122" bit="2" ecubyteindex="47" target="2" />
-                <switch id="S140" name="Center Differential Lamp 5" desc="(T) S140" byte="0x000122" bit="1" ecubyteindex="47" target="2" />
-                <switch id="S141" name="Center Differential Lamp 6" desc="(T) S141" byte="0x000122" bit="0" ecubyteindex="47" target="2" />
-                <switch id="S142" name="Parking Position Switch" desc="(T) S142" byte="0x0000D6" bit="7" ecubyteindex="54" target="2" />
-                <switch id="S143" name="Center Differential Relay" desc="(T) S143" byte="0x0000D6" bit="6" ecubyteindex="54" target="2" />
-                <switch id="S144" name="AUTO/MANUAL Mode Switch" desc="(T) S144" byte="0x0000D6" bit="5" ecubyteindex="54" target="2" />
-                <switch id="S145" name="AUTO Mode Lamp" desc="(T) S145" byte="0x0000D6" bit="4" ecubyteindex="54" target="2" />
-                <switch id="S146" name="Fwd/B Hydraulic Pressure Switch" desc="(T) S146" byte="0x0000D6" bit="3" ecubyteindex="54" target="2" />
-                <switch id="S147" name="Automatic Transmission Learning Process" desc="(T) S147" byte="0x0000D6" bit="2" ecubyteindex="54" target="2" />
-                <switch id="S148" name="Body Integrated Unit Data" desc="(E) S148" byte="0x0000D7" bit="7" ecubyteindex="55" target="1" />
-                <switch id="S149" name="Body Integrated Unit Count" desc="(E) S149" byte="0x0000D7" bit="6" ecubyteindex="55" target="1" />
-                <switch id="S150" name="Secondary Air Combi Valve Relay #2" desc="(E) S150" byte="0x0000D7" bit="4" ecubyteindex="55" target="1" />
-                <switch id="S151" name="Secondary Air Pump Relay" desc="(E) S151" byte="0x0000D7" bit="3" ecubyteindex="55" target="1" />
-                <switch id="S152" name="Secondary Air Combi Valve Relay #1" desc="(E) S152" byte="0x0000D7" bit="2" ecubyteindex="55" target="1" />
-                <switch id="S153" name="Distance Change Switch" desc="(E) S153" byte="0x0000D7" bit="1" ecubyteindex="55" target="1" />
-                <switch id="S154" name="Cruise Control Cancel Switch" desc="(E) S154" byte="0x0000D7" bit="0" ecubyteindex="55" target="1" />
-                <switch id="S155" name="Malfunction Indicator Light (MIL) ON Flag" desc="(E) S155" byte="0x000196" bit="7" ecubyteindex="57" target="1" />
-                <switch id="S156" name="Fuel Pressure Switching Solenoid Valve" desc="(E) S156" byte="0x000196" bit="6" ecubyteindex="57" target="1" />
-                <switch id="S157" name="Oil Level Switch" desc="(E) S157" byte="0x000196" bit="5" ecubyteindex="57" target="1" />
-                <switch id="S158" name="Boost Pressure Control Mode" desc="(E) S158" byte="0x000197" bit="7" ecubyteindex="58" target="1" />
-                <switch id="S159" name="Exhaust Gas Recirculation (EGR) Control Mode" desc="(E) S159" byte="0x000197" bit="6" ecubyteindex="58" target="1" />
-                <switch id="S160" name="Glow Relay" desc="(E) S160" byte="0x000197" bit="5" ecubyteindex="58" target="1" />
-                <switch id="S161" name="Swirl Control Valve" desc="(E) S161" byte="0x000197" bit="4" ecubyteindex="58" target="1" />
-                <switch id="S162" name="Sub Fuel Pump Relay" desc="(E) S162" byte="0x000197" bit="3" ecubyteindex="58" target="1" />
-                <switch id="S163" name="Request for 'Compressor ON'" desc="(E) S163" byte="0x000197" bit="2" ecubyteindex="58" target="1" />
-                <switch id="S164" name="Fuel Pump Learning" desc="(E) S164" byte="0x000197" bit="1" ecubyteindex="58" target="1" />
-                <switch id="S165" name="Injector Learning" desc="(E) S165" byte="0x000197" bit="0" ecubyteindex="58" target="1" />
-                <switch id="S166" name="Self-Shut Relay Output" desc="(T) S166" byte="0x0001CD" bit="7" ecubyteindex="68" target="2" />
-                <switch id="S167" name="Lock-Up ON/OFF Solenoid Valve" desc="(T) S167" byte="0x0001CD" bit="6" ecubyteindex="68" target="2" />
-                <switch id="S168" name="Exhaust Gas Recirculation (EGR) Learning" desc="(E) S168" byte="0x0001CE" bit="7" ecubyteindex="70" target="1" />
-                <switch id="S169" name="Fuel Cut" desc="(E) S169" byte="0x0001CE" bit="6" ecubyteindex="70" target="1" />
-                <switch id="S170" name="Fuel Pump Mode" desc="(E) S170" byte="0x0001CE" bit="5" ecubyteindex="70" target="1" />
-                <switch id="S171" name="Clutch Switch for Smart-System" desc="(E) S171" byte="0x0001CE" bit="4" ecubyteindex="70" target="1" />
-                <switch id="S172" name="Diesel Particulate Filter (DPF) Regeneration" desc="(E) S172" byte="0x0001CE" bit="3" ecubyteindex="70" target="1" />
+                <switch id="S1" name="AT Vehicle ID" desc="(E) S1" byte="0x000061" bit="6" ecubyteindex="19" target="1" />
+                <switch id="S2" name="Test Mode Signal" desc="(E) S2" byte="0x000061" bit="5" ecubyteindex="19" target="1" />
+                <switch id="S3" name="Read Memory Signal" desc="(E) S3" byte="0x000061" bit="4" ecubyteindex="19" target="1" />
+                <switch id="S4" name="Neutral Position Switch" desc="(B) S4" byte="0x000062" bit="7" ecubyteindex="20" target="3" />
+                <switch id="S5" name="Idle Switch" desc="(E) S5" byte="0x000062" bit="6" ecubyteindex="20" target="1" />
+                <switch id="S6" name="Intercooler Auto Washer Switch" desc="(E) S6" byte="0x000062" bit="4" ecubyteindex="20" target="1" />
+                <switch id="S7" name="Ignition Switch" desc="(B) S7" byte="0x000062" bit="3" ecubyteindex="20" target="3" />
+                <switch id="S8" name="Power Steering Switch" desc="(E) S8" byte="0x000062" bit="2" ecubyteindex="20" target="1" />
+                <switch id="S9" name="Air Conditioning Switch" desc="(E) S9" byte="0x000062" bit="1" ecubyteindex="20" target="1" />
+                <switch id="S10" name="Handle Switch" desc="(E) S10" byte="0x000063" bit="7" ecubyteindex="21" target="1" />
+                <switch id="S11" name="Starter Switch" desc="(E) S11" byte="0x000063" bit="6" ecubyteindex="21" target="1" />
+                <switch id="S12" name="Front O2 Sensor #1 Rich Signal" desc="(E) S12" byte="0x000063" bit="5" ecubyteindex="21" target="1" />
+                <switch id="S13" name="Rear O2 Sensor Rich Signal" desc="(E) S13" byte="0x000063" bit="4" ecubyteindex="21" target="1" />
+                <switch id="S14" name="Front O2 Sensor #2 Rich Signal" desc="(E) S14" byte="0x000063" bit="3" ecubyteindex="21" target="1" />
+                <switch id="S15" name="Knocking Signal #1" desc="(E) S15" byte="0x000063" bit="2" ecubyteindex="21" target="1" />
+                <switch id="S16" name="Knocking Signal #2" desc="(E) S16" byte="0x000063" bit="1" ecubyteindex="21" target="1" />
+                <switch id="S17" name="Electrical Load Signal" desc="(E) S17" byte="0x000063" bit="0" ecubyteindex="21" target="1" />
+                <switch id="S18" name="Crankshaft Position Signal" desc="(E) S18" byte="0x000064" bit="7" ecubyteindex="22" target="1" />
+                <switch id="S19" name="Camshaft Position Signal" desc="(E) S19" byte="0x000064" bit="6" ecubyteindex="22" target="1" />
+                <switch id="S20" name="Rear Defogger Switch" desc="(E) S20" byte="0x000064" bit="5" ecubyteindex="22" target="1" />
+                <switch id="S21" name="Blower Fan Switch" desc="(E) S21" byte="0x000064" bit="4" ecubyteindex="22" target="1" />
+                <switch id="S22" name="Light Switch" desc="(E) S22" byte="0x000064" bit="3" ecubyteindex="22" target="1" />
+                <switch id="S23" name="Wiper Switch" desc="(E) S23" byte="0x000064" bit="2" ecubyteindex="22" target="1" />
+                <switch id="S24" name="Air Conditioning Lock Signal" desc="(E) S24" byte="0x000064" bit="1" ecubyteindex="22" target="1" />
+                <switch id="S25" name="Air Conditioning Mid Pressure Switch" desc="(E) S25" byte="0x000064" bit="0" ecubyteindex="22" target="1" />
+                <switch id="S26" name="Air Conditioning Compressor Signal" desc="(E) S26" byte="0x000065" bit="7" ecubyteindex="23" target="1" />
+                <switch id="S27" name="Radiator Fan Relay #3" desc="(E) S27" byte="0x000065" bit="6" ecubyteindex="23" target="1" />
+                <switch id="S28" name="Radiator Fan Relay #1" desc="(E) S28" byte="0x000065" bit="5" ecubyteindex="23" target="1" />
+                <switch id="S29" name="Radiator Fan Relay #2" desc="(E) S29" byte="0x000065" bit="4" ecubyteindex="23" target="1" />
+                <switch id="S30" name="Fuel Pump Relay" desc="(E) S30" byte="0x000065" bit="3" ecubyteindex="23" target="1" />
+                <switch id="S31" name="Intercooler Auto Washer Relay" desc="(E) S31" byte="0x000065" bit="2" ecubyteindex="23" target="1" />
+                <switch id="S32" name="Canister Purge Control (CPC) Solenoid Valve" desc="(E) S32" byte="0x000065" bit="1" ecubyteindex="23" target="1" />
+                <switch id="S33" name="Blow-By Leak Connector" desc="(E) S33" byte="0x000065" bit="0" ecubyteindex="23" target="1" />
+                <switch id="S34" name="Positive Crankcase Ventilation (PCV) Solenoid Valv" desc="(E) S34" byte="0x000066" bit="7" ecubyteindex="24" target="1" />
+                <switch id="S35" name="Tumble Generator Valve (TGV) Output" desc="(E) S35" byte="0x000066" bit="6" ecubyteindex="24" target="1" />
+                <switch id="S36" name="Tumble Generator Valve (TGV) Drive" desc="(E) S36" byte="0x000066" bit="5" ecubyteindex="24" target="1" />
+                <switch id="S37" name="Variable Intake Air Solenoid" desc="(E) S37" byte="0x000066" bit="4" ecubyteindex="24" target="1" />
+                <switch id="S38" name="Pressure Sources Change" desc="(E) S38" byte="0x000066" bit="3" ecubyteindex="24" target="1" />
+                <switch id="S39" name="Ventilation Solenoid Valve" desc="(E) S39" byte="0x000066" bit="2" ecubyteindex="24" target="1" />
+                <switch id="S40" name="Power Steering Solenoid Valve" desc="(E) S40" byte="0x000066" bit="1" ecubyteindex="24" target="1" />
+                <switch id="S41" name="Assist Air Solenoid Valve" desc="(E) S41" byte="0x000066" bit="0" ecubyteindex="24" target="1" />
+                <switch id="S42" name="Tank Sensor Control Valve" desc="(E) S42" byte="0x000067" bit="7" ecubyteindex="25" target="1" />
+                <switch id="S43" name="Relief Valve Solenoid #1" desc="(E) S43" byte="0x000067" bit="6" ecubyteindex="25" target="1" />
+                <switch id="S44" name="Relief Valve Solenoid #2" desc="(E) S44" byte="0x000067" bit="5" ecubyteindex="25" target="1" />
+                <switch id="S45" name="Traction Control System (TCS) Relief Valve Solenoi" desc="(E) S45" byte="0x000067" bit="4" ecubyteindex="25" target="1" />
+                <switch id="S46" name="Exhaust Gas Positive Pressure" desc="(E) S46" byte="0x000067" bit="3" ecubyteindex="25" target="1" />
+                <switch id="S47" name="Exhaust Gas Negative Pressure" desc="(E) S47" byte="0x000067" bit="2" ecubyteindex="25" target="1" />
+                <switch id="S48" name="Intake Air Solenoid" desc="(E) S48" byte="0x000067" bit="1" ecubyteindex="25" target="1" />
+                <switch id="S49" name="Muffler Control" desc="(E) S49" byte="0x000067" bit="0" ecubyteindex="25" target="1" />
+                <switch id="S50" name="Retard Signal From AT" desc="(E) S50" byte="0x000068" bit="3" ecubyteindex="26" target="1" />
+                <switch id="S51" name="Fuel Cut Signal From AT" desc="(E) S51" byte="0x000068" bit="2" ecubyteindex="26" target="1" />
+                <switch id="S52" name="Ban of Torque Down" desc="(E) S52" byte="0x000068" bit="1" ecubyteindex="26" target="1" />
+                <switch id="S53" name="Request Torque Down VDC" desc="(E) S53" byte="0x000068" bit="0" ecubyteindex="26" target="1" />
+                <switch id="S54" name="Torque Control Signal #1" desc="(E) S54" byte="0x000069" bit="7" ecubyteindex="27" target="1" />
+                <switch id="S55" name="Torque Control Signal #2" desc="(E) S55" byte="0x000069" bit="6" ecubyteindex="27" target="1" />
+                <switch id="S56" name="Torque Permission Signal" desc="(E) S56" byte="0x000069" bit="5" ecubyteindex="27" target="1" />
+                <switch id="S57" name="Engine AT Masking Flag (EAM) Signal" desc="(E) S57" byte="0x000069" bit="4" ecubyteindex="27" target="1" />
+                <switch id="S58" name="AT Cooperation Lock Up Signal" desc="(E) S58" byte="0x000069" bit="3" ecubyteindex="27" target="1" />
+                <switch id="S59" name="AT Cooperation Lean Burn Signal" desc="(E) S59" byte="0x000069" bit="2" ecubyteindex="27" target="1" />
+                <switch id="S60" name="AT Cooperation Rich Spike Signal" desc="(E) S60" byte="0x000069" bit="1" ecubyteindex="27" target="1" />
+                <switch id="S61" name="AT Engine Torque Request (AET) Signal" desc="(E) S61" byte="0x000069" bit="0" ecubyteindex="27" target="1" />
+                <switch id="S62" name="Electronic Throttle Control (ETC) Motor Relay" desc="(E) S62" byte="0x000120" bit="6" ecubyteindex="44" target="1" />
+                <switch id="S63" name="Clutch Switch" desc="(E) S63" byte="0x000121" bit="7" ecubyteindex="45" target="1" />
+                <switch id="S64" name="Stop Light Switch" desc="(E) S64" byte="0x000121" bit="6" ecubyteindex="45" target="1" />
+                <switch id="S65" name="Cruise Control Set/Coast Switch" desc="(E) S65" byte="0x000121" bit="5" ecubyteindex="45" target="1" />
+                <switch id="S66" name="Cruise Control Resume/Accelerate Switch" desc="(E) S66" byte="0x000121" bit="4" ecubyteindex="45" target="1" />
+                <switch id="S67" name="Brake Switch" desc="(E) S67" byte="0x000121" bit="3" ecubyteindex="45" target="1" />
+                <switch id="S68" name="Cruise Control Main Toggle Switch" desc="(E) S68" byte="0x000121" bit="1" ecubyteindex="45" target="1" />
+                <switch id="S69" name="D-Check Require Flag" desc="(E) S69" byte="0x000061" bit="2" ecubyteindex="19" target="1" />
+                <switch id="S70" name="Delivery Mode (Test Mode) Connector" desc="(E) S70" byte="0x000061" bit="1" ecubyteindex="19" target="1" />
+                <switch id="S71" name="Clear Memory Terminal" desc="(E) S71" byte="0x000061" bit="0" ecubyteindex="19" target="1" />
+                <switch id="S72" name="Exhaust By-Pass Valve" desc="(E) S72-Not Used." byte="0x000068" bit="7" ecubyteindex="26" target="1" />
+                <switch id="S73" name="Engine Oil Pressure Switch #1" desc="(E) S73" byte="0x000068" bit="6" ecubyteindex="26" target="1" />
+                <switch id="S74" name="Engine Oil Pressure Switch #2" desc="(E) S74" byte="0x000068" bit="5" ecubyteindex="26" target="1" />
+                <switch id="S75" name="Canister Purge Control (CPC) Solenoid Valve #2" desc="(E) S75" byte="0x000068" bit="4" ecubyteindex="26" target="1" />
+                <switch id="S76" name="Tiptronic Mode Switch" desc="(T) S76" byte="0x00006A" bit="7" ecubyteindex="28" target="2" />
+                <switch id="S77" name="Cruise Control Signal" desc="(T) S77-TCU input." byte="0x00006A" bit="6" ecubyteindex="28" target="2" />
+                <switch id="S78" name="ABS Signal" desc="(T) S78" byte="0x00006A" bit="5" ecubyteindex="28" target="2" />
+                <switch id="S79" name="Downshift Switch" desc="(T) S79" byte="0x00006A" bit="4" ecubyteindex="28" target="2" />
+                <switch id="S80" name="Stop Light Switch" desc="(T) S80" byte="0x00006A" bit="3" ecubyteindex="28" target="2" />
+                <switch id="S81" name="Upshift Switch" desc="(T) S81" byte="0x00006A" bit="2" ecubyteindex="28" target="2" />
+                <switch id="S82" name="Kick Down Switch" desc="(B) S82" byte="0x00006A" bit="1" ecubyteindex="28" target="3" />
+                <switch id="S83" name="Front Wheel Drive (FWD) Switch" desc="(T) S83-Becomes ON(1) when fuse is inserted into FWD fuse holder. TCU input." byte="0x00006A" bit="0" ecubyteindex="28" target="2" />
+                <switch id="S84" name="Power Mode Switch" desc="(T) S84" byte="0x00006B" bit="7" ecubyteindex="29" target="2" />
+                <switch id="S85" name="Hold Mode Switch" desc="(T) S85" byte="0x00006B" bit="6" ecubyteindex="29" target="2" />
+                <switch id="S86" name="1st Range Signal" desc="(T) S86" byte="0x00006B" bit="5" ecubyteindex="29" target="2" />
+                <switch id="S87" name="2nd Range Signal" desc="(T) S87" byte="0x00006B" bit="4" ecubyteindex="29" target="2" />
+                <switch id="S88" name="3rd Range Signal" desc="(T) S88" byte="0x00006B" bit="3" ecubyteindex="29" target="2" />
+                <switch id="S89" name="D Range Signal" desc="(T) S89" byte="0x00006B" bit="2" ecubyteindex="29" target="2" />
+                <switch id="S90" name="R Range Signal" desc="(T) S90" byte="0x00006B" bit="1" ecubyteindex="29" target="2" />
+                <switch id="S91" name="N/P Range Signal" desc="(T) S91" byte="0x00006B" bit="0" ecubyteindex="29" target="2" />
+                <switch id="S92" name="4th Range Signal" desc="(T) S92" byte="0x00006C" bit="7" ecubyteindex="30" target="2" />
+                <switch id="S93" name="Tiptronic Solenoid" desc="(T) S93" byte="0x00006C" bit="6" ecubyteindex="30" target="2" />
+                <switch id="S94" name="Torque Control Signal #1" desc="(T) S94" byte="0x00006C" bit="5" ecubyteindex="30" target="2" />
+                <switch id="S95" name="Torque Control Signal #2" desc="(T) S95" byte="0x00006C" bit="4" ecubyteindex="30" target="2" />
+                <switch id="S96" name="2-4 Brake Timing Solenoid" desc="(T) S96" byte="0x00006C" bit="3" ecubyteindex="30" target="2" />
+                <switch id="S97" name="Low Clutch Timing Solenoid" desc="(T) S97" byte="0x00006C" bit="2" ecubyteindex="30" target="2" />
+                <switch id="S98" name="Shift Solenoid #2" desc="(T) S98" byte="0x00006C" bit="1" ecubyteindex="30" target="2" />
+                <switch id="S99" name="Shift Solenoid #1" desc="(T) S99" byte="0x00006C" bit="0" ecubyteindex="30" target="2" />
+                <switch id="S100" name="Shift Output 4" desc="(T) S100" byte="0x00006D" bit="7" ecubyteindex="31" target="2" />
+                <switch id="S101" name="Shift Output 3" desc="(T) S101" byte="0x00006D" bit="6" ecubyteindex="31" target="2" />
+                <switch id="S102" name="Shift Output 2" desc="(T) S102" byte="0x00006D" bit="5" ecubyteindex="31" target="2" />
+                <switch id="S103" name="Shift Output 1" desc="(T) S103" byte="0x00006D" bit="4" ecubyteindex="31" target="2" />
+                <switch id="S104" name="Diagnosis Lamp" desc="(T) S104" byte="0x00006D" bit="3" ecubyteindex="31" target="2" />
+                <switch id="S105" name="Rear Differential Oil Temperature Switch" desc="(T) S105" byte="0x00006D" bit="2" ecubyteindex="31" target="2" />
+                <switch id="S106" name="ATF Temperature Lamp" desc="(T) S106" byte="0x00006D" bit="1" ecubyteindex="31" target="2" />
+                <switch id="S107" name="Shift Lock Solenoid" desc="(T) S107" byte="0x00006D" bit="0" ecubyteindex="31" target="2" />
+                <switch id="S108" name="Economy Switch" desc="(B) S108" byte="0x00006E" bit="7" ecubyteindex="32" target="3" />
+                <switch id="S109" name="Power Mode Lamp" desc="(T) S109" byte="0x00006E" bit="6" ecubyteindex="32" target="2" />
+                <switch id="S110" name="P Range" desc="(T) S110" byte="0x00006E" bit="5" ecubyteindex="32" target="2" />
+                <switch id="S111" name="Torque Control Cut Signal" desc="(T) S111" byte="0x00006E" bit="4" ecubyteindex="32" target="2" />
+                <switch id="S112" name="P/N Signal" desc="(T) S112" byte="0x00006E" bit="3" ecubyteindex="32" target="2" />
+                <switch id="S113" name="Traction Control System (TCS) Switch" desc="(T) S113" byte="0x00006E" bit="2" ecubyteindex="32" target="2" />
+                <switch id="S114" name="Hold Lamp" desc="(T) S114" byte="0x00006E" bit="1" ecubyteindex="32" target="2" />
+                <switch id="S115" name="N Range" desc="(T) S115" byte="0x00006E" bit="0" ecubyteindex="32" target="2" />
+                <switch id="S116" name="Judgement of All Wheel Drive (AWD)" desc="(T) S116" byte="0x0000D4" bit="7" ecubyteindex="35" target="2" />
+                <switch id="S117" name="Inhibitor Switch #1" desc="(T) S117" byte="0x0000D4" bit="6" ecubyteindex="35" target="2" />
+                <switch id="S118" name="Inhibitor Switch #2" desc="(T) S118" byte="0x0000D4" bit="5" ecubyteindex="35" target="2" />
+                <switch id="S119" name="Inhibitor Switch #3" desc="(T) S119" byte="0x0000D4" bit="4" ecubyteindex="35" target="2" />
+                <switch id="S120" name="Inhibitor Switch #4" desc="(T) S120" byte="0x0000D4" bit="3" ecubyteindex="35" target="2" />
+                <switch id="S121" name="Inhibitor Switch #3 Monitor" desc="(T) S121" byte="0x0000D4" bit="2" ecubyteindex="35" target="2" />
+                <switch id="S122" name="Back Lamp Relay" desc="(T) S122" byte="0x0000D4" bit="1" ecubyteindex="35" target="2" />
+                <switch id="S123" name="AT Power Relay" desc="(T) S123" byte="0x0000D4" bit="0" ecubyteindex="35" target="2" />
+                <switch id="S124" name="H and LR/C Fluid Pressure" desc="(T) S124" byte="0x0000D5" bit="5" ecubyteindex="39" target="2" />
+                <switch id="S125" name="D/C Fluid Pressure" desc="(T) S125" byte="0x0000D5" bit="4" ecubyteindex="39" target="2" />
+                <switch id="S126" name="F/B Fluid Pressure" desc="(T) S126" byte="0x0000D5" bit="3" ecubyteindex="39" target="2" />
+                <switch id="S127" name="I/C Fluid Pressure" desc="(T) S127" byte="0x0000D5" bit="2" ecubyteindex="39" target="2" />
+                <switch id="S128" name="LC/B Fluid Pressure" desc="(T) S128" byte="0x0000D5" bit="1" ecubyteindex="39" target="2" />
+                <switch id="S129" name="Signal of Identified Electronic Control Module (EC" desc="(T) S129-DCCD shows ON(1) if AUTO mode is Yes. DCCD output." byte="0x0000D5" bit="0" ecubyteindex="39" target="2" />
+                <switch id="S130" name="Idle Switch" desc="(E) S130" byte="0x000120" bit="7" ecubyteindex="44" target="1" />
+                <switch id="S131" name="Injector Driver Relay" desc="(E) S131" byte="0x000120" bit="5" ecubyteindex="44" target="1" />
+                <switch id="S132" name="Cruise Control Inhibitor Switch" desc="(E) S132-Becomes ON(1) in Park or Neutral. ECU input." byte="0x000121" bit="2" ecubyteindex="45" target="1" />
+                <switch id="S133" name="Cruise Control System Status" desc="(B) S133" byte="0x000121" bit="0" ecubyteindex="45" target="3" />
+                <switch id="S134" name="LC/B Solenoid Valve" desc="(T) S134" byte="0x000122" bit="7" ecubyteindex="46" target="2" />
+                <switch id="S135" name="LU and FWD/B Solenoid Valve" desc="(T) S135" byte="0x000122" bit="6" ecubyteindex="46" target="2" />
+                <switch id="S136" name="Center Differential Lamp 1" desc="(T) S136" byte="0x000122" bit="5" ecubyteindex="46" target="2" />
+                <switch id="S137" name="Center Differential Lamp 2" desc="(T) S137" byte="0x000122" bit="4" ecubyteindex="46" target="2" />
+                <switch id="S138" name="Center Differential Lamp 3" desc="(T) S138" byte="0x000122" bit="3" ecubyteindex="46" target="2" />
+                <switch id="S139" name="Center Differential Lamp 4" desc="(T) S139" byte="0x000122" bit="2" ecubyteindex="46" target="2" />
+                <switch id="S140" name="Center Differential Lamp 5" desc="(T) S140" byte="0x000122" bit="1" ecubyteindex="46" target="2" />
+                <switch id="S141" name="Center Differential Lamp 6" desc="(T) S141" byte="0x000122" bit="0" ecubyteindex="46" target="2" />
+                <switch id="S142" name="Parking Position Switch" desc="(T) S142" byte="0x0000D6" bit="7" ecubyteindex="53" target="2" />
+                <switch id="S143" name="Center Differential Relay" desc="(T) S143" byte="0x0000D6" bit="6" ecubyteindex="53" target="2" />
+                <switch id="S144" name="AUTO/MANUAL Mode Switch" desc="(T) S144" byte="0x0000D6" bit="5" ecubyteindex="53" target="2" />
+                <switch id="S145" name="AUTO Mode Lamp" desc="(T) S145" byte="0x0000D6" bit="4" ecubyteindex="53" target="2" />
+                <switch id="S146" name="Fwd/B Hydraulic Pressure Switch" desc="(T) S146" byte="0x0000D6" bit="3" ecubyteindex="53" target="2" />
+                <switch id="S147" name="Automatic Transmission Learning Process" desc="(T) S147" byte="0x0000D6" bit="2" ecubyteindex="53" target="2" />
+                <switch id="S148" name="Body Integrated Unit Data" desc="(E) S148" byte="0x0000D7" bit="7" ecubyteindex="54" target="1" />
+                <switch id="S149" name="Body Integrated Unit Count" desc="(E) S149" byte="0x0000D7" bit="6" ecubyteindex="54" target="1" />
+                <switch id="S150" name="Secondary Air Combi Valve Relay #2" desc="(E) S150" byte="0x0000D7" bit="4" ecubyteindex="54" target="1" />
+                <switch id="S151" name="Secondary Air Pump Relay" desc="(E) S151" byte="0x0000D7" bit="3" ecubyteindex="54" target="1" />
+                <switch id="S152" name="Secondary Air Combi Valve Relay #1" desc="(E) S152" byte="0x0000D7" bit="2" ecubyteindex="54" target="1" />
+                <switch id="S153" name="Distance Change Switch" desc="(E) S153" byte="0x0000D7" bit="1" ecubyteindex="54" target="1" />
+                <switch id="S154" name="Cruise Control Cancel Switch" desc="(E) S154" byte="0x0000D7" bit="0" ecubyteindex="54" target="1" />
+                <switch id="S155" name="Malfunction Indicator Light (MIL) ON Flag" desc="(E) S155" byte="0x000196" bit="7" ecubyteindex="56" target="1" />
+                <switch id="S156" name="Fuel Pressure Switching Solenoid Valve" desc="(E) S156" byte="0x000196" bit="6" ecubyteindex="56" target="1" />
+                <switch id="S157" name="Oil Level Switch" desc="(E) S157" byte="0x000196" bit="5" ecubyteindex="56" target="1" />
+                <switch id="S158" name="Boost Pressure Control Mode" desc="(E) S158" byte="0x000197" bit="7" ecubyteindex="57" target="1" />
+                <switch id="S159" name="Exhaust Gas Recirculation (EGR) Control Mode" desc="(E) S159" byte="0x000197" bit="6" ecubyteindex="57" target="1" />
+                <switch id="S160" name="Glow Relay" desc="(E) S160" byte="0x000197" bit="5" ecubyteindex="57" target="1" />
+                <switch id="S161" name="Swirl Control Valve" desc="(E) S161" byte="0x000197" bit="4" ecubyteindex="57" target="1" />
+                <switch id="S162" name="Sub Fuel Pump Relay" desc="(E) S162" byte="0x000197" bit="3" ecubyteindex="57" target="1" />
+                <switch id="S163" name="Request for 'Compressor ON'" desc="(E) S163" byte="0x000197" bit="2" ecubyteindex="57" target="1" />
+                <switch id="S164" name="Fuel Pump Learning" desc="(E) S164" byte="0x000197" bit="1" ecubyteindex="57" target="1" />
+                <switch id="S165" name="Injector Learning" desc="(E) S165" byte="0x000197" bit="0" ecubyteindex="57" target="1" />
+                <switch id="S166" name="Self-Shut Relay Output" desc="(T) S166" byte="0x0001CD" bit="7" ecubyteindex="67" target="2" />
+                <switch id="S167" name="Lock-Up ON/OFF Solenoid Valve" desc="(T) S167" byte="0x0001CD" bit="6" ecubyteindex="67" target="2" />
+                <switch id="S168" name="Exhaust Gas Recirculation (EGR) Learning" desc="(E) S168" byte="0x0001CE" bit="7" ecubyteindex="69" target="1" />
+                <switch id="S169" name="Fuel Cut" desc="(E) S169" byte="0x0001CE" bit="6" ecubyteindex="69" target="1" />
+                <switch id="S170" name="Fuel Pump Mode" desc="(E) S170" byte="0x0001CE" bit="5" ecubyteindex="69" target="1" />
+                <switch id="S171" name="Clutch Switch for Smart-System" desc="(E) S171" byte="0x0001CE" bit="4" ecubyteindex="69" target="1" />
+                <switch id="S172" name="Diesel Particulate Filter (DPF) Regeneration" desc="(E) S172" byte="0x0001CE" bit="3" ecubyteindex="69" target="1" />
             </switches>
             <ecuparams>
                 <ecuparam id="E1" name="IAM*" desc="E1-KCA = (KA (max) map value * IAM) + FBKC + FLKC. Total Timing = KCA + base timing + timing compensations" target="1">
@@ -10059,6 +10077,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF2538</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF2538</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF2538</address>
                     </ecu>
@@ -10356,6 +10377,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF3048</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF2D28</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF30B8</address>
                     </ecu>
@@ -10365,8 +10389,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF2D50</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF3188</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF31A4</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF3200</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF2DCC</address>
@@ -10820,6 +10850,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6B30</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6B30</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6B30</address>
                     </ecu>
@@ -11126,6 +11159,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF65D0</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF6628</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF6594</address>
                     </ecu>
@@ -11135,8 +11171,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF6680</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF63E8</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF63F0</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF63F4</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF66D4</address>
@@ -11584,6 +11626,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address>0xFF9449</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address>0xFF9449</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address>0xFF9451</address>
                     </ecu>
@@ -11890,6 +11935,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFFA3F1</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF9B51</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFFA611</address>
                     </ecu>
@@ -11899,14 +11947,23 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF9DBD</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFFA4D1</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFFA5BD</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFFA9C5</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF9E75</address>
                     </ecu>
                     <ecu id="7442594007">
                         <address>0xFF9E11</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address>0xFF9A75</address>
                     </ecu>
                     <conversions>
                         <conversion units="status" expr="x+6" format="0" />
@@ -12243,6 +12300,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6434</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6434</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6434</address>
                     </ecu>
@@ -12462,6 +12522,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF5EA4</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF5F0C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF5EA4</address>
                     </ecu>
@@ -12471,7 +12534,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF5F0C</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF5CA0</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF5CA0</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF5CA0</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -12821,6 +12890,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6428</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6428</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6428</address>
                     </ecu>
@@ -13040,6 +13112,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF5E94</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF5EFC</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF5E94</address>
                     </ecu>
@@ -13049,7 +13124,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF5EFC</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF5C90</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF5C90</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF5C90</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -13401,6 +13482,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF642C</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF642C</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF642C</address>
                     </ecu>
@@ -13620,6 +13704,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF5E9C</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF5F04</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF5E9C</address>
                     </ecu>
@@ -13629,7 +13716,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF5F04</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF5C98</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF5C98</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF5C98</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -13983,6 +14076,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6430</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6430</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6430</address>
                     </ecu>
@@ -14202,6 +14298,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF5EA0</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF5F08</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF5EA0</address>
                     </ecu>
@@ -14211,7 +14310,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF5F08</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF5C9C</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF5C9C</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF5C9C</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -14576,6 +14681,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6A10</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6A10</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6A10</address>
                     </ecu>
@@ -14873,6 +14981,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF64B8</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF6520</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF647C</address>
                     </ecu>
@@ -14882,7 +14993,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF6578</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF62CC</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF62D8</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF62D8</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -15322,6 +15439,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7BD0</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7BD0</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7BD8</address>
                     </ecu>
@@ -15619,6 +15739,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF7F48</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7C78</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7F30</address>
                     </ecu>
@@ -15628,8 +15751,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF7C68</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7DC4</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7DD0</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7DF8</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7C68</address>
@@ -16071,6 +16200,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7C34</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7C34</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7C3C</address>
                     </ecu>
@@ -16371,6 +16503,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF7FB8</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7CE8</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7FA0</address>
                     </ecu>
@@ -16380,8 +16515,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF7CD8</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7E34</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7E40</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7E68</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7CD8</address>
@@ -16817,6 +16958,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7C54</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7C54</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7C5C</address>
                     </ecu>
@@ -17117,6 +17261,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF7FE4</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7D14</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7FCC</address>
                     </ecu>
@@ -17126,8 +17273,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF7D04</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7E60</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7E6C</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7E94</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7D04</address>
@@ -17526,6 +17679,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7BCC</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7BCC</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7BD4</address>
                     </ecu>
@@ -17814,6 +17970,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF7F44</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7C74</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7F2C</address>
                     </ecu>
@@ -17823,8 +17982,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF7C64</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7DC0</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7DCC</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7DF4</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7C64</address>
@@ -18272,6 +18437,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF24B4</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF24B4</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF24B4</address>
                     </ecu>
@@ -18578,6 +18746,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF2FB4</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF2C9C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF3024</address>
                     </ecu>
@@ -18587,8 +18758,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF2CC4</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF30E0</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF3110</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF3158</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF2D40</address>
@@ -19036,6 +19213,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF24BC</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF24BC</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF24BC</address>
                     </ecu>
@@ -19342,6 +19522,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF2FBC</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF2CA4</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF302C</address>
                     </ecu>
@@ -19351,8 +19534,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF2CCC</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF30E8</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF3118</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF3160</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF2D48</address>
@@ -19800,6 +19989,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF24C4</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF24C4</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF24C4</address>
                     </ecu>
@@ -20106,6 +20298,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF2FC4</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF2CAC</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF3034</address>
                     </ecu>
@@ -20115,8 +20310,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF2CD4</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF30F0</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF3120</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF3168</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF2D50</address>
@@ -20564,6 +20765,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF24CC</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF24CC</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF24CC</address>
                     </ecu>
@@ -20870,6 +21074,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF2FCC</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF2CB4</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF303C</address>
                     </ecu>
@@ -20879,8 +21086,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF2CDC</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF30F8</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF3128</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF3170</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF2D58</address>
@@ -21328,6 +21541,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7518</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7518</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7518</address>
                     </ecu>
@@ -21634,6 +21850,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF7650</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF73C8</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7638</address>
                     </ecu>
@@ -21643,8 +21862,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF73A4</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7498</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF74B8</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF74CC</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF73AC</address>
@@ -22011,6 +22236,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address>0xFF8270</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address>0xFF8270</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address>0xFF8278</address>
                     </ecu>
@@ -22299,6 +22527,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFF8654</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF8384</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF863C</address>
                     </ecu>
@@ -22308,8 +22539,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF8388</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFF8544</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFF84D8</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFF8578</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF837C</address>
@@ -22757,6 +22994,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF78E0</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF78E0</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF78E8</address>
                     </ecu>
@@ -23063,6 +23303,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF71F0</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF6F7C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF71D8</address>
                     </ecu>
@@ -23072,8 +23315,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF6F58</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7038</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7058</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF706C</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF6F50</address>
@@ -23779,6 +24028,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6642584007">
                         <address length="4">0xFF6420</address>
                     </ecu>
+                    <ecu id="6642784007">
+                        <address length="4">0xFF6438</address>
+                    </ecu>
                     <ecu id="6652784007">
                         <address length="4">0xFF6438</address>
                     </ecu>
@@ -23797,6 +24049,12 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6912783007">
                         <address length="4">0xFF6394</address>
                     </ecu>
+                    <ecu id="6E12786007">
+                        <address length="4">0xFF63E8</address>
+                    </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF6450</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF63AC</address>
                     </ecu>
@@ -23805,6 +24063,12 @@ Added ECU ID: 74A2584007 to extended parameters
                     </ecu>
                     <ecu id="7402744007">
                         <address length="4">0xFF64A8</address>
+                    </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF61FC</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF6208</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF64F8</address>
@@ -24254,6 +24518,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6970</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6970</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6970</address>
                     </ecu>
@@ -24560,6 +24827,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF63E8</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF6450</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF63AC</address>
                     </ecu>
@@ -24569,7 +24839,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF64A8</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF61FC</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF6208</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF6208</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -25020,6 +25296,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7A1C</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7A1C</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7A24</address>
                     </ecu>
@@ -25326,6 +25605,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF7C90</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF79C0</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7C78</address>
                     </ecu>
@@ -25335,8 +25617,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF79A4</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7B04</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7B0C</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7B38</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF79A4</address>
@@ -25784,6 +26072,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6A20</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6A20</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6A20</address>
                     </ecu>
@@ -26090,6 +26381,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF64C0</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF6528</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF6484</address>
                     </ecu>
@@ -26099,7 +26393,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF6580</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF62D4</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF62E0</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF62E0</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -26107,6 +26407,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF6548</address>
+                    </ecu>
+                    <ecu id="74A2584007">
+                        <address length="4">0xFF6528</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x" format="0.000" />
@@ -26548,6 +26851,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF77AC</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF77AC</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF77B0</address>
                     </ecu>
@@ -26854,6 +27160,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF79E4</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7714</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF79CC</address>
                     </ecu>
@@ -26863,8 +27172,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF76F8</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7844</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7860</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7878</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF76F8</address>
@@ -27294,6 +27609,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7EDC</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7EDC</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7EE4</address>
                     </ecu>
@@ -27600,6 +27918,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF82AC</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7FDC</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF8294</address>
                     </ecu>
@@ -27609,8 +27930,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF7FD8</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF812C</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF8134</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF8160</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7FCC</address>
@@ -28046,6 +28373,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7EC4</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7EC4</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7ECC</address>
                     </ecu>
@@ -28352,6 +28682,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF82A4</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7FD4</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF828C</address>
                     </ecu>
@@ -28361,8 +28694,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF7FD0</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF8124</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF812C</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF8158</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7FC4</address>
@@ -28798,6 +29137,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address>0xFF7C5A</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address>0xFF7C5A</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address>0xFF7C62</address>
                     </ecu>
@@ -29095,6 +29437,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFF7FF0</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF7D20</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF7FD8</address>
                     </ecu>
@@ -29104,8 +29449,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF7D10</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFF7E6C</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFF7E78</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFF7EA0</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF7D10</address>
@@ -29547,6 +29898,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address>0xFF6F09</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address>0xFF6F09</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address>0xFF6F09</address>
                     </ecu>
@@ -29853,6 +30207,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFF69D9</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF6A31</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF69BD</address>
                     </ecu>
@@ -29862,8 +30219,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF6AAD</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFF67FD</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFF6821</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFF6829</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF6B01</address>
@@ -30317,6 +30680,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF78CC</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF78CC</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF78D4</address>
                     </ecu>
@@ -30567,7 +30933,7 @@ Added ECU ID: 74A2584007 to extended parameters
                         <address length="4">0xFF7B18</address>
                     </ecu>
                     <ecu id="5C42504007">
-                        <address length="4">0xFF784C</address>
+                        <address length="4">0xFF785C</address>
                     </ecu>
                     <ecu id="5C42584007">
                         <address length="4">0xFF784C</address>
@@ -30620,6 +30986,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF7B44</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7874</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7B2C</address>
                     </ecu>
@@ -30629,8 +30998,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF7858</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF79A8</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF79C0</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF79DC</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7858</address>
@@ -31078,6 +31453,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address>0xFF7521</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address>0xFF7521</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address>0xFF7521</address>
                     </ecu>
@@ -31384,6 +31762,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFF7657</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF73CF</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF763F</address>
                     </ecu>
@@ -31393,8 +31774,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF73AB</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFF749F</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFF74BF</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFF74D3</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF73B3</address>
@@ -34268,6 +34655,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6450</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6450</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6450</address>
                     </ecu>
@@ -34487,6 +34877,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF5EB8</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF5F20</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF5EB8</address>
                     </ecu>
@@ -34496,7 +34889,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF5F20</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF5CB4</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF5CB4</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF5CB4</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -34748,6 +35147,9 @@ Added ECU ID: 74A2584007 to extended parameters
                         <address length="2">0xFF708C</address>
                     </ecu>
                     <ecu id="4B04585007">
+                        <address length="2">0xFF6F1C</address>
+                    </ecu>
+                    <ecu id="4B04785007">
                         <address length="2">0xFF6F1C</address>
                     </ecu>
                     <ecu id="4B04785207">
@@ -35127,6 +35529,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F1E</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F1E</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F1E</address>
                     </ecu>
@@ -35502,6 +35907,9 @@ Added ECU ID: 74A2584007 to extended parameters
                         <address length="2">0xFF7090</address>
                     </ecu>
                     <ecu id="4B04585007">
+                        <address length="2">0xFF6F20</address>
+                    </ecu>
+                    <ecu id="4B04785007">
                         <address length="2">0xFF6F20</address>
                     </ecu>
                     <ecu id="4B04785207">
@@ -36076,6 +36484,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7230</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7230</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7230</address>
                     </ecu>
@@ -36376,6 +36787,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF74C0</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7248</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF74A8</address>
                     </ecu>
@@ -36385,8 +36799,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF7224</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7308</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7328</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF733C</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7218</address>
@@ -36744,6 +37164,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F24</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F24</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F24</address>
                     </ecu>
@@ -37044,6 +37467,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF6A06</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A5E</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69EA</address>
                     </ecu>
@@ -37053,8 +37479,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="2">0xFF6ADA</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF683E</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF6862</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF686E</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B42</address>
@@ -37385,6 +37817,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F28</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F28</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F28</address>
                     </ecu>
@@ -37667,6 +38102,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF6A0A</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A62</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69EE</address>
                     </ecu>
@@ -37676,8 +38114,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="2">0xFF6ADE</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF6842</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF6866</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF6872</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B46</address>
@@ -38125,6 +38569,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7604</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7604</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7604</address>
                     </ecu>
@@ -38425,6 +38872,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF7760</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7490</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7748</address>
                     </ecu>
@@ -38434,8 +38884,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF746C</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF75A8</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF75C8</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF75DC</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7474</address>
@@ -38795,6 +39251,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F2A</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F2A</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F2A</address>
                     </ecu>
@@ -39095,6 +39554,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF6A10</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A66</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69F4</address>
                     </ecu>
@@ -39104,8 +39566,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="2">0xFF6AE2</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF6848</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF686A</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF6878</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B4A</address>
@@ -39246,6 +39714,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFF6A22</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF6A77</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF6A06</address>
                     </ecu>
@@ -39255,8 +39726,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF6AF3</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFF685A</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFF687B</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFF688A</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF6B5B</address>
@@ -39507,6 +39984,9 @@ Added ECU ID: 74A2584007 to extended parameters
                         <address length="2">0xFF70A0</address>
                     </ecu>
                     <ecu id="4B04585007">
+                        <address length="2">0xFF6F30</address>
+                    </ecu>
+                    <ecu id="4B04785007">
                         <address length="2">0xFF6F30</address>
                     </ecu>
                     <ecu id="4B04785207">
@@ -40159,6 +40639,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6642584007">
                         <address length="2">0xFF6A14</address>
                     </ecu>
+                    <ecu id="6642784007">
+                        <address length="2">0xFF6A2C</address>
+                    </ecu>
                     <ecu id="6652784007">
                         <address length="2">0xFF6A2C</address>
                     </ecu>
@@ -40174,11 +40657,23 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6912783007">
                         <address length="2">0xFF69B4</address>
                     </ecu>
+                    <ecu id="6E12786007">
+                        <address length="2">0xFF69EC</address>
+                    </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A44</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69D0</address>
                     </ecu>
                     <ecu id="7402744007">
                         <address length="2">0xFF6AC0</address>
+                    </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF6824</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF6854</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B28</address>
@@ -40460,6 +40955,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F3E</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F3E</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F3E</address>
                     </ecu>
@@ -40733,6 +41231,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF69EC</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A44</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69D0</address>
                     </ecu>
@@ -40742,8 +41243,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="2">0xFF6AC0</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF6824</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF6848</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF6854</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B28</address>
@@ -40998,6 +41505,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F42</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F42</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F42</address>
                     </ecu>
@@ -41217,6 +41727,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF6A1C</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A72</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF6A00</address>
                     </ecu>
@@ -41226,8 +41739,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="2">0xFF6AEE</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF6854</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF6876</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF6884</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B56</address>
@@ -41676,6 +42195,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6C68</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6C68</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6C68</address>
                     </ecu>
@@ -41976,6 +42498,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF670C</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF6764</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF66F0</address>
                     </ecu>
@@ -41985,8 +42510,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF67E0</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF6528</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF654C</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF6554</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF6834</address>
@@ -42346,6 +42877,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F44</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F44</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F44</address>
                     </ecu>
@@ -42646,6 +43180,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF69F4</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A4C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69D8</address>
                     </ecu>
@@ -42655,8 +43192,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="2">0xFF6AC8</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF682C</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF6850</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF685C</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B30</address>
@@ -42911,6 +43454,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F4C</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F4C</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F4C</address>
                     </ecu>
@@ -43130,6 +43676,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF69EE</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A46</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69D2</address>
                     </ecu>
@@ -43139,8 +43688,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="2">0xFF6AC2</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF6826</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF684A</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF6856</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B2A</address>
@@ -43391,6 +43946,9 @@ Added ECU ID: 74A2584007 to extended parameters
                         <address>0xFF70C6</address>
                     </ecu>
                     <ecu id="4B04585007">
+                        <address>0xFF6F56</address>
+                    </ecu>
+                    <ecu id="4B04785007">
                         <address>0xFF6F56</address>
                     </ecu>
                     <ecu id="4B04785207">
@@ -43651,6 +44209,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFF6A2C</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF6A81</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF6A10</address>
                     </ecu>
@@ -43660,8 +44221,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF6AFD</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFF6864</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFF6885</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFF6894</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF6B65</address>
@@ -43912,6 +44479,9 @@ Added ECU ID: 74A2584007 to extended parameters
                         <address>0xFF70C9</address>
                     </ecu>
                     <ecu id="4B04585007">
+                        <address>0xFF6F59</address>
+                    </ecu>
+                    <ecu id="4B04785007">
                         <address>0xFF6F59</address>
                     </ecu>
                     <ecu id="4B04785207">
@@ -44172,6 +44742,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFF6A2F</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF6A84</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF6A13</address>
                     </ecu>
@@ -44181,8 +44754,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF6B00</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFF6867</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFF6888</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFF6897</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF6B68</address>
@@ -44433,6 +45012,9 @@ Added ECU ID: 74A2584007 to extended parameters
                         <address>0xFF70CB</address>
                     </ecu>
                     <ecu id="4B04585007">
+                        <address>0xFF6F5B</address>
+                    </ecu>
+                    <ecu id="4B04785007">
                         <address>0xFF6F5B</address>
                     </ecu>
                     <ecu id="4B04785207">
@@ -44693,6 +45275,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFF6A2E</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF6A83</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF6A12</address>
                     </ecu>
@@ -44702,8 +45287,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF6AFF</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFF6866</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFF6887</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFF6896</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF6B67</address>
@@ -45094,11 +45685,20 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF69FE</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A56</address>
+                    </ecu>
                     <ecu id="7402744007">
                         <address length="2">0xFF6AD2</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF6836</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF685A</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF6866</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B3A</address>
@@ -45784,6 +46384,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address>0xFF6A38</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address>0xFF6A8D</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF6A1C</address>
                     </ecu>
@@ -45793,8 +46396,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address>0xFF6B09</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address>0xFF6870</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address>0xFF6891</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address>0xFF68A0</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address>0xFF6B71</address>
@@ -46236,6 +46845,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF6974</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF6974</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF6974</address>
                     </ecu>
@@ -46542,6 +47154,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF63EC</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF6454</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF63B0</address>
                     </ecu>
@@ -46551,7 +47166,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF64AC</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF6200</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF620C</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF620C</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -46877,6 +47498,9 @@ Added ECU ID: 74A2584007 to extended parameters
                         <address>0xFF7D18</address>
                     </ecu>
                     <ecu id="4B04585007">
+                        <address>0xFF7BA8</address>
+                    </ecu>
+                    <ecu id="4B04785007">
                         <address>0xFF7BA8</address>
                     </ecu>
                     <ecu id="4B04785207">
@@ -47376,6 +48000,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF71A8</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF71A8</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF71A8</address>
                     </ecu>
@@ -47585,6 +48212,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7C2C</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7C2C</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7C34</address>
                     </ecu>
@@ -47741,6 +48371,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF7FB0</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7CE0</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7F98</address>
                     </ecu>
@@ -47750,8 +48383,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF7CD0</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7E2C</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7E38</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7E60</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7CD0</address>
@@ -47797,6 +48436,9 @@ Added ECU ID: 74A2584007 to extended parameters
                         <address length="4">0xFF649C</address>
                     </ecu>
                     <ecu id="4B04585007">
+                        <address length="4">0xFF6474</address>
+                    </ecu>
+                    <ecu id="4B04785007">
                         <address length="4">0xFF6474</address>
                     </ecu>
                     <ecu id="4B04785207">
@@ -47955,6 +48597,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF5E98</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF5F00</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF5E98</address>
                     </ecu>
@@ -47964,7 +48609,13 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF5F00</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF5C94</address>
+                    </ecu>
                     <ecu id="7412597007">
+                        <address length="4">0xFF5C94</address>
+                    </ecu>
+                    <ecu id="7412597207">
                         <address length="4">0xFF5C94</address>
                     </ecu>
                     <ecu id="7432744007">
@@ -48415,6 +49066,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7240</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7240</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7240</address>
                     </ecu>
@@ -48721,6 +49375,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF75A8</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7330</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7590</address>
                     </ecu>
@@ -48730,8 +49387,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF730C</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF73F0</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7410</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7424</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7300</address>
@@ -49091,6 +49754,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F4A</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F4A</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F4A</address>
                     </ecu>
@@ -49397,6 +50063,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF6A08</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A60</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69EC</address>
                     </ecu>
@@ -49406,8 +50075,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="2">0xFF6ADC</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF6840</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF6864</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF6870</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B44</address>
@@ -49857,6 +50532,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="4">0xFF7178</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="4">0xFF7178</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="4">0xFF7178</address>
                     </ecu>
@@ -50163,6 +50841,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="4">0xFF71B0</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF6F3C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7198</address>
                     </ecu>
@@ -50172,8 +50853,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="4">0xFF6F18</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF6FF8</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7018</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF702C</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF6F10</address>
@@ -50536,6 +51223,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="4B04585007">
                         <address length="2">0xFF6F2E</address>
                     </ecu>
+                    <ecu id="4B04785007">
+                        <address length="2">0xFF6F2E</address>
+                    </ecu>
                     <ecu id="4B04785207">
                         <address length="2">0xFF6F2E</address>
                     </ecu>
@@ -50842,6 +51532,9 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="6E12786007">
                         <address length="2">0xFF6A02</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="2">0xFF6A5A</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69E6</address>
                     </ecu>
@@ -50851,8 +51544,14 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="7402744007">
                         <address length="2">0xFF6AD6</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="2">0xFF683A</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="2">0xFF685E</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="2">0xFF686A</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="2">0xFF6B3E</address>
@@ -50870,11 +51569,20 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="5B42564107">
                         <address length="4">0xFF7BC0</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7A20</address>
+                    </ecu>
                     <ecu id="7402744007">
                         <address length="4">0xFF7A04</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7B64</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7B6C</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7B98</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7A04</address>
@@ -50892,6 +51600,9 @@ Added ECU ID: 74A2584007 to extended parameters
                 <ecuparam id="E126" name="Timing Compensation IAT B (4-byte)*" desc="E126-The current active IAT B timing compensation." target="1">
                     <ecu id="5B42564107">
                         <address length="4">0xFF7CCC</address>
+                    </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7B40</address>
                     </ecu>
                     <ecu id="7402744007">
                         <address length="4">0xFF7B30</address>
@@ -50916,11 +51627,20 @@ Added ECU ID: 74A2584007 to extended parameters
                     <ecu id="5B42564107">
                         <address length="4">0xFF7D04</address>
                     </ecu>
+                    <ecu id="7142504007">
+                        <address length="4">0xFF7B78</address>
+                    </ecu>
                     <ecu id="7402744007">
                         <address length="4">0xFF7B68</address>
                     </ecu>
+                    <ecu id="7412587107">
+                        <address length="4">0xFF7CC4</address>
+                    </ecu>
                     <ecu id="7412597007">
                         <address length="4">0xFF7CD0</address>
+                    </ecu>
+                    <ecu id="7412597207">
+                        <address length="4">0xFF7CF8</address>
                     </ecu>
                     <ecu id="7432744007">
                         <address length="4">0xFF7B68</address>

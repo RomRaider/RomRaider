@@ -77,6 +77,7 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
     				));
 	    	}
     	}
+    	connector.dispose();
     }
 
     public String getId() {

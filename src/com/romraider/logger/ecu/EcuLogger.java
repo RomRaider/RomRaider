@@ -772,11 +772,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void clearAllSelectedParameters(ParameterListTableModel paramListTableModel) {
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
-            LoggerData loggerData = row.getLoggerData();
-            if (loggerData.isSelected() && row.isSelected()) {
-                paramListTableModel.selectParam(loggerData, false);
+            if (row.isSelected()) {
+            	row.getLoggerData().setSelected(false);
+                row.setSelected(false);
+                paramListTableModel.selectParam(row.getLoggerData(), false);
             }
         }
+        paramListTableModel.fireTableDataChanged();
     }
 
     private JButton buildUnselectAllButton() {
@@ -797,15 +799,23 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             private static final long serialVersionUID = 723232894767995265L;
 
             public void actionPerformed(ActionEvent e) {
-            	clearAllSelectedParameters(dataTabParamListTableModel);
-            	clearAllSelectedParameters(dataTabSwitchListTableModel);
-            	clearAllSelectedParameters(dataTabExternalListTableModel);
-            	clearAllSelectedParameters(graphTabParamListTableModel);
-            	clearAllSelectedParameters(graphTabSwitchListTableModel);
-            	clearAllSelectedParameters(graphTabExternalListTableModel);
-            	clearAllSelectedParameters(dashboardTabParamListTableModel);
-            	clearAllSelectedParameters(dashboardTabSwitchListTableModel);
-            	clearAllSelectedParameters(dashboardTabExternalListTableModel);
+            	try {
+	            	clearAllSelectedParameters(dataTabParamListTableModel);
+	            	clearAllSelectedParameters(dataTabSwitchListTableModel);
+	            	clearAllSelectedParameters(dataTabExternalListTableModel);
+	            	clearAllSelectedParameters(graphTabParamListTableModel);
+	            	clearAllSelectedParameters(graphTabSwitchListTableModel);
+	            	clearAllSelectedParameters(graphTabExternalListTableModel);
+	            	clearAllSelectedParameters(dashboardTabParamListTableModel);
+	            	clearAllSelectedParameters(dashboardTabSwitchListTableModel);
+	            	clearAllSelectedParameters(dashboardTabExternalListTableModel);
+            	}
+            	catch (Exception cae) {
+            		LOGGER.error("Un-select ALL error: " + cae);
+            	}
+            	finally {
+            		LOGGER.info("Un-select all parameters by user action");
+            	}
             }
         });
         return button;
