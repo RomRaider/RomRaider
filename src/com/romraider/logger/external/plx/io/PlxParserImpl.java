@@ -76,7 +76,7 @@ public final class PlxParserImpl implements PlxParser {
             case EXPECTING_SECOND_HALF_OF_VALUE:
                 state = EXPECTING_FIRST_HALF_OF_SENSOR_TYPE;
                 int rawValue = (partialValue << 6) | b;
-            	LOGGER.info("PLX sensor: " + sensorType + " instance: " + instance + " value: " + rawValue );
+            	LOGGER.trace("PLX sensor: " + sensorType + " instance: " + instance + " value: " + rawValue );
            		return new PlxResponse(sensorType, instance, rawValue);	
         }
         return null;

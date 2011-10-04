@@ -85,7 +85,7 @@ public final class MTSRunner implements MTSEvents, Stoppable {
                 if (mts.inputCount() > 0) {
                     while (!stop) {
                         // wait for newData() event to occur
-                        sleep(60000L);
+                        sleep(100L);
                     }
                 }
                 else {

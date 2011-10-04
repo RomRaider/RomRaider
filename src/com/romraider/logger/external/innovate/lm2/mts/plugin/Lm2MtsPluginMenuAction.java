@@ -45,8 +45,11 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
         		null,
                 getPorts(),
                 dataSource.getPort());
-        port = port.substring(0, 1);
-        if (port != null && port.length() > 0) dataSource.setPort(port);
+
+        if (port != null && port.length() > 0) {
+            port = port.substring(0, 1);
+            dataSource.setPort(port);
+        }
     }
 
     private String[] getPorts() {
