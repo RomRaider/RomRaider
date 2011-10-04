@@ -282,6 +282,11 @@ public final class DOMSettingsBuilder {
         filelogging.setAttribute("absolutetimestamp", String.valueOf(settings.isFileLoggingAbsoluteTimestamp()));
         loggerSettings.appendChild(filelogging);
 
+        // debug level
+        IIOMetadataNode debug = new IIOMetadataNode("debug");
+        debug.setAttribute("level", settings.getLoggerDebuggingLevel());
+        loggerSettings.appendChild(debug);
+
         // plugin ports
         Map<String, String> pluginPorts = settings.getLoggerPluginPorts();
         if (pluginPorts != null && !pluginPorts.isEmpty()) {

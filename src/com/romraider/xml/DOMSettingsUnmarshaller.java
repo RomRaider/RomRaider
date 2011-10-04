@@ -246,6 +246,9 @@ public final class DOMSettingsUnmarshaller {
                 settings.setFileLoggingControllerSwitchActive(unmarshallAttribute(n, "active", true));
                 settings.setFileLoggingAbsoluteTimestamp(unmarshallAttribute(n, "absolutetimestamp", false));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("debug")) {
+            	settings.setLoggerDebuggingLevel(unmarshallAttribute(n, "level", "info"));
+
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("plugins")) {
                 Map<String, String> pluginPorts = new HashMap<String, String>();
                 NodeList pluginNodes = n.getChildNodes();

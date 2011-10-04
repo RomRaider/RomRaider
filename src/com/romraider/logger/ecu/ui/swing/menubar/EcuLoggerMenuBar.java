@@ -20,6 +20,34 @@
 package com.romraider.logger.ecu.ui.swing.menubar;
 
 import static com.romraider.Version.PRODUCT_NAME;
+import static java.awt.event.InputEvent.CTRL_MASK;
+import static java.awt.event.InputEvent.SHIFT_MASK;
+import static java.awt.event.KeyEvent.VK_A;
+import static java.awt.event.KeyEvent.VK_C;
+import static java.awt.event.KeyEvent.VK_D;
+import static java.awt.event.KeyEvent.VK_F;
+import static java.awt.event.KeyEvent.VK_F7;
+import static java.awt.event.KeyEvent.VK_H;
+import static java.awt.event.KeyEvent.VK_I;
+import static java.awt.event.KeyEvent.VK_L;
+import static java.awt.event.KeyEvent.VK_M;
+import static java.awt.event.KeyEvent.VK_O;
+import static java.awt.event.KeyEvent.VK_P;
+import static java.awt.event.KeyEvent.VK_R;
+import static java.awt.event.KeyEvent.VK_S;
+import static java.awt.event.KeyEvent.VK_T;
+import static java.awt.event.KeyEvent.VK_U;
+import static java.awt.event.KeyEvent.VK_X;
+import static javax.swing.KeyStroke.getKeyStroke;
+
+import java.util.List;
+
+import javax.swing.Action;
+import javax.swing.ButtonGroup;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JSeparator;
+
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.ui.swing.menubar.action.DisconnectAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ExitAction;
@@ -28,6 +56,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.LoadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileAbsoluteTimestampAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileControllerSwitchAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileLocationAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebuggingLevelAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDefinitionLocationAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ReloadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ResetConnectionAction;
@@ -40,29 +69,6 @@ import com.romraider.swing.menubar.Menu;
 import com.romraider.swing.menubar.MenuItem;
 import com.romraider.swing.menubar.RadioButtonMenuItem;
 import com.romraider.swing.menubar.action.AboutAction;
-import static java.awt.event.KeyEvent.CTRL_MASK;
-import static java.awt.event.KeyEvent.SHIFT_MASK;
-import static java.awt.event.KeyEvent.VK_A;
-import static java.awt.event.KeyEvent.VK_C;
-import static java.awt.event.KeyEvent.VK_D;
-import static java.awt.event.KeyEvent.VK_F;
-import static java.awt.event.KeyEvent.VK_F7;
-import static java.awt.event.KeyEvent.VK_H;
-import static java.awt.event.KeyEvent.VK_L;
-import static java.awt.event.KeyEvent.VK_M;
-import static java.awt.event.KeyEvent.VK_O;
-import static java.awt.event.KeyEvent.VK_P;
-import static java.awt.event.KeyEvent.VK_R;
-import static java.awt.event.KeyEvent.VK_S;
-import static java.awt.event.KeyEvent.VK_T;
-import static java.awt.event.KeyEvent.VK_U;
-import static java.awt.event.KeyEvent.VK_X;
-import static javax.swing.KeyStroke.getKeyStroke;
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JSeparator;
-import java.util.List;
 
 public class EcuLoggerMenuBar extends JMenuBar {
 
@@ -117,6 +123,21 @@ public class EcuLoggerMenuBar extends JMenuBar {
         // help menu stuff
         JMenu helpMenu = new Menu("Help", VK_H);
         helpMenu.add(new MenuItem("Update Logger Definition...", new UpdateLoggerDefAction(logger), VK_U));
+        helpMenu.add(new JSeparator());
+        ButtonGroup group = new ButtonGroup();
+        JMenu debug = new JMenu("Debugging Level");
+        debug.setMnemonic(VK_D);
+        debug.setToolTipText("Level of detail recorded in the rr_system.log file");
+        RadioButtonMenuItem info = new RadioButtonMenuItem("INFO - normal", VK_I, null, new LoggerDebuggingLevelAction(logger, "INFO"), logger.getSettings().getLoggerDebuggingLevel().equalsIgnoreCase("INFO"));
+        RadioButtonMenuItem db = new RadioButtonMenuItem("DEBUG - detailed", VK_D, null, new LoggerDebuggingLevelAction(logger, "DEBUG"), logger.getSettings().getLoggerDebuggingLevel().equalsIgnoreCase("DEBUG"));
+        RadioButtonMenuItem trace = new RadioButtonMenuItem("TRACE - verbose", VK_T, null, new LoggerDebuggingLevelAction(logger, "TRACE"), logger.getSettings().getLoggerDebuggingLevel().equalsIgnoreCase("TRACE"));
+        group.add(info);
+        group.add(db);
+        group.add(trace);
+        debug.add(info);
+        debug.add(db);
+        debug.add(trace);
+        helpMenu.add(debug);
         helpMenu.add(new JSeparator());
         helpMenu.add(new MenuItem("About " + PRODUCT_NAME, new AboutAction(logger), VK_A));
         add(helpMenu);

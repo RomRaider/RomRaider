@@ -88,6 +88,7 @@ public class Settings implements Serializable {
 	private byte loggerDestinationId = 0x10;
 	private boolean fastPoll = true;
 	private double loggerDividerLocation = 400;
+	private String loggerDebuggingLevel = "info";
 
 
     public Settings() {
@@ -482,5 +483,13 @@ public class Settings implements Serializable {
 
 	public String getLogfileNameText() {
 		return logfileNameText;
+	}
+
+	public void setLoggerDebuggingLevel(String level) {
+		this.loggerDebuggingLevel  = level;
+	}
+
+	public String getLoggerDebuggingLevel() {
+		return loggerDebuggingLevel;
 	}
 }

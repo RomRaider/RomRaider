@@ -42,7 +42,11 @@ public final class MTSConnector {
      * across all the found ports.
      */
     public MTSConnector() {
-        setMtsPorts();
+        try {
+        	setMtsPorts();
+        }
+        catch (NullPointerException e){
+       	}
     }
 
     public MTSConnector(int mtsPort) {
@@ -68,8 +72,12 @@ public final class MTSConnector {
 
     private void createMts() {
       // create mts interface
-      this.mts = createMTS();
-      mts.disconnect();
+    	try {
+    	      this.mts = createMTS();
+    	      mts.disconnect();
+    	}
+    	catch (com4j.ExecutionException e) {
+    	}
     }
 
     private void setMtsPorts() {
@@ -144,7 +152,7 @@ public final class MTSConnector {
                 	}
             	}
             	else {
-                    LOGGER.error("Innovate MTS: Error - no input channels found to log from!");
+                    LOGGER.error("Innovate MTS: Error - no input channels found to log from");
             	}
             }
             finally {

@@ -100,6 +100,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.table.TableColumn;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
@@ -270,6 +271,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void construct(Settings settings) {
         checkNotNull(settings);
         this.settings = settings;
+        Logger.getRootLogger().setLevel((Level) Level.toLevel(settings.getLoggerDebuggingLevel()));
         bootstrap();
         loadEcuDefs();
         loadLoggerPlugins();

@@ -47,7 +47,7 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
                 dataSource.getPort());
 
         if (port != null && port.length() > 0) {
-            port = port.substring(0, 1);
+            port = port.substring(0, 2).trim();
             dataSource.setPort(port);
         }
     }
@@ -57,13 +57,20 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
         mts.disconnect();
         try {
             int portCount = mts.portCount();
-            String[] result = new String[portCount];
+            String[] results = new String[portCount];
+            results[0] = "-1 - [ no ports found ]";
             for (int i = 0; i < portCount; i++) {
                 mts.currentPort(i);
                 String name = mts.portName();
-                result[i] = i + " - " + name;
+                mts.connect();
+                int inputs = mts.inputCount();
+                String result = String.format(
+                		"%d - [ %s: %d sesnors ]",
+                		i, name, inputs);
+                results[i] = result;
+                mts.disconnect();
             }
-            return result;
+            return results;
         } finally {
             mts.dispose();
         }

@@ -61,20 +61,23 @@ This is the first beta release of the upcoming official 0.5.4b release.
 - TXS Tuner Wideband plugin added courtesy of, nitros
 - Added support for ECU/TCU Switch filtering
 - Added (msec) designation to logged CSV column heading
-- Added support for sorting the Selected? & Description parameter list entries.
+- Added support for sorting the Selected? & Description parameter list entries
 - Added support for convertors on External data items (F/C, lambda/AFR, etc.)
-- Added all defined PLX Sensors according to their documentation
-- Added more Innovate MTS LM-2 support for additional sensors.  Sensors are now
+- Added instance 0 of all defined PLX Sensors according to their documentation
+- Added support for additional Innovate MTS LM-2 sensors.  Sensors are now
   loaded dynamically when the Logger starts.  Sensor units are set via LogWorks.
   Wideband errors are reported as the negative value of the error number.  For
   example, if an LC-1 is in need of calibration -3 will be reported to the Logger.
   See MTSSensorInputFunction.java for more state values.
 - Updated library COM4J to version: com4j-20110322. This affects Innovate MTS
   and Tactrix Openport 2.0 support.
-- Added a button to un-select all selected parameters on all tabs.  Selections
+- Added a button to Un-select ALL selected parameters on all tabs.  Selections
   can be restored by reloading the current profile or loading a different profile.
-- Moved the Fast Poll checkbox to a selection item in the Settings menu, selected
-  by default.
+- Moved the Fast Poll checkbox to a selection item in the Settings menu (selected
+  by default).  The polling state is reported in the queries/sec status display.
+- Added a Debugging Level selection option to the Help menu.  The setting is saved
+  and restored between sessions.  INFO should be the normal state to keep the
+  rr_system.log file in-check.
 --- Editor ---
 - Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.
