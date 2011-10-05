@@ -58,6 +58,7 @@ import static javax.swing.SwingUtilities.invokeLater;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -85,12 +86,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
@@ -255,6 +258,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private List<ExternalDataSource> externalDataSources;
     private List<EcuParameter> ecuParams;
     private SerialPortRefresher refresher;
+    private JDialog startStatus;
+    private JLabel startText = new JLabel(" Initializing Logger...");
 
     public EcuLogger(Settings settings) {
         super(ECU_LOGGER_TITLE);
@@ -270,13 +275,26 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void construct(Settings settings) {
         checkNotNull(settings);
         this.settings = settings;
+        JProgressBar progressBar = startbar();
         Logger.getRootLogger().setLevel((Level) Level.toLevel(settings.getLoggerDebuggingLevel()));
         bootstrap();
+        progressBar.setValue(20);
+        startText.setText(" Loading ECU Defs...");
         loadEcuDefs();
+        progressBar.setValue(40);
+        startText.setText(" Loading Plugins...");
+        progressBar.setIndeterminate(true);
         loadLoggerPlugins();
+        progressBar.setIndeterminate(false);
+        progressBar.setValue(60);
+        startText.setText(" Loading ECU Parameters...");
         loadLoggerParams();
+        progressBar.setValue(80);
+        startText.setText(" Starting Logger...");
         initControllerListeners();
+        progressBar.setValue(100);
         initUserInterface();
+        startStatus.dispose();
         initDataUpdateHandlers();
         startPortRefresherThread();
         if (!isLogging()) startLogging();
@@ -1371,7 +1389,31 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
-    //**********************************************************************
+	public void setRefreshMode(boolean refreshMode) {
+		settings.setRefreshMode(refreshMode);
+       	refresher.setRefreshMode(refreshMode);
+	}
+
+	private JProgressBar startbar() {
+		startStatus = new JDialog();
+    	startStatus.setAlwaysOnTop(true);
+    	startStatus.setUndecorated(true);
+    	startStatus.setLocation((int)(settings.getLoggerWindowSize().getWidth()/2 + settings.getLoggerWindowLocation().getX()),
+    							(int)(settings.getLoggerWindowSize().getHeight()/2 + settings.getLoggerWindowLocation().getY()));
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setValue(0);
+        progressBar.setIndeterminate(false);
+        progressBar.setOpaque(true);
+        startText.setOpaque(true);
+        startStatus.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        startStatus.getContentPane().add(progressBar, BorderLayout.CENTER);
+        startStatus.getContentPane().add(startText, BorderLayout.SOUTH);
+        startStatus.pack();
+        startStatus.setVisible(true);
+		return progressBar;
+	}
+
+	//**********************************************************************
 
 
     public static void startLogger(int defaultCloseOperation, ECUEditor ecuEditor) {
@@ -1445,9 +1487,4 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 	    	}
 	    }
     }
-
-	public void setRefreshMode(boolean refreshMode) {
-		settings.setRefreshMode(refreshMode);
-       	refresher.setRefreshMode(refreshMode);
-	}
 }

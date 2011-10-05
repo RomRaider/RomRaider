@@ -69,8 +69,8 @@ public enum SensorConversionsOther implements ExternalSensorConversions {
 	MAF_GS	("g/sec", "x", "0.00", new GaugeMinMax(0,400,50)),
 	MAF_GS2LB	("lb/min", "x/7.54", "0.00", new GaugeMinMax(0,50,5)),
 	PERCENT	("%", "x", "0.0", new GaugeMinMax(0,100,10)),
-	VOLTS_5DC("vdc", "x", "0.0", new GaugeMinMax(0,5,0.5)),
-	VOLTS_12DC("vdc", "x", "0.0", new GaugeMinMax(0,15,1.5));
+	VOLTS_5DC("VDC", "x", "0.0", new GaugeMinMax(0,5,0.5)),
+	VOLTS_12DC("VDC", "x", "0.0", new GaugeMinMax(0,15,1.5));
 
 	
 	private final String units;
