@@ -25,6 +25,7 @@ import static java.awt.event.InputEvent.SHIFT_MASK;
 import static java.awt.event.KeyEvent.VK_A;
 import static java.awt.event.KeyEvent.VK_C;
 import static java.awt.event.KeyEvent.VK_D;
+import static java.awt.event.KeyEvent.VK_E;
 import static java.awt.event.KeyEvent.VK_F;
 import static java.awt.event.KeyEvent.VK_F7;
 import static java.awt.event.KeyEvent.VK_H;
@@ -49,6 +50,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JSeparator;
 
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.ecu.ui.swing.menubar.action.ComPortAutoRefreshAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.DisconnectAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ExitAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.FastPollModeAction;
@@ -92,9 +94,13 @@ public class EcuLoggerMenuBar extends JMenuBar {
         settingsMenu.add(new MenuItem("Log File Output Location...", new LogFileLocationAction(logger), VK_O, getKeyStroke(VK_O, CTRL_MASK)));
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Control File Logging With Defogger Switch", VK_C, getKeyStroke(VK_C, CTRL_MASK), new LogFileControllerSwitchAction(logger), logger.getSettings().isFileLoggingControllerSwitchActive()));
+        RadioButtonMenuItem autoRefresh = new RadioButtonMenuItem("Enable COM port Auto Refresh", VK_E, getKeyStroke(VK_E, CTRL_MASK), new ComPortAutoRefreshAction(logger), logger.getSettings().getRefreshMode());
+        autoRefresh.setToolTipText("Select to enable automatic COM port refreshing");
+        settingsMenu.add(autoRefresh);
         RadioButtonMenuItem fastPoll = new RadioButtonMenuItem("Enable Fast Polling Mode", VK_M, getKeyStroke(VK_M, CTRL_MASK), new FastPollModeAction(logger), logger.getSettings().isFastPoll());
         fastPoll.setToolTipText("Select to enable faster polling of the ECU");
         settingsMenu.add(fastPoll);
+        settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));
         add(settingsMenu);
 

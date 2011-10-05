@@ -19,10 +19,26 @@
 
 package com.romraider.logger.ecu.comms.manager;
 
-import com.romraider.Settings;
-import com.romraider.logger.ecu.comms.manager.PollingState;
-import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
 import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
+import static com.romraider.logger.ecu.definition.EcuDataType.EXTERNAL;
+import static com.romraider.util.ParamChecker.checkNotNull;
+import static com.romraider.util.ThreadUtil.runAsDaemon;
+import static com.romraider.util.ThreadUtil.sleep;
+import static java.util.Collections.synchronizedList;
+import static java.util.Collections.synchronizedMap;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.SwingUtilities;
+
+import org.apache.log4j.Logger;
+
+import com.romraider.Settings;
+import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
@@ -32,30 +48,15 @@ import com.romraider.logger.ecu.comms.query.Query;
 import com.romraider.logger.ecu.comms.query.Response;
 import com.romraider.logger.ecu.comms.query.ResponseImpl;
 import com.romraider.logger.ecu.definition.EcuData;
-import static com.romraider.logger.ecu.definition.EcuDataType.EXTERNAL;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.StatusChangeListener;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import com.romraider.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitor;
-import static com.romraider.util.ParamChecker.checkNotNull;
-import static com.romraider.util.ThreadUtil.runAsDaemon;
-import static com.romraider.util.ThreadUtil.sleep;
-import static java.util.Collections.synchronizedList;
-import static java.util.Collections.synchronizedMap;
-import org.apache.log4j.Logger;
-import javax.swing.SwingUtilities;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public final class QueryManagerImpl implements QueryManager {
     private static final Logger LOGGER = Logger.getLogger(QueryManagerImpl.class);
-    private final DecimalFormat format = new DecimalFormat("0.00");
     private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
     private final Map<String, Query> queryMap = synchronizedMap(new HashMap<String, Query>());
     private final Map<String, Query> addList = new HashMap<String, Query>();

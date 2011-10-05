@@ -78,6 +78,7 @@ This is the first beta release of the upcoming official 0.5.4b release.
 - Added a Debugging Level selection option to the Help menu.  The setting is saved
   and restored between sessions.  INFO should be the normal state to keep the
   rr_system.log file in-check.
+- Moved the COM port Auto Refresh checkbox to the Settings menu.
 --- Editor ---
 - Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.
