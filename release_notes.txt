@@ -79,6 +79,9 @@ This is the first beta release of the upcoming official 0.5.4b release.
   and restored between sessions.  INFO should be the normal state to keep the
   rr_system.log file in-check.
 - Moved the COM port Auto Refresh checkbox to the Settings menu.
+- Added a Logger startup Progress Bar as loading plugins sometimes takes time.
+- Added colour to "Log to File" button. Red when recording and green when not.
+- Added colour to "Un-select ALL" button.  Yellow so it stands out. 
 --- Editor ---
 - Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.

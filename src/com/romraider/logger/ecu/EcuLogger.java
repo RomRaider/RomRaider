@@ -62,6 +62,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -802,6 +803,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JButton buildUnselectAllButton() {
         final JButton button = new JButton();
+        button.setBackground(Color.YELLOW);
         VerticalTextIcon textIcon = new VerticalTextIcon(button, "Un-select ALL", ROTATE_LEFT);
         button.setToolTipText(UNSELECT_ALL_TT_TEXT);
         button.setIcon(textIcon);
@@ -1054,13 +1056,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private Component buildLogToFileButton() {
         logToFileButton = new JToggleButton("Log to file", new ImageIcon("./graphics/logger_log_to_file.png"));
         logToFileButton.setToolTipText("Start/stop file logging (F1)");
-        logToFileButton.setPreferredSize(new Dimension(100, 25));
+        //logToFileButton.setPreferredSize(new Dimension(100, 25));
+        logToFileButton.setOpaque(true);
+        logToFileButton.setBackground(Color.GREEN);
         logToFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (logToFileButton.isSelected()) {
                     fileUpdateHandler.start();
+                    logToFileButton.setBackground(Color.RED);
                 } else {
                     fileUpdateHandler.stop();
+                    logToFileButton.setBackground(Color.GREEN);
                 }
             }
         });
@@ -1395,7 +1401,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 	}
 
 	private JProgressBar startbar() {
-		startStatus = new JDialog();
+		if (ecuEditor != null) {
+	        startStatus = new JDialog(getActiveFrame());
+		}
+		else {
+			startStatus = new JDialog();
+		}
     	startStatus.setAlwaysOnTop(true);
     	startStatus.setUndecorated(true);
     	startStatus.setLocation((int)(settings.getLoggerWindowSize().getWidth()/2 + settings.getLoggerWindowLocation().getX()),
@@ -1413,7 +1424,20 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 		return progressBar;
 	}
 
-	//**********************************************************************
+	  private static Frame getActiveFrame() {
+		    Frame result = null;
+		    Frame[] frames = Frame.getFrames();
+		    for (int i = 0; i < frames.length; i++) {
+		      Frame frame = frames[i];
+		      if (frame.isVisible()) { 
+		        result = frame;
+		        break;
+		      }
+		    }
+		    return result;
+	  }
+
+		    //**********************************************************************
 
 
     public static void startLogger(int defaultCloseOperation, ECUEditor ecuEditor) {
