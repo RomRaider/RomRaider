@@ -81,7 +81,9 @@ This is the first beta release of the upcoming official 0.5.4b release.
 - Moved the COM port Auto Refresh checkbox to the Settings menu.
 - Added a Logger startup Progress Bar as loading plugins sometimes takes time.
 - Added colour to "Log to File" button. Red when recording and green when not.
-- Added colour to "Un-select ALL" button.  Yellow so it stands out. 
+- Added colour to "Un-select ALL" button.  Yellow so it stands out.
+  * Button colours may not appear complete as this is platform dependent to implement. 
+- Changed "Log to File" keyboard shortcut from F1 to Spacebar.
 --- Editor ---
 - Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.
