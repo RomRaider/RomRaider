@@ -276,29 +276,47 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void construct(Settings settings) {
         checkNotNull(settings);
         this.settings = settings;
-        JProgressBar progressBar = startbar();
         Logger.getRootLogger().setLevel((Level) Level.toLevel(settings.getLoggerDebuggingLevel()));
-        bootstrap();
-        progressBar.setValue(20);
-        startText.setText(" Loading ECU Defs...");
-        loadEcuDefs();
-        progressBar.setValue(40);
-        startText.setText(" Loading Plugins...");
-        progressBar.setIndeterminate(true);
-        loadLoggerPlugins();
-        progressBar.setIndeterminate(false);
-        progressBar.setValue(60);
-        startText.setText(" Loading ECU Parameters...");
-        loadLoggerParams();
-        progressBar.setValue(80);
-        startText.setText(" Starting Logger...");
-        initControllerListeners();
-        progressBar.setValue(100);
-        initUserInterface();
-        startStatus.dispose();
-        initDataUpdateHandlers();
-        startPortRefresherThread();
-        if (!isLogging()) startLogging();
+        if (ecuEditor == null) {
+            JProgressBar progressBar = startbar();
+	        bootstrap();
+	        progressBar.setValue(20);
+	        startText.setText(" Loading ECU Defs...");
+	        loadEcuDefs();
+	        progressBar.setValue(40);
+	        startText.setText(" Loading Plugins...");
+	        progressBar.setIndeterminate(true);
+	        loadLoggerPlugins();
+	        progressBar.setIndeterminate(false);
+	        progressBar.setValue(60);
+	        startText.setText(" Loading ECU Parameters...");
+	        loadLoggerParams();
+	        progressBar.setValue(80);
+	        startText.setText(" Starting Logger...");
+	        initControllerListeners();
+	        initUserInterface();
+	        progressBar.setValue(100);
+	        initDataUpdateHandlers();
+	        startPortRefresherThread();
+	        if (!isLogging()) startLogging();
+	        startStatus.dispose();
+        }
+        else {
+	        bootstrap();
+	        ecuEditor.statusPanel.update("Loading ECU Defs...", 20);
+	        loadEcuDefs();
+	        ecuEditor.statusPanel.update("Loading Plugins...", 40);
+	        loadLoggerPlugins();
+	        ecuEditor.statusPanel.update("Loading ECU Parameters...", 60);
+	        loadLoggerParams();
+	        ecuEditor.statusPanel.update("Starting Logger...", 80);
+	        initControllerListeners();
+	        initUserInterface();
+	        ecuEditor.statusPanel.update("Complete...", 100);
+	        initDataUpdateHandlers();
+	        startPortRefresherThread();
+	        if (!isLogging()) startLogging();
+    	}
     }
 
     private void bootstrap() {
@@ -1055,7 +1073,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private Component buildLogToFileButton() {
         logToFileButton = new JToggleButton("Log to file", new ImageIcon("./graphics/logger_log_to_file.png"));
-        logToFileButton.setToolTipText("Start/stop file logging (F1)");
+        logToFileButton.setToolTipText("Start/stop file logging (Spacebar)");
         //logToFileButton.setPreferredSize(new Dimension(100, 25));
         logToFileButton.setOpaque(true);
         logToFileButton.setBackground(Color.GREEN);
@@ -1070,7 +1088,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 }
             }
         });
-        logToFileButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F1"), "toggleFileLogging");
+        logToFileButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke(' '), "toggleFileLogging");
         logToFileButton.getActionMap().put("toggleFileLogging", new ToggleButtonAction(this, logToFileButton));
         return logToFileButton;
     }
@@ -1401,12 +1419,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 	}
 
 	private JProgressBar startbar() {
-		if (ecuEditor != null) {
-	        startStatus = new JDialog(getActiveFrame());
-		}
-		else {
-			startStatus = new JDialog();
-		}
+		startStatus = new JDialog();
     	startStatus.setAlwaysOnTop(true);
     	startStatus.setUndecorated(true);
     	startStatus.setLocation((int)(settings.getLoggerWindowSize().getWidth()/2 + settings.getLoggerWindowLocation().getX()),
@@ -1424,20 +1437,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 		return progressBar;
 	}
 
-	  private static Frame getActiveFrame() {
-		    Frame result = null;
-		    Frame[] frames = Frame.getFrames();
-		    for (int i = 0; i < frames.length; i++) {
-		      Frame frame = frames[i];
-		      if (frame.isVisible()) { 
-		        result = frame;
-		        break;
-		      }
-		    }
-		    return result;
-	  }
-
-		    //**********************************************************************
+    //**********************************************************************
 
 
     public static void startLogger(int defaultCloseOperation, ECUEditor ecuEditor) {

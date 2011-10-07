@@ -90,7 +90,7 @@ public class EcuLoggerMenuBar extends JMenuBar {
 
         // settings menu items
         JMenu settingsMenu = new Menu("Settings", VK_S);
-        settingsMenu.add(new MenuItem("Logger Definition Location...", new LoggerDefinitionLocationAction(logger), VK_D, getKeyStroke(VK_D, CTRL_MASK)));
+        settingsMenu.add(new MenuItem("Logger Definition Location...", new LoggerDefinitionLocationAction(logger), VK_F, getKeyStroke(VK_F, CTRL_MASK)));
         settingsMenu.add(new MenuItem("Log File Output Location...", new LogFileLocationAction(logger), VK_O, getKeyStroke(VK_O, CTRL_MASK)));
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Control File Logging With Defogger Switch", VK_C, getKeyStroke(VK_C, CTRL_MASK), new LogFileControllerSwitchAction(logger), logger.getSettings().isFileLoggingControllerSwitchActive()));

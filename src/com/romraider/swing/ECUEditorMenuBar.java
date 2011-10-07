@@ -288,7 +288,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             parent.setUserLevel(5);
 
         } else if (e.getSource() == openLogger) {
+        	parent.statusPanel.update("Launching Logger...", 10);
             EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent);
+        	parent.statusPanel.update("Ready...", 0);
 
         } else if (e.getSource() == updateDefinition) {
             BareBonesBrowserLaunch.openURL(ECU_DEFS_URL);

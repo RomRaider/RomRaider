@@ -90,7 +90,7 @@ public class ECUEditor extends AbstractFrame {
     private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private RomTree imageList = new RomTree(imageRoot);
     public MDIDesktopPane rightPanel = new MDIDesktopPane();
-    private JProgressPane statusPanel = new JProgressPane();
+    public JProgressPane statusPanel = new JProgressPane();
     private JSplitPane splitPane = new JSplitPane();
     private Rom lastSelectedRom = null;
     private ECUEditorToolBar toolBar;
