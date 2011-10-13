@@ -181,4 +181,8 @@ public class Table1D extends Table {
     public boolean isLiveDataSupported() {
         return false;
     }
+
+	public boolean isButtonSelected() {
+		return true;
+	}
 }

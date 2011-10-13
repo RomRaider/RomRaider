@@ -19,15 +19,13 @@
 
 package com.romraider.maps;
 
-import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
-import com.romraider.swing.JProgressPane;
-import com.romraider.xml.TableNotFoundException;
 import static com.romraider.maps.RomChecksum.calculateRomChecksum;
 import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.HexUtil.asHex;
-import org.apache.log4j.Logger;
-import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.DEFAULT_OPTION;
+import static javax.swing.JOptionPane.QUESTION_MESSAGE;
+import static javax.swing.JOptionPane.showOptionDialog;
+
 import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -35,6 +33,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
+
+import org.apache.log4j.Logger;
+
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
+import com.romraider.swing.JProgressPane;
+import com.romraider.xml.TableNotFoundException;
 
 public class Rom implements Serializable {
     private static final long serialVersionUID = 7865405179738828128L;
@@ -211,6 +218,23 @@ public class Rom implements Serializable {
         }
         if (checksum != null && !checksum.isLocked()) {
         	calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
+        }
+        else if (checksum != null && checksum.isLocked() && !checksum.isButtonSelected()) {
+            Object[] options = {"Yes", "No"};
+            String message = String.format("One or more ROM image Checksums is invalid.  " +
+            		"Calculate new Checksums?%n" +
+            		"(NOTE: this will only fix the Checksums it will NOT repair a corrupt ROM image)");
+            int answer = showOptionDialog(container,
+            		message,
+                    "Checksum Fix",
+                    DEFAULT_OPTION,
+                    QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[0]);
+            if (answer == 0) {
+            	calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
+            }
         }
         if (checksum != null) {
 	    	byte count = binData[checksum.getStorageAddress() + 207];

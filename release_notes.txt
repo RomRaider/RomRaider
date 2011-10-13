@@ -82,11 +82,13 @@ This is the first beta release of the upcoming official 0.5.4b release.
 - Added a Logger startup Progress Bar as loading plugins sometimes takes time.
 - Added colour to "Log to File" button. Red when recording and green when not.
 - Added colour to "Un-select ALL" button.  Yellow so it stands out.
-  * Button colours may not appear complete as this is platform dependent to implement. 
+  * Button colours may not appear correctly as this is platform dependent. 
 - Changed "Log to File" keyboard shortcut from F1 to Spacebar.
 --- Editor ---
 - Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.
+- Added a Checksum recalculation option when saving ROM images that have a bad Checksum
+  (re: Diesel ROMs seem to have an invalid fifth Checksum)
   
 
 0.5.3b RC10 (09/12/2011)

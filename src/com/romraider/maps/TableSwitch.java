@@ -19,7 +19,11 @@
  
 package com.romraider.maps;
  
+import static com.romraider.maps.RomChecksum.validateRomChecksum;
+import static com.romraider.util.ByteUtil.indexOfBytes;
+import static com.romraider.util.HexUtil.asBytes;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
@@ -40,9 +44,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
 import com.romraider.Settings;
-import static com.romraider.util.ByteUtil.indexOfBytes;
-import static com.romraider.util.HexUtil.asBytes;
-import static com.romraider.maps.RomChecksum.validateRomChecksum;
 
 public class TableSwitch extends Table {
  
@@ -79,17 +80,20 @@ public class TableSwitch extends Table {
         add(radioPanel, BorderLayout.CENTER);
        
         // Validate the ROM image checksums.
-        // if the result is  1: any checksum failed
+        // if the result is >0: position of failed checksum
         // if the result is  0: all the checksums matched
         // if the result is -1: all the checksums have been previously disabled
         if (super.getName().equalsIgnoreCase("Checksum Fix")) {
         	int result = validateRomChecksum(input, storageAddress, dataSize);
-	        String message = String.format("One or more Checksums is invalid.%nThe ROM image may be corrupt.%nUse of this ROM image is not advised!");
-        	if (result == 1) {
+	        String message = String.format(
+	        		"Checksum No. %d is invalid.%n" +
+	        		"The ROM image may be corrupt.%n" +
+	        		"Use of this ROM image is not advised!", result);
+        	if (result > 0) {
     	        showMessageDialog(this,
     	        		message,
     	        		"ERROR - Checksums Failed",
-    	        		ERROR_MESSAGE);
+    	        		WARNING_MESSAGE);
     	        setButtonsUnselected(buttonGroup);
         	}
         	else if (result == -1){
@@ -97,7 +101,7 @@ public class TableSwitch extends Table {
     	        showMessageDialog(this,
     	        		message,
     	        		"Warning - Checksum Status",
-    	        		WARNING_MESSAGE);
+    	        		INFORMATION_MESSAGE);
             	getButtonByText(buttonGroup, "on").setSelected(true);        	}
         	else {
         		getButtonByText(buttonGroup, "off").setSelected(true);
@@ -224,6 +228,15 @@ public class TableSwitch extends Table {
         return false;
     }
  
+    public boolean isButtonSelected() {
+    	if (buttonGroup.getSelection() == null) {
+    		return false;
+    	}
+    	else {
+    		return true;
+    	}
+    }
+
     // returns the selected radio button in the specified group
     private static JRadioButton getSelectedButton(ButtonGroup group) {
         for (Enumeration<AbstractButton> e = group.getElements(); e.hasMoreElements(); ) {

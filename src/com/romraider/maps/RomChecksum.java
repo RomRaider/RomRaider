@@ -55,7 +55,7 @@ public class RomChecksum {
     	}
         for (j = 0; j < (dataSize / 12); j++) {
             if (results[j] != 0) {
-            	return result = 1; // 1, a checksum is invalid
+            	return j + 1; // position of invalid checksum
             }
         }
     	return result; // 0, all checksums are valid

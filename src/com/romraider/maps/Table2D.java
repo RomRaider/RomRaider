@@ -305,7 +305,11 @@ public class Table2D extends Table {
         return !isNullOrEmpty(axis.getLogParam());
     }
 
-    protected void highlightLiveData() {
+	public boolean isButtonSelected() {
+		return true;
+	}
+
+	protected void highlightLiveData() {
         if (overlayLog && frame.isVisible()) {
             AxisRange range = getLiveDataRangeForAxis(axis);
             clearSelection();

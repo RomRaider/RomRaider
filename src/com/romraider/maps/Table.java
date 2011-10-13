@@ -1239,6 +1239,8 @@ public abstract class Table extends JPanel implements Serializable {
 
     public abstract boolean isLiveDataSupported();
 
+    public abstract boolean isButtonSelected();
+
     protected void highlightLiveData() {
     }
 
