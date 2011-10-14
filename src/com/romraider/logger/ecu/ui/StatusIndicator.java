@@ -30,14 +30,14 @@ import java.awt.BorderLayout;
 public final class StatusIndicator extends JPanel implements StatusChangeListener {
     private static final long serialVersionUID = -3244690866698807677L;
     private final JLabel statusLabel = new JLabel();
-    private static final String TEXT_CONNECTING = "Connecting to ECU...";
+    private static final String TEXT_CONNECTING = "Connecting...";
     private static final String TEXT_READING = "Reading data...";
-    private static final String TEXT_LOGGING = "Logging data to file...";
+    private static final String TEXT_LOGGING = "Logging to file...";
     private static final String TEXT_STOPPED = "Stopped.";
-    private static final ImageIcon ICON_CONNECTING = new ImageIcon("./graphics/logger_red.png");
-    private static final ImageIcon ICON_READING = new ImageIcon("./graphics/logger_blue.png");
-    private static final ImageIcon ICON_LOGGING = new ImageIcon("./graphics/logger_green.png");
-    private static final ImageIcon ICON_STOPPED = new ImageIcon("./graphics/logger_red.png");
+    private static final ImageIcon ICON_CONNECTING = new ImageIcon("./graphics/logger_blue.png");
+    private static final ImageIcon ICON_READING = new ImageIcon("./graphics/logger_green.png");
+    private static final ImageIcon ICON_LOGGING = new ImageIcon("./graphics/logger_red.png");
+    private static final ImageIcon ICON_STOPPED = new ImageIcon("./graphics/logger_stop.png");
 
     public StatusIndicator() {
         setLayout(new BorderLayout());
@@ -65,7 +65,7 @@ public final class StatusIndicator extends JPanel implements StatusChangeListene
     private void updateStatusLabel(final String text, final ImageIcon icon) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                statusLabel.setText("  ");
+                statusLabel.setText(text);
                 statusLabel.setIcon(icon);
             }
         });

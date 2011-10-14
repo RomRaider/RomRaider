@@ -20,6 +20,7 @@
 package com.romraider.logger.ecu.ui.swing.menubar;
 
 import static com.romraider.Version.PRODUCT_NAME;
+import static java.awt.event.InputEvent.ALT_MASK;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.InputEvent.SHIFT_MASK;
 import static java.awt.event.KeyEvent.VK_A;
@@ -58,6 +59,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.LoadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileAbsoluteTimestampAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileControllerSwitchAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileLocationAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebugLocationAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebuggingLevelAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDefinitionLocationAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ReloadProfileAction;
@@ -143,6 +145,8 @@ public class EcuLoggerMenuBar extends JMenuBar {
         debug.add(info);
         debug.add(db);
         debug.add(trace);
+        debug.add(new JSeparator());
+        debug.add(new MenuItem("Open Debug Log Location...", new LoggerDebugLocationAction(logger), VK_O, getKeyStroke(VK_O, ALT_MASK)));
         helpMenu.add(debug);
         helpMenu.add(new JSeparator());
         helpMenu.add(new MenuItem("About " + PRODUCT_NAME, new AboutAction(logger), VK_A));

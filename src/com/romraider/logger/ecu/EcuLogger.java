@@ -62,7 +62,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -1073,10 +1072,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private Component buildLogToFileButton() {
         logToFileButton = new JToggleButton("Log to file", new ImageIcon("./graphics/logger_log_to_file.png"));
-        logToFileButton.setToolTipText("Start/stop file logging (Spacebar)");
+        logToFileButton.setToolTipText("Start/stop file logging (F1)");
         //logToFileButton.setPreferredSize(new Dimension(100, 25));
-        logToFileButton.setOpaque(true);
         logToFileButton.setBackground(Color.GREEN);
+        logToFileButton.setOpaque(true);
         logToFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (logToFileButton.isSelected()) {
@@ -1088,7 +1087,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 }
             }
         });
-        logToFileButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke(' '), "toggleFileLogging");
+        logToFileButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F1"), "toggleFileLogging");
         logToFileButton.getActionMap().put("toggleFileLogging", new ToggleButtonAction(this, logToFileButton));
         return logToFileButton;
     }
