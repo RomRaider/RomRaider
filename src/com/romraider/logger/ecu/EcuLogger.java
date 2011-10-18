@@ -36,7 +36,9 @@ import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.BorderLayout.WEST;
 import static java.awt.Color.BLACK;
+import static java.awt.Color.GREEN;
 import static java.awt.Color.RED;
+import static java.awt.Color.YELLOW;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.sort;
 import static javax.swing.BorderFactory.createLoweredBevelBorder;
@@ -58,7 +60,6 @@ import static javax.swing.SwingUtilities.invokeLater;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -82,11 +83,11 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -101,6 +102,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JWindow;
+import javax.swing.border.Border;
 import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Level;
@@ -258,7 +261,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private List<ExternalDataSource> externalDataSources;
     private List<EcuParameter> ecuParams;
     private SerialPortRefresher refresher;
-    private JDialog startStatus;
+    private JWindow startStatus;
     private JLabel startText = new JLabel(" Initializing Logger...");
 
     public EcuLogger(Settings settings) {
@@ -820,7 +823,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JButton buildUnselectAllButton() {
         final JButton button = new JButton();
-        button.setBackground(Color.YELLOW);
+        button.setBackground(YELLOW);
         VerticalTextIcon textIcon = new VerticalTextIcon(button, "Un-select ALL", ROTATE_LEFT);
         button.setToolTipText(UNSELECT_ALL_TT_TEXT);
         button.setIcon(textIcon);
@@ -1074,16 +1077,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         logToFileButton = new JToggleButton("Log to file", new ImageIcon("./graphics/logger_log_to_file.png"));
         logToFileButton.setToolTipText("Start/stop file logging (F1)");
         //logToFileButton.setPreferredSize(new Dimension(100, 25));
-        logToFileButton.setBackground(Color.GREEN);
+        logToFileButton.setBackground(GREEN);
         logToFileButton.setOpaque(true);
         logToFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 if (logToFileButton.isSelected()) {
                     fileUpdateHandler.start();
-                    logToFileButton.setBackground(Color.RED);
+                    logToFileButton.setBackground(RED);
                 } else {
                     fileUpdateHandler.stop();
-                    logToFileButton.setBackground(Color.GREEN);
+                    logToFileButton.setBackground(GREEN);
                 }
             }
         });
@@ -1418,9 +1421,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 	}
 
 	private JProgressBar startbar() {
-		startStatus = new JDialog();
+		startStatus = new JWindow();
     	startStatus.setAlwaysOnTop(true);
-    	startStatus.setUndecorated(true);
     	startStatus.setLocation((int)(settings.getLoggerWindowSize().getWidth()/2 + settings.getLoggerWindowLocation().getX()),
     							(int)(settings.getLoggerWindowSize().getHeight()/2 + settings.getLoggerWindowLocation().getY()));
         JProgressBar progressBar = new JProgressBar(0, 100);
@@ -1428,9 +1430,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         progressBar.setIndeterminate(false);
         progressBar.setOpaque(true);
         startText.setOpaque(true);
-        startStatus.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        startStatus.getContentPane().add(progressBar, BorderLayout.CENTER);
-        startStatus.getContentPane().add(startText, BorderLayout.SOUTH);
+        Border etchedBdr = BorderFactory.createEtchedBorder();
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setBorder(etchedBdr);
+        panel.add(progressBar, BorderLayout.CENTER);
+        panel.add(startText, BorderLayout.SOUTH);
+        startStatus.getContentPane().add(panel);
         startStatus.pack();
         startStatus.setVisible(true);
 		return progressBar;

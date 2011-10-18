@@ -53,12 +53,13 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
     }
 
     private String[] getPorts() {
-        MTS mts = createMTS();
-        mts.disconnect();
+    	String[] results;
+    	MTS mts = createMTS();
         try {
-            int portCount = mts.portCount();
-            String[] results = new String[portCount];
-            results[0] = "-1 - [ no ports found ]";
+	        mts.disconnect();
+	        int portCount = mts.portCount();
+	        results = new String[portCount];
+	        results[0] = "-1 - [ no ports found ]";
             for (int i = 0; i < portCount; i++) {
                 mts.currentPort(i);
                 String name = mts.portName();
@@ -70,9 +71,9 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
                 results[i] = result;
                 mts.disconnect();
             }
-            return results;
         } finally {
             mts.dispose();
         }
+        return results;
     }
 }

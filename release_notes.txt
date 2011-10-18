@@ -81,14 +81,16 @@ This is the first beta release of the upcoming official 0.5.4b release.
 - Moved the COM port Auto Refresh checkbox to the Settings menu.
 - Added a Logger startup Progress Bar as loading plugins sometimes takes time.
 - Added colour to "Log to File" button. Red when recording and green when not.
-  * Button colours may not appear correctly as this is platform dependent.
+  * Button colours may not appear correctly as this is platform dependent. Colour
+    may show as a border rather than a fill.
   Also changed the colours used for the connection state:
-    * Red = recording to file (used to be green)
-    * Green =  connected and ready to record (used to blue)
-    * Blue = connection to ECU in progress (used to be red)
+    * Red   = recording to file (used to be green)
+    * Green = connected and ready to record (used to blue)
+    * Blue  = connection to ECU in progress (used to be red)
     * Red with X = disconnected (used to be red)
 - Added colour to "Un-select ALL" button.  Yellow so it stands out.
-  * Button colours may not appear correctly as this is platform dependent. 
+  * Button colours may not appear correctly as this is platform dependent. Colour
+    may show as a border rather than a fill.
 --- Editor ---
 - Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.
