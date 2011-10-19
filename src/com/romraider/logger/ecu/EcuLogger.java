@@ -23,7 +23,7 @@ import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
 import static com.romraider.Version.LOGGER_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
-import static com.romraider.logger.ecu.profile.UserProfileLoader.BACKUP_PATH;
+import static com.romraider.logger.ecu.profile.UserProfileLoader.BACKUP_PROFILE;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
 import static com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon.ROTATE_LEFT;
 import static com.romraider.util.ParamChecker.checkNotNull;
@@ -263,6 +263,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private SerialPortRefresher refresher;
     private JWindow startStatus;
     private JLabel startText = new JLabel(" Initializing Logger...");
+    private String HOME = System.getProperty("user.home"); 
 
     public EcuLogger(Settings settings) {
         super(ECU_LOGGER_TITLE);
@@ -539,7 +540,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     public void loadUserProfile(String profileFilePath) {
         try {
             UserProfileLoader profileLoader = new UserProfileLoaderImpl();
-            String path = isNullOrEmpty(profileFilePath) ? BACKUP_PATH : profileFilePath;
+            String path = isNullOrEmpty(profileFilePath) ? (HOME + BACKUP_PROFILE) : profileFilePath;
             UserProfile profile = profileLoader.loadProfile(path);
             applyUserProfile(profile);
             File profileFile = new File(path);
@@ -1333,7 +1334,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private void backupCurrentProfile() {
         try {
-            saveProfileToFile(getCurrentProfile(), new File(BACKUP_PATH));
+            saveProfileToFile(getCurrentProfile(), new File(HOME + BACKUP_PROFILE));
         } catch (Exception e) {
             LOGGER.warn("Error backing up profile", e);
         }

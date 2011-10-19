@@ -34,11 +34,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public final class SettingsManagerImpl implements SettingsManager {
-    private static final String SETTINGS_FILE = "./settings.xml";
+    private static final String SETTINGS_FILE = "/.RomRaider/settings.xml";
+	private static final String HOME = System.getProperty("user.home");
 
     public Settings load() {
         try {
-            InputSource src = new InputSource(new FileInputStream(new File(SETTINGS_FILE)));
+            InputSource src = new InputSource(new FileInputStream(new File(HOME + SETTINGS_FILE)));
             DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
             DOMParser parser = new DOMParser();
             parser.parse(src);
@@ -60,7 +61,8 @@ public final class SettingsManagerImpl implements SettingsManager {
     public void save(Settings settings, JProgressPane progress) {
         DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
-            builder.buildSettings(settings, new File(SETTINGS_FILE), progress, VERSION);
+            new File(HOME + "/.RomRaider/").mkdir();		// Creates directory if it does not exist
+            builder.buildSettings(settings, new File(HOME + SETTINGS_FILE), progress, VERSION);
         } catch (Exception e) {
             // ignore
         }
