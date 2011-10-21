@@ -41,6 +41,6 @@ public final class LoggerDebugLocationAction extends AbstractAction {
     }
 
     private void openLogFileLocationDialog() throws Exception {
-    	Desktop.getDesktop().open(new File(System.getProperty("user.dir")));
+    	Desktop.getDesktop().open(new File(System.getProperty("user.home") + "/.RomRaider"));
     }
 }
