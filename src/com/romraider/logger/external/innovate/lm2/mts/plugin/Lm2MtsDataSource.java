@@ -78,11 +78,11 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
 	    				));
 		    	}
 	    	}
-	    	connector.dispose();
     	}
     	else {
     		throw new IllegalStateException("Innovate LogWorks MTS control does not appear to be installed on this computer");
     	}
+    	connector.dispose();
     }
 
     public String getId() {
