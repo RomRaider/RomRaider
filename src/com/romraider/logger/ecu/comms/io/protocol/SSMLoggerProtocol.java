@@ -47,8 +47,8 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         return protocol.constructEcuInitRequest(id);
     }
 
-    public byte[] constructEcuResetRequest() {
-        return protocol.constructEcuResetRequest();
+    public byte[] constructEcuResetRequest(byte id) {
+        return protocol.constructEcuResetRequest(id);
     }
 
     public byte[] constructReadAddressRequest(byte id, Collection<EcuQuery> queries) {

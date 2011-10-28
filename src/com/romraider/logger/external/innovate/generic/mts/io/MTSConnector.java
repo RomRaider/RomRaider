@@ -30,8 +30,8 @@ import org.apache.log4j.Logger;
 
 public final class MTSConnector {
     private static final Logger LOGGER = getLogger(MTSConnector.class);
-    private MTS mts;
-    private int[] ports;
+    private static MTS mts;
+    private static int[] ports;
     {
     	createMts();
     }
@@ -42,7 +42,7 @@ public final class MTSConnector {
      * across all the found ports.
      */
     public MTSConnector() {
-        try {
+    	try {
         	setMtsPorts();
         }
         catch (NullPointerException e){
@@ -73,10 +73,11 @@ public final class MTSConnector {
     private void createMts() {
       // create mts interface
     	try {
-    	      this.mts = createMTS();
+    	      mts = createMTS();
     	      mts.disconnect();
     	}
     	catch (com4j.ExecutionException e) {
+    		LOGGER.error("COM4J error creating MTS interface: " + e);
     	}
     }
 

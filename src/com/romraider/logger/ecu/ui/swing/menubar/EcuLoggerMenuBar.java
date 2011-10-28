@@ -114,7 +114,7 @@ public class EcuLoggerMenuBar extends JMenuBar {
 
         // tools menu items
         JMenu toolsMenu = new Menu("Tools", VK_T);
-        toolsMenu.add(new MenuItem("Reset ECU", new ResetEcuAction(logger), VK_R, getKeyStroke(VK_F7, 0)));
+        toolsMenu.add(new MenuItem("Reset ECU/TCU", new ResetEcuAction(logger), VK_R, getKeyStroke(VK_F7, 0)));
         add(toolsMenu);
 
         // plugins menu items

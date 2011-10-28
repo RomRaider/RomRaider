@@ -25,7 +25,7 @@ import com.romraider.logger.ecu.comms.query.EcuQuery;
 import java.util.Collection;
 
 public interface LoggerConnection {
-    void ecuReset();
+    void ecuReset(byte id);
 
     void ecuInit(EcuInitCallback callback, byte id);
 

@@ -38,20 +38,22 @@ public final class ResetManagerImpl implements ResetManager {
     }
 
     public boolean resetEcu() {
+    	String target = "ECU";
         try {
             LoggerConnection connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
-                messageListener.reportMessage("Sending ECU Reset...");
-                connection.ecuReset();
-                messageListener.reportMessage("Sending ECU Reset...done.");
+            	if (settings.getDestinationId() == 0x18) target = "TCU";
+                messageListener.reportMessage("Sending " + target + " Reset...");
+                connection.ecuReset(settings.getDestinationId());
+                messageListener.reportMessage("Sending " + target + " Reset...done.");
                 return true;
             } finally {
                 connection.close();
             }
         } catch (Exception e) {
-            messageListener.reportMessage("Unable to reset ecu - check correct serial port has been selected, cable is connected and ignition is on.");
-            LOGGER.error("Error sending ecu reset", e);
+            messageListener.reportMessage("Unable to reset " + target + " - check correct serial port has been selected, cable is connected and ignition is on.");
+            LOGGER.error("Error sending " + target + " reset", e);
             return false;
         }
     }

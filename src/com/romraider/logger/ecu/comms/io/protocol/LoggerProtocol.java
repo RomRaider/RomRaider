@@ -28,7 +28,7 @@ public interface LoggerProtocol {
 
     byte[] constructEcuInitRequest(byte id);
 
-    byte[] constructEcuResetRequest();
+    byte[] constructEcuResetRequest(byte id);
 
     byte[] constructReadAddressRequest(byte id, Collection<EcuQuery> queries);
 

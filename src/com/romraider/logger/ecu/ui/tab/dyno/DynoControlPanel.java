@@ -1530,7 +1530,7 @@ public final class DynoControlPanel extends JPanel {
                 openURL(CARS_DEFS_URL);
             } else {
                 showMessageDialog(parent, MISSING_CAR_DEF +
-                        " file from installation directory.", "Error", ERROR_MESSAGE);
+                        " file from the installation directory.\nDyno feature will not be available until this file is present.", "Notice", WARNING_MESSAGE);
             }
             carTypeArr = new String[]{MISSING_CAR_DEF};
             t.printStackTrace();

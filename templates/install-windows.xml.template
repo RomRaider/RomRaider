@@ -50,6 +50,8 @@
             <file src="logger.dtd" targetdir="$INSTALL_PATH"/>
             <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
 
+            <file src="post-install-tasks.bat" targetdir="$INSTALL_PATH"/>
+
             <file src="plugins/aem.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/aem2.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/fourteenpoint7.plugin" targetdir="$INSTALL_PATH/plugins"/>
@@ -77,6 +79,13 @@
                 <exclude name="plugins/txs_tuner.plugin"/>
                 <exclude name="plugins/zt2.plugin"/>
             </updatecheck>
+
+	        <executable targetfile="$INSTALL_PATH/post-install-tasks.bat" stage="postinstall"
+	        	failure="abort" keep="false">
+				<args>
+					<arg value="$INSTALL_PATH" />
+				</args>
+			</executable>
 
         </pack>
 

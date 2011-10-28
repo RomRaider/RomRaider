@@ -93,6 +93,8 @@ This is the first beta release of the upcoming official 0.5.4b release.
     may show as a border rather than a fill.
 - Moved settings.xml & profile_backup.xml to the /.RomRaider/ directory under the
   users home directory.
+- Added support to reset the TCU.  The reset target is selected via the action bar
+  Checkbox items ECU or TCU just like logging. 
 --- Editor ---
 - Set JInternalFrame.isPalette in TableFarme.java so table titles are visible on
   Mac OS.

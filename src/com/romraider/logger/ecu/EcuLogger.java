@@ -986,7 +986,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
         splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
-        splitPane.setDividerSize(2);
+        splitPane.setDividerSize(5);
         splitPane.setDividerLocation((int) settings.getDividerLocation());
         splitPane.addPropertyChangeListener(this);
         return splitPane;
@@ -1186,6 +1186,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     	settings.setDestinationId(TCU_ID);
     	target = "TCU";
     }
+    
+    public String getTarget() {
+    	return target;
+    }
 
     public void restartLogging() {
         stopLogging();
@@ -1341,6 +1345,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void cleanUpUpdateHandlers() {
+    	fileUpdateHandler.cleanUp();
         dataHandlerManager.cleanUp();
         graphHandlerManager.cleanUp();
         dashboardHandlerManager.cleanUp();

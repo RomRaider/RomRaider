@@ -43,7 +43,7 @@ public interface Protocol {
 
     EcuInit parseEcuInitResponse(byte[] processedResponse);
 
-    byte[] constructEcuResetRequest();
+    byte[] constructEcuResetRequest(byte id);
 
     void checkValidEcuResetResponse(byte[] processedResponse);
 

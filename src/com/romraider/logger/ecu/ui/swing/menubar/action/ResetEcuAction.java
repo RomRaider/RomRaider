@@ -45,16 +45,16 @@ public final class ResetEcuAction extends AbstractAction {
     }
 
     private int showConfirmation() {
-        return showConfirmDialog(logger, "Do you want to reset the ECU?", "Reset ECU", YES_NO_OPTION, WARNING_MESSAGE);
+        return showConfirmDialog(logger, "Do you want to reset the " + logger.getTarget() + "?", "Reset " + logger.getTarget(), YES_NO_OPTION, WARNING_MESSAGE);
     }
 
     private void resetEcu() {
         if (doReset()) {
             showMessageDialog(logger, "Reset Successful!\nTurn your ignition OFF and then\nback ON to complete the process.",
-                    "Reset ECU", INFORMATION_MESSAGE);
+                    "Reset " + logger.getTarget(), INFORMATION_MESSAGE);
         } else {
-            showMessageDialog(logger, "Error performing ECU reset.\nCheck the following:\n* Correct COM port selected\n" +
-                    "* Cable is connected properly\n* Ignition is ON\n* Logger is stopped", "Reset ECU", ERROR_MESSAGE);
+            showMessageDialog(logger, "Error performing " + logger.getTarget() + " reset.\nCheck the following:\n* Correct COM port selected\n" +
+                    "* Cable is connected properly\n* Ignition is ON\n* Logger is stopped", "Reset " + logger.getTarget(), ERROR_MESSAGE);
         }
     }
 
@@ -62,7 +62,7 @@ public final class ResetEcuAction extends AbstractAction {
         try {
             return logger.resetEcu();
         } catch (Exception e) {
-            logger.reportError("Error performing ECU reset", e);
+            logger.reportError("Error performing " + logger.getTarget() + " reset", e);
             return false;
         }
     }

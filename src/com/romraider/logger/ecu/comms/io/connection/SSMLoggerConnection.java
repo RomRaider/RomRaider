@@ -43,8 +43,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
         this.manager = manager;
     }
 
-    public void ecuReset() {
-        byte[] request = protocol.constructEcuResetRequest();
+    public void ecuReset(byte id) {
+        byte[] request = protocol.constructEcuResetRequest(id);
         LOGGER.debug("Ecu Reset Request  ---> " + asHex(request));
         byte[] response = manager.send(request, SEND_TIMEOUT);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
