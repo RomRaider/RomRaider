@@ -34,7 +34,7 @@ documentation may be incomplete or out of date.
 
 
 ---------------------------------
-- 0.5.4b RC1 Notes (??/??/????) -
+- 0.5.4b RC1 Notes (10/28/2011) -
 ---------------------------------
 This is the first beta release of the upcoming official 0.5.4b release.
 
@@ -54,7 +54,7 @@ This is the first beta release of the upcoming official 0.5.4b release.
 - Change Log -
 --------------
 
-0.5.4b RC1 (??/??/????)
+0.5.4b RC1 (10/28/2011)
 -----------------------
 
 --- Logger ---
