@@ -264,6 +264,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JWindow startStatus;
     private JLabel startText = new JLabel(" Initializing Logger...");
     private String HOME = System.getProperty("user.home"); 
+    private StatusIndicator statusIndicator;
 
     public EcuLogger(Settings settings) {
         super(ECU_LOGGER_TITLE);
@@ -1082,12 +1083,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         logToFileButton.setOpaque(true);
         logToFileButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                if (logToFileButton.isSelected()) {
+                if (logToFileButton.isSelected() && controller.isStarted()) {
                     fileUpdateHandler.start();
                     logToFileButton.setBackground(RED);
                 } else {
                     fileUpdateHandler.stop();
+                    if (!controller.isStarted()) statusIndicator.stopped();
                     logToFileButton.setBackground(GREEN);
+                    logToFileButton.setSelected(false);
                 }
             }
         });
@@ -1197,7 +1200,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private StatusIndicator buildStatusIndicator() {
-        StatusIndicator statusIndicator = new StatusIndicator();
+        statusIndicator = new StatusIndicator();
         controller.addListener(statusIndicator);
         fileUpdateHandler.addListener(statusIndicator);
         return statusIndicator;
@@ -1436,10 +1439,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         progressBar.setIndeterminate(false);
         progressBar.setOpaque(true);
         startText.setOpaque(true);
-        Border etchedBdr = BorderFactory.createEtchedBorder();
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        panel.setBorder(etchedBdr);
+        panel.setBorder(BorderFactory.createEtchedBorder());
         panel.add(progressBar, BorderLayout.CENTER);
         panel.add(startText, BorderLayout.SOUTH);
         startStatus.getContentPane().add(panel);

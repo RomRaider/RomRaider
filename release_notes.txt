@@ -81,10 +81,10 @@ This is the first beta release of the upcoming official 0.5.4b release.
 - Moved the COM port Auto Refresh checkbox to the Settings menu.
 - Added a Logger startup Progress Bar as loading plugins sometimes takes time.
 - Added colour to "Log to File" button. Red when recording and green when not.
-  * Button colours may not appear correctly as this is platform dependent. Colour
+  * Button colours may not appear correctly as this is platform dependent. Colours
     may show as a border rather than a fill.
   Also changed the colours used for the connection state:
-    * Red   = recording to file (used to be green)
+    * Red Square = recording to file (used to be green)
     * Green = connected and ready to record (used to blue)
     * Blue  = connection to ECU in progress (used to be red)
     * Red with X = disconnected (used to be red)

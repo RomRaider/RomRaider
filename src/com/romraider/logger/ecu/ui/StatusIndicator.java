@@ -30,13 +30,13 @@ import java.awt.BorderLayout;
 public final class StatusIndicator extends JPanel implements StatusChangeListener {
     private static final long serialVersionUID = -3244690866698807677L;
     private final JLabel statusLabel = new JLabel();
-    private static final String TEXT_CONNECTING = "Connecting...";
-    private static final String TEXT_READING = "Reading data...";
-    private static final String TEXT_LOGGING = "Logging to file...";
-    private static final String TEXT_STOPPED = "Stopped.";
+    private static final String TEXT_CONNECTING = "Connecting ";
+    private static final String TEXT_READING = "Reading data ";
+    private static final String TEXT_LOGGING = "Logging to file ";
+    private static final String TEXT_STOPPED = "Stopped ";
     private static final ImageIcon ICON_CONNECTING = new ImageIcon("./graphics/logger_blue.png");
     private static final ImageIcon ICON_READING = new ImageIcon("./graphics/logger_green.png");
-    private static final ImageIcon ICON_LOGGING = new ImageIcon("./graphics/logger_red.png");
+    private static final ImageIcon ICON_LOGGING = new ImageIcon("./graphics/logger_recording.png");
     private static final ImageIcon ICON_STOPPED = new ImageIcon("./graphics/logger_stop.png");
 
     public StatusIndicator() {
