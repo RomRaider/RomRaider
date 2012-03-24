@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2010 RomRaider.com
+ * Copyright (C) 2006-2012 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@ import org.apache.log4j.Logger;
 
 import com.romraider.logger.external.core.Stoppable;
 import com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2MtsDataItem;
-import com4j.EventCookie;
+// import com4j.EventCookie;
 
 public final class MTSRunner implements MTSEvents, Stoppable {
     private static final Logger LOGGER = getLogger(MTSRunner.class);
     private final Map<Integer, Lm2MtsDataItem> dataItems;
-    private EventCookie connectionEventCookie;
+//    private EventCookie connectionEventCookie;
     private final MTS mts;
     private boolean running;
     private boolean stop;
@@ -48,8 +48,8 @@ public final class MTSRunner implements MTSEvents, Stoppable {
     /**
      * MTSRunner contains the work-horse methods to process the MTS stream
      * data and update the appropriate sensor result.  Once started this class
-     * listens for events to process, typically with the newData() method after
-     * a successful connection is made and data collection started. 
+     * reads data at a set interval from the MTS stream.
+     * Events processing appears to be problematic via COM4J and therefore not used.
      */
     public MTSRunner(int mtsPort, Map<Integer, Lm2MtsDataItem> dataItems) {
     	MTSConnector connection = new MTSConnector(mtsPort);
@@ -78,18 +78,18 @@ public final class MTSRunner implements MTSEvents, Stoppable {
     private void doRun() {
         try {
             // attempt to connect to the specified device
-            connectionEventCookie = mts.advise(MTSEvents.class, this);
+//            connectionEventCookie = mts.advise(MTSEvents.class, this);
             mts.connect();
 
             try {
                 if (mts.inputCount() > 0) {
                     while (!stop) {
-                        // wait for newData() event to occur
-                        sleep(100L);
+                    	readData();
+                        sleep(12L);
                     }
                 }
                 else {
-                    LOGGER.error("Innovate MTS: Error - no input channels found to log from!");
+                    LOGGER.error("Innovate MTS: Error while reading data - no input channels found to log from!");
                 }
             }
             finally {
@@ -97,7 +97,7 @@ public final class MTSRunner implements MTSEvents, Stoppable {
             }
         }
         finally {
-            connectionEventCookie.close();
+            //connectionEventCookie.close();
             mts.dispose();
         }
     }
@@ -120,6 +120,11 @@ public final class MTSRunner implements MTSEvents, Stoppable {
     }
 
     public void newData() {
+    	LOGGER.debug("Innovate MTS newData");
+    	//readData();
+    }
+    
+    public void readData() {
         for (int i = 0; i < mts.inputCount(); i++) {
             float data = 0f;
 

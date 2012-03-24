@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2010 RomRaider.com
+ * Copyright (C) 2006-2012 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,8 +73,11 @@ public final class ReadCommandGenerator extends AbstractCommandGenerator {
     }
 
     private byte[] incrementAddress(byte[] address, int increment) {
-    	BigInteger newAddr = new BigInteger(address);
-    	byte[] incAddr = newAddr.add(new BigInteger(String.valueOf(increment))).toByteArray();
+    	BigInteger currentAddr = new BigInteger(1, address);
+    	String strIncrement = String.valueOf(increment);
+    	BigInteger bintIncrement = new BigInteger(strIncrement);
+    	BigInteger newAddress = currentAddr.add(bintIncrement);
+    	byte[] incAddr = newAddress.toByteArray();
     	if (incAddr.length == 1){
     		address[0] = 0;
     		address[1] = 0;
@@ -85,6 +88,10 @@ public final class ReadCommandGenerator extends AbstractCommandGenerator {
     		address[0] = 0;
     		address[1] = incAddr[0];
     		address[2] = incAddr[1];
+    		return address;
+    	}
+    	if (incAddr.length == 4){
+    		System.arraycopy(incAddr, 1, address, 0, 3);
     		return address;
     	}
     	else {
