@@ -254,8 +254,8 @@
         <attribute name="property"/>
         <sequential>
             <tempfile property="svninfo.log"/>
-            <exec executable="svn" output="${svninfo.log}" failonerror="false">
-                <arg line="info @{repository}"/>
+            <exec executable="git" output="${svninfo.log}" failonerror="false">
+                <arg line="describe --always"/>
             </exec>
             <loadfile property="@{property}" srcFile="${svninfo.log}">
                 <filterchain>

@@ -5,6 +5,9 @@ if [ -z "$JAVA_HOME" ]; then
     exit 1
 fi
 
+mkdir -p $HOME/.RomRaider
+cp build/linux/lib/RomRaider.jar .
+
 $JAVA_HOME/bin/java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
 #$JAVA_HOME/bin/java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar -logger >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
 #$JAVA_HOME/bin/java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar -logger.fullscreen >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
