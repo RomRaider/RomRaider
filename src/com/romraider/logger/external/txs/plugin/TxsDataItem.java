@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.txstuner.plugin;
+package com.romraider.logger.external.txs.plugin;
 
 import static com.romraider.logger.external.core.ExternalDataConvertorLoader.loadConvertors;
 
@@ -26,22 +26,24 @@ import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
-public final class TxsTunerDataItem implements ExternalDataItem, DataListener {
-	private EcuDataConvertor[] convertors;
+public final class TxsDataItem implements ExternalDataItem, DataListener {
+    private EcuDataConvertor[] convertors;
+    private final String name;
     private double data;
 
-    public TxsTunerDataItem(ExternalSensorConversions... convertorList) {
-		super();
-		convertors = new EcuDataConvertor[convertorList.length];
-		convertors = loadConvertors(this, convertors, convertorList);
+    public TxsDataItem(String name, ExternalSensorConversions... convertorList) {
+    	super();
+        this.name = name;
+        convertors = new EcuDataConvertor[convertorList.length];
+        convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {
-        return "TXS Tuner AFR";
+        return name;
     }
 
     public String getDescription() {
-        return "TXS Tuner Wideband data";
+        return name + " data";
     }
 
     public double getData() {
@@ -56,4 +58,3 @@ public final class TxsTunerDataItem implements ExternalDataItem, DataListener {
 		return convertors;
 	}
 }
-

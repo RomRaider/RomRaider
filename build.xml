@@ -77,8 +77,8 @@
         <property name="optimize" value="on"/>
         <property name="deprecation" value="on"/>
 
-        <!-- get the current svn revision (needed by version.properties) - if repository is unavailable, this will be zero -->
-        <macro_svn_revision repository="https://svn2.assembla.com/svn/romraider" property="svn.revision"/>
+        <!-- get the current svn revision (needed by version.properties) - if repository is unavailable, this will be zero 
+        <macro_svn_revision repository="https://svn2.assembla.com/svn/romraider" property="svn.revision"/> -->
 
         <!-- Set the buildnumber to be the revision fetched from the repository, but default to zero for
                 offline work -->

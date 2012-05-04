@@ -25,6 +25,7 @@ public class Test implements MTSEvents {
 
     private MTS mts;
     private EventCookie connectionEventCookie;
+    private int count = 0;
 
     public Test() {
         mts = null;
@@ -39,7 +40,7 @@ public class Test implements MTSEvents {
             String inputName = mts.inputName();
             int inputType = mts.inputType();
 
-            System.out.printf("%s : %d%n", inputName, inputType);
+            System.out.printf("inputName:%s, inputType:%d%n", inputName, inputType);
         }
     }
 
@@ -80,24 +81,28 @@ public class Test implements MTSEvents {
 
         System.out.printf("Found %d ports.%n", portCount);
 
-        // set the current port before attempting to connect
-        mts.currentPort(0);
-        String portName = mts.portName();
-
-        System.out.printf("Set current port to 0; port name = %s%n", portName);
-
         // register for MTS component events
         connectionEventCookie = mts.advise(MTSEvents.class, this);
 
-        // attempt to connect to the specified device
-        System.out.println("connect() called.");
-        mts.connect();
-
-        // show available inputs
-        printAvailableInputs();
-
+        // set the current port before attempting to connect
+        for (int i = 0; i < portCount; i++) {
+	        mts.currentPort(i);
+	        String portName = mts.portName();
+	
+	        System.out.printf("Current MTS port is %d; port name = %s%n", i, portName);
+	
+	        // attempt to connect to the specified device
+	        System.out.println("connect() called.");
+	        mts.connect();
+	
+	        // show available inputs
+	        printAvailableInputs();
+	        mts.disconnect();
+        }
         // attempt to get data
 //        mts.currentInput(0);
+        mts.currentPort(0);
+        mts.connect();
         mts.startData();
 
         // notes:
@@ -123,7 +128,7 @@ public class Test implements MTSEvents {
 
         // retrieve 10 samples
 //        getSamples(10);
-       	waitFor(20000);
+       	waitFor(60000);
 
         // dispose of the event handler instance
         connectionEventCookie.close();
@@ -150,17 +155,23 @@ public class Test implements MTSEvents {
     public void newData() {
     	int i;
     	float data = 0f;
-//    	for (i = 0; i < mts.inputCount(); i++) {
-    		i=0;
+    	for (i = 0; i < mts.inputCount(); i++) {
+//    		i=0;
     		mts.currentInput(i);
         	float min = mts.inputMinValue();
             float max = mts.inputMaxValue();
-	        data = mts.inputSample();
-            data = ((max - min) * ((float) data / 1024f)) + min;
-	        float multiplier = mts.inputAFRMultiplier();
-	        int sampleMeaning = mts.inputFunction();
-	        System.out.printf("newData raised for Input: %02d, Function: %d, Data: %f,\tMultiplier: %f%n", i, sampleMeaning, data, multiplier);
-//    	}
+            float sample = mts.inputSample();
+            data = ((max - min) * ((float) sample / 1024f)) + min;
+//	        float multiplier = mts.inputAFRMultiplier();
+//	        int sampleMeaning = mts.inputFunction();
+    		String str = String.format(
+        			"%d, InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f, Sample: %f, Data: %f",
+        			count, i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue(), sample, data);
+
+	        System.out.printf("%s%n", str);
+//	        System.out.printf("newData raised for Input: %02d, Function: %d, Data: %f,\tMultiplier: %f%n", i, sampleMeaning, data, multiplier);
+	        count++;
+    	}
     }
 
     /**

@@ -16,20 +16,36 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+package com.romraider.logger.external.txs.io;
 
-package com.romraider.io.j2534.op20;
+import com.romraider.io.connection.ConnectionProperties;
 
-import com.jinvoke.Embedded;
-import com.jinvoke.NativeStruct;
+public final class TxsConnectionProperties implements ConnectionProperties {
+    public int getBaudRate() {
+        return 19200;
+    }
 
-@NativeStruct
-public final class PassThruMessage {
-    public int ProtocolID; /* vehicle network protocol */
-    public int RxStatus; /* receive message status */
-    public int TxFlags; /* transmit message flags */
-    public int Timestamp; /* receive message timestamp(in microseconds) */
-    public int DataSize; /* byte size of message payload in the Data array */
-    public int ExtraDataIndex; /* start of extra data(i.e. CRC, checksum, etc) in Data array */
-    @Embedded(length = 4128)
-    public byte[] Data = new byte[4128]; /* message payload or data */
+    public void setBaudRate(int b) {
+
+    }
+
+    public int getDataBits() {
+        return 8;
+    }
+
+    public int getStopBits() {
+        return 1;
+    }
+
+    public int getParity() {
+        return 0;
+    }
+
+    public int getConnectTimeout() {
+        return 2000;
+    }
+
+    public int getSendTimeout() {
+        return 500;
+    }
 }

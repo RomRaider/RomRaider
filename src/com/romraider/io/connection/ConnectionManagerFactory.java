@@ -25,6 +25,8 @@ import static com.romraider.util.proxy.Proxifier.proxy;
 import com.romraider.util.proxy.TimerWrapper;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
+import static com.romraider.util.Platform.isPlatform;
+import static com.romraider.util.Platform.WINDOWS;
 
 public final class ConnectionManagerFactory {
     private static final Logger LOGGER = getLogger(ConnectionManagerFactory.class);
@@ -41,7 +43,9 @@ public final class ConnectionManagerFactory {
 
     private static ConnectionManager manager(String portName, ConnectionProperties connectionProperties) {
         try {
-            LOGGER.info("Trying J2534 connection...");
+        	if (!isPlatform(WINDOWS))
+        		throw new RuntimeException ("J2534 is not support on this platform");
+        	LOGGER.info("Trying J2534 connection...");
             return new J2534ConnectionManager(connectionProperties);
         } catch (Throwable t) {
             LOGGER.info("J2534 connection not available [" + t.getClass().getName() + ": " + t.getMessage() + "], trying serial connection...");

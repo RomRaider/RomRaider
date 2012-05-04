@@ -20,18 +20,20 @@
 package com.romraider.swing;
 
 import static com.romraider.Version.PRODUCT_NAME;
+import static com.romraider.util.Platform.LINUX;
+import static com.romraider.util.Platform.MAC_OS_X;
+import static com.romraider.util.Platform.isPlatform;
 import static javax.swing.UIManager.getCrossPlatformLookAndFeelClassName;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
 import static javax.swing.UIManager.setLookAndFeel;
-import org.apache.log4j.Logger;
+
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import org.apache.log4j.Logger;
+
 public final class LookAndFeelManager {
     private static final Logger LOGGER = Logger.getLogger(LookAndFeelManager.class);
-    private static final String OS_NAME = "os.name";
-    private static final String MAC_OS_X = "Mac OS X";
-    private static final String LINUX = "Linux";
 
     private LookAndFeelManager() {
         throw new UnsupportedOperationException();
@@ -56,10 +58,6 @@ public final class LookAndFeelManager {
         } catch (Exception ex) {
             LOGGER.error("Error loading system look and feel.", ex);
         }
-    }
-
-    private static boolean isPlatform(String platform) {
-        return System.getProperties().getProperty(OS_NAME).toLowerCase().contains(platform.toLowerCase());
     }
 
     private static String getLookAndFeel() {

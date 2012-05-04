@@ -19,32 +19,24 @@
 
 package com.romraider.io.j2534.api;
 
-import com.romraider.io.connection.ConnectionManager;
-import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.j2534.op20.Old_J2534OpenPort20;
-import com.romraider.logger.ecu.comms.manager.PollingState;
-
-import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_LOOPBACK;
-import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P1_MAX;
-import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P3_MIN;
-import static com.romraider.io.j2534.op20.OpenPort20.CONFIG_P4_MIN;
-import static com.romraider.io.j2534.op20.OpenPort20.FLAG_ISO9141_NO_CHECKSUM;
-import static com.romraider.io.j2534.op20.OpenPort20.PROTOCOL_ISO9141;
 import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
-
-import org.apache.log4j.Logger;
-
 import static java.lang.System.arraycopy;
 import static org.apache.log4j.Logger.getLogger;
 
+import org.apache.log4j.Logger;
+
+import com.romraider.io.connection.ConnectionManager;
+import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.j2534.api.J2534Impl.Config;
+import com.romraider.io.j2534.api.J2534Impl.Flag;
+import com.romraider.io.j2534.api.J2534Impl.Protocol;
+import com.romraider.logger.ecu.comms.manager.PollingState;
+
 public final class J2534ConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = getLogger(J2534ConnectionManager.class);
-    private final J2534 api = new Old_J2534OpenPort20(PROTOCOL_ISO9141);
-    //        private final J2534 api = new J2534OpenPort20(PROTOCOL_ISO9141);
-    //    private final J2534 api = proxy(new Old_J2534OpenPort20(PROTOCOL_ISO9141), TimerWrapper.class);
-    //    private final J2534 api = proxy(new J2534OpenPort20(PROTOCOL_ISO9141), TimerWrapper.class);
+    private J2534 api = new J2534Impl(Protocol.ISO9141);
     private int channelId;
     private int deviceId;
     private int msgId;
@@ -126,7 +118,7 @@ public final class J2534ConnectionManager implements ConnectionManager {
         deviceId = api.open();
         try {
             version(deviceId);
-            channelId = api.connect(deviceId, FLAG_ISO9141_NO_CHECKSUM, baudRate);
+            channelId = api.connect(deviceId, Flag.ISO9141_NO_CHECKSUM.getValue(), baudRate);
             setConfig(channelId);
             msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
         } catch (Exception e) {
@@ -142,10 +134,10 @@ public final class J2534ConnectionManager implements ConnectionManager {
     }
 
     private void setConfig(int channelId) {
-        ConfigItem p1Max = new ConfigItem(CONFIG_P1_MAX, 2);
-        ConfigItem p3Min = new ConfigItem(CONFIG_P3_MIN, 0);
-        ConfigItem p4Min = new ConfigItem(CONFIG_P4_MIN, 0);
-        ConfigItem loopback = new ConfigItem(CONFIG_LOOPBACK, 1);
+        ConfigItem p1Max = new ConfigItem(Config.P1_MAX.getValue(), 2);
+        ConfigItem p3Min = new ConfigItem(Config.P3_MIN.getValue(), 0);
+        ConfigItem p4Min = new ConfigItem(Config.P4_MIN.getValue(), 0);
+        ConfigItem loopback = new ConfigItem(Config.LOOPBACK.getValue(), 1);
         api.setConfig(channelId, p1Max, p3Min, p4Min, loopback);
     }
 

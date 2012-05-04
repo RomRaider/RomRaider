@@ -57,8 +57,10 @@ import com.romraider.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonito
 
 public final class QueryManagerImpl implements QueryManager {
     private static final Logger LOGGER = Logger.getLogger(QueryManagerImpl.class);
-    private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
-    private final Map<String, Query> queryMap = synchronizedMap(new HashMap<String, Query>());
+    private final List<StatusChangeListener> listeners =
+    		synchronizedList(new ArrayList<StatusChangeListener>());
+    private final Map<String, Query> queryMap =
+    		synchronizedMap(new HashMap<String, Query>());
     private final Map<String, Query> addList = new HashMap<String, Query>();
     private final List<String> removeList = new ArrayList<String>();
     private static final PollingState pollState = new PollingStateImpl();
@@ -72,9 +74,14 @@ public final class QueryManagerImpl implements QueryManager {
     private boolean started;
     private boolean stop;
 
-    public QueryManagerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener,
+    public QueryManagerImpl(Settings settings,
+    						EcuInitCallback ecuInitCallback,
+    						MessageListener messageListener,
                             DataUpdateHandler... dataUpdateHandlers) {
-        checkNotNull(settings, ecuInitCallback, messageListener, dataUpdateHandlers);
+        checkNotNull(settings,
+        			 ecuInitCallback,
+        			 messageListener,
+        			 dataUpdateHandlers);
         this.settings = settings;
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
@@ -151,8 +158,10 @@ public final class QueryManagerImpl implements QueryManager {
     	}
     	
         try {
-            LoggerConnection connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
-                    settings.getLoggerConnectionProperties());
+            LoggerConnection connection =
+            		getConnection(settings.getLoggerProtocol(),
+            					  settings.getLoggerPort(),
+            					  settings.getLoggerConnectionProperties());
             try {
                 messageListener.reportMessage("Sending " + target + " Init...");
                 connection.ecuInit(ecuInitCallback, id);
@@ -162,7 +171,8 @@ public final class QueryManagerImpl implements QueryManager {
                 connection.close();
             }
         } catch (Exception e) {
-            messageListener.reportMessage("Unable to send " + target + " init - check cable is connected and ignition is on.");
+            messageListener.reportMessage("Unable to send " + target +
+            		" init - check cable is connected and ignition is on.");
             logError(e);
             return false;
         }
@@ -244,15 +254,19 @@ public final class QueryManagerImpl implements QueryManager {
 
     private void sendEcuQueries(TransmissionManager txManager) {
         List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
-        if (fileLoggerQuery != null && settings.isFileLoggingControllerSwitchActive()) ecuQueries.add(fileLoggerQuery);
+        if (fileLoggerQuery != null &&
+        	settings.isFileLoggingControllerSwitchActive())
+        		ecuQueries.add(fileLoggerQuery);
         txManager.sendQueries(ecuQueries, pollState);
     }
 
     private void sendExternalQueries() {
-        List<ExternalQuery> externalQueries = filterExternalQueries(queryMap.values());
+        List<ExternalQuery> externalQueries =
+        		filterExternalQueries(queryMap.values());
         for (ExternalQuery externalQuery : externalQueries) {
             //FIXME: This is a hack!!
-            externalQuery.setResponse(externalQuery.getLoggerData().getSelectedConvertor().convert(null));
+            externalQuery.setResponse(
+            	externalQuery.getLoggerData().getSelectedConvertor().convert(null));
         }
     }
 
