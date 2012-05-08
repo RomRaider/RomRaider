@@ -28,12 +28,12 @@
 	<classpathentry kind="lib" path="lib/common/jdic.jar"/>
 	<classpathentry kind="lib" path="lib/common/jfreechart-1.0.9.jar"/>
 	<classpathentry kind="lib" path="lib/common/jcommon-1.0.12.jar"/>
-	<classpathentry kind="lib" path="C:/repositories/RomRaider/lib/common/jna.jar">
+	<classpathentry kind="lib" path="lib/common/jna.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://twall.github.com/jna/3.4.0/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/repositories/RomRaider/lib/common/platform.jar">
+	<classpathentry kind="lib" path="lib/common/platform.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://twall.github.com/jna/3.4.0/javadoc/"/>
 		</attributes>
