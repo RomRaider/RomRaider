@@ -64,7 +64,7 @@ public final class SettingsManagerImpl implements SettingsManager {
             new File(HOME + "/.RomRaider/").mkdir();		// Creates directory if it does not exist
             builder.buildSettings(settings, new File(HOME + SETTINGS_FILE), progress, VERSION);
         } catch (Exception e) {
-            // ignore
+        	throw new RuntimeException(e);
         }
     }
 }

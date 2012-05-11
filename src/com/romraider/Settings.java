@@ -89,7 +89,7 @@ public class Settings implements Serializable {
 	private boolean fastPoll = true;
 	private double loggerDividerLocation = 400;
 	private String loggerDebuggingLevel = "info";
-
+	private String j2534Device = "op20pt32"; //MONGI432 op20pt32
 
     public Settings() {
         //center window by default
@@ -491,5 +491,13 @@ public class Settings implements Serializable {
 
 	public String getLoggerDebuggingLevel() {
 		return loggerDebuggingLevel;
+	}
+
+	public void setJ2534Device(String j2534Device) {
+		this.j2534Device = j2534Device;
+	}
+
+	public String getJ2534Device() {
+		return j2534Device;
 	}
 }

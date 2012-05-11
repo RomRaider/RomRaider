@@ -110,8 +110,7 @@ public final class J2534ConnectionManager implements ConnectionManager {
         stopMsgFilter();
         disconnectChannel();
         closeDevice();
-        resetHandles();
-        LOGGER.info("J2534 connection closed");
+        //resetHandles();
     }
 
     private void initJ2534(int baudRate) {
@@ -121,7 +120,13 @@ public final class J2534ConnectionManager implements ConnectionManager {
             channelId = api.connect(deviceId, Flag.ISO9141_NO_CHECKSUM.getValue(), baudRate);
             setConfig(channelId);
             msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
+            LOGGER.debug(String.format(
+            		"J2534 success: deviceId:%d, channelId:%d, msgId:%d",
+            		deviceId, channelId, msgId));
         } catch (Exception e) {
+            LOGGER.debug(String.format(
+            		"J2534 exception: deviceId:%d, channelId:%d, msgId:%d",
+            		deviceId, channelId, msgId));
             close();
             throw new J2534Exception("J2534 Error opening device: " + e.getMessage(), e);
         }
@@ -143,7 +148,8 @@ public final class J2534ConnectionManager implements ConnectionManager {
 
     private void stopMsgFilter() {
         try {
-            if (channelId > 0 && msgId > 0) api.stopMsgFilter(channelId, msgId);
+            api.stopMsgFilter(channelId, msgId);
+            LOGGER.debug("J2534 stopped message filter:" + msgId);
         } catch (Exception e) {
             LOGGER.warn("J2534 Error stopping msg filter: " + e.getMessage());
         }
@@ -151,7 +157,8 @@ public final class J2534ConnectionManager implements ConnectionManager {
 
     private void disconnectChannel() {
         try {
-            if (channelId > 0) api.disconnect(channelId);
+            api.disconnect(channelId);
+            LOGGER.debug("J2534 disconnected channel:" + channelId);
         } catch (Exception e) {
             LOGGER.warn("J2534 Error disconnecting channel: " + e.getMessage());
         }
@@ -159,15 +166,17 @@ public final class J2534ConnectionManager implements ConnectionManager {
 
     private void closeDevice() {
         try {
-            if (deviceId > 0) api.close(deviceId);
+            api.close(deviceId);
+            LOGGER.info("J2534 closed connection to device:" + deviceId);
         } catch (Exception e) {
             LOGGER.warn("J2534 Error closing device: " + e.getMessage());
         }
     }
 
-    private void resetHandles() {
-        channelId = 0;
-        deviceId = 0;
-        msgId = 0;
-    }
+//    private void resetHandles() {
+//        channelId = -1;
+//        deviceId = -1;
+//        msgId = -1;
+//        api = null;
+//    }
 }

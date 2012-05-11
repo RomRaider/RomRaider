@@ -21,6 +21,7 @@ package com.romraider.io.j2534.api;
 
 import java.nio.ByteBuffer;
 
+import com.romraider.Settings;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
@@ -32,11 +33,13 @@ import com.sun.jna.ptr.NativeLongByReference;
  * JNA Wrapper for Native library <b>J2534 v0404</b><br>
  */
 public class J2534_v0404 implements Library {
-	public static final String JNA_LIBRARY_NAME = "op20pt32";
+	private static final Settings SETTINGS = new Settings();
+	public static final String JNA_LIBRARY_NAME =
+			SETTINGS.getJ2534Device();
 	public static final NativeLibrary JNA_NATIVE_LIB =
-		NativeLibrary.getInstance(J2534_v0404.JNA_LIBRARY_NAME);
+			NativeLibrary.getInstance(J2534_v0404.JNA_LIBRARY_NAME);
 	static {
-		Native.register(J2534_v0404.JNA_LIBRARY_NAME);
+			Native.register(J2534_v0404.JNA_LIBRARY_NAME);
 	}
 	
 	public static native NativeLong PassThruOpen(

@@ -1319,7 +1319,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 cleanUpUpdateHandlers();
             }
         } catch (Exception e) {
-            LOGGER.warn("Error stopping logger", e);
+            LOGGER.warn("Error stopping logger:", e);
         } finally {
             saveSettings();
             backupCurrentProfile();
@@ -1335,12 +1335,18 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         if (settings.getLoggerParameterListState()) settings.setLoggerDividerLocation(splitPane.getDividerLocation());
         settings.setLoggerSelectedTabIndex(tabbedPane.getSelectedIndex());
         settings.setLoggerPluginPorts(getPluginPorts(externalDataSources));
-        new SettingsManagerImpl().save(settings);
+        try {
+        	new SettingsManagerImpl().save(settings);
+            LOGGER.debug("Logger settings saved");
+        } catch (Exception e) {
+            LOGGER.warn("Error saving logger settings:", e);
+        }
     }
 
     private void backupCurrentProfile() {
         try {
             saveProfileToFile(getCurrentProfile(), new File(HOME + BACKUP_PROFILE));
+            LOGGER.debug("Backup profile saved");
         } catch (Exception e) {
             LOGGER.warn("Error backing up profile", e);
         }
