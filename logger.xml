@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE logger SYSTEM "logger.dtd">
-<!--ROMRAIDER STANDARD UNITS LOGGER DEFINITION FILE (VERSION 44) 20110814_001620
-Updated ECU ID: 6642784007 added extended parameters E51, E88
+<!--ROMRAIDER STANDARD UNITS LOGGER DEFINITION FILE (VERSION 56) 20120212_005812
+Added ECU ID: 4D12088006 to extended parameters
 
 TERMS, CONDITIONS, AND DISCLAIMERS
 - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -21,7 +21,7 @@ As always, use at your own risk.
 
 These definitions are created for FREE without any sort of guarantee. The developers cannot be held liable for
 any damage or injury incurred as a result of these definitions. USE AT YOUR OWN RISK! -->
-<logger>
+<logger version="56">
     <protocols>
         <protocol id="SSM" baud="4800" databits="8" stopbits="1" parity="0" connect_timeout="2000" send_timeout="55">
             <parameters>
@@ -69,6 +69,8 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <conversion units="kPa" expr="x*37/255/14.50377*100" format="0" gauge_min="-120" gauge_max="280" gauge_step="40" />
                         <conversion units="hPa" expr="x*37/255/14.50377*1000" format="0" gauge_min="-1200" gauge_max="2800" gauge_step="400" />
                         <conversion units="bar" expr="x*37/255/14.50377" format="0.000" gauge_min="-1.2" gauge_max="2.8" gauge_step="0.4" />
+                        <conversion units="inHg" expr="x*2.036*37/255" format="0.00" gauge_min="-40" gauge_max="80" gauge_step="10" />
+                        <conversion units="mmHg" expr="x*51.715*37/255" format="0" gauge_max="2069" gauge_min="-1024"gauge_step="259" />
                     </conversions>
                 </parameter>
                 <parameter id="P8" name="Engine Speed" desc="P8" ecubyteindex="8" ecubit="0" target="3">
@@ -174,7 +176,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <conversions>
                         <conversion units="psi" expr="x*37/255" format="0.00" gauge_min="0" gauge_max="20" gauge_step="2" />
                         <conversion units="kPa" expr="x" format="0" gauge_min="0" gauge_max="255" gauge_step="20" />
-                        <conversion units="bar" expr="x*37/255/14.50377" format="0.000" gauge_min="0" gauge_max="1.5" gauge_step="0.1" />
+                        <conversion units="bar" expr="x*0.01" format="0.000" gauge_min="0" gauge_max="1.5" gauge_step="0.1" />
+                        <conversion units="mmHg" format="0" expr="x*750.06" gauge_min="0" gauge_max="1125" gauge_step="75" />
+                        <conversion units="inHg" format="0.0" expr="x*29.53" gauge_min="0" gauge_max="44.3" gauge_step="3.0" />
                     </conversions>
                 </parameter>
                 <parameter id="P25" name="Manifold Relative Pressure" desc="P25" ecubyteindex="11" ecubit="7" target="1">
@@ -396,7 +400,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <conversion units="AFR" expr="x/128*14.7" format="0.00" />
                     </conversions>
                 </parameter>
-                <parameter id="P60" name="Gear Position" desc="P60" ecubyteindex="16" ecubit="5" target="2">
+                <parameter id="P60" name="Gear Position" desc="P60" ecubyteindex="16" ecubit="5" target="3">
                     <address>0x00004A</address>
                     <conversions>
                         <conversion units="gear" expr="x+1" format="0" />
@@ -566,13 +570,13 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                 <parameter id="P87" name="Exhaust OCV Current Right" desc="P87" ecubyteindex="43" ecubit="3" target="1">
                     <address>0x00011C</address>
                     <conversions>
-                        <conversion units="mA" expr="x*32" format="0.00" />
+                        <conversion units="mA" expr="x/32" format="0.00" />
                     </conversions>
                 </parameter>
                 <parameter id="P88" name="Exhaust OCV Current Left" desc="P88" ecubyteindex="43" ecubit="2" target="1">
                     <address>0x00011D</address>
                     <conversions>
-                        <conversion units="mA" expr="x*32" format="0.00" />
+                        <conversion units="mA" expr="x/32" format="0.00" />
                     </conversions>
                 </parameter>
                 <parameter id="P89" name="A/F Correction #3 (32-bit ECU)" desc="P89" ecubyteindex="15" ecubit="3" target="1">
@@ -1110,7 +1114,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <conversion units="A" expr="x" format="0" />
                     </conversions>
                 </parameter>
-                <parameter id="P170" name="Target Fuel Pump Current" desc="P170" ecubyteindex="61" ecubit="0" target="1">
+                <parameter id="P170" name="Fuel Pump Suction Control Valve Current (Target)" desc="P170-Target current value of suction control valve calculated by the ECM. Applies only to Diesel models." ecubyteindex="61" ecubit="0" target="1">
                     <address length="2">0x0001F6</address>
                     <conversions>
                         <conversion units="mA" expr="x" format="0" />
@@ -1140,7 +1144,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <conversion units="raw ecu value" expr="x" format="0" />
                     </conversions>
                 </parameter>
-                <parameter id="P175" name="Actual Fuel Pump Current" desc="P175" ecubyteindex="63" ecubit="7" target="1">
+                <parameter id="P175" name="Fuel Pump Suction Control Valve Current (Actual)" desc="P175-Actual current value of suction control valve. Input to the ECM. Applies only to Diesel models." ecubyteindex="63" ecubit="7" target="1">
                     <address length="2">0x0001F8</address>
                     <conversions>
                         <conversion units="mA" expr="x" format="0" />
@@ -1328,6 +1332,8 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <conversions>
                         <conversion units="psi" expr="[P7:psi]-[P24:psi]" format="0.00" gauge_min="-30" gauge_max="30" gauge_step="5" />
                         <conversion units="bar" expr="[P7:bar]-[P24:bar]" format="0.000" gauge_min="-2" gauge_max="2" gauge_step="0.4" />
+                        <conversion units="mmHg" expr="[P7:mmHg]-[P24:mmHg]" format="0" gauge_max="1551" gauge_min="-1551" gauge_step="258" />
+                        <conversion units="inHg" expr="[P7:inHg]-[P24:inHg]" format="0" gauge_min="-61" gauge_max="61" gauge_step="10" />
                     </conversions>
                 </parameter>
                 <parameter id="P203" name="Fuel Consumption (Est.)" desc="P203-Estimated fuel consumption based on MAF, AFR and vehicle speed." target="1">
@@ -6778,6 +6784,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <conversion units="psi absolute" expr="x*0.01933677" format="0.00" />
                         <conversion units="bar absolute" expr="x*0.001333224" format="0.000" />
                         <conversion units="mmHg absolute" expr="x" format="0" />
+                        <conversion units="inHg absolute" expr="x*0.03937" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E21" name="Manifold Relative Sea Level Pressure (Direct)*" desc="E21-Same as Manifold Absolute Pressure (Direct) except represented as relative pressure with the assumption of sea level." target="1">
@@ -9777,6 +9784,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="3712405006">
                         <address length="4">0xFF8550</address>
                     </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF2664</address>
+                    </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFF8550</address>
                     </ecu>
@@ -10131,6 +10141,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF2D78</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF2D80</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF2E38</address>
                     </ecu>
@@ -10380,6 +10393,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF2D28</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF2CD4</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF30B8</address>
                     </ecu>
@@ -10409,6 +10425,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="74A2584007">
                         <address length="4">0xFF2D38</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF2D9C</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF3050</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF30C0</address>
                     </ecu>
                     <conversions>
                         <conversion units="multiplier" storagetype="float" expr="x" format="0.0000" />
@@ -10543,6 +10568,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA6AC</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5034</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA6AC</address>
@@ -10904,6 +10932,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF6824</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF6834</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF68CC</address>
                     </ecu>
@@ -11162,6 +11193,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF6628</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF6500</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF6594</address>
                     </ecu>
@@ -11185,6 +11219,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF664C</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF6588</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF63EC</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF63F8</address>
                     </ecu>
                     <conversions>
                         <conversion units="g/rev" storagetype="float" expr="x" format="0.00" />
@@ -11319,6 +11362,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address>0xFFC11D</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address>0xFF6E15</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address>0xFFC11E</address>
@@ -11680,6 +11726,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address>0xFF9921</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address>0xFF9929</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address>0xFF98D1</address>
                     </ecu>
@@ -11938,6 +11987,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address>0xFF9B51</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address>0xFFA1C1</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFFA611</address>
                     </ecu>
@@ -11964,6 +12016,12 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="74A2584007">
                         <address>0xFF9A75</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFFA6B1</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFFA91D</address>
                     </ecu>
                     <conversions>
                         <conversion units="status" expr="x+6" format="0" />
@@ -12080,6 +12138,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA290</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4BEC</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA290</address>
@@ -12555,6 +12616,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="74A2584007">
                         <address length="4">0xFF5F0C</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF5EA4</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF5CAC</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF5CAC</address>
+                    </ecu>
                     <conversions>
                         <conversion units="absolute %" storagetype="float" expr="x" format="0.00" />
                     </conversions>
@@ -12670,6 +12740,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA284</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4BE0</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA284</address>
@@ -13145,6 +13218,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="74A2584007">
                         <address length="4">0xFF5EFC</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF5E94</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF5C9C</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF5C9C</address>
+                    </ecu>
                     <conversions>
                         <conversion units="psi" storagetype="float" expr="x*0.01933677" format="0.00" />
                         <conversion units="bar" storagetype="float" expr="x*0.001333224" format="0.000" />
@@ -13262,6 +13344,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA288</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4BE4</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA288</address>
@@ -13737,6 +13822,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="74A2584007">
                         <address length="4">0xFF5F04</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF5E9C</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF5CA4</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF5CA4</address>
+                    </ecu>
                     <conversions>
                         <conversion units="psi relative sea level" storagetype="float" expr="(x-760)*0.01933677" format="0.00" />
                         <conversion units="psi absolute" storagetype="float" expr="x*0.01933677" format="0.00" />
@@ -13856,6 +13950,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA28C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4BE8</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA28C</address>
@@ -14331,6 +14428,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="74A2584007">
                         <address length="4">0xFF5F08</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF5EA0</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF5CA8</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF5CA8</address>
+                    </ecu>
                     <conversions>
                         <conversion units="absolute %" storagetype="float" expr="x" format="0.00" />
                     </conversions>
@@ -14446,6 +14552,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA5B8</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4F44</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA5B8</address>
@@ -14984,6 +15093,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF6520</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF63EC</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF647C</address>
                     </ecu>
@@ -15010,6 +15122,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="74A2584007">
                         <address length="4">0xFF6520</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF647C</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF62D8</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF62E4</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x/.84" format="0.00" />
@@ -15138,6 +15259,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFB030</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5C30</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFB030</address>
@@ -15493,6 +15617,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF7FAC</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7FBC</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF78C0</address>
                     </ecu>
@@ -15742,6 +15869,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7C78</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF8058</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7F30</address>
                     </ecu>
@@ -15771,6 +15901,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="74A2584007">
                         <address length="4">0xFF7B60</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7AD8</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7E2C</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7E5C</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
@@ -15899,6 +16038,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFB074</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5C74</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFB074</address>
@@ -16254,6 +16396,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF7FD4</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7FE4</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF7904</address>
                     </ecu>
@@ -16506,6 +16651,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7CE8</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF8084</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7FA0</address>
                     </ecu>
@@ -16529,6 +16677,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF7C44</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7B48</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7E9C</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7ECC</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
@@ -16657,6 +16814,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFB08C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5C8C</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFB08C</address>
@@ -17012,6 +17172,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF7FE0</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7FF0</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF791C</address>
                     </ecu>
@@ -17264,6 +17427,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7D14</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF80BC</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7FCC</address>
                     </ecu>
@@ -17293,6 +17459,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="74A2584007">
                         <address length="4">0xFF7BFC</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7B74</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7EC8</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7EF8</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
@@ -17406,6 +17581,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFB81C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF6484</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFB81C</address>
@@ -17656,6 +17834,18 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4F54787016">
                         <address length="4">0xFFC8D4</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF8DE8</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF88B8</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF8CD0</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF8CF8</address>
+                    </ecu>
                     <conversions>
                         <conversion units="multiplier" storagetype="float" expr="x" format="0.000" />
                     </conversions>
@@ -17729,6 +17919,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="4D12084106">
                         <address length="4">0xFF7FA8</address>
+                    </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7FB8</address>
                     </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF78BC</address>
@@ -17973,6 +18166,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7C74</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF8054</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7F2C</address>
                     </ecu>
@@ -17996,6 +18192,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF7BD0</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7AD4</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7E28</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7E58</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
@@ -18130,6 +18335,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFF84FC</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF2608</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFF84FC</address>
@@ -18491,6 +18699,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF2CF0</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF2CF8</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF2DD4</address>
                     </ecu>
@@ -18749,6 +18960,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF2C9C</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF2C34</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF3024</address>
                     </ecu>
@@ -18772,6 +18986,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF2D58</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF2D10</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF2F90</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF3000</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x*100" format="0.00" />
@@ -18906,6 +19129,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFF8504</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF2610</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFF8504</address>
@@ -19267,6 +19493,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF2CF8</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF2D00</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF2DDC</address>
                     </ecu>
@@ -19525,6 +19754,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF2CA4</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF2C3C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF302C</address>
                     </ecu>
@@ -19548,6 +19780,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF2D60</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF2D18</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF2F98</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF3008</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x*100" format="0.00" />
@@ -19682,6 +19923,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFF850C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF2618</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFF850C</address>
@@ -20043,6 +20287,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF2D00</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF2D08</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF2DE4</address>
                     </ecu>
@@ -20301,6 +20548,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF2CAC</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF2C44</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF3034</address>
                     </ecu>
@@ -20324,6 +20574,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF2D68</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF2D20</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF2FA0</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF3010</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x*100" format="0.00" />
@@ -20458,6 +20717,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFF8514</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF2620</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFF8514</address>
@@ -20819,6 +21081,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF2D08</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF2D10</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF2DEC</address>
                     </ecu>
@@ -21077,6 +21342,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF2CB4</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF2C4C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF303C</address>
                     </ecu>
@@ -21100,6 +21368,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF2D70</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF2D28</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF2FA8</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF3018</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x*100" format="0.00" />
@@ -21234,6 +21511,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFABE4</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5718</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFABE4</address>
@@ -21595,6 +21875,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF783C</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF784C</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF72F4</address>
                     </ecu>
@@ -21853,6 +22136,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF73C8</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF7730</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7638</address>
                     </ecu>
@@ -21876,6 +22162,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF7324</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7228</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF74D8</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7508</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x*100" format="0.00" />
@@ -21992,6 +22287,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address>0xFFB2E4</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address>0xFF5EFC</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address>0xFFB2E4</address>
@@ -22530,6 +22828,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address>0xFF8384</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address>0xFF86E8</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF863C</address>
                     </ecu>
@@ -22553,6 +22854,12 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address>0xFF82E0</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFF85B0</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFF85E0</address>
                     </ecu>
                     <conversions>
                         <conversion units="raw ecu value" expr="x" format="0" />
@@ -22687,6 +22994,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFAE24</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF59D4</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFAE24</address>
@@ -23048,6 +23358,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF7538</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7548</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF7640</address>
                     </ecu>
@@ -23306,6 +23619,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF6F7C</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF7280</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF71D8</address>
                     </ecu>
@@ -23329,6 +23645,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF6EC8</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF6DDC</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7070</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF70A0</address>
                     </ecu>
                     <conversions>
                         <conversion units="ms" storagetype="float" expr="x*.001" format="0.0000" />
@@ -23454,6 +23779,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA528</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4EB4</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA528</address>
@@ -23800,6 +24128,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF6654</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF6660</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF6710</address>
                     </ecu>
@@ -24055,6 +24386,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF6450</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF632C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF63AC</address>
                     </ecu>
@@ -24076,10 +24410,20 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7442594007">
                         <address length="4">0xFF6470</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF63AC</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF6208</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF6214</address>
+                    </ecu>
                     <conversions>
                         <conversion units="psi absolute" storagetype="float" expr="x*0.01933677" format="0.00" />
                         <conversion units="bar absolute" storagetype="float" expr="x*0.001333224" format="0.000" />
                         <conversion units="mmHg absolute" storagetype="float" expr="x" format="0" />
+                        <conversion units="inHg absolute" storagetype="float" expr="x*0.03937" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E52" name="Manifold Relative Sea Level Pressure (4-byte)*" desc="E52-Same as Manifold Absolute Pressure (Direct) except represented as relative pressure with the assumption of sea level." target="1">
@@ -24211,6 +24555,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA528</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4EB4</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA528</address>
@@ -24572,6 +24919,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF6654</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF6660</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF6710</address>
                     </ecu>
@@ -24830,6 +25180,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF6450</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF632C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF63AC</address>
                     </ecu>
@@ -24853,6 +25206,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF6470</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF63AC</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF6208</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF6214</address>
                     </ecu>
                     <conversions>
                         <conversion units="psi relative sea level" storagetype="float" expr="(x-760)*0.01933677" format="0.00" />
@@ -24989,6 +25351,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFAF40</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5AF4</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFAF40</address>
@@ -25350,6 +25715,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF7DE4</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7DF4</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF7768</address>
                     </ecu>
@@ -25608,6 +25976,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF79C0</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF7DAC</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7C78</address>
                     </ecu>
@@ -25631,6 +26002,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF791C</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7820</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7B6C</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7B9C</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
@@ -25765,6 +26145,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA5BC</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4F48</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA5BC</address>
@@ -26126,6 +26509,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF670C</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF6718</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF67BC</address>
                     </ecu>
@@ -26384,6 +26770,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF6528</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF63FC</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF6484</address>
                     </ecu>
@@ -26410,6 +26799,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="74A2584007">
                         <address length="4">0xFF6528</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF6484</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF62E0</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF62EC</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x" format="0.000" />
@@ -26544,6 +26942,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFAD44</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF58E8</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFAD44</address>
@@ -26905,6 +27306,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF7B9C</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7BAC</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF7550</address>
                     </ecu>
@@ -27163,6 +27567,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7714</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF79F8</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF79CC</address>
                     </ecu>
@@ -27186,6 +27593,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF7670</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7574</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7890</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF78C0</address>
                     </ecu>
                     <conversions>
                         <conversion units="raw ecu value" storagetype="float" expr="x" format="0" />
@@ -27317,6 +27733,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFB16C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5D80</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFB16C</address>
@@ -27663,6 +28082,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF819C</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF81AC</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF7BB4</address>
                     </ecu>
@@ -27921,6 +28343,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7FDC</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF8424</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF8294</address>
                     </ecu>
@@ -27950,6 +28375,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="74A2584007">
                         <address length="4">0xFF7EC4</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7E3C</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF8198</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF81C8</address>
                     </ecu>
                     <conversions>
                         <conversion units="raw ecu value" storagetype="float" expr="x" format="0.00" />
@@ -28081,6 +28515,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFB168</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5D7C</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFB168</address>
@@ -28427,6 +28864,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF8198</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF81A8</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF7BAC</address>
                     </ecu>
@@ -28709,6 +29149,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7442594007">
                         <address length="4">0xFF7F30</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7E34</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF8190</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF81C0</address>
+                    </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x/.84" format="0.00" />
                     </conversions>
@@ -28836,6 +29285,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address>0xFFB095</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address>0xFF5C92</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address>0xFFB095</address>
@@ -29191,6 +29643,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address>0xFF7FFA</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address>0xFF800A</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address>0xFF7922</address>
                     </ecu>
@@ -29440,6 +29895,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address>0xFF7D20</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address>0xFF80D6</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF7FD8</address>
                     </ecu>
@@ -29463,6 +29921,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address>0xFF7C7C</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address>0xFF7B80</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFF7ED4</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFF7F04</address>
                     </ecu>
                     <conversions>
                         <conversion units="index position" expr="x+1" format="0" />
@@ -29594,6 +30061,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address>0xFFA8D1</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address>0xFF526D</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address>0xFFA8D1</address>
@@ -29952,6 +30422,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address>0xFF6B34</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address>0xFF69CC</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address>0xFF6BB9</address>
                     </ecu>
@@ -30240,6 +30713,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="74A2584007">
                         <address>0xFF6A35</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address>0xFF69B1</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFF6805</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFF6831</address>
+                    </ecu>
                     <conversions>
                         <conversion units="position" expr="x" format="0" />
                     </conversions>
@@ -30373,6 +30855,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFAE10</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF59C0</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFAE10</address>
@@ -30734,6 +31219,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF7C74</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7C84</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF762C</address>
                     </ecu>
@@ -30989,6 +31477,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7874</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF7C00</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7B2C</address>
                     </ecu>
@@ -31012,6 +31503,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF77D0</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF76D4</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF79F4</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7A24</address>
                     </ecu>
                     <conversions>
                         <conversion units="ms" storagetype="float" expr="x*.001" format="0.0000" />
@@ -31146,6 +31646,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address>0xFFABED</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address>0xFF5721</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address>0xFFABED</address>
@@ -31507,6 +32010,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address>0xFF7849</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address>0xFF7859</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address>0xFF72FD</address>
                     </ecu>
@@ -31765,6 +32271,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address>0xFF73CF</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address>0xFF7737</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF763F</address>
                     </ecu>
@@ -31788,6 +32297,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address>0xFF732B</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address>0xFF722F</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFF74DF</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFF750F</address>
                     </ecu>
                     <conversions>
                         <conversion units="offset" expr="x+1" format="0" />
@@ -32202,6 +32720,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA2AC</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4C08</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA2AC</address>
@@ -33204,6 +33725,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <conversion units="psi relative" expr="(x-32768)*0.01933677" format="0.00" />
                         <conversion units="bar relative" expr="(x-32768)*0.001333224" format="0.000" />
                         <conversion units="mmHg relative" expr="x-32768" format="0" />
+                        <conversion	units="inHg relative" expr="(x-32768)*0.03937007" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E73" name="Primary Wastegate Duty Maximum*" desc="E73-Current max WG duty as determined by the Max Wastegate Duty table(s) with all WG compensations applied." target="1">
@@ -34436,6 +34958,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="3712405006">
                         <address length="4">0xFFA2AC</address>
                     </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4C08</address>
+                    </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA2AC</address>
                     </ecu>
@@ -34904,6 +35429,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7442594007">
                         <address length="4">0xFF5F20</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF5EB8</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF5CC0</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF5CC0</address>
+                    </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="x" format="0.000" />
                     </conversions>
@@ -34953,6 +35487,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address length="2">0xFF5308</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF527C</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB328</address>
@@ -35334,6 +35871,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="2F12795606">
                         <address length="2">0xFF530A</address>
                     </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF527E</address>
+                    </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB32A</address>
                     </ecu>
@@ -35713,6 +36253,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address length="2">0xFF530C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF5280</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB32C</address>
@@ -36178,6 +36721,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="3712405006">
                         <address length="4">0xFFAA9C</address>
                     </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF55D0</address>
+                    </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFAA9C</address>
                     </ecu>
@@ -36538,6 +37084,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF76FC</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF770C</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF7138</address>
                     </ecu>
@@ -36790,6 +37339,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7248</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF75E4</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF74A8</address>
                     </ecu>
@@ -36813,6 +37365,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF7190</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF70A8</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7340</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7370</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" storagetype="float" expr="(x*100)-100" format="0.00" />
@@ -36881,6 +37442,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F421A6106">
                         <address length="2">0xFFBDFE</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF5284</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB330</address>
@@ -37218,6 +37782,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="2">0xFF6FF6</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="2">0xFF7006</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="2">0xFF6BD0</address>
                     </ecu>
@@ -37470,6 +38037,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="2">0xFF6A5E</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="2">0xFF6E5C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69EA</address>
                     </ecu>
@@ -37493,6 +38063,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="2">0xFF6ABA</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69DE</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF684A</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF6876</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" expr="(x*.01220703)-100" format="0.00" />
@@ -37558,6 +38137,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F421A6106">
                         <address length="2">0xFFBE00</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF5288</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB334</address>
@@ -37862,6 +38444,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="2">0xFF6FF8</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="2">0xFF7008</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="2">0xFF6BD4</address>
                     </ecu>
@@ -38105,6 +38690,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="2">0xFF6A62</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="2">0xFF6E60</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69EE</address>
                     </ecu>
@@ -38128,6 +38716,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="2">0xFF6ABE</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69E2</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF684E</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF687A</address>
                     </ecu>
                     <conversions>
                         <conversion units="%" expr="(x*.04882812)-50" format="0.00" />
@@ -38262,6 +38859,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFAC3C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5788</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFAC3C</address>
@@ -38623,6 +39223,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF7930</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7940</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF73E0</address>
                     </ecu>
@@ -38875,6 +39478,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7490</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF77F8</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7748</address>
                     </ecu>
@@ -38898,6 +39504,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF73EC</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF72F0</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF75E8</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7618</address>
                     </ecu>
                     <conversions>
                         <conversion units="estimated AFR" storagetype="float" expr="14.7/(1+x)" format="0.00" />
@@ -38968,6 +39583,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F421A6106">
                         <address length="2">0xFFBE04</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF528A</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB336</address>
@@ -39305,6 +39923,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="2">0xFF6FFC</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="2">0xFF700C</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="2">0xFF6BD6</address>
                     </ecu>
@@ -39557,6 +40178,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="2">0xFF6A66</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="2">0xFF6E64</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69F4</address>
                     </ecu>
@@ -39580,6 +40204,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="2">0xFF6AC2</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69E6</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF6854</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF6880</address>
                     </ecu>
                     <conversions>
                         <conversion units="estimated AFR" expr="14.7/(1+(x*.00003051758))" format="0.00" />
@@ -39717,6 +40350,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address>0xFF6A77</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address>0xFF6E6F</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF6A06</address>
                     </ecu>
@@ -39740,6 +40376,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address>0xFF6AD3</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address>0xFF69F7</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFF6865</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFF6891</address>
                     </ecu>
                     <conversions>
                         <conversion units="g/rev" expr="x*.015625" format="0.00" />
@@ -39790,6 +40435,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address length="2">0xFF531C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF5290</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB33C</address>
@@ -40174,6 +40822,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="2F12795606">
                         <address length="2">0xFF532A</address>
                     </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF529E</address>
+                    </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB34A</address>
                     </ecu>
@@ -40663,6 +41314,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="2">0xFF6A44</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="2">0xFF6E44</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69D0</address>
                     </ecu>
@@ -40681,10 +41335,20 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7442594007">
                         <address length="2">0xFF6AA0</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69C4</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF6830</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF685C</address>
+                    </ecu>
                     <conversions>
                         <conversion units="psi absolute" expr="x*0.01933677" format="0.00" />
                         <conversion units="bar absolute" expr="x*0.001333224" format="0.000" />
                         <conversion units="mmHg absolute" expr="x" format="0" />
+                        <conversion units="inHg absolute" expr="x*0.03937" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E89" name="Manifold Relative Sea Level Pressure (2-byte)**" desc="E89-Same as Manifold Absolute Pressure (Direct) except represented as relative pressure with the assumption of sea level." target="1">
@@ -40735,6 +41399,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address length="2">0xFF532A</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF529E</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB34A</address>
@@ -41234,6 +41901,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="2">0xFF6A44</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="2">0xFF6E44</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69D0</address>
                     </ecu>
@@ -41257,6 +41927,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="2">0xFF6AA0</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69C4</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF6830</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF685C</address>
                     </ecu>
                     <conversions>
                         <conversion units="psi relative sea level" expr="(x-760)*0.01933677" format="0.00" />
@@ -41309,6 +41988,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address length="2">0xFF5330</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF52A4</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB350</address>
@@ -41754,6 +42436,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7442594007">
                         <address length="2">0xFF6ACE</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69F2</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF6860</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF688C</address>
+                    </ecu>
                     <conversions>
                         <conversion units="psi relative sea level" expr="(x-760)*0.01933677" format="0.00" />
                         <conversion units="psi absolute" expr="x*0.01933677" format="0.00" />
@@ -41891,6 +42582,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA78C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF511C</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA78C</address>
@@ -42249,6 +42943,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF6988</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF6998</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF6A2C</address>
                     </ecu>
@@ -42501,6 +43198,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF6764</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF6648</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF66F0</address>
                     </ecu>
@@ -42524,6 +43224,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF67AC</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF66E4</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF6530</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF655C</address>
                     </ecu>
                     <conversions>
                         <conversion units="estimated AFR" storagetype="float" expr="x*14.7" format="0.00" />
@@ -42594,6 +43303,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F421A6106">
                         <address length="2">0xFFBDF4</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF52A6</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB352</address>
@@ -42931,6 +43643,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="2">0xFF6FEC</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="2">0xFF6FFC</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="2">0xFF6BF2</address>
                     </ecu>
@@ -43183,6 +43898,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="2">0xFF6A4C</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="2">0xFF6E4C</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69D8</address>
                     </ecu>
@@ -43206,6 +43924,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="2">0xFF6AA8</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69CC</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF6838</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF6864</address>
                     </ecu>
                     <conversions>
                         <conversion units="estimated AFR" expr="(x*.0001220703)*14.7" format="0.00" />
@@ -43258,6 +43985,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address length="2">0xFF533A</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF52AE</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB35A</address>
@@ -43703,6 +44433,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7442594007">
                         <address length="2">0xFF6AA2</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69C6</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF6832</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF685E</address>
+                    </ecu>
                     <conversions>
                         <conversion units="%" expr="x*0.0022706535" format="0.00" />
                     </conversions>
@@ -43752,6 +44491,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address>0xFF5344</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address>0xFF52B8</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address>0xFFB364</address>
@@ -44212,6 +44954,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address>0xFF6A81</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address>0xFF6E77</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF6A10</address>
                     </ecu>
@@ -44235,6 +44980,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address>0xFF6ADD</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address>0xFF6A01</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFF686F</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFF689B</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" expr="(x*.3515625)-45" format="0.00" />
@@ -44285,6 +45039,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address>0xFF5347</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address>0xFF52BB</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address>0xFFB367</address>
@@ -44745,6 +45502,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address>0xFF6A84</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address>0xFF6E7A</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF6A13</address>
                     </ecu>
@@ -44768,6 +45528,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address>0xFF6AE0</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address>0xFF6A04</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFF6872</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFF689E</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" expr="(x*.3515625)-45" format="0.00" />
@@ -44818,6 +45587,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address>0xFF5349</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address>0xFF52BD</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address>0xFFB369</address>
@@ -45278,6 +46050,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address>0xFF6A83</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address>0xFF6E79</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address>0xFF6A12</address>
                     </ecu>
@@ -45301,6 +46076,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address>0xFF6ADF</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address>0xFF6A03</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFF6871</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFF689D</address>
                     </ecu>
                     <conversions>
                         <conversion units="multiplier" expr="x*.0625" format="0.0000" />
@@ -45396,6 +46180,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="4D12084106">
                         <address>0xFF7003</address>
+                    </ecu>
+                    <ecu id="4D12088006">
+                        <address>0xFF7013</address>
                     </ecu>
                     <ecu id="4E52144007">
                         <address>0xFF7053</address>
@@ -45507,6 +46294,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="2">0xFF6FE0</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="2">0xFF6FF0</address>
+                    </ecu>
                     <ecu id="4E52144007">
                         <address length="2">0xFF7030</address>
                     </ecu>
@@ -45526,6 +46316,7 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                         <conversion units="psi absolute" expr="(x*0.0003688196892273)-2.9005155" format="0.00" />
                         <conversion units="bar absolute" expr="(x*.00002542923463176)-.1999836" format="0.000" />
                         <conversion units="mmHg absolute" expr="(x*0.01907349)-150" format="0" />
+                        <conversion units="inHg absolute" expr="(x*0.0007509233)-5.9055" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E99" name="Fuel Injector #1 Pulse Width (2-byte)**" desc="E99-Fuel Injector #1 PW with higher resolution. Note: This parameter does not include latency unlike the standard parameter." target="1">
@@ -45619,6 +46410,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="2">0xFF6FFE</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="2">0xFF700E</address>
+                    </ecu>
                     <ecu id="4E52144007">
                         <address length="2">0xFF704E</address>
                     </ecu>
@@ -45688,6 +46482,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="2">0xFF6A56</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="2">0xFF6E54</address>
+                    </ecu>
                     <ecu id="7402744007">
                         <address length="2">0xFF6AD2</address>
                     </ecu>
@@ -45705,6 +46502,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="2">0xFF6AB2</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69D6</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF6842</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF686E</address>
                     </ecu>
                     <conversions>
                         <conversion units="ms" expr="x*.004" format="0.000" />
@@ -46411,6 +47217,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7442594007">
                         <address>0xFF6AE9</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address>0xFF6A0D</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address>0xFF687B</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address>0xFF68A7</address>
+                    </ecu>
                     <conversions>
                         <conversion units="%" expr="x*.3921568" format="0.00" />
                     </conversions>
@@ -46538,6 +47353,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA52C</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF4EB8</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFA52C</address>
@@ -46899,6 +47717,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF6658</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF6664</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF6714</address>
                     </ecu>
@@ -47157,6 +47978,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF6454</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF6330</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF63B0</address>
                     </ecu>
@@ -47181,10 +48005,20 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7442594007">
                         <address length="4">0xFF6474</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF63B0</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF620C</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF6218</address>
+                    </ecu>
                     <conversions>
                         <conversion units="psi relative" storagetype="float" expr="x*0.01933677" format="0.00" />
                         <conversion units="bar relative" storagetype="float" expr="x*0.001333224" format="0.000" />
                         <conversion units="mmHg relative" storagetype="float" expr="x" format="0" />
+                        <conversion units="inHg relative" storagetype="float" expr="x*0.03937007" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E114" name="Knock Sum*" desc="E114-Knock event counter, determined by the ECU, after an execution with no knock event, this counter is incremented." target="1">
@@ -47241,6 +48075,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F12795606">
                         <address>0xFF5CFC</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address>0xFF5C08</address>
                     </ecu>
                     <ecu id="3B02593006">
                         <address>0xFFAE98</address>
@@ -47545,6 +48382,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address>0xFF7F84</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address>0xFF7F94</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address>0xFF7898</address>
                     </ecu>
@@ -47780,6 +48620,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFAA20</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5554</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFAA20</address>
@@ -48374,6 +49217,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7CE0</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF8080</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7F98</address>
                     </ecu>
@@ -48397,6 +49243,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF7C3C</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7B40</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7E94</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7EC4</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
@@ -48624,6 +49479,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7442594007">
                         <address length="4">0xFF5F00</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF5E98</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF5CA0</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF5CA0</address>
+                    </ecu>
                     <conversions>
                         <conversion units="psi relative" storagetype="float" expr="x*0.01933677" format="0.00" />
                         <conversion units="bar relative" storagetype="float" expr="x*0.001333224" format="0.000" />
@@ -48759,6 +49623,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFAAE4</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF56A0</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFAAE4</address>
@@ -49120,6 +49987,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF770C</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF771C</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF7180</address>
                     </ecu>
@@ -49378,6 +50248,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF7330</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF76B8</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7590</address>
                     </ecu>
@@ -49401,6 +50274,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF7278</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7190</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7428</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7458</address>
                     </ecu>
                     <conversions>
                         <conversion units="estimated AFR" storagetype="float" expr="x*14.7" format="0.00" />
@@ -49471,6 +50353,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="2F421A6106">
                         <address length="2">0xFFBDFC</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF5338</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB358</address>
@@ -49808,6 +50693,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="2">0xFF6FF4</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="2">0xFF7004</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="2">0xFF6BF8</address>
                     </ecu>
@@ -50066,6 +50954,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="2">0xFF6A60</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="2">0xFF6E5E</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69EC</address>
                     </ecu>
@@ -50089,6 +50980,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="2">0xFF6ABC</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69E0</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF684C</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF6878</address>
                     </ecu>
                     <conversions>
                         <conversion units="lambda" expr="x*0.0001220703" format="0.00" />
@@ -50225,6 +51125,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3712405006">
                         <address length="4">0xFFA9F0</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="4">0xFF5524</address>
                     </ecu>
                     <ecu id="3712485006">
                         <address length="4">0xFFAD1C</address>
@@ -50586,6 +51489,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="4">0xFF7500</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="4">0xFF7510</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="4">0xFF708C</address>
                     </ecu>
@@ -50844,6 +51750,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="4">0xFF6F3C</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="4">0xFF7240</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="4">0xFF7198</address>
                     </ecu>
@@ -50867,6 +51776,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="4">0xFF6E88</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF6D9C</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7030</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7060</address>
                     </ecu>
                     <conversions>
                         <conversion units="estimated AFR" storagetype="float" expr="14.7/x" format="0.00" />
@@ -50940,6 +51858,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="3152584006">
                         <address length="2">0xFF8238</address>
+                    </ecu>
+                    <ecu id="371240A006">
+                        <address length="2">0xFF528E</address>
                     </ecu>
                     <ecu id="3B02594006">
                         <address length="2">0xFFB33A</address>
@@ -51277,6 +52198,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="4D12084106">
                         <address length="2">0xFF6FF0</address>
                     </ecu>
+                    <ecu id="4D12088006">
+                        <address length="2">0xFF7000</address>
+                    </ecu>
                     <ecu id="4D12504006">
                         <address length="2">0xFF6BDA</address>
                     </ecu>
@@ -51535,6 +52459,9 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="7142504007">
                         <address length="2">0xFF6A5A</address>
                     </ecu>
+                    <ecu id="7144345007">
+                        <address length="2">0xFF6E58</address>
+                    </ecu>
                     <ecu id="7212786007">
                         <address length="2">0xFF69E6</address>
                     </ecu>
@@ -51558,6 +52485,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="7442594007">
                         <address length="2">0xFF6AB6</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="2">0xFF69DA</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="2">0xFF6846</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="2">0xFF6872</address>
                     </ecu>
                     <conversions>
                         <conversion units="estimated AFR" expr="14.7/(x*.0004882812)" format="0.00" />
@@ -51592,6 +52528,15 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     </ecu>
                     <ecu id="74A2584007">
                         <address length="4">0xFF7908</address>
+                    </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF7880</address>
+                    </ecu>
+                    <ecu id="8112585007">
+                        <address length="4">0xFF7BCC</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7BFC</address>
                     </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
@@ -51651,6 +52596,12 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="74A2584007">
                         <address length="4">0xFF7A60</address>
                     </ecu>
+                    <ecu id="74A2594007">
+                        <address length="4">0xFF79D8</address>
+                    </ecu>
+                    <ecu id="8112595007">
+                        <address length="4">0xFF7D5C</address>
+                    </ecu>
                     <conversions>
                         <conversion units="degrees" storagetype="float" expr="x" format="0.00" />
                     </conversions>
@@ -51659,10 +52610,16 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="4">0xFF6018</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFF6018</address>
+                    </ecu>
                     <ecu id="6644D87107">
                         <address length="4">0xFF6018</address>
                     </ecu>
                     <ecu id="6644D87207">
+                        <address length="4">0xFF6018</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="4">0xFF6018</address>
                     </ecu>
                     <conversions>
@@ -51673,10 +52630,16 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="4">0xFF61A8</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFF61A8</address>
+                    </ecu>
                     <ecu id="6644D87107">
                         <address length="4">0xFF61A8</address>
                     </ecu>
                     <ecu id="6644D87207">
+                        <address length="4">0xFF61A8</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="4">0xFF61A8</address>
                     </ecu>
                     <conversions>
@@ -51687,18 +52650,27 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="4">0xFFB1B0</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFFB1B0</address>
+                    </ecu>
                     <ecu id="6644D87107">
                         <address length="4">0xFFB150</address>
                     </ecu>
                     <ecu id="6644D87207">
                         <address length="4">0xFFB1B0</address>
                     </ecu>
+                    <ecu id="6644D87407">
+                        <address length="4">0xFFB1B0</address>
+                    </ecu>
                     <conversions>
-                        <conversion units="%" storagetype="float" expr="x" format="0.000" />
+                        <conversion units="%" storagetype="float" expr="x" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E131" name="Oil Dilution Ratio (4-byte)*" desc="E131" target="1">
                     <ecu id="6144D87207">
+                        <address length="4">0xFFB258</address>
+                    </ecu>
+                    <ecu id="6144D87407">
                         <address length="4">0xFFB258</address>
                     </ecu>
                     <ecu id="6644D87107">
@@ -51707,32 +52679,27 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6644D87207">
                         <address length="4">0xFFB258</address>
                     </ecu>
-                    <conversions>
-                        <conversion units="%" storagetype="float" expr="x" format="0.000" />
-                    </conversions>
-                </ecuparam>
-                <ecuparam id="E132" name="DPF Regenerations (4-byte)*" desc="E132" target="1">
-                    <ecu id="6144D87207">
-                        <address length="4">0xFFB1DA</address>
-                    </ecu>
-                    <ecu id="6644D87107">
-                        <address length="4">0xFFB17A</address>
-                    </ecu>
-                    <ecu id="6644D87207">
-                        <address length="4">0xFFB1DA</address>
+                    <ecu id="6644D87407">
+                        <address length="4">0xFFB258</address>
                     </ecu>
                     <conversions>
-                        <conversion units="-" storagetype="float" expr="x" format="0" />
+                        <conversion units="%" expr="x" format="0.00" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E133" name="Distance Since Last DPF Regeneration (4-byte)*" desc="E133" target="1">
                     <ecu id="6144D87207">
                         <address length="4">0xFFAED4</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFFAED4</address>
+                    </ecu>
                     <ecu id="6644D87107">
                         <address length="4">0xFFAE74</address>
                     </ecu>
                     <ecu id="6644D87207">
+                        <address length="4">0xFFAED4</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="4">0xFFAED4</address>
                     </ecu>
                     <conversions>
@@ -51743,18 +52710,27 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="4">0xFFA838</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFFA838</address>
+                    </ecu>
                     <ecu id="6644D87107">
                         <address length="4">0xFFA7F4</address>
                     </ecu>
                     <ecu id="6644D87207">
                         <address length="4">0xFFA838</address>
                     </ecu>
+                    <ecu id="6644D87407">
+                        <address length="4">0xFFA838</address>
+                    </ecu>
                     <conversions>
-                        <conversion units="%" storagetype="float" expr="x*10000" format="0.00" />
+                        <conversion units="%" storagetype="float" expr="x*10000" format="0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E135" name="DPF Cumulative Ash Amount*" desc="E135" target="1">
                     <ecu id="6144D87207">
+                        <address length="4">0xFFA828</address>
+                    </ecu>
+                    <ecu id="6144D87407">
                         <address length="4">0xFFA828</address>
                     </ecu>
                     <ecu id="6644D87107">
@@ -51763,18 +52739,27 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6644D87207">
                         <address length="4">0xFFA828</address>
                     </ecu>
+                    <ecu id="6644D87407">
+                        <address length="4">0xFFA828</address>
+                    </ecu>
                     <conversions>
-                        <conversion units="grams" storagetype="float" expr="x" format="0.000" />
+                        <conversion units="grams" storagetype="float" expr="x" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E136" name="Exhaust Gas Temperature DPF Inlet (4-byte)*" desc="E136" target="1">
                     <ecu id="6144D87207">
                         <address length="4">0xFF6270</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFF6270</address>
+                    </ecu>
                     <ecu id="6644D87107">
                         <address length="4">0xFF6270</address>
                     </ecu>
                     <ecu id="6644D87207">
+                        <address length="4">0xFF6270</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="4">0xFF6270</address>
                     </ecu>
                     <conversions>
@@ -51785,10 +52770,16 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="4">0xFF62E8</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFF62E8</address>
+                    </ecu>
                     <ecu id="6644D87107">
                         <address length="4">0xFF62E8</address>
                     </ecu>
                     <ecu id="6644D87207">
+                        <address length="4">0xFF62E8</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="4">0xFF62E8</address>
                     </ecu>
                     <conversions>
@@ -51800,19 +52791,28 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="4">0xFF762C</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFF762C</address>
+                    </ecu>
                     <ecu id="6644D87107">
                         <address length="4">0xFF7618</address>
                     </ecu>
                     <ecu id="6644D87207">
                         <address length="4">0xFF762C</address>
                     </ecu>
+                    <ecu id="6644D87407">
+                        <address length="4">0xFF762C</address>
+                    </ecu>
                     <conversions>
-                        <conversion units="km" storagetype="float" expr="x" format="0.000" />
-                        <conversion units="miles" storagetype="float" expr="x*0.621371192237" format="0.000" />
+                        <conversion units="km" storagetype="float" expr="x" format="0" />
+                        <conversion units="miles" storagetype="float" expr="x*0.621371192237" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E139" name="Odometer Delta (4-Byte)*" desc="E139-Reaching 1.0 km triggers update of Odometer variable." target="1">
                     <ecu id="6144D87207">
+                        <address length="4">0xFF7630</address>
+                    </ecu>
+                    <ecu id="6144D87407">
                         <address length="4">0xFF7630</address>
                     </ecu>
                     <ecu id="6644D87107">
@@ -51821,13 +52821,19 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6644D87207">
                         <address length="4">0xFF7630</address>
                     </ecu>
+                    <ecu id="6644D87407">
+                        <address length="4">0xFF7630</address>
+                    </ecu>
                     <conversions>
-                        <conversion units="km" storagetype="float" expr="x" format="0.000" />
-                        <conversion units="miles" storagetype="float" expr="x*0.621371192237" format="0.000" />
+                        <conversion units="km" storagetype="float" expr="x" format="0" />
+                        <conversion units="miles" storagetype="float" expr="x*0.621371192237" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E140" name="Injector Learning Interval*" desc="E140-Compared with Distance since Injector Learning, enabling automatic learning when interval has been reached." target="1">
                     <ecu id="6144D87207">
+                        <address length="4">0xFF9334</address>
+                    </ecu>
+                    <ecu id="6144D87407">
                         <address length="4">0xFF9334</address>
                     </ecu>
                     <ecu id="6644D87107">
@@ -51836,16 +52842,25 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6644D87207">
                         <address length="4">0xFF9334</address>
                     </ecu>
+                    <ecu id="6644D87407">
+                        <address length="4">0xFF9334</address>
+                    </ecu>
                     <conversions>
-                        <conversion units="km" storagetype="float" expr="x" format="0.000" />
-                        <conversion units="miles" storagetype="float" expr="x*0.621371192237" format="0.000" />
+                        <conversion units="km" storagetype="float" expr="x" format="0" />
+                        <conversion units="miles" storagetype="float" expr="x*0.621371192237" format="0.0" />
                     </conversions>
                 </ecuparam>
                 <ecuparam id="E141" name="Interior Heater 1*" desc="E141" target="1">
                     <ecu id="6144D87207">
                         <address>0xFF9B82</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address>0xFF9B82</address>
+                    </ecu>
                     <ecu id="6644D87207">
+                        <address>0xFF9B82</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address>0xFF9B82</address>
                     </ecu>
                     <conversions>
@@ -51856,7 +52871,13 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address>0xFF9B83</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address>0xFF9B83</address>
+                    </ecu>
                     <ecu id="6644D87207">
+                        <address>0xFF9B83</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address>0xFF9B83</address>
                     </ecu>
                     <conversions>
@@ -51867,7 +52888,13 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address>0xFF9B84</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address>0xFF9B84</address>
+                    </ecu>
                     <ecu id="6644D87207">
+                        <address>0xFF9B84</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address>0xFF9B84</address>
                     </ecu>
                     <conversions>
@@ -51878,19 +52905,31 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="4">0xFF9A88</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFF9A88</address>
+                    </ecu>
                     <ecu id="6644D87207">
+                        <address length="4">0xFF9A88</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="4">0xFF9A88</address>
                     </ecu>
                     <conversions>
                         <conversion units="A" storagetype="float" expr="x" format="0.0" />
                     </conversions>
                 </ecuparam>
-                <ecuparam id="E145" name="Gear (4-byte)*" desc="E145-Range 0-6. Does not take clutch or neutral into account, showing theoretical gear in coast." target="1">
+                <ecuparam id="E145" name="Gear*" desc="E145-Range 0-6. Does not take clutch or neutral into account, showing theoretical gear in coast." target="1">
                     <ecu id="6144D87207">
-                        <address length="4">0xFF7CF8</address>
+                        <address>0xFF7CF8</address>
+                    </ecu>
+                    <ecu id="6144D87407">
+                        <address>0xFF7CF8</address>
                     </ecu>
                     <ecu id="6644D87207">
-                        <address length="4">0xFF7CF8</address>
+                        <address>0xFF7CF8</address>
+                    </ecu>
+                    <ecu id="6644D87407">
+                        <address>0xFF7CF8</address>
                     </ecu>
                     <conversions>
                         <conversion units="-" storagetype="float" expr="x" format="0" />
@@ -51900,7 +52939,13 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="2">0xFF9BA2</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="2">0xFF9BA2</address>
+                    </ecu>
                     <ecu id="6644D87207">
+                        <address length="2">0xFF9BA2</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="2">0xFF9BA2</address>
                     </ecu>
                     <conversions>
@@ -51912,7 +52957,13 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="2">0xFF9BA4</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="2">0xFF9BA4</address>
+                    </ecu>
                     <ecu id="6644D87207">
+                        <address length="2">0xFF9BA4</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="2">0xFF9BA4</address>
                     </ecu>
                     <conversions>
@@ -51924,7 +52975,13 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="2">0xFF9BA6</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="2">0xFF9BA6</address>
+                    </ecu>
                     <ecu id="6644D87207">
+                        <address length="2">0xFF9BA6</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="2">0xFF9BA6</address>
                     </ecu>
                     <conversions>
@@ -51936,7 +52993,13 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="2">0xFF9BA8</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="2">0xFF9BA8</address>
+                    </ecu>
                     <ecu id="6644D87207">
+                        <address length="2">0xFF9BA8</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="2">0xFF9BA8</address>
                     </ecu>
                     <conversions>
@@ -51948,10 +53011,16 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="4">0xFF7E88</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFF7E88</address>
+                    </ecu>
                     <ecu id="6644D87107">
                         <address length="4">0xFF7E50</address>
                     </ecu>
                     <ecu id="6644D87207">
+                        <address length="4">0xFF7E88</address>
+                    </ecu>
+                    <ecu id="6644D87407">
                         <address length="4">0xFF7E88</address>
                     </ecu>
                     <conversions>
@@ -51962,11 +53031,35 @@ any damage or injury incurred as a result of these definitions. USE AT YOUR OWN 
                     <ecu id="6144D87207">
                         <address length="4">0xFFA27C</address>
                     </ecu>
+                    <ecu id="6144D87407">
+                        <address length="4">0xFFA27C</address>
+                    </ecu>
                     <ecu id="6644D87207">
                         <address length="4">0xFFA27C</address>
                     </ecu>
+                    <ecu id="6644D87407">
+                        <address length="4">0xFFA27C</address>
+                    </ecu>
                     <conversions>
-                        <conversion units="litres" storagetype="float" expr="x" format="0" />
+                        <conversion units="litres" storagetype="float" expr="x" format="0.00" />
+                        <conversion units="gallon (US)" storagetype="float" expr="x*0.264172052358" format="0.000" />
+                        <conversion units="gallon (UK)" storagetype="float" expr="x*0.219969234654" format="0.000" />
+                    </conversions>
+                </ecuparam>
+                <ecuparam id="E152" name="Map Ratio 1 (Primary)*" desc="E152-The ratio used to determine the portion of specific multiple Cruise and Non-Cruise maps which are combined to determine the target value." target="1">
+                    <ecu id="7144345007">
+                        <address length="4">0xFF7DE4</address>
+                    </ecu>
+                    <conversions>
+                        <conversion units="multiplier" storagetype="float" expr="x" format="0.000" />
+                    </conversions>
+                </ecuparam>
+                <ecuparam id="E153" name="Map Ratio 2 (Primary)*" desc="E153-The ratio used to determine the portion of specific multiple Cruise and Non-Cruise maps which are combined to determine the target value." target="1">
+                    <ecu id="7144345007">
+                        <address length="4">0xFF7DF4</address>
+                    </ecu>
+                    <conversions>
+                        <conversion units="multiplier" storagetype="float" expr="x" format="0.000" />
                     </conversions>
                 </ecuparam>
             </ecuparams>
