@@ -36,20 +36,22 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 
 public final class J2534ConnectionManager implements ConnectionManager {
     private static final Logger LOGGER = getLogger(J2534ConnectionManager.class);
-    private J2534 api = new J2534Impl(Protocol.ISO9141);
+    private J2534 api = null;
     private int channelId;
     private int deviceId;
     private int msgId;
     private byte[] lastResponse;
+    private long timeout;
 
-    public J2534ConnectionManager(ConnectionProperties connectionProperties) {
+    public J2534ConnectionManager(ConnectionProperties connectionProperties, String library) {
         checkNotNull(connectionProperties, "connectionProperties");
-        initJ2534(connectionProperties.getBaudRate());
+        timeout = (long)connectionProperties.getConnectTimeout();
+        initJ2534(connectionProperties.getBaudRate(), library);
         LOGGER.info("J2534 connection initialised");
     }
 
     // Send request and wait for response with known length
-    public void send(byte[] request, byte[] response, long timeout, PollingState pollState) {
+    public void send(byte[] request, byte[] response, PollingState pollState) {
         checkNotNull(request, "request");
         checkNotNull(response, "response");
         checkNotNull(pollState, "pollState");
@@ -59,7 +61,6 @@ public final class J2534ConnectionManager implements ConnectionManager {
         }
 
         if (pollState.getCurrentState() == 0) {
-	        // FIX - should timeout be connectionProperties.getReadTimeout() ??
 	        api.writeMsg(channelId, request, timeout);
         }
         api.readMsg(channelId, response, timeout);
@@ -83,11 +84,10 @@ public final class J2534ConnectionManager implements ConnectionManager {
     }
 
     // Send request and wait specified time for response with unknown length
-    public byte[] send(byte[] request, long maxWait) {
+    public byte[] send(byte[] request) {
         checkNotNull(request, "request");
-        // FIX - should maxWait be connectionProperties.getReadTimeout() ??
-        api.writeMsg(channelId, request, maxWait);
-        return api.readMsg(channelId, maxWait);
+        api.writeMsg(channelId, request, timeout);
+        return api.readMsg(channelId, timeout);
     }
 
 	public void clearLine() {
@@ -110,10 +110,10 @@ public final class J2534ConnectionManager implements ConnectionManager {
         stopMsgFilter();
         disconnectChannel();
         closeDevice();
-        //resetHandles();
     }
 
-    private void initJ2534(int baudRate) {
+    private void initJ2534(int baudRate, String library) {
+    	api = new J2534Impl(Protocol.ISO9141, library);
         deviceId = api.open();
         try {
             version(deviceId);
@@ -172,11 +172,4 @@ public final class J2534ConnectionManager implements ConnectionManager {
             LOGGER.warn("J2534 Error closing device: " + e.getMessage());
         }
     }
-
-//    private void resetHandles() {
-//        channelId = -1;
-//        deviceId = -1;
-//        msgId = -1;
-//        api = null;
-//    }
 }

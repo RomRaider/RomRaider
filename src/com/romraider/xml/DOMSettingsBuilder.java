@@ -240,6 +240,12 @@ public final class DOMSettingsBuilder {
         serial.setAttribute("fastpoll", String.valueOf(settings.isFastPoll()));
         loggerSettings.appendChild(serial);
 
+        // J2534 connection
+        IIOMetadataNode j2534 = new IIOMetadataNode("j2534");
+        j2534.setAttribute("protocol", Settings.getJ2534Protocol());
+        j2534.setAttribute("library", Settings.getJ2534Device());
+        loggerSettings.appendChild(j2534);
+
         // window maximized
         IIOMetadataNode maximized = new IIOMetadataNode("maximized");
         maximized.setAttribute("value", String.valueOf((settings.isLoggerWindowMaximized())));

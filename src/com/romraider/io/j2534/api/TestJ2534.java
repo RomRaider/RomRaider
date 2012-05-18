@@ -26,7 +26,7 @@ import com.romraider.io.j2534.api.J2534Impl.Flag;
 import com.romraider.io.j2534.api.J2534Impl.Protocol;
 
 public class TestJ2534 {
-	private static final J2534 api = new J2534Impl(Protocol.ISO9141);
+	private static final J2534 api = new J2534Impl(Protocol.ISO9141, "op20pt32");
 
 	public TestJ2534() {
         int deviceId = api.open();

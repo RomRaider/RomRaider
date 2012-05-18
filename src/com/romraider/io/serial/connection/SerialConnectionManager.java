@@ -38,11 +38,13 @@ public final class SerialConnectionManager implements ConnectionManager {
     private final SerialConnection connection;
     private final ConnectionProperties connectionProperties;
     private byte[] lastResponse;
+    private long timeout;
 
     public SerialConnectionManager(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
         this.connectionProperties = connectionProperties;
+        timeout = (long)connectionProperties.getConnectTimeout();
         // Use TestSerialConnection for testing!!
         connection = new SerialConnectionImpl(portName, connectionProperties);
 //        connection = new TestSerialConnection2(portName, connectionProperties);
@@ -50,7 +52,7 @@ public final class SerialConnectionManager implements ConnectionManager {
     }
 
     // Send request and wait for response with known length
-    public void send(byte[] request, byte[] response, long timeout, PollingState pollState) {
+    public void send(byte[] request, byte[] response, PollingState pollState) {
         checkNotNull(request, "request");
         checkNotNull(response, "response");
         checkNotNull(pollState, "pollState");
@@ -93,7 +95,7 @@ public final class SerialConnectionManager implements ConnectionManager {
     }
 
     // Send request and wait specified time for response with unknown length
-    public byte[] send(byte[] bytes, long maxWait) {
+    public byte[] send(byte[] bytes) {
         checkNotNull(bytes, "bytes");
         connection.readStaleData();
         connection.write(bytes);
@@ -106,7 +108,7 @@ public final class SerialConnectionManager implements ConnectionManager {
                 available = connection.available();
                 lastChange = currentTimeMillis();
             }
-            keepLooking = (currentTimeMillis() - lastChange) < maxWait;
+            keepLooking = (currentTimeMillis() - lastChange) < timeout;
         }
         return connection.readAvailable();
     }

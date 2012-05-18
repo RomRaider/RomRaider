@@ -47,13 +47,12 @@ import com.sun.jna.ptr.IntByReference;
  */
 public class J2534DllLocator {
 	private static final Logger LOGGER = getLogger(J2534DllLocator.class);
-	private static final String ISO9141 = "ISO9141";
 	private static final String FUNCTIONLIBRARY = "FunctionLibrary";
 	private static final int KEY_READ = 0x20019;
     private static final int ERROR_NO_MORE_ITEMS = 0x103;
     private static  Advapi32 advapi32 = Advapi32.INSTANCE;
 
-    public static Set<J2534Library> ListLibraries() throws Exception {
+    public static Set<J2534Library> listLibraries(String protocol) throws Exception {
     	Set<J2534Library> libraries = new HashSet<J2534Library>();
         HKEY hklm = HKEY_LOCAL_MACHINE;
         String passThru = "SOFTWARE\\PassThruSupport.04.04";
@@ -63,10 +62,10 @@ public class J2534DllLocator {
         for (String vendor : vendors) {
             HKEYByReference vendorKey =
             		getHandle(passThruHandle.getValue(), vendor);
-            int supported = getDWord(vendorKey.getValue(), ISO9141);
+            int supported = getDWord(vendorKey.getValue(), protocol);
 			if (supported == 0 ) continue;
 			String library = getSZ(vendorKey.getValue(), FUNCTIONLIBRARY);
-			LOGGER.debug(String.format("Vendor:%s | Library:%s",
+			LOGGER.debug(String.format("Found J2534 Vendor:%s | Library:%s",
 					vendor, library));
 			libraries.add(new J2534Library(vendor, library));
 			advapi32.RegCloseKey(vendorKey.getValue());

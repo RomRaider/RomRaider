@@ -34,7 +34,6 @@ import java.util.Collection;
 
 public final class SSMLoggerConnection implements LoggerConnection {
     private static final Logger LOGGER = getLogger(SSMLoggerConnection.class);
-    private static final long SEND_TIMEOUT = 2000L;
     private final LoggerProtocol protocol = new SSMLoggerProtocol();
     private final ConnectionManager manager;
 
@@ -46,7 +45,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
     public void ecuReset(byte id) {
         byte[] request = protocol.constructEcuResetRequest(id);
         LOGGER.debug("Ecu Reset Request  ---> " + asHex(request));
-        byte[] response = manager.send(request, SEND_TIMEOUT);
+        byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
         LOGGER.debug("Ecu Reset Response <--- " + asHex(processedResponse));
         protocol.processEcuResetResponse(processedResponse);
@@ -55,7 +54,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
     public void ecuInit(EcuInitCallback callback, byte id) {
         byte[] request = protocol.constructEcuInitRequest(id);
         LOGGER.debug("Ecu Init Request  ---> " + asHex(request));
-        byte[] response = manager.send(request, SEND_TIMEOUT);
+        byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
         LOGGER.debug("Ecu Init Response <--- " + asHex(processedResponse));
         protocol.processEcuInitResponse(callback, processedResponse);
@@ -65,7 +64,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
         byte[] request = protocol.constructReadAddressRequest(id, queries);
         if (pollState.getCurrentState() == 0) LOGGER.debug("Mode:" + pollState.getCurrentState() + " ECU Request  ---> " + asHex(request));
         byte[] response = protocol.constructReadAddressResponse(queries, pollState);
-        manager.send(request, response, SEND_TIMEOUT, pollState);
+        manager.send(request, response, pollState);
         byte[] processedResponse = protocol.preprocessResponse(request, response, pollState);
         LOGGER.debug("Mode:" + pollState.getCurrentState() + " ECU Response <--- " + asHex(processedResponse));
         protocol.processReadAddressResponses(queries, processedResponse, pollState);

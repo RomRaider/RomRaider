@@ -22,9 +22,9 @@ package com.romraider.io.connection;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 
 public interface ConnectionManager {
-    void send(byte[] request, byte[] response, long sendTimeout, PollingState pollState);
+    void send(byte[] request, byte[] response, PollingState pollState);
 
-    byte[] send(byte[] bytes, long maxWait);
+    byte[] send(byte[] bytes);
 
     void clearLine();
 

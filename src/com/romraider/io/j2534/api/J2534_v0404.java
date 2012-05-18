@@ -21,7 +21,6 @@ package com.romraider.io.j2534.api;
 
 import java.nio.ByteBuffer;
 
-import com.romraider.Settings;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
@@ -33,55 +32,52 @@ import com.sun.jna.ptr.NativeLongByReference;
  * JNA Wrapper for Native library <b>J2534 v0404</b><br>
  */
 public class J2534_v0404 implements Library {
-	private static final Settings SETTINGS = new Settings();
-	public static final String JNA_LIBRARY_NAME =
-			SETTINGS.getJ2534Device();
-	public static final NativeLibrary JNA_NATIVE_LIB =
-			NativeLibrary.getInstance(J2534_v0404.JNA_LIBRARY_NAME);
-	static {
-			Native.register(J2534_v0404.JNA_LIBRARY_NAME);
+			
+	public J2534_v0404(String library) {
+		NativeLibrary.getInstance(library);
+		Native.register(library);
 	}
-	
-	public static native NativeLong PassThruOpen(
+
+	public native NativeLong PassThruOpen(
 			Pointer pName,
 			NativeLongByReference pDeviceID
 			);
-	public static native NativeLong PassThruClose(
+	public native NativeLong PassThruClose(
 			NativeLong DeviceID
 			);
-	public static native NativeLong PassThruConnect(
+	public native NativeLong PassThruConnect(
 			NativeLong DeviceID,
 			NativeLong protocolID,
 			NativeLong flags,
 			NativeLong baud,
 			NativeLongByReference pChannelID
 			);
-	public static native NativeLong PassThruDisconnect(
+	public native NativeLong PassThruDisconnect(
 			NativeLong channelID
 			);
-    public static native NativeLong PassThruReadMsgs(
+    public native NativeLong PassThruReadMsgs(
     		NativeLong ChannelID,
     		Pointer pMsg,
     		NativeLongByReference pNumMsgs,
     		NativeLong Timeout
     		);
-    public static native NativeLong PassThruWriteMsgs(
+    public native NativeLong PassThruWriteMsgs(
     		NativeLong ChannelID,
     		Pointer pMsg,
     		NativeLongByReference pNumMsgs,
     		NativeLong Timeout
     		);
-	public static native NativeLong PassThruStartPeriodicMsg(
+	public native NativeLong PassThruStartPeriodicMsg(
 			NativeLong channelID,
 			Pointer pMsg,
 			NativeLongByReference pMsgID,
 			NativeLong timeInterval
 			);
-	public static native NativeLong PassThruStopPeriodicMsg(
+	public native NativeLong PassThruStopPeriodicMsg(
 			NativeLong channelID,
 			NativeLong msgID
 			);
-	public static native NativeLong PassThruStartMsgFilter(
+	public native NativeLong PassThruStartMsgFilter(
 			NativeLong ChannelID,
 			NativeLong FilterType,
 			Pointer pMaskMsg,
@@ -89,24 +85,24 @@ public class J2534_v0404 implements Library {
 			Pointer pFlowControlMsg,
 			NativeLongByReference pMsgID
 			);
-	public static native NativeLong PassThruStopMsgFilter(
+	public native NativeLong PassThruStopMsgFilter(
 			NativeLong channelID,
 			NativeLong msgID
 			);
-	public static native NativeLong PassThruSetProgrammingVoltage(
+	public native NativeLong PassThruSetProgrammingVoltage(
 			NativeLong pinNumber,
 			NativeLong voltage
 			);
-	public static native NativeLong PassThruReadVersion(
+	public native NativeLong PassThruReadVersion(
 			NativeLong DeviceID,
 			ByteBuffer pFirmwareVersion,
 			ByteBuffer pDllVersion,
 			ByteBuffer pApiVersion
 			);
-	public static native NativeLong PassThruGetLastError(
+	public native NativeLong PassThruGetLastError(
 			ByteBuffer pErrorDescription
 			);
-	public static native NativeLong PassThruIoctl(
+	public native NativeLong PassThruIoctl(
 			NativeLong channelID,
 			NativeLong ioctlID,
 			Pointer pInput,

@@ -26,7 +26,6 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class CommandExecutorImpl implements CommandExecutor {
-    private static final long SEND_TIMEOUT = 2000L;
     private final ConnectionProperties connectionProperties;
     private final String port;
 
@@ -40,7 +39,7 @@ public final class CommandExecutorImpl implements CommandExecutor {
     public byte[] executeCommand(byte[] command) {
         ConnectionManager connectionManager = getManager(port, connectionProperties);
         try {
-            return connectionManager.send(command, SEND_TIMEOUT);
+            return connectionManager.send(command);
         } finally {
             connectionManager.close();
         }

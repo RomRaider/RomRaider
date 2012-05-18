@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Vector;
 
 public class Settings implements Serializable {
-
+	
     private static final long serialVersionUID = 1026542922680475190L;
     private Dimension windowSize = new Dimension(800, 600);
     private Point windowLocation = new Point();
@@ -89,7 +89,8 @@ public class Settings implements Serializable {
 	private boolean fastPoll = true;
 	private double loggerDividerLocation = 400;
 	private String loggerDebuggingLevel = "info";
-	private String j2534Device = "op20pt32"; //MONGI432 op20pt32
+	private static String j2534Device = null;
+	private static String j2534Protocol = "ISO9141";
 
     public Settings() {
         //center window by default
@@ -493,11 +494,19 @@ public class Settings implements Serializable {
 		return loggerDebuggingLevel;
 	}
 
-	public void setJ2534Device(String j2534Device) {
-		this.j2534Device = j2534Device;
+	public static void setJ2534Device(String j2534Device) {
+		Settings.j2534Device = j2534Device;
 	}
 
-	public String getJ2534Device() {
+	public static String getJ2534Device() {
 		return j2534Device;
+	}
+
+	public static void setJ2534Protocol(String j2534Protocol) {
+		Settings.j2534Protocol = j2534Protocol;
+	}
+
+	public static String getJ2534Protocol() {
+		return j2534Protocol;
 	}
 }

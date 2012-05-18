@@ -218,6 +218,10 @@ public final class DOMSettingsUnmarshaller {
                 settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
                 settings.setFastPoll(unmarshallAttribute(n, "fastpoll", true));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("j2534")) {
+                Settings.setJ2534Protocol(unmarshallAttribute(n, "protocol", "ISO9141"));
+                Settings.setJ2534Device(unmarshallAttribute(n, "library", null));
+
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
                 settings.setLoggerWindowMaximized(unmarshallAttribute(n, "value", false));
 

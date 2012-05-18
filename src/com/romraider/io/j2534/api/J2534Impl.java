@@ -19,17 +19,6 @@
 
 package com.romraider.io.j2534.api;
 
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruClose;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruConnect;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruDisconnect;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruGetLastError;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruIoctl;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruOpen;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruReadMsgs;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruReadVersion;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruStartMsgFilter;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruStopMsgFilter;
-import static com.romraider.io.j2534.api.J2534_v0404.PassThruWriteMsgs;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ThreadUtil.sleep;
 import static java.lang.System.arraycopy;
@@ -59,6 +48,7 @@ import com.sun.jna.ptr.NativeLongByReference;
 public final class J2534Impl implements J2534 {
     private static final Logger LOGGER = getLogger(J2534Impl.class);
     private final NativeLong protocolID;
+    static J2534_v0404 lib = null;
 
 	/**
 	*	Enum class representing the J2534-1 protocols with methods to
@@ -156,10 +146,10 @@ public final class J2534Impl implements J2534 {
     }
 
 	/**
-	*	Enum class representing the J2534/2 extention types with methods to
+	*	Enum class representing the J2534/2 extension types with methods to
 	*	translate the mnemonic and numerical values.
 	*/
-    public enum Extention {
+    public enum Extension {
 	   	CAN_CH1			(0x00009000),
 		J1850VPW_CH1	(0x00009080),
 		J1850PWM_CH1	(0x00009160),
@@ -176,22 +166,22 @@ public final class J2534Impl implements J2534 {
 		ISO15765_CH1	(0x00009400),
 		UNDEFINED		(0xFFFFFFFF);	// Returned when no match is found for get()
 	
-		private static final Map<Integer, Extention> lookup
-					= new HashMap<Integer, Extention>();
+		private static final Map<Integer, Extension> lookup
+					= new HashMap<Integer, Extension>();
 	
 		static {
-		for(Extention s : EnumSet.allOf(Extention.class))
+		for(Extension s : EnumSet.allOf(Extension.class))
 			lookup.put(s.getValue(), s);
 		}
 		
 		private int value;
 		
-		private Extention(int value) {
+		private Extension(int value) {
 			this.value = value;
 		}
 		
 		/**
-		* @return	the numeric value associated with the <b>Extention</b>
+		* @return	the numeric value associated with the <b>Extension</b>
 		*			mnemonic string.
 		*/
 		public int getValue() {
@@ -200,10 +190,10 @@ public final class J2534Impl implements J2534 {
 		
 		/**
 		* @param	value - numeric value to be translated.
-		* @return	the <b>Extention</b> mnemonic mapped to the numeric
+		* @return	the <b>Extension</b> mnemonic mapped to the numeric
 		*			value or UNDEFINED if value is undefined.
 		*/
-		public static Extention get(int value) {
+		public static Extension get(int value) {
 			if (lookup.containsKey(value)) {
 				return lookup.get(value);
 			}
@@ -478,10 +468,12 @@ public final class J2534Impl implements J2534 {
     /**
      * Constructor declaration
      * @param 		protocol - <b>Protocol</b> enum specified by J2534-1
+     * @param		library  - native library of the J2534 device
      * @exception	J2534Exception on various non-zero return status
      */
-    public J2534Impl(Protocol protocol) {
+    public J2534Impl(Protocol protocol, String library) {
         this.protocolID = new NativeLong(protocol.getValue());
+        lib = new J2534_v0404(library);
 	}
 
 	/**
@@ -490,7 +482,7 @@ public final class J2534Impl implements J2534 {
      */
     public int open() {
 		NativeLongByReference pDeviceID = new NativeLongByReference();
-		NativeLong ret = PassThruOpen(null, pDeviceID);
+		NativeLong ret = lib.PassThruOpen(null, pDeviceID);
 		if (ret.intValue() != Status.NOERROR.getValue()) handleError(
 				"PassThruOpen", ret.intValue());
 		return pDeviceID.getValue().intValue();
@@ -498,7 +490,7 @@ public final class J2534Impl implements J2534 {
 
     /**
      * Retrieve the PassThru device firmware version,
-     * DLL version, and the J2534 implmenation version.
+     * DLL version, and the J2534 implementation version.
      * @param	deviceId - of PassThru device
      * @return	an instance of <b>Version</b>
      * @see		Version
@@ -507,7 +499,7 @@ public final class J2534Impl implements J2534 {
 		ByteBuffer pFirmwareVersion = ByteBuffer.allocate(80);
 		ByteBuffer pDllVersion = ByteBuffer.allocate(80);
 		ByteBuffer pApiVersion = ByteBuffer.allocate(80);
-		NativeLong ret = PassThruReadVersion(
+		NativeLong ret = lib.PassThruReadVersion(
 				new NativeLong(deviceId),
 				pFirmwareVersion,
 				pDllVersion,
@@ -522,7 +514,7 @@ public final class J2534Impl implements J2534 {
     }
 
     /**
-     * Establish a logical conneciton with a protocol channel of the specified
+     * Establish a logical connection with a protocol channel of the specified
      * device.
      * @param	deviceId - of PassThru device
      * @param	flags	 - protocol specific options
@@ -531,7 +523,7 @@ public final class J2534Impl implements J2534 {
      */
     public int connect(int deviceId, int flags, int baud) {
 		NativeLongByReference pChannelID = new  NativeLongByReference();
-		NativeLong ret = PassThruConnect(
+		NativeLong ret = lib.PassThruConnect(
         		new NativeLong(deviceId),
         		protocolID,
         		new NativeLong(flags),
@@ -555,7 +547,7 @@ public final class J2534Impl implements J2534 {
         SCONFIG_LIST list = sConfigList(sConfigs);
     	NativeLong ioctlID = new NativeLong();
     	ioctlID.setValue(IOCtl.SET_CONFIG.getValue());
-    	NativeLong ret = PassThruIoctl(
+    	NativeLong ret = lib.PassThruIoctl(
     			new NativeLong(channelId),
     			ioctlID,
     			list.getPointer(),
@@ -579,7 +571,7 @@ public final class J2534Impl implements J2534 {
         SCONFIG_LIST input = sConfigList(sConfigs);
     	NativeLong ioctlID = new NativeLong();
     	ioctlID.setValue(IOCtl.GET_CONFIG.getValue());
-    	NativeLong ret = PassThruIoctl(
+    	NativeLong ret = lib.PassThruIoctl(
     			new NativeLong(channelId),
     			ioctlID,
     			input.getPointer(),
@@ -605,7 +597,7 @@ public final class J2534Impl implements J2534 {
 
 		NativeLongByReference msgId = new NativeLongByReference();
 		msgId.setValue(new NativeLong(0));
-		NativeLong ret = PassThruStartMsgFilter(
+		NativeLong ret = lib.PassThruStartMsgFilter(
 				new NativeLong(channelId),
         		new NativeLong(Filter.PASS_FILTER.getValue()),
         		maskMsg.getPointer(),
@@ -616,7 +608,7 @@ public final class J2534Impl implements J2534 {
        	if (ret.intValue() != Status.NOERROR.getValue()) handleError(
        			"PassThruStartMsgFilter", ret.intValue());
 
-        ret = PassThruIoctl(
+        ret = lib.PassThruIoctl(
         		new NativeLong(channelId),
         		new NativeLong(IOCtl.CLEAR_RX_BUFFER.getValue()),
         		null,
@@ -638,7 +630,7 @@ public final class J2534Impl implements J2534 {
         LOGGER.trace("Write Msg: " + toString(msg));
         NativeLongByReference numMsg = new NativeLongByReference();
         numMsg.setValue(new NativeLong(1));
-        NativeLong ret = PassThruWriteMsgs(
+        NativeLong ret = lib.PassThruWriteMsgs(
         		new NativeLong(channelId),
         		msg.getPointer(),
         		numMsg,
@@ -685,7 +677,7 @@ public final class J2534Impl implements J2534 {
     }
 
     public void stopMsgFilter(int channelId, int msgId) {
-    	NativeLong ret = PassThruStopMsgFilter(
+    	NativeLong ret = lib.PassThruStopMsgFilter(
     			new NativeLong(channelId),
     			new NativeLong(msgId)
     		);
@@ -694,16 +686,16 @@ public final class J2534Impl implements J2534 {
     }
 
     public void disconnect(int channelId) {
-    	NativeLong ret = PassThruDisconnect(new NativeLong(channelId));
+    	NativeLong ret = lib.PassThruDisconnect(new NativeLong(channelId));
     	if (ret.intValue() != Status.NOERROR.getValue()) handleError(
     			"PassThruDisconnect", ret.intValue());
     }
 
     public void close(int deviceId) {
-    	NativeLong ret = PassThruClose(new NativeLong(deviceId));
+    	NativeLong ret = lib.PassThruClose(new NativeLong(deviceId));
 		if (ret.intValue() != Status.NOERROR.getValue()) handleError(
 				"PassThruClose", ret.intValue());
-    }
+		}
 
     private byte[] concat(List<byte[]> responses) {
         int length = 0;
@@ -744,7 +736,7 @@ public final class J2534Impl implements J2534 {
     	PASSTHRU_MSG msg = passThruMessage();
         NativeLongByReference pNumMsgs = new NativeLongByReference();
         pNumMsgs.setValue(new NativeLong(1));
-        NativeLong status = PassThruReadMsgs(
+        NativeLong status = lib.PassThruReadMsgs(
         		new NativeLong(channelId),
         		msg.getPointer(),
         		pNumMsgs,
@@ -774,7 +766,7 @@ public final class J2534Impl implements J2534 {
 
     private SCONFIG[] sConfigs(ConfigItem... items) {
     	SCONFIG[] sConfigs =
-    		(SCONFIG[]) new SCONFIG.ByReference().toArray(items.length);
+        		(SCONFIG[]) new SCONFIG.ByReference().toArray(items.length);
     	for (int i = 0; i < items.length; i++) {
 	    	sConfigs[i].parameter = new NativeLong(items[i].parameter);
 	    	sConfigs[i].value = new NativeLong(items[i].value);
@@ -788,7 +780,7 @@ public final class J2534Impl implements J2534 {
 
     private SCONFIG[] sConfigs(int... parameters) {
     	SCONFIG[] sConfigs =
-    		(SCONFIG[]) new SCONFIG.ByReference().toArray(parameters.length);
+        		(SCONFIG[]) new SCONFIG.ByReference().toArray(parameters.length);
         for (int i = 0; i < parameters.length; i++) {
 	    	sConfigs[i].parameter = new NativeLong(parameters[i]);
 	    	sConfigs[i].value = new NativeLong(-1);
@@ -837,8 +829,8 @@ public final class J2534Impl implements J2534 {
      */
 	private static void handleError(String operation, int status) {
     	ByteBuffer error = ByteBuffer.allocate(255);
-    	PassThruGetLastError(error);
-    	String errString = String.format("%s error [%d]:%s, msg: %s%n",
+    	lib.PassThruGetLastError(error);
+    	String errString = String.format("%s error [%d]:%s, %s",
     			operation, status, Status.get(status), Native.toString(error.array()));
     	throw new J2534Exception(errString);
     }

@@ -19,7 +19,12 @@
 
 package com.romraider.io.connection;
 
+import java.util.Set;
+
+import com.romraider.Settings;
 import com.romraider.io.j2534.api.J2534ConnectionManager;
+import com.romraider.io.j2534.api.J2534DllLocator;
+import com.romraider.io.j2534.api.J2534Library;
 import com.romraider.io.serial.connection.SerialConnectionManager;
 import static com.romraider.util.proxy.Proxifier.proxy;
 import com.romraider.util.proxy.TimerWrapper;
@@ -35,20 +40,74 @@ public final class ConnectionManagerFactory {
     private ConnectionManagerFactory() {
     }
 
-    public static ConnectionManager getManager(String portName, ConnectionProperties connectionProperties) {
+    public static ConnectionManager getManager(
+    		String portName,
+    		ConnectionProperties connectionProperties) {
+    	
         ConnectionManager manager = manager(portName, connectionProperties);
         if (ENABLE_TIMER) return proxy(manager, TimerWrapper.class);
         return manager;
     }
 
-    private static ConnectionManager manager(String portName, ConnectionProperties connectionProperties) {
-        try {
+    private static ConnectionManager manager(
+    		String portName,
+    		ConnectionProperties connectionProperties) {
+    	
+    	try {
         	if (!isPlatform(WINDOWS))
-        		throw new RuntimeException ("J2534 is not support on this platform");
-        	LOGGER.info("Trying J2534 connection...");
-            return new J2534ConnectionManager(connectionProperties);
+        		throw new RuntimeException("J2534 is not support on this platform");
+        	Set<J2534Library> libraries =
+        			J2534DllLocator.listLibraries(
+        					Settings.getJ2534Protocol().toUpperCase());
+        	
+        	// if the J2534 device has not been previously defined, search for it
+        	// else use the defined device
+	    	if (Settings.getJ2534Device() == null) {
+	        	for (J2534Library dll : libraries) {
+	        		LOGGER.info(String.format("Trying new J2534 %s connection: %s",
+	        				Settings.getJ2534Protocol(),
+	        				dll.getVendor()));
+	        		try {
+	        	    	Settings.setJ2534Device(dll.getLibrary());
+	        			return new J2534ConnectionManager(
+        	    				connectionProperties,
+        	    				dll.getLibrary());
+	        		}
+	        		catch (Throwable t) {
+	        			Settings.setJ2534Device(null);
+	        			LOGGER.info(String.format("%s is not available: %s",
+	        					dll.getVendor(), t.getMessage()));
+	        		}
+	        	}
+	    	}
+	    	else {
+	    		for (J2534Library dll : libraries) {
+	    			if (dll.getLibrary().toLowerCase().contains(
+	    					Settings.getJ2534Device().toLowerCase())) {
+
+		        		LOGGER.info(String.format(
+		        				"Re-trying previous J2534 %s connection: %s",
+		        				Settings.getJ2534Protocol(),
+		        				dll.getVendor()));
+		        		try {
+		        	    	Settings.setJ2534Device(dll.getLibrary());
+		        			return new J2534ConnectionManager(
+	        	    				connectionProperties,
+	        	    				dll.getLibrary());
+		        		}
+		        		catch (Throwable t) {
+		        			Settings.setJ2534Device(null);
+		        			LOGGER.info(String.format("%s is not available: %s",
+		        					dll.getVendor(), t.getMessage()));
+		        		}
+	    			}
+	    		}
+	    	}
+        	throw new RuntimeException("J2534 connection not available");
         } catch (Throwable t) {
-            LOGGER.info("J2534 connection not available [" + t.getClass().getName() + ": " + t.getMessage() + "], trying serial connection...");
+			Settings.setJ2534Device(null);
+            LOGGER.info(String.format("%s, trying serial connection...",
+            		t.getMessage()));
             return new SerialConnectionManager(portName, connectionProperties);
         }
     }
