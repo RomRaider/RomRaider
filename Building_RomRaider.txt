@@ -8,45 +8,81 @@ tools inherited from the RomRaider project are Windows-based.
 ----------------------------------------------
 Setting up the project (from romraider.com)
 
-As an open source project, RomRaider depends on Java developers like you for
+  As an open source project, RomRaider depends on Java developers like you for
 enhancements, bug fixes and general maintenance. This page is meant to be a
 guide to setting up a development environment from scratch. The guide was
-originally written by Tgui in this thread and has been adapted and revised.
+originally written by Tgui and has been adapted and revised for the reflect
+the current source control system.
 
-RomRaider’s official IDE is Eclipse. You are free to use any Java IDE you
+  RomRaider’s official IDE is Eclipse. You are free to use any Java IDE you
 choose, but due to the extremely simple process of setting up the environment
 and the power of Eclipse, it’s probably your best choice.
 
-    * Installing Eclipse and Subclipse
-          o Install the latest version of the Java Development Kit
-          o Get and Install Eclipse JDT for your platform
-          o Install Subclipse for Subversion (SVN) integration, following the
-              steps outlined in #3 below.
-    * Setting up the RomRaider project
-          o Open the Java perspective in Eclipse by clicking
-              Window > Open Perspective > Java
-          o Right click in the package explorer and select “Import…”
-          o Select “Checkout Projects from SVN” and click “Next”
-          o Select “Use a new repository location:” and click “Next”
-          o Enter “https://svn2.assembla.com/svn/romraider” and click “Next”
-          o Highlight “trunk” in the folder tree and click “Next”
-          o Name the project “romraider” and click “Finish”
+* Installing the Java Development Kit and Eclipse
+    o Install the latest version of the 32bit Java SE Development Kit
+          (http://java.sun.com/javase/downloads/index.jsp)
+    o Get and install ‘Eclipse IDE for Java Developers’ 32bit
+          (http://www.eclipse.org/downloads)
+      for your specific platform. The Java EE version will work too but there are
+      subtle differences (noted below).
+    o Set the JAVA_HOME environment variable for your Operating System to point
+      to the JDK installation directory. i.e.: For Windows 32bit,
+          JAVA_HOME=C:\Program Files\Java\jdk1.6.0_32 
 
-    * Setting the library path 
-          o You may need to change the path to the Jars within your
-          	libs dir (ex: Linux). See Note #1 below or you should read this
-          	to set the Build Paths: 
-			http://help.eclipse.org/indigo/topic/org.eclipse.jdt.doc.user/reference/ref-properties-build-path.htm
+* Setting up the RomRaider project
+    o If you use the Java EE version you may need to install the Git plugin,
+      or you can use the non integrated command line Git tools outside of Eclipse
+      (while Eclipse is not running of course).
+    o If you have Java EE and wish to install the Git plugin, open:
+          Help > Eclipse Marketplace, Search for ‘EGit’ (name of the plug in),
+      select it, Install, and restart Eclipse
+    o Open the Git perspective in Eclipse by clicking:
+          Window > Open Perspective > Other > Git Repository Exploring
+    o Press the Clone Git Repository button
+    o In the window the pops up paste in the repository URL:
+          (https://github.com/RomRaider/RomRaider.git)
+    o Click “Next”
+    o In the branches window click “Deselect All”, then scroll to the bottom and
+      select “master”, click “Next”
+    o Enter a directory path on your computer to store the repository in. DO NOT
+      save it in the Eclipse workspace directory.
+    o Click “Finish”
+    o After the repository has been copied to your system it will appear in the
+      left pane of Eclipse, Git Repositories.
+    o Right-click on the repository entry and select “Import Projects”.
+    o Click “Next” and select “Finish”.
+    o To switch to the Java view, open the Java perspective by clicking:
+          Window > Open Perspective > Java 
 
-    * Building the Project for the First Time 
-          o First complete a build using ant. Right-click on build.xml and
-            select Run As -> 2 Ant build then select all in the targets tab.
-            More info in Note #4 below.
-          o When the build is finished (successfully I hope), Right-click on
-            the root romraider project and select Refresh. This should clear
-            all the errors and warnings you may have seen.
+* Setting the library path
+    o You may need to change the path to the Jars within your libs directory
+      (ex: Linux). You should read this to set the Build Paths:
+          (http://help.eclipse.org/indigo/topic/org.eclipse.jdt.doc.user/reference/ref-properties-build-path.htm) 
+
+* Building the Project for the First Time
+    o First complete a build using ant. Right-click on build.xml and select:
+          Run As -> 2 Ant build (this may appear as item 3 in the Java EE version)
+      then select all in the targets tab.
+    o When the build is finished (successfully I hope), Right-click on the root
+      romraider project and select Refresh. This should clear all the errors and
+      warnings decorations you may have seen on some files.
+    o The built files are stored in the repository’s build directory:
+          RomRaider\build\dist
+    o Install the build of your choosing and enjoy RomRaider. 
+
+* Setup EGit
+    o Ensure you have configured your user settings in Eclipse under menu:
+          Window > Preferences > Team > Git > Configuration > User Settings
+      add entries for user.name and user.email
+    o Switch to the Repository Settings tab and Add Entry branch.master.rebase
+      with a value of true
+    o The EGit reference can be found here:
+          (http://wiki.eclipse.org/EGit/User_Guide)
+      and a Git command x-ref here:
+          (http://wiki.eclipse.org/EGit/Mapping_Git_Commands)
 
 ----------------------------------------------
+
 
 Notes on the above:
 
@@ -58,29 +94,11 @@ Notes on the above:
 
         romraider/build/classes
 
-2)  The jars in the java build path mentioned above should be correct in the SVN
-    repository for a Windows environment.
+2)  The jars in the java build path mentioned above should be correct in the
+    repository for a Windows environment.  These settings are in the .classpath file
+    and should all have a relative path to the project root directory.
 
-3)  A command line Subversion client needs to be installed and available in the default
-    path.  To verify this, open a command prompt and run 
-    
-        svn info https://svn2.assembla.com/svn/romraider
-        
-    You should get a response of the form
-    
-        Path: romraider
-        URL: https://svn2.assembla.com/svn/romraider
-        Repository Root: https://svn2.assembla.com/svn/romraider
-        Repository UUID: 38686702-15cf-42e4-a595-3071df8bf5ea
-        Revision: 78
-        Node Kind: directory
-        Last Changed Author: kascade
-        Last Changed Rev: 78
-        Last Changed Date: 2008-05-02 15:50:23 -0700 (Fri, 02 May 2008)
-
-    If this does not work correctly, the ant build will fail.
-
-4) 	The ant build file is in the main directory and uses the default name of
+3) 	The ant build file is in the main directory and uses the default name of
   	"build.xml".
 
 	The Java builder is set as the default.  During development it's convenient to have
@@ -91,13 +109,12 @@ Notes on the above:
 	To build using ant, right-click on the build.xml
 	file in the Package Explorer (Java perspective) and select
 	
-	Run As -> 2 Ant build, then select "all" in the targets tab. To get more verbose
-	output from ant set the -v option in the arguments field on the Main tab.
+	Run As -> 2 Ant build (this could be item 3 in Java EE), then select "all" in
+	the targets tab. To get more verbose output from ant set the -v option in the
+	arguments field on the Main tab.
 	
 	The "help" target lists available targets with a brief description of each.
 	
-	The "all" target does just that.  It rebuilds everything, finishing with the installers.
-
-
-
-
+	The "all" target does just that.  It rebuilds everything, finishing with the
+	installers saving all files in the <repository_path>\RomRaider\build\dist\
+	directory under each OS name Windows and Linux.
