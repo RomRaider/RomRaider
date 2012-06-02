@@ -32,7 +32,11 @@ public interface J2534 {
 
     int startPassMsgFilter(int channelId, byte mask, byte pattern);
 
+    byte[] fastInit(int channelId, byte[] input);
+
     void writeMsg(int channelId, byte[] data, long timeout);
+
+    byte[] readMsg(int channelId, int numMsg, long timeout);
 
     byte[] readMsg(int channelId, long maxWait);
 

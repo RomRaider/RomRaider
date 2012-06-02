@@ -19,11 +19,8 @@
 
 package com.romraider.io.j2534.api;
 
-import static com.romraider.util.HexUtil.asHex;
-import static com.romraider.util.ThreadUtil.sleep;
 import static java.lang.System.arraycopy;
 import static java.lang.System.currentTimeMillis;
-import static org.apache.log4j.Logger.getLogger;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -38,6 +35,8 @@ import com.romraider.io.j2534.api.J2534_v0404.PASSTHRU_MSG;
 import com.romraider.io.j2534.api.J2534_v0404.SCONFIG;
 import com.romraider.io.j2534.api.J2534_v0404.SCONFIG.ByReference;
 import com.romraider.io.j2534.api.J2534_v0404.SCONFIG_LIST;
+import com.romraider.util.HexUtil;
+import com.romraider.util.ThreadUtil;
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
@@ -46,9 +45,10 @@ import com.sun.jna.ptr.NativeLongByReference;
  * J2534 Implementation of the Native library wrapper <b>J2534 v0404</b>
  */
 public final class J2534Impl implements J2534 {
-    private static final Logger LOGGER = getLogger(J2534Impl.class);
+    private static final Logger LOGGER = Logger.getLogger(J2534Impl.class);
     private final NativeLong protocolID;
-    static J2534_v0404 lib = null;
+    private boolean loopback;
+    private static J2534_v0404 lib;
 
 	/**
 	*	Enum class representing the J2534-1 protocols with methods to
@@ -620,6 +620,31 @@ public final class J2534Impl implements J2534 {
     }
 
     /**
+     * This function performs an ISO14230 fast initialization sequence.
+     * @param	channelId - handle to the open communications channel
+     * @param	input	  - start message to be transmitted to the vehicle network
+     * @return	response  - response upon a successful initialization
+     */
+    public byte[] fastInit(int channelId, byte[] input) {
+    	PASSTHRU_MSG inMsg = passThruMessage(input);
+    	PASSTHRU_MSG outMsg = passThruMessage();
+    	LOGGER.trace("Ioctl inMsg: " + toString(inMsg));
+        NativeLong ret = lib.PassThruIoctl(
+        		new NativeLong(channelId),
+        		new NativeLong(IOCtl.FAST_INIT.value),
+        		inMsg.getPointer(),
+        		outMsg.getPointer()
+        	);
+       	if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+       			"PassThruIoctl", ret.intValue());
+        LOGGER.trace("Ioctl outMsg: " + toString(outMsg));
+       	//byte[] response = readMsg(channelId, 1, 2000L);
+        byte[] response = new byte[outMsg.dataSize.intValue()];
+        arraycopy(outMsg.data, 0, response, 0, outMsg.dataSize.intValue());
+       	return response;
+    }
+
+    /**
      * Send a message through the existing communication channel to the vehicle.
      * @param	channelId - handle to the open communications channel
      * @param	data	  - data bytes to be transmitted to the vehicle network
@@ -671,11 +696,49 @@ public final class J2534Impl implements J2534 {
         	PASSTHRU_MSG msg = doReadMsg(channelId);
             LOGGER.trace("Read Msg: " + toString(msg));
             if (isResponse(msg)) responses.add(data(msg));
-            sleep(2);
+            ThreadUtil.sleep(2);
         } while (currentTimeMillis() <= end);
         return concat(responses);
     }
 
+    /**
+     * Retrieve the indicated number of messages through the existing communication
+     * channel from the vehicle. If the number of messages can not be read before the
+     * timeout expires, throw an exception.
+     * @param	channelId - handle to the open communications channel
+     * @param	numMsg	  - number of valid messages to retrieve
+     * @return	bytes read from the vehicle network
+     * @throws	J2534Exception
+     */
+    public byte[] readMsg(int channelId, int numMsg, long timeout) {
+    	if (loopback) {
+    		numMsg++;
+    	}
+        List<byte[]> responses = new ArrayList<byte[]>();
+        long end = currentTimeMillis() + timeout;
+        do {
+        	if (currentTimeMillis() >= end) {
+            	String errString = String.format(
+            		"readMsg error: timeout expired waiting for %d more message(s)",
+            		numMsg);
+            	throw new J2534Exception(errString);
+            }
+        	PASSTHRU_MSG msg = doReadMsg(channelId);
+            LOGGER.trace("Read Msg: " + toString(msg));
+            if (isResponse(msg)) {
+            	responses.add(data(msg));
+            	numMsg--;
+            }
+            ThreadUtil.sleep(2);
+        } while (numMsg != 0);
+        return concat(responses);
+    }
+
+    /**
+	 * Stop the previously defined message filter by filter ID.
+     * @param	channelId  - handle to the open communications channel
+     * @param	msgId	   - ID of the filter to stop
+     */
     public void stopMsgFilter(int channelId, int msgId) {
     	NativeLong ret = lib.PassThruStopMsgFilter(
     			new NativeLong(channelId),
@@ -685,12 +748,20 @@ public final class J2534Impl implements J2534 {
     			"PassThruStopMsgFilter", ret.intValue());
     }
 
+    /**
+     * Disconnect a previously opened communications channel.
+     * @param	channelId  - handle to the open communications channel
+     */
     public void disconnect(int channelId) {
     	NativeLong ret = lib.PassThruDisconnect(new NativeLong(channelId));
     	if (ret.intValue() != Status.NOERROR.getValue()) handleError(
     			"PassThruDisconnect", ret.intValue());
     }
 
+	/**
+     * Close the PassThru device by ID.
+     * @param deviceId of PassThru device
+     */
     public void close(int deviceId) {
     	NativeLong ret = lib.PassThruClose(new NativeLong(deviceId));
 		if (ret.intValue() != Status.NOERROR.getValue()) handleError(
@@ -722,14 +793,33 @@ public final class J2534Impl implements J2534 {
         		msg.timestamp.intValue(),
         		msg.dataSize.intValue(),
         		msg.extraDataIndex.intValue(),
-        		asHex(bytes));
+        		HexUtil.asHex(bytes));
         return str;
     }
 
     private boolean isResponse(PASSTHRU_MSG msg) {
-        if (msg.timestamp.intValue() == 0) return false;
-        if ((msg.rxStatus.intValue() & 0x00) == 0x00) return true;
-        return msg.rxStatus.intValue() == 0x01;
+        if (msg.timestamp.intValue() != 0) {
+        	switch (msg.rxStatus.intValue()) {
+	        	case 0x00:		// Normal message
+	        		return true;
+	
+	        	case 0x01:		// Loopback message
+	        		return loopback;
+
+	        	case 0x02:		// Receive start indication
+	        		return false;
+	
+	        	case 0x04:		// Receive break indication
+		    		return false;
+		    		
+	        	case 0x09:		// Transmit done indication 
+		    		return false;
+
+	        	case 0x10:		// Receive pad error 
+		    		return false;
+        	}
+        }
+        return false;
     }
 
     private PASSTHRU_MSG doReadMsg(int channelId) {
@@ -770,6 +860,11 @@ public final class J2534Impl implements J2534 {
     	for (int i = 0; i < items.length; i++) {
 	    	sConfigs[i].parameter = new NativeLong(items[i].parameter);
 	    	sConfigs[i].value = new NativeLong(items[i].value);
+	    	if (items[i].parameter == Config.LOOPBACK.value) {
+	    		if (items[i].value == 1) {
+	    			loopback = true;
+	    		}
+	    	}
     	}
 //    	for (SCONFIG sc : sConfigs) {
 //    		sc.write();
@@ -830,7 +925,7 @@ public final class J2534Impl implements J2534 {
 	private static void handleError(String operation, int status) {
     	ByteBuffer error = ByteBuffer.allocate(255);
     	lib.PassThruGetLastError(error);
-    	String errString = String.format("%s error [%d]:%s, %s",
+    	String errString = String.format("%s error [%d:%s], %s",
     			operation, status, Status.get(status), Native.toString(error.array()));
     	throw new J2534Exception(errString);
     }
