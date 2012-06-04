@@ -42,10 +42,11 @@ public final class AemRunner implements Stoppable {
     public void run() {
         try {
             while (!stop) {
-                String response = connection.readLine();
+                final String response = connection.readLine();
                 LOGGER.trace("AEM UEGO AFR Response: " + response);
                 if (!isNullOrEmpty(response)) dataItem.setData(parseDouble(response));
             }
+            connection.close();
         } catch (Throwable t) {
             LOGGER.error("Error occurred", t);
         } finally {
@@ -55,12 +56,13 @@ public final class AemRunner implements Stoppable {
 
     public void stop() {
         stop = true;
-        connection.close();
     }
 
     private double parseDouble(String value) {
         try {
-            return Double.parseDouble(value);
+    		final String[] substr = value.split("\t");
+    		final double result = Double.parseDouble(substr[0]);
+    		return result;
         } catch (Exception e) {
             return 0.0;
         }

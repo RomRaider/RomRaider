@@ -17,27 +17,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.mrf.io;
+package com.romraider.logger.external.aem.xwifi.io;
 
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.serial.connection.SerialConnection;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
 import com.romraider.logger.external.core.Stoppable;
-import com.romraider.logger.external.mrf.plugin.MrfDataItem;
-import com.romraider.logger.external.mrf.plugin.MrfSensorType;
+import com.romraider.logger.external.aem.xwifi.plugin.AemDataItem;
+import com.romraider.logger.external.aem.xwifi.plugin.AemSensorType;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.util.Map;
 
-public final class MrfRunner implements Stoppable {
-    private static final Logger LOGGER = getLogger(MrfRunner.class);
-    private static final ConnectionProperties CONNECTION_PROPS = new MrfConnectionProperties();
-    private final Map<MrfSensorType, MrfDataItem> dataItems;
+public final class AemRunner implements Stoppable {
+    private static final Logger LOGGER = getLogger(AemRunner.class);
+    private static final ConnectionProperties CONNECTION_PROPS = new AemConnectionProperties();
+    private final Map<AemSensorType, AemDataItem> dataItems;
     private final SerialConnection connection;
     private boolean stop;
 
-    public MrfRunner(String port, Map<MrfSensorType, MrfDataItem> dataItems) {
+    public AemRunner(final String port, final Map<AemSensorType, AemDataItem> dataItems) {
         this.connection = new SerialConnectionImpl(port, CONNECTION_PROPS);
         this.dataItems = dataItems;
     }
@@ -45,18 +45,18 @@ public final class MrfRunner implements Stoppable {
     public void run() {
         try {
             while (!stop) {
-                String response = connection.readLine();
+                final String response = connection.readLine();
                 if (isNullOrEmpty(response)) continue;
-                LOGGER.trace("MRF Stealth Gauge Response: " + response);
-                String[] values = response.split(",");
+                LOGGER.trace("AEM X-Wifi Response: " + response);
+                final String[] values = response.split(",");
                 for (int i = 0; i < values.length; i++) {
-                    MrfDataItem dataItem = dataItems.get(MrfSensorType.valueOf(i));
+                    final AemDataItem dataItem = dataItems.get(AemSensorType.valueOf(i));
                     if (dataItem != null) dataItem.setData(parseDouble(values[i]));
                 }
             }
             connection.close();
         } catch (Throwable t) {
-            LOGGER.error("Error occurred", t);
+            LOGGER.error("AEM X-Wifi read error occurred", t);
         } finally {
             connection.close();
         }
@@ -66,9 +66,10 @@ public final class MrfRunner implements Stoppable {
         stop = true;
     }
 
-    private double parseDouble(String value) {
+    private double parseDouble(final String value) {
         try {
-            return Double.parseDouble(value);
+        	final double result = Double.parseDouble(value);
+            return result;
         } catch (Exception e) {
             return 0.0;
         }

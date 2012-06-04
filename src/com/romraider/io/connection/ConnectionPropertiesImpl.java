@@ -66,15 +66,17 @@ public final class ConnectionPropertiesImpl implements ConnectionProperties {
     }
 
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getClass().getSimpleName());
-        builder.append("[baudRate=").append(baudRate);
-        builder.append(", dataBits=").append(dataBits);
-        builder.append(", stopBits=").append(stopBits);
-        builder.append(", dataBits=").append(dataBits);
-        builder.append(", parity=").append(parity);
-        builder.append(", connectTimeout=").append(connectTimeout);
-        builder.append(", sendTimeout=").append(sendTimeout).append("]");
-        return builder.toString();
+    	final String properties = String.format(
+        		"%s[baudRate=%d, dataBits=%d, stopBits=%d, parity=%d, " + 
+        		"connectTimeout=%d, sendTimeout=%d]",
+	        getClass().getSimpleName(),
+	        getBaudRate(),
+	        getDataBits(),
+	        getStopBits(),
+	        getParity(),
+	        getConnectTimeout(),
+	        getSendTimeout()
+	    );
+        return properties;
     }
 }

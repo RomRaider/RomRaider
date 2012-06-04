@@ -53,6 +53,7 @@ public final class PlxRunner implements Stoppable {
                 	item.setRaw(response.value);
                 }
             }
+            connection.close();
         } catch (Throwable t) {
             LOGGER.error("Error occurred", t);
         } finally {
@@ -62,7 +63,6 @@ public final class PlxRunner implements Stoppable {
 
     public void stop() {
         stop = true;
-        connection.close();
     }
 
     private boolean isValid(PlxResponse response) {

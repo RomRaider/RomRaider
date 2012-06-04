@@ -101,8 +101,8 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     private void reconnect(String port) {
-        dataSource.setPort(port);
         doDisconnect();
+        dataSource.setPort(port);
         doConnect();
     }
 }

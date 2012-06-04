@@ -83,6 +83,7 @@ public final class InnovateRunner implements Stoppable {
                     LOGGER.trace("Innovate discarded: " + asHex(b0));
                 }
             }
+            connection.close();
         } catch (Throwable t) {
             LOGGER.error("Error occurred", t);
         } finally {
@@ -92,7 +93,6 @@ public final class InnovateRunner implements Stoppable {
 
     public void stop() {
         stop = true;
-        connection.close();
     }
 
     private void process(byte[] bytes) {

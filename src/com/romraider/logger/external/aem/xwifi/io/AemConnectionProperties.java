@@ -17,13 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.external.aem2.io;
+package com.romraider.logger.external.aem.xwifi.io;
 
 import com.romraider.io.connection.ConnectionProperties;
 
 public final class AemConnectionProperties implements ConnectionProperties {
     public int getBaudRate() {
-        return 19200;
+        return 115200;
     }
 
     public void setBaudRate(int b) {
@@ -51,7 +51,7 @@ public final class AemConnectionProperties implements ConnectionProperties {
     }
 
     public String toString() {
-    	final String properties = String.format(
+        final String properties = String.format(
         		"%s[baudRate=%d, dataBits=%d, stopBits=%d, parity=%d, " + 
         		"connectTimeout=%d, sendTimeout=%d]",
 	        getClass().getSimpleName(),

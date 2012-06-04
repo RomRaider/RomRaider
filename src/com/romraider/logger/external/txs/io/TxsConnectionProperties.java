@@ -48,4 +48,19 @@ public final class TxsConnectionProperties implements ConnectionProperties {
     public int getSendTimeout() {
         return 500;
     }
+
+    public String toString() {
+    	final String properties = String.format(
+        		"%s[baudRate=%d, dataBits=%d, stopBits=%d, parity=%d, " + 
+        		"connectTimeout=%d, sendTimeout=%d]",
+	        getClass().getSimpleName(),
+	        getBaudRate(),
+	        getDataBits(),
+	        getStopBits(),
+	        getParity(),
+	        getConnectTimeout(),
+	        getSendTimeout()
+	    );
+        return properties;
+    }
 }

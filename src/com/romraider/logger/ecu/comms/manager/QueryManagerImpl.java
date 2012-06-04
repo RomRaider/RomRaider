@@ -24,6 +24,7 @@ import static com.romraider.logger.ecu.definition.EcuDataType.EXTERNAL;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
+import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
 
@@ -54,6 +55,7 @@ import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.StatusChangeListener;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import com.romraider.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitor;
+import com.romraider.logger.ecu.ui.handler.file.FileUpdateHandlerImpl;
 
 public final class QueryManagerImpl implements QueryManager {
     private static final Logger LOGGER = Logger.getLogger(QueryManagerImpl.class);
@@ -64,6 +66,8 @@ public final class QueryManagerImpl implements QueryManager {
     private final Map<String, Query> addList = new HashMap<String, Query>();
     private final List<String> removeList = new ArrayList<String>();
     private static final PollingState pollState = new PollingStateImpl();
+    private static final String ECU = "ECU";
+    private static final String TCU = "TCU";
     private final Settings settings;
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
@@ -149,12 +153,12 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private boolean doEcuInit(byte id) {
-    	String target = "";
+    	String target = null;
     	if (id == 0x10){
-    		target = "ECU";
+    		target = ECU;
     	}
     	if (id == 0x18){
-    		target = "TCU";
+    		target = TCU;
     	}
     	
         try {
@@ -187,12 +191,12 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private void runLogger(byte id) {
-    	String target = "";
+    	String target = null;
     	if (id == 0x10){
-    		target = "ECU";
+    		target = ECU;
     	}
     	if (id == 0x18){
-    		target = "TCU";
+    		target = TCU;
     	}
         TransmissionManager txManager = new TransmissionManagerImpl(settings);
         long start = System.currentTimeMillis();
@@ -204,43 +208,64 @@ public final class QueryManagerImpl implements QueryManager {
             	pollState.setFastPoll(settings.isFastPoll());
                 updateQueryList();
                 if (queryMap.isEmpty()) {
-                	if (pollState.isLastQuery()) endEcuQueries(txManager);
+                	if (pollState.isLastQuery() && pollState.getCurrentState() == 0) {
+                		endEcuQueries(txManager);
+                		pollState.setLastState(0);
+                	}
                     start = System.currentTimeMillis();
                     count = 0;
                     messageListener.reportMessage("Select parameters to be logged...");
                     sleep(1000L);
                 } else {
-               		sendEcuQueries(txManager);
+                    final long end = currentTimeMillis() + 1L;	// update once every 1msec
+                    final List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
+                    if (!ecuQueries.isEmpty()) {
+                   		sendEcuQueries(txManager);
+	                    if (!pollState.isFastPoll() && lastPollState) {
+	                    	endEcuQueries(txManager);
+	                    }
+	                    if (pollState.isFastPoll()) {
+		                    if (pollState.getCurrentState() == 0 && pollState.isNewQuery()) {
+		                    	pollState.setCurrentState(1);
+		                    	pollState.setNewQuery(false);
+		                    }
+		                    if (pollState.getCurrentState() == 0 && !pollState.isNewQuery()) {
+		                    	pollState.setCurrentState(1);
+		                    }
+		                    if (pollState.getCurrentState() == 1 && pollState.isNewQuery()) {
+		                    	pollState.setCurrentState(0);
+		                    	pollState.setLastState(1);
+		                    	pollState.setNewQuery(false);
+		                    }
+		                    if (pollState.getCurrentState() == 1 && !pollState.isNewQuery()) {
+		                    	pollState.setLastState(1);
+		                    }
+		                    pollState.setLastQuery(true);
+	                    }
+	                    else {
+	                    	pollState.setCurrentState(0);
+	                    	pollState.setLastState(0);
+	                    	pollState.setNewQuery(false);
+	                    }
+	                    lastPollState = pollState.isFastPoll();
+                    }
+                    else {
+                    	if (pollState.isLastQuery() && pollState.getLastState() == 1) {
+                    		endEcuQueries(txManager);
+                    		pollState.setLastState(0);
+                            pollState.setCurrentState(0);
+                            pollState.setNewQuery(true);
+                    	}
+                    }
                     sendExternalQueries();
+                    // waiting until at least 1msec has passed since last query set
+                    while (currentTimeMillis() < end) {
+                    	sleep(1L);
+                    }
                     handleQueryResponse();
                     count++;
                     messageListener.reportMessage("Querying " + target + "...");
                     messageListener.reportStats(buildStatsMessage(start, count));
-                    if (!pollState.isFastPoll() && lastPollState) endEcuQueries(txManager);
-                    if (pollState.isFastPoll()) {
-	                    if (pollState.getCurrentState() == 0 && pollState.isNewQuery()) {
-	                    	pollState.setCurrentState(1);
-	                    	pollState.setNewQuery(false);
-	                    }
-	                    if (pollState.getCurrentState() == 0 && !pollState.isNewQuery()) {
-	                    	pollState.setCurrentState(1);
-	                    }
-	                    if (pollState.getCurrentState() == 1 && pollState.isNewQuery()) {
-	                    	pollState.setCurrentState(0);
-	                    	pollState.setLastState(1);
-	                    	pollState.setNewQuery(false);
-	                    }
-	                    if (pollState.getCurrentState() == 1 && !pollState.isNewQuery()) {
-	                    	pollState.setLastState(1);
-	                    }
-	                    pollState.setLastQuery(true);
-                    }
-                    else {
-                    	pollState.setCurrentState(0);
-                    	pollState.setLastState(0);
-                    	pollState.setNewQuery(false);
-                    }
-                    lastPollState = pollState.isFastPoll();
                 }
             }
         } catch (Exception e) {
@@ -253,15 +278,15 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private void sendEcuQueries(TransmissionManager txManager) {
-        List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
-        if (fileLoggerQuery != null &&
-        	settings.isFileLoggingControllerSwitchActive())
-        		ecuQueries.add(fileLoggerQuery);
-        txManager.sendQueries(ecuQueries, pollState);
+        final List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
+        if (fileLoggerQuery != null
+        		&& settings.isFileLoggingControllerSwitchActive())
+        	ecuQueries.add(fileLoggerQuery);
+       	txManager.sendQueries(ecuQueries, pollState);
     }
 
     private void sendExternalQueries() {
-        List<ExternalQuery> externalQueries =
+        final List<ExternalQuery> externalQueries =
         		filterExternalQueries(queryMap.values());
         for (ExternalQuery externalQuery : externalQueries) {
             //FIXME: This is a hack!!
@@ -271,7 +296,7 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private void endEcuQueries(TransmissionManager txManager) {
-        txManager.endQueries();
+    	txManager.endQueries();
         pollState.setLastQuery(false);
     }
 
@@ -288,8 +313,8 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private Response buildResponse(Collection<Query> queries) {
-        Response response = new ResponseImpl();
-        for (Query query : queries) {
+        final Response response = new ResponseImpl();
+        for (final Query query : queries) {
             response.setDataValue(query.getLoggerData(), query.getResponse());
         }
         return response;

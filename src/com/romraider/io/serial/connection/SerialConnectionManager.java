@@ -38,17 +38,18 @@ public final class SerialConnectionManager implements ConnectionManager {
     private final SerialConnection connection;
     private final ConnectionProperties connectionProperties;
     private byte[] lastResponse;
-    private long timeout;
+    private final long timeout;
+    private long readTimeout;
 
     public SerialConnectionManager(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
         this.connectionProperties = connectionProperties;
         timeout = (long)connectionProperties.getConnectTimeout();
+        readTimeout = timeout;
         // Use TestSerialConnection for testing!!
         connection = new SerialConnectionImpl(portName, connectionProperties);
 //        connection = new TestSerialConnection2(portName, connectionProperties);
-        LOGGER.info("Serial connection initialised");
     }
 
     // Send request and wait for response with known length
@@ -67,13 +68,14 @@ public final class SerialConnectionManager implements ConnectionManager {
         }
         while (connection.available() < response.length) {
             sleep(1);
-            timeout -= 1;
-            if (timeout <= 0) {
+            readTimeout -= 1;
+            if (readTimeout <= 0) {
                 byte[] badBytes = connection.readAvailable();
                 LOGGER.debug("SSM Bad read response (read timeout): " + asHex(badBytes));
                 return; // this will reinitialize the connection
             }
         }
+        readTimeout = timeout;
         connection.read(response);
 
         if (pollState.getCurrentState() == 1){

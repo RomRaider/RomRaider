@@ -35,6 +35,7 @@ import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import static gnu.io.SerialPort.FLOWCONTROL_NONE;
+import static java.lang.System.currentTimeMillis;
 import gnu.io.UnsupportedCommOperationException;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
@@ -60,6 +61,7 @@ public final class SerialConnectionImpl implements SerialConnection {
             os = new BufferedOutputStream(serialPort.getOutputStream());
             is = new BufferedInputStream(serialPort.getInputStream());
             reader = new BufferedReader(new InputStreamReader(is));
+            LOGGER.info("Serial connection initialised: " + connectionProperties);
         } catch (Exception e) {
             close();
             throw new NotConnectedException(e);
@@ -123,14 +125,18 @@ public final class SerialConnectionImpl implements SerialConnection {
 
     public void readStaleData() {
         if (available() <= 0) return;
-        byte[] staleBytes = readAvailable();
-        LOGGER.debug("Stale data read: " + asHex(staleBytes));
+        final long end = currentTimeMillis() + 100L;
+        do {
+        	byte[] staleBytes = readAvailable();
+            LOGGER.debug("Stale data read: " + asHex(staleBytes));
+            sleep(2);
+        } while (  (available() > 0)
+        		&& (currentTimeMillis() <= end));
     }
 
     public void close() {
         if (os != null) {
             try {
-            	readStaleData();
                 os.close();
             } catch (IOException e) {
                 LOGGER.error("Error closing output stream", e);
@@ -138,6 +144,7 @@ public final class SerialConnectionImpl implements SerialConnection {
         }
         if (reader != null) {
             try {
+            	//readStaleData();
                 reader.close();
             } catch (IOException e) {
                 LOGGER.error("Error closing input stream reader", e);
@@ -145,6 +152,7 @@ public final class SerialConnectionImpl implements SerialConnection {
         }
         if (is != null) {
             try {
+            	//readStaleData();
                 is.close();
             } catch (IOException e) {
                 LOGGER.error("Error closing input stream", e);

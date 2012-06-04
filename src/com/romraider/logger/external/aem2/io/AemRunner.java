@@ -30,6 +30,7 @@ import static org.apache.log4j.Logger.getLogger;
 public final class AemRunner implements Stoppable {
     private static final Logger LOGGER = getLogger(AemRunner.class);
     private static final AemConnectionProperties CONNECTION_PROPS = new AemConnectionProperties();
+    private static final String TAB = "\t";
     private final SerialConnection connection;
     private final AemDataItem dataItem;
     private boolean stop;
@@ -42,10 +43,11 @@ public final class AemRunner implements Stoppable {
     public void run() {
         try {
             while (!stop) {
-                String response = connection.readLine();
+                final String response = connection.readLine();
                 LOGGER.trace("AEM UEGO Lambda Response: " + response);
                 if (!isNullOrEmpty(response)) dataItem.setData(parseString(response));
             }
+            connection.close();
         } catch (Throwable t) {
             LOGGER.error("Error occurred", t);
         } finally {
@@ -55,7 +57,6 @@ public final class AemRunner implements Stoppable {
 
     public void stop() {
         stop = true;
-        connection.close();
     }
 
     /*
@@ -68,13 +69,14 @@ public final class AemRunner implements Stoppable {
      * terminated with a carriage return and line feed.  This should
      * work for either case.
      */
-        private double parseString(String value){
-        	try{
-        		String[] substr = value.split("\t");
-        		return Double.parseDouble(substr[0]);    
-            }
-        	catch (Exception e){
-        		return 0.0;
-            }
-    	}
+	private double parseString(String value){
+		try{
+			final String[] substr = value.split(TAB);
+			final double result = Double.parseDouble(substr[0]);
+			return result;
+	    }
+		catch (Exception e){
+			return 0.0;
+	    }
+	}
 }

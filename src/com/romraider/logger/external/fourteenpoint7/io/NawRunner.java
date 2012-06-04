@@ -40,9 +40,10 @@ public final class NawRunner implements Stoppable {
         try {
             while (!stop) {
                 connection.write(NAW_PROMPT);
-                byte[] buffer = connection.readBytes();
+                final byte[] buffer = connection.readBytes();
                 listener.setBytes(buffer);
             }
+            connection.close();
         } catch (Throwable t) {
             LOGGER.error("Error occurred", t);
         } finally {
@@ -52,6 +53,5 @@ public final class NawRunner implements Stoppable {
 
     public void stop() {
         stop = true;
-        connection.close();
     }
 }

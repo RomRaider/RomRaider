@@ -97,6 +97,7 @@ public final class TxsRunner implements Stoppable{
 	            //Set Data Item Values
 	            SetDataItemValues(values);
 	        }
+			connection.close();
 		} 
 		catch (Throwable t) {
 			LOGGER.error("Error occurred", t);
@@ -108,7 +109,6 @@ public final class TxsRunner implements Stoppable{
 
 	public void stop() {
 		stop = true;
-		connection.close();
 	}
 	
 	private String[] SplitUtecString(String value) {

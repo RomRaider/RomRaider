@@ -42,7 +42,7 @@ public class ResponseImpl implements Response {
     }
 
     public double getDataValue(LoggerData data) {
-        Double value = dataValues.get(data);
+        final Double value = dataValues.get(data);
         return value == null ? ZERO : value;
     }
 

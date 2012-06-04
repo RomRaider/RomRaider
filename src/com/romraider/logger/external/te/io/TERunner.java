@@ -171,6 +171,7 @@ public final class TERunner implements Stoppable {
                     packetStarted = false;
                 }
             }
+            connection.close();
         }
         catch (Throwable t) {
             LOGGER.error("Error occurred", t);
@@ -182,6 +183,5 @@ public final class TERunner implements Stoppable {
 
     public void stop() {
         stop = true;
-        connection.close();
     }
 }

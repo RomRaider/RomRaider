@@ -123,6 +123,7 @@ public final class ZT2Runner implements Stoppable {
                     packetStarted = false;
                 }
             }
+    		connection.close();
         } catch (Throwable t) {
             LOGGER.error("ZT2 error occurred", t);
         } finally {
@@ -132,6 +133,5 @@ public final class ZT2Runner implements Stoppable {
 
     public void stop() {
         stop = true;
-        connection.close();
     }
 }

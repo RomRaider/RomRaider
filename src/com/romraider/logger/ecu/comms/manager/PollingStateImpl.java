@@ -73,4 +73,17 @@ public final class PollingStateImpl implements PollingState {
 	public void setFastPoll(boolean state) {
 		fastPoll = state;
 	}
+
+	public String toString() {
+    	final String state = String.format(
+        		"Polling State [isFastPoll=%s, CurrentState=%d, LastState=%d, " +
+        		"isNewQuery=%s, isLastQuery=%s]",
+       		isFastPoll(),
+    		getCurrentState(),
+    		getLastState(),
+    		isNewQuery(),
+    		isLastQuery()
+	    );
+        return state;
+    }
 }
