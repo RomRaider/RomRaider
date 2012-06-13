@@ -40,4 +40,6 @@ public interface EcuDataLoader {
     EcuSwitch getFileLoggingControllerSwitch();
 
     ConnectionProperties getConnectionProperties();
+
+	String getDefVersion();
 }

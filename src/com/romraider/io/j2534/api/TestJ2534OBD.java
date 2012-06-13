@@ -31,13 +31,17 @@ import com.romraider.util.LogManager;
 public final class TestJ2534OBD {
 	private static final J2534 api = new J2534Impl(
 			Protocol.ISO14230, "op20pt32"); //op20pt32 MONGI432
-	private static final int LOOPBACK = 1;
+	private static final int LOOPBACK = 0;
 
-	public TestJ2534OBD() {
+	public TestJ2534OBD() throws InterruptedException {
         final int deviceId = api.open();
         try {
             version(deviceId);
             final int channelId = api.connect(deviceId, 0, 10400);
+            
+            final double vBatt = api.getVbattery(channelId);
+            System.out.println("Pin 16 Volts = " + vBatt);
+
             final int msgId = api.startPassMsgFilter(
             		channelId, (byte) 0x00, (byte) 0x00);
 
@@ -53,60 +57,64 @@ public final class TestJ2534OBD {
                 if (response.length > 0
                 	&&	response[4] == (byte) 0xE9
                 	&&	response[5] == (byte) 0x8F) {
-                    System.out.println("Setting standard timing = " +
+                    System.out.println("Standard timing = " +
                     		HexUtil.asHex(response));
                 }
                 setConfig(channelId);
                 getConfig(channelId);
                 
+                Thread.sleep(10L);
                 final byte[] timingReq = {
                 		(byte) 0xC2, (byte) 0x33, (byte) 0xF1,
-                		(byte) 0x83, (byte) 0x00};
+                		(byte) 0x83, (byte) 0x01};
 
                 api.writeMsg(channelId, timingReq, 55L);
-                System.out.println("Request  = " + HexUtil.asHex(timingReq));
+                System.out.println("Timing Request  = " + HexUtil.asHex(timingReq));
 
                 response = api.readMsg(channelId, 1, 2000L);
                 System.out.println("Timing Response = " + HexUtil.asHex(response));
 
+                Thread.sleep(20L);
                 final byte[] mode09pid01 = {
                 		(byte) 0xC2, (byte) 0x33, (byte) 0xF1,
                 		(byte) 0x09, (byte) 0x01};
 
                 api.writeMsg(channelId, mode09pid01, 55L);
-                System.out.println("Request  = " + HexUtil.asHex(mode09pid01));
+                System.out.println("PID0901 Request  = " + HexUtil.asHex(mode09pid01));
 
                 response = api.readMsg(channelId, 1, 2000L);
-                System.out.println("Response = " + HexUtil.asHex(response));
+                System.out.println("PID0901 Response = " + HexUtil.asHex(response));
 
                 int numMsg = 0;
                 switch (LOOPBACK) {
 	                case 0:
-	                	numMsg = response[4];
+	                	numMsg = response[5];
 	                	break;
 	                case 1:
 	                	numMsg = response[10];
                 }
                 
+                Thread.sleep(10L);
                 final byte[] mode09pid02 = {
                 		(byte) 0xC2, (byte) 0x33, (byte) 0xF1,
                 		(byte) 0x09, (byte) 0x02};
 
                 api.writeMsg(channelId, mode09pid02, 55L);
-                System.out.println("Request  = " + HexUtil.asHex(mode09pid02));
+                System.out.println("PID0902 Request  = " + HexUtil.asHex(mode09pid02));
 
                 response = api.readMsg(channelId, numMsg, 2000L);
-                System.out.println("Response = " + HexUtil.asHex(response));
+                System.out.println("PID0902 Response = " + HexUtil.asHex(response));
 
+                Thread.sleep(10L);
                 final byte[] stopReq = {
                 		(byte) 0xC1, (byte) 0x33, (byte) 0xF1,
                 		(byte) 0x82};
 
                 api.writeMsg(channelId, stopReq, 55L);
-                System.out.println("Request  = " + HexUtil.asHex(stopReq));
+                System.out.println("Stop Request  = " + HexUtil.asHex(stopReq));
 
                 response = api.readMsg(channelId, 1, 2000L);
-                System.out.println("Response = " + HexUtil.asHex(response));
+                System.out.println("Stop Response = " + HexUtil.asHex(response));
 
             } finally {
                 api.stopMsgFilter(channelId, msgId);
@@ -160,7 +168,7 @@ public final class TestJ2534OBD {
     	}
     }
 
-	public static void main(String args[]){
+	public static void main(String args[]) throws InterruptedException{
 		LogManager.initDebugLogging();
 		TestJ2534OBD test1 = new TestJ2534OBD();
 	}

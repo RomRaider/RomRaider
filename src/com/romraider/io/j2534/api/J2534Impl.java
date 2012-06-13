@@ -637,11 +637,31 @@ public final class J2534Impl implements J2534 {
         	);
        	if (ret.intValue() != Status.NOERROR.getValue()) handleError(
        			"PassThruIoctl", ret.intValue());
+       	outMsg.read();
         LOGGER.trace("Ioctl outMsg: " + toString(outMsg));
-       	//byte[] response = readMsg(channelId, 1, 2000L);
         byte[] response = new byte[outMsg.dataSize.intValue()];
         arraycopy(outMsg.data, 0, response, 0, outMsg.dataSize.intValue());
        	return response;
+    }
+
+    /**
+     * This function reads the battery voltage on pin 16 of the J2534 interface.
+     * @param  channelId - handle to the open communications channel
+     * @return battery voltage in VDC
+     */
+    public double getVbattery(int channelId) {
+    	NativeLongByReference vBatt = new NativeLongByReference();
+        NativeLong ret = lib.PassThruIoctl(
+        		new NativeLong(channelId),
+        		new NativeLong(IOCtl.READ_VBATT.getValue()),
+        		null,
+        		vBatt.getPointer()
+        	);
+       	if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+       			"PassThruIoctl", ret.intValue());
+        LOGGER.trace("Ioctl result: " + vBatt.getValue().longValue());
+        double response = vBatt.getValue().doubleValue() / 1000;
+		return response;
     }
 
     /**
@@ -902,6 +922,7 @@ public final class J2534Impl implements J2534 {
 
     private PASSTHRU_MSG passThruMessage() {
     	PASSTHRU_MSG msg = new PASSTHRU_MSG();
+    	msg.txFlags = new NativeLong(0);
     	msg.protocolID = protocolID;
         return msg;
     }

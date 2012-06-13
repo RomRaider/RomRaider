@@ -44,6 +44,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
     private EcuSwitch fileLoggingControllerSwitch;
     private ConnectionProperties connectionProperties;
+    private String defVersion;
 
     public void loadEcuDefsFromXml(File ecuDefsFile) {
         checkNotNull(ecuDefsFile, "ecuDefsFile");
@@ -79,6 +80,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 ecuSwitches = handler.getEcuSwitches();
                 fileLoggingControllerSwitch = handler.getFileLoggingControllerSwitch();
                 connectionProperties = handler.getConnectionProperties();
+                defVersion = handler.getVersion();
             } finally {
                 inputStream.close();
             }
@@ -111,4 +113,8 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     public ConnectionProperties getConnectionProperties() {
         return connectionProperties;
     }
+
+	public String getDefVersion() {
+		return defVersion;
+	}
 }

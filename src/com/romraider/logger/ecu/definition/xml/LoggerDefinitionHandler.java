@@ -54,6 +54,7 @@ import java.util.Set;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String FLOAT = "float";
+    private static final String TAG_LOGGER = "logger";
     private static final String TAG_PROTOCOL = "protocol";
     private static final String TAG_PARAMETER = "parameter";
     private static final String TAG_ADDRESS = "address";
@@ -64,6 +65,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_SWITCH = "switch";
     private static final String TAG_ECUPARAM = "ecuparam";
     private static final String TAG_ECU = "ecu";
+    private static final String ATTR_VERSION = "version";
     private static final String ATTR_ID = "id";
     private static final String ATTR_NAME = "name";
     private static final String ATTR_DESC = "desc";
@@ -120,6 +122,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String conversionStorageType;
     private GaugeMinMax conversionGauge;
     private String target;
+    private String version;
 
     public LoggerDefinitionHandler(String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(protocol, "protocol");
@@ -136,7 +139,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if (TAG_PROTOCOL.equals(qName)) {
+        if (TAG_LOGGER.equals(qName)) {
+        	version = attributes.getValue(ATTR_VERSION);
+        } else if (TAG_PROTOCOL.equals(qName)) {
             parseProtocol = protocol.equalsIgnoreCase(attributes.getValue(ATTR_ID));
             if (parseProtocol) {
                 connectionProperties = new ConnectionPropertiesImpl(Integer.parseInt(attributes.getValue(ATTR_BAUD)),
@@ -290,6 +295,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
 
     public ConnectionProperties getConnectionProperties() {
         return connectionProperties;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     private void resetConvertorLists() {

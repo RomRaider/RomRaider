@@ -45,7 +45,7 @@ public final class SerialConnectionManager implements ConnectionManager {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
         this.connectionProperties = connectionProperties;
-        timeout = (long)connectionProperties.getConnectTimeout();
+        timeout = (long) connectionProperties.getConnectTimeout();
         readTimeout = timeout;
         // Use TestSerialConnection for testing!!
         connection = new SerialConnectionImpl(portName, connectionProperties);

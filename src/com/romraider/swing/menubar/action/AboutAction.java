@@ -19,28 +19,30 @@
 
 package com.romraider.swing.menubar.action;
 
-import static com.romraider.Version.ABOUT_ICON;
-import static com.romraider.Version.BUILDNUMBER;
-import static com.romraider.Version.PRODUCT_NAME;
-import static com.romraider.Version.SUPPORT_URL;
-import static com.romraider.Version.VERSION;
-import com.romraider.logger.ecu.EcuLogger;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
+
 import java.awt.event.ActionEvent;
+
+import com.romraider.Version;
+import com.romraider.logger.ecu.EcuLogger;
 
 public final class AboutAction extends AbstractAction {
 
-    public AboutAction(EcuLogger logger) {
+    public AboutAction(final EcuLogger logger) {
         super(logger);
     }
 
-    public void actionPerformed(ActionEvent actionEvent) {
-        String message = PRODUCT_NAME + " - ECU Logger\n"
-                + "Version: " + VERSION + "\n"
-                + "Build #: " + BUILDNUMBER + "\n"
-                + SUPPORT_URL;
-        String title = "About " + PRODUCT_NAME;
-        showMessageDialog(logger, message, title, INFORMATION_MESSAGE, ABOUT_ICON);
+    public void actionPerformed(final ActionEvent actionEvent) {
+        final String message = String.format(
+        		"%s - ECU Logger%nVersion: %s%nBuild #: %s%n%s%nLogger Def Version: %s",
+        		Version.PRODUCT_NAME,
+        		Version.VERSION,
+        		Version.BUILDNUMBER,
+        		Version.SUPPORT_URL,
+        		logger.getDefVersion());
+        final String title = "About " + Version.PRODUCT_NAME;
+        showMessageDialog(logger, message, title,
+        		INFORMATION_MESSAGE, Version.ABOUT_ICON);
     }
 }

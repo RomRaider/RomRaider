@@ -210,6 +210,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final byte TCU_ID = (byte) 0x18;
     private static String target = "ECU";
     private static String loadResult  = "";
+    private String defVersion;
     private ECUEditor ecuEditor;
     private Settings settings;
     private LoggerController controller;
@@ -490,7 +491,18 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 loadEcuSwitches(dataLoader.getEcuSwitches());
                 if (target.equals("ECU")) initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
                 settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
-                loadResult = String.format("%sloaded %d parameters, %d switches.",loadResult, ecuParams.size(), dataLoader.getEcuSwitches().size());
+                if (dataLoader.getDefVersion() == null) {
+                	defVersion = "na";
+                }
+                else {
+                	defVersion = dataLoader.getDefVersion();
+                }
+                loadResult = String.format(
+                		"%sloaded %d parameters, %d switches from def version %s.",
+                		loadResult,
+                		ecuParams.size(),
+                		dataLoader.getEcuSwitches().size(),
+                		defVersion);
                 LOGGER.info(loadResult);
             } catch (ConfigurationException cfe) {
             	reportError(cfe);
@@ -1191,6 +1203,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     
     public String getTarget() {
     	return target;
+    }
+
+    public String getDefVersion() {
+    	return defVersion;
     }
 
     public void restartLogging() {
