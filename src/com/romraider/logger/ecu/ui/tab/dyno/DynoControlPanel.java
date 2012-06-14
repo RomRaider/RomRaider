@@ -21,6 +21,8 @@ package com.romraider.logger.ecu.ui.tab.dyno;
 
 import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
 import static com.romraider.Version.CARS_DEFS_URL;
+
+import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.EcuParameter;
@@ -73,16 +75,13 @@ import java.awt.event.FocusEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 public final class DynoControlPanel extends JPanel {
     private static final long serialVersionUID = 3787020251963102201L;
@@ -151,23 +150,23 @@ public final class DynoControlPanel extends JPanel {
     private double P_v;
     private double P_d;
     private double airDen;
-    private double fToE = 0;
-    private double sToE = 0;
-    private double tToS = 0;
-    private double reFfToE = 0;
-    private double reFsToE = 0;
-    private double reFtToS = 0;
-    private double reFauc = 0;
-    private double auc = 0;
-    private double aucStart = 0;
-    private long fTime = 0;
-    private long sTime = 0;
-    private long eTime = 0;
-    private long ttTime = 0;
-    private long stTime = 0;
-    private boolean getEnv = false;
-    private boolean wotSet = false;
-    private String path = null;
+    private double fToE;
+    private double sToE;
+    private double tToS;
+    private double reFfToE;
+    private double reFsToE;
+    private double reFtToS;
+    private double reFauc;
+    private double auc;
+    private double aucStart;
+    private long fTime;
+    private long sTime;
+    private long eTime;
+    private long ttTime;
+    private long stTime;
+    private boolean getEnv;
+    private boolean wotSet;
+    private String path;
     private String carInfo;
     private String[] carTypeArr;
     private String[] carMassArr;
@@ -206,7 +205,7 @@ public final class DynoControlPanel extends JPanel {
     private String preUnits = IMPERIAL;
     private String elevUnits = "ft";
     private String tempUnits = "\u00b0F";
-    private double atm = 0;
+    private double atm;
     private String pressUnits = "psi";
     private String pressText = String.format("%1.2f", 14.7);
     private String iatLogUnits = "F";
@@ -216,8 +215,8 @@ public final class DynoControlPanel extends JPanel {
     private String[] resultStrings = new String[6];
     //    private String hpUnits = "hp(I)";
     //    private String tqUnits = "lbf-ft";
-    private double distance = 0;
-    private long lastET = 0;
+    private double distance;
+    private long lastET;
     private double[] etResults = new double[12];
 
     private final JPanel filterPanel = new JPanel();
@@ -1424,9 +1423,35 @@ public final class DynoControlPanel extends JPanel {
 
     private void loadCars() {
         try {
+        	File carDef = null;
+        	final String SEPARATOR = System.getProperty("file.separator");
+        	final String loggerFilePath = Settings.getLoggerDefinitionFilePath();
+        	if (loggerFilePath != null) {
+            	final int index = loggerFilePath.lastIndexOf(SEPARATOR);
+            	if (index > 0) {
+            		final String path = loggerFilePath.substring(0, index + 1);
+	        		carDef = new File(path + CARS_FILE);
+            	}
+        	}
+        	if (!carDef.exists()) {
+            	final String profileFilePath = Settings.getLoggerProfileFilePath();
+            	if (profileFilePath != null) {
+	            	final int index = profileFilePath.lastIndexOf(SEPARATOR);
+	            	if (index > 0) {
+	            		final String path = profileFilePath.substring(0, index + 1);
+		        		carDef = new File(path + CARS_FILE);
+	            	}
+            	}
+        	}
+        	if (!carDef.exists()) {
+        		carDef = new File(CARS_FILE);
+        	}
+        	if (!carDef.exists()) {
+        		throw new FileNotFoundException(MISSING_CAR_DEF);
+        	}
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document carsDef = docBuilder.parse(new File(CARS_FILE));
+            Document carsDef = docBuilder.parse(carDef);
 
             // normalize text representation
             carsDef.getDocumentElement().normalize();
@@ -1530,7 +1555,7 @@ public final class DynoControlPanel extends JPanel {
                 openURL(CARS_DEFS_URL);
             } else {
                 showMessageDialog(parent, MISSING_CAR_DEF +
-                        " file from the installation directory.\nDyno feature will not be available until this file is present.", "Notice", WARNING_MESSAGE);
+                        " file from the installation or profiles or definitions directory.\nDyno feature will not be available until this file is present.", "Notice", WARNING_MESSAGE);
             }
             carTypeArr = new String[]{MISSING_CAR_DEF};
             t.printStackTrace();

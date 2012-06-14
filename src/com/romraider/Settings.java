@@ -40,7 +40,7 @@ public class Settings implements Serializable {
     private Dimension windowSize = new Dimension(800, 600);
     private Point windowLocation = new Point();
     private int splitPaneLocation = 150;
-    private boolean windowMaximized = false;
+    private boolean windowMaximized;
 
     private String recentVersion = "x";
 
@@ -48,7 +48,7 @@ public class Settings implements Serializable {
     private File lastImageDir = new File("images");
     private boolean obsoleteWarning = true;
     private boolean calcConflictWarning = true;
-    private boolean debug = false;
+    private boolean debug;
     private int userLevel = 1;
     private boolean saveDebugTables = true;
     private boolean displayHighTables = true;
@@ -65,31 +65,31 @@ public class Settings implements Serializable {
     private Color warningColor = new Color(255, 0, 0);
     private int tableClickCount = 1; // number of clicks to open table
 
-    private String loggerPort = "";
-    private String loggerPortDefault = "";
+    private String loggerPort;
+    private String loggerPortDefault;
     private String loggerProtocol = "SSM";
-    private String loggerDefinitionFilePath = "";
-    private String loggerProfileFilePath = "";
+    private static String loggerDefinitionFilePath;
+    private static String loggerProfileFilePath;
     private String loggerOutputDirPath = System.getProperty("user.home");
     private String fileLoggingControllerSwitchId = "S20"; // defogger switch by default
     private boolean fileLoggingControllerSwitchActive = true;
-    private boolean fileLoggingAbsoluteTimestamp = false;
-    private String logfileNameText = "";
+    private boolean fileLoggingAbsoluteTimestamp;
+    private String logfileNameText;
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();
-    private boolean loggerWindowMaximized = false;
-    private int loggerSelectedTabIndex = 0;
+    private boolean loggerWindowMaximized;
+    private int loggerSelectedTabIndex;
     private boolean loggerParameterListState = true;
     private ConnectionProperties loggerConnectionProperties;
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
     private Map<String, String> loggerPluginPorts;
-	private boolean loggerRefreshMode = false;
+	private boolean loggerRefreshMode;
 	private byte loggerDestinationId = 0x10;
 	private boolean fastPoll = true;
 	private double loggerDividerLocation = 400;
 	private String loggerDebuggingLevel = "info";
-	private static String j2534Device = null;
+	private static String j2534Device;
 	private static String j2534Protocol = "ISO9141";
 
     public Settings() {
@@ -333,7 +333,7 @@ public class Settings implements Serializable {
         return loggerProtocol;
     }
 
-    public String getLoggerDefinitionFilePath() {
+    public static String getLoggerDefinitionFilePath() {
         return loggerDefinitionFilePath;
     }
 
@@ -377,7 +377,7 @@ public class Settings implements Serializable {
         this.loggerDividerLocation = dividerLocation;
     }
 
-    public String getLoggerProfileFilePath() {
+    public static String getLoggerProfileFilePath() {
         return loggerProfileFilePath;
     }
 
