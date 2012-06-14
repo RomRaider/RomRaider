@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
+import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.swing.menubar.action.AbstractAction;
 import java.awt.event.ActionEvent;
@@ -31,7 +32,8 @@ public final class ReloadProfileAction extends AbstractAction {
 
     public void actionPerformed(ActionEvent actionEvent) {
         try {
-            logger.loadUserProfile(logger.getSettings().getLoggerProfileFilePath());
+            logger.getSettings();
+			logger.loadUserProfile(Settings.getLoggerProfileFilePath());
         } catch (Exception e) {
             logger.reportError(e);
         }

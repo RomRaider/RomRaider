@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
+import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getDefinitionFileChooser;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getFile;
@@ -44,7 +45,8 @@ public final class LoggerDefinitionLocationAction extends AbstractAction {
     }
 
     private void setDefinitionLocationDialog() throws Exception {
-        File lastConfigPath = getFile(logger.getSettings().getLoggerDefinitionFilePath());
+        logger.getSettings();
+		File lastConfigPath = getFile(Settings.getLoggerDefinitionFilePath());
         JFileChooser fc = getDefinitionFileChooser(lastConfigPath);
         if (fc.showOpenDialog(logger) == APPROVE_OPTION) {
             String path = fc.getSelectedFile().getAbsolutePath();

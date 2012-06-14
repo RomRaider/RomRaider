@@ -338,7 +338,7 @@ public class Settings implements Serializable {
     }
 
     public void setLoggerDefinitionFilePath(String loggerDefinitionFilePath) {
-        this.loggerDefinitionFilePath = loggerDefinitionFilePath;
+        Settings.loggerDefinitionFilePath = loggerDefinitionFilePath;
     }
 
     public String getLoggerOutputDirPath() {
@@ -382,7 +382,7 @@ public class Settings implements Serializable {
     }
 
     public void setLoggerProfileFilePath(String loggerProfileFilePath) {
-        this.loggerProfileFilePath = loggerProfileFilePath;
+        Settings.loggerProfileFilePath = loggerProfileFilePath;
     }
 
     public void setLoggerOutputDirPath(String loggerOutputDirPath) {

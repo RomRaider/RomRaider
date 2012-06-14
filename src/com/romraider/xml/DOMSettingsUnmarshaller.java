@@ -239,7 +239,7 @@ public final class DOMSettingsUnmarshaller {
                 settings.setLoggerParameterListState(unmarshallAttribute(n, "showlist", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("definition")) {
-                settings.setLoggerDefinitionFilePath(unmarshallAttribute(n, "path", settings.getLoggerDefinitionFilePath()));
+                settings.setLoggerDefinitionFilePath(unmarshallAttribute(n, "path", Settings.getLoggerDefinitionFilePath()));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("profile")) {
                 settings.setLoggerProfileFilePath(unmarshallAttribute(n, "path", ""));

@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
+import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getFile;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getProfileFileChooser;
@@ -46,7 +47,8 @@ public final class SaveProfileAsAction extends AbstractAction {
     }
 
     private void saveProfileAs() throws Exception {
-        File lastProfileFile = getFile(logger.getSettings().getLoggerProfileFilePath());
+        logger.getSettings();
+		File lastProfileFile = getFile(Settings.getLoggerProfileFilePath());
         JFileChooser fc = getProfileFileChooser(lastProfileFile);
         if (fc.showSaveDialog(logger) == APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();

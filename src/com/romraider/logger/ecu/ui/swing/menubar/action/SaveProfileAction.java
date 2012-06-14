@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
+import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
 import com.romraider.swing.menubar.action.AbstractAction;
@@ -40,7 +41,8 @@ public final class SaveProfileAction extends AbstractAction {
     }
 
     private void saveProfile() throws Exception {
-        File lastProfileFile = new File(logger.getSettings().getLoggerProfileFilePath());
+        logger.getSettings();
+		File lastProfileFile = new File(Settings.getLoggerProfileFilePath());
         String profileFilePath = saveProfileToFile(logger.getCurrentProfile(), lastProfileFile);
         logger.getSettings().setLoggerProfileFilePath(profileFilePath);
         logger.reportMessageInTitleBar("Profile: " + profileFilePath);
