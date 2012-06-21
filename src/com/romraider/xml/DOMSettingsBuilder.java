@@ -105,6 +105,11 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode imageDir = new IIOMetadataNode("image_dir");
         imageDir.setAttribute("path", settings.getLastImageDir().getAbsolutePath());
         files.appendChild(imageDir);
+        
+        // repository directory
+        IIOMetadataNode repositoryDir = new IIOMetadataNode(Settings.REPOSITORY_ELEMENT_NAME);
+        repositoryDir.setAttribute(Settings.REPOSITORY_ATTRIBUTE_NAME, settings.getLastRepositoryDir().getAbsolutePath());
+        files.appendChild(repositoryDir);
 
         // repository directory
         IIOMetadataNode repositoryDir = new IIOMetadataNode(Settings.REPOSITORY_ELEMENT_NAME);
