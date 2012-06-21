@@ -66,6 +66,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private JMenu editMenu = new JMenu("Edit");
     private JMenuItem settings = new JMenuItem(PRODUCT_NAME + " Settings...");
+    private JMenuItem compareImages = new JMenuItem("Compare Images...");
 
     private JMenu viewMenu = new JMenu("View");
     private JMenuItem romProperties = new JMenuItem("ECU Image Properties");
@@ -120,6 +121,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         editMenu.setMnemonic('E');
         editMenu.add(settings);
         settings.addActionListener(this);
+        editMenu.add(compareImages);
+        compareImages.addActionListener(this);
 
         // ecu def menu items
         add(definitionMenu);
@@ -128,6 +131,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 //        editDefinition.setMnemonic('E');
         updateDefinition.setMnemonic('U');
         settings.setMnemonic('S');
+        compareImages.setMnemonic('C');
         definitionMenu.add(defManager);
 //        definitionMenu.add(editDefinition);
         definitionMenu.add(updateDefinition);
@@ -210,12 +214,14 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             closeAll.setEnabled(false);
             romProperties.setEnabled(false);
             saveImage.setText("Save As...");
+            compareImages.setEnabled(false);
         } else {
             saveImage.setEnabled(true);
             closeImage.setEnabled(true);
             closeAll.setEnabled(true);
             romProperties.setEnabled(true);
             saveImage.setText("Save " + file + " As...");
+            compareImages.setEnabled(true);
         }
         refreshImage.setText("Refresh " + file);
         closeImage.setText("Close " + file);
@@ -267,6 +273,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             form.setLocationRelativeTo(parent);
             form.setVisible(true);
 
+        } else if (e.getSource() == compareImages){
+        	CompareImagesForm form = new CompareImagesForm(parent.getImages());
+        	form.setLocationRelativeTo(parent);
+        	form.setVisible(true);
+        	
         } else if (e.getSource() == defManager) {
             DefinitionManager form = new DefinitionManager(parent);
             form.setLocationRelativeTo(parent);

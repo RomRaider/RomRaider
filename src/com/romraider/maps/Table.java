@@ -52,7 +52,7 @@ import java.util.Vector;
 
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
-    private static final String BLANK = "";
+    protected static final String BLANK = "";
 
     public static final int ENDIAN_LITTLE = 1;
     public static final int ENDIAN_BIG = 2;
@@ -74,6 +74,8 @@ public abstract class Table extends JPanel implements Serializable {
     public static final boolean STORAGE_DATA_SIGNED = false;
 
     protected static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
+    protected static final String NEW_LINE = System.getProperty("line.separator");
+    protected static final String TAB = "\t";
 
     protected String name;
     protected int type;
@@ -966,10 +968,10 @@ public abstract class Table extends JPanel implements Serializable {
     public StringBuffer getTableAsString() {
         //make a string of the selection
         StringBuffer output = new StringBuffer(BLANK);
-        for (int i = 0; i < getDataSize(); i++) {
+        for (int i = 0; i < data.length; i++) {
             output.append(data[i].getText());
-            if (i < getDataSize() - 1) {
-                output.append("\t");
+            if (i < data.length - 1) {
+                output.append(TAB);
             }
         }
         return output;
@@ -981,7 +983,7 @@ public abstract class Table extends JPanel implements Serializable {
         for (int i = 0; i < getDataSize(); i++) {
             output.append(data[i].getText());
             if (i < getDataSize() - 1) {
-                output.append("\t");
+                output.append(TAB);
             }
         }
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);

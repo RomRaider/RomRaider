@@ -211,6 +211,26 @@ public class Table3D extends Table {
 
         add(new JLabel(getScale().getUnit(), JLabel.CENTER), BorderLayout.SOUTH);
     }
+    
+    public StringBuffer getTableAsString() {
+        // Make a string of the table
+	    StringBuffer output = new StringBuffer(BLANK);
+	    output.append(xAxis.getTableAsString()).append(NEW_LINE);
+	
+	    for (int y = 0; y < getSizeY(); y++) {
+	        output.append(yAxis.getCellAsString(y)).append(TAB);
+	        for (int x = 0; x < getSizeX(); x++) {
+	            output.append(data[x][y].getText());
+	            if (x < getSizeX() - 1) {
+	                output.append(TAB);
+	            }
+	        }
+	        if (y < getSizeY() - 1) {
+	            output.append(NEW_LINE);
+	        }
+	    }
+        return output;
+    }
 
     public void colorize() {
         if (compareType == COMPARE_OFF) {
@@ -696,15 +716,15 @@ public class Table3D extends Table {
         output.append(xAxis.getTableAsString()).append(newline);
 
         for (int y = 0; y < getSizeY(); y++) {
-            output.append(yAxis.getCellAsString(y)).append("\t");
+            output.append(yAxis.getCellAsString(y)).append(TAB);
             for (int x = 0; x < getSizeX(); x++) {
                 output.append(data[x][y].getText());
                 if (x < getSizeX() - 1) {
-                    output.append("\t");
+                    output.append(TAB);
                 }
             }
             if (y < getSizeY() - 1) {
-                output.append(newline);
+                output.append(NEW_LINE);
             }
         }
         //copy to clipboard
