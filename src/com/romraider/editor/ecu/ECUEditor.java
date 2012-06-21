@@ -200,6 +200,7 @@ public class ECUEditor extends AbstractFrame {
         settings.setWindowSize(getSize());
         settings.setWindowLocation(getLocation());
 
+        // Save when exit to save file settings.
         settingsManager.save(settings, statusPanel);
         statusPanel.update("Ready...", 0);
         repaint();
@@ -433,13 +434,26 @@ public class ECUEditor extends AbstractFrame {
 
         } catch (StackOverflowError ex) {
             // handles looped inheritance, which will use up all available memory
-            showMessageDialog(this, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", ERROR_MESSAGE);
+            showMessageDialog(this, "Looped \"base\" attribute in XML definitions.", "Error Loading "+inputFile.getName(), ERROR_MESSAGE);
 
+        } catch (OutOfMemoryError ome) {
+        	// handles Java heap space issues when loading multiple Roms.
+        	showMessageDialog(this, "Error loading Image. Out of memeory.", "Error Loading "+inputFile.getName(), ERROR_MESSAGE);
+        	
         } finally {
             // remove progress bar
             //progress.dispose();
             statusPanel.update("Ready...", 0);
+        }
+    }
 
+    public void openImages(File[] inputFiles) throws Exception {
+    	if(inputFiles.length < 1) {
+            showMessageDialog(this, "Image Not Found", "Error Loading Image(s)", ERROR_MESSAGE);
+    		return;
+    	}
+        for(int j=0;j<inputFiles.length;j++) {
+        	openImage(inputFiles[j]);
         }
     }
 
@@ -458,5 +472,7 @@ public class ECUEditor extends AbstractFrame {
         return baos.toByteArray();
     }
 
-
+    public SettingsManager getSettingsManager() {
+    	return this.settingsManager;
+    }
 }

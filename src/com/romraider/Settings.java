@@ -37,7 +37,10 @@ import java.util.Vector;
 public class Settings implements Serializable {
 	
     private static final long serialVersionUID = 1026542922680475190L;
-    private Dimension windowSize = new Dimension(800, 600);
+    public static final String REPOSITORY_ELEMENT_NAME = "repository-dir";
+    public static final String REPOSITORY_ATTRIBUTE_NAME = "path";
+    
+	private Dimension windowSize = new Dimension(800, 600);
     private Point windowLocation = new Point();
     private int splitPaneLocation = 150;
     private boolean windowMaximized = false;
@@ -46,6 +49,7 @@ public class Settings implements Serializable {
 
     private Vector<File> ecuDefinitionFiles = new Vector<File>();
     private File lastImageDir = new File("images");
+    private File lastRepositoryDir = new File("repositories");
     private boolean obsoleteWarning = true;
     private boolean calcConflictWarning = true;
     private boolean debug = false;
@@ -133,6 +137,14 @@ public class Settings implements Serializable {
 
     public void setLastImageDir(File lastImageDir) {
         this.lastImageDir = lastImageDir;
+    }
+
+    public File getLastRepositoryDir() {
+    	return lastRepositoryDir;
+    }
+
+    public void setLastRepositoryDir(File lastRepositoryDir) {
+    	this.lastRepositoryDir = lastRepositoryDir;
     }
 
     public int getSplitPaneLocation() {
