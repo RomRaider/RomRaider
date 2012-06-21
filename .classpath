@@ -41,5 +41,6 @@
 			<attribute name="javadoc_location" value="http://twall.github.com/jna/3.4.0/javadoc/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/common/phidget21.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

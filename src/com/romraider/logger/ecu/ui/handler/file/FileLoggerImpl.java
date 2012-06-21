@@ -125,7 +125,8 @@ public final class FileLoggerImpl implements FileLogger {
             logDir += File.separator;
         }
     	logDir += "romraiderlog_";
-        if (!settings.getLogfileNameText().isEmpty()) {
+        if (settings.getLogfileNameText() != null
+        		&& !settings.getLogfileNameText().isEmpty()) {
         	logDir += settings.getLogfileNameText() + "_"; 
         }
         logDir += dateFormat.format(new Date()) + ".csv";

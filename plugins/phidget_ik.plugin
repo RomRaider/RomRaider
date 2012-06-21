@@ -1,0 +1,1 @@
+datasource.class=com.romraider.logger.external.phidget.interfacekit.plugin.IntfKitDataSource
