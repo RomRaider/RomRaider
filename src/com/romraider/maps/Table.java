@@ -283,6 +283,13 @@ public abstract class Table extends JPanel implements Serializable {
                 getFrame().getToolBar().multiply();
             }
         };
+        Action numNegAction = new AbstractAction() {
+			private static final long serialVersionUID = -6346750245035640773L;
+
+			public void actionPerformed(ActionEvent e) {
+        		getFrame().getToolBar().focusSetValue('-');
+        	}
+        };
 
         // set input mapping
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -314,6 +321,7 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke numPoint = KeyStroke.getKeyStroke('.');
         KeyStroke copy = KeyStroke.getKeyStroke("control C");
         KeyStroke paste = KeyStroke.getKeyStroke("control V");
+        KeyStroke numNeg = KeyStroke.getKeyStroke('-');
 
         im.put(right, "right");
         im.put(left, "left");
@@ -342,6 +350,7 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(paste, "pasteAction");
         im.put(mulKey, "mulAction");
         im.put(mulKeys, "mulAction");
+        im.put(numNeg, "numNeg");
 
         getActionMap().put(im.get(right), rightAction);
         getActionMap().put(im.get(left), leftAction);
@@ -370,6 +379,7 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(mulKeys), multiplyAction);
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
+        getActionMap().put(im.get(numNeg), numNegAction);
 
         this.setInputMap(WHEN_FOCUSED, im);
     }
