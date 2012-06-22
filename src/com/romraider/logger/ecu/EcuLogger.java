@@ -339,7 +339,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                             ecuIdLabel.setText(buildEcuInfoLabelText(target + " ID", ecuId));
                             loadResult = String.format("Loading logger config for new %s ID: %s, ", target, ecuId);
                             loadLoggerParams();
-                            loadUserProfile(settings.getLoggerProfileFilePath());
+                            loadUserProfile(Settings.getLoggerProfileFilePath());
                         }
 
                         private String getCalId(String ecuId) {
@@ -478,7 +478,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void loadLoggerConfig() {
-        String loggerConfigFilePath = settings.getLoggerDefinitionFilePath();
+        String loggerConfigFilePath = Settings.getLoggerDefinitionFilePath();
         if (isNullOrEmpty(loggerConfigFilePath)) showMissingConfigDialog();
         else {
             try {
@@ -909,6 +909,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
         });
 
+        if (!settings.getLoggerParameterListState()) {
+        	toggleListButton.doClick();
+        }
+
         JPanel tabControlPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 1, 1));
         tabControlPanel.setPreferredSize(new Dimension(25, 25));
         tabControlPanel.add(toggleListButton);
@@ -1268,7 +1272,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private void selectTab(int tabIndex) {
         int count = tabbedPane.getComponentCount();
-        if (tabIndex >= 0 && tabIndex < count) tabbedPane.setSelectedIndex(tabIndex);
+        if (tabIndex >= 0 && tabIndex < count)
+        	tabbedPane.setSelectedIndex(tabIndex);
     }
 
     public void windowOpened(WindowEvent windowEvent) {
@@ -1348,7 +1353,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         settings.setLoggerWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
         settings.setLoggerWindowSize(getSize());
         settings.setLoggerWindowLocation(getLocation());
-        if (settings.getLoggerParameterListState()) settings.setLoggerDividerLocation(splitPane.getDividerLocation());
+        if (settings.getLoggerParameterListState()) {
+    		final Component c = tabbedPane.getSelectedComponent();
+    		final JSplitPane sp = (JSplitPane) c.getComponentAt(100, 100);
+        	settings.setLoggerDividerLocation(sp.getDividerLocation());
+        }
         settings.setLoggerSelectedTabIndex(tabbedPane.getSelectedIndex());
         settings.setLoggerPluginPorts(getPluginPorts(externalDataSources));
         try {
@@ -1453,8 +1462,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 	private JProgressBar startbar() {
 		startStatus = new JWindow();
     	startStatus.setAlwaysOnTop(true);
-    	startStatus.setLocation((int)(settings.getLoggerWindowSize().getWidth()/2 + settings.getLoggerWindowLocation().getX()),
-    							(int)(settings.getLoggerWindowSize().getHeight()/2 + settings.getLoggerWindowLocation().getY()));
+    	startStatus.setLocation(
+    			(int)(settings.getLoggerWindowSize().getWidth()/2 + settings.getLoggerWindowLocation().getX() - 150),
+    			(int)(settings.getLoggerWindowSize().getHeight()/2 + settings.getLoggerWindowLocation().getY() - 36));
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
         progressBar.setIndeterminate(false);
@@ -1530,19 +1540,5 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             ecuLogger.setDefaultCloseOperation(defaultCloseOperation);
             ecuLogger.setVisible(true);
         }
-        // simulate F11 key typed based on Parameter List show setting 'showlist' in settings.xml
-        // is this a hack as it may not work in X-server?
-        if (settings.getLoggerSelectedTabIndex() >= 0 && settings.getLoggerSelectedTabIndex() <= 2) {
-	    	if (!settings.getLoggerParameterListState()) { //false setting hides list
-	    		Robot r;
-				try {
-					r = new Robot();
-	        		r.keyPress(KeyEvent.VK_F11);
-	        		r.keyRelease(KeyEvent.VK_F11);
-				} catch (AWTException e) {
-					e.printStackTrace();
-				}
-	    	}
-	    }
     }
 }
