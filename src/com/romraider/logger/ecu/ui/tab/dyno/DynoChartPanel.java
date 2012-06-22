@@ -17,9 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.ui.tab;
+package com.romraider.logger.ecu.ui.tab.dyno;
 
 import com.romraider.logger.ecu.ui.handler.graph.SpringUtilities;
+import com.romraider.logger.ecu.ui.tab.CircleDrawer;
+import com.romraider.logger.ecu.ui.tab.XYTrendline;
+
 import static com.romraider.util.ParamChecker.checkNotNull;
 import jamlab.Polyfit;
 import static java.awt.Color.BLACK;
