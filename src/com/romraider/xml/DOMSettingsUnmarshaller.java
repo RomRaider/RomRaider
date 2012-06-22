@@ -19,12 +19,10 @@
 
 package com.romraider.xml;
 
-import com.romraider.Settings;
 import static com.romraider.xml.DOMHelper.unmarshallAttribute;
 import static java.awt.Font.BOLD;
-import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
-import org.w3c.dom.NodeList;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -32,6 +30,11 @@ import java.awt.Point;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.romraider.Settings;
 
 public final class DOMSettingsUnmarshaller {
 
@@ -58,6 +61,8 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("logger")) {
                 settings = unmarshallLogger(n, settings);
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase(Settings.TABLE_CLIPBOARD_FORMAT_ELEMENT)) {
+                settings = this.unmarshallClipboardFormat(n, settings);
             }
         }
         return settings;
@@ -105,8 +110,8 @@ public final class DOMSettingsUnmarshaller {
                 settings.setLastImageDir(new File(unmarshallAttribute(n, "path", "ecu_defs.xml")));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase(Settings.REPOSITORY_ELEMENT_NAME)) {
-            	settings.setLastRepositoryDir(new File(unmarshallAttribute(n, Settings.REPOSITORY_ATTRIBUTE_NAME, "repositories")));
-            
+                settings.setLastRepositoryDir(new File(unmarshallAttribute(n, Settings.REPOSITORY_ATTRIBUTE_NAME, "repositories")));
+
             }
         }
         return settings;
@@ -231,7 +236,7 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("size")) {
                 settings.setLoggerWindowSize(new Dimension(unmarshallAttribute(n, "y", 600),
                         unmarshallAttribute(n, "x", 1000)));
-                settings.setLoggerDividerLocation((double) unmarshallAttribute(n, "divider", 500));
+                settings.setLoggerDividerLocation(unmarshallAttribute(n, "divider", 500));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("location")) {
                 settings.setLoggerWindowLocation(new Point(unmarshallAttribute(n, "x", 150),
@@ -254,7 +259,7 @@ public final class DOMSettingsUnmarshaller {
                 settings.setFileLoggingAbsoluteTimestamp(unmarshallAttribute(n, "absolutetimestamp", false));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("debug")) {
-            	settings.setLoggerDebuggingLevel(unmarshallAttribute(n, "level", "info"));
+                settings.setLoggerDebuggingLevel(unmarshallAttribute(n, "level", "info"));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("plugins")) {
                 Map<String, String> pluginPorts = new HashMap<String, String>();
@@ -279,6 +284,36 @@ public final class DOMSettingsUnmarshaller {
         return new Color(unmarshallAttribute(colorNode, "r", 155),
                 unmarshallAttribute(colorNode, "g", 155),
                 unmarshallAttribute(colorNode, "b", 155));
+    }
+
+    private Settings unmarshallClipboardFormat(Node formatNode, Settings settings) {
+        String tableClipboardFormat = unmarshallAttribute(formatNode, Settings.TABLE_CLIPBOARD_FORMAT_ATTRIBUTE, Settings.DEFAULT_CLIPBOARD_FORMAT);
+        if(tableClipboardFormat.equalsIgnoreCase(Settings.CUSTOM_CLIPBOARD_FORMAT)) {
+            settings.setTableClipboardFormat(Settings.CUSTOM_CLIPBOARD_FORMAT);
+        } else if (tableClipboardFormat.equalsIgnoreCase(Settings.AIRBOYS_CLIPBOARD_FORMAT)) {
+            settings.setAirboysFormat();
+            return settings;
+        } else {
+            settings.setDefaultFormat();
+            return settings;
+        }
+
+        NodeList tableFormats = formatNode.getChildNodes();
+        for( int i = 0; i < tableFormats.getLength(); i++) {
+            Node tableNode = tableFormats.item(i);
+            if(tableNode.getNodeType() == ELEMENT_NODE) {
+                if(tableNode.getNodeName().equalsIgnoreCase(Settings.TABLE_ELEMENT)) {
+                    settings.setTableHeader(unmarshallAttribute(tableNode, Settings.TABLE_HEADER_ATTRIBUTE, Settings.DEFAULT_TABLE_HEADER));
+                } else if(tableNode.getNodeName().equalsIgnoreCase(Settings.TABLE1D_ELEMENT)) {
+                    settings.setTable1DHeader(unmarshallAttribute(tableNode, Settings.TABLE_HEADER_ATTRIBUTE, Settings.DEFAULT_TABLE1D_HEADER));
+                } else if(tableNode.getNodeName().equalsIgnoreCase(Settings.TABLE2D_ELEMENT)) {
+                    settings.setTable2DHeader(unmarshallAttribute(tableNode, Settings.TABLE_HEADER_ATTRIBUTE, Settings.DEFAULT_TABLE2D_HEADER));
+                } else if(tableNode.getNodeName().equalsIgnoreCase(Settings.TABLE3D_ELEMENT)) {
+                    settings.setTable3DHeader(unmarshallAttribute(tableNode, Settings.TABLE_HEADER_ATTRIBUTE, Settings.DEFAULT_TABLE3D_HEADER));
+                }
+            }
+        }
+        return settings;
     }
 
 }

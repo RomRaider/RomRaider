@@ -19,20 +19,29 @@
 
 package com.romraider.swing;
 
-import ZoeloeSoft.projects.JFontChooser.JFontChooser;
-import com.romraider.Settings;
 import static com.romraider.Version.PRODUCT_NAME;
-import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.util.FileAssociator;
 import static java.io.File.separator;
-import javax.swing.JColorChooser;
-import javax.swing.JFrame;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.StringTokenizer;
+
+import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JColorChooser;
+import javax.swing.JFrame;
+import javax.swing.JRadioButton;
+import javax.swing.LayoutStyle.ComponentPlacement;
+
+import ZoeloeSoft.projects.JFontChooser.JFontChooser;
+
+import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.util.FileAssociator;
 
 public class SettingsForm extends JFrame implements MouseListener {
 
@@ -104,6 +113,14 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         valueLimitWarning.setSelected(settings.isValueLimitWarning());
         warningColor.setBackground(settings.getWarningColor());
+
+        if(settings.getTableClipboardFormat().equalsIgnoreCase(Settings.AIRBOYS_CLIPBOARD_FORMAT)) {
+            this.rdbtnAirboys.setSelected(true);
+        } else if(settings.getTableClipboardFormat().equalsIgnoreCase(Settings.CUSTOM_CLIPBOARD_FORMAT)) {
+            this.rdbtnCustom.setSelected(true);
+        } else {
+            this.rdbtnDefault.setSelected(true);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
@@ -115,7 +132,10 @@ public class SettingsForm extends JFrame implements MouseListener {
         btnOk = new javax.swing.JButton();
         btnApply = new javax.swing.JButton();
         reset = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        settingsTabbedPane = new javax.swing.JTabbedPane();
+        jPanelClipboard = new javax.swing.JPanel();
+        jPanelDefault = new javax.swing.JPanel();
+        jPanelTableDisplay = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         lblAxis = new javax.swing.JLabel();
         lblHighlight = new javax.swing.JLabel();
@@ -149,6 +169,14 @@ public class SettingsForm extends JFrame implements MouseListener {
         jLabel1 = new javax.swing.JLabel();
         tableClickCount = new javax.swing.JComboBox();
 
+        clipboardButtonGroup = new ButtonGroup();
+        rdbtnDefault = new JRadioButton("RomRaider Default");
+        rdbtnAirboys = new JRadioButton("Airboys Spreadsheet");
+        rdbtnCustom = new JRadioButton("Custom (manually specify formats in settings.xml)");
+        clipboardButtonGroup.add(this.rdbtnDefault);
+        clipboardButtonGroup.add(this.rdbtnAirboys);
+        clipboardButtonGroup.add(this.rdbtnCustom);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(PRODUCT_NAME + " Settings");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -177,7 +205,6 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         reset.setText("Restore Defaults");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Table Display"));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Background"));
         lblAxis.setText("Axis Cell:");
 
@@ -213,50 +240,50 @@ public class SettingsForm extends JFrame implements MouseListener {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
                 jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                                 .add(lblWarning)
                                 .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(jPanel2Layout.createSequentialGroup()
-                                        .add(4, 4, 4)
-                                        .add(lblMin))
-                                .add(lblMax)))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(jPanel2Layout.createSequentialGroup()
-                                        .add(maxColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 22, Short.MAX_VALUE)
-                                        .add(lblHighlight)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(highlightColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(jPanel2Layout.createSequentialGroup()
-                                        .add(minColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 55, Short.MAX_VALUE)
-                                        .add(lblAxis)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(axisColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(warningColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-        );
+                                        .add(jPanel2Layout.createSequentialGroup()
+                                                .add(4, 4, 4)
+                                                .add(lblMin))
+                                                .add(lblMax)))
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                        .add(jPanel2Layout.createSequentialGroup()
+                                                                .add(maxColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 22, Short.MAX_VALUE)
+                                                                .add(lblHighlight)
+                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                .add(highlightColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                                                .add(jPanel2Layout.createSequentialGroup()
+                                                                        .add(minColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 55, Short.MAX_VALUE)
+                                                                        .add(lblAxis)
+                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                        .add(axisColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                                                        .add(warningColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                                                        .addContainerGap())
+                );
         jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel2Layout.createSequentialGroup()
+                .add(jPanel2Layout.createSequentialGroup()
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                                 .add(lblMax)
                                 .add(maxColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .add(highlightColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .add(lblHighlight))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(lblMin)
-                                .add(minColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(axisColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(lblAxis))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(warningColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(lblWarning)))
-        );
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(lblMin)
+                                        .add(minColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(axisColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(lblAxis))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                .add(warningColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                .add(lblWarning)))
+                );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Cell Borders"));
         lblIncrease.setText("Increased:");
@@ -275,7 +302,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
                 jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
                         .add(lblIncrease)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -285,15 +312,15 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(decreaseColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())
-        );
+                );
         jPanel3Layout.setVerticalGroup(
                 jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                         .add(decreaseColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(lblDecrease)
                         .add(lblIncrease)
                         .add(increaseColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-        );
+                );
 
         lblCellHeight.setText("Cell Height:");
 
@@ -332,139 +359,205 @@ public class SettingsForm extends JFrame implements MouseListener {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
                 jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                 .add(extensionBin)
                                 .add(extensionHex))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 93, Short.MAX_VALUE)
-                        .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                .add(btnAddAssocs, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(btnRemoveAssocs))
-                        .add(25, 25, 25))
-        );
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 93, Short.MAX_VALUE)
+                                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                        .add(btnAddAssocs, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .add(btnRemoveAssocs))
+                                        .add(25, 25, 25))
+                );
         jPanel4Layout.setVerticalGroup(
                 jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel4Layout.createSequentialGroup()
+                .add(jPanel4Layout.createSequentialGroup()
                         .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                                 .add(btnAddAssocs)
                                 .add(extensionHex))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(btnRemoveAssocs)
-                        .add(extensionBin)))
-        );
-
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(saveDebugTables)
-                                        .add(displayHighTables)
-                                        .add(valueLimitWarning))
-                                .add(jPanel1Layout.createSequentialGroup()
-                                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(lblCellHeight)
-                                        .add(lblFont))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(btnChooseFont)
-                                .add(jPanel1Layout.createSequentialGroup()
-                                .add(cellHeight, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 42, Short.MAX_VALUE)
-                                .add(lblCellWidth)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(cellWidth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
-                        .add(47, 47, 47))
-        );
-        jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel1Layout.createSequentialGroup()
-                        .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(22, 22, 22)
-                        .add(saveDebugTables)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(displayHighTables)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(valueLimitWarning)
-                        .add(27, 27, 27)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(lblCellWidth)
-                                .add(cellWidth, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(lblCellHeight)
-                                .add(cellHeight, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(lblFont)
-                        .add(btnChooseFont, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-        );
+                                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(btnRemoveAssocs)
+                                        .add(extensionBin)))
+                );
 
         jLabel1.setText("click to open tables");
 
         tableClickCount.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Single", "Double"}));
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        initTabs();
+
+        settingsTabbedPane.addTab("General", jPanelDefault);
+        settingsTabbedPane.addTab("Table Display", jPanelTableDisplay);
+        settingsTabbedPane.addTab("Clipboard", jPanelClipboard);
+
+        // Content Pane Layout
+        GroupLayout layout = new GroupLayout(getContentPane());
         layout.setHorizontalGroup(
-                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                layout.createParallelGroup(Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, calcConflictWarning)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, obsoleteWarning)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                        .add(tableClickCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(jLabel1))
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, debug)
-                                .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(reset)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 34, Short.MAX_VALUE)
-                                .add(btnApply)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(btnOk)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(btnCancel)))
-                        .addContainerGap())
-        );
+                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(settingsTabbedPane, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 432, Short.MAX_VALUE)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(reset)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                                        .addComponent(btnApply)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(btnOk)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(btnCancel)))
+                                        .addContainerGap())
+                );
         layout.setVerticalGroup(
-                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(layout.createSequentialGroup()
+                layout.createParallelGroup(Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(jLabel1)
-                                .add(tableClickCount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 18, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(obsoleteWarning)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(calcConflictWarning)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(debug)
-                        .add(17, 17, 17)
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(22, 22, 22)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(btnCancel)
-                                .add(btnApply)
-                                .add(reset)
-                                .add(btnOk))
-                        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                        .addComponent(settingsTabbedPane, GroupLayout.PREFERRED_SIZE, 542, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(btnCancel)
+                                .addComponent(btnOk)
+                                .addComponent(btnApply)
+                                .addComponent(reset))
+                                .addContainerGap())
+                );
+        getContentPane().setLayout(layout);
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void initTabs() {
+        // Init Default Tab Panel
+        GroupLayout jPanelDefaultLayout = new GroupLayout(jPanelDefault);
+        jPanelDefaultLayout.setVerticalGroup(
+                jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(jLabel1)
+                                .addComponent(tableClickCount, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(obsoleteWarning)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(calcConflictWarning)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(debug)
+                                .addGap(17)
+                                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                );
+        jPanelDefaultLayout.setHorizontalGroup(
+                jPanelDefaultLayout.createParallelGroup(Alignment.TRAILING)
+                .addGroup(Alignment.LEADING, jPanelDefaultLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
+                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                                        .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
+                                                .addComponent(calcConflictWarning)
+                                                .addComponent(obsoleteWarning)
+                                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                                                        .addComponent(tableClickCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                                        .addComponent(jLabel1))
+                                                        .addComponent(debug))
+                                                        .addContainerGap(45, Short.MAX_VALUE)))
+                                                        .addContainerGap())
+                );
+        jPanelDefault.setLayout(jPanelDefaultLayout);
+
+        // Init Table Display Tab
+        GroupLayout jPanelTableDisplayLayout = new GroupLayout(jPanelTableDisplay);
+        jPanelTableDisplayLayout.setHorizontalGroup(
+                jPanelTableDisplayLayout.createParallelGroup(Alignment.TRAILING)
+                .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.TRAILING)
+                                .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
+                                        .addComponent(saveDebugTables)
+                                        .addComponent(displayHighTables)
+                                        .addComponent(valueLimitWarning))
+                                        .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
+                                                .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
+                                                        .addComponent(lblCellHeight)
+                                                        .addComponent(lblFont))
+                                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                                        .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
+                                                                .addComponent(btnChooseFont)
+                                                                .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
+                                                                        .addComponent(cellHeight, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                                                                        .addComponent(lblCellWidth)
+                                                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                                                        .addComponent(cellWidth, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))))
+                                                                        .addGap(47))
+                                                                        .addGroup(Alignment.LEADING, jPanelTableDisplayLayout.createSequentialGroup()
+                                                                                .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                                                                                .addContainerGap())
+                                                                                .addGroup(Alignment.LEADING, jPanelTableDisplayLayout.createSequentialGroup()
+                                                                                        .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                                                                                        .addContainerGap())
+                                                                                        .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                );
+        jPanelTableDisplayLayout.setVerticalGroup(
+                jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(saveDebugTables)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(displayHighTables)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(valueLimitWarning)
+                        .addGap(27)
+                        .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(lblCellWidth)
+                                .addComponent(cellWidth, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblCellHeight)
+                                .addComponent(cellHeight, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.BASELINE)
+                                        .addComponent(lblFont)
+                                        .addComponent(btnChooseFont, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+                                        .addContainerGap())
+                );
+        jPanelTableDisplay.setLayout(jPanelTableDisplayLayout);
+
+        // Init Clipboard Tab Panel
+        GroupLayout jPanelClipboardLayout = new GroupLayout(jPanelClipboard);
+        jPanelClipboardLayout.setHorizontalGroup(
+                jPanelClipboardLayout.createParallelGroup(Alignment.TRAILING)
+                .addGroup(jPanelClipboardLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelClipboardLayout.createParallelGroup(Alignment.LEADING)
+                                .addGroup(jPanelClipboardLayout.createSequentialGroup()
+                                        .addGap(17)
+                                        .addGroup(jPanelClipboardLayout.createParallelGroup(Alignment.LEADING)
+                                                .addComponent(rdbtnAirboys)
+                                                .addComponent(rdbtnDefault)
+                                                .addComponent(rdbtnCustom))))
+                                                .addGap(157))
+                );
+        jPanelClipboardLayout.setVerticalGroup(
+                jPanelClipboardLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(jPanelClipboardLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(rdbtnDefault)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(rdbtnAirboys)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(rdbtnCustom)
+                        .addGap(435))
+                );
+        jPanelClipboard.setLayout(jPanelClipboardLayout);
+    }
+
+    @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == maxColor) {
             Color color = JColorChooser.showDialog(this.getContentPane(),
@@ -511,7 +604,10 @@ public class SettingsForm extends JFrame implements MouseListener {
         } else if (e.getSource() == btnApply) {
             applySettings();
         } else if (e.getSource() == btnOk) {
+            // Apply settings to Settings object.
             applySettings();
+            // Write settings to file.
+            saveSettings();
             this.dispose();
         } else if (e.getSource() == btnCancel) {
             this.dispose();
@@ -592,18 +688,35 @@ public class SettingsForm extends JFrame implements MouseListener {
         settings.setValueLimitWarning(valueLimitWarning.isSelected());
         settings.setWarningColor(warningColor.getBackground());
 
-        parent.setSettings(settings);
+        if(rdbtnAirboys.isSelected())
+        {
+            settings.setAirboysFormat();
+        } else if(rdbtnCustom.isSelected()) {
+            settings.setTableClipboardFormat(Settings.CUSTOM_CLIPBOARD_FORMAT);
+            // Table Header settings need to be manually edited in the settings.xml file;
+        } else {
+            settings.setDefaultFormat();
+        }
     }
 
+    public void saveSettings()
+    {
+        parent.getSettingsManager().save(settings);
+    }
+
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
@@ -626,7 +739,10 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JLabel highlightColor;
     private javax.swing.JLabel increaseColor;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JTabbedPane settingsTabbedPane;
+    private javax.swing.JPanel jPanelDefault;
+    private javax.swing.JPanel jPanelClipboard;
+    private javax.swing.JPanel jPanelTableDisplay;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -648,6 +764,8 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JComboBox tableClickCount;
     private javax.swing.JCheckBox valueLimitWarning;
     private javax.swing.JLabel warningColor;
-    // End of variables declaration//GEN-END:variables
-
+    private ButtonGroup clipboardButtonGroup;
+    private javax.swing.JRadioButton rdbtnDefault;
+    private javax.swing.JRadioButton rdbtnAirboys;
+    private javax.swing.JRadioButton rdbtnCustom;
 }

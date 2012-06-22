@@ -22,9 +22,8 @@ package com.romraider;
 import static com.romraider.Version.RELEASE_NOTES;
 import static com.romraider.Version.ROM_REVISION_URL;
 import static com.romraider.Version.SUPPORT_URL;
-import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.logger.ecu.definition.EcuDefinition;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -34,14 +33,43 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Vector;
 
+import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.logger.ecu.definition.EcuDefinition;
+
 public class Settings implements Serializable {
 	
     private static final long serialVersionUID = 1026542922680475190L;
+
+    public static final String NEW_LINE = System.getProperty("line.separator");
+    public static final String TAB = "\t";
+
+    public static final String TABLE_CLIPBOARD_FORMAT_ELEMENT = "table-clipboard-format";
+    public static final String TABLE_CLIPBOARD_FORMAT_ATTRIBUTE = "format-string";
+    public static final String TABLE_ELEMENT = "table";
+    public static final String TABLE1D_ELEMENT = "table1D";
+    public static final String TABLE2D_ELEMENT = "table2D";
+    public static final String TABLE3D_ELEMENT = "table3D";
+    public static final String TABLE_HEADER_ATTRIBUTE = "table-header";
+
+    public static final String DEFAULT_CLIPBOARD_FORMAT = "Default";
+    public static final String DEFAULT_TABLE_HEADER = "[Table1D]" + NEW_LINE;
+    public static final String DEFAULT_TABLE1D_HEADER = "";
+    public static final String DEFAULT_TABLE2D_HEADER = "[Table2D]" + NEW_LINE;
+    public static final String DEFAULT_TABLE3D_HEADER = "[Table3D]" + NEW_LINE;
+
+    public static final String AIRBOYS_CLIPBOARD_FORMAT = "Airboys";
+    public static final String AIRBOYS_TABLE_HEADER = "";
+    public static final String AIRBOYS_TABLE1D_HEADER = "";
+    public static final String AIRBOYS_TABLE2D_HEADER = "[Table2D]" + NEW_LINE;
+    public static final String AIRBOYS_TABLE3D_HEADER = "[Table3D]" + TAB;
+
+    public static final String CUSTOM_CLIPBOARD_FORMAT = "Custom";
+
     public static final String REPOSITORY_ELEMENT_NAME = "repository-dir";
     public static final String REPOSITORY_ATTRIBUTE_NAME = "path";
-    
-	private Dimension windowSize = new Dimension(800, 600);
-    private Point windowLocation = new Point();
+
+    private final Dimension windowSize = new Dimension(800, 600);
+    private final Point windowLocation = new Point();
     private int splitPaneLocation = 150;
     private boolean windowMaximized = false;
 
@@ -71,7 +99,7 @@ public class Settings implements Serializable {
 
     private String loggerPort = "";
     private String loggerPortDefault = "";
-    private String loggerProtocol = "SSM";
+    private final String loggerProtocol = "SSM";
     private String loggerDefinitionFilePath = "";
     private String loggerProfileFilePath = "";
     private String loggerOutputDirPath = System.getProperty("user.home");
@@ -88,14 +116,19 @@ public class Settings implements Serializable {
     private ConnectionProperties loggerConnectionProperties;
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
     private Map<String, String> loggerPluginPorts;
-	private boolean loggerRefreshMode = false;
-	private byte loggerDestinationId = 0x10;
-	private boolean fastPoll = true;
-	private double loggerDividerLocation = 400;
-	private String loggerDebuggingLevel = "info";
+    private boolean loggerRefreshMode = false;
+    private byte loggerDestinationId = 0x10;
+    private boolean fastPoll = true;
+    private double loggerDividerLocation = 400;
+    private String loggerDebuggingLevel = "info";
 	private static String j2534Device = null;
 	private static String j2534Protocol = "ISO9141";
 
+    private String tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT; // Currently 2 options.  Default and Airboy. Custom is not hooked up.
+    private String tableHeader = DEFAULT_TABLE_HEADER;
+    private String table1DHeader = DEFAULT_TABLE1D_HEADER;
+    private String table2DHeader = DEFAULT_TABLE2D_HEADER;
+    private String table3DHeader = DEFAULT_TABLE3D_HEADER;
     public Settings() {
         //center window by default
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -140,11 +173,11 @@ public class Settings implements Serializable {
     }
 
     public File getLastRepositoryDir() {
-    	return lastRepositoryDir;
+        return lastRepositoryDir;
     }
 
     public void setLastRepositoryDir(File lastRepositoryDir) {
-    	this.lastRepositoryDir = lastRepositoryDir;
+        this.lastRepositoryDir = lastRepositoryDir;
     }
 
     public int getSplitPaneLocation() {
@@ -457,54 +490,110 @@ public class Settings implements Serializable {
     public void setLoggerPluginPorts(Map<String, String> loggerPluginPorts) {
         this.loggerPluginPorts = loggerPluginPorts;
     }
-    
+
     public void setLoggerParameterListState(boolean ShowListState) {
-    	this.loggerParameterListState = ShowListState;
+        this.loggerParameterListState = ShowListState;
     }
 
     public boolean getLoggerParameterListState() {
-    	return loggerParameterListState;
+        return loggerParameterListState;
     }
 
-	public void setRefreshMode(boolean selected) {
-    	this.loggerRefreshMode = selected;
-	}
-
-	public boolean getRefreshMode() {
-    	return loggerRefreshMode;
+    public void setRefreshMode(boolean selected) {
+        this.loggerRefreshMode = selected;
     }
 
-	public void setDestinationId(byte id) {
-    	this.loggerDestinationId = id;
-	}
+    public boolean getRefreshMode() {
+        return loggerRefreshMode;
+    }
 
-	public byte getDestinationId() {
-		return loggerDestinationId;
-	}
+    public void setDestinationId(byte id) {
+        this.loggerDestinationId = id;
+    }
 
-	public void setFastPoll(boolean state) {
-    	this.fastPoll = state;
-	}
+    public byte getDestinationId() {
+        return loggerDestinationId;
+    }
 
-	public boolean isFastPoll() {
-		return fastPoll;
-	}
+    public void setFastPoll(boolean state) {
+        this.fastPoll = state;
+    }
 
-	public void setLogfileNameText(String text) {
-		this.logfileNameText = text;
-	}
+    public boolean isFastPoll() {
+        return fastPoll;
+    }
 
-	public String getLogfileNameText() {
-		return logfileNameText;
-	}
+    public void setLogfileNameText(String text) {
+        this.logfileNameText = text;
+    }
 
-	public void setLoggerDebuggingLevel(String level) {
-		this.loggerDebuggingLevel  = level;
-	}
+    public String getLogfileNameText() {
+        return logfileNameText;
+    }
 
-	public String getLoggerDebuggingLevel() {
-		return loggerDebuggingLevel;
-	}
+    public void setLoggerDebuggingLevel(String level) {
+        this.loggerDebuggingLevel  = level;
+    }
+
+    public String getLoggerDebuggingLevel() {
+        return loggerDebuggingLevel;
+    }
+
+    public void setTableClipboardFormat(String formatString) {
+        this.tableClipboardFormat = formatString;
+    }
+
+    public String getTableClipboardFormat() {
+        return this.tableClipboardFormat;
+    }
+
+    public void setTableHeader(String header) {
+        this.tableHeader = header;
+    }
+
+    public String getTableHeader() {
+        return this.tableHeader;
+    }
+
+    public void setTable1DHeader(String header) {
+        this.table1DHeader = header;
+    }
+
+    public String getTable1DHeader() {
+        return this.table1DHeader;
+    }
+
+    public void setTable2DHeader(String header) {
+        this.table2DHeader = header;
+    }
+
+    public String getTable2DHeader() {
+        return this.table2DHeader;
+    }
+
+    public void setTable3DHeader(String header) {
+        this.table3DHeader = header;
+    }
+
+    public String getTable3DHeader() {
+        return this.table3DHeader;
+    }
+
+    public void setDefaultFormat() {
+        this.tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT;
+        this.tableHeader = DEFAULT_TABLE_HEADER;
+        this.table1DHeader = DEFAULT_TABLE1D_HEADER;
+        this.table2DHeader = DEFAULT_TABLE2D_HEADER;
+        this.table3DHeader = DEFAULT_TABLE3D_HEADER;
+    }
+
+    public void setAirboysFormat() {
+        this.tableClipboardFormat = AIRBOYS_CLIPBOARD_FORMAT;
+        this.tableHeader = AIRBOYS_TABLE_HEADER;
+        this.table1DHeader = AIRBOYS_TABLE1D_HEADER;
+        this.table2DHeader = AIRBOYS_TABLE2D_HEADER;
+        this.table3DHeader = AIRBOYS_TABLE3D_HEADER;
+    }
 
 	public static void setJ2534Device(String j2534Device) {
 		Settings.j2534Device = j2534Device;

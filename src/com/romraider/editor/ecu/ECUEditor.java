@@ -19,11 +19,52 @@
 
 package com.romraider.editor.ecu;
 
-import com.centerkey.utils.BareBonesBrowserLaunch;
-import com.romraider.Settings;
 import static com.romraider.Version.ECU_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
+import static javax.swing.JOptionPane.DEFAULT_OPTION;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.JOptionPane.showOptionDialog;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.tree.TreePath;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
+
+import com.centerkey.utils.BareBonesBrowserLaunch;
+import com.romraider.Settings;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
@@ -42,59 +83,22 @@ import com.romraider.util.SettingsManagerImpl;
 import com.romraider.xml.DOMRomUnmarshaller;
 import com.romraider.xml.RomNotFoundException;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
-import static javax.swing.JOptionPane.DEFAULT_OPTION;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
-import static javax.swing.JOptionPane.WARNING_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
-import static javax.swing.JOptionPane.showOptionDialog;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXParseException;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Vector;
 
 public class ECUEditor extends AbstractFrame {
     private static final long serialVersionUID = -7826850987392016292L;
 
-    private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
+    private final String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
 
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final SettingsManager settingsManager = new SettingsManagerImpl();
-    private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
-    private RomTree imageList = new RomTree(imageRoot);
+    private final RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
+    private final RomTree imageList = new RomTree(imageRoot);
     public MDIDesktopPane rightPanel = new MDIDesktopPane();
     public JProgressPane statusPanel = new JProgressPane();
     private JSplitPane splitPane = new JSplitPane();
     private Rom lastSelectedRom = null;
     private ECUEditorToolBar toolBar;
-    private ECUEditorMenuBar menuBar;
+    private final ECUEditorMenuBar menuBar;
     private Settings settings;
 
     public ECUEditor() {
@@ -206,25 +210,32 @@ public class ECUEditor extends AbstractFrame {
         repaint();
     }
 
+    @Override
     public void windowClosing(WindowEvent e) {
         handleExit();
     }
 
+    @Override
     public void windowOpened(WindowEvent e) {
     }
 
+    @Override
     public void windowClosed(WindowEvent e) {
     }
 
+    @Override
     public void windowIconified(WindowEvent e) {
     }
 
+    @Override
     public void windowDeiconified(WindowEvent e) {
     }
 
+    @Override
     public void windowActivated(WindowEvent e) {
     }
 
+    @Override
     public void windowDeactivated(WindowEvent e) {
     }
 
@@ -258,11 +269,12 @@ public class ECUEditor extends AbstractFrame {
             check.setHorizontalAlignment(JCheckBox.RIGHT);
 
             check.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     settings.setObsoleteWarning(((JCheckBox) e.getSource()).isSelected());
                 }
             }
-            );
+                    );
 
             infoPanel.add(check);
             showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", INFORMATION_MESSAGE);
@@ -381,6 +393,7 @@ public class ECUEditor extends AbstractFrame {
         return images;
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         imageList.updateUI();
         imageList.repaint();
@@ -437,9 +450,9 @@ public class ECUEditor extends AbstractFrame {
             showMessageDialog(this, "Looped \"base\" attribute in XML definitions.", "Error Loading "+inputFile.getName(), ERROR_MESSAGE);
 
         } catch (OutOfMemoryError ome) {
-        	// handles Java heap space issues when loading multiple Roms.
-        	showMessageDialog(this, "Error loading Image. Out of memeory.", "Error Loading "+inputFile.getName(), ERROR_MESSAGE);
-        	
+            // handles Java heap space issues when loading multiple Roms.
+            showMessageDialog(this, "Error loading Image. Out of memeory.", "Error Loading "+inputFile.getName(), ERROR_MESSAGE);
+
         } finally {
             // remove progress bar
             //progress.dispose();
@@ -448,12 +461,12 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void openImages(File[] inputFiles) throws Exception {
-    	if(inputFiles.length < 1) {
+        if(inputFiles.length < 1) {
             showMessageDialog(this, "Image Not Found", "Error Loading Image(s)", ERROR_MESSAGE);
-    		return;
-    	}
+            return;
+        }
         for(int j=0;j<inputFiles.length;j++) {
-        	openImage(inputFiles[j]);
+            openImage(inputFiles[j]);
         }
     }
 
@@ -473,6 +486,6 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public SettingsManager getSettingsManager() {
-    	return this.settingsManager;
+        return this.settingsManager;
     }
 }

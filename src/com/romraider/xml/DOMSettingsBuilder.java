@@ -19,16 +19,18 @@
 
 package com.romraider.xml;
 
-import com.romraider.Settings;
-import com.romraider.swing.JProgressPane;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import javax.imageio.metadata.IIOMetadataNode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Vector;
+
+import javax.imageio.metadata.IIOMetadataNode;
+
+import com.romraider.Settings;
+import com.romraider.swing.JProgressPane;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public final class DOMSettingsBuilder {
 
@@ -47,6 +49,8 @@ public final class DOMSettingsBuilder {
         settingsNode.appendChild(buildTableDisplay(settings));
         progress.update("Saving logger settings...", 75);
         settingsNode.appendChild(buildLogger(settings));
+        progress.update("Saving table clipboard format settings...", 80);
+        settingsNode.appendChild(buildTableClipboardFormat(settings));
 
         OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
         of.setIndent(1);
@@ -99,7 +103,7 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode imageDir = new IIOMetadataNode("image_dir");
         imageDir.setAttribute("path", settings.getLastImageDir().getAbsolutePath());
         files.appendChild(imageDir);
-        
+
         // repository directory
         IIOMetadataNode repositoryDir = new IIOMetadataNode(Settings.REPOSITORY_ELEMENT_NAME);
         repositoryDir.setAttribute(Settings.REPOSITORY_ATTRIBUTE_NAME, settings.getLastRepositoryDir().getAbsolutePath());
@@ -312,5 +316,32 @@ public final class DOMSettingsBuilder {
         }
 
         return loggerSettings;
+    }
+
+    private IIOMetadataNode buildTableClipboardFormat(Settings settings) {
+        // Head Node
+        IIOMetadataNode tableClipboardFormatSetting = new IIOMetadataNode(Settings.TABLE_CLIPBOARD_FORMAT_ELEMENT);
+        tableClipboardFormatSetting.setAttribute(Settings.TABLE_CLIPBOARD_FORMAT_ATTRIBUTE, settings.getTableClipboardFormat());
+
+        // Table Child
+        IIOMetadataNode tableFormatSetting = new IIOMetadataNode(Settings.TABLE_ELEMENT);
+        // Table1D Child
+        IIOMetadataNode table1DFormatSetting = new IIOMetadataNode(Settings.TABLE1D_ELEMENT);
+        // Table2D Child
+        IIOMetadataNode table2DFormatSetting = new IIOMetadataNode(Settings.TABLE2D_ELEMENT);
+        // Table3D Child
+        IIOMetadataNode table3DFormatSetting = new IIOMetadataNode(Settings.TABLE3D_ELEMENT);
+
+        tableFormatSetting.setAttribute(Settings.TABLE_HEADER_ATTRIBUTE, settings.getTableHeader());
+        table1DFormatSetting.setAttribute(Settings.TABLE_HEADER_ATTRIBUTE, settings.getTable1DHeader());
+        table2DFormatSetting.setAttribute(Settings.TABLE_HEADER_ATTRIBUTE, settings.getTable2DHeader());
+        table3DFormatSetting.setAttribute(Settings.TABLE_HEADER_ATTRIBUTE, settings.getTable3DHeader());
+
+        tableClipboardFormatSetting.appendChild(tableFormatSetting);
+        tableClipboardFormatSetting.appendChild(table1DFormatSetting);
+        tableClipboardFormatSetting.appendChild(table2DFormatSetting);
+        tableClipboardFormatSetting.appendChild(table3DFormatSetting);
+
+        return tableClipboardFormatSetting;
     }
 }
