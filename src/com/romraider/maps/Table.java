@@ -52,7 +52,7 @@ import java.util.Vector;
 
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
-    private static final String BLANK = "";
+    protected static final String BLANK = "";
 
     public static final int ENDIAN_LITTLE = 1;
     public static final int ENDIAN_BIG = 2;
@@ -74,6 +74,8 @@ public abstract class Table extends JPanel implements Serializable {
     public static final boolean STORAGE_DATA_SIGNED = false;
 
     protected static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
+    protected static final String NEW_LINE = System.getProperty("line.separator");
+    protected static final String TAB = "\t";
 
     protected String name;
     protected int type;
@@ -281,6 +283,13 @@ public abstract class Table extends JPanel implements Serializable {
                 getFrame().getToolBar().multiply();
             }
         };
+        Action numNegAction = new AbstractAction() {
+            private static final long serialVersionUID = -6346750245035640773L;
+
+            public void actionPerformed(ActionEvent e) {
+                getFrame().getToolBar().focusSetValue('-');
+            }
+        };
 
         // set input mapping
         InputMap im = getInputMap(WHEN_IN_FOCUSED_WINDOW);
@@ -312,6 +321,7 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke numPoint = KeyStroke.getKeyStroke('.');
         KeyStroke copy = KeyStroke.getKeyStroke("control C");
         KeyStroke paste = KeyStroke.getKeyStroke("control V");
+        KeyStroke numNeg = KeyStroke.getKeyStroke('-');
 
         im.put(right, "right");
         im.put(left, "left");
@@ -340,6 +350,7 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(paste, "pasteAction");
         im.put(mulKey, "mulAction");
         im.put(mulKeys, "mulAction");
+        im.put(numNeg, "numNeg");
 
         getActionMap().put(im.get(right), rightAction);
         getActionMap().put(im.get(left), leftAction);
@@ -368,6 +379,7 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(mulKeys), multiplyAction);
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
+        getActionMap().put(im.get(numNeg), numNegAction);
 
         this.setInputMap(WHEN_FOCUSED, im);
     }
@@ -966,22 +978,23 @@ public abstract class Table extends JPanel implements Serializable {
     public StringBuffer getTableAsString() {
         //make a string of the selection
         StringBuffer output = new StringBuffer(BLANK);
-        for (int i = 0; i < getDataSize(); i++) {
+        for (int i = 0; i < data.length; i++) {
             output.append(data[i].getText());
-            if (i < getDataSize() - 1) {
-                output.append("\t");
+            if (i < data.length - 1) {
+                output.append(TAB);
             }
         }
         return output;
     }
 
     public void copyTable() {
-        String newline = System.getProperty("line.separator");
-        StringBuffer output = new StringBuffer("[Table1D]" + newline);
+        String tableHeader = settings.getTableHeader();
+
+        StringBuffer output = new StringBuffer(tableHeader);
         for (int i = 0; i < getDataSize(); i++) {
             output.append(data[i].getText());
             if (i < getDataSize() - 1) {
-                output.append("\t");
+                output.append(TAB);
             }
         }
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
@@ -1061,24 +1074,24 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void applyColorSettings(Settings settings) {
-    	if (this.getType() != TABLE_SWITCH) {
-	        this.setSettings(settings);
-	
-	        // apply settings to cells
-	        for (int i = 0; i < getDataSize(); i++) {
-	            this.setMaxColor(settings.getMaxColor());
-	            this.setMinColor(settings.getMinColor());
-	            data[i].setHighlightColor(settings.getHighlightColor());
-	            data[i].setIncreaseBorder(settings.getIncreaseBorder());
-	            data[i].setDecreaseBorder(settings.getDecreaseBorder());
-	            data[i].setFont(settings.getTableFont());
-	            data[i].repaint();
-	        }
-	        cellHeight = (int) settings.getCellSize().getHeight();
-	        cellWidth = (int) settings.getCellSize().getWidth();
-	        colorize();
-	        validateScaling();
-    	}
+        if (this.getType() != TABLE_SWITCH) {
+            this.setSettings(settings);
+
+            // apply settings to cells
+            for (int i = 0; i < getDataSize(); i++) {
+                this.setMaxColor(settings.getMaxColor());
+                this.setMinColor(settings.getMinColor());
+                data[i].setHighlightColor(settings.getHighlightColor());
+                data[i].setIncreaseBorder(settings.getIncreaseBorder());
+                data[i].setDecreaseBorder(settings.getDecreaseBorder());
+                data[i].setFont(settings.getTableFont());
+                data[i].repaint();
+            }
+            cellHeight = (int) settings.getCellSize().getHeight();
+            cellWidth = (int) settings.getCellSize().getWidth();
+            colorize();
+            validateScaling();
+        }
     }
 
     public void resize() {
@@ -1135,7 +1148,7 @@ public abstract class Table extends JPanel implements Serializable {
                                 getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
                             }
                         }
-                );
+                        );
 
                 JOptionPane.showMessageDialog(container.getContainer(), panel,
                         "Warning", JOptionPane.ERROR_MESSAGE);

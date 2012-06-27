@@ -262,8 +262,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private List<EcuParameter> ecuParams;
     private SerialPortRefresher refresher;
     private JWindow startStatus;
-    private JLabel startText = new JLabel(" Initializing Logger...");
-    private String HOME = System.getProperty("user.home"); 
+    private final JLabel startText = new JLabel(" Initializing Logger...");
+    private final String HOME = System.getProperty("user.home");
     private StatusIndicator statusIndicator;
 
     public EcuLogger(Settings settings) {
@@ -505,9 +505,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 		defVersion);
                 LOGGER.info(loadResult);
             } catch (ConfigurationException cfe) {
-            	reportError(cfe);
-            	showMissingConfigDialog();
-            }	
+                reportError(cfe);
+                showMissingConfigDialog();
+            }
             catch (Exception e) {
                 reportError(e);
             }
@@ -1204,7 +1204,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     	settings.setDestinationId(TCU_ID);
     	target = "TCU";
     }
-    
+
     public String getTarget() {
     	return target;
     }

@@ -152,7 +152,7 @@ public class Table1D extends Table {
         for (int i = 0; i < getDataSize(); i++) {
             output.append(data[i].getText());
             if (i < getDataSize() - 1) {
-                output.append("\t");
+                output.append(TAB);
             }
         }
         return output;

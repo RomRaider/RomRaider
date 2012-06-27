@@ -19,24 +19,28 @@
 
 package com.romraider.util;
 
-import com.romraider.Settings;
 import static com.romraider.Version.VERSION;
-import com.romraider.swing.JProgressPane;
-import com.romraider.xml.DOMSettingsBuilder;
-import com.romraider.xml.DOMSettingsUnmarshaller;
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
+import com.romraider.Settings;
+import com.romraider.swing.JProgressPane;
+import com.romraider.xml.DOMSettingsBuilder;
+import com.romraider.xml.DOMSettingsUnmarshaller;
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+
 public final class SettingsManagerImpl implements SettingsManager {
     private static final String SETTINGS_FILE = "/.RomRaider/settings.xml";
-	private static final String HOME = System.getProperty("user.home");
+    private static final String HOME = System.getProperty("user.home");
 
+    @Override
     public Settings load() {
         try {
             InputSource src = new InputSource(new FileInputStream(new File(HOME + SETTINGS_FILE)));
@@ -54,17 +58,19 @@ public final class SettingsManagerImpl implements SettingsManager {
         }
     }
 
+    @Override
     public void save(Settings settings) {
         save(settings, new JProgressPane());
     }
 
+    @Override
     public void save(Settings settings, JProgressPane progress) {
         DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
             new File(HOME + "/.RomRaider/").mkdir();		// Creates directory if it does not exist
             builder.buildSettings(settings, new File(HOME + SETTINGS_FILE), progress, VERSION);
         } catch (Exception e) {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 }

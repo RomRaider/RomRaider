@@ -216,8 +216,10 @@ public class Table2D extends Table {
     }
 
     public void copyTable() {
+        String tableHeader = settings.getTable2DHeader();
+
         // create string
-        StringBuffer output = new StringBuffer("[Table2D]" + NEW_LINE);
+        StringBuffer output = new StringBuffer(tableHeader);
         output.append(axis.getTableAsString()).append(NEW_LINE);
         output.append(super.getTableAsString());
         //copy to clipboard

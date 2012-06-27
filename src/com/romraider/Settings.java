@@ -37,8 +37,37 @@ import java.util.Vector;
 public class Settings implements Serializable {
 	
     private static final long serialVersionUID = 1026542922680475190L;
-    private Dimension windowSize = new Dimension(800, 600);
-    private Point windowLocation = new Point();
+
+    public static final String NEW_LINE = System.getProperty("line.separator");
+    public static final String TAB = "\t";
+
+    public static final String TABLE_CLIPBOARD_FORMAT_ELEMENT = "table-clipboard-format";
+    public static final String TABLE_CLIPBOARD_FORMAT_ATTRIBUTE = "format-string";
+    public static final String TABLE_ELEMENT = "table";
+    public static final String TABLE1D_ELEMENT = "table1D";
+    public static final String TABLE2D_ELEMENT = "table2D";
+    public static final String TABLE3D_ELEMENT = "table3D";
+    public static final String TABLE_HEADER_ATTRIBUTE = "table-header";
+
+    public static final String DEFAULT_CLIPBOARD_FORMAT = "Default";
+    public static final String DEFAULT_TABLE_HEADER = "[Table1D]" + NEW_LINE;
+    public static final String DEFAULT_TABLE1D_HEADER = "";
+    public static final String DEFAULT_TABLE2D_HEADER = "[Table2D]" + NEW_LINE;
+    public static final String DEFAULT_TABLE3D_HEADER = "[Table3D]" + NEW_LINE;
+
+    public static final String AIRBOYS_CLIPBOARD_FORMAT = "Airboys";
+    public static final String AIRBOYS_TABLE_HEADER = "";
+    public static final String AIRBOYS_TABLE1D_HEADER = "";
+    public static final String AIRBOYS_TABLE2D_HEADER = "[Table2D]" + NEW_LINE;
+    public static final String AIRBOYS_TABLE3D_HEADER = "[Table3D]" + TAB;
+
+    public static final String CUSTOM_CLIPBOARD_FORMAT = "Custom";
+
+    public static final String REPOSITORY_ELEMENT_NAME = "repository-dir";
+    public static final String REPOSITORY_ATTRIBUTE_NAME = "path";
+
+    private final Dimension windowSize = new Dimension(800, 600);
+    private final Point windowLocation = new Point();
     private int splitPaneLocation = 150;
     private boolean windowMaximized;
 
@@ -46,6 +75,7 @@ public class Settings implements Serializable {
 
     private Vector<File> ecuDefinitionFiles = new Vector<File>();
     private File lastImageDir = new File("images");
+    private File lastRepositoryDir = new File("repositories");
     private boolean obsoleteWarning = true;
     private boolean calcConflictWarning = true;
     private boolean debug;
@@ -92,6 +122,12 @@ public class Settings implements Serializable {
 	private static String j2534Device;
 	private static String j2534Protocol = "ISO9141";
 
+    private String tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT; // Currently 2 options.  Default and Airboy. Custom is not hooked up.
+    private String tableHeader = DEFAULT_TABLE_HEADER;
+    private String table1DHeader = DEFAULT_TABLE1D_HEADER;
+    private String table2DHeader = DEFAULT_TABLE2D_HEADER;
+    private String table3DHeader = DEFAULT_TABLE3D_HEADER;
+
     public Settings() {
         //center window by default
         Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -133,6 +169,14 @@ public class Settings implements Serializable {
 
     public void setLastImageDir(File lastImageDir) {
         this.lastImageDir = lastImageDir;
+    }
+
+    public File getLastRepositoryDir() {
+        return lastRepositoryDir;
+    }
+
+    public void setLastRepositoryDir(File lastRepositoryDir) {
+        this.lastRepositoryDir = lastRepositoryDir;
     }
 
     public int getSplitPaneLocation() {
@@ -445,7 +489,7 @@ public class Settings implements Serializable {
     public void setLoggerPluginPorts(Map<String, String> loggerPluginPorts) {
         this.loggerPluginPorts = loggerPluginPorts;
     }
-    
+
     public void setLoggerParameterListState(boolean ShowListState) {
     	this.loggerParameterListState = ShowListState;
     }
@@ -509,4 +553,60 @@ public class Settings implements Serializable {
 	public static String getJ2534Protocol() {
 		return j2534Protocol;
 	}
+
+    public void setTableClipboardFormat(String formatString) {
+        this.tableClipboardFormat = formatString;
+    }
+
+    public String getTableClipboardFormat() {
+        return this.tableClipboardFormat;
+    }
+
+    public void setTableHeader(String header) {
+        this.tableHeader = header;
+    }
+
+    public String getTableHeader() {
+        return this.tableHeader;
+    }
+
+    public void setTable1DHeader(String header) {
+        this.table1DHeader = header;
+    }
+
+    public String getTable1DHeader() {
+        return this.table1DHeader;
+    }
+
+    public void setTable2DHeader(String header) {
+        this.table2DHeader = header;
+    }
+
+    public String getTable2DHeader() {
+        return this.table2DHeader;
+    }
+
+    public void setTable3DHeader(String header) {
+        this.table3DHeader = header;
+    }
+
+    public String getTable3DHeader() {
+        return this.table3DHeader;
+    }
+
+    public void setDefaultFormat() {
+        this.tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT;
+        this.tableHeader = DEFAULT_TABLE_HEADER;
+        this.table1DHeader = DEFAULT_TABLE1D_HEADER;
+        this.table2DHeader = DEFAULT_TABLE2D_HEADER;
+        this.table3DHeader = DEFAULT_TABLE3D_HEADER;
+    }
+
+    public void setAirboysFormat() {
+        this.tableClipboardFormat = AIRBOYS_CLIPBOARD_FORMAT;
+        this.tableHeader = AIRBOYS_TABLE_HEADER;
+        this.table1DHeader = AIRBOYS_TABLE1D_HEADER;
+        this.table2DHeader = AIRBOYS_TABLE2D_HEADER;
+        this.table3DHeader = AIRBOYS_TABLE3D_HEADER;
+    }
 }

@@ -48,21 +48,11 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.JOptionPane.showOptionDialog;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXParseException;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.tree.TreePath;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -80,21 +70,34 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.tree.TreePath;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
+
 public class ECUEditor extends AbstractFrame {
     private static final long serialVersionUID = -7826850987392016292L;
 
-    private String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
+    private final String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
 
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final SettingsManager settingsManager = new SettingsManagerImpl();
-    private RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
-    private RomTree imageList = new RomTree(imageRoot);
+    private final RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
+    private final RomTree imageList = new RomTree(imageRoot);
     public MDIDesktopPane rightPanel = new MDIDesktopPane();
     public JProgressPane statusPanel = new JProgressPane();
     private JSplitPane splitPane = new JSplitPane();
     private Rom lastSelectedRom = null;
     private ECUEditorToolBar toolBar;
-    private ECUEditorMenuBar menuBar;
+    private final ECUEditorMenuBar menuBar;
     private Settings settings;
 
     public ECUEditor() {
@@ -200,6 +203,7 @@ public class ECUEditor extends AbstractFrame {
         settings.setWindowSize(getSize());
         settings.setWindowLocation(getLocation());
 
+        // Save when exit to save file settings.
         settingsManager.save(settings, statusPanel);
         statusPanel.update("Ready...", 0);
         repaint();
@@ -433,13 +437,26 @@ public class ECUEditor extends AbstractFrame {
 
         } catch (StackOverflowError ex) {
             // handles looped inheritance, which will use up all available memory
-            showMessageDialog(this, "Looped \"base\" attribute in XML definitions.", "Error Loading ROM", ERROR_MESSAGE);
+            showMessageDialog(this, "Looped \"base\" attribute in XML definitions.", "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
+
+        } catch (OutOfMemoryError ome) {
+            // handles Java heap space issues when loading multiple Roms.
+            showMessageDialog(this, "Error loading Image. Out of memeory.", "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
 
         } finally {
             // remove progress bar
             //progress.dispose();
             statusPanel.update("Ready...", 0);
+        }
+    }
 
+    public void openImages(File[] inputFiles) throws Exception {
+        if(inputFiles.length < 1) {
+            showMessageDialog(this, "Image Not Found", "Error Loading Image(s)", ERROR_MESSAGE);
+            return;
+        }
+        for(int j = 0; j < inputFiles.length; j++) {
+            openImage(inputFiles[j]);
         }
     }
 
@@ -458,5 +475,7 @@ public class ECUEditor extends AbstractFrame {
         return baos.toByteArray();
     }
 
-
+    public SettingsManager getSettingsManager() {
+        return this.settingsManager;
+    }
 }
