@@ -29,7 +29,7 @@ public final class TEDataItemImpl implements TEDataItem {
     private int[] raw;
 
     public TEDataItemImpl(String name, ExternalSensorConversions... convertorList) {
-    	super();
+        super();
         this.name = name;
         convertors = new EcuDataConvertor[convertorList.length];
         convertors = loadConvertors(this, convertors, convertorList);
@@ -48,7 +48,7 @@ public final class TEDataItemImpl implements TEDataItem {
     }
 
     public double getData() {
-    	return raw[0] * 256d + raw[1];
+        return raw[0] * 256d + raw[1];
     }
 
     public void setRaw(int... raw) {

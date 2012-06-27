@@ -20,70 +20,70 @@
 package com.romraider.logger.ecu.comms.manager;
 
 public final class PollingStateImpl implements PollingState {
-	private static int currentState;
-	private static int lastpollState;
-	private static boolean newQuery;
-	private static boolean lastQuery;
-	private static boolean fastPoll;
+    private static int currentState;
+    private static int lastpollState;
+    private static boolean newQuery;
+    private static boolean lastQuery;
+    private static boolean fastPoll;
 
-	public PollingStateImpl() {
-		setCurrentState(0);
-		setLastState(0);
-		setNewQuery(true);
-		setLastQuery(false);
-		setFastPoll(false);
-	}
+    public PollingStateImpl() {
+        setCurrentState(0);
+        setLastState(0);
+        setNewQuery(true);
+        setLastQuery(false);
+        setFastPoll(false);
+    }
 
-	public int getCurrentState() {
-		return currentState;
-	}
+    public int getCurrentState() {
+        return currentState;
+    }
 
-	public void setCurrentState(int i) {
-		currentState = i;
-	}
+    public void setCurrentState(int i) {
+        currentState = i;
+    }
 
-	public int getLastState() {
-		return lastpollState;
-	}
+    public int getLastState() {
+        return lastpollState;
+    }
 
-	public void setLastState(int i) {
-		lastpollState = i;
-	}
+    public void setLastState(int i) {
+        lastpollState = i;
+    }
 
-	public boolean isNewQuery() {
-		return newQuery;
-	}
+    public boolean isNewQuery() {
+        return newQuery;
+    }
 
-	public void setNewQuery(boolean state) {
-		newQuery = state;
-	}
+    public void setNewQuery(boolean state) {
+        newQuery = state;
+    }
 
-	public boolean isLastQuery() {
-		return lastQuery;
-	}
+    public boolean isLastQuery() {
+        return lastQuery;
+    }
 
-	public void setLastQuery(boolean state) {
-		lastQuery = state;
-	}
+    public void setLastQuery(boolean state) {
+        lastQuery = state;
+    }
 
-	public boolean isFastPoll() {
-		return fastPoll;
-	}
+    public boolean isFastPoll() {
+        return fastPoll;
+    }
 
-	public void setFastPoll(boolean state) {
-		fastPoll = state;
-	}
+    public void setFastPoll(boolean state) {
+        fastPoll = state;
+    }
 
-	public String toString() {
-    	final String state = String.format(
-        		"Polling State [isFastPoll=%s, CurrentState=%d, LastState=%d, " +
-        		"isNewQuery=%s, isLastQuery=%s]",
-       		isFastPoll(),
-    		getCurrentState(),
-    		getLastState(),
-    		isNewQuery(),
-    		isLastQuery()
-	    );
+    public String toString() {
+        final String state = String.format(
+                "Polling State [isFastPoll=%s, CurrentState=%d, LastState=%d, " +
+                "isNewQuery=%s, isLastQuery=%s]",
+               isFastPoll(),
+            getCurrentState(),
+            getLastState(),
+            isNewQuery(),
+            isLastQuery()
+        );
         return state;
     }
 }

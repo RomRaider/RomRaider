@@ -69,14 +69,14 @@ public final class AemRunner implements Stoppable {
      * terminated with a carriage return and line feed.  This should
      * work for either case.
      */
-	private double parseString(String value){
-		try{
-			final String[] substr = value.split(TAB);
-			final double result = Double.parseDouble(substr[0]);
-			return result;
-	    }
-		catch (Exception e){
-			return 0.0;
-	    }
-	}
+    private double parseString(String value){
+        try{
+            final String[] substr = value.split(TAB);
+            final double result = Double.parseDouble(substr[0]);
+            return result;
+        }
+        catch (Exception e){
+            return 0.0;
+        }
+    }
 }

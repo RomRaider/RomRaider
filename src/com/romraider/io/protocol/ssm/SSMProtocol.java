@@ -59,7 +59,7 @@ public final class SSMProtocol implements Protocol {
     
     public byte[] constructEcuInitRequest(byte id) {
         checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
-    	SSMProtocol.ECU_ID = id;
+        SSMProtocol.ECU_ID = id;
         // 0x80 0x10 0xF0 0x01 0xBF 0x40
         return buildRequest(ECU_INIT_COMMAND, false, new byte[0]);
     }
@@ -68,7 +68,7 @@ public final class SSMProtocol implements Protocol {
         checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(values, "values");
-    	SSMProtocol.ECU_ID = id;
+        SSMProtocol.ECU_ID = id;
         // 0x80 0x10 0xF0 data_length 0xB0 from_address value1 value2 ... valueN checksum
         return buildRequest(WRITE_MEMORY_COMMAND, false, address, values);
     }
@@ -84,7 +84,7 @@ public final class SSMProtocol implements Protocol {
         checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
         checkNotNullOrEmpty(address, "address");
         checkGreaterThanZero(numBytes, "numBytes");
-    	SSMProtocol.ECU_ID = id;
+        SSMProtocol.ECU_ID = id;
         // 0x80 0x10 0xF0 data_length 0xA0 padding from_address num_bytes-1 checksum
         return buildRequest(READ_MEMORY_COMMAND, true, address, new byte[]{asByte(numBytes - 1)});
     }
@@ -92,7 +92,7 @@ public final class SSMProtocol implements Protocol {
     public byte[] constructReadAddressRequest(byte id, byte[][] addresses) {
         checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
         checkNotNullOrEmpty(addresses, "addresses");
-    	SSMProtocol.ECU_ID = id;
+        SSMProtocol.ECU_ID = id;
         // 0x80 0x10 0xF0 data_length 0xA8 padding address1 address2 ... addressN checksum
         return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }
@@ -125,7 +125,7 @@ public final class SSMProtocol implements Protocol {
         //  80 10 F0 05 B8 00 00 60 40 DD
         //FIXME: Create a buildWriteAddressRequest() method
         checkNotNullOrEmpty(String.valueOf(id), "ECU_ID");
-    	SSMProtocol.ECU_ID = id;
+        SSMProtocol.ECU_ID = id;
         byte[] resetDataBytes = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x60, (byte) 0x40};
         return buildRequest(WRITE_ADDRESS_COMMAND, false, resetDataBytes);
     }

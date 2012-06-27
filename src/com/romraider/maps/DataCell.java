@@ -126,38 +126,38 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         // make sure it's in range
         if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
-        	if (table.isSignedData()) {
-        		int minAllowedValue = 0;
-        		int maxAllowedValue = 0;
-        		switch (table.getStorageType()) {
-        			case 1:
-	        				minAllowedValue = Byte.MIN_VALUE;
-	        				maxAllowedValue = Byte.MAX_VALUE;
-	        				break;
-        			case 2:
-	        				minAllowedValue = Short.MIN_VALUE;
-	        				maxAllowedValue = Short.MAX_VALUE;
-	        				break;
-        			case 4:
-	        				minAllowedValue = Integer.MIN_VALUE;
-	        				maxAllowedValue = Integer.MAX_VALUE;
-	        				break;
-        		}
-	            if (binValue < minAllowedValue ) {
-	            	this.setBinValue(minAllowedValue);
-	            }
-	            else if (binValue > maxAllowedValue) {
-	                this.setBinValue(maxAllowedValue);
-	            }
-        	}
-	        else {
-	            if (binValue < 0) {
-	                this.setBinValue(0);
-	            }
-	            else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
-	                this.setBinValue((int) (Math.pow(256, table.getStorageType()) - 1));
-	            }
-	        }
+            if (table.isSignedData()) {
+                int minAllowedValue = 0;
+                int maxAllowedValue = 0;
+                switch (table.getStorageType()) {
+                    case 1:
+                            minAllowedValue = Byte.MIN_VALUE;
+                            maxAllowedValue = Byte.MAX_VALUE;
+                            break;
+                    case 2:
+                            minAllowedValue = Short.MIN_VALUE;
+                            maxAllowedValue = Short.MAX_VALUE;
+                            break;
+                    case 4:
+                            minAllowedValue = Integer.MIN_VALUE;
+                            maxAllowedValue = Integer.MAX_VALUE;
+                            break;
+                }
+                if (binValue < minAllowedValue ) {
+                    this.setBinValue(minAllowedValue);
+                }
+                else if (binValue > maxAllowedValue) {
+                    this.setBinValue(maxAllowedValue);
+                }
+            }
+            else {
+                if (binValue < 0) {
+                    this.setBinValue(0);
+                }
+                else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
+                    this.setBinValue((int) (Math.pow(256, table.getStorageType()) - 1));
+                }
+            }
         }
         this.updateDisplayValue();
     }

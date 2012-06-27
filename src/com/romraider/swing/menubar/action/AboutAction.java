@@ -35,14 +35,14 @@ public final class AboutAction extends AbstractAction {
 
     public void actionPerformed(final ActionEvent actionEvent) {
         final String message = String.format(
-        		"%s - ECU Logger%nVersion: %s%nBuild #: %s%n%s%nLogger Def Version: %s",
-        		Version.PRODUCT_NAME,
-        		Version.VERSION,
-        		Version.BUILDNUMBER,
-        		Version.SUPPORT_URL,
-        		logger.getDefVersion());
+                "%s - ECU Logger%nVersion: %s%nBuild #: %s%n%s%nLogger Def Version: %s",
+                Version.PRODUCT_NAME,
+                Version.VERSION,
+                Version.BUILDNUMBER,
+                Version.SUPPORT_URL,
+                logger.getDefVersion());
         final String title = "About " + Version.PRODUCT_NAME;
         showMessageDialog(logger, message, title,
-        		INFORMATION_MESSAGE, Version.ABOUT_ICON);
+                INFORMATION_MESSAGE, Version.ABOUT_ICON);
     }
 }

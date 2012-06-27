@@ -50,7 +50,7 @@ public final class SerialPortRefresher implements Runnable {
         while (true) {
             sleep(PORT_REFRESH_INTERVAL);
             if (refreshMode) {
-            	refreshPortList();
+                refreshPortList();
             }
         }
     }
@@ -60,9 +60,9 @@ public final class SerialPortRefresher implements Runnable {
     }
 
     public void setRefreshMode(boolean b) {
-    	refreshMode = b;
+        refreshMode = b;
         if (refreshMode) {
-        	refreshPortList();
+            refreshPortList();
         }
     }
 

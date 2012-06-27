@@ -57,32 +57,32 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
      * one stream can be processed.
      */
     {
-    	final MTSConnector connector = new MTSConnector();
-    	int[] ports = connector.getMtsPorts();
-    	if (ports != null) {
-	    	for (int i = 0; i < ports.length; i++) {
-	    		connector.usePort(i);
-		    	Set<MTSSensor> sensors = connector.getSensors();
-		    	if (sensors.isEmpty())
-		    		continue;
-		    	dataItems.put(0, new Lm2MtsDataItem("LM-2", 0, "AFR", 9, 20)); // a default entry
-		    	for (MTSSensor sensor : sensors) {
-		    		dataItems.put(
-	    				sensor.getInputNumber(),
-	    				new Lm2MtsDataItem(
-							sensor.getDeviceName(),
-							sensor.getDeviceChannel(),
-							sensor.getUnits(),
-							sensor.getMinValue(),
-							sensor.getMaxValue()
-	    				));
-		    	}
-	    	}
-    	}
-    	else {
-    		throw new IllegalStateException("Innovate LogWorks MTS control does not appear to be installed on this computer");
-    	}
-    	connector.dispose();
+        final MTSConnector connector = new MTSConnector();
+        int[] ports = connector.getMtsPorts();
+        if (ports != null) {
+            for (int i = 0; i < ports.length; i++) {
+                connector.usePort(i);
+                Set<MTSSensor> sensors = connector.getSensors();
+                if (sensors.isEmpty())
+                    continue;
+                dataItems.put(0, new Lm2MtsDataItem("LM-2", 0, "AFR", 9, 20)); // a default entry
+                for (MTSSensor sensor : sensors) {
+                    dataItems.put(
+                        sensor.getInputNumber(),
+                        new Lm2MtsDataItem(
+                            sensor.getDeviceName(),
+                            sensor.getDeviceChannel(),
+                            sensor.getUnits(),
+                            sensor.getMinValue(),
+                            sensor.getMaxValue()
+                        ));
+                }
+            }
+        }
+        else {
+            throw new IllegalStateException("Innovate LogWorks MTS control does not appear to be installed on this computer");
+        }
+        connector.dispose();
     }
 
     public String getId() {
@@ -98,7 +98,7 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
-    	return unmodifiableList(new ArrayList<Lm2MtsDataItem>(dataItems.values()));
+        return unmodifiableList(new ArrayList<Lm2MtsDataItem>(dataItems.values()));
     }
 
     public Action getMenuAction(EcuLogger logger) {

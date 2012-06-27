@@ -20,21 +20,21 @@
 package com.romraider.logger.car.util;
 
 public enum Constants {
-	IMPERIAL		("imperial"),
-	IMPERIAL_UNIT	("mph"),
-	METRIC			("metric"),
-	METRIC_UNIT		("kph"),
-	KPH_2_MPH		("1.609344"),
-	TQ_CONSTANT_I	("5252.113122"),
-	TQ_CONSTANT_M	("9549.296748");
+    IMPERIAL        ("imperial"),
+    IMPERIAL_UNIT    ("mph"),
+    METRIC            ("metric"),
+    METRIC_UNIT        ("kph"),
+    KPH_2_MPH        ("1.609344"),
+    TQ_CONSTANT_I    ("5252.113122"),
+    TQ_CONSTANT_M    ("9549.296748");
 
-	private final String value;
-	
-	Constants (String value) {
-		this.value = value;
-	}
-	
-	public String value(){
-		return value;
-	}
+    private final String value;
+    
+    Constants (String value) {
+        this.value = value;
+    }
+    
+    public String value(){
+        return value;
+    }
 }

@@ -48,32 +48,32 @@ public final class IntfKitConnector {
      * @see IntfKitRunner
      */
     public static Set<InterfaceKitPhidget> openIkSerial(
-    		final IntfKitRunner ikr,
-    		final Integer[] serials) {
+            final IntfKitRunner ikr,
+            final Integer[] serials) {
 
-    	final Set<InterfaceKitPhidget> kits = new HashSet<InterfaceKitPhidget>();
+        final Set<InterfaceKitPhidget> kits = new HashSet<InterfaceKitPhidget>();
         try {
-        	for (int serial : serials) {
-	        	final InterfaceKitPhidget ik = new InterfaceKitPhidget();
-	        	final IntfKitSensorChangeListener scl = new IntfKitSensorChangeListener(ikr);
-	        	ik.addSensorChangeListener(scl);
-	    		ik.open(serial);
-	            final long timeout = currentTimeMillis() + 500L;
-	            do {
-	    			Thread.sleep(50);
-	            } while (!ik.isAttached() && (currentTimeMillis() < timeout));
-    			final int inputCount = ik.getSensorCount();
-            	for (int i = 0; i < inputCount; i++) {
-            		ik.setSensorChangeTrigger(i, 1);
-            	}
-	    		kits.add(ik);
-        	}
-   		}
-   		catch (PhidgetException e) {
-       		LOGGER.error("InterfaceKit open error: " + e);
-   		} catch (InterruptedException e) {
-        	LOGGER.info("Sleep interrupted " + e);
-		}
-		return kits;
+            for (int serial : serials) {
+                final InterfaceKitPhidget ik = new InterfaceKitPhidget();
+                final IntfKitSensorChangeListener scl = new IntfKitSensorChangeListener(ikr);
+                ik.addSensorChangeListener(scl);
+                ik.open(serial);
+                final long timeout = currentTimeMillis() + 500L;
+                do {
+                    Thread.sleep(50);
+                } while (!ik.isAttached() && (currentTimeMillis() < timeout));
+                final int inputCount = ik.getSensorCount();
+                for (int i = 0; i < inputCount; i++) {
+                    ik.setSensorChangeTrigger(i, 1);
+                }
+                kits.add(ik);
+            }
+           }
+           catch (PhidgetException e) {
+               LOGGER.error("InterfaceKit open error: " + e);
+           } catch (InterruptedException e) {
+            LOGGER.info("Sleep interrupted " + e);
+        }
+        return kits;
     }
 }

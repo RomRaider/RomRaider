@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Vector;
 
 public class Settings implements Serializable {
-	
+    
     private static final long serialVersionUID = 1026542922680475190L;
 
     public static final String NEW_LINE = System.getProperty("line.separator");
@@ -114,13 +114,13 @@ public class Settings implements Serializable {
     private ConnectionProperties loggerConnectionProperties;
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
     private Map<String, String> loggerPluginPorts;
-	private boolean loggerRefreshMode;
-	private byte loggerDestinationId = 0x10;
-	private boolean fastPoll = true;
-	private double loggerDividerLocation = 400;
-	private String loggerDebuggingLevel = "info";
-	private static String j2534Device;
-	private static String j2534Protocol = "ISO9141";
+    private boolean loggerRefreshMode;
+    private byte loggerDestinationId = 0x10;
+    private boolean fastPoll = true;
+    private double loggerDividerLocation = 400;
+    private String loggerDebuggingLevel = "info";
+    private static String j2534Device;
+    private static String j2534Protocol = "ISO9141";
 
     private String tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT; // Currently 2 options.  Default and Airboy. Custom is not hooked up.
     private String tableHeader = DEFAULT_TABLE_HEADER;
@@ -491,68 +491,68 @@ public class Settings implements Serializable {
     }
 
     public void setLoggerParameterListState(boolean ShowListState) {
-    	this.loggerParameterListState = ShowListState;
+        this.loggerParameterListState = ShowListState;
     }
 
     public boolean getLoggerParameterListState() {
-    	return loggerParameterListState;
+        return loggerParameterListState;
     }
 
-	public void setRefreshMode(boolean selected) {
-    	this.loggerRefreshMode = selected;
-	}
-
-	public boolean getRefreshMode() {
-    	return loggerRefreshMode;
+    public void setRefreshMode(boolean selected) {
+        this.loggerRefreshMode = selected;
     }
 
-	public void setDestinationId(byte id) {
-    	this.loggerDestinationId = id;
-	}
+    public boolean getRefreshMode() {
+        return loggerRefreshMode;
+    }
 
-	public byte getDestinationId() {
-		return loggerDestinationId;
-	}
+    public void setDestinationId(byte id) {
+        this.loggerDestinationId = id;
+    }
 
-	public void setFastPoll(boolean state) {
-    	this.fastPoll = state;
-	}
+    public byte getDestinationId() {
+        return loggerDestinationId;
+    }
 
-	public boolean isFastPoll() {
-		return fastPoll;
-	}
+    public void setFastPoll(boolean state) {
+        this.fastPoll = state;
+    }
 
-	public void setLogfileNameText(String text) {
-		this.logfileNameText = text;
-	}
+    public boolean isFastPoll() {
+        return fastPoll;
+    }
 
-	public String getLogfileNameText() {
-		return logfileNameText;
-	}
+    public void setLogfileNameText(String text) {
+        this.logfileNameText = text;
+    }
 
-	public void setLoggerDebuggingLevel(String level) {
-		this.loggerDebuggingLevel  = level;
-	}
+    public String getLogfileNameText() {
+        return logfileNameText;
+    }
 
-	public String getLoggerDebuggingLevel() {
-		return loggerDebuggingLevel;
-	}
+    public void setLoggerDebuggingLevel(String level) {
+        this.loggerDebuggingLevel  = level;
+    }
 
-	public static void setJ2534Device(String j2534Device) {
-		Settings.j2534Device = j2534Device;
-	}
+    public String getLoggerDebuggingLevel() {
+        return loggerDebuggingLevel;
+    }
 
-	public static String getJ2534Device() {
-		return j2534Device;
-	}
+    public static void setJ2534Device(String j2534Device) {
+        Settings.j2534Device = j2534Device;
+    }
 
-	public static void setJ2534Protocol(String j2534Protocol) {
-		Settings.j2534Protocol = j2534Protocol;
-	}
+    public static String getJ2534Device() {
+        return j2534Device;
+    }
 
-	public static String getJ2534Protocol() {
-		return j2534Protocol;
-	}
+    public static void setJ2534Protocol(String j2534Protocol) {
+        Settings.j2534Protocol = j2534Protocol;
+    }
+
+    public static String getJ2534Protocol() {
+        return j2534Protocol;
+    }
 
     public void setTableClipboardFormat(String formatString) {
         this.tableClipboardFormat = formatString;

@@ -68,7 +68,7 @@ public final class AemRunner implements Stoppable {
 
     private double parseDouble(final String value) {
         try {
-        	final double result = Double.parseDouble(value);
+            final double result = Double.parseDouble(value);
             return result;
         } catch (Exception e) {
             return 0.0;

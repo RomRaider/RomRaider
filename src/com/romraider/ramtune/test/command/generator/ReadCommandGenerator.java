@@ -73,30 +73,30 @@ public final class ReadCommandGenerator extends AbstractCommandGenerator {
     }
 
     private byte[] incrementAddress(byte[] address, int increment) {
-    	BigInteger currentAddr = new BigInteger(1, address);
-    	String strIncrement = String.valueOf(increment);
-    	BigInteger bintIncrement = new BigInteger(strIncrement);
-    	BigInteger newAddress = currentAddr.add(bintIncrement);
-    	byte[] incAddr = newAddress.toByteArray();
-    	if (incAddr.length == 1){
-    		address[0] = 0;
-    		address[1] = 0;
-    		address[2] = incAddr[0];
-    		return address;
-    	}
-    	if (incAddr.length == 2){
-    		address[0] = 0;
-    		address[1] = incAddr[0];
-    		address[2] = incAddr[1];
-    		return address;
-    	}
-    	if (incAddr.length == 4){
-    		System.arraycopy(incAddr, 1, address, 0, 3);
-    		return address;
-    	}
-    	else {
-    		return incAddr;
-    	}
+        BigInteger currentAddr = new BigInteger(1, address);
+        String strIncrement = String.valueOf(increment);
+        BigInteger bintIncrement = new BigInteger(strIncrement);
+        BigInteger newAddress = currentAddr.add(bintIncrement);
+        byte[] incAddr = newAddress.toByteArray();
+        if (incAddr.length == 1){
+            address[0] = 0;
+            address[1] = 0;
+            address[2] = incAddr[0];
+            return address;
+        }
+        if (incAddr.length == 2){
+            address[0] = 0;
+            address[1] = incAddr[0];
+            address[2] = incAddr[1];
+            return address;
+        }
+        if (incAddr.length == 4){
+            System.arraycopy(incAddr, 1, address, 0, 3);
+            return address;
+        }
+        else {
+            return incAddr;
+        }
     }
 
     public String toString() {

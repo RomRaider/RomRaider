@@ -42,7 +42,7 @@ public final class SaveProfileAction extends AbstractAction {
 
     private void saveProfile() throws Exception {
         logger.getSettings();
-		File lastProfileFile = new File(Settings.getLoggerProfileFilePath());
+        File lastProfileFile = new File(Settings.getLoggerProfileFilePath());
         String profileFilePath = saveProfileToFile(logger.getCurrentProfile(), lastProfileFile);
         logger.getSettings().setLoggerProfileFilePath(profileFilePath);
         logger.reportMessageInTitleBar("Profile: " + profileFilePath);

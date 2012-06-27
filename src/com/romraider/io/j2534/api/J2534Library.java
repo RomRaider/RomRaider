@@ -26,32 +26,32 @@ package com.romraider.io.j2534.api;
  * @see J2534DllLocator 
  */
 public class J2534Library {
-	private String vendor;
-	private String library;
+    private String vendor;
+    private String library;
 
-	/**
-	 * Create a new instance of a J2534 library detail.
-	 * @param vendor	- J2534 vendor string
-	 * @param library	- J2534 library path 
-	 */
-	public J2534Library(String vendor, String library) {
-		this.vendor = vendor;
-		this.library = library;
-	}
+    /**
+     * Create a new instance of a J2534 library detail.
+     * @param vendor    - J2534 vendor string
+     * @param library    - J2534 library path 
+     */
+    public J2534Library(String vendor, String library) {
+        this.vendor = vendor;
+        this.library = library;
+    }
 
-	/**
-	 * Get the vendor of this library detail instance.
-	 * @return the vendor
-	 */
-	public String getVendor() {
-		return vendor;
-	}
+    /**
+     * Get the vendor of this library detail instance.
+     * @return the vendor
+     */
+    public String getVendor() {
+        return vendor;
+    }
 
-	/**
-	 * Get the fully qualified library path of this library detail instance.
-	 * @return the library
-	 */
-	public String getLibrary() {
-		return library;
-	}
+    /**
+     * Get the fully qualified library path of this library detail instance.
+     * @return the library
+     */
+    public String getLibrary() {
+        return library;
+    }
 }

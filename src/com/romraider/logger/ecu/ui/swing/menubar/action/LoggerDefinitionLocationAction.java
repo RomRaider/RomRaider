@@ -46,7 +46,7 @@ public final class LoggerDefinitionLocationAction extends AbstractAction {
 
     private void setDefinitionLocationDialog() throws Exception {
         logger.getSettings();
-		File lastConfigPath = getFile(Settings.getLoggerDefinitionFilePath());
+        File lastConfigPath = getFile(Settings.getLoggerDefinitionFilePath());
         JFileChooser fc = getDefinitionFileChooser(lastConfigPath);
         if (fc.showOpenDialog(logger) == APPROVE_OPTION) {
             String path = fc.getSelectedFile().getAbsolutePath();

@@ -22,23 +22,23 @@ package com.romraider.logger.ecu.comms.manager;
 
 public interface PollingState {
 
-	    int getCurrentState();
+        int getCurrentState();
 
-	    void setCurrentState(int i);
+        void setCurrentState(int i);
 
-		int getLastState();
+        int getLastState();
 
-		void setLastState(int i);
+        void setLastState(int i);
 
-	    boolean isNewQuery();
+        boolean isNewQuery();
 
-	    void setNewQuery(boolean state);
-	    
-	    boolean isLastQuery();
-	    
-	    void setLastQuery(boolean state);
+        void setNewQuery(boolean state);
+        
+        boolean isLastQuery();
+        
+        void setLastQuery(boolean state);
 
-	    boolean isFastPoll();
-	    
-	    void setFastPoll(boolean state);
-	}
+        boolean isFastPoll();
+        
+        void setFastPoll(boolean state);
+    }

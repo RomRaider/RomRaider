@@ -114,7 +114,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         return connectionProperties;
     }
 
-	public String getDefVersion() {
-		return defVersion;
-	}
+    public String getDefVersion() {
+        return defVersion;
+    }
 }

@@ -52,8 +52,8 @@ public final class MTSRunner implements MTSEvents, Stoppable {
      * Events processing appears to be problematic via COM4J and therefore not used.
      */
     public MTSRunner(int mtsPort, Map<Integer, Lm2MtsDataItem> dataItems) {
-    	MTSConnector connection = new MTSConnector(mtsPort);
-    	this.mts = connection.getMts();
+        MTSConnector connection = new MTSConnector(mtsPort);
+        this.mts = connection.getMts();
         this.dataItems = dataItems;
     }
 
@@ -84,7 +84,7 @@ public final class MTSRunner implements MTSEvents, Stoppable {
             try {
                 if (mts.inputCount() > 0) {
                     while (!stop) {
-                    	readData();
+                        readData();
                         sleep(12L);
                     }
                 }
@@ -107,21 +107,21 @@ public final class MTSRunner implements MTSEvents, Stoppable {
             mts.startData();
         }
         else if (result == -1) {
-        	throw new IllegalStateException("No Innovate MTS Data detected");
+            throw new IllegalStateException("No Innovate MTS Data detected");
         }
         else {
-        	throw new IllegalStateException("Innovate MTS Connect Error: " + result);
+            throw new IllegalStateException("Innovate MTS Connect Error: " + result);
         }
     }
       
     public void connectionError() {
         mts.disconnect();
-    	throw new IllegalStateException("Innovate MTS Connection Timeout");
+        throw new IllegalStateException("Innovate MTS Connection Timeout");
     }
 
     public void newData() {
-    	LOGGER.debug("Innovate MTS newData");
-    	//readData();
+        LOGGER.debug("Innovate MTS newData");
+        //readData();
     }
     
     public void readData() {
@@ -146,9 +146,9 @@ public final class MTSRunner implements MTSEvents, Stoppable {
                     data = ((max - min) * ((float) sample / 1024f)) + min;
                 }
                 else {
-                	// this will report other functions, such as ERROR states
-                	// as a negative constant value
-                	data = (float)function * -1f;
+                    // this will report other functions, such as ERROR states
+                    // as a negative constant value
+                    data = (float)function * -1f;
                 }
             }
 
@@ -165,9 +165,9 @@ public final class MTSRunner implements MTSEvents, Stoppable {
                     data = ((float) sample / 10f);
                 }
                 else {
-                	// this will report other functions, such as ERROR states
-                	// as a negative constant value
-                	data = (float)function * -1f;
+                    // this will report other functions, such as ERROR states
+                    // as a negative constant value
+                    data = (float)function * -1f;
                 }
             }
 
@@ -178,9 +178,9 @@ public final class MTSRunner implements MTSEvents, Stoppable {
                     data = (float) sample / 1000f + 0.5f;
                 }
                 else {
-                	// this will report other functions, such as ERROR states
-                	// as a negative constant value
-                	data = (float)function * -1f;
+                    // this will report other functions, such as ERROR states
+                    // as a negative constant value
+                    data = (float)function * -1f;
                 }
             }
             // set data for this sensor based on inputNumber

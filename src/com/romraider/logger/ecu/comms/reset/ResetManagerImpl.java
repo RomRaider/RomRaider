@@ -38,12 +38,12 @@ public final class ResetManagerImpl implements ResetManager {
     }
 
     public boolean resetEcu() {
-    	String target = "ECU";
+        String target = "ECU";
         try {
             LoggerConnection connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
-            	if (settings.getDestinationId() == 0x18) target = "TCU";
+                if (settings.getDestinationId() == 0x18) target = "TCU";
                 messageListener.reportMessage("Sending " + target + " Reset...");
                 connection.ecuReset(settings.getDestinationId());
                 messageListener.reportMessage("Sending " + target + " Reset...done.");

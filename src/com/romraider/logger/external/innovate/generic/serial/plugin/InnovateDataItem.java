@@ -52,7 +52,7 @@ public final class InnovateDataItem implements ExternalDataItem, DataListener {
         this.data = data;
     }
 
-	public EcuDataConvertor[] getConvertors() {
-		return convertors;
-	}
+    public EcuDataConvertor[] getConvertors() {
+        return convertors;
+    }
 }

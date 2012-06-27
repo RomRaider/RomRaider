@@ -30,7 +30,7 @@ public final class ZT2DataItemImpl implements ZT2DataItem {
     private int[] raw;
 
     public ZT2DataItemImpl(String name, ExternalSensorConversions... convertorList) {
-    	super();
+        super();
         this.name = name;
         convertors = new EcuDataConvertor[convertorList.length];
         convertors = loadConvertors(this, convertors, convertorList);
@@ -45,25 +45,25 @@ public final class ZT2DataItemImpl implements ZT2DataItem {
     }
 
     public double getData() {
-		if (name.equalsIgnoreCase("MAP") && ((raw[1] & 128) == 128)) {
-		    // special handling on high byte - if 8th bit is 1 (means that it's negative)
-	        // We are supposed to clear the 8 bit, calc, then restore the sign.
-	        return 0 - (raw[0] + (raw[1] & ~(1 << 7)) * 256d);
-		}
-		else {
-			if (raw.length == 1)
-				return raw[0];
-			if (raw.length == 2)
-				return raw[0] + (raw[1] * 256d);
-		}
-		return 0;
+        if (name.equalsIgnoreCase("MAP") && ((raw[1] & 128) == 128)) {
+            // special handling on high byte - if 8th bit is 1 (means that it's negative)
+            // We are supposed to clear the 8 bit, calc, then restore the sign.
+            return 0 - (raw[0] + (raw[1] & ~(1 << 7)) * 256d);
+        }
+        else {
+            if (raw.length == 1)
+                return raw[0];
+            if (raw.length == 2)
+                return raw[0] + (raw[1] * 256d);
+        }
+        return 0;
     }
 
     public void setRaw(int... raw) {
         this.raw = raw;
     }
 
-	public EcuDataConvertor[] getConvertors() {
-		return convertors;
-	}
+    public EcuDataConvertor[] getConvertors() {
+        return convertors;
+    }
 }

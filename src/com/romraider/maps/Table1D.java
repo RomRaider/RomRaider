@@ -182,7 +182,7 @@ public class Table1D extends Table {
         return false;
     }
 
-	public boolean isButtonSelected() {
-		return true;
-	}
+    public boolean isButtonSelected() {
+        return true;
+    }
 }

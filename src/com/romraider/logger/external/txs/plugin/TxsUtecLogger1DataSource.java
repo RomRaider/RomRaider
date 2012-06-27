@@ -52,78 +52,78 @@ import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.txs.io.TxsRunner;
 
 public class TxsUtecLogger1DataSource implements ExternalDataSource {
-	private static final String LOGGER = "1";
-	private static final String DEVICE = "u";
-	private static final String DEVICE_NAME = "TXS UTEC ";
-	private static final int RPM = 0;
-	private static final int BOOST = 1;
-	private static final int MAFV = 2;
-	private static final int TPS = 3;
-	private static final int LOAD = 4;
-	private static final int KNOCK = 5;
-	private static final int ECUIGN = 7;
-	private static final int IDC = 8;
-	private static final int MODIGN = 9;
-	private static final int MAPVE_MODFUEL = 10;
-	private static final int MODMAFV = 12;
-	private static final int AFR = 13;
-		
-	private final HashMap<Integer, TxsDataItem> dataItems =
-						new HashMap<Integer, TxsDataItem>();
-	private TxsRunner runner;
-	private String port;
-	
-	{
-		dataItems.put(RPM, 				new TxsDataItem(DEVICE_NAME + "RPM", TXS_RPM));
-		dataItems.put(BOOST, 			new TxsDataItem(DEVICE_NAME + "BOOST", TXS_BOOST));
-		dataItems.put(MAFV, 			new TxsDataItem(DEVICE_NAME + "MAFV", TXS_MAFV));
-		dataItems.put(TPS, 				new TxsDataItem(DEVICE_NAME + "TPS", TXS_TPS));
-		dataItems.put(LOAD, 			new TxsDataItem(DEVICE_NAME + "LOAD", TXS_LOAD));
-		dataItems.put(KNOCK, 			new TxsDataItem(DEVICE_NAME + "KNOCK", TXS_KNOCK));
-		dataItems.put(ECUIGN, 			new TxsDataItem(DEVICE_NAME + "ECUIGN", TXS_IGN));
-		dataItems.put(IDC, 				new TxsDataItem(DEVICE_NAME + "IDC", TXS_IDC));
-		dataItems.put(MODIGN, 			new TxsDataItem(DEVICE_NAME + "MODIGN", TXS_IGN));
-		dataItems.put(MAPVE_MODFUEL,	new TxsDataItem(DEVICE_NAME + "MAPVE/MODFUEL", TXS_MODFUEL, TXS_MAPVE));
-		dataItems.put(MODMAFV, 			new TxsDataItem(DEVICE_NAME + "MODMAFV", TXS_MAFV));
-		dataItems.put(AFR, 				new TxsDataItem(DEVICE_NAME + "AFR", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-	}
-	
-	public String getId() {
-		return getClass().getName();
-	}
-	
-	public String getName() {
-		return DEVICE_NAME + "Logger";
-	}
-	
-	public String getVersion() {
-		return "0.01";
-	}
-	
-	public List<? extends ExternalDataItem> getDataItems() {
-		return unmodifiableList(new ArrayList<TxsDataItem>(dataItems.values()));
-	}
-	
-	public Action getMenuAction(EcuLogger logger) {
-		return null;
-	}
-	
-	public void setPort(String port) {
-		this.port = port;
-	}
-	
-	public String getPort() {
-		return port;
-	}
-	
-	public void connect() {
-		runner = new TxsRunner(port, dataItems, LOGGER, DEVICE);
-		runAsDaemon(runner);
-	}
-	
-	public void disconnect() {
-		if(runner!=null) {
-			runner.stop();
-		}
-	}
+    private static final String LOGGER = "1";
+    private static final String DEVICE = "u";
+    private static final String DEVICE_NAME = "TXS UTEC ";
+    private static final int RPM = 0;
+    private static final int BOOST = 1;
+    private static final int MAFV = 2;
+    private static final int TPS = 3;
+    private static final int LOAD = 4;
+    private static final int KNOCK = 5;
+    private static final int ECUIGN = 7;
+    private static final int IDC = 8;
+    private static final int MODIGN = 9;
+    private static final int MAPVE_MODFUEL = 10;
+    private static final int MODMAFV = 12;
+    private static final int AFR = 13;
+        
+    private final HashMap<Integer, TxsDataItem> dataItems =
+                        new HashMap<Integer, TxsDataItem>();
+    private TxsRunner runner;
+    private String port;
+    
+    {
+        dataItems.put(RPM,                 new TxsDataItem(DEVICE_NAME + "RPM", TXS_RPM));
+        dataItems.put(BOOST,             new TxsDataItem(DEVICE_NAME + "BOOST", TXS_BOOST));
+        dataItems.put(MAFV,             new TxsDataItem(DEVICE_NAME + "MAFV", TXS_MAFV));
+        dataItems.put(TPS,                 new TxsDataItem(DEVICE_NAME + "TPS", TXS_TPS));
+        dataItems.put(LOAD,             new TxsDataItem(DEVICE_NAME + "LOAD", TXS_LOAD));
+        dataItems.put(KNOCK,             new TxsDataItem(DEVICE_NAME + "KNOCK", TXS_KNOCK));
+        dataItems.put(ECUIGN,             new TxsDataItem(DEVICE_NAME + "ECUIGN", TXS_IGN));
+        dataItems.put(IDC,                 new TxsDataItem(DEVICE_NAME + "IDC", TXS_IDC));
+        dataItems.put(MODIGN,             new TxsDataItem(DEVICE_NAME + "MODIGN", TXS_IGN));
+        dataItems.put(MAPVE_MODFUEL,    new TxsDataItem(DEVICE_NAME + "MAPVE/MODFUEL", TXS_MODFUEL, TXS_MAPVE));
+        dataItems.put(MODMAFV,             new TxsDataItem(DEVICE_NAME + "MODMAFV", TXS_MAFV));
+        dataItems.put(AFR,                 new TxsDataItem(DEVICE_NAME + "AFR", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+    }
+    
+    public String getId() {
+        return getClass().getName();
+    }
+    
+    public String getName() {
+        return DEVICE_NAME + "Logger";
+    }
+    
+    public String getVersion() {
+        return "0.01";
+    }
+    
+    public List<? extends ExternalDataItem> getDataItems() {
+        return unmodifiableList(new ArrayList<TxsDataItem>(dataItems.values()));
+    }
+    
+    public Action getMenuAction(EcuLogger logger) {
+        return null;
+    }
+    
+    public void setPort(String port) {
+        this.port = port;
+    }
+    
+    public String getPort() {
+        return port;
+    }
+    
+    public void connect() {
+        runner = new TxsRunner(port, dataItems, LOGGER, DEVICE);
+        runAsDaemon(runner);
+    }
+    
+    public void disconnect() {
+        if(runner!=null) {
+            runner.stop();
+        }
+    }
 }

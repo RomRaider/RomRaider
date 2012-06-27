@@ -75,16 +75,16 @@ public final class NawConvertorImpl implements NawConvertor {
             }
             lambda = ((o2conc / 3) + 1) / (1 - (4.76 * o2conc));
             if (lambda >= 1.43) {
-            	lambda = 1.43;
+                lambda = 1.43;
             }
         } else { // Rich
-        	lambda = ((0.00003453 * unCalIp * unCalIp) - (0.00159 * unCalIp) + 0.6368);
+            lambda = ((0.00003453 * unCalIp * unCalIp) - (0.00159 * unCalIp) + 0.6368);
         }
         temp = (0x000000FF & ((int) bytes[8])); // convert signed byte to unsigned byte
         if (temp < 11) { // check sensor temperature range for valid reading
-        	lambda = 99.99;    // sensor too hot
+            lambda = 99.99;    // sensor too hot
         } else if (temp > 19) {
-        	lambda = -99.99;    // sensor too cold
+            lambda = -99.99;    // sensor too cold
         }
         temp = 1500 / temp;  // temperature in percent, 100% is best
         LOGGER.trace("Converting NAW_7S response: " + asHex(bytes) + " --> Ip:" + unCalIp + " --> temp:" + temp + "% --> lambda:" + lambda);

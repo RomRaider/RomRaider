@@ -108,10 +108,10 @@ public final class ParameterListTableModel extends AbstractTableModel {
         paramRowMap.clear();
         registeredLoggerData.clear();
         try {
-        	fireTableDataChanged();
+            fireTableDataChanged();
         }
         catch (Exception e) {
-        	// Swallow complaints from TableRowSorter when the table is empty
+            // Swallow complaints from TableRowSorter when the table is empty
         }
     }
 

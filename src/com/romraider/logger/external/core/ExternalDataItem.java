@@ -28,5 +28,5 @@ public interface ExternalDataItem {
 
     double getData();
 
-	EcuDataConvertor[] getConvertors();
+    EcuDataConvertor[] getConvertors();
 }

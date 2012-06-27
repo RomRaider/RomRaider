@@ -139,25 +139,25 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         private static final char COMMA = ',';
         private static final char SEMICOLON = ';';
         private final Set<String> locales = new HashSet<String>(
-        		Arrays.asList(new String[] {
-        			"be_BY","bg_BG","ca_ES","cs_CZ","da_DK","de_AT","de_CH","de_DE","de_LU",
-        			"el_CY","el_GR","es_AR","es_BO","es_CL","es_CO","es_EC","es_ES","es_PE",
-        			"es_PY","es_UY","es_VE","et_EE","fi_FI","fr_BE","fr_CA","fr_CH","fr_FR",
-        			"fr_LU","hr_HR","hu_HU","in_ID","is_IS","it_CH","it_IT","lt_LT","lv_LV",
-        			"mk_MK","nl_BE","nl_NL","no_NO","no_NO_NY","pl_PL","pt_BR","pt_PT",
-        			"ro_RO","ru_RU","sk_SK","sl_SI","sq_AL","sr_BA","sr_CS","sr_ME","sr_RS",
-        			"sv_SE","tr_TR","uk_UA","vi_VN"
-        		}
-        		));
+                Arrays.asList(new String[] {
+                    "be_BY","bg_BG","ca_ES","cs_CZ","da_DK","de_AT","de_CH","de_DE","de_LU",
+                    "el_CY","el_GR","es_AR","es_BO","es_CL","es_CO","es_EC","es_ES","es_PE",
+                    "es_PY","es_UY","es_VE","et_EE","fi_FI","fr_BE","fr_CA","fr_CH","fr_FR",
+                    "fr_LU","hr_HR","hu_HU","in_ID","is_IS","it_CH","it_IT","lt_LT","lv_LV",
+                    "mk_MK","nl_BE","nl_NL","no_NO","no_NO_NY","pl_PL","pt_BR","pt_PT",
+                    "ro_RO","ru_RU","sk_SK","sl_SI","sq_AL","sr_BA","sr_CS","sr_ME","sr_RS",
+                    "sv_SE","tr_TR","uk_UA","vi_VN"
+                }
+                ));
         private final Map<LoggerData, String> loggerDataValues;
         private final char delimiter;
         {
-        	if (locales.contains(userLocale.toString())) {
-        		delimiter = SEMICOLON;
-        	}
-        	else {
-        		delimiter = COMMA;
-        	}
+            if (locales.contains(userLocale.toString())) {
+                delimiter = SEMICOLON;
+            }
+            else {
+                delimiter = COMMA;
+            }
         }
 
         public Line(Set<LoggerData> loggerDatas) {

@@ -41,5 +41,5 @@ public interface EcuDataLoader {
 
     ConnectionProperties getConnectionProperties();
 
-	String getDefVersion();
+    String getDefVersion();
 }

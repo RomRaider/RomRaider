@@ -33,7 +33,7 @@ public final class MTSConnector {
     private static MTS mts;
     private static int[] ports;
     {
-    	createMts();
+        createMts();
     }
     
     /**
@@ -42,11 +42,11 @@ public final class MTSConnector {
      * across all the found ports.
      */
     public MTSConnector() {
-    	try {
-        	setMtsPorts();
+        try {
+            setMtsPorts();
         }
         catch (NullPointerException e){
-       	}
+           }
     }
 
     public MTSConnector(int mtsPort) {
@@ -54,31 +54,31 @@ public final class MTSConnector {
     }
 
     public MTS getMts() {
-    	return mts;
+        return mts;
     }
     
     public int[] getMtsPorts() {
-    	return ports;
+        return ports;
     }
     
     public void usePort(int mtsPort) {
-    	mts(mtsPort);
+        mts(mtsPort);
     }
 
     public void dispose() {
-    	mts.disconnect();
-    	mts.dispose();
+        mts.disconnect();
+        mts.dispose();
     }
 
     private void createMts() {
       // create mts interface
-    	try {
-    	      mts = createMTS();
-    	      mts.disconnect();
-    	}
-    	catch (com4j.ExecutionException e) {
-    		LOGGER.error("COM4J error creating MTS interface: " + e);
-    	}
+        try {
+              mts = createMTS();
+              mts.disconnect();
+        }
+        catch (com4j.ExecutionException e) {
+            LOGGER.error("COM4J error creating MTS interface: " + e);
+        }
     }
 
     private void setMtsPorts() {
@@ -90,11 +90,11 @@ public final class MTSConnector {
             ports = new int[portCount];
             String names = "";
             for (int i = 0; i < portCount; i++) {
-            	ports[i] = i;
-            	mts.currentPort(i);
+                ports[i] = i;
+                mts.currentPort(i);
                 names = names + " " + mts.portName();
             }
-        	LOGGER.info("Innovate MTS: found " + portCount + " ports," + names);
+            LOGGER.info("Innovate MTS: found " + portCount + " ports," + names);
         }
         catch (RuntimeException t) {
             // cleanup mts and rethrow exception
@@ -110,7 +110,7 @@ public final class MTSConnector {
         try {
             int portCount = mts.portCount();
             if (portCount <= 0) throw new IllegalStateException("No Innovate MTS ports found");
-        	
+            
             // select the specified port
             mts.currentPort(mtsPort);
             String portName = mts.portName();
@@ -124,18 +124,18 @@ public final class MTSConnector {
     }
 
     public Set<MTSSensor> getSensors() {
-    	Set<MTSSensor> sensors = new HashSet<MTSSensor>();
+        Set<MTSSensor> sensors = new HashSet<MTSSensor>();
         try {
             // attempt to connect to the specified device
             mts.connect();
 
             try {
-            	// get a count of available inputs
-            	int inputCount = mts.inputCount();
-            	LOGGER.info("Innovate MTS: found " + inputCount + " inputs.");
+                // get a count of available inputs
+                int inputCount = mts.inputCount();
+                LOGGER.info("Innovate MTS: found " + inputCount + " inputs.");
 
-            	if (inputCount > 0) {
-                	for (int i = 0; i < inputCount; i++) {
+                if (inputCount > 0) {
+                    for (int i = 0; i < inputCount; i++) {
                         // report each input found
                         mts.currentInput(i);
                         MTSSensor sensor = new MTSSensor();
@@ -147,14 +147,14 @@ public final class MTSConnector {
                         sensor.setMinValue(mts.inputMinValue());
                         sensor.setMaxValue(mts.inputMaxValue());
                         sensors.add(sensor);
-                		LOGGER.debug(String.format(
-                			"Innovate MTS: InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f",
-                			i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue()));
-                	}
-            	}
-            	else {
+                        LOGGER.debug(String.format(
+                            "Innovate MTS: InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f",
+                            i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue()));
+                    }
+                }
+                else {
                     LOGGER.error("Innovate MTS: Error - no input channels found to log from");
-            	}
+                }
             }
             finally {
                 mts.disconnect();
@@ -162,6 +162,6 @@ public final class MTSConnector {
         }
         finally {
         }
-    	return sensors;
+        return sensors;
     }
 }

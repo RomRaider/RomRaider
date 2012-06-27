@@ -85,57 +85,57 @@ public final class EcuDefinitionHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) {
         if (TAG_ROMID.equals(qName)) {
             if (!isNullOrEmpty(ecuId)    && 
-            	!isNullOrEmpty(calId)    &&
-            	!isNullOrEmpty(year)     &&
-            	!isNullOrEmpty(market)   &&
-            	!isNullOrEmpty(make)     &&
-            	!isNullOrEmpty(model)    &&
-            	!isNullOrEmpty(submodel) &&
-            	!isNullOrEmpty(transmission)
-            	) {
-            	carString = String.format("%s %s %s %s %s %s",
-            			year, market, make, model, submodel, transmission);
+                !isNullOrEmpty(calId)    &&
+                !isNullOrEmpty(year)     &&
+                !isNullOrEmpty(market)   &&
+                !isNullOrEmpty(make)     &&
+                !isNullOrEmpty(model)    &&
+                !isNullOrEmpty(submodel) &&
+                !isNullOrEmpty(transmission)
+                ) {
+                carString = String.format("%s %s %s %s %s %s",
+                        year, market, make, model, submodel, transmission);
                 ecuDefinitionMap.put(ecuId, new EcuDefinitionImpl(ecuId, calId, carString));
             }
         }
         else if (TAG_CALID.equals(qName)) {
-        	calId = charBuffer.toString();
+            calId = charBuffer.toString();
         }
         else if (TAG_ECUID.equals(qName)) {
             ecuId = charBuffer.toString();
         }
         else if (TAG_YEAR.equals(qName)) {
-        	year = charBuffer.toString();
-        	if (!year.isEmpty()) {
-	        	try {
-		        	if (Integer.parseInt(year) < 90) {
-		        		year = "20" + year;
-		        	}
-		       	}
-	        	catch (NumberFormatException e) {
-		        	if ((year.contains("/") || year.contains("-")) &&
-		        			year.length() < 6 )
-		        		year = "20" + year;        		
-	        	}
-        	}
-        	else {
-        		year = "20xx";
-        	}
+            year = charBuffer.toString();
+            if (!year.isEmpty()) {
+                try {
+                    if (Integer.parseInt(year) < 90) {
+                        year = "20" + year;
+                    }
+                   }
+                catch (NumberFormatException e) {
+                    if ((year.contains("/") || year.contains("-")) &&
+                            year.length() < 6 )
+                        year = "20" + year;                
+                }
+            }
+            else {
+                year = "20xx";
+            }
         }
         else if (TAG_MARKET.equals(qName)) {
-        	market = charBuffer.toString();
+            market = charBuffer.toString();
         }
         else if (TAG_MAKE.equals(qName)) {
-        	make = charBuffer.toString();
+            make = charBuffer.toString();
         }
         else if (TAG_MODEL.equals(qName)) {
-        	model = charBuffer.toString();
+            model = charBuffer.toString();
         }
         else if (TAG_SUBMODEL.equals(qName)) {
-        	submodel = charBuffer.toString();
+            submodel = charBuffer.toString();
         }
         else if (TAG_TRANS.equals(qName)) {
-        	transmission = charBuffer.toString();
+            transmission = charBuffer.toString();
         }
     }
 

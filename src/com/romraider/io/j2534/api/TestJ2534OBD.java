@@ -29,11 +29,11 @@ import com.romraider.util.LogManager;
  * an active ECU using the ISO14230 protocol.
  */
 public final class TestJ2534OBD {
-	private static final J2534 api = new J2534Impl(
-			Protocol.ISO14230, "op20pt32"); //op20pt32 MONGI432
-	private static final int LOOPBACK = 0;
+    private static final J2534 api = new J2534Impl(
+            Protocol.ISO14230, "op20pt32"); //op20pt32 MONGI432
+    private static final int LOOPBACK = 0;
 
-	public TestJ2534OBD() throws InterruptedException {
+    public TestJ2534OBD() throws InterruptedException {
         final int deviceId = api.open();
         try {
             version(deviceId);
@@ -43,30 +43,30 @@ public final class TestJ2534OBD {
             System.out.println("Pin 16 Volts = " + vBatt);
 
             final int msgId = api.startPassMsgFilter(
-            		channelId, (byte) 0x00, (byte) 0x00);
+                    channelId, (byte) 0x00, (byte) 0x00);
 
             try {
                 final byte[] startReq = {
-                		(byte) 0xC1, (byte) 0x33, (byte) 0xF1,
-                		(byte) 0x81};
+                        (byte) 0xC1, (byte) 0x33, (byte) 0xF1,
+                        (byte) 0x81};
 
                 byte[] response =
-                		api.fastInit(channelId, startReq);
+                        api.fastInit(channelId, startReq);
                 System.out.println("Start Response = " + HexUtil.asHex(response));
 
                 if (response.length > 0
-                	&&	response[4] == (byte) 0xE9
-                	&&	response[5] == (byte) 0x8F) {
+                    &&    response[4] == (byte) 0xE9
+                    &&    response[5] == (byte) 0x8F) {
                     System.out.println("Standard timing = " +
-                    		HexUtil.asHex(response));
+                            HexUtil.asHex(response));
                 }
                 setConfig(channelId);
                 getConfig(channelId);
                 
                 Thread.sleep(10L);
                 final byte[] timingReq = {
-                		(byte) 0xC2, (byte) 0x33, (byte) 0xF1,
-                		(byte) 0x83, (byte) 0x01};
+                        (byte) 0xC2, (byte) 0x33, (byte) 0xF1,
+                        (byte) 0x83, (byte) 0x01};
 
                 api.writeMsg(channelId, timingReq, 55L);
                 System.out.println("Timing Request  = " + HexUtil.asHex(timingReq));
@@ -76,8 +76,8 @@ public final class TestJ2534OBD {
 
                 Thread.sleep(20L);
                 final byte[] mode09pid01 = {
-                		(byte) 0xC2, (byte) 0x33, (byte) 0xF1,
-                		(byte) 0x09, (byte) 0x01};
+                        (byte) 0xC2, (byte) 0x33, (byte) 0xF1,
+                        (byte) 0x09, (byte) 0x01};
 
                 api.writeMsg(channelId, mode09pid01, 55L);
                 System.out.println("PID0901 Request  = " + HexUtil.asHex(mode09pid01));
@@ -87,17 +87,17 @@ public final class TestJ2534OBD {
 
                 int numMsg = 0;
                 switch (LOOPBACK) {
-	                case 0:
-	                	numMsg = response[5];
-	                	break;
-	                case 1:
-	                	numMsg = response[10];
+                    case 0:
+                        numMsg = response[5];
+                        break;
+                    case 1:
+                        numMsg = response[10];
                 }
                 
                 Thread.sleep(10L);
                 final byte[] mode09pid02 = {
-                		(byte) 0xC2, (byte) 0x33, (byte) 0xF1,
-                		(byte) 0x09, (byte) 0x02};
+                        (byte) 0xC2, (byte) 0x33, (byte) 0xF1,
+                        (byte) 0x09, (byte) 0x02};
 
                 api.writeMsg(channelId, mode09pid02, 55L);
                 System.out.println("PID0902 Request  = " + HexUtil.asHex(mode09pid02));
@@ -107,8 +107,8 @@ public final class TestJ2534OBD {
 
                 Thread.sleep(10L);
                 final byte[] stopReq = {
-                		(byte) 0xC1, (byte) 0x33, (byte) 0xF1,
-                		(byte) 0x82};
+                        (byte) 0xC1, (byte) 0x33, (byte) 0xF1,
+                        (byte) 0x82};
 
                 api.writeMsg(channelId, stopReq, 55L);
                 System.out.println("Stop Request  = " + HexUtil.asHex(stopReq));
@@ -128,48 +128,48 @@ public final class TestJ2534OBD {
     private static void version(final int deviceId) {
         Version version = api.readVersion(deviceId);
         System.out.printf("Version => Firmware:[%s], DLL:[%s], API:[%s]%n",
-        		version.firmware, version.dll, version.api);
+                version.firmware, version.dll, version.api);
     }
 
     private static void setConfig(final int channelId) {
         final ConfigItem p1Max = new ConfigItem(
-        		Config.P1_MAX.getValue(),
-        		40);
+                Config.P1_MAX.getValue(),
+                40);
         final ConfigItem p3Min = new ConfigItem(
-        		Config.P3_MIN.getValue(),
-        		110);
+                Config.P3_MIN.getValue(),
+                110);
         final ConfigItem p4Min = new ConfigItem(
-        		Config.P4_MIN.getValue(),
-        		10);
+                Config.P4_MIN.getValue(),
+                10);
         final ConfigItem loopback = new ConfigItem(
-        		Config.LOOPBACK.getValue(),
-        		LOOPBACK);
+                Config.LOOPBACK.getValue(),
+                LOOPBACK);
         api.setConfig(channelId, p1Max, p3Min, p4Min, loopback);
     }
 
     private static void getConfig(int channelId) {
-    	final ConfigItem[] configs = api.getConfig(
-    			channelId,
-    			Config.LOOPBACK.getValue(),
-    			//Config.P1_MIN.getValue(),
-    			Config.P1_MAX.getValue(),
-    			//Config.P2_MIN.getValue(),
-    			//Config.P2_MAX.getValue(),
-    			Config.P3_MIN.getValue(),
-    			//Config.P3_MAX.getValue(),
-    			Config.P4_MIN.getValue()
-    			//Config.P4_MAX.getValue()
-    			);
-    	int i = 1;
-    	for (ConfigItem item : configs) {
-    		System.out.printf("Config item %d: Parameter: %s, value:%d%n",
-    				i, Config.get(item.parameter), item.value);
-    		i++;
-    	}
+        final ConfigItem[] configs = api.getConfig(
+                channelId,
+                Config.LOOPBACK.getValue(),
+                //Config.P1_MIN.getValue(),
+                Config.P1_MAX.getValue(),
+                //Config.P2_MIN.getValue(),
+                //Config.P2_MAX.getValue(),
+                Config.P3_MIN.getValue(),
+                //Config.P3_MAX.getValue(),
+                Config.P4_MIN.getValue()
+                //Config.P4_MAX.getValue()
+                );
+        int i = 1;
+        for (ConfigItem item : configs) {
+            System.out.printf("Config item %d: Parameter: %s, value:%d%n",
+                    i, Config.get(item.parameter), item.value);
+            i++;
+        }
     }
 
-	public static void main(String args[]) throws InterruptedException{
-		LogManager.initDebugLogging();
-		TestJ2534OBD test1 = new TestJ2534OBD();
-	}
+    public static void main(String args[]) throws InterruptedException{
+        LogManager.initDebugLogging();
+        TestJ2534OBD test1 = new TestJ2534OBD();
+    }
 }

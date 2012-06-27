@@ -381,7 +381,7 @@ public final class DOMRomUnmarshaller {
 
         table.setCategory(unmarshallAttribute(tableNode, "category", table.getCategory()));
         if (table.getStorageType() < 1) {
-        	table.setSignedData(RomAttributeParser.parseStorageDataSign(unmarshallAttribute(tableNode, "storagetype", String.valueOf(table.getStorageType()))));
+            table.setSignedData(RomAttributeParser.parseStorageDataSign(unmarshallAttribute(tableNode, "storagetype", String.valueOf(table.getStorageType()))));
         }
         table.setStorageType(RomAttributeParser.parseStorageType(unmarshallAttribute(tableNode, "storagetype", String.valueOf(table.getStorageType()))));
         table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(tableNode, "endian", String.valueOf(table.getEndian()))));
@@ -469,7 +469,7 @@ public final class DOMRomUnmarshaller {
                     table.setDescription(unmarshallText(n));
 
                 } else if (n.getNodeName().equalsIgnoreCase("state")) {
-                	((TableSwitch) table).setValues(unmarshallAttribute(n, "name", ""), unmarshallAttribute(n, "data", "0"));
+                    ((TableSwitch) table).setValues(unmarshallAttribute(n, "name", ""), unmarshallAttribute(n, "data", "0"));
 
                 } else { /*unexpected element in Table (skip) */ }
             } else { /* unexpected node-type in Table (skip) */ }

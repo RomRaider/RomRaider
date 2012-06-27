@@ -50,10 +50,10 @@ public final class IntfKitRunner implements Stoppable {
      * @param dataItems - a Map of PhidgetInterfaceKit data items (sensors)
      */
     public IntfKitRunner(
-    		final Integer[] kits,
-    		final Map<String, IntfKitDataItem> dataItems) {
+            final Integer[] kits,
+            final Map<String, IntfKitDataItem> dataItems) {
         this.dataItems = dataItems;
-    	this.connections = IntfKitConnector.openIkSerial(this, kits);
+        this.connections = IntfKitConnector.openIkSerial(this, kits);
     }
 
     /**
@@ -70,11 +70,11 @@ public final class IntfKitRunner implements Stoppable {
                 sleep(500L);
             }
             for (InterfaceKitPhidget connector : connections) {
-					connector.close();
+                    connector.close();
             }
         } catch (PhidgetException e) {
-       		LOGGER.error("InterfaceKit close error: " + e);
-		}
+               LOGGER.error("InterfaceKit close error: " + e);
+        }
     }
 
     /**
@@ -93,18 +93,18 @@ public final class IntfKitRunner implements Stoppable {
      * @param value  - the new value to set
      */
     public void updateDataItem(final int serial, final int sensor, final int value) {
-    	if (serial != -1) {
-		final String inputName = String.format("%d:%d", serial, sensor);
-		dataItems.get(inputName).setData((double) value);
-		final String result = String.format(
-				"Phidget InterfaceKit sensor %s event - raw value: %d",
-				inputName,
-				sensor,
-				value);
-		LOGGER.trace(result);
-    	}
-    	else {
-    		LOGGER.error("Phidget InterfaceKit dataitem update error");
-    	}
+        if (serial != -1) {
+        final String inputName = String.format("%d:%d", serial, sensor);
+        dataItems.get(inputName).setData((double) value);
+        final String result = String.format(
+                "Phidget InterfaceKit sensor %s event - raw value: %d",
+                inputName,
+                sensor,
+                value);
+        LOGGER.trace(result);
+        }
+        else {
+            LOGGER.error("Phidget InterfaceKit dataitem update error");
+        }
     }
 }

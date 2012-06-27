@@ -60,9 +60,9 @@ public final class AemRunner implements Stoppable {
 
     private double parseDouble(String value) {
         try {
-    		final String[] substr = value.split("\t");
-    		final double result = Double.parseDouble(substr[0]);
-    		return result;
+            final String[] substr = value.split("\t");
+            final double result = Double.parseDouble(substr[0]);
+            return result;
         } catch (Exception e) {
             return 0.0;
         }

@@ -23,32 +23,32 @@ import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public enum TxsSensorConversions implements ExternalSensorConversions{
-	TXS_RPM		("rpm", "x", "0", new GaugeMinMax(0,10000,1000)),
-	TXS_BOOST	("psi", "x", "0.0", new GaugeMinMax(-100,100,5)),
-	TXS_MAFV	("mafv", "x", "0.00", new GaugeMinMax(0,5,0.05)),
-	TXS_TPS		("tps", "x", "0", new GaugeMinMax(0,100,5)),
-	TXS_LOAD	("load", "x", "0", new GaugeMinMax(0,100,10)),
-	TXS_KNOCK	("knock", "x", "0", new GaugeMinMax(0,100,1)),
-	TXS_IGN		("ign", "x", "0.00", new GaugeMinMax(-15,60,5)),
-	TXS_IDC		("%", "x", "0", new GaugeMinMax(0,125,5)),
-	TXS_MAPVE	("mapve", "x", "0", new GaugeMinMax(0,200,5)),
-	TXS_MODFUEL	("modfuel %", "x", "0.00", new GaugeMinMax(-50,50,.05));
-	
-	private final String units;
-	private final String expression;
-	private final String format;
-	private final GaugeMinMax gaugeMinMax;
-	
-	TxsSensorConversions(String units, String expression,
-						 String format, GaugeMinMax gaugeMinMax) {
-		this.units = units;
-		this.expression = expression;
-		this.format = format;
-		this.gaugeMinMax = gaugeMinMax;
-	}
+    TXS_RPM        ("rpm", "x", "0", new GaugeMinMax(0,10000,1000)),
+    TXS_BOOST    ("psi", "x", "0.0", new GaugeMinMax(-100,100,5)),
+    TXS_MAFV    ("mafv", "x", "0.00", new GaugeMinMax(0,5,0.05)),
+    TXS_TPS        ("tps", "x", "0", new GaugeMinMax(0,100,5)),
+    TXS_LOAD    ("load", "x", "0", new GaugeMinMax(0,100,10)),
+    TXS_KNOCK    ("knock", "x", "0", new GaugeMinMax(0,100,1)),
+    TXS_IGN        ("ign", "x", "0.00", new GaugeMinMax(-15,60,5)),
+    TXS_IDC        ("%", "x", "0", new GaugeMinMax(0,125,5)),
+    TXS_MAPVE    ("mapve", "x", "0", new GaugeMinMax(0,200,5)),
+    TXS_MODFUEL    ("modfuel %", "x", "0.00", new GaugeMinMax(-50,50,.05));
+    
+    private final String units;
+    private final String expression;
+    private final String format;
+    private final GaugeMinMax gaugeMinMax;
+    
+    TxsSensorConversions(String units, String expression,
+                         String format, GaugeMinMax gaugeMinMax) {
+        this.units = units;
+        this.expression = expression;
+        this.format = format;
+        this.gaugeMinMax = gaugeMinMax;
+    }
 
-	public String units() 		{ return units; }
-	public String expression()  { return expression; }
-	public String format() 		{ return format; }
-	public GaugeMinMax gaugeMinMax() {return gaugeMinMax; }
+    public String units()         { return units; }
+    public String expression()  { return expression; }
+    public String format()         { return format; }
+    public GaugeMinMax gaugeMinMax() {return gaugeMinMax; }
 }

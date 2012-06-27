@@ -23,58 +23,58 @@ import static com.romraider.xml.RomAttributeParser.parseByteValue;
 import static com.romraider.xml.RomAttributeParser.parseIntegerValue;
 
 public class RomChecksum {
-	private static final int CHECK_TOTAL = 0x5AA5A55A;
+    private static final int CHECK_TOTAL = 0x5AA5A55A;
 
     public static void calculateRomChecksum(byte[] input, int storageAddress, int dataSize) {
-    	for (int i = storageAddress; i < storageAddress + dataSize; i+=12) {
-    		byte[] newSum = calculateChecksum(input,
-				(int)parseByteValue(input, 0, i  , 4, true),
-				(int)parseByteValue(input, 0, i+4, 4, true));
-    		System.arraycopy(newSum, 0, input, i + 8, 4);
-    	}
+        for (int i = storageAddress; i < storageAddress + dataSize; i+=12) {
+            byte[] newSum = calculateChecksum(input,
+                (int)parseByteValue(input, 0, i  , 4, true),
+                (int)parseByteValue(input, 0, i+4, 4, true));
+            System.arraycopy(newSum, 0, input, i + 8, 4);
+        }
     }
 
     public static int validateRomChecksum(byte[] input, int storageAddress, int dataSize) {
-    	int result = 0;
-    	int[] results = new int[dataSize / 12];
-    	int j = 0;
-    	for (int i = storageAddress; i < storageAddress + dataSize; i+=12) {
-    		int startAddr = (int)parseByteValue(input, 0, i  , 4, true);
-    		int endAddr   = (int)parseByteValue(input, 0, i+4, 4, true);
-    		int diff      = (int)parseByteValue(input, 0, i+8, 4, true);
-    		if (j == 0 &&
-    			startAddr == 0 &&
-    			endAddr   == 0 &&
-    			diff      == CHECK_TOTAL) {
-    			return result = -1; // -1, all checksums disabled if the first one is disabled
-    		}
-    		else {
-    			results[j] = validateChecksum(input, startAddr, endAddr, diff);
+        int result = 0;
+        int[] results = new int[dataSize / 12];
+        int j = 0;
+        for (int i = storageAddress; i < storageAddress + dataSize; i+=12) {
+            int startAddr = (int)parseByteValue(input, 0, i  , 4, true);
+            int endAddr   = (int)parseByteValue(input, 0, i+4, 4, true);
+            int diff      = (int)parseByteValue(input, 0, i+8, 4, true);
+            if (j == 0 &&
+                startAddr == 0 &&
+                endAddr   == 0 &&
+                diff      == CHECK_TOTAL) {
+                return result = -1; // -1, all checksums disabled if the first one is disabled
             }
-    		j++;
-    	}
+            else {
+                results[j] = validateChecksum(input, startAddr, endAddr, diff);
+            }
+            j++;
+        }
         for (j = 0; j < (dataSize / 12); j++) {
             if (results[j] != 0) {
-            	return j + 1; // position of invalid checksum
+                return j + 1; // position of invalid checksum
             }
         }
-    	return result; // 0, all checksums are valid
+        return result; // 0, all checksums are valid
     }
 
-	private static int validateChecksum(byte[] input, int startAddr, int endAddr, int diff) {
-    	int byteSum = 0;
-    	for (int i=startAddr; i<endAddr; i+=4) {
-    		byteSum += (int)parseByteValue(input, 0, i, 4, true);
-    	}
-    	int result = (CHECK_TOTAL - diff - byteSum);
-    	return result;
+    private static int validateChecksum(byte[] input, int startAddr, int endAddr, int diff) {
+        int byteSum = 0;
+        for (int i=startAddr; i<endAddr; i+=4) {
+            byteSum += (int)parseByteValue(input, 0, i, 4, true);
+        }
+        int result = (CHECK_TOTAL - diff - byteSum);
+        return result;
     }    
 
-	private static byte[] calculateChecksum(byte[] input, int startAddr, int endAddr) {
-    	int byteSum = 0;
-    	for (int i=startAddr; i<endAddr; i+=4) {
-    		byteSum += (int)parseByteValue(input, 0, i, 4, true);
-    	}
-    	return parseIntegerValue((CHECK_TOTAL - byteSum), 0, 4);
+    private static byte[] calculateChecksum(byte[] input, int startAddr, int endAddr) {
+        int byteSum = 0;
+        for (int i=startAddr; i<endAddr; i+=4) {
+            byteSum += (int)parseByteValue(input, 0, i, 4, true);
+        }
+        return parseIntegerValue((CHECK_TOTAL - byteSum), 0, 4);
     }    
 }

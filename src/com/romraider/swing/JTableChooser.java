@@ -41,8 +41,8 @@ public class JTableChooser extends JOptionPane implements MouseListener {
 
     public boolean showChooser(Vector<Rom> roms, Component parent, Table targetTable) {
 
-    	int nameLength = 0;
-    	for (int i = 0; i < roms.size(); i++) {
+        int nameLength = 0;
+        for (int i = 0; i < roms.size(); i++) {
             Rom rom = roms.get(i);
             DefaultMutableTreeNode romNode = new DefaultMutableTreeNode(rom.getFileName());
             rootNode.add(romNode);
@@ -52,7 +52,7 @@ public class JTableChooser extends JOptionPane implements MouseListener {
                 // use the length of the table name to set the width of the displayTree
                 // so the entire name can be read without being cut off on the right
                 if (table.getName().length() > nameLength) {
-                	nameLength = table.getName().length();
+                    nameLength = table.getName().length();
                 }
                 TableChooserTreeNode tableNode = new TableChooserTreeNode(table.getName(), table);
 
@@ -94,8 +94,8 @@ public class JTableChooser extends JOptionPane implements MouseListener {
     }
 
     public void mouseReleased(MouseEvent e) {
-    	displayTree.setPreferredSize(new Dimension(displayTree.getWidth(), (displayTree.getRowCount()*displayTree.getRowHeight())));
-    	displayTree.revalidate();
+        displayTree.setPreferredSize(new Dimension(displayTree.getWidth(), (displayTree.getRowCount()*displayTree.getRowHeight())));
+        displayTree.revalidate();
     }
     public void mouseClicked(MouseEvent e){}
     public void mouseEntered(MouseEvent e){}

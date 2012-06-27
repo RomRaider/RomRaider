@@ -59,11 +59,11 @@ public final class SerialConnectionManager implements ConnectionManager {
         checkNotNull(pollState, "pollState");
 
         if (pollState.getCurrentState() == 0 && pollState.getLastState() == 1) {
-        	clearLine();
+            clearLine();
         }
 
         if (pollState.getCurrentState() == 0) {
-           	connection.readStaleData();
+               connection.readStaleData();
             connection.write(request);
         }
         while (connection.available() < response.length) {
@@ -79,20 +79,20 @@ public final class SerialConnectionManager implements ConnectionManager {
         connection.read(response);
 
         if (pollState.getCurrentState() == 1){
-	        if (    response[0] == (byte) 0x80
-	        	&&  response[1] == (byte) 0xF0
-	        	&& (response[2] == (byte) 0x10 || response[2] == (byte) 0x18)
-	        	&&  response[3] == (response.length - 5)
-	        	&&  response[response.length - 1] == calculateChecksum(response)) {
-	
-	        	lastResponse = new byte[response.length];
-	        	arraycopy(response, 0, lastResponse, 0, response.length);
-	        }
-	        else{
+            if (    response[0] == (byte) 0x80
+                &&  response[1] == (byte) 0xF0
+                && (response[2] == (byte) 0x10 || response[2] == (byte) 0x18)
+                &&  response[3] == (response.length - 5)
+                &&  response[response.length - 1] == calculateChecksum(response)) {
+    
+                lastResponse = new byte[response.length];
+                arraycopy(response, 0, lastResponse, 0, response.length);
+            }
+            else{
                 LOGGER.error("SSM Bad Data response: " + asHex(response));
-	        	arraycopy(lastResponse, 0, response, 0, response.length);
-	        	pollState.setNewQuery(true);
-	        }
+                arraycopy(lastResponse, 0, response, 0, response.length);
+                pollState.setNewQuery(true);
+            }
         }
     }
 
@@ -116,14 +116,14 @@ public final class SerialConnectionManager implements ConnectionManager {
     }
 
     public void clearLine() {
-    	LOGGER.debug("SSM sending line break");
+        LOGGER.debug("SSM sending line break");
         connection.sendBreak( 1 / 
-        		(connectionProperties.getBaudRate() *
-        		(connectionProperties.getDataBits() +
-        		 connectionProperties.getStopBits() +
-        		 connectionProperties.getParity() + 1)));
+                (connectionProperties.getBaudRate() *
+                (connectionProperties.getDataBits() +
+                 connectionProperties.getStopBits() +
+                 connectionProperties.getParity() + 1)));
         do {
-        	sleep(2);
+            sleep(2);
             byte[] badBytes = connection.readAvailable();
             LOGGER.debug("SSM clearing line (stale data): " + asHex(badBytes));
             sleep(10);

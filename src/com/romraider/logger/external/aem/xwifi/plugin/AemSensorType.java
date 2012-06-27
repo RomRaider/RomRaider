@@ -24,49 +24,49 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
-*	Enum class representing the AEM X-Wifi sensor types available with methods to
-*	translate the mnemonic and numerical values.
+*    Enum class representing the AEM X-Wifi sensor types available with methods to
+*    translate the mnemonic and numerical values.
 */
 public enum AemSensorType {
     UEGO(0),
     EGT1(1),
     EGT2(2),
-	UNDEFINED(-1);	// Returned when no match is found for get()
+    UNDEFINED(-1);    // Returned when no match is found for get()
 
-	private static final Map<Integer, AemSensorType> lookup
-			= new HashMap<Integer, AemSensorType>();
+    private static final Map<Integer, AemSensorType> lookup
+            = new HashMap<Integer, AemSensorType>();
 
-	static {
-		for(AemSensorType s : EnumSet.allOf(AemSensorType.class))
-			lookup.put(s.getValue(), s);
-	}
+    static {
+        for(AemSensorType s : EnumSet.allOf(AemSensorType.class))
+            lookup.put(s.getValue(), s);
+    }
 
-	private final int value;
+    private final int value;
 
     private AemSensorType(int value) {
         this.value = value;
     }
 
-	/**
-	* Get the numeric value associated with the <b>AemSensorType</b>
-	* mnemonic string.
-	* @return	numeric value.
-	*/
+    /**
+    * Get the numeric value associated with the <b>AemSensorType</b>
+    * mnemonic string.
+    * @return    numeric value.
+    */
     public int getValue() {
         return value;
     }
 
-	/**
-	* Get the <b>AemSensorType</b> mnemonic mapped to the numeric
-	* value or UNDEFINED if value is undefined. 
-	* @param	value - numeric value to be translated.
-	* @return	the <b>AemSensorType</b> mnemonic mapped to the numeric
-	*			value or UNDEFINED if value is undefined.
-	*/
-	public static AemSensorType valueOf(int value) {
-		if (lookup.containsKey(value)) {
-			return lookup.get(value);
-		}
-		else return UNDEFINED;
-	}
+    /**
+    * Get the <b>AemSensorType</b> mnemonic mapped to the numeric
+    * value or UNDEFINED if value is undefined. 
+    * @param    value - numeric value to be translated.
+    * @return    the <b>AemSensorType</b> mnemonic mapped to the numeric
+    *            value or UNDEFINED if value is undefined.
+    */
+    public static AemSensorType valueOf(int value) {
+        if (lookup.containsKey(value)) {
+            return lookup.get(value);
+        }
+        else return UNDEFINED;
+    }
 }

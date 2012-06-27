@@ -23,7 +23,7 @@ import com.romraider.logger.external.core.ExternalDataItem;
 
 public interface PlxDataItem extends ExternalDataItem {
 
-	void setRaw(int raw);
+    void setRaw(int raw);
 
-	int getInstance();
+    int getInstance();
 }

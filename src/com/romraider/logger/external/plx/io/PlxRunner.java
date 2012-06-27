@@ -50,7 +50,7 @@ public final class PlxRunner implements Stoppable {
                 if (!isValid(response)) continue;
                 PlxDataItem item = dataItems.get(response.sensor);
                 if (item != null && (response.instance == item.getInstance())) {
-                	item.setRaw(response.value);
+                    item.setRaw(response.value);
                 }
             }
             connection.close();

@@ -79,6 +79,6 @@ public final class TestZt2Connection implements SerialConnection {
         index = 0;
     }
 
-	public void sendBreak(int duration) {
-	}
+    public void sendBreak(int duration) {
+    }
 }

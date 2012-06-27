@@ -48,15 +48,15 @@ public final class IntfKitDataItem implements ExternalDataItem, DataListener {
      * @param maxValue - the maximum value expected for the data item
      */
     public IntfKitDataItem(String name, String units, float minValue, float maxValue) {
-    	super();
+        super();
         this.name = name;
         this.units = units;
         float step = (Math.abs(maxValue) + Math.abs(minValue)) / 10f;
         if (step > 0.5f) {
-        	step = (float) Math.round(step);
+            step = (float) Math.round(step);
         }
         else {
-        	step = 0.5f;
+            step = 0.5f;
         }
         gaugeMinMax = new GaugeMinMax(minValue, maxValue, step);
     }
@@ -81,14 +81,14 @@ public final class IntfKitDataItem implements ExternalDataItem, DataListener {
         this.data = data;
     }
 
-	public EcuDataConvertor[] getConvertors() {
-		EcuDataConvertor[] convertors = {
-				new ExternalDataConvertorImpl(
-						this,
-						units,
-						"x",
-						"0.##",
-						gaugeMinMax)};
-		return convertors;
-	}
+    public EcuDataConvertor[] getConvertors() {
+        EcuDataConvertor[] convertors = {
+                new ExternalDataConvertorImpl(
+                        this,
+                        units,
+                        "x",
+                        "0.##",
+                        gaugeMinMax)};
+        return convertors;
+    }
 }

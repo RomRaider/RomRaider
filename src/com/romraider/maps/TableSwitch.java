@@ -84,30 +84,30 @@ public class TableSwitch extends Table {
         // if the result is  0: all the checksums matched
         // if the result is -1: all the checksums have been previously disabled
         if (super.getName().equalsIgnoreCase("Checksum Fix")) {
-        	int result = validateRomChecksum(input, storageAddress, dataSize);
-	        String message = String.format(
-	        		"Checksum No. %d is invalid.%n" +
-	        		"The ROM image may be corrupt.%n" +
-	        		"Use of this ROM image is not advised!", result);
-        	if (result > 0) {
-    	        showMessageDialog(this,
-    	        		message,
-    	        		"ERROR - Checksums Failed",
-    	        		WARNING_MESSAGE);
-    	        setButtonsUnselected(buttonGroup);
-        	}
-        	else if (result == -1){
-        		message = "All Checksums are disabled.";
-    	        showMessageDialog(this,
-    	        		message,
-    	        		"Warning - Checksum Status",
-    	        		INFORMATION_MESSAGE);
-            	getButtonByText(buttonGroup, "on").setSelected(true);        	}
-        	else {
-        		getButtonByText(buttonGroup, "off").setSelected(true);
-        		locked = false;
-        	}
-        	return;
+            int result = validateRomChecksum(input, storageAddress, dataSize);
+            String message = String.format(
+                    "Checksum No. %d is invalid.%n" +
+                    "The ROM image may be corrupt.%n" +
+                    "Use of this ROM image is not advised!", result);
+            if (result > 0) {
+                showMessageDialog(this,
+                        message,
+                        "ERROR - Checksums Failed",
+                        WARNING_MESSAGE);
+                setButtonsUnselected(buttonGroup);
+            }
+            else if (result == -1){
+                message = "All Checksums are disabled.";
+                showMessageDialog(this,
+                        message,
+                        "Warning - Checksum Status",
+                        INFORMATION_MESSAGE);
+                getButtonByText(buttonGroup, "on").setSelected(true);            }
+            else {
+                getButtonByText(buttonGroup, "off").setSelected(true);
+                locked = false;
+            }
+            return;
         }
 
         // Validate XML switch definition data against the ROM data to select
@@ -118,11 +118,11 @@ public class TableSwitch extends Table {
         for (String stateName : switchStates.keySet()) {
             byte[] sourceData = new byte[dataSize];
             System.arraycopy(
-            		input,
-            		storageAddress - ramOffset,
-            		sourceData,
-            		0,
-            		dataSize);
+                    input,
+                    storageAddress - ramOffset,
+                    sourceData,
+                    0,
+                    dataSize);
             int compareResult = indexOfBytes(sourceData, getValues(stateName));
             if (compareResult == -1) {
                 getButtonByText(buttonGroup, stateName).setSelected(false);
@@ -135,17 +135,17 @@ public class TableSwitch extends Table {
 
         for (String source : sourceStatus.keySet()) {
             if (sourceStatus.get(source) != -1) {
-            	locked = false;
+                locked = false;
                 break;
             }
         }
 
         if (locked) {
-	        String mismatch = String.format("Table: %s%nTable editing has been disabled.%nDefinition file or ROM image may be corrupt.", super.getName());
-	        showMessageDialog(this,
-	                          mismatch,
-	                          "ERROR - Data Mismatch",
-	                          ERROR_MESSAGE);
+            String mismatch = String.format("Table: %s%nTable editing has been disabled.%nDefinition file or ROM image may be corrupt.", super.getName());
+            showMessageDialog(this,
+                              mismatch,
+                              "ERROR - Data Mismatch",
+                              ERROR_MESSAGE);
             setButtonsUnselected(buttonGroup);
         }
     }
@@ -171,22 +171,22 @@ public class TableSwitch extends Table {
     }
  
     public byte[] saveFile(byte[] input) {
-    	if (!super.getName().equalsIgnoreCase("Checksum Fix")) {
-	    	if (!locked) {
-	    		JRadioButton selectedButton = getSelectedButton(buttonGroup);
-	    		System.arraycopy(
-	    				switchStates.get(selectedButton.getText()),
-	    				0,
-	    				input,
-	    				storageAddress - ramOffset,
-	    				dataSize);
-	    	}
-    	}
+        if (!super.getName().equalsIgnoreCase("Checksum Fix")) {
+            if (!locked) {
+                JRadioButton selectedButton = getSelectedButton(buttonGroup);
+                System.arraycopy(
+                        switchStates.get(selectedButton.getText()),
+                        0,
+                        input,
+                        storageAddress - ramOffset,
+                        dataSize);
+            }
+        }
         return input;
     }
  
     public void setValues(String name, String input) {
-    	switchStates.put(name, asBytes(input));
+        switchStates.put(name, asBytes(input));
     }
  
     public byte[] getValues(String key) {
@@ -229,12 +229,12 @@ public class TableSwitch extends Table {
     }
  
     public boolean isButtonSelected() {
-    	if (buttonGroup.getSelection() == null) {
-    		return false;
-    	}
-    	else {
-    		return true;
-    	}
+        if (buttonGroup.getSelection() == null) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     // returns the selected radio button in the specified group

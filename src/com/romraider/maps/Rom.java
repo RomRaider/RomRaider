@@ -143,24 +143,24 @@ public class Rom implements Serializable {
     }
 
     private void setEditStamp(byte[] binData, int address) {
-    	byte[] stampData = new byte[4];
-    	System.arraycopy(binData, address+204, stampData, 0, stampData.length);
-    	String stamp = asHex(stampData);
-    	if (stamp.equalsIgnoreCase("FFFFFFFF")) {
-    		romID.setEditStamp("");
-    	}
-    	else {
-    		StringBuilder niceStamp = new StringBuilder(stamp);
-    		niceStamp.replace(6, 9, String.valueOf((int)0xFF & stampData[3]));
-    		niceStamp.insert(6, " v");
-    		niceStamp.insert(4, "-");
-    		niceStamp.insert(2, "-");
-    		niceStamp.insert(0, "20");
-    		romID.setEditStamp(niceStamp.toString());
-    	}
-	}
+        byte[] stampData = new byte[4];
+        System.arraycopy(binData, address+204, stampData, 0, stampData.length);
+        String stamp = asHex(stampData);
+        if (stamp.equalsIgnoreCase("FFFFFFFF")) {
+            romID.setEditStamp("");
+        }
+        else {
+            StringBuilder niceStamp = new StringBuilder(stamp);
+            niceStamp.replace(6, 9, String.valueOf((int)0xFF & stampData[3]));
+            niceStamp.insert(6, " v");
+            niceStamp.insert(4, "-");
+            niceStamp.insert(2, "-");
+            niceStamp.insert(0, "20");
+            romID.setEditStamp(niceStamp.toString());
+        }
+    }
 
-	public void setRomID(RomID romID) {
+    public void setRomID(RomID romID) {
         this.romID = romID;
     }
 
@@ -210,22 +210,22 @@ public class Rom implements Serializable {
     }
 
     public byte[] saveFile() {
-    	Table checksum = null;
+        Table checksum = null;
         for (Table table : tables) {
             table.saveFile(binData);
             if (table.getName().equalsIgnoreCase("Checksum Fix"))
-            	checksum = table;
+                checksum = table;
         }
         if (checksum != null && !checksum.isLocked()) {
-        	calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
+            calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
         }
         else if (checksum != null && checksum.isLocked() && !checksum.isButtonSelected()) {
             Object[] options = {"Yes", "No"};
             String message = String.format("One or more ROM image Checksums is invalid.  " +
-            		"Calculate new Checksums?%n" +
-            		"(NOTE: this will only fix the Checksums it will NOT repair a corrupt ROM image)");
+                    "Calculate new Checksums?%n" +
+                    "(NOTE: this will only fix the Checksums it will NOT repair a corrupt ROM image)");
             int answer = showOptionDialog(container,
-            		message,
+                    message,
                     "Checksum Fix",
                     DEFAULT_OPTION,
                     QUESTION_MESSAGE,
@@ -233,27 +233,27 @@ public class Rom implements Serializable {
                     options,
                     options[0]);
             if (answer == 0) {
-            	calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
+                calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
             }
         }
         if (checksum != null) {
-	    	byte count = binData[checksum.getStorageAddress() + 207];
-	    	if (count == -1) {
-	    		count = 1;
-	    	}
-	    	else {
-	    		count++;
-	    	}
-	    	String currentDate = new SimpleDateFormat("yyMMdd").format(new Date());
-	    	String stamp = String.format("%s%02x", currentDate, count);
-	    	byte[] romStamp = asBytes(stamp);
-	    	System.arraycopy(
-	    			romStamp,
-	    			0,
-	    			binData,
-	    			checksum.getStorageAddress() + 204,
-	    			4);
-	    	setEditStamp(binData, checksum.getStorageAddress());
+            byte count = binData[checksum.getStorageAddress() + 207];
+            if (count == -1) {
+                count = 1;
+            }
+            else {
+                count++;
+            }
+            String currentDate = new SimpleDateFormat("yyMMdd").format(new Date());
+            String stamp = String.format("%s%02x", currentDate, count);
+            byte[] romStamp = asBytes(stamp);
+            System.arraycopy(
+                    romStamp,
+                    0,
+                    binData,
+                    checksum.getStorageAddress() + 204,
+                    4);
+            setEditStamp(binData, checksum.getStorageAddress());
         }
         return binData;
     }

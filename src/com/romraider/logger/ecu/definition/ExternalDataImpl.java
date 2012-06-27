@@ -59,7 +59,7 @@ public final class ExternalDataImpl implements ExternalData {
     }
 
     public EcuAddress getAddress() {
-		return null;
+        return null;
     }
 
     public EcuDataConvertor getSelectedConvertor() {

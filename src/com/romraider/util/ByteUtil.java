@@ -29,7 +29,7 @@ public final class ByteUtil {
     }
 
     public static int asUnsignedInt(byte b) {
-    	return asUnsignedInt(new byte[]{b});
+        return asUnsignedInt(new byte[]{b});
     }
 
     public static int asUnsignedInt(byte[] bytes) {
@@ -64,11 +64,11 @@ public final class ByteUtil {
         return (b & mask) == 0;
     }
 
-	public static void byteListToBytes(List<Byte> buffer, byte[] response) {
-		for (int i = 0; i < buffer.size(); i++) {
-			response[i] = buffer.get(i);
-		}
-	}
+    public static void byteListToBytes(List<Byte> buffer, byte[] response) {
+        for (int i = 0; i < buffer.size(); i++) {
+            response[i] = buffer.get(i);
+        }
+    }
 
     public static int indexOfBytes(byte[] bytes, byte[] pattern) {
         int[] failure = computeFailure(pattern);

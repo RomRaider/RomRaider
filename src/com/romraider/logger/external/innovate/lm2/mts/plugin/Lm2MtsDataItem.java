@@ -33,16 +33,16 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
     private String units;
 
     public Lm2MtsDataItem(String name, int channel, String units, float minValue, float maxValue) {
-    	super();
+        super();
         this.name = name;
         this.channel = channel;
         this.units = units;
         float step = (Math.abs(maxValue) + Math.abs(minValue)) / 10f;
         if (step > 0.5f) {
-        	step = (float) Math.round(step);
+            step = (float) Math.round(step);
         }
         else {
-        	step = 0.5f;
+            step = 0.5f;
         }
         gaugeMinMax = new GaugeMinMax(minValue, maxValue, step);
     }
@@ -56,7 +56,7 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
     }
 
     public int getChannel() {
-    	return channel;
+        return channel;
     }
     
     public double getData() {
@@ -71,14 +71,14 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
         this.data = data;
     }
 
-	public EcuDataConvertor[] getConvertors() {
-		EcuDataConvertor[] convertors = {
-				new ExternalDataConvertorImpl(
-						this,
-						units,
-						"x",
-						"0.##",
-						gaugeMinMax)};
-		return convertors;
-	}
+    public EcuDataConvertor[] getConvertors() {
+        EcuDataConvertor[] convertors = {
+                new ExternalDataConvertorImpl(
+                        this,
+                        units,
+                        "x",
+                        "0.##",
+                        gaugeMinMax)};
+        return convertors;
+    }
 }

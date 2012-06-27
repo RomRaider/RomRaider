@@ -30,19 +30,19 @@ public final class ExternalDataConvertorImpl implements EcuDataConvertor {
     private final String units;
     private final String expression;
     private final GaugeMinMax gaugeMinMax;
-	private final ExternalDataItem dataItem; 
+    private final ExternalDataItem dataItem; 
     private DecimalFormat format;
     
-	public ExternalDataConvertorImpl(ExternalDataItem dataItem, String units, String expression,
-									 String format,
-									 GaugeMinMax gaugeMinMax
-									 ) {
-		this.dataItem = dataItem;
-		this.units = units;
-		this.expression = expression;
-		this.format = new DecimalFormat(format);
-		this.gaugeMinMax = gaugeMinMax;
-	}
+    public ExternalDataConvertorImpl(ExternalDataItem dataItem, String units, String expression,
+                                     String format,
+                                     GaugeMinMax gaugeMinMax
+                                     ) {
+        this.dataItem = dataItem;
+        this.units = units;
+        this.expression = expression;
+        this.format = new DecimalFormat(format);
+        this.gaugeMinMax = gaugeMinMax;
+    }
 
     public double convert(byte[] bytes) {
         double value = dataItem.getData();

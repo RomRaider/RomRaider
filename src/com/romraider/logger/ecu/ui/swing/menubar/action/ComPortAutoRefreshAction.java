@@ -31,7 +31,7 @@ public final class ComPortAutoRefreshAction extends AbstractAction {
 
     public void actionPerformed(ActionEvent actionEvent) {
         try {
-        	logger.setRefreshMode((Boolean) getValue(SELECTED_KEY));
+            logger.setRefreshMode((Boolean) getValue(SELECTED_KEY));
         } catch (Exception e) {
             logger.reportError(e);
         }

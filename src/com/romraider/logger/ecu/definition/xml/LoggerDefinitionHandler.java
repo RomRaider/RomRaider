@@ -140,7 +140,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if (TAG_LOGGER.equals(qName)) {
-        	version = attributes.getValue(ATTR_VERSION);
+            version = attributes.getValue(ATTR_VERSION);
         } else if (TAG_PROTOCOL.equals(qName)) {
             parseProtocol = protocol.equalsIgnoreCase(attributes.getValue(ATTR_ID));
             if (parseProtocol) {

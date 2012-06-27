@@ -71,14 +71,14 @@ final class TestSerialConnection implements SerialConnection {
 
     public int available() {
         if (isEcuInitRequest()) {
-        	String init = "";
-        	if (ECU_ID == 0x10){
-        		init = ECU_INIT_RESPONSE;
-        	}
-        	if (ECU_ID == 0x18){
-        		init = ECU_INIT_RESPONSE_TCU;
-        	}
-    		return asBytes(init).length;
+            String init = "";
+            if (ECU_ID == 0x10){
+                init = ECU_INIT_RESPONSE;
+            }
+            if (ECU_ID == 0x18){
+                init = ECU_INIT_RESPONSE_TCU;
+            }
+            return asBytes(init).length;
         } else if (isReadAddressRequest()) {
             return request.length + (RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes());
         } else if (isReadMemoryRequest()) {
@@ -92,12 +92,12 @@ final class TestSerialConnection implements SerialConnection {
 
     public void read(byte[] bytes) {
         if (isEcuInitRequest()) {
-        	if (ECU_ID == 0x10){
+            if (ECU_ID == 0x10){
                 System.arraycopy(asBytes(ECU_INIT_RESPONSE), 0, bytes, 0, bytes.length);
-        	}
-        	if (ECU_ID == 0x18){
+            }
+            if (ECU_ID == 0x18){
                 System.arraycopy(asBytes(ECU_INIT_RESPONSE_TCU), 0, bytes, 0, bytes.length);
-        	}
+            }
         } else if (isIamRequest()) {
             byte[] response = asBytes("0x80F01006E83F600000000D");
             System.arraycopy(response, 0, bytes, request.length, response.length);
@@ -171,10 +171,10 @@ final class TestSerialConnection implements SerialConnection {
         throw new UnsupportedOperationException();
     }
 
-	public void sendBreak(int duration) {
-	}
+    public void sendBreak(int duration) {
+    }
 
-	private int calculateNumResponseDataBytes() {
+    private int calculateNumResponseDataBytes() {
         return ((request.length - REQUEST_NON_DATA_BYTES) / ADDRESS_SIZE) * DATA_SIZE;
     }
 

@@ -62,8 +62,8 @@ public final class TransmissionManagerImpl implements TransmissionManager {
 
     public void stop() {
         if (connection != null) {
-        	endQueries();
-        	connection.close();
+            endQueries();
+            connection.close();
         }
         LOGGER.info("TX Manager Stopped.");
     }

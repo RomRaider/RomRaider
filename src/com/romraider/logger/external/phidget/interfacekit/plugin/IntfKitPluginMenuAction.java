@@ -35,46 +35,46 @@ import com.romraider.swing.menubar.action.AbstractAction;
  */
 public final class IntfKitPluginMenuAction extends AbstractAction {
 
-	/**
-	 * Initialise the Phidgets Plugins menu item.
-	 * @param logger - the parent frame to bind the dialog message to
-	 */
+    /**
+     * Initialise the Phidgets Plugins menu item.
+     * @param logger - the parent frame to bind the dialog message to
+     */
     public IntfKitPluginMenuAction(final EcuLogger logger) {
         super(logger);
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-    	JOptionPane.showMessageDialog(
-        		logger,
-        		getKits(),
-        		"Interface Kits found",
-        		JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(
+                logger,
+                getKits(),
+                "Interface Kits found",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
-	/**
-	 * Build a list of device types with serial numbers attached to the system.
-	 * @return	a formated string to be displayed in the message box
-	 * @see IntfKitManager
-	 */
+    /**
+     * Build a list of device types with serial numbers attached to the system.
+     * @return    a formated string to be displayed in the message box
+     * @see IntfKitManager
+     */
     private String getKits() {
-    	final Integer[] kits = IntfKitManager.findIntfkits();
-    	final StringBuilder sb = new StringBuilder();
-    	if (kits.length < 1) {
-    		sb.append("No Interface Kits attached");
+        final Integer[] kits = IntfKitManager.findIntfkits();
+        final StringBuilder sb = new StringBuilder();
+        if (kits.length < 1) {
+            sb.append("No Interface Kits attached");
         }
         else {
-        	IntfKitManager.loadIk();
-	        for (int serial : kits) {
-	        	final String result = IntfKitManager.getIkName(serial);
-	        	if (result != null) {
-	        		sb.append(result);
-	        	}
-	        	else {
-	        		sb.append("Unable to read properties of serial # " + serial +
-	        				", it may be in use");
-	        	}
-	    		sb.append("\n");
-	        }
+            IntfKitManager.loadIk();
+            for (int serial : kits) {
+                final String result = IntfKitManager.getIkName(serial);
+                if (result != null) {
+                    sb.append(result);
+                }
+                else {
+                    sb.append("Unable to read properties of serial # " + serial +
+                            ", it may be in use");
+                }
+                sb.append("\n");
+            }
         }
         return sb.toString();
     }

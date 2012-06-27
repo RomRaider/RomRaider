@@ -49,7 +49,7 @@ public class MTSSensor {
     }
 
     public void setInputName(String name) {
-    	inputName = name;
+        inputName = name;
     }
 
     public String getDeviceName() {
@@ -57,7 +57,7 @@ public class MTSSensor {
     }
 
     public void setDeviceName(String name) {
-    	deviceName = name;
+        deviceName = name;
     }
 
     public int getDeviceChannel() {
@@ -65,7 +65,7 @@ public class MTSSensor {
     }
 
     public void setDeviceChannel(int channel) {
-    	deviceChannel = channel;
+        deviceChannel = channel;
     }
 
     public String getUnits() {
@@ -73,7 +73,7 @@ public class MTSSensor {
     }
 
     public void setUnits(String unit) {
-    	units = unit;
+        units = unit;
     }
 
     public float getMinValue() {
@@ -81,7 +81,7 @@ public class MTSSensor {
     }
 
     public void setMinValue(float value) {
-    	minValue = value;
+        minValue = value;
     }
 
     public float getMaxValue() {
@@ -89,6 +89,6 @@ public class MTSSensor {
     }
 
     public void setMaxValue(float value) {
-    	maxValue = value;
+        maxValue = value;
     }
 }

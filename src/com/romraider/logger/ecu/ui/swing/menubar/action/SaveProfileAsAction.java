@@ -48,7 +48,7 @@ public final class SaveProfileAsAction extends AbstractAction {
 
     private void saveProfileAs() throws Exception {
         logger.getSettings();
-		File lastProfileFile = getFile(Settings.getLoggerProfileFilePath());
+        File lastProfileFile = getFile(Settings.getLoggerProfileFilePath());
         JFileChooser fc = getProfileFileChooser(lastProfileFile);
         if (fc.showSaveDialog(logger) == APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();

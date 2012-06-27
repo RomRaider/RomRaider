@@ -29,32 +29,32 @@ import com.phidgets.event.SensorChangeEvent;
  * IntfKitRunner's data items.
  */
 public class IntfKitSensorChangeListener implements SensorChangeListener {
-	private final IntfKitRunner ikr;
+    private final IntfKitRunner ikr;
 
-	/**
-	 * Creates a new instance of IntfKitSensorChangeListener to be
-	 * registered against each PhidgetInterfaceKit opened.
-	 * @param ikr - the instance of the InterfaceKitRunner
-	 */
+    /**
+     * Creates a new instance of IntfKitSensorChangeListener to be
+     * registered against each PhidgetInterfaceKit opened.
+     * @param ikr - the instance of the InterfaceKitRunner
+     */
     public IntfKitSensorChangeListener(IntfKitRunner ikr) {
-    	this.ikr = ikr;
+        this.ikr = ikr;
     }
 
-	/**
-	 * Handles the sensor change, isolates the serial number, sensor
-	 * number and value then calls to the InterfaceKitRunner to 
-	 * update the matching data item.
-	 * @param sensorChangeEvent - the event from the Phidget device
-	 */
+    /**
+     * Handles the sensor change, isolates the serial number, sensor
+     * number and value then calls to the InterfaceKitRunner to 
+     * update the matching data item.
+     * @param sensorChangeEvent - the event from the Phidget device
+     */
     public void sensorChanged(final SensorChangeEvent sensorChangeEvent) {
-    	try {
-			ikr.updateDataItem(
-					sensorChangeEvent.getSource().getSerialNumber(),
-					sensorChangeEvent.getIndex(),
-					sensorChangeEvent.getValue());
-    	}
-		catch (PhidgetException e) {
-			ikr.updateDataItem(-1, -1, -1);
-		}
+        try {
+            ikr.updateDataItem(
+                    sensorChangeEvent.getSource().getSerialNumber(),
+                    sensorChangeEvent.getIndex(),
+                    sensorChangeEvent.getValue());
+        }
+        catch (PhidgetException e) {
+            ikr.updateDataItem(-1, -1, -1);
+        }
     }
 }

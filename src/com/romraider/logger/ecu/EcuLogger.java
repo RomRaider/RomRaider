@@ -200,10 +200,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String ECU_TEXT = "Engine Control Unit Polling";
     private static final String TCU_TEXT = "Transmission Control Unit Polling";
     private static final String[] LOG_FILE_TEXT = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
-    											 "4th PT","5th PT","6th PT",
-		 										 "1st WOT","2nd WOT","3rd WOT",
-    											 "4th WOT","5th WOT","6th WOT",
-    											 "cruising"};
+                                                 "4th PT","5th PT","6th PT",
+                                                  "1st WOT","2nd WOT","3rd WOT",
+                                                 "4th WOT","5th WOT","6th WOT",
+                                                 "cruising"};
     private static final String TOGGLE_LIST_TT_TEXT = "Hides the parameter list and saves the state on exit (F11)";
     private static final String UNSELECT_ALL_TT_TEXT = "Un-select all selected parameters/switches on all tabs! (F9)";
     private static final byte ECU_ID = (byte) 0x10;
@@ -283,44 +283,44 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         Logger.getRootLogger().setLevel((Level) Level.toLevel(settings.getLoggerDebuggingLevel()));
         if (ecuEditor == null) {
             JProgressBar progressBar = startbar();
-	        bootstrap();
-	        progressBar.setValue(20);
-	        startText.setText(" Loading ECU Defs...");
-	        loadEcuDefs();
-	        progressBar.setValue(40);
-	        startText.setText(" Loading Plugins...");
-	        progressBar.setIndeterminate(true);
-	        loadLoggerPlugins();
-	        progressBar.setIndeterminate(false);
-	        progressBar.setValue(60);
-	        startText.setText(" Loading ECU Parameters...");
-	        loadLoggerParams();
-	        progressBar.setValue(80);
-	        startText.setText(" Starting Logger...");
-	        initControllerListeners();
-	        initUserInterface();
-	        progressBar.setValue(100);
-	        initDataUpdateHandlers();
-	        startPortRefresherThread();
-	        if (!isLogging()) startLogging();
-	        startStatus.dispose();
+            bootstrap();
+            progressBar.setValue(20);
+            startText.setText(" Loading ECU Defs...");
+            loadEcuDefs();
+            progressBar.setValue(40);
+            startText.setText(" Loading Plugins...");
+            progressBar.setIndeterminate(true);
+            loadLoggerPlugins();
+            progressBar.setIndeterminate(false);
+            progressBar.setValue(60);
+            startText.setText(" Loading ECU Parameters...");
+            loadLoggerParams();
+            progressBar.setValue(80);
+            startText.setText(" Starting Logger...");
+            initControllerListeners();
+            initUserInterface();
+            progressBar.setValue(100);
+            initDataUpdateHandlers();
+            startPortRefresherThread();
+            if (!isLogging()) startLogging();
+            startStatus.dispose();
         }
         else {
-	        bootstrap();
-	        ecuEditor.statusPanel.update("Loading ECU Defs...", 20);
-	        loadEcuDefs();
-	        ecuEditor.statusPanel.update("Loading Plugins...", 40);
-	        loadLoggerPlugins();
-	        ecuEditor.statusPanel.update("Loading ECU Parameters...", 60);
-	        loadLoggerParams();
-	        ecuEditor.statusPanel.update("Starting Logger...", 80);
-	        initControllerListeners();
-	        initUserInterface();
-	        ecuEditor.statusPanel.update("Complete...", 100);
-	        initDataUpdateHandlers();
-	        startPortRefresherThread();
-	        if (!isLogging()) startLogging();
-    	}
+            bootstrap();
+            ecuEditor.statusPanel.update("Loading ECU Defs...", 20);
+            loadEcuDefs();
+            ecuEditor.statusPanel.update("Loading Plugins...", 40);
+            loadLoggerPlugins();
+            ecuEditor.statusPanel.update("Loading ECU Parameters...", 60);
+            loadLoggerParams();
+            ecuEditor.statusPanel.update("Starting Logger...", 80);
+            initControllerListeners();
+            initUserInterface();
+            ecuEditor.statusPanel.update("Complete...", 100);
+            initDataUpdateHandlers();
+            startPortRefresherThread();
+            if (!isLogging()) startLogging();
+        }
     }
 
     private void bootstrap() {
@@ -492,17 +492,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 if (target.equals("ECU")) initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
                 settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
                 if (dataLoader.getDefVersion() == null) {
-                	defVersion = "na";
+                    defVersion = "na";
                 }
                 else {
-                	defVersion = dataLoader.getDefVersion();
+                    defVersion = dataLoader.getDefVersion();
                 }
                 loadResult = String.format(
-                		"%sloaded %d parameters, %d switches from def version %s.",
-                		loadResult,
-                		ecuParams.size(),
-                		dataLoader.getEcuSwitches().size(),
-                		defVersion);
+                        "%sloaded %d parameters, %d switches from def version %s.",
+                        loadResult,
+                        ecuParams.size(),
+                        dataLoader.getEcuSwitches().size(),
+                        defVersion);
                 LOGGER.info(loadResult);
             } catch (ConfigurationException cfe) {
                 reportError(cfe);
@@ -633,10 +633,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private void addExternalConvertorUpdateListeners(List<ExternalData> externalDatas) {
         for (ExternalData externalData : externalDatas) {
-        	externalData.addConvertorUpdateListener(fileUpdateHandler);
-        	externalData.addConvertorUpdateListener(liveDataUpdateHandler);
-        	externalData.addConvertorUpdateListener(graphUpdateHandler);
-        	externalData.addConvertorUpdateListener(dashboardUpdateHandler);
+            externalData.addConvertorUpdateListener(fileUpdateHandler);
+            externalData.addConvertorUpdateListener(liveDataUpdateHandler);
+            externalData.addConvertorUpdateListener(graphUpdateHandler);
+            externalData.addConvertorUpdateListener(dashboardUpdateHandler);
         }
     }
 
@@ -691,7 +691,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             try {
                 List<? extends ExternalDataItem> dataItems = dataSource.getDataItems();
                 for (ExternalDataItem item : dataItems) {
-                	externalDatas.add(new ExternalDataImpl(item, dataSource));
+                    externalDatas.add(new ExternalDataImpl(item, dataSource));
                 }
             } catch (Exception e) {
                 reportError("Error loading plugin: " + dataSource.getName() + " v" + dataSource.getVersion(), e);
@@ -826,7 +826,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         List<ParameterRow> rows = paramListTableModel.getParameterRows();
         for (ParameterRow row : rows) {
             if (row.isSelected()) {
-            	row.getLoggerData().setSelected(false);
+                row.getLoggerData().setSelected(false);
                 row.setSelected(false);
                 paramListTableModel.selectParam(row.getLoggerData(), false);
             }
@@ -853,23 +853,23 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             private static final long serialVersionUID = 723232894767995265L;
 
             public void actionPerformed(ActionEvent e) {
-            	try {
-	            	clearAllSelectedParameters(dataTabParamListTableModel);
-	            	clearAllSelectedParameters(dataTabSwitchListTableModel);
-	            	clearAllSelectedParameters(dataTabExternalListTableModel);
-	            	clearAllSelectedParameters(graphTabParamListTableModel);
-	            	clearAllSelectedParameters(graphTabSwitchListTableModel);
-	            	clearAllSelectedParameters(graphTabExternalListTableModel);
-	            	clearAllSelectedParameters(dashboardTabParamListTableModel);
-	            	clearAllSelectedParameters(dashboardTabSwitchListTableModel);
-	            	clearAllSelectedParameters(dashboardTabExternalListTableModel);
-            	}
-            	catch (Exception cae) {
-            		LOGGER.error("Un-select ALL error: " + cae);
-            	}
-            	finally {
-            		LOGGER.info("Un-select all parameters by user action");
-            	}
+                try {
+                    clearAllSelectedParameters(dataTabParamListTableModel);
+                    clearAllSelectedParameters(dataTabSwitchListTableModel);
+                    clearAllSelectedParameters(dataTabExternalListTableModel);
+                    clearAllSelectedParameters(graphTabParamListTableModel);
+                    clearAllSelectedParameters(graphTabSwitchListTableModel);
+                    clearAllSelectedParameters(graphTabExternalListTableModel);
+                    clearAllSelectedParameters(dashboardTabParamListTableModel);
+                    clearAllSelectedParameters(dashboardTabSwitchListTableModel);
+                    clearAllSelectedParameters(dashboardTabExternalListTableModel);
+                }
+                catch (Exception cae) {
+                    LOGGER.error("Un-select ALL error: " + cae);
+                }
+                finally {
+                    LOGGER.info("Un-select all parameters by user action");
+                }
             }
         });
         return button;
@@ -897,20 +897,20 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
             public void actionPerformed(ActionEvent e) {
                 int current = splitPane.getDividerLocation();
-            	if (toggleListButton.isSelected()) {
-                	splitPane.setDividerLocation(size);
-                	settings.setLoggerParameterListState(true);
+                if (toggleListButton.isSelected()) {
+                    splitPane.setDividerLocation(size);
+                    settings.setLoggerParameterListState(true);
                 }
                 else {
                     splitPane.setDividerLocation(min);
                     size = current;
-                	settings.setLoggerParameterListState(false);
+                    settings.setLoggerParameterListState(false);
                 }
             }
         });
 
         if (!settings.getLoggerParameterListState()) {
-        	toggleListButton.doClick();
+            toggleListButton.doClick();
         }
 
         JPanel tabControlPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 1, 1));
@@ -1041,24 +1041,24 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private Component buildFileNameExtention() {
-    	JLabel fileNameLabel = new JLabel("Logfile Text");
-    	final JTextField fileNameExtention = new JTextField("",8);
-    	fileNameExtention.setToolTipText(FILE_NAME_EXTENTION);
-    	fileNameExtention.addFocusListener(new FocusListener() {
-			public void focusGained(FocusEvent arg0) {
-			}
+        JLabel fileNameLabel = new JLabel("Logfile Text");
+        final JTextField fileNameExtention = new JTextField("",8);
+        fileNameExtention.setToolTipText(FILE_NAME_EXTENTION);
+        fileNameExtention.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent arg0) {
+            }
 
-			public void focusLost(FocusEvent arg0) {
-				settings.setLogfileNameText(fileNameExtention.getText());
-			}
+            public void focusLost(FocusEvent arg0) {
+                settings.setLogfileNameText(fileNameExtention.getText());
+            }
           });
-    	
-    	JPopupMenu fileNamePopup = new JPopupMenu();
+        
+        JPopupMenu fileNamePopup = new JPopupMenu();
         JMenuItem ecuIdItem = new JMenuItem("Use Current " + target + " ID");
         ecuIdItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	fileNameExtention.setText(ecuInit.getEcuId());
-				settings.setLogfileNameText(fileNameExtention.getText());
+                fileNameExtention.setText(ecuInit.getEcuId());
+                settings.setLogfileNameText(fileNameExtention.getText());
             }
           });
         fileNamePopup.add(ecuIdItem);
@@ -1068,8 +1068,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             if (item.endsWith("WOT")) ecuIdItem.setToolTipText("Wide Open Throttle");
             ecuIdItem.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                	fileNameExtention.setText(item.replaceAll(" ", "_"));
-    				settings.setLogfileNameText(fileNameExtention.getText());
+                    fileNameExtention.setText(item.replaceAll(" ", "_"));
+                    settings.setLogfileNameText(fileNameExtention.getText());
                 }
               });
             fileNamePopup.add(ecuIdItem);
@@ -1077,12 +1077,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         ecuIdItem = new JMenuItem("Clear Logfile Text");
         ecuIdItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	fileNameExtention.setText("");
-				settings.setLogfileNameText(fileNameExtention.getText());
+                fileNameExtention.setText("");
+                settings.setLogfileNameText(fileNameExtention.getText());
             }
           });
         fileNamePopup.add(ecuIdItem);
-    	fileNameExtention.addMouseListener(new LogFileNameFieldAction(fileNamePopup));
+        fileNameExtention.addMouseListener(new LogFileNameFieldAction(fileNamePopup));
 
         JPanel panel = new JPanel();
         panel.add(fileNameLabel);
@@ -1134,29 +1134,29 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         tcuCheckBox.setToolTipText(TCU_TEXT);
         ecuCheckBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-            	stopLogging();
-            	tcuCheckBox.setSelected(false);
-            	setTargetEcu();
-            	startLogging();
+                stopLogging();
+                tcuCheckBox.setSelected(false);
+                setTargetEcu();
+                startLogging();
             }
         });
         tcuCheckBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-            	stopLogging();
-            	ecuCheckBox.setSelected(false);
-            	setTargetTcu();
-            	startLogging();
+                stopLogging();
+                ecuCheckBox.setSelected(false);
+                setTargetTcu();
+                startLogging();
             }
         });
         if (settings.getDestinationId() == 0x10) {
-        	ecuCheckBox.setSelected(true);
-        	tcuCheckBox.setSelected(false);
-        	setTargetEcu();
+            ecuCheckBox.setSelected(true);
+            tcuCheckBox.setSelected(false);
+            setTargetEcu();
         }
         else {
-        	tcuCheckBox.setSelected(true);
-        	ecuCheckBox.setSelected(false);
-        	setTargetTcu();
+            tcuCheckBox.setSelected(true);
+            ecuCheckBox.setSelected(false);
+            setTargetTcu();
         }
 
         comboBoxPanel.add(ecuCheckBox);
@@ -1196,21 +1196,21 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void setTargetEcu() {
-    	settings.setDestinationId(ECU_ID);
-    	target = "ECU";
+        settings.setDestinationId(ECU_ID);
+        target = "ECU";
     }
 
     private void setTargetTcu() {
-    	settings.setDestinationId(TCU_ID);
-    	target = "TCU";
+        settings.setDestinationId(TCU_ID);
+        target = "TCU";
     }
 
     public String getTarget() {
-    	return target;
+        return target;
     }
 
     public String getDefVersion() {
-    	return defVersion;
+        return defVersion;
     }
 
     public void restartLogging() {
@@ -1273,7 +1273,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private void selectTab(int tabIndex) {
         int count = tabbedPane.getComponentCount();
         if (tabIndex >= 0 && tabIndex < count)
-        	tabbedPane.setSelectedIndex(tabIndex);
+            tabbedPane.setSelectedIndex(tabIndex);
     }
 
     public void windowOpened(WindowEvent windowEvent) {
@@ -1354,14 +1354,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         settings.setLoggerWindowSize(getSize());
         settings.setLoggerWindowLocation(getLocation());
         if (settings.getLoggerParameterListState()) {
-    		final Component c = tabbedPane.getSelectedComponent();
-    		final JSplitPane sp = (JSplitPane) c.getComponentAt(100, 100);
-        	settings.setLoggerDividerLocation(sp.getDividerLocation());
+            final Component c = tabbedPane.getSelectedComponent();
+            final JSplitPane sp = (JSplitPane) c.getComponentAt(100, 100);
+            settings.setLoggerDividerLocation(sp.getDividerLocation());
         }
         settings.setLoggerSelectedTabIndex(tabbedPane.getSelectedIndex());
         settings.setLoggerPluginPorts(getPluginPorts(externalDataSources));
         try {
-        	new SettingsManagerImpl().save(settings);
+            new SettingsManagerImpl().save(settings);
             LOGGER.debug("Logger settings saved");
         } catch (Exception e) {
             LOGGER.warn("Error saving logger settings:", e);
@@ -1378,7 +1378,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void cleanUpUpdateHandlers() {
-    	fileUpdateHandler.cleanUp();
+        fileUpdateHandler.cleanUp();
         dataHandlerManager.cleanUp();
         graphHandlerManager.cleanUp();
         dashboardHandlerManager.cleanUp();
@@ -1454,17 +1454,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
-	public void setRefreshMode(boolean refreshMode) {
-		settings.setRefreshMode(refreshMode);
-       	refresher.setRefreshMode(refreshMode);
-	}
+    public void setRefreshMode(boolean refreshMode) {
+        settings.setRefreshMode(refreshMode);
+           refresher.setRefreshMode(refreshMode);
+    }
 
-	private JProgressBar startbar() {
-		startStatus = new JWindow();
-    	startStatus.setAlwaysOnTop(true);
-    	startStatus.setLocation(
-    			(int)(settings.getLoggerWindowSize().getWidth()/2 + settings.getLoggerWindowLocation().getX() - 150),
-    			(int)(settings.getLoggerWindowSize().getHeight()/2 + settings.getLoggerWindowLocation().getY() - 36));
+    private JProgressBar startbar() {
+        startStatus = new JWindow();
+        startStatus.setAlwaysOnTop(true);
+        startStatus.setLocation(
+                (int)(settings.getLoggerWindowSize().getWidth()/2 + settings.getLoggerWindowLocation().getX() - 150),
+                (int)(settings.getLoggerWindowSize().getHeight()/2 + settings.getLoggerWindowLocation().getY() - 36));
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
         progressBar.setIndeterminate(false);
@@ -1478,8 +1478,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         startStatus.getContentPane().add(panel);
         startStatus.pack();
         startStatus.setVisible(true);
-		return progressBar;
-	}
+        return progressBar;
+    }
 
     //**********************************************************************
 

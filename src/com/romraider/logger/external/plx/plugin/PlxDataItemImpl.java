@@ -31,11 +31,11 @@ public final class PlxDataItemImpl implements PlxDataItem {
     private int raw;
 
     public PlxDataItemImpl(String name, int instance, ExternalSensorConversions... convertorList) {
-		super();
-		this.name = name;
-		this.instance = instance;
-		convertors = new EcuDataConvertor[convertorList.length];
-		convertors = loadConvertors(this, convertors, convertorList);
+        super();
+        this.name = name;
+        this.instance = instance;
+        convertors = new EcuDataConvertor[convertorList.length];
+        convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {
@@ -47,7 +47,7 @@ public final class PlxDataItemImpl implements PlxDataItem {
     }
 
     public int getInstance() {
-    	return instance;
+        return instance;
     }
     
     public double getData() {
@@ -58,7 +58,7 @@ public final class PlxDataItemImpl implements PlxDataItem {
         this.raw = raw;
     }
 
-	public EcuDataConvertor[] getConvertors() {
-		return convertors;
-	}
+    public EcuDataConvertor[] getConvertors() {
+        return convertors;
+    }
 }

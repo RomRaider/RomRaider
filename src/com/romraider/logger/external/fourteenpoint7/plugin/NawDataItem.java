@@ -54,7 +54,7 @@ public final class NawDataItem implements ExternalDataItem, RawDataListener {
         this.bytes = bytes;
     }
 
-	public EcuDataConvertor[] getConvertors() {
-		return convertors;
-	}
+    public EcuDataConvertor[] getConvertors() {
+        return convertors;
+    }
 }

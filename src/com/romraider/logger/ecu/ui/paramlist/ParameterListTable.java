@@ -42,12 +42,12 @@ public final class ParameterListTable extends JTable {
         this.tableModel = tableModel;
         this.getTableHeader().setReorderingAllowed(false);
         for (int column = 0; column < tableModel.getColumnCount(); column++) {
-	        if (tableModel.getColumnName(2).equalsIgnoreCase("units")) {
-	        	setColumnSortable(column, false);
-	        }
-	        else {
-		        setColumnSortable(column, true);
-	        }
+            if (tableModel.getColumnName(2).equalsIgnoreCase("units")) {
+                setColumnSortable(column, false);
+            }
+            else {
+                setColumnSortable(column, true);
+            }
         }
     }
 
@@ -81,7 +81,7 @@ public final class ParameterListTable extends JTable {
                 return true;
         }
         if (ExternalData.class.isAssignableFrom(value.getClass())) {
-        	ExternalData externalData = (ExternalData) value;
+            ExternalData externalData = (ExternalData) value;
             if (externalData.getConvertors().length > 1)
                 return true;
         }
@@ -89,9 +89,9 @@ public final class ParameterListTable extends JTable {
     }
 
     private void setColumnSortable(int column, boolean state) {
-    	TableRowSorter<ParameterListTableModel> sorter =
-    		new TableRowSorter<ParameterListTableModel>(tableModel);
-    	sorter.setSortable(column, state);
-    	setRowSorter(sorter);
+        TableRowSorter<ParameterListTableModel> sorter =
+            new TableRowSorter<ParameterListTableModel>(tableModel);
+        sorter.setSortable(column, state);
+        setRowSorter(sorter);
     }
 }

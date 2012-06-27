@@ -40,8 +40,8 @@ public enum MTSSensorInputType {
 
    public static MTSSensorInputType valueOf(int inputType) {
         for (MTSSensorInputType type : values()) {
-            	if (type.getType() == inputType)
-            			return type;
+                if (type.getType() == inputType)
+                        return type;
         }
         return null;
     }

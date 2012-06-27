@@ -76,7 +76,7 @@ public final class ZT2Runner implements Stoppable {
                             }
                             break;
                         case 6:
-                        	dataItem = dataItems.get(EGT);
+                            dataItem = dataItems.get(EGT);
                             if (dataItem != null) {
                                 int raw1 = asUnsignedInt(buffer.get(4));
                                 int raw2 = asUnsignedInt(buffer.get(5));
@@ -84,7 +84,7 @@ public final class ZT2Runner implements Stoppable {
                             }
                             break;
                         case 8:
-                        	dataItem = dataItems.get(ENGINE_SPEED);
+                            dataItem = dataItems.get(ENGINE_SPEED);
                             if (dataItem != null) {
                                 int raw1 = asUnsignedInt(buffer.get(6));
                                 int raw2 = asUnsignedInt(buffer.get(7));
@@ -92,7 +92,7 @@ public final class ZT2Runner implements Stoppable {
                             }
                             break;
                         case 10:
-                        	dataItem = dataItems.get(MAP);
+                            dataItem = dataItems.get(MAP);
                             if (dataItem != null) {
                                 int raw1 = asUnsignedInt(buffer.get(8));
                                 int raw2 = asUnsignedInt(buffer.get(9));
@@ -100,14 +100,14 @@ public final class ZT2Runner implements Stoppable {
                             }
                             break;
                         case 11:
-                        	dataItem = dataItems.get(TPS);
+                            dataItem = dataItems.get(TPS);
                             if (dataItem != null) {
                                 int raw = asUnsignedInt(buffer.get(10));
                                 dataItem.setRaw(raw);
                             }
                             break;
                         case 12:
-                        	dataItem = dataItems.get(USER1);
+                            dataItem = dataItems.get(USER1);
                             if (dataItem != null) {
                                 int raw = asUnsignedInt(buffer.get(11));
                                 dataItem.setRaw(raw);
@@ -123,7 +123,7 @@ public final class ZT2Runner implements Stoppable {
                     packetStarted = false;
                 }
             }
-    		connection.close();
+            connection.close();
         } catch (Throwable t) {
             LOGGER.error("ZT2 error occurred", t);
         } finally {

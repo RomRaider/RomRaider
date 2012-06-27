@@ -33,7 +33,7 @@ public final class ReloadProfileAction extends AbstractAction {
     public void actionPerformed(ActionEvent actionEvent) {
         try {
             logger.getSettings();
-			logger.loadUserProfile(Settings.getLoggerProfileFilePath());
+            logger.loadUserProfile(Settings.getLoggerProfileFilePath());
         } catch (Exception e) {
             logger.reportError(e);
         }

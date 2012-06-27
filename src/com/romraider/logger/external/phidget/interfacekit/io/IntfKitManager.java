@@ -50,27 +50,27 @@ public final class IntfKitManager {
      * @throws PhidgetException
      * @throws InterruptedException
      */
-	public static Integer[] findIntfkits() {
-    	final List<Integer> serials = new ArrayList<Integer>();
+    public static Integer[] findIntfkits() {
+        final List<Integer> serials = new ArrayList<Integer>();
         try {
-        	final Manager fm = new Manager();
-        	fm.open();
-        	Thread.sleep(100);
-			@SuppressWarnings("unchecked")
-			final List<Phidget> phidgets = fm.getPhidgets();
-    		for (Phidget phidget : phidgets) {
-    			if (phidget.getDeviceType().equalsIgnoreCase(INTFKIT)) {
-    				serials.add(phidget.getSerialNumber());
-    			}
-    		}
-        	fm.close();
+            final Manager fm = new Manager();
+            fm.open();
+            Thread.sleep(100);
+            @SuppressWarnings("unchecked")
+            final List<Phidget> phidgets = fm.getPhidgets();
+            for (Phidget phidget : phidgets) {
+                if (phidget.getDeviceType().equalsIgnoreCase(INTFKIT)) {
+                    serials.add(phidget.getSerialNumber());
+                }
+            }
+            fm.close();
         }
         catch (PhidgetException e) {
-    		LOGGER.error("Phidget Manager error: " + e);
+            LOGGER.error("Phidget Manager error: " + e);
         }
         catch (InterruptedException e) {
-        	LOGGER.info("Sleep interrupted " + e);
-		}
+            LOGGER.info("Sleep interrupted " + e);
+        }
         return serials.toArray(new Integer[0]);
     }
 
@@ -80,13 +80,13 @@ public final class IntfKitManager {
      * @throws PhidgetException
      */
     public static void loadIk() {
-    	try {
-    		ik = new InterfaceKitPhidget();
-    		LOGGER.info(Phidget.getLibraryVersion());
-  	  	}
-  	  	catch (PhidgetException e) {
-  	  		LOGGER.error("InterfaceKit error: " + e);
-  	  	}
+        try {
+            ik = new InterfaceKitPhidget();
+            LOGGER.info(Phidget.getLibraryVersion());
+            }
+            catch (PhidgetException e) {
+                LOGGER.error("InterfaceKit error: " + e);
+            }
     }
 
     /**
@@ -98,32 +98,32 @@ public final class IntfKitManager {
      * @throws InterruptedException
      */
     public static String getIkName(final int serial) {
-    	String result = null;
+        String result = null;
         try {
-    		ik.open(serial);
-    		waitForAttached();
-    		try {
-    			if (ik.getDeviceType().equalsIgnoreCase(INTFKIT)) {
-       				result = String.format(
-       						"%s serial: %d",
-       						ik.getDeviceName(), 
-	    					serial);
-    			}
-    		}
-    		catch (PhidgetException e) {
-        		LOGGER.error("InterfaceKit read device error: " + e);
-    		}
-    		finally {
+            ik.open(serial);
+            waitForAttached();
+            try {
+                if (ik.getDeviceType().equalsIgnoreCase(INTFKIT)) {
+                       result = String.format(
+                               "%s serial: %d",
+                               ik.getDeviceName(), 
+                            serial);
+                }
+            }
+            catch (PhidgetException e) {
+                LOGGER.error("InterfaceKit read device error: " + e);
+            }
+            finally {
                 ik.close();
-    		}
+            }
         }
         catch (PhidgetException e) {
-    		LOGGER.error("InterfaceKit open serial error: " + e);
+            LOGGER.error("InterfaceKit open serial error: " + e);
         }
         catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return result;
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -135,54 +135,54 @@ public final class IntfKitManager {
      * @throws InterruptedException
      */
     public static Set<IntfKitSensor> getSensors(final int serial) {
-    	Set<IntfKitSensor> sensors = new HashSet<IntfKitSensor>();
+        Set<IntfKitSensor> sensors = new HashSet<IntfKitSensor>();
         try {
-    		ik.open(serial);
-    		waitForAttached();
+            ik.open(serial);
+            waitForAttached();
             try {
-	    		if (ik.isAttached()) {
-	    			if (ik.getDeviceType().equalsIgnoreCase(INTFKIT)) {
-	       				final String result = String.format(
-	       						"Plugin found: %s Serial: %d",
-	       						ik.getDeviceName(), 
-		    					serial);
-		    			LOGGER.info(result);
-		    			final int inputCount = ik.getSensorCount();
-	                	for (int i = 0; i < inputCount; i++) {
-	                        final IntfKitSensor sensor = new IntfKitSensor();
-	                        sensor.setInputNumber(i);
-	    					final String inputName = String.format("Sensor %d:%d",
-	    							serial,
-	    							i);
-	                        sensor.setInputName(inputName);
-	                        sensor.setUnits("raw value");
-	                        sensor.setMinValue(0);
-	                        sensor.setMaxValue(1000);
-	                        sensors.add(sensor);
-	                	}
-	    			}
-	    			else {
-		    			LOGGER.info("No InterfaceKits attached");
-	    			}
-	    		}
-	    		else {
-	    			LOGGER.info("No Phidget devices attached");
-	    		}
-    		}
-    		catch (PhidgetException e) {
-        		LOGGER.error("InterfaceKit read error: " + e);
-    		}
-    		finally {
+                if (ik.isAttached()) {
+                    if (ik.getDeviceType().equalsIgnoreCase(INTFKIT)) {
+                           final String result = String.format(
+                                   "Plugin found: %s Serial: %d",
+                                   ik.getDeviceName(), 
+                                serial);
+                        LOGGER.info(result);
+                        final int inputCount = ik.getSensorCount();
+                        for (int i = 0; i < inputCount; i++) {
+                            final IntfKitSensor sensor = new IntfKitSensor();
+                            sensor.setInputNumber(i);
+                            final String inputName = String.format("Sensor %d:%d",
+                                    serial,
+                                    i);
+                            sensor.setInputName(inputName);
+                            sensor.setUnits("raw value");
+                            sensor.setMinValue(0);
+                            sensor.setMaxValue(1000);
+                            sensors.add(sensor);
+                        }
+                    }
+                    else {
+                        LOGGER.info("No InterfaceKits attached");
+                    }
+                }
+                else {
+                    LOGGER.info("No Phidget devices attached");
+                }
+            }
+            catch (PhidgetException e) {
+                LOGGER.error("InterfaceKit read error: " + e);
+            }
+            finally {
                 ik.close();
-    		}
+            }
         }
         catch (PhidgetException e) {
-    		LOGGER.error("InterfaceKit open error: " + e);
+            LOGGER.error("InterfaceKit open error: " + e);
         }
         catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return sensors;
+            e.printStackTrace();
+        }
+        return sensors;
     }
 
     /**
@@ -192,10 +192,10 @@ public final class IntfKitManager {
      * @throws InterruptedException
      */
     private static void waitForAttached()
-    		throws InterruptedException, PhidgetException {
+            throws InterruptedException, PhidgetException {
         final long timeout = currentTimeMillis() + 500L;
         do {
-			Thread.sleep(50);
+            Thread.sleep(50);
         } while (!ik.isAttached() && (currentTimeMillis() < timeout));
     }
 }

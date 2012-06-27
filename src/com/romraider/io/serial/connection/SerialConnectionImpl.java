@@ -127,11 +127,11 @@ public final class SerialConnectionImpl implements SerialConnection {
         if (available() <= 0) return;
         final long end = currentTimeMillis() + 100L;
         do {
-        	byte[] staleBytes = readAvailable();
+            byte[] staleBytes = readAvailable();
             LOGGER.debug("Stale data read: " + asHex(staleBytes));
             sleep(2);
         } while (  (available() > 0)
-        		&& (currentTimeMillis() <= end));
+                && (currentTimeMillis() <= end));
     }
 
     public void close() {
@@ -144,7 +144,7 @@ public final class SerialConnectionImpl implements SerialConnection {
         }
         if (reader != null) {
             try {
-            	//readStaleData();
+                //readStaleData();
                 reader.close();
             } catch (IOException e) {
                 LOGGER.error("Error closing input stream reader", e);
@@ -152,7 +152,7 @@ public final class SerialConnectionImpl implements SerialConnection {
         }
         if (is != null) {
             try {
-            	//readStaleData();
+                //readStaleData();
                 is.close();
             } catch (IOException e) {
                 LOGGER.error("Error closing input stream", e);
@@ -170,7 +170,7 @@ public final class SerialConnectionImpl implements SerialConnection {
 
     public void sendBreak(int duration) {
         try {
-        	serialPort.sendBreak(duration);
+            serialPort.sendBreak(duration);
         } catch (Exception e) {
             throw new SerialCommunicationException(e);
         }

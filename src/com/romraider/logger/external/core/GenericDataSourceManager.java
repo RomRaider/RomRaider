@@ -73,7 +73,7 @@ public final class GenericDataSourceManager implements ExternalDataSource {
         return dataSource.getPort();
     }
 
-	public synchronized void connect() {
+    public synchronized void connect() {
         if (connectCount++ == 0) doConnect();
         LOGGER.trace("Connect count [" + dataSource.getName() + "]: " + connectCount);
     }
@@ -91,10 +91,10 @@ public final class GenericDataSourceManager implements ExternalDataSource {
     }
 
     private void doDisconnect() {
-    	if (dataSource.getPort() == null) return;
+        if (dataSource.getPort() == null) return;
         try {
             String message = String.format("%s: disconnecting port %s",
-            		dataSource.getName(), dataSource.getPort());
+                    dataSource.getName(), dataSource.getPort());
             LOGGER.info(message);
             while (!connectors.isEmpty()) connectors.remove(0).stop();
             dataSource.disconnect();
@@ -102,7 +102,7 @@ public final class GenericDataSourceManager implements ExternalDataSource {
             LOGGER.info(message);
         } catch (Exception e) {
             LOGGER.error("External Datasource [" + dataSource.getName() +
-            		"] disconnect error", e);
+                    "] disconnect error", e);
         }
     }
 

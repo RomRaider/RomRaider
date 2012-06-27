@@ -50,7 +50,7 @@ public final class IntfKitSensor {
     }
 
     public void setInputName(String name) {
-    	inputName = name;
+        inputName = name;
     }
 
     public String getUnits() {
@@ -58,7 +58,7 @@ public final class IntfKitSensor {
     }
 
     public void setUnits(String unit) {
-    	units = unit;
+        units = unit;
     }
 
     public float getMinValue() {
@@ -66,7 +66,7 @@ public final class IntfKitSensor {
     }
 
     public void setMinValue(float value) {
-    	minValue = value;
+        minValue = value;
     }
 
     public float getMaxValue() {
@@ -74,6 +74,6 @@ public final class IntfKitSensor {
     }
 
     public void setMaxValue(float value) {
-    	maxValue = value;
+        maxValue = value;
     }
 }

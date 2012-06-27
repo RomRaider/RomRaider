@@ -5,23 +5,23 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPopupMenu;
 
 public class LogFileNameFieldAction extends MouseAdapter {
-	private final JPopupMenu menu;
-	
-	public LogFileNameFieldAction(JPopupMenu menu){
-		this.menu = menu;
-	}
-	
+    private final JPopupMenu menu;
+    
+    public LogFileNameFieldAction(JPopupMenu menu){
+        this.menu = menu;
+    }
+    
     public void mousePressed(MouseEvent e) {
         ShowFieldPopup(e);
     }
 
     public void mouseReleased(MouseEvent e) {
-    	ShowFieldPopup(e);
+        ShowFieldPopup(e);
     }
 
     private void ShowFieldPopup(MouseEvent e) {
         if (e.isPopupTrigger()) {
-        	menu.show(e.getComponent(),
+            menu.show(e.getComponent(),
                        e.getX(), e.getY());
         }
     }

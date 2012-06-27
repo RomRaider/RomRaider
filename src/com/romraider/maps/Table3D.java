@@ -937,11 +937,11 @@ public class Table3D extends Table {
         return !isNullOrEmpty(xAxis.getLogParam()) && !isNullOrEmpty(yAxis.getLogParam());
     }
 
-	public boolean isButtonSelected() {
-		return true;
-	}
+    public boolean isButtonSelected() {
+        return true;
+    }
 
-	protected void highlightLiveData() {
+    protected void highlightLiveData() {
         if (overlayLog && frame.isVisible()) {
             AxisRange rangeX = getLiveDataRangeForAxis(xAxis);
             AxisRange rangeY = getLiveDataRangeForAxis(yAxis);

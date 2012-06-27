@@ -51,7 +51,7 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     public void mouseClicked(MouseEvent e) {
-    	showHideTable(e);
+        showHideTable(e);
     }
 
     private void showHideTable(MouseEvent e) {

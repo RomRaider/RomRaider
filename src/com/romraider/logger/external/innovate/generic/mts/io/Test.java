@@ -86,18 +86,18 @@ public class Test implements MTSEvents {
 
         // set the current port before attempting to connect
         for (int i = 0; i < portCount; i++) {
-	        mts.currentPort(i);
-	        String portName = mts.portName();
-	
-	        System.out.printf("Current MTS port is %d; port name = %s%n", i, portName);
-	
-	        // attempt to connect to the specified device
-	        System.out.println("connect() called.");
-	        mts.connect();
-	
-	        // show available inputs
-	        printAvailableInputs();
-	        mts.disconnect();
+            mts.currentPort(i);
+            String portName = mts.portName();
+    
+            System.out.printf("Current MTS port is %d; port name = %s%n", i, portName);
+    
+            // attempt to connect to the specified device
+            System.out.println("connect() called.");
+            mts.connect();
+    
+            // show available inputs
+            printAvailableInputs();
+            mts.disconnect();
         }
         // attempt to get data
 //        mts.currentInput(0);
@@ -128,7 +128,7 @@ public class Test implements MTSEvents {
 
         // retrieve 10 samples
 //        getSamples(10);
-       	waitFor(60000);
+           waitFor(60000);
 
         // dispose of the event handler instance
         connectionEventCookie.close();
@@ -153,25 +153,25 @@ public class Test implements MTSEvents {
     }
 
     public void newData() {
-    	int i;
-    	float data = 0f;
-    	for (i = 0; i < mts.inputCount(); i++) {
-//    		i=0;
-    		mts.currentInput(i);
-        	float min = mts.inputMinValue();
+        int i;
+        float data = 0f;
+        for (i = 0; i < mts.inputCount(); i++) {
+//            i=0;
+            mts.currentInput(i);
+            float min = mts.inputMinValue();
             float max = mts.inputMaxValue();
             float sample = mts.inputSample();
             data = ((max - min) * ((float) sample / 1024f)) + min;
-//	        float multiplier = mts.inputAFRMultiplier();
-//	        int sampleMeaning = mts.inputFunction();
-    		String str = String.format(
-        			"%d, InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f, Sample: %f, Data: %f",
-        			count, i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue(), sample, data);
+//            float multiplier = mts.inputAFRMultiplier();
+//            int sampleMeaning = mts.inputFunction();
+            String str = String.format(
+                    "%d, InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f, Sample: %f, Data: %f",
+                    count, i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue(), sample, data);
 
-	        System.out.printf("%s%n", str);
-//	        System.out.printf("newData raised for Input: %02d, Function: %d, Data: %f,\tMultiplier: %f%n", i, sampleMeaning, data, multiplier);
-	        count++;
-    	}
+            System.out.printf("%s%n", str);
+//            System.out.printf("newData raised for Input: %02d, Function: %d, Data: %f,\tMultiplier: %f%n", i, sampleMeaning, data, multiplier);
+            count++;
+        }
     }
 
     /**

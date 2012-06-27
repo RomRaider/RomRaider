@@ -20,9 +20,9 @@
 package com.romraider.util;
 
 public final class Platform {
-	public static final String LINUX = "Linux";
-	public static final String MAC_OS_X = "Mac OS X";
-	public static final String WINDOWS = "Windows";
+    public static final String LINUX = "Linux";
+    public static final String MAC_OS_X = "Mac OS X";
+    public static final String WINDOWS = "Windows";
     private static final String OS_NAME = "os.name";
     
     public static boolean isPlatform(String platform) {

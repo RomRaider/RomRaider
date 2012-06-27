@@ -360,17 +360,17 @@ public final class RamTuneTestApp extends AbstractFrame {
         final JCheckBox tcuCheckBox = new JCheckBox("TCU");
         ecuCheckBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-            	tcuCheckBox.setSelected(false);
-            	ecuId = 0x10;
+                tcuCheckBox.setSelected(false);
+                ecuId = 0x10;
              }
         });
         tcuCheckBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-            	ecuCheckBox.setSelected(false);
-            	ecuId = 0x18;
+                ecuCheckBox.setSelected(false);
+                ecuId = 0x18;
             }
         });
-    	ecuCheckBox.setSelected(true);
+        ecuCheckBox.setSelected(true);
 
         panel.add(ecuCheckBox);
         panel.add(tcuCheckBox);

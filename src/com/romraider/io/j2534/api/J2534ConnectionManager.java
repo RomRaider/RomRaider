@@ -57,29 +57,29 @@ public final class J2534ConnectionManager implements ConnectionManager {
         checkNotNull(pollState, "pollState");
 
         if (pollState.getCurrentState() == 0 && pollState.getLastState() == 1) {
-        	clearLine();
+            clearLine();
         }
 
         if (pollState.getCurrentState() == 0) {
-	        api.writeMsg(channelId, request, timeout);
+            api.writeMsg(channelId, request, timeout);
         }
         api.readMsg(channelId, response, timeout);
 
         if (pollState.getCurrentState() == 1){
-	        if (    response[0] == (byte) 0x80
-	        	&&  response[1] == (byte) 0xF0
-	        	&& (response[2] == (byte) 0x10 || response[2] == (byte) 0x18)
-	        	&&  response[3] == (response.length - 5)
-	        	&&  response[response.length - 1] == calculateChecksum(response)) {
-	
-	        	lastResponse = new byte[response.length];
-	        	arraycopy(response, 0, lastResponse, 0, response.length);
-	        }
-	        else{
+            if (    response[0] == (byte) 0x80
+                &&  response[1] == (byte) 0xF0
+                && (response[2] == (byte) 0x10 || response[2] == (byte) 0x18)
+                &&  response[3] == (response.length - 5)
+                &&  response[response.length - 1] == calculateChecksum(response)) {
+    
+                lastResponse = new byte[response.length];
+                arraycopy(response, 0, lastResponse, 0, response.length);
+            }
+            else{
                 LOGGER.error("J2534 Bad Data response: " + asHex(response));
-	        	arraycopy(lastResponse, 0, response, 0, response.length);
-	        	pollState.setNewQuery(true);
-	        }
+                arraycopy(lastResponse, 0, response, 0, response.length);
+                pollState.setNewQuery(true);
+            }
         }
     }
 
@@ -90,30 +90,30 @@ public final class J2534ConnectionManager implements ConnectionManager {
         return api.readMsg(channelId, timeout);
     }
 
-	public void clearLine() {
-    	LOGGER.debug("J2534 sending line break");
-    	api.writeMsg(channelId, new byte[] {0,0,0,0,0,0,0,0,0,0}, 100L);
-    	boolean empty = false;
+    public void clearLine() {
+        LOGGER.debug("J2534 sending line break");
+        api.writeMsg(channelId, new byte[] {0,0,0,0,0,0,0,0,0,0}, 100L);
+        boolean empty = false;
         do {
             byte[] badBytes = api.readMsg(channelId, 100L);
             if (badBytes.length > 0) {
-            	LOGGER.debug("J2534 clearing line (stale data): " + asHex(badBytes));
-            	empty = false;
+                LOGGER.debug("J2534 clearing line (stale data): " + asHex(badBytes));
+                empty = false;
             }
             else {
-            	empty = true;
+                empty = true;
             }
         } while (!empty ); 
-	}
+    }
 
-	public void close() {
+    public void close() {
         stopMsgFilter();
         disconnectChannel();
         closeDevice();
     }
 
     private void initJ2534(int baudRate, String library) {
-    	api = new J2534Impl(Protocol.ISO9141, library);
+        api = new J2534Impl(Protocol.ISO9141, library);
         deviceId = api.open();
         try {
             version(deviceId);
@@ -121,12 +121,12 @@ public final class J2534ConnectionManager implements ConnectionManager {
             setConfig(channelId);
             msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
             LOGGER.debug(String.format(
-            		"J2534 success: deviceId:%d, channelId:%d, msgId:%d",
-            		deviceId, channelId, msgId));
+                    "J2534 success: deviceId:%d, channelId:%d, msgId:%d",
+                    deviceId, channelId, msgId));
         } catch (Exception e) {
             LOGGER.debug(String.format(
-            		"J2534 exception: deviceId:%d, channelId:%d, msgId:%d",
-            		deviceId, channelId, msgId));
+                    "J2534 exception: deviceId:%d, channelId:%d, msgId:%d",
+                    deviceId, channelId, msgId));
             close();
             throw new J2534Exception("J2534 Error opening device: " + e.getMessage(), e);
         }

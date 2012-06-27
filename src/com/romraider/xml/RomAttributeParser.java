@@ -155,25 +155,25 @@ public final class RomAttributeParser {
 
     public static byte[] parseIntegerValue(int input, int endian, int length) {
         try {
-        	ByteBuffer bb = ByteBuffer.allocate(length);
-        	if (endian == ENDIAN_LITTLE) {
-        		bb.order(ByteOrder.LITTLE_ENDIAN);
-        	}
-        	switch (length) {
-        		case 1:
-        				bb.put((byte) input);
-        				break;
-        		case 2:
-						bb.putShort((short) input);
-						break;
-        		case 4:
-        				bb.putInt(input);
+            ByteBuffer bb = ByteBuffer.allocate(length);
+            if (endian == ENDIAN_LITTLE) {
+                bb.order(ByteOrder.LITTLE_ENDIAN);
+            }
+            switch (length) {
+                case 1:
+                        bb.put((byte) input);
                         break;
-			}
-			return bb.array();
+                case 2:
+                        bb.putShort((short) input);
+                        break;
+                case 4:
+                        bb.putInt(input);
+                        break;
+            }
+            return bb.array();
         }
         catch (BufferOverflowException ex) {
-        	throw new BufferOverflowException();
+            throw new BufferOverflowException();
         }
     }
 

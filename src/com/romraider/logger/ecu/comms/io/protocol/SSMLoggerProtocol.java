@@ -67,9 +67,9 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         }
         switch (pollState.getCurrentState()) {
         case 0:
-        	return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES) + (numAddresses * ADDRESS_SIZE + REQUEST_NON_DATA_BYTES)];
+            return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES) + (numAddresses * ADDRESS_SIZE + REQUEST_NON_DATA_BYTES)];
         case 1:
-        	return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES)];
+            return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES)];
         default:
             throw new UnsupportedOperationException("Poll mode not supported:" + pollState.getCurrentState());
         }

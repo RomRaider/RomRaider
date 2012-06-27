@@ -47,34 +47,34 @@ import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
  */
 public final class IntfKitDataSource implements ExternalDataSource {
     private final Map<String, IntfKitDataItem> dataItems =
-    		new HashMap<String, IntfKitDataItem>();
+            new HashMap<String, IntfKitDataItem>();
     private IntfKitRunner runner;
     private Integer[] kits;
 
     {
-    	kits = IntfKitManager.findIntfkits();
-    	if (kits.length > 0) {
-    		IntfKitManager.loadIk();
-	    	for (int serial : kits) {
-		    	final Set<IntfKitSensor> sensors = IntfKitManager.getSensors(serial);
-		    	if (!sensors.isEmpty()) {
-			    	for (IntfKitSensor sensor : sensors) {
-			    		final String inputName = String.format("%d:%d",
-			    				serial,
-			    				sensor.getInputNumber());
-			    		dataItems.put(
-			    			inputName,
-							new IntfKitDataItem(
-								sensor.getInputName(),
-								sensor.getUnits(),
-								sensor.getMinValue(),
-								sensor.getMaxValue()
-							)
-			    		);
-			    	}
-		    	}
-	    	}
-    	}
+        kits = IntfKitManager.findIntfkits();
+        if (kits.length > 0) {
+            IntfKitManager.loadIk();
+            for (int serial : kits) {
+                final Set<IntfKitSensor> sensors = IntfKitManager.getSensors(serial);
+                if (!sensors.isEmpty()) {
+                    for (IntfKitSensor sensor : sensors) {
+                        final String inputName = String.format("%d:%d",
+                                serial,
+                                sensor.getInputNumber());
+                        dataItems.put(
+                            inputName,
+                            new IntfKitDataItem(
+                                sensor.getInputName(),
+                                sensor.getUnits(),
+                                sensor.getMinValue(),
+                                sensor.getMaxValue()
+                            )
+                        );
+                    }
+                }
+            }
+        }
     }
 
     public String getId() {
@@ -90,7 +90,7 @@ public final class IntfKitDataSource implements ExternalDataSource {
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
-    	return unmodifiableList(new ArrayList<IntfKitDataItem>(dataItems.values()));
+        return unmodifiableList(new ArrayList<IntfKitDataItem>(dataItems.values()));
     }
 
     public Action getMenuAction(final EcuLogger logger) {
@@ -106,10 +106,10 @@ public final class IntfKitDataSource implements ExternalDataSource {
         if (runner != null) runner.stop();
     }
 
-	public void setPort(final String port) {
-	}
+    public void setPort(final String port) {
+    }
 
-	public String getPort() {
-		return "HID USB";
-	}
+    public String getPort() {
+        return "HID USB";
+    }
 }

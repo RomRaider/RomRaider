@@ -70,5 +70,5 @@ public final class TestInnovateConnection implements SerialConnection {
     }
 
     public void sendBreak(int duration) {
-	}
+    }
 }

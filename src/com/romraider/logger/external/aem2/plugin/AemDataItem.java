@@ -27,13 +27,13 @@ import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalSensorConversions;
 
 public final class AemDataItem implements ExternalDataItem, DataListener {
-	private EcuDataConvertor[] convertors;
+    private EcuDataConvertor[] convertors;
     private double data;
 
     public AemDataItem(ExternalSensorConversions... convertorList) {
-		super();
-		convertors = new EcuDataConvertor[convertorList.length];
-		convertors = loadConvertors(this, convertors, convertorList);
+        super();
+        convertors = new EcuDataConvertor[convertorList.length];
+        convertors = loadConvertors(this, convertors, convertorList);
     }
 
     public String getName() {
@@ -52,7 +52,7 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
         this.data = data;
     }
 
-	public EcuDataConvertor[] getConvertors() {
-		return convertors;
-	}
+    public EcuDataConvertor[] getConvertors() {
+        return convertors;
+    }
 }

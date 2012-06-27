@@ -32,7 +32,7 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
     private double data;
 
     public AemDataItem(final String name, final ExternalSensorConversions... convertorList) {
-    	super();
+        super();
         this.name = name;
         convertors = new EcuDataConvertor[convertorList.length];
         convertors = loadConvertors(this, convertors, convertorList);
@@ -54,7 +54,7 @@ public final class AemDataItem implements ExternalDataItem, DataListener {
         this.data = data;
     }
 
-	public EcuDataConvertor[] getConvertors() {
-		return convertors;
-	}
+    public EcuDataConvertor[] getConvertors() {
+        return convertors;
+    }
 }

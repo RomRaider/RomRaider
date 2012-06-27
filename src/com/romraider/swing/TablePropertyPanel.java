@@ -36,10 +36,10 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         realToByte.setText(table.getScale().getByteExpression());
         String intType;
         if (table.isSignedData()) {
-        	intType = "int";
+            intType = "int";
         }
         else {
-        	intType = "uint";
+            intType = "uint";
         }
         storageSize.setText(intType + (table.getStorageType() * 8));
         storageAddress.setText("0x" + Integer.toHexString(table.getStorageAddress()));

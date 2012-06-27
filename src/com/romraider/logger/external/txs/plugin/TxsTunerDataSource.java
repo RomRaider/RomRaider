@@ -44,63 +44,63 @@ import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.txs.io.TxsRunner;
 
 public class TxsTunerDataSource implements ExternalDataSource {
-	
-	private static final String LOGGER = "1";
-	private static final String DEVICE = "t";
-	private static final String DEVICE_NAME = "TXS Tuner ";
-	private static final int TUNER_LITE_AFR = 0;
-	private static final int TUNER_PRO_RPM = 0;
-	private static final int TUNER_PRO_AFR = 1;
-	private static final int TUNER_PRO_KNOCK = 11;
-		
-	private final HashMap<Integer, TxsDataItem> dataItems =
-					new HashMap<Integer, TxsDataItem>();
-	private TxsRunner runner;
-	private String port;
-	
-	{
-		dataItems.put(TUNER_LITE_AFR, 	new TxsDataItem(DEVICE_NAME + "Lite AFR", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-		dataItems.put(TUNER_PRO_RPM, 	new TxsDataItem(DEVICE_NAME + "Pro Knock", TXS_RPM));
-		dataItems.put(TUNER_PRO_AFR, 	new TxsDataItem(DEVICE_NAME + "Pro AFR", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-		dataItems.put(TUNER_PRO_KNOCK, 	new TxsDataItem(DEVICE_NAME + "Pro Knock", TXS_KNOCK));
-	}
-	
-	public String getId() {
-		return getClass().getName();
-	}
-	
-	public String getName() {
-		return DEVICE_NAME + "Logger";
-	}
-	
-	public String getVersion() {
-		return "0.01";
-	}
-	
-	public List<? extends ExternalDataItem> getDataItems() {
-		return unmodifiableList(new ArrayList<TxsDataItem>(dataItems.values()));
-	}
-	
-	public Action getMenuAction(EcuLogger logger) {
-		return null;
-	}
-	
-	public void setPort(String port) {
-		this.port = port;
-	}
-	
-	public String getPort() {
-		return port;
-	}
-	
-	public void connect() {
-		runner = new TxsRunner(port, dataItems, LOGGER, DEVICE);
-		runAsDaemon(runner);
-	}
-	
-	public void disconnect() {
-		if(runner!=null) {
-			runner.stop();
-		}
-	}
+    
+    private static final String LOGGER = "1";
+    private static final String DEVICE = "t";
+    private static final String DEVICE_NAME = "TXS Tuner ";
+    private static final int TUNER_LITE_AFR = 0;
+    private static final int TUNER_PRO_RPM = 0;
+    private static final int TUNER_PRO_AFR = 1;
+    private static final int TUNER_PRO_KNOCK = 11;
+        
+    private final HashMap<Integer, TxsDataItem> dataItems =
+                    new HashMap<Integer, TxsDataItem>();
+    private TxsRunner runner;
+    private String port;
+    
+    {
+        dataItems.put(TUNER_LITE_AFR,     new TxsDataItem(DEVICE_NAME + "Lite AFR", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+        dataItems.put(TUNER_PRO_RPM,     new TxsDataItem(DEVICE_NAME + "Pro Knock", TXS_RPM));
+        dataItems.put(TUNER_PRO_AFR,     new TxsDataItem(DEVICE_NAME + "Pro AFR", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+        dataItems.put(TUNER_PRO_KNOCK,     new TxsDataItem(DEVICE_NAME + "Pro Knock", TXS_KNOCK));
+    }
+    
+    public String getId() {
+        return getClass().getName();
+    }
+    
+    public String getName() {
+        return DEVICE_NAME + "Logger";
+    }
+    
+    public String getVersion() {
+        return "0.01";
+    }
+    
+    public List<? extends ExternalDataItem> getDataItems() {
+        return unmodifiableList(new ArrayList<TxsDataItem>(dataItems.values()));
+    }
+    
+    public Action getMenuAction(EcuLogger logger) {
+        return null;
+    }
+    
+    public void setPort(String port) {
+        this.port = port;
+    }
+    
+    public String getPort() {
+        return port;
+    }
+    
+    public void connect() {
+        runner = new TxsRunner(port, dataItems, LOGGER, DEVICE);
+        runAsDaemon(runner);
+    }
+    
+    public void disconnect() {
+        if(runner!=null) {
+            runner.stop();
+        }
+    }
 }

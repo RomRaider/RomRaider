@@ -27,7 +27,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public final class LoggerDebuggingLevelAction extends AbstractAction {
-	private String level;
+    private String level;
 
     public LoggerDebuggingLevelAction(EcuLogger logger, String level) {
         super(logger);
@@ -36,8 +36,8 @@ public final class LoggerDebuggingLevelAction extends AbstractAction {
 
     public void actionPerformed(ActionEvent actionEvent) {
         try {
-       		Logger.getRootLogger().setLevel((Level) Level.toLevel(level));
-    		logger.getSettings().setLoggerDebuggingLevel(level.toLowerCase());
+               Logger.getRootLogger().setLevel((Level) Level.toLevel(level));
+            logger.getSettings().setLoggerDebuggingLevel(level.toLowerCase());
         } catch (Exception e) {
             logger.reportError(e);
         }
