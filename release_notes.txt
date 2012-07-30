@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.4 Beta RC1 -
+                    - RomRaider 0.5.5 SNAPSHOT -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -31,6 +31,85 @@ official RomRaider FAQ can be found at
 http://www.romraider.com/about444.html. Please be aware that as
 RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
+
+-------------------------------------
+- 0.5.5 SNAPSHOT Notes (07/29/2012) -
+-------------------------------------
+This is the latest SNAPSHOT release of the RomRaider from the GitHub repo.
+
+-------------------------------
+- 0.5.5 SNAPSHOT Known Issues -
+-------------------------------
+- Editor
+  - Pasting table data can cause hangs under certain circumstances
+- Logger
+  - Pressing the Logger Connect button twice may start a second QueryManger
+    instance which will continually try to connect to the ECU while the first
+    instance is running.  Press Disconnect and then Connect just one time to
+    clear the condition
+  - Gauge min/max/step limits incomplete in logger.xml
+  - ECU connections under Linux are flaky (start the logger after
+      you've started the engine)
+  - Update latency via injector tab broken for some models (eg. 2007 2.5i)
+
+--------------
+- Change Log -
+--------------
+
+0.5.5 SNAPSHOT (07/29/2012)
+---------------------------
+
+--- Logger ---
+- Minimum Java version 1.6 (x86) required
+- Changed LM-2 MTS plugin from event based data reads to fixed interval data
+  reads
+- TXS plugin refactored to include Tuner Pro by nitros@romraider.forum
+- Added AEM X-Wifi Controller external plugin
+- Added Phidgets InterfaceKit external plugin
+- J2534 API updated to remove dependency on J/Invoke
+- J2534 API refactored to use JNA 3.4.0
+- Removed OpenPort 2.0 specific package (op20) as it is now supported in
+  the J2534 API
+- J2534 API supports searching all available devices and if none found will
+  default to serial. J2534 settings are stored and loaded through the
+  settings file
+- Including com4j-x86.dll to ensure it is present in the install directory
+  to avoid write permission issues on Win7
+- Created a new J2534DllLocator class based on JNA and removed third-party
+  registry Jar
+- Added extra LOGGER.debug statements to assist with troubleshooting
+- Corrected serial connection close() call in all serial plug-ins as
+  exceptions were being thrown
+- Changed QueryManager logic to try and deal with duplicate log entries
+  caused by high speed logging, it may still need some work
+- Added Logger definition version to Help->About menu
+- Updated Dyno control panel to look for cars_def.xml & .dtd in three
+  possible locations:
+    1 - the directory where the logger.xml file lives (preferred location)
+    2 - the directory where the user stores their logging profiles
+    3 - the RomRaider installation directory
+- Fixed up the Parameter List Show/Hide state when opening the Logger
+  such that the list on each tab is set the same as the last selected
+  tab's state
+
+--- Editor ---
+- Fixed Test App's ability to walk through addresses and cross the
+  0xf7fff 0xf8000 boundary correctly
+- scotthew@romraider.forum Added the ability to compare all tables in two
+  ROM images
+  Usage:
+    - Open one or more ROM images (The same image can be compared to itself.
+        Will not do much but show "Images are equal.")
+    - Select Edit->Compare Images...
+    - Select the two images to compare and click the compare button
+    - Results are displayed in the results pane
+- scotthew@romraider.forum Added ability to save as repository.  This
+   basically dumps the tables into a file structure represented by the
+   categories and saves the tables as a text file.  Use this for tracking
+   changes made to ROMs using a revision control system.
+- scotthew@romraider.forum Added ability to change the clipboard format.
+  Options are Default, Airboy's, and Custom. Custom formats are specified
+  in the settings.xml file
 
 
 ---------------------------------
