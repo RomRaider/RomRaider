@@ -1,4 +1,4 @@
-                    - RomRaider 0.5.5 SNAPSHOT -
+                - RomRaider 0.5.5 SNAPSHOT 86b338 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -32,14 +32,14 @@ http://www.romraider.com/about444.html. Please be aware that as
 RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
--------------------------------------
-- 0.5.5 SNAPSHOT Notes (07/29/2012) -
--------------------------------------
+--------------------------------------------
+- 0.5.5 SNAPSHOT 86b338 Notes (07/29/2012) -
+--------------------------------------------
 This is the latest SNAPSHOT release of the RomRaider from the GitHub repo.
 
--------------------------------
-- 0.5.5 SNAPSHOT Known Issues -
--------------------------------
+--------------------------------------
+- 0.5.5 SNAPSHOT 86b338 Known Issues -
+--------------------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
 - Logger
@@ -56,8 +56,8 @@ This is the latest SNAPSHOT release of the RomRaider from the GitHub repo.
 - Change Log -
 --------------
 
-0.5.5 SNAPSHOT (07/29/2012)
----------------------------
+0.5.5 SNAPSHOT 86b338 (07/29/2012)
+----------------------------------
 
 --- Logger ---
 - Minimum Java version 1.6 (x86) required
