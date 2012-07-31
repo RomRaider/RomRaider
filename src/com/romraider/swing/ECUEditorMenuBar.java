@@ -468,6 +468,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                         out.close();
                     }
                 }
+                this.parent.getSettings().setLastRepositoryDir(selectedDir);
             }
         }
     }
