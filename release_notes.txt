@@ -1,4 +1,4 @@
-                - RomRaider 0.5.5 SNAPSHOT 86b338 -
+                - RomRaider 0.5.5 RC1 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,12 +33,12 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.5 SNAPSHOT 86b338 Notes (07/29/2012) -
+- 0.5.5 RC1 Notes (07/29/2012) -
 --------------------------------------------
 This is the latest SNAPSHOT release of the RomRaider from the GitHub repo.
 
 --------------------------------------
-- 0.5.5 SNAPSHOT 86b338 Known Issues -
+- 0.5.5 RC1 Known Issues -
 --------------------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -56,7 +56,7 @@ This is the latest SNAPSHOT release of the RomRaider from the GitHub repo.
 - Change Log -
 --------------
 
-0.5.5 SNAPSHOT 86b338 (07/29/2012)
+0.5.5 RC1 (07/29/2012)
 ----------------------------------
 
 --- Logger ---
