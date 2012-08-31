@@ -447,6 +447,7 @@ public class ECUEditor extends AbstractFrame {
             DOMRomUnmarshaller domUms = new DOMRomUnmarshaller(settings, this);
             DOMParser parser = new DOMParser();
             statusPanel.update("Finding ECU definition...", 10);
+            repaint();
             Rom rom;
 
             // parse ecu definition files until result found
@@ -459,10 +460,12 @@ public class ECUEditor extends AbstractFrame {
                 try {
                     rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, statusPanel);
                     statusPanel.update("Populating tables...", 50);
+                    repaint();
                     rom.populateTables(input, statusPanel);
                     rom.setFileName(inputFile.getName());
 
                     statusPanel.update("Finalizing...", 90);
+                    repaint();
                     addRom(rom);
                     rom.setFullFileName(inputFile);
                     return;
