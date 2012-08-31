@@ -19,17 +19,20 @@
 
 package com.romraider.swing;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Point;
+import java.beans.PropertyVetoException;
+
 import javax.swing.DefaultDesktopManager;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.Point;
-import java.beans.PropertyVetoException;
+
+import com.romraider.editor.ecu.ECUEditor;
 
 /**
  * An extension of WDesktopPane that supports often used MDI functionality. This
@@ -40,14 +43,17 @@ public class MDIDesktopPane extends JDesktopPane {
 
     private static final long serialVersionUID = -1839360490978587035L;
     private static int FRAME_OFFSET = 20;
-    private MDIDesktopManager manager;
+    private final MDIDesktopManager manager;
+    private final ECUEditor parent;
 
-    public MDIDesktopPane() {
+    public MDIDesktopPane(ECUEditor parent) {
+        this.parent = parent;
         manager = new MDIDesktopManager(this);
         setDesktopManager(manager);
         setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
     }
 
+    @Override
     public void setBounds(int x, int y, int w, int h) {
         super.setBounds(x, y, w, h);
         checkDesktopSize();
@@ -82,6 +88,8 @@ public class MDIDesktopPane extends JDesktopPane {
         }
         moveToFront(frame);
         frame.setVisible(true);
+        TableFrame foo = (TableFrame) frame;
+        parent.updateTableToolBar(foo.getTable(), true);
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException e) {
@@ -90,8 +98,12 @@ public class MDIDesktopPane extends JDesktopPane {
         return retval;
     }
 
+    @Override
     public void remove(Component c) {
         super.remove(c);
+
+        parent.updateTableToolBar(null, false);
+
         checkDesktopSize();
     }
 
@@ -163,17 +175,19 @@ class MDIDesktopManager extends DefaultDesktopManager {
      *
      */
     private static final long serialVersionUID = -7668105643849176819L;
-    private MDIDesktopPane desktop;
+    private final MDIDesktopPane desktop;
 
     public MDIDesktopManager(MDIDesktopPane desktop) {
         this.desktop = desktop;
     }
 
+    @Override
     public void endResizingFrame(JComponent f) {
         super.endResizingFrame(f);
         resizeDesktop();
     }
 
+    @Override
     public void endDraggingFrame(JComponent f) {
         super.endDraggingFrame(f);
         resizeDesktop();
@@ -197,6 +211,11 @@ class MDIDesktopManager extends DefaultDesktopManager {
             scrollPane.invalidate();
             scrollPane.validate();
         }
+    }
+
+    public MDIDesktopPane getDesktop()
+    {
+        return this.desktop;
     }
 
     private Insets getScrollPaneInsets() {

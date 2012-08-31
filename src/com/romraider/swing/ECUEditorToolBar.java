@@ -19,30 +19,38 @@
 
 package com.romraider.swing;
 
-import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.maps.Rom;
 import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JToolBar;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JToolBar;
+
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.maps.Rom;
+
 public class ECUEditorToolBar extends JToolBar implements ActionListener {
 
     private static final long serialVersionUID = 7778170684606193919L;
-    private ECUEditor parent;
-    private JButton openImage = new JButton(new ImageIcon("./graphics/icon-open.png"));
-    private JButton saveImage = new JButton(new ImageIcon("./graphics/icon-save.png"));
-    private JButton refreshImage = new JButton(new ImageIcon("./graphics/icon-refresh.png"));
-    private JButton closeImage = new JButton(new ImageIcon("./graphics/icon-close.png"));
+    private final ECUEditor parent;
+    private final JButton openImage = new JButton(new ImageIcon("./graphics/icon-open.png"));
+    private final JButton saveImage = new JButton(new ImageIcon("./graphics/icon-save.png"));
+    private final JButton refreshImage = new JButton(new ImageIcon("./graphics/icon-refresh.png"));
+    private final JButton closeImage = new JButton(new ImageIcon("./graphics/icon-close.png"));
 
-    public ECUEditorToolBar(ECUEditor parent) {
+    public ECUEditorToolBar(ECUEditor parent, String name) {
+        super(name);
         this.parent = parent;
-        this.setFloatable(false);
+        this.setFloatable(true);
+        this.setRollover(true);
+        this.setBorder(BorderFactory.createTitledBorder("Editor Tools"));
+
         this.add(openImage);
         this.add(saveImage);
         this.add(closeImage);
@@ -84,6 +92,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         }
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == openImage) {
             try {

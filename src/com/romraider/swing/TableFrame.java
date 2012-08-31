@@ -19,21 +19,26 @@
 
 package com.romraider.swing;
 
-import com.romraider.maps.Table;
 import static javax.swing.BorderFactory.createBevelBorder;
+
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import java.awt.BorderLayout;
+
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.maps.Table;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener {
 
     private static final long serialVersionUID = -2651279694660392351L;
     private Table table;
-    private TableToolBar toolBar;
+    private final ECUEditor parent;
 
-    public TableFrame(Table table) {
+    public TableFrame(Table table, ECUEditor parent) {
         super(table.getRom().getFileName() + " - " + table.getName(), true, true);
+
+        this.parent = parent;
+
         setTable(table);
         add(table);
         setFrameIcon(null);
@@ -42,39 +47,50 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
             putClientProperty("JInternalFrame.isPalette", true);
         setVisible(false);
         setJMenuBar(new TableMenuBar(table));
-        toolBar = new TableToolBar(table, this);
-        add(toolBar, BorderLayout.NORTH);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         table.setFrame(this);
         addInternalFrameListener(this);
     }
 
     public TableToolBar getToolBar() {
-        return toolBar;
+        return parent.getTableToolBar();
     }
 
+    @Override
     public void internalFrameActivated(InternalFrameEvent e) {
         getTable().getRom().getContainer().setLastSelectedRom(getTable().getRom());
+        parent.updateTableToolBar(this.table, true);
     }
 
 
+    @Override
     public void internalFrameOpened(InternalFrameEvent e) {
+        ;
     }
 
+    @Override
     public void internalFrameClosing(InternalFrameEvent e) {
         getTable().getRom().getContainer().removeDisplayTable(this);
     }
 
+    @Override
     public void internalFrameClosed(InternalFrameEvent e) {
+        parent.updateTableToolBar(null, false);
     }
 
+    @Override
     public void internalFrameIconified(InternalFrameEvent e) {
+        ;
     }
 
+    @Override
     public void internalFrameDeiconified(InternalFrameEvent e) {
+        ;
     }
 
+    @Override
     public void internalFrameDeactivated(InternalFrameEvent e) {
+        parent.updateTableToolBar(null, false);
     }
 
     public Table getTable() {

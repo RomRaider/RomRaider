@@ -19,18 +19,23 @@
 
 package com.romraider.swing;
 
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.Enumeration;
 import java.util.Vector;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.maps.Rom;
+import com.romraider.maps.Table;
 
 public class RomTreeNode extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = -5534315445738460608L;
     private Rom rom = new Rom();
+    ECUEditor parent;
 
-    public RomTreeNode(Rom rom, int userLevel, boolean isDisplayHighTables) {
+    public RomTreeNode(Rom rom, int userLevel, boolean isDisplayHighTables, ECUEditor parent) {
+        this.parent = parent;
         setRom(rom);
         refresh(userLevel, isDisplayHighTables);
         updateFileName();
@@ -70,6 +75,7 @@ public class RomTreeNode extends DefaultMutableTreeNode {
         }
     }
 
+    @Override
     public void removeAllChildren() {
 
         // close all table windows
@@ -93,14 +99,16 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     }
 
     public void add(Table table) {
-        TableFrame frame = new TableFrame(table);
+        TableFrame frame = new TableFrame(table, parent);
         table.setFrame(frame);
     }
 
+    @Override
     public DefaultMutableTreeNode getChildAt(int i) {
         return (DefaultMutableTreeNode) super.getChildAt(i);
     }
 
+    @Override
     public DefaultMutableTreeNode getLastChild() {
         return (DefaultMutableTreeNode) super.getLastChild();
     }

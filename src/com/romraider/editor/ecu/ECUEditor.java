@@ -19,29 +19,9 @@
 
 package com.romraider.editor.ecu;
 
-import com.centerkey.utils.BareBonesBrowserLaunch;
-import com.romraider.Settings;
 import static com.romraider.Version.ECU_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
-import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
-import com.romraider.net.URL;
-import com.romraider.swing.AbstractFrame;
-import com.romraider.swing.ECUEditorMenuBar;
-import com.romraider.swing.ECUEditorToolBar;
-import com.romraider.swing.JProgressPane;
-import com.romraider.swing.MDIDesktopPane;
-import com.romraider.swing.RomTree;
-import com.romraider.swing.RomTreeNode;
-import com.romraider.swing.RomTreeRootNode;
-import com.romraider.swing.TableFrame;
-import com.romraider.util.SettingsManager;
-import com.romraider.util.SettingsManagerImpl;
-import com.romraider.xml.DOMRomUnmarshaller;
-import com.romraider.xml.RomNotFoundException;
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import static javax.swing.JOptionPane.DEFAULT_OPTION;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -56,6 +36,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -77,11 +58,34 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
+
+import com.centerkey.utils.BareBonesBrowserLaunch;
+import com.romraider.Settings;
+import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
+import com.romraider.maps.Rom;
+import com.romraider.maps.Table;
+import com.romraider.net.URL;
+import com.romraider.swing.AbstractFrame;
+import com.romraider.swing.ECUEditorMenuBar;
+import com.romraider.swing.ECUEditorToolBar;
+import com.romraider.swing.JProgressPane;
+import com.romraider.swing.MDIDesktopPane;
+import com.romraider.swing.RomTree;
+import com.romraider.swing.RomTreeNode;
+import com.romraider.swing.RomTreeRootNode;
+import com.romraider.swing.TableFrame;
+import com.romraider.swing.TableToolBar;
+import com.romraider.util.SettingsManager;
+import com.romraider.util.SettingsManagerImpl;
+import com.romraider.xml.DOMRomUnmarshaller;
+import com.romraider.xml.RomNotFoundException;
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public class ECUEditor extends AbstractFrame {
     private static final long serialVersionUID = -7826850987392016292L;
@@ -92,13 +96,15 @@ public class ECUEditor extends AbstractFrame {
     private final SettingsManager settingsManager = new SettingsManagerImpl();
     private final RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private final RomTree imageList = new RomTree(imageRoot);
-    public MDIDesktopPane rightPanel = new MDIDesktopPane();
+    public MDIDesktopPane rightPanel = new MDIDesktopPane(this);
     public JProgressPane statusPanel = new JProgressPane();
     private JSplitPane splitPane = new JSplitPane();
     private Rom lastSelectedRom = null;
     private ECUEditorToolBar toolBar;
     private final ECUEditorMenuBar menuBar;
     private Settings settings;
+    private final TableToolBar tableToolBar;
+    private final JPanel toolBarPanel = new JPanel();
 
     public ECUEditor() {
 
@@ -129,12 +135,28 @@ public class ECUEditor extends AbstractFrame {
         imageList.setScrollsOnExpand(true);
         imageList.setContainer(this);
 
-        //create menubar and toolbar
+        //create menubar
         menuBar = new ECUEditorMenuBar(this);
         this.setJMenuBar(menuBar);
-        toolBar = new ECUEditorToolBar(this);
-        this.add(toolBar, BorderLayout.NORTH);
         this.add(statusPanel, BorderLayout.SOUTH);
+
+        // create toolbars
+
+        toolBar = new ECUEditorToolBar(this, "Editor Tools");
+
+        tableToolBar = new TableToolBar("Table Tools");
+        tableToolBar.updateTableToolBar(null);
+        tableToolBar.toggleTableToolBar(false);
+
+        FlowLayout toolBarLayout = new FlowLayout();
+        toolBarPanel.setLayout(toolBarLayout);
+        toolBarLayout.setAlignment(FlowLayout.LEFT);
+
+        toolBarPanel.add(toolBar);
+        toolBarPanel.add(tableToolBar);
+
+        toolBarPanel.setVisible(true);
+        this.add(toolBarPanel, BorderLayout.NORTH);
 
         //set remaining window properties
         setIconImage(new ImageIcon("./graphics/romraider-ico.gif").getImage());
@@ -209,25 +231,32 @@ public class ECUEditor extends AbstractFrame {
         repaint();
     }
 
+    @Override
     public void windowClosing(WindowEvent e) {
         handleExit();
     }
 
+    @Override
     public void windowOpened(WindowEvent e) {
     }
 
+    @Override
     public void windowClosed(WindowEvent e) {
     }
 
+    @Override
     public void windowIconified(WindowEvent e) {
     }
 
+    @Override
     public void windowDeiconified(WindowEvent e) {
     }
 
+    @Override
     public void windowActivated(WindowEvent e) {
     }
 
+    @Override
     public void windowDeactivated(WindowEvent e) {
     }
 
@@ -241,7 +270,7 @@ public class ECUEditor extends AbstractFrame {
 
     public void addRom(Rom input) {
         // add to ecu image list pane
-        RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel(), settings.isDisplayHighTables());
+        RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel(), settings.isDisplayHighTables(), this);
         imageList.setRootVisible(true);
         imageRoot.add(romNode);
         imageList.updateUI();
@@ -261,11 +290,12 @@ public class ECUEditor extends AbstractFrame {
             check.setHorizontalAlignment(JCheckBox.RIGHT);
 
             check.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     settings.setObsoleteWarning(((JCheckBox) e.getSource()).isSelected());
                 }
             }
-            );
+                    );
 
             infoPanel.add(check);
             showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", INFORMATION_MESSAGE);
@@ -290,6 +320,9 @@ public class ECUEditor extends AbstractFrame {
 
     public void removeDisplayTable(TableFrame frame) {
         frame.setVisible(false);
+
+        updateTableToolBar(null,false);
+
         rightPanel.remove(frame);
         rightPanel.repaint();
     }
@@ -361,6 +394,15 @@ public class ECUEditor extends AbstractFrame {
         this.toolBar = toolBar;
     }
 
+    public TableToolBar getTableToolBar() {
+        return tableToolBar;
+    }
+
+    public void updateTableToolBar(Table currentTable, boolean enabled) {
+        tableToolBar.updateTableToolBar(currentTable);
+        tableToolBar.toggleTableToolBar(enabled);
+    }
+
     public void setSettings(Settings settings) {
         this.settings = settings;
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
@@ -384,6 +426,7 @@ public class ECUEditor extends AbstractFrame {
         return images;
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         imageList.updateUI();
         imageList.repaint();
@@ -393,14 +436,17 @@ public class ECUEditor extends AbstractFrame {
 
         try {
             update(getGraphics());
-            statusPanel.update("Parsing ECU definitions...", 0);
-            repaint();
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    statusPanel.update("Parsing ECU definitions...", 0);
+                }
+            });
 
             byte[] input = readFile(inputFile);
             DOMRomUnmarshaller domUms = new DOMRomUnmarshaller(settings, this);
             DOMParser parser = new DOMParser();
             statusPanel.update("Finding ECU definition...", 10);
-            repaint();
             Rom rom;
 
             // parse ecu definition files until result found
@@ -413,12 +459,10 @@ public class ECUEditor extends AbstractFrame {
                 try {
                     rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, statusPanel);
                     statusPanel.update("Populating tables...", 50);
-                    repaint();
                     rom.populateTables(input, statusPanel);
                     rom.setFileName(inputFile.getName());
 
                     statusPanel.update("Finalizing...", 90);
-                    repaint();
                     addRom(rom);
                     rom.setFullFileName(inputFile);
                     return;
