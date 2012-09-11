@@ -477,4 +477,17 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         Rom lastSelectedRom = parent.getLastSelectedRom();
         return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
     }
+
+    public void toggleMenuBar(boolean enabled) {
+        openImage.setEnabled(enabled);
+        openImages.setEnabled(enabled);
+        saveImage.setEnabled(enabled);
+        saveAsRepository.setEnabled(enabled);
+        refreshImage.setEnabled(enabled);
+        closeImage.setEnabled(enabled);
+        closeAll.setEnabled(enabled);
+        if(enabled) {
+            updateMenu();
+        }
+    }
 }

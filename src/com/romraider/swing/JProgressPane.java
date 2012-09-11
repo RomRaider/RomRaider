@@ -19,18 +19,23 @@
 
 package com.romraider.swing;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-public class JProgressPane extends JPanel {
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+
+public class JProgressPane extends JPanel implements PropertyChangeListener{
 
     private static final long serialVersionUID = -6827936662738014543L;
     JLabel label = new JLabel();
     JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
+    String status = "ready";
+    int percent = 0;
 
     public JProgressPane() {
 
@@ -41,6 +46,7 @@ public class JProgressPane extends JPanel {
         label.setFont(new Font("Tahoma", Font.PLAIN, 11));
         label.setHorizontalAlignment(JLabel.LEFT);
         progressBar.setMinimumSize(new Dimension(200, 50));
+        progressBar.setValue(0);
 
         this.add(progressBar, BorderLayout.WEST);
         this.add(label, BorderLayout.CENTER);
@@ -50,7 +56,25 @@ public class JProgressPane extends JPanel {
     public void update(String status, int percent) {
         label.setText(" " + status);
         progressBar.setValue(percent);
-        repaint();
-        this.update(this.getGraphics());
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public JProgressBar getProgressBar() {
+        return this.progressBar;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if("progress" == evt.getPropertyName()) {
+            int progress = (Integer) evt.getNewValue();
+            progressBar.setValue(progress);
+            label.setText(" " + status);
+        }
+        else{
+            ;// do nothing
+        }
     }
 }

@@ -124,4 +124,14 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         Rom lastSelectedRom = parent.getLastSelectedRom();
         return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
     }
+
+    public void toggleEditorToolBar(boolean enabled) {
+        openImage.setEnabled(enabled);
+        saveImage.setEnabled(enabled);
+        closeImage.setEnabled(enabled);
+        refreshImage.setEnabled(enabled);
+        if(enabled) {
+            updateButtons();
+        }
+    }
 }
