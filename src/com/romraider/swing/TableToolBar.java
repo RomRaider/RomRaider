@@ -39,7 +39,6 @@ import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -87,7 +86,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final JButton clearOverlay = new JButton("Clear Overlay");
     private final JLabel liveDataValue = new JLabel();
 
-    private final String defaultToolBarTitle = "Table Tools";
+    //private final String defaultToolBarName = "Table Tools";
 
     private Table table = null;
 
@@ -95,8 +94,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         super(name);
         this.setFloatable(true);
         this.setRollover(true);
-        this.setLayout(new FlowLayout(FlowLayout.LEFT));
-        this.setBorder(BorderFactory.createTitledBorder("Table Tools"));
+        FlowLayout toolBarLayout = new FlowLayout(FlowLayout.LEFT, 0, 0);
+        this.setLayout(toolBarLayout);
+        //this.setBorder(BorderFactory.createTitledBorder("Table Tools"));
 
         JPanel finePanel = new JPanel();
         finePanel.add(incrementFine);
@@ -226,7 +226,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     public void updateTableToolBar(Table table)
     {
-        String toolBarTitle = defaultToolBarTitle;
+        //String toolBarName = defaultToolBarName;
         double fineIncrement = 0;
         double coarseIncrement = 0;
         Vector<Scale> scales = new Vector<Scale>();
@@ -235,7 +235,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         if(null != table)
         {
-            toolBarTitle += " - " + table.getName();
+            //toolBarName += " - " + table.getName();
             try {
                 fineIncrement = Math.abs(table.getScale().getFineIncrement());
                 coarseIncrement = Math.abs(table.getScale().getCoarseIncrement());
@@ -245,7 +245,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             scales = table.getScales();
         }
 
-        this.setBorder(BorderFactory.createTitledBorder(toolBarTitle));
+        //this.setBorder(BorderFactory.createTitledBorder(toolBarName));
 
         incrementByFine.setValue(fineIncrement);
         incrementByCoarse.setValue(coarseIncrement);

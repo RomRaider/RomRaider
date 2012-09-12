@@ -23,10 +23,10 @@ import static javax.swing.BorderFactory.createLineBorder;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -49,7 +49,9 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         this.parent = parent;
         this.setFloatable(true);
         this.setRollover(true);
-        this.setBorder(BorderFactory.createTitledBorder("Editor Tools"));
+        FlowLayout toolBarLayout = new FlowLayout(FlowLayout.LEFT, 0, 0);
+        this.setLayout(toolBarLayout);
+        //this.setBorder(BorderFactory.createTitledBorder("Editor Tools"));
 
         this.add(openImage);
         this.add(saveImage);
@@ -123,15 +125,5 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     private String getLastSelectedRomFileName() {
         Rom lastSelectedRom = parent.getLastSelectedRom();
         return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
-    }
-
-    public void toggleEditorToolBar(boolean enabled) {
-        openImage.setEnabled(enabled);
-        saveImage.setEnabled(enabled);
-        closeImage.setEnabled(enabled);
-        refreshImage.setEnabled(enabled);
-        if(enabled) {
-            updateButtons();
-        }
     }
 }

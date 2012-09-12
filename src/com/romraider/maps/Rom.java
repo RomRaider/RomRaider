@@ -49,7 +49,7 @@ public class Rom implements Serializable {
     private RomID romID = new RomID();
     private String fileName = "";
     private File fullFileName = new File(".");
-    private Vector<Table> tables = new Vector<Table>();
+    private final Vector<Table> tables = new Vector<Table>();
     private ECUEditor container;
     private byte[] binData;
     private String parent = "";
@@ -105,7 +105,7 @@ public class Rom implements Serializable {
 
             // update progress
             int currProgress = (int) ((double) i / (double) getTables().size() * 40);
-            progress.update("Populating tables...", 40 + currProgress);
+            progress.update("Populating tables...", 50 + currProgress);
 
             Table table = tables.get(i);
             try {
@@ -151,7 +151,7 @@ public class Rom implements Serializable {
         }
         else {
             StringBuilder niceStamp = new StringBuilder(stamp);
-            niceStamp.replace(6, 9, String.valueOf((int)0xFF & stampData[3]));
+            niceStamp.replace(6, 9, String.valueOf(0xFF & stampData[3]));
             niceStamp.insert(6, " v");
             niceStamp.insert(4, "-");
             niceStamp.insert(2, "-");
@@ -172,6 +172,7 @@ public class Rom implements Serializable {
         return romID.getXmlid();
     }
 
+    @Override
     public String toString() {
         String output = "";
         output = output + "\n---- Rom ----" + romID.toString();

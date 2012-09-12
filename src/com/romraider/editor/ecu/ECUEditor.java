@@ -68,11 +68,13 @@ import org.xml.sax.SAXParseException;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.romraider.Settings;
+import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.net.URL;
 import com.romraider.swing.AbstractFrame;
+import com.romraider.swing.CustomToolbarLayout;
 import com.romraider.swing.ECUEditorMenuBar;
 import com.romraider.swing.ECUEditorToolBar;
 import com.romraider.swing.JProgressPane;
@@ -109,6 +111,7 @@ public class ECUEditor extends AbstractFrame {
     private OpenImageWorker openImageWorker;
     private CloseImageWorker closeImageWorker;
     private SetUserLevelWorker setUserLevelWorker;
+    private LaunchLoggerWorker launchLoggerWorker;
 
     public ECUEditor() {
 
@@ -152,14 +155,13 @@ public class ECUEditor extends AbstractFrame {
         tableToolBar.updateTableToolBar(null);
         tableToolBar.toggleTableToolBar(false);
 
-        FlowLayout toolBarLayout = new FlowLayout();
-        toolBarPanel.setLayout(toolBarLayout);
-        toolBarLayout.setAlignment(FlowLayout.LEFT);
+        CustomToolbarLayout toolBarLayout = new CustomToolbarLayout(FlowLayout.LEFT, 0, 0);
 
+        toolBarPanel.setLayout(toolBarLayout);
         toolBarPanel.add(toolBar);
         toolBarPanel.add(tableToolBar);
-
         toolBarPanel.setVisible(true);
+
         this.add(toolBarPanel, BorderLayout.NORTH);
 
         //set remaining window properties
@@ -275,9 +277,10 @@ public class ECUEditor extends AbstractFrame {
     public void addRom(Rom input) {
         // add to ecu image list pane
         RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel(), settings.isDisplayHighTables(), this);
-        imageList.setRootVisible(true);
         imageRoot.add(romNode);
+        imageList.setRootVisible(true);
         imageList.expandRow(imageList.getRowCount() - 1);
+        imageList.setRootVisible(false);
 
         setLastSelectedRom(input);
 
@@ -296,14 +299,12 @@ public class ECUEditor extends AbstractFrame {
                 public void actionPerformed(ActionEvent e) {
                     settings.setObsoleteWarning(((JCheckBox) e.getSource()).isSelected());
                 }
-            }
-                    );
+            });
 
             infoPanel.add(check);
             showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", INFORMATION_MESSAGE);
         }
         input.setContainer(this);
-        imageList.setRootVisible(false);
     }
 
     public void displayTable(TableFrame frame) {
@@ -330,8 +331,6 @@ public class ECUEditor extends AbstractFrame {
 
     public void closeImage() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        toolBar.toggleEditorToolBar(false);
-        menuBar.toggleMenuBar(false);
         closeImageWorker = new CloseImageWorker(this);
         closeImageWorker.addPropertyChangeListener(this);
         closeImageWorker.execute();
@@ -392,8 +391,6 @@ public class ECUEditor extends AbstractFrame {
 
     public void setUserLevel(int userLevel) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        toolBar.toggleEditorToolBar(false);
-        menuBar.toggleMenuBar(false);
         setUserLevelWorker = new SetUserLevelWorker(this, userLevel);
         setUserLevelWorker.addPropertyChangeListener(this);
         setUserLevelWorker.execute();
@@ -416,8 +413,6 @@ public class ECUEditor extends AbstractFrame {
 
     public void openImage(File inputFile) throws Exception {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        toolBar.toggleEditorToolBar(false);
-        menuBar.toggleMenuBar(false);
         openImageWorker = new OpenImageWorker(this, inputFile);
         openImageWorker.addPropertyChangeListener(statusPanel);
         openImageWorker.execute();
@@ -448,6 +443,13 @@ public class ECUEditor extends AbstractFrame {
         return baos.toByteArray();
     }
 
+    public void launchLogger() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        launchLoggerWorker = new LaunchLoggerWorker(this);
+        launchLoggerWorker.addPropertyChangeListener(this);
+        launchLoggerWorker.execute();
+    }
+
     public SettingsManager getSettingsManager() {
         return this.settingsManager;
     }
@@ -458,6 +460,31 @@ public class ECUEditor extends AbstractFrame {
 
     public RomTree getImageList() {
         return imageList;
+    }
+}
+
+class LaunchLoggerWorker extends SwingWorker<Void, Void> {
+    private final ECUEditor editor;
+
+    public LaunchLoggerWorker(ECUEditor editor) {
+        this.editor = editor;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        editor.statusPanel.setStatus("Launching Logger...");
+        setProgress(10);
+        EcuLogger.startLogger(javax.swing.WindowConstants.DISPOSE_ON_CLOSE, editor);
+        return null;
+    }
+
+    @Override
+    public void done() {
+        editor.statusPanel.setStatus("Ready...");
+        setProgress(0);
+        editor.getToolBar().updateButtons();
+        editor.getEditorMenuBar().updateMenu();
+        editor.setCursor(null);
     }
 }
 
@@ -484,8 +511,8 @@ class SetUserLevelWorker extends SwingWorker<Void, Void> {
     public void done() {
         editor.statusPanel.setStatus("Ready...");
         setProgress(0);
-        editor.getToolBar().toggleEditorToolBar(true);
-        editor.getEditorMenuBar().toggleMenuBar(true);
+        editor.getToolBar().updateButtons();
+        editor.getEditorMenuBar().updateMenu();
         editor.setCursor(null);
     }
 }
@@ -536,8 +563,8 @@ class CloseImageWorker extends SwingWorker<Void, Void> {
     public void done() {
         editor.statusPanel.setStatus("Ready...");
         setProgress(0);
-        editor.getToolBar().toggleEditorToolBar(true);
-        editor.getEditorMenuBar().toggleMenuBar(true);
+        editor.getToolBar().updateButtons();
+        editor.getEditorMenuBar().updateMenu();
         editor.setCursor(null);
     }
 }
@@ -623,8 +650,8 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
     public void done() {
         editor.statusPanel.setStatus("Ready...");
         setProgress(0);
-        editor.getToolBar().toggleEditorToolBar(true);
-        editor.getEditorMenuBar().toggleMenuBar(true);
+        editor.getToolBar().updateButtons();
+        editor.getEditorMenuBar().updateMenu();
         editor.setCursor(null);
     }
 }

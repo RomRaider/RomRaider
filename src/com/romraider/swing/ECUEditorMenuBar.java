@@ -50,7 +50,6 @@ import javax.swing.JSeparator;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.ramtune.test.RamTuneTestApp;
@@ -110,25 +109,25 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         saveAsRepository.setMnemonic('D');
         refreshImage.setMnemonic('R');
         closeImage.setMnemonic('C');
-        closeAll.setMnemonic('A');
+        //closeAll.setMnemonic('A');
         exit.setMnemonic('X');
         fileMenu.add(openImage);
-        fileMenu.add(openImages);
+        //fileMenu.add(openImages);
         fileMenu.add(saveImage);
         fileMenu.add(saveAsRepository);
         fileMenu.add(refreshImage);
         fileMenu.add(new JSeparator());
         fileMenu.add(closeImage);
-        fileMenu.add(closeAll);
+        //fileMenu.add(closeAll);
         fileMenu.add(new JSeparator());
         fileMenu.add(exit);
         openImage.addActionListener(this);
-        openImages.addActionListener(this);
+        //openImages.addActionListener(this);
         saveImage.addActionListener(this);
         saveAsRepository.addActionListener(this);
         refreshImage.addActionListener(this);
         closeImage.addActionListener(this);
-        closeAll.addActionListener(this);
+        //closeAll.addActionListener(this);
         exit.addActionListener(this);
 
         // edit menu items
@@ -227,7 +226,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             saveImage.setEnabled(false);
             saveAsRepository.setEnabled(false);
             closeImage.setEnabled(false);
-            closeAll.setEnabled(false);
+            //closeAll.setEnabled(false);
             romProperties.setEnabled(false);
             saveImage.setText("Save As...");
             saveAsRepository.setText("Save As Repository...");
@@ -236,7 +235,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             saveImage.setEnabled(true);
             saveAsRepository.setEnabled(true);
             closeImage.setEnabled(true);
-            closeAll.setEnabled(true);
+            //closeAll.setEnabled(true);
             romProperties.setEnabled(true);
             saveImage.setText("Save " + file + " As...");
             saveAsRepository.setText("Save "+ file +" As Repository...");
@@ -333,10 +332,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             parent.setUserLevel(5);
 
         } else if (e.getSource() == openLogger) {
-            parent.statusPanel.update("Launching Logger...", 10);
-            EcuLogger.startLogger(DISPOSE_ON_CLOSE, parent);
-            parent.statusPanel.update("Ready...", 0);
-
+            parent.launchLogger();
         } else if (e.getSource() == updateDefinition) {
             BareBonesBrowserLaunch.openURL(ECU_DEFS_URL);
 
@@ -476,18 +472,5 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private String getLastSelectedRomFileName() {
         Rom lastSelectedRom = parent.getLastSelectedRom();
         return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
-    }
-
-    public void toggleMenuBar(boolean enabled) {
-        openImage.setEnabled(enabled);
-        openImages.setEnabled(enabled);
-        saveImage.setEnabled(enabled);
-        saveAsRepository.setEnabled(enabled);
-        refreshImage.setEnabled(enabled);
-        closeImage.setEnabled(enabled);
-        closeAll.setEnabled(enabled);
-        if(enabled) {
-            updateMenu();
-        }
     }
 }
