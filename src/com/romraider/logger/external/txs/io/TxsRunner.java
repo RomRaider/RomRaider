@@ -22,7 +22,7 @@ package com.romraider.logger.external.txs.io;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static org.apache.log4j.Logger.getLogger;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -41,7 +41,7 @@ public final class TxsRunner implements Stoppable{
     private static final String SPLIT_DELIMITER = " ";
     private static final byte[] EXIT = new byte[]{24};
     
-    private final HashMap<Integer, TxsDataItem> dataItems;
+    private final ArrayList<TxsDataItem> dataItems;
     private final SerialConnection connection;
     
     private boolean stop;
@@ -50,7 +50,7 @@ public final class TxsRunner implements Stoppable{
     
     public TxsRunner(
             String port,
-            HashMap<Integer, TxsDataItem> dataItems,
+            ArrayList<TxsDataItem> dataItems,
             String logger,
             String device) {
         this.connection = new SerialConnectionImpl(port, CONNECTION_PROPS);
@@ -130,7 +130,7 @@ public final class TxsRunner implements Stoppable{
             
             if(dataItem != null) {
                 //Set value to dataItem
-                dataItem.setData(parseDouble(values[i]));
+                dataItem.setData(parseDouble(values[dataItem.getItemIndex()]));
             }
             
         }

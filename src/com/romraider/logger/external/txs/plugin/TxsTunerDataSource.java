@@ -33,9 +33,7 @@ import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
 import javax.swing.Action;
 
 import com.romraider.logger.ecu.EcuLogger;
@@ -53,16 +51,16 @@ public class TxsTunerDataSource implements ExternalDataSource {
     private static final int TUNER_PRO_AFR = 1;
     private static final int TUNER_PRO_KNOCK = 11;
         
-    private final HashMap<Integer, TxsDataItem> dataItems =
-                    new HashMap<Integer, TxsDataItem>();
+    private final ArrayList<TxsDataItem> dataItems =
+                    new ArrayList<TxsDataItem>();
     private TxsRunner runner;
     private String port;
     
     {
-        dataItems.put(TUNER_LITE_AFR,     new TxsDataItem(DEVICE_NAME + "Lite AFR", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-        dataItems.put(TUNER_PRO_RPM,     new TxsDataItem(DEVICE_NAME + "Pro Knock", TXS_RPM));
-        dataItems.put(TUNER_PRO_AFR,     new TxsDataItem(DEVICE_NAME + "Pro AFR", AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
-        dataItems.put(TUNER_PRO_KNOCK,     new TxsDataItem(DEVICE_NAME + "Pro Knock", TXS_KNOCK));
+        dataItems.add(new TxsDataItem(DEVICE_NAME + "Lite AFR", TUNER_LITE_AFR, AFR_147, LAMBDA, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+        dataItems.add(new TxsDataItem(DEVICE_NAME + "Pro RPM", TUNER_PRO_RPM, TXS_RPM));
+        dataItems.add(new TxsDataItem(DEVICE_NAME + "Pro AFR", TUNER_PRO_AFR, LAMBDA, AFR_147, AFR_90, AFR_146, AFR_64, AFR_155, AFR_172, AFR_34));
+        dataItems.add(new TxsDataItem(DEVICE_NAME + "Pro Knock", TUNER_PRO_KNOCK, TXS_KNOCK));
     }
     
     public String getId() {
@@ -74,11 +72,11 @@ public class TxsTunerDataSource implements ExternalDataSource {
     }
     
     public String getVersion() {
-        return "0.01";
+        return "2012.09.22";
     }
     
     public List<? extends ExternalDataItem> getDataItems() {
-        return unmodifiableList(new ArrayList<TxsDataItem>(dataItems.values()));
+        return unmodifiableList(dataItems);
     }
     
     public Action getMenuAction(EcuLogger logger) {

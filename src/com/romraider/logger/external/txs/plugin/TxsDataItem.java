@@ -29,15 +29,21 @@ import com.romraider.logger.external.core.ExternalSensorConversions;
 public final class TxsDataItem implements ExternalDataItem, DataListener {
     private EcuDataConvertor[] convertors;
     private final String name;
+    private final int itemIndex;
     private double data;
 
-    public TxsDataItem(String name, ExternalSensorConversions... convertorList) {
+    public TxsDataItem(String name, int itemIndex, ExternalSensorConversions... convertorList) {
         super();
         this.name = name;
+        this.itemIndex = itemIndex;
         convertors = new EcuDataConvertor[convertorList.length];
         convertors = loadConvertors(this, convertors, convertorList);
     }
 
+    public int getItemIndex(){
+    	return itemIndex;
+    }
+    
     public String getName() {
         return name;
     }
