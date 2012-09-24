@@ -307,7 +307,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             form.setVisible(true);
 
         } else if (e.getSource() == compareImages){
-            CompareImagesForm form = new CompareImagesForm(parent.getImages());
+            CompareImagesForm form = new CompareImagesForm(parent.getImages(), parent.getIconImage());
             form.setLocationRelativeTo(parent);
             form.setVisible(true);
 

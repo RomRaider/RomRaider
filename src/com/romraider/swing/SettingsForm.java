@@ -54,6 +54,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     ECUEditor parent;
 
     public SettingsForm(ECUEditor parent) {
+        this.setIconImage(parent.getIconImage());
         this.parent = parent;
         settings = parent.getSettings();
         initComponents();
