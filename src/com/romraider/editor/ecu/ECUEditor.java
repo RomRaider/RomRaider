@@ -282,7 +282,10 @@ public class ECUEditor extends AbstractFrame {
         imageList.expandRow(imageList.getRowCount() - 1);
         imageList.setRootVisible(false);
 
-        setLastSelectedRom(input);
+        // Only set if no other rom has been selected.
+        if(null == getLastSelectedRom()) {
+            setLastSelectedRom(input);
+        }
 
         if (input.getRomID().isObsolete() && settings.isObsoleteWarning()) {
             JPanel infoPanel = new JPanel();
