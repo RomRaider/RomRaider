@@ -19,14 +19,9 @@
 
 package com.romraider.swing;
 
-import ZoeloeSoft.projects.JFontChooser.JFontChooser;
-import com.romraider.Settings;
 import static com.romraider.Version.PRODUCT_NAME;
-import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.util.FileAssociator;
 import static java.io.File.separator;
-import javax.swing.JColorChooser;
-import javax.swing.JFrame;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
@@ -37,8 +32,20 @@ import java.util.StringTokenizer;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JColorChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.border.TitledBorder;
+
+import ZoeloeSoft.projects.JFontChooser.JFontChooser;
+
+import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.util.FileAssociator;
 
 public class SettingsForm extends JFrame implements MouseListener {
 
@@ -118,6 +125,10 @@ public class SettingsForm extends JFrame implements MouseListener {
         } else {
             this.rdbtnDefault.setSelected(true);
         }
+
+        this.textFieldEditorIconScale.setText(String.valueOf(settings.getEditorIconScale()));
+        this.textFieldTableIconScale.setText(String.valueOf(settings.getTableIconScale()));
+
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
@@ -133,6 +144,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         jPanelClipboard = new javax.swing.JPanel();
         jPanelDefault = new javax.swing.JPanel();
         jPanelTableDisplay = new javax.swing.JPanel();
+        jPanelIcons = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         lblAxis = new javax.swing.JLabel();
         lblHighlight = new javax.swing.JLabel();
@@ -165,6 +177,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         btnRemoveAssocs = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         tableClickCount = new javax.swing.JComboBox();
+        editorIconsPanel = new javax.swing.JPanel();
+        tableIconsPanel = new javax.swing.JPanel();;
 
         clipboardButtonGroup = new ButtonGroup();
         rdbtnDefault = new JRadioButton("RomRaider Default");
@@ -388,6 +402,9 @@ public class SettingsForm extends JFrame implements MouseListener {
         settingsTabbedPane.addTab("General", jPanelDefault);
         settingsTabbedPane.addTab("Table Display", jPanelTableDisplay);
         settingsTabbedPane.addTab("Clipboard", jPanelClipboard);
+        settingsTabbedPane.addTab("Icons", jPanelIcons);
+
+        editorIconsPanel = new JPanel();
 
         // Content Pane Layout
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -552,6 +569,94 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .addGap(435))
                 );
         jPanelClipboard.setLayout(jPanelClipboardLayout);
+
+        // Init Icons Tab panel
+        editorIconsPanel.setBorder(new TitledBorder(null, "Editor Toolbar Icons", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        tableIconsPanel.setBorder(new TitledBorder(null, "Table Toolbar Icons", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
+        GroupLayout jPanelIconsLayout = new GroupLayout(jPanelIcons);
+        jPanelIconsLayout.setHorizontalGroup(
+                jPanelIconsLayout.createParallelGroup(Alignment.TRAILING)
+                .addGroup(jPanelIconsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanelIconsLayout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(editorIconsPanel, GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+                                .addComponent(tableIconsPanel, GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE))
+                                .addContainerGap())
+                );
+        jPanelIconsLayout.setVerticalGroup(
+                jPanelIconsLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(jPanelIconsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(editorIconsPanel, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(tableIconsPanel, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(367, Short.MAX_VALUE))
+                );
+
+        JLabel lblTableIconScale = new JLabel("Scale:");
+
+        textFieldTableIconScale = new JTextField();
+        textFieldTableIconScale.setToolTipText("The percentage of the icons original size.");
+        textFieldTableIconScale.setColumns(10);
+
+        JLabel labelTableScalePercent = new JLabel("%");
+        GroupLayout tableIconsPanelLayout = new GroupLayout(tableIconsPanel);
+        tableIconsPanelLayout.setHorizontalGroup(
+                tableIconsPanelLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(tableIconsPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblTableIconScale)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(textFieldTableIconScale, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(labelTableScalePercent)
+                        .addContainerGap(216, Short.MAX_VALUE))
+                );
+        tableIconsPanelLayout.setVerticalGroup(
+                tableIconsPanelLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(tableIconsPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(tableIconsPanelLayout.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(lblTableIconScale)
+                                .addComponent(textFieldTableIconScale, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(labelTableScalePercent))
+                                .addContainerGap(116, Short.MAX_VALUE))
+                );
+        tableIconsPanel.setLayout(tableIconsPanelLayout);
+
+        JLabel lblEditorIconScale = new JLabel("Scale:");
+
+        textFieldEditorIconScale = new JTextField();
+        textFieldEditorIconScale.setToolTipText("The percentage of the icons original size.");
+        textFieldEditorIconScale.setColumns(10);
+
+        JLabel labelEditorScalePercent = new JLabel("%");
+        GroupLayout editorIconsPanelLayout = new GroupLayout(editorIconsPanel);
+        editorIconsPanelLayout.setHorizontalGroup(
+                editorIconsPanelLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(editorIconsPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblEditorIconScale)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(textFieldEditorIconScale, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(labelEditorScalePercent)
+                        .addContainerGap(216, Short.MAX_VALUE))
+                );
+        editorIconsPanelLayout.setVerticalGroup(
+                editorIconsPanelLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(editorIconsPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(editorIconsPanelLayout.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(lblEditorIconScale)
+                                .addComponent(textFieldEditorIconScale, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(labelEditorScalePercent))
+                                .addContainerGap(95, Short.MAX_VALUE))
+                );
+        editorIconsPanel.setLayout(editorIconsPanelLayout);
+
+        jPanelIcons.setLayout(jPanelIconsLayout);
     }
 
     @Override
@@ -694,6 +799,22 @@ public class SettingsForm extends JFrame implements MouseListener {
         } else {
             settings.setDefaultFormat();
         }
+
+        try{
+            settings.setEditorIconScale(Integer.parseInt(textFieldEditorIconScale.getText()));
+            parent.getToolBar().updateIcons();
+        } catch(NumberFormatException ex) {
+            // Number formatted incorrectly reset.
+            textFieldEditorIconScale.setText(String.valueOf(settings.getEditorIconScale()));
+        }
+
+        try{
+            settings.setTableIconScale(Integer.parseInt(textFieldTableIconScale.getText()));
+            parent.getTableToolBar().updateIcons();
+        } catch(NumberFormatException ex) {
+            // Number formatted incorrectly reset.
+            textFieldTableIconScale.setText(String.valueOf(settings.getTableIconScale()));
+        }
     }
 
     public void saveSettings()
@@ -701,15 +822,19 @@ public class SettingsForm extends JFrame implements MouseListener {
         parent.getSettingsManager().save(settings);
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
@@ -736,6 +861,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JPanel jPanelDefault;
     private javax.swing.JPanel jPanelClipboard;
     private javax.swing.JPanel jPanelTableDisplay;
+    private javax.swing.JPanel jPanelIcons;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -761,4 +887,8 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JRadioButton rdbtnDefault;
     private javax.swing.JRadioButton rdbtnAirboys;
     private javax.swing.JRadioButton rdbtnCustom;
+    private JPanel editorIconsPanel;
+    private JPanel tableIconsPanel;
+    private JTextField textFieldTableIconScale;
+    private JTextField textFieldEditorIconScale;
 }

@@ -19,16 +19,18 @@
 
 package com.romraider.xml;
 
-import com.romraider.Settings;
-import com.romraider.swing.JProgressPane;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-import javax.imageio.metadata.IIOMetadataNode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Vector;
+
+import javax.imageio.metadata.IIOMetadataNode;
+
+import com.romraider.Settings;
+import com.romraider.swing.JProgressPane;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public final class DOMSettingsBuilder {
 
@@ -49,6 +51,8 @@ public final class DOMSettingsBuilder {
         settingsNode.appendChild(buildLogger(settings));
         progress.update("Saving table clipboard format settings...", 80);
         settingsNode.appendChild(buildTableClipboardFormat(settings));
+        progress.update("Saving icon scale settings...", 85);
+        settingsNode.appendChild(buildIcons(settings));
 
         OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
         of.setIndent(1);
@@ -341,5 +345,23 @@ public final class DOMSettingsBuilder {
         tableClipboardFormatSetting.appendChild(table3DFormatSetting);
 
         return tableClipboardFormatSetting;
+    }
+
+    private IIOMetadataNode buildIcons(Settings settings) {
+        // Head Node
+        IIOMetadataNode iconsSettings = new IIOMetadataNode(Settings.ICONS_ELEMENT_NAME);
+
+        // Editor Icons Child
+        IIOMetadataNode editorIconsScaleSettings = new IIOMetadataNode(Settings.EDITOR_ICONS_ELEMENT_NAME);
+        editorIconsScaleSettings.setAttribute(Settings.EDITOR_ICONS_SCALE_ATTRIBUTE_NAME, String.valueOf(settings.getEditorIconScale()));
+
+        // Table Icons Child
+        IIOMetadataNode tableIconsScaleSettings = new IIOMetadataNode(Settings.TABLE_ICONS_ELEMENT_NAME);
+        tableIconsScaleSettings.setAttribute(Settings.TABLE_ICONS_SCALE_ATTRIBUTE_NAME, String.valueOf(settings.getTableIconScale()));
+
+        iconsSettings.appendChild(editorIconsScaleSettings);
+        iconsSettings.appendChild(tableIconsScaleSettings);
+
+        return iconsSettings;
     }
 }

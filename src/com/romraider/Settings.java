@@ -22,9 +22,8 @@ package com.romraider;
 import static com.romraider.Version.RELEASE_NOTES;
 import static com.romraider.Version.ROM_REVISION_URL;
 import static com.romraider.Version.SUPPORT_URL;
-import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.logger.ecu.definition.EcuDefinition;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -34,8 +33,11 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Vector;
 
+import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.logger.ecu.definition.EcuDefinition;
+
 public class Settings implements Serializable {
-    
+
     private static final long serialVersionUID = 1026542922680475190L;
 
     public static final String NEW_LINE = System.getProperty("line.separator");
@@ -65,6 +67,15 @@ public class Settings implements Serializable {
 
     public static final String REPOSITORY_ELEMENT_NAME = "repository-dir";
     public static final String REPOSITORY_ATTRIBUTE_NAME = "path";
+
+    public static final String ICONS_ELEMENT_NAME = "icons";
+    public static final String EDITOR_ICONS_ELEMENT_NAME = "editor-toolbar";
+    public static final String EDITOR_ICONS_SCALE_ATTRIBUTE_NAME = "scale";
+    public static final String TABLE_ICONS_ELEMENT_NAME = "table-toolbar";
+    public static final String TABLE_ICONS_SCALE_ATTRIBUTE_NAME = "scale";
+
+    public static final int DEFAULT_EDITOR_ICON_SCALE = 50;
+    public static final int DEFAULT_TABLE_ICON_SCALE = 70;
 
     private final Dimension windowSize = new Dimension(800, 600);
     private final Point windowLocation = new Point();
@@ -97,7 +108,7 @@ public class Settings implements Serializable {
 
     private String loggerPort;
     private String loggerPortDefault;
-    private String loggerProtocol = "SSM";
+    private final String loggerProtocol = "SSM";
     private static String loggerDefinitionFilePath;
     private static String loggerProfileFilePath;
     private String loggerOutputDirPath = System.getProperty("user.home");
@@ -127,6 +138,9 @@ public class Settings implements Serializable {
     private String table1DHeader = DEFAULT_TABLE1D_HEADER;
     private String table2DHeader = DEFAULT_TABLE2D_HEADER;
     private String table3DHeader = DEFAULT_TABLE3D_HEADER;
+
+    private int editorIconScale = DEFAULT_EDITOR_ICON_SCALE;
+    private int tableIconScale = DEFAULT_TABLE_ICON_SCALE;
 
     public Settings() {
         //center window by default
@@ -608,5 +622,21 @@ public class Settings implements Serializable {
         this.table1DHeader = AIRBOYS_TABLE1D_HEADER;
         this.table2DHeader = AIRBOYS_TABLE2D_HEADER;
         this.table3DHeader = AIRBOYS_TABLE3D_HEADER;
+    }
+
+    public int getEditorIconScale() {
+        return this.editorIconScale;
+    }
+
+    public void setEditorIconScale(int scale) {
+        this.editorIconScale = scale;
+    }
+
+    public int getTableIconScale() {
+        return this.tableIconScale;
+    }
+
+    public void setTableIconScale(int scale) {
+        this.tableIconScale = scale;
     }
 }

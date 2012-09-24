@@ -19,12 +19,10 @@
 
 package com.romraider.xml;
 
-import com.romraider.Settings;
 import static com.romraider.xml.DOMHelper.unmarshallAttribute;
 import static java.awt.Font.BOLD;
-import org.w3c.dom.Node;
 import static org.w3c.dom.Node.ELEMENT_NODE;
-import org.w3c.dom.NodeList;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -32,6 +30,11 @@ import java.awt.Point;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.romraider.Settings;
 
 public final class DOMSettingsUnmarshaller {
 
@@ -60,6 +63,8 @@ public final class DOMSettingsUnmarshaller {
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase(Settings.TABLE_CLIPBOARD_FORMAT_ELEMENT)) {
                 settings = this.unmarshallClipboardFormat(n, settings);
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase(Settings.ICONS_ELEMENT_NAME)) {
+                settings = this.unmarshallIcons(n, settings);
             }
         }
         return settings;
@@ -233,7 +238,7 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("size")) {
                 settings.setLoggerWindowSize(new Dimension(unmarshallAttribute(n, "y", 600),
                         unmarshallAttribute(n, "x", 1000)));
-                settings.setLoggerDividerLocation((double) unmarshallAttribute(n, "divider", 500));
+                settings.setLoggerDividerLocation(unmarshallAttribute(n, "divider", 500));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("location")) {
                 settings.setLoggerWindowLocation(new Point(unmarshallAttribute(n, "x", 150),
@@ -313,4 +318,26 @@ public final class DOMSettingsUnmarshaller {
         return settings;
     }
 
+    private Settings unmarshallIcons(Node iconsNode, Settings settings) {
+        NodeList iconScales = iconsNode.getChildNodes();
+        for(int i = 0; i < iconScales.getLength(); i++) {
+            Node scaleNode = iconScales.item(i);
+            if(scaleNode.getNodeType() == ELEMENT_NODE) {
+                if(scaleNode.getNodeName().equalsIgnoreCase(Settings.EDITOR_ICONS_ELEMENT_NAME)) {
+                    try{
+                        settings.setEditorIconScale(unmarshallAttribute(scaleNode, Settings.EDITOR_ICONS_SCALE_ATTRIBUTE_NAME, Settings.DEFAULT_EDITOR_ICON_SCALE));
+                    } catch(NumberFormatException ex) {
+                        settings.setEditorIconScale(Settings.DEFAULT_EDITOR_ICON_SCALE);
+                    }
+                } else if(scaleNode.getNodeName().equalsIgnoreCase(Settings.TABLE_ICONS_ELEMENT_NAME)) {
+                    try{
+                        settings.setTableIconScale(unmarshallAttribute(scaleNode, Settings.TABLE_ICONS_SCALE_ATTRIBUTE_NAME, Settings.DEFAULT_TABLE_ICON_SCALE));
+                    } catch(NumberFormatException ex) {
+                        settings.setTableIconScale(Settings.DEFAULT_TABLE_ICON_SCALE);
+                    }
+                }
+            }
+        }
+        return settings;
+    }
 }

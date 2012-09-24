@@ -24,6 +24,7 @@ import static javax.swing.BorderFactory.createLineBorder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -39,10 +40,15 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
 
     private static final long serialVersionUID = 7778170684606193919L;
     private final ECUEditor parent;
-    private final JButton openImage = new JButton(new ImageIcon("./graphics/icon-open.png"));
-    private final JButton saveImage = new JButton(new ImageIcon("./graphics/icon-save.png"));
-    private final JButton refreshImage = new JButton(new ImageIcon("./graphics/icon-refresh.png"));
-    private final JButton closeImage = new JButton(new ImageIcon("./graphics/icon-close.png"));
+    private final JButton openImage = new JButton();
+    private final JButton saveImage = new JButton();
+    private final JButton refreshImage = new JButton();
+    private final JButton closeImage = new JButton();
+
+    private final String openIconImage = "./graphics/icon-open.png";
+    private final String saveIconImage = "./graphics/icon-save.png";
+    private final String refreshIconImage = "./graphics/icon-refresh.png";
+    private final String closeIconImage = "./graphics/icon-close.png";
 
     public ECUEditorToolBar(ECUEditor parent, String name) {
         super(name);
@@ -52,6 +58,8 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         FlowLayout toolBarLayout = new FlowLayout(FlowLayout.LEFT, 0, 0);
         this.setLayout(toolBarLayout);
         //this.setBorder(BorderFactory.createTitledBorder("Editor Tools"));
+
+        this.updateIcons();
 
         this.add(openImage);
         this.add(saveImage);
@@ -67,12 +75,30 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         refreshImage.setMaximumSize(new Dimension(50, 50));
         refreshImage.setBorder(createLineBorder(new Color(150, 150, 150), 0));
 
-        updateButtons();
+        this.updateButtons();
 
         openImage.addActionListener(this);
         saveImage.addActionListener(this);
         closeImage.addActionListener(this);
         refreshImage.addActionListener(this);
+    }
+
+    public void updateIcons() {
+        openImage.setIcon(rescaleImageIcon(new ImageIcon(openIconImage), parent.getSettings().getEditorIconScale()));
+        saveImage.setIcon(rescaleImageIcon(new ImageIcon(saveIconImage), parent.getSettings().getEditorIconScale()));
+        refreshImage.setIcon(rescaleImageIcon(new ImageIcon(refreshIconImage), parent.getSettings().getEditorIconScale()));
+        closeImage.setIcon(rescaleImageIcon(new ImageIcon(closeIconImage), parent.getSettings().getEditorIconScale()));
+    }
+
+    private ImageIcon rescaleImageIcon(ImageIcon imageIcon, int percentOfOriginal) {
+        int newHeight = (int) (imageIcon.getImage().getHeight(this) * (percentOfOriginal * .01));
+        int newWidth = (int) (imageIcon.getImage().getWidth(this) * (percentOfOriginal * .01));
+
+        if(newHeight > 0 && newWidth > 0)
+        {
+            imageIcon.setImage(imageIcon.getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH));
+        }
+        return imageIcon;
     }
 
     public void updateButtons() {

@@ -86,6 +86,8 @@ public class RomTree extends JTree implements MouseListener {
                     container.setLastSelectedRom(node.getRom());
                 }
             }
+            container.getEditorMenuBar().updateMenu();
+            container.getToolBar().updateButtons();
         } catch (NullPointerException ex) {
         }
     }

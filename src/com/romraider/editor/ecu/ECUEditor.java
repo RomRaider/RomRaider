@@ -151,7 +151,7 @@ public class ECUEditor extends AbstractFrame {
 
         toolBar = new ECUEditorToolBar(this, "Editor Tools");
 
-        tableToolBar = new TableToolBar("Table Tools");
+        tableToolBar = new TableToolBar("Table Tools", this);
         tableToolBar.updateTableToolBar(null);
         tableToolBar.toggleTableToolBar(false);
 
