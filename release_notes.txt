@@ -1,4 +1,4 @@
-                - RomRaider 0.5.5 RC1 -
+                - RomRaider 0.5.6 RC1 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,12 +33,12 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.5 RC1 Notes (07/29/2012) -
+- 0.5.6 RC1 Notes (09/29/2012) -
 --------------------------------------------
-This is the latest SNAPSHOT release of the RomRaider from the GitHub repo.
+This is the latest release of the RomRaider from the GitHub repo.
 
 --------------------------------------
-- 0.5.5 RC1 Known Issues -
+- 0.5.6 RC1 Known Issues -
 --------------------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -56,7 +56,22 @@ This is the latest SNAPSHOT release of the RomRaider from the GitHub repo.
 - Change Log -
 --------------
 
+0.5.6 RC1 (09/29/2012)
+----------------------------------
+
+- Logger
+  - TXS plugin refactored to include Tuner Pro by nitros@romraider.forum
+
+- Editor
+  - Table toolbar moved from table window and onto main window.  Toolbar can
+    now be moved.  Updates to multi-thread some major functions.  Try this,
+    open a rom, while that ROM is opening open another ROM and then launch
+    the Logger. And while all of this is going on resize the main editor
+    window.  It should all be smooth as silk. By scotthew@romraider.forum
+
+
 0.5.5 RC1 (07/29/2012)
+(Same as SNAPSHOT 86b338)
 ----------------------------------
 
 --- Logger ---
@@ -111,27 +126,6 @@ This is the latest SNAPSHOT release of the RomRaider from the GitHub repo.
   Options are Default, Airboy's, and Custom. Custom formats are specified
   in the settings.xml file
 
-
----------------------------------
-- 0.5.4b RC1 Notes (10/28/2011) -
----------------------------------
-This is the first beta release of the upcoming official 0.5.4b release.
-
----------------------------
-- 0.5.4b RC1 Known Issues -
----------------------------
-- Editor
-  - Pasting table data can cause hangs under certain circumstances
-- Logger
-  - Gauge min/max/step limits incomplete in logger.xml
-  - ECU connections under Linux are flaky (start the logger after
-      you've started the engine)
-  - Update latency via injector tab broken for some models (eg. 2007 2.5i)
-
-
---------------
-- Change Log -
---------------
 
 0.5.4b RC1 (10/28/2011)
 -----------------------

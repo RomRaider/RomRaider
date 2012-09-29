@@ -82,7 +82,7 @@
 
         <!-- Set the buildnumber to be the revision fetched from the repository, but default to zero for
                 offline work -->
-        <condition property="buildnumber" value="${svn.revision}" else="402">
+        <condition property="buildnumber" value="${svn.revision}" else="413">
             <isset property="svn.revision"/>
         </condition>
 
