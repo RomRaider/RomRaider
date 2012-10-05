@@ -132,12 +132,14 @@ public class ECUEditor extends AbstractFrame {
                 VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane leftScrollPane = new JScrollPane(imageList,
                 VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
         splitPane.setDividerSize(3);
         splitPane.setDividerLocation(getSettings().getSplitPaneLocation());
         splitPane.addPropertyChangeListener(this);
-
+        splitPane.setContinuousLayout(true);
         getContentPane().add(splitPane);
+
         rightPanel.setBackground(Color.BLACK);
         imageList.setScrollsOnExpand(true);
         imageList.setContainer(this);
@@ -278,9 +280,15 @@ public class ECUEditor extends AbstractFrame {
         // add to ecu image list pane
         RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel(), settings.isDisplayHighTables(), this);
         imageRoot.add(romNode);
+
+        imageList.setVisible(true);
         imageList.setRootVisible(true);
-        imageList.expandRow(imageList.getRowCount() - 1);
+        TreePath addedRomPath = new TreePath(romNode.getPath());
+        imageList.expandPath(addedRomPath);
+        // uncomment collapsePath if you want ROM to open collapsed.
+        // imageList.collapsePath(addedRomPath);
         imageList.setRootVisible(false);
+        imageList.repaint();
 
         // Only set if no other rom has been selected.
         if(null == getLastSelectedRom()) {
