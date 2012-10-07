@@ -19,22 +19,12 @@
 
 package com.romraider.maps;
 
-import com.romraider.Settings;
-import com.romraider.swing.TableFrame;
 import static com.romraider.util.ColorScaler.getScaledColor;
-import com.romraider.util.JEPUtil;
-import com.romraider.xml.RomAttributeParser;
 import static javax.swing.BorderFactory.createLineBorder;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.InputMap;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -49,6 +39,22 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.InputMap;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+
+import com.romraider.Settings;
+import com.romraider.swing.TableFrame;
+import com.romraider.util.JEPUtil;
+import com.romraider.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
@@ -122,6 +128,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected String liveValue = BLANK;
     protected boolean overlayLog = false;
 
+    protected CopyTableWorker copyTableWorker;
+
     public Table(Settings settings) {
         this.setSettings(settings);
         this.setLayout(borderLayout);
@@ -132,6 +140,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action rightAction = new AbstractAction() {
             private static final long serialVersionUID = 1042884198300385041L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 cursorRight();
             }
@@ -139,6 +148,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action leftAction = new AbstractAction() {
             private static final long serialVersionUID = -4970441255677214171L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 cursorLeft();
             }
@@ -146,6 +156,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action downAction = new AbstractAction() {
             private static final long serialVersionUID = -7898502951121825984L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 cursorDown();
             }
@@ -153,6 +164,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action upAction = new AbstractAction() {
             private static final long serialVersionUID = 6937621541727666631L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 cursorUp();
             }
@@ -160,6 +172,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action incCoarseAction = new AbstractAction() {
             private static final long serialVersionUID = -8308522736529183148L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().incrementCoarse();
             }
@@ -167,6 +180,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action decCoarseAction = new AbstractAction() {
             private static final long serialVersionUID = -7407628920997400915L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().decrementCoarse();
             }
@@ -174,6 +188,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action incFineAction = new AbstractAction() {
             private static final long serialVersionUID = 7261463425941761433L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().incrementFine();
             }
@@ -181,6 +196,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action decFineAction = new AbstractAction() {
             private static final long serialVersionUID = 8929400237520608035L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 frame.getToolBar().decrementFine();
             }
@@ -188,6 +204,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num0Action = new AbstractAction() {
             private static final long serialVersionUID = -6310984176739090034L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('0');
             }
@@ -195,6 +212,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num1Action = new AbstractAction() {
             private static final long serialVersionUID = -6187220355403883499L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('1');
             }
@@ -202,6 +220,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num2Action = new AbstractAction() {
             private static final long serialVersionUID = -8745505977907325720L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('2');
             }
@@ -209,6 +228,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num3Action = new AbstractAction() {
             private static final long serialVersionUID = 4694872385823448942L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('3');
             }
@@ -216,6 +236,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num4Action = new AbstractAction() {
             private static final long serialVersionUID = 4005741329254221678L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('4');
             }
@@ -223,6 +244,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num5Action = new AbstractAction() {
             private static final long serialVersionUID = -5846094949106279884L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('5');
             }
@@ -230,6 +252,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num6Action = new AbstractAction() {
             private static final long serialVersionUID = -5338656374925334150L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('6');
             }
@@ -237,6 +260,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num7Action = new AbstractAction() {
             private static final long serialVersionUID = 1959983381590509303L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('7');
             }
@@ -244,6 +268,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num8Action = new AbstractAction() {
             private static final long serialVersionUID = 7442763278699460648L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('8');
             }
@@ -251,6 +276,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action num9Action = new AbstractAction() {
             private static final long serialVersionUID = 7475171864584215094L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('9');
             }
@@ -258,6 +284,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action numPointAction = new AbstractAction() {
             private static final long serialVersionUID = -4729135055857591830L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('.');
             }
@@ -265,6 +292,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action copyAction = new AbstractAction() {
             private static final long serialVersionUID = -6978981449261938672L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 copySelection();
             }
@@ -272,6 +300,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action pasteAction = new AbstractAction() {
             private static final long serialVersionUID = 2026817603236490899L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 paste();
             }
@@ -279,6 +308,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action multiplyAction = new AbstractAction() {
             private static final long serialVersionUID = -2350912575392447149L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().multiply();
             }
@@ -286,6 +316,7 @@ public abstract class Table extends JPanel implements Serializable {
         Action numNegAction = new AbstractAction() {
             private static final long serialVersionUID = -6346750245035640773L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getFrame().getToolBar().focusSetValue('-');
             }
@@ -458,10 +489,12 @@ public abstract class Table extends JPanel implements Serializable {
         this.type = type;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -567,6 +600,7 @@ public abstract class Table extends JPanel implements Serializable {
         return logParam;
     }
 
+    @Override
     public String toString() {
         /*String output = "\n   ---- Table " + name + " ----" +
                 scale +
@@ -918,6 +952,7 @@ public abstract class Table extends JPanel implements Serializable {
         this.beforeRam = beforeRam;
     }
 
+    @Override
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
         for (DataCell cell : data) {
@@ -988,16 +1023,10 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void copyTable() {
-        String tableHeader = settings.getTableHeader();
-
-        StringBuffer output = new StringBuffer(tableHeader);
-        for (int i = 0; i < getDataSize(); i++) {
-            output.append(data[i].getText());
-            if (i < getDataSize() - 1) {
-                output.append(TAB);
-            }
-        }
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        copyTableWorker = new CopyTableWorker(settings, this);
+        copyTableWorker.execute();
     }
 
     public String getCellAsString(int index) {
@@ -1144,6 +1173,7 @@ public abstract class Table extends JPanel implements Serializable {
 
                 check.addActionListener(
                         new ActionListener() {
+                            @Override
                             public void actionPerformed(ActionEvent e) {
                                 getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
                             }
@@ -1291,4 +1321,35 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
+}
+
+class CopyTableWorker extends SwingWorker<Void, Void> {
+    Settings settings;
+    Table table;
+
+    public CopyTableWorker(Settings settings, Table table) {
+        this.settings = settings;
+        this.table = table;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        String tableHeader = settings.getTableHeader();
+
+        StringBuffer output = new StringBuffer(tableHeader);
+        for (int i = 0; i < table.getDataSize(); i++) {
+            output.append(table.data[i].getText());
+            if (i < table.getDataSize() - 1) {
+                output.append(Table.TAB);
+            }
+        }
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+        return null;
+    }
+
+    @Override
+    public void done() {
+        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        table.setCursor(null);
+    }
 }
