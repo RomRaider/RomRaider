@@ -46,7 +46,9 @@ public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
     static final String NEW_LINE = System.getProperty("line.separator");
     private Table1D axis = new Table1D(new Settings());
+
     private CopyTable2DWorker copyTable2DWorker;
+    private CopySelection2DWorker copySelection2DWorker;
 
     public Table2D(Settings settings) {
         super(settings);
@@ -239,8 +241,11 @@ public class Table2D extends Table {
 
     @Override
     public void copySelection() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         super.copySelection();
-        axis.copySelection();
+        copySelection2DWorker = new CopySelection2DWorker(this);
+        copySelection2DWorker.execute();
     }
 
     @Override
@@ -377,6 +382,28 @@ public class Table2D extends Table {
             cell.setLiveDataTrace(false);
             cell.updateDisplayValue();
         }
+    }
+}
+
+class CopySelection2DWorker extends SwingWorker<Void, Void> {
+    Table2D table;
+    Table extendedTable;
+
+    public CopySelection2DWorker(Table2D table)
+    {
+        this.table = table;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        table.getAxis().copySelection();
+        return null;
+    }
+
+    @Override
+    public void done() {
+        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        table.setCursor(null);
     }
 }
 

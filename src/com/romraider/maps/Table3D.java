@@ -57,7 +57,9 @@ public class Table3D extends Table {
     private boolean swapXY = false;
     private boolean flipX = false;
     private boolean flipY = false;
+
     CopyTable3DWorker copyTable3DWorker;
+    CopySelection3DWorker copySelection3DWorker;
 
     public Table3D(Settings settings) {
         super(settings);
@@ -704,60 +706,11 @@ public class Table3D extends Table {
 
     @Override
     public void copySelection() {
-        // find bounds of selection
-        // coords[0] = x min, y min, x max, y max
-        boolean copy = false;
-        int[] coords = new int[4];
-        coords[0] = this.getSizeX();
-        coords[1] = this.getSizeY();
+        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        copySelection3DWorker = new CopySelection3DWorker(this);
+        copySelection3DWorker.execute();
 
-        for (int x = 0; x < this.getSizeX(); x++) {
-            for (int y = 0; y < this.getSizeY(); y++) {
-                if (data[x][y].isSelected()) {
-                    if (x < coords[0]) {
-                        coords[0] = x;
-                        copy = true;
-                    }
-                    if (x > coords[2]) {
-                        coords[2] = x;
-                        copy = true;
-                    }
-                    if (y < coords[1]) {
-                        coords[1] = y;
-                        copy = true;
-                    }
-                    if (y > coords[3]) {
-                        coords[3] = y;
-                        copy = true;
-                    }
-                }
-            }
-        }
-        // make string of selection
-        if (copy) {
-            String newline = System.getProperty("line.separator");
-            StringBuffer output = new StringBuffer("[Selection3D]" + newline);
-            for (int y = coords[1]; y <= coords[3]; y++) {
-                for (int x = coords[0]; x <= coords[2]; x++) {
-                    if (data[x][y].isSelected()) {
-                        output.append(data[x][y].getText());
-                    } else {
-                        output.append("x"); // x represents non-selected cell
-                    }
-                    if (x < coords[2]) {
-                        output.append("\t");
-                    }
-                }
-                if (y < coords[3]) {
-                    output.append(newline);
-                }
-                //copy to clipboard
-                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
-            }
-        } else {
-            xAxis.copySelection();
-            yAxis.copySelection();
-        }
     }
 
     @Override
@@ -1072,6 +1025,80 @@ public class Table3D extends Table {
     }
 }
 
+class CopySelection3DWorker extends SwingWorker<Void, Void> {
+    Table3D table;
+
+    public CopySelection3DWorker(Table3D table)
+    {
+        this.table = table;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        // find bounds of selection
+        // coords[0] = x min, y min, x max, y max
+        boolean copy = false;
+        int[] coords = new int[4];
+        coords[0] = table.getSizeX();
+        coords[1] = table.getSizeY();
+
+        for (int x = 0; x < table.getSizeX(); x++) {
+            for (int y = 0; y < table.getSizeY(); y++) {
+                if (table.get3dData()[x][y].isSelected()) {
+                    if (x < coords[0]) {
+                        coords[0] = x;
+                        copy = true;
+                    }
+                    if (x > coords[2]) {
+                        coords[2] = x;
+                        copy = true;
+                    }
+                    if (y < coords[1]) {
+                        coords[1] = y;
+                        copy = true;
+                    }
+                    if (y > coords[3]) {
+                        coords[3] = y;
+                        copy = true;
+                    }
+                }
+            }
+        }
+        // make string of selection
+        if (copy) {
+            String newline = System.getProperty("line.separator");
+            StringBuffer output = new StringBuffer("[Selection3D]" + newline);
+            for (int y = coords[1]; y <= coords[3]; y++) {
+                for (int x = coords[0]; x <= coords[2]; x++) {
+                    if (table.get3dData()[x][y].isSelected()) {
+                        output.append(table.get3dData()[x][y].getText());
+                    } else {
+                        output.append("x"); // x represents non-selected cell
+                    }
+                    if (x < coords[2]) {
+                        output.append("\t");
+                    }
+                }
+                if (y < coords[3]) {
+                    output.append(newline);
+                }
+                //copy to clipboard
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+            }
+        } else {
+            table.getXAxis().copySelection();
+            table.getYAxis().copySelection();
+        }
+        return null;
+    }
+
+    @Override
+    public void done() {
+        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        table.setCursor(null);
+    }
+}
+
 class CopyTable3DWorker extends SwingWorker<Void, Void> {
     Settings settings;
     Table3D table;
@@ -1092,7 +1119,7 @@ class CopyTable3DWorker extends SwingWorker<Void, Void> {
         for (int y = 0; y < table.getSizeY(); y++) {
             output.append(table.getYAxis().getCellAsString(y)).append(Table3D.TAB);
             for (int x = 0; x < table.getSizeX(); x++) {
-                output.append(table.data[x][y].getText());
+                output.append(table.get3dData()[x][y].getText());
                 if (x < table.getSizeX() - 1) {
                     output.append(Table3D.TAB);
                 }

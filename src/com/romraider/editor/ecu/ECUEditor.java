@@ -472,6 +472,14 @@ public class ECUEditor extends AbstractFrame {
     public RomTree getImageList() {
         return imageList;
     }
+
+    public JProgressPane getStatusPanel() {
+        return this.statusPanel;
+    }
+
+    public MDIDesktopPane getRightPanel() {
+        return this.rightPanel;
+    }
 }
 
 class LaunchLoggerWorker extends SwingWorker<Void, Void> {
@@ -483,7 +491,7 @@ class LaunchLoggerWorker extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        editor.statusPanel.setStatus("Launching Logger...");
+        editor.getStatusPanel().setStatus("Launching Logger...");
         setProgress(10);
         EcuLogger.startLogger(javax.swing.WindowConstants.DISPOSE_ON_CLOSE, editor);
         return null;
@@ -491,7 +499,7 @@ class LaunchLoggerWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        editor.statusPanel.setStatus("Ready...");
+        editor.getStatusPanel().setStatus("Ready...");
         setProgress(0);
         editor.getToolBar().updateButtons();
         editor.getEditorMenuBar().updateMenu();
@@ -520,7 +528,7 @@ class SetUserLevelWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        editor.statusPanel.setStatus("Ready...");
+        editor.getStatusPanel().setStatus("Ready...");
         setProgress(0);
         editor.getToolBar().updateButtons();
         editor.getEditorMenuBar().updateMenu();
@@ -547,7 +555,7 @@ class CloseImageWorker extends SwingWorker<Void, Void> {
             if (rom == editor.getLastSelectedRom()) {
                 Vector<Table> romTables = rom.getTables();
                 for (Table t : romTables) {
-                    editor.rightPanel.remove(t.getFrame());
+                    editor.getRightPanel().remove(t.getFrame());
                     TableUpdateHandler.getInstance().deregisterTable(t);
                 }
 
@@ -566,13 +574,13 @@ class CloseImageWorker extends SwingWorker<Void, Void> {
             // no other images open
             editor.setLastSelectedRom(null);
         }
-        editor.rightPanel.repaint();
+        editor.getRightPanel().repaint();
         return null;
     }
 
     @Override
     public void done() {
-        editor.statusPanel.setStatus("Ready...");
+        editor.getStatusPanel().setStatus("Ready...");
         setProgress(0);
         editor.getToolBar().updateButtons();
         editor.getEditorMenuBar().updateMenu();
@@ -595,14 +603,14 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
         try {
             Settings settings = editor.getSettings();
 
-            editor.statusPanel.setStatus("Parsing ECU definitions...");
+            editor.getStatusPanel().setStatus("Parsing ECU definitions...");
             setProgress(0);
 
             byte[] input = editor.readFile(inputFile);
             DOMRomUnmarshaller domUms = new DOMRomUnmarshaller(settings, editor);
             DOMParser parser = new DOMParser();
 
-            editor.statusPanel.setStatus("Finding ECU definition...");
+            editor.getStatusPanel().setStatus("Finding ECU definition...");
             setProgress(10);
 
             Rom rom;
@@ -615,21 +623,21 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
                 Document doc = parser.getDocument();
 
                 try {
-                    rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.statusPanel);
+                    rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.getStatusPanel());
 
-                    editor.statusPanel.setStatus("Populating tables...");
+                    editor.getStatusPanel().setStatus("Populating tables...");
                     setProgress(50);
 
-                    rom.populateTables(input, editor.statusPanel);
+                    rom.populateTables(input, editor.getStatusPanel());
                     rom.setFileName(inputFile.getName());
 
-                    editor.statusPanel.setStatus("Finalizing...");
+                    editor.getStatusPanel().setStatus("Finalizing...");
                     setProgress(75);
 
                     editor.addRom(rom);
                     rom.setFullFileName(inputFile);
 
-                    editor.statusPanel.setStatus("Done loading image...");
+                    editor.getStatusPanel().setStatus("Done loading image...");
                     setProgress(100);
                     return null;
 
@@ -659,7 +667,7 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        editor.statusPanel.setStatus("Ready...");
+        editor.getStatusPanel().setStatus("Ready...");
         setProgress(0);
         editor.getToolBar().updateButtons();
         editor.getEditorMenuBar().updateMenu();

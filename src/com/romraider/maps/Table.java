@@ -129,6 +129,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected boolean overlayLog = false;
 
     protected CopyTableWorker copyTableWorker;
+    protected CopySelectionWorker copySelectionWorker;
 
     public Table(Settings settings) {
         this.setSettings(settings);
@@ -973,41 +974,10 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void copySelection() {
-        // find bounds of selection
-        // coords[0] = x min, y min, x max, y max
-        String newline = System.getProperty("line.separator");
-        String output = "[Selection1D]" + newline;
-        boolean copy = false;
-        int[] coords = new int[2];
-        coords[0] = this.getDataSize();
-
-        for (int i = 0; i < this.getDataSize(); i++) {
-            if (data[i].isSelected()) {
-                if (i < coords[0]) {
-                    coords[0] = i;
-                    copy = true;
-                }
-                if (i > coords[1]) {
-                    coords[1] = i;
-                    copy = true;
-                }
-            }
-        }
-        //make a string of the selection
-        for (int i = coords[0]; i <= coords[1]; i++) {
-            if (data[i].isSelected()) {
-                output = output + data[i].getText();
-            } else {
-                output = output + "x"; // x represents non-selected cell
-            }
-            if (i < coords[1]) {
-                output = output + "\t";
-            }
-        }
-        //copy to clipboard
-        if (copy) {
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output), null);
-        }
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        copySelectionWorker = new CopySelectionWorker(this);
+        copySelectionWorker.execute();
     }
 
     public StringBuffer getTableAsString() {
@@ -1321,6 +1291,71 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
+    public boolean getIsStatic() {
+        return this.isStatic;
+    }
+
+    public boolean getIsAxis() {
+        return this.isAxis;
+    }
+
+    public int getCompareType() {
+        return this.compareType;
+    }
+}
+
+class CopySelectionWorker extends SwingWorker<Void, Void> {
+    Table table;
+
+    public CopySelectionWorker(Table table) {
+        this.table = table;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        // find bounds of selection
+        // coords[0] = x min, y min, x max, y max
+        String newline = System.getProperty("line.separator");
+        String output = "[Selection1D]" + newline;
+        boolean copy = false;
+        int[] coords = new int[2];
+        coords[0] = table.getDataSize();
+
+        for (int i = 0; i < table.getDataSize(); i++) {
+            if (table.getData()[i].isSelected()) {
+                if (i < coords[0]) {
+                    coords[0] = i;
+                    copy = true;
+                }
+                if (i > coords[1]) {
+                    coords[1] = i;
+                    copy = true;
+                }
+            }
+        }
+        //make a string of the selection
+        for (int i = coords[0]; i <= coords[1]; i++) {
+            if (table.getData()[i].isSelected()) {
+                output = output + table.getData()[i].getText();
+            } else {
+                output = output + "x"; // x represents non-selected cell
+            }
+            if (i < coords[1]) {
+                output = output + "\t";
+            }
+        }
+        //copy to clipboard
+        if (copy) {
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output), null);
+        }
+        return null;
+    }
+
+    @Override
+    public void done() {
+        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        table.setCursor(null);
+    }
 }
 
 class CopyTableWorker extends SwingWorker<Void, Void> {
@@ -1338,7 +1373,7 @@ class CopyTableWorker extends SwingWorker<Void, Void> {
 
         StringBuffer output = new StringBuffer(tableHeader);
         for (int i = 0; i < table.getDataSize(); i++) {
-            output.append(table.data[i].getText());
+            output.append(table.getData()[i].getText());
             if (i < table.getDataSize() - 1) {
                 output.append(Table.TAB);
             }

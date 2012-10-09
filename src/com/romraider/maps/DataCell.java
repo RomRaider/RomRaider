@@ -24,6 +24,7 @@ import static java.awt.Color.BLUE;
 import static java.awt.Color.RED;
 import static java.lang.Math.abs;
 import static javax.swing.BorderFactory.createLineBorder;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -31,9 +32,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+
 import javax.swing.JLabel;
 import javax.swing.border.Border;
+
 import org.apache.log4j.Logger;
+
 import com.romraider.util.JEPUtil;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
@@ -85,7 +89,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             if (getCompareDisplay() == Table.COMPARE_ABSOLUTE) {
                 displayValue = formatter.format(
                         calcDisplayValue(binValue, table.getScale().getExpression()) -
-                                calcDisplayValue(compareValue, table.getScale().getExpression()));
+                        calcDisplayValue(compareValue, table.getScale().getExpression()));
 
             } else if (getCompareDisplay() == Table.COMPARE_PERCENT) {
                 String expression = table.getScale().getExpression();
@@ -130,18 +134,18 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                 int minAllowedValue = 0;
                 int maxAllowedValue = 0;
                 switch (table.getStorageType()) {
-                    case 1:
-                            minAllowedValue = Byte.MIN_VALUE;
-                            maxAllowedValue = Byte.MAX_VALUE;
-                            break;
-                    case 2:
-                            minAllowedValue = Short.MIN_VALUE;
-                            maxAllowedValue = Short.MAX_VALUE;
-                            break;
-                    case 4:
-                            minAllowedValue = Integer.MIN_VALUE;
-                            maxAllowedValue = Integer.MAX_VALUE;
-                            break;
+                case 1:
+                    minAllowedValue = Byte.MIN_VALUE;
+                    maxAllowedValue = Byte.MAX_VALUE;
+                    break;
+                case 2:
+                    minAllowedValue = Short.MIN_VALUE;
+                    maxAllowedValue = Short.MAX_VALUE;
+                    break;
+                case 4:
+                    minAllowedValue = Integer.MIN_VALUE;
+                    maxAllowedValue = Integer.MAX_VALUE;
+                    break;
                 }
                 if (binValue < minAllowedValue ) {
                     this.setBinValue(minAllowedValue);
@@ -166,6 +170,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         return binValue;
     }
 
+    @Override
     public String toString() {
         return displayValue;
     }
@@ -206,10 +211,12 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         return highlighted;
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
         table.highlight(x, y);
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
         if (!table.isStatic()) {
             if (!e.isControlDown()) {
@@ -220,15 +227,18 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         requestFocus();
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         if (!table.isStatic()) {
             table.stopHighlight();
         }
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 
@@ -244,7 +254,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         setRealValue(String.valueOf((calcDisplayValue(binValue, scale.getExpression()) + increment)));
 
         // make sure table is incremented if change isnt great enough
-        int maxValue = (int) Math.pow(8, (double) table.getStorageType());
+        int maxValue = (int) Math.pow(8, table.getStorageType());
 
         if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT &&
                 oldValue == Double.parseDouble(getText()) &&
@@ -299,13 +309,17 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setRealValue(String input) {
         // create parser
-        if (!"x".equalsIgnoreCase(input)) {
-            double result = JEPUtil.evaluate(table.getScale().getByteExpression(), Double.parseDouble(input));
-            if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
-                this.setBinValue(result);
-            } else {
-                this.setBinValue((int) Math.round(result));
+        try {
+            if (!"x".equalsIgnoreCase(input)) {
+                double result = JEPUtil.evaluate(table.getScale().getByteExpression(), Double.parseDouble(input));
+                if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
+                    this.setBinValue(result);
+                } else {
+                    this.setBinValue((int) Math.round(result));
+                }
             }
+        } catch (NumberFormatException e) {
+            // Do nothing.  input is null or not a valid number.
         }
     }
 
