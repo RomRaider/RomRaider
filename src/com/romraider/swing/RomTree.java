@@ -20,11 +20,16 @@
 package com.romraider.swing;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Enumeration;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
@@ -33,7 +38,7 @@ import com.romraider.editor.ecu.ECUEditor;
 public class RomTree extends JTree implements MouseListener {
 
     private static final long serialVersionUID = 1630446543383498886L;
-    public static ECUEditor container;
+    public static ECUEditor editor;
 
     public RomTree(DefaultMutableTreeNode input) {
         super(input);
@@ -42,54 +47,79 @@ public class RomTree extends JTree implements MouseListener {
         addMouseListener(this);
         setCellRenderer(new RomCellRenderer());
         setFont(new Font("Tahoma", Font.PLAIN, 11));
+
+        // key binding actions
+        Action enterAction = new AbstractAction() {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -6008026264821746092L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    Object selectedRow = getSelectionPath().getLastPathComponent();
+                    showHideTable(selectedRow);
+                }catch(NullPointerException ex) {
+                }
+            }
+        };
+
+        this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
+        this.getActionMap().put("enter", enterAction);
     }
 
-    public ECUEditor getContainer() {
-        return container;
+    public ECUEditor getEditor() {
+        return editor;
     }
 
     public void setContainer(ECUEditor container) {
-        RomTree.container = container;
+        RomTree.editor = container;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        showHideTable(e);
-    }
-
-    private void showHideTable(MouseEvent e) {
-        try {
-
+        try{
             Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
 
-            if (e.getClickCount() >= container.getSettings().getTableClickCount() &&
-                    selectedRow instanceof TableTreeNode) {
+            if (e.getClickCount() >= editor.getSettings().getTableClickCount()) {
+                showHideTable(selectedRow);
+            }
+            setLastSelectedRom(selectedRow);
+        }catch(NullPointerException ex) {
+        }
+    }
 
+    private void showHideTable(Object selectedRow) {
+        try{
+            if(selectedRow instanceof TableTreeNode) {
                 TableTreeNode node = (TableTreeNode) selectedRow;
-
-                //if (!(node.getTable().getUserLevel() > container.getSettings().getUserLevel())) {
-                container.displayTable(node.getFrame());
-                //}
+                editor.displayTable(node.getFrame());
             }
-
-            if (selectedRow instanceof TableTreeNode || selectedRow instanceof CategoryTreeNode || selectedRow instanceof RomTreeNode)
-            {
-                Object lastSelectedPathComponent = getLastSelectedPathComponent();
-                if(lastSelectedPathComponent instanceof TableTreeNode) {
-                    TableTreeNode node = (TableTreeNode) getLastSelectedPathComponent();
-                    container.setLastSelectedRom(node.getTable().getRom());
-                } else if(lastSelectedPathComponent instanceof CategoryTreeNode) {
-                    CategoryTreeNode node = (CategoryTreeNode) getLastSelectedPathComponent();
-                    container.setLastSelectedRom(node.getRom());
-                } else if(lastSelectedPathComponent instanceof RomTreeNode) {
-                    RomTreeNode node = (RomTreeNode) getLastSelectedPathComponent();
-                    container.setLastSelectedRom(node.getRom());
-                }
-            }
-            container.getEditorMenuBar().updateMenu();
-            container.getToolBar().updateButtons();
+            setLastSelectedRom(selectedRow);
+            editor.getEditorMenuBar().updateMenu();
+            editor.getToolBar().updateButtons();
         } catch (NullPointerException ex) {
         }
+    }
+
+    private void setLastSelectedRom(Object selectedNode) {
+        if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof RomTreeNode)
+        {
+            Object lastSelectedPathComponent = getLastSelectedPathComponent();
+            if(lastSelectedPathComponent instanceof TableTreeNode) {
+                TableTreeNode node = (TableTreeNode) getLastSelectedPathComponent();
+                editor.setLastSelectedRom(node.getTable().getRom());
+            } else if(lastSelectedPathComponent instanceof CategoryTreeNode) {
+                CategoryTreeNode node = (CategoryTreeNode) getLastSelectedPathComponent();
+                editor.setLastSelectedRom(node.getRom());
+            } else if(lastSelectedPathComponent instanceof RomTreeNode) {
+                RomTreeNode node = (RomTreeNode) getLastSelectedPathComponent();
+                editor.setLastSelectedRom(node.getRom());
+            }
+        }
+        editor.getEditorMenuBar().updateMenu();
+        editor.getToolBar().updateButtons();
     }
 
     @Override

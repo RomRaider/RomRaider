@@ -190,8 +190,12 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getTable().requestFocus();
-                setValue();
+                Table getTable = getTable();
+                if(null != getTable)
+                {
+                    getTable().requestFocus();
+                    setValue();
+                }
             }
         };
 
