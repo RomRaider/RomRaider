@@ -88,8 +88,8 @@ public class MDIDesktopPane extends JDesktopPane {
         }
         moveToFront(frame);
         frame.setVisible(true);
-        TableFrame foo = (TableFrame) frame;
-        parent.updateTableToolBar(foo.getTable(), true);
+        TableFrame tableFrame = (TableFrame) frame;
+        parent.updateTableToolBar(tableFrame.getTable(), true);
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException e) {

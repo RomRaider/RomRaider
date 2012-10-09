@@ -49,10 +49,7 @@ public class RomTree extends JTree implements MouseListener {
         setFont(new Font("Tahoma", Font.PLAIN, 11));
 
         // key binding actions
-        Action enterAction = new AbstractAction() {
-            /**
-             *
-             */
+        Action tableSelectAction = new AbstractAction() {
             private static final long serialVersionUID = -6008026264821746092L;
 
             @Override
@@ -66,7 +63,9 @@ public class RomTree extends JTree implements MouseListener {
         };
 
         this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "enter");
-        this.getActionMap().put("enter", enterAction);
+        this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "space");
+        this.getActionMap().put("enter", tableSelectAction);
+        this.getActionMap().put("space", tableSelectAction);
     }
 
     public ECUEditor getEditor() {
@@ -97,13 +96,12 @@ public class RomTree extends JTree implements MouseListener {
                 editor.displayTable(node.getFrame());
             }
             setLastSelectedRom(selectedRow);
-            editor.getEditorMenuBar().updateMenu();
-            editor.getToolBar().updateButtons();
         } catch (NullPointerException ex) {
         }
     }
 
     private void setLastSelectedRom(Object selectedNode) {
+        TreePath selectedPath = getSelectionPath();
         if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof RomTreeNode)
         {
             Object lastSelectedPathComponent = getLastSelectedPathComponent();
