@@ -60,6 +60,8 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
     public void internalFrameActivated(InternalFrameEvent e) {
         getTable().getRom().getContainer().setLastSelectedRom(getTable().getRom());
         parent.updateTableToolBar(this.table, true);
+        parent.getToolBar().updateButtons();
+        parent.getEditorMenuBar().updateMenu();
     }
 
 
