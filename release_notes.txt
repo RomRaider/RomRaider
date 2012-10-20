@@ -1,4 +1,4 @@
-                - RomRaider 0.5.6 RC1 -
+                - RomRaider 0.5.6 RC2 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,12 +33,12 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.6 RC1 Notes (09/29/2012) -
+- 0.5.6 RC2 Notes (10/20/2012) -
 --------------------------------------------
 This is the latest release of the RomRaider from the GitHub repo.
 
 --------------------------------------
-- 0.5.6 RC1 Known Issues -
+- 0.5.6 RC2 Known Issues -
 --------------------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -55,6 +55,16 @@ This is the latest release of the RomRaider from the GitHub repo.
 --------------
 - Change Log -
 --------------
+
+0.5.6 RC2 (10/20/2012)
+----------------------------------
+
+- Editor
+  - updates to fix a few bugs related to the ROM tree by scotthew
+  - updates to Copy & Paste tables by scotthew
+  - updates to fix ROM tree focus and reflect selected in menus and buttons
+    by scotthew
+
 
 0.5.6 RC1 (09/29/2012)
 ----------------------------------
