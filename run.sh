@@ -1,15 +1,11 @@
 #!/bin/bash
 
-if [ -z "$JAVA_HOME" ]; then
-    echo JAVA_HOME not set.
-    exit 1
-fi
+# To change your ZIP install startup preference, uncomment the preferred line.
+# Make sure only one line is uncommented
+# Java is expected to be available on your PATH
 
-mkdir -p $HOME/.RomRaider
-cp build/linux/lib/RomRaider.jar .
-
-$JAVA_HOME/bin/java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
-#$JAVA_HOME/bin/java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar -logger >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
-#$JAVA_HOME/bin/java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar -logger.fullscreen >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
+java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
+#java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar -logger >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
+#java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar -logger.fullscreen >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
 
 exit 0
