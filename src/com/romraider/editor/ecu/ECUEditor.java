@@ -155,7 +155,6 @@ public class ECUEditor extends AbstractFrame {
 
         tableToolBar = new TableToolBar("Table Tools", this);
         tableToolBar.updateTableToolBar(null);
-        tableToolBar.toggleTableToolBar(false);
 
         CustomToolbarLayout toolBarLayout = new CustomToolbarLayout(FlowLayout.LEFT, 0, 0);
 
@@ -334,7 +333,7 @@ public class ECUEditor extends AbstractFrame {
     public void removeDisplayTable(TableFrame frame) {
         frame.setVisible(false);
 
-        updateTableToolBar(null,false);
+        updateTableToolBar(null);
 
         rightPanel.remove(frame);
         rightPanel.repaint();
@@ -387,9 +386,8 @@ public class ECUEditor extends AbstractFrame {
         return tableToolBar;
     }
 
-    public void updateTableToolBar(Table currentTable, boolean enabled) {
+    public void updateTableToolBar(Table currentTable) {
         tableToolBar.updateTableToolBar(currentTable);
-        tableToolBar.toggleTableToolBar(enabled);
     }
 
     public void setSettings(Settings settings) {

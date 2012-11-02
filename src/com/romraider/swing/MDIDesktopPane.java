@@ -89,7 +89,7 @@ public class MDIDesktopPane extends JDesktopPane {
         moveToFront(frame);
         frame.setVisible(true);
         TableFrame tableFrame = (TableFrame) frame;
-        parent.updateTableToolBar(tableFrame.getTable(), true);
+        parent.updateTableToolBar(tableFrame.getTable());
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException e) {
@@ -102,7 +102,7 @@ public class MDIDesktopPane extends JDesktopPane {
     public void remove(Component c) {
         super.remove(c);
 
-        parent.updateTableToolBar(null, false);
+        parent.updateTableToolBar(null);
 
         checkDesktopSize();
     }

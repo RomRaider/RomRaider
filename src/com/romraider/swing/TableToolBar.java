@@ -255,34 +255,39 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     public void updateTableToolBar(Table table)
     {
-        //String toolBarName = defaultToolBarName;
         double fineIncrement = 0;
         double coarseIncrement = 0;
         Vector<Scale> scales = new Vector<Scale>();
 
         setTable(table);
 
-        if(null != table)
+        if(null == table)
         {
-            //toolBarName += " - " + table.getName();
-            try {
-                fineIncrement = Math.abs(table.getScale().getFineIncrement());
-                coarseIncrement = Math.abs(table.getScale().getCoarseIncrement());
-            } catch (Exception ex) {
-                // scaling units haven't been added yet -- no problem
-            }
-            scales = table.getScales();
+            // disable the toolbar.
+            toggleTableToolBar(false);
+            return;
         }
 
-        //this.setBorder(BorderFactory.createTitledBorder(toolBarName));
+        try {
+            // enable the toolbar.
+            fineIncrement = Math.abs(table.getScale().getFineIncrement());
+            coarseIncrement = Math.abs(table.getScale().getCoarseIncrement());
+        } catch (Exception ex) {
+            // scaling units haven't been added yet -- no problem
+        }
+
+        scales = table.getScales();
 
         incrementByFine.setValue(fineIncrement);
         incrementByCoarse.setValue(coarseIncrement);
+        this.overlayLog.setSelected(table.getOverlayLog());
+        this.enable3d.setEnabled(table.getType() == Table.TABLE_3D);
 
         setScales(scales);
+        toggleTableToolBar(true);
     }
 
-    public void toggleTableToolBar(Boolean enabled) {
+    private void toggleTableToolBar(Boolean enabled) {
         incrementFine.setEnabled(enabled);
         decrementFine.setEnabled(enabled);
         incrementCoarse.setEnabled(enabled);

@@ -1238,6 +1238,11 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
+    public boolean getOverlayLog()
+    {
+        return this.overlayLog;
+    }
+
     public void setLiveValue(String liveValue) {
         this.liveValue = liveValue;
     }
