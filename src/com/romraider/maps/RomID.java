@@ -26,39 +26,54 @@ import java.io.Serializable;
 public class RomID implements Serializable {
 
     private static final long serialVersionUID = 7272741253665400643L;
-    private String xmlid = "";//ID stored in XML
-    private int internalIdAddress = 0;//address of ECU version in image
-    private String internalIdString = "";//ID stored in image
-    private String caseId = "";//ECU hardware version
-    private String ecuId = "";
-    private String make = "";//manufacturer
-    private String market = "";
-    private String model = "";
-    private String subModel = "";//trim, ie WRX
-    private String transmission = "";
+    private String xmlid;               //ID stored in XML
+    private int    internalIdAddress;   //address of ECU version in image
+    private String internalIdString;    //ID stored in image
+    private String caseId;              //ECU hardware version
+    private String ecuId;
+    private String make;                //manufacturer
+    private String market;
+    private String model;
+    private String subModel;            //trim, ie WRX
+    private String transmission;
     private String year = "Unknown";
-    private String flashMethod = "";//flash method string used for ecuflash
-    private String memModel = "";//model used for reflashing with ecuflash
-    private String editStamp = "";//YYYY-MM-DD and v, the save count for this ROM
-    private int fileSize = 0;
-    private int ramOffset = 0;
-    private boolean obsolete = false; // whether a more recent revision exists
+    private String flashMethod;         //flash method string used for ecuflash
+    private String memModel;            //model used for reflashing with ecuflash
+    private String editStamp;           //YYYY-MM-DD and v, the save count for this ROM
+    private int    fileSize;
+    private int    ramOffset;
+    private boolean obsolete;           // whether a more recent revision exists
 
     public String toString() {
-        return "\n   ---- RomID " + xmlid + " ----" +
-                "\n   Internal ID Address: " + internalIdAddress +
-                "\n   Internal ID String: " + internalIdString +
-                "\n   Case ID: " + caseId +
-                "\n   ECU ID: " + ecuId +
-                "\n   Make: " + make +
-                "\n   Market: " + market +
-                "\n   Model: " + model +
-                "\n   Submodel: " + subModel +
-                "\n   Transmission: " + transmission +
-                "\n   Year: " + year +
-                "\n   Flash Method: " + flashMethod +
-                "\n   Memory Model: " + memModel +
-                "\n   ---- End RomID " + xmlid + " ----";
+        return String.format(
+                "%n   ---- RomID %s ----" +
+                "%n   Internal ID Address: %s" +
+                "%n   Internal ID String: %s" +
+                "%n   Case ID: %s" +
+                "%n   ECU ID: %s" +
+                "%n   Make: %s" +
+                "%n   Market: %s" +
+                "%n   Model: %s" +
+                "%n   Submodel: %s" +
+                "%n   Transmission: %s" +
+                "%n   Year: %s" +
+                "%n   Flash Method: %s" +
+                "%n   Memory Model: %s" +
+                "%n   ---- End RomID %s ----",
+                xmlid,
+                internalIdAddress,
+                internalIdString,
+                caseId,
+                ecuId,
+                make,
+                market,
+                model,
+                subModel,
+                transmission,
+                year,
+                flashMethod,
+                memModel,
+                xmlid);
     }
 
     public RomID() {
@@ -199,5 +214,4 @@ public class RomID implements Serializable {
     public void setEditStamp(String editStamp) {
         this.editStamp = editStamp;
     }
-
 }

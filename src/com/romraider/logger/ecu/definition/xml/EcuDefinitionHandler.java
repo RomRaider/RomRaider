@@ -22,6 +22,8 @@ package com.romraider.logger.ecu.definition.xml;
 import com.romraider.logger.ecu.definition.EcuDefinition;
 import com.romraider.logger.ecu.definition.EcuDefinitionImpl;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
+
+import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import java.util.HashMap;
@@ -38,24 +40,38 @@ import java.util.Map;
 </romid>
 */
 public final class EcuDefinitionHandler extends DefaultHandler {
+    private static final Logger LOGGER = Logger.getLogger(EcuDefinitionHandler.class);
     private static final String TAG_ROMID    = "romid";
     private static final String TAG_CALID    = "internalidstring";
     private static final String TAG_ECUID    = "ecuid";
+    private static final String TAG_CASEID   = "caseid";
+    private static final String TAG_ADDRESS  = "internalidaddress";
     private static final String TAG_YEAR     = "year";
     private static final String TAG_MARKET   = "market";
     private static final String TAG_MAKE     = "make";
     private static final String TAG_MODEL    = "model";
     private static final String TAG_SUBMODEL = "submodel";
     private static final String TAG_TRANS    = "transmission";
+    private static final String TAG_MEMMODEL = "memmodel";
+    private static final String TAG_FLASH    = "flashmethod";
+    private static final String TAG_SIZE     = "filesize";
+    private static final String TAG_OBSOLETE = "obsolete";
     private Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
     private String calId;
     private String ecuId;
+    private String caseId;
+    private String address;
     private String year;
     private String market;
     private String make;
     private String model;
     private String submodel;
     private String transmission;
+    private String memmodel;
+    private String flashmethod;
+    private String filesize;
+    private String obsolete;
+    private String inherit;
     private String carString;
     private StringBuilder charBuffer;
 
@@ -67,12 +83,19 @@ public final class EcuDefinitionHandler extends DefaultHandler {
         if (TAG_ROMID.equals(qName)) {
             calId        = "";
             ecuId        = "";
+            caseId       = "";
+            address      = "";
             year         = "";
             market       = "";
             make         = "";
             model        = "";
             submodel     = "";
             transmission = "";
+            memmodel     = "";
+            flashmethod  = "";
+            filesize     = "";
+            obsolete     = "0";
+            inherit      = "";
             carString    = "";
         }
         charBuffer = new StringBuilder();
@@ -97,12 +120,33 @@ public final class EcuDefinitionHandler extends DefaultHandler {
                         year, market, make, model, submodel, transmission);
                 ecuDefinitionMap.put(ecuId, new EcuDefinitionImpl(ecuId, calId, carString));
             }
+            if (!isNullOrEmpty(ecuId)    && 
+                !isNullOrEmpty(calId)    &&
+                !isNullOrEmpty(address)  &&
+                !isNullOrEmpty(year)     &&
+                !isNullOrEmpty(market)   &&
+                !isNullOrEmpty(make)     &&
+                !isNullOrEmpty(model)    &&
+                !isNullOrEmpty(submodel) &&
+                !isNullOrEmpty(transmission) &&
+                !isNullOrEmpty(memmodel) &&
+                !isNullOrEmpty(flashmethod) &&
+                !isNullOrEmpty(obsolete)
+                ) {
+                LOGGER.debug(romDetail());
+            }
         }
         else if (TAG_CALID.equals(qName)) {
             calId = charBuffer.toString();
         }
         else if (TAG_ECUID.equals(qName)) {
             ecuId = charBuffer.toString();
+        }
+        else if (TAG_CASEID.equals(qName)) {
+            caseId = charBuffer.toString();
+        }
+        else if (TAG_ADDRESS.equals(qName)) {
+            address = charBuffer.toString();
         }
         else if (TAG_YEAR.equals(qName)) {
             year = charBuffer.toString();
@@ -137,9 +181,56 @@ public final class EcuDefinitionHandler extends DefaultHandler {
         else if (TAG_TRANS.equals(qName)) {
             transmission = charBuffer.toString();
         }
+        else if (TAG_MEMMODEL.equals(qName)) {
+            memmodel = charBuffer.toString();
+        }
+        else if (TAG_FLASH.equals(qName)) {
+            flashmethod = charBuffer.toString();
+        }
+        else if (TAG_SIZE.equals(qName)) {
+            filesize = charBuffer.toString();
+        }
+        else if (TAG_OBSOLETE.equals(qName)) {
+            obsolete = charBuffer.toString();
+        }
     }
 
     public Map<String, EcuDefinition> getEcuDefinitionMap() {
         return ecuDefinitionMap;
+    }
+
+    public String romDetail() {
+        return String.format(
+            "calid='%s'," +
+            "address='%s'," +
+            "string='%s'," +
+            "caseid='%s'," +
+            "year='%s'," +
+            "market='%s'," +
+            "make='%s'," +
+            "model='%s'," +
+            "submodel='%s'," +
+            "transmission='%s'," +
+            "memmodel='%s'," +
+            "flash='%s'," +
+            "filesize='%s'," +
+            "obsolete='%s'," +
+            "inherit='%s'",
+            calId,
+            address,
+            calId,
+            caseId,
+            year,
+            market,
+            make,
+            model,
+            submodel,
+            transmission,
+            memmodel,
+            flashmethod,
+            filesize ,
+            obsolete,
+            inherit
+            );
     }
 }

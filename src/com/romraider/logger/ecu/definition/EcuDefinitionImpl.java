@@ -20,11 +20,9 @@
 package com.romraider.logger.ecu.definition;
 
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import org.apache.log4j.Logger;
 
 
 public final class EcuDefinitionImpl implements EcuDefinition {
-    private static final Logger LOGGER = Logger.getLogger(EcuDefinitionImpl.class);
     private final String ecuId;
     private final String calId;
     private final String carString;
@@ -36,7 +34,6 @@ public final class EcuDefinitionImpl implements EcuDefinition {
         this.ecuId = ecuId;
         this.calId = calId;
         this.carString = carString;
-        LOGGER.trace(ecuId + "\t" + calId + "\t" + carString);
     }
 
     public String getEcuId() {

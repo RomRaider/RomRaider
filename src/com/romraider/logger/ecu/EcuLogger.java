@@ -472,6 +472,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 }
             }
             settings.setLoggerEcuDefinitionMap(ecuDefinitionMap);
+            LOGGER.info(
+                String.format(
+                    "%d ECU definitions loaded from %d files",
+                    ecuDefinitionMap.size(), ecuDefFiles.size()
+                )
+            );
         } catch (Exception e) {
             reportError(e);
         }
