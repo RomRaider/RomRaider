@@ -77,6 +77,7 @@ public class RomID implements Serializable {
     }
 
     public RomID() {
+        this.internalIdString = "";
     }
 
     public String getXmlid() {
