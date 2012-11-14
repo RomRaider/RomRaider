@@ -38,7 +38,7 @@ public final class ConverterMaxMinDefaults {
         add("bar", -1.5, 3.0, 0.5);
         add("rpm", 0, 8000, 1000.0);
         add("mph", 0.0, 200.0, 20.0);
-        add("kph", 0.0, 300.0, 20.0);
+        add("km/h", 0.0, 300.0, 20.0);
         add("degrees", -15, 60.0, 5.0);
         add("g/s", 0.0, 400.0, 20.0);
         add("v", 0.0, 5.0, 0.5);
@@ -51,14 +51,14 @@ public final class ConverterMaxMinDefaults {
         add("lambda", 0.5, 1.5, 0.1);
         add("gear", 0.0, 6.0, 1.0);
         add("misfire count", 0.0, 20.0, 5.0);
-        add("mpa", 0.0, 0.5, 0.1);
+        add("MPa", 0.0, 0.5, 0.1);
         add("2*g/rev", 0.0, 8.0, 1.0);
         add("g/rev", 0.0, 4.0, 0.5);
         add("g/cyl", 0.0, 2.0, 0.5);
         add("multiplier", 0.0, 1.0, 0.1);
         add("raw ecu value", 0.0, 16.0, 1.0);
         add("status", 0.0, 10.0, 1.0);
-        add("mmhg", 0.0, 2000.0, 100.0);
+        add("mmHg", 0.0, 2000.0, 100.0);
     }
 
     public static double getMin(String units) {

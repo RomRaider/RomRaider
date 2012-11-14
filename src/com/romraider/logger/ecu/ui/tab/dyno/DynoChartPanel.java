@@ -254,12 +254,12 @@ public final class DynoChartPanel extends JPanel {
         String s1000Text = "1,000 ft";
         String s1320Text = "1/4 mile";
         String zTo60Text = "60 mph";
-        if (units.equalsIgnoreCase("kph")) {
+        if (units.equalsIgnoreCase("km/h")) {
             s60Text = "18.3m";
             s330Text = "100m";
             s1000Text = "305m";
             s1320Text = "402m";
-            zTo60Text = "97 kph";
+            zTo60Text = "97 km/h";
         }
         hpAxis.setLabel("Vehicle Speed (" + units + ")");
         String[] car = carInfo.split(";");
@@ -423,7 +423,7 @@ public final class DynoChartPanel extends JPanel {
     public void startPrompt(String select) {
         String startPrompt = START_PROMPT;
         if (select.equalsIgnoreCase("mph")) startPrompt = ET_PROMPT_I;
-        if (select.equalsIgnoreCase("kph")) startPrompt = ET_PROMPT_M;
+        if (select.equalsIgnoreCase("km/h")) startPrompt = ET_PROMPT_M;
         final double x = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 2) + plot.getDomainAxis().getLowerBound();
         final double y = ((hpAxis.getUpperBound() - hpAxis.getLowerBound()) / 2) + hpAxis.getLowerBound();
         final XYTextAnnotation startMessage = new XYTextAnnotation(startPrompt, x, y);

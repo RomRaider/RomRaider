@@ -37,7 +37,7 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
 
     public EcuDerivedParameterImpl(String id, String name, String description, EcuData[] ecuDatas,
                                    EcuDerivedParameterConvertor[] convertors) {
-        checkNotNullOrEmpty(name, "id");
+        checkNotNullOrEmpty(id, "id");
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");
         checkNotNullOrEmpty(ecuDatas, "ecuDatas");

@@ -129,7 +129,7 @@ public final class DynoControlPanel extends JPanel {
     private static final String LOG_TA = "Throttle";
     private static final String LOG_VS = "Vehicle Speed";
     private static final String LOG_VS_I = "mph";
-    private static final String LOG_VS_M = "kph";
+    private static final String LOG_VS_M = "km/h";
     private static final double KPH_2_MPH = 1.609344;
     private final DataRegistrationBroker broker;
     private final DynoChartPanel chartPanel;

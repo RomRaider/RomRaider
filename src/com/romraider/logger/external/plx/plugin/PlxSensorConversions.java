@@ -39,7 +39,7 @@ public enum PlxSensorConversions implements ExternalSensorConversions {
     BOOST_KGCM2    ("kg/cm^2", "x/329.47", "0.00", new GaugeMinMax(-0.5,2.5,0.3)),
     RPM        ("rpm", "x*19.55", "0", new GaugeMinMax(0,10000,1000)),
     MPH        ("mph", "x/6.39", "0.0", new GaugeMinMax(0,200,20)),
-    KPH        ("kph", "x/3.97", "0.0", new GaugeMinMax(0,300,30)),
+    KPH        ("km/h", "x/3.97", "0.0", new GaugeMinMax(0,300,30)),
     FLUID_PSI    ("psi", "x/5.115", "0.00", new GaugeMinMax(0,150,15)),
     FLUID_BAR    ("bar", "x/74.22", "0.00", new GaugeMinMax(0,10,1)),
     FLUID_KPA    ("kPa", "x*1.34794864", "0.00", new GaugeMinMax(0,1035,100)),      // converts from PSI to kpa

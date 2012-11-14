@@ -153,6 +153,7 @@ public final class EcuDerivedParameterConvertorImpl implements EcuDerivedParamet
             if (convertorUnits == null || convertorUnits.length() == 0) {
                 return ecuDataId;
             } else {
+                convertorUnits = convertorUnits.replaceAll("[^\\w]", "_");
                 return '_' + ecuDataId + '_' + convertorUnits + '_';
             }
         }

@@ -23,7 +23,7 @@ public enum Constants {
     IMPERIAL        ("imperial"),
     IMPERIAL_UNIT    ("mph"),
     METRIC            ("metric"),
-    METRIC_UNIT        ("kph"),
+    METRIC_UNIT        ("km/h"),
     KPH_2_MPH        ("1.609344"),
     TQ_CONSTANT_I    ("5252.113122"),
     TQ_CONSTANT_M    ("9549.296748");
