@@ -55,7 +55,6 @@ import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.StatusChangeListener;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import com.romraider.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitor;
-import com.romraider.logger.ecu.ui.handler.file.FileUpdateHandlerImpl;
 
 public final class QueryManagerImpl implements QueryManager {
     private static final Logger LOGGER = Logger.getLogger(QueryManagerImpl.class);

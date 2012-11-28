@@ -23,7 +23,6 @@ import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ByteUtil.asFloat;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
-import java.nio.ByteBuffer;
 
 
 /*
