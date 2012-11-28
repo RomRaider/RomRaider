@@ -32,9 +32,6 @@ public class TableChooserTreeNode extends DefaultMutableTreeNode {
         this.table = table;
     }
 
-    private TableChooserTreeNode() {
-    }
-
     public Table getTable() {
         return table;
     }
