@@ -48,10 +48,6 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         tableList.setListData(rom.getTables());
     }
 
-    //prevent bad constructor
-    private RomPropertyPanel() {
-    }
-
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         lblFilename = new javax.swing.JLabel();

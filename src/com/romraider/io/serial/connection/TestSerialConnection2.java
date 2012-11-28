@@ -72,7 +72,7 @@ final class TestSerialConnection2 implements SerialConnection {
     private byte[] request = new byte[0];
     private byte[] readResponse = new byte[0];
     private byte[] result = new byte[1];
-    private int index;
+//    private int index;
 
 
     public TestSerialConnection2(String portName, ConnectionProperties connectionProperties) {

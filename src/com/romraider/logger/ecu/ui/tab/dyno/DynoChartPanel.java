@@ -31,8 +31,6 @@ import static java.awt.Color.GREEN;
 import static java.awt.Color.RED;
 import static java.awt.Color.WHITE;
 import static java.awt.Color.YELLOW;
-import org.apache.log4j.Logger;
-import static org.apache.log4j.Logger.getLogger;
 import static org.jfree.chart.ChartFactory.createScatterPlot;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -58,7 +56,6 @@ import java.awt.Font;
 
 public final class DynoChartPanel extends JPanel {
     private static final long serialVersionUID = -6577979878171615665L;
-    private static final Logger LOGGER = getLogger(DynoChartPanel.class);
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
     private static final String START_PROMPT = "Accelerate using WOT when ready!!";

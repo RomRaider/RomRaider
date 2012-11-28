@@ -68,9 +68,6 @@ public class TablePropertyPanel extends javax.swing.JPanel {
 
     }
 
-    private TablePropertyPanel() {
-    }
-
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         lblTable = new javax.swing.JLabel();
