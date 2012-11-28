@@ -41,7 +41,6 @@ import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.Action;
