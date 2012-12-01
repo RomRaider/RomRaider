@@ -155,7 +155,7 @@ public class DialGaugeStyle implements GaugeStyle {
         db.setGradientPaintTransformer(new StandardGradientPaintTransformer(VERTICAL));
         plot.setBackground(db);
 
-        unitsLabel.setFont(new Font("Dialog", BOLD, 15));
+        unitsLabel.setFont(new Font(Font.DIALOG, BOLD, 15));
         unitsLabel.setRadius(0.7);
         unitsLabel.setLabel(loggerData.getSelectedConvertor().getUnits());
         plot.addLayer(unitsLabel);
@@ -171,7 +171,7 @@ public class DialGaugeStyle implements GaugeStyle {
         StandardDialScale scale = new StandardDialScale(minMax.min, minMax.max, 225.0, -270.0, minMax.step, 5);
         scale.setTickRadius(0.88);
         scale.setTickLabelOffset(0.15);
-        scale.setTickLabelFont(new Font("Dialog", PLAIN, 12));
+        scale.setTickLabelFont(new Font(Font.DIALOG, PLAIN, 12));
         scale.setTickLabelFormatter(format);
         plot.addScale(0, scale);
         plot.addScale(1, scale);
