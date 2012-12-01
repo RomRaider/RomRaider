@@ -21,6 +21,8 @@ package com.romraider.net;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URI;
 
 public class BrowserControl {
     private static final Logger LOGGER = Logger.getLogger(BrowserControl.class);
@@ -30,6 +32,18 @@ public class BrowserControl {
     }
 
     public static void displayURL(String url) {
+        try {
+            Class<?> display = Class.forName("java.awt.Desktop");
+            Object getDesktopMethod = display.getDeclaredMethod("getDesktop").invoke(null);
+            Method browseMethod = display.getDeclaredMethod("browse", java.net.URI.class);
+            browseMethod.invoke(getDesktopMethod, new URI(url));
+        } catch (Exception e) {
+            LOGGER.debug("Failed to display URL via java.awt.Desktop. Calling by OS depended method.", e);
+            displayURLtraditional(url);
+        }
+    }
+
+    private static void displayURLtraditional(String url) {
         boolean windows = isWindowsPlatform();
         String cmd = null;
         try {
