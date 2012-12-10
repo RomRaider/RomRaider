@@ -78,6 +78,7 @@ public class RomID implements Serializable {
 
     public RomID() {
         this.internalIdString = "";
+        this.caseId = "";
     }
 
     public String getXmlid() {
