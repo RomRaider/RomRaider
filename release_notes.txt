@@ -1,4 +1,4 @@
-                - RomRaider 0.5.6 RC3 -
+                - RomRaider 0.5.6 RC4 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,12 +33,12 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.6 RC3 Notes (11/14/2012) -
+- 0.5.6 RC4 Notes (12/13/2012) -
 --------------------------------------------
 This is the latest release of the RomRaider from the GitHub repo.
 
 --------------------------------------
-- 0.5.6 RC3 Known Issues -
+- 0.5.6 RC4 Known Issues -
 --------------------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -57,6 +57,23 @@ Status of these items can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.5.6 RC4 (12/13/2012)
+----------------------------------
+
+Maintainability Updates
+  - remove unused imports
+  - enhanced web browser support
+  - use Font.{DIALOG,SANS_SERIF} for maintainability
+  - simplify static method call to Logger.Settings
+  - initialize caseID to avoid null being displayed in ROM tree title
+
+Application Installer
+  - changed Release Notes and License shortcut spec in Linux template to be an
+    Application to make them show in the RomRaider menu group
+  - changed Uninstaller commandline and Icon file name in shortcut spec in
+    Linux template
+
 
 0.5.6 RC3 (11/14/2012)
 ----------------------------------
