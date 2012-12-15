@@ -38,7 +38,6 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
-import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.swing.JProgressPane;
 import com.romraider.xml.TableNotFoundException;
@@ -50,7 +49,6 @@ public class Rom implements Serializable {
     private String fileName = "";
     private File fullFileName = new File(".");
     private final Vector<Table> tables = new Vector<Table>();
-    private ECUEditor container;
     private byte[] binData;
     private String parent = "";
     private boolean isAbstract = false;
@@ -122,7 +120,7 @@ public class Rom implements Serializable {
                                 table.getStorageAddress() + " " + binData.length + " filesize", ex);
 
                         // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(container, "Storage address for table \"" + table.getName() +
+                        JOptionPane.showMessageDialog(table.getEditor(), "Storage address for table \"" + table.getName() +
                                 "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                         tables.removeElementAt(i);
                         i--;
@@ -136,7 +134,7 @@ public class Rom implements Serializable {
                 }
 
             } catch (NullPointerException ex) {
-                JOptionPane.showMessageDialog(container, "There was an error loading table " + table.getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(table.getEditor(), "There was an error loading table " + table.getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                 tables.removeElementAt(i);
             }
         }
@@ -196,15 +194,9 @@ public class Rom implements Serializable {
         return tables;
     }
 
-    public ECUEditor getContainer() {
-        return container;
-    }
-
-    public void setContainer(ECUEditor container) {
-        this.container = container;
-        // apply settings to tables
+    public void applyTableColorSettings() {
         for (Table table : tables) {
-            table.applyColorSettings(container.getSettings());
+            table.applyColorSettings();
             //tables.get(i).resize();
             table.getFrame().pack();
         }
@@ -225,7 +217,7 @@ public class Rom implements Serializable {
             String message = String.format("One or more ROM image Checksums is invalid.  " +
                     "Calculate new Checksums?%n" +
                     "(NOTE: this will only fix the Checksums it will NOT repair a corrupt ROM image)");
-            int answer = showOptionDialog(container,
+            int answer = showOptionDialog(checksum.getEditor(),
                     message,
                     "Checksum Fix",
                     DEFAULT_OPTION,

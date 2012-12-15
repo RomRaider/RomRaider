@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -39,19 +40,21 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.swing.TableFrame;
 import com.romraider.util.AxisRange;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
     static final String NEW_LINE = System.getProperty("line.separator");
-    private Table1D axis = new Table1D(new Settings());
+    private Table1D axis;
 
     private CopyTable2DWorker copyTable2DWorker;
     private CopySelection2DWorker copySelection2DWorker;
 
-    public Table2D(Settings settings) {
-        super(settings);
+    public Table2D(ECUEditor editor) {
+        super(editor);
+        axis = new Table1D(editor);
         verticalOverhead += 18;
     }
 
@@ -96,10 +99,10 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void applyColorSettings(Settings settings) {
-        this.setAxisColor(settings.getAxisColor());
-        axis.applyColorSettings(settings);
-        super.applyColorSettings(settings);
+    public void applyColorSettings() {
+        this.setAxisColor(editor.getSettings().getAxisColor());
+        axis.applyColorSettings();
+        super.applyColorSettings();
     }
 
     @Override
@@ -241,8 +244,12 @@ public class Table2D extends Table {
 
     @Override
     public void copySelection() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         super.copySelection();
         copySelection2DWorker = new CopySelection2DWorker(this);
         copySelection2DWorker.execute();
@@ -250,9 +257,13 @@ public class Table2D extends Table {
 
     @Override
     public void copyTable() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copyTable2DWorker = new CopyTable2DWorker(settings, this);
+        copyTable2DWorker = new CopyTable2DWorker(editor.getSettings(), this);
         copyTable2DWorker.execute();
     }
 
@@ -402,8 +413,12 @@ class CopySelection2DWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(null);
+        }
         table.setCursor(null);
+        table.getEditor().setCursor(null);
     }
 }
 
@@ -433,7 +448,11 @@ class CopyTable2DWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(null);
+        }
         table.setCursor(null);
+        table.getEditor().setCursor(null);
     }
 }
