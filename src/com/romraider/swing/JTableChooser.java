@@ -19,18 +19,20 @@
 
 package com.romraider.swing;
 
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import com.romraider.maps.Rom;
+import com.romraider.maps.Table;
 
 public class JTableChooser extends JOptionPane implements MouseListener {
 
@@ -40,7 +42,6 @@ public class JTableChooser extends JOptionPane implements MouseListener {
     JTree displayTree = new JTree(rootNode);
 
     public boolean showChooser(Vector<Rom> roms, Component parent, Table targetTable) {
-
         int nameLength = 0;
         for (int i = 0; i < roms.size(); i++) {
             Rom rom = roms.get(i);
@@ -74,7 +75,7 @@ public class JTableChooser extends JOptionPane implements MouseListener {
             }
         }
 
-        displayTree.setPreferredSize(new Dimension(nameLength*7, 400));  
+        displayTree.setPreferredSize(new Dimension(nameLength*7, 400));
         displayTree.setMinimumSize(new Dimension(nameLength*7, 400));
 
         displayTree.setRootVisible(true);
@@ -84,8 +85,9 @@ public class JTableChooser extends JOptionPane implements MouseListener {
 
         Object[] values = {"Compare", "Cancel"};
 
-        if ((showOptionDialog(parent, displayPanel, "Select a Map", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, values, values[0]) == 0 &&
-                (displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode))) {
+        if ((showOptionDialog(parent, displayPanel, "Select a Map", JOptionPane.DEFAULT_OPTION,
+                JOptionPane.PLAIN_MESSAGE, null, values, values[0]) == 0
+                && (displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode))) {
             ((TableChooserTreeNode) displayTree.getLastSelectedPathComponent()).getTable().copyTable();
             return true;
         } else {
@@ -93,13 +95,18 @@ public class JTableChooser extends JOptionPane implements MouseListener {
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         displayTree.setPreferredSize(new Dimension(displayTree.getWidth(), (displayTree.getRowCount()*displayTree.getRowHeight())));
         displayTree.revalidate();
     }
+    @Override
     public void mouseClicked(MouseEvent e){}
+    @Override
     public void mouseEntered(MouseEvent e){}
+    @Override
     public void mouseExited(MouseEvent e){}
+    @Override
     public void mousePressed(MouseEvent e){}
 
 }

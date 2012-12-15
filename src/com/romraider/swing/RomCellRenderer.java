@@ -19,9 +19,14 @@
 
 package com.romraider.swing;
 
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
 import static javax.swing.BorderFactory.createLineBorder;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,11 +34,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+
+import com.romraider.maps.Rom;
+import com.romraider.maps.Table;
 
 public class RomCellRenderer implements TreeCellRenderer {
 
@@ -52,9 +55,10 @@ public class RomCellRenderer implements TreeCellRenderer {
 
     }
 
+    @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value,
-                                                  boolean selected, boolean expanded, boolean leaf, int row,
-                                                  boolean hasFocus) {
+            boolean selected, boolean expanded, boolean leaf, int row,
+            boolean hasFocus) {
 
         Component returnValue = null;
 
@@ -79,7 +83,7 @@ public class RomCellRenderer implements TreeCellRenderer {
                         rom.getRomID().getModel() + " " +
                         rom.getRomID().getSubModel() + ", " +
                         rom.getRomID().getTransmission()
-                );
+                        );
 
                 JPanel renderer = new JPanel(new GridLayout(2, 1));
                 renderer.add(fileName);
@@ -132,7 +136,7 @@ public class RomCellRenderer implements TreeCellRenderer {
                 tableName.setForeground(new Color(255, 150, 150));
                 tableName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 
-            } else if (table.getUserLevel() > table.getRom().getContainer().getSettings().getUserLevel()) {
+            } else if (table.getUserLevel() > table.getEditor().getSettings().getUserLevel()) {
                 //tableName.setForeground(new Color(185, 185, 185));
                 tableName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 

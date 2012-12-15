@@ -21,6 +21,20 @@
 
 package com.romraider.xml;
 
+import static com.romraider.xml.DOMHelper.unmarshallAttribute;
+import static com.romraider.xml.DOMHelper.unmarshallText;
+import static org.w3c.dom.Node.ELEMENT_NODE;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.management.modelmbean.XMLParseException;
+import javax.swing.JOptionPane;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.maps.DataCell;
@@ -36,23 +50,13 @@ import com.romraider.swing.DebugPanel;
 import com.romraider.swing.JProgressPane;
 import com.romraider.util.LogManager;
 import com.romraider.util.ObjectCloner;
-import static com.romraider.xml.DOMHelper.unmarshallAttribute;
-import static com.romraider.xml.DOMHelper.unmarshallText;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Node;
-import static org.w3c.dom.Node.ELEMENT_NODE;
-import org.w3c.dom.NodeList;
-import javax.management.modelmbean.XMLParseException;
-import javax.swing.JOptionPane;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class DOMRomUnmarshaller {
     private static final Logger LOGGER = Logger.getLogger(DOMRomUnmarshaller.class);
     private JProgressPane progress = null;
-    private List<Scale> scales = new ArrayList<Scale>();
-    private Settings settings;
-    private ECUEditor parent;
+    private final List<Scale> scales = new ArrayList<Scale>();
+    private final Settings settings;
+    private final ECUEditor parent;
 
     public DOMRomUnmarshaller(Settings settings, ECUEditor parent) {
         this.settings = settings;
@@ -323,7 +327,7 @@ public final class DOMRomUnmarshaller {
 
         if (!unmarshallAttribute(tableNode, "base", "none").equalsIgnoreCase("none")) { // copy base table for inheritance
             try {
-                table = (Table) ObjectCloner.deepCopy((Object) rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
+                table = (Table) ObjectCloner.deepCopy(rom.getTable(unmarshallAttribute(tableNode, "base", "none")));
 
             } catch (TableNotFoundException ex) { /* table not found, do nothing */
 
@@ -339,24 +343,24 @@ public final class DOMRomUnmarshaller {
             }
         } catch (NullPointerException ex) { // if type is null or less than 0, create new instance (otherwise it is inherited)
             if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("3D")) {
-                table = new Table3D(settings);
+                table = new Table3D(parent);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("2D")) {
-                table = new Table2D(settings);
+                table = new Table2D(parent);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("1D")) {
-                table = new Table1D(settings);
+                table = new Table1D(parent);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("X Axis") ||
                     unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Y Axis")) {
-                table = new Table1D(settings);
+                table = new Table1D(parent);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static Y Axis") ||
                     unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Static X Axis")) {
-                table = new Table1D(settings);
+                table = new Table1D(parent);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase("Switch")) {
-                table = new TableSwitch(settings);
+                table = new TableSwitch(parent);
 
             } else {
                 throw new XMLParseException("Error loading table, " + tableNode.getAttributes().getNamedItem("name"));

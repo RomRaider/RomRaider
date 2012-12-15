@@ -277,29 +277,29 @@ public class ECUEditor extends AbstractFrame {
 
     public void addRom(Rom input) {
         // add to ecu image list pane
-        RomTreeNode romNode = new RomTreeNode(input, settings.getUserLevel(), settings.isDisplayHighTables(), this);
-        imageRoot.add(romNode);
+        RomTreeNode romNode = new RomTreeNode(input, getSettings().getUserLevel(), getSettings().isDisplayHighTables(), this);
+        getImageRoot().add(romNode);
 
-        imageList.setVisible(true);
-        imageList.setRootVisible(true);
+        getImageList().setVisible(true);
+        getImageList().setRootVisible(true);
         TreePath addedRomPath = new TreePath(romNode.getPath());
-        imageList.expandPath(addedRomPath);
+        getImageList().expandPath(addedRomPath);
         // uncomment collapsePath if you want ROM to open collapsed.
         // imageList.collapsePath(addedRomPath);
-        imageList.setRootVisible(false);
-        imageList.repaint();
+        getImageList().setRootVisible(false);
+        getImageList().repaint();
 
         // Only set if no other rom has been selected.
         if(null == getLastSelectedRom()) {
             setLastSelectedRom(input);
         }
 
-        if (input.getRomID().isObsolete() && settings.isObsoleteWarning()) {
+        if (input.getRomID().isObsolete() && getSettings().isObsoleteWarning()) {
             JPanel infoPanel = new JPanel();
             infoPanel.setLayout(new GridLayout(3, 1));
             infoPanel.add(new JLabel("A newer version of this ECU revision exists. " +
                     "Please visit the following link to download the latest revision:"));
-            infoPanel.add(new URL(settings.getRomRevisionURL()));
+            infoPanel.add(new URL(getSettings().getRomRevisionURL()));
 
             JCheckBox check = new JCheckBox("Always display this message", true);
             check.setHorizontalAlignment(JCheckBox.RIGHT);
@@ -314,7 +314,7 @@ public class ECUEditor extends AbstractFrame {
             infoPanel.add(check);
             showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", INFORMATION_MESSAGE);
         }
-        input.setContainer(this);
+        input.applyTableColorSettings();
     }
 
     public void displayTable(TableFrame frame) {
@@ -394,7 +394,7 @@ public class ECUEditor extends AbstractFrame {
         this.settings = settings;
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
             RomTreeNode rtn = (RomTreeNode) imageRoot.getChildAt(i);
-            rtn.getRom().setContainer(this);
+            rtn.getRom().applyTableColorSettings();
         }
     }
 

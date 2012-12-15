@@ -19,7 +19,9 @@
 
 package com.romraider.swing;
 
-import com.romraider.maps.Table;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -27,38 +29,38 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
+import com.romraider.maps.Table;
 
 public class TableMenuBar extends JMenuBar implements ActionListener {
 
     private static final long serialVersionUID = -695692646459410510L;
-    private Table table;
-    private JMenu fileMenu = new JMenu("Table");
-    private JMenuItem graph = new JMenuItem("View Graph");
+    private final Table table;
+    private final JMenu fileMenu = new JMenu("Table");
+    private final JMenuItem graph = new JMenuItem("View Graph");
     //private JRadioButtonMenuItem overlay = new JRadioButtonMenuItem("Overlay Log");
 
-    private JMenu compareMenu = new JMenu("Compare");
-    private JRadioButtonMenuItem compareOriginal = new JRadioButtonMenuItem("Show Changes");
-    private JRadioButtonMenuItem compareMap = new JRadioButtonMenuItem("Compare to Another Map");
-    private JRadioButtonMenuItem compareOff = new JRadioButtonMenuItem("Off");
-    private JMenu compareDisplay = new JMenu("Display");
-    private JRadioButtonMenuItem comparePercent = new JRadioButtonMenuItem("Percent Difference");
-    private JRadioButtonMenuItem compareAbsolute = new JRadioButtonMenuItem("Absolute Difference");
+    private final JMenu compareMenu = new JMenu("Compare");
+    private final JRadioButtonMenuItem compareOriginal = new JRadioButtonMenuItem("Show Changes");
+    private final JRadioButtonMenuItem compareMap = new JRadioButtonMenuItem("Compare to Another Map");
+    private final JRadioButtonMenuItem compareOff = new JRadioButtonMenuItem("Off");
+    private final JMenu compareDisplay = new JMenu("Display");
+    private final JRadioButtonMenuItem comparePercent = new JRadioButtonMenuItem("Percent Difference");
+    private final JRadioButtonMenuItem compareAbsolute = new JRadioButtonMenuItem("Absolute Difference");
 
-    private JMenuItem close = new JMenuItem("Close Table");
-    private JMenu editMenu = new JMenu("Edit");
-    private JMenuItem undoSel = new JMenuItem("Undo Selected Changes");
-    private JMenuItem undoAll = new JMenuItem("Undo All Changes");
-    private JMenuItem revert = new JMenuItem("Set Revert Point");
-    private JMenuItem copySel = new JMenuItem("Copy Selection");
-    private JMenuItem copyTable = new JMenuItem("Copy Table");
-    private JMenuItem paste = new JMenuItem("Paste");
-    private JMenu viewMenu = new JMenu("View");
-    private JMenuItem tableProperties = new JMenuItem("Table Properties");
+    private final JMenuItem close = new JMenuItem("Close Table");
+    private final JMenu editMenu = new JMenu("Edit");
+    private final JMenuItem undoSel = new JMenuItem("Undo Selected Changes");
+    private final JMenuItem undoAll = new JMenuItem("Undo All Changes");
+    private final JMenuItem revert = new JMenuItem("Set Revert Point");
+    private final JMenuItem copySel = new JMenuItem("Copy Selection");
+    private final JMenuItem copyTable = new JMenuItem("Copy Table");
+    private final JMenuItem paste = new JMenuItem("Paste");
+    private final JMenu viewMenu = new JMenu("View");
+    private final JMenuItem tableProperties = new JMenuItem("Table Properties");
 
-    private ButtonGroup compareGroup = new ButtonGroup();
-    private ButtonGroup compareDisplayGroup = new ButtonGroup();
+    private final ButtonGroup compareGroup = new ButtonGroup();
+    private final ButtonGroup compareDisplayGroup = new ButtonGroup();
 
     public TableMenuBar(Table table) {
         this.table = table;
@@ -139,6 +141,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         graph.setEnabled(false);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == undoAll) {
             table.undoAll();
@@ -150,7 +153,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             table.undoSelected();
 
         } else if (e.getSource() == close) {
-            table.getRom().getContainer().removeDisplayTable(table.getFrame());
+            table.getEditor().removeDisplayTable(table.getFrame());
 
         } else if (e.getSource() == tableProperties) {
             JOptionPane.showMessageDialog(table, new TablePropertyPanel(table),
@@ -173,7 +176,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == compareMap) {
             JTableChooser chooser = new JTableChooser();
-            if (chooser.showChooser(table.getRom().getContainer().getImages(), table.getRom().getContainer(), table)) {
+            if (chooser.showChooser(table.getEditor().getImages(), table.getEditor(), table)) {
                 table.pasteCompare();
                 table.compare(Table.COMPARE_TABLE);
             }

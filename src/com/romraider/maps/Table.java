@@ -28,6 +28,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -52,6 +53,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.swing.TableFrame;
 import com.romraider.util.JEPUtil;
 import com.romraider.xml.RomAttributeParser;
@@ -121,7 +123,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected int compareType = 0;
     protected int compareDisplay = 1;
     protected int userLevel = 0;
-    protected Settings settings;
+    protected ECUEditor editor;
     protected boolean locked = false;
 
     protected String logParam = BLANK;
@@ -131,8 +133,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected CopyTableWorker copyTableWorker;
     protected CopySelectionWorker copySelectionWorker;
 
-    public Table(Settings settings) {
-        this.setSettings(settings);
+    public Table(ECUEditor editor) {
+        this.editor = editor;
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
         centerPanel.setVisible(true);
@@ -440,7 +442,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             for (int i = 0; i < data.length; i++) {
                 if (data[i] == null) {
-                    data[i] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
+                    data[i] = new DataCell(scales.get(scaleIndex), getEditor().getSettings().getCellSize());
                     data[i].setTable(this);
 
                     // populate data cells
@@ -673,7 +675,7 @@ public abstract class Table extends JPanel implements Serializable {
                     if (value > high || value < low) {
 
                         // value exceeds limit
-                        data[i].setColor(getSettings().getWarningColor());
+                        data[i].setColor(getEditor().getSettings().getWarningColor());
 
                     } else {
                         // limits not set, scale based on table values
@@ -685,12 +687,12 @@ public abstract class Table extends JPanel implements Serializable {
                             scale = (value - low) / (high - low);
                         }
 
-                        data[i].setColor(getScaledColor(scale, getSettings()));
+                        data[i].setColor(getScaledColor(scale, getEditor().getSettings()));
                     }
                 }
             } else { // is static/axis
                 for (int i = 0; i < getDataSize(); i++) {
-                    data[i].setColor(getSettings().getAxisColor());
+                    data[i].setColor(getEditor().getSettings().getAxisColor());
                     data[i].setOpaque(true);
                     data[i].setBorder(createLineBorder(Color.BLACK, 1));
                     data[i].setHorizontalAlignment(DataCell.CENTER);
@@ -721,14 +723,14 @@ public abstract class Table extends JPanel implements Serializable {
                     if (scale == 0) {
                         data[i].setColor(UNCHANGED_VALUE_COLOR);
                     } else {
-                        data[i].setColor(getScaledColor(scale, getSettings()));
+                        data[i].setColor(getScaledColor(scale, getEditor().getSettings()));
                     }
 
                     // set border
                     if (data[i].getBinValue() > data[i].getOriginalValue()) {
-                        data[i].setBorder(createLineBorder(getSettings().getIncreaseBorder()));
+                        data[i].setBorder(createLineBorder(getEditor().getSettings().getIncreaseBorder()));
                     } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
-                        data[i].setBorder(createLineBorder(getSettings().getDecreaseBorder()));
+                        data[i].setBorder(createLineBorder(getEditor().getSettings().getDecreaseBorder()));
                     } else {
                         data[i].setBorder(createLineBorder(Color.BLACK, 1));
                     }
@@ -740,9 +742,9 @@ public abstract class Table extends JPanel implements Serializable {
         if (!isStatic) {
             for (int i = 0; i < getDataSize(); i++) {
                 if (data[i].getBinValue() > data[i].getOriginalValue()) {
-                    data[i].setBorder(createLineBorder(getSettings().getIncreaseBorder()));
+                    data[i].setBorder(createLineBorder(getEditor().getSettings().getIncreaseBorder()));
                 } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
-                    data[i].setBorder(createLineBorder(getSettings().getDecreaseBorder()));
+                    data[i].setBorder(createLineBorder(getEditor().getSettings().getDecreaseBorder()));
                 } else {
                     data[i].setBorder(createLineBorder(Color.BLACK, 1));
                 }
@@ -774,14 +776,14 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void increment(double increment) {
-        if (!isStatic && !locked && !(userLevel > settings.getUserLevel())) {
+        if (!isStatic && !locked && !(userLevel > getEditor().getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.increment(increment);
                 }
             }
             colorize();
-        } else if (userLevel > settings.getUserLevel()) {
+        } else if (userLevel > getEditor().getSettings().getUserLevel()) {
             JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
                     userLevel + " or greater. Click View->User Level to change your userlevel.",
                     "Table cannot be modified",
@@ -790,13 +792,13 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void multiply(double factor) {
-        if (!isStatic && !locked && !(userLevel > settings.getUserLevel())) {
+        if (!isStatic && !locked && !(userLevel > getEditor().getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.multiply(factor);
                 }
             }
-        } else if (userLevel > settings.getUserLevel()) {
+        } else if (userLevel > getEditor().getSettings().getUserLevel()) {
             JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
                     userLevel + " or greater. Click View->User Level to change your userlevel.",
                     "Table cannot be modified",
@@ -806,13 +808,13 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void setRealValue(String realValue) {
-        if (!isStatic && !locked && !(userLevel > settings.getUserLevel())) {
+        if (!isStatic && !locked && !(userLevel > getEditor().getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.setRealValue(realValue);
                 }
             }
-        } else if (userLevel > settings.getUserLevel()) {
+        } else if (userLevel > getEditor().getSettings().getUserLevel()) {
             JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
                     userLevel + " or greater. Click View->User Level to change your userlevel.",
                     "Table cannot be modified",
@@ -916,11 +918,11 @@ public abstract class Table extends JPanel implements Serializable {
     public byte[] saveFile(byte[] binData) {
         if (!isStatic  // save if table is not static
                 &&     // and user level is great enough
-                userLevel <= getSettings().getUserLevel()
+                userLevel <= getEditor().getSettings().getUserLevel()
                 &&     // and table is not in debug mode, unless saveDebugTables is true
                 (userLevel < 5
                         ||
-                        getSettings().isSaveDebugTables())) {
+                        getEditor().getSettings().isSaveDebugTables())) {
 
             for (int i = 0; i < data.length; i++) {
 
@@ -964,18 +966,25 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void selectCellAt(int y) {
-        if (type == TABLE_X_AXIS || type == TABLE_Y_AXIS) {
-            axisParent.clearSelection();
-        } else {
-            clearSelection();
+        if(y >= 0 && y < data.length) {
+            if (type == TABLE_X_AXIS || type == TABLE_Y_AXIS) {
+                axisParent.clearSelection();
+            } else {
+                clearSelection();
+            }
+
+            data[y].setSelected(true);
+            highlightY = y;
         }
-        data[y].setSelected(true);
-        highlightY = y;
     }
 
     public void copySelection() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         copySelectionWorker = new CopySelectionWorker(this);
         copySelectionWorker.execute();
     }
@@ -993,9 +1002,13 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void copyTable() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copyTableWorker = new CopyTableWorker(settings, this);
+        copyTableWorker = new CopyTableWorker(getEditor().getSettings(), this);
         copyTableWorker.execute();
     }
 
@@ -1072,22 +1085,20 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public void applyColorSettings(Settings settings) {
+    public void applyColorSettings() {
         if (this.getType() != TABLE_SWITCH) {
-            this.setSettings(settings);
-
             // apply settings to cells
             for (int i = 0; i < getDataSize(); i++) {
-                this.setMaxColor(settings.getMaxColor());
-                this.setMinColor(settings.getMinColor());
-                data[i].setHighlightColor(settings.getHighlightColor());
-                data[i].setIncreaseBorder(settings.getIncreaseBorder());
-                data[i].setDecreaseBorder(settings.getDecreaseBorder());
-                data[i].setFont(settings.getTableFont());
+                this.setMaxColor(editor.getSettings().getMaxColor());
+                this.setMinColor(editor.getSettings().getMinColor());
+                data[i].setHighlightColor(editor.getSettings().getHighlightColor());
+                data[i].setIncreaseBorder(editor.getSettings().getIncreaseBorder());
+                data[i].setDecreaseBorder(editor.getSettings().getDecreaseBorder());
+                data[i].setFont(editor.getSettings().getTableFont());
                 data[i].repaint();
             }
-            cellHeight = (int) settings.getCellSize().getHeight();
-            cellWidth = (int) settings.getCellSize().getWidth();
+            cellHeight = (int) editor.getSettings().getCellSize().getHeight();
+            cellWidth = (int) editor.getSettings().getCellSize().getWidth();
             colorize();
             validateScaling();
         }
@@ -1145,12 +1156,12 @@ public abstract class Table extends JPanel implements Serializable {
                         new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
+                                getEditor().getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
                             }
                         }
                         );
 
-                JOptionPane.showMessageDialog(container.getContainer(), panel,
+                JOptionPane.showMessageDialog(editor, panel,
                         "Warning", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -1215,12 +1226,12 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public Settings getSettings() {
-        return settings;
+    public void setEditor(ECUEditor editor) {
+        this.editor = editor;
     }
 
-    public void setSettings(Settings settings) {
-        this.settings = settings;
+    public ECUEditor getEditor() {
+        return this.editor;
     }
 
     public boolean isLocked() {
@@ -1358,8 +1369,12 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(null);
+        }
         table.setCursor(null);
+        table.getEditor().setCursor(null);
     }
 }
 
@@ -1389,7 +1404,11 @@ class CopyTableWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(null);
+        }
         table.setCursor(null);
+        table.getEditor().setCursor(null);
     }
 }

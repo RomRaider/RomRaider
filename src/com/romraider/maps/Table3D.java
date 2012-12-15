@@ -30,6 +30,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -43,6 +44,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.swing.TableFrame;
 import com.romraider.util.AxisRange;
@@ -51,8 +53,8 @@ import com.romraider.xml.RomAttributeParser;
 public class Table3D extends Table {
 
     private static final long serialVersionUID = 3103448753263606599L;
-    private Table1D xAxis = new Table1D(new Settings());
-    private Table1D yAxis = new Table1D(new Settings());
+    private Table1D xAxis;
+    private Table1D yAxis;
     DataCell[][] data = new DataCell[1][1];
     private boolean swapXY = false;
     private boolean flipX = false;
@@ -61,8 +63,10 @@ public class Table3D extends Table {
     CopyTable3DWorker copyTable3DWorker;
     CopySelection3DWorker copySelection3DWorker;
 
-    public Table3D(Settings settings) {
-        super(settings);
+    public Table3D(ECUEditor editor) {
+        super(editor);
+        xAxis = new Table1D(editor);
+        yAxis = new Table1D(editor);
         verticalOverhead += 39;
         horizontalOverhead += 10;
     }
@@ -166,7 +170,7 @@ public class Table3D extends Table {
                     y = z;
                 }
 
-                data[x][y] = new DataCell(scales.get(scaleIndex), settings.getCellSize());
+                data[x][y] = new DataCell(scales.get(scaleIndex), editor.getSettings().getCellSize());
                 data[x][y].setTable(this);
 
                 // populate data cells
@@ -279,7 +283,7 @@ public class Table3D extends Table {
                         if (value > high || value < low) {
 
                             // value exceeds limit
-                            cell.setColor(settings.getWarningColor());
+                            cell.setColor(editor.getSettings().getWarningColor());
 
                         } else {
                             // limits not set, scale based on table values
@@ -291,7 +295,7 @@ public class Table3D extends Table {
                                 scale = (value - low) / (high - low);
                             }
 
-                            cell.setColor(getScaledColor(scale, settings));
+                            cell.setColor(getScaledColor(scale, editor.getSettings()));
                         }
                     }
                 }
@@ -325,14 +329,14 @@ public class Table3D extends Table {
                         if (scale == 0) {
                             cell.setColor(UNCHANGED_VALUE_COLOR);
                         } else {
-                            cell.setColor(getScaledColor(scale, settings));
+                            cell.setColor(getScaledColor(scale, editor.getSettings()));
                         }
 
                         // set border
                         if (cell.getBinValue() > cell.getOriginalValue()) {
-                            cell.setBorder(createLineBorder(settings.getIncreaseBorder()));
+                            cell.setBorder(createLineBorder(editor.getSettings().getIncreaseBorder()));
                         } else if (cell.getBinValue() < cell.getOriginalValue()) {
-                            cell.setBorder(createLineBorder(settings.getDecreaseBorder()));
+                            cell.setBorder(createLineBorder(editor.getSettings().getDecreaseBorder()));
                         } else {
                             cell.setBorder(createLineBorder(Color.BLACK, 1));
                         }
@@ -350,9 +354,9 @@ public class Table3D extends Table {
                 for (DataCell cell : column) {
 
                     if (cell.getBinValue() > cell.getOriginalValue()) {
-                        cell.setBorder(createLineBorder(settings.getIncreaseBorder()));
+                        cell.setBorder(createLineBorder(editor.getSettings().getIncreaseBorder()));
                     } else if (cell.getBinValue() < cell.getOriginalValue()) {
-                        cell.setBorder(createLineBorder(settings.getDecreaseBorder()));
+                        cell.setBorder(createLineBorder(editor.getSettings().getDecreaseBorder()));
                     } else {
                         cell.setBorder(createLineBorder(Color.BLACK, 1));
                     }
@@ -533,11 +537,11 @@ public class Table3D extends Table {
     public byte[] saveFile(byte[] binData) {
         if (!isStatic  // save if table is not static
                 &&     // and user level is great enough
-                userLevel <= settings.getUserLevel()
+                userLevel <= editor.getSettings().getUserLevel()
                 &&     // and table is not in debug mode, unless saveDebugTables is true
                 (userLevel < 5
                         ||
-                        settings.isSaveDebugTables())) {
+                        editor.getSettings().isSaveDebugTables())) {
 
             binData = xAxis.saveFile(binData);
             binData = yAxis.saveFile(binData);
@@ -686,7 +690,11 @@ public class Table3D extends Table {
 
     @Override
     public void copySelection() {
-        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         copySelection3DWorker = new CopySelection3DWorker(this);
         copySelection3DWorker.execute();
@@ -695,9 +703,13 @@ public class Table3D extends Table {
 
     @Override
     public void copyTable() {
-        SwingUtilities.getWindowAncestor(this).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copyTable3DWorker = new CopyTable3DWorker(settings, this);
+        copyTable3DWorker = new CopyTable3DWorker(editor.getSettings(), this);
         copyTable3DWorker.execute();
     }
 
@@ -856,28 +868,26 @@ public class Table3D extends Table {
     }
 
     @Override
-    public void applyColorSettings(Settings settings) {
+    public void applyColorSettings() {
         // apply settings to cells
-        this.settings = settings;
-
         for (int y = 0; y < getSizeY(); y++) {
             for (int x = 0; x < getSizeX(); x++) {
 
-                this.setMaxColor(settings.getMaxColor());
-                this.setMinColor(settings.getMinColor());
-                data[x][y].setHighlightColor(settings.getHighlightColor());
-                data[x][y].setIncreaseBorder(settings.getIncreaseBorder());
-                data[x][y].setDecreaseBorder(settings.getDecreaseBorder());
-                data[x][y].setFont(settings.getTableFont());
+                this.setMaxColor(editor.getSettings().getMaxColor());
+                this.setMinColor(editor.getSettings().getMinColor());
+                data[x][y].setHighlightColor(editor.getSettings().getHighlightColor());
+                data[x][y].setIncreaseBorder(editor.getSettings().getIncreaseBorder());
+                data[x][y].setDecreaseBorder(editor.getSettings().getDecreaseBorder());
+                data[x][y].setFont(editor.getSettings().getTableFont());
                 data[x][y].repaint();
             }
         }
 
-        this.setAxisColor(settings.getAxisColor());
-        xAxis.applyColorSettings(settings);
-        yAxis.applyColorSettings(settings);
-        cellHeight = (int) settings.getCellSize().getHeight();
-        cellWidth = (int) settings.getCellSize().getWidth();
+        this.setAxisColor(editor.getSettings().getAxisColor());
+        xAxis.applyColorSettings();
+        yAxis.applyColorSettings();
+        cellHeight = (int) editor.getSettings().getCellSize().getHeight();
+        cellWidth = (int) editor.getSettings().getCellSize().getWidth();
 
         validateScaling();
         resize();
@@ -1074,8 +1084,12 @@ class CopySelection3DWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(null);
+        }
         table.setCursor(null);
+        table.getEditor().setCursor(null);
     }
 }
 
@@ -1115,7 +1129,11 @@ class CopyTable3DWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        SwingUtilities.getWindowAncestor(table).setCursor(null);
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow){
+            ancestorWindow.setCursor(null);
+        }
         table.setCursor(null);
+        table.getEditor().setCursor(null);
     }
 }

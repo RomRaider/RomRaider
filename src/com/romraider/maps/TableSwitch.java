@@ -1,24 +1,24 @@
 /*
-* RomRaider Open-Source Tuning, Logging and Reflashing
-* Copyright (C) 2006-2012 RomRaider.com
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program; if not, write to the Free Software Foundation, Inc.,
-* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-*/
- 
+ * RomRaider Open-Source Tuning, Logging and Reflashing
+ * Copyright (C) 2006-2012 RomRaider.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package com.romraider.maps;
- 
+
 import static com.romraider.maps.RomChecksum.validateRomChecksum;
 import static com.romraider.util.ByteUtil.indexOfBytes;
 import static com.romraider.util.HexUtil.asBytes;
@@ -43,32 +43,35 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
-import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
 
 public class TableSwitch extends Table {
- 
+
     private static final long serialVersionUID = -4887718305447362308L;
-    private ButtonGroup buttonGroup = new ButtonGroup();
-    private Map<String, byte[]> switchStates = new HashMap<String, byte[]>();
+    private final ButtonGroup buttonGroup = new ButtonGroup();
+    private final Map<String, byte[]> switchStates = new HashMap<String, byte[]>();
     private int dataSize = 0;
- 
-    public TableSwitch(Settings settings) {
-        super(settings);
+
+    public TableSwitch(ECUEditor editor) {
+        super(editor);
         storageType = 1;
         type = TABLE_SWITCH;
         locked = true;
         removeAll();
         setLayout(new BorderLayout());
     }
- 
+
+    @Override
     public void setDataSize(int size) {
         if (dataSize == 0) dataSize = size;
     }
- 
+
+    @Override
     public int getDataSize() {
         return dataSize;
     }
 
+    @Override
     public void populateTable(byte[] input) {
         JPanel radioPanel = new JPanel(new GridLayout(0, 1));
         radioPanel.add(new JLabel("  " + name));
@@ -78,7 +81,7 @@ public class TableSwitch extends Table {
             radioPanel.add(button);
         }
         add(radioPanel, BorderLayout.CENTER);
-       
+
         // Validate the ROM image checksums.
         // if the result is >0: position of failed checksum
         // if the result is  0: all the checksums matched
@@ -87,8 +90,8 @@ public class TableSwitch extends Table {
             int result = validateRomChecksum(input, storageAddress, dataSize);
             String message = String.format(
                     "Checksum No. %d is invalid.%n" +
-                    "The ROM image may be corrupt.%n" +
-                    "Use of this ROM image is not advised!", result);
+                            "The ROM image may be corrupt.%n" +
+                            "Use of this ROM image is not advised!", result);
             if (result > 0) {
                 showMessageDialog(this,
                         message,
@@ -143,21 +146,24 @@ public class TableSwitch extends Table {
         if (locked) {
             String mismatch = String.format("Table: %s%nTable editing has been disabled.%nDefinition file or ROM image may be corrupt.", super.getName());
             showMessageDialog(this,
-                              mismatch,
-                              "ERROR - Data Mismatch",
-                              ERROR_MESSAGE);
+                    mismatch,
+                    "ERROR - Data Mismatch",
+                    ERROR_MESSAGE);
             setButtonsUnselected(buttonGroup);
         }
     }
- 
+
+    @Override
     public void setName(String name) {
         super.setName(name);
     }
- 
+
+    @Override
     public int getType() {
         return TABLE_SWITCH;
     }
- 
+
+    @Override
     public void setDescription(String description) {
         super.setDescription(description);
         JTextArea descriptionArea = new JTextArea(description);
@@ -166,10 +172,11 @@ public class TableSwitch extends Table {
         descriptionArea.setWrapStyleWord(true);
         descriptionArea.setLineWrap(true);
         descriptionArea.setMargin(new Insets(0,5,5,5));
- 
+
         add(descriptionArea, BorderLayout.SOUTH);
     }
- 
+
+    @Override
     public byte[] saveFile(byte[] input) {
         if (!super.getName().equalsIgnoreCase("Checksum Fix")) {
             if (!locked) {
@@ -184,15 +191,16 @@ public class TableSwitch extends Table {
         }
         return input;
     }
- 
+
     public void setValues(String name, String input) {
         switchStates.put(name, asBytes(input));
     }
- 
+
     public byte[] getValues(String key) {
-            return switchStates.get(key);
+        return switchStates.get(key);
     }
- 
+
+    @Override
     public Dimension getFrameSize() {
         int height = verticalOverhead + 75;
         int width = horizontalOverhead;
@@ -205,29 +213,37 @@ public class TableSwitch extends Table {
         }
         return new Dimension(width, height);
     }
- 
+
+    @Override
     public void colorize() {
     }
- 
+
+    @Override
     public void cursorUp() {
     }
- 
+
+    @Override
     public void cursorDown() {
     }
- 
+
+    @Override
     public void cursorLeft() {
     }
- 
+
+    @Override
     public void cursorRight() {
     }
- 
+
+    @Override
     public void setAxisColor(Color color) {
     }
- 
+
+    @Override
     public boolean isLiveDataSupported() {
         return false;
     }
- 
+
+    @Override
     public boolean isButtonSelected() {
         if (buttonGroup.getSelection() == null) {
             return false;
@@ -247,7 +263,7 @@ public class TableSwitch extends Table {
         }
         return null;
     }
- 
+
     // Unselects & disables all radio buttons in the specified group
     private static void setButtonsUnselected(ButtonGroup group) {
         for (Enumeration<AbstractButton> e = group.getElements(); e.hasMoreElements(); ) {
@@ -256,7 +272,7 @@ public class TableSwitch extends Table {
             b.setEnabled(false);
         }
     }
- 
+
     // returns the radio button based on its display text
     private static JRadioButton getButtonByText(ButtonGroup group, String text) {
         for (Enumeration<AbstractButton> e = group.getElements(); e.hasMoreElements(); ) {
