@@ -19,19 +19,22 @@
 
 package com.romraider.maps;
 
-import com.romraider.Settings;
-import javax.swing.JLabel;
 import java.awt.BorderLayout;
 import java.awt.Color;
+
+import javax.swing.JLabel;
+
+import com.romraider.editor.ecu.ECUEditor;
 
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
     private Color axisColor = new Color(255, 255, 255);
 
-    public Table1D(Settings settings) {
-        super(settings);
+    public Table1D(ECUEditor editor) {
+        super(editor);
     }
 
+    @Override
     public void populateTable(byte[] input) {
         centerLayout.setRows(1);
         centerLayout.setColumns(this.getDataSize());
@@ -44,6 +47,7 @@ public class Table1D extends Table {
         add(new JLabel(name + " (" + scales.get(scaleIndex).getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
     }
 
+    @Override
     public String toString() {
         return super.toString() + " (1D)";
     }
@@ -56,6 +60,7 @@ public class Table1D extends Table {
         this.isAxis = isAxis;
     }
 
+    @Override
     public void clearSelection() {
         super.clearSelection();
         //if (isAxis) axisParent.clearSelection();
@@ -69,10 +74,12 @@ public class Table1D extends Table {
         }
     }
 
+    @Override
     public void colorize() {
         super.colorize();
     }
 
+    @Override
     public void cursorUp() {
         if (type == Table.TABLE_Y_AXIS) {
             if (highlightY > 0 && data[highlightY].isSelected()) {
@@ -85,6 +92,7 @@ public class Table1D extends Table {
         }
     }
 
+    @Override
     public void cursorDown() {
         if (type == Table.TABLE_Y_AXIS) {
             if (axisParent.getType() == Table.TABLE_3D) {
@@ -103,6 +111,7 @@ public class Table1D extends Table {
         }
     }
 
+    @Override
     public void cursorLeft() {
         if (type == Table.TABLE_Y_AXIS) {
             // X axis is on left.. nothing happens
@@ -122,6 +131,7 @@ public class Table1D extends Table {
         }
     }
 
+    @Override
     public void cursorRight() {
         if (type == Table.TABLE_Y_AXIS && data[highlightY].isSelected()) {
             if (axisParent.getType() == Table.TABLE_3D) {
@@ -140,6 +150,7 @@ public class Table1D extends Table {
         }
     }
 
+    @Override
     public void startHighlight(int x, int y) {
         if (isAxis) {
             axisParent.clearSelection();
@@ -147,6 +158,7 @@ public class Table1D extends Table {
         super.startHighlight(x, y);
     }
 
+    @Override
     public StringBuffer getTableAsString() {
         StringBuffer output = new StringBuffer("");
         for (int i = 0; i < getDataSize(); i++) {
@@ -158,6 +170,7 @@ public class Table1D extends Table {
         return output;
     }
 
+    @Override
     public String getCellAsString(int index) {
         return data[index].getText();
     }
@@ -166,10 +179,12 @@ public class Table1D extends Table {
         return axisColor;
     }
 
+    @Override
     public void setAxisColor(Color axisColor) {
         this.axisColor = axisColor;
     }
 
+    @Override
     public void setLiveValue(String value) {
         liveValue = value;
         Table parent = getAxisParent();
@@ -178,10 +193,12 @@ public class Table1D extends Table {
         }
     }
 
+    @Override
     public boolean isLiveDataSupported() {
         return false;
     }
 
+    @Override
     public boolean isButtonSelected() {
         return true;
     }
