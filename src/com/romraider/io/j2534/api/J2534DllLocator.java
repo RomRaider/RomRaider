@@ -19,9 +19,9 @@
 
 package com.romraider.io.j2534.api;
 
+import static com.sun.jna.platform.win32.WinError.ERROR_FILE_NOT_FOUND;
 import static com.sun.jna.platform.win32.WinError.ERROR_SUCCESS;
 import static com.sun.jna.platform.win32.WinReg.HKEY_LOCAL_MACHINE;
-import static org.apache.log4j.Logger.getLogger;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.romraider.util.ParamChecker;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Advapi32;
 import com.sun.jna.platform.win32.WinBase.FILETIME;
@@ -46,7 +47,7 @@ import com.sun.jna.ptr.IntByReference;
  * @see J2534Library
  */
 public class J2534DllLocator {
-    private static final Logger LOGGER = getLogger(J2534DllLocator.class);
+    private static final Logger LOGGER = Logger.getLogger(J2534DllLocator.class);
     private static final String FUNCTIONLIBRARY = "FunctionLibrary";
     private static final int KEY_READ = 0x20019;
     private static final int ERROR_NO_MORE_ITEMS = 0x103;
@@ -67,6 +68,7 @@ public class J2534DllLocator {
             String library = getSZ(vendorKey.getValue(), FUNCTIONLIBRARY);
             LOGGER.debug(String.format("Found J2534 Vendor:%s | Library:%s",
                     vendor, library));
+            if (ParamChecker.isNullOrEmpty(library)) continue;
             libraries.add(new J2534Library(vendor, library));
             advapi32.RegCloseKey(vendorKey.getValue());
         }
@@ -154,12 +156,20 @@ public class J2534DllLocator {
                 lpType,
                 lpData,
                 lpcbData);
-        if(ret != ERROR_SUCCESS) {
-            String errString = String.format("DWORD_RegQueryValueEx(%s)",
-                    valueName);
-            handleError(errString, ret);
+
+        int dword = -1;
+        switch (ret) {
+            case ERROR_SUCCESS:
+                dword = reverse(lpData, lpcbData.getValue());
+                break;
+            case ERROR_FILE_NOT_FOUND:
+                dword = 0;
+                break;
+            default:
+                String errString = String.format("DWORD_RegQueryValueEx(%s)",
+                        valueName);
+                handleError(errString, ret);
         }
-        int dword = reverse(lpData, lpcbData.getValue());
         return dword;
     }
 
@@ -176,11 +186,19 @@ public class J2534DllLocator {
                 lpType,
                 lpData,
                 lpcbData);
-        if(ret != ERROR_SUCCESS) {
-            String errString = String.format("SZ_RegQueryValueEx(%s)",
-                    valueName);
-            handleError(errString, ret);
+
+        String szValue = null;
+        switch (ret) {
+            case ERROR_SUCCESS:
+                szValue = Native.toString(lpData);
+                break;
+            case ERROR_FILE_NOT_FOUND:
+                break;
+            default:
+                String errString = String.format("SZ_RegQueryValueEx(%s)",
+                        valueName);
+                handleError(errString, ret);
         }
-        return Native.toString(lpData);
+        return szValue;
     }
 }
