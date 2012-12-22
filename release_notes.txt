@@ -1,4 +1,4 @@
-                - RomRaider 0.5.6 RC4 -
+                - RomRaider 0.5.6 RC5 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,15 +33,16 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.6 RC4 Notes (12/13/2012) -
+- 0.5.6 RC5 Notes (12/22/2012) -
 --------------------------------------------
 This is the latest release of the RomRaider from the GitHub repo.
 
 --------------------------------------
-- 0.5.6 RC4 Known Issues -
+- 0.5.6 RC5 Known Issues -
 --------------------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
+  - Table Compare to another map fails on large maps such as Base Timing 
 - Logger
   - Pressing the Logger Connect button twice may start a second QueryManger
     instance which will continually try to connect to the ECU while the first
@@ -57,6 +58,16 @@ Status of these items can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.5.6 RC5 (12/22/2012)
+----------------------------------
+
+- Editor
+  - partial fix for Table Compare to another map by scotthew
+
+- Logger
+  - fix to handle Registry FILE_NOT_FOUND error response for J2534 device lookup.
+
 
 0.5.6 RC4 (12/13/2012)
 ----------------------------------
