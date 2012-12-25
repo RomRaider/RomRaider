@@ -367,15 +367,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         return compareDisplay;
     }
 
-    public void setCompareRealValue(String input) {
-        double result = JEPUtil.evaluate(table.getScale().getByteExpression(), Double.parseDouble(input));
-        if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
-            this.setCompareValue(result);
-        } else {
-            this.setCompareValue((int) Math.round(result));
-        }
-    }
-
     public void setCompareDisplay(int compareDisplay) {
         this.compareDisplay = compareDisplay;
     }

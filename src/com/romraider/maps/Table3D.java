@@ -366,6 +366,31 @@ public class Table3D extends Table {
     }
 
     @Override
+    public void compare(Table compareTable, int compareType) {
+        if(!(compareTable instanceof Table3D)) {
+            return;
+        }
+
+        DataCell[][] compareData = ((Table3D) compareTable).get3dData();
+        int x=0;
+        int y=0;
+
+        if(data.length != compareData.length || data[0].length != compareData[0].length) {
+            return;
+        }
+
+        for (DataCell[] column : compareData) {
+            y = 0;
+            for(DataCell cell : column) {
+                data[x][y].setCompareValue(cell.getOriginalValue());
+                y++;
+            }
+            x++;
+        }
+        compare(compareType);
+    }
+
+    @Override
     public void compare(int compareType) {
         this.compareType = compareType;
 
@@ -758,73 +783,6 @@ public class Table3D extends Table {
             xAxis.paste();
             yAxis.paste();
         }
-    }
-
-    @Override
-    public void pasteCompare() {
-        StringTokenizer st = new StringTokenizer("");
-        String input = "";
-        try {
-            input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
-        } catch (IOException ex) {
-        }
-
-        String pasteType = st.nextToken();
-
-        if ("[Table3D]".equalsIgnoreCase(pasteType)) { // Paste table
-            String newline = System.getProperty("line.separator");
-            String xAxisValues = "[Table1D]" + newline + st.nextToken(newline);
-            StringBuffer yAxisValues = new StringBuffer("");
-            StringBuffer dataValues = new StringBuffer("");
-
-            while (st.hasMoreTokens()) {
-                StringTokenizer currentLine = new StringTokenizer(st.nextToken(newline));
-                yAxisValues.append(currentLine.nextToken("\t")).append("\t");
-                //dataValues.append(currentLine.nextToken(newline));
-
-                while (currentLine.hasMoreTokens()) {
-                    dataValues.append(currentLine.nextToken()).append("\t");
-                }
-                dataValues.append(newline);
-            }
-
-            // put x axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(xAxisValues), null);
-            xAxis.pasteCompare();
-            // put y axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(yAxisValues.toString()), null);
-            yAxis.pasteCompare();
-            // put datavalues in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues.toString()), null);
-            pasteCompareValues();
-            // reset clipboard
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
-        }
-        colorize();
-    }
-
-    public void pasteCompareValues() {
-        StringTokenizer st = new StringTokenizer("");
-        try {
-            String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
-        } catch (IOException ex) {
-        }
-
-        // set values
-        for (int y = 0; y < getSizeY(); y++) {
-            if (st.hasMoreTokens()) {
-
-                for (int x = 0; x < getSizeX(); x++) {
-                    String currentToken = st.nextToken();
-                    data[x][y].setCompareRealValue(currentToken);
-                }
-            }
-        }
-
     }
 
     public void pasteValues() {

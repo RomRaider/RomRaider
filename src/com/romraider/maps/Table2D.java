@@ -304,35 +304,6 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void pasteCompare() {
-        StringTokenizer st = new StringTokenizer("");
-        String input = "";
-        try {
-            input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
-        } catch (IOException ex) {
-        }
-
-        String pasteType = st.nextToken();
-
-        if (pasteType.equalsIgnoreCase("[Table2D]")) { // Paste table
-            String axisValues = "[Table1D]" + NEW_LINE + st.nextToken(NEW_LINE);
-            String dataValues = "[Table1D]" + NEW_LINE + st.nextToken(NEW_LINE);
-
-            // put axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues), null);
-            axis.pasteCompare();
-            // put datavalues in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues), null);
-            super.pasteCompare();
-            // reset clipboard
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
-
-        }
-    }
-
-    @Override
     public void setAxisColor(Color axisColor) {
         axis.setAxisColor(axisColor);
     }

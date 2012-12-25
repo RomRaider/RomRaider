@@ -1062,29 +1062,6 @@ public abstract class Table extends JPanel implements Serializable {
         colorize();
     }
 
-    public void pasteCompare() {
-        StringTokenizer st = new StringTokenizer(BLANK);
-        try {
-            String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
-        } catch (IOException ex) {
-        }
-
-        String pasteType = st.nextToken();
-
-        if ("[Table1D]".equalsIgnoreCase(pasteType)) { // copied entire table
-            int i = 0;
-            while (st.hasMoreTokens()) {
-                try {
-                    String currentToken = st.nextToken();
-                    data[i].setCompareRealValue(currentToken);
-                } catch (ArrayIndexOutOfBoundsException ex) { /* table larger than target, ignore*/ }
-                i++;
-            }
-        }
-    }
-
     public void applyColorSettings() {
         if (this.getType() != TABLE_SWITCH) {
             // apply settings to cells
@@ -1165,6 +1142,25 @@ public abstract class Table extends JPanel implements Serializable {
                         "Warning", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+
+    public void compare(Table compareTable, int compareType) {
+        if(!(compareTable instanceof Table)) {
+            return;
+        }
+
+        DataCell[] compareData = compareTable.getData();
+        int i = 0;
+
+        if(data.length != compareData.length) {
+            return;
+        }
+
+        for(DataCell cell : compareData) {
+            data[i].setCompareValue(cell.getOriginalValue());
+            i++;
+        }
+        compare(compareType);
     }
 
     public void compare(int compareType) {
