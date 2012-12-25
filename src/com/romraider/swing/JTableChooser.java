@@ -19,7 +19,6 @@
 
 package com.romraider.swing;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -41,7 +40,8 @@ public class JTableChooser extends JOptionPane implements MouseListener {
     DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Open Images");
     JTree displayTree = new JTree(rootNode);
 
-    public boolean showChooser(Vector<Rom> roms, Component parent, Table targetTable) {
+    public Table showChooser(Table targetTable) {
+        Vector<Rom> roms = targetTable.getEditor().getImages();
         int nameLength = 0;
         for (int i = 0; i < roms.size(); i++) {
             Rom rom = roms.get(i);
@@ -85,13 +85,12 @@ public class JTableChooser extends JOptionPane implements MouseListener {
 
         Object[] values = {"Compare", "Cancel"};
 
-        if ((showOptionDialog(parent, displayPanel, "Select a Map", JOptionPane.DEFAULT_OPTION,
+        if ((showOptionDialog(targetTable.getEditor(), displayPanel, "Select a Map", JOptionPane.DEFAULT_OPTION,
                 JOptionPane.PLAIN_MESSAGE, null, values, values[0]) == 0
                 && (displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode))) {
-            ((TableChooserTreeNode) displayTree.getLastSelectedPathComponent()).getTable().copyTable();
-            return true;
+            return ((TableChooserTreeNode) displayTree.getLastSelectedPathComponent()).getTable();
         } else {
-            return false;
+            return null;
         }
     }
 

@@ -176,11 +176,11 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == compareMap) {
             JTableChooser chooser = new JTableChooser();
-            if (chooser.showChooser(table.getEditor().getImages(), table.getEditor(), table)) {
-                table.pasteCompare();
-                table.compare(Table.COMPARE_TABLE);
-            }
+            Table selectedTable = chooser.showChooser(table);
 
+            if(null != selectedTable) {
+                table.compare(selectedTable, Table.COMPARE_TABLE);
+            }
         } else if (e.getSource() == compareAbsolute) {
             table.setCompareDisplay(Table.COMPARE_ABSOLUTE);
 
