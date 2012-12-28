@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
 
-<!-- The English langpack -->
+<!-- The Romanian langpack -->
 
 <langpack>
 
@@ -105,4 +105,6 @@
 
     <!-- Add your own panels specific strings here if you need -->
 
+    <str id="data.validation.error.title" txt="Eroare" />
+    <str id="data.validation.warning.title" txt="Atentie" />
 </langpack>

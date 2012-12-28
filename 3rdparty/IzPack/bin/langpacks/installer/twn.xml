@@ -162,5 +162,7 @@
     <str id="UserPathPanel.summaryCaption" txt="選擇路徑"/>
     <!-- Strings for the summary of panels - END -->
 
+    <str id="data.validation.error.title" txt="錯誤" />
+    <str id="data.validation.warning.title" txt="警告" />
 </langpack>
 

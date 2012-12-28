@@ -31,6 +31,8 @@
 	<str id="CompilePanel.start" txt="Start"/>
 	<str id="CompilePanel.tip" txt="Postęp kompilacji:"/>
 	<str id="ConditionalUserInputPanel.headline" txt="Dane użytkownika"/>
+    <str id="data.validation.error.title" txt="Błąd" />
+    <str id="data.validation.warning.title" txt="Ostrzeżenie" />
 	<str id="debug.changevariable" txt="zmodyfikuj wartość"/>
 	<str id="ExtendedInstallPanel.headline" txt="Instalacja i konfiguracja"/>
 	<str id="FinishPanel.auto" txt="Generuj skrypt automatycznej instalacji"/>
