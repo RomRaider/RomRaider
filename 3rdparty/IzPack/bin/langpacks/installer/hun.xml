@@ -155,4 +155,6 @@
          txt="A program eltávolításához szükséges kulcs a következõ lesz: "/>
     <!-- Add your own panels specific strings here if you need -->
 
+    <str id="data.validation.error.title" txt="Hiba" />
+    <str id="data.validation.warning.title" txt="Figyelem" />
 </langpack>
