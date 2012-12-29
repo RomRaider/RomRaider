@@ -186,4 +186,6 @@
 
     <!-- Add your own panels specific strings here if you need -->
 
+    <str id="data.validation.error.title" txt="Έξοδος" />
+    <str id="data.validation.warning.title" txt="Προσοχή" />
 </langpack>

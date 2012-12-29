@@ -289,4 +289,6 @@
     <str id="log.error_0" txt="imposible escribir ''{0}''"/>
     <str id="debug.changevariable" txt="modificar valor"/>
  
+    <str id="data.validation.error.title" txt="Erro" />
+    <str id="data.validation.warning.title" txt="Aviso" />
 </langpack>

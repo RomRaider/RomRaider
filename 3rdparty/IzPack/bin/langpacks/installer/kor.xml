@@ -177,4 +177,6 @@
 
     <!-- Add your own panels specific strings here if you need -->
 
+    <str id="data.validation.error.title" txt="오류" />
+    <str id="data.validation.warning.title" txt="경고 " />
 </langpack>

@@ -333,7 +333,7 @@ public class MainFrame extends JFrame {
 						String path = _outfile.getPath();
 						if (Util.WINDOWS_OS) {
 							log.append(Messages.getString("MainFrame.executing") + path);
-							Util.exec(new String[] { path }, log);
+							Util.exec(new String[] { path, "--l4j-debug" }, log);
 						} else {
 							log.append(Messages.getString("MainFrame.jar.integrity.test")
 									+ path);

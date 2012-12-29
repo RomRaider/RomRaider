@@ -21,7 +21,7 @@
 JNLP_TEMPLATE = """
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
-  spec="1.5+"
+  spec="1.6+"
   codebase="$codebase"
   href="$jnlp">
   <information>
@@ -35,7 +35,7 @@ JNLP_TEMPLATE = """
       <all-permissions/>
   </security>
   <resources>
-    <j2se version="1.5+"/>
+    <j2se version="1.6+"/>
     <jar href="$installer"/>
   </resources>
   <application-desc main-class="com.izforge.izpack.installer.Installer"/>
