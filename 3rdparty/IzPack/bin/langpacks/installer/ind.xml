@@ -304,5 +304,8 @@
     <str id="InstallationGroupPanel.colNameSize" txt="Ukuran"/>
 
     <str id="debug.changevariable" txt="ubah nilai"/>
+
+    <str id="data.validation.error.title" txt="Kesalahan" />
+    <str id="data.validation.warning.title" txt="Peringatan" />
 </langpack>
 

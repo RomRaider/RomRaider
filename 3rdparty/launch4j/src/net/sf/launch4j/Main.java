@@ -2,7 +2,7 @@
 	Launch4j (http://launch4j.sourceforge.net/)
 	Cross-platform Java application wrapper for creating Windows native executables.
 
-	Copyright (c) 2004, 2008 Grzegorz Kowal
+	Copyright (c) 2004, 2011 Grzegorz Kowal
 
 	All rights reserved.
 
@@ -90,7 +90,7 @@ public class Main {
 				" (http://launch4j.sourceforge.net/)\n" +
 				"Cross-platform Java application wrapper" +
 						" for creating Windows native executables.\n\n" +
-				"Copyright (C) 2004, 2008 Grzegorz Kowal\n\n" +
+				"Copyright (C) 2004, 2011 Grzegorz Kowal\n\n" +
 				"Launch4j comes with ABSOLUTELY NO WARRANTY.\n" +
 				"This is free software, licensed under the BSD License.\n" +
 				"This product includes software developed by the Apache Software Foundation" +

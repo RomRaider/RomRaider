@@ -162,4 +162,6 @@
 
     <!-- Add your own panels specific strings here if you need -->
 
+    <str id="data.validation.error.title" txt="Chyba" />
+    <str id="data.validation.warning.title" txt="Varování" />
 </langpack>

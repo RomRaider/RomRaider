@@ -360,4 +360,6 @@
          langpack with the same syntax referred as resoure CustomLangpack.xml_[ISO3]"
     -->
 
+    <str id="data.validation.error.title" txt="Fout" />
+    <str id="data.validation.warning.title" txt="Waarschuwing" />
 </langpack>
