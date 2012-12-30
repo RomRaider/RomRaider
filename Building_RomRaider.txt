@@ -21,6 +21,7 @@ and the power of Eclipse, it’s probably your best choice.
 * Installing the Java Development Kit and Eclipse
     o Install the latest version of the 32bit Java SE Development Kit
           (http://java.sun.com/javase/downloads/index.jsp)
+      If you wish to use a 64-bit version of Eclipse, see below for additional instructions.
     o Get and install ‘Eclipse IDE for Java Developers’ 32bit
           (http://www.eclipse.org/downloads)
       for your specific platform. The Java EE version will work too but there are
@@ -60,12 +61,15 @@ and the power of Eclipse, it’s probably your best choice.
           (http://help.eclipse.org/indigo/topic/org.eclipse.jdt.doc.user/reference/ref-properties-build-path.htm) 
 
 * Building the Project for the First Time
+    o When the project is created as above (Setting up the RomRaider Project) Eclipse will 
+      initially report numerous problems, such as the inability to recolve references.  
+      This is due to the absence of some generated files, not problems with the project itself.
     o First complete a build using ant. Right-click on build.xml and select:
           Run As -> 2 Ant build (this may appear as item 3 in the Java EE version)
       then select all in the targets tab.
     o When the build is finished (successfully I hope), Right-click on the root
-      romraider project and select Refresh. This should clear all the errors and
-      warnings decorations you may have seen on some files.
+      romraider project and select Refresh. This should clear all the errors.  Some warnings
+      may remain, depending on the source code itself.
     o The built files are stored in the repository’s build directory:
           RomRaider\build\dist
     o Install the build of your choosing and enjoy RomRaider. 
@@ -109,12 +113,33 @@ Notes on the above:
 	To build using ant, right-click on the build.xml
 	file in the Package Explorer (Java perspective) and select
 	
-	Run As -> 2 Ant build (this could be item 3 in Java EE), then select "all" in
-	the targets tab. To get more verbose output from ant set the -v option in the
-	arguments field on the Main tab.
+	Run As -> 2 Ant build (this could be item 3 in Java EE), then select the "all"
+	target in the targets tab. To get more verbose output from ant set the -v option 
+	in the arguments field on the Main tab.
 	
 	The "help" target lists available targets with a brief description of each.
 	
 	The "all" target does just that.  It rebuilds everything, finishing with the
 	installers saving all files in the <repository_path>\RomRaider\build\dist\
 	directory under each OS name Windows and Linux.
+
+----------------------------------------------
+
+
+Additional instructions for using 64-bit versions of Eclipse
+
+The 64-bit version of Eclipse is usable, but a 32-bit JRE must be installed.  RomRaider
+can only run properly in a 32-bit JVM.  By default, projects will use the default JRE.  
+
+To configure the RomRaider project to use a 32-bit JRE:
+
+1)  Select the Java perspective.  Window -> Open Perspective -> Other -> Java
+2)  Right-click on the RomRaider project adn select Properties
+3)  Select Run/Debug Settings, select the Launch Configuration, then click the Edit button.
+4)  Select the JRE tab, then choose the Alternate JRE radio button. 
+5)  Click the Installed JREs button.  
+6)  Click on the Add button, and then select the installation directory of your 32-bit JRE.
+7)  Check the box next to this JRE, then click OK.  This JRE should now be selected in the 
+    dropdown box.  
+8)  Click OK, then OK.  Your project should now use the 32-bit JRE when runnign and debugging
+    through Eclipse.
