@@ -1392,8 +1392,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         settings.setLoggerWindowLocation(getLocation());
         if (settings.getLoggerParameterListState()) {
             final Component c = tabbedPane.getSelectedComponent();
-            final JSplitPane sp = (JSplitPane) c.getComponentAt(100, 100);
-            settings.setLoggerDividerLocation(sp.getDividerLocation());
+            if (c instanceof JSplitPane) {
+            	// Only save the divider location if there is one
+            	final JSplitPane sp = (JSplitPane) c.getComponentAt(100, 100);
+            	settings.setLoggerDividerLocation(sp.getDividerLocation());
+            }
         }
         settings.setLoggerSelectedTabIndex(tabbedPane.getSelectedIndex());
         settings.setLoggerPluginPorts(getPluginPorts(externalDataSources));
