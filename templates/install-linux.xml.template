@@ -25,7 +25,9 @@
     </resources>
 
     <panels>
-        <panel classname="HTMLInfoPanel"/>
+        <panel classname="HTMLInfoPanel">
+            <os arch="amd64" />
+        </panel>
         <panel classname="InfoPanel"/>
         <panel classname="LicencePanel"/>
         <panel classname="TargetPanel"/>
