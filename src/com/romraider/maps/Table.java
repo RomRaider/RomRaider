@@ -72,11 +72,12 @@ public abstract class Table extends JPanel implements Serializable {
     public static final int TABLE_Y_AXIS = 5;
     public static final int TABLE_SWITCH = 6;
 
-    public static final int COMPARE_OFF = 0;
-    public static final int COMPARE_ORIGINAL = 1;
-    public static final int COMPARE_TABLE = 2;
-    public static final int COMPARE_PERCENT = 0;
-    public static final int COMPARE_ABSOLUTE = 1;
+    public static final int COMPARE_TYPE_ORIGINAL = 0;
+    public static final int COMPARE_TYPE_BIN = 1;
+
+    public static final int COMPARE_DISPLAY_OFF = 0;
+    public static final int COMPARE_DISPLAY_PERCENT = 1;
+    public static final int COMPARE_DISPLAY_ABSOLUTE = 2;
 
     public static final int STORAGE_TYPE_FLOAT = 99;
     public static final boolean STORAGE_DATA_SIGNED = false;
@@ -120,8 +121,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected Color maxColor;
     protected Color minColor;
     protected boolean isAxis = false;
-    protected int compareType = 0;
-    protected int compareDisplay = 1;
+    protected int compareType = COMPARE_TYPE_ORIGINAL;
+    protected int compareDisplay = COMPARE_DISPLAY_OFF;
     protected int userLevel = 0;
     protected ECUEditor editor;
     protected boolean locked = false;
@@ -645,20 +646,16 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void colorize() {
-        if (compareType == COMPARE_OFF) {
+        if (compareDisplay == COMPARE_DISPLAY_OFF) {
             if (!isStatic && !isAxis) {
-
                 double high = Double.MIN_VALUE;
                 double low = Double.MAX_VALUE;
 
                 if (getScale().getMax() != 0 || getScale().getMin() != 0) {
-
                     // set min and max values if they are set in scale
                     high = getScale().getMax();
                     low = getScale().getMin();
-
                 } else {
-
                     for (int i = 0; i < getDataSize(); i++) {
                         double value = data[i].getValue();
                         if (value > high) {
@@ -673,10 +670,8 @@ public abstract class Table extends JPanel implements Serializable {
                 for (int i = 0; i < getDataSize(); i++) {
                     double value = data[i].getValue();
                     if (value > high || value < low) {
-
                         // value exceeds limit
                         data[i].setColor(getEditor().getSettings().getWarningColor());
-
                     } else {
                         // limits not set, scale based on table values
                         double scale;
@@ -705,14 +700,14 @@ public abstract class Table extends JPanel implements Serializable {
 
                 // determine ratios
                 for (int i = 0; i < getDataSize(); i++) {
-                    if (Math.abs(data[i].getBinValue() - data[i].getOriginalValue()) > high) {
-                        high = Math.abs(data[i].getBinValue() - data[i].getOriginalValue());
+                    if (Math.abs(data[i].getBinValue() - data[i].getCompareValue()) > high) {
+                        high = Math.abs(data[i].getBinValue() - data[i].getCompareValue());
                     }
                 }
 
                 // colorize
                 for (int i = 0; i < getDataSize(); i++) {
-                    double cellDifference = Math.abs(data[i].getBinValue() - data[i].getOriginalValue());
+                    double cellDifference = Math.abs(data[i].getBinValue() - data[i].getCompareValue());
                     double scale;
                     if (high == 0) {
                         scale = 0;
@@ -727,9 +722,9 @@ public abstract class Table extends JPanel implements Serializable {
                     }
 
                     // set border
-                    if (data[i].getBinValue() > data[i].getOriginalValue()) {
+                    if (data[i].getBinValue() > data[i].getCompareValue()) {
                         data[i].setBorder(createLineBorder(getEditor().getSettings().getIncreaseBorder()));
-                    } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
+                    } else if (data[i].getBinValue() < data[i].getCompareValue()) {
                         data[i].setBorder(createLineBorder(getEditor().getSettings().getDecreaseBorder()));
                     } else {
                         data[i].setBorder(createLineBorder(Color.BLACK, 1));
@@ -739,15 +734,20 @@ public abstract class Table extends JPanel implements Serializable {
         }
 
         // colorize border
-        if (!isStatic) {
-            for (int i = 0; i < getDataSize(); i++) {
-                if (data[i].getBinValue() > data[i].getOriginalValue()) {
-                    data[i].setBorder(createLineBorder(getEditor().getSettings().getIncreaseBorder()));
-                } else if (data[i].getBinValue() < data[i].getOriginalValue()) {
-                    data[i].setBorder(createLineBorder(getEditor().getSettings().getDecreaseBorder()));
-                } else {
-                    data[i].setBorder(createLineBorder(Color.BLACK, 1));
-                }
+        for (int i = 0; i < getDataSize(); i++) {
+            double checkValue;
+            if(compareDisplay == COMPARE_DISPLAY_OFF) {
+                checkValue = data[i].getOriginalValue();
+            } else {
+                checkValue = data[i].getCompareValue();
+            }
+
+            if (checkValue > data[i].getBinValue()) {
+                data[i].setBorder(createLineBorder(getEditor().getSettings().getIncreaseBorder()));
+            } else if (checkValue < data[i].getBinValue()) {
+                data[i].setBorder(createLineBorder(getEditor().getSettings().getDecreaseBorder()));
+            } else {
+                data[i].setBorder(createLineBorder(Color.BLACK, 1));
             }
         }
     }
@@ -1145,42 +1145,35 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void compare(Table compareTable, int compareType) {
-        if(!(compareTable instanceof Table)) {
+        if(null == compareTable) {
             return;
         }
 
-        DataCell[] compareData = compareTable.getData();
-        int i = 0;
+        clearLiveDataTrace();
+        this.compareType = compareType;
 
+        DataCell[] compareData = compareTable.getData();
         if(data.length != compareData.length) {
             return;
         }
 
-        for(DataCell cell : compareData) {
-            data[i].setCompareValue(cell.getOriginalValue());
+        int i = 0;
+        for(DataCell cell : data) {
+            if(compareType == COMPARE_TYPE_BIN) {
+                cell.setCompareValue(compareData[i].getBinValue());
+            } else {
+                cell.setCompareValue(compareData[i].getOriginalValue());
+            }
             i++;
         }
-        compare(compareType);
-    }
-
-    public void compare(int compareType) {
-        clearLiveDataTrace();
-        this.compareType = compareType;
-
-        for (int i = 0; i < getDataSize(); i++) {
-            if (compareType == COMPARE_ORIGINAL) {
-                data[i].setCompareValue(data[i].getOriginalValue());
-            }
-            data[i].setCompareType(compareType);
-            data[i].setCompareDisplay(compareDisplay);
-            data[i].updateDisplayValue();
-        }
-        colorize();
     }
 
     public void setCompareDisplay(int compareDisplay) {
         this.compareDisplay = compareDisplay;
-        compare(compareType);
+        for(DataCell cell : data) {
+            cell.setCompareDisplay(compareDisplay);
+            cell.updateDisplayValue();
+        }
         colorize();
     }
 
@@ -1313,6 +1306,10 @@ public abstract class Table extends JPanel implements Serializable {
 
     public int getCompareType() {
         return this.compareType;
+    }
+
+    public void setCompareType(int compareType) {
+        this.compareType = compareType;
     }
 }
 

@@ -249,9 +249,8 @@ public class Table3D extends Table {
 
     @Override
     public void colorize() {
-        if (compareType == COMPARE_OFF) {
+        if (compareDisplay == COMPARE_DISPLAY_OFF) {
             if (!isStatic && !isAxis) {
-
                 double high = Double.MIN_VALUE;
                 double low = Double.MAX_VALUE;
 
@@ -275,7 +274,6 @@ public class Table3D extends Table {
                         }
                     }
                 }
-
 
                 for (DataCell[] column : data) {
                     for (DataCell cell : column) {
@@ -307,8 +305,8 @@ public class Table3D extends Table {
                 // determine ratios
                 for (DataCell[] column : data) {
                     for (DataCell cell : column) {
-                        if (Math.abs(cell.getBinValue() - cell.getOriginalValue()) > high) {
-                            high = Math.abs(cell.getBinValue() - cell.getOriginalValue());
+                        if (Math.abs(cell.getBinValue() - cell.getCompareValue()) > high) {
+                            high = Math.abs(cell.getBinValue() - cell.getCompareValue());
                         }
                     }
                 }
@@ -317,7 +315,7 @@ public class Table3D extends Table {
                 for (DataCell[] column : data) {
                     for (DataCell cell : column) {
 
-                        double cellDifference = Math.abs(cell.getBinValue() - cell.getOriginalValue());
+                        double cellDifference = Math.abs(cell.getBinValue() - cell.getCompareValue());
 
                         double scale;
                         if (high == 0) {
@@ -333,9 +331,9 @@ public class Table3D extends Table {
                         }
 
                         // set border
-                        if (cell.getBinValue() > cell.getOriginalValue()) {
+                        if (cell.getBinValue() > cell.getCompareValue()) {
                             cell.setBorder(createLineBorder(editor.getSettings().getIncreaseBorder()));
-                        } else if (cell.getBinValue() < cell.getOriginalValue()) {
+                        } else if (cell.getBinValue() < cell.getCompareValue()) {
                             cell.setBorder(createLineBorder(editor.getSettings().getDecreaseBorder()));
                         } else {
                             cell.setBorder(createLineBorder(Color.BLACK, 1));
@@ -344,18 +342,22 @@ public class Table3D extends Table {
                     }
                 }
             }
-            xAxis.colorize();
-            yAxis.colorize();
         }
 
         // colorize borders
         if (!isStatic) {
             for (DataCell[] column : data) {
                 for (DataCell cell : column) {
-
-                    if (cell.getBinValue() > cell.getOriginalValue()) {
+                    double checkValue;
+                    if(compareDisplay == Table.COMPARE_DISPLAY_OFF) {
+                        checkValue = cell.getOriginalValue();
+                    }
+                    else{
+                        checkValue = cell.getCompareValue();
+                    }
+                    if (checkValue > cell.getBinValue()) {
                         cell.setBorder(createLineBorder(editor.getSettings().getIncreaseBorder()));
-                    } else if (cell.getBinValue() < cell.getOriginalValue()) {
+                    } else if (checkValue < cell.getBinValue()) {
                         cell.setBorder(createLineBorder(editor.getSettings().getDecreaseBorder()));
                     } else {
                         cell.setBorder(createLineBorder(Color.BLACK, 1));
@@ -367,44 +369,54 @@ public class Table3D extends Table {
 
     @Override
     public void compare(Table compareTable, int compareType) {
-        if(!(compareTable instanceof Table3D)) {
+        if(null == compareTable || !(compareTable instanceof Table3D)) {
             return;
         }
 
-        DataCell[][] compareData = ((Table3D) compareTable).get3dData();
+        clearLiveDataTrace();
+        this.compareType = compareType;
+
+        Table3D compareTable3D = (Table3D) compareTable;
+
+        if(data.length != compareTable3D.data.length ||
+                data[0].length != compareTable3D.data[0].length ||
+                xAxis.getDataSize() != compareTable3D.xAxis.getDataSize() ||
+                yAxis.getDataSize() != compareTable3D.yAxis.getDataSize()) {
+            return;
+        }
+
         int x=0;
         int y=0;
-
-        if(data.length != compareData.length || data[0].length != compareData[0].length) {
-            return;
-        }
-
-        for (DataCell[] column : compareData) {
+        for (DataCell[] column : data) {
             y = 0;
             for(DataCell cell : column) {
-                data[x][y].setCompareValue(cell.getOriginalValue());
+                if(compareType == COMPARE_TYPE_BIN) {
+                    cell.setCompareValue(compareTable3D.data[x][y].getBinValue());
+                } else {
+                    cell.setCompareValue(compareTable3D.data[x][y].getOriginalValue());
+                }
                 y++;
             }
             x++;
         }
-        compare(compareType);
-    }
 
-    @Override
-    public void compare(int compareType) {
-        this.compareType = compareType;
-
-        for (DataCell[] column : data) {
-            for (DataCell cell : column) {
-                if (compareType == Table.COMPARE_ORIGINAL) {
-                    cell.setCompareValue(cell.getOriginalValue());
-                }
-                cell.setCompareType(compareType);
-                cell.setCompareDisplay(compareDisplay);
-                cell.updateDisplayValue();
+        if(!xAxis.isStatic) {
+            int i = 0;
+            for (DataCell cell : compareTable3D.xAxis.getData()) {
+                xAxis.getData()[i].setCompareValue(cell.getOriginalValue());
+                i++;
             }
+            xAxis.compare(compareTable3D.xAxis, compareType);
         }
-        colorize();
+
+        if(!yAxis.isStatic) {
+            int i = 0;
+            for (DataCell cell : compareTable3D.yAxis.getData()) {
+                yAxis.getData()[i].setCompareValue(cell.getOriginalValue());
+                i++;
+            }
+            yAxis.compare(compareTable3D.yAxis, compareType);
+        }
     }
 
     @Override
@@ -970,6 +982,26 @@ public class Table3D extends Table {
         } else {
             return getScale().getMax();
         }
+    }
+
+    @Override
+    public void setCompareDisplay(int compareDisplay) {
+        this.compareDisplay = compareDisplay;
+        if(!xAxis.isStatic) {
+            xAxis.setCompareDisplay(compareDisplay);
+        }
+
+        if(!yAxis.isStatic) {
+            yAxis.setCompareDisplay(compareDisplay);
+        }
+
+        for (DataCell[] column : data) {
+            for(DataCell cell : column) {
+                cell.setCompareDisplay(compareDisplay);
+                cell.updateDisplayValue();
+            }
+        }
+        colorize();
     }
 }
 

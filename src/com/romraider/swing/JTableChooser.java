@@ -28,21 +28,27 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 
 public class JTableChooser extends JOptionPane implements MouseListener {
+    public JTableChooser() {
+    }
 
     private static final long serialVersionUID = 5611729002131147882L;
     JPanel displayPanel = new JPanel();
     DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Open Images");
     JTree displayTree = new JTree(rootNode);
+    JScrollPane displayScrollPane;
 
     public Table showChooser(Table targetTable) {
         Vector<Rom> roms = targetTable.getEditor().getImages();
         int nameLength = 0;
+
         for (int i = 0; i < roms.size(); i++) {
             Rom rom = roms.get(i);
             DefaultMutableTreeNode romNode = new DefaultMutableTreeNode(rom.getFileName());
@@ -78,10 +84,13 @@ public class JTableChooser extends JOptionPane implements MouseListener {
         displayTree.setPreferredSize(new Dimension(nameLength*7, 400));
         displayTree.setMinimumSize(new Dimension(nameLength*7, 400));
 
-        displayTree.setRootVisible(true);
-        displayTree.updateUI();
+        displayTree.expandPath(new TreePath(rootNode.getPath()));
+        displayTree.setRootVisible(false);
+
         displayTree.addMouseListener(this);
-        displayPanel.add(new JScrollPane(displayTree));
+        displayScrollPane = new JScrollPane(displayTree);
+        displayScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        displayPanel.add(displayScrollPane);
 
         Object[] values = {"Compare", "Cancel"};
 

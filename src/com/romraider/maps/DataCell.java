@@ -61,8 +61,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private int x = 0;
     private int y = 0;
     private double compareValue = 0;
-    private int compareType = Table.COMPARE_OFF;
-    private int compareDisplay = Table.COMPARE_ABSOLUTE;
+    private int compareDisplay = Table.COMPARE_DISPLAY_OFF;
 
     public DataCell() {
     }
@@ -82,16 +81,16 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void updateDisplayValue() {
         DecimalFormat formatter = new DecimalFormat(scale.getFormat());
 
-        if (getCompareType() == Table.COMPARE_OFF) {
+        if (getCompareDisplay() == Table.COMPARE_DISPLAY_OFF) {
             displayValue = getRealValue();
 
         } else {
-            if (getCompareDisplay() == Table.COMPARE_ABSOLUTE) {
+            if (getCompareDisplay() == Table.COMPARE_DISPLAY_ABSOLUTE) {
                 displayValue = formatter.format(
                         calcDisplayValue(binValue, table.getScale().getExpression()) -
                         calcDisplayValue(compareValue, table.getScale().getExpression()));
 
-            } else if (getCompareDisplay() == Table.COMPARE_PERCENT) {
+            } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_PERCENT) {
                 String expression = table.getScale().getExpression();
                 double thisValue = calcDisplayValue(binValue, expression);
                 double thatValue = calcDisplayValue(compareValue, expression);
@@ -353,14 +352,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setCompareValue(double compareValue) {
         this.compareValue = compareValue;
-    }
-
-    public int getCompareType() {
-        return compareType;
-    }
-
-    public void setCompareType(int compareType) {
-        this.compareType = compareType;
     }
 
     public int getCompareDisplay() {

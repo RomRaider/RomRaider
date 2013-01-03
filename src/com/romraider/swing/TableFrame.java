@@ -33,6 +33,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
     private static final long serialVersionUID = -2651279694660392351L;
     private Table table;
     private final ECUEditor parent;
+    private TableMenuBar tableMenuBar = null;
 
     public TableFrame(Table table, ECUEditor parent) {
         super(table.getRom().getFileName() + " - " + table.getName(), true, true);
@@ -46,7 +47,8 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         if (System.getProperty("os.name").startsWith("Mac OS"))
             putClientProperty("JInternalFrame.isPalette", true);
         setVisible(false);
-        setJMenuBar(new TableMenuBar(table));
+        tableMenuBar = new TableMenuBar(table);
+        setJMenuBar(tableMenuBar);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         table.setFrame(this);
         addInternalFrameListener(this);
@@ -105,5 +107,9 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
 
     public void updateFileName() {
         setTitle(table.getRom().getFileName() + " - " + table.getName());
+    }
+
+    public TableMenuBar getTableMenuBar() {
+        return this.tableMenuBar;
     }
 }

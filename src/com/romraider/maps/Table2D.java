@@ -72,6 +72,25 @@ public class Table2D extends Table {
     }
 
     @Override
+    public void compare(Table compareTable, int compareType) {
+        if(null == compareTable || !(compareTable instanceof Table2D)) {
+            return;
+        }
+
+        Table2D compareTable2D = (Table2D) compareTable;
+
+        if(data.length != compareTable2D.data.length || axis.data.length != compareTable2D.axis.data.length) {
+            return;
+        }
+
+        super.compare(compareTable, compareType);
+        if(!axis.isStatic)
+        {
+            axis.compare(compareTable2D.axis, compareType);
+        }
+    }
+
+    @Override
     public void colorize() {
         super.colorize();
         axis.colorize();
@@ -363,6 +382,14 @@ public class Table2D extends Table {
         for (DataCell cell : data) {
             cell.setLiveDataTrace(false);
             cell.updateDisplayValue();
+        }
+    }
+
+    @Override
+    public void setCompareDisplay(int compareDisplay) {
+        super.setCompareDisplay(compareDisplay);
+        if(!axis.isStatic) {
+            axis.setCompareDisplay(compareDisplay);
         }
     }
 }
