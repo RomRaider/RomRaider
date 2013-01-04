@@ -13,7 +13,7 @@
     <supportUrl></supportUrl>
     <customProcName>false</customProcName>
     <stayAlive>false</stayAlive>
-    <icon>../../graphics/romraider-ico.ico</icon>
+    <icon>../../src/main/resources/graphics/romraider-ico.ico</icon>
     <jre>
         <path></path>
         <minVersion>1.6.0</minVersion>
@@ -24,7 +24,7 @@
         <opt>@jvm.args.win@</opt>
     </jre>
     <splash>
-        <file>../../graphics/splash.bmp</file>
+        <file>../../src/main/resources/graphics/splash.bmp</file>
         <waitForWindow>true</waitForWindow>
         <timeout>60</timeout>
         <timeoutErr>true</timeoutErr>

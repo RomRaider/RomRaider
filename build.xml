@@ -93,6 +93,8 @@
         <!-- basic project properties -->
         <property name="src.dir" value="${basedir}/src"/>
         <property name="src.java.dir" value="${src.dir}/main/java"/>
+        <property name="src.res.dir" value="${src.dir}/resources"/>
+        <property name="graphics.dir" value="${src.res.dir}/graphics"/>
         <property name="docs.dir" value="${basedir}/docs"/>
         <property name="build.dir" value="${basedir}/build"/>
         <property name="template.dir" value="${basedir}/templates"/>
@@ -320,7 +322,11 @@
                 <attribute name="Class-Path" value="${@{os}.jar.classpath}"/>
             </manifest>
             <jar basedir="${classes.dir}" destfile="${build.dir}/@{os}/lib/${jar.package}"
-                 manifest="${build.dir}/@{os}/MANIFEST.MF"/>
+                 manifest="${build.dir}/@{os}/MANIFEST.MF">
+                 <fileset dir="${src.dir}/main">
+                    <include name="/resources/**/*.*"/>
+                </fileset>
+            </jar>
         </sequential>
     </macrodef>
 
@@ -328,7 +334,7 @@
         <attribute name="os"/>
         <sequential>
             <mkdir dir="${classes.dir}"/>
-            <javac failonerror="true" srcdir="${src.java.dir}" destdir="${classes.dir}" target="1.6" includeantruntime="false">
+            <javac failonerror="true" srcdir="${src.java.dir}" destdir="${classes.dir}" target="1.6" source="1.6" includeantruntime="false">
                 <classpath refid="@{os}.classpath"/>
             </javac>
         </sequential>
@@ -347,7 +353,6 @@
                 <zipfileset file="ecu_defs.dtd" prefix="${name.package}"/>
                 <zipfileset file="logger.dtd" prefix="${name.package}"/>
                 <zipfileset file="profile.dtd" prefix="${name.package}"/>
-                <zipfileset dir="graphics" prefix="${name.package}/graphics" excludes="*.bmp"/>
                 <zipfileset dir="plugins" prefix="${name.package}/plugins"/>
                 <zipfileset dir="lib/common" prefix="${name.package}/lib/common"/>
                 <zipfileset dir="lib/@{os}" prefix="${name.package}/lib/@{os}"/>

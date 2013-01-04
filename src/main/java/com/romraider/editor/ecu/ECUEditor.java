@@ -166,7 +166,7 @@ public class ECUEditor extends AbstractFrame {
         this.add(toolBarPanel, BorderLayout.NORTH);
 
         //set remaining window properties
-        setIconImage(new ImageIcon("./graphics/romraider-ico.gif").getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/resources/graphics/romraider-ico.gif")).getImage());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         addWindowListener(this);
         setTitle(titleText);

@@ -424,7 +424,7 @@ public final class RamTuneTestApp extends AbstractFrame {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("SSM Read/Write");
-                ramTuneTestApp.setIconImage(new ImageIcon("./graphics/romraider-ico.gif").getImage());
+                ramTuneTestApp.setIconImage(new ImageIcon( getClass().getResource("/resources/graphics/romraider-ico.gif")).getImage());
                 ramTuneTestApp.setDefaultCloseOperation(defaultCloseOperation);
                 ramTuneTestApp.addWindowListener(ramTuneTestApp);
                 ramTuneTestApp.setLocation(100, 50);

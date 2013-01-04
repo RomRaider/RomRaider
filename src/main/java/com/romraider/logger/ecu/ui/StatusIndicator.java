@@ -34,10 +34,10 @@ public final class StatusIndicator extends JPanel implements StatusChangeListene
     private static final String TEXT_READING = "Reading data ";
     private static final String TEXT_LOGGING = "Logging to file ";
     private static final String TEXT_STOPPED = "Stopped ";
-    private static final ImageIcon ICON_CONNECTING = new ImageIcon("./graphics/logger_blue.png");
-    private static final ImageIcon ICON_READING = new ImageIcon("./graphics/logger_green.png");
-    private static final ImageIcon ICON_LOGGING = new ImageIcon("./graphics/logger_recording.png");
-    private static final ImageIcon ICON_STOPPED = new ImageIcon("./graphics/logger_stop.png");
+    private static final ImageIcon ICON_CONNECTING = new ImageIcon(StatusIndicator.class.getClass().getResource("/resources/graphics/logger_blue.png"));
+    private static final ImageIcon ICON_READING = new ImageIcon(StatusIndicator.class.getClass().getResource("/resources/graphics/logger_green.png"));
+    private static final ImageIcon ICON_LOGGING = new ImageIcon(StatusIndicator.class.getClass().getResource("/resources/graphics/logger_recording.png"));
+    private static final ImageIcon ICON_STOPPED = new ImageIcon(StatusIndicator.class.getClass().getResource("/resources/graphics/logger_stop.png"));
 
     public StatusIndicator() {
         setLayout(new BorderLayout());

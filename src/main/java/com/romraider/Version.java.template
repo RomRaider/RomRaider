@@ -33,7 +33,7 @@ public final class Version {
 	public static final String LOGGER_DEFS_URL = "@loggerdefsurl@";
 	public static final String CARS_DEFS_URL = "@carsdefsurl@";
 	public static final String RELEASE_NOTES = "@release_notes@";
-	public static final ImageIcon ABOUT_ICON = new ImageIcon("graphics/romraider-ico-large.gif");
+	public static final ImageIcon ABOUT_ICON = new ImageIcon(Version.class.getClass().getResource("/resources/graphics/romraider-ico-large.gif"));
 
     private Version() {
     }
