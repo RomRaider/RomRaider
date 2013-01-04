@@ -84,25 +84,23 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         if (getCompareDisplay() == Table.COMPARE_DISPLAY_OFF) {
             displayValue = getRealValue();
 
-        } else {
-            if (getCompareDisplay() == Table.COMPARE_DISPLAY_ABSOLUTE) {
-                displayValue = formatter.format(
-                        calcDisplayValue(binValue, table.getScale().getExpression()) -
-                        calcDisplayValue(compareValue, table.getScale().getExpression()));
+        } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_ABSOLUTE) {
+            displayValue = formatter.format(
+                    calcDisplayValue(binValue, table.getScale().getExpression()) -
+                    calcDisplayValue(compareValue, table.getScale().getExpression()));
 
-            } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_PERCENT) {
-                String expression = table.getScale().getExpression();
-                double thisValue = calcDisplayValue(binValue, expression);
-                double thatValue = calcDisplayValue(compareValue, expression);
-                double difference = thisValue - thatValue;
-                if (difference == 0) {
-                    displayValue = PERCENT_FORMAT.format(0.0);
-                } else if (thatValue == 0.0) {
-                    displayValue = '\u221e' + "%";
-                } else {
-                    double d = difference / abs(thatValue);
-                    displayValue = PERCENT_FORMAT.format(d);
-                }
+        } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_PERCENT) {
+            String expression = table.getScale().getExpression();
+            double thisValue = calcDisplayValue(binValue, expression);
+            double thatValue = calcDisplayValue(compareValue, expression);
+            double difference = thisValue - thatValue;
+            if (difference == 0) {
+                displayValue = PERCENT_FORMAT.format(0.0);
+            } else if (thatValue == 0.0) {
+                displayValue = '\u221e' + "%";
+            } else {
+                double d = difference / abs(thatValue);
+                displayValue = PERCENT_FORMAT.format(d);
             }
         }
         setText(displayValue);
@@ -163,6 +161,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             }
         }
         this.updateDisplayValue();
+        table.refreshCompares();
     }
 
     public double getBinValue() {

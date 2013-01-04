@@ -69,8 +69,6 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     private ButtonGroup compareDisplayGroup;
     private ButtonGroup compareToGroup;
 
-    private Table selectedTable;
-
     public TableMenuBar(Table table) {
         this.table = table;
         initTableMenuBar();
@@ -162,8 +160,11 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
     private void initCompareMenu() {
         compareOriginal = new JRadioButtonMenuItem("Show Changes");
+        compareOriginal.setToolTipText("Compares the current values to the original or revert point values.");
         compareMap = new JRadioButtonMenuItem("Compare to Another Map");
-        similarOpenTables = new JMenu("Compare to Open Table");
+        compareMap.setToolTipText("Compares this table and a selected table.");
+        similarOpenTables = new JMenu("Compare to Table");
+        similarOpenTables.setToolTipText("Compares this table to a similar table.");
 
         compareOff = new JRadioButtonMenuItem("Off");
 
@@ -177,7 +178,9 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         compareDisplay.add(compareAbsolute);
 
         compareToOriginal = new JRadioButtonMenuItem("Compre to Original Value");
+        compareToOriginal.setToolTipText("Compares this table to the selected table's original or revert point values.");
         compareToBin = new JRadioButtonMenuItem("Compare to Bin Value");
+        compareToBin.setToolTipText("Compares this table to the selected table's current values.");
         compareToGroup = new ButtonGroup();
         compareToGroup.add(compareToOriginal);
         compareToGroup.add(compareToBin);
@@ -278,58 +281,67 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             table.paste();
 
         } else if (e.getSource() == compareOff) {
-            setTableCompareDisplay();
+            compareByDisplay(Table.COMPARE_DISPLAY_OFF);
 
         } else if (e.getSource() == compareAbsolute) {
-            setTableCompareDisplay();
+            compareByDisplay(Table.COMPARE_DISPLAY_ABSOLUTE);
 
         } else if (e.getSource() == comparePercent) {
-            setTableCompareDisplay();
+            compareByDisplay(Table.COMPARE_DISPLAY_PERCENT);
 
         } else if (e.getSource() == compareOriginal) {
-            selectedTable = table;
-            compareToSelectedTable();
+            table.setCompareType(Table.COMPARE_TYPE_ORIGINAL);
+            compareToOriginal.setSelected(true);
+            compareByTable(table);
 
         } else if (e.getSource() == compareMap) {
             JTableChooser chooser = new JTableChooser();
-            selectedTable = chooser.showChooser(table);
-            compareToSelectedTable();
+            Table selectedTable = chooser.showChooser(table);
+            if(null != selectedTable) {
+                compareByTable(selectedTable);
+            }
 
         } else if (e.getSource() instanceof TableMenuItem) {
-            selectedTable = ((TableMenuItem) e.getSource()).getTable();
-            compareToSelectedTable();
+            Table selectedTable = ((TableMenuItem) e.getSource()).getTable();
+            compareByTable(selectedTable);
 
         } else if (e.getSource() == compareToOriginal) {
-            if(!compareOriginal.isSelected() && !compareOff.isSelected()) {
-                compareToSelectedTable();
-            }
+            compareByType(Table.COMPARE_TYPE_ORIGINAL);
 
         } else if (e.getSource() == compareToBin) {
-            if(!compareOriginal.isSelected() && !compareOff.isSelected()) {
-                compareToSelectedTable();
-            }
+            compareByType(Table.COMPARE_TYPE_BIN);
 
         }
     }
 
-    private void setTableCompareDisplay() {
-        if(compareOff.isSelected()) {
-            table.setCompareDisplay(Table.COMPARE_DISPLAY_OFF);
-        } else if(comparePercent.isSelected()) {
-            table.setCompareDisplay(Table.COMPARE_DISPLAY_PERCENT);
-        } else {
+    private void compareByType(int compareType) {
+        table.setCompareType(compareType);
+        if(table.fillCompareValues()) {
+            table.refreshCellDisplay();
+        }
+    }
+
+    private void compareByTable(Table selectedTable) {
+        if(null == selectedTable) {
+            return;
+        }
+
+        if(table.getCompareDisplay() == Table.COMPARE_DISPLAY_OFF) {
+            // Default to absolute if none selected.
+            this.compareAbsolute.setSelected(true);
             table.setCompareDisplay(Table.COMPARE_DISPLAY_ABSOLUTE);
         }
+
+        selectedTable.addComparedToTable(table);
+
+        table.setCompareTable(selectedTable);
+        if(table.fillCompareValues()) {
+            table.refreshCellDisplay();
+        }
     }
 
-    private void compareToSelectedTable() {
-        if(null != selectedTable) {
-            if(compareToOriginal.isSelected() || compareOriginal.isSelected()) {
-                table.compare(selectedTable, Table.COMPARE_TYPE_ORIGINAL);
-            } else {
-                table.compare(selectedTable, Table.COMPARE_TYPE_BIN);
-            }
-            setTableCompareDisplay();
-        }
+    public void compareByDisplay(int compareDisplay) {
+        table.setCompareDisplay(compareDisplay);
+        table.refreshCellDisplay();
     }
 }

@@ -38,6 +38,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -121,11 +123,14 @@ public abstract class Table extends JPanel implements Serializable {
     protected Color maxColor;
     protected Color minColor;
     protected boolean isAxis = false;
-    protected int compareType = COMPARE_TYPE_ORIGINAL;
-    protected int compareDisplay = COMPARE_DISPLAY_OFF;
     protected int userLevel = 0;
     protected ECUEditor editor;
     protected boolean locked = false;
+
+    protected int compareType = COMPARE_TYPE_ORIGINAL;
+    protected int compareDisplay = COMPARE_DISPLAY_OFF;
+    protected Table compareTable = null;
+    protected List<Table> comparedToTables = new ArrayList<Table>();
 
     protected String logParam = BLANK;
     protected String liveValue = BLANK;
@@ -896,7 +901,9 @@ public abstract class Table extends JPanel implements Serializable {
         clearLiveDataTrace();
         if (!isStatic) {
             for (DataCell cell : data) {
-                cell.setBinValue(cell.getOriginalValue());
+                if(cell.getBinValue() != cell.getOriginalValue()) {
+                    cell.setBinValue(cell.getOriginalValue());
+                }
             }
         }
         colorize();
@@ -908,7 +915,9 @@ public abstract class Table extends JPanel implements Serializable {
             for (DataCell cell : data) {
                 // reset current value to original value
                 if (cell.isSelected()) {
-                    cell.setBinValue(cell.getOriginalValue());
+                    if(cell.getBinValue() != cell.getOriginalValue()) {
+                        cell.setBinValue(cell.getOriginalValue());
+                    }
                 }
             }
         }
@@ -1144,18 +1153,17 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public void compare(Table compareTable, int compareType) {
+    public boolean fillCompareValues() {
         if(null == compareTable) {
-            return;
+            return false;
         }
-
-        clearLiveDataTrace();
-        this.compareType = compareType;
 
         DataCell[] compareData = compareTable.getData();
         if(data.length != compareData.length) {
-            return;
+            return false;
         }
+
+        clearLiveDataTrace();
 
         int i = 0;
         for(DataCell cell : data) {
@@ -1166,10 +1174,18 @@ public abstract class Table extends JPanel implements Serializable {
             }
             i++;
         }
+        return true;
     }
 
     public void setCompareDisplay(int compareDisplay) {
         this.compareDisplay = compareDisplay;
+    }
+
+    public int getCompareDisplay() {
+        return this.compareDisplay;
+    }
+
+    public void refreshCellDisplay() {
         for(DataCell cell : data) {
             cell.setCompareDisplay(compareDisplay);
             cell.updateDisplayValue();
@@ -1310,6 +1326,34 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setCompareType(int compareType) {
         this.compareType = compareType;
+    }
+
+    public void setCompareTable(Table compareTable) {
+        this.compareTable = compareTable;
+    }
+
+    public List<Table> getComparedToTables() {
+        return this.comparedToTables;
+    }
+
+    public void addComparedToTable(Table table) {
+        if(!table.equals(this) && !this.getComparedToTables().contains(table)) {
+            comparedToTables.add(table);
+        }
+    }
+
+    public void refreshCompares() {
+        if(null == comparedToTables || comparedToTables.size() < 1) {
+            return;
+        }
+
+        for(Table table : comparedToTables) {
+            if(null != table) {
+                if(table.fillCompareValues()) {
+                    table.refreshCellDisplay();
+                }
+            }
+        }
     }
 }
 

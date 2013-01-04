@@ -75,11 +75,6 @@ public class Table1D extends Table {
     }
 
     @Override
-    public void colorize() {
-        super.colorize();
-    }
-
-    @Override
     public void cursorUp() {
         if (type == Table.TABLE_Y_AXIS) {
             if (highlightY > 0 && data[highlightY].isSelected()) {
