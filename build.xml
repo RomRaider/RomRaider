@@ -92,6 +92,7 @@
 
         <!-- basic project properties -->
         <property name="src.dir" value="${basedir}/src"/>
+        <property name="src.java.dir" value="${src.dir}/main/java"/>
         <property name="docs.dir" value="${basedir}/docs"/>
         <property name="build.dir" value="${basedir}/build"/>
         <property name="template.dir" value="${basedir}/templates"/>
@@ -166,8 +167,8 @@
     <!-- =================================================================== -->
     <target name="prepare" depends="-init">
         <!-- generate the Version class -->
-        <copy overwrite="true" tofile="${src.dir}/com/romraider/Version.java"
-              file="src/com/romraider/Version.java.template">
+        <copy overwrite="true" tofile="${src.java.dir}/com/romraider/Version.java"
+              file="src/main/java/com/romraider/Version.java.template">
             <filterset refid="version.filterset"/>
         </copy>
     </target>
@@ -192,7 +193,7 @@
     <target name="javadoc" depends="-init">
         <delete quiet="true" dir="${javadoc.dir}"/>
         <mkdir dir="${javadoc.dir}"/>
-        <javadoc windowtitle="${name.package}" header="${javadoc.header}" sourcepath="${src.dir}" author="yes"
+        <javadoc windowtitle="${name.package}" header="${javadoc.header}" sourcepath="${src.java.dir}" author="yes"
                  version="yes" destdir="${javadoc.dir}"
                  breakiterator="yes" maxmemory="96m">
             <packageset dir="src">
@@ -327,7 +328,7 @@
         <attribute name="os"/>
         <sequential>
             <mkdir dir="${classes.dir}"/>
-            <javac failonerror="true" srcdir="${src.dir}" destdir="${classes.dir}" target="1.6" includeantruntime="false">
+            <javac failonerror="true" srcdir="${src.java.dir}" destdir="${classes.dir}" target="1.6" includeantruntime="false">
                 <classpath refid="@{os}.classpath"/>
             </javac>
         </sequential>
