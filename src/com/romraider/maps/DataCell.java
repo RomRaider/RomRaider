@@ -251,7 +251,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         setRealValue(String.valueOf((calcDisplayValue(binValue, scale.getExpression()) + increment)));
 
-        // make sure table is incremented if change isnt great enough
+        // make sure table is incremented if change isn't great enough
         int maxValue = (int) Math.pow(8, table.getStorageType());
 
         if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT &&
@@ -290,7 +290,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void undo() {
-        this.setBinValue(originalValue);
+        if(this.getBinValue() != originalValue) {
+            this.setBinValue(originalValue);
+        }
     }
 
     public void setRevertPoint() {
@@ -311,9 +313,14 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             if (!"x".equalsIgnoreCase(input)) {
                 double result = JEPUtil.evaluate(table.getScale().getByteExpression(), Double.parseDouble(input));
                 if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
-                    this.setBinValue(result);
+                    if(this.getBinValue() != result) {
+                        this.setBinValue(result);
+                    }
                 } else {
-                    this.setBinValue((int) Math.round(result));
+                    int roundResult = (int) Math.round(result);
+                    if(this.getBinValue() != roundResult) {
+                        this.setBinValue(roundResult);
+                    }
                 }
             }
         } catch (NumberFormatException e) {
