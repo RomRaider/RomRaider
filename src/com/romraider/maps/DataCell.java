@@ -61,8 +61,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private int x = 0;
     private int y = 0;
     private double compareValue = 0;
-    private int compareType = Table.COMPARE_OFF;
-    private int compareDisplay = Table.COMPARE_ABSOLUTE;
+    private int compareDisplay = Table.COMPARE_DISPLAY_OFF;
 
     public DataCell() {
     }
@@ -82,28 +81,26 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void updateDisplayValue() {
         DecimalFormat formatter = new DecimalFormat(scale.getFormat());
 
-        if (getCompareType() == Table.COMPARE_OFF) {
+        if (getCompareDisplay() == Table.COMPARE_DISPLAY_OFF) {
             displayValue = getRealValue();
 
-        } else {
-            if (getCompareDisplay() == Table.COMPARE_ABSOLUTE) {
-                displayValue = formatter.format(
-                        calcDisplayValue(binValue, table.getScale().getExpression()) -
-                        calcDisplayValue(compareValue, table.getScale().getExpression()));
+        } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_ABSOLUTE) {
+            displayValue = formatter.format(
+                    calcDisplayValue(binValue, table.getScale().getExpression()) -
+                    calcDisplayValue(compareValue, table.getScale().getExpression()));
 
-            } else if (getCompareDisplay() == Table.COMPARE_PERCENT) {
-                String expression = table.getScale().getExpression();
-                double thisValue = calcDisplayValue(binValue, expression);
-                double thatValue = calcDisplayValue(compareValue, expression);
-                double difference = thisValue - thatValue;
-                if (difference == 0) {
-                    displayValue = PERCENT_FORMAT.format(0.0);
-                } else if (thatValue == 0.0) {
-                    displayValue = '\u221e' + "%";
-                } else {
-                    double d = difference / abs(thatValue);
-                    displayValue = PERCENT_FORMAT.format(d);
-                }
+        } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_PERCENT) {
+            String expression = table.getScale().getExpression();
+            double thisValue = calcDisplayValue(binValue, expression);
+            double thatValue = calcDisplayValue(compareValue, expression);
+            double difference = thisValue - thatValue;
+            if (difference == 0) {
+                displayValue = PERCENT_FORMAT.format(0.0);
+            } else if (thatValue == 0.0) {
+                displayValue = '\u221e' + "%";
+            } else {
+                double d = difference / abs(thatValue);
+                displayValue = PERCENT_FORMAT.format(d);
             }
         }
         setText(displayValue);
@@ -164,6 +161,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             }
         }
         this.updateDisplayValue();
+        table.refreshCompares();
     }
 
     public double getBinValue() {
@@ -253,7 +251,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         setRealValue(String.valueOf((calcDisplayValue(binValue, scale.getExpression()) + increment)));
 
-        // make sure table is incremented if change isnt great enough
+        // make sure table is incremented if change isn't great enough
         int maxValue = (int) Math.pow(8, table.getStorageType());
 
         if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT &&
@@ -292,7 +290,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void undo() {
-        this.setBinValue(originalValue);
+        if(this.getBinValue() != originalValue) {
+            this.setBinValue(originalValue);
+        }
     }
 
     public void setRevertPoint() {
@@ -313,9 +313,14 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             if (!"x".equalsIgnoreCase(input)) {
                 double result = JEPUtil.evaluate(table.getScale().getByteExpression(), Double.parseDouble(input));
                 if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
-                    this.setBinValue(result);
+                    if(this.getBinValue() != result) {
+                        this.setBinValue(result);
+                    }
                 } else {
-                    this.setBinValue((int) Math.round(result));
+                    int roundResult = (int) Math.round(result);
+                    if(this.getBinValue() != roundResult) {
+                        this.setBinValue(roundResult);
+                    }
                 }
             }
         } catch (NumberFormatException e) {
@@ -353,14 +358,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setCompareValue(double compareValue) {
         this.compareValue = compareValue;
-    }
-
-    public int getCompareType() {
-        return compareType;
-    }
-
-    public void setCompareType(int compareType) {
-        this.compareType = compareType;
     }
 
     public int getCompareDisplay() {

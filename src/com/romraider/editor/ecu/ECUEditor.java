@@ -112,6 +112,7 @@ public class ECUEditor extends AbstractFrame {
     private CloseImageWorker closeImageWorker;
     private SetUserLevelWorker setUserLevelWorker;
     private LaunchLoggerWorker launchLoggerWorker;
+    private final ImageIcon editorIcon = new ImageIcon("./graphics/romraider-ico.gif", "RomRaider ECU Editor");
 
     public ECUEditor() {
 
@@ -166,7 +167,8 @@ public class ECUEditor extends AbstractFrame {
         this.add(toolBarPanel, BorderLayout.NORTH);
 
         //set remaining window properties
-        setIconImage(new ImageIcon("./graphics/romraider-ico.gif").getImage());
+        setIconImage(editorIcon.getImage());
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         addWindowListener(this);
         setTitle(titleText);
@@ -281,11 +283,12 @@ public class ECUEditor extends AbstractFrame {
         getImageRoot().add(romNode);
 
         getImageList().setVisible(true);
-        getImageList().setRootVisible(true);
-        TreePath addedRomPath = new TreePath(romNode.getPath());
-        getImageList().expandPath(addedRomPath);
+        getImageList().expandPath(new TreePath(getImageRoot()));
+
+        getImageList().expandPath(new TreePath(romNode.getPath()));
         // uncomment collapsePath if you want ROM to open collapsed.
         // imageList.collapsePath(addedRomPath);
+
         getImageList().setRootVisible(false);
         getImageList().repaint();
 
@@ -478,6 +481,20 @@ public class ECUEditor extends AbstractFrame {
     public MDIDesktopPane getRightPanel() {
         return this.rightPanel;
     }
+
+    public ImageIcon getEditorImageIcon() {
+        return this.editorIcon;
+    }
+
+    public void refreshTableMenus() {
+        Vector<Rom> roms = getImages();
+        for(Rom rom : roms) {
+            Vector<Table> tables = rom.getTables();
+            for(Table table : tables) {
+                table.getFrame().getTableMenuBar().refreshTableMenuBar();
+            }
+        }
+    }
 }
 
 class LaunchLoggerWorker extends SwingWorker<Void, Void> {
@@ -582,6 +599,7 @@ class CloseImageWorker extends SwingWorker<Void, Void> {
         setProgress(0);
         editor.getToolBar().updateButtons();
         editor.getEditorMenuBar().updateMenu();
+        editor.refreshTableMenus();
         editor.setCursor(null);
     }
 }
@@ -669,6 +687,7 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
         setProgress(0);
         editor.getToolBar().updateButtons();
         editor.getEditorMenuBar().updateMenu();
+        editor.refreshTableMenus();
         editor.setCursor(null);
     }
 }
