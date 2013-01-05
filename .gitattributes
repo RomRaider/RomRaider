@@ -1,0 +1,21 @@
+# Global RomRaider repository settings
+# git config core.eol lf
+# git config core.autocrlf input
+
+# Autodetect text files
+* text=auto
+
+# Force working directory files to have specific attr for
+# cross platform development
+./*.txt           eol=crlf
+./*.bat           eol=crlf
+./*.sh            eol=lf
+./*.dtd           eol=lf
+./*.xml           eol=lf
+./*.html          eol=lf
+./*.properties    eol=lf
+lib/*             binary
+plugins/*         eol=lf
+src/main/resources/graphics/* binary
+src/main/java/*   eol=lf
+templates/*       eol=lf
