@@ -50,6 +50,8 @@
             <file src="ecu_defs.dtd" targetdir="$INSTALL_PATH"/>
             <file src="logger.dtd" targetdir="$INSTALL_PATH"/>
             <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
+            <file src="src/main/resources/graphics/romraider-ico.ico" targetdir="$INSTALL_PATH"/>
+            <file src="src/main/resources/graphics/icon-close.png" targetdir="$INSTALL_PATH"/>
 
             <file src="post-install-tasks.sh" targetdir="$INSTALL_PATH"/>
 
