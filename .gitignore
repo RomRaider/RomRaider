@@ -1,5 +1,4 @@
 src/main/java/com/romraider/Version.java
 build/
-lib/common/libjinvoke.so
 target/
 tmp/
