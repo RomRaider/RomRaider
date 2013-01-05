@@ -44,8 +44,6 @@
             <file src="license.txt" targetdir="$INSTALL_PATH"/>
             <file src="release_notes.txt" targetdir="$INSTALL_PATH"/>
 
-            <fileset dir="graphics" targetdir="$INSTALL_PATH/graphics" excludes="*.bmp"/>
-
             <file src="log4j.properties" targetdir="$INSTALL_PATH"/>
 
             <file src="cars_def.dtd" targetdir="$INSTALL_PATH"/>

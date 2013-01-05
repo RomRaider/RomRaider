@@ -27,6 +27,7 @@ import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -44,11 +45,6 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     private final JButton saveImage = new JButton();
     private final JButton refreshImage = new JButton();
     private final JButton closeImage = new JButton();
-
-    private final String openIconImage = "./graphics/icon-open.png";
-    private final String saveIconImage = "./graphics/icon-save.png";
-    private final String refreshIconImage = "./graphics/icon-refresh.png";
-    private final String closeIconImage = "./graphics/icon-close.png";
 
     public ECUEditorToolBar(ECUEditor parent, String name) {
         super(name);
@@ -84,10 +80,10 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     }
 
     public void updateIcons() {
-        openImage.setIcon(rescaleImageIcon(new ImageIcon(openIconImage), parent.getSettings().getEditorIconScale()));
-        saveImage.setIcon(rescaleImageIcon(new ImageIcon(saveIconImage), parent.getSettings().getEditorIconScale()));
-        refreshImage.setIcon(rescaleImageIcon(new ImageIcon(refreshIconImage), parent.getSettings().getEditorIconScale()));
-        closeImage.setIcon(rescaleImageIcon(new ImageIcon(closeIconImage), parent.getSettings().getEditorIconScale()));
+        openImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-open.png")), parent.getSettings().getEditorIconScale()));
+        saveImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-save.png")), parent.getSettings().getEditorIconScale()));
+        refreshImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-refresh.png")), parent.getSettings().getEditorIconScale()));
+        closeImage.setIcon(rescaleImageIcon(new ImageIcon( getClass().getResource("/graphics/icon-close.png")), parent.getSettings().getEditorIconScale()));
     }
 
     private ImageIcon rescaleImageIcon(ImageIcon imageIcon, int percentOfOriginal) {

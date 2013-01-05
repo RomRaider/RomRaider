@@ -112,7 +112,7 @@ public class ECUEditor extends AbstractFrame {
     private CloseImageWorker closeImageWorker;
     private SetUserLevelWorker setUserLevelWorker;
     private LaunchLoggerWorker launchLoggerWorker;
-    private final ImageIcon editorIcon = new ImageIcon("./graphics/romraider-ico.gif", "RomRaider ECU Editor");
+    private final ImageIcon editorIcon = new ImageIcon(getClass().getResource("/graphics/romraider-ico.gif"), "RomRaider ECU Editor");
 
     public ECUEditor() {
 

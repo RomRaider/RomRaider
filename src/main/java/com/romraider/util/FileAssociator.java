@@ -49,7 +49,7 @@ public final class FileAssociator {
         logassoc.addFileExtension(extension.toUpperCase());
         logassoc.setDescription(description);
         logassoc.addAction(new Action("open", command + " %1"));
-        logassoc.setIconFileName(new File("").getAbsolutePath() + "/graphics/romraider-ico.ico");
+        logassoc.setIconFileName(FileAssociator.class.getClass().getResource("/graphics/romraider-ico.ico").toString());
 
         LOGGER.debug("Adding ...\n" + logassoc + "\n\n\n");
 

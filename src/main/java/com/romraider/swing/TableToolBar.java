@@ -34,6 +34,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Vector;
@@ -88,11 +89,11 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final JButton clearOverlay = new JButton("Clear Overlay");
     private final JLabel liveDataValue = new JLabel();
 
-    private final String incrementFineImage = "./graphics/icon-incfine.png";
-    private final String decrementFineImage = "./graphics/icon-decfine.png";
-    private final String incrementCoarseImage = "./graphics/icon-inccoarse.png";
-    private final String decrementCoarseImage = "./graphics/icon-deccoarse.png";
-    private final String enable3dImage = "./graphics/3d_render.png";
+    private final URL incrementFineImage = getClass().getResource("/graphics/icon-incfine.png");
+    private final URL decrementFineImage = getClass().getResource("/graphics/icon-decfine.png");
+    private final URL incrementCoarseImage = getClass().getResource("/graphics/icon-inccoarse.png");
+    private final URL decrementCoarseImage = getClass().getResource("/graphics/icon-deccoarse.png");
+    private final URL enable3dImage = getClass().getResource("/graphics/3d_render.png");
 
     //private final String defaultToolBarName = "Table Tools";
 

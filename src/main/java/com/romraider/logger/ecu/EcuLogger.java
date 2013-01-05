@@ -73,6 +73,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -188,7 +189,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
     private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU/TCU Logger";
     private static final String LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
-    private static final String ICON_PATH = "./graphics/romraider-ico.gif";
+    private static final URL ICON_PATH =  Settings.class.getClass().getResource("/graphics/romraider-ico.gif");
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
@@ -1111,7 +1112,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private Component buildLogToFileButton() {
-        logToFileButton = new JToggleButton("Log to file", new ImageIcon("./graphics/logger_log_to_file.png"));
+        logToFileButton = new JToggleButton("Log to file", new ImageIcon( getClass().getResource("/graphics/logger_log_to_file.png")));
         logToFileButton.setToolTipText("Start/stop file logging (F1)");
         //logToFileButton.setPreferredSize(new Dimension(100, 25));
         logToFileButton.setBackground(GREEN);
@@ -1186,7 +1187,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(ecuCheckBox);
         comboBoxPanel.add(tcuCheckBox);
 
-        JButton reconnectButton = new JButton(new ImageIcon("./graphics/logger_restart.png"));
+        JButton reconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_restart.png")));
         reconnectButton.setPreferredSize(new Dimension(25, 25));
         reconnectButton.setToolTipText("Reconnect to " + target);
         reconnectButton.addActionListener(new ActionListener() {
@@ -1200,7 +1201,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
         });
         comboBoxPanel.add(reconnectButton);
-        JButton disconnectButton = new JButton(new ImageIcon("./graphics/logger_stop.png"));
+        JButton disconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_stop.png")));
         disconnectButton.setPreferredSize(new Dimension(25, 25));
         disconnectButton.setToolTipText("Disconnect from " + target);
         disconnectButton.addActionListener(new ActionListener() {
