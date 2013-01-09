@@ -44,6 +44,7 @@ import static java.util.Collections.sort;
 import static javax.swing.BorderFactory.createLoweredBevelBorder;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.JOptionPane.DEFAULT_OPTION;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -170,6 +171,7 @@ import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.core.ExternalDataSourceLoader;
 import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
 import com.romraider.swing.AbstractFrame;
+import com.romraider.util.JREChecker;
 import com.romraider.util.SettingsManagerImpl;
 import com.romraider.util.ThreadUtil;
 
@@ -276,6 +278,21 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void construct(Settings settings) {
+        // 64-bit won't work with the native libs (e.g. serial rxtx) but won't
+        // fail until we actually try to use them since the logger requires
+        // these libraries, this is a hard error here
+        if (!JREChecker.is32bit()) {
+            showMessageDialog(null, 
+                "Incompatible JRE detected.\n" +
+                PRODUCT_NAME +
+                " ECU Logger requires a 32-bit JRE.\nLogger will now exit.", 
+                "JRE Incompatibility Error", 
+                ERROR_MESSAGE);
+            // this will generate a NullPointerException because we never got
+            // things started
+            WindowEvent e = new WindowEvent(this, WindowEvent.WINDOW_CLOSED);
+            windowClosing(e);
+        }
         checkNotNull(settings);
         this.settings = settings;
         Logger.getRootLogger().setLevel(Level.toLevel(settings.getLoggerDebuggingLevel()));

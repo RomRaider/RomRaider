@@ -31,9 +31,11 @@ import static com.romraider.util.LogManager.initDebugLogging;
 import static com.romraider.util.RomServer.isRunning;
 import static com.romraider.util.RomServer.sendRomToOpenInstance;
 import static com.romraider.util.RomServer.waitForRom;
+import com.romraider.util.JREChecker;
 import com.romraider.util.SettingsManager;
 import com.romraider.util.SettingsManagerImpl;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
@@ -54,12 +56,25 @@ public class ECUExec {
     public static void main(String args[]) {
         // init debug logging
         initDebugLogging();
-        // dump the system properties to the log file as early as practical to help debugging/support
+        // dump the system properties to the log file as early as practical to
+        // help debugging/support
         LOGGER.info(PRODUCT_NAME + " " + VERSION + " Build: " + BUILDNUMBER);
         LOGGER.info("When requesting assistance at " + SUPPORT_URL + " please include the System Properties information below:");
         LOGGER.info(DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.LONG).format(System.currentTimeMillis()));
         LOGGER.info("System Properties: \n\t"
                 + System.getProperties().toString().replace(",", "\n\t"));
+
+        // 64-bit won't work with the native libs (e.g. serial rxtx) but won't
+        // fail until we actually try to use them we'll just warn here
+        if (!JREChecker.is32bit() &&
+                !containsLoggerArg(args)) {
+            showMessageDialog(null, 
+                "Incompatible JRE detected.\n" +
+                PRODUCT_NAME +
+                " requires a 32-bit JRE for some operations.\nSome features may be unavailable.", 
+                "JRE Incompatibility Warning", 
+                WARNING_MESSAGE);
+        }
 
         // check for dodgy threading - dev only
 //        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));
