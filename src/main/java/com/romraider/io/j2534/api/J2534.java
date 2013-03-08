@@ -32,6 +32,13 @@ public interface J2534 {
 
     int startPassMsgFilter(int channelId, byte mask, byte pattern);
 
+    int startPassMsgFilter(int channelId, byte[] mask, byte[] pattern);
+
+    int startBlockMsgFilter(int channelId, byte[] mask, byte[] pattern);
+
+    int startFlowCntrlFilter(int channelId, byte[] mask,
+            byte[] pattern, byte[] flowCntrl);
+
     byte[] fastInit(int channelId, byte[] input);
 
     double getVbattery(int channelId);

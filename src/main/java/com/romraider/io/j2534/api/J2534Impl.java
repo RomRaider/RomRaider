@@ -587,36 +587,77 @@ public final class J2534Impl implements J2534 {
      * messages received.  Then purge the PassThru device's receive buffer.
      * @param    channelId  - handle to the open communications channel
      * @param    mask       - used to isolate the receive message
-     *                          header section(s) of interest
-     * @param    pattern       - a message pattern to compare with the receive messages
-     * @return    the message filter ID to be used to later stop the filter
+     *                        header section(s) of interest to pass
+     * @param    pattern    - a message pattern to compare with the receive messages
+     * @return   the message filter ID to be used to later stop the filter
      */
     public int startPassMsgFilter(int channelId, byte mask, byte pattern) {
         PASSTHRU_MSG maskMsg    = passThruMessage(mask);
         PASSTHRU_MSG patternMsg = passThruMessage(pattern);
 
-        NativeLongByReference msgId = new NativeLongByReference();
-        msgId.setValue(new NativeLong(0));
-        NativeLong ret = lib.PassThruStartMsgFilter(
-                new NativeLong(channelId),
-                new NativeLong(Filter.PASS_FILTER.getValue()),
-                maskMsg.getPointer(),
-                patternMsg.getPointer(),
-                null,
-                msgId
-            );
-           if (ret.intValue() != Status.NOERROR.getValue()) handleError(
-                   "PassThruStartMsgFilter", ret.intValue());
+        int filterType = Filter.PASS_FILTER.getValue();
+        int rc = setMsgFilter(channelId, filterType,
+                maskMsg, patternMsg, null);
+        return rc;
+    }
 
-        ret = lib.PassThruIoctl(
-                new NativeLong(channelId),
-                new NativeLong(IOCtl.CLEAR_RX_BUFFER.getValue()),
-                null,
-                null
-            );
-           if (ret.intValue() != Status.NOERROR.getValue()) handleError(
-                   "PassThruIoctl (CLEAR_RX_BUFFER)", ret.intValue());
-        return msgId.getValue().intValue();
+    /**
+     * Setup network protocol filter(s) to selectively restrict or limit
+     * messages received.  Then purge the PassThru device's receive buffer.
+     * @param    channelId  - handle to the open communications channel
+     * @param    mask       - used to isolate the receive message
+     *                        header section(s) of interest to pass
+     * @param    pattern    - a message pattern to compare with the receive messages
+     * @return   the message filter ID to be used to later stop the filter
+     */
+    public int startPassMsgFilter(int channelId, byte[] mask, byte[] pattern) {
+        PASSTHRU_MSG maskMsg    = passThruMessage(mask);
+        PASSTHRU_MSG patternMsg = passThruMessage(pattern);
+
+        int filterType = Filter.PASS_FILTER.getValue();
+        int rc = setMsgFilter(channelId, filterType,
+                maskMsg, patternMsg, null);
+        return rc;
+    }
+
+    /**
+     * Setup network protocol filter(s) to selectively restrict or limit
+     * messages received.  Then purge the PassThru device's receive buffer.
+     * @param    channelId  - handle to the open communications channel
+     * @param    mask       - used to isolate the receive message
+     *                        header section(s) of interest to block
+     * @param    pattern    - a message pattern to compare with the receive messages
+     * @return   the message filter ID to be used to later stop the filter
+     */
+    public int startBlockMsgFilter(int channelId, byte[] mask, byte[] pattern) {
+        PASSTHRU_MSG maskMsg    = passThruMessage(mask);
+        PASSTHRU_MSG patternMsg = passThruMessage(pattern);
+
+        int filterType = Filter.BLOCK_FILTER.getValue();
+        int rc = setMsgFilter(channelId, filterType,
+                maskMsg, patternMsg, null);
+        return rc;
+    }
+
+    /**
+     * Setup network protocol filter(s) to selectively restrict or limit
+     * messages received.  Then purge the PassThru device's receive buffer.
+     * @param    channelId  - handle to the open communications channel
+     * @param    mask       - used to isolate the receive message
+     *                        header section(s) of interest to pass
+     * @param    pattern    - a message pattern to compare with the receive messages
+     * @return   the message filter ID to be used to later stop the filter
+     */
+    public int startFlowCntrlFilter(int channelId, byte[] mask,
+                byte[] pattern, byte[] flowCntrl) {
+        PASSTHRU_MSG maskMsg    = passThruMessage(mask);
+        PASSTHRU_MSG patternMsg = passThruMessage(pattern);
+        PASSTHRU_MSG flowCntrlMsg = passThruMessage(flowCntrl);
+
+        int filterType = Filter.FLOW_CONTROL_FILTER.getValue();
+        int rc = setMsgFilter(channelId, filterType,
+                maskMsg, patternMsg, flowCntrlMsg);
+        return rc;
     }
 
     /**
@@ -932,6 +973,34 @@ public final class J2534Impl implements J2534 {
         byte[] data = new byte[length];
         arraycopy(msg.data, 0, data, 0, length);
         return data;
+    }
+
+    private int setMsgFilter(int channelId, int filterType,
+            PASSTHRU_MSG maskMsg, PASSTHRU_MSG patternMsg,
+            PASSTHRU_MSG flowMsg) {
+
+        NativeLongByReference msgId = new NativeLongByReference();
+        msgId.setValue(new NativeLong(0));
+        NativeLong ret = lib.PassThruStartMsgFilter(
+                new NativeLong(channelId),
+                new NativeLong(filterType),
+                maskMsg.getPointer(),
+                patternMsg.getPointer(),
+                flowMsg == null ? null : flowMsg.getPointer(),
+                msgId
+            );
+        if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+                "PassThruStartMsgFilter", ret.intValue());
+
+        ret = lib.PassThruIoctl(
+                new NativeLong(channelId),
+                new NativeLong(IOCtl.CLEAR_RX_BUFFER.getValue()),
+                null,
+                null
+            );
+        if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+                "PassThruIoctl (CLEAR_RX_BUFFER)", ret.intValue());
+        return msgId.getValue().intValue();
     }
 
     /**
