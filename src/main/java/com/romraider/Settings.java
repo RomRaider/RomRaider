@@ -116,6 +116,7 @@ public class Settings implements Serializable {
     private boolean fileLoggingControllerSwitchActive = true;
     private boolean fileLoggingAbsoluteTimestamp;
     private String logfileNameText;
+    private boolean logExternalsOnly;
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();
@@ -131,7 +132,7 @@ public class Settings implements Serializable {
     private double loggerDividerLocation = 400;
     private String loggerDebuggingLevel = "info";
     private static String j2534Device;
-    private static String j2534Protocol = "ISO9141";
+    private static String j2534Protocol = "ISO15765"; // ISO9141 ISO15765
 
     private String tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT; // Currently 2 options.  Default and Airboy. Custom is not hooked up.
     private String tableHeader = DEFAULT_TABLE_HEADER;
@@ -638,5 +639,13 @@ public class Settings implements Serializable {
 
     public void setTableIconScale(int scale) {
         this.tableIconScale = scale;
+    }
+
+    public void setLogExternalsOnly(boolean state) {
+        this.logExternalsOnly = state;
+    }
+
+    public boolean isLogExternalsOnly() {
+        return logExternalsOnly;
     }
 }

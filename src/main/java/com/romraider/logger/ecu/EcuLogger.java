@@ -197,8 +197,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
     private static final String FILE_NAME_EXTENTION = "Right-click to select or type text to add to the saved logfile name.";
-    private static final String ECU_TEXT = "Engine Control Unit Polling";
-    private static final String TCU_TEXT = "Transmission Control Unit Polling";
+    private static final String ECU_TEXT = "Engine Control Unit Polling. Uncheck both ECU & TCU for Externals logging only";
+    private static final String TCU_TEXT = "Transmission Control Unit Polling. Un-check both ECU & TCU for Externals logging only";
     private static final String[] LOG_FILE_TEXT = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
         "4th PT","5th PT","6th PT",
         "1st WOT","2nd WOT","3rd WOT",
@@ -1177,7 +1177,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             public void actionPerformed(ActionEvent actionEvent) {
                 stopLogging();
                 tcuCheckBox.setSelected(false);
-                setTargetEcu();
+                if (ecuCheckBox.isSelected()) {
+                    settings.setLogExternalsOnly(false);
+                    setTargetEcu();
+                }
+                else {
+                    settings.setLogExternalsOnly(true);
+                }
                 startLogging();
             }
         });
@@ -1186,7 +1192,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             public void actionPerformed(ActionEvent actionEvent) {
                 stopLogging();
                 ecuCheckBox.setSelected(false);
-                setTargetTcu();
+                if (tcuCheckBox.isSelected()) {
+                    settings.setLogExternalsOnly(false);
+                    setTargetTcu();
+                }
+                else {
+                    settings.setLogExternalsOnly(true);
+                }
                 startLogging();
             }
         });
