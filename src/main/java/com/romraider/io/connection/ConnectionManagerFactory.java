@@ -22,7 +22,7 @@ package com.romraider.io.connection;
 import java.util.Set;
 
 import com.romraider.Settings;
-import com.romraider.io.j2534.api.J2534ConnectionManager;
+import com.romraider.io.j2534.api.J2534ConnectionISO9141;
 import com.romraider.io.j2534.api.J2534DllLocator;
 import com.romraider.io.j2534.api.J2534Library;
 import com.romraider.io.serial.connection.SerialConnectionManager;
@@ -69,7 +69,7 @@ public final class ConnectionManagerFactory {
                             dll.getVendor()));
                     try {
                         Settings.setJ2534Device(dll.getLibrary());
-                        return new J2534ConnectionManager(
+                        return new J2534ConnectionISO9141(
                                 connectionProperties,
                                 dll.getLibrary());
                     }
@@ -91,7 +91,7 @@ public final class ConnectionManagerFactory {
                                 dll.getVendor()));
                         try {
                             Settings.setJ2534Device(dll.getLibrary());
-                            return new J2534ConnectionManager(
+                            return new J2534ConnectionISO9141(
                                     connectionProperties,
                                     dll.getLibrary());
                         }
