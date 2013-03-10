@@ -132,7 +132,7 @@ public class Settings implements Serializable {
     private double loggerDividerLocation = 400;
     private String loggerDebuggingLevel = "info";
     private static String j2534Device;
-    private static String j2534Protocol = "ISO15765"; // ISO9141 ISO15765
+    private static String j2534Protocol;
 
     private String tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT; // Currently 2 options.  Default and Airboy. Custom is not hooked up.
     private String tableHeader = DEFAULT_TABLE_HEADER;
