@@ -41,7 +41,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
 
     public void start() {
         try {
-            connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(), settings.getLoggerConnectionProperties());
+            connection = getConnection(Settings.getLoggerProtocol(), settings.getLoggerPort(), settings.getLoggerConnectionProperties());
             LOGGER.info("TX Manager Started.");
         } catch (Throwable e) {
             stop();

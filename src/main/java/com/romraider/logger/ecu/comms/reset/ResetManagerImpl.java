@@ -40,7 +40,7 @@ public final class ResetManagerImpl implements ResetManager {
     public boolean resetEcu() {
         String target = "ECU";
         try {
-            LoggerConnection connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
+            LoggerConnection connection = getConnection(Settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
                 if (settings.getDestinationId() == 0x18) target = "TCU";

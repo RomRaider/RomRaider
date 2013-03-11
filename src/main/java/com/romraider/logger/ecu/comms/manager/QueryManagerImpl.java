@@ -167,7 +167,7 @@ public final class QueryManagerImpl implements QueryManager {
         
         try {
             LoggerConnection connection =
-                    getConnection(settings.getLoggerProtocol(),
+                    getConnection(Settings.getLoggerProtocol(),
                                   settings.getLoggerPort(),
                                   settings.getLoggerConnectionProperties());
             try {

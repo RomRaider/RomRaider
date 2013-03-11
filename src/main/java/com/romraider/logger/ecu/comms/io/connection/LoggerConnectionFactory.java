@@ -28,17 +28,27 @@ public final class LoggerConnectionFactory {
     private LoggerConnectionFactory() {
     }
 
-    public static LoggerConnection getConnection(String protocolName, String portName, ConnectionProperties connectionProperties) {
+    public static LoggerConnection getConnection(
+            String protocolName, 
+            String portName, 
+            ConnectionProperties connectionProperties) {
         ConnectionManager manager = getManager(portName, connectionProperties);
         return instantiateConnection(protocolName, manager);
     }
 
-    private static LoggerConnection instantiateConnection(String protocolName, ConnectionManager manager) {
+    private static LoggerConnection instantiateConnection(
+            String protocolName,
+            ConnectionManager manager) {
+
         try {
-            Class<?> cls = Class.forName(LoggerConnectionFactory.class.getPackage().getName() + "." + protocolName + "LoggerConnection");
-            return (LoggerConnection) cls.getConstructor(ConnectionManager.class).newInstance(manager);
+            Class<?> cls = Class.forName(
+                    LoggerConnectionFactory.class.getPackage().getName() + 
+                    "." + protocolName + "LoggerConnection");
+            return (LoggerConnection) cls.getConstructor(
+                    ConnectionManager.class).newInstance(manager);
         } catch (Exception e) {
-            throw new UnsupportedProtocolException("'" + protocolName + "' is not a supported protocol", e);
+            manager.close();
+            throw new UnsupportedProtocolException(e.getCause().getMessage(), e);
         }
     }
 }

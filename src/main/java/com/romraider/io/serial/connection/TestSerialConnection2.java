@@ -20,21 +20,22 @@
 package com.romraider.io.serial.connection;
 
 import com.romraider.io.connection.ConnectionProperties;
-import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
-import static com.romraider.io.protocol.ssm.SSMProtocol.ADDRESS_SIZE;
-import static com.romraider.io.protocol.ssm.SSMProtocol.DATA_SIZE;
-import static com.romraider.io.protocol.ssm.SSMProtocol.DIAGNOSTIC_TOOL_ID;
-import static com.romraider.io.protocol.ssm.SSMProtocol.ECU_ID;
-import static com.romraider.io.protocol.ssm.SSMProtocol.ECU_INIT_COMMAND;
-import static com.romraider.io.protocol.ssm.SSMProtocol.HEADER;
-import static com.romraider.io.protocol.ssm.SSMProtocol.READ_ADDRESS_COMMAND;
-import static com.romraider.io.protocol.ssm.SSMProtocol.READ_ADDRESS_RESPONSE;
-import static com.romraider.io.protocol.ssm.SSMProtocol.READ_MEMORY_COMMAND;
-import static com.romraider.io.protocol.ssm.SSMProtocol.READ_MEMORY_RESPONSE;
-import static com.romraider.io.protocol.ssm.SSMProtocol.REQUEST_NON_DATA_BYTES;
-import static com.romraider.io.protocol.ssm.SSMProtocol.RESPONSE_NON_DATA_BYTES;
-import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_MEMORY_COMMAND;
-import static com.romraider.io.protocol.ssm.SSMProtocol.WRITE_MEMORY_RESPONSE;
+
+import static com.romraider.io.protocol.ssm.iso9141.SSMChecksumCalculator.calculateChecksum;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ADDRESS_SIZE;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.DATA_SIZE;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.DIAGNOSTIC_TOOL_ID;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ECU_ID;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ECU_INIT_COMMAND;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.HEADER;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.READ_ADDRESS_COMMAND;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.READ_ADDRESS_RESPONSE;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.READ_MEMORY_COMMAND;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.READ_MEMORY_RESPONSE;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.REQUEST_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.RESPONSE_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.WRITE_MEMORY_COMMAND;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.WRITE_MEMORY_RESPONSE;
 
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;

@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 import com.romraider.Settings;
 import com.romraider.io.j2534.api.J2534DllLocator;
 import com.romraider.io.j2534.api.J2534Library;
-import com.romraider.io.j2534.api.J2534ProtocolFactory;
+import com.romraider.io.j2534.api.J2534TransportFactory;
 import com.romraider.io.serial.connection.SerialConnectionManager;
 import com.romraider.util.proxy.TimerWrapper;
 
@@ -60,24 +60,24 @@ public final class ConnectionManagerFactory {
                 throw new RuntimeException("J2534 is not support on this platform");
             Set<J2534Library> libraries =
                     J2534DllLocator.listLibraries(
-                            Settings.getJ2534Protocol().toUpperCase());
+                            Settings.getTransportProtocol().toUpperCase());
             
             if (libraries.isEmpty())
                 throw new RuntimeException(
                         "No J2534 libraries found that support protocol " +
-                        Settings.getJ2534Protocol());;
+                        Settings.getTransportProtocol());;
 
             // if the J2534 device has not been previously defined, search for it
             // else use the defined device
             if (Settings.getJ2534Device() == null) {
                 for (J2534Library dll : libraries) {
                     LOGGER.info(String.format("Trying new J2534/%s connection: %s",
-                            Settings.getJ2534Protocol(),
+                            Settings.getTransportProtocol(),
                             dll.getVendor()));
                     try {
                         Settings.setJ2534Device(dll.getLibrary());
-                        return J2534ProtocolFactory.getManager(
-                                Settings.getJ2534Protocol().toUpperCase(),
+                        return J2534TransportFactory.getManager(
+                                Settings.getTransportProtocol().toUpperCase(),
                                 connectionProperties,
                                 dll.getLibrary());
 
@@ -96,12 +96,12 @@ public final class ConnectionManagerFactory {
 
                         LOGGER.info(String.format(
                                 "Re-trying previous J2534/%s connection: %s",
-                                Settings.getJ2534Protocol(),
+                                Settings.getTransportProtocol(),
                                 dll.getVendor()));
                         try {
                             Settings.setJ2534Device(dll.getLibrary());
-                            return J2534ProtocolFactory.getManager(
-                                    Settings.getJ2534Protocol().toUpperCase(),
+                            return J2534TransportFactory.getManager(
+                                    Settings.getTransportProtocol().toUpperCase(),
                                     connectionProperties,
                                     dll.getLibrary());
                         }

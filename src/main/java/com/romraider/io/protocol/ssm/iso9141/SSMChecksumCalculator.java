@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.io.protocol.ssm;
+package com.romraider.io.protocol.ssm.iso9141;
 
 import static com.romraider.util.ByteUtil.asByte;
 import static com.romraider.util.ByteUtil.asInt;

@@ -507,7 +507,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         else {
             try {
                 EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-                dataLoader.loadConfigFromXml(loggerConfigFilePath, settings.getLoggerProtocol(),
+                dataLoader.loadConfigFromXml(loggerConfigFilePath, Settings.getLoggerProtocol(),
                         settings.getFileLoggingControllerSwitchId(), ecuInit);
                 List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
                 addConvertorUpdateListeners(ecuParams);
@@ -522,8 +522,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                     defVersion = dataLoader.getDefVersion();
                 }
                 loadResult = String.format(
-                        "%sloaded %d parameters, %d switches from def version %s.",
+                        "%sloaded %s: %d parameters, %d switches from def version %s.",
                         loadResult,
+                        Settings.getLoggerProtocol(),
                         ecuParams.size(),
                         dataLoader.getEcuSwitches().size(),
                         defVersion);

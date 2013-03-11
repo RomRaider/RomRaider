@@ -22,7 +22,7 @@ package com.romraider.ramtune.test;
 import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
-import com.romraider.io.protocol.ssm.SSMProtocol;
+import com.romraider.io.protocol.ssm.iso9141.SSMProtocol;
 import com.romraider.io.serial.port.SerialPortRefresher;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;

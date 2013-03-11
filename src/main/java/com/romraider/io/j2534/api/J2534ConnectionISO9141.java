@@ -19,7 +19,7 @@
 
 package com.romraider.io.j2534.api;
 
-import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
+import static com.romraider.io.protocol.ssm.iso9141.SSMChecksumCalculator.calculateChecksum;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static java.lang.System.arraycopy;

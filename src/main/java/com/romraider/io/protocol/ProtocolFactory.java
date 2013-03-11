@@ -25,18 +25,20 @@ public final class ProtocolFactory {
     private ProtocolFactory() {
     }
 
-    public static Protocol getProtocol(String protocol) {
-        String className = getClassName(protocol);
+    public static Protocol getProtocol(String protocol, String transport) {
+        String className = getClassName(protocol, transport);
         try {
             Class<?> cls = Class.forName(className);
             return (Protocol) cls.newInstance();
         } catch (Exception e) {
-            throw new UnsupportedProtocolException("Protocol class for " + protocol + " not found: " + className);
+            throw new UnsupportedProtocolException("Protocol class for " +
+                    protocol + "/" + transport + " not found: " + className);
         }
     }
 
-    private static String getClassName(String protocol) {
+    private static String getClassName(String protocol, String transport) {
         Package pkg = ProtocolFactory.class.getPackage();
-        return pkg.getName() + "." + protocol.toLowerCase() + "." + protocol + "Protocol";
+        return pkg.getName() + "." + protocol.toLowerCase() + "." +
+        transport.toLowerCase() + "." + protocol.toUpperCase() + "Protocol";
     }
 }

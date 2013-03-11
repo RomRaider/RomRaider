@@ -17,11 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.io.protocol.ssm;
+package com.romraider.io.protocol.ssm.iso9141;
 
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
-import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
+
+import static com.romraider.io.protocol.ssm.iso9141.SSMChecksumCalculator.calculateChecksum;
 
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;

@@ -108,7 +108,7 @@ public class Settings implements Serializable {
 
     private String loggerPort;
     private String loggerPortDefault;
-    private final String loggerProtocol = "SSM";
+    private static String loggerProtocol = "SSM";
     private static String loggerDefinitionFilePath;
     private static String loggerProfileFilePath;
     private String loggerOutputDirPath = System.getProperty("user.home");
@@ -132,7 +132,7 @@ public class Settings implements Serializable {
     private double loggerDividerLocation = 400;
     private String loggerDebuggingLevel = "info";
     private static String j2534Device;
-    private static String j2534Protocol;
+    private static String transportProtocol;
 
     private String tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT; // Currently 2 options.  Default and Airboy. Custom is not hooked up.
     private String tableHeader = DEFAULT_TABLE_HEADER;
@@ -388,7 +388,11 @@ public class Settings implements Serializable {
         this.loggerPortDefault = loggerPortDefault;
     }
 
-    public String getLoggerProtocol() {
+    public static void setLoggerProtocol(String protocol) {
+        Settings.loggerProtocol = protocol;
+    }
+
+    public static String getLoggerProtocol() {
         return loggerProtocol;
     }
 
@@ -561,12 +565,12 @@ public class Settings implements Serializable {
         return j2534Device;
     }
 
-    public static void setJ2534Protocol(String j2534Protocol) {
-        Settings.j2534Protocol = j2534Protocol;
+    public static void setTransportProtocol(String transport) {
+        Settings.transportProtocol = transport;
     }
 
-    public static String getJ2534Protocol() {
-        return j2534Protocol;
+    public static String getTransportProtocol() {
+        return transportProtocol;
     }
 
     public void setTableClipboardFormat(String formatString) {

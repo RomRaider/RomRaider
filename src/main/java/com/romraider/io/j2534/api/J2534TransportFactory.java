@@ -24,8 +24,8 @@ import java.lang.reflect.Constructor;
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
 
-public final class J2534ProtocolFactory {
-    private J2534ProtocolFactory() {
+public final class J2534TransportFactory {
+    private J2534TransportFactory() {
     }
 
     public static ConnectionManager getManager(
@@ -35,7 +35,7 @@ public final class J2534ProtocolFactory {
 
         try {
             final Class<?> cls = Class.forName(
-                    J2534ProtocolFactory.class.getPackage().getName() + 
+                    J2534TransportFactory.class.getPackage().getName() + 
                     ".J2534Connection" + protocolName.toUpperCase());
 
             final Constructor<?> cnstrtr = cls.getConstructor(

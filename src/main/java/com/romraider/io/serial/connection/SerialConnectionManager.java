@@ -19,7 +19,8 @@
 
 package com.romraider.io.serial.connection;
 
-import static com.romraider.io.protocol.ssm.SSMChecksumCalculator.calculateChecksum;
+import static com.romraider.io.protocol.ssm.iso9141.SSMChecksumCalculator.calculateChecksum;
+
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.logger.ecu.comms.manager.PollingState;

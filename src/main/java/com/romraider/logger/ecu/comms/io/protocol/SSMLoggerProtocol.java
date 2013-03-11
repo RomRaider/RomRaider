@@ -19,14 +19,15 @@
 
 package com.romraider.logger.ecu.comms.io.protocol;
 
+import com.romraider.Settings;
 import com.romraider.io.protocol.Protocol;
-import com.romraider.io.protocol.ssm.SSMProtocol;
-import static com.romraider.io.protocol.ssm.SSMProtocol.ADDRESS_SIZE;
-import static com.romraider.io.protocol.ssm.SSMProtocol.DATA_SIZE;
-import static com.romraider.io.protocol.ssm.SSMProtocol.REQUEST_NON_DATA_BYTES;
-import static com.romraider.io.protocol.ssm.SSMProtocol.RESPONSE_NON_DATA_BYTES;
-import static com.romraider.io.protocol.ssm.SSMResponseProcessor.extractResponseData;
-import static com.romraider.io.protocol.ssm.SSMResponseProcessor.filterRequestFromResponse;
+import com.romraider.io.protocol.ProtocolFactory;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ADDRESS_SIZE;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.DATA_SIZE;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.REQUEST_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.RESPONSE_NON_DATA_BYTES;
+import static com.romraider.io.protocol.ssm.iso9141.SSMResponseProcessor.extractResponseData;
+import static com.romraider.io.protocol.ssm.iso9141.SSMResponseProcessor.filterRequestFromResponse;
 
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
@@ -41,7 +42,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class SSMLoggerProtocol implements LoggerProtocol {
-    private final Protocol protocol = new SSMProtocol();
+    private final Protocol protocol = ProtocolFactory.getProtocol(
+            Settings.getLoggerProtocol(),
+            Settings.getTransportProtocol());
 
     public byte[] constructEcuInitRequest(byte id) {
         return protocol.constructEcuInitRequest(id);
