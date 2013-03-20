@@ -32,6 +32,7 @@ import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.j2534.api.J2534Impl.Config;
 import com.romraider.io.j2534.api.J2534Impl.Flag;
 import com.romraider.io.j2534.api.J2534Impl.Protocol;
+import com.romraider.io.j2534.api.J2534Impl.TxFlags;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 
 public final class J2534ConnectionISO9141 implements ConnectionManager {
@@ -61,7 +62,7 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
         }
 
         if (pollState.getCurrentState() == 0) {
-            api.writeMsg(channelId, request, timeout);
+            api.writeMsg(channelId, request, timeout, TxFlags.NO_FLAGS);
         }
         api.readMsg(channelId, response, timeout);
 
@@ -86,13 +87,17 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
     // Send request and wait specified time for response with unknown length
     public byte[] send(byte[] request) {
         checkNotNull(request, "request");
-        api.writeMsg(channelId, request, timeout);
-        return api.readMsg(channelId, timeout);
+        api.writeMsg(channelId, request, timeout, TxFlags.NO_FLAGS);
+        return api.readMsg(channelId, 1, timeout);
     }
 
     public void clearLine() {
         LOGGER.debug("J2534/ISO9141 sending line break");
-        api.writeMsg(channelId, new byte[] {0,0,0,0,0,0,0,0,0,0}, 100L);
+        api.writeMsg(
+                channelId, 
+                new byte[] {0,0,0,0,0,0,0,0,0,0}, 
+                100L, 
+                TxFlags.NO_FLAGS);
         boolean empty = false;
         do {
             byte[] badBytes = api.readMsg(channelId, 100L);
@@ -134,15 +139,15 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
 
     private void version(int deviceId) {
         if (!LOGGER.isDebugEnabled()) return;
-        Version version = api.readVersion(deviceId);
+        final Version version = api.readVersion(deviceId);
         LOGGER.info("J2534 Version => firmware: " + version.firmware + ", dll: " + version.dll + ", api: " + version.api);
     }
 
     private void setConfig(int channelId) {
-        ConfigItem p1Max = new ConfigItem(Config.P1_MAX.getValue(), 2);
-        ConfigItem p3Min = new ConfigItem(Config.P3_MIN.getValue(), 0);
-        ConfigItem p4Min = new ConfigItem(Config.P4_MIN.getValue(), 0);
-        ConfigItem loopback = new ConfigItem(Config.LOOPBACK.getValue(), 1);
+        final ConfigItem p1Max = new ConfigItem(Config.P1_MAX.getValue(), 2);
+        final ConfigItem p3Min = new ConfigItem(Config.P3_MIN.getValue(), 0);
+        final ConfigItem p4Min = new ConfigItem(Config.P4_MIN.getValue(), 0);
+        final ConfigItem loopback = new ConfigItem(Config.LOOPBACK.getValue(), 1);
         api.setConfig(channelId, p1Max, p3Min, p4Min, loopback);
     }
 

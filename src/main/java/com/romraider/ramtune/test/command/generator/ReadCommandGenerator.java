@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ReadCommandGenerator extends AbstractCommandGenerator {
-    private static final int INCREMENT_SIZE = 32;
+    private static final int INCREMENT_SIZE = 128;
     
     public ReadCommandGenerator(Protocol protocol) {
         super(protocol);

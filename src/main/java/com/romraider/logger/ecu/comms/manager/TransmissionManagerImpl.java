@@ -52,7 +52,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
         checkNotNull(queries, "queries");
         checkNotNull(pollState, "pollState");
         if (connection == null) throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
-        connection.sendAddressReads(queries, settings.getDestinationId(), pollState);
+        connection.sendAddressReads(queries, Settings.getDestinationId(), pollState);
     }
 
     public void endQueries() {

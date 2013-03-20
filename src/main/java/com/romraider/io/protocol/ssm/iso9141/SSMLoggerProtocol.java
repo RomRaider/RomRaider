@@ -17,11 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.comms.io.protocol;
+package com.romraider.io.protocol.ssm.iso9141;
 
-import com.romraider.Settings;
 import com.romraider.io.protocol.Protocol;
-import com.romraider.io.protocol.ProtocolFactory;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ADDRESS_SIZE;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.DATA_SIZE;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.REQUEST_NON_DATA_BYTES;
@@ -29,6 +27,7 @@ import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.RESPONSE_NON_DAT
 import static com.romraider.io.protocol.ssm.iso9141.SSMResponseProcessor.extractResponseData;
 import static com.romraider.io.protocol.ssm.iso9141.SSMResponseProcessor.filterRequestFromResponse;
 
+import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
@@ -42,9 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class SSMLoggerProtocol implements LoggerProtocol {
-    private final Protocol protocol = ProtocolFactory.getProtocol(
-            Settings.getLoggerProtocol(),
-            Settings.getTransportProtocol());
+    private final Protocol protocol = new SSMProtocol();
 
     public byte[] constructEcuInitRequest(byte id) {
         return protocol.constructEcuInitRequest(id);
@@ -112,6 +109,10 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         for (EcuQuery query : queries) {
             query.setResponse(addressResults.get(query.getHex()));
         }
+    }
+
+    public Protocol getProtocol() {
+        return protocol;
     }
 
     private Collection<EcuQuery> filterDuplicates(Collection<EcuQuery> queries) {

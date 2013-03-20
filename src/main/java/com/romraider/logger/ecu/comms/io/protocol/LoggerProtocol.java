@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.comms.io.protocol;
 
+import com.romraider.io.protocol.Protocol;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
@@ -41,4 +42,6 @@ public interface LoggerProtocol {
     void processEcuResetResponse(byte[] response);
 
     void processReadAddressResponses(Collection<EcuQuery> queries, byte[] response, PollingState pollState);
+
+    Protocol getProtocol();
 }

@@ -22,8 +22,9 @@ package com.romraider.ramtune.test;
 import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
-import com.romraider.io.protocol.ssm.iso9141.SSMProtocol;
+import com.romraider.io.protocol.ProtocolFactory;
 import com.romraider.io.serial.port.SerialPortRefresher;
+import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.ui.SerialPortComboBox;
@@ -39,6 +40,9 @@ import com.romraider.swing.LookAndFeelManager;
 import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.HexUtil.asHex;
 import com.romraider.util.LogManager;
+import com.romraider.util.SettingsManager;
+import com.romraider.util.SettingsManagerImpl;
+
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
 import static java.awt.FlowLayout.LEFT;
@@ -91,21 +95,31 @@ public final class RamTuneTestApp extends AbstractFrame {
     private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
     private static final String REGEX_VALID_DATA_BYTES = "[0-9a-fA-F]{2,}";
     private static final PollingState pollMode = new PollingStateImpl();
-    private final Protocol protocol = new SSMProtocol();
-    private final Settings settings = new Settings();
+    private static Protocol protocol;
+    private final Settings settings;
     private final JTextField addressField = new JTextField(6);
     private final JTextField lengthField = new JTextField(4);
     private final JTextField sendTimeoutField = new JTextField(4);
     private final JTextArea dataField = new JTextArea(10, 80);
     private final JTextArea responseField = new JTextArea(15, 80);
-    private final SerialPortComboBox portsComboBox = new SerialPortComboBox(settings);
-    private final JComboBox commandComboBox = new JComboBox(new CommandGenerator[]{new EcuInitCommandGenerator(protocol),
-            new ReadCommandGenerator(protocol),
-            new WriteCommandGenerator(protocol)});
+    private final SerialPortComboBox portsComboBox;
+    private final JComboBox commandComboBox;
     private static byte ecuId = 0x10;
 
     public RamTuneTestApp(String title) {
         super(title);
+        final SettingsManager manager = new SettingsManagerImpl();
+        settings = manager.load();
+        portsComboBox = new SerialPortComboBox(settings);
+        final LoggerProtocol lp = ProtocolFactory.getProtocol(
+                "SSM",
+                "ISO9141"
+                );
+        protocol = lp.getProtocol();
+        commandComboBox = new JComboBox(new CommandGenerator[]{
+                new EcuInitCommandGenerator(protocol),
+                new ReadCommandGenerator(protocol),
+                new WriteCommandGenerator(protocol)});
         initUserInterface();
         startPortRefresherThread();
     }
@@ -252,6 +266,7 @@ public final class RamTuneTestApp extends AbstractFrame {
                                 }
                                 appendResponseLater("DATA [Raw]:\t" + builder.toString() + "\n\n");
                             }
+                            commandExecutor.close();
                         } catch (Exception ex) {
                             reportError(ex);
                         } finally {

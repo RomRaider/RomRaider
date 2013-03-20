@@ -55,11 +55,9 @@ public final class DOMRomUnmarshaller {
     private static final Logger LOGGER = Logger.getLogger(DOMRomUnmarshaller.class);
     private JProgressPane progress = null;
     private final List<Scale> scales = new ArrayList<Scale>();
-    private final Settings settings;
     private final ECUEditor parent;
 
     public DOMRomUnmarshaller(Settings settings, ECUEditor parent) {
-        this.settings = settings;
         this.parent = parent;
     }
 

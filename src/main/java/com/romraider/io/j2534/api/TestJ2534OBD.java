@@ -21,6 +21,7 @@ package com.romraider.io.j2534.api;
 
 import com.romraider.io.j2534.api.J2534Impl.Config;
 import com.romraider.io.j2534.api.J2534Impl.Protocol;
+import com.romraider.io.j2534.api.J2534Impl.TxFlags;
 import com.romraider.util.HexUtil;
 import com.romraider.util.LogManager;
 
@@ -68,7 +69,7 @@ public final class TestJ2534OBD {
                         (byte) 0xC2, (byte) 0x33, (byte) 0xF1,
                         (byte) 0x83, (byte) 0x01};
 
-                api.writeMsg(channelId, timingReq, 55L);
+                api.writeMsg(channelId, timingReq, 55L, TxFlags.NO_FLAGS);
                 System.out.println("Timing Request  = " + HexUtil.asHex(timingReq));
 
                 response = api.readMsg(channelId, 1, 2000L);
@@ -79,7 +80,7 @@ public final class TestJ2534OBD {
                         (byte) 0xC2, (byte) 0x33, (byte) 0xF1,
                         (byte) 0x09, (byte) 0x01};
 
-                api.writeMsg(channelId, mode09pid01, 55L);
+                api.writeMsg(channelId, mode09pid01, 55L, TxFlags.NO_FLAGS);
                 System.out.println("PID0901 Request  = " + HexUtil.asHex(mode09pid01));
 
                 response = api.readMsg(channelId, 1, 2000L);
@@ -99,7 +100,7 @@ public final class TestJ2534OBD {
                         (byte) 0xC2, (byte) 0x33, (byte) 0xF1,
                         (byte) 0x09, (byte) 0x02};
 
-                api.writeMsg(channelId, mode09pid02, 55L);
+                api.writeMsg(channelId, mode09pid02, 55L, TxFlags.NO_FLAGS);
                 System.out.println("PID0902 Request  = " + HexUtil.asHex(mode09pid02));
 
                 response = api.readMsg(channelId, numMsg, 2000L);
@@ -110,7 +111,7 @@ public final class TestJ2534OBD {
                         (byte) 0xC1, (byte) 0x33, (byte) 0xF1,
                         (byte) 0x82};
 
-                api.writeMsg(channelId, stopReq, 55L);
+                api.writeMsg(channelId, stopReq, 55L, TxFlags.NO_FLAGS);
                 System.out.println("Stop Request  = " + HexUtil.asHex(stopReq));
 
                 response = api.readMsg(channelId, 1, 2000L);

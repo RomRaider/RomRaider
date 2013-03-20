@@ -75,8 +75,8 @@ public final class QueryManagerImpl implements QueryManager {
     private FileLoggerControllerSwitchMonitor monitor;
     private EcuQuery fileLoggerQuery;
     private Thread queryManagerThread;
-    private boolean started;
-    private boolean stop;
+    private static boolean started;
+    private static boolean stop;
 
     public QueryManagerImpl(Settings settings,
                             EcuInitCallback ecuInitCallback,
@@ -90,6 +90,7 @@ public final class QueryManagerImpl implements QueryManager {
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
         this.dataUpdateHandlers = dataUpdateHandlers;
+        stop = true;
     }
 
     public synchronized void addListener(StatusChangeListener listener) {
@@ -137,9 +138,10 @@ public final class QueryManagerImpl implements QueryManager {
             while (!stop) {
                 notifyConnecting();
                 if (!settings.isLogExternalsOnly() &&
-                        doEcuInit(settings.getDestinationId())) {
+                        doEcuInit(Settings.getDestinationId())) {
+
                     notifyReading();
-                    runLogger(settings.getDestinationId());
+                    runLogger(Settings.getDestinationId());
                 } else if (settings.isLogExternalsOnly()) {
                     notifyReading();
                     runLogger((byte) -1);
@@ -361,10 +363,10 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     public void stop() {
-        stop = true;
         if (queryManagerThread != null) {
             queryManagerThread.interrupt();
         }
+        stop = true;
     }
 
     private String buildQueryId(String callerId, LoggerData loggerData) {
@@ -394,6 +396,9 @@ public final class QueryManagerImpl implements QueryManager {
         String state = "Slow-K:";
         if (pollState.isFastPoll()) {
             state = "Fast-K:";
+        }
+        if (Settings.getTransportProtocol().equals("ISO15765")) {
+            state = "CAN bus:";
         }
         if (settings.isLogExternalsOnly()) {
             state = "Externals:";

@@ -454,6 +454,105 @@ public final class J2534Impl implements J2534 {
         }
     }
 
+    /**
+    *    Enum class representing the J2534-1 RxStatus values with methods to
+    *    translate the mnemonic and numerical values.
+    */
+    public enum RxStatus {
+        RX_INDICATION          (0x00000000),
+        TX_LOOPBACK            (0x00000001),
+        START_OF_MESSAGE       (0x00000002),
+        RX_BREAK               (0x00000004),
+        TX_INDICATION          (0x00000008),
+        TX_DONE_LOOPBACK       (0x00000009),
+        ISO15765_PADDING_ERROR (0x00000010),
+        ISO15765_ADDR_TYPE     (0x00000080),
+        CAN_29BIT_ID           (0x00000100),
+        UNDEFINED              (0xFFFFFFFF);    // Returned when no match is found for get()
+        
+        private static final Map<Integer, RxStatus> lookup
+                    = new HashMap<Integer, RxStatus>();
+    
+        static {
+            for(RxStatus s : EnumSet.allOf(RxStatus.class))
+                lookup.put(s.getValue(), s);
+        }
+        
+        private int value;
+        
+        private RxStatus(int value) {
+            this.value = value;
+        }
+        
+        /**
+        * @return    the numeric value associated with the <b>RxStatus</b>
+        *            mnemonic string.
+        */
+        public int getValue() {
+            return value;
+        }
+        
+        /**
+        * @param    value - numeric value to be translated.
+        * @return    the <b>RxStatus</b> mnemonic mapped to the numeric
+        *            value or UNDEFINED if value is undefined.
+        */
+        public static RxStatus get(int value) {
+            if (lookup.containsKey(value)) {
+                return lookup.get(value);
+            }
+            else return UNDEFINED;
+        }
+    }
+
+    /**
+    *    Enum class representing the J2534-1 TxFlags values with methods to
+    *    translate the mnemonic and numerical values.
+    */
+    public enum TxFlags {
+        NO_FLAGS              (0x00000000),
+        ISO15765_FRAME_PAD    (0x00000040),
+        ISO15765_ADDR_TYPE    (0x00000080),
+        CAN_29BIT_ID          (0x00000100),
+        WAIT_P3_MIN_ONLY      (0x00000200),
+        SCI_MODE              (0x00400000),
+        SCI_TX_VOLTAGE        (0x00800000),
+        UNDEFINED             (0xFFFFFFFF);    // Returned when no match is found for get()
+        
+        private static final Map<Integer, TxFlags> lookup
+                    = new HashMap<Integer, TxFlags>();
+    
+        static {
+            for(TxFlags s : EnumSet.allOf(TxFlags.class))
+                lookup.put(s.getValue(), s);
+        }
+        
+        private int value;
+        
+        private TxFlags(int value) {
+            this.value = value;
+        }
+        
+        /**
+        * @return    the numeric value associated with the <b>TxFlags</b>
+        *            mnemonic string.
+        */
+        public int getValue() {
+            return value;
+        }
+        
+        /**
+        * @param    value - numeric value to be translated.
+        * @return    the <b>TxFlags</b> mnemonic mapped to the numeric
+        *            value or UNDEFINED if value is undefined.
+        */
+        public static TxFlags get(int value) {
+            if (lookup.containsKey(value)) {
+                return lookup.get(value);
+            }
+            else return UNDEFINED;
+        }
+    }
 
     /**
      * Constructor declaration
@@ -649,10 +748,10 @@ public final class J2534Impl implements J2534 {
      * @return   the message filter ID to be used to later stop the filter
      */
     public int startFlowCntrlFilter(int channelId, byte[] mask,
-                byte[] pattern, byte[] flowCntrl) {
-        PASSTHRU_MSG maskMsg    = passThruMessage(mask);
-        PASSTHRU_MSG patternMsg = passThruMessage(pattern);
-        PASSTHRU_MSG flowCntrlMsg = passThruMessage(flowCntrl);
+                byte[] pattern, byte[] flowCntrl, TxFlags flag) {
+        PASSTHRU_MSG maskMsg    = passThruMessage(flag, mask);
+        PASSTHRU_MSG patternMsg = passThruMessage(flag, pattern);
+        PASSTHRU_MSG flowCntrlMsg = passThruMessage(flag, flowCntrl);
 
         int filterType = Filter.FLOW_CONTROL_FILTER.getValue();
         int rc = setMsgFilter(channelId, filterType,
@@ -711,8 +810,8 @@ public final class J2534Impl implements J2534 {
      * @param    data      - data bytes to be transmitted to the vehicle network
      * @param    timeout      - maximum time (in milliseconds) for write completion
      */
-    public void writeMsg(int channelId, byte[] data, long timeout) {
-        PASSTHRU_MSG msg = passThruMessage(data);
+    public void writeMsg(int channelId, byte[] data, long timeout, TxFlags flag) {
+        PASSTHRU_MSG msg = passThruMessage(flag, data);
         LOGGER.trace("Write Msg: " + toString(msg));
         NativeLongByReference numMsg = new NativeLongByReference();
         numMsg.setValue(new NativeLong(1));
@@ -722,7 +821,7 @@ public final class J2534Impl implements J2534 {
                 numMsg,
                 new NativeLong(timeout)
             );
-           if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+        if (ret.intValue() != Status.NOERROR.getValue()) handleError(
                    "PassThruWriteMsgs", ret.intValue());
     }
 
@@ -810,6 +909,30 @@ public final class J2534Impl implements J2534 {
     }
 
     /**
+     * Clear the buffers on the communications channel.
+     * @param    channelId  - handle to the open communications channel
+     */
+    public void clearBuffers(int channelId) {
+        NativeLong ret = lib.PassThruIoctl(
+                new NativeLong(channelId),
+                new NativeLong(IOCtl.CLEAR_TX_BUFFER.getValue()),
+                null,
+                null
+            );
+        if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+                "PassThruIoctl (CLEAR_TX_BUFFER)", ret.intValue());
+
+        ret = lib.PassThruIoctl(
+                new NativeLong(channelId),
+                new NativeLong(IOCtl.CLEAR_RX_BUFFER.getValue()),
+                null,
+                null
+            );
+        if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+                "PassThruIoctl (CLEAR_RX_BUFFER)", ret.intValue());
+    }
+
+    /**
      * Disconnect a previously opened communications channel.
      * @param    channelId  - handle to the open communications channel
      */
@@ -846,7 +969,7 @@ public final class J2534Impl implements J2534 {
         byte[] bytes = new byte[msg.dataSize.intValue()];
         arraycopy(msg.data, 0, bytes, 0, bytes.length);
         String str = String.format(
-                "[protocolID=%d | rxStatus=%d | txFlags=%d | timestamp=%x |" +
+                "[protocolID=%d | rxStatus=0x%02x | txFlags=0x%02x | timestamp=0x%x |" +
                 " dataSize=%d | extraDataIndex=%d | data=%s]",
                 msg.protocolID.intValue(),
                 msg.rxStatus.intValue(),
@@ -860,23 +983,35 @@ public final class J2534Impl implements J2534 {
 
     private boolean isResponse(PASSTHRU_MSG msg) {
         if (msg.timestamp.intValue() != 0) {
-            switch (msg.rxStatus.intValue()) {
-                case 0x00:        // Normal message
+            switch (RxStatus.get(msg.rxStatus.intValue())) {
+                case RX_INDICATION:
                     return true;
     
-                case 0x01:        // Loopback message
+                case TX_LOOPBACK:
                     return loopback;
 
-                case 0x02:        // Receive start indication
+                case START_OF_MESSAGE:
                     return false;
     
-                case 0x04:        // Receive break indication
+                case RX_BREAK:
                     return false;
                     
-                case 0x09:        // Transmit done indication 
+                case TX_INDICATION: 
                     return false;
 
-                case 0x10:        // Receive pad error 
+                case TX_DONE_LOOPBACK: 
+                    return false;
+
+                case ISO15765_PADDING_ERROR:
+                    return false;
+                
+                case ISO15765_ADDR_TYPE:
+                    return false;
+                
+                case CAN_29BIT_ID:
+                    return false;
+
+                case UNDEFINED:
                     return false;
             }
         }
@@ -961,9 +1096,24 @@ public final class J2534Impl implements J2534 {
         return msg;
     }
 
+    private PASSTHRU_MSG passThruMessage(TxFlags flag, byte... data) {
+        PASSTHRU_MSG msg = passThruMessage(flag);
+        msg.dataSize = new NativeLong(data.length);
+        arraycopy(data, 0, msg.data, 0, data.length);
+        msg.write();
+        return msg;
+    }
+
     private PASSTHRU_MSG passThruMessage() {
         PASSTHRU_MSG msg = new PASSTHRU_MSG();
         msg.txFlags = new NativeLong(0);
+        msg.protocolID = protocolID;
+        return msg;
+    }
+
+    private PASSTHRU_MSG passThruMessage(TxFlags flag) {
+        PASSTHRU_MSG msg = new PASSTHRU_MSG();
+        msg.txFlags = new NativeLong(flag.getValue());
         msg.protocolID = protocolID;
         return msg;
     }
@@ -992,14 +1142,7 @@ public final class J2534Impl implements J2534 {
         if (ret.intValue() != Status.NOERROR.getValue()) handleError(
                 "PassThruStartMsgFilter", ret.intValue());
 
-        ret = lib.PassThruIoctl(
-                new NativeLong(channelId),
-                new NativeLong(IOCtl.CLEAR_RX_BUFFER.getValue()),
-                null,
-                null
-            );
-        if (ret.intValue() != Status.NOERROR.getValue()) handleError(
-                "PassThruIoctl (CLEAR_RX_BUFFER)", ret.intValue());
+        clearBuffers(channelId);
         return msgId.getValue().intValue();
     }
 

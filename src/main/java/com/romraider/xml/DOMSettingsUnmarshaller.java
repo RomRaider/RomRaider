@@ -225,7 +225,7 @@ public final class DOMSettingsUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
                 settings.setRefreshMode(unmarshallAttribute(n, "refresh", false));
-                settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
+                Settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
                 settings.setFastPoll(unmarshallAttribute(n, "fastpoll", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("protocol")) {

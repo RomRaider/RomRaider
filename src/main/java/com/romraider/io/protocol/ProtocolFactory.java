@@ -19,17 +19,18 @@
 
 package com.romraider.io.protocol;
 
+import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
 import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
 
 public final class ProtocolFactory {
     private ProtocolFactory() {
     }
 
-    public static Protocol getProtocol(String protocol, String transport) {
+    public static LoggerProtocol getProtocol(String protocol, String transport) {
         String className = getClassName(protocol, transport);
         try {
             Class<?> cls = Class.forName(className);
-            return (Protocol) cls.newInstance();
+            return (LoggerProtocol) cls.newInstance();
         } catch (Exception e) {
             throw new UnsupportedProtocolException("Protocol class for " +
                     protocol + "/" + transport + " not found: " + className);
@@ -39,6 +40,6 @@ public final class ProtocolFactory {
     private static String getClassName(String protocol, String transport) {
         Package pkg = ProtocolFactory.class.getPackage();
         return pkg.getName() + "." + protocol.toLowerCase() + "." +
-        transport.toLowerCase() + "." + protocol.toUpperCase() + "Protocol";
+        transport.toLowerCase() + "." + protocol.toUpperCase() + "LoggerProtocol";
     }
 }

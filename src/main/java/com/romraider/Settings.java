@@ -77,6 +77,8 @@ public class Settings implements Serializable {
     public static final int DEFAULT_EDITOR_ICON_SCALE = 50;
     public static final int DEFAULT_TABLE_ICON_SCALE = 70;
 
+    private static final String ISO15765 = "ISO15765";
+    private static final String ISO9141 = "ISO9141";
     private final Dimension windowSize = new Dimension(800, 600);
     private final Point windowLocation = new Point();
     private int splitPaneLocation = 150;
@@ -127,12 +129,12 @@ public class Settings implements Serializable {
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
     private Map<String, String> loggerPluginPorts;
     private boolean loggerRefreshMode;
-    private byte loggerDestinationId = 0x10;
+    private static byte loggerDestinationId = 0x10;
     private boolean fastPoll = true;
     private double loggerDividerLocation = 400;
     private String loggerDebuggingLevel = "info";
     private static String j2534Device;
-    private static String transportProtocol;
+    private static String transportProtocol = ISO9141;
 
     private String tableClipboardFormat = DEFAULT_CLIPBOARD_FORMAT; // Currently 2 options.  Default and Airboy. Custom is not hooked up.
     private String tableHeader = DEFAULT_TABLE_HEADER;
@@ -525,11 +527,11 @@ public class Settings implements Serializable {
         return loggerRefreshMode;
     }
 
-    public void setDestinationId(byte id) {
-        this.loggerDestinationId = id;
+    public static void setDestinationId(byte id) {
+        loggerDestinationId = id;
     }
 
-    public byte getDestinationId() {
+    public static byte getDestinationId() {
         return loggerDestinationId;
     }
 
@@ -651,5 +653,12 @@ public class Settings implements Serializable {
 
     public boolean isLogExternalsOnly() {
         return logExternalsOnly;
+    }
+
+    public static boolean isCanBus() {
+        if (transportProtocol.equals(ISO15765)) {
+            return true;
+        }
+        return false;
     }
 }

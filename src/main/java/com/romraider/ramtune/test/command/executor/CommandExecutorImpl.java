@@ -26,22 +26,19 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class CommandExecutorImpl implements CommandExecutor {
-    private final ConnectionProperties connectionProperties;
-    private final String port;
+    private final ConnectionManager connectionManager;
 
     public CommandExecutorImpl(ConnectionProperties connectionProperties, String port) {
         checkNotNull(connectionProperties);
         checkNotNullOrEmpty(port, "port");
-        this.connectionProperties = connectionProperties;
-        this.port = port;
+        this.connectionManager = getManager(port, connectionProperties);
     }
 
     public byte[] executeCommand(byte[] command) {
-        ConnectionManager connectionManager = getManager(port, connectionProperties);
-        try {
-            return connectionManager.send(command);
-        } finally {
-            connectionManager.close();
-        }
+        return connectionManager.send(command);
+    }
+
+    public void close() {
+        connectionManager.close();
     }
 }

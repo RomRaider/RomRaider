@@ -19,6 +19,8 @@
 
 package com.romraider.io.j2534.api;
 
+import com.romraider.io.j2534.api.J2534Impl.TxFlags;
+
 public interface J2534 {
     int open();
 
@@ -37,13 +39,13 @@ public interface J2534 {
     int startBlockMsgFilter(int channelId, byte[] mask, byte[] pattern);
 
     int startFlowCntrlFilter(int channelId, byte[] mask,
-            byte[] pattern, byte[] flowCntrl);
+            byte[] pattern, byte[] flowCntrl, TxFlags flag);
 
     byte[] fastInit(int channelId, byte[] input);
 
     double getVbattery(int channelId);
 
-    void writeMsg(int channelId, byte[] data, long timeout);
+    void writeMsg(int channelId, byte[] data, long timeout, TxFlags flag);
 
     byte[] readMsg(int channelId, int numMsg, long timeout);
 
@@ -52,6 +54,8 @@ public interface J2534 {
     void readMsg(int channelId, byte[] response, long timeout);
 
     void stopMsgFilter(int channelId, int msgId);
+
+    void clearBuffers(int channelId);
 
     void disconnect(int channelId);
 

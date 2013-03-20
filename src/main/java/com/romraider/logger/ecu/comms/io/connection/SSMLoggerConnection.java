@@ -19,9 +19,10 @@
 
 package com.romraider.logger.ecu.comms.io.connection;
 
+import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionManager;
+import com.romraider.io.protocol.ProtocolFactory;
 import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
-import com.romraider.logger.ecu.comms.io.protocol.SSMLoggerProtocol;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
@@ -34,12 +35,15 @@ import java.util.Collection;
 
 public final class SSMLoggerConnection implements LoggerConnection {
     private static final Logger LOGGER = getLogger(SSMLoggerConnection.class);
-    private final LoggerProtocol protocol = new SSMLoggerProtocol();
+    private final LoggerProtocol protocol;
     private final ConnectionManager manager;
 
     public SSMLoggerConnection(ConnectionManager manager) {
         checkNotNull(manager, "manager");
         this.manager = manager;
+        this.protocol = ProtocolFactory.getProtocol(
+                Settings.getLoggerProtocol(),
+                Settings.getTransportProtocol());
     }
 
     public void ecuReset(byte id) {

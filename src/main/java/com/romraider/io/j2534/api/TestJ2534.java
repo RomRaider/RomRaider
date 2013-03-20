@@ -25,6 +25,7 @@ import static com.romraider.util.LogManager.initDebugLogging;
 import com.romraider.io.j2534.api.J2534Impl.Config;
 import com.romraider.io.j2534.api.J2534Impl.Flag;
 import com.romraider.io.j2534.api.J2534Impl.Protocol;
+import com.romraider.io.j2534.api.J2534Impl.TxFlags;
 
 /**
  * This class is used to exercise the J2534 API against a real J2534 device and
@@ -50,7 +51,7 @@ public class TestJ2534 {
                             (byte) 0x80, (byte) 0x10, (byte) 0xF0,
                             (byte) 0x01, (byte) 0xBF, (byte) 0x40};
 
-                    api.writeMsg(channelId, ecuInit, 55L);
+                    api.writeMsg(channelId, ecuInit, 55L, TxFlags.NO_FLAGS);
                     System.out.println("Request  = " + asHex(ecuInit));
 
                     byte[] response = api.readMsg(channelId, 1, 2000L);

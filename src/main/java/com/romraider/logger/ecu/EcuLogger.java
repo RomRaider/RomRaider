@@ -1185,6 +1185,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 else {
                     settings.setLogExternalsOnly(true);
                 }
+                sleep(2000L);
                 startLogging();
             }
         });
@@ -1200,10 +1201,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 else {
                     settings.setLogExternalsOnly(true);
                 }
+                sleep(2000L);
                 startLogging();
             }
         });
-        if (settings.getDestinationId() == 0x10) {
+        if (Settings.getDestinationId() == 0x10) {
             ecuCheckBox.setSelected(true);
             tcuCheckBox.setSelected(false);
             setTargetEcu();
@@ -1253,12 +1255,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void setTargetEcu() {
-        settings.setDestinationId(ECU_ID);
+        Settings.setDestinationId(ECU_ID);
         target = "ECU";
     }
 
     private void setTargetTcu() {
-        settings.setDestinationId(TCU_ID);
+        Settings.setDestinationId(TCU_ID);
         target = "TCU";
     }
 

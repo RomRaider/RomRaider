@@ -43,9 +43,9 @@ public final class ResetManagerImpl implements ResetManager {
             LoggerConnection connection = getConnection(Settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
-                if (settings.getDestinationId() == 0x18) target = "TCU";
+                if (Settings.getDestinationId() == 0x18) target = "TCU";
                 messageListener.reportMessage("Sending " + target + " Reset...");
-                connection.ecuReset(settings.getDestinationId());
+                connection.ecuReset(Settings.getDestinationId());
                 messageListener.reportMessage("Sending " + target + " Reset...done.");
                 return true;
             } finally {
