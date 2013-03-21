@@ -125,13 +125,14 @@ public final class SSMProtocol implements Protocol {
         return new SSMEcuInit(parseResponseData(processedResponse));
     }
 
-    public byte[] constructEcuResetRequest(byte id) {
+    public final byte[] constructEcuResetRequest(byte id) {
         //  80 10 F0 05 B8 00 00 60 40 DD
-        //FIXME: Create a buildWriteAddressRequest() method
         checkGreaterThanZero(id, "ECU_ID");
         SSMProtocol.ECU_ID = id;
-        byte[] resetDataBytes = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x60, (byte) 0x40};
-        return buildRequest(WRITE_ADDRESS_COMMAND, false, resetDataBytes);
+        final byte[] resetAddress = new byte[]{
+                (byte) 0x00, (byte) 0x00, (byte) 0x60};
+        final byte reset = 0x40;
+        return constructWriteAddressRequest(resetAddress, reset);
     }
 
     public void checkValidEcuResetResponse(byte[] processedResponse) {
