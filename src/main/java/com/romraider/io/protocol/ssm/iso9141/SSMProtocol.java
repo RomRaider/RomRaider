@@ -19,6 +19,9 @@
 
 package com.romraider.io.protocol.ssm.iso9141;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
 
@@ -174,28 +177,34 @@ public final class SSMProtocol implements Protocol {
         };
     }
 
-    //TODO: Clean up SSM request building... pretty ugly at the moment..
-    private byte[] buildRequest(byte command, boolean padContent, byte[]... content) {
-        byte[] data = new byte[0];
+    private final byte[] buildRequest(byte command, boolean padContent,
+            byte[]... content) {
+    
+        int length = 0;
         for (byte[] tmp : content) {
-            byte[] tmp2 = new byte[data.length + tmp.length];
-            System.arraycopy(data, 0, tmp2, 0, data.length);
-            System.arraycopy(tmp, 0, tmp2, data.length, tmp.length);
-            data = tmp2;
+            length += tmp.length;
         }
-        byte[] request = new byte[data.length + (padContent ? REQUEST_NON_DATA_BYTES : RESPONSE_NON_DATA_BYTES)];
-        int i = 0;
-        request[i++] = HEADER;
-        request[i++] = ECU_ID;
-        request[i++] = DIAGNOSTIC_TOOL_ID;
-        request[i++] = asByte(data.length + (padContent ? 2 : 1));
-        request[i++] = command;
+        final ByteArrayOutputStream bb = new ByteArrayOutputStream(length);
+        bb.write(HEADER);
+        bb.write(ECU_ID);
+        bb.write(DIAGNOSTIC_TOOL_ID);
+        bb.write(Integer.valueOf(length + (padContent ? 2 : 1)).byteValue());
+        bb.write(command);
         if (padContent) {
-            request[i++] = (pollState.isFastPoll() ?  READ_ADDRESS_CONTINUOUS : READ_ADDRESS_ONCE);
+            bb.write((pollState.isFastPoll() ? 
+                    READ_ADDRESS_CONTINUOUS : READ_ADDRESS_ONCE));
         }
-        System.arraycopy(data, 0, request, i, data.length);
-        request[request.length - 1] = calculateChecksum(request);
+        for (byte[] tmp : content) {
+            try {
+                bb.write(tmp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        bb.write((byte) 0x00);
+        final byte[] request = bb.toByteArray();
+        final byte cs = calculateChecksum(request);
+        request[request.length - 1] = cs;
         return request;
     }
-
 }
