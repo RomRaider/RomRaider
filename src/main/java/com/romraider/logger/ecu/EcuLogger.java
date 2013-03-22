@@ -1188,7 +1188,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 else {
                     settings.setLogExternalsOnly(true);
                 }
-                sleep(2000L);
                 startLogging();
             }
         });
@@ -1204,7 +1203,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 else {
                     settings.setLogExternalsOnly(true);
                 }
-                sleep(2000L);
                 startLogging();
             }
         });
@@ -1384,7 +1382,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     public void stopLogging() {
         controller.stop();
-        sleep(1000L);
     }
 
     private void stopPlugins() {

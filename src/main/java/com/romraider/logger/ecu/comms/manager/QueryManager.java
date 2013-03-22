@@ -36,4 +36,6 @@ public interface QueryManager extends Runnable {
     void stop();
 
     void addListener(StatusChangeListener listener);
+
+    Thread getThread();
 }

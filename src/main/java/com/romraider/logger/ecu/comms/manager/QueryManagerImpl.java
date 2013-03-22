@@ -125,6 +125,10 @@ public final class QueryManagerImpl implements QueryManager {
         }
     }
 
+    public Thread getThread() {
+        return queryManagerThread;
+    }
+
     public boolean isRunning() {
         return started && !stop;
     }
@@ -363,9 +367,6 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     public void stop() {
-        if (queryManagerThread != null) {
-            queryManagerThread.interrupt();
-        }
         stop = true;
     }
 

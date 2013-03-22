@@ -19,12 +19,11 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
+import java.awt.event.ActionEvent;
+
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.swing.menubar.action.AbstractAction;
-import com.romraider.util.ThreadUtil;
-
-import java.awt.event.ActionEvent;
 
 public final class CanBusModeAction extends AbstractAction {
 
@@ -41,7 +40,6 @@ public final class CanBusModeAction extends AbstractAction {
                 Settings.setTransportProtocol("ISO9141");
             }
             logger.stopLogging();
-            ThreadUtil.sleep(2000L);
             logger.startLogging();
         } catch (Exception e) {
             logger.reportError(e);

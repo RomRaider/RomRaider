@@ -74,6 +74,30 @@ public final class LoggerControllerImpl implements LoggerController {
     }
 
     public synchronized void stop() {
-        if (isStarted()) queryManager.stop();
+        if (isStarted() && queryManager.getThread().isAlive()) {
+            queryManager.stop();
+            try {
+                LOGGER.debug(String.format(
+                        "%s - Stopping QueryManager: %s",
+                        this.getClass().getSimpleName(),
+                        queryManager.getThread().getName()));
+                queryManager.getThread().interrupt();
+                LOGGER.debug(String.format(
+                        "%s - Waiting for QueryManager %s to terminate",
+                        this.getClass().getSimpleName(),
+                        queryManager.getThread().getName()));
+                queryManager.getThread().join();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            finally {
+                LOGGER.debug(String.format(
+                        "%s - QueryManager %s state: %s",
+                        this.getClass().getSimpleName(),
+                        queryManager.getThread().getName(),
+                        queryManager.getThread().getState()));
+            }
+        }
     }
 }
