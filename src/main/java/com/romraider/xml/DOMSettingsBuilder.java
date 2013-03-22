@@ -242,6 +242,7 @@ public final class DOMSettingsBuilder {
 
     private IIOMetadataNode buildLogger(Settings settings) {
         IIOMetadataNode loggerSettings = new IIOMetadataNode("logger");
+        loggerSettings.setAttribute("locale", settings.getLocale());
 
         // serial connection
         IIOMetadataNode serial = new IIOMetadataNode("serial");

@@ -24,6 +24,7 @@ import static java.awt.event.InputEvent.ALT_MASK;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.InputEvent.SHIFT_MASK;
 import static java.awt.event.KeyEvent.VK_A;
+import static java.awt.event.KeyEvent.VK_B;
 import static java.awt.event.KeyEvent.VK_C;
 import static java.awt.event.KeyEvent.VK_D;
 import static java.awt.event.KeyEvent.VK_E;
@@ -62,6 +63,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.LoadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileAbsoluteTimestampAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileControllerSwitchAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileLocationAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileNumberFormatAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebugLocationAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebuggingLevelAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDefinitionLocationAction;
@@ -110,6 +112,9 @@ public class EcuLoggerMenuBar extends JMenuBar {
         settingsMenu.add(canBus);
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));
+        final RadioButtonMenuItem numFormat = new RadioButtonMenuItem("Use US English number format in Log File", VK_B, getKeyStroke(VK_B, CTRL_MASK), new LogFileNumberFormatAction(logger), logger.getSettings().isUsNumberFormat()); 
+        numFormat.setToolTipText("Select to force log files to be written with . decimal point and , field separator");
+        settingsMenu.add(numFormat);
         add(settingsMenu);
 
         // connection menu items

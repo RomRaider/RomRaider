@@ -30,6 +30,7 @@ import java.awt.Font;
 import java.awt.Point;
 import java.io.File;
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -79,6 +80,10 @@ public class Settings implements Serializable {
 
     private static final String ISO15765 = "ISO15765";
     private static final String ISO9141 = "ISO9141";
+    private static final String SYSTEM_NUMFORMAT = "system";
+    private static final String USER_LANGUAGE = "user.language";
+    private static final String USER_COUNTRY = "user.country";
+    private static final String EN_US = "en_US";
     private final Dimension windowSize = new Dimension(800, 600);
     private final Point windowLocation = new Point();
     private int splitPaneLocation = 150;
@@ -119,6 +124,7 @@ public class Settings implements Serializable {
     private boolean fileLoggingAbsoluteTimestamp;
     private String logfileNameText;
     private boolean logExternalsOnly;
+    private static String userLocale = SYSTEM_NUMFORMAT; 
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();
@@ -660,5 +666,27 @@ public class Settings implements Serializable {
             return true;
         }
         return false;
+    }
+
+    public final boolean isUsNumberFormat() {
+        if (userLocale.equalsIgnoreCase(EN_US)) {
+            return true;
+        }
+        return false;
+    }
+
+    public final String getLocale() {
+        return userLocale;
+    }
+
+    public final void setLocale(String locale) {
+        userLocale = locale;
+        if (!locale.equalsIgnoreCase(SYSTEM_NUMFORMAT)) {
+            final String[] language = locale.split("_");
+            System.setProperty(USER_LANGUAGE, language[0]);
+            System.setProperty(USER_COUNTRY, language[1]);
+            final Locale lc = new Locale(language[0], language[1]);
+            Locale.setDefault(lc);
+        }
     }
 }

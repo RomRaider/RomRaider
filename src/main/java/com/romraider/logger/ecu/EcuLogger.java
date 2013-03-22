@@ -296,6 +296,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         checkNotNull(settings);
         this.settings = settings;
         Logger.getRootLogger().setLevel(Level.toLevel(settings.getLoggerDebuggingLevel()));
+        LOGGER.info("Logger locale: " + System.getProperty("user.language") +
+                "_" + System.getProperty("user.country"));
+
         if (ecuEditor == null) {
             JProgressBar progressBar = startbar();
             bootstrap();

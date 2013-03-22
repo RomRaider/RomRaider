@@ -218,6 +218,9 @@ public final class DOMSettingsUnmarshaller {
 
     private Settings unmarshallLogger(Node loggerNode, Settings settings) {
         NodeList nodes = loggerNode.getChildNodes();
+        if (loggerNode.getNodeType() == ELEMENT_NODE && loggerNode.getNodeName().equalsIgnoreCase("logger")) {
+            settings.setLocale(unmarshallAttribute(loggerNode, "locale", "system"));
+        } 
 
         for (int i = 0; i < nodes.getLength(); i++) {
             Node n = nodes.item(i);
