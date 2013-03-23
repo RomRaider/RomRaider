@@ -208,6 +208,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String UNSELECT_ALL_TT_TEXT = "Un-select all selected parameters/switches on all tabs! (F9)";
     private static final byte ECU_ID = (byte) 0x10;
     private static final byte TCU_ID = (byte) 0x18;
+    private static final String LOG_TO_FILE_FK = "F1";
+    private static final String LOG_TO_FILE_ICON = "/graphics/logger_log_to_file.png";
+    private static final String LOG_TO_FILE_START = "Start file log";
+    private static final String LOG_TO_FILE_STOP = "Stop file log";
+    private static final String LOG_TO_FILE_TT_TEXT = "Start/stop file logging (F1)";
     private static String target = "ECU";
     private static String loadResult  = "";
     private String defVersion;
@@ -1132,28 +1137,37 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return panel;
     }
 
-    private Component buildLogToFileButton() {
-        logToFileButton = new JToggleButton("Log to file", new ImageIcon( getClass().getResource("/graphics/logger_log_to_file.png")));
-        logToFileButton.setToolTipText("Start/stop file logging (F1)");
-        //logToFileButton.setPreferredSize(new Dimension(100, 25));
+    private final Component buildLogToFileButton() {
+        logToFileButton = new JToggleButton(
+                LOG_TO_FILE_START, 
+                new ImageIcon(getClass().getResource(LOG_TO_FILE_ICON)));
+        logToFileButton.setToolTipText(LOG_TO_FILE_TT_TEXT);
         logToFileButton.setBackground(GREEN);
         logToFileButton.setOpaque(true);
-        logToFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (logToFileButton.isSelected() && controller.isStarted()) {
-                    fileUpdateHandler.start();
-                    logToFileButton.setBackground(RED);
-                } else {
-                    fileUpdateHandler.stop();
-                    if (!controller.isStarted()) statusIndicator.stopped();
-                    logToFileButton.setBackground(GREEN);
-                    logToFileButton.setSelected(false);
+        logToFileButton.addActionListener(
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    if (logToFileButton.isSelected() && controller.isStarted()) {
+                        fileUpdateHandler.start();
+                        logToFileButton.setBackground(RED);
+                        logToFileButton.setText(LOG_TO_FILE_STOP);
+                    }
+                    else {
+                        fileUpdateHandler.stop();
+                        if (!controller.isStarted()) statusIndicator.stopped();
+                        logToFileButton.setBackground(GREEN);
+                        logToFileButton.setSelected(false);
+                        logToFileButton.setText(LOG_TO_FILE_START);
+                    }
                 }
             }
-        });
-        logToFileButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F1"), "toggleFileLogging");
-        logToFileButton.getActionMap().put("toggleFileLogging", new ToggleButtonAction(this, logToFileButton));
+        );
+        logToFileButton.getInputMap(
+                WHEN_IN_FOCUSED_WINDOW).put(
+                        getKeyStroke(LOG_TO_FILE_FK), "toggleFileLogging");
+        logToFileButton.getActionMap().put(
+                "toggleFileLogging", new ToggleButtonAction(this, logToFileButton));
         return logToFileButton;
     }
 
