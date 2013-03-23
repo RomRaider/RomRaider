@@ -786,13 +786,13 @@ public final class J2534Impl implements J2534 {
 
     /**
      * This function reads the battery voltage on pin 16 of the J2534 interface.
-     * @param  channelId - handle to the open communications channel
+     * @param  deviceId - handle to the PassThru device
      * @return battery voltage in VDC
      */
-    public double getVbattery(int channelId) {
+    public double getVbattery(int deviceId) {
         NativeLongByReference vBatt = new NativeLongByReference();
         NativeLong ret = lib.PassThruIoctl(
-                new NativeLong(channelId),
+                new NativeLong(deviceId),
                 new NativeLong(IOCtl.READ_VBATT.getValue()),
                 null,
                 vBatt.getPointer()

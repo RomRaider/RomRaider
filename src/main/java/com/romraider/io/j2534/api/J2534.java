@@ -43,7 +43,7 @@ public interface J2534 {
 
     byte[] fastInit(int channelId, byte[] input);
 
-    double getVbattery(int channelId);
+    double getVbattery(int deviceId);
 
     void writeMsg(int channelId, byte[] data, long timeout, TxFlags flag);
 
