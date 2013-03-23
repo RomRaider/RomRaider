@@ -79,6 +79,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -95,6 +96,7 @@ public final class RamTuneTestApp extends AbstractFrame {
     private static final String REGEX_VALID_ADDRESS_BYTES = "[0-9a-fA-F]{6}";
     private static final String REGEX_VALID_DATA_BYTES = "[0-9a-fA-F]{2,}";
     private static final PollingState pollMode = new PollingStateImpl();
+    private static final String ISO9141 = "ISO9141";
     private static Protocol protocol;
     private final Settings settings;
     private final JTextField addressField = new JTextField(6);
@@ -105,15 +107,22 @@ public final class RamTuneTestApp extends AbstractFrame {
     private final SerialPortComboBox portsComboBox;
     private final JComboBox commandComboBox;
     private static byte ecuId = 0x10;
+    private static String userTp;
+    private static String userLibrary;
 
     public RamTuneTestApp(String title) {
         super(title);
         final SettingsManager manager = new SettingsManagerImpl();
         settings = manager.load();
         portsComboBox = new SerialPortComboBox(settings);
+        userTp = Settings.getTransportProtocol();
+        userLibrary = Settings.getJ2534Device();
+        Settings.setTransportProtocol(ISO9141);
+        // Read Address blocks only seems to work with ISO9141, it
+        // may not be implemented in the ECU for ISO15765
         final LoggerProtocol lp = ProtocolFactory.getProtocol(
                 "SSM",
-                "ISO9141"
+                ISO9141
                 );
         protocol = lp.getProtocol();
         commandComboBox = new JComboBox(new CommandGenerator[]{
@@ -446,4 +455,9 @@ public final class RamTuneTestApp extends AbstractFrame {
         });
     }
 
+    @Override
+    public void windowClosing(WindowEvent e) {
+        Settings.setTransportProtocol(userTp);
+        Settings.setJ2534Device(userLibrary);
+    }
 }
