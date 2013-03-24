@@ -173,6 +173,7 @@ import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.util.JREChecker;
 import com.romraider.util.SettingsManagerImpl;
+import com.romraider.util.FormatFilename;
 import com.romraider.util.ThreadUtil;
 
 /*
@@ -588,9 +589,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             String path = isNullOrEmpty(profileFilePath) ? (HOME + BACKUP_PROFILE) : profileFilePath;
             UserProfile profile = profileLoader.loadProfile(path);
             applyUserProfile(profile);
-            File profileFile = new File(path);
-            if (profileFile.exists()) reportMessageInTitleBar("Profile: " + profileFile.getAbsolutePath());
-        } catch (Exception e) {
+            final File profileFile = new File(path);
+            if (profileFile.exists()) {
+                reportMessageInTitleBar(
+                    "Profile: " + FormatFilename.getShortName(profileFile));
+            }
+        }
+        catch (Exception e) {
             reportError(e);
         }
     }

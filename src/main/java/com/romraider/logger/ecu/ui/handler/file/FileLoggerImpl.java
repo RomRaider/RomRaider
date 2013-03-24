@@ -22,6 +22,8 @@ package com.romraider.logger.ecu.ui.handler.file;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.exception.FileLoggerException;
 import com.romraider.logger.ecu.ui.MessageListener;
+import com.romraider.util.FormatFilename;
+
 import static com.romraider.util.ParamChecker.checkNotNull;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -53,7 +55,9 @@ public final class FileLoggerImpl implements FileLogger {
             try {
                 String filePath = buildFilePath();
                 os = new BufferedOutputStream(new FileOutputStream(filePath));
-                messageListener.reportMessageInTitleBar("Started logging to file: " + filePath);
+                messageListener.reportMessageInTitleBar(
+                        "Started logging to file: " + 
+                        FormatFilename.getShortName(filePath));
                 zero = true;
             } catch (Exception e) {
                 stop();
