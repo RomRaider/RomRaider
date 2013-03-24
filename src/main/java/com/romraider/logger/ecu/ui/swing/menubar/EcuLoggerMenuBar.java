@@ -20,6 +20,8 @@
 package com.romraider.logger.ecu.ui.swing.menubar;
 
 import static com.romraider.Version.PRODUCT_NAME;
+import static com.romraider.util.Platform.WINDOWS;
+import static com.romraider.util.Platform.isPlatform;
 import static java.awt.event.InputEvent.ALT_MASK;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.InputEvent.SHIFT_MASK;
@@ -109,7 +111,9 @@ public class EcuLoggerMenuBar extends JMenuBar {
         settingsMenu.add(fastPoll);
         RadioButtonMenuItem canBus = new RadioButtonMenuItem("CAN bus Logging (2007+)", VK_N, getKeyStroke(VK_N, CTRL_MASK), new CanBusModeAction(logger), Settings.isCanBus());
         canBus.setToolTipText("Select to enable logging via CAN bus using a J2534 compatible cable");
-        settingsMenu.add(canBus);
+        if (isPlatform(WINDOWS)) {
+            settingsMenu.add(canBus);
+        }
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));
         final RadioButtonMenuItem numFormat = new RadioButtonMenuItem("Use US English number format in Log File", VK_B, getKeyStroke(VK_B, CTRL_MASK), new LogFileNumberFormatAction(logger), logger.getSettings().isUsNumberFormat()); 
