@@ -57,4 +57,19 @@ public final class RamTuneTestAppConnectionProperties implements ConnectionPrope
     public int getSendTimeout() {
         return sendTimeout > 0 ? sendTimeout : defaultConnectionProperties.getSendTimeout();
     }
+
+    public String toString() {
+        final String properties = String.format(
+                "%s[baudRate=%d, dataBits=%d, stopBits=%d, parity=%d, " + 
+                "connectTimeout=%d, sendTimeout=%d]",
+            getClass().getSimpleName(),
+            getBaudRate(),
+            getDataBits(),
+            getStopBits(),
+            getParity(),
+            getConnectTimeout(),
+            getSendTimeout()
+        );
+        return properties;
+    }
 }
