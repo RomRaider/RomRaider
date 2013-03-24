@@ -61,30 +61,51 @@ public final class TxsRunner implements Stoppable{
 
     public void run() {
         try {
+        	
+        	LOGGER.trace("TXS Runner Begin.");
+        	
             //Convert string into bytes[]
             byte[] device = txsDevice.getBytes();
             byte[] logger = this.txsLogger.getBytes();        
 
+            LOGGER.trace("TXS Runner Send Exit to Main Screen.");
+            
             //Exit to main screen 
             connection.write(EXIT);
+            
+            LOGGER.trace("TXS Runner Sleep 250 ms to exit to main.");
             //wait for exit to complete.
             Thread.sleep(250L);
             
+            LOGGER.trace("TXS Runner Readline 1.");
             String response = connection.readLine();
+            
+            if(response != null && response.trim().isEmpty() == false)
+            {
+            	LOGGER.trace("TXS Runner Readline 1 Response: "+ response);
+            }
+            
+            LOGGER.trace("TXS Runner Switching to Device. " + txsDevice);
             //Send command to switch device: utec / tuner.
             connection.write(device);
             
             //Read and Trace response switching device.
             response = connection.readLine();
-            LOGGER.trace("TXS Runner Response: " + response);
             
+            if(response != null && response.trim().isEmpty() == false)
+            {
+            	LOGGER.trace("TXS Runner Readline 2 Response: "+ response);
+            }
+            
+            LOGGER.trace("TXS Runner Start Logger.");
+                        
             //Start device logger
             connection.write(logger);
                     
             while (!stop) {
                 //Get Response from TXS Device
                 response = connection.readLine();
-                connection.write(logger);
+                //connection.write(logger);
                 
                 //Continue if no data was received.
                 if (isNullOrEmpty(response)) {
