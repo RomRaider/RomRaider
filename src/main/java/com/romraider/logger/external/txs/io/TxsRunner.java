@@ -58,26 +58,53 @@ public final class TxsRunner implements Stoppable{
         this.txsLogger = logger;        
         this.txsDevice = device;
     }
+    
+    public TxsRunner(ArrayList<TxsDataItem> dataItems)
+    {
+     this.connection = null;
+     this.dataItems = dataItems;
+    }
 
     public void run() {
         try {
+        	
+        	LOGGER.trace("TXS Runner Begin.");
+        	
             //Convert string into bytes[]
             byte[] device = txsDevice.getBytes();
             byte[] logger = this.txsLogger.getBytes();        
 
+            LOGGER.trace("TXS Runner Send Exit to Main Screen.");
+            
             //Exit to main screen 
             connection.write(EXIT);
+            
+            LOGGER.trace("TXS Runner Sleep 250 ms to exit to main.");
             //wait for exit to complete.
             Thread.sleep(250L);
             
+            LOGGER.trace("TXS Runner Readline 1.");
             String response = connection.readLine();
+            
+            if(response != null && response.trim().isEmpty() == false)
+            {
+            	LOGGER.trace("TXS Runner Readline 1 Response: "+ response);
+            }
+            
+            LOGGER.trace("TXS Runner Switching to Device. " + txsDevice);
             //Send command to switch device: utec / tuner.
             connection.write(device);
             
             //Read and Trace response switching device.
             response = connection.readLine();
-            LOGGER.trace("TXS Runner Response: " + response);
             
+            if(response != null && response.trim().isEmpty() == false)
+            {
+            	LOGGER.trace("TXS Runner Readline 2 Response: "+ response);
+            }
+            
+            LOGGER.trace("TXS Runner Start Logger.");
+                        
             //Start device logger
             connection.write(logger);
                     
@@ -112,7 +139,7 @@ public final class TxsRunner implements Stoppable{
         stop = true;
     }
     
-    private String[] SplitUtecString(String value) {
+    String[] SplitUtecString(String value) {
         try {
             value = value.trim();
             value = value.replaceAll(WHITESPACE_REGEX, SPLIT_DELIMITER);
@@ -124,17 +151,24 @@ public final class TxsRunner implements Stoppable{
         }
     }
     
-    private void SetDataItemValues(String[] values) {
-        for(int i = 0; i < values.length ; i++) {
-            //GetDataItem via Index Hash defined in DataSoruce
-            TxsDataItem dataItem = dataItems.get(i);
-            
-            if(dataItem != null) {
-                //Set value to dataItem
-                dataItem.setData(parseDouble(values[dataItem.getItemIndex()]));
-            }
-            
-        }
+    void SetDataItemValues(String[] values) {
+		for (TxsDataItem dataItem : dataItems)
+		{
+			if(dataItem != null) 
+			{
+				//Set value to dataItem
+				if(values.length < dataItem.getItemIndex())
+				{
+					LOGGER.trace("TXS DataItem: " + dataItem.getName() +  " Index requested: " + dataItem.getItemIndex() + " TXS data size: " + values.length);
+					dataItem.setData(0);
+				}
+				else
+				{
+					LOGGER.trace("TXS Setting DataItem: " + dataItem.getName());
+						dataItem.setData(parseDouble(values[dataItem.getItemIndex()]));	
+				}	
+			}
+		}    
     }
     
     private double parseDouble(String value) {

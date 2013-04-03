@@ -96,7 +96,7 @@ public class TxsUtecLogger1DataSource implements ExternalDataSource {
     }
     
     public String getVersion() {
-        return "2012.09.20";
+        return "2013.04.02";
     }
     
     public List<? extends ExternalDataItem> getDataItems() {
