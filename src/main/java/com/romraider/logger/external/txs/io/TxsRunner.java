@@ -58,6 +58,12 @@ public final class TxsRunner implements Stoppable{
         this.txsLogger = logger;        
         this.txsDevice = device;
     }
+    
+    public TxsRunner(ArrayList<TxsDataItem> dataItems)
+    {
+     this.connection = null;
+     this.dataItems = dataItems;
+    }
 
     public void run() {
         try {
@@ -133,7 +139,7 @@ public final class TxsRunner implements Stoppable{
         stop = true;
     }
     
-    private String[] SplitUtecString(String value) {
+    String[] SplitUtecString(String value) {
         try {
             value = value.trim();
             value = value.replaceAll(WHITESPACE_REGEX, SPLIT_DELIMITER);
@@ -145,17 +151,24 @@ public final class TxsRunner implements Stoppable{
         }
     }
     
-    private void SetDataItemValues(String[] values) {
-        for(int i = 0; i < values.length ; i++) {
-            //GetDataItem via Index Hash defined in DataSoruce
-            TxsDataItem dataItem = dataItems.get(i);
-            
-            if(dataItem != null) {
-                //Set value to dataItem
-                dataItem.setData(parseDouble(values[dataItem.getItemIndex()]));
-            }
-            
-        }
+    void SetDataItemValues(String[] values) {
+		for (TxsDataItem dataItem : dataItems)
+		{
+			if(dataItem != null) 
+			{
+				//Set value to dataItem
+				if(values.length < dataItem.getItemIndex())
+				{
+					LOGGER.trace("TXS DataItem: " + dataItem.getName() +  " Index requested: " + dataItem.getItemIndex() + " TXS data size: " + values.length);
+					dataItem.setData(0);
+				}
+				else
+				{
+					LOGGER.trace("TXS Setting DataItem: " + dataItem.getName());
+						dataItem.setData(parseDouble(values[dataItem.getItemIndex()]));	
+				}	
+			}
+		}    
     }
     
     private double parseDouble(String value) {
