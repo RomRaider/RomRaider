@@ -111,7 +111,7 @@ public final class TxsRunner implements Stoppable{
             while (!stop) {
                 //Get Response from TXS Device
                 response = connection.readLine();
-                //connection.write(logger);
+                connection.write(logger);
                 
                 //Continue if no data was received.
                 if (isNullOrEmpty(response)) {
