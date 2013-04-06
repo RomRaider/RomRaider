@@ -72,7 +72,7 @@ public class TxsTunerDataSource implements ExternalDataSource {
     }
     
     public String getVersion() {
-        return "2012.09.22";
+        return "2013.04.04";
     }
     
     public List<? extends ExternalDataItem> getDataItems() {
