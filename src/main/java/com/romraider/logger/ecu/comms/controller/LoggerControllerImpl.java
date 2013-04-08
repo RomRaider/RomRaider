@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ public final class LoggerControllerImpl implements LoggerController {
                         "%s - Waiting for QueryManager %s to terminate",
                         this.getClass().getSimpleName(),
                         queryManager.getThread().getName()));
-                queryManager.getThread().join();
+                queryManager.getThread().join(5000);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
