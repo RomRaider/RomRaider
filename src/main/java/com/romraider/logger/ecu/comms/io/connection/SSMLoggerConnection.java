@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,12 +31,17 @@ import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public final class SSMLoggerConnection implements LoggerConnection {
     private static final Logger LOGGER = getLogger(SSMLoggerConnection.class);
     private final LoggerProtocol protocol;
     private final ConnectionManager manager;
+    private List<EcuQuery> tcuQueries = new ArrayList<EcuQuery>();
+    private final Collection<EcuQuery> tcuSubQuery = new ArrayList<EcuQuery>();
 
     public SSMLoggerConnection(ConnectionManager manager) {
         checkNotNull(manager, "manager");
@@ -64,14 +69,59 @@ public final class SSMLoggerConnection implements LoggerConnection {
         protocol.processEcuInitResponse(callback, processedResponse);
     }
 
-    public void sendAddressReads(Collection<EcuQuery> queries, byte id, PollingState pollState) {
-        byte[] request = protocol.constructReadAddressRequest(id, queries);
-        if (pollState.getCurrentState() == 0) LOGGER.debug("Mode:" + pollState.getCurrentState() + " ECU Request  ---> " + asHex(request));
-        byte[] response = protocol.constructReadAddressResponse(queries, pollState);
-        manager.send(request, response, pollState);
-        byte[] processedResponse = protocol.preprocessResponse(request, response, pollState);
-        LOGGER.debug("Mode:" + pollState.getCurrentState() + " ECU Response <--- " + asHex(processedResponse));
-        protocol.processReadAddressResponses(queries, processedResponse, pollState);
+    public final void sendAddressReads(
+            Collection<EcuQuery> queries,
+            byte id, 
+            PollingState pollState) {
+
+        // Determine if ISO15765 is selected and then if TCU is selected.  If
+        // both are true then proceed to split queries so max CAN data packet
+        // contains 8 or less bytes, otherwise don't split up the queries.
+        if (Settings.isCanBus() && id == 0x18) {
+            tcuQueries = (ArrayList<EcuQuery>) queries;
+            final int tcuQueryListLength = tcuQueries.size();
+            for (int i = 0; i < tcuQueryListLength; i++) {
+                tcuSubQuery.clear();
+                tcuSubQuery.add(tcuQueries.get(i));
+                final int addrLength1 = tcuQueries.get(i).getAddresses().length;
+                int addrLength2 = -1;
+                if ((i + 1) < tcuQueryListLength) {
+                    addrLength2 = tcuQueries.get(i + 1).getAddresses().length;
+                }
+                if ((addrLength1 + addrLength2) == 2 ) {
+                    tcuSubQuery.add(tcuQueries.get(i + 1));
+                    i++;
+                }
+                final byte[] request = protocol.constructReadAddressRequest(
+                        id, tcuSubQuery);
+                LOGGER.debug("TCU CAN Request  ---> " + asHex(request));
+                final byte[] response = protocol.constructReadAddressResponse(
+                        tcuSubQuery, pollState);
+                manager.send(request, response, pollState);
+                final byte[] processedResponse = protocol.preprocessResponse(
+                        request, response, pollState);
+                LOGGER.debug("TCU CAN Response <--- " + asHex(processedResponse));
+                protocol.processReadAddressResponses(
+                        tcuSubQuery, processedResponse, pollState);
+            }
+        }
+        else {
+            final byte[] request = protocol.constructReadAddressRequest(
+                    id, queries);
+            if (pollState.getCurrentState() == 0) {
+                LOGGER.debug("Mode:" + pollState.getCurrentState() + 
+                        " ECU Request  ---> " + asHex(request));
+            }
+            final byte[] response = protocol.constructReadAddressResponse(
+                    queries, pollState);
+            manager.send(request, response, pollState);
+            final byte[] processedResponse = protocol.preprocessResponse(
+                    request, response, pollState);
+            LOGGER.debug("Mode:" + pollState.getCurrentState() + 
+                    " ECU Response <--- " + asHex(processedResponse));
+            protocol.processReadAddressResponses(
+                    queries, processedResponse, pollState);
+        }
     }
 
     public void clearLine() {
