@@ -60,6 +60,7 @@ public final class SSMProtocol implements Protocol {
     public static final int RESPONSE_NON_DATA_BYTES = 6;
     public static final int REQUEST_NON_DATA_BYTES = 7;
     private final PollingState pollState = new PollingStateImpl();
+    private final ByteArrayOutputStream bb = new ByteArrayOutputStream(255);
     
     public byte[] constructEcuInitRequest(byte id) {
         checkGreaterThanZero(id, "ECU_ID");
@@ -185,7 +186,7 @@ public final class SSMProtocol implements Protocol {
         for (byte[] tmp : content) {
             length += tmp.length;
         }
-        final ByteArrayOutputStream bb = new ByteArrayOutputStream(length);
+        bb.reset();
         bb.write(HEADER);
         bb.write(ECU_ID);
         bb.write(DIAGNOSTIC_TOOL_ID);
