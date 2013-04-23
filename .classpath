@@ -43,5 +43,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/common/phidget21.jar"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="output" path="target"/>
 </classpath>
