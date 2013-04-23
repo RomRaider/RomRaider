@@ -47,7 +47,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
         api = null;
         timeout = (long) 2000;
         initJ2534(500000, library);
-        LOGGER.info("J2534/ISO1576 connection initialized");
+        LOGGER.info("J2534/ISO15765 connection initialized");
     }
 
     // Send request and wait for response with known length
@@ -71,7 +71,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     }
 
     public void clearLine() {
-//        LOGGER.debug("J2534/ISO1576 clearing buffers");
+//        LOGGER.debug("J2534/ISO15765 clearing buffers");
 //        api.clearBuffers(channelId);
     }
 
@@ -107,15 +107,15 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
                     flowCntrl, TxFlags.ISO15765_FRAME_PAD);
 
             LOGGER.debug(String.format(
-                    "J2534/ISO1576 success: deviceId:%d, channelId:%d, msgId:%d",
+                    "J2534/ISO15765 success: deviceId:%d, channelId:%d, msgId:%d",
                     deviceId, channelId, msgId));
         }
         catch (Exception e) {
             LOGGER.debug(String.format(
-                    "J2534/ISO1576 exception: deviceId:%d, channelId:%d, msgId:%d",
+                    "J2534/ISO15765 exception: deviceId:%d, channelId:%d, msgId:%d",
                     deviceId, channelId, msgId));
             close();
-            throw new J2534Exception("J2534/ISO1576 Error opening device: " + 
+            throw new J2534Exception("J2534/ISO15765 Error opening device: " + 
                     e.getMessage(), e);
         }
     }
@@ -140,9 +140,9 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     private void stopFcFilter() {
         try {
             api.stopMsgFilter(channelId, msgId);
-            LOGGER.debug("J2534/ISO1576 stopped message filter:" + msgId);
+            LOGGER.debug("J2534/ISO15765 stopped message filter:" + msgId);
         } catch (Exception e) {
-            LOGGER.warn("J2534/ISO1576 Error stopping msg filter: " + 
+            LOGGER.warn("J2534/ISO15765 Error stopping msg filter: " + 
                     e.getMessage());
         }
     }
@@ -150,9 +150,9 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     private void disconnectChannel() {
         try {
             api.disconnect(channelId);
-            LOGGER.debug("J2534/ISO1576 disconnected channel:" + channelId);
+            LOGGER.debug("J2534/ISO15765 disconnected channel:" + channelId);
         } catch (Exception e) {
-            LOGGER.warn("J2534/ISO1576 Error disconnecting channel: " + 
+            LOGGER.warn("J2534/ISO15765 Error disconnecting channel: " + 
                     e.getMessage());
         }
     }
@@ -160,9 +160,9 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     private void closeDevice() {
         try {
             api.close(deviceId);
-            LOGGER.info("J2534/ISO1576 closed connection to device:" + deviceId);
+            LOGGER.info("J2534/ISO15765 closed connection to device:" + deviceId);
         } catch (Exception e) {
-            LOGGER.warn("J2534/ISO1576 Error closing device: " + e.getMessage());
+            LOGGER.warn("J2534/ISO15765 Error closing device: " + e.getMessage());
         }
     }
 }
