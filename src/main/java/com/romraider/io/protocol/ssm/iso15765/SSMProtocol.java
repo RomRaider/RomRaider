@@ -46,6 +46,7 @@ public final class SSMProtocol implements Protocol {
             new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe9};
     private static final byte[] resetAddress = 
             new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x60};
+    private final ByteArrayOutputStream bb = new ByteArrayOutputStream(255);
     private static byte[] TESTER = ECU_TESTER;
     public static byte[] ECU_ID = ECU_CALID;
     public static final byte READ_MEMORY_PADDING = (byte) 0x00;
@@ -198,11 +199,7 @@ public final class SSMProtocol implements Protocol {
             boolean padContent, 
             byte[]... content) {
 
-        int length = 0;
-        for (byte[] tmp : content) {
-            length += tmp.length;
-        }
-        final ByteArrayOutputStream bb = new ByteArrayOutputStream(length);
+        bb.reset();
         try {
             bb.write(TESTER);
             bb.write(command);
