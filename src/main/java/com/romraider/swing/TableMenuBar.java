@@ -31,6 +31,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 
+import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 
@@ -239,7 +241,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     private void refreshSimilarOpenTables() {
         similarOpenTables.removeAll();
         String currentTableName = table.getName();
-        Vector<Rom> roms = table.getEditor().getImages();
+        Vector<Rom> roms = ECUEditorManager.getECUEditor().getImages();
 
         for(Rom rom : roms) {
             Vector<Table> tables = rom.getTables();
@@ -265,7 +267,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             table.undoSelected();
 
         } else if (e.getSource() == close) {
-            table.getEditor().removeDisplayTable(table.getFrame());
+            ECUEditorManager.getECUEditor().removeDisplayTable(table.getFrame());
 
         } else if (e.getSource() == tableProperties) {
             JOptionPane.showMessageDialog(table, new TablePropertyPanel(table),
@@ -281,16 +283,16 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             table.paste();
 
         } else if (e.getSource() == compareOff) {
-            compareByDisplay(Table.COMPARE_DISPLAY_OFF);
+            compareByDisplay(Settings.COMPARE_DISPLAY_OFF);
 
         } else if (e.getSource() == compareAbsolute) {
-            compareByDisplay(Table.COMPARE_DISPLAY_ABSOLUTE);
+            compareByDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
 
         } else if (e.getSource() == comparePercent) {
-            compareByDisplay(Table.COMPARE_DISPLAY_PERCENT);
+            compareByDisplay(Settings.COMPARE_DISPLAY_PERCENT);
 
         } else if (e.getSource() == compareOriginal) {
-            table.setCompareType(Table.COMPARE_TYPE_ORIGINAL);
+            table.setCompareType(Settings.COMPARE_TYPE_ORIGINAL);
             compareToOriginal.setSelected(true);
             compareByTable(table);
 
@@ -306,10 +308,10 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             compareByTable(selectedTable);
 
         } else if (e.getSource() == compareToOriginal) {
-            compareByType(Table.COMPARE_TYPE_ORIGINAL);
+            compareByType(Settings.COMPARE_TYPE_ORIGINAL);
 
         } else if (e.getSource() == compareToBin) {
-            compareByType(Table.COMPARE_TYPE_BIN);
+            compareByType(Settings.COMPARE_TYPE_BIN);
 
         }
     }
@@ -326,10 +328,10 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             return;
         }
 
-        if(table.getCompareDisplay() == Table.COMPARE_DISPLAY_OFF) {
+        if(table.getCompareDisplay() == Settings.COMPARE_DISPLAY_OFF) {
             // Default to absolute if none selected.
             this.compareAbsolute.setSelected(true);
-            table.setCompareDisplay(Table.COMPARE_DISPLAY_ABSOLUTE);
+            table.setCompareDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
         }
 
         selectedTable.addComparedToTable(table);

@@ -45,18 +45,15 @@ import ZoeloeSoft.projects.JFontChooser.JFontChooser;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.FileAssociator;
 
 public class SettingsForm extends JFrame implements MouseListener {
 
     private static final long serialVersionUID = 3910602424260147767L;
-    Settings settings;
-    ECUEditor parent;
 
-    public SettingsForm(ECUEditor parent) {
-        this.setIconImage(parent.getIconImage());
-        this.parent = parent;
-        settings = parent.getSettings();
+    public SettingsForm() {
+        this.setIconImage(getEditor().getIconImage());
         initComponents();
         initSettings();
 
@@ -90,7 +87,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     }
 
     private void initSettings() {
-
+        Settings settings = getSettings();
         obsoleteWarning.setSelected(settings.isObsoleteWarning());
         calcConflictWarning.setSelected(settings.isCalcConflictWarning());
         displayHighTables.setSelected(settings.isDisplayHighTables());
@@ -662,6 +659,7 @@ public class SettingsForm extends JFrame implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        Settings settings = getSettings();
         if (e.getSource() == maxColor) {
             Color color = JColorChooser.showDialog(this.getContentPane(),
                     "Background Color", settings.getMaxColor());
@@ -717,12 +715,12 @@ public class SettingsForm extends JFrame implements MouseListener {
         } else if (e.getSource() == btnChooseFont) {
             JFontChooser fc = new JFontChooser(this);
             fc.setLocationRelativeTo(this);
-            if (fc.showDialog(settings.getTableFont()) == JFontChooser.OK_OPTION) {
+            if (fc.showDialog(getSettings().getTableFont()) == JFontChooser.OK_OPTION) {
                 btnChooseFont.setFont(fc.getFont());
                 btnChooseFont.setText(fc.getFont().getFontName());
             }
         } else if (e.getSource() == reset) {
-            settings = new Settings();
+            getEditor().setSettings(new Settings());
             initSettings();
         } else if (e.getSource() == btnAddAssocs) {
             // add file associations for selected file types
@@ -755,72 +753,82 @@ public class SettingsForm extends JFrame implements MouseListener {
             Integer.parseInt(cellHeight.getText());
         } catch (NumberFormatException ex) {
             // number formatted imporperly, reset
-            cellHeight.setText((int) (settings.getCellSize().getHeight()) + "");
+            cellHeight.setText((int) (getSettings().getCellSize().getHeight()) + "");
         }
         try {
             Integer.parseInt(cellWidth.getText());
         } catch (NumberFormatException ex) {
             // number formatted imporperly, reset
-            cellWidth.setText((int) (settings.getCellSize().getWidth()) + "");
+            cellWidth.setText((int) (getSettings().getCellSize().getWidth()) + "");
         }
 
-        settings.setObsoleteWarning(obsoleteWarning.isSelected());
-        settings.setCalcConflictWarning(calcConflictWarning.isSelected());
-        settings.setDisplayHighTables(displayHighTables.isSelected());
-        settings.setSaveDebugTables(saveDebugTables.isSelected());
-        settings.setDebug(debug.isSelected());
+        getSettings().setObsoleteWarning(obsoleteWarning.isSelected());
+        getSettings().setCalcConflictWarning(calcConflictWarning.isSelected());
+        getSettings().setDisplayHighTables(displayHighTables.isSelected());
+        getSettings().setSaveDebugTables(saveDebugTables.isSelected());
+        getSettings().setDebug(debug.isSelected());
 
-        settings.setMaxColor(maxColor.getBackground());
-        settings.setMinColor(minColor.getBackground());
-        settings.setHighlightColor(highlightColor.getBackground());
-        settings.setAxisColor(axisColor.getBackground());
-        settings.setIncreaseBorder(increaseColor.getBackground());
-        settings.setDecreaseBorder(decreaseColor.getBackground());
+        getSettings().setMaxColor(maxColor.getBackground());
+        getSettings().setMinColor(minColor.getBackground());
+        getSettings().setHighlightColor(highlightColor.getBackground());
+        getSettings().setAxisColor(axisColor.getBackground());
+        getSettings().setIncreaseBorder(increaseColor.getBackground());
+        getSettings().setDecreaseBorder(decreaseColor.getBackground());
 
-        settings.setCellSize(new Dimension(Integer.parseInt(cellWidth.getText()),
+        getSettings().setCellSize(new Dimension(Integer.parseInt(cellWidth.getText()),
                 Integer.parseInt(cellHeight.getText())));
 
-        settings.setTableFont(btnChooseFont.getFont());
+        getSettings().setTableFont(btnChooseFont.getFont());
 
         if (tableClickCount.getSelectedIndex() == 0) { // single click opens table
-            settings.setTableClickCount(1);
+            getSettings().setTableClickCount(1);
         } else { // double click opens table
-            settings.setTableClickCount(2);
+            getSettings().setTableClickCount(2);
         }
 
-        settings.setValueLimitWarning(valueLimitWarning.isSelected());
-        settings.setWarningColor(warningColor.getBackground());
+        getSettings().setValueLimitWarning(valueLimitWarning.isSelected());
+        getSettings().setWarningColor(warningColor.getBackground());
 
         if(rdbtnAirboys.isSelected())
         {
-            settings.setAirboysFormat();
+            getSettings().setAirboysFormat();
         } else if(rdbtnCustom.isSelected()) {
-            settings.setTableClipboardFormat(Settings.CUSTOM_CLIPBOARD_FORMAT);
+            getSettings().setTableClipboardFormat(Settings.CUSTOM_CLIPBOARD_FORMAT);
             // Table Header settings need to be manually edited in the settings.xml file;
         } else {
-            settings.setDefaultFormat();
+            getSettings().setDefaultFormat();
         }
 
         try{
-            settings.setEditorIconScale(Integer.parseInt(textFieldEditorIconScale.getText()));
-            parent.getToolBar().updateIcons();
+            getSettings().setEditorIconScale(Integer.parseInt(textFieldEditorIconScale.getText()));
+            getEditor().getToolBar().updateIcons();
         } catch(NumberFormatException ex) {
             // Number formatted incorrectly reset.
-            textFieldEditorIconScale.setText(String.valueOf(settings.getEditorIconScale()));
+            textFieldEditorIconScale.setText(String.valueOf(getSettings().getEditorIconScale()));
         }
 
         try{
-            settings.setTableIconScale(Integer.parseInt(textFieldTableIconScale.getText()));
-            parent.getTableToolBar().updateIcons();
+            getSettings().setTableIconScale(Integer.parseInt(textFieldTableIconScale.getText()));
+            getEditor().getTableToolBar().updateIcons();
         } catch(NumberFormatException ex) {
             // Number formatted incorrectly reset.
-            textFieldTableIconScale.setText(String.valueOf(settings.getTableIconScale()));
+            textFieldTableIconScale.setText(String.valueOf(getSettings().getTableIconScale()));
         }
+    }
+
+    private Settings getSettings()
+    {
+        return getEditor().getSettings();
+    }
+
+    private ECUEditor getEditor()
+    {
+        return ECUEditorManager.getECUEditor();
     }
 
     public void saveSettings()
     {
-        parent.getSettingsManager().save(settings);
+        getEditor().getSettingsManager().save(getSettings());
     }
 
     @Override

@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -120,7 +121,7 @@ public class Rom implements Serializable {
                                 table.getStorageAddress() + " " + binData.length + " filesize", ex);
 
                         // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(table.getEditor(), "Storage address for table \"" + table.getName() +
+                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table), "Storage address for table \"" + table.getName() +
                                 "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                         tables.removeElementAt(i);
                         i--;
@@ -134,7 +135,7 @@ public class Rom implements Serializable {
                 }
 
             } catch (NullPointerException ex) {
-                JOptionPane.showMessageDialog(table.getEditor(), "There was an error loading table " + table.getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table), "There was an error loading table " + table.getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                 tables.removeElementAt(i);
             }
         }
@@ -217,7 +218,7 @@ public class Rom implements Serializable {
             String message = String.format("One or more ROM image Checksums is invalid.  " +
                     "Calculate new Checksums?%n" +
                     "(NOTE: this will only fix the Checksums it will NOT repair a corrupt ROM image)");
-            int answer = showOptionDialog(checksum.getEditor(),
+            int answer = showOptionDialog(SwingUtilities.windowForComponent(checksum),
                     message,
                     "Checksum Fix",
                     DEFAULT_OPTION,

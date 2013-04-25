@@ -23,7 +23,6 @@ import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static com.romraider.util.TableAxisUtil.getLiveDataRangeForAxis;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -40,21 +39,20 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableFrame;
 import com.romraider.util.AxisRange;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
-    static final String NEW_LINE = System.getProperty("line.separator");
     private Table1D axis;
 
     private CopyTable2DWorker copyTable2DWorker;
     private CopySelection2DWorker copySelection2DWorker;
 
-    public Table2D(ECUEditor editor) {
-        super(editor);
-        axis = new Table1D(editor);
+    public Table2D() {
+        super();
+        axis = new Table1D();
         verticalOverhead += 18;
     }
 
@@ -121,7 +119,7 @@ public class Table2D extends Table {
 
     @Override
     public void applyColorSettings() {
-        this.setAxisColor(editor.getSettings().getAxisColor());
+        this.setAxisColor();
         axis.applyColorSettings();
         super.applyColorSettings();
     }
@@ -269,7 +267,7 @@ public class Table2D extends Table {
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
-        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         super.copySelection();
         copySelection2DWorker = new CopySelection2DWorker(this);
@@ -282,9 +280,9 @@ public class Table2D extends Table {
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
-        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copyTable2DWorker = new CopyTable2DWorker(editor.getSettings(), this);
+        copyTable2DWorker = new CopyTable2DWorker(this);
         copyTable2DWorker.execute();
     }
 
@@ -302,8 +300,8 @@ public class Table2D extends Table {
         String pasteType = st.nextToken();
 
         if (pasteType.equalsIgnoreCase("[Table2D]")) { // Paste table
-            String axisValues = "[Table1D]" + NEW_LINE + st.nextToken(NEW_LINE);
-            String dataValues = "[Table1D]" + NEW_LINE + st.nextToken(NEW_LINE);
+            String axisValues = "[Table1D]" + Settings.NEW_LINE + st.nextToken(Settings.NEW_LINE);
+            String dataValues = "[Table1D]" + Settings.NEW_LINE + st.nextToken(Settings.NEW_LINE);
 
             // put axis in clipboard and paste
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues), null);
@@ -325,8 +323,8 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void setAxisColor(Color axisColor) {
-        axis.setAxisColor(axisColor);
+    public void setAxisColor() {
+        axis.setAxisColor();
     }
 
     @Override
@@ -360,7 +358,7 @@ public class Table2D extends Table {
             for (int i = range.getStartIndex(); i <= range.getEndIndex(); i++) {
                 int x = 0;
                 int y = i;
-                if (axis.getType() == TABLE_X_AXIS) {
+                if (axis.getType() == Settings.TABLE_X_AXIS) {
                     x = i;
                     y = 0;
                 }
@@ -375,7 +373,7 @@ public class Table2D extends Table {
                 cell.setDisplayValue(cell.getRealValue() + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue)));
             }
             stopHighlight();
-            frame.getToolBar().setLiveDataValue(liveValue);
+            getToolbar().setLiveDataValue(liveValue);
         }
     }
 
@@ -461,27 +459,25 @@ class CopySelection2DWorker extends SwingWorker<Void, Void> {
             ancestorWindow.setCursor(null);
         }
         table.setCursor(null);
-        table.getEditor().setCursor(null);
+        ECUEditorManager.getECUEditor().setCursor(null);
     }
 }
 
 class CopyTable2DWorker extends SwingWorker<Void, Void> {
-    Settings settings;
     Table2D table;
 
-    public CopyTable2DWorker(Settings settings, Table2D table)
+    public CopyTable2DWorker(Table2D table)
     {
-        this.settings = settings;
         this.table = table;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        String tableHeader = settings.getTable2DHeader();
+        String tableHeader = table.getSettings().getTable2DHeader();
 
         // create string
         StringBuffer output = new StringBuffer(tableHeader);
-        output.append(table.getAxis().getTableAsString()).append(Table2D.NEW_LINE);
+        output.append(table.getAxis().getTableAsString()).append(Settings.NEW_LINE);
         output.append(table.getTableAsString());
         //copy to clipboard
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
@@ -496,6 +492,6 @@ class CopyTable2DWorker extends SwingWorker<Void, Void> {
             ancestorWindow.setCursor(null);
         }
         table.setCursor(null);
-        table.getEditor().setCursor(null);
+        ECUEditorManager.getECUEditor().setCursor(null);
     }
 }
