@@ -58,6 +58,7 @@ import org.apache.log4j.Logger;
 import com.ecm.graphics.Graph3dFrameManager;
 import com.ecm.graphics.data.GraphData;
 import com.ecm.graphics.data.GraphDataListener;
+import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.maps.DataCell;
 import com.romraider.maps.Scale;
@@ -282,7 +283,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         incrementByFine.setValue(fineIncrement);
         incrementByCoarse.setValue(coarseIncrement);
         this.overlayLog.setSelected(table.getOverlayLog());
-        this.enable3d.setEnabled(table.getType() == Table.TABLE_3D);
+        this.enable3d.setEnabled(table.getType() == Settings.TABLE_3D);
 
         setScales(scales);
         toggleTableToolBar(true);
@@ -306,7 +307,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         liveDataValue.setEnabled(enabled);
 
         //Only enable the 3d button if table includes 3d data
-        if (null != table && table.getType() == Table.TABLE_3D && enabled) {
+        if (null != table && table.getType() == Settings.TABLE_3D && enabled) {
             enable3d.setEnabled(true);
         }
         else{
@@ -401,7 +402,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         //Pull data into format 3d graph understands
         Vector<float[]> graphValues = new Vector<float[]>();
-        if (table.getType() == Table.TABLE_3D) {
+        if (table.getType() == Settings.TABLE_3D) {
             Table3D table3d = (Table3D) table;
             DataCell[][] tableData = table3d.get3dData();
             valueCount = tableData.length;

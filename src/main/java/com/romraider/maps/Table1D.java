@@ -24,14 +24,14 @@ import java.awt.Color;
 
 import javax.swing.JLabel;
 
-import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.Settings;
 
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
     private Color axisColor = new Color(255, 255, 255);
 
-    public Table1D(ECUEditor editor) {
-        super(editor);
+    public Table1D() {
+        super();
     }
 
     @Override
@@ -76,50 +76,50 @@ public class Table1D extends Table {
 
     @Override
     public void cursorUp() {
-        if (type == Table.TABLE_Y_AXIS) {
+        if (type == Settings.TABLE_Y_AXIS) {
             if (highlightY > 0 && data[highlightY].isSelected()) {
                 selectCellAt(highlightY - 1);
             }
-        } else if (type == Table.TABLE_X_AXIS) {
+        } else if (type == Settings.TABLE_X_AXIS) {
             // Y axis is on top.. nothing happens
-        } else if (type == Table.TABLE_1D) {
+        } else if (type == Settings.TABLE_1D) {
             // no where to move up to
         }
     }
 
     @Override
     public void cursorDown() {
-        if (type == Table.TABLE_Y_AXIS) {
-            if (axisParent.getType() == Table.TABLE_3D) {
+        if (type == Settings.TABLE_Y_AXIS) {
+            if (axisParent.getType() == Settings.TABLE_3D) {
                 if (highlightY < getDataSize() - 1 && data[highlightY].isSelected()) {
                     selectCellAt(highlightY + 1);
                 }
-            } else if (axisParent.getType() == Table.TABLE_2D) {
+            } else if (axisParent.getType() == Settings.TABLE_2D) {
                 if (data[highlightY].isSelected()) {
                     axisParent.selectCellAt(highlightY);
                 }
             }
-        } else if (type == Table.TABLE_X_AXIS && data[highlightY].isSelected()) {
+        } else if (type == Settings.TABLE_X_AXIS && data[highlightY].isSelected()) {
             ((Table3D) axisParent).selectCellAt(highlightY, this);
-        } else if (type == Table.TABLE_1D) {
+        } else if (type == Settings.TABLE_1D) {
             // no where to move down to
         }
     }
 
     @Override
     public void cursorLeft() {
-        if (type == Table.TABLE_Y_AXIS) {
+        if (type == Settings.TABLE_Y_AXIS) {
             // X axis is on left.. nothing happens
-            if (axisParent.getType() == Table.TABLE_2D) {
+            if (axisParent.getType() == Settings.TABLE_2D) {
                 if (data[highlightY].isSelected()) {
                     selectCellAt(highlightY - 1);
                 }
             }
-        } else if (type == Table.TABLE_X_AXIS && data[highlightY].isSelected()) {
+        } else if (type == Settings.TABLE_X_AXIS && data[highlightY].isSelected()) {
             if (highlightY > 0) {
                 selectCellAt(highlightY - 1);
             }
-        } else if (type == Table.TABLE_1D && data[highlightY].isSelected()) {
+        } else if (type == Settings.TABLE_1D && data[highlightY].isSelected()) {
             if (highlightY > 0) {
                 selectCellAt(highlightY - 1);
             }
@@ -128,17 +128,17 @@ public class Table1D extends Table {
 
     @Override
     public void cursorRight() {
-        if (type == Table.TABLE_Y_AXIS && data[highlightY].isSelected()) {
-            if (axisParent.getType() == Table.TABLE_3D) {
+        if (type == Settings.TABLE_Y_AXIS && data[highlightY].isSelected()) {
+            if (axisParent.getType() == Settings.TABLE_3D) {
                 ((Table3D) axisParent).selectCellAt(highlightY, this);
-            } else if (axisParent.getType() == Table.TABLE_2D) {
+            } else if (axisParent.getType() == Settings.TABLE_2D) {
                 selectCellAt(highlightY + 1);
             }
-        } else if (type == Table.TABLE_X_AXIS && data[highlightY].isSelected()) {
+        } else if (type == Settings.TABLE_X_AXIS && data[highlightY].isSelected()) {
             if (highlightY < getDataSize() - 1) {
                 selectCellAt(highlightY + 1);
             }
-        } else if (type == Table.TABLE_1D && data[highlightY].isSelected()) {
+        } else if (type == Settings.TABLE_1D && data[highlightY].isSelected()) {
             if (highlightY < getDataSize() - 1) {
                 selectCellAt(highlightY + 1);
             }
@@ -159,7 +159,7 @@ public class Table1D extends Table {
         for (int i = 0; i < getDataSize(); i++) {
             output.append(data[i].getText());
             if (i < getDataSize() - 1) {
-                output.append(TAB);
+                output.append(Settings.TAB);
             }
         }
         return output;
@@ -175,8 +175,8 @@ public class Table1D extends Table {
     }
 
     @Override
-    public void setAxisColor(Color axisColor) {
-        this.axisColor = axisColor;
+    public void setAxisColor() {
+        this.axisColor = getSettings().getAxisColor();
     }
 
     @Override

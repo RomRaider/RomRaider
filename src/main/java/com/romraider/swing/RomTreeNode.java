@@ -24,7 +24,6 @@ import java.util.Vector;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 
@@ -32,10 +31,8 @@ public class RomTreeNode extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = -5534315445738460608L;
     private Rom rom = new Rom();
-    ECUEditor parent;
 
-    public RomTreeNode(Rom rom, int userLevel, boolean isDisplayHighTables, ECUEditor parent) {
-        this.parent = parent;
+    public RomTreeNode(Rom rom, int userLevel, boolean isDisplayHighTables) {
         setRom(rom);
         refresh(userLevel, isDisplayHighTables);
         updateFileName();
@@ -48,7 +45,7 @@ public class RomTreeNode extends DefaultMutableTreeNode {
 
         for (int i = 0; i < tables.size(); i++) {
             Table table = tables.get(i);
-            add(table);
+            this.add(table);
 
             if (isDisplayHighTables || userLevel >= table.getUserLevel()) {
 
@@ -99,7 +96,7 @@ public class RomTreeNode extends DefaultMutableTreeNode {
     }
 
     public void add(Table table) {
-        TableFrame frame = new TableFrame(table, parent);
+        TableFrame frame = new TableFrame(table);
         table.setFrame(frame);
     }
 

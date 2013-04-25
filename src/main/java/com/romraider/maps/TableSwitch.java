@@ -28,7 +28,6 @@ import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -43,7 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
-import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.Settings;
 
 public class TableSwitch extends Table {
 
@@ -52,10 +51,10 @@ public class TableSwitch extends Table {
     private final Map<String, byte[]> switchStates = new HashMap<String, byte[]>();
     private int dataSize = 0;
 
-    public TableSwitch(ECUEditor editor) {
-        super(editor);
+    public TableSwitch() {
+        super();
         storageType = 1;
-        type = TABLE_SWITCH;
+        type = Settings.TABLE_SWITCH;
         locked = true;
         removeAll();
         setLayout(new BorderLayout());
@@ -159,11 +158,6 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public int getType() {
-        return TABLE_SWITCH;
-    }
-
-    @Override
     public void setDescription(String description) {
         super.setDescription(description);
         JTextArea descriptionArea = new JTextArea(description);
@@ -235,7 +229,7 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public void setAxisColor(Color color) {
+    public void setAxisColor() {
     }
 
     @Override

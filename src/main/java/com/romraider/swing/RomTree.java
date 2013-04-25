@@ -34,11 +34,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
 
 public class RomTree extends JTree implements MouseListener {
 
     private static final long serialVersionUID = 1630446543383498886L;
-    public static ECUEditor editor;
 
     public RomTree(DefaultMutableTreeNode input) {
         super(input);
@@ -69,11 +69,7 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     public ECUEditor getEditor() {
-        return editor;
-    }
-
-    public void setContainer(ECUEditor container) {
-        RomTree.editor = container;
+        return ECUEditorManager.getECUEditor();
     }
 
     @Override
@@ -81,7 +77,7 @@ public class RomTree extends JTree implements MouseListener {
         try{
             Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
 
-            if (e.getClickCount() >= editor.getSettings().getTableClickCount()) {
+            if (e.getClickCount() >= getEditor().getSettings().getTableClickCount()) {
                 showHideTable(selectedRow);
             }
             setLastSelectedRom(selectedRow);
@@ -93,7 +89,7 @@ public class RomTree extends JTree implements MouseListener {
         try{
             if(selectedRow instanceof TableTreeNode) {
                 TableTreeNode node = (TableTreeNode) selectedRow;
-                editor.displayTable(node.getFrame());
+                getEditor().displayTable(node.getFrame());
             }
             setLastSelectedRom(selectedRow);
         } catch (NullPointerException ex) {
@@ -101,23 +97,22 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     private void setLastSelectedRom(Object selectedNode) {
-        TreePath selectedPath = getSelectionPath();
         if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof RomTreeNode)
         {
             Object lastSelectedPathComponent = getLastSelectedPathComponent();
             if(lastSelectedPathComponent instanceof TableTreeNode) {
-                TableTreeNode node = (TableTreeNode) getLastSelectedPathComponent();
-                editor.setLastSelectedRom(node.getTable().getRom());
+                TableTreeNode node = (TableTreeNode) lastSelectedPathComponent;
+                getEditor().setLastSelectedRom(node.getTable().getRom());
             } else if(lastSelectedPathComponent instanceof CategoryTreeNode) {
-                CategoryTreeNode node = (CategoryTreeNode) getLastSelectedPathComponent();
-                editor.setLastSelectedRom(node.getRom());
+                CategoryTreeNode node = (CategoryTreeNode) lastSelectedPathComponent;
+                getEditor().setLastSelectedRom(node.getRom());
             } else if(lastSelectedPathComponent instanceof RomTreeNode) {
-                RomTreeNode node = (RomTreeNode) getLastSelectedPathComponent();
-                editor.setLastSelectedRom(node.getRom());
+                RomTreeNode node = (RomTreeNode) lastSelectedPathComponent;
+                getEditor().setLastSelectedRom(node.getRom());
             }
         }
-        editor.getEditorMenuBar().updateMenu();
-        editor.getToolBar().updateButtons();
+        getEditor().getEditorMenuBar().updateMenu();
+        getEditor().getToolBar().updateButtons();
     }
 
     @Override
