@@ -38,12 +38,13 @@ import javax.swing.border.Border;
 
 import org.apache.log4j.Logger;
 
+import com.romraider.Settings;
 import com.romraider.util.JEPUtil;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final long serialVersionUID = -2904293227148940937L;
     private static final Logger LOGGER = Logger.getLogger(DataCell.class);
-    private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
+    private final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
     private final Border defaultBorder = createLineBorder(BLACK, 1);
     private final Border modifiedBorder = createLineBorder(RED, 3);
     private final Font defaultFont = new Font("Arial", Font.BOLD, 12);
@@ -61,7 +62,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private int x = 0;
     private int y = 0;
     private double compareValue = 0;
-    private int compareDisplay = Table.COMPARE_DISPLAY_OFF;
+    private int compareDisplay = Settings.COMPARE_DISPLAY_OFF;
 
     public DataCell() {
     }
@@ -81,15 +82,15 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void updateDisplayValue() {
         DecimalFormat formatter = new DecimalFormat(scale.getFormat());
 
-        if (getCompareDisplay() == Table.COMPARE_DISPLAY_OFF) {
+        if (getCompareDisplay() == Settings.COMPARE_DISPLAY_OFF) {
             displayValue = getRealValue();
 
-        } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_ABSOLUTE) {
+        } else if (getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
             displayValue = formatter.format(
                     calcDisplayValue(binValue, table.getScale().getExpression()) -
                     calcDisplayValue(compareValue, table.getScale().getExpression()));
 
-        } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_PERCENT) {
+        } else if (getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
             String expression = table.getScale().getExpression();
             double thisValue = calcDisplayValue(binValue, expression);
             double thatValue = calcDisplayValue(compareValue, expression);
@@ -126,7 +127,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.binValue = binValue;
 
         // make sure it's in range
-        if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
+        if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
             if (table.isSignedData()) {
                 int minAllowedValue = 0;
                 int maxAllowedValue = 0;
@@ -181,8 +182,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.selected = selected;
         if (selected) {
             this.setBackground(getHighlightColor());
-            table.getFrame().getToolBar().setFineValue(abs(table.getScale().getFineIncrement()));
-            table.getFrame().getToolBar().setCoarseValue(abs(table.getScale().getCoarseIncrement()));
+            table.getToolbar().setFineValue(abs(table.getScale().getFineIncrement()));
+            table.getToolbar().setCoarseValue(abs(table.getScale().getCoarseIncrement()));
         } else {
             this.setBackground(scaledColor);
         }
@@ -254,7 +255,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         // make sure table is incremented if change isn't great enough
         int maxValue = (int) Math.pow(8, table.getStorageType());
 
-        if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT &&
+        if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT &&
                 oldValue == Double.parseDouble(getText()) &&
                 binValue > 0 &&
                 binValue < maxValue) {
@@ -312,7 +313,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         try {
             if (!"x".equalsIgnoreCase(input)) {
                 double result = JEPUtil.evaluate(table.getScale().getByteExpression(), Double.parseDouble(input));
-                if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
+                if (table.getStorageType() == Settings.STORAGE_TYPE_FLOAT) {
                     if(this.getBinValue() != result) {
                         this.setBinValue(result);
                     }

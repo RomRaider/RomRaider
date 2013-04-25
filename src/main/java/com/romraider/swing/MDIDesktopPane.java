@@ -33,6 +33,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
 import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
 
 /**
  * An extension of WDesktopPane that supports often used MDI functionality. This
@@ -44,10 +45,8 @@ public class MDIDesktopPane extends JDesktopPane {
     private static final long serialVersionUID = -1839360490978587035L;
     private static int FRAME_OFFSET = 20;
     private final MDIDesktopManager manager;
-    private final ECUEditor parent;
 
-    public MDIDesktopPane(ECUEditor parent) {
-        this.parent = parent;
+    public MDIDesktopPane() {
         manager = new MDIDesktopManager(this);
         setDesktopManager(manager);
         setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
@@ -89,7 +88,7 @@ public class MDIDesktopPane extends JDesktopPane {
         moveToFront(frame);
         frame.setVisible(true);
         TableFrame tableFrame = (TableFrame) frame;
-        parent.updateTableToolBar(tableFrame.getTable());
+        getEditor().updateTableToolBar(tableFrame.getTable());
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException e) {
@@ -102,9 +101,13 @@ public class MDIDesktopPane extends JDesktopPane {
     public void remove(Component c) {
         super.remove(c);
 
-        parent.updateTableToolBar(null);
+        getEditor().updateTableToolBar(null);
 
         checkDesktopSize();
+    }
+
+    public ECUEditor getEditor() {
+        return ECUEditorManager.getECUEditor();
     }
 
     /**
