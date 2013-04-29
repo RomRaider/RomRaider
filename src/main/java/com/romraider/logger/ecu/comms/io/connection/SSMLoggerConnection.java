@@ -83,21 +83,21 @@ public final class SSMLoggerConnection implements LoggerConnection {
             for (int i = 0; i < tcuQueryListLength; i++) {
                 tcuSubQuery.clear();
                 tcuSubQuery.add(tcuQueries.get(i));
-                final int addrLength1 = tcuQueries.get(i).getAddresses().length;
-                int addrLength2 = -1;
-                if ((i + 1) < tcuQueryListLength) {
-                    addrLength2 = tcuQueries.get(i + 1).getAddresses().length;
-                }
-                if ((addrLength1 + addrLength2) == 2 ) {
-                    tcuSubQuery.add(tcuQueries.get(i + 1));
-                    i++;
-                }
+                final int addrLength = tcuQueries.get(i).getAddresses().length;
                 final byte[] request = protocol.constructReadAddressRequest(
                         id, tcuSubQuery);
-                LOGGER.debug("TCU CAN Request  ---> " + asHex(request));
-                final byte[] response = protocol.constructReadAddressResponse(
-                        tcuSubQuery, pollState);
-                manager.send(request, response, pollState);
+                byte[] response = new byte[0];
+                if (addrLength == 1) {
+                    LOGGER.debug("TCU CAN Request  ---> " + asHex(request));
+                    response = protocol.constructReadAddressResponse(
+                            tcuSubQuery, pollState);
+                    manager.send(request, response, pollState);
+                }
+                if (addrLength > 1) {
+                    response = SSMLoggerCANSubQuery.doSubQuery(
+                            (ArrayList<EcuQuery>) tcuSubQuery, manager,
+                            protocol, id, pollState);
+                }
                 final byte[] processedResponse = protocol.preprocessResponse(
                         request, response, pollState);
                 LOGGER.debug("TCU CAN Response <--- " + asHex(processedResponse));
