@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,20 +37,34 @@ import com.romraider.xml.DOMSettingsUnmarshaller;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public final class SettingsManagerImpl implements SettingsManager {
-    private static final String SETTINGS_FILE = "/.RomRaider/settings.xml";
-    private static final String HOME = System.getProperty("user.home");
+    private static final String SETTINGS_FILE = "/settings.xml";
+    private static final String USER_HOME =
+    		System.getProperty("user.home") + "/.RomRaider";
+    private static final String START_DIR = System.getProperty("user.dir");
+    private static String settingsDir = USER_HOME;
 
     @Override
-    public Settings load() {
+    public final Settings load() {
         try {
-            InputSource src = new InputSource(new FileInputStream(new File(HOME + SETTINGS_FILE)));
-            DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
-            DOMParser parser = new DOMParser();
+        	FileInputStream settingsFileIn = null;
+        	try {
+            	final File sf = new File(USER_HOME + SETTINGS_FILE);
+        		settingsFileIn = new FileInputStream(sf);
+        	}
+        	catch (Exception e) {
+            	final File sf = new File(START_DIR + SETTINGS_FILE);
+        		settingsFileIn = new FileInputStream(sf);
+        		settingsDir = START_DIR;
+        	}
+            final InputSource src = new InputSource(settingsFileIn);
+            final DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
+            final DOMParser parser = new DOMParser();
             parser.parse(src);
-            Document doc = parser.getDocument();
+            final Document doc = parser.getDocument();
             return domUms.unmarshallSettings(doc.getDocumentElement());
         } catch (FileNotFoundException e) {
-            showMessageDialog(null, "Settings file not found.\nUsing default settings.",
+        	showMessageDialog(null, 
+            		"Settings file not found.\nUsing default settings.",
                     "Error Loading Settings", INFORMATION_MESSAGE);
             return new Settings();
         } catch (Exception e) {
@@ -59,16 +73,18 @@ public final class SettingsManagerImpl implements SettingsManager {
     }
 
     @Override
-    public void save(Settings settings) {
+    public final void save(Settings settings) {
         save(settings, new JProgressPane());
     }
 
     @Override
-    public void save(Settings settings, JProgressPane progress) {
-        DOMSettingsBuilder builder = new DOMSettingsBuilder();
+    public final void save(Settings settings, JProgressPane progress) {
+        final DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
-            new File(HOME + "/.RomRaider/").mkdir();		// Creates directory if it does not exist
-            builder.buildSettings(settings, new File(HOME + SETTINGS_FILE), progress, VERSION);
+        	final File newDir = new File(settingsDir);
+        	newDir.mkdir();		// Creates directory if it does not exist
+        	final File sf = new File(settingsDir + SETTINGS_FILE); 
+            builder.buildSettings(settings, sf, progress, VERSION);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
