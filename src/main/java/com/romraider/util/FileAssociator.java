@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.jdesktop.jdic.filetypes.Action;
 import org.jdesktop.jdic.filetypes.Association;
 import org.jdesktop.jdic.filetypes.AssociationService;
-import java.io.File;
 
 
 public final class FileAssociator {
