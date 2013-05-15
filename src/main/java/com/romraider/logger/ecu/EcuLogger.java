@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
 import static com.romraider.Version.LOGGER_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
+import static com.romraider.Version.MIN_LOG_DEF_VERSION;
 import static com.romraider.logger.ecu.profile.UserProfileLoader.BACKUP_PROFILE;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
 import static com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon.ROTATE_LEFT;
@@ -530,6 +531,23 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 else {
                     defVersion = dataLoader.getDefVersion();
                 }
+
+                if ( defVersion.equals("na") || 
+                        Integer.parseInt(defVersion) < MIN_LOG_DEF_VERSION ) {
+                    final String wrongDefVersion = "This version of RomRaider " +
+                    		"Logger requires a logger definfition XML\nfile of " +
+                    		"version " + MIN_LOG_DEF_VERSION + " or higher due " +
+                    		"to a definition file format change.\n\nIncorrect " +
+                    		"results may occur if the definition file " +
+                    		"is not updated.\nUse the Help menu 'Update Logger " +
+                    		"Definition' item to go online\nand donwload the " + 
+                    		"latest logger definition.\n";
+                    showMessageDialog(this,
+                            wrongDefVersion,
+                            "Configuration", INFORMATION_MESSAGE);
+                    throw new Exception(wrongDefVersion);
+                }
+
                 loadResult = String.format(
                         "%sloaded %s: %d parameters, %d switches from def version %s.",
                         loadResult,

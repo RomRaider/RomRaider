@@ -19,6 +19,24 @@
 
 package com.romraider.logger.ecu.definition.xml;
 
+import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMax;
+import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMin;
+import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getStep;
+import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
+import static java.lang.Double.parseDouble;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
+
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.connection.ConnectionPropertiesImpl;
 import com.romraider.logger.ecu.comms.query.EcuInit;
@@ -35,22 +53,7 @@ import com.romraider.logger.ecu.definition.EcuParameterImpl;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.EcuSwitchConvertorImpl;
 import com.romraider.logger.ecu.definition.EcuSwitchImpl;
-import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMax;
-import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMin;
-import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getStep;
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
-import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import static com.romraider.util.ParamChecker.isNullOrEmpty;
-import static java.lang.Double.parseDouble;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_LOGGER = "logger";
@@ -105,6 +108,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String ecuByteIndex;
     private String ecuBit;
     private String ecuIds;
+    private List<String> addrStrings = new ArrayList<String>();
+    private boolean EcuAddressCreated;
     private EcuAddress address;
     private Set<String> dependsList;
     private Map<String, EcuAddress> ecuAddressMap;
@@ -156,7 +161,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 ecuByteIndex = attributes.getValue(ATTR_ECUBYTEINDEX);
                 ecuBit = attributes.getValue(ATTR_ECUBIT);
                 target = attributes.getValue(ATTR_TARGET);
-                resetConvertorLists();
+                resetLists();
             } else if (TAG_ADDRESS.equals(qName)) {
                 String length = attributes.getValue(ATTR_LENGTH);
                 addressLength = length == null ? 1 : Integer.valueOf(length);
@@ -178,6 +183,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 double gaugeStep = getConversionStep(attributes, conversionUnits);
                 conversionGauge = new GaugeMinMax(gaugeMin, gaugeMax, gaugeStep);
                 replaceMap = new HashMap<String, String>();
+                if (!derived && !EcuAddressCreated) {
+                    address = new EcuAddressImpl(addrStrings.toArray(new String[0]), addressLength, addressBit);
+                    EcuAddressCreated = true;
+                }
             } else if (TAG_REPLACE.equals(qName)) {
                 replaceMap.put(attributes.getValue(ATTR_VALUE), attributes.getValue(ATTR_WITH));
             } else if (TAG_SWITCH.equals(qName)) {
@@ -188,13 +197,13 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 ecuBit = attributes.getValue(ATTR_BIT);
                 target = attributes.getValue(ATTR_TARGET);
                 address = new EcuAddressImpl(attributes.getValue(ATTR_BYTE), 1, Integer.valueOf(attributes.getValue(ATTR_BIT)));
-                resetConvertorLists();
+                resetLists();
             } else if (TAG_ECUPARAM.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);
                 desc = attributes.getValue(ATTR_DESC);
                 target = attributes.getValue(ATTR_TARGET);
-                resetConvertorLists();
+                resetLists();
                 ecuAddressMap = new HashMap<String, EcuAddress>();
                 derived = false;
             } else if (TAG_ECU.equals(qName)) {
@@ -215,7 +224,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             parseProtocol = false;
         } else if (parseProtocol) {
             if (TAG_ADDRESS.equals(qName)) {
-                address = new EcuAddressImpl(charBuffer.toString(), addressLength, addressBit);
+                addrStrings.add(charBuffer.toString());
             } else if (TAG_PARAMETER.equals(qName)) {
                 if (derived) {
                     Set<EcuData> dependencies = new HashSet<EcuData>();
@@ -262,9 +271,12 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     ecuDataMap.put(param.getId(), param);
                 }
             } else if (TAG_ECU.equals(qName)) {
+                address = new EcuAddressImpl(addrStrings.toArray(new String[0]), addressLength, addressBit);
+                EcuAddressCreated = true;
                 for (String ecuId : ecuIds.split(",")) {
                     ecuAddressMap.put(ecuId, address);
                 }
+                addrStrings.clear();
             } else if (TAG_SWITCH.equals(qName)) {
                 if (ecuByteIndex == null || ecuBit == null || ecuInit == null || isSupportedParameter(ecuInit,
                         ecuByteIndex, ecuBit)) {
@@ -300,7 +312,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         return version;
     }
 
-    private void resetConvertorLists() {
+    private void resetLists() {
+        addrStrings.clear();
+        EcuAddressCreated = false;
         convertorList = new LinkedHashSet<EcuDataConvertor>();
         derivedConvertorList = new LinkedHashSet<EcuDerivedParameterConvertor>();
     }

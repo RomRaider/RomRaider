@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,15 @@ public final class EcuAddressImpl implements EcuAddress {
     public EcuAddressImpl(String address, int length, int bit) {
         checkNotNullOrEmpty(address, "address");
         checkGreaterThanZero(length, "length");
+        final String[] addrSting = {address};
+        this.addresses = buildAddresses(addrSting, length);
+        this.bytes = getAddressBytes(addresses);
+        this.bit = bit;
+    }
+
+    public EcuAddressImpl(String[] address, int length, int bit) {
+        checkNotNullOrEmpty(address, "address");
+        checkGreaterThanZero(length, "length");
         this.addresses = buildAddresses(address, length);
         this.bytes = getAddressBytes(addresses);
         this.bit = bit;
@@ -64,11 +73,23 @@ public final class EcuAddressImpl implements EcuAddress {
         return addresses.length;
     }
 
-    private String[] buildAddresses(String startAddress, int addressLength) {
-        List<String> addresses = new LinkedList<String>();
-        int start = hexToInt(startAddress);
-        for (int i = 0; i < addressLength; i++) {
-            addresses.add(padAddress(intToHexString(start + i), startAddress.length()));
+    private String[] buildAddresses(String[] startAddress, int addressLength) {
+        final List<String> addresses = new LinkedList<String>();
+        if (startAddress.length > addressLength) {
+            for (int i = 0; i < startAddress.length; i++) {
+                final int address = hexToInt(startAddress[i]);
+                addresses.add(
+                        padAddress(intToHexString(address), 
+                        startAddress[i].length()));
+            }
+        }
+        else {
+            int start = hexToInt(startAddress[0]);
+            for (int i = 0; i < addressLength; i++) {
+                addresses.add(
+                        padAddress(intToHexString(start + i),
+                        startAddress[0].length()));
+            }
         }
         return addresses.toArray(new String[addresses.size()]);
     }
