@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,20 @@ public final class ByteUtil {
         return asUnsignedInt(new byte[]{b});
     }
 
+    public static int asSignedInt(byte[] bytes) {
+        int i = 0;
+        for (int j = 0; j < bytes.length; j++) {
+            if (j == 0) {
+                i |= bytes[j];
+            }
+            else {
+                i <<= 8;
+                i |= bytes[j] & 0xFF;
+            }
+        }
+        return i;
+    }
+
     public static int asUnsignedInt(byte[] bytes) {
         int i = 0;
         for (int j = 0; j < bytes.length; j++) {
@@ -48,7 +62,7 @@ public final class ByteUtil {
     }
 
     public static float asFloat(byte[] b, int offset, int length) {
-        ByteBuffer buf = ByteBuffer.wrap(b, offset, length);
+        final ByteBuffer buf = ByteBuffer.wrap(b, offset, length);
         return buf.getFloat();
     }
 

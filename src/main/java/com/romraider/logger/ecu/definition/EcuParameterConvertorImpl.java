@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,31 +20,36 @@
 package com.romraider.logger.ecu.definition;
 
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getDefault;
-import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
+import static com.romraider.util.ByteUtil.asFloat;
+import static com.romraider.util.ByteUtil.asSignedInt;
 import static com.romraider.util.ByteUtil.asUnsignedInt;
 import static com.romraider.util.JEPUtil.evaluate;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ParamChecker.isValidBit;
-import static java.lang.Float.intBitsToFloat;
+
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
+
 public final class EcuParameterConvertorImpl implements EcuDataConvertor {
+    private final String FLOAT = "float";
+    private final String INT = "int";
     private final String units;
     private final String expression;
     private final DecimalFormat format;
     private final int bit;
-    private final boolean isFloat;
+    private final String dataType;
     private final Map<String, String> replaceMap;
     private final GaugeMinMax gaugeMinMax;
 
     public EcuParameterConvertorImpl() {
-        this("Raw data", "x", "0", -1, false, new HashMap<String, String>(), getDefault());
+        this("Raw data", "x", "0", -1, "uint", new HashMap<String, String>(), getDefault());
     }
 
-    public EcuParameterConvertorImpl(String units, String expression, String format, int bit, boolean isFloat, Map<String, String> replaceMap,
+    public EcuParameterConvertorImpl(String units, String expression, String format, int bit, String dataType, Map<String, String> replaceMap,
                                      GaugeMinMax gaugeMinMax) {
         checkNotNullOrEmpty(units, "units");
         checkNotNullOrEmpty(expression, "expression");
@@ -54,7 +59,7 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
         this.expression = expression;
         this.format = new DecimalFormat(format);
         this.bit = bit;
-        this.isFloat = isFloat;
+        this.dataType = dataType;
         this.replaceMap = replaceMap;
         this.gaugeMinMax = gaugeMinMax;
     }
@@ -63,7 +68,16 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
         if (isValidBit(bit)) {
             return (bytes[0] & (1 << bit)) > 0 ? 1 : 0;
         } else {
-            double value = (double) (isFloat ? intBitsToFloat(asUnsignedInt(bytes)) : asUnsignedInt(bytes));
+            double value = 0;
+            if (dataType != null && dataType.equalsIgnoreCase(FLOAT)) {
+                value = (double) asFloat(bytes, 0 , bytes.length);
+            }
+            else if (dataType != null && dataType.startsWith(INT)) {
+                value = (double) asSignedInt(bytes);
+            }
+            else {
+                value = (double) asUnsignedInt(bytes);
+            }
             double result = evaluate(expression, value);
             return Double.isNaN(result) || Double.isInfinite(result) ? 0.0 : result;
         }

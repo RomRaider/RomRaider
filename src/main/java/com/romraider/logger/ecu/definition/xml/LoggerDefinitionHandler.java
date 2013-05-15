@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,6 @@ import java.util.Map;
 import java.util.Set;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
-    private static final String FLOAT = "float";
     private static final String TAG_LOGGER = "logger";
     private static final String TAG_PROTOCOL = "protocol";
     private static final String TAG_PARAMETER = "parameter";
@@ -250,7 +249,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                             conversionExpression, conversionFormat, replaceMap, conversionGauge));
                 } else {
                     convertorList.add(new EcuParameterConvertorImpl(conversionUnits, conversionExpression, conversionFormat, address.getBit(),
-                            FLOAT.equalsIgnoreCase(conversionStorageType), replaceMap, conversionGauge));
+                            conversionStorageType, replaceMap, conversionGauge));
                 }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
