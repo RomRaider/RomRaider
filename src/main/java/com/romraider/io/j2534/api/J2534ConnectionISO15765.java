@@ -58,9 +58,8 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
         pollState.setFastPoll(false);
         pollState.setCurrentState(0);
         api.writeMsg(channelId, request, timeout, TxFlags.ISO15765_FRAME_PAD);
-        System.arraycopy(
-                api.readMsg(channelId, 1, timeout), 0, 
-                response, 0, response.length) ;
+        final byte[] readMsg = api.readMsg(channelId, 1, timeout);
+        System.arraycopy(readMsg, 0, response, 0, readMsg.length) ;
     }
 
     // Send request and wait specified time for one response with unknown length

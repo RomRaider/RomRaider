@@ -48,7 +48,7 @@ public final class SSMResponseProcessor {
     public static void validateResponse(byte[] response) {
         assertTrue(response.length > RESPONSE_NON_DATA_BYTES, "Invalid response length");
         assertEquals(ECU_ID, response, "Invalid ECU id");
-        if (response.length == 7) {
+        if (response[4] == ECU_NRC) {
             assertNrc(ECU_NRC, response[4], response[5], response[6],"Request type not supported");
         }
         assertOneOf(new byte[]{ECU_INIT_RESPONSE, READ_ADDRESS_RESPONSE, READ_MEMORY_RESPONSE, WRITE_ADDRESS_RESPONSE, WRITE_MEMORY_RESPONSE}, response[4], "Invalid response code");
@@ -72,7 +72,7 @@ public final class SSMResponseProcessor {
 
     private static void assertNrc(byte expected, byte actual, byte command, byte code, String msg) {
         if (actual == expected) {
-            String ec = " unsupported.";
+            String ec = " unsupported parameter.";
             if (code == 0x13) {
                 ec = " invalid format or length.";
             }
