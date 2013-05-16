@@ -32,6 +32,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
+import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
 
@@ -43,7 +44,6 @@ import com.romraider.editor.ecu.ECUEditorManager;
 public class MDIDesktopPane extends JDesktopPane {
 
     private static final long serialVersionUID = -1839360490978587035L;
-    private static int FRAME_OFFSET = 20;
     private final MDIDesktopManager manager;
 
     public MDIDesktopPane() {
@@ -68,8 +68,8 @@ public class MDIDesktopPane extends JDesktopPane {
         checkDesktopSize();
         if (array.length > 0) {
             p = array[0].getLocation();
-            p.x = p.x + FRAME_OFFSET;
-            p.y = p.y + FRAME_OFFSET;
+            p.x = p.x + Settings.FRAME_OFFSET;
+            p.y = p.y + Settings.FRAME_OFFSET;
         } else {
             p = new Point(0, 0);
         }
@@ -119,13 +119,13 @@ public class MDIDesktopPane extends JDesktopPane {
         JInternalFrame allFrames[] = getAllFrames();
 
         manager.setNormalSize();
-        int frameHeight = (getBounds().height - 5) - allFrames.length * FRAME_OFFSET;
-        int frameWidth = (getBounds().width - 5) - allFrames.length * FRAME_OFFSET;
+        int frameHeight = (getBounds().height - 5) - allFrames.length * Settings.FRAME_OFFSET;
+        int frameWidth = (getBounds().width - 5) - allFrames.length * Settings.FRAME_OFFSET;
         for (int i = allFrames.length - 1; i >= 0; i--) {
             allFrames[i].setSize(frameWidth, frameHeight);
             allFrames[i].setLocation(x, y);
-            x = x + FRAME_OFFSET;
-            y = y + FRAME_OFFSET;
+            x = x + Settings.FRAME_OFFSET;
+            y = y + Settings.FRAME_OFFSET;
         }
     }
 

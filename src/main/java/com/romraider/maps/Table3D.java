@@ -227,23 +227,43 @@ public class Table3D extends Table {
     }
 
     @Override
-    public StringBuffer getTableAsString() {
-        // Make a string of the table
+    public StringBuffer getTableAsString(int valType) {
         StringBuffer output = new StringBuffer(Settings.BLANK);
-        output.append(xAxis.getTableAsString()).append(Settings.NEW_LINE);
+
+        if(xAxis.isStatic) {
+            for (int i = 0; i < xAxis.data.length; i++) {
+                output.append(xAxis.data[i].getText());
+                if (i < xAxis.data.length - 1) {
+                    output.append(Settings.TAB);
+                }
+            }
+        } else {
+            output.append(xAxis.getTableAsString(valType));
+        }
+
+        output.append(Settings.NEW_LINE);
 
         for (int y = 0; y < getSizeY(); y++) {
-            output.append(yAxis.getCellAsString(y)).append(Settings.TAB);
+            if(xAxis.isStatic) {
+                output.append(yAxis.data[y].getText());
+            } else {
+                output.append(yAxis.data[y].getRealValue(valType));
+            }
+
+            output.append(Settings.TAB);
+
             for (int x = 0; x < getSizeX(); x++) {
-                output.append(data[x][y].getText());
+                output.append(data[x][y].getRealValue(valType));
                 if (x < getSizeX() - 1) {
                     output.append(Settings.TAB);
                 }
             }
+
             if (y < getSizeY() - 1) {
                 output.append(Settings.NEW_LINE);
             }
         }
+
         return output;
     }
 
@@ -264,7 +284,7 @@ public class Table3D extends Table {
                     // min/max not set in scale
                     for (DataCell[] column : data) {
                         for (DataCell cell : column) {
-                            double value = cell.getValue();
+                            double value = cell.getValue(Settings.DATA_TYPE_BIN);
                             if (value > high) {
                                 high = value;
                             }
@@ -277,7 +297,7 @@ public class Table3D extends Table {
 
                 for (DataCell[] column : data) {
                     for (DataCell cell : column) {
-                        double value = cell.getValue();
+                        double value = cell.getValue(Settings.DATA_TYPE_BIN);
                         if (value > high || value < low) {
 
                             // value exceeds limit
@@ -388,7 +408,7 @@ public class Table3D extends Table {
         for (DataCell[] column : data) {
             y = 0;
             for(DataCell cell : column) {
-                if(compareType == Settings.COMPARE_TYPE_BIN) {
+                if(compareType == Settings.DATA_TYPE_BIN) {
                     cell.setCompareValue(compareTable3D.data[x][y].getBinValue());
                 } else {
                     cell.setCompareValue(compareTable3D.data[x][y].getOriginalValue());
@@ -908,7 +928,7 @@ public class Table3D extends Table {
                     }
                     DataCell cell = data[x][y];
                     cell.setLiveDataTrace(true);
-                    cell.setDisplayValue(cell.getRealValue() + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue)));
+                    cell.setDisplayValue(cell.getRealValue(Settings.DATA_TYPE_BIN) + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue)));
                 }
             }
             stopHighlight();
@@ -944,7 +964,7 @@ public class Table3D extends Table {
 
             for (DataCell[] column : data) {
                 for (DataCell cell : column) {
-                    double value = cell.getValue();
+                    double value = cell.getValue(Settings.DATA_TYPE_BIN);
                     if (value < low) {
                         low = value;
                     }
@@ -964,7 +984,7 @@ public class Table3D extends Table {
 
             for (DataCell[] column : data) {
                 for (DataCell cell : column) {
-                    double value = cell.getValue();
+                    double value = cell.getValue(Settings.DATA_TYPE_BIN);
                     if (value > high) {
                         high = value;
                     }
@@ -1054,6 +1074,52 @@ public class Table3D extends Table {
         if(!yAxis.isStatic) {
             yAxis.addComparedToTable(table3D.yAxis);
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(null == other) {
+            return false;
+        }
+
+        if(other == this) {
+            return true;
+        }
+
+        if(!(other instanceof Table3D)) {
+            return false;
+        }
+
+        Table3D otherTable = (Table3D)other;
+
+        if(! this.xAxis.equals(otherTable.xAxis)) {
+            return false;
+        }
+
+        if(! this.yAxis.equals(otherTable.yAxis)) {
+            return false;
+        }
+
+        if(this.data.length != otherTable.data.length || this.data[0].length != otherTable.data[0].length)
+        {
+            return false;
+        }
+
+        if(this.data.equals(otherTable.data))
+        {
+            return true;
+        }
+
+        // Compare Bin Values
+        for(int i = 0 ; i < this.data.length ; i++) {
+            for(int j = 0; j < this.data[i].length ; j++) {
+                if(this.data[i][j].getBinValue() != otherTable.data[i][j].getBinValue()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
 
@@ -1146,22 +1212,8 @@ class CopyTable3DWorker extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         String tableHeader = table.getSettings().getTable3DHeader();
-
         StringBuffer output = new StringBuffer(tableHeader);
-        output.append(table.getXAxis().getTableAsString()).append(Settings.NEW_LINE);
-
-        for (int y = 0; y < table.getSizeY(); y++) {
-            output.append(table.getYAxis().getCellAsString(y)).append(Settings.TAB);
-            for (int x = 0; x < table.getSizeX(); x++) {
-                output.append(table.get3dData()[x][y].getText());
-                if (x < table.getSizeX() - 1) {
-                    output.append(Settings.TAB);
-                }
-            }
-            if (y < table.getSizeY() - 1) {
-                output.append(Settings.NEW_LINE);
-            }
-        }
+        output.append(table.getTableAsString(Settings.DATA_TYPE_DISPLAYED));
         //copy to clipboard
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
         return null;

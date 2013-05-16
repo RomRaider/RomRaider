@@ -413,7 +413,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
                 float[] rowValues = new float[valueCount];
                 for (int i = 0; i < valueCount; i++) {
                     DataCell theCell = tableData[i][j];
-                    rowValues[i] = (float) theCell.getValue();
+                    rowValues[i] = (float) theCell.getValue(Settings.DATA_TYPE_BIN);
                     //float theValue = (float)theCell.getValue();
                     //BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
                     //rowValues[i] = finalRoundedValue.floatValue();
@@ -430,7 +430,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             double[] xValues = new double[length];
 
             for (int i = 0; i < length; i++) {
-                xValues[i] = dataCells[i].getValue();
+                xValues[i] = dataCells[i].getValue(Settings.DATA_TYPE_BIN);
                 //double theValue = dataCells[i].getValue();
                 //BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
                 //xValues[i] = finalRoundedValue.doubleValue();
@@ -442,7 +442,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             double[] yValues = new double[length];
 
             for (int i = 0; i < length; i++) {
-                double theValue = dataCells[i].getValue();
+                double theValue = dataCells[i].getValue(Settings.DATA_TYPE_BIN);
                 BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2, BigDecimal.ROUND_HALF_UP);
                 yValues[i] = finalRoundedValue.doubleValue();
             }

@@ -154,18 +154,6 @@ public class Table1D extends Table {
     }
 
     @Override
-    public StringBuffer getTableAsString() {
-        StringBuffer output = new StringBuffer("");
-        for (int i = 0; i < getDataSize(); i++) {
-            output.append(data[i].getText());
-            if (i < getDataSize() - 1) {
-                output.append(Settings.TAB);
-            }
-        }
-        return output;
-    }
-
-    @Override
     public String getCellAsString(int index) {
         return data[index].getText();
     }

@@ -19,18 +19,7 @@
 
 package com.romraider.logger.ecu.ui.tab.maf;
 
-import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.logger.ecu.definition.EcuParameter;
-import com.romraider.logger.ecu.definition.EcuSwitch;
-import com.romraider.logger.ecu.definition.ExternalData;
-import com.romraider.logger.ecu.definition.LoggerData;
-import com.romraider.logger.ecu.ui.DataRegistrationBroker;
-import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
 import static com.romraider.logger.ecu.ui.tab.TableFinder.findTableStartsWith;
-import com.romraider.maps.DataCell;
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
-import com.romraider.maps.Table2D;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static java.awt.GridBagConstraints.CENTER;
 import static java.awt.GridBagConstraints.HORIZONTAL;
@@ -41,8 +30,15 @@ import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
-import org.apache.log4j.Logger;
-import org.jfree.ui.KeyedComboBoxModel;
+
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -51,13 +47,22 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.TitledBorder;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.jfree.ui.KeyedComboBoxModel;
+
+import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.logger.ecu.definition.EcuParameter;
+import com.romraider.logger.ecu.definition.EcuSwitch;
+import com.romraider.logger.ecu.definition.ExternalData;
+import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.ui.DataRegistrationBroker;
+import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
+import com.romraider.maps.DataCell;
+import com.romraider.maps.Rom;
+import com.romraider.maps.Table;
+import com.romraider.maps.Table2D;
 
 public final class MafControlPanel extends JPanel {
     private static final long serialVersionUID = 5787020251107365950L;
@@ -180,11 +185,11 @@ public final class MafControlPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-//        add(panel, gridBagLayout, buildAfrSourcePanel(), 0, 0, 1, HORIZONTAL);
-//        add(panel, gridBagLayout, buildFilterPanel(), 0, 1, 1, HORIZONTAL);
-//        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 2, 1, HORIZONTAL);
-//        add(panel, gridBagLayout, buildUpdateMafPanel(), 0, 3, 1, HORIZONTAL);
-//        add(panel, gridBagLayout, buildResetPanel(), 0, 4, 1, HORIZONTAL);
+        //        add(panel, gridBagLayout, buildAfrSourcePanel(), 0, 0, 1, HORIZONTAL);
+        //        add(panel, gridBagLayout, buildFilterPanel(), 0, 1, 1, HORIZONTAL);
+        //        add(panel, gridBagLayout, buildInterpolatePanel(), 0, 2, 1, HORIZONTAL);
+        //        add(panel, gridBagLayout, buildUpdateMafPanel(), 0, 3, 1, HORIZONTAL);
+        //        add(panel, gridBagLayout, buildResetPanel(), 0, 4, 1, HORIZONTAL);
 
         add(panel, gridBagLayout, buildFilterPanel(), 0, 0, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildInterpolatePanel(), 0, 1, 1, HORIZONTAL);
@@ -267,15 +272,16 @@ public final class MafControlPanel extends JPanel {
 
     private JToggleButton buildRecordDataButton() {
         recordDataButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (recordDataButton.isSelected()) {
-//                    afrSourceList.setEnabled(false);
-//                    registerAfr();
+                    //                    afrSourceList.setEnabled(false);
+                    //                    registerAfr();
                     registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
                 } else {
-//                    deregisterAfr();
+                    //                    deregisterAfr();
                     deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
-//                    afrSourceList.setEnabled(true);
+                    //                    afrSourceList.setEnabled(true);
                 }
             }
         });
@@ -367,6 +373,7 @@ public final class MafControlPanel extends JPanel {
     private JButton buildResetButton() {
         JButton resetButton = new JButton("Reset Data");
         resetButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 chartPanel.clear();
                 parent.repaint();
@@ -378,6 +385,7 @@ public final class MafControlPanel extends JPanel {
     private JButton buildInterpolateButton(final JComboBox orderComboBox) {
         JButton interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 chartPanel.interpolate((Integer) orderComboBox.getSelectedItem());
                 parent.repaint();
@@ -395,6 +403,7 @@ public final class MafControlPanel extends JPanel {
     private JButton buildUpdateMafButton() {
         final JButton updateMafButton = new JButton("Update MAF");
         updateMafButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     if (showUpdateMafConfirmation() == OK_OPTION) {
@@ -405,14 +414,14 @@ public final class MafControlPanel extends JPanel {
                                 double[] x = new double[axisCells.length];
                                 for (int i = 0; i < axisCells.length; i++) {
                                     DataCell cell = axisCells[i];
-                                    x[i] = cell.getValue();
+                                    x[i] = cell.getValue(Settings.DATA_TYPE_BIN);
                                 }
                                 double[] percentChange = chartPanel.calculate(x);
                                 DataCell[] dataCells = table.getData();
                                 for (int i = 0; i < dataCells.length; i++) {
-                                    if (inRange(axisCells[i].getValue(), mafvMin, mafvMax)) {
+                                    if (inRange(axisCells[i].getValue(Settings.DATA_TYPE_BIN), mafvMin, mafvMax)) {
                                         DataCell cell = dataCells[i];
-                                        double value = cell.getValue();
+                                        double value = cell.getValue(Settings.DATA_TYPE_BIN);
                                         cell.setRealValue("" + (value * (1.0 + percentChange[i] / 100.0)));
                                     }
                                 }
@@ -485,7 +494,7 @@ public final class MafControlPanel extends JPanel {
 
     public void setEcuParams(List<EcuParameter> params) {
         this.params = new ArrayList<EcuParameter>(params);
-//        updateAfrSourceList();
+        //        updateAfrSourceList();
     }
 
     public void setEcuSwitches(List<EcuSwitch> switches) {
@@ -494,6 +503,6 @@ public final class MafControlPanel extends JPanel {
 
     public void setExternalDatas(List<ExternalData> externals) {
         this.externals = new ArrayList<ExternalData>(externals);
-//        updateAfrSourceList();
+        //        updateAfrSourceList();
     }
 }

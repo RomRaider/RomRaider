@@ -19,6 +19,7 @@
 
 package com.romraider.util;
 
+import com.romraider.Settings;
 import com.romraider.maps.DataCell;
 import com.romraider.maps.Table1D;
 
@@ -34,7 +35,7 @@ public final class TableAxisUtil {
         DataCell[] data = axis.getData();
         for (int i = 0; i < data.length; i++) {
             DataCell cell = data[i];
-            double axisValue = cell.getValue();
+            double axisValue = cell.getValue(Settings.DATA_TYPE_BIN);
             if (liveAxisValue == axisValue) {
                 startIdx = i;
                 endIdx = i;

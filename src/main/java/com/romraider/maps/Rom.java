@@ -252,6 +252,11 @@ public class Rom implements Serializable {
         return binData;
     }
 
+    public void clearData() {
+        tables.clear();
+        binData = null;
+    }
+
     public int getRealFileSize() {
         return binData.length;
     }

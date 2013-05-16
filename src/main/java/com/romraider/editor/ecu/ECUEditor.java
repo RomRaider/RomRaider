@@ -95,7 +95,6 @@ public class ECUEditor extends AbstractFrame {
 
     private final String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
 
-    private static final String NEW_LINE = System.getProperty("line.separator");
     private final SettingsManager settingsManager = new SettingsManagerImpl();
     private final RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private final RomTree imageList = new RomTree(imageRoot);
@@ -209,7 +208,7 @@ public class ECUEditor extends AbstractFrame {
 
                 StringBuffer sb = new StringBuffer();
                 while (br.ready()) {
-                    sb.append(br.readLine()).append(NEW_LINE);
+                    sb.append(br.readLine()).append(Settings.NEW_LINE);
                 }
                 releaseNotes.setText(sb.toString());
                 releaseNotes.setCaretPosition(0);
@@ -344,7 +343,7 @@ public class ECUEditor extends AbstractFrame {
     public void closeImage() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         closeImageWorker = new CloseImageWorker();
-        closeImageWorker.addPropertyChangeListener(this);
+        closeImageWorker.addPropertyChangeListener(getStatusPanel());
         closeImageWorker.execute();
     }
 
@@ -408,7 +407,7 @@ public class ECUEditor extends AbstractFrame {
     public void setUserLevel(int userLevel) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setUserLevelWorker = new SetUserLevelWorker(userLevel);
-        setUserLevelWorker.addPropertyChangeListener(this);
+        setUserLevelWorker.addPropertyChangeListener(getStatusPanel());
         setUserLevelWorker.execute();
     }
 
@@ -424,13 +423,27 @@ public class ECUEditor extends AbstractFrame {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         imageList.updateUI();
-        imageList.repaint();
+        imageList.invalidate();
+        rightPanel.updateUI();
+        rightPanel.invalidate();
+    }
+
+    public void refreshUI()
+    {
+        getToolBar().updateButtons();
+        getEditorMenuBar().updateMenu();
+        refreshTableMenus();
+
+        imageList.updateUI();
+        imageList.invalidate();
+        rightPanel.updateUI();
+        rightPanel.invalidate();
     }
 
     public void openImage(File inputFile) throws Exception {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         openImageWorker = new OpenImageWorker(inputFile);
-        openImageWorker.addPropertyChangeListener(statusPanel);
+        openImageWorker.addPropertyChangeListener(getStatusPanel());
         openImageWorker.execute();
     }
 
@@ -462,7 +475,7 @@ public class ECUEditor extends AbstractFrame {
     public void launchLogger() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         launchLoggerWorker = new LaunchLoggerWorker();
-        launchLoggerWorker.addPropertyChangeListener(this);
+        launchLoggerWorker.addPropertyChangeListener(getStatusPanel());
         launchLoggerWorker.execute();
     }
 
@@ -509,13 +522,22 @@ class LaunchLoggerWorker extends SwingWorker<Void, Void> {
         return null;
     }
 
+    public void propertyChange(PropertyChangeEvent evnt)
+    {
+        SwingWorker source = (SwingWorker) evnt.getSource();
+        if (null != source && "state".equals( evnt.getPropertyName() )
+                && (source.isDone() || source.isCancelled() ) )
+        {
+            source.removePropertyChangeListener(editor.getStatusPanel());
+        }
+    }
+
     @Override
     public void done() {
         editor.getStatusPanel().setStatus("Ready...");
         setProgress(0);
-        editor.getToolBar().updateButtons();
-        editor.getEditorMenuBar().updateMenu();
         editor.setCursor(null);
+        editor.refreshUI();
     }
 }
 
@@ -537,13 +559,22 @@ class SetUserLevelWorker extends SwingWorker<Void, Void> {
         return null;
     }
 
+    public void propertyChange(PropertyChangeEvent evnt)
+    {
+        SwingWorker source = (SwingWorker) evnt.getSource();
+        if (null != source && "state".equals( evnt.getPropertyName() )
+                && (source.isDone() || source.isCancelled() ) )
+        {
+            source.removePropertyChangeListener(editor.getStatusPanel());
+        }
+    }
+
     @Override
     public void done() {
         editor.getStatusPanel().setStatus("Ready...");
         setProgress(0);
-        editor.getToolBar().updateButtons();
-        editor.getEditorMenuBar().updateMenu();
         editor.setCursor(null);
+        editor.refreshUI();
     }
 }
 
@@ -563,16 +594,20 @@ class CloseImageWorker extends SwingWorker<Void, Void> {
             RomTreeNode romTreeNode = (RomTreeNode) imageRoot.getChildAt(i);
             Rom rom = romTreeNode.getRom();
             if (rom == editor.getLastSelectedRom()) {
-                Vector<Table> romTables = rom.getTables();
-                for (Table t : romTables) {
+                for (Table t : rom.getTables()) {
                     editor.getRightPanel().remove(t.getFrame());
                     TableUpdateHandler.getInstance().deregisterTable(t);
                 }
+
+                // Cleanup Rom Data
+                rom.clearData();
 
                 Vector<TreePath> path = new Vector<TreePath>();
                 path.add(new TreePath(romTreeNode.getPath()));
                 imageRoot.remove(i);
                 imageList.removeDescendantToggledPaths(path.elements());
+
+                path.clear();
 
                 break;
             }
@@ -584,7 +619,6 @@ class CloseImageWorker extends SwingWorker<Void, Void> {
             // no other images open
             editor.setLastSelectedRom(null);
         }
-        editor.getRightPanel().repaint();
         return null;
     }
 
@@ -592,10 +626,9 @@ class CloseImageWorker extends SwingWorker<Void, Void> {
     public void done() {
         editor.getStatusPanel().setStatus("Ready...");
         setProgress(0);
-        editor.getToolBar().updateButtons();
-        editor.getEditorMenuBar().updateMenu();
-        editor.refreshTableMenus();
         editor.setCursor(null);
+        editor.refreshUI();
+        System.gc();
     }
 }
 
@@ -617,23 +650,21 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
             setProgress(0);
 
             byte[] input = editor.readFile(inputFile);
-            DOMRomUnmarshaller domUms = new DOMRomUnmarshaller();
             DOMParser parser = new DOMParser();
 
             editor.getStatusPanel().setStatus("Finding ECU definition...");
             setProgress(10);
 
-            Rom rom;
-
             // parse ecu definition files until result found
             for (int i = 0; i < settings.getEcuDefinitionFiles().size(); i++) {
-                InputSource src = new InputSource(new FileInputStream(settings.getEcuDefinitionFiles().get(i)));
+                FileInputStream fileStream = new FileInputStream(settings.getEcuDefinitionFiles().get(i));
+                InputSource src = new InputSource(fileStream);
 
                 parser.parse(src);
                 Document doc = parser.getDocument();
 
                 try {
-                    rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.getStatusPanel());
+                    Rom rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.getStatusPanel());
                     editor.getStatusPanel().setStatus("Populating tables...");
                     setProgress(50);
 
@@ -648,11 +679,20 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
 
                     editor.getStatusPanel().setStatus("Done loading image...");
                     setProgress(100);
+                    parser.reset();
+                    try{
+                        fileStream.close();
+                    } catch(IOException ioex) {
+                        ;// Do nothing
+                    }
                     return null;
 
                 } catch (RomNotFoundException ex) {
                     // rom was not found in current file, skip to next
                 }
+                parser = null;
+                doc.removeChild(doc.getDocumentElement());
+                doc = null;
             }
 
             // if code executes to this point, no ROM was found, report to user
@@ -674,13 +714,22 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
         return null;
     }
 
+    public void propertyChange(PropertyChangeEvent evnt)
+    {
+        SwingWorker source = (SwingWorker) evnt.getSource();
+        if (null != source && "state".equals( evnt.getPropertyName() )
+                && (source.isDone() || source.isCancelled() ) )
+        {
+            source.removePropertyChangeListener(editor.getStatusPanel());
+        }
+    }
+
     @Override
     public void done() {
         editor.getStatusPanel().setStatus("Ready...");
         setProgress(0);
-        editor.getToolBar().updateButtons();
-        editor.getEditorMenuBar().updateMenu();
-        editor.refreshTableMenus();
         editor.setCursor(null);
+        editor.refreshUI();
+        System.gc();
     }
 }

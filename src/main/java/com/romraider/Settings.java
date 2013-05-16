@@ -96,8 +96,9 @@ public class Settings implements Serializable {
     public static final int TABLE_Y_AXIS = 5;
     public static final int TABLE_SWITCH = 6;
 
-    public static final int COMPARE_TYPE_ORIGINAL = 0;
-    public static final int COMPARE_TYPE_BIN = 1;
+    public static final int DATA_TYPE_ORIGINAL = 0;
+    public static final int DATA_TYPE_BIN = 1;
+    public static final int DATA_TYPE_DISPLAYED = 2;
 
     public static final int COMPARE_DISPLAY_OFF = 0;
     public static final int COMPARE_DISPLAY_PERCENT = 1;
@@ -114,6 +115,14 @@ public class Settings implements Serializable {
     /* Scale Settings */
     public static final int LINEAR = 1;
     public static final int INVERSE = 2;
+
+    /* Compare Image Settings */
+    public static Color TABLE_EQUAL_COLOR = new Color(52,114,53);
+    public static Color TABLE_DIFFERENT_COLOR = new Color(193, 27, 23);
+    public static Color TABLE_MISSING_COLOR = new Color(251,185,23);
+
+    /* MDI Desktop Settings*/
+    public static int FRAME_OFFSET = 20;
 
     private static final String ISO15765 = "ISO15765";
     private static final String ISO9141 = "ISO9141";

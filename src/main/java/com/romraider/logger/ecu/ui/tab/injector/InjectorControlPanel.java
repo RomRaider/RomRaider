@@ -19,18 +19,7 @@
 
 package com.romraider.logger.ecu.ui.tab.injector;
 
-import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.logger.ecu.definition.EcuParameter;
-import com.romraider.logger.ecu.definition.EcuSwitch;
-import com.romraider.logger.ecu.definition.ExternalData;
-import com.romraider.logger.ecu.definition.LoggerData;
-import com.romraider.logger.ecu.ui.DataRegistrationBroker;
-import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
 import static com.romraider.logger.ecu.ui.tab.TableFinder.findTableStartsWith;
-import com.romraider.maps.DataCell;
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
-import com.romraider.maps.Table2D;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static java.awt.GridBagConstraints.CENTER;
 import static java.awt.GridBagConstraints.HORIZONTAL;
@@ -41,14 +30,7 @@ import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
-import org.apache.log4j.Logger;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.border.TitledBorder;
+
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -57,6 +39,29 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.border.TitledBorder;
+
+import org.apache.log4j.Logger;
+
+import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.logger.ecu.definition.EcuParameter;
+import com.romraider.logger.ecu.definition.EcuSwitch;
+import com.romraider.logger.ecu.definition.ExternalData;
+import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.ui.DataRegistrationBroker;
+import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
+import com.romraider.maps.DataCell;
+import com.romraider.maps.Rom;
+import com.romraider.maps.Table;
+import com.romraider.maps.Table2D;
 
 public final class InjectorControlPanel extends JPanel {
     /**
@@ -294,6 +299,7 @@ public final class InjectorControlPanel extends JPanel {
 
     private JToggleButton buildRecordDataButton() {
         recordDataButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (recordDataButton.isSelected()) {
                     registerData(COOLANT_TEMP, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, AFR, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32, PULSE_WIDTH_16, PULSE_WIDTH_32, ENGINE_LOAD_16, ENGINE_LOAD_32);
@@ -365,6 +371,7 @@ public final class InjectorControlPanel extends JPanel {
     private JButton buildResetButton() {
         JButton resetButton = new JButton("Reset Data");
         resetButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 chartPanel.clear();
                 parent.repaint();
@@ -376,6 +383,7 @@ public final class InjectorControlPanel extends JPanel {
     private JButton buildInterpolateButton() {
         JButton interpolateButton = new JButton("Interpolate");
         interpolateButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 chartPanel.interpolate(1);
                 double[] coefficients = chartPanel.getPolynomialCoefficients();
@@ -393,6 +401,7 @@ public final class InjectorControlPanel extends JPanel {
     private JButton buildUpdateInjectorScalerButton() {
         final JButton updateButton = new JButton("Update Scaling");
         updateButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     if (showUpdateTableConfirmation("Injector Flow Scaling") == OK_OPTION) {
@@ -424,6 +433,7 @@ public final class InjectorControlPanel extends JPanel {
     private JButton buildUpdateInjectorLatencyButton() {
         final JButton updateButton = new JButton("Update Latency");
         updateButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
                     if (showUpdateTableConfirmation("Injector Latency") == OK_OPTION) {
@@ -432,7 +442,7 @@ public final class InjectorControlPanel extends JPanel {
                             DataCell[] cells = table.getData();
                             if (isNumber(latencyOffset)) {
                                 for (DataCell cell : cells) {
-                                    double newLatency = cell.getValue() + parseDouble(latencyOffset);
+                                    double newLatency = cell.getValue(Settings.DATA_TYPE_BIN) + parseDouble(latencyOffset);
                                     cell.setRealValue("" + newLatency);
                                 }
                                 table.colorize();

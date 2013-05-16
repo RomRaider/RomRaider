@@ -102,7 +102,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected int userLevel = 0;
     protected boolean locked = false;
 
-    protected int compareType = Settings.COMPARE_TYPE_ORIGINAL;
+    protected int compareType = Settings.DATA_TYPE_ORIGINAL;
     protected int compareDisplay = Settings.COMPARE_DISPLAY_OFF;
     protected Table compareTable = null;
     protected List<Table> comparedToTables = new ArrayList<Table>();
@@ -605,6 +605,42 @@ public abstract class Table extends JPanel implements Serializable {
         return name;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if(null == other) {
+            return false;
+        }
+
+        if(other == this) {
+            return true;
+        }
+
+        if(!(other instanceof Table)) {
+            return false;
+        }
+
+        Table otherTable = (Table)other;
+
+        if(this.data.length != otherTable.data.length)
+        {
+            return false;
+        }
+
+        if(this.data.equals(otherTable.data))
+        {
+            return true;
+        }
+
+        // Compare Bin Values
+        for(int i=0 ; i < this.data.length ; i++) {
+            if(this.data[i].getBinValue() != otherTable.data[i].getBinValue()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public boolean isStatic() {
         return isStatic;
     }
@@ -636,7 +672,7 @@ public abstract class Table extends JPanel implements Serializable {
                     low = getScale().getMin();
                 } else {
                     for (int i = 0; i < getDataSize(); i++) {
-                        double value = data[i].getValue();
+                        double value = data[i].getValue(Settings.DATA_TYPE_BIN);
                         if (value > high) {
                             high = value;
                         }
@@ -647,7 +683,7 @@ public abstract class Table extends JPanel implements Serializable {
                 }
 
                 for (int i = 0; i < getDataSize(); i++) {
-                    double value = data[i].getValue();
+                    double value = data[i].getValue(Settings.DATA_TYPE_BIN);
                     if (value > high || value < low) {
                         // value exceeds limit
                         data[i].setColor(getSettings().getWarningColor());
@@ -973,11 +1009,10 @@ public abstract class Table extends JPanel implements Serializable {
         copySelectionWorker.execute();
     }
 
-    public StringBuffer getTableAsString() {
-        //make a string of the selection
+    public StringBuffer getTableAsString(int valType) {
         StringBuffer output = new StringBuffer(Settings.BLANK);
         for (int i = 0; i < data.length; i++) {
-            output.append(data[i].getText());
+            output.append(data[i].getRealValue(valType));
             if (i < data.length - 1) {
                 output.append(Settings.TAB);
             }
@@ -1142,7 +1177,7 @@ public abstract class Table extends JPanel implements Serializable {
 
         int i = 0;
         for(DataCell cell : data) {
-            if(compareType == Settings.COMPARE_TYPE_BIN) {
+            if(compareType == Settings.DATA_TYPE_BIN) {
                 cell.setCompareValue(compareData[i].getBinValue());
             } else {
                 cell.setCompareValue(compareData[i].getOriginalValue());
@@ -1268,7 +1303,7 @@ public abstract class Table extends JPanel implements Serializable {
         if (getScale().getMin() == 0 && getScale().getMax() == 0) {
             double low = Double.MAX_VALUE;
             for (int i = 0; i < getDataSize(); i++) {
-                double value = data[i].getValue();
+                double value = data[i].getValue(Settings.DATA_TYPE_BIN);
                 if (value < low) {
                     low = value;
                 }
@@ -1283,7 +1318,7 @@ public abstract class Table extends JPanel implements Serializable {
         if (getScale().getMin() == 0 && getScale().getMax() == 0) {
             double high = Double.MIN_VALUE;
             for (int i = 0; i < getDataSize(); i++) {
-                double value = data[i].getValue();
+                double value = data[i].getValue(Settings.DATA_TYPE_BIN);
                 if (value > high) {
                     high = value;
                 }
@@ -1407,14 +1442,8 @@ class CopyTableWorker extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         String tableHeader = table.getSettings().getTableHeader();
-
         StringBuffer output = new StringBuffer(tableHeader);
-        for (int i = 0; i < table.getDataSize(); i++) {
-            output.append(table.getData()[i].getText());
-            if (i < table.getDataSize() - 1) {
-                output.append(Settings.TAB);
-            }
-        }
+        output.append(table.getTableAsString(Settings.DATA_TYPE_DISPLAYED));
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
         return null;
     }

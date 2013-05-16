@@ -83,7 +83,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         DecimalFormat formatter = new DecimalFormat(scale.getFormat());
 
         if (getCompareDisplay() == Settings.COMPARE_DISPLAY_OFF) {
-            displayValue = getRealValue();
+            displayValue = getRealValue(Settings.DATA_TYPE_BIN);
 
         } else if (getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
             displayValue = formatter.format(
@@ -300,12 +300,22 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.setOriginalValue(binValue);
     }
 
-    public double getValue() {
-        return calcDisplayValue(binValue, table.getScale().getExpression());
+    public double getValue(int valType) {
+        double cellVal;
+        switch(valType) {
+        case Settings.DATA_TYPE_ORIGINAL:
+            cellVal = getOriginalValue();
+            break;
+        default:
+            cellVal = getBinValue();
+            break;
+        }
+
+        return calcDisplayValue(cellVal, table.getScale().getExpression());
     }
 
-    public String getRealValue() {
-        return new DecimalFormat(scale.getFormat()).format(getValue());
+    public String getRealValue(int valType) {
+        return new DecimalFormat(scale.getFormat()).format(getValue(valType));
     }
 
     public void setRealValue(String input) {
