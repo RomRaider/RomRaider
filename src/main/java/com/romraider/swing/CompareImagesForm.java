@@ -40,6 +40,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
+import com.romraider.Settings;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 
@@ -56,9 +57,6 @@ public class CompareImagesForm extends JFrame implements ActionListener {
     private final ChangeListCellRenderer changeRenderer = new ChangeListCellRenderer();
     private final JScrollPane scrollPaneResults;
     private final JLabel lblImageResultString;
-    public static Color equal = new Color(52,114,53);
-    public static Color different = new Color(193, 27, 23);
-    public static Color missing = new Color(251,185,23);
 
     public CompareImagesForm(Vector<Rom> roms, Image parentImage) {
         this.setIconImage(parentImage);
@@ -82,22 +80,14 @@ public class CompareImagesForm extends JFrame implements ActionListener {
         panelImageSelector.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
         panelImageSelector.setLayout(null);
 
-        JLabel lblImageLeft = new JLabel("Image (Left):");
-        lblImageLeft.setBounds(10, 10, 70, 14);
-        panelImageSelector.add(lblImageLeft);
-
         this.comboBoxImageLeft = new JComboBox();
-        this.comboBoxImageLeft.setBounds(89, 7, 475, 20);
+        this.comboBoxImageLeft.setBounds(10, 7, 554, 20);
         this.comboBoxImageLeft.setToolTipText("Select an image to compare.");
         this.comboBoxImageLeft.setRenderer( new ComboBoxRenderer() );
         panelImageSelector.add(this.comboBoxImageLeft);
 
-        JLabel lblImageRight = new JLabel("Image (Right):");
-        lblImageRight.setBounds(10, 35, 70, 14);
-        panelImageSelector.add(lblImageRight);
-
         this.comboBoxImageRight = new JComboBox();
-        this.comboBoxImageRight.setBounds(89, 32, 475, 20);
+        this.comboBoxImageRight.setBounds(10, 32, 554, 20);
         this.comboBoxImageRight.setToolTipText("Select an image to compare.");
         this.comboBoxImageRight.setRenderer( new ComboBoxRenderer() );
         panelImageSelector.add(this.comboBoxImageRight);
@@ -144,75 +134,63 @@ public class CompareImagesForm extends JFrame implements ActionListener {
     {
         listModelChanges.clear();
 
-        Vector<Table> leftTables = left.getTables();
-        Vector<Table> rightTables = right.getTables();
-
         int equal = 0;
         int different = 0;
         int missing = 0;
 
-        String leftTableName;
-        String rightTableName;
-        String leftTableAsString;
-        String rightTableAsString;
-        Boolean found = false;
-
-        // Compare the tables.
-        for(int x=0;x<leftTables.size();x++) {
-            found = false;
-            leftTableName = leftTables.get(x).getName().trim().toLowerCase();
-            for(int y=0;y<rightTables.size();y++) {
-                rightTableName = rightTables.get(y).getName().trim().toLowerCase();
-                if(leftTableName.equals(rightTableName)) {
-                    // Same table.  Compare table as string
-                    found = true;
-                    leftTableAsString = leftTables.get(x).getTableAsString().toString().trim().toLowerCase();
-                    rightTableAsString = rightTables.get(y).getTableAsString().toString().trim().toLowerCase();
-                    if(leftTableAsString.equals(rightTableAsString)) {
-                        // Tables are equal
+        for(Table leftTable : left.getTables())
+        {
+            Boolean found = false;
+            for(Table rightTable : right.getTables())
+            {
+                if(leftTable.getName().equalsIgnoreCase(rightTable.getName()))
+                {
+                    if(leftTable.equals(rightTable)) {
                         equal++;
-                        listModelChanges.addElement(new ListItem(1, leftTables.get(x).getName()));
-                    } else {
-                        // Tables are different
-                        different++;
-                        listModelChanges.addElement(new ListItem(2, leftTables.get(x).getName()));
+                        listModelChanges.addElement(new ListItem(1, leftTable.getName()));
                     }
+                    else {
+                        different++;
+                        listModelChanges.addElement(new ListItem(2, leftTable.getName()));
+                    }
+                    found = true;
                     break;
                 }
             }
+
             if(!found) {
                 missing++;
-                listModelChanges.addElement(new ListItem(3, leftTables.get(x).getName()));
+                listModelChanges.addElement(new ListItem(3, leftTable.getName()));
             }
         }
 
         // Check if rightTables has tables that do not exist in left table.
-        for(int x=0;x<rightTables.size();x++) {
-            found = false;
-            rightTableName = rightTables.get(x).getName().trim().toLowerCase();
-            for(int y=0;y<leftTables.size();y++) {
-                leftTableName = leftTables.get(y).getName().trim().toLowerCase();
-                if(rightTableName.equals(leftTableName))
+        for(Table rightTable : right.getTables()) {
+            Boolean found = false;
+            for(Table leftTable : left.getTables()) {
+                if(leftTable.getName().equalsIgnoreCase(rightTable.getName()))
                 {
                     found = true;
+                    break;
                 }
             }
+
             if(!found) {
                 missing++;
-                listModelChanges.addElement(new ListItem(3, rightTables.get(x).getName()));
+                listModelChanges.addElement(new ListItem(3, rightTable.getName()));
             }
         }
 
         // Fill out the result string.
         if(equal > 0 && different == 0 && missing == 0) {
             lblImageResultString.setText("Images are equal.");
-            lblImageResultString.setForeground(CompareImagesForm.equal);
+            lblImageResultString.setForeground(Settings.TABLE_EQUAL_COLOR);
         } else if(different > 0) {
             lblImageResultString.setText("Images are NOT equal.  Equal Tables: "+equal+", Changed Tables: "+different+", Missing Tables: "+missing);
-            lblImageResultString.setForeground(CompareImagesForm.different);
+            lblImageResultString.setForeground(Settings.TABLE_DIFFERENT_COLOR);
         } else {
             lblImageResultString.setText("Images are NOT equal.  Equal Tables: "+equal+", Changed Tables: "+different+", Missing Tables: "+missing);
-            lblImageResultString.setForeground(CompareImagesForm.missing);
+            lblImageResultString.setForeground(Settings.TABLE_MISSING_COLOR);
         }
 
         // Check if the list has items.
@@ -320,15 +298,15 @@ public class CompareImagesForm extends JFrame implements ActionListener {
             switch(item.getType()) {
             case 1:
                 // equal - default green
-                setForeground(CompareImagesForm.equal);
+                setForeground(Settings.TABLE_EQUAL_COLOR);
                 break;
             case 2:
                 // different - default red
-                setForeground(CompareImagesForm.different);
+                setForeground(Settings.TABLE_DIFFERENT_COLOR);
                 break;
             case 3:
                 // missing - default yellow
-                setForeground(CompareImagesForm.missing);
+                setForeground(Settings.TABLE_MISSING_COLOR);
                 break;
             default:
                 setForeground(paramList.getForeground());

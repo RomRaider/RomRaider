@@ -85,6 +85,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     public void refreshTableMenuBar() {
         refreshSimilarOpenTables();
         initCompareGroup();
+        invalidate();
     }
 
     private void initFileMenu() {
@@ -292,7 +293,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             compareByDisplay(Settings.COMPARE_DISPLAY_PERCENT);
 
         } else if (e.getSource() == compareOriginal) {
-            table.setCompareType(Settings.COMPARE_TYPE_ORIGINAL);
+            table.setCompareType(Settings.DATA_TYPE_ORIGINAL);
             compareToOriginal.setSelected(true);
             compareByTable(table);
 
@@ -308,10 +309,10 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             compareByTable(selectedTable);
 
         } else if (e.getSource() == compareToOriginal) {
-            compareByType(Settings.COMPARE_TYPE_ORIGINAL);
+            compareByType(Settings.DATA_TYPE_ORIGINAL);
 
         } else if (e.getSource() == compareToBin) {
-            compareByType(Settings.COMPARE_TYPE_BIN);
+            compareByType(Settings.DATA_TYPE_BIN);
 
         }
     }

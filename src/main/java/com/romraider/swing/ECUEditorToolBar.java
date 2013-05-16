@@ -80,10 +80,12 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     }
 
     public void updateIcons() {
-        openImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-open.png")), getSettings().getEditorIconScale()));
-        saveImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-save.png")), getSettings().getEditorIconScale()));
-        refreshImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-refresh.png")), getSettings().getEditorIconScale()));
-        closeImage.setIcon(rescaleImageIcon(new ImageIcon( getClass().getResource("/graphics/icon-close.png")), getSettings().getEditorIconScale()));
+        int iconScale = getSettings().getEditorIconScale();
+        openImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-open.png")), iconScale));
+        saveImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-save.png")), iconScale));
+        refreshImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-refresh.png")), iconScale));
+        closeImage.setIcon(rescaleImageIcon(new ImageIcon( getClass().getResource("/graphics/icon-close.png")), iconScale));
+        invalidate();
     }
 
     private ImageIcon rescaleImageIcon(ImageIcon imageIcon, int percentOfOriginal) {
@@ -114,6 +116,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
             refreshImage.setEnabled(true);
             closeImage.setEnabled(true);
         }
+        invalidate();
     }
 
     @Override
@@ -123,23 +126,23 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
                 ((ECUEditorMenuBar) getEditor().getJMenuBar()).openImageDialog();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
-                        getEditor().getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                        getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == saveImage) {
             try {
                 ((ECUEditorMenuBar) getEditor().getJMenuBar()).saveImage(getEditor().getLastSelectedRom());
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
-                        getEditor().getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                        getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == closeImage) {
-            ((ECUEditorMenuBar) getEditor().getJMenuBar()).closeImage();
+            getEditor().closeImage();
         } else if (e.getSource() == refreshImage) {
             try {
                 ((ECUEditorMenuBar) getEditor().getJMenuBar()).refreshImage();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
-                        getEditor().getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                        getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

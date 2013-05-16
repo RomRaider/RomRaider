@@ -38,7 +38,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
@@ -245,6 +244,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         refreshImage.setText("Refresh " + file);
         closeImage.setText("Close " + file);
         romProperties.setText(file + "Properties");
+        invalidate();
     }
 
     @Override
@@ -281,10 +281,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                         new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
             }
         } else if (e.getSource() == closeImage) {
-            this.closeImage();
+            parent.closeImage();
 
         } else if (e.getSource() == closeAll) {
-            this.closeAllImages();
+            parent.closeAllImages();
 
         } else if (e.getSource() == exit) {
             parent.handleExit();
@@ -384,14 +384,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
     }
 
-    public void closeImage() {
-        getEditor().closeImage();
-    }
-
-    public void closeAllImages() {
-        getEditor().closeAllImages();
-    }
-
     public void saveImage(Rom input) throws Exception {
         ECUEditor parent = getEditor();
         if (parent.getLastSelectedRom() != null) {
@@ -429,6 +421,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         fc.setCurrentDirectory(lastRepositoryDir);
         fc.setDialogTitle("Select Repository Directory");
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
         // disable the "All files" option
         fc.setAcceptAllFileFilterUsed(false);
         String separator = System.getProperty("file.separator");
@@ -445,27 +438,32 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 }
             }
             if(save) {
-                Vector<Table> romTables = image.getTables();
-                for(int i=0;i<romTables.size();i++) {
-                    Table curTable = romTables.get(i);
-                    String category = curTable.getCategory();
-                    String tableName = curTable.getName();
+                for(Table table : image.getTables())
+                {
+                    String category = table.getCategory();
+                    String tableName = table.getName();
                     String tableDirString = selectedDir.getAbsolutePath() + separator + category;
                     File tableDir = new File(tableDirString.replace('/', '-'));
                     tableDir.mkdirs();
                     String tableFileString = tableDir.getAbsolutePath() + separator + tableName+".txt";
                     File tableFile = new File(tableFileString.replace('/', '-'));
+
                     if(tableFile.exists())
                     {
                         tableFile.delete();
                     }
+
                     tableFile.createNewFile();
-                    StringBuffer tableData = curTable.getTableAsString();
+                    StringBuffer tableData = table.getTableAsString(Settings.DATA_TYPE_BIN);
                     BufferedWriter out = new BufferedWriter(new FileWriter(tableFile));
                     try {
                         out.write(tableData.toString());
                     } finally {
-                        out.close();
+                        try {
+                            out.close();
+                        } catch(Exception ex) {
+                            ;// Do Nothing.
+                        }
                     }
                 }
                 getSettings().setLastRepositoryDir(selectedDir);

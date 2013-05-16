@@ -97,6 +97,24 @@ public class Table2D extends Table {
     }
 
     @Override
+    public StringBuffer getTableAsString(int valType) {
+        StringBuffer output = new StringBuffer(Settings.BLANK);
+        if(axis.isStatic){
+            for (int i = 0; i < axis.data.length; i++) {
+                output.append(axis.data[i].getText());
+                if (i < axis.data.length - 1) {
+                    output.append(Settings.TAB);
+                }
+            }
+        } else {
+            output.append(axis.getTableAsString(valType));
+        }
+        output.append(Settings.NEW_LINE);
+        output.append(super.getTableAsString(valType));
+        return output;
+    }
+
+    @Override
     public void setFrame(TableFrame frame) {
         this.frame = frame;
         axis.setFrame(frame);
@@ -370,7 +388,7 @@ public class Table2D extends Table {
                 }
                 DataCell cell = data[i];
                 cell.setLiveDataTrace(true);
-                cell.setDisplayValue(cell.getRealValue() + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue)));
+                cell.setDisplayValue(cell.getRealValue(Settings.DATA_TYPE_BIN) + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue)));
             }
             stopHighlight();
             getToolbar().setLiveDataValue(liveValue);
@@ -435,6 +453,46 @@ public class Table2D extends Table {
             axis.addComparedToTable(table2D.axis);
         }
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if(null == other) {
+            return false;
+        }
+
+        if(other == this) {
+            return true;
+        }
+
+        if(!(other instanceof Table2D)) {
+            return false;
+        }
+
+        Table2D otherTable = (Table2D)other;
+
+        if(!this.axis.equals(otherTable.axis)) {
+            return false;
+        }
+
+        if(this.data.length != otherTable.data.length)
+        {
+            return false;
+        }
+
+        if(this.data.equals(otherTable.data))
+        {
+            return true;
+        }
+
+        // Compare Bin Values
+        for(int i = 0 ; i < this.data.length ; i++) {
+            if(this.data[i].getBinValue() != otherTable.data[i].getBinValue()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 
 class CopySelection2DWorker extends SwingWorker<Void, Void> {
@@ -474,11 +532,9 @@ class CopyTable2DWorker extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         String tableHeader = table.getSettings().getTable2DHeader();
-
-        // create string
         StringBuffer output = new StringBuffer(tableHeader);
-        output.append(table.getAxis().getTableAsString()).append(Settings.NEW_LINE);
-        output.append(table.getTableAsString());
+        output.append(table.getTableAsString(Settings.DATA_TYPE_DISPLAYED));
+
         //copy to clipboard
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
         return null;
