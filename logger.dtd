@@ -69,3 +69,4 @@
 <!ELEMENT protocols ( protocol+ ) >
 
 <!ELEMENT logger ( protocols ) >
+<!ATTLIST logger version CDATA #IMPLIED >
