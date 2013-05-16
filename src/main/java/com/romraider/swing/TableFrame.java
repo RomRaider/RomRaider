@@ -26,21 +26,18 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Table;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener {
 
     private static final long serialVersionUID = -2651279694660392351L;
     private Table table;
-    private final ECUEditor parent;
     private TableMenuBar tableMenuBar = null;
 
-    public TableFrame(Table table, ECUEditor parent) {
+    public TableFrame(Table table) {
         super(table.getRom().getFileName() + " - " + table.getName(), true, true);
-
-        this.parent = parent;
-
-        setTable(table);
+        this.table = table;
         add(table);
         setFrameIcon(null);
         setBorder(createBevelBorder(0));
@@ -54,13 +51,10 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         addInternalFrameListener(this);
     }
 
-    public TableToolBar getToolBar() {
-        return parent.getTableToolBar();
-    }
-
     @Override
     public void internalFrameActivated(InternalFrameEvent e) {
-        getTable().getEditor().setLastSelectedRom(getTable().getRom());
+        ECUEditor parent = getEditor();
+        parent.setLastSelectedRom(getTable().getRom());
         parent.updateTableToolBar(this.table);
         parent.getToolBar().updateButtons();
         parent.getEditorMenuBar().updateMenu();
@@ -74,12 +68,12 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
 
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
-        getTable().getEditor().removeDisplayTable(this);
+        getEditor().removeDisplayTable(this);
     }
 
     @Override
     public void internalFrameClosed(InternalFrameEvent e) {
-        parent.updateTableToolBar(null);
+        getEditor().updateTableToolBar(null);
     }
 
     @Override
@@ -94,7 +88,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
 
     @Override
     public void internalFrameDeactivated(InternalFrameEvent e) {
-        parent.updateTableToolBar(null);
+        getEditor().updateTableToolBar(null);
     }
 
     public Table getTable() {
@@ -103,6 +97,10 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
 
     public void setTable(Table table) {
         this.table = table;
+    }
+
+    public ECUEditor getEditor() {
+        return ECUEditorManager.getECUEditor();
     }
 
     public void updateFileName() {

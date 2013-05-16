@@ -33,21 +33,22 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
+import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.maps.Rom;
 
 public class ECUEditorToolBar extends JToolBar implements ActionListener {
 
     private static final long serialVersionUID = 7778170684606193919L;
-    private final ECUEditor parent;
     private final JButton openImage = new JButton();
     private final JButton saveImage = new JButton();
     private final JButton refreshImage = new JButton();
     private final JButton closeImage = new JButton();
 
-    public ECUEditorToolBar(ECUEditor parent, String name) {
+    private final ECUEditor editor;
+
+    public ECUEditorToolBar(ECUEditor editor, String name) {
         super(name);
-        this.parent = parent;
+        this.editor = editor;
         this.setFloatable(true);
         this.setRollover(true);
         FlowLayout toolBarLayout = new FlowLayout(FlowLayout.LEFT, 0, 0);
@@ -79,10 +80,10 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     }
 
     public void updateIcons() {
-        openImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-open.png")), parent.getSettings().getEditorIconScale()));
-        saveImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-save.png")), parent.getSettings().getEditorIconScale()));
-        refreshImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-refresh.png")), parent.getSettings().getEditorIconScale()));
-        closeImage.setIcon(rescaleImageIcon(new ImageIcon( getClass().getResource("/graphics/icon-close.png")), parent.getSettings().getEditorIconScale()));
+        openImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-open.png")), getSettings().getEditorIconScale()));
+        saveImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-save.png")), getSettings().getEditorIconScale()));
+        refreshImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-refresh.png")), getSettings().getEditorIconScale()));
+        closeImage.setIcon(rescaleImageIcon(new ImageIcon( getClass().getResource("/graphics/icon-close.png")), getSettings().getEditorIconScale()));
     }
 
     private ImageIcon rescaleImageIcon(ImageIcon imageIcon, int percentOfOriginal) {
@@ -97,7 +98,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     }
 
     public void updateButtons() {
-        String file = getLastSelectedRomFileName();
+        String file = getEditor().getLastSelectedRomFileName();
 
         openImage.setToolTipText("Open Image");
         saveImage.setToolTipText("Save " + file + " As New Image...");
@@ -119,32 +120,35 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == openImage) {
             try {
-                ((ECUEditorMenuBar) parent.getJMenuBar()).openImageDialog();
+                ((ECUEditorMenuBar) getEditor().getJMenuBar()).openImageDialog();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
-                        parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
+                        getEditor().getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == saveImage) {
             try {
-                ((ECUEditorMenuBar) parent.getJMenuBar()).saveImage(parent.getLastSelectedRom());
+                ((ECUEditorMenuBar) getEditor().getJMenuBar()).saveImage(getEditor().getLastSelectedRom());
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
-                        parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
+                        getEditor().getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == closeImage) {
-            ((ECUEditorMenuBar) parent.getJMenuBar()).closeImage();
+            ((ECUEditorMenuBar) getEditor().getJMenuBar()).closeImage();
         } else if (e.getSource() == refreshImage) {
             try {
-                ((ECUEditorMenuBar) parent.getJMenuBar()).refreshImage();
+                ((ECUEditorMenuBar) getEditor().getJMenuBar()).refreshImage();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(parent, new DebugPanel(ex,
-                        parent.getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
+                        getEditor().getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private String getLastSelectedRomFileName() {
-        Rom lastSelectedRom = parent.getLastSelectedRom();
-        return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
+    private Settings getSettings() {
+        return getEditor().getSettings();
+    }
+
+    private ECUEditor getEditor() {
+        return editor;
     }
 }

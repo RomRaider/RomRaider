@@ -99,7 +99,7 @@ public class ECUEditor extends AbstractFrame {
     private final SettingsManager settingsManager = new SettingsManagerImpl();
     private final RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private final RomTree imageList = new RomTree(imageRoot);
-    public MDIDesktopPane rightPanel = new MDIDesktopPane(this);
+    public MDIDesktopPane rightPanel = new MDIDesktopPane();
     public JProgressPane statusPanel = new JProgressPane();
     private JSplitPane splitPane = new JSplitPane();
     private Rom lastSelectedRom = null;
@@ -143,7 +143,6 @@ public class ECUEditor extends AbstractFrame {
 
         rightPanel.setBackground(Color.BLACK);
         imageList.setScrollsOnExpand(true);
-        imageList.setContainer(this);
 
         //create menubar
         menuBar = new ECUEditorMenuBar(this);
@@ -279,7 +278,7 @@ public class ECUEditor extends AbstractFrame {
 
     public void addRom(Rom input) {
         // add to ecu image list pane
-        RomTreeNode romNode = new RomTreeNode(input, getSettings().getUserLevel(), getSettings().isDisplayHighTables(), this);
+        RomTreeNode romNode = new RomTreeNode(input, getSettings().getUserLevel(), getSettings().isDisplayHighTables());
         getImageRoot().add(romNode);
 
         getImageList().setVisible(true);
@@ -344,7 +343,7 @@ public class ECUEditor extends AbstractFrame {
 
     public void closeImage() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        closeImageWorker = new CloseImageWorker(this);
+        closeImageWorker = new CloseImageWorker();
         closeImageWorker.addPropertyChangeListener(this);
         closeImageWorker.execute();
     }
@@ -357,6 +356,11 @@ public class ECUEditor extends AbstractFrame {
 
     public Rom getLastSelectedRom() {
         return lastSelectedRom;
+    }
+
+    public String getLastSelectedRomFileName() {
+        Rom lastSelectedRom = getLastSelectedRom();
+        return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
     }
 
     public void setLastSelectedRom(Rom lastSelectedRom) {
@@ -403,7 +407,7 @@ public class ECUEditor extends AbstractFrame {
 
     public void setUserLevel(int userLevel) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setUserLevelWorker = new SetUserLevelWorker(this, userLevel);
+        setUserLevelWorker = new SetUserLevelWorker(userLevel);
         setUserLevelWorker.addPropertyChangeListener(this);
         setUserLevelWorker.execute();
     }
@@ -425,7 +429,7 @@ public class ECUEditor extends AbstractFrame {
 
     public void openImage(File inputFile) throws Exception {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        openImageWorker = new OpenImageWorker(this, inputFile);
+        openImageWorker = new OpenImageWorker(inputFile);
         openImageWorker.addPropertyChangeListener(statusPanel);
         openImageWorker.execute();
     }
@@ -457,7 +461,7 @@ public class ECUEditor extends AbstractFrame {
 
     public void launchLogger() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        launchLoggerWorker = new LaunchLoggerWorker(this);
+        launchLoggerWorker = new LaunchLoggerWorker();
         launchLoggerWorker.addPropertyChangeListener(this);
         launchLoggerWorker.execute();
     }
@@ -482,15 +486,9 @@ public class ECUEditor extends AbstractFrame {
         return this.rightPanel;
     }
 
-    public ImageIcon getEditorImageIcon() {
-        return this.editorIcon;
-    }
-
     public void refreshTableMenus() {
-        Vector<Rom> roms = getImages();
-        for(Rom rom : roms) {
-            Vector<Table> tables = rom.getTables();
-            for(Table table : tables) {
+        for(Rom rom : getImages()) {
+            for(Table table : rom.getTables()) {
                 table.getFrame().getTableMenuBar().refreshTableMenuBar();
             }
         }
@@ -498,10 +496,9 @@ public class ECUEditor extends AbstractFrame {
 }
 
 class LaunchLoggerWorker extends SwingWorker<Void, Void> {
-    private final ECUEditor editor;
+    private final ECUEditor editor = ECUEditorManager.getECUEditor();
 
-    public LaunchLoggerWorker(ECUEditor editor) {
-        this.editor = editor;
+    public LaunchLoggerWorker() {
     }
 
     @Override
@@ -523,11 +520,10 @@ class LaunchLoggerWorker extends SwingWorker<Void, Void> {
 }
 
 class SetUserLevelWorker extends SwingWorker<Void, Void> {
-    private final ECUEditor editor;
+    private final ECUEditor editor = ECUEditorManager.getECUEditor();
     int userLevel;
 
-    public SetUserLevelWorker(ECUEditor editor, int userLevel) {
-        this.editor = editor;
+    public SetUserLevelWorker(int userLevel) {
         this.userLevel = userLevel;
     }
 
@@ -553,10 +549,9 @@ class SetUserLevelWorker extends SwingWorker<Void, Void> {
 
 class CloseImageWorker extends SwingWorker<Void, Void> {
 
-    private final ECUEditor editor;
+    private final ECUEditor editor = ECUEditorManager.getECUEditor();
 
-    public CloseImageWorker(ECUEditor editor) {
-        this.editor = editor;
+    public CloseImageWorker() {
     }
 
     @Override
@@ -606,11 +601,10 @@ class CloseImageWorker extends SwingWorker<Void, Void> {
 
 class OpenImageWorker extends SwingWorker<Void, Void> {
 
-    private final ECUEditor editor;
+    private final ECUEditor editor = ECUEditorManager.getECUEditor();
     private final File inputFile;
 
-    public OpenImageWorker(ECUEditor editor, File inputFile) {
-        this.editor = editor;
+    public OpenImageWorker(File inputFile) {
         this.inputFile = inputFile;
     }
 
@@ -623,7 +617,7 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
             setProgress(0);
 
             byte[] input = editor.readFile(inputFile);
-            DOMRomUnmarshaller domUms = new DOMRomUnmarshaller(settings, editor);
+            DOMRomUnmarshaller domUms = new DOMRomUnmarshaller();
             DOMParser parser = new DOMParser();
 
             editor.getStatusPanel().setStatus("Finding ECU definition...");
@@ -640,7 +634,6 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
 
                 try {
                     rom = domUms.unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.getStatusPanel());
-
                     editor.getStatusPanel().setStatus("Populating tables...");
                     setProgress(50);
 

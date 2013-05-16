@@ -41,9 +41,12 @@ public class Settings implements Serializable {
 
     private static final long serialVersionUID = 1026542922680475190L;
 
+    /* String Format Settings */
     public static final String NEW_LINE = System.getProperty("line.separator");
     public static final String TAB = "\t";
+    public static final String BLANK = "";
 
+    /* Clipboard Settings */
     public static final String TABLE_CLIPBOARD_FORMAT_ELEMENT = "table-clipboard-format";
     public static final String TABLE_CLIPBOARD_FORMAT_ATTRIBUTE = "format-string";
     public static final String TABLE_ELEMENT = "table";
@@ -66,6 +69,7 @@ public class Settings implements Serializable {
 
     public static final String CUSTOM_CLIPBOARD_FORMAT = "Custom";
 
+    /* XML Settings */
     public static final String REPOSITORY_ELEMENT_NAME = "repository-dir";
     public static final String REPOSITORY_ATTRIBUTE_NAME = "path";
 
@@ -75,8 +79,40 @@ public class Settings implements Serializable {
     public static final String TABLE_ICONS_ELEMENT_NAME = "table-toolbar";
     public static final String TABLE_ICONS_SCALE_ATTRIBUTE_NAME = "scale";
 
+    /* UI Settings */
     public static final int DEFAULT_EDITOR_ICON_SCALE = 50;
     public static final int DEFAULT_TABLE_ICON_SCALE = 70;
+
+    /* Table settings */
+
+    public static final int ENDIAN_LITTLE = 1;
+    public static final int ENDIAN_BIG = 2;
+
+    public static final int TABLE_1D = 1;
+    public static final int TABLE_2D = 2;
+    public static final int TABLE_3D = 3;
+    public static final int TABLE_X_AXIS = 4;
+    public static final int TABLE_Y_AXIS = 5;
+    public static final int TABLE_SWITCH = 6;
+
+    public static final int COMPARE_TYPE_ORIGINAL = 0;
+    public static final int COMPARE_TYPE_BIN = 1;
+
+    public static final int COMPARE_DISPLAY_OFF = 0;
+    public static final int COMPARE_DISPLAY_PERCENT = 1;
+    public static final int COMPARE_DISPLAY_ABSOLUTE = 2;
+
+    public static final int STORAGE_TYPE_FLOAT = 99;
+    public static final boolean STORAGE_DATA_SIGNED = false;
+
+    public static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
+
+    /* Rom Settings */
+    public static final int CHECK_TOTAL = 0x5AA5A55A;
+
+    /* Scale Settings */
+    public static final int LINEAR = 1;
+    public static final int INVERSE = 2;
 
     private static final String ISO15765 = "ISO15765";
     private static final String ISO9141 = "ISO9141";
@@ -84,6 +120,7 @@ public class Settings implements Serializable {
     private static final String USER_LANGUAGE = "user.language";
     private static final String USER_COUNTRY = "user.country";
     private static final String EN_US = "en_US";
+
     private final Dimension windowSize = new Dimension(800, 600);
     private final Point windowLocation = new Point();
     private int splitPaneLocation = 150;
@@ -124,7 +161,7 @@ public class Settings implements Serializable {
     private boolean fileLoggingAbsoluteTimestamp;
     private String logfileNameText;
     private boolean logExternalsOnly;
-    private static String userLocale = SYSTEM_NUMFORMAT; 
+    private static String userLocale = SYSTEM_NUMFORMAT;
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();

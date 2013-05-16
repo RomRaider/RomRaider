@@ -35,6 +35,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
+import com.romraider.Settings;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 
@@ -113,13 +114,13 @@ public class RomCellRenderer implements TreeCellRenderer {
             renderer.setBackground(Color.WHITE);
 
             // display icon
-            if (table.getType() == Table.TABLE_1D) {
+            if (table.getType() == Settings.TABLE_1D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/1d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Table.TABLE_2D) {
+            } else if (table.getType() == Settings.TABLE_2D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/2d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Table.TABLE_3D) {
+            } else if (table.getType() == Settings.TABLE_3D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/3d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Table.TABLE_SWITCH) {
+            } else if (table.getType() == Settings.TABLE_SWITCH) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/switch.gif")), JLabel.LEFT);
             }
 
@@ -136,7 +137,7 @@ public class RomCellRenderer implements TreeCellRenderer {
                 tableName.setForeground(new Color(255, 150, 150));
                 tableName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 
-            } else if (table.getUserLevel() > table.getEditor().getSettings().getUserLevel()) {
+            } else if (table.getUserLevel() > table.getSettings().getUserLevel()) {
                 //tableName.setForeground(new Color(185, 185, 185));
                 tableName.setFont(new Font("Tahoma", Font.ITALIC, 11));
 
