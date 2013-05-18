@@ -765,6 +765,7 @@ public abstract class Table extends JPanel implements Serializable {
                 data[i].setBorder(createLineBorder(Color.BLACK, 1));
             }
         }
+        repaint();
     }
 
     public void setFrame(TableFrame frame) {

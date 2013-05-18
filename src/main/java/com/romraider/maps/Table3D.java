@@ -385,6 +385,7 @@ public class Table3D extends Table {
                 }
             }
         }
+        repaint();
     }
 
     @Override

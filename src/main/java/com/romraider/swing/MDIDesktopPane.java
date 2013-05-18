@@ -211,8 +211,7 @@ class MDIDesktopManager extends DefaultDesktopManager {
 
             d.setSize(d.getWidth() - 20, d.getHeight() - 20);
             desktop.setAllSize(x, y);
-            scrollPane.invalidate();
-            scrollPane.validate();
+            scrollPane.revalidate();
         }
     }
 

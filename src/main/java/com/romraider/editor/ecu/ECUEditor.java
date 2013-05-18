@@ -423,9 +423,9 @@ public class ECUEditor extends AbstractFrame {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         imageList.updateUI();
-        imageList.invalidate();
+        imageList.repaint();
         rightPanel.updateUI();
-        rightPanel.invalidate();
+        rightPanel.repaint();
     }
 
     public void refreshUI()
@@ -435,9 +435,9 @@ public class ECUEditor extends AbstractFrame {
         refreshTableMenus();
 
         imageList.updateUI();
-        imageList.invalidate();
+        imageList.repaint();
         rightPanel.updateUI();
-        rightPanel.invalidate();
+        rightPanel.repaint();
     }
 
     public void openImage(File inputFile) throws Exception {

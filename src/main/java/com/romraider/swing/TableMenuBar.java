@@ -85,7 +85,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     public void refreshTableMenuBar() {
         refreshSimilarOpenTables();
         initCompareGroup();
-        invalidate();
+        repaint();
     }
 
     private void initFileMenu() {
