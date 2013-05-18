@@ -111,8 +111,7 @@ public class RomTree extends JTree implements MouseListener {
                 getEditor().setLastSelectedRom(node.getRom());
             }
         }
-        getEditor().getEditorMenuBar().updateMenu();
-        getEditor().getToolBar().updateButtons();
+        getEditor().refreshUI();
     }
 
     @Override

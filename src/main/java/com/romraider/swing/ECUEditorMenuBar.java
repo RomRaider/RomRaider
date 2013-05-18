@@ -244,7 +244,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         refreshImage.setText("Refresh " + file);
         closeImage.setText("Close " + file);
         romProperties.setText(file + "Properties");
-        invalidate();
+        repaint();
     }
 
     @Override

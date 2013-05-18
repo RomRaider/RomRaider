@@ -85,7 +85,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         saveImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-save.png")), iconScale));
         refreshImage.setIcon(rescaleImageIcon(new ImageIcon(getClass().getResource("/graphics/icon-refresh.png")), iconScale));
         closeImage.setIcon(rescaleImageIcon(new ImageIcon( getClass().getResource("/graphics/icon-close.png")), iconScale));
-        invalidate();
+        repaint();
     }
 
     private ImageIcon rescaleImageIcon(ImageIcon imageIcon, int percentOfOriginal) {
@@ -116,7 +116,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
             refreshImage.setEnabled(true);
             closeImage.setEnabled(true);
         }
-        invalidate();
+        repaint();
     }
 
     @Override
