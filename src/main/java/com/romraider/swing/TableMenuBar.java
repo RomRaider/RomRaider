@@ -80,6 +80,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         initFileMenu();
         initEditMenu();
         initViewMenu();
+        applyTableTypeRules();
     }
 
     public void refreshTableMenuBar() {
@@ -236,6 +237,18 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
         for(int i = 0; i< similarOpenTables.getItemCount(); i++) {
             compareGroup.add(similarOpenTables.getItem(i));
+        }
+    }
+
+    private void applyTableTypeRules() {
+        // Hide items that don't work with a DTC tables.
+        if(table.getType() == Settings.TABLE_SWITCH) {
+            editMenu.setEnabled(false);
+            compareOriginal.setEnabled(false);
+            comparePercent.setEnabled(false);
+            compareAbsolute.setEnabled(false);
+            compareToOriginal.setEnabled(false);
+            compareToBin.setEnabled(false);
         }
     }
 

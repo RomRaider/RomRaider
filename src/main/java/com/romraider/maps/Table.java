@@ -607,38 +607,53 @@ public abstract class Table extends JPanel implements Serializable {
 
     @Override
     public boolean equals(Object other) {
-        if(null == other) {
-            return false;
-        }
-
-        if(other == this) {
-            return true;
-        }
-
-        if(!(other instanceof Table)) {
-            return false;
-        }
-
-        Table otherTable = (Table)other;
-
-        if(this.data.length != otherTable.data.length)
-        {
-            return false;
-        }
-
-        if(this.data.equals(otherTable.data))
-        {
-            return true;
-        }
-
-        // Compare Bin Values
-        for(int i=0 ; i < this.data.length ; i++) {
-            if(this.data[i].getBinValue() != otherTable.data[i].getBinValue()) {
+        try {
+            if(null == other) {
                 return false;
             }
-        }
 
-        return true;
+            if(other == this) {
+                return true;
+            }
+
+            if(!(other instanceof Table)) {
+                return false;
+            }
+
+            Table otherTable = (Table)other;
+
+            if( (null == this.getName() && null == otherTable.getName())
+                    || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
+                ;// Skip name compare if name is null or empty. This typically happens with
+                // a table axis.  A table axis should be handled by Table1D.
+            } else {
+                if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+                    return false;
+                }
+            }
+
+            if(this.data.length != otherTable.data.length)
+            {
+                return false;
+            }
+
+            if(this.data.equals(otherTable.data))
+            {
+                return true;
+            }
+
+            // Compare Bin Values
+            for(int i=0 ; i < this.data.length ; i++) {
+                if(this.data[i].getBinValue() != otherTable.data[i].getBinValue()) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch(Exception ex) {
+            // TODO: Log Exception.
+            return false;
+        }
     }
 
     public boolean isStatic() {

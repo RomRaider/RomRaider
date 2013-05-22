@@ -456,42 +456,51 @@ public class Table2D extends Table {
 
     @Override
     public boolean equals(Object other) {
-        if(null == other) {
-            return false;
-        }
-
-        if(other == this) {
-            return true;
-        }
-
-        if(!(other instanceof Table2D)) {
-            return false;
-        }
-
-        Table2D otherTable = (Table2D)other;
-
-        if(!this.axis.equals(otherTable.axis)) {
-            return false;
-        }
-
-        if(this.data.length != otherTable.data.length)
-        {
-            return false;
-        }
-
-        if(this.data.equals(otherTable.data))
-        {
-            return true;
-        }
-
-        // Compare Bin Values
-        for(int i = 0 ; i < this.data.length ; i++) {
-            if(this.data[i].getBinValue() != otherTable.data[i].getBinValue()) {
+        try {
+            if(null == other) {
                 return false;
             }
-        }
 
-        return true;
+            if(other == this) {
+                return true;
+            }
+
+            if(!(other instanceof Table2D)) {
+                return false;
+            }
+
+            Table2D otherTable = (Table2D)other;
+
+            if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+                return false;
+            }
+
+            if(!this.axis.equals(otherTable.axis)) {
+                return false;
+            }
+
+            if(this.data.length != otherTable.data.length)
+            {
+                return false;
+            }
+
+            if(this.data.equals(otherTable.data))
+            {
+                return true;
+            }
+
+            // Compare Bin Values
+            for(int i = 0 ; i < this.data.length ; i++) {
+                if(this.data[i].getBinValue() != otherTable.data[i].getBinValue()) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch(Exception ex) {
+            // TODO: Log Exception.
+            return false;
+        }
     }
 }
 

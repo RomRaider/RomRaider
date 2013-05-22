@@ -1079,48 +1079,57 @@ public class Table3D extends Table {
 
     @Override
     public boolean equals(Object other) {
-        if(null == other) {
-            return false;
-        }
+        try {
+            if(null == other) {
+                return false;
+            }
 
-        if(other == this) {
-            return true;
-        }
+            if(other == this) {
+                return true;
+            }
 
-        if(!(other instanceof Table3D)) {
-            return false;
-        }
+            if(!(other instanceof Table3D)) {
+                return false;
+            }
 
-        Table3D otherTable = (Table3D)other;
+            Table3D otherTable = (Table3D)other;
 
-        if(! this.xAxis.equals(otherTable.xAxis)) {
-            return false;
-        }
+            if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+                return false;
+            }
 
-        if(! this.yAxis.equals(otherTable.yAxis)) {
-            return false;
-        }
+            if(! this.xAxis.equals(otherTable.xAxis)) {
+                return false;
+            }
 
-        if(this.data.length != otherTable.data.length || this.data[0].length != otherTable.data[0].length)
-        {
-            return false;
-        }
+            if(! this.yAxis.equals(otherTable.yAxis)) {
+                return false;
+            }
 
-        if(this.data.equals(otherTable.data))
-        {
-            return true;
-        }
+            if(this.data.length != otherTable.data.length || this.data[0].length != otherTable.data[0].length)
+            {
+                return false;
+            }
 
-        // Compare Bin Values
-        for(int i = 0 ; i < this.data.length ; i++) {
-            for(int j = 0; j < this.data[i].length ; j++) {
-                if(this.data[i][j].getBinValue() != otherTable.data[i][j].getBinValue()) {
-                    return false;
+            if(this.data.equals(otherTable.data))
+            {
+                return true;
+            }
+
+            // Compare Bin Values
+            for(int i = 0 ; i < this.data.length ; i++) {
+                for(int j = 0; j < this.data[i].length ; j++) {
+                    if(this.data[i][j].getBinValue() != otherTable.data[i][j].getBinValue()) {
+                        return false;
+                    }
                 }
             }
-        }
 
-        return true;
+            return true;
+        } catch(Exception ex) {
+            // TODO: Log Exception.
+            return false;
+        }
     }
 }
 
