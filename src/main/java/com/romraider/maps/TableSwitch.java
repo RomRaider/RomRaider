@@ -33,7 +33,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -158,6 +160,11 @@ public class TableSwitch extends Table {
     }
 
     @Override
+    public int getType() {
+        return Settings.TABLE_SWITCH;
+    }
+
+    @Override
     public void setDescription(String description) {
         super.setDescription(description);
         JTextArea descriptionArea = new JTextArea(description);
@@ -208,6 +215,14 @@ public class TableSwitch extends Table {
         return new Dimension(width, height);
     }
 
+    public ButtonGroup getButtonGroup() {
+        return this.buttonGroup;
+    }
+
+    public Map<String, byte[]> getSwitchStates() {
+        return this.switchStates;
+    }
+
     @Override
     public void colorize() {
     }
@@ -244,6 +259,100 @@ public class TableSwitch extends Table {
         }
         else {
             return true;
+        }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        // TODO: Validate DTC equals.
+        try {
+            if(null == other) {
+                return false;
+            }
+
+            if(other == this) {
+                return true;
+            }
+
+            if(!(other instanceof TableSwitch)) {
+                return false;
+            }
+
+            TableSwitch otherTable = (TableSwitch)other;
+
+            if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+                return false;
+            }
+
+            if(this.getDataSize() != otherTable.getDataSize()) {
+                return false;
+            }
+
+            if(this.getSwitchStates() == otherTable.getSwitchStates()) {
+                return true;
+            }
+
+            // Compare Map Keys
+            Set<String> keys = new HashSet<String>(this.getSwitchStates().keySet());
+            Set<String> otherKeys = new HashSet<String>(otherTable.getSwitchStates().keySet());
+
+            if(keys.size() != otherKeys.size()) {
+                return false;
+            }
+
+            if(!keys.containsAll(otherKeys)) {
+                return false;
+            }
+
+            // Compare Map Values.
+            Set<byte[]> values = new HashSet<byte[]>(this.getSwitchStates().values());
+            Set<byte[]> otherValues = new HashSet<byte[]>(otherTable.getSwitchStates().values());
+            if(values.equals(otherValues)) {
+                return true;
+            }
+
+            // Compare DTC.  Is there a better way to compare the DTC?
+            for(String key : keys) {
+                JRadioButton button = getButtonByText(this.getButtonGroup(), key);
+                JRadioButton otherButton = getButtonByText(otherTable.getButtonGroup(), key);
+
+                if(button.isSelected() != otherButton.isSelected()) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch(Exception ex) {
+            // TODO: Log Exception.
+            return false;
+        }
+    }
+
+    @Override
+    public boolean fillCompareValues() {
+        return true; // Do Nothing.
+    }
+
+    @Override
+    public void refreshCellDisplay() {
+        if(!(compareTable instanceof TableSwitch)) {
+            return;
+        }
+
+        TableSwitch otherTable = (TableSwitch)compareTable;
+
+        Set<String> keys = new HashSet<String>(this.getSwitchStates().keySet());
+
+        // Compare DTC.
+        for(String key : keys) {
+            JRadioButton button = getButtonByText(this.getButtonGroup(), key);
+            JRadioButton otherButton = getButtonByText(otherTable.getButtonGroup(), key);
+
+            if(compareDisplay == Settings.COMPARE_DISPLAY_OFF || button.isSelected() == otherButton.isSelected()) {
+                button.setForeground(Settings.TABLESWITCH_DEFAULT_COLOR);
+            } else {
+                button.setForeground(Settings.TABLESWITCH_DIFFERENT_COLOR);
+            }
         }
     }
 

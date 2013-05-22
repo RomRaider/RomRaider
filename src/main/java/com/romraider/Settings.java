@@ -121,6 +121,10 @@ public class Settings implements Serializable {
     public static Color TABLE_DIFFERENT_COLOR = new Color(193, 27, 23);
     public static Color TABLE_MISSING_COLOR = new Color(251,185,23);
 
+    /* Compare DTC Foreground Colors */
+    public static Color TABLESWITCH_DEFAULT_COLOR = Color.black;
+    public static Color TABLESWITCH_DIFFERENT_COLOR = new Color(193, 27, 23);
+
     /* MDI Desktop Settings*/
     public static int FRAME_OFFSET = 20;
 

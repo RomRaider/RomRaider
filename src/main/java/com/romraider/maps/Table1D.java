@@ -185,4 +185,61 @@ public class Table1D extends Table {
     public boolean isButtonSelected() {
         return true;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        try {
+            if(null == other) {
+                return false;
+            }
+
+            if(other == this) {
+                return true;
+            }
+
+            if(!(other instanceof Table1D)) {
+                return false;
+            }
+
+            Table1D otherTable = (Table1D)other;
+
+            if(this.isIsAxis()) {
+                if(!otherTable.isIsAxis()) {
+                    return false;
+                }
+
+                if(! this.isStatic() == otherTable.isStatic()) {
+                    return false;
+                }
+            } else {
+                // TODO: Possibly Log Error.  It appears that Table1D is always an Axis.
+                if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+                    return false;
+                }
+            }
+
+
+            if(this.data.length != otherTable.data.length)
+            {
+                return false;
+            }
+
+            if(this.data.equals(otherTable.data))
+            {
+                return true;
+            }
+
+            // Compare Bin Values
+            for(int i=0 ; i < this.data.length ; i++) {
+                if(this.data[i].getBinValue() != otherTable.data[i].getBinValue()) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch(Exception ex) {
+            // TODO: Log Exception.
+            return false;
+        }
+    }
 }
