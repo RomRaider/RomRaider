@@ -32,6 +32,7 @@ import static java.awt.event.KeyEvent.VK_D;
 import static java.awt.event.KeyEvent.VK_E;
 import static java.awt.event.KeyEvent.VK_F;
 import static java.awt.event.KeyEvent.VK_F7;
+import static java.awt.event.KeyEvent.VK_F8;
 import static java.awt.event.KeyEvent.VK_H;
 import static java.awt.event.KeyEvent.VK_I;
 import static java.awt.event.KeyEvent.VK_L;
@@ -69,6 +70,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileNumberFormatActio
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebugLocationAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebuggingLevelAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDefinitionLocationAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.ReadEcuCodesAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ReloadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ResetConnectionAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ResetEcuAction;
@@ -130,6 +132,8 @@ public class EcuLoggerMenuBar extends JMenuBar {
         // tools menu items
         JMenu toolsMenu = new Menu("Tools", VK_T);
         toolsMenu.add(new MenuItem("Reset ECU/TCU", new ResetEcuAction(logger), VK_R, getKeyStroke(VK_F7, 0)));
+        toolsMenu.add(new JSeparator());
+        toolsMenu.add(new MenuItem("Read Diagnostic Codes", new ReadEcuCodesAction(logger), VK_D, getKeyStroke(VK_F8, 0)));
         add(toolsMenu);
 
         // plugins menu items

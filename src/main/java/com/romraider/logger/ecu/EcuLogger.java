@@ -115,6 +115,8 @@ import com.romraider.logger.ecu.comms.controller.LoggerController;
 import com.romraider.logger.ecu.comms.controller.LoggerControllerImpl;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
+import com.romraider.logger.ecu.comms.readcodes.ReadCodesManager;
+import com.romraider.logger.ecu.comms.readcodes.ReadCodesManagerImpl;
 import com.romraider.logger.ecu.comms.reset.ResetManager;
 import com.romraider.logger.ecu.comms.reset.ResetManagerImpl;
 import com.romraider.logger.ecu.definition.EcuDataLoader;
@@ -1435,6 +1437,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     public boolean resetEcu() {
         return resetManager.resetEcu();
+    }
+
+    public boolean readEcuCodes() {
+        final ReadCodesManager readCodesManager = 
+                new ReadCodesManagerImpl(
+                        settings, 
+                        this, 
+                        dtcodes, 
+                        ecuInit.getEcuInitBytes().length);
+        return readCodesManager.readCodes();
     }
 
     public void handleExit() {
