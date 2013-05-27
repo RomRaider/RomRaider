@@ -67,6 +67,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_SWITCH = "switch";
     private static final String TAG_ECUPARAM = "ecuparam";
     private static final String TAG_ECU = "ecu";
+    private static final String TAG_DTCODE = "dtcode";
     private static final String ATTR_VERSION = "version";
     private static final String ATTR_ID = "id";
     private static final String ATTR_NAME = "name";
@@ -93,11 +94,14 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_GAUGE_MAX = "gauge_max";
     private static final String ATTR_GAUGE_STEP = "gauge_step";
     private static final String ATTR_TARGET = "target";
+    private static final String ATTR_TMPADDR = "tmpaddr";
+    private static final String ATTR_MEMADDR = "memaddr";
     private final String protocol;
     private final String fileLoggingControllerSwitchId;
     private final EcuInit ecuInit;
     private List<EcuParameter> params = new ArrayList<EcuParameter>();
     private List<EcuSwitch> switches = new ArrayList<EcuSwitch>();
+    private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
     private EcuSwitch fileLoggingControllerSwitch;
     private ConnectionProperties connectionProperties;
     private Map<String, EcuData> ecuDataMap;
@@ -140,6 +144,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         params = new ArrayList<EcuParameter>();
         switches = new ArrayList<EcuSwitch>();
         ecuDataMap = new HashMap<String, EcuData>();
+        dtcodes = new ArrayList<EcuSwitch>();
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -208,6 +213,17 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 derived = false;
             } else if (TAG_ECU.equals(qName)) {
                 ecuIds = attributes.getValue(ATTR_ID);
+            } else if (TAG_DTCODE.equals(qName)) {
+                id = attributes.getValue(ATTR_ID);
+                name = attributes.getValue(ATTR_NAME);
+                desc = attributes.getValue(ATTR_DESC);
+                address = new EcuAddressImpl(
+                        new String[] {attributes.getValue(ATTR_TMPADDR),
+                                      attributes.getValue(ATTR_MEMADDR)
+                                     },
+                        1,
+                        Integer.valueOf(attributes.getValue(ATTR_BIT)));
+                resetLists();
             }
         }
         charBuffer = new StringBuilder();
@@ -288,6 +304,11 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
                     }
                 }
+            } else if (TAG_DTCODE.equals(qName)) {
+                final EcuDataConvertor[] convertors = new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())};
+                final EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
+                dtcodes.add(ecuSwitch);
+                ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
             }
         }
     }
@@ -310,6 +331,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
 
     public String getVersion() {
         return version;
+    }
+
+    public List<EcuSwitch> getEcuCodes() {
+        return dtcodes;
     }
 
     private void resetLists() {

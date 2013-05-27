@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
+    private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
     private EcuSwitch fileLoggingControllerSwitch;
     private ConnectionProperties connectionProperties;
     private String defVersion;
@@ -81,6 +82,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 fileLoggingControllerSwitch = handler.getFileLoggingControllerSwitch();
                 connectionProperties = handler.getConnectionProperties();
                 defVersion = handler.getVersion();
+                dtcodes = handler.getEcuCodes();
             } finally {
                 inputStream.close();
             }
@@ -116,5 +118,9 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
 
     public String getDefVersion() {
         return defVersion;
+    }
+
+    public List<EcuSwitch> getEcuCodes() {
+        return dtcodes;
     }
 }

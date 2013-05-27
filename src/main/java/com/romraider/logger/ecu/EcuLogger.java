@@ -272,6 +272,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private final JLabel startText = new JLabel(" Initializing Logger...");
     private final String HOME = System.getProperty("user.home");
     private StatusIndicator statusIndicator;
+    private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
 
     public EcuLogger(Settings settings) {
         super(ECU_LOGGER_TITLE);
@@ -523,6 +524,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 addConvertorUpdateListeners(ecuParams);
                 loadEcuParams(ecuParams);
                 loadEcuSwitches(dataLoader.getEcuSwitches());
+                dtcodes = dataLoader.getEcuCodes();
                 if (target.equals("ECU")) initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
                 settings.setLoggerConnectionProperties(dataLoader.getConnectionProperties());
                 if (dataLoader.getDefVersion() == null) {
