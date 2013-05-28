@@ -32,16 +32,29 @@ public class TablePropertyPanel extends javax.swing.JPanel {
 
         tableName.setText(table.getName() + " (" + table.getType() + "D)");
         category.setText(table.getCategory());
-        unit.setText(table.getScale().getUnit());
-        byteToReal.setText(table.getScale().getExpression());
-        realToByte.setText(table.getScale().getByteExpression());
+
         String intType;
-        if (table.isSignedData()) {
-            intType = "int";
+
+        if (Settings.TABLE_SWITCH == table.getType()) {
+            intType = "DTC";
+            // TODO: fill out other DTC specific properties.
+            fine.setText(Settings.INVALID_ATTRIBUTE_TEXT);
+            coarse.setText(Settings.INVALID_ATTRIBUTE_TEXT);
+        } else {
+            if (table.isSignedData()) {
+                intType = "int";
+            }
+            else {
+                intType = "uint";
+            }
+
+            unit.setText(table.getScale().getUnit());
+            byteToReal.setText(table.getScale().getExpression());
+            realToByte.setText(table.getScale().getByteExpression());
+            fine.setText(table.getScale().getFineIncrement() + "");
+            coarse.setText(table.getScale().getCoarseIncrement() + "");
         }
-        else {
-            intType = "uint";
-        }
+
         storageSize.setText(intType + (table.getStorageType() * 8));
         storageAddress.setText("0x" + Integer.toHexString(table.getStorageAddress()));
 
@@ -52,8 +65,6 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         }
 
         description.setText(table.getDescription());
-        fine.setText(table.getScale().getFineIncrement() + "");
-        coarse.setText(table.getScale().getCoarseIncrement() + "");
 
         if (table.getUserLevel() == 1) {
             userLevel.setText("Beginner");

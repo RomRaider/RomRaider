@@ -40,7 +40,6 @@ import javax.swing.SwingWorker;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.swing.TableFrame;
 import com.romraider.util.AxisRange;
 
 public class Table2D extends Table {
@@ -115,13 +114,6 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void setFrame(TableFrame frame) {
-        this.frame = frame;
-        axis.setFrame(frame);
-        frame.setSize(getFrameSize());
-    }
-
-    @Override
     public Dimension getFrameSize() {
         int height = verticalOverhead + cellHeight * 2;
         int width = horizontalOverhead + data.length * cellWidth;
@@ -143,14 +135,13 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
+    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException {
         centerLayout.setRows(2);
         centerLayout.setColumns(this.getDataSize());
 
         try {
-            axis.setRom(container);
-            axis.populateTable(input);
-            super.populateTable(input);
+            axis.populateTable(input, ramOffset);
+            super.populateTable(input, ramOffset);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -369,7 +360,7 @@ public class Table2D extends Table {
 
     @Override
     protected void highlightLiveData() {
-        if (overlayLog && frame.isVisible()) {
+        if (overlayLog) {
             AxisRange range = getLiveDataRangeForAxis(axis);
             clearSelection();
             boolean first = true;

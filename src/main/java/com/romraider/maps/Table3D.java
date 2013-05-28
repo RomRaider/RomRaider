@@ -46,7 +46,6 @@ import javax.swing.SwingWorker;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
-import com.romraider.swing.TableFrame;
 import com.romraider.util.AxisRange;
 import com.romraider.xml.RomAttributeParser;
 
@@ -130,11 +129,11 @@ public class Table3D extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input) throws NullPointerException, ArrayIndexOutOfBoundsException {
+    public void populateTable(byte[] input, int ramOffset) throws NullPointerException, ArrayIndexOutOfBoundsException {
         // fill first empty cell
         centerPanel.add(new JLabel());
         if (!beforeRam) {
-            ramOffset = container.getRomID().getRamOffset();
+            this.ramOffset = ramOffset;
         }
 
         // temporarily remove lock
@@ -143,10 +142,8 @@ public class Table3D extends Table {
 
         // populate axiis
         try {
-            xAxis.setRom(container);
-            xAxis.populateTable(input);
-            yAxis.setRom(container);
-            yAxis.populateTable(input);
+            xAxis.populateTable(input, ramOffset);
+            yAxis.populateTable(input, ramOffset);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new ArrayIndexOutOfBoundsException();
         }
@@ -427,15 +424,6 @@ public class Table3D extends Table {
             yAxis.fillCompareValues();
         }
         return true;
-    }
-
-    @Override
-    public void setFrame(TableFrame frame) {
-        this.frame = frame;
-        xAxis.setFrame(frame);
-        yAxis.setFrame(frame);
-        //frame.setSize(getFrameSize());
-        frame.pack();
     }
 
     @Override
@@ -874,7 +862,6 @@ public class Table3D extends Table {
         cellWidth = (int) getSettings().getCellSize().getWidth();
 
         validateScaling();
-        resize();
         colorize();
     }
 
@@ -914,7 +901,7 @@ public class Table3D extends Table {
 
     @Override
     protected void highlightLiveData() {
-        if (overlayLog && frame.isVisible()) {
+        if (overlayLog) {
             AxisRange rangeX = getLiveDataRangeForAxis(xAxis);
             AxisRange rangeY = getLiveDataRangeForAxis(yAxis);
             clearSelection();

@@ -36,46 +36,90 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.log4j.Logger;
 
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
+import com.romraider.swing.CategoryTreeNode;
 import com.romraider.swing.JProgressPane;
+import com.romraider.swing.TableFrame;
+import com.romraider.swing.TableTreeNode;
 import com.romraider.xml.TableNotFoundException;
 
-public class Rom implements Serializable {
+public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private static final long serialVersionUID = 7865405179738828128L;
     private static final Logger LOGGER = Logger.getLogger(Rom.class);
     private RomID romID = new RomID();
     private String fileName = "";
     private File fullFileName = new File(".");
-    private final Vector<Table> tables = new Vector<Table>();
+    private final Vector<TableTreeNode> tableNodes = new Vector<TableTreeNode>();
     private byte[] binData;
-    private String parent = "";
     private boolean isAbstract = false;
 
     public Rom() {
     }
 
+    public void refresh(int userLevel, boolean isDisplayHighTables) {
+
+        removeAllChildren();
+        for (int i = 0; i < tableNodes.size(); i++) {
+            Table table = tableNodes.get(i).getTable();
+            String frameTitle = this.getFileName() + " - " + table.getName();
+
+            if (isDisplayHighTables || userLevel >= table.getUserLevel()) {
+                boolean categoryExists = false;
+
+                for (int j = 0; j < getChildCount(); j++) {
+                    if (getChildAt(j).toString().equals(table.getCategory())) {
+                        // add to appropriate category
+                        TableTreeNode tableNode = new TableTreeNode(new TableFrame(frameTitle, table));
+                        getChildAt(j).add(tableNode);
+                        categoryExists = true;
+                        break;
+                    }
+                }
+
+                if (!categoryExists) { // if category does not already exist, create it
+                    CategoryTreeNode categoryNode = new CategoryTreeNode(table.getCategory());
+                    TableTreeNode tableNode = new TableTreeNode(new TableFrame(frameTitle, table));
+                    categoryNode.add(tableNode);
+                    this.add(categoryNode);
+                }
+            }
+        }
+    }
+
     public void addTable(Table table) {
         boolean found = false;
-        for (int i = 0; i < tables.size(); i++) {
-            if (tables.get(i).getName().equalsIgnoreCase(table.getName())) {
-                tables.remove(i);
-                tables.add(i, table);
+        String frameTitle = this.getFileName()+" - "+table.getName();
+
+        for (int i = 0; i < tableNodes.size(); i++) {
+            if (tableNodes.get(i).getTable().getName().equalsIgnoreCase(table.getName())) {
+                tableNodes.remove(i);
+                tableNodes.add(i, new TableTreeNode(new TableFrame(frameTitle, table)));
                 found = true;
                 break;
             }
         }
         if (!found) {
-            tables.add(table);
+            tableNodes.add(new TableTreeNode(new TableFrame(frameTitle, table)));
+        }
+    }
+
+    public void removeTable(Table table) {
+        for(int i = 0; i < tableNodes.size(); i++) {
+            if(tableNodes.get(i).getTable().getName().equalsIgnoreCase(table.getName())) {
+                tableNodes.remove(i);
+                break;
+            }
         }
     }
 
     public Table getTable(String tableName) throws TableNotFoundException {
-        for (Table table : tables) {
-            if (table.getName().equalsIgnoreCase(tableName)) {
-                return table;
+        for (TableTreeNode tableNode : tableNodes) {
+            if (tableNode.getTable().getName().equalsIgnoreCase(tableName)) {
+                return tableNode.getTable();
             }
         }
         throw new TableNotFoundException();
@@ -83,37 +127,40 @@ public class Rom implements Serializable {
 
     public List<Table> findTables(String regex) {
         List<Table> result = new ArrayList<Table>();
-        for (Table table : tables) {
-            String name = table.getName();
-            if (name.matches(regex)) result.add(table);
+        for (TableTreeNode tableNode : tableNodes) {
+            String name = tableNode.getTable().getName();
+            if (name.matches(regex)) result.add(tableNode.getTable());
         }
         return result;
     }
 
-    public void removeTable(String tableName) {
-        for (int i = 0; i < tables.size(); i++) {
-            if (tables.get(i).getName().equalsIgnoreCase(tableName)) {
-                tables.remove(i);
+    public void removeTableFrame(String tableName) {
+        for (int i = 0; i < tableNodes.size(); i++) {
+            if (tableNodes.get(i).getTable().getName().equalsIgnoreCase(tableName)) {
+                tableNodes.remove(i);
             }
         }
     }
 
     public void populateTables(byte[] binData, JProgressPane progress) {
         this.binData = binData;
-        for (int i = 0; i < getTables().size(); i++) {
+        for (int i = 0; i < tableNodes.size(); i++) {
 
             // update progress
-            int currProgress = (int) ((double) i / (double) getTables().size() * 40);
+            int currProgress = (int) (i / (double) tableNodes.size() * 40);
             progress.update("Populating tables...", 50 + currProgress);
 
-            Table table = tables.get(i);
+            Table table = tableNodes.get(i).getTable();
             try {
                 // if storageaddress has not been set (or is set to 0) omit table
                 if (table.getStorageAddress() != 0) {
                     try {
-                        table.populateTable(binData);
+                        table.populateTable(binData, this.getRomID().getRamOffset());
                         TableUpdateHandler.getInstance().registerTable(table);
-                        if (table.getName().equalsIgnoreCase("Checksum Fix")) setEditStamp(binData, table.getStorageAddress());
+
+                        if (table.getName().equalsIgnoreCase("Checksum Fix")){
+                            setEditStamp(binData, table.getStorageAddress());
+                        }
                     } catch (ArrayIndexOutOfBoundsException ex) {
 
                         LOGGER.error(table.getName() +
@@ -123,20 +170,20 @@ public class Rom implements Serializable {
                         // table storage address extends beyond end of file
                         JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table), "Storage address for table \"" + table.getName() +
                                 "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
-                        tables.removeElementAt(i);
+                        tableNodes.removeElementAt(i);
                         i--;
-
                     }
 
                 } else {
-                    tables.remove(i);
+                    tableNodes.removeElementAt(i);
                     // decrement i because length of vector has changed
                     i--;
                 }
 
             } catch (NullPointerException ex) {
                 JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table), "There was an error loading table " + table.getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
-                tables.removeElementAt(i);
+                tableNodes.removeElementAt(i);
+                i--;
             }
         }
     }
@@ -175,8 +222,8 @@ public class Rom implements Serializable {
     public String toString() {
         String output = "";
         output = output + "\n---- Rom ----" + romID.toString();
-        for (int i = 0; i < getTables().size(); i++) {
-            output = output + getTables().get(i);
+        for (int i = 0; i < tableNodes.size(); i++) {
+            output = output + tableNodes.get(i).getTable();
         }
         output = output + "\n---- End Rom ----";
 
@@ -187,28 +234,38 @@ public class Rom implements Serializable {
         return fileName;
     }
 
+    public Vector<Table> getTables() {
+        Vector<Table> tables = new Vector<Table>();
+        for(TableTreeNode tableNode : tableNodes) {
+            tables.add(tableNode.getTable());
+        }
+        return tables;
+    }
+
+    public Vector<TableTreeNode> getTableNodes() {
+        return this.tableNodes;
+    }
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
-    public Vector<Table> getTables() {
-        return tables;
-    }
-
     public void applyTableColorSettings() {
-        for (Table table : tables) {
-            table.applyColorSettings();
+        for (TableTreeNode tableNode : tableNodes) {
+            tableNode.getTable().applyColorSettings();
             //tables.get(i).resize();
-            table.getFrame().pack();
+            tableNode.getFrame().pack();
         }
     }
 
     public byte[] saveFile() {
         Table checksum = null;
-        for (Table table : tables) {
-            table.saveFile(binData);
-            if (table.getName().equalsIgnoreCase("Checksum Fix"))
-                checksum = table;
+        for (TableTreeNode tableNode : tableNodes) {
+            tableNode.getTable().saveFile(binData);
+            if (tableNode.getTable().getName().equalsIgnoreCase("Checksum Fix"))
+            {
+                checksum = tableNode.getTable();
+            }
         }
         if (checksum != null && !checksum.isLocked()) {
             calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
@@ -253,7 +310,7 @@ public class Rom implements Serializable {
     }
 
     public void clearData() {
-        tables.clear();
+        tableNodes.clear();
         binData = null;
     }
 
@@ -268,17 +325,10 @@ public class Rom implements Serializable {
     public void setFullFileName(File fullFileName) {
         this.fullFileName = fullFileName;
         this.setFileName(fullFileName.getName());
-        for (Table table : tables) {
-            table.getFrame().updateFileName();
+        for (TableTreeNode tableNode : tableNodes) {
+            String frameTitle = this.getFileName() + " - " + tableNode.getTable().getName();
+            tableNode.getFrame().setTitle(frameTitle);
         }
-    }
-
-    public String getParent() {
-        return parent;
-    }
-
-    public void setParent(String parent) {
-        this.parent = parent;
     }
 
     public boolean isAbstract() {
@@ -287,5 +337,24 @@ public class Rom implements Serializable {
 
     public void setAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
+    }
+
+    @Override
+    public void removeAllChildren() {
+        // Dispose all table frames.
+        for(TableTreeNode tableNode : tableNodes) {
+            tableNode.getFrame().dispose();
+        }
+        super.removeAllChildren();
+    }
+
+    @Override
+    public DefaultMutableTreeNode getChildAt(int i) {
+        return (DefaultMutableTreeNode) super.getChildAt(i);
+    }
+
+    @Override
+    public DefaultMutableTreeNode getLastChild() {
+        return (DefaultMutableTreeNode) super.getLastChild();
     }
 }

@@ -116,7 +116,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
             refreshImage.setEnabled(true);
             closeImage.setEnabled(true);
         }
-        repaint();
+        revalidate();
     }
 
     @Override

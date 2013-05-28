@@ -21,6 +21,8 @@ package com.romraider.swing;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.romraider.maps.Rom;
+
 public class RomTreeRootNode extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = 6810217325725782803L;
@@ -31,7 +33,7 @@ public class RomTreeRootNode extends DefaultMutableTreeNode {
 
     public void setUserLevel(int userLevel, boolean isDisplayHighTables) {
         for (int i = 0; i < getChildCount(); i++) {
-            ((RomTreeNode) getChildAt(i)).refresh(userLevel, isDisplayHighTables);
+            ((Rom) getChildAt(i)).refresh(userLevel, isDisplayHighTables);
         }
     }
 }

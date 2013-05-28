@@ -27,16 +27,17 @@ import javax.swing.event.InternalFrameListener;
 
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.Table;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener {
 
     private static final long serialVersionUID = -2651279694660392351L;
-    private Table table;
+    private final Table table;
     private TableMenuBar tableMenuBar = null;
 
-    public TableFrame(Table table) {
-        super(table.getRom().getFileName() + " - " + table.getName(), true, true);
+    public TableFrame(String title, Table table) {
+        super(title, true, true);
         this.table = table;
         add(table);
         setFrameIcon(null);
@@ -44,18 +45,16 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         if (System.getProperty("os.name").startsWith("Mac OS"))
             putClientProperty("JInternalFrame.isPalette", true);
         setVisible(false);
-        tableMenuBar = new TableMenuBar(table);
+        tableMenuBar = new TableMenuBar(this);
         setJMenuBar(tableMenuBar);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
-        table.setFrame(this);
         addInternalFrameListener(this);
     }
 
     @Override
     public void internalFrameActivated(InternalFrameEvent e) {
         ECUEditor parent = getEditor();
-        parent.setLastSelectedRom(getTable().getRom());
-        parent.updateTableToolBar(this.table);
+        parent.updateTableToolBar(getTable());
         parent.getToolBar().updateButtons();
         parent.getEditorMenuBar().updateMenu();
     }
@@ -63,11 +62,12 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
 
     @Override
     public void internalFrameOpened(InternalFrameEvent e) {
-        ;
+        TableUpdateHandler.getInstance().registerTable(this.getTable());
     }
 
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
+        TableUpdateHandler.getInstance().deregisterTable(this.getTable());
         getEditor().removeDisplayTable(this);
     }
 
@@ -95,16 +95,8 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         return table;
     }
 
-    public void setTable(Table table) {
-        this.table = table;
-    }
-
     public ECUEditor getEditor() {
         return ECUEditorManager.getECUEditor();
-    }
-
-    public void updateFileName() {
-        setTitle(table.getRom().getFileName() + " - " + table.getName());
     }
 
     public TableMenuBar getTableMenuBar() {

@@ -225,12 +225,11 @@ public final class DOMRomUnmarshaller {
 
                     try {
                         table = unmarshallTable(n, table, rom);
-                        table.setRom(rom);
                         rom.addTable(table);
                     } catch (TableIsOmittedException ex) {
                         // table is not supported in inherited def (skip)
                         if (table != null) {
-                            rom.removeTable(table.getName());
+                            rom.removeTable(table);
                         }
                     } catch (XMLParseException ex) {
                         LOGGER.error("Error unmarshalling rom", ex);

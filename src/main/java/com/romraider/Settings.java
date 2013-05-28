@@ -108,6 +108,8 @@ public class Settings implements Serializable {
 
     public static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
 
+    public static final String INVALID_ATTRIBUTE_TEXT = "invalid";
+
     /* Rom Settings */
     public static final int CHECK_TOTAL = 0x5AA5A55A;
 

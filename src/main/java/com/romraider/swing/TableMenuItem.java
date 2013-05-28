@@ -2,19 +2,17 @@ package com.romraider.swing;
 
 import javax.swing.JRadioButtonMenuItem;
 
-import com.romraider.maps.Table;
-
 public class TableMenuItem extends JRadioButtonMenuItem{
 
     private static final long serialVersionUID = -3618983591185294967L;
-    private final Table table;
+    private final TableFrame tableFrame;
 
-    public TableMenuItem(Table table) {
-        super(table.getFrame().getTitle());
-        this.table = table;
+    public TableMenuItem(TableFrame tableFrame) {
+        super(tableFrame.getTitle());
+        this.tableFrame = tableFrame;
     }
 
-    public Table getTable() {
-        return this.table;
+    public TableFrame getFrame() {
+        return this.tableFrame;
     }
 }
