@@ -73,7 +73,7 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input) {
+    public void populateTable(byte[] input, int ramOffset) {
         JPanel radioPanel = new JPanel(new GridLayout(0, 1));
         radioPanel.add(new JLabel("  " + name));
         for (String stateName : switchStates.keySet()) {
@@ -117,7 +117,9 @@ public class TableSwitch extends Table {
         // Validate XML switch definition data against the ROM data to select
         // the appropriate switch setting or throw an error if there is a
         // mismatch and disable this table's editing ability.
-        if (!beforeRam) ramOffset = container.getRomID().getRamOffset();
+        if (!beforeRam) {
+            this.ramOffset = ramOffset;
+        }
         Map<String, Integer> sourceStatus = new HashMap<String, Integer>();
         for (String stateName : switchStates.keySet()) {
             byte[] sourceData = new byte[dataSize];

@@ -244,7 +244,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         refreshImage.setText("Refresh " + file);
         closeImage.setText("Close " + file);
         romProperties.setText(file + "Properties");
-        repaint();
+        revalidate();
     }
 
     @Override
@@ -438,8 +438,9 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 }
             }
             if(save) {
-                for(Table table : image.getTables())
+                for(TableTreeNode treeNode : image.getTableNodes())
                 {
+                    Table table = treeNode.getTable();
                     String category = table.getCategory();
                     String tableName = table.getName();
                     String tableDirString = selectedDir.getAbsolutePath() + separator + category;

@@ -56,7 +56,6 @@ import javax.swing.SwingWorker;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.swing.TableFrame;
 import com.romraider.swing.TableToolBar;
 import com.romraider.util.JEPUtil;
 import com.romraider.xml.RomAttributeParser;
@@ -83,7 +82,6 @@ public abstract class Table extends JPanel implements Serializable {
     protected BorderLayout borderLayout = new BorderLayout();
     protected GridLayout centerLayout = new GridLayout(1, 1, 0, 0);
     protected JPanel centerPanel = new JPanel(centerLayout);
-    protected TableFrame frame;
     protected int verticalOverhead = 103;
     protected int horizontalOverhead = 2;
     protected int cellHeight = 18;
@@ -91,7 +89,6 @@ public abstract class Table extends JPanel implements Serializable {
     protected int minHeight = 100;
     protected int minWidthNoOverlay = 465;
     protected int minWidthOverlay = 700;
-    protected Rom container;
     protected int highlightX;
     protected int highlightY;
     protected boolean highlight = false;
@@ -406,7 +403,7 @@ public abstract class Table extends JPanel implements Serializable {
         this.data = data;
     }
 
-    public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
+    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException {
         if (scales.isEmpty()) {
             scales.add(new Scale());
         }
@@ -417,7 +414,7 @@ public abstract class Table extends JPanel implements Serializable {
 
         if (!isStatic) {
             if (!beforeRam) {
-                ramOffset = container.getRomID().getRamOffset();
+                this.ramOffset = ramOffset;
             }
 
             for (int i = 0; i < data.length; i++) {
@@ -783,11 +780,6 @@ public abstract class Table extends JPanel implements Serializable {
         repaint();
     }
 
-    public void setFrame(TableFrame frame) {
-        this.frame = frame;
-        frame.pack();
-    }
-
     public Dimension getFrameSize() {
         int height = verticalOverhead + cellHeight;
         int width = horizontalOverhead + data.length * cellWidth;
@@ -799,10 +791,6 @@ public abstract class Table extends JPanel implements Serializable {
             width = minWidth;
         }
         return new Dimension(width, height);
-    }
-
-    public TableFrame getFrame() {
-        return frame;
     }
 
     public void increment(double increment) {
@@ -851,14 +839,6 @@ public abstract class Table extends JPanel implements Serializable {
                     JOptionPane.INFORMATION_MESSAGE);
         }
         colorize();
-    }
-
-    public Rom getRom() {
-        return container;
-    }
-
-    public void setRom(Rom container) {
-        this.container = container;
     }
 
     public void clearSelection() {
@@ -1114,11 +1094,6 @@ public abstract class Table extends JPanel implements Serializable {
             colorize();
             validateScaling();
         }
-    }
-
-    public void resize() {
-        //frame.setSize(getFrameSize());
-        frame.pack();
     }
 
     public Color getMaxColor() {

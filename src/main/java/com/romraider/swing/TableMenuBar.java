@@ -39,7 +39,7 @@ import com.romraider.maps.Table;
 public class TableMenuBar extends JMenuBar implements ActionListener {
 
     private static final long serialVersionUID = -695692646459410510L;
-    private final Table table;
+    private final TableFrame tableFrame;
     private JMenu fileMenu;
     private JMenuItem graph;
     //private JRadioButtonMenuItem overlay = new JRadioButtonMenuItem("Overlay Log");
@@ -71,8 +71,8 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     private ButtonGroup compareDisplayGroup;
     private ButtonGroup compareToGroup;
 
-    public TableMenuBar(Table table) {
-        this.table = table;
+    public TableMenuBar(TableFrame tableFrame) {
+        this.tableFrame = tableFrame;
         initTableMenuBar();
     }
 
@@ -96,7 +96,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         close = new JMenuItem("Close Table");
 
         initCompareMenu();
-        close.setText("Close " + table.getName());
+        close.setText("Close " + getTable().getName());
 
         graph.addActionListener(this);
         close.addActionListener(this);
@@ -242,7 +242,7 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
     private void applyTableTypeRules() {
         // Hide items that don't work with a DTC tables.
-        if(table.getType() == Settings.TABLE_SWITCH) {
+        if(getTable().getType() == Settings.TABLE_SWITCH) {
             editMenu.setEnabled(false);
             compareOriginal.setEnabled(false);
             comparePercent.setEnabled(false);
@@ -254,14 +254,13 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
     private void refreshSimilarOpenTables() {
         similarOpenTables.removeAll();
-        String currentTableName = table.getName();
+        String currentTableName = getTable().getName();
         Vector<Rom> roms = ECUEditorManager.getECUEditor().getImages();
 
         for(Rom rom : roms) {
-            Vector<Table> tables = rom.getTables();
-            for(Table table : tables) {
-                if(table.getName().equalsIgnoreCase(currentTableName)) {
-                    JRadioButtonMenuItem similarTable = new TableMenuItem(table);
+            for(TableTreeNode tableNode : rom.getTableNodes()) {
+                if(tableNode.getTable().getName().equalsIgnoreCase(currentTableName)) {
+                    JRadioButtonMenuItem similarTable = new TableMenuItem(tableNode.getFrame());
                     similarTable.addActionListener(this);
                     similarOpenTables.add(similarTable);
                 }
@@ -272,29 +271,29 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == undoAll) {
-            table.undoAll();
+            getTable().undoAll();
 
         } else if (e.getSource() == revert) {
-            table.setRevertPoint();
+            getTable().setRevertPoint();
 
         } else if (e.getSource() == undoSel) {
-            table.undoSelected();
+            getTable().undoSelected();
 
         } else if (e.getSource() == close) {
-            ECUEditorManager.getECUEditor().removeDisplayTable(table.getFrame());
+            ECUEditorManager.getECUEditor().removeDisplayTable(tableFrame);
 
         } else if (e.getSource() == tableProperties) {
-            JOptionPane.showMessageDialog(table, new TablePropertyPanel(table),
-                    table.getName() + " Table Properties", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(getTable(), new TablePropertyPanel(getTable()),
+                    getTable().getName() + " Table Properties", JOptionPane.INFORMATION_MESSAGE);
 
         } else if (e.getSource() == copySel) {
-            table.copySelection();
+            getTable().copySelection();
 
         } else if (e.getSource() == copyTable) {
-            table.copyTable();
+            getTable().copyTable();
 
         } else if (e.getSource() == paste) {
-            table.paste();
+            getTable().paste();
 
         } else if (e.getSource() == compareOff) {
             compareByDisplay(Settings.COMPARE_DISPLAY_OFF);
@@ -306,19 +305,19 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             compareByDisplay(Settings.COMPARE_DISPLAY_PERCENT);
 
         } else if (e.getSource() == compareOriginal) {
-            table.setCompareType(Settings.DATA_TYPE_ORIGINAL);
+            getTable().setCompareType(Settings.DATA_TYPE_ORIGINAL);
             compareToOriginal.setSelected(true);
-            compareByTable(table);
+            compareByTable(getTable());
 
         } else if (e.getSource() == compareMap) {
             JTableChooser chooser = new JTableChooser();
-            Table selectedTable = chooser.showChooser(table);
+            Table selectedTable = chooser.showChooser(getTable());
             if(null != selectedTable) {
                 compareByTable(selectedTable);
             }
 
         } else if (e.getSource() instanceof TableMenuItem) {
-            Table selectedTable = ((TableMenuItem) e.getSource()).getTable();
+            Table selectedTable = ((TableMenuItem) e.getSource()).getFrame().getTable();
             compareByTable(selectedTable);
 
         } else if (e.getSource() == compareToOriginal) {
@@ -331,9 +330,9 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     }
 
     private void compareByType(int compareType) {
-        table.setCompareType(compareType);
-        if(table.fillCompareValues()) {
-            table.refreshCellDisplay();
+        getTable().setCompareType(compareType);
+        if(getTable().fillCompareValues()) {
+            getTable().refreshCellDisplay();
         }
     }
 
@@ -342,22 +341,30 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
             return;
         }
 
-        if(table.getCompareDisplay() == Settings.COMPARE_DISPLAY_OFF) {
+        if(getTable().getCompareDisplay() == Settings.COMPARE_DISPLAY_OFF) {
             // Default to absolute if none selected.
             this.compareAbsolute.setSelected(true);
-            table.setCompareDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
+            getTable().setCompareDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
         }
 
-        selectedTable.addComparedToTable(table);
+        selectedTable.addComparedToTable(getTable());
 
-        table.setCompareTable(selectedTable);
-        if(table.fillCompareValues()) {
-            table.refreshCellDisplay();
+        getTable().setCompareTable(selectedTable);
+        if(getTable().fillCompareValues()) {
+            getTable().refreshCellDisplay();
         }
     }
 
     public void compareByDisplay(int compareDisplay) {
-        table.setCompareDisplay(compareDisplay);
-        table.refreshCellDisplay();
+        getTable().setCompareDisplay(compareDisplay);
+        getTable().refreshCellDisplay();
+    }
+
+    private Table getTable() {
+        return this.getTableFrame().getTable();
+    }
+
+    private TableFrame getTableFrame() {
+        return this.tableFrame;
     }
 }

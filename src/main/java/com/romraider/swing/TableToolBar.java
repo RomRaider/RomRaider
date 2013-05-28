@@ -287,6 +287,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         setScales(scales);
         toggleTableToolBar(true);
+        revalidate();
     }
 
     private void toggleTableToolBar(Boolean enabled) {

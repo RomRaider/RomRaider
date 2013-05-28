@@ -35,6 +35,7 @@ import javax.swing.tree.TreePath;
 
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.maps.Rom;
 
 public class RomTree extends JTree implements MouseListener {
 
@@ -97,18 +98,12 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     private void setLastSelectedRom(Object selectedNode) {
-        if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof RomTreeNode)
+        if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof Rom)
         {
             Object lastSelectedPathComponent = getLastSelectedPathComponent();
-            if(lastSelectedPathComponent instanceof TableTreeNode) {
-                TableTreeNode node = (TableTreeNode) lastSelectedPathComponent;
-                getEditor().setLastSelectedRom(node.getTable().getRom());
-            } else if(lastSelectedPathComponent instanceof CategoryTreeNode) {
-                CategoryTreeNode node = (CategoryTreeNode) lastSelectedPathComponent;
-                getEditor().setLastSelectedRom(node.getRom());
-            } else if(lastSelectedPathComponent instanceof RomTreeNode) {
-                RomTreeNode node = (RomTreeNode) lastSelectedPathComponent;
-                getEditor().setLastSelectedRom(node.getRom());
+            if(lastSelectedPathComponent instanceof Rom) {
+                Rom node = (Rom) lastSelectedPathComponent;
+                getEditor().setLastSelectedRom(node);
             }
         }
         getEditor().refreshUI();

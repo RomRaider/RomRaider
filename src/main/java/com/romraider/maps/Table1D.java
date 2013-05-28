@@ -35,10 +35,11 @@ public class Table1D extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input) {
+    public void populateTable(byte[] input, int ramOffset) {
         centerLayout.setRows(1);
         centerLayout.setColumns(this.getDataSize());
-        super.populateTable(input);
+
+        super.populateTable(input, ramOffset);
 
         // add to table
         for (int i = 0; i < this.getDataSize(); i++) {
