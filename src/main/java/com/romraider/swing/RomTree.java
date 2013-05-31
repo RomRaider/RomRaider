@@ -90,7 +90,9 @@ public class RomTree extends JTree implements MouseListener {
         try{
             if(selectedRow instanceof TableTreeNode) {
                 TableTreeNode node = (TableTreeNode) selectedRow;
-                getEditor().displayTable(node.getFrame());
+                if(null != node) {
+                    getEditor().displayTable(node.getFrame());
+                }
             }
             setLastSelectedRom(selectedRow);
         } catch (NullPointerException ex) {
@@ -98,12 +100,13 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     private void setLastSelectedRom(Object selectedNode) {
-        if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof Rom)
-        {
+        if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof Rom) {
             Object lastSelectedPathComponent = getLastSelectedPathComponent();
             if(lastSelectedPathComponent instanceof Rom) {
                 Rom node = (Rom) lastSelectedPathComponent;
-                getEditor().setLastSelectedRom(node);
+                if(null != node) {
+                    getEditor().setLastSelectedRom(node);
+                }
             }
         }
         getEditor().refreshUI();

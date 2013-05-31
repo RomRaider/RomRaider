@@ -274,8 +274,9 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void addRom(Rom input) {
+        input.refreshDisplayedTables();
+
         // add to ecu image list pane
-        input.refresh(getSettings().getUserLevel(), getSettings().isDisplayHighTables());
         getImageRoot().add(input);
 
         getImageList().setVisible(true);
@@ -333,12 +334,13 @@ public class ECUEditor extends AbstractFrame {
         frame.setVisible(false);
         updateTableToolBar(null);
         rightPanel.remove(frame);
-        rightPanel.repaint();
+        rightPanel.validate();
+        refreshUI();
     }
 
     public void closeImage() {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        closeImageWorker = new CloseImageWorker();
+        closeImageWorker = new CloseImageWorker(getLastSelectedRom());
         closeImageWorker.addPropertyChangeListener(getStatusPanel());
         closeImageWorker.execute();
     }
@@ -354,8 +356,8 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public String getLastSelectedRomFileName() {
-        Rom lastSelectedRom = getLastSelectedRom();
-        return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
+        Rom lastSelRom = getLastSelectedRom();
+        return lastSelRom == null ? "" : lastSelRom.getFileName() + " ";
     }
 
     public void setLastSelectedRom(Rom lastSelectedRom) {
@@ -397,7 +399,8 @@ public class ECUEditor extends AbstractFrame {
 
     public void setUserLevel(int userLevel) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setUserLevelWorker = new SetUserLevelWorker(userLevel);
+        getSettings().setUserLevel(userLevel);
+        setUserLevelWorker = new SetUserLevelWorker();
         setUserLevelWorker.addPropertyChangeListener(getStatusPanel());
         setUserLevelWorker.execute();
     }
@@ -405,8 +408,12 @@ public class ECUEditor extends AbstractFrame {
     public Vector<Rom> getImages() {
         Vector<Rom> images = new Vector<Rom>();
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
-            Rom rom = (Rom) imageRoot.getChildAt(i);
-            images.add(rom);
+            if(imageRoot.getChildAt(i) instanceof Rom) {
+                Rom rom = (Rom) imageRoot.getChildAt(i);
+                if(null != rom) {
+                    images.add(rom);
+                }
+            }
         }
         return images;
     }
@@ -533,19 +540,15 @@ class LaunchLoggerWorker extends SwingWorker<Void, Void> {
 
 class SetUserLevelWorker extends SwingWorker<Void, Void> {
     private final ECUEditor editor = ECUEditorManager.getECUEditor();
-    int userLevel;
 
-    public SetUserLevelWorker(int userLevel) {
-        this.userLevel = userLevel;
+    public SetUserLevelWorker() {
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        Settings settings = editor.getSettings();
-        RomTreeRootNode imageRoot = editor.getImageRoot();
-
-        settings.setUserLevel(userLevel);
-        imageRoot.setUserLevel(userLevel, settings.isDisplayHighTables());
+        for(Rom rom : editor.getImages()) {
+            rom.refreshDisplayedTables();
+        }
         return null;
     }
 
@@ -571,33 +574,19 @@ class SetUserLevelWorker extends SwingWorker<Void, Void> {
 class CloseImageWorker extends SwingWorker<Void, Void> {
 
     private final ECUEditor editor = ECUEditorManager.getECUEditor();
+    Rom rom;
 
-    public CloseImageWorker() {
+    public CloseImageWorker(Rom romToRemove) {
+        this.rom = romToRemove;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
         RomTreeRootNode imageRoot = editor.getImageRoot();
-        RomTree imageList = editor.getImageList();
 
-        for (int i = 0; i < imageRoot.getChildCount(); i++) {
-            Rom rom = (Rom) imageRoot.getChildAt(i);;
-            if (rom == editor.getLastSelectedRom()) {
-                rom.removeAllChildren();
-
-                // Cleanup Rom Data
-                rom.clearData();
-
-                Vector<TreePath> path = new Vector<TreePath>();
-                path.add(new TreePath(rom.getPath()));
-                imageRoot.remove(i);
-                imageList.removeDescendantToggledPaths(path.elements());
-
-                path.clear();
-
-                break;
-            }
-        }
+        rom.clearData();
+        rom.removeFromParent();
+        rom = null;
 
         if (imageRoot.getChildCount() > 0) {
             editor.setLastSelectedRom((Rom) imageRoot.getChildAt(0));
@@ -657,19 +646,17 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
                     editor.getStatusPanel().setStatus("Populating tables...");
                     setProgress(50);
 
+                    rom.setFullFileName(inputFile);
                     rom.populateTables(input, editor.getStatusPanel());
-                    rom.setFileName(inputFile.getName());
 
                     editor.getStatusPanel().setStatus("Finalizing...");
-                    setProgress(75);
+                    setProgress(90);
 
                     editor.addRom(rom);
-                    rom.setFullFileName(inputFile);
 
                     editor.getStatusPanel().setStatus("Done loading image...");
                     setProgress(100);
                     return null;
-
                 } catch (RomNotFoundException ex) {
                     // rom was not found in current file, skip to next
                 } finally {
