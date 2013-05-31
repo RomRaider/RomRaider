@@ -131,6 +131,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
         } else if (e.getSource() == saveImage) {
             try {
                 ((ECUEditorMenuBar) getEditor().getJMenuBar()).saveImage(getEditor().getLastSelectedRom());
+                getEditor().refreshUI();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
                         getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);

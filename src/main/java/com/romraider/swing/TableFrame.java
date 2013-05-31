@@ -68,7 +68,6 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
         TableUpdateHandler.getInstance().deregisterTable(this.getTable());
-        getEditor().removeDisplayTable(this);
     }
 
     @Override

@@ -26,6 +26,7 @@ import static javax.swing.JOptionPane.DEFAULT_OPTION;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.showOptionDialog;
 
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import org.apache.log4j.Logger;
 
+import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.swing.CategoryTreeNode;
 import com.romraider.swing.JProgressPane;
@@ -60,21 +63,24 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     public Rom() {
     }
 
-    public void refresh(int userLevel, boolean isDisplayHighTables) {
+    public void refreshDisplayedTables() {
+        // Remove all nodes from the ROM tree node.
+        super.removeAllChildren();
 
-        removeAllChildren();
-        for (int i = 0; i < tableNodes.size(); i++) {
-            Table table = tableNodes.get(i).getTable();
-            String frameTitle = this.getFileName() + " - " + table.getName();
+        Settings settings = ECUEditorManager.getECUEditor().getSettings();
 
-            if (isDisplayHighTables || userLevel >= table.getUserLevel()) {
+        // Add nodes to ROM tree.
+        for (TableTreeNode tableTreeNode : tableNodes) {
+            TableFrame tableFrame = tableTreeNode.getFrame();
+            Table table = tableFrame.getTable();
+
+            if (settings.isDisplayHighTables() || settings.getUserLevel() >= table.getUserLevel()) {
                 boolean categoryExists = false;
 
                 for (int j = 0; j < getChildCount(); j++) {
                     if (getChildAt(j).toString().equals(table.getCategory())) {
                         // add to appropriate category
-                        TableTreeNode tableNode = new TableTreeNode(new TableFrame(frameTitle, table));
-                        getChildAt(j).add(tableNode);
+                        getChildAt(j).add(tableTreeNode);
                         categoryExists = true;
                         break;
                     }
@@ -82,8 +88,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
                 if (!categoryExists) { // if category does not already exist, create it
                     CategoryTreeNode categoryNode = new CategoryTreeNode(table.getCategory());
-                    TableTreeNode tableNode = new TableTreeNode(new TableFrame(frameTitle, table));
-                    categoryNode.add(tableNode);
+                    categoryNode.add(tableTreeNode);
                     this.add(categoryNode);
                 }
             }
@@ -132,14 +137,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             if (name.matches(regex)) result.add(tableNode.getTable());
         }
         return result;
-    }
-
-    public void removeTableFrame(String tableName) {
-        for (int i = 0; i < tableNodes.size(); i++) {
-            if (tableNodes.get(i).getTable().getName().equalsIgnoreCase(tableName)) {
-                tableNodes.remove(i);
-            }
-        }
     }
 
     public void populateTables(byte[] binData, JProgressPane progress) {
@@ -310,6 +307,20 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     }
 
     public void clearData() {
+        super.removeAllChildren();
+
+        // Hide and dispose all frames.
+        for(TableTreeNode tableTreeNode : tableNodes) {
+            TableFrame frame = tableTreeNode.getFrame();
+            frame.setVisible(false);
+            try {
+                frame.setClosed(true);
+            } catch (PropertyVetoException e) {
+                ; // Do nothing.
+            }
+            frame.dispose();
+        }
+
         tableNodes.clear();
         binData = null;
     }
@@ -337,15 +348,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public void setAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
-    }
-
-    @Override
-    public void removeAllChildren() {
-        // Dispose all table frames.
-        for(TableTreeNode tableNode : tableNodes) {
-            tableNode.getFrame().dispose();
-        }
-        super.removeAllChildren();
     }
 
     @Override
