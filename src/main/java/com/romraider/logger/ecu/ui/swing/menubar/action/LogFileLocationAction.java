@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
+import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getFile;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getLoggerOutputDirFileChooser;
@@ -43,7 +44,7 @@ public final class LogFileLocationAction extends AbstractAction {
     }
 
     private void setLogFileLocationDialog() throws Exception {
-        File lastLoggerOutputDir = getFile(logger.getSettings().getLoggerOutputDirPath());
+        File lastLoggerOutputDir = getFile(Settings.getLoggerOutputDirPath());
         JFileChooser fc = getLoggerOutputDirFileChooser(lastLoggerOutputDir);
         if (fc.showOpenDialog(logger) == APPROVE_OPTION) {
             String loggerOutputDirPath = fc.getSelectedFile().getAbsolutePath();

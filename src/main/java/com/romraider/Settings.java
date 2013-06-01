@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ public class Settings implements Serializable {
     private static String loggerProtocol = "SSM";
     private static String loggerDefinitionFilePath;
     private static String loggerProfileFilePath;
-    private String loggerOutputDirPath = System.getProperty("user.home");
+    private static String loggerOutputDirPath = System.getProperty("user.home");
     private String fileLoggingControllerSwitchId = "S20"; // defogger switch by default
     private boolean fileLoggingControllerSwitchActive = true;
     private boolean fileLoggingAbsoluteTimestamp;
@@ -412,7 +412,7 @@ public class Settings implements Serializable {
         Settings.loggerDefinitionFilePath = loggerDefinitionFilePath;
     }
 
-    public String getLoggerOutputDirPath() {
+    public static String getLoggerOutputDirPath() {
         return loggerOutputDirPath;
     }
 
@@ -457,7 +457,7 @@ public class Settings implements Serializable {
     }
 
     public void setLoggerOutputDirPath(String loggerOutputDirPath) {
-        this.loggerOutputDirPath = loggerOutputDirPath;
+        Settings.loggerOutputDirPath = loggerOutputDirPath;
     }
 
     public String getFileLoggingControllerSwitchId() {
