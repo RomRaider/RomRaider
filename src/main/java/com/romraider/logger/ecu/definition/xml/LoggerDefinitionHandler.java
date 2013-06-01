@@ -47,6 +47,7 @@ import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.EcuDerivedParameterConvertor;
 import com.romraider.logger.ecu.definition.EcuDerivedParameterConvertorImpl;
 import com.romraider.logger.ecu.definition.EcuDerivedParameterImpl;
+import com.romraider.logger.ecu.definition.EcuDtcConvertorImpl;
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuParameterConvertorImpl;
 import com.romraider.logger.ecu.definition.EcuParameterImpl;
@@ -305,7 +306,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     }
                 }
             } else if (TAG_DTCODE.equals(qName)) {
-                final EcuDataConvertor[] convertors = new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())};
+                final EcuDataConvertor[] convertors = new EcuDataConvertor[]{new EcuDtcConvertorImpl(address.getBit())};
                 final EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
                 dtcodes.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);

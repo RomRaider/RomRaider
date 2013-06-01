@@ -1439,10 +1439,23 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return resetManager.resetEcu();
     }
 
-    public boolean readEcuCodes() {
+    public final boolean getDtcodesEmpty() {
+        LOGGER.info("DT codes defined: " + !dtcodes.isEmpty() + 
+                ", definition version: " + defVersion);
+        return dtcodes.isEmpty();
+    }
+
+    public final boolean isEcuInit() {
+        if (ecuInit == null) {
+            LOGGER.info("DT codes ECU Initialized: false");
+            return false;
+        }
+        return true;
+    }
+
+    public final int readEcuCodes() {
         final ReadCodesManager readCodesManager = 
                 new ReadCodesManagerImpl(
-                        settings, 
                         this, 
                         dtcodes, 
                         ecuInit.getEcuInitBytes().length);
