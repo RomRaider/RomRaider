@@ -1346,16 +1346,16 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void addComparedToTable(Table table) {
         if(!table.equals(this) && !this.getComparedToTables().contains(table)) {
-            comparedToTables.add(table);
+            this.getComparedToTables().add(table);
         }
     }
 
     public void refreshCompares() {
-        if(null == comparedToTables || comparedToTables.size() < 1) {
+        if(null == getComparedToTables() || getComparedToTables().size() < 1) {
             return;
         }
 
-        for(Table table : comparedToTables) {
+        for(Table table : getComparedToTables()) {
             if(null != table) {
                 if(table.fillCompareValues()) {
                     table.refreshCellDisplay();

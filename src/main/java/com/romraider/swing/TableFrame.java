@@ -21,16 +21,24 @@ package com.romraider.swing;
 
 import static javax.swing.BorderFactory.createBevelBorder;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JInternalFrame;
+import javax.swing.JMenu;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
+import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
+import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 
-public class TableFrame extends JInternalFrame implements InternalFrameListener {
+public class TableFrame extends JInternalFrame implements InternalFrameListener, ActionListener {
 
     private static final long serialVersionUID = -2651279694660392351L;
     private final Table table;
@@ -47,7 +55,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
         setVisible(false);
         tableMenuBar = new TableMenuBar(this);
         setJMenuBar(tableMenuBar);
-        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         addInternalFrameListener(this);
     }
 
@@ -100,5 +108,134 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener 
 
     public TableMenuBar getTableMenuBar() {
         return this.tableMenuBar;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        TableMenuBar menu = getTableMenuBar();
+
+        if (e.getSource() == menu.getUndoAll()) {
+            getTable().undoAll();
+
+        } else if (e.getSource() == menu.getRevert()) {
+            getTable().setRevertPoint();
+
+        } else if (e.getSource() == menu.getUndoSel()) {
+            getTable().undoSelected();
+
+        } else if (e.getSource() == menu.getClose()) {
+            ECUEditorManager.getECUEditor().removeDisplayTable(this);
+
+        } else if (e.getSource() == menu.getTableProperties()) {
+            JOptionPane.showMessageDialog(getTable(), new TablePropertyPanel(getTable()),
+                    getTable().getName() + " Table Properties", JOptionPane.INFORMATION_MESSAGE);
+
+        } else if (e.getSource() == menu.getCopySel()) {
+            getTable().copySelection();
+
+        } else if (e.getSource() == menu.getCopyTable()) {
+            getTable().copyTable();
+
+        } else if (e.getSource() == menu.getPaste()) {
+            getTable().paste();
+
+        } else if (e.getSource() == menu.getCompareOff()) {
+            compareByDisplay(Settings.COMPARE_DISPLAY_OFF);
+
+        } else if (e.getSource() == menu.getCompareAbsolute()) {
+            compareByDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
+
+        } else if (e.getSource() == menu.getComparePercent()) {
+            compareByDisplay(Settings.COMPARE_DISPLAY_PERCENT);
+
+        } else if (e.getSource() == menu.getCompareOriginal()) {
+            getTable().setCompareType(Settings.DATA_TYPE_ORIGINAL);
+            getTableMenuBar().getCompareToOriginal().setSelected(true);
+            compareByTable(getTable());
+
+        } else if (e.getSource() == menu.getCompareMap()) {
+            JTableChooser chooser = new JTableChooser();
+            Table selectedTable = chooser.showChooser(getTable());
+            if(null != selectedTable) {
+                compareByTable(selectedTable);
+            }
+
+        } else if (e.getSource() instanceof TableMenuItem) {
+            Table selectedTable = findSimilarTable((TableMenuItem)e.getSource());
+            if(null != e.getSource()) {
+                compareByTable(selectedTable);
+            }
+
+        } else if (e.getSource() == menu.getCompareToOriginal()) {
+            compareByType(Settings.DATA_TYPE_ORIGINAL);
+
+        } else if (e.getSource() == menu.getCompareToBin()) {
+            compareByType(Settings.DATA_TYPE_BIN);
+
+        }
+    }
+
+    private void compareByTable(Table selectedTable) {
+        if(null == selectedTable) {
+            return;
+        }
+
+        if(getTable().getCompareDisplay() == Settings.COMPARE_DISPLAY_OFF) {
+            // Default to absolute if none selected.
+            getTableMenuBar().getCompareAbsolute().setSelected(true);
+            getTable().setCompareDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
+        }
+
+        selectedTable.addComparedToTable(getTable());
+
+        getTable().setCompareTable(selectedTable);
+        if(getTable().fillCompareValues()) {
+            getTable().refreshCellDisplay();
+        }
+    }
+
+    public void compareByDisplay(int compareDisplay) {
+        getTable().setCompareDisplay(compareDisplay);
+        getTable().refreshCellDisplay();
+    }
+
+    public void refreshSimilarOpenTables() {
+        JMenu similarTables =  getTableMenuBar().getSimilarOpenTables();
+        similarTables.removeAll();
+
+        for(Rom rom : ECUEditorManager.getECUEditor().getImages()) {
+            for(TableTreeNode tableNode : rom.getTableNodes()) {
+                if(tableNode.getTable().getName().equalsIgnoreCase(getTable().getName())) {
+                    JRadioButtonMenuItem similarTable = new TableMenuItem(rom.getFileName());
+                    similarTable.setToolTipText(tableNode.getFrame().getTable().getName());
+                    similarTable.addActionListener(this);
+                    similarTables.add(similarTable);
+                    break;
+                }
+            }
+        }
+
+        getTableMenuBar().initCompareGroup();
+        getTableMenuBar().repaint();
+    }
+
+    private Table findSimilarTable(TableMenuItem menuItem) {
+        for(Rom rom : ECUEditorManager.getECUEditor().getImages()) {
+            if(menuItem.getText().equalsIgnoreCase(rom.getFileName())) {
+                for(TableTreeNode treeNode : rom.getTableNodes()) {
+                    if(menuItem.getToolTipText().equalsIgnoreCase(treeNode.getFrame().getTable().getName())) {
+                        return treeNode.getFrame().getTable();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private void compareByType(int compareType) {
+        getTable().setCompareType(compareType);
+        if(getTable().fillCompareValues()) {
+            getTable().refreshCellDisplay();
+        }
     }
 }

@@ -49,11 +49,11 @@ public class CompareImagesForm extends JFrame implements ActionListener {
     private static final long serialVersionUID = -8937472127815934398L;
     private final Vector<Rom> roms;
     private final JPanel contentPane;
-    private final JComboBox<Rom> comboBoxImageLeft;
-    private final JComboBox<Rom> comboBoxImageRight;
+    private final JComboBox comboBoxImageLeft;
+    private final JComboBox comboBoxImageRight;
     private final JButton btnCompare;
-    private final JList<ListItem> listChanges;
-    private final DefaultListModel<ListItem> listModelChanges = new DefaultListModel<ListItem>();
+    private final JList listChanges;
+    private final DefaultListModel listModelChanges = new DefaultListModel();
     private final ChangeListCellRenderer changeRenderer = new ChangeListCellRenderer();
     private final JScrollPane scrollPaneResults;
     private final JLabel lblImageResultString;
@@ -80,13 +80,13 @@ public class CompareImagesForm extends JFrame implements ActionListener {
         panelImageSelector.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
         panelImageSelector.setLayout(null);
 
-        this.comboBoxImageLeft = new JComboBox<Rom>();
+        this.comboBoxImageLeft = new JComboBox();
         this.comboBoxImageLeft.setBounds(10, 7, 554, 20);
         this.comboBoxImageLeft.setToolTipText("Select an image to compare.");
         this.comboBoxImageLeft.setRenderer( new ComboBoxRenderer() );
         panelImageSelector.add(this.comboBoxImageLeft);
 
-        this.comboBoxImageRight = new JComboBox<Rom>();
+        this.comboBoxImageRight = new JComboBox();
         this.comboBoxImageRight.setBounds(10, 32, 554, 20);
         this.comboBoxImageRight.setToolTipText("Select an image to compare.");
         this.comboBoxImageRight.setRenderer( new ComboBoxRenderer() );
@@ -110,7 +110,7 @@ public class CompareImagesForm extends JFrame implements ActionListener {
         scrollPaneResults.setBounds(10, 166, 574, 245);
         contentPane.add(scrollPaneResults);
 
-        this.listChanges = new JList<ListItem>(this.listModelChanges);
+        this.listChanges = new JList(this.listModelChanges);
         scrollPaneResults.setViewportView(this.listChanges);
         listChanges.setCellRenderer(changeRenderer);
         listChanges.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);

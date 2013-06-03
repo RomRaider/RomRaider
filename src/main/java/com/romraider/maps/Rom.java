@@ -350,6 +350,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         this.isAbstract = isAbstract;
     }
 
+    public void refreshTableCompareMenus() {
+        for(TableTreeNode tableNode : getTableNodes()) {
+            tableNode.getFrame().refreshSimilarOpenTables();
+        }
+    }
+
     @Override
     public DefaultMutableTreeNode getChildAt(int i) {
         return (DefaultMutableTreeNode) super.getChildAt(i);
