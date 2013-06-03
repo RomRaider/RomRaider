@@ -64,8 +64,16 @@ public class MDIDesktopPane extends JDesktopPane {
         int w;
         int h;
 
+        // check if frame has been added.
+        for(JInternalFrame curFrame : array) {
+            if(curFrame.equals(frame)) {
+                throw new IllegalArgumentException("The frame has been added.");
+            }
+        }
+
         Component retval = super.add(frame);
         checkDesktopSize();
+
         if (array.length > 0) {
             p = array[0].getLocation();
             p.x = p.x + Settings.FRAME_OFFSET;
@@ -73,6 +81,7 @@ public class MDIDesktopPane extends JDesktopPane {
         } else {
             p = new Point(0, 0);
         }
+
         frame.setLocation(p.x, p.y);
         if (frame.isResizable()) {
             w = getWidth() - (getWidth() / 3);
@@ -85,15 +94,21 @@ public class MDIDesktopPane extends JDesktopPane {
             }
             frame.setSize(w, h);
         }
+
         moveToFront(frame);
         frame.setVisible(true);
-        TableFrame tableFrame = (TableFrame) frame;
-        getEditor().updateTableToolBar(tableFrame.getTable());
+
+        if(frame instanceof TableFrame) {
+            TableFrame tableFrame = (TableFrame) frame;
+            getEditor().updateTableToolBar(tableFrame.getTable());
+        }
+
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException e) {
             frame.toBack();
         }
+
         return retval;
     }
 

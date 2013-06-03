@@ -44,6 +44,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -318,14 +319,17 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void displayTable(TableFrame frame) {
-        frame.setVisible(true);
         try {
             rightPanel.add(frame);
         } catch (IllegalArgumentException ex) {
             // table is already open, so set focus
-            frame.requestFocus();
+            frame.toFront();
+            try {
+                frame.setSelected(true);
+            } catch (PropertyVetoException e) {
+            }
+            frame.requestFocusInWindow();
         }
-        //frame.setSize(frame.getTable().getFrameSize());
         frame.pack();
         rightPanel.repaint();
     }
@@ -436,11 +440,13 @@ public class ECUEditor extends AbstractFrame {
         rightPanel.repaint();
     }
 
-    public void refreshOpenTableMenus() {
-        for(Object frame : ECUEditorManager.getECUEditor().getRightPanel().getAllFrames()) {
-            if(frame instanceof TableFrame)
-            {
-                ((TableFrame)frame).getTableMenuBar().refreshTableMenuBar();
+    public void refreshTableCompareMenus() {
+        for (int i = 0; i < imageRoot.getChildCount(); i++) {
+            if(imageRoot.getChildAt(i) instanceof Rom) {
+                Rom rom = (Rom) imageRoot.getChildAt(i);
+                if(null != rom) {
+                    rom.refreshTableCompareMenus();
+                }
             }
         }
     }
@@ -594,6 +600,9 @@ class CloseImageWorker extends SwingWorker<Void, Void> {
             // no other images open
             editor.setLastSelectedRom(null);
         }
+
+        editor.refreshTableCompareMenus();
+
         return null;
     }
 
@@ -653,6 +662,8 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
                     setProgress(90);
 
                     editor.addRom(rom);
+
+                    editor.refreshTableCompareMenus();
 
                     editor.getStatusPanel().setStatus("Done loading image...");
                     setProgress(100);

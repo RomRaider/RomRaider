@@ -24,14 +24,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
@@ -57,7 +55,8 @@ public class RomTree extends JTree implements MouseListener {
             public void actionPerformed(ActionEvent e) {
                 try{
                     Object selectedRow = getSelectionPath().getLastPathComponent();
-                    showHideTable(selectedRow);
+                    showTable(selectedRow);
+                    setLastSelectedRom(selectedRow);
                 }catch(NullPointerException ex) {
                 }
             }
@@ -79,14 +78,14 @@ public class RomTree extends JTree implements MouseListener {
             Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
 
             if (e.getClickCount() >= getEditor().getSettings().getTableClickCount()) {
-                showHideTable(selectedRow);
+                showTable(selectedRow);
             }
             setLastSelectedRom(selectedRow);
         }catch(NullPointerException ex) {
         }
     }
 
-    private void showHideTable(Object selectedRow) {
+    private void showTable(Object selectedRow) {
         try{
             if(selectedRow instanceof TableTreeNode) {
                 TableTreeNode node = (TableTreeNode) selectedRow;
@@ -128,8 +127,4 @@ public class RomTree extends JTree implements MouseListener {
     public void mouseExited(MouseEvent e) {
     }
 
-    @Override
-    public void removeDescendantToggledPaths(Enumeration<TreePath> toRemove) {
-        super.removeDescendantToggledPaths(toRemove);
-    }
 }
