@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,15 @@
 
 package com.romraider.ramtune.test.command.generator;
 
-import com.romraider.io.protocol.Protocol;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import static java.util.Arrays.asList;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.romraider.io.protocol.Protocol;
+import com.romraider.util.ByteUtil;
 
 public final class WriteCommandGenerator extends AbstractCommandGenerator {
 
@@ -33,10 +38,26 @@ public final class WriteCommandGenerator extends AbstractCommandGenerator {
     public List<byte[]> createCommands(byte id, byte[] data, byte[] address, int length) {
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(data, "data");
-        return asList(protocol.constructWriteMemoryRequest(id, address, data));
+        final List<byte[]> commands = new ArrayList<byte[]>();
+        for (int i = 0; i < length; i++) {
+            int singleAddress = ByteUtil.asUnsignedInt(address) + i;
+            byte[] singleAddrBytes = intToByteArray(singleAddress);
+            commands.add(
+                    protocol.constructWriteAddressRequest(id, singleAddrBytes, data[i]));
+        }
+        return commands;
     }
 
     public String toString() {
         return "Write";
+    }
+
+    private final byte[] intToByteArray(int address) {
+        final ByteBuffer bb = ByteBuffer.allocate(4);
+        bb.order(ByteOrder.BIG_ENDIAN);
+        bb.putInt(address);
+        final byte[] result = new byte[3];
+        System.arraycopy(bb.array(), 1, result, 0, result.length);
+        return result;
     }
 }
