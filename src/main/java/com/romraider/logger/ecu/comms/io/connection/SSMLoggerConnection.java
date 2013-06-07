@@ -35,6 +35,7 @@ import static org.apache.log4j.Logger.getLogger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public final class SSMLoggerConnection implements LoggerConnection {
     private static final Logger LOGGER = getLogger(SSMLoggerConnection.class);
@@ -132,4 +133,28 @@ public final class SSMLoggerConnection implements LoggerConnection {
         manager.close();
     }
 
+    public final void sendAddressWrites(
+            Map<EcuQuery, byte[]> writeQueries, byte id) {
+
+        for (EcuQuery writeKey : writeQueries.keySet()) {
+            if (writeKey.getBytes().length == 3) {
+                final byte[] request =
+                        protocol.constructWriteAddressRequest(
+                                id,
+                                writeKey.getBytes(),
+                                writeQueries.get(writeKey)[0]);
+                                
+        LOGGER.debug("ECU Write Request  ---> " + asHex(request));
+        final byte[] response = manager.send(request);
+        byte[] processedResponse =
+                protocol.preprocessResponse(
+                        request,
+                        response,
+                        new PollingStateImpl());
+        LOGGER.debug("ECU Write Response <--- " + asHex(processedResponse));
+        protocol.processWriteResponse(
+                writeQueries.get(writeKey), processedResponse);
+            }
+        }
+    }
 }

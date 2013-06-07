@@ -84,9 +84,13 @@ public final class SSMProtocol implements Protocol {
                 asHex(address));
     }
 
-    public byte[] constructWriteAddressRequest(byte[] address, byte value) {
+    public byte[] constructWriteAddressRequest(
+            byte id, byte[] address, byte value) {
+
+        checkGreaterThanZero(id, "ECU_ID");
         checkNotNullOrEmpty(address, "address");
         checkNotNull(value, "value");
+        setIDs(id);
         // 000007E0 B8 address value
         return buildRequest(
                 WRITE_ADDRESS_COMMAND, false, address, new byte[]{value});
@@ -144,9 +148,8 @@ public final class SSMProtocol implements Protocol {
 
     public byte[] constructEcuResetRequest(byte id) {
         checkGreaterThanZero(id, "ECU_ID");
-        setIDs(id);
         //  000007E0 B8 000060 40
-        return constructWriteAddressRequest(resetAddress, (byte) 0x40);
+        return constructWriteAddressRequest(id, resetAddress, (byte) 0x40);
     }
 
     public void checkValidEcuResetResponse(byte[] processedResponse) {
@@ -157,6 +160,19 @@ public final class SSMProtocol implements Protocol {
                 processedResponse[5] != (byte) 0x40) {
             throw new InvalidResponseException(
                     "Unexpected ECU Reset response: " + 
+                    asHex(processedResponse));
+        }
+    }
+
+    public void checkValidWriteResponse(byte[] data, byte[] processedResponse) {
+        checkNotNullOrEmpty(data, "data");
+        checkNotNullOrEmpty(processedResponse, "processedResponse");
+        // 000007E8 F8 data
+        byte responseType = processedResponse[4];
+        if (responseType != WRITE_ADDRESS_RESPONSE || 
+                processedResponse[5] != (byte) data[0]) {
+            throw new InvalidResponseException(
+                    "Unexpected ECU Write response: " + 
                     asHex(processedResponse));
         }
     }

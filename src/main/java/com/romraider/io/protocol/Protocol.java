@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ public interface Protocol {
 
     byte[] constructWriteMemoryRequest(byte id, byte[] address, byte[] values);
 
-    byte[] constructWriteAddressRequest(byte[] address, byte value);
+    byte[] constructWriteAddressRequest(byte id, byte[] address, byte value);
 
     byte[] constructReadMemoryRequest(byte id, byte[] address, int numBytes);
 
@@ -48,4 +48,6 @@ public interface Protocol {
     void checkValidEcuResetResponse(byte[] processedResponse);
 
     ConnectionProperties getDefaultConnectionProperties();
+
+    void checkValidWriteResponse(byte[] data, byte[] processedResponse);
 }

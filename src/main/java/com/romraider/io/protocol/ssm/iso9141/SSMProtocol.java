@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,9 +78,13 @@ public final class SSMProtocol implements Protocol {
         return buildRequest(WRITE_MEMORY_COMMAND, false, address, values);
     }
 
-    public byte[] constructWriteAddressRequest(byte[] address, byte value) {
+    public byte[] constructWriteAddressRequest(
+            byte id, byte[] address, byte value) {
+
+        checkGreaterThanZero(id, "ECU_ID");
         checkNotNullOrEmpty(address, "address");
         checkNotNull(value, "value");
+        SSMProtocol.ECU_ID = id;
         // 0x80 0x10 0xF0 data_length 0xB8 from_address value checksum
         return buildRequest(WRITE_ADDRESS_COMMAND, false, address, new byte[]{value});
     }
@@ -129,11 +133,10 @@ public final class SSMProtocol implements Protocol {
     public final byte[] constructEcuResetRequest(byte id) {
         //  80 10 F0 05 B8 00 00 60 40 DD
         checkGreaterThanZero(id, "ECU_ID");
-        SSMProtocol.ECU_ID = id;
         final byte[] resetAddress = new byte[]{
                 (byte) 0x00, (byte) 0x00, (byte) 0x60};
         final byte reset = 0x40;
-        return constructWriteAddressRequest(resetAddress, reset);
+        return constructWriteAddressRequest(id, resetAddress, reset);
     }
 
     public void checkValidEcuResetResponse(byte[] processedResponse) {
@@ -143,6 +146,19 @@ public final class SSMProtocol implements Protocol {
         byte responseType = processedResponse[4];
         if (responseType != WRITE_ADDRESS_RESPONSE || processedResponse[5] != (byte) 0x40) {
             throw new InvalidResponseException("Unexpected ECU Reset response: " + asHex(processedResponse));
+        }
+    }
+
+    public void checkValidWriteResponse(byte[] data, byte[] processedResponse) {
+        checkNotNullOrEmpty(data, "data");
+        checkNotNullOrEmpty(processedResponse, "processedResponse");
+        // 80 F0 10 02 F8 data checksum
+        byte responseType = processedResponse[4];
+        if (responseType != WRITE_ADDRESS_RESPONSE || 
+                processedResponse[5] != (byte) data[0]) {
+            throw new InvalidResponseException(
+                    "Unexpected ECU Write response: " + 
+                    asHex(processedResponse));
         }
     }
 

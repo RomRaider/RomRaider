@@ -107,6 +107,18 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         return protocol;
     }
 
+    public byte[] constructWriteAddressRequest(
+            byte id, byte[] writeAddress, byte value) {
+
+        return protocol.constructWriteAddressRequest(id, writeAddress, value);
+    }
+
+    public void processWriteResponse(byte[] data, byte[] response) {
+        checkNotNullOrEmpty(data, "data");
+        checkNotNullOrEmpty(response, "response");
+        protocol.checkValidWriteResponse(data, response);
+    }
+
     private Collection<EcuQuery> filterDuplicates(Collection<EcuQuery> queries) {
         Collection<EcuQuery> filteredQueries = new ArrayList<EcuQuery>();
         for (EcuQuery query : queries) {

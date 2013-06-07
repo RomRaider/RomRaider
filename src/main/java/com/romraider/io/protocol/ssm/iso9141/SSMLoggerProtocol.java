@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,6 +115,18 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         return protocol;
     }
 
+    public byte[] constructWriteAddressRequest(
+            byte id, byte[] writeAddress, byte value) {
+
+        return protocol.constructWriteAddressRequest(id, writeAddress, value);
+    }
+
+    public void processWriteResponse(byte[] data, byte[] response) {
+        checkNotNullOrEmpty(data, "data");
+        checkNotNullOrEmpty(response, "response");
+        protocol.checkValidWriteResponse(data, response);
+    }
+
     private Collection<EcuQuery> filterDuplicates(Collection<EcuQuery> queries) {
         Collection<EcuQuery> filteredQueries = new ArrayList<EcuQuery>();
         for (EcuQuery query : queries) {
@@ -140,5 +152,4 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
         }
         return addresses;
     }
-
 }

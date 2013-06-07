@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.ComPortAutoRefreshAction
 import com.romraider.logger.ecu.ui.swing.menubar.action.DisconnectAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ExitAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.FastPollModeAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.GlobalAdjustmentAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileAbsoluteTimestampAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileControllerSwitchAction;
@@ -134,6 +135,8 @@ public class EcuLoggerMenuBar extends JMenuBar {
         toolsMenu.add(new MenuItem("Reset ECU/TCU", new ResetEcuAction(logger), VK_R, getKeyStroke(VK_F7, 0)));
         toolsMenu.add(new JSeparator());
         toolsMenu.add(new MenuItem("Read Diagnostic Codes", new ReadEcuCodesAction(logger), VK_D, getKeyStroke(VK_F8, 0)));
+        toolsMenu.add(new JSeparator());
+        toolsMenu.add(new MenuItem("Global Timing & Idle RPM Adjustment", new GlobalAdjustmentAction(logger), VK_T, getKeyStroke(VK_T, ALT_MASK)));
         add(toolsMenu);
 
         // plugins menu items

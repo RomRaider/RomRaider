@@ -76,6 +76,9 @@ public final class SSMResponseProcessor {
             if (code == 0x13) {
                 ec = " invalid format or length.";
             }
+            if (code == 0x22) {
+                ec = " address not allowed.";
+            }
             throw new InvalidResponseException(
                     msg + ". Command: " + asHex(new byte[]{command}) + ec);
         }

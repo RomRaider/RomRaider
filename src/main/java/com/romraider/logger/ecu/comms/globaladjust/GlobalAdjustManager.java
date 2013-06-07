@@ -17,24 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.comms.io.connection;
+package com.romraider.logger.ecu.comms.globaladjust;
 
-import com.romraider.logger.ecu.comms.manager.PollingState;
-import com.romraider.logger.ecu.comms.query.EcuInitCallback;
-import com.romraider.logger.ecu.comms.query.EcuQuery;
-import java.util.Collection;
-import java.util.Map;
-
-public interface LoggerConnection {
-    void ecuReset(byte id);
-
-    void ecuInit(EcuInitCallback callback, byte id);
-
-    void sendAddressReads(Collection<EcuQuery> queries, byte id, PollingState pollState);
-    
-    void clearLine();
-
-    void close();
-
-    void sendAddressWrites(Map<EcuQuery, byte[]> writeQueries, byte id);
+public interface GlobalAdjustManager {
+    int ecuGlobalAdjustments();
 }
