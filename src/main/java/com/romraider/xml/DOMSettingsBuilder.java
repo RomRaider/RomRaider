@@ -173,6 +173,16 @@ public final class DOMSettingsBuilder {
         valueLimitWarning.setAttribute("value", String.valueOf(settings.isValueLimitWarning()));
         options.appendChild(valueLimitWarning);
 
+        // show table toolbar border
+        IIOMetadataNode showTableToolbarBorder = new IIOMetadataNode("showtabletoolbarborder");
+        showTableToolbarBorder.setAttribute("value", String.valueOf(settings.isShowTableToolbarBorder()));
+        options.appendChild(showTableToolbarBorder);
+
+        // open top level rom node expanded
+        IIOMetadataNode openRomExpanded = new IIOMetadataNode("openromexpanded");
+        openRomExpanded.setAttribute("value", String.valueOf(settings.isOpenExpanded()));
+        options.appendChild(openRomExpanded);
+
         return options;
     }
 

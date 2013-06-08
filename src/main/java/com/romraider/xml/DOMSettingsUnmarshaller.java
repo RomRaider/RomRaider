@@ -154,6 +154,12 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("valuelimitwarning")) {
                 settings.setValueLimitWarning(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("showtabletoolbarborder")) {
+                settings.setShowTableToolbarBorder(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("openromexpanded")) {
+                settings.setOpenExpanded(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
+
             }
         }
         return settings;
@@ -221,7 +227,7 @@ public final class DOMSettingsUnmarshaller {
         NodeList nodes = loggerNode.getChildNodes();
         if (loggerNode.getNodeType() == ELEMENT_NODE && loggerNode.getNodeName().equalsIgnoreCase("logger")) {
             settings.setLocale(unmarshallAttribute(loggerNode, "locale", "system"));
-        } 
+        }
 
         for (int i = 0; i < nodes.getLength(); i++) {
             Node n = nodes.item(i);

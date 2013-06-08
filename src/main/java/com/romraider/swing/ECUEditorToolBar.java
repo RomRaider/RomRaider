@@ -35,6 +35,7 @@ import javax.swing.JToolBar;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
 
 public class ECUEditorToolBar extends JToolBar implements ActionListener {
 
@@ -44,11 +45,8 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     private final JButton refreshImage = new JButton();
     private final JButton closeImage = new JButton();
 
-    private final ECUEditor editor;
-
-    public ECUEditorToolBar(ECUEditor editor, String name) {
+    public ECUEditorToolBar(String name) {
         super(name);
-        this.editor = editor;
         this.setFloatable(true);
         this.setRollover(true);
         FlowLayout toolBarLayout = new FlowLayout(FlowLayout.LEFT, 0, 0);
@@ -153,6 +151,6 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     }
 
     private ECUEditor getEditor() {
-        return editor;
+        return ECUEditorManager.getECUEditor();
     }
 }

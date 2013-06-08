@@ -62,7 +62,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     @Override
     public void internalFrameActivated(InternalFrameEvent e) {
         ECUEditor parent = getEditor();
-        parent.updateTableToolBar(getTable());
+        parent.getTableToolBar().updateTableToolBar();
         parent.getToolBar().updateButtons();
         parent.getEditorMenuBar().updateMenu();
     }
@@ -80,7 +80,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
 
     @Override
     public void internalFrameClosed(InternalFrameEvent e) {
-        getEditor().updateTableToolBar(null);
+        getEditor().getTableToolBar().updateTableToolBar();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
 
     @Override
     public void internalFrameDeactivated(InternalFrameEvent e) {
-        getEditor().updateTableToolBar(null);
+        getEditor().getTableToolBar().updateTableToolBar();
     }
 
     public Table getTable() {

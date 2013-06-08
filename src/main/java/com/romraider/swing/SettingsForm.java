@@ -32,6 +32,7 @@ import java.util.StringTokenizer;
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -127,6 +128,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         this.textFieldEditorIconScale.setText(String.valueOf(settings.getEditorIconScale()));
         this.textFieldTableIconScale.setText(String.valueOf(settings.getTableIconScale()));
 
+        chckbxShowTableToolbar.setSelected(settings.isShowTableToolbarBorder());
+        chckbxOpenRomNode.setSelected(settings.isOpenExpanded());
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
@@ -177,6 +180,9 @@ public class SettingsForm extends JFrame implements MouseListener {
         tableClickCount = new javax.swing.JComboBox();
         editorIconsPanel = new javax.swing.JPanel();
         tableIconsPanel = new javax.swing.JPanel();;
+
+        chckbxShowTableToolbar = new JCheckBox("Show table toolbar border");
+        chckbxOpenRomNode = new JCheckBox("Open rom node expanded");
 
         clipboardButtonGroup = new ButtonGroup();
         rdbtnDefault = new JRadioButton("RomRaider Default");
@@ -364,6 +370,8 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         btnRemoveAssocs.setText("Remove Associations");
 
+
+
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -442,6 +450,31 @@ public class SettingsForm extends JFrame implements MouseListener {
     private void initTabs() {
         // Init Default Tab Panel
         GroupLayout jPanelDefaultLayout = new GroupLayout(jPanelDefault);
+        jPanelDefaultLayout.setHorizontalGroup(
+                jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                        .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
+                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
+                                                .addComponent(calcConflictWarning)
+                                                .addComponent(obsoleteWarning)
+                                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                                                        .addComponent(tableClickCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                                        .addComponent(jLabel1)))
+                                                        .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                        .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                                                                .addContainerGap()
+                                                                .addComponent(chckbxOpenRomNode))
+                                                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                                                                        .addContainerGap()
+                                                                        .addComponent(chckbxShowTableToolbar))
+                                                                        .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                                                                                .addContainerGap()
+                                                                                .addComponent(debug)))
+                                                                                .addContainerGap())
+                );
         jPanelDefaultLayout.setVerticalGroup(
                 jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
                 .addGroup(jPanelDefaultLayout.createSequentialGroup()
@@ -454,26 +487,12 @@ public class SettingsForm extends JFrame implements MouseListener {
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addComponent(calcConflictWarning)
                                 .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(chckbxOpenRomNode)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(chckbxShowTableToolbar)
+                                .addPreferredGap(ComponentPlacement.RELATED)
                                 .addComponent(debug)
-                                .addGap(17)
-                                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-        jPanelDefaultLayout.setHorizontalGroup(
-                jPanelDefaultLayout.createParallelGroup(Alignment.TRAILING)
-                .addGroup(Alignment.LEADING, jPanelDefaultLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
-                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
-                                        .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(calcConflictWarning)
-                                                .addComponent(obsoleteWarning)
-                                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
-                                                        .addComponent(tableClickCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                                        .addComponent(jLabel1))
-                                                        .addComponent(debug))
-                                                        .addContainerGap(45, Short.MAX_VALUE)))
-                                                        .addContainerGap())
+                                .addContainerGap(378, Short.MAX_VALUE))
                 );
         jPanelDefault.setLayout(jPanelDefaultLayout);
 
@@ -767,6 +786,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         getSettings().setDisplayHighTables(displayHighTables.isSelected());
         getSettings().setSaveDebugTables(saveDebugTables.isSelected());
         getSettings().setDebug(debug.isSelected());
+        getSettings().setOpenExpanded(chckbxOpenRomNode.isSelected());
+        getSettings().setShowTableToolbarBorder(chckbxShowTableToolbar.isSelected());
 
         getSettings().setMaxColor(maxColor.getBackground());
         getSettings().setMinColor(minColor.getBackground());
@@ -829,6 +850,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     public void saveSettings()
     {
         getEditor().getSettingsManager().save(getSettings());
+        getEditor().refreshUI();
     }
 
     @Override
@@ -900,4 +922,6 @@ public class SettingsForm extends JFrame implements MouseListener {
     private JPanel tableIconsPanel;
     private JTextField textFieldTableIconScale;
     private JTextField textFieldEditorIconScale;
+    private javax.swing.JCheckBox chckbxShowTableToolbar;
+    private javax.swing.JCheckBox chckbxOpenRomNode;
 }
