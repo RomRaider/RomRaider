@@ -59,30 +59,36 @@ public class MDIDesktopPane extends JDesktopPane {
     }
 
     public Component add(JInternalFrame frame) {
-        JInternalFrame[] array = getAllFrames();
         Point p;
         int w;
         int h;
 
-        // check if frame has been added.
-        for(JInternalFrame curFrame : array) {
-            if(curFrame.equals(frame)) {
-                throw new IllegalArgumentException("The frame has been added.");
+        // get frame location.
+        if(getEditor().getSettings().isAlwaysOpenTableAtZero()) {
+            p = new Point(0, 0);
+        } else {
+            if (getAllFrames().length > 0) {
+                JInternalFrame selectedFrame = getSelectedFrame();
+                if(null == selectedFrame) {
+                    // if none selected get the location at index 0.
+                    p = getAllFrames()[0].getLocation();
+                } else {
+                    // get the selected frame location and open off of that location.
+                    p = selectedFrame.getLocation();
+                }
+
+                p.x = p.x + Settings.FRAME_OFFSET;
+                p.y = p.y + Settings.FRAME_OFFSET;
+            } else {
+                p = new Point(0, 0);
             }
         }
 
         Component retval = super.add(frame);
+        frame.setLocation(p.x, p.y);
+
         checkDesktopSize();
 
-        if (array.length > 0) {
-            p = array[0].getLocation();
-            p.x = p.x + Settings.FRAME_OFFSET;
-            p.y = p.y + Settings.FRAME_OFFSET;
-        } else {
-            p = new Point(0, 0);
-        }
-
-        frame.setLocation(p.x, p.y);
         if (frame.isResizable()) {
             w = getWidth() - (getWidth() / 3);
             h = getHeight() - (getHeight() / 3);
@@ -114,9 +120,7 @@ public class MDIDesktopPane extends JDesktopPane {
     @Override
     public void remove(Component c) {
         super.remove(c);
-
         getEditor().getTableToolBar().updateTableToolBar();
-
         checkDesktopSize();
     }
 

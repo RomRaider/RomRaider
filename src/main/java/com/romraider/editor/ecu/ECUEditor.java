@@ -55,6 +55,7 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -279,6 +280,7 @@ public class ECUEditor extends AbstractFrame {
 
     public void addRom(Rom input) {
         input.refreshDisplayedTables();
+        input.applyTableColorSettings();
 
         // add to ecu image list pane
         getImageRoot().add(input);
@@ -320,20 +322,48 @@ public class ECUEditor extends AbstractFrame {
             infoPanel.add(check);
             showMessageDialog(this, infoPanel, "ECU Revision is Obsolete", INFORMATION_MESSAGE);
         }
-        input.applyTableColorSettings();
     }
 
     public void displayTable(TableFrame frame) {
         try {
+            // check if frame has been added.
+            for(JInternalFrame curFrame : getRightPanel().getAllFrames()) {
+                if(curFrame.equals(frame)) {
+                    // table is already open.
+                    if(1 == getSettings().getTableClickBehavior()) { // open/focus frame
+                        // table is already open, so set focus on the frame.
+                        boolean selected = true;
+                        frame.toFront();
+                        try {
+                            frame.setSelected(true);
+                        } catch (PropertyVetoException e) {
+                            frame.toBack();
+                            selected = false;
+                        }
+                        if(selected) {
+                            frame.requestFocusInWindow();
+                        }
+                    } else { // default to open/close frame
+                        // table is already open, so close the frame.
+                        rightPanel.remove(frame);
+                        frame.setVisible(false);
+                        try {
+                            frame.setClosed(true);
+                        } catch (PropertyVetoException e) {
+                            ; // Do nothing.
+                        }
+                        frame.dispose();
+                    }
+                    frame.pack();
+                    rightPanel.repaint();
+                    return;
+                }
+            }
+
+            // frame not added.  add the frame.
             rightPanel.add(frame);
         } catch (IllegalArgumentException ex) {
-            // table is already open, so set focus
-            frame.toFront();
-            try {
-                frame.setSelected(true);
-            } catch (PropertyVetoException e) {
-            }
-            frame.requestFocusInWindow();
+            ;// Do nothing.
         }
         frame.pack();
         rightPanel.repaint();

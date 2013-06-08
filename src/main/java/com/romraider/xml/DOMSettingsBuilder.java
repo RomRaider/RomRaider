@@ -151,6 +151,11 @@ public final class DOMSettingsBuilder {
         tableClickCount.setAttribute("value", String.valueOf(settings.getTableClickCount()));
         options.appendChild(tableClickCount);
 
+        // table click behavior
+        IIOMetadataNode tableClickBehavior = new IIOMetadataNode("tableclickbehavior");
+        tableClickBehavior.setAttribute("value", String.valueOf(settings.getTableClickBehavior()));
+        options.appendChild(tableClickBehavior);
+
         // last version used
         IIOMetadataNode version = new IIOMetadataNode("version");
         version.setAttribute("value", versionNumber);
@@ -180,6 +185,11 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode openRomExpanded = new IIOMetadataNode("openromexpanded");
         openRomExpanded.setAttribute("value", String.valueOf(settings.isOpenExpanded()));
         options.appendChild(openRomExpanded);
+
+        // show table toolbar border
+        IIOMetadataNode alwaysOpenTableAtZero = new IIOMetadataNode("alwaysopentableatzero");
+        alwaysOpenTableAtZero.setAttribute("value", String.valueOf(settings.isAlwaysOpenTableAtZero()));
+        options.appendChild(alwaysOpenTableAtZero);
 
         return options;
     }

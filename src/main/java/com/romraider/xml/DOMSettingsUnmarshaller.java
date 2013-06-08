@@ -141,6 +141,9 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tableclickcount")) {
                 settings.setTableClickCount(unmarshallAttribute(n, "value", 2));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tableclickbehavior")) {
+                settings.setTableClickBehavior(unmarshallAttribute(n, "value", 0));
+
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("version")) {
                 settings.setRecentVersion(unmarshallAttribute(n, "value", ""));
 
@@ -158,6 +161,9 @@ public final class DOMSettingsUnmarshaller {
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("openromexpanded")) {
                 settings.setOpenExpanded(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("alwaysopentableatzero")) {
+                settings.setAlwaysOpenTableAtZero(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
 
             }
         }
