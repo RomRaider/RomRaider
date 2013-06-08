@@ -71,7 +71,6 @@ import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
 import com.romraider.net.URL;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.CustomToolbarLayout;
@@ -104,7 +103,7 @@ public class ECUEditor extends AbstractFrame {
     private ECUEditorToolBar toolBar;
     private final ECUEditorMenuBar menuBar;
     private Settings settings;
-    private final TableToolBar tableToolBar;
+    private TableToolBar tableToolBar;
     private final JPanel toolBarPanel = new JPanel();
     private OpenImageWorker openImageWorker;
     private CloseImageWorker closeImageWorker;
@@ -113,7 +112,6 @@ public class ECUEditor extends AbstractFrame {
     private final ImageIcon editorIcon = new ImageIcon(getClass().getResource("/graphics/romraider-ico.gif"), "RomRaider ECU Editor");
 
     public ECUEditor() {
-
         // get settings from xml
         settings = settingsManager.load();
 
@@ -147,12 +145,23 @@ public class ECUEditor extends AbstractFrame {
         this.setJMenuBar(menuBar);
         this.add(statusPanel, BorderLayout.SOUTH);
 
+        //set remaining window properties
+        setIconImage(editorIcon.getImage());
+
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(this);
+        setTitle(titleText);
+        setVisible(true);
+    }
+
+    public void initializeToolbar()
+    {
         // create toolbars
 
-        toolBar = new ECUEditorToolBar(this, "Editor Tools");
+        toolBar = new ECUEditorToolBar("Editor Tools");
 
-        tableToolBar = new TableToolBar("Table Tools", this);
-        tableToolBar.updateTableToolBar(null);
+        tableToolBar = new TableToolBar();
+        tableToolBar.updateTableToolBar();
 
         CustomToolbarLayout toolBarLayout = new CustomToolbarLayout(FlowLayout.LEFT, 0, 0);
 
@@ -162,16 +171,11 @@ public class ECUEditor extends AbstractFrame {
         toolBarPanel.setVisible(true);
 
         this.add(toolBarPanel, BorderLayout.NORTH);
+        revalidate();
+    }
 
-        //set remaining window properties
-        setIconImage(editorIcon.getImage());
-
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        addWindowListener(this);
-        setTitle(titleText);
-        setVisible(true);
-
-        if (settings.getEcuDefinitionFiles().size() <= 0) {
+    public void checkDefinitions() {
+        if (getSettings().getEcuDefinitionFiles().size() <= 0) {
             // no ECU definitions configured - let user choose to get latest or configure later
             Object[] options = {"Yes", "No"};
             int answer = showOptionDialog(null,
@@ -191,12 +195,11 @@ public class ECUEditor extends AbstractFrame {
                         INFORMATION_MESSAGE);
             }
         }
-
     }
 
     private void showReleaseNotes() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(settings.getReleaseNotes()));
+            BufferedReader br = new BufferedReader(new FileReader(getSettings().getReleaseNotes()));
             try {
                 // new version being used, display release notes
                 JTextArea releaseNotes = new JTextArea();
@@ -226,13 +229,13 @@ public class ECUEditor extends AbstractFrame {
     }
 
     public void handleExit() {
-        settings.setSplitPaneLocation(splitPane.getDividerLocation());
-        settings.setWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
-        settings.setWindowSize(getSize());
-        settings.setWindowLocation(getLocation());
+        getSettings().setSplitPaneLocation(splitPane.getDividerLocation());
+        getSettings().setWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
+        getSettings().setWindowSize(getSize());
+        getSettings().setWindowLocation(getLocation());
 
         // Save when exit to save file settings.
-        settingsManager.save(settings, statusPanel);
+        settingsManager.save(getSettings(), statusPanel);
         statusPanel.update("Ready...", 0);
         repaint();
     }
@@ -284,8 +287,10 @@ public class ECUEditor extends AbstractFrame {
         getImageList().expandPath(new TreePath(getImageRoot()));
 
         getImageList().expandPath(new TreePath(input.getPath()));
-        // uncomment collapsePath if you want ROM to open collapsed.
-        // imageList.collapsePath(addedRomPath);
+
+        if(!getSettings().isOpenExpanded()) {
+            imageList.collapsePath(new TreePath(input.getPath()));
+        }
 
         getImageList().setRootVisible(false);
         getImageList().repaint();
@@ -308,7 +313,7 @@ public class ECUEditor extends AbstractFrame {
             check.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    settings.setObsoleteWarning(((JCheckBox) e.getSource()).isSelected());
+                    getSettings().setObsoleteWarning(((JCheckBox) e.getSource()).isSelected());
                 }
             });
 
@@ -336,7 +341,7 @@ public class ECUEditor extends AbstractFrame {
 
     public void removeDisplayTable(TableFrame frame) {
         frame.setVisible(false);
-        updateTableToolBar(null);
+        this.getTableToolBar().updateTableToolBar();
         rightPanel.remove(frame);
         rightPanel.validate();
         refreshUI();
@@ -389,10 +394,6 @@ public class ECUEditor extends AbstractFrame {
         return tableToolBar;
     }
 
-    public void updateTableToolBar(Table currentTable) {
-        tableToolBar.updateTableToolBar(currentTable);
-    }
-
     public void setSettings(Settings settings) {
         this.settings = settings;
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
@@ -434,6 +435,7 @@ public class ECUEditor extends AbstractFrame {
     {
         getToolBar().updateButtons();
         getEditorMenuBar().updateMenu();
+        getTableToolBar().updateTableToolBar();
         imageList.updateUI();
         imageList.repaint();
         rightPanel.updateUI();

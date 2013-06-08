@@ -99,8 +99,7 @@ public class MDIDesktopPane extends JDesktopPane {
         frame.setVisible(true);
 
         if(frame instanceof TableFrame) {
-            TableFrame tableFrame = (TableFrame) frame;
-            getEditor().updateTableToolBar(tableFrame.getTable());
+            getEditor().getTableToolBar().updateTableToolBar();
         }
 
         try {
@@ -116,7 +115,7 @@ public class MDIDesktopPane extends JDesktopPane {
     public void remove(Component c) {
         super.remove(c);
 
-        getEditor().updateTableToolBar(null);
+        getEditor().getTableToolBar().updateTableToolBar();
 
         checkDesktopSize();
     }

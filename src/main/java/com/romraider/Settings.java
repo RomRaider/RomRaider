@@ -83,7 +83,9 @@ public class Settings implements Serializable {
     public static final int DEFAULT_EDITOR_ICON_SCALE = 50;
     public static final int DEFAULT_TABLE_ICON_SCALE = 70;
 
-    /* Table settings */
+
+    /* Table Settings */
+    public static final String defaultTableToolBarName = "Table Tools";
 
     public static final int ENDIAN_LITTLE = 1;
     public static final int ENDIAN_BIG = 2;
@@ -202,6 +204,9 @@ public class Settings implements Serializable {
 
     private int editorIconScale = DEFAULT_EDITOR_ICON_SCALE;
     private int tableIconScale = DEFAULT_TABLE_ICON_SCALE;
+
+    private boolean openExpanded = true;
+    private boolean showTableToolbarBorder = false;
 
     public Settings() {
         //center window by default
@@ -740,5 +745,21 @@ public class Settings implements Serializable {
             final Locale lc = new Locale(language[0], language[1]);
             Locale.setDefault(lc);
         }
+    }
+
+    public boolean isOpenExpanded() {
+        return openExpanded;
+    }
+
+    public void setOpenExpanded(boolean expanded) {
+        this.openExpanded = expanded;
+    }
+
+    public boolean isShowTableToolbarBorder() {
+        return showTableToolbarBorder;
+    }
+
+    public void setShowTableToolbarBorder(boolean showBorder) {
+        this.showTableToolbarBorder = showBorder;
     }
 }
