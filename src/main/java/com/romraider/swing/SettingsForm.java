@@ -30,6 +30,7 @@ import java.io.File;
 import java.util.StringTokenizer;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JCheckBox;
@@ -40,6 +41,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
 import ZoeloeSoft.projects.JFontChooser.JFontChooser;
@@ -75,6 +77,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         btnRemoveAssocs.addMouseListener(this);
 
         tableClickCount.setBackground(Color.WHITE);
+        tableClickBehavior.setBackground(Color.WHITE);
 
         // disable file association buttons if user is not in Windows
         StringTokenizer osName = new StringTokenizer(System.getProperties().getProperty("os.name"));
@@ -114,6 +117,12 @@ public class SettingsForm extends JFrame implements MouseListener {
             tableClickCount.setSelectedIndex(1);
         }
 
+        if(1 == settings.getTableClickBehavior()) { // open/focus
+            tableClickBehavior.setSelectedIndex(1);
+        } else { // open/close
+            tableClickBehavior.setSelectedIndex(0);
+        }
+
         valueLimitWarning.setSelected(settings.isValueLimitWarning());
         warningColor.setBackground(settings.getWarningColor());
 
@@ -130,6 +139,7 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         chckbxShowTableToolbar.setSelected(settings.isShowTableToolbarBorder());
         chckbxOpenRomNode.setSelected(settings.isOpenExpanded());
+        chckbxOpenTablesAt.setSelected(settings.isAlwaysOpenTableAtZero());
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
@@ -176,13 +186,11 @@ public class SettingsForm extends JFrame implements MouseListener {
         extensionBin = new javax.swing.JCheckBox();
         btnAddAssocs = new javax.swing.JButton();
         btnRemoveAssocs = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        tableClickCount = new javax.swing.JComboBox();
         editorIconsPanel = new javax.swing.JPanel();
-        tableIconsPanel = new javax.swing.JPanel();;
-
-        chckbxShowTableToolbar = new JCheckBox("Show table toolbar border");
-        chckbxOpenRomNode = new JCheckBox("Open rom node expanded");
+        tableIconsPanel = new javax.swing.JPanel();
+        tableClickBehavior = new javax.swing.JComboBox();
+        labelTableClick = new javax.swing.JLabel();
+        tableClickCount = new javax.swing.JComboBox();
 
         clipboardButtonGroup = new ButtonGroup();
         rdbtnDefault = new JRadioButton("RomRaider Default");
@@ -399,10 +407,6 @@ public class SettingsForm extends JFrame implements MouseListener {
                                         .add(extensionBin)))
                 );
 
-        jLabel1.setText("click to open tables");
-
-        tableClickCount.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Single", "Double"}));
-
         initTabs();
 
         settingsTabbedPane.addTab("General", jPanelDefault);
@@ -448,52 +452,100 @@ public class SettingsForm extends JFrame implements MouseListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void initTabs() {
+
+        JPanel panelUISettings = new JPanel();
+        panelUISettings.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "UI Settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         // Init Default Tab Panel
         GroupLayout jPanelDefaultLayout = new GroupLayout(jPanelDefault);
         jPanelDefaultLayout.setHorizontalGroup(
                 jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
                 .addGroup(jPanelDefaultLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
-                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(calcConflictWarning)
-                                                .addComponent(obsoleteWarning)
-                                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
-                                                        .addComponent(tableClickCount, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                                        .addComponent(jLabel1)))
-                                                        .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                        .addGroup(jPanelDefaultLayout.createSequentialGroup()
-                                                                .addContainerGap()
-                                                                .addComponent(chckbxOpenRomNode))
-                                                                .addGroup(jPanelDefaultLayout.createSequentialGroup()
-                                                                        .addContainerGap()
-                                                                        .addComponent(chckbxShowTableToolbar))
-                                                                        .addGroup(jPanelDefaultLayout.createSequentialGroup()
-                                                                                .addContainerGap()
-                                                                                .addComponent(debug)))
-                                                                                .addContainerGap())
+                                .addComponent(panelUISettings, GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+                                .addComponent(obsoleteWarning)
+                                .addComponent(calcConflictWarning)
+                                .addComponent(debug))
+                                .addContainerGap())
                 );
         jPanelDefaultLayout.setVerticalGroup(
                 jPanelDefaultLayout.createParallelGroup(Alignment.LEADING)
                 .addGroup(jPanelDefaultLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(jPanelDefaultLayout.createParallelGroup(Alignment.BASELINE)
-                                .addComponent(jLabel1)
+                        .addComponent(obsoleteWarning)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(calcConflictWarning)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(debug)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(panelUISettings, GroupLayout.PREFERRED_SIZE, 173, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(267, Short.MAX_VALUE))
+                );
+        chckbxOpenRomNode = new JCheckBox("Open rom node expanded");
+
+        chckbxShowTableToolbar = new JCheckBox("Show table toolbar border");
+
+        panelTreeSettings = new JPanel();
+        panelTreeSettings.setBorder(new TitledBorder(null, "Rom Tree Settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
+        chckbxOpenTablesAt = new JCheckBox("Always open tables at [0,0]");
+        GroupLayout gl_panelUISettings = new GroupLayout(panelUISettings);
+        gl_panelUISettings.setHorizontalGroup(
+                gl_panelUISettings.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_panelUISettings.createSequentialGroup()
+                        .addGroup(gl_panelUISettings.createParallelGroup(Alignment.LEADING)
+                                .addComponent(chckbxOpenRomNode)
+                                .addComponent(chckbxShowTableToolbar))
+                                .addContainerGap(244, Short.MAX_VALUE))
+                                .addComponent(panelTreeSettings, GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                                .addGroup(gl_panelUISettings.createSequentialGroup()
+                                        .addComponent(chckbxOpenTablesAt)
+                                        .addContainerGap())
+                );
+        gl_panelUISettings.setVerticalGroup(
+                gl_panelUISettings.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_panelUISettings.createSequentialGroup()
+                        .addComponent(chckbxOpenRomNode)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(chckbxShowTableToolbar)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(chckbxOpenTablesAt)
+                        .addPreferredGap(ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addComponent(panelTreeSettings, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE))
+                );
+
+        labelTableClick.setText("Click to open tables");
+        tableClickCount.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Single", "Double"}));
+        tableClickBehavior.setModel(new DefaultComboBoxModel(new String[] {"open/close", "open/focus"}));
+
+        lblClickBehavior = new JLabel("Table click behavior");
+        GroupLayout gl_panelTreeSettings = new GroupLayout(panelTreeSettings);
+        gl_panelTreeSettings.setHorizontalGroup(
+                gl_panelTreeSettings.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_panelTreeSettings.createSequentialGroup()
+                        .addGroup(gl_panelTreeSettings.createParallelGroup(Alignment.LEADING)
+                                .addComponent(tableClickCount, 0, 72, Short.MAX_VALUE)
+                                .addComponent(tableClickBehavior, 0, 86, Short.MAX_VALUE))
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addGroup(gl_panelTreeSettings.createParallelGroup(Alignment.LEADING)
+                                        .addComponent(labelTableClick)
+                                        .addComponent(lblClickBehavior))
+                                        .addGap(200))
+                );
+        gl_panelTreeSettings.setVerticalGroup(
+                gl_panelTreeSettings.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_panelTreeSettings.createSequentialGroup()
+                        .addGroup(gl_panelTreeSettings.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(labelTableClick)
                                 .addComponent(tableClickCount, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(obsoleteWarning)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(calcConflictWarning)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(chckbxOpenRomNode)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(chckbxShowTableToolbar)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(debug)
-                                .addContainerGap(378, Short.MAX_VALUE))
+                                .addGroup(gl_panelTreeSettings.createParallelGroup(Alignment.BASELINE)
+                                        .addComponent(lblClickBehavior)
+                                        .addComponent(tableClickBehavior, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addContainerGap(23, Short.MAX_VALUE))
                 );
+        panelTreeSettings.setLayout(gl_panelTreeSettings);
+        panelUISettings.setLayout(gl_panelUISettings);
         jPanelDefault.setLayout(jPanelDefaultLayout);
 
         // Init Table Display Tab
@@ -787,6 +839,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         getSettings().setSaveDebugTables(saveDebugTables.isSelected());
         getSettings().setDebug(debug.isSelected());
         getSettings().setOpenExpanded(chckbxOpenRomNode.isSelected());
+        getSettings().setAlwaysOpenTableAtZero(chckbxOpenTablesAt.isSelected());
         getSettings().setShowTableToolbarBorder(chckbxShowTableToolbar.isSelected());
 
         getSettings().setMaxColor(maxColor.getBackground());
@@ -805,6 +858,12 @@ public class SettingsForm extends JFrame implements MouseListener {
             getSettings().setTableClickCount(1);
         } else { // double click opens table
             getSettings().setTableClickCount(2);
+        }
+
+        if(1 == tableClickBehavior.getSelectedIndex()) { // open/close frame
+            getSettings().setTableClickBehavior(1);
+        } else { // open/focus frame
+            getSettings().setTableClickBehavior(0);
         }
 
         getSettings().setValueLimitWarning(valueLimitWarning.isSelected());
@@ -887,7 +946,8 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JCheckBox extensionHex;
     private javax.swing.JLabel highlightColor;
     private javax.swing.JLabel increaseColor;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel labelTableClick;
+    private javax.swing.JLabel lblClickBehavior;
     private javax.swing.JTabbedPane settingsTabbedPane;
     private javax.swing.JPanel jPanelDefault;
     private javax.swing.JPanel jPanelClipboard;
@@ -924,4 +984,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private JTextField textFieldEditorIconScale;
     private javax.swing.JCheckBox chckbxShowTableToolbar;
     private javax.swing.JCheckBox chckbxOpenRomNode;
+    private JPanel panelTreeSettings;
+    private javax.swing.JComboBox tableClickBehavior;
+    private javax.swing.JCheckBox chckbxOpenTablesAt;
 }
