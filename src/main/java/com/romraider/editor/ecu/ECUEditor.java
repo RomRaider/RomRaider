@@ -682,32 +682,37 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
                 parser.parse(src);
                 doc = parser.getDocument();
 
+                Rom rom;
+
                 try {
-                    Rom rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.getStatusPanel());
-                    editor.getStatusPanel().setStatus("Populating tables...");
-                    setProgress(50);
-
-                    rom.setFullFileName(inputFile);
-                    rom.populateTables(input, editor.getStatusPanel());
-
-                    editor.getStatusPanel().setStatus("Finalizing...");
-                    setProgress(90);
-
-                    editor.addRom(rom);
-
-                    editor.refreshTableCompareMenus();
-
-                    editor.getStatusPanel().setStatus("Done loading image...");
-                    setProgress(100);
-                    return null;
+                    rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.getStatusPanel());
                 } catch (RomNotFoundException ex) {
                     // rom was not found in current file, skip to next
+                    continue;
                 } finally {
+                    // Release mem after unmarshall.
                     parser.reset();
                     doc.removeChild(doc.getDocumentElement());
                     doc = null;
                     fileStream.close();
+                    System.gc();
                 }
+
+                editor.getStatusPanel().setStatus("Populating tables...");
+                setProgress(50);
+
+                rom.setFullFileName(inputFile);
+                rom.populateTables(input, editor.getStatusPanel());
+
+                editor.getStatusPanel().setStatus("Finalizing...");
+                setProgress(90);
+
+                editor.addRom(rom);
+                editor.refreshTableCompareMenus();
+
+                editor.getStatusPanel().setStatus("Done loading image...");
+                setProgress(100);
+                return null;
             }
 
             // if code executes to this point, no ROM was found, report to user
