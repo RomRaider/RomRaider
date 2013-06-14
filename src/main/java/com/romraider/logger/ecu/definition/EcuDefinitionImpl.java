@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,14 +26,18 @@ public final class EcuDefinitionImpl implements EcuDefinition {
     private final String ecuId;
     private final String calId;
     private final String carString;
+    private final String inherits;
 
-    public EcuDefinitionImpl(String ecuId, String calId, String carString) {
+    public EcuDefinitionImpl(
+        String ecuId, String calId, String carString, String inherits) {
+
         checkNotNullOrEmpty(ecuId, "ecuId");
         checkNotNullOrEmpty(calId, "calId");
         checkNotNullOrEmpty(carString, "carString");
         this.ecuId = ecuId;
         this.calId = calId;
         this.carString = carString;
+        this.inherits = inherits;
     }
 
     public String getEcuId() {
@@ -46,5 +50,9 @@ public final class EcuDefinitionImpl implements EcuDefinition {
 
     public String getCarString() {
         return carString;
+    }
+
+    public String getInherits() {
+        return inherits;
     }
 }

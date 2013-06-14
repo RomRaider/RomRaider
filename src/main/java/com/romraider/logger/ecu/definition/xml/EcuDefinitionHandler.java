@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,17 +30,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*
-<romid>
+<rom base="16BITBASE">
+  <romid>
     <xmlid>CAL ID:A4TC300K</xmlid>
     <internalidaddress>200</internalidaddress>
     <internalidstring>A4TC300K</internalidstring>
     <year>03</year>
     <transmission>AT</transmission>
     <ecuid>3614446205</ecuid>
-</romid>
+  </romid>
+</rom>
 */
 public final class EcuDefinitionHandler extends DefaultHandler {
     private static final Logger LOGGER = Logger.getLogger(EcuDefinitionHandler.class);
+    private static final String TAG_ROM    	 = "rom";
     private static final String TAG_ROMID    = "romid";
     private static final String TAG_CALID    = "internalidstring";
     private static final String TAG_ECUID    = "ecuid";
@@ -56,6 +59,7 @@ public final class EcuDefinitionHandler extends DefaultHandler {
     private static final String TAG_FLASH    = "flashmethod";
     private static final String TAG_SIZE     = "filesize";
     private static final String TAG_OBSOLETE = "obsolete";
+    private static final String ATTR_BASE    = "base";
     private Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
     private String calId;
     private String ecuId;
@@ -80,7 +84,10 @@ public final class EcuDefinitionHandler extends DefaultHandler {
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if (TAG_ROMID.equals(qName)) {
+        if (TAG_ROM.equals(qName)) {
+            inherit = attributes.getValue(ATTR_BASE);
+        }
+        else if (TAG_ROMID.equals(qName)) {
             calId        = "";
             ecuId        = "";
             caseId       = "";
@@ -95,7 +102,6 @@ public final class EcuDefinitionHandler extends DefaultHandler {
             flashmethod  = "";
             filesize     = "";
             obsolete     = "0";
-            inherit      = "";
             carString    = "";
         }
         charBuffer = new StringBuilder();
@@ -106,7 +112,10 @@ public final class EcuDefinitionHandler extends DefaultHandler {
     }
 
     public void endElement(String uri, String localName, String qName) {
-        if (TAG_ROMID.equals(qName)) {
+        if (TAG_ROM.equals(qName)) {
+            inherit = null;
+        }
+        else if (TAG_ROMID.equals(qName)) {
             if (!isNullOrEmpty(ecuId)    && 
                 !isNullOrEmpty(calId)    &&
                 !isNullOrEmpty(year)     &&
@@ -118,7 +127,7 @@ public final class EcuDefinitionHandler extends DefaultHandler {
                 ) {
                 carString = String.format("%s %s %s %s %s %s",
                         year, market, make, model, submodel, transmission);
-                ecuDefinitionMap.put(ecuId, new EcuDefinitionImpl(ecuId, calId, carString));
+                ecuDefinitionMap.put(ecuId, new EcuDefinitionImpl(ecuId, calId, carString, inherit));
             }
             if (!isNullOrEmpty(ecuId)    && 
                 !isNullOrEmpty(calId)    &&
@@ -231,6 +240,6 @@ public final class EcuDefinitionHandler extends DefaultHandler {
             filesize ,
             obsolete,
             inherit
-            );
+        );
     }
 }
