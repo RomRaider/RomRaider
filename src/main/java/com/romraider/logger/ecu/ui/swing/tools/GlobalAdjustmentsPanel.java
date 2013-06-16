@@ -22,6 +22,7 @@ package com.romraider.logger.ecu.ui.swing.tools;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -73,9 +74,9 @@ public final class GlobalAdjustmentsPanel extends JDialog {
         setIconImage(logger.getIconImage());
         setTitle(DIALOG_TITLE);
         setBounds(
-                logger.getX() + (logger.getWidth() / 2) - 137,
+                logger.getX() + (logger.getWidth() / 2) - 140,
                 logger.getY() + 90,
-                274,
+                280,
                 245);
 
         final JPanel contentPanel = new JPanel();
@@ -129,8 +130,9 @@ public final class GlobalAdjustmentsPanel extends JDialog {
         contentPanel.add(onRpmUnitsLabel);
 
         final JLabel resetWarningLabel = new JLabel(RESET_WARNING);
+        resetWarningLabel.setFont(new Font("Tahoma", Font.PLAIN, 10));
         resetWarningLabel.setForeground(Color.BLUE);
-        resetWarningLabel.setBounds(20, 138, 246, 20);
+        resetWarningLabel.setBounds(11, 138, 246, 20);
         contentPanel.add(resetWarningLabel);
 
         final JPanel buttonPanel = new JPanel();
