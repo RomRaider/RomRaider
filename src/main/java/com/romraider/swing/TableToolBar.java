@@ -104,6 +104,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     private final TitledBorder toolbarBorder = BorderFactory.createTitledBorder(Settings.defaultTableToolBarName);
 
+    private Table selectedTable = null;
+
     public TableToolBar() {
         super(Settings.defaultTableToolBarName);
         this.setFloatable(true);
@@ -133,6 +135,11 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         setValuePanel.add(multiply);
         this.add(setValuePanel);
 
+        JPanel scaleSelectionPanel = new JPanel();
+        scaleSelectionPanel.add(scaleSelection);
+        // TODO: what is this?
+        //this.add(scaleSelectionPanel);
+
         incrementFine.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         decrementFine.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         incrementCoarse.setBorder(createLineBorder(new Color(150, 150, 150), 1));
@@ -143,8 +150,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         setValue.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         multiply.setPreferredSize(new Dimension(33, 23));
         multiply.setBorder(createLineBorder(new Color(150, 150, 150), 1));
+
         scaleSelection.setPreferredSize(new Dimension(80, 23));
-        scaleSelection.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        scaleSelection.setFont(new Font("Tahoma", Font.PLAIN, 12));
+
         clearOverlay.setPreferredSize(new Dimension(75, 23));
         clearOverlay.setBorder(createLineBorder(new Color(150, 150, 150), 1));
 
@@ -263,6 +272,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             return null;
         }
 
+
         return ((TableFrame)frame).getTable();
     }
 
@@ -275,46 +285,64 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         }
     }
 
-    public void updateTableToolBar()
-    {
+    public void updateTableToolBar() {
+        this.selectedTable = getTable();
+        this.updateTableToolBar(getTable());
+    }
+
+    public void updateTableToolBar(Table selectedTable) {
+        this.selectedTable = selectedTable;
         double fineIncrement = 0;
         double coarseIncrement = 0;
 
         setBorder(toolbarBorder);
 
-        Table curTable = getTable();
-
-        if(null == curTable)
+        if(null == selectedTable)
         {
             // disable the toolbar.
-            toggleTableToolBar(false, curTable);
+            toggleTableToolBar(selectedTable);
             return;
         }
 
         try {
             // enable the toolbar.
-            fineIncrement = Math.abs(curTable.getScale().getFineIncrement());
-            coarseIncrement = Math.abs(curTable.getScale().getCoarseIncrement());
+            fineIncrement = Math.abs(selectedTable.getScale().getFineIncrement());
+            coarseIncrement = Math.abs(selectedTable.getScale().getCoarseIncrement());
         } catch (Exception ex) {
             // scaling units haven't been added yet -- no problem
         }
 
         incrementByFine.setValue(fineIncrement);
         incrementByCoarse.setValue(coarseIncrement);
-        this.overlayLog.setSelected(curTable.getOverlayLog());
-        this.enable3d.setEnabled(curTable.getType() == Settings.TABLE_3D);
+        this.overlayLog.setSelected(selectedTable.getOverlayLog());
+        this.enable3d.setEnabled(selectedTable.getType() == Settings.TABLE_3D);
 
-        setScales(curTable.getScales());
-        toggleTableToolBar(true, curTable);
+        setScales(selectedTable.getScales());
+        toggleTableToolBar(selectedTable);
     }
 
-    private void toggleTableToolBar(Boolean enabled, Table currentTable) {
+    private void toggleTableToolBar(Table currentTable) {
+        String newTitle = "";
+        boolean enabled;
+
         if(null == currentTable) {
-            toolbarBorder.setTitle("");
+            enabled = false;
         } else {
-            String newTitle = currentTable.getName();
-            toolbarBorder.setTitle(newTitle);
+            if(currentTable instanceof Table1D) {
+                Table1D cur1DTable = (Table1D)currentTable;
+                if(cur1DTable.isAxis()) {
+                    newTitle = cur1DTable.getAxisParent().getName() + " ("+ cur1DTable.getName() +")";
+                } else {
+                    newTitle = currentTable.getName();
+                }
+            } else {
+                newTitle = currentTable.getName();
+            }
+
+            enabled = true;
         }
+
+        toolbarBorder.setTitle(newTitle);
 
         incrementFine.setEnabled(enabled);
         decrementFine.setEnabled(enabled);
@@ -355,9 +383,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         // remove item listener to avoid null pointer exception when populating
         scaleSelection.removeItemListener(this);
+        scaleSelection.removeAllItems();
 
-        for (int i = 0; i < scales.size(); i++) {
-            scaleSelection.addItem(scales.get(i).getName());
+        for (Scale scale : scales) {
+            scaleSelection.addItem(scale.getName());
         }
 
         // and put it back
@@ -366,7 +395,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable)
         {
             return;
@@ -387,8 +416,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         } else if (e.getSource() == setValue) {
             setValue(curTable);
         }
-
-        curTable.colorize();
     }
 
     public void setValue(Table currentTable) {
@@ -396,7 +423,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void multiply() {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable) {
             return;
         }
@@ -412,7 +439,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void incrementFine() {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable) {
             return;
         }
@@ -424,7 +451,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void decrementFine() {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable) {
             return;
         }
@@ -436,7 +463,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void incrementCoarse() {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable) {
             return;
         }
@@ -448,7 +475,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void decrementCoarse() {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable) {
             return;
         }
@@ -479,7 +506,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
                 float[] rowValues = new float[valueCount];
                 for (int i = 0; i < valueCount; i++) {
                     DataCell theCell = tableData[i][j];
-                    rowValues[i] = (float) theCell.getValue(Settings.DATA_TYPE_BIN);
+                    rowValues[i] = (float) theCell.getBinValue();
                     //float theValue = (float)theCell.getValue();
                     //BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
                     //rowValues[i] = finalRoundedValue.floatValue();
@@ -496,7 +523,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             double[] xValues = new double[length];
 
             for (int i = 0; i < length; i++) {
-                xValues[i] = dataCells[i].getValue(Settings.DATA_TYPE_BIN);
+                xValues[i] = dataCells[i].getBinValue();
                 //double theValue = dataCells[i].getValue();
                 //BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
                 //xValues[i] = finalRoundedValue.doubleValue();
@@ -508,7 +535,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             double[] yValues = new double[length];
 
             for (int i = 0; i < length; i++) {
-                double theValue = dataCells[i].getValue(Settings.DATA_TYPE_BIN);
+                double theValue = dataCells[i].getBinValue();
                 BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2, BigDecimal.ROUND_HALF_UP);
                 yValues[i] = finalRoundedValue.doubleValue();
             }
@@ -535,8 +562,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
              */
 
 
-            double maxV = table3d.getMax();
-            double minV = table3d.getMin();
+            double maxV = table3d.getMaxReal();
+            double minV = table3d.getMinReal();
             //TODO Remove this when above is working
             //***********
             /*minV = 0.0;
@@ -595,19 +622,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     public void mouseExited(MouseEvent e) {
     }
 
-    /*
-    public TableFrame getFrame() {
-        return frame;
-    }
-
-    public void setFrame(TableFrame frame) {
-        this.frame = frame;
-    }
-     */
-
     @Override
     public void itemStateChanged(ItemEvent e) {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable) {
             return;
         }
@@ -624,7 +641,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable) {
             return;
         }
@@ -646,7 +663,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     @Override
     public void newGraphData(int x, int z, float value) {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable) {
             return;
         }
@@ -662,7 +679,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     @Override
     public void selectStateChange(int x, int z, boolean value) {
-        Table curTable = getTable();
+        Table curTable = getSelectedTable();
         if(null == curTable) {
             return;
         }
@@ -676,5 +693,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
                 table3d.deSelectCellAt(x, table3d.getSizeY() - z - 1);
             }
         }
+    }
+
+    public Table getSelectedTable() {
+        return this.selectedTable;
     }
 }

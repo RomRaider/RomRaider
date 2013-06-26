@@ -260,7 +260,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         description.setBackground(new java.awt.Color(236, 233, 216));
         description.setColumns(20);
         description.setEditable(false);
-        description.setFont(new java.awt.Font("Tahoma", 0, 11));
+        description.setFont(new java.awt.Font("Tahoma", 0, 12));
         description.setLineWrap(true);
         description.setRows(5);
         description.setText("Description");

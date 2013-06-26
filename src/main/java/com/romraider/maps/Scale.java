@@ -34,8 +34,8 @@ public class Scale implements Serializable {
     private String format = "#";
     private double coarseIncrement = 2;
     private double fineIncrement = 1;
-    private double min = 0;
-    private double max = 0;
+    private double min = 0.0;
+    private double max = 0.0;
     private Table table;
 
     public Scale() {

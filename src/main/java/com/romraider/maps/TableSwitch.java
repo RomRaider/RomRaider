@@ -226,10 +226,6 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public void colorize() {
-    }
-
-    @Override
     public void cursorUp() {
     }
 
@@ -243,10 +239,6 @@ public class TableSwitch extends Table {
 
     @Override
     public void cursorRight() {
-    }
-
-    @Override
-    public void setAxisColor() {
     }
 
     @Override
@@ -331,33 +323,20 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public boolean fillCompareValues() {
-        return true; // Do Nothing.
+    public void populateCompareValues(Table compareTable) {
+        return; // Do nothing.
     }
 
     @Override
-    public void refreshCellDisplay() {
-        if(!(compareTable instanceof TableSwitch)) {
-            return;
-        }
-
-        TableSwitch otherTable = (TableSwitch)compareTable;
-
-        Set<String> keys = new HashSet<String>(this.getSwitchStates().keySet());
-
-        // Compare DTC.
-        for(String key : keys) {
-            JRadioButton button = getButtonByText(this.getButtonGroup(), key);
-            JRadioButton otherButton = getButtonByText(otherTable.getButtonGroup(), key);
-
-            if(compareDisplay == Settings.COMPARE_DISPLAY_OFF || button.isSelected() == otherButton.isSelected()) {
-                button.setForeground(Settings.TABLESWITCH_DEFAULT_COLOR);
-            } else {
-                button.setForeground(Settings.TABLESWITCH_DIFFERENT_COLOR);
-            }
-        }
+    public void refreshDataBounds(){
+        return; // Do nothing.
     }
 
+    @Override
+    public void drawTable()
+    {
+        return; // Do nothing.
+    }
     // returns the selected radio button in the specified group
     private static JRadioButton getSelectedButton(ButtonGroup group) {
         for (Enumeration<AbstractButton> e = group.getElements(); e.hasMoreElements(); ) {

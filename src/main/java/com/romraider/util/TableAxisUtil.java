@@ -19,7 +19,6 @@
 
 package com.romraider.util;
 
-import com.romraider.Settings;
 import com.romraider.maps.DataCell;
 import com.romraider.maps.Table1D;
 
@@ -31,16 +30,16 @@ public final class TableAxisUtil {
     public static AxisRange getLiveDataRangeForAxis(Table1D axis) {
         int startIdx = 0;
         int endIdx = 0;
-        double liveAxisValue = axis.getLiveValue();
         DataCell[] data = axis.getData();
         for (int i = 0; i < data.length; i++) {
             DataCell cell = data[i];
-            double axisValue = cell.getValue(Settings.DATA_TYPE_BIN);
-            if (liveAxisValue == axisValue) {
+            double axisValue = cell.getRealValue();
+            double liveValue = cell.getLiveDataTraceValue();
+            if (liveValue == axisValue) {
                 startIdx = i;
                 endIdx = i;
                 break;
-            } else if (liveAxisValue < axisValue) {
+            } else if (liveValue < axisValue) {
                 startIdx = i - 1;
                 endIdx = i;
                 break;
