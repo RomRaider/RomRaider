@@ -363,7 +363,6 @@ public class ECUEditor extends AbstractFrame {
 
             // frame not added.  add the frame.
             frame.getTable().refreshDataBounds();
-            frame.getTable().drawTable();
             rightPanel.add(frame);
         } catch (IllegalArgumentException ex) {
             ;// Do nothing.

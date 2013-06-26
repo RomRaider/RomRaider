@@ -32,7 +32,11 @@ public final class ColorScaler {
     public static Color getScaledColor(double scale) {
 
         Settings settings = ECUEditorManager.getECUEditor().getSettings();
-        if(0.0 == scale || Double.NaN == scale) {
+        if(0.0 == scale) {
+            return settings.getMinColor();
+        }
+
+        if(Double.NaN == scale) {
             return settings.getMaxColor();
         }
 

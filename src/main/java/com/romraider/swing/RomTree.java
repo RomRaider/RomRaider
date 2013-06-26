@@ -77,9 +77,21 @@ public class RomTree extends JTree implements MouseListener {
         try{
             Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
 
-            if (e.getClickCount() >= getEditor().getSettings().getTableClickCount()) {
-                showTable(selectedRow);
+            if(selectedRow instanceof TableTreeNode) {
+                if (e.getClickCount() >= getEditor().getSettings().getTableClickCount()) {
+                    showTable(selectedRow);
+                }
+            } else if(selectedRow instanceof Rom || selectedRow instanceof CategoryTreeNode) {
+                if (e.getClickCount() >= getEditor().getSettings().getTableClickCount()) {
+                    if(isCollapsed(getRowForLocation(e.getX(),e.getY()))) {
+                        expandRow(getRowForLocation(e.getX(),e.getY()));
+                    }
+                    else {
+                        collapseRow(getRowForLocation(e.getX(),e.getY()));
+                    }
+                }
             }
+
             setLastSelectedRom(selectedRow);
         }catch(NullPointerException ex) {
         }
@@ -93,7 +105,6 @@ public class RomTree extends JTree implements MouseListener {
                     getEditor().displayTable(node.getFrame());
                 }
             }
-            setLastSelectedRom(selectedRow);
         } catch (NullPointerException ex) {
         }
     }
