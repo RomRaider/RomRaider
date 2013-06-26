@@ -83,6 +83,7 @@ import com.romraider.swing.RomTree;
 import com.romraider.swing.RomTreeRootNode;
 import com.romraider.swing.TableFrame;
 import com.romraider.swing.TableToolBar;
+import com.romraider.swing.TableTreeNode;
 import com.romraider.util.SettingsManager;
 import com.romraider.util.SettingsManagerImpl;
 import com.romraider.xml.DOMRomUnmarshaller;
@@ -153,6 +154,7 @@ public class ECUEditor extends AbstractFrame {
         addWindowListener(this);
         setTitle(titleText);
         setVisible(true);
+        toFront();
     }
 
     public void initializeToolbar()
@@ -280,7 +282,6 @@ public class ECUEditor extends AbstractFrame {
 
     public void addRom(Rom input) {
         input.refreshDisplayedTables();
-        input.applyTableColorSettings();
 
         // add to ecu image list pane
         getImageRoot().add(input);
@@ -361,6 +362,8 @@ public class ECUEditor extends AbstractFrame {
             }
 
             // frame not added.  add the frame.
+            frame.getTable().refreshDataBounds();
+            frame.getTable().drawTable();
             rightPanel.add(frame);
         } catch (IllegalArgumentException ex) {
             ;// Do nothing.
@@ -428,7 +431,9 @@ public class ECUEditor extends AbstractFrame {
         this.settings = settings;
         for (int i = 0; i < imageRoot.getChildCount(); i++) {
             Rom rom = (Rom) imageRoot.getChildAt(i);
-            rom.applyTableColorSettings();
+            for(TableTreeNode tableNode : rom.getTableNodes()) {
+                tableNode.getFrame().getTable().drawTable();
+            }
         }
     }
 
@@ -686,9 +691,13 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
 
                 try {
                     rom = new DOMRomUnmarshaller().unmarshallXMLDefinition(doc.getDocumentElement(), input, editor.getStatusPanel());
-                } catch (RomNotFoundException ex) {
+                } catch (RomNotFoundException rex) {
                     // rom was not found in current file, skip to next
                     continue;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    showMessageDialog(editor, "Error Loading.  Unknown Exception.", "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
+                    return null;
                 } finally {
                     // Release mem after unmarshall.
                     parser.reset();

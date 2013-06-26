@@ -116,7 +116,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         for(int i = 0; i < tableNodes.size(); i++) {
             if(tableNodes.get(i).getTable().getName().equalsIgnoreCase(table.getName())) {
                 tableNodes.remove(i);
-                break;
+                return;
             }
         }
     }
@@ -245,14 +245,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    public void applyTableColorSettings() {
-        for (TableTreeNode tableNode : tableNodes) {
-            tableNode.getTable().applyColorSettings();
-            //tables.get(i).resize();
-            tableNode.getFrame().pack();
-        }
     }
 
     public byte[] saveFile() {

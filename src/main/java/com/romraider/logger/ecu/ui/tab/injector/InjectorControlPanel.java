@@ -50,7 +50,6 @@ import javax.swing.border.TitledBorder;
 
 import org.apache.log4j.Logger;
 
-import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
@@ -412,7 +411,6 @@ public final class InjectorControlPanel extends JPanel {
                                 if (isNumber(flowScaling)) {
                                     String value = flowScaling.getText().trim();
                                     cells[0].setRealValue(value);
-                                    table.colorize();
                                 } else {
                                     showMessageDialog(parent, "Invalid Injector Flow Scaling value.", "Error", ERROR_MESSAGE);
                                 }
@@ -442,10 +440,9 @@ public final class InjectorControlPanel extends JPanel {
                             DataCell[] cells = table.getData();
                             if (isNumber(latencyOffset)) {
                                 for (DataCell cell : cells) {
-                                    double newLatency = cell.getValue(Settings.DATA_TYPE_BIN) + parseDouble(latencyOffset);
+                                    double newLatency = cell.getRealValue() + parseDouble(latencyOffset);
                                     cell.setRealValue("" + newLatency);
                                 }
-                                table.colorize();
                             } else {
                                 showMessageDialog(parent, "Invalid Injector Latency Offset value.", "Error", ERROR_MESSAGE);
                             }

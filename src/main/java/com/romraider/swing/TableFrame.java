@@ -140,16 +140,19 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             getTable().paste();
 
         } else if (e.getSource() == menu.getCompareOff()) {
-            compareByDisplay(Settings.COMPARE_DISPLAY_OFF);
+            getTable().comparing = false;
+            getTable().setCompareValueType(Settings.DATA_TYPE_BIN);
+            getTableMenuBar().getCompareToBin().setSelected(true);
+            getTable().removeFromCompareTo();
 
         } else if (e.getSource() == menu.getCompareAbsolute()) {
-            compareByDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
+            getTable().setCompareDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
 
         } else if (e.getSource() == menu.getComparePercent()) {
-            compareByDisplay(Settings.COMPARE_DISPLAY_PERCENT);
+            getTable().setCompareDisplay(Settings.COMPARE_DISPLAY_PERCENT);
 
         } else if (e.getSource() == menu.getCompareOriginal()) {
-            getTable().setCompareType(Settings.DATA_TYPE_ORIGINAL);
+            getTable().setCompareValueType(Settings.DATA_TYPE_ORIGINAL);
             getTableMenuBar().getCompareToOriginal().setSelected(true);
             compareByTable(getTable());
 
@@ -167,36 +170,33 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             }
 
         } else if (e.getSource() == menu.getCompareToOriginal()) {
-            compareByType(Settings.DATA_TYPE_ORIGINAL);
+            getTable().setCompareValueType(Settings.DATA_TYPE_ORIGINAL);
+            if(getTable().getCompareTable() != null) {
+                getTable().getCompareTable().refreshCompares();
+            }
 
         } else if (e.getSource() == menu.getCompareToBin()) {
-            compareByType(Settings.DATA_TYPE_BIN);
+            getTable().setCompareValueType(Settings.DATA_TYPE_BIN);
+            if(getTable().getCompareTable() != null) {
+                getTable().getCompareTable().refreshCompares();
+            }
 
+        } else if (e.getSource() == menu.getShowBinValues()) {
+            getTable().setDisplayValueType(Settings.DATA_TYPE_BIN);
+        } else if (e.getSource() == menu.getShowRealValues()) {
+            getTable().setDisplayValueType(Settings.DATA_TYPE_REAL);
         }
     }
 
     private void compareByTable(Table selectedTable) {
+        getTable().comparing = true;
         if(null == selectedTable) {
             return;
         }
 
-        if(getTable().getCompareDisplay() == Settings.COMPARE_DISPLAY_OFF) {
-            // Default to absolute if none selected.
-            getTableMenuBar().getCompareAbsolute().setSelected(true);
-            getTable().setCompareDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
-        }
-
         selectedTable.addComparedToTable(getTable());
-
-        getTable().setCompareTable(selectedTable);
-        if(getTable().fillCompareValues()) {
-            getTable().refreshCellDisplay();
-        }
-    }
-
-    public void compareByDisplay(int compareDisplay) {
-        getTable().setCompareDisplay(compareDisplay);
-        getTable().refreshCellDisplay();
+        selectedTable.refreshCompares();
+        getTable().drawTable();
     }
 
     public void refreshSimilarOpenTables() {
@@ -230,12 +230,5 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             }
         }
         return null;
-    }
-
-    private void compareByType(int compareType) {
-        getTable().setCompareType(compareType);
-        if(getTable().fillCompareValues()) {
-            getTable().refreshCellDisplay();
-        }
     }
 }

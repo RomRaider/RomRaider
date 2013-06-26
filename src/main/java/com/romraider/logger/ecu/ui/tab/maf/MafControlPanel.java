@@ -51,7 +51,6 @@ import javax.swing.border.TitledBorder;
 import org.apache.log4j.Logger;
 import org.jfree.ui.KeyedComboBoxModel;
 
-import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
@@ -414,18 +413,17 @@ public final class MafControlPanel extends JPanel {
                                 double[] x = new double[axisCells.length];
                                 for (int i = 0; i < axisCells.length; i++) {
                                     DataCell cell = axisCells[i];
-                                    x[i] = cell.getValue(Settings.DATA_TYPE_BIN);
+                                    x[i] = cell.getRealValue();
                                 }
                                 double[] percentChange = chartPanel.calculate(x);
                                 DataCell[] dataCells = table.getData();
                                 for (int i = 0; i < dataCells.length; i++) {
-                                    if (inRange(axisCells[i].getValue(Settings.DATA_TYPE_BIN), mafvMin, mafvMax)) {
+                                    if (inRange(axisCells[i].getRealValue(), mafvMin, mafvMax)) {
                                         DataCell cell = dataCells[i];
-                                        double value = cell.getValue(Settings.DATA_TYPE_BIN);
+                                        double value = cell.getRealValue();
                                         cell.setRealValue("" + (value * (1.0 + percentChange[i] / 100.0)));
                                     }
                                 }
-                                table.colorize();
                             } else {
                                 showMessageDialog(parent, "Invalid MAFv range specified.", "Error", ERROR_MESSAGE);
                             }

@@ -455,7 +455,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                     }
 
                     tableFile.createNewFile();
-                    StringBuffer tableData = table.getTableAsString(Settings.DATA_TYPE_BIN);
+                    StringBuffer tableData = table.getTableAsString();
                     BufferedWriter out = new BufferedWriter(new FileWriter(tableFile));
                     try {
                         out.write(tableData.toString());

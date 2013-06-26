@@ -19,9 +19,6 @@
 
 package com.romraider.maps;
 
-import static com.romraider.util.ColorScaler.getScaledColor;
-import static javax.swing.BorderFactory.createLineBorder;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -76,7 +73,6 @@ public abstract class Table extends JPanel implements Serializable {
     protected int endian;
     protected boolean flip;
     protected DataCell[] data = new DataCell[0];
-    protected boolean isStatic = false;
     protected boolean beforeRam = false;
     protected int ramOffset = 0;
     protected BorderLayout borderLayout = new BorderLayout();
@@ -84,37 +80,51 @@ public abstract class Table extends JPanel implements Serializable {
     protected JPanel centerPanel = new JPanel(centerLayout);
     protected int verticalOverhead = 103;
     protected int horizontalOverhead = 2;
-    protected int cellHeight = 18;
-    protected int cellWidth = 42;
+    protected int cellHeight = (int) getSettings().getCellSize().getHeight();
+    protected int cellWidth = (int) getSettings().getCellSize().getWidth();
     protected int minHeight = 100;
     protected int minWidthNoOverlay = 465;
     protected int minWidthOverlay = 700;
     protected int highlightX;
     protected int highlightY;
     protected boolean highlight = false;
-    protected Table axisParent;
-    protected Color maxColor;
-    protected Color minColor;
-    protected boolean isAxis = false;
     protected int userLevel = 0;
     protected boolean locked = false;
 
-    protected int compareType = Settings.DATA_TYPE_ORIGINAL;
-    protected int compareDisplay = Settings.COMPARE_DISPLAY_OFF;
-    protected Table compareTable = null;
     protected List<Table> comparedToTables = new ArrayList<Table>();
 
     protected String logParam = Settings.BLANK;
-    protected String liveValue = Settings.BLANK;
     protected boolean overlayLog = false;
 
     protected CopyTableWorker copyTableWorker;
     protected CopySelectionWorker copySelectionWorker;
+    protected RefreshTableCompareWorker refreshTableCompareWorker;
+
+    protected boolean loaded = false;
+
+    protected double maxCompare = 0.0;
+    protected double minCompare = 0.0;
+
+    protected double maxBin = 0.0;
+    protected double minBin = 0.0;
+
+    public boolean comparing = false;
+
+    protected int compareDisplay = Settings.COMPARE_DISPLAY_ABSOLUTE;
+    protected int compareValueType = Settings.DATA_TYPE_BIN;
+
+    public int displayValueType = Settings.DATA_TYPE_REAL;
+
+    private final Table compareTable = null;
 
     public Table() {
+        scales.clear();
+        scales.add(new Scale());
+
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
         centerPanel.setVisible(true);
+        comparedToTables.clear();
 
         // key binding actions
         Action rightAction = new AbstractAction() {
@@ -404,57 +414,50 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException {
-        if (scales.isEmpty()) {
-            scales.add(new Scale());
-        }
-
         // temporarily remove lock
         boolean tempLock = locked;
         locked = false;
 
-        if (!isStatic) {
-            if (!beforeRam) {
-                this.ramOffset = ramOffset;
-            }
+        if (!beforeRam) {
+            this.ramOffset = ramOffset;
+        }
 
-            for (int i = 0; i < data.length; i++) {
-                if (data[i] == null) {
-                    data[i] = new DataCell(scales.get(scaleIndex), getSettings().getCellSize());
-                    data[i].setTable(this);
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] == null) {
+                double dataValue = 0.0;
 
-                    // populate data cells
-                    if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
-                        byte[] byteValue = new byte[4];
-                        byteValue[0] = input[storageAddress + i * 4 - ramOffset];
-                        byteValue[1] = input[storageAddress + i * 4 - ramOffset + 1];
-                        byteValue[2] = input[storageAddress + i * 4 - ramOffset + 2];
-                        byteValue[3] = input[storageAddress + i * 4 - ramOffset + 3];
-                        data[i].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
+                // populate data cells
+                if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
+                    byte[] byteValue = new byte[4];
+                    byteValue[0] = input[storageAddress + i * 4 - ramOffset];
+                    byteValue[1] = input[storageAddress + i * 4 - ramOffset + 1];
+                    byteValue[2] = input[storageAddress + i * 4 - ramOffset + 2];
+                    byteValue[3] = input[storageAddress + i * 4 - ramOffset + 3];
+                    dataValue = RomAttributeParser.byteToFloat(byteValue, endian);
 
-                    } else { // integer storage type
-                        data[i].setBinValue(
-                                RomAttributeParser.parseByteValue(input,
-                                        endian,
-                                        storageAddress + i * storageType - ramOffset,
-                                        storageType,
-                                        signed));
-                    }
+                } else { // integer storage type
+                    dataValue = RomAttributeParser.parseByteValue(input,
+                            endian,
+                            storageAddress + i * storageType - ramOffset,
+                            storageType,
+                            signed);
+                }
 
-                    data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
-                    centerPanel.add(data[i]);
-                    data[i].setYCoord(i);
-                    data[i].setOriginalValue(data[i].getBinValue());
+                data[i] = new DataCell(this, dataValue, 0, i, scales.get(scaleIndex), getSettings().getCellSize());
+                data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
+                data[i].setBinValue(dataValue);
+                centerPanel.add(data[i]);
 
-                    // show locked cell
-                    if (tempLock) {
-                        data[i].setForeground(Color.GRAY);
-                    }
+                // show locked cell
+                if (tempLock) {
+                    data[i].setForeground(Color.GRAY);
                 }
             }
         }
 
         // reset locked status
         locked = tempLock;
+        loaded = true;
     }
 
     public int getType() {
@@ -522,6 +525,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
         scales.add(scale);
+        validateScaling();
     }
 
     public int getStorageAddress() {
@@ -621,8 +625,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             if( (null == this.getName() && null == otherTable.getName())
                     || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
-                ;// Skip name compare if name is null or empty. This typically happens with
-                // a table axis.  A table axis should be handled by Table1D.
+                ;// Skip name compare if name is null or empty.
             } else {
                 if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
                     return false;
@@ -641,7 +644,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             // Compare Bin Values
             for(int i=0 ; i < this.data.length ; i++) {
-                if(this.data[i].getBinValue() != otherTable.data[i].getBinValue()) {
+                if(! this.data[i].equals(otherTable.data[i])) {
                     return false;
                 }
             }
@@ -653,131 +656,119 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public boolean isStatic() {
-        return isStatic;
-    }
+    public void refreshDataBounds(){
+        try {
+            double maxBin = data[0].getBinValue();
+            double minBin = data[0].getBinValue();
 
-    public void setIsStatic(boolean isStatic) {
-        this.isStatic = isStatic;
-    }
+            double maxCompare = data[0].getCompareValue();
+            double minCompare = data[0].getCompareValue();
 
-    public void addStaticDataCell(DataCell input) {
-        if (isStatic) {
-            for (int i = 0; i < data.length; i++) {
-                if (data[i] == null) {
-                    data[i] = input;
-                    break;
+            for(DataCell cell : data) {
+                double cellVal = cell.getBinValue();
+                double compareVal = cell.getCompareValue();
+
+                if(cellVal > maxBin) {
+                    maxBin = cellVal;
+                }
+                if(cellVal < minBin) {
+                    minBin = cellVal;
+                }
+
+                if(compareVal > maxCompare) {
+                    maxCompare = compareVal;
+                }
+                if(compareVal < minCompare) {
+                    minCompare = compareVal;
                 }
             }
+            this.maxBin = maxBin;
+            this.minBin = minBin;
+            this.maxCompare = maxCompare;
+            this.minCompare = minCompare;
+        } catch (Exception ex) {
+            ; // Do Nothing.
         }
     }
 
-    public void colorize() {
-        if (compareDisplay == Settings.COMPARE_DISPLAY_OFF) {
-            if (!isStatic && !isAxis) {
-                double high = Double.MIN_VALUE;
-                double low = Double.MAX_VALUE;
+    public double getMaxValue() {
+        double maxVal = getScale().getMax();
+        if(0.0 == maxVal) {
+            maxVal = Double.MAX_VALUE;
+        }
+        return maxVal;
+    }
 
-                if (getScale().getMax() != 0 || getScale().getMin() != 0) {
-                    // set min and max values if they are set in scale
-                    high = getScale().getMax();
-                    low = getScale().getMin();
-                } else {
-                    for (int i = 0; i < getDataSize(); i++) {
-                        double value = data[i].getValue(Settings.DATA_TYPE_BIN);
-                        if (value > high) {
-                            high = value;
-                        }
-                        if (value < low) {
-                            low = value;
-                        }
-                    }
-                }
+    public double getMinValue() {
+        double minVal = getScale().getMin();
+        if(0.0 == minVal) {
+            minVal = -Double.MAX_VALUE;
+        }
+        return minVal;
+    }
 
-                for (int i = 0; i < getDataSize(); i++) {
-                    double value = data[i].getValue(Settings.DATA_TYPE_BIN);
-                    if (value > high || value < low) {
-                        // value exceeds limit
-                        data[i].setColor(getSettings().getWarningColor());
-                    } else {
-                        // limits not set, scale based on table values
-                        double scale;
-                        if (high - low == 0) {
-                            // if all values are the same, color will be middle value
-                            scale = .5;
-                        } else {
-                            scale = (value - low) / (high - low);
-                        }
+    public double getMaxBin() {
+        return this.maxBin;
+    }
 
-                        data[i].setColor(getScaledColor(scale, getSettings()));
-                    }
-                }
-            } else { // is static/axis
-                for (int i = 0; i < getDataSize(); i++) {
-                    data[i].setColor(getSettings().getAxisColor());
-                    data[i].setOpaque(true);
-                    data[i].setBorder(createLineBorder(Color.BLACK, 1));
-                    data[i].setHorizontalAlignment(DataCell.CENTER);
-                }
-            }
-
-        } else { // comparing is on
-            if (!isStatic) {
-                double high = Double.MIN_VALUE;
-
-                // determine ratios
-                for (int i = 0; i < getDataSize(); i++) {
-                    if (Math.abs(data[i].getBinValue() - data[i].getCompareValue()) > high) {
-                        high = Math.abs(data[i].getBinValue() - data[i].getCompareValue());
-                    }
-                }
-
-                // colorize
-                for (int i = 0; i < getDataSize(); i++) {
-                    double cellDifference = Math.abs(data[i].getBinValue() - data[i].getCompareValue());
-                    double scale;
-                    if (high == 0) {
-                        scale = 0;
-                    } else {
-                        scale = cellDifference / high;
-                    }
-
-                    if (scale == 0) {
-                        data[i].setColor(Settings.UNCHANGED_VALUE_COLOR);
-                    } else {
-                        data[i].setColor(getScaledColor(scale, getSettings()));
-                    }
-
-                    // set border
-                    if (data[i].getBinValue() > data[i].getCompareValue()) {
-                        data[i].setBorder(createLineBorder(getSettings().getIncreaseBorder()));
-                    } else if (data[i].getBinValue() < data[i].getCompareValue()) {
-                        data[i].setBorder(createLineBorder(getSettings().getDecreaseBorder()));
-                    } else {
-                        data[i].setBorder(createLineBorder(Color.BLACK, 1));
-                    }
-                }
-            }
+    public void setMaxBin(double maxBin) {
+        if(this.maxBin == maxBin)
+        {
+            return;
         }
 
-        // colorize border
-        for (int i = 0; i < getDataSize(); i++) {
-            double checkValue;
-            if(compareDisplay == Settings.COMPARE_DISPLAY_OFF) {
-                checkValue = data[i].getOriginalValue();
-            } else {
-                checkValue = data[i].getCompareValue();
-            }
+        this.maxBin = maxBin;
+        drawTable();
+    }
 
-            if (checkValue > data[i].getBinValue()) {
-                data[i].setBorder(createLineBorder(getSettings().getIncreaseBorder()));
-            } else if (checkValue < data[i].getBinValue()) {
-                data[i].setBorder(createLineBorder(getSettings().getDecreaseBorder()));
-            } else {
-                data[i].setBorder(createLineBorder(Color.BLACK, 1));
+    public double getMinBin() {
+        return this.minBin;
+    }
+
+    public void setMinBin(double minBin) {
+        if(this.minBin == minBin)
+        {
+            return;
+        }
+
+        this.minBin = minBin;
+        drawTable();
+    }
+
+    public double getMaxCompare() {
+        return this.maxCompare;
+    }
+
+    public void setMaxCompare(double maxCompare) {
+        if(this.maxCompare == maxCompare)
+        {
+            return;
+        }
+
+        this.maxCompare = maxCompare;
+        drawTable();
+    }
+
+    public double getMinCompare() {
+        return this.minCompare;
+    }
+
+    public void setMinCompare(double minCompare) {
+        if(this.minCompare == minCompare)
+        {
+            return;
+        }
+
+        this.minCompare = minCompare;
+        drawTable();
+    }
+
+    public void drawTable() {
+        for(DataCell cell : data) {
+            if(null != cell) {
+                cell.drawCell();
             }
         }
-        repaint();
     }
 
     public Dimension getFrameSize() {
@@ -794,13 +785,12 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void increment(double increment) {
-        if (!isStatic && !locked && !(userLevel > getSettings().getUserLevel())) {
+        if (!locked && !(userLevel > getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.increment(increment);
                 }
             }
-            colorize();
         } else if (userLevel > getSettings().getUserLevel()) {
             JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
                     userLevel + " or greater. Click View->User Level to change your userlevel.",
@@ -810,7 +800,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void multiply(double factor) {
-        if (!isStatic && !locked && !(userLevel > getSettings().getUserLevel())) {
+        if (!locked && !(userLevel > getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.multiply(factor);
@@ -822,12 +812,11 @@ public abstract class Table extends JPanel implements Serializable {
                     "Table cannot be modified",
                     JOptionPane.INFORMATION_MESSAGE);
         }
-        colorize();
     }
 
     public void setRealValue(String realValue) {
-        if (!isStatic && !locked && !(userLevel > getSettings().getUserLevel())) {
-            for (DataCell cell : data) {
+        if (!!locked && !(userLevel > getSettings().getUserLevel())) {
+            for(DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.setRealValue(realValue);
                 }
@@ -838,12 +827,13 @@ public abstract class Table extends JPanel implements Serializable {
                     "Table cannot be modified",
                     JOptionPane.INFORMATION_MESSAGE);
         }
-        colorize();
     }
 
     public void clearSelection() {
         for (DataCell cell : data) {
-            cell.setSelected(false);
+            if(cell.isSelected()) {
+                cell.setSelected(false);
+            }
         }
     }
 
@@ -871,8 +861,10 @@ public abstract class Table extends JPanel implements Serializable {
         // loop through, selected and un-highlight
         for (DataCell cell : data) {
             if (cell.isHighlighted()) {
-                cell.setSelected(true);
                 cell.setHighlighted(false);
+                if(!cell.isSelected()) {
+                    cell.setSelected(true);
+                }
             }
         }
     }
@@ -885,61 +877,32 @@ public abstract class Table extends JPanel implements Serializable {
 
     public abstract void cursorRight();
 
-    public Table getAxisParent() {
-        return axisParent;
-    }
-
-    public void setAxisParent(Table axisParent) {
-        this.axisParent = axisParent;
-    }
-
     public void setRevertPoint() {
-        if (!isStatic) {
-            for (DataCell cell : data) {
-                cell.setOriginalValue(cell.getBinValue());
-            }
+        for (DataCell cell : data) {
+            cell.setRevertPoint();
         }
-        colorize();
     }
 
     public void undoAll() {
         clearLiveDataTrace();
-        if (!isStatic) {
-            for (DataCell cell : data) {
-                if(cell.getBinValue() != cell.getOriginalValue()) {
-                    cell.setBinValue(cell.getOriginalValue());
-                }
-            }
+        for (DataCell cell : data) {
+            cell.undo();
         }
-        colorize();
     }
 
     public void undoSelected() {
         clearLiveDataTrace();
-        if (!isStatic) {
-            for (DataCell cell : data) {
-                // reset current value to original value
-                if (cell.isSelected()) {
-                    if(cell.getBinValue() != cell.getOriginalValue()) {
-                        cell.setBinValue(cell.getOriginalValue());
-                    }
-                }
+        for (DataCell cell : data) {
+            // reset current value to original value
+            if (cell.isSelected()) {
+                cell.undo();
             }
         }
-        colorize();
     }
 
     public byte[] saveFile(byte[] binData) {
-        if (!isStatic  // save if table is not static
-                &&     // and user level is great enough
-                userLevel <= getSettings().getUserLevel()
-                &&     // and table is not in debug mode, unless saveDebugTables is true
-                (userLevel < 5
-                        ||
-                        getSettings().isSaveDebugTables())) {
-
+        if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {
             for (int i = 0; i < data.length; i++) {
-
                 // determine output byte values
                 byte[] output;
                 if (storageType != Settings.STORAGE_TYPE_FLOAT) {
@@ -981,12 +944,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void selectCellAt(int y) {
         if(y >= 0 && y < data.length) {
-            if (type == Settings.TABLE_X_AXIS || type == Settings.TABLE_Y_AXIS) {
-                axisParent.clearSelection();
-            } else {
-                clearSelection();
-            }
-
+            clearSelection();
             data[y].setSelected(true);
             highlightY = y;
         }
@@ -1005,10 +963,10 @@ public abstract class Table extends JPanel implements Serializable {
         copySelectionWorker.execute();
     }
 
-    public StringBuffer getTableAsString(int valType) {
+    public StringBuffer getTableAsString() {
         StringBuffer output = new StringBuffer(Settings.BLANK);
         for (int i = 0; i < data.length; i++) {
-            output.append(data[i].getRealValue(valType));
+            output.append(data[i].getRealValue());
             if (i < data.length - 1) {
                 output.append(Settings.TAB);
             }
@@ -1042,6 +1000,8 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void paste() {
+        // TODO: This sounds like desearialize.
+
         StringTokenizer st = new StringTokenizer(Settings.BLANK);
         try {
             String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
@@ -1074,48 +1034,10 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         }
-        colorize();
     }
-
-    public void applyColorSettings() {
-        if (this.getType() != Settings.TABLE_SWITCH) {
-            // apply settings to cells
-            for (int i = 0; i < getDataSize(); i++) {
-                this.setMaxColor(getSettings().getMaxColor());
-                this.setMinColor(getSettings().getMinColor());
-                data[i].setHighlightColor(getSettings().getHighlightColor());
-                data[i].setIncreaseBorder(getSettings().getIncreaseBorder());
-                data[i].setDecreaseBorder(getSettings().getDecreaseBorder());
-                data[i].setFont(getSettings().getTableFont());
-                data[i].repaint();
-            }
-            cellHeight = (int) getSettings().getCellSize().getHeight();
-            cellWidth = (int) getSettings().getCellSize().getWidth();
-            colorize();
-            validateScaling();
-        }
-    }
-
-    public Color getMaxColor() {
-        return maxColor;
-    }
-
-    public void setMaxColor(Color maxColor) {
-        this.maxColor = maxColor;
-    }
-
-    public Color getMinColor() {
-        return minColor;
-    }
-
-    public void setMinColor(Color minColor) {
-        this.minColor = minColor;
-    }
-
-    public abstract void setAxisColor();
 
     public void validateScaling() {
-        if (type != Settings.TABLE_SWITCH && !isStatic) {
+        if (type != Settings.TABLE_SWITCH) {
 
             // make sure a scale is present
             if (scales.isEmpty()) {
@@ -1154,44 +1076,56 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public boolean fillCompareValues() {
-        if(null == compareTable) {
-            return false;
+    public void populateCompareValues(Table otherTable) {
+        loaded = false;
+        if(null == otherTable) {
+            loaded = true;
+            return;
         }
 
-        DataCell[] compareData = compareTable.getData();
+        DataCell[] compareData = otherTable.getData();
         if(data.length != compareData.length) {
-            return false;
+            loaded = true;
+            return;
         }
 
         clearLiveDataTrace();
 
         int i = 0;
         for(DataCell cell : data) {
-            if(compareType == Settings.DATA_TYPE_BIN) {
-                cell.setCompareValue(compareData[i].getBinValue());
-            } else {
-                cell.setCompareValue(compareData[i].getOriginalValue());
-            }
+            cell.setCompareValue(compareData[i]);
             i++;
         }
-        return true;
+        loaded = true;
+        refreshDataBounds();
+        drawTable();
     }
 
     public void setCompareDisplay(int compareDisplay) {
         this.compareDisplay = compareDisplay;
+        drawTable();
     }
 
     public int getCompareDisplay() {
         return this.compareDisplay;
     }
 
-    public void refreshCellDisplay() {
-        for(DataCell cell : data) {
-            cell.setCompareDisplay(compareDisplay);
-            cell.updateDisplayValue();
-        }
-        colorize();
+    public void setCompareValueType(int compareValueType) {
+        this.compareValueType = compareValueType;
+        drawTable();
+    }
+
+    public int getCompareValueType() {
+        return this.compareValueType;
+    }
+
+    public void setDisplayValueType(int displayValueType) {
+        this.displayValueType = displayValueType;
+        drawTable();
+    }
+
+    public int getDisplayValueType() {
+        return this.displayValueType;
     }
 
     public int getUserLevel() {
@@ -1212,22 +1146,23 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void setScaleIndex(int scaleIndex) {
+        // TODO: what is the scale max and min?
         this.scaleIndex = scaleIndex;
-        refreshValues();
+        // recalc max values.
+        if(maxBin < getScale().getMax()) {
+            maxBin = getScale().getMax();
+        }
+
+        if(minBin < getScale().getMin()) {
+            minBin = getScale().getMin();
+        }
     }
 
     public void setScaleByName(String scaleName) {
         for (int i = 0; i < scales.size(); i++) {
             if (scales.get(i).getName().equalsIgnoreCase(scaleName)) {
                 setScaleIndex(i);
-            }
-        }
-    }
-
-    public void refreshValues() {
-        if (!isStatic) {
-            for (int i = 0; i < getDataSize(); i++) {
-                data[i].refreshValue();
+                break;
             }
         }
     }
@@ -1255,6 +1190,10 @@ public abstract class Table extends JPanel implements Serializable {
         this.locked = locked;
     }
 
+    public boolean isLoaded() {
+        return this.loaded;
+    }
+
     public void setOverlayLog(boolean overlayLog) {
         this.overlayLog = overlayLog;
         if (overlayLog) {
@@ -1267,101 +1206,53 @@ public abstract class Table extends JPanel implements Serializable {
         return this.overlayLog;
     }
 
-    public void setLiveValue(String liveValue) {
-        this.liveValue = liveValue;
-    }
-
-    public double getLiveValue() {
-        try {
-            return Double.parseDouble(liveValue);
-        } catch (NumberFormatException e) {
-            return 0.0;
-        }
-    }
-
     public abstract boolean isLiveDataSupported();
 
     public abstract boolean isButtonSelected();
 
-    protected void highlightLiveData() {
+    public void highlightLiveData(String liveValue) {
     }
 
     public void clearLiveDataTrace() {
-        liveValue = Settings.BLANK;
     }
 
-    public double getMin() {
-        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
-            double low = Double.MAX_VALUE;
-            for (int i = 0; i < getDataSize(); i++) {
-                double value = data[i].getValue(Settings.DATA_TYPE_BIN);
-                if (value < low) {
-                    low = value;
-                }
-            }
-            return low;
-        } else {
-            return getScale().getMin();
+    public void addComparedToTable(Table table) {
+        if(!this.comparedToTables.contains(table)) {
+            this.comparedToTables.add(table);
         }
     }
 
-    public double getMax() {
-        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
-            double high = Double.MIN_VALUE;
-            for (int i = 0; i < getDataSize(); i++) {
-                double value = data[i].getValue(Settings.DATA_TYPE_BIN);
-                if (value > high) {
-                    high = value;
-                }
-            }
-            return high;
-        } else {
-            return getScale().getMax();
+    public void removeComparedToTable(Table table) {
+        if(this.comparedToTables.contains(table)) {
+            this.comparedToTables.remove(table);
         }
-    }
-
-    public boolean getIsStatic() {
-        return this.isStatic;
-    }
-
-    public boolean getIsAxis() {
-        return this.isAxis;
-    }
-
-    public int getCompareType() {
-        return this.compareType;
-    }
-
-    public void setCompareType(int compareType) {
-        this.compareType = compareType;
-    }
-
-    public void setCompareTable(Table compareTable) {
-        this.compareTable = compareTable;
     }
 
     public List<Table> getComparedToTables() {
         return this.comparedToTables;
     }
 
-    public void addComparedToTable(Table table) {
-        if(!table.equals(this) && !this.getComparedToTables().contains(table)) {
-            this.getComparedToTables().add(table);
+    public Table getCompareTable() {
+        return compareTable;
+    }
+
+    public void removeFromCompareTo() {
+        if(getCompareTable() != null) {
+            getCompareTable().getComparedToTables().remove(this);
         }
     }
 
     public void refreshCompares() {
-        if(null == getComparedToTables() || getComparedToTables().size() < 1) {
-            return;
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
 
-        for(Table table : getComparedToTables()) {
-            if(null != table) {
-                if(table.fillCompareValues()) {
-                    table.refreshCellDisplay();
-                }
-            }
-        }
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        refreshTableCompareWorker = new RefreshTableCompareWorker(this);
+        refreshTableCompareWorker.execute();
     }
 }
 
@@ -1434,8 +1325,40 @@ class CopyTableWorker extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         String tableHeader = table.getSettings().getTableHeader();
         StringBuffer output = new StringBuffer(tableHeader);
-        output.append(table.getTableAsString(Settings.DATA_TYPE_DISPLAYED));
+        output.append(table.getTableAsString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+        return null;
+    }
+
+    @Override
+    public void done() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(null);
+        }
+        table.setCursor(null);
+        ECUEditorManager.getECUEditor().setCursor(null);
+    }
+}
+
+class RefreshTableCompareWorker extends SwingWorker<Void, Void> {
+    Table table;
+
+    public RefreshTableCompareWorker(Table table) {
+        this.table = table;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        if(null == table.getComparedToTables() || table.getComparedToTables().size() < 1) {
+            return null;
+        }
+
+        for(Table comparedTable : table.getComparedToTables()) {
+            if(null != table) {
+                comparedTable.populateCompareValues(table);
+            }
+        }
         return null;
     }
 

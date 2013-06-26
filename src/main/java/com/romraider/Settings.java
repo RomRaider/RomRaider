@@ -99,9 +99,8 @@ public class Settings implements Serializable {
 
     public static final int DATA_TYPE_ORIGINAL = 0;
     public static final int DATA_TYPE_BIN = 1;
-    public static final int DATA_TYPE_DISPLAYED = 2;
+    public static final int DATA_TYPE_REAL = 3;
 
-    public static final int COMPARE_DISPLAY_OFF = 0;
     public static final int COMPARE_DISPLAY_PERCENT = 1;
     public static final int COMPARE_DISPLAY_ABSOLUTE = 2;
 
@@ -160,13 +159,17 @@ public class Settings implements Serializable {
     private Dimension cellSize = new Dimension(42, 18);
     private Color maxColor = new Color(255, 102, 102);
     private Color minColor = new Color(153, 153, 255);
-    private Color highlightColor = new Color(204, 204, 204);
-    private Color increaseBorder = new Color(255, 0, 0);
-    private Color decreaseBorder = new Color(0, 0, 255);
+
+    private Color selectColor = new Color(204, 204, 204);
+    private Color highlightColor = new Color(27, 161, 226);
+
+    private Color decreaseBorder = new Color(255, 0, 0);
+    private Color increaseBorder = new Color(0, 0, 255);
     private Color axisColor = new Color(255, 255, 255);
     private Color warningColor = new Color(255, 0, 0);
     private int tableClickCount = 1; // number of clicks to open table
     private int tableClickBehavior = 0; // TableTreeNode click behavior. 0=open/close frame, 1=open/focus frame
+    private boolean colorAxis = false;
 
     private String loggerPort;
     private String loggerPortDefault;
@@ -339,6 +342,14 @@ public class Settings implements Serializable {
 
     public void setHighlightColor(Color highlightColor) {
         this.highlightColor = highlightColor;
+    }
+
+    public Color getSelectColor() {
+        return selectColor;
+    }
+
+    public void setSelectColor(Color selectColor) {
+        this.selectColor = selectColor;
     }
 
     public boolean isCalcConflictWarning() {
@@ -781,5 +792,13 @@ public class Settings implements Serializable {
 
     public void setAlwaysOpenTableAtZero(boolean openAtZero) {
         this.alwaysOpenTableAtZero = openAtZero;
+    }
+
+    public boolean isColorAxis() {
+        return this.colorAxis;
+    }
+
+    public void setColorAxis(boolean colorAxis) {
+        this.colorAxis = colorAxis;
     }
 }

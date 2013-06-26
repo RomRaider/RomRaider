@@ -385,19 +385,19 @@ public final class DOMRomUnmarshaller {
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("1D")) {
-                table = new Table1D();
+                table = new Table1D(false, false);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("X Axis")
                     || unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("Y Axis")) {
-                table = new Table1D();
+                table = new Table1D(false, true);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("Static Y Axis")
                     || unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("Static X Axis")) {
-                table = new Table1D();
+                table = new Table1D(true, true);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("Switch")) {
@@ -416,19 +416,6 @@ public final class DOMRomUnmarshaller {
         if (unmarshallAttribute(tableNode, "beforeram", "false")
                 .equalsIgnoreCase("true")) {
             table.setBeforeRam(true);
-        }
-
-        if (unmarshallAttribute(tableNode, "type", "unknown").equalsIgnoreCase(
-                "Static X Axis")
-                || unmarshallAttribute(tableNode, "type", "unknown")
-                .equalsIgnoreCase("Static Y Axis")) {
-            table.setIsStatic(true);
-            ((Table1D) table).setIsAxis(true);
-        } else if (unmarshallAttribute(tableNode, "type", "unknown")
-                .equalsIgnoreCase("X Axis")
-                || unmarshallAttribute(tableNode, "type", "unknown")
-                .equalsIgnoreCase("Y Axis")) {
-            ((Table1D) table).setIsAxis(true);
         }
 
         table.setCategory(unmarshallAttribute(tableNode, "category",
@@ -500,14 +487,13 @@ public final class DOMRomUnmarshaller {
                             }
                             tempTable.setData(((Table2D) table).getAxis()
                                     .getData());
-                            tempTable.setAxisParent(table);
                             ((Table2D) table).setAxis(tempTable);
 
                         }
                     } else if (table.getType() == Settings.TABLE_3D) { // if table
                         // is 3D,
                         // populate
-                        // axiis
+                        // xAxis
                         if (RomAttributeParser
                                 .parseTableType(unmarshallAttribute(n, "type",
                                         "unknown")) == Settings.TABLE_X_AXIS) {
@@ -521,7 +507,6 @@ public final class DOMRomUnmarshaller {
                             }
                             tempTable.setData(((Table3D) table).getXAxis()
                                     .getData());
-                            tempTable.setAxisParent(table);
                             ((Table3D) table).setXAxis(tempTable);
 
                         } else if (RomAttributeParser
@@ -537,7 +522,6 @@ public final class DOMRomUnmarshaller {
                             }
                             tempTable.setData(((Table3D) table).getYAxis()
                                     .getData());
-                            tempTable.setAxisParent(table);
                             ((Table3D) table).setYAxis(tempTable);
 
                         }
@@ -557,10 +541,13 @@ public final class DOMRomUnmarshaller {
 
                 } else if (n.getNodeName().equalsIgnoreCase("data")) {
                     // parse and add data to table
-                    DataCell dataCell = new DataCell();
-                    dataCell.setDisplayValue(unmarshallText(n));
-                    dataCell.setTable(table);
-                    table.addStaticDataCell(dataCell);
+                    DataCell dataCell = new DataCell(unmarshallText(n));
+                    if(table instanceof Table1D) {
+                        ((Table1D)table).addStaticDataCell(dataCell);
+                    } else {
+                        // Why would this happen.  Static should only be for axis.
+                        LOGGER.error("Error adding static data cell.");
+                    }
 
                 } else if (n.getNodeName().equalsIgnoreCase("description")) {
                     table.setDescription(unmarshallText(n));
@@ -568,7 +555,7 @@ public final class DOMRomUnmarshaller {
                 } else if (n.getNodeName().equalsIgnoreCase("state")) {
                     ((TableSwitch) table).setValues(
                             unmarshallAttribute(n, "name", ""),
-                            unmarshallAttribute(n, "data", "0"));
+                            unmarshallAttribute(n, "data", "0.0"));
 
                 } else { /* unexpected element in Table (skip) */
                 }

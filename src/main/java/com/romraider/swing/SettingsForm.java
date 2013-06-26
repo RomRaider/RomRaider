@@ -49,6 +49,8 @@ import ZoeloeSoft.projects.JFontChooser.JFontChooser;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.maps.Rom;
+import com.romraider.maps.Table;
 import com.romraider.util.FileAssociator;
 
 public class SettingsForm extends JFrame implements MouseListener {
@@ -203,7 +205,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(PRODUCT_NAME + " Settings");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setFont(new java.awt.Font("Tahoma", 0, 11));
+        setFont(new java.awt.Font("Tahoma", 0, 12));
         obsoleteWarning.setText("Warn me when opening out of date ECU image revision");
         obsoleteWarning.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         obsoleteWarning.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -786,7 +788,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         } else if (e.getSource() == btnChooseFont) {
             JFontChooser fc = new JFontChooser(this);
             fc.setLocationRelativeTo(this);
-            if (fc.showDialog(getSettings().getTableFont()) == JFontChooser.OK_OPTION) {
+            if (fc.showDialog(settings.getTableFont()) == JFontChooser.OK_OPTION) {
                 btnChooseFont.setFont(fc.getFont());
                 btnChooseFont.setText(fc.getFont().getFontName());
             }
@@ -909,6 +911,15 @@ public class SettingsForm extends JFrame implements MouseListener {
     public void saveSettings()
     {
         getEditor().getSettingsManager().save(getSettings());
+
+        // TODO: check if table setting changed before refreshing all tables.
+        // Refresh all tables.
+        for(Rom rom : getEditor().getImages()) {
+            for(Table table : rom.getTables()) {
+                table.drawTable();
+            }
+        }
+
         getEditor().refreshUI();
     }
 
