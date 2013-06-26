@@ -430,13 +430,17 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             return;
         }
 
+        boolean drawTable = false;
+
         // if new max set max.
         if(compareValue > table.getMaxCompare()) {
             table.setMaxCompare(compareValue);
+            drawTable = true;
         }
         // if new min set min.
         if(compareValue < table.getMinCompare()) {
             table.setMinCompare(compareValue);
+            drawTable = true;
         }
 
         // check for bin refresh.
@@ -450,13 +454,19 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         // if new max set max.
         if(checkedValue > table.getMaxBin()) {
             table.setMaxBin(checkedValue);
+            drawTable = true;
         }
         // if new min set min.
         if(checkedValue < table.getMinBin()) {
             table.setMinBin(checkedValue);
+            drawTable = true;
         }
 
-        drawCell();
+        if(drawTable) {
+            table.drawTable();
+        } else {
+            drawCell();
+        }
     }
 
     @Override

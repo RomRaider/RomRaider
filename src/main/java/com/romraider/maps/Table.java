@@ -697,7 +697,6 @@ public abstract class Table extends JPanel implements Serializable {
         }
 
         this.maxBin = maxBin;
-        drawTable();
     }
 
     public double getMinBin() {
@@ -711,7 +710,6 @@ public abstract class Table extends JPanel implements Serializable {
         }
 
         this.minBin = minBin;
-        drawTable();
     }
 
     public double getMaxCompare() {
@@ -725,7 +723,6 @@ public abstract class Table extends JPanel implements Serializable {
         }
 
         this.maxCompare = maxCompare;
-        drawTable();
     }
 
     public double getMinCompare() {
@@ -739,7 +736,6 @@ public abstract class Table extends JPanel implements Serializable {
         }
 
         this.minCompare = minCompare;
-        drawTable();
     }
 
     public void drawTable() {
@@ -1077,7 +1073,6 @@ public abstract class Table extends JPanel implements Serializable {
         }
         loaded = true;
         refreshDataBounds();
-        drawTable();
     }
 
     public void setCompareDisplay(int compareDisplay) {
@@ -1398,6 +1393,7 @@ class RefreshDataBoundsWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
+        table.drawTable();
         Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(null);

@@ -306,7 +306,6 @@ public class Table3D extends Table {
         }
         loaded = true;
         refreshDataBounds();
-        drawTable();
 
         xAxis.populateCompareValues(compareTable3D.getXAxis());
         yAxis.populateCompareValues(compareTable3D.getYAxis());
@@ -1056,6 +1055,7 @@ class RefreshDataBounds3DWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
+        table.drawTable();
         Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(null);
