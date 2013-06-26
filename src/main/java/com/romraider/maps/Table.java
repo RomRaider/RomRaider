@@ -99,6 +99,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected CopyTableWorker copyTableWorker;
     protected CopySelectionWorker copySelectionWorker;
     protected RefreshTableCompareWorker refreshTableCompareWorker;
+    protected RefreshDataBoundsWorker refreshDataBoundsWorker;
 
     protected boolean loaded = false;
 
@@ -656,39 +657,17 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public void refreshDataBounds(){
-        try {
-            double maxBin = data[0].getBinValue();
-            double minBin = data[0].getBinValue();
+    public void refreshDataBounds() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
 
-            double maxCompare = data[0].getCompareValue();
-            double minCompare = data[0].getCompareValue();
-
-            for(DataCell cell : data) {
-                double cellVal = cell.getBinValue();
-                double compareVal = cell.getCompareValue();
-
-                if(cellVal > maxBin) {
-                    maxBin = cellVal;
-                }
-                if(cellVal < minBin) {
-                    minBin = cellVal;
-                }
-
-                if(compareVal > maxCompare) {
-                    maxCompare = compareVal;
-                }
-                if(compareVal < minCompare) {
-                    minCompare = compareVal;
-                }
-            }
-            this.maxBin = maxBin;
-            this.minBin = minBin;
-            this.maxCompare = maxCompare;
-            this.minCompare = minCompare;
-        } catch (Exception ex) {
-            ; // Do Nothing.
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
+
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        refreshDataBoundsWorker = new RefreshDataBoundsWorker(this);
+        refreshDataBoundsWorker.execute();
     }
 
     public double getMaxValue() {
@@ -1358,6 +1337,61 @@ class RefreshTableCompareWorker extends SwingWorker<Void, Void> {
             if(null != table) {
                 comparedTable.populateCompareValues(table);
             }
+        }
+        return null;
+    }
+
+    @Override
+    public void done() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(null);
+        }
+        table.setCursor(null);
+        ECUEditorManager.getECUEditor().setCursor(null);
+    }
+}
+
+class RefreshDataBoundsWorker extends SwingWorker<Void, Void> {
+    Table table;
+
+    public RefreshDataBoundsWorker(Table table) {
+        this.table = table;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        try {
+            double maxBin = table.getData()[0].getBinValue();
+            double minBin = table.getData()[0].getBinValue();
+
+            double maxCompare = table.getData()[0].getCompareValue();
+            double minCompare = table.getData()[0].getCompareValue();
+
+            for(DataCell cell : table.getData()) {
+                double cellVal = cell.getBinValue();
+                double compareVal = cell.getCompareValue();
+
+                if(cellVal > maxBin) {
+                    maxBin = cellVal;
+                }
+                if(cellVal < minBin) {
+                    minBin = cellVal;
+                }
+
+                if(compareVal > maxCompare) {
+                    maxCompare = compareVal;
+                }
+                if(compareVal < minCompare) {
+                    minCompare = compareVal;
+                }
+            }
+            table.setMaxBin(maxBin);
+            table.setMinBin(minBin);
+            table.setMaxCompare(maxCompare);
+            table.setMinCompare(minCompare);
+        } catch (Exception ex) {
+            ; // Do Nothing.
         }
         return null;
     }

@@ -60,6 +60,7 @@ public class Table3D extends Table {
 
     CopyTable3DWorker copyTable3DWorker;
     CopySelection3DWorker copySelection3DWorker;
+    RefreshDataBounds3DWorker refreshDataBounds3DWorker;
 
     public Table3D() {
         super();
@@ -129,41 +130,16 @@ public class Table3D extends Table {
 
     @Override
     public void refreshDataBounds(){
-        try {
-            double maxBin = data[0][0].getBinValue();
-            double minBin = data[0][0].getBinValue();
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
 
-            double maxCompare = data[0][0].getCompareValue();
-            double minCompare = data[0][0].getCompareValue();
-
-            for(DataCell[] column : data) {
-                for(DataCell cell : column) {
-                    double cellVal = cell.getBinValue();
-                    double compareVal = cell.getCompareValue();
-
-                    if(cellVal > maxBin) {
-                        maxBin = cellVal;
-                    }
-                    if(cellVal < minBin) {
-                        minBin = cellVal;
-                    }
-                    if(compareVal > maxCompare) {
-                        maxCompare = compareVal;
-                    }
-                    if(compareVal < minCompare) {
-                        minCompare = compareVal;
-                    }
-                }
-            }
-            this.maxBin = maxBin;
-            this.minBin = minBin;
-            this.maxCompare = maxCompare;
-            this.minCompare = minCompare;
-            xAxis.refreshDataBounds();
-            yAxis.refreshDataBounds();
-        } catch (Exception ex) {
-            ;// Do nothing.
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
+
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        refreshDataBounds3DWorker = new RefreshDataBounds3DWorker(this);
+        refreshDataBounds3DWorker.execute();
     }
 
     @Override
@@ -1024,6 +1000,64 @@ class CopyTable3DWorker extends SwingWorker<Void, Void> {
     public void done() {
         Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
         if(null != ancestorWindow){
+            ancestorWindow.setCursor(null);
+        }
+        table.setCursor(null);
+        ECUEditorManager.getECUEditor().setCursor(null);
+    }
+}
+
+class RefreshDataBounds3DWorker extends SwingWorker<Void, Void> {
+    Table3D table;
+
+    public RefreshDataBounds3DWorker(Table3D table) {
+        this.table = table;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        try {
+            double maxBin = table.get3dData()[0][0].getBinValue();
+            double minBin = table.get3dData()[0][0].getBinValue();
+
+            double maxCompare = table.get3dData()[0][0].getCompareValue();
+            double minCompare = table.get3dData()[0][0].getCompareValue();
+
+            for(DataCell[] column : table.get3dData()) {
+                for(DataCell cell : column) {
+                    double cellVal = cell.getBinValue();
+                    double compareVal = cell.getCompareValue();
+
+                    if(cellVal > maxBin) {
+                        maxBin = cellVal;
+                    }
+                    if(cellVal < minBin) {
+                        minBin = cellVal;
+                    }
+                    if(compareVal > maxCompare) {
+                        maxCompare = compareVal;
+                    }
+                    if(compareVal < minCompare) {
+                        minCompare = compareVal;
+                    }
+                }
+            }
+            table.setMaxBin(maxBin);
+            table.setMinBin(minBin);
+            table.setMaxCompare(maxCompare);
+            table.setMinCompare(minCompare);
+            table.getXAxis().refreshDataBounds();
+            table.getYAxis().refreshDataBounds();
+        } catch (Exception ex) {
+            ;// Do nothing.
+        }
+        return null;
+    }
+
+    @Override
+    public void done() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
             ancestorWindow.setCursor(null);
         }
         table.setCursor(null);
