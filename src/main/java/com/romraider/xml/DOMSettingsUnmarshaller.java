@@ -157,6 +157,9 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("valuelimitwarning")) {
                 settings.setValueLimitWarning(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("coloraxis")) {
+                settings.setColorAxis(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
+
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("showtabletoolbarborder")) {
                 settings.setShowTableToolbarBorder(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
 
@@ -210,6 +213,9 @@ public final class DOMSettingsUnmarshaller {
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("highlight")) {
                 settings.setHighlightColor(unmarshallColor(n));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("select")) {
+                settings.setSelectColor(unmarshallColor(n));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("increaseborder")) {
                 settings.setIncreaseBorder(unmarshallColor(n));

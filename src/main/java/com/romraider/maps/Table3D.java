@@ -819,6 +819,20 @@ public class Table3D extends Table {
     }
 
     @Override
+    public void setCompareValueType(int compareValueType) {
+        super.setCompareValueType(compareValueType);
+        xAxis.setCompareValueType(compareValueType);
+        yAxis.setCompareValueType(compareValueType);
+    }
+
+    @Override
+    public void setDisplayValueType(int displayValueType) {
+        super.setDisplayValueType(displayValueType);
+        xAxis.setDisplayValueType(displayValueType);
+        yAxis.setDisplayValueType(displayValueType);
+    }
+
+    @Override
     public void addComparedToTable(Table table) {
         if(!(table instanceof Table3D)) {
             return;
@@ -829,6 +843,26 @@ public class Table3D extends Table {
         super.addComparedToTable(table3D);
         xAxis.addComparedToTable(table3D.xAxis);
         yAxis.addComparedToTable(table3D.yAxis);
+    }
+
+    @Override
+    public void removeComparedToTable(Table table) {
+        if(!(table instanceof Table3D)) {
+            return;
+        }
+
+        Table3D table3D = (Table3D) table;
+
+        super.removeComparedToTable(table3D);
+        xAxis.removeComparedToTable(table3D.xAxis);
+        yAxis.removeComparedToTable(table3D.yAxis);
+    }
+
+    @Override
+    public void refreshCompares() {
+        super.refreshCompares();
+        xAxis.refreshCompares();
+        yAxis.refreshCompares();
     }
 
     @Override
@@ -897,6 +931,13 @@ public class Table3D extends Table {
         if(null != yAxis) {
             yAxis.repaint();
         }
+    }
+
+    @Override
+    public void setComparing(boolean comparing) {
+        super.setComparing(comparing);
+        xAxis.setComparing(comparing);
+        yAxis.setComparing(comparing);
     }
 }
 

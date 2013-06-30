@@ -140,7 +140,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             getTable().paste();
 
         } else if (e.getSource() == menu.getCompareOff()) {
-            getTable().comparing = false;
+            getTable().setComparing(false);
             getTable().setCompareValueType(Settings.DATA_TYPE_BIN);
             getTableMenuBar().getCompareToBin().setSelected(true);
             getTable().removeFromCompareTo();
@@ -189,7 +189,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
     }
 
     private void compareByTable(Table selectedTable) {
-        getTable().comparing = true;
+        getTable().setComparing(true);
         if(null == selectedTable) {
             return;
         }

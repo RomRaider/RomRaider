@@ -75,6 +75,12 @@ public class Table2D extends Table {
     }
 
     @Override
+    public void refreshCompares() {
+        super.refreshCompares();
+        axis.refreshCompares();
+    }
+
+    @Override
     public void populateCompareValues(Table otherTable) {
         loaded = false;
         if(null == otherTable || !(otherTable instanceof Table2D)) {
@@ -382,13 +388,39 @@ public class Table2D extends Table {
     }
 
     @Override
+    public void setCompareValueType(int compareValueType) {
+        super.setCompareValueType(compareValueType);
+        axis.setCompareValueType(compareValueType);
+    }
+
+    @Override
+    public void setDisplayValueType(int displayValueType) {
+        super.setDisplayValueType(displayValueType);
+        axis.setDisplayValueType(displayValueType);
+    }
+
+    @Override
     public void addComparedToTable(Table table) {
-        super.addComparedToTable(table);
         if(!(table instanceof Table2D)) {
             return;
         }
+
         Table2D table2D = (Table2D) table;
+
+        super.addComparedToTable(table2D);
         axis.addComparedToTable(table2D.axis);
+    }
+
+    @Override
+    public void removeComparedToTable(Table table) {
+        if(!(table instanceof Table2D)) {
+            return;
+        }
+
+        Table2D table2D = (Table2D) table;
+
+        super.removeComparedToTable(table2D);
+        axis.removeComparedToTable(table2D.axis);
     }
 
     @Override
@@ -446,6 +478,12 @@ public class Table2D extends Table {
         if(null != axis) {
             axis.repaint();
         }
+    }
+
+    @Override
+    public void setComparing(boolean comparing) {
+        super.setComparing(comparing);
+        axis.setComparing(comparing);
     }
 }
 
