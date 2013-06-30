@@ -1217,6 +1217,10 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void refreshCompares() {
+        if(null == getComparedToTables() || getComparedToTables().size() < 1) {
+            return;
+        }
+        
         Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
 
         if(null != ancestorWindow) {
