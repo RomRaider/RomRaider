@@ -555,17 +555,15 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void undo() {
-        if(binValue != originalValue) {
-            binValue = originalValue;
-            drawCell();
-        }
+        this.setBinValue(originalValue);
     }
 
     public void setRevertPoint() {
-        if(originalValue != binValue) {
-            originalValue = binValue;
-            drawCell();
-        }
+        this.setOriginalValue(binValue);
+    }
+
+    public void setOriginalValue(double originalValue) {
+        this.originalValue = originalValue;
     }
 
     public void setCompareValue(DataCell compareCell) {
