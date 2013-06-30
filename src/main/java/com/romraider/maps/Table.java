@@ -109,7 +109,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected double maxBin = 0.0;
     protected double minBin = 0.0;
 
-    public boolean comparing = false;
+    private boolean comparing = false;
 
     protected int compareDisplay = Settings.COMPARE_DISPLAY_ABSOLUTE;
     protected int compareValueType = Settings.DATA_TYPE_BIN;
@@ -1220,7 +1220,7 @@ public abstract class Table extends JPanel implements Serializable {
         if(null == getComparedToTables() || getComparedToTables().size() < 1) {
             return;
         }
-        
+
         Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
 
         if(null != ancestorWindow) {
@@ -1231,6 +1231,14 @@ public abstract class Table extends JPanel implements Serializable {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         refreshTableCompareWorker = new RefreshTableCompareWorker(this);
         refreshTableCompareWorker.execute();
+    }
+
+    public boolean isComparing() {
+        return this.comparing;
+    }
+
+    public void setComparing(boolean comparing) {
+        this.comparing = comparing;
     }
 }
 

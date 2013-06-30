@@ -65,6 +65,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         maxColor.addMouseListener(this);
         minColor.addMouseListener(this);
         highlightColor.addMouseListener(this);
+        selectColor.addMouseListener(this);
         axisColor.addMouseListener(this);
         increaseColor.addMouseListener(this);
         decreaseColor.addMouseListener(this);
@@ -103,6 +104,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         maxColor.setBackground(settings.getMaxColor());
         minColor.setBackground(settings.getMinColor());
         highlightColor.setBackground(settings.getHighlightColor());
+        selectColor.setBackground(settings.getSelectColor());
         axisColor.setBackground(settings.getAxisColor());
         increaseColor.setBackground(settings.getIncreaseBorder());
         decreaseColor.setBackground(settings.getDecreaseBorder());
@@ -127,6 +129,7 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         valueLimitWarning.setSelected(settings.isValueLimitWarning());
         warningColor.setBackground(settings.getWarningColor());
+        chckbxColorAxis.setSelected(settings.isColorAxis());
 
         if(settings.getTableClipboardFormat().equalsIgnoreCase(Settings.AIRBOYS_CLIPBOARD_FORMAT)) {
             this.rdbtnAirboys.setSelected(true);
@@ -161,11 +164,13 @@ public class SettingsForm extends JFrame implements MouseListener {
         jPanel2 = new javax.swing.JPanel();
         lblAxis = new javax.swing.JLabel();
         lblHighlight = new javax.swing.JLabel();
+        lblSelect = new javax.swing.JLabel();
         lblMin = new javax.swing.JLabel();
         lblMax = new javax.swing.JLabel();
         maxColor = new javax.swing.JLabel();
         minColor = new javax.swing.JLabel();
         highlightColor = new javax.swing.JLabel();
+        selectColor = new javax.swing.JLabel();
         axisColor = new javax.swing.JLabel();
         warningColor = new javax.swing.JLabel();
         lblWarning = new javax.swing.JLabel();
@@ -183,6 +188,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         saveDebugTables = new javax.swing.JCheckBox();
         displayHighTables = new javax.swing.JCheckBox();
         valueLimitWarning = new javax.swing.JCheckBox();
+        chckbxColorAxis = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
         extensionHex = new javax.swing.JCheckBox();
         extensionBin = new javax.swing.JCheckBox();
@@ -234,6 +240,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         lblAxis.setText("Axis Cell:");
 
         lblHighlight.setText("Highlighted Cell:");
+        lblSelect.setText("Selected Cell:");
 
         lblMin.setText("Minimum Value:");
 
@@ -251,6 +258,10 @@ public class SettingsForm extends JFrame implements MouseListener {
         highlightColor.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         highlightColor.setOpaque(true);
 
+        selectColor.setBackground(new java.awt.Color(255, 0, 0));
+        selectColor.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        selectColor.setOpaque(true);
+
         axisColor.setBackground(new java.awt.Color(255, 0, 0));
         axisColor.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         axisColor.setOpaque(true);
@@ -261,54 +272,65 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         lblWarning.setText("Warning:");
 
-        org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
+        GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
         jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                .add(lblWarning)
-                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(jPanel2Layout.createSequentialGroup()
-                                                .add(4, 4, 4)
-                                                .add(lblMin))
-                                                .add(lblMax)))
-                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                                        .add(jPanel2Layout.createSequentialGroup()
-                                                                .add(maxColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 22, Short.MAX_VALUE)
-                                                                .add(lblHighlight)
-                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                                                .add(highlightColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                                                .add(jPanel2Layout.createSequentialGroup()
-                                                                        .add(minColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 55, Short.MAX_VALUE)
-                                                                        .add(lblAxis)
-                                                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                                                        .add(axisColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                                                        .add(warningColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 50, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                                                        .addContainerGap())
+                jPanel2Layout.createParallelGroup(Alignment.TRAILING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(lblWarning)
+                                .addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
+                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                .addGap(4)
+                                                .addComponent(lblMin))
+                                                .addComponent(lblMax)))
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addGroup(jPanel2Layout.createParallelGroup(Alignment.TRAILING)
+                                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                                .addComponent(maxColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                                                                .addComponent(lblHighlight)
+                                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                                .addComponent(highlightColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+                                                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                                                        .addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
+                                                                                .addGroup(Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                                                                        .addComponent(minColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                                                                        .addPreferredGap(ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
+                                                                                        .addComponent(lblAxis))
+                                                                                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                                                                                .addComponent(warningColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                                                                                .addPreferredGap(ComponentPlacement.RELATED, 151, Short.MAX_VALUE)
+                                                                                                .addComponent(lblSelect)))
+                                                                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                                                                .addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
+                                                                                                        .addComponent(selectColor, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                        .addComponent(axisColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))))
+                                                                                                        .addContainerGap())
                 );
         jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(jPanel2Layout.createSequentialGroup()
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(lblMax)
-                                .add(maxColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(highlightColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(lblHighlight))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                        .add(lblMin)
-                                        .add(minColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .add(axisColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .add(lblAxis))
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                                .add(warningColor, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                                .add(lblWarning)))
+                jPanel2Layout.createParallelGroup(Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(lblMax)
+                                .addComponent(maxColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(highlightColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblHighlight))
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
+                                        .addComponent(lblMin)
+                                        .addComponent(minColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(axisColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblAxis))
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
+                                                .addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
+                                                        .addComponent(warningColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(lblWarning))
+                                                        .addComponent(selectColor, GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
+                                                        .addComponent(lblSelect))
+                                                        .addContainerGap())
                 );
+        jPanel2.setLayout(jPanel2Layout);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Cell Borders"));
         lblIncrease.setText("Increased:");
@@ -367,6 +389,10 @@ public class SettingsForm extends JFrame implements MouseListener {
         valueLimitWarning.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         valueLimitWarning.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
+        chckbxColorAxis.setText("Color Axis");
+        chckbxColorAxis.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        chckbxColorAxis.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("File Associations"));
         extensionHex.setText("HEX");
         extensionHex.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -379,8 +405,6 @@ public class SettingsForm extends JFrame implements MouseListener {
         btnAddAssocs.setText("Add Associations");
 
         btnRemoveAssocs.setText("Remove Associations");
-
-
 
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -553,35 +577,45 @@ public class SettingsForm extends JFrame implements MouseListener {
         // Init Table Display Tab
         GroupLayout jPanelTableDisplayLayout = new GroupLayout(jPanelTableDisplay);
         jPanelTableDisplayLayout.setHorizontalGroup(
-                jPanelTableDisplayLayout.createParallelGroup(Alignment.TRAILING)
+                jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
                 .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.TRAILING)
+                        .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(lblCellHeight)
+                                .addComponent(lblFont))
+                                .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(saveDebugTables)
-                                        .addComponent(displayHighTables)
-                                        .addComponent(valueLimitWarning))
+                                        .addComponent(btnChooseFont)
                                         .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
-                                                .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
-                                                        .addComponent(lblCellHeight)
-                                                        .addComponent(lblFont))
-                                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                                        .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
-                                                                .addComponent(btnChooseFont)
+                                                .addComponent(cellHeight, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(ComponentPlacement.RELATED, 155, Short.MAX_VALUE)
+                                                .addComponent(lblCellWidth)
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addComponent(cellWidth, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(47))
+                                                .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
+                                                        .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                                                        .addContainerGap())
+                                                        .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
+                                                                .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                                                                .addContainerGap())
+                                                                .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                 .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
-                                                                        .addComponent(cellHeight, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                                                        .addPreferredGap(ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
-                                                                        .addComponent(lblCellWidth)
-                                                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                                                        .addComponent(cellWidth, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))))
-                                                                        .addGap(47))
-                                                                        .addGroup(Alignment.LEADING, jPanelTableDisplayLayout.createSequentialGroup()
-                                                                                .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
-                                                                                .addContainerGap())
-                                                                                .addGroup(Alignment.LEADING, jPanelTableDisplayLayout.createSequentialGroup()
-                                                                                        .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
-                                                                                        .addContainerGap())
-                                                                                        .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                                                                        .addContainerGap()
+                                                                        .addComponent(saveDebugTables)
+                                                                        .addContainerGap(184, Short.MAX_VALUE))
+                                                                        .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
+                                                                                .addContainerGap()
+                                                                                .addComponent(displayHighTables)
+                                                                                .addContainerGap(214, Short.MAX_VALUE))
+                                                                                .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
+                                                                                        .addContainerGap()
+                                                                                        .addComponent(valueLimitWarning)
+                                                                                        .addContainerGap(246, Short.MAX_VALUE))
+                                                                                        .addGroup(jPanelTableDisplayLayout.createSequentialGroup()
+                                                                                                .addContainerGap()
+                                                                                                .addComponent(chckbxColorAxis)
+                                                                                                .addContainerGap(324, Short.MAX_VALUE))
                 );
         jPanelTableDisplayLayout.setVerticalGroup(
                 jPanelTableDisplayLayout.createParallelGroup(Alignment.LEADING)
@@ -598,7 +632,9 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .addComponent(displayHighTables)
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(valueLimitWarning)
-                        .addGap(27)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(chckbxColorAxis)
+                        .addPreferredGap(ComponentPlacement.RELATED)
                         .addGroup(jPanelTableDisplayLayout.createParallelGroup(Alignment.BASELINE)
                                 .addComponent(lblCellWidth)
                                 .addComponent(cellWidth, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -751,6 +787,12 @@ public class SettingsForm extends JFrame implements MouseListener {
             if (color != null) {
                 highlightColor.setBackground(color);
             }
+        } else if (e.getSource() == selectColor) {
+            Color color = JColorChooser.showDialog(this.getContentPane(),
+                    "Background Color", settings.getSelectColor());
+            if (color != null) {
+                selectColor.setBackground(color);
+            }
         } else if (e.getSource() == axisColor) {
             Color color = JColorChooser.showDialog(this.getContentPane(),
                     "Background Color", settings.getAxisColor());
@@ -847,6 +889,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         getSettings().setMaxColor(maxColor.getBackground());
         getSettings().setMinColor(minColor.getBackground());
         getSettings().setHighlightColor(highlightColor.getBackground());
+        getSettings().setSelectColor(selectColor.getBackground());
         getSettings().setAxisColor(axisColor.getBackground());
         getSettings().setIncreaseBorder(increaseColor.getBackground());
         getSettings().setDecreaseBorder(decreaseColor.getBackground());
@@ -870,6 +913,7 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         getSettings().setValueLimitWarning(valueLimitWarning.isSelected());
         getSettings().setWarningColor(warningColor.getBackground());
+        getSettings().setColorAxis(chckbxColorAxis.isSelected());
 
         if(rdbtnAirboys.isSelected())
         {
@@ -956,6 +1000,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JCheckBox extensionBin;
     private javax.swing.JCheckBox extensionHex;
     private javax.swing.JLabel highlightColor;
+    private javax.swing.JLabel selectColor;
     private javax.swing.JLabel increaseColor;
     private javax.swing.JLabel labelTableClick;
     private javax.swing.JLabel lblClickBehavior;
@@ -973,6 +1018,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JLabel lblDecrease;
     private javax.swing.JLabel lblFont;
     private javax.swing.JLabel lblHighlight;
+    private javax.swing.JLabel lblSelect;
     private javax.swing.JLabel lblIncrease;
     private javax.swing.JLabel lblMax;
     private javax.swing.JLabel lblMin;
@@ -984,6 +1030,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JCheckBox saveDebugTables;
     private javax.swing.JComboBox tableClickCount;
     private javax.swing.JCheckBox valueLimitWarning;
+    private javax.swing.JCheckBox chckbxColorAxis;
     private javax.swing.JLabel warningColor;
     private ButtonGroup clipboardButtonGroup;
     private javax.swing.JRadioButton rdbtnDefault;

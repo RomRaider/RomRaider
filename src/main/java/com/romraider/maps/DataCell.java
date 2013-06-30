@@ -50,13 +50,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private Table table;
 
     private final Color scaleTextColor = new Color(0, 0, 0);
-
-    private final Color highlightColor = getSettings().getHighlightColor();
     private final Color highlightTextColor = new Color(255, 255, 255);
-
-    private final Color selectColor = getSettings().getSelectColor();
     private final Color selectTextColor = new Color(0, 0, 0);
-
     private final Color liveDataTraceTextColor = new Color(229, 20, 0);
 
     private Boolean selected = false;
@@ -157,7 +152,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public Color getCompareColor() {
         if(table instanceof Table1D) {
             Table1D checkTable = (Table1D)table;
-            if(checkTable.isAxis()) {
+            if(checkTable.isAxis() && !getSettings().isColorAxis()) {
                 return getSettings().getAxisColor();
             }
         }
@@ -176,7 +171,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public Color getBinColor() {
         if(table instanceof Table1D) {
             Table1D checkTable = (Table1D)table;
-            if(checkTable.isAxis()) {
+            if(checkTable.isAxis() && !getSettings().isColorAxis()) {
                 return getSettings().getAxisColor();
             }
         }
@@ -220,16 +215,17 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     private Color getCellBackgroundColor() {
+        Settings settings = getSettings();
         if(isStaticValue) {
-            return getSettings().getAxisColor();
+            return settings.getAxisColor();
         }
 
         Color backgroundColor;
         if(highlighted) {
-            backgroundColor = highlightColor;
+            backgroundColor = settings.getHighlightColor();
         } else if(selected) {
-            backgroundColor = selectColor;
-        } else if(!table.comparing) {
+            backgroundColor = settings.getSelectColor();
+        } else if(!table.isComparing()) {
             backgroundColor = getBinColor();
         }else {
             backgroundColor = getCompareColor();
@@ -261,7 +257,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         }
 
         Border border;
-        if(table.comparing) {
+        if(table.isComparing()) {
             if (compareToValue < binValue) {
                 border = createLineBorder(increaseBorderColor, 2);
             } else if (compareToValue > binValue) {
@@ -290,7 +286,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         DecimalFormat formatter = new DecimalFormat(scale.getFormat());
         String displayString = "";
 
-        if (!table.comparing) {
+        if (!table.isComparing()) {
             if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
                 displayString = formatter.format(getRealValue());
             } else {
@@ -327,36 +323,12 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             return staticText;
         }
 
+        // Always display the bin or real value as the tooltip.
         String displayToolTipString = "";
-
-        if (!table.comparing) {
-            if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
-                displayToolTipString = Double.toString(getRealValue());
-            } else {
-                displayToolTipString = Double.toString(getBinValue());
-            }
-
-        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
-            if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
-                displayToolTipString = Double.toString(getRealCompareValue());
-            } else {
-                displayToolTipString = Double.toString(getCompareValue());
-            }
-
-        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
-            if (getCompareValue() == 0.0) {
-                displayToolTipString = PERCENT_FORMAT.format(0.0);
-            } else {
-                if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
-                    displayToolTipString = Double.toString(getRealCompareValue());
-                } else {
-                    displayToolTipString = Double.toString(getCompareValue());
-                }
-            }
-        }
-
-        if(traced) {
-            displayToolTipString = displayToolTipString + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue));
+        if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
+            displayToolTipString = Double.toString(getRealValue());
+        } else {
+            displayToolTipString = Double.toString(getBinValue());
         }
         return displayToolTipString;
     }

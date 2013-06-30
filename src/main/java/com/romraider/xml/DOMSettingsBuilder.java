@@ -176,6 +176,11 @@ public final class DOMSettingsBuilder {
         valueLimitWarning.setAttribute("value", String.valueOf(settings.isValueLimitWarning()));
         options.appendChild(valueLimitWarning);
 
+        // color axis
+        IIOMetadataNode colorAxis = new IIOMetadataNode("coloraxis");
+        colorAxis.setAttribute("value", String.valueOf(settings.isColorAxis()));
+        options.appendChild(colorAxis);
+
         // show table toolbar border
         IIOMetadataNode showTableToolbarBorder = new IIOMetadataNode("showtabletoolbarborder");
         showTableToolbarBorder.setAttribute("value", String.valueOf(settings.isShowTableToolbarBorder()));
@@ -230,6 +235,12 @@ public final class DOMSettingsBuilder {
         highlight.setAttribute("g", String.valueOf(settings.getHighlightColor().getGreen()));
         highlight.setAttribute("b", String.valueOf(settings.getHighlightColor().getBlue()));
         colors.appendChild(highlight);
+        // select
+        IIOMetadataNode select = new IIOMetadataNode("select");
+        select.setAttribute("r", String.valueOf(settings.getSelectColor().getRed()));
+        select.setAttribute("g", String.valueOf(settings.getSelectColor().getGreen()));
+        select.setAttribute("b", String.valueOf(settings.getSelectColor().getBlue()));
+        colors.appendChild(select);
         // increased cell border
         IIOMetadataNode increaseBorder = new IIOMetadataNode("increaseborder");
         increaseBorder.setAttribute("r", String.valueOf(settings.getIncreaseBorder().getRed()));
