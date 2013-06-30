@@ -22,6 +22,7 @@ package com.romraider.util;
 import org.apache.log4j.Logger;
 import org.jdesktop.jdic.filetypes.Action;
 import org.jdesktop.jdic.filetypes.Association;
+import org.jdesktop.jdic.filetypes.AssociationNotRegisteredException;
 import org.jdesktop.jdic.filetypes.AssociationService;
 
 
@@ -66,12 +67,20 @@ public final class FileAssociator {
         AssociationService serv = new AssociationService();
         Association logassoc = serv.getFileExtensionAssociation(extension.toUpperCase());
 
+        if(null == logassoc) {
+            LOGGER.debug("Association(s) do not exist.  Skipping remove...\n\n\n");
+            return true;
+        }
+
         LOGGER.debug("Removing ...\n" + logassoc + "\n\n\n");
 
         try {
             serv.unregisterUserAssociation(logassoc);
+        } catch (AssociationNotRegisteredException anre) {
+            LOGGER.debug("Association(s) do not exist.  Skipping remove...\n\n\n");
         } catch (Exception e) {
             LOGGER.error("Error removing association", e);
+            return false;
         }
         return true;
     }
