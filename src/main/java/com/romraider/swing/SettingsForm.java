@@ -37,6 +37,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -839,27 +840,43 @@ public class SettingsForm extends JFrame implements MouseListener {
             initSettings();
         } else if (e.getSource() == btnAddAssocs) {
             // add file associations for selected file types
+            boolean added = false;
             try {
                 if (extensionHex.isSelected()) {
                     FileAssociator.addAssociation("HEX", new File(".").getCanonicalPath() + separator + PRODUCT_NAME + ".exe", "ECU Image");
+                    added = true;
                 }
 
                 if (extensionBin.isSelected()) {
                     FileAssociator.addAssociation("BIN", new File(".").getCanonicalPath() + separator + PRODUCT_NAME + ".exe", "ECU Image");
+                    added = true;
                 }
             } catch (Exception ex) {
+                added = false;
+            } finally {
+                if(added) {
+                    JOptionPane.showMessageDialog(null, "Association(s) added.", "Add Association Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to add association(s).", "Add Association Failure", JOptionPane.ERROR_MESSAGE);
+                }
             }
 
         } else if (e.getSource() == btnRemoveAssocs) {
             // remove file associations for selected file types
+            boolean removed = false;
             if (extensionHex.isSelected()) {
-                FileAssociator.removeAssociation("HEX");
+                removed = FileAssociator.removeAssociation("HEX");
             }
 
             if (extensionBin.isSelected()) {
-                FileAssociator.removeAssociation("BIN");
+                removed = FileAssociator.removeAssociation("BIN");
             }
 
+            if(removed) {
+                JOptionPane.showMessageDialog(null, "Association removed.", "Remove Association Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Failed to remove association.", "Remove Association Failure", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
