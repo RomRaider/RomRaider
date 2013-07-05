@@ -21,27 +21,48 @@ package com.romraider.util;
 
 import java.io.File;
 
+/**
+ * Shorten a long text file path for use in title bar or limited width display
+ * component.
+ */
 public final class FormatFilename {
     private final static String separator = System.getProperty("file.separator");
-    
+
     private FormatFilename() {
     }
 
+    /**
+     * Shorten a text file path name if > 45 characters.
+     * @param file - the File to shorten the path name for.
+     * @return the shortened name
+     */
     public final static String getShortName(File file) {
-        final String filePath = file.getAbsolutePath();
-        return getShortName(filePath);
+        String filePath = file.getAbsolutePath();
+        if (filePath.length() > 45) {
+            filePath = getShortName(filePath);
+        }
+        return filePath;
     }
-    
+
     public final static String getShortName(String filePath) {
         String regex = separator;
         if (separator.equals("\\")) {
             regex = "\\" + separator;
         }
         final String[] filePathParts = filePath.split(regex);
-        final String logFileName = String.format(
-                        "...%s%s", 
-                        separator, 
-                        filePathParts[filePathParts.length - 1]);
+        String logFileName = filePath;
+        if (filePathParts.length > 3) {
+            logFileName = String.format(
+                            "%s%s%s...%s%s%s%s",
+                            filePathParts[0],
+                            separator,
+                            filePathParts[1].substring(0,
+                                    Math.min(4, filePathParts[1].length())),
+                            separator,
+                            filePathParts[filePathParts.length - 2],
+                            separator,
+                            filePathParts[filePathParts.length - 1]);
+        }
         return logFileName;
     }
 }
