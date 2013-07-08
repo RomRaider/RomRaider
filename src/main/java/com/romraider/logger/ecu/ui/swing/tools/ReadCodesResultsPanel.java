@@ -50,6 +50,7 @@ import javax.swing.table.TableColumn;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.ui.swing.tools.tablemodels.ReadCodesTableModel;
 
 public final class ReadCodesResultsPanel extends JPanel {
     private static final long serialVersionUID = -3180488605471088911L;

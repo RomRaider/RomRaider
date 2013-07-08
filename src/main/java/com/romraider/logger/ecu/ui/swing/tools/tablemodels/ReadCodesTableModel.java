@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.ui.swing.tools;
+package com.romraider.logger.ecu.ui.swing.tools.tablemodels;
 
 import java.util.ArrayList;
 
