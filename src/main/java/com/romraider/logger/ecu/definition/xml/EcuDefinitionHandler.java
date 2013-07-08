@@ -26,6 +26,8 @@ import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,6 +80,11 @@ public final class EcuDefinitionHandler extends DefaultHandler {
     private String inherit;
     private String carString;
     private StringBuilder charBuffer;
+    private File ecuDefsFile;
+
+    public EcuDefinitionHandler(File ecuDefsFile) {
+        this.ecuDefsFile = ecuDefsFile;
+    }
 
     public void startDocument() {
         ecuDefinitionMap = new HashMap<String, EcuDefinition>();
@@ -127,7 +134,9 @@ public final class EcuDefinitionHandler extends DefaultHandler {
                 ) {
                 carString = String.format("%s %s %s %s %s %s",
                         year, market, make, model, submodel, transmission);
-                ecuDefinitionMap.put(ecuId, new EcuDefinitionImpl(ecuId, calId, carString, inherit));
+                ecuDefinitionMap.put(ecuId,
+                        new EcuDefinitionImpl(
+                                ecuId, calId, carString, inherit, ecuDefsFile));
             }
             if (!isNullOrEmpty(ecuId)    && 
                 !isNullOrEmpty(calId)    &&
@@ -224,7 +233,8 @@ public final class EcuDefinitionHandler extends DefaultHandler {
             "flash='%s'," +
             "filesize='%s'," +
             "obsolete='%s'," +
-            "inherit='%s'",
+            "inherit='%s'" +
+            "file='%s'",
             calId,
             address,
             calId,
@@ -239,7 +249,8 @@ public final class EcuDefinitionHandler extends DefaultHandler {
             flashmethod,
             filesize ,
             obsolete,
-            inherit
+            inherit,
+            ecuDefsFile.getName()
         );
     }
 }

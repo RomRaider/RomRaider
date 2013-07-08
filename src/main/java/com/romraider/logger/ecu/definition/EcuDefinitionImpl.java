@@ -21,15 +21,19 @@ package com.romraider.logger.ecu.definition;
 
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
+import java.io.File;
+
 
 public final class EcuDefinitionImpl implements EcuDefinition {
     private final String ecuId;
     private final String calId;
     private final String carString;
     private final String inherits;
+    private final File ecuDefFile;
 
     public EcuDefinitionImpl(
-        String ecuId, String calId, String carString, String inherits) {
+            String ecuId, String calId, String carString,
+            String inherits, File ecuDefFile) {
 
         checkNotNullOrEmpty(ecuId, "ecuId");
         checkNotNullOrEmpty(calId, "calId");
@@ -38,6 +42,7 @@ public final class EcuDefinitionImpl implements EcuDefinition {
         this.calId = calId;
         this.carString = carString;
         this.inherits = inherits;
+        this.ecuDefFile = ecuDefFile;
     }
 
     public String getEcuId() {
@@ -54,5 +59,9 @@ public final class EcuDefinitionImpl implements EcuDefinition {
 
     public String getInherits() {
         return inherits;
+    }
+
+    public File getEcuDefFile() {
+        return ecuDefFile;
     }
 }

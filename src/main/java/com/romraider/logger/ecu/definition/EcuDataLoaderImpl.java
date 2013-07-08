@@ -52,7 +52,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(ecuDefsFile));
             try {
-                EcuDefinitionHandler handler = new EcuDefinitionHandler();
+                EcuDefinitionHandler handler = new EcuDefinitionHandler(ecuDefsFile);
                 getSaxParser().parse(inputStream, handler);
                 ecuDefinitionMap = handler.getEcuDefinitionMap();
             } finally {

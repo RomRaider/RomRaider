@@ -19,6 +19,8 @@
 
 package com.romraider.logger.ecu.definition;
 
+import java.io.File;
+
 public interface EcuDefinition {
 
     String getEcuId();
@@ -28,4 +30,6 @@ public interface EcuDefinition {
     String getCarString();
 
     String getInherits();
+
+    File getEcuDefFile();
 }
