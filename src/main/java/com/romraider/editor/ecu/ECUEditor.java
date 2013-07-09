@@ -174,7 +174,7 @@ public class ECUEditor extends AbstractFrame {
         toolBarPanel.setVisible(true);
 
         this.add(toolBarPanel, BorderLayout.NORTH);
-        revalidate();
+        validate();
     }
 
     public void checkDefinitions() {
