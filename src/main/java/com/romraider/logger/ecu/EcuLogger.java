@@ -115,6 +115,8 @@ import com.romraider.logger.ecu.comms.controller.LoggerController;
 import com.romraider.logger.ecu.comms.controller.LoggerControllerImpl;
 import com.romraider.logger.ecu.comms.globaladjust.GlobalAdjustManager;
 import com.romraider.logger.ecu.comms.globaladjust.GlobalAdjustManagerImpl;
+import com.romraider.logger.ecu.comms.learning.LearningTableValues;
+import com.romraider.logger.ecu.comms.learning.LearningTableValuesImpl;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.readcodes.ReadCodesManager;
@@ -126,6 +128,7 @@ import com.romraider.logger.ecu.definition.EcuDataLoaderImpl;
 import com.romraider.logger.ecu.definition.EcuDefinition;
 import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
+import com.romraider.logger.ecu.definition.EvaluateEcuDefinition;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
@@ -1470,6 +1473,18 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                         this,
                         dataTabParamListTableModel);
         return globalAdjustManager.ecuGlobalAdjustments();
+    }
+
+    public final void readLearningTables() {
+        final EcuDefinition ecuDef = new EvaluateEcuDefinition().getDef(
+                settings.getLoggerEcuDefinitionMap(),
+                ecuInit.getEcuId());
+        final LearningTableValues learningTablesManager = 
+                new LearningTableValuesImpl(
+                        this,
+                        dataTabParamListTableModel,
+                        ecuDef);
+        learningTablesManager.execute();
     }
 
     public void handleExit() {

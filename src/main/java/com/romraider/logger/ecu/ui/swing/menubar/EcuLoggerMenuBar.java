@@ -31,6 +31,8 @@ import static java.awt.event.KeyEvent.VK_C;
 import static java.awt.event.KeyEvent.VK_D;
 import static java.awt.event.KeyEvent.VK_E;
 import static java.awt.event.KeyEvent.VK_F;
+import static java.awt.event.KeyEvent.VK_F5;
+import static java.awt.event.KeyEvent.VK_F6;
 import static java.awt.event.KeyEvent.VK_F7;
 import static java.awt.event.KeyEvent.VK_F8;
 import static java.awt.event.KeyEvent.VK_H;
@@ -44,6 +46,7 @@ import static java.awt.event.KeyEvent.VK_R;
 import static java.awt.event.KeyEvent.VK_S;
 import static java.awt.event.KeyEvent.VK_T;
 import static java.awt.event.KeyEvent.VK_U;
+import static java.awt.event.KeyEvent.VK_V;
 import static java.awt.event.KeyEvent.VK_X;
 import static javax.swing.KeyStroke.getKeyStroke;
 
@@ -63,6 +66,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.DisconnectAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ExitAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.FastPollModeAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.GlobalAdjustmentAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.LearningTableValuesAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileAbsoluteTimestampAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileControllerSwitchAction;
@@ -136,7 +140,9 @@ public class EcuLoggerMenuBar extends JMenuBar {
         toolsMenu.add(new JSeparator());
         toolsMenu.add(new MenuItem("Read Diagnostic Codes", new ReadEcuCodesAction(logger), VK_D, getKeyStroke(VK_F8, 0)));
         toolsMenu.add(new JSeparator());
-        toolsMenu.add(new MenuItem("Global Timing & Idle RPM Adjustment", new GlobalAdjustmentAction(logger), VK_T, getKeyStroke(VK_T, ALT_MASK)));
+        toolsMenu.add(new MenuItem("Global Timing & Idle RPM Adjustment", new GlobalAdjustmentAction(logger), VK_T, getKeyStroke(VK_F5, 0)));
+        toolsMenu.add(new JSeparator());
+        toolsMenu.add(new MenuItem("Learning Table Values", new LearningTableValuesAction(logger), VK_V, getKeyStroke(VK_F6, 0)));
         add(toolsMenu);
 
         // plugins menu items
