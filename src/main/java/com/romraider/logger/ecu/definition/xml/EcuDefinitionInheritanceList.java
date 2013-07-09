@@ -20,7 +20,6 @@
 package com.romraider.logger.ecu.definition.xml;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.xpath.XPath;
@@ -46,8 +45,8 @@ public class EcuDefinitionInheritanceList {
      *  @param document - the DOM document containing the ECU definition and
      *                    its parents.
      *  @param ecuDef - ECU definition to start with.
-     *  @return a List of Node starting with the base listing to the given ECU
-     *  definition. 
+     *  @return a List of Node starting with the given ECU listing back to the
+     *  base definition. 
      */
     public static final List<Node> getInheritanceList(
             Document document,
@@ -68,7 +67,6 @@ public class EcuDefinitionInheritanceList {
             Node baseNode = getBaseRomIdNode(xpath, document, inheritId);
             inheritanceNodes.add(baseNode);
         }
-        Collections.reverse(inheritanceNodes);
         return inheritanceNodes;
     }
 
