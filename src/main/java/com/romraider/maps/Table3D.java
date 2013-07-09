@@ -371,6 +371,11 @@ public class Table3D extends Table {
     public void clearSelection() {
         xAxis.clearSelection();
         yAxis.clearSelection();
+        clearSelectedData();
+    }
+
+    @Override
+    public void clearSelectedData() {
         for (int x = 0; x < this.getSizeX(); x++) {
             for (int y = 0; y < this.getSizeY(); y++) {
                 data[x][y].setSelected(false);

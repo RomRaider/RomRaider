@@ -805,6 +805,10 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void clearSelection() {
+        clearSelectedData();
+    }
+
+    public void clearSelectedData() {
         for (DataCell cell : data) {
             if(cell.isSelected()) {
                 cell.setSelected(false);
