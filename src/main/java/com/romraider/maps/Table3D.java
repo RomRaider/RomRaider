@@ -51,8 +51,9 @@ import com.romraider.xml.RomAttributeParser;
 public class Table3D extends Table {
 
     private static final long serialVersionUID = 3103448753263606599L;
-    private Table1D xAxis = new Table1D(false, true);
-    private Table1D yAxis = new Table1D(false, true);
+    private Table1D xAxis = new Table1D();
+    private Table1D yAxis = new Table1D();
+    @SuppressWarnings("hiding")
     DataCell[][] data = new DataCell[1][1];
     private boolean swapXY = false;
     private boolean flipX = false;
@@ -369,8 +370,8 @@ public class Table3D extends Table {
 
     @Override
     public void clearSelection() {
-        xAxis.clearSelection();
-        yAxis.clearSelection();
+        xAxis.clearSelectedData();
+        yAxis.clearSelectedData();
         clearSelectedData();
     }
 
@@ -600,10 +601,9 @@ public class Table3D extends Table {
 
     @Override
     public void startHighlight(int x, int y) {
-        xAxis.clearSelection();
-        yAxis.clearSelection();
+        xAxis.clearSelectedData();
+        yAxis.clearSelectedData();
         super.startHighlight(x, y);
-        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(this);
     }
 
     @Override

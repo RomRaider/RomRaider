@@ -922,7 +922,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void selectCellAt(int y) {
-        if(y >= 0 && y < data.length) {
+        if(y >= 0 && y < data.length && !data[y].isStaticValue()) {
             clearSelection();
             data[y].setSelected(true);
             highlightY = y;
