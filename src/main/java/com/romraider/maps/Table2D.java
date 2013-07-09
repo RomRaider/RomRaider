@@ -44,7 +44,7 @@ import com.romraider.util.AxisRange;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
-    private Table1D axis = new Table1D(false, true);
+    private Table1D axis = new Table1D();
 
     private CopyTable2DWorker copyTable2DWorker;
     private CopySelection2DWorker copySelection2DWorker;
@@ -153,7 +153,7 @@ public class Table2D extends Table {
 
         if(null == axis.getName() || axis.getName().length() < 1 || "" == axis.getName()) {
             ;// Do not add label.
-        } else if(axis.isStatic() || "0x" == axis.getScale().getUnit()) {
+        } else if("0x" == axis.getScale().getUnit()) {
             // static or no scale exists.
             add(new JLabel(axis.getName(), JLabel.CENTER), BorderLayout.NORTH);
         } else {
@@ -176,13 +176,8 @@ public class Table2D extends Table {
 
     @Override
     public void clearSelection() {
-        axis.clearSelection();
+        axis.clearSelectedData();
         clearSelectedData();
-    }
-
-    @Override
-    public void clearSelectedData() {
-        super.clearSelection();
     }
 
     @Override
@@ -220,10 +215,6 @@ public class Table2D extends Table {
     public void addKeyListener(KeyListener listener) {
         super.addKeyListener(listener);
         axis.addKeyListener(listener);
-    }
-
-    public void selectCellAt(int y, Table1D axisType) {
-        selectCellAt(y);
     }
 
     @Override
@@ -264,9 +255,8 @@ public class Table2D extends Table {
 
     @Override
     public void startHighlight(int x, int y) {
-        axis.clearSelection();
+        axis.clearSelectedData();
         super.startHighlight(x, y);
-        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(this);
     }
 
     @Override

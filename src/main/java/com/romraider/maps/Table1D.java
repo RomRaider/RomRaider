@@ -24,19 +24,13 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditorManager;
 
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
     private Table parent = null;
 
-    private final boolean isStatic;
-    private final boolean isAxis;
-
-    public Table1D(boolean isStatic, boolean isAxis) {
+    public Table1D() {
         super();
-        this.isStatic = isStatic;
-        this.isAxis = isAxis;
     }
 
     public void setAxisParent(Table axisParent) {
@@ -73,7 +67,7 @@ public class Table1D extends Table {
 
         if(null == name || name.length() < 1 || "" == name) {
             ;// Do not add label.
-        } else if(isStatic || "0x" == getScale().getUnit()) {
+        } else if("0x" == getScale().getUnit()) {
             // static or no scale exists.
             add(new JLabel(name, JLabel.CENTER), BorderLayout.NORTH);
         } else {
@@ -159,23 +153,29 @@ public class Table1D extends Table {
     }
 
     @Override
+    public void clearSelection() {
+        // Call to the axis parent.  The axis parent should then call to clear this data.
+        getAxisParent().clearSelection();
+    }
+
+    @Override
     public void startHighlight(int x, int y) {
         Table axisParent = getAxisParent();
         axisParent.clearSelectedData();
 
         if(axisParent instanceof Table3D) {
             Table3D table3D = (Table3D) axisParent;
-            if(this == table3D.getXAxis()) {
+            if(getType() == Settings.TABLE_X_AXIS) {
                 table3D.getYAxis().clearSelectedData();
-            } else {
+            } else if (getType() == Settings.TABLE_Y_AXIS) {
                 table3D.getXAxis().clearSelectedData();
             }
         } else if (axisParent instanceof Table2D) {
             ((Table2D) axisParent).getAxis().clearSelectedData();
         }
 
+
         super.startHighlight(x, y);
-        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(this);
     }
 
     @Override
@@ -194,11 +194,8 @@ public class Table1D extends Table {
     }
 
     public boolean isAxis() {
-        return isAxis;
-    }
-
-    public boolean isStatic() {
-        return isStatic;
+        return getType() == Settings.TABLE_X_AXIS ||
+                getType() == Settings.TABLE_Y_AXIS;
     }
 
     @Override

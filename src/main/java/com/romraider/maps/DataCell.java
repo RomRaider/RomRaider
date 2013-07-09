@@ -73,10 +73,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private final Color decreaseBorderColor = getSettings().getDecreaseBorder();
 
     private String staticText = "";
-    private boolean isStaticValue = false;
+    private boolean staticValue = false;
 
     public DataCell(String staticText) {
-        this.isStaticValue = true;
+        this.staticValue = true;
         this.staticText = staticText;
         this.setHorizontalAlignment(CENTER);
         this.setVerticalAlignment(CENTER);
@@ -199,7 +199,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void drawCell() {
-        if(!isStaticValue && (table == null || !table.isLoaded()) ) {
+        if(!staticValue && (table == null || !table.isLoaded()) ) {
             return;
         }
 
@@ -218,7 +218,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     private Color getCellBackgroundColor() {
         Settings settings = getSettings();
-        if(isStaticValue) {
+        if(staticValue) {
             return settings.getAxisColor();
         }
 
@@ -236,7 +236,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     private Color getCellTextColor() {
-        if(isStaticValue) {
+        if(staticValue) {
             return scaleTextColor;
         }
 
@@ -254,7 +254,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     private Border getCellBorder() {
-        if(isStaticValue) {
+        if(staticValue) {
             return createLineBorder(defaultBorderColor, 1);
         }
 
@@ -281,7 +281,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     private String getCellText() {
-        if(isStaticValue) {
+        if(staticValue) {
             return staticText;
         }
 
@@ -321,7 +321,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     private String getCellToolTip() {
-        if(isStaticValue) {
+        if(staticValue) {
             return staticText;
         }
 
@@ -453,14 +453,15 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void setSelected(Boolean selected) {
-        if(this.selected != selected) {
+        if(!staticValue || this.selected != selected) {
             this.selected = selected;
             drawCell();
+            ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
         }
     }
 
     public void setHighlighted(Boolean highlighted) {
-        if(this.highlighted != highlighted) {
+        if(!staticValue || this.highlighted != highlighted) {
             this.highlighted = highlighted;
             drawCell();
         }
@@ -620,7 +621,15 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         }
 
         DataCell otherCell = (DataCell) other;
+
+        if(this.staticValue != otherCell.staticValue) {
+            return false;
+        }
+
         return binValue == otherCell.binValue;
     }
 
+    public boolean isStaticValue() {
+        return this.staticValue;
+    }
 }

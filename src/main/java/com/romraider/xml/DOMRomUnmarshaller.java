@@ -385,19 +385,19 @@ public final class DOMRomUnmarshaller {
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("1D")) {
-                table = new Table1D(false, false);
+                table = new Table1D();
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("X Axis")
                     || unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("Y Axis")) {
-                table = new Table1D(false, true);
+                table = new Table1D();
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("Static Y Axis")
                     || unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("Static X Axis")) {
-                table = new Table1D(true, true);
+                table = new Table1D();
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("Switch")) {
