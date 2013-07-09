@@ -45,6 +45,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final Logger LOGGER = Logger.getLogger(DataCell.class);
     private final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
     private final Font defaultFont = new Font("Arial", Font.BOLD, 12);
+    int unSelectMask1 = MouseEvent.BUTTON1_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
+    int unSelectMask2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
 
     private Scale scale = new Scale();
     private Table table;
@@ -470,7 +472,13 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        table.highlight(x, y);
+        if(unSelectMask1 == (e.getModifiersEx() & unSelectMask1)) {
+            clearCell();
+        } else if(unSelectMask2 == (e.getModifiersEx() & unSelectMask2)) {
+            clearCell();
+        } else {
+            table.highlight(x, y);
+        }
     }
 
     @Override
@@ -478,7 +486,12 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         if (!e.isControlDown()) {
             table.clearSelection();
         }
-        table.startHighlight(x, y);
+
+        if (e.isControlDown() && e.isAltDown()) {
+            clearCell();
+        } else {
+            table.startHighlight(x, y);
+        }
         requestFocus();
     }
 
@@ -493,6 +506,15 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+
+    private void clearCell() {
+        if(isHighlighted()) {
+            setHighlighted(false);
+        }
+        if(isSelected()) {
+            setSelected(false);
+        }
     }
 
     public void increment(double increment) {

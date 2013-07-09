@@ -177,6 +177,11 @@ public class Table2D extends Table {
     @Override
     public void clearSelection() {
         axis.clearSelection();
+        clearSelectedData();
+    }
+
+    @Override
+    public void clearSelectedData() {
         super.clearSelection();
     }
 

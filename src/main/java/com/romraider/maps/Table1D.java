@@ -160,7 +160,20 @@ public class Table1D extends Table {
 
     @Override
     public void startHighlight(int x, int y) {
-        getAxisParent().clearSelection();
+        Table axisParent = getAxisParent();
+        axisParent.clearSelectedData();
+
+        if(axisParent instanceof Table3D) {
+            Table3D table3D = (Table3D) axisParent;
+            if(this == table3D.getXAxis()) {
+                table3D.getYAxis().clearSelectedData();
+            } else {
+                table3D.getXAxis().clearSelectedData();
+            }
+        } else if (axisParent instanceof Table2D) {
+            ((Table2D) axisParent).getAxis().clearSelectedData();
+        }
+
         super.startHighlight(x, y);
         ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(this);
     }
