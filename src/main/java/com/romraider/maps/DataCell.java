@@ -19,10 +19,8 @@
 
 package com.romraider.maps;
 
-import static java.awt.Color.BLACK;
-import static java.awt.Color.BLUE;
-import static java.awt.Color.RED;
-import static java.lang.Math.abs;
+import static com.romraider.util.ColorScaler.getScaledColor;
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static javax.swing.BorderFactory.createLineBorder;
 
 import java.awt.Color;
@@ -38,95 +36,314 @@ import javax.swing.border.Border;
 
 import org.apache.log4j.Logger;
 
+import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.JEPUtil;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final long serialVersionUID = -2904293227148940937L;
     private static final Logger LOGGER = Logger.getLogger(DataCell.class);
-    private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
-    private final Border defaultBorder = createLineBorder(BLACK, 1);
-    private final Border modifiedBorder = createLineBorder(RED, 3);
+    private final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
     private final Font defaultFont = new Font("Arial", Font.BOLD, 12);
-    private double binValue = 0;
-    private double originalValue = 0;
+    int unSelectMask1 = MouseEvent.BUTTON1_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
+    int unSelectMask2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
+
     private Scale scale = new Scale();
-    private String displayValue = "";
-    private Color scaledColor = new Color(0, 0, 0);
-    private Color highlightColor = new Color(155, 155, 255);
-    private Color increaseBorder = RED;
-    private Color decreaseBorder = BLUE;
+    private Table table;
+
+    private final Color scaleTextColor = new Color(0, 0, 0);
+    private final Color highlightTextColor = new Color(255, 255, 255);
+    private final Color selectTextColor = new Color(0, 0, 0);
+    private final Color liveDataTraceTextColor = new Color(229, 20, 0);
+
     private Boolean selected = false;
     private Boolean highlighted = false;
-    private Table table;
+    private Boolean traced = false;
+
     private int x = 0;
     private int y = 0;
-    private double compareValue = 0;
-    private int compareDisplay = Table.COMPARE_DISPLAY_OFF;
 
-    public DataCell() {
+    private double binValue = 0.0;
+    private double originalValue = 0.0;
+    private double compareToValue = 0.0;
+    private String liveValue = "";
+
+    private final Color defaultBorderColor = new Color(0, 0, 0);
+    private final Color increaseBorderColor = getSettings().getIncreaseBorder();
+    private final Color decreaseBorderColor = getSettings().getDecreaseBorder();
+
+    private String staticText = "";
+    private boolean isStaticValue = false;
+
+    public DataCell(String staticText) {
+        this.isStaticValue = true;
+        this.staticText = staticText;
+        this.setHorizontalAlignment(CENTER);
+        this.setVerticalAlignment(CENTER);
+        this.setFont(defaultFont);
+        this.setOpaque(true);
+        this.setVisible(true);
     }
 
-    public DataCell(Scale scale, Dimension size) {
+    public DataCell(Table table) {
+        this.table = table;
+    }
+
+    public DataCell(Table table, double originalValue, int x, int y, Scale scale, Dimension size) {
+        this.table = table;
+        this.originalValue = originalValue;
+        this.binValue = originalValue;
+        this.x = x;
+        this.y = y;
         this.scale = scale;
         this.setHorizontalAlignment(CENTER);
         this.setVerticalAlignment(CENTER);
         this.setFont(defaultFont);
-        this.setBorder(defaultBorder);
         this.setOpaque(true);
         this.setVisible(true);
         this.addMouseListener(this);
         this.setPreferredSize(size);
     }
 
-    public void updateDisplayValue() {
-        DecimalFormat formatter = new DecimalFormat(scale.getFormat());
+    public double getBinValue() {
+        return binValue;
+    }
 
-        if (getCompareDisplay() == Table.COMPARE_DISPLAY_OFF) {
-            displayValue = getRealValue();
+    public double getRealValue() {
+        return JEPUtil.evaluate(scale.getExpression(), binValue);
+    }
 
-        } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_ABSOLUTE) {
-            displayValue = formatter.format(
-                    calcDisplayValue(binValue, table.getScale().getExpression()) -
-                    calcDisplayValue(compareValue, table.getScale().getExpression()));
+    public void setRealValue(String input) {
+        // create parser
+        try {
+            double result = 0.0;
+            if (!"x".equalsIgnoreCase(input)) {
+                result = JEPUtil.evaluate(scale.getByteExpression(), Double.parseDouble(input));
+                if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
+                    result = (int) Math.round(result);
+                }
 
-        } else if (getCompareDisplay() == Table.COMPARE_DISPLAY_PERCENT) {
-            String expression = table.getScale().getExpression();
-            double thisValue = calcDisplayValue(binValue, expression);
-            double thatValue = calcDisplayValue(compareValue, expression);
-            double difference = thisValue - thatValue;
-            if (difference == 0) {
-                displayValue = PERCENT_FORMAT.format(0.0);
-            } else if (thatValue == 0.0) {
-                displayValue = '\u221e' + "%";
-            } else {
-                double d = difference / abs(thatValue);
-                displayValue = PERCENT_FORMAT.format(d);
+                if(binValue != result) {
+                    this.setBinValue(result);
+                }
+            }
+        } catch (NumberFormatException e) {
+            // Do nothing.  input is null or not a valid number.
+        }
+    }
+
+    public void setStaticValue(String input) {
+        // create parser
+        try {
+            double result = Double.parseDouble(input);
+            binValue = result;
+            originalValue = result;
+        } catch (NumberFormatException e) {
+            // Do nothing.  input is null or not a valid number.
+        }
+    }
+
+    public double getCompareValue() {
+        return binValue - compareToValue;
+    }
+
+    public double getRealCompareValue() {
+        return JEPUtil.evaluate(scale.getExpression(), binValue) - JEPUtil.evaluate(scale.getExpression(), compareToValue);
+    }
+
+    public Color getCompareColor() {
+        if(table instanceof Table1D) {
+            Table1D checkTable = (Table1D)table;
+            if(checkTable.isAxis() && !getSettings().isColorAxis()) {
+                return getSettings().getAxisColor();
             }
         }
-        setText(displayValue);
+
+        double compareScale;
+        if (0.0 == getCompareValue()) {
+            return Settings.UNCHANGED_VALUE_COLOR;
+        }else if(table.getMinCompare() == table.getMaxCompare()) {
+            return getSettings().getMaxColor();
+        } else {
+            compareScale = (getCompareValue() - table.getMinCompare()) / (table.getMaxCompare() - table.getMinCompare());
+        }
+        return getScaledColor(compareScale);
     }
 
-    public double calcDisplayValue(double input, String expression) {
-        return JEPUtil.evaluate(expression, input);
-    }
+    public Color getBinColor() {
+        if(table instanceof Table1D) {
+            Table1D checkTable = (Table1D)table;
+            if(checkTable.isAxis() && !getSettings().isColorAxis()) {
+                return getSettings().getAxisColor();
+            }
+        }
 
-    public void setColor(Color color) {
-        scaledColor = color;
-        if (!selected) {
-            super.setBackground(color);
+        double scaleValue = getBinValue();
+        table.getMaxValue();
+        if (table.getMaxValue() < table.getMaxBin()) {
+            return getSettings().getWarningColor();
+        } else if (table.getMinValue() > table.getMinBin()) {
+            return getSettings().getWarningColor();
+        } else {
+            // limits not set, scale based on table values
+            double colorScale;
+            if (table.getMaxBin() - table.getMinBin() == 0.0) {
+                // if all values are the same, color will be middle value
+                colorScale = .5;
+            } else {
+                colorScale = (scaleValue - table.getMinBin()) / (table.getMaxBin() - table.getMinBin());
+            }
+
+            return getScaledColor(colorScale);
         }
     }
 
-    public void setDisplayValue(String displayValue) {
-        this.displayValue = displayValue;
-        this.setText(displayValue);
+    public void drawCell() {
+        if(!isStaticValue && (table == null || !table.isLoaded()) ) {
+            return;
+        }
+
+        this.invalidate();
+        setFont(getSettings().getTableFont());
+        setText(getCellText());
+        setToolTipText(getCellToolTip());
+        setBackground(getCellBackgroundColor());
+        setForeground(getCellTextColor());
+        setBorder(getCellBorder());
+        this.validate();
+        if(null != table) {
+            table.repaint();
+        }
     }
 
-    public void setBinValue(double binValue) {
-        this.binValue = binValue;
+    private Color getCellBackgroundColor() {
+        Settings settings = getSettings();
+        if(isStaticValue) {
+            return settings.getAxisColor();
+        }
+
+        Color backgroundColor;
+        if(highlighted) {
+            backgroundColor = settings.getHighlightColor();
+        } else if(selected) {
+            backgroundColor = settings.getSelectColor();
+        } else if(!table.isComparing()) {
+            backgroundColor = getBinColor();
+        }else {
+            backgroundColor = getCompareColor();
+        }
+        return backgroundColor;
+    }
+
+    private Color getCellTextColor() {
+        if(isStaticValue) {
+            return scaleTextColor;
+        }
+
+        Color textColor;
+        if(traced) {
+            textColor = liveDataTraceTextColor;
+        } else if (highlighted) {
+            textColor = highlightTextColor;
+        } else if (selected) {
+            textColor = selectTextColor;
+        } else {
+            textColor = scaleTextColor;
+        }
+        return textColor;
+    }
+
+    private Border getCellBorder() {
+        if(isStaticValue) {
+            return createLineBorder(defaultBorderColor, 1);
+        }
+
+        Border border;
+        if(table.isComparing()) {
+            if (compareToValue < binValue) {
+                border = createLineBorder(increaseBorderColor, 2);
+            } else if (compareToValue > binValue) {
+                border = createLineBorder(decreaseBorderColor, 2);
+            } else {
+                border = createLineBorder(defaultBorderColor, 1);
+            }
+        } else {
+            if (originalValue < binValue) {
+                border = createLineBorder(increaseBorderColor, 2);
+            } else if (originalValue > binValue) {
+                border = createLineBorder(decreaseBorderColor, 2);
+            } else {
+                border = createLineBorder(defaultBorderColor, 1);
+            }
+        }
+
+        return border;
+    }
+
+    private String getCellText() {
+        if(isStaticValue) {
+            return staticText;
+        }
+
+        DecimalFormat formatter = new DecimalFormat(scale.getFormat());
+        String displayString = "";
+
+        if (!table.isComparing()) {
+            if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
+                displayString = formatter.format(getRealValue());
+            } else {
+                displayString = formatter.format(getBinValue());
+            }
+
+        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
+            if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
+                displayString = formatter.format(getRealCompareValue());
+            } else {
+                displayString = formatter.format(getCompareValue());
+            }
+
+        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
+            if (getCompareValue() == 0.0) {
+                displayString = PERCENT_FORMAT.format(0.0);
+            } else {
+                if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
+                    displayString = PERCENT_FORMAT.format(getRealCompareValue());
+                } else {
+                    displayString = PERCENT_FORMAT.format(getCompareValue());
+                }
+            }
+        }
+
+        if(traced) {
+            displayString = displayString + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue));
+        }
+        return displayString;
+    }
+
+    private String getCellToolTip() {
+        if(isStaticValue) {
+            return staticText;
+        }
+
+        // Always display the bin or real value as the tooltip.
+        String displayToolTipString = "";
+        if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
+            displayToolTipString = Double.toString(getRealValue());
+        } else {
+            displayToolTipString = Double.toString(getBinValue());
+        }
+        return displayToolTipString;
+    }
+
+    public void setBinValue(double newBinValue) {
+        if(binValue == newBinValue) {
+            return;
+        }
+
+        double checkedValue = newBinValue;
 
         // make sure it's in range
-        if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT) {
+        if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
             if (table.isSignedData()) {
                 int minAllowedValue = 0;
                 int maxAllowedValue = 0;
@@ -144,33 +361,91 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                     maxAllowedValue = Integer.MAX_VALUE;
                     break;
                 }
-                if (binValue < minAllowedValue ) {
-                    this.setBinValue(minAllowedValue);
+                if (checkedValue < minAllowedValue ) {
+                    checkedValue = minAllowedValue;
                 }
-                else if (binValue > maxAllowedValue) {
-                    this.setBinValue(maxAllowedValue);
+                else if (checkedValue > maxAllowedValue) {
+                    checkedValue = maxAllowedValue;
                 }
             }
             else {
-                if (binValue < 0) {
-                    this.setBinValue(0);
+                if (checkedValue < 0) {
+                    checkedValue = 0;
                 }
-                else if (binValue > Math.pow(256, table.getStorageType()) - 1) {
-                    this.setBinValue((int) (Math.pow(256, table.getStorageType()) - 1));
+                else if (checkedValue > Math.pow(256, table.getStorageType()) - 1) {
+                    checkedValue = (int) (Math.pow(256, table.getStorageType()) - 1);
                 }
             }
         }
-        this.updateDisplayValue();
-        table.refreshCompares();
-    }
 
-    public double getBinValue() {
-        return binValue;
+
+        if(binValue == checkedValue) {
+            return;
+        }
+
+
+        // get current real and compare.
+        double currentBin = getBinValue();
+        double currentCompare = getCompareValue();
+
+        // set bin.
+        binValue = checkedValue;
+
+        table.refreshCompares();
+
+        // get new real and compare.
+        double compareValue = getCompareValue();
+
+        // check for compare refresh.
+        if( (currentCompare == table.getMaxCompare() && compareValue < currentCompare) ||
+                (currentCompare == table.getMinCompare() && compareValue > currentCompare)) {
+            // look for a new max or min.
+            table.refreshDataBounds();
+            return;
+        }
+
+        boolean drawTable = false;
+
+        // if new max set max.
+        if(compareValue > table.getMaxCompare()) {
+            table.setMaxCompare(compareValue);
+            drawTable = true;
+        }
+        // if new min set min.
+        if(compareValue < table.getMinCompare()) {
+            table.setMinCompare(compareValue);
+            drawTable = true;
+        }
+
+        // check for bin refresh.
+        if( (currentBin == table.getMaxBin() && checkedValue < currentBin) ||
+                (currentBin == table.getMinBin() && checkedValue > currentBin)){
+            // look for a new max or min.
+            table.refreshDataBounds();
+            return;
+        }
+
+        // if new max set max.
+        if(checkedValue > table.getMaxBin()) {
+            table.setMaxBin(checkedValue);
+            drawTable = true;
+        }
+        // if new min set min.
+        if(checkedValue < table.getMinBin()) {
+            table.setMinBin(checkedValue);
+            drawTable = true;
+        }
+
+        if(drawTable) {
+            table.drawTable();
+        } else {
+            drawCell();
+        }
     }
 
     @Override
     public String toString() {
-        return displayValue;
+        return getCellText();
     }
 
     public Boolean isSelected() {
@@ -178,30 +453,16 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void setSelected(Boolean selected) {
-        this.selected = selected;
-        if (selected) {
-            this.setBackground(getHighlightColor());
-            table.getFrame().getToolBar().setFineValue(abs(table.getScale().getFineIncrement()));
-            table.getFrame().getToolBar().setCoarseValue(abs(table.getScale().getCoarseIncrement()));
-        } else {
-            this.setBackground(scaledColor);
+        if(this.selected != selected) {
+            this.selected = selected;
+            drawCell();
         }
-
-        //TODO Uncomment if needed after further testing
-        //Removed to test with 3d graph
-        //requestFocus();
     }
 
     public void setHighlighted(Boolean highlighted) {
-        if (!table.isStatic()) {
+        if(this.highlighted != highlighted) {
             this.highlighted = highlighted;
-            if (highlighted) {
-                this.setBackground(getHighlightColor());
-            } else {
-                if (!selected) {
-                    this.setBackground(scaledColor);
-                }
-            }
+            drawCell();
         }
     }
 
@@ -211,15 +472,24 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        table.highlight(x, y);
+        if(unSelectMask1 == (e.getModifiersEx() & unSelectMask1)) {
+            clearCell();
+        } else if(unSelectMask2 == (e.getModifiersEx() & unSelectMask2)) {
+            clearCell();
+        } else {
+            table.highlight(x, y);
+        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (!table.isStatic()) {
-            if (!e.isControlDown()) {
-                table.clearSelection();
-            }
+        if (!e.isControlDown()) {
+            table.clearSelection();
+        }
+
+        if (e.isControlDown() && e.isAltDown()) {
+            clearCell();
+        } else {
             table.startHighlight(x, y);
         }
         requestFocus();
@@ -227,9 +497,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (!table.isStatic()) {
-            table.stopHighlight();
-        }
+        table.stopHighlight();
     }
 
     @Override
@@ -240,150 +508,119 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void mouseExited(MouseEvent e) {
     }
 
+    private void clearCell() {
+        if(isHighlighted()) {
+            setHighlighted(false);
+        }
+        if(isSelected()) {
+            setSelected(false);
+        }
+    }
+
     public void increment(double increment) {
-        updateDisplayValue();
+        double oldValue = getRealValue();
 
-        double oldValue = Double.parseDouble(getText());
-
-        if (table.getScale().getCoarseIncrement() < 0) {
-            increment = 0 - increment;
+        if (table.getScale().getCoarseIncrement() < 0.0) {
+            increment = 0.0 - increment;
         }
 
-        setRealValue(String.valueOf((calcDisplayValue(binValue, scale.getExpression()) + increment)));
+        double incResult = JEPUtil.evaluate(scale.getByteExpression(), (oldValue + increment));
+        if (table.getStorageType() == Settings.STORAGE_TYPE_FLOAT) {
+            if(binValue != incResult) {
+                this.setBinValue(incResult);
+            }
+        } else {
+            int roundResult = (int) Math.round(incResult);
+            if(binValue != roundResult) {
+                this.setBinValue(roundResult);
+            }
+        }
 
         // make sure table is incremented if change isn't great enough
         int maxValue = (int) Math.pow(8, table.getStorageType());
 
-        if (table.getStorageType() != Table.STORAGE_TYPE_FLOAT &&
-                oldValue == Double.parseDouble(getText()) &&
-                binValue > 0 &&
+        if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT &&
+                oldValue == getRealValue() &&
+                binValue > 0.0 &&
                 binValue < maxValue) {
             LOGGER.debug(maxValue + " " + binValue);
             increment(increment * 2);
         }
-
-    }
-
-    public void setTable(Table table) {
-        this.table = table;
-    }
-
-    public void setXCoord(int x) {
-        this.x = x;
-    }
-
-    public void setYCoord(int y) {
-        this.y = y;
-    }
-
-    public double getOriginalValue() {
-        return originalValue;
-    }
-
-    public void setOriginalValue(double originalValue) {
-        this.originalValue = originalValue;
-        if (binValue != getOriginalValue()) {
-            this.setBorder(modifiedBorder);
-        } else {
-            this.setBorder(defaultBorder);
-        }
     }
 
     public void undo() {
-        if(this.getBinValue() != originalValue) {
-            this.setBinValue(originalValue);
-        }
+        this.setBinValue(originalValue);
     }
 
     public void setRevertPoint() {
         this.setOriginalValue(binValue);
     }
 
-    public double getValue() {
-        return calcDisplayValue(binValue, table.getScale().getExpression());
+    public void setOriginalValue(double originalValue) {
+        this.originalValue = originalValue;
     }
 
-    public String getRealValue() {
-        return new DecimalFormat(scale.getFormat()).format(getValue());
-    }
-
-    public void setRealValue(String input) {
-        // create parser
-        try {
-            if (!"x".equalsIgnoreCase(input)) {
-                double result = JEPUtil.evaluate(table.getScale().getByteExpression(), Double.parseDouble(input));
-                if (table.getStorageType() == Table.STORAGE_TYPE_FLOAT) {
-                    if(this.getBinValue() != result) {
-                        this.setBinValue(result);
-                    }
-                } else {
-                    int roundResult = (int) Math.round(result);
-                    if(this.getBinValue() != roundResult) {
-                        this.setBinValue(roundResult);
-                    }
-                }
+    public void setCompareValue(DataCell compareCell) {
+        if(Settings.DATA_TYPE_BIN == table.getCompareValueType())
+        {
+            if(this.compareToValue == compareCell.binValue) {
+                return;
             }
-        } catch (NumberFormatException e) {
-            // Do nothing.  input is null or not a valid number.
+
+            this.compareToValue = compareCell.binValue;
+        } else {
+            if(this.compareToValue == compareCell.originalValue) {
+                return;
+            }
+
+            this.compareToValue = compareCell.originalValue;
         }
-    }
 
-    public Color getHighlightColor() {
-        return highlightColor;
-    }
-
-    public void setHighlightColor(Color highlightColor) {
-        this.highlightColor = highlightColor;
-    }
-
-    public Color getIncreaseBorder() {
-        return increaseBorder;
-    }
-
-    public void setIncreaseBorder(Color increaseBorder) {
-        this.increaseBorder = increaseBorder;
-    }
-
-    public Color getDecreaseBorder() {
-        return decreaseBorder;
-    }
-
-    public void setDecreaseBorder(Color decreaseBorder) {
-        this.decreaseBorder = decreaseBorder;
-    }
-
-    public double getCompareValue() {
-        return compareValue;
-    }
-
-    public void setCompareValue(double compareValue) {
-        this.compareValue = compareValue;
-    }
-
-    public int getCompareDisplay() {
-        return compareDisplay;
-    }
-
-    public void setCompareDisplay(int compareDisplay) {
-        this.compareDisplay = compareDisplay;
-    }
-
-    public void refreshValue() {
-        setBinValue(binValue);
+        drawCell();
     }
 
     public void multiply(double factor) {
-        updateDisplayValue();
-        setRealValue(String.valueOf(Double.parseDouble(getText()) * factor));
+        setBinValue(binValue * factor);
     }
 
     public void setLiveDataTrace(boolean trace) {
-        if (trace) {
-            //setBorder(liveDataTraceBorder);
-            setForeground(RED);
-        } else {
-            //setBorder(defaultBorder);
-            setForeground(BLACK);
+        if(traced != trace) {
+            traced = trace;
+            drawCell();
         }
     }
+
+    public void setLiveDataTraceValue(String liveValue) {
+        if(this.liveValue != liveValue) {
+            this.liveValue = liveValue;
+            drawCell();
+        }
+    }
+
+    public double getLiveDataTraceValue() {
+        try {
+            return Double.parseDouble(liveValue);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
+    private Settings getSettings() {
+        return ECUEditorManager.getECUEditor().getSettings();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(other == null) {
+            return false;
+        }
+
+        if(!(other instanceof DataCell)) {
+            return false;
+        }
+
+        DataCell otherCell = (DataCell) other;
+        return binValue == otherCell.binValue;
+    }
+
 }

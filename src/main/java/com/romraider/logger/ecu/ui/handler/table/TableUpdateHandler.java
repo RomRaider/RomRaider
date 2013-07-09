@@ -19,18 +19,20 @@
 
 package com.romraider.logger.ecu.ui.handler.table;
 
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
+import static java.util.Collections.synchronizedMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.romraider.logger.ecu.comms.query.Response;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
-import static com.romraider.util.ParamChecker.isNullOrEmpty;
-import static java.util.Collections.synchronizedMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public final class TableUpdateHandler implements DataUpdateHandler {
     private static final TableUpdateHandler INSTANCE = new TableUpdateHandler();
@@ -39,27 +41,32 @@ public final class TableUpdateHandler implements DataUpdateHandler {
     private TableUpdateHandler() {
     }
 
+    @Override
     public void registerData(LoggerData loggerData) {
     }
 
+    @Override
     public void handleDataUpdate(Response response) {
         for (LoggerData loggerData : response.getData()) {
             List<Table> tables = tableMap.get(loggerData.getId());
             if (tables != null && !tables.isEmpty()) {
                 String formattedValue = loggerData.getSelectedConvertor().format(response.getDataValue(loggerData));
                 for (Table table : tables) {
-                    table.setLiveValue(formattedValue);
+                    table.highlightLiveData(formattedValue);
                 }
             }
         }
     }
 
+    @Override
     public void deregisterData(LoggerData loggerData) {
     }
 
+    @Override
     public void cleanUp() {
     }
 
+    @Override
     public void reset() {
     }
 

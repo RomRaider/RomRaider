@@ -21,9 +21,8 @@ package com.romraider;
 
 import static com.romraider.Version.BUILDNUMBER;
 import static com.romraider.Version.PRODUCT_NAME;
-import static com.romraider.Version.VERSION;
 import static com.romraider.Version.SUPPORT_URL;
-import com.romraider.editor.ecu.ECUEditor;
+import static com.romraider.Version.VERSION;
 import static com.romraider.editor.ecu.ECUEditorManager.getECUEditor;
 import static com.romraider.logger.ecu.EcuLogger.startLogger;
 import static com.romraider.swing.LookAndFeelManager.initLookAndFeel;
@@ -31,18 +30,22 @@ import static com.romraider.util.LogManager.initDebugLogging;
 import static com.romraider.util.RomServer.isRunning;
 import static com.romraider.util.RomServer.sendRomToOpenInstance;
 import static com.romraider.util.RomServer.waitForRom;
-import com.romraider.util.JREChecker;
-import com.romraider.util.SettingsManager;
-import com.romraider.util.SettingsManagerImpl;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
-import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
+
 import java.io.File;
 import java.text.DateFormat;
+
+import org.apache.log4j.Logger;
+
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.util.JREChecker;
+import com.romraider.util.SettingsManager;
+import com.romraider.util.SettingsManagerImpl;
 
 public class ECUExec {
     private static final Logger LOGGER = getLogger(ECUExec.class);
@@ -68,16 +71,16 @@ public class ECUExec {
         // fail until we actually try to use them we'll just warn here
         if (!JREChecker.is32bit() &&
                 !containsLoggerArg(args)) {
-            showMessageDialog(null, 
-                "Incompatible JRE detected.\n" +
-                PRODUCT_NAME +
-                " requires a 32-bit JRE for some operations.\nSome features may be unavailable.", 
-                "JRE Incompatibility Warning", 
-                WARNING_MESSAGE);
+            showMessageDialog(null,
+                    "Incompatible JRE detected.\n" +
+                            PRODUCT_NAME +
+                            " requires a 32-bit JRE for some operations.\nSome features may be unavailable.",
+                            "JRE Incompatibility Warning",
+                            WARNING_MESSAGE);
         }
 
         // check for dodgy threading - dev only
-//        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));
+        //RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));
 
         // set look and feel
         initLookAndFeel();
@@ -120,6 +123,7 @@ public class ECUExec {
 
     private static void openRom(final ECUEditor editor, final String rom) {
         invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     File file = new File(rom);
@@ -133,6 +137,9 @@ public class ECUExec {
 
     private static void openEditor(String[] args) {
         ECUEditor editor = getECUEditor();
+        editor.initializeToolbar();
+        editor.checkDefinitions();
+
         if (args.length > 0) {
             openRom(editor, args[0]);
         }

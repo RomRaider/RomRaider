@@ -151,6 +151,11 @@ public final class DOMSettingsBuilder {
         tableClickCount.setAttribute("value", String.valueOf(settings.getTableClickCount()));
         options.appendChild(tableClickCount);
 
+        // table click behavior
+        IIOMetadataNode tableClickBehavior = new IIOMetadataNode("tableclickbehavior");
+        tableClickBehavior.setAttribute("value", String.valueOf(settings.getTableClickBehavior()));
+        options.appendChild(tableClickBehavior);
+
         // last version used
         IIOMetadataNode version = new IIOMetadataNode("version");
         version.setAttribute("value", versionNumber);
@@ -170,6 +175,26 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode valueLimitWarning = new IIOMetadataNode("valuelimitwarning");
         valueLimitWarning.setAttribute("value", String.valueOf(settings.isValueLimitWarning()));
         options.appendChild(valueLimitWarning);
+
+        // color axis
+        IIOMetadataNode colorAxis = new IIOMetadataNode("coloraxis");
+        colorAxis.setAttribute("value", String.valueOf(settings.isColorAxis()));
+        options.appendChild(colorAxis);
+
+        // show table toolbar border
+        IIOMetadataNode showTableToolbarBorder = new IIOMetadataNode("showtabletoolbarborder");
+        showTableToolbarBorder.setAttribute("value", String.valueOf(settings.isShowTableToolbarBorder()));
+        options.appendChild(showTableToolbarBorder);
+
+        // open top level rom node expanded
+        IIOMetadataNode openRomExpanded = new IIOMetadataNode("openromexpanded");
+        openRomExpanded.setAttribute("value", String.valueOf(settings.isOpenExpanded()));
+        options.appendChild(openRomExpanded);
+
+        // show table toolbar border
+        IIOMetadataNode alwaysOpenTableAtZero = new IIOMetadataNode("alwaysopentableatzero");
+        alwaysOpenTableAtZero.setAttribute("value", String.valueOf(settings.isAlwaysOpenTableAtZero()));
+        options.appendChild(alwaysOpenTableAtZero);
 
         return options;
     }
@@ -210,6 +235,12 @@ public final class DOMSettingsBuilder {
         highlight.setAttribute("g", String.valueOf(settings.getHighlightColor().getGreen()));
         highlight.setAttribute("b", String.valueOf(settings.getHighlightColor().getBlue()));
         colors.appendChild(highlight);
+        // select
+        IIOMetadataNode select = new IIOMetadataNode("select");
+        select.setAttribute("r", String.valueOf(settings.getSelectColor().getRed()));
+        select.setAttribute("g", String.valueOf(settings.getSelectColor().getGreen()));
+        select.setAttribute("b", String.valueOf(settings.getSelectColor().getBlue()));
+        colors.appendChild(select);
         // increased cell border
         IIOMetadataNode increaseBorder = new IIOMetadataNode("increaseborder");
         increaseBorder.setAttribute("r", String.valueOf(settings.getIncreaseBorder().getRed()));

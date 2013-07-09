@@ -29,9 +29,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 
@@ -46,7 +48,7 @@ public class JTableChooser extends JOptionPane implements MouseListener {
     JScrollPane displayScrollPane;
 
     public Table showChooser(Table targetTable) {
-        Vector<Rom> roms = targetTable.getEditor().getImages();
+        Vector<Rom> roms = ECUEditorManager.getECUEditor().getImages();
         int nameLength = 0;
 
         for (int i = 0; i < roms.size(); i++) {
@@ -54,8 +56,8 @@ public class JTableChooser extends JOptionPane implements MouseListener {
             DefaultMutableTreeNode romNode = new DefaultMutableTreeNode(rom.getFileName());
             rootNode.add(romNode);
 
-            for (int j = 0; j < rom.getTables().size(); j++) {
-                Table table = rom.getTables().get(j);
+            for (TableTreeNode tableTreeNode : rom.getTableNodes()) {
+                Table table = tableTreeNode.getTable();
                 // use the length of the table name to set the width of the displayTree
                 // so the entire name can be read without being cut off on the right
                 if (table.getName().length() > nameLength) {
@@ -94,7 +96,7 @@ public class JTableChooser extends JOptionPane implements MouseListener {
 
         Object[] values = {"Compare", "Cancel"};
 
-        if ((showOptionDialog(targetTable.getEditor(), displayPanel, "Select a Map", JOptionPane.DEFAULT_OPTION,
+        if ((showOptionDialog(SwingUtilities.windowForComponent(targetTable), displayPanel, "Select a Map", JOptionPane.DEFAULT_OPTION,
                 JOptionPane.PLAIN_MESSAGE, null, values, values[0]) == 0
                 && (displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode))) {
             return ((TableChooserTreeNode) displayTree.getLastSelectedPathComponent()).getTable();

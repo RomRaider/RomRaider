@@ -19,9 +19,6 @@
 
 package com.romraider.maps;
 
-import static com.romraider.util.ColorScaler.getScaledColor;
-import static javax.swing.BorderFactory.createLineBorder;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -55,43 +52,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.swing.TableFrame;
+import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.swing.TableToolBar;
 import com.romraider.util.JEPUtil;
 import com.romraider.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
-    protected static final String BLANK = "";
-
-    public static final int ENDIAN_LITTLE = 1;
-    public static final int ENDIAN_BIG = 2;
-
-    public static final int TABLE_1D = 1;
-    public static final int TABLE_2D = 2;
-    public static final int TABLE_3D = 3;
-    public static final int TABLE_X_AXIS = 4;
-    public static final int TABLE_Y_AXIS = 5;
-    public static final int TABLE_SWITCH = 6;
-
-    public static final int COMPARE_TYPE_ORIGINAL = 0;
-    public static final int COMPARE_TYPE_BIN = 1;
-
-    public static final int COMPARE_DISPLAY_OFF = 0;
-    public static final int COMPARE_DISPLAY_PERCENT = 1;
-    public static final int COMPARE_DISPLAY_ABSOLUTE = 2;
-
-    public static final int STORAGE_TYPE_FLOAT = 99;
-    public static final boolean STORAGE_DATA_SIGNED = false;
-
-    protected static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
-    protected static final String NEW_LINE = System.getProperty("line.separator");
-    protected static final String TAB = "\t";
 
     protected String name;
     protected int type;
     protected String category = "Other";
-    protected String description = BLANK;
+    protected String description = Settings.BLANK;
     protected Vector<Scale> scales = new Vector<Scale>();
     protected int scaleIndex = 0; // index of selected scale
 
@@ -101,49 +73,59 @@ public abstract class Table extends JPanel implements Serializable {
     protected int endian;
     protected boolean flip;
     protected DataCell[] data = new DataCell[0];
-    protected boolean isStatic = false;
     protected boolean beforeRam = false;
     protected int ramOffset = 0;
     protected BorderLayout borderLayout = new BorderLayout();
     protected GridLayout centerLayout = new GridLayout(1, 1, 0, 0);
     protected JPanel centerPanel = new JPanel(centerLayout);
-    protected TableFrame frame;
     protected int verticalOverhead = 103;
     protected int horizontalOverhead = 2;
-    protected int cellHeight = 18;
-    protected int cellWidth = 42;
+    protected int cellHeight = (int) getSettings().getCellSize().getHeight();
+    protected int cellWidth = (int) getSettings().getCellSize().getWidth();
     protected int minHeight = 100;
     protected int minWidthNoOverlay = 465;
     protected int minWidthOverlay = 700;
-    protected Rom container;
     protected int highlightX;
     protected int highlightY;
     protected boolean highlight = false;
-    protected Table axisParent;
-    protected Color maxColor;
-    protected Color minColor;
-    protected boolean isAxis = false;
     protected int userLevel = 0;
-    protected ECUEditor editor;
     protected boolean locked = false;
 
-    protected int compareType = COMPARE_TYPE_ORIGINAL;
-    protected int compareDisplay = COMPARE_DISPLAY_OFF;
-    protected Table compareTable = null;
     protected List<Table> comparedToTables = new ArrayList<Table>();
 
-    protected String logParam = BLANK;
-    protected String liveValue = BLANK;
+    protected String logParam = Settings.BLANK;
     protected boolean overlayLog = false;
 
     protected CopyTableWorker copyTableWorker;
     protected CopySelectionWorker copySelectionWorker;
+    protected RefreshTableCompareWorker refreshTableCompareWorker;
+    protected RefreshDataBoundsWorker refreshDataBoundsWorker;
 
-    public Table(ECUEditor editor) {
-        this.editor = editor;
+    protected boolean loaded = false;
+
+    protected double maxCompare = 0.0;
+    protected double minCompare = 0.0;
+
+    protected double maxBin = 0.0;
+    protected double minBin = 0.0;
+
+    private boolean comparing = false;
+
+    protected int compareDisplay = Settings.COMPARE_DISPLAY_ABSOLUTE;
+    protected int compareValueType = Settings.DATA_TYPE_BIN;
+
+    public int displayValueType = Settings.DATA_TYPE_REAL;
+
+    private final Table compareTable = null;
+
+    public Table() {
+        scales.clear();
+        scales.add(new Scale());
+
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
         centerPanel.setVisible(true);
+        comparedToTables.clear();
 
         // key binding actions
         Action rightAction = new AbstractAction() {
@@ -183,7 +165,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.getToolBar().incrementCoarse();
+                getToolbar().incrementCoarse();
             }
         };
         Action decCoarseAction = new AbstractAction() {
@@ -191,7 +173,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.getToolBar().decrementCoarse();
+                getToolbar().decrementCoarse();
             }
         };
         Action incFineAction = new AbstractAction() {
@@ -199,7 +181,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.getToolBar().incrementFine();
+                getToolbar().incrementFine();
             }
         };
         Action decFineAction = new AbstractAction() {
@@ -207,7 +189,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.getToolBar().decrementFine();
+                getToolbar().decrementFine();
             }
         };
         Action num0Action = new AbstractAction() {
@@ -215,7 +197,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('0');
+                getToolbar().focusSetValue('0');
             }
         };
         Action num1Action = new AbstractAction() {
@@ -223,7 +205,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('1');
+                getToolbar().focusSetValue('1');
             }
         };
         Action num2Action = new AbstractAction() {
@@ -231,7 +213,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('2');
+                getToolbar().focusSetValue('2');
             }
         };
         Action num3Action = new AbstractAction() {
@@ -239,7 +221,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('3');
+                getToolbar().focusSetValue('3');
             }
         };
         Action num4Action = new AbstractAction() {
@@ -247,7 +229,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('4');
+                getToolbar().focusSetValue('4');
             }
         };
         Action num5Action = new AbstractAction() {
@@ -255,7 +237,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('5');
+                getToolbar().focusSetValue('5');
             }
         };
         Action num6Action = new AbstractAction() {
@@ -263,7 +245,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('6');
+                getToolbar().focusSetValue('6');
             }
         };
         Action num7Action = new AbstractAction() {
@@ -271,7 +253,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('7');
+                getToolbar().focusSetValue('7');
             }
         };
         Action num8Action = new AbstractAction() {
@@ -279,7 +261,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('8');
+                getToolbar().focusSetValue('8');
             }
         };
         Action num9Action = new AbstractAction() {
@@ -287,7 +269,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('9');
+                getToolbar().focusSetValue('9');
             }
         };
         Action numPointAction = new AbstractAction() {
@@ -295,7 +277,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('.');
+                getToolbar().focusSetValue('.');
             }
         };
         Action copyAction = new AbstractAction() {
@@ -319,7 +301,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().multiply();
+                getToolbar().multiply();
             }
         };
         Action numNegAction = new AbstractAction() {
@@ -327,7 +309,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                getFrame().getToolBar().focusSetValue('-');
+                getToolbar().focusSetValue('-');
             }
         };
 
@@ -432,58 +414,51 @@ public abstract class Table extends JPanel implements Serializable {
         this.data = data;
     }
 
-    public void populateTable(byte[] input) throws ArrayIndexOutOfBoundsException {
-        if (scales.isEmpty()) {
-            scales.add(new Scale());
-        }
-
+    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException {
         // temporarily remove lock
         boolean tempLock = locked;
         locked = false;
 
-        if (!isStatic) {
-            if (!beforeRam) {
-                ramOffset = container.getRomID().getRamOffset();
-            }
+        if (!beforeRam) {
+            this.ramOffset = ramOffset;
+        }
 
-            for (int i = 0; i < data.length; i++) {
-                if (data[i] == null) {
-                    data[i] = new DataCell(scales.get(scaleIndex), getEditor().getSettings().getCellSize());
-                    data[i].setTable(this);
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] == null) {
+                double dataValue = 0.0;
 
-                    // populate data cells
-                    if (storageType == STORAGE_TYPE_FLOAT) { //float storage type
-                        byte[] byteValue = new byte[4];
-                        byteValue[0] = input[storageAddress + i * 4 - ramOffset];
-                        byteValue[1] = input[storageAddress + i * 4 - ramOffset + 1];
-                        byteValue[2] = input[storageAddress + i * 4 - ramOffset + 2];
-                        byteValue[3] = input[storageAddress + i * 4 - ramOffset + 3];
-                        data[i].setBinValue(RomAttributeParser.byteToFloat(byteValue, endian));
+                // populate data cells
+                if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
+                    byte[] byteValue = new byte[4];
+                    byteValue[0] = input[storageAddress + i * 4 - ramOffset];
+                    byteValue[1] = input[storageAddress + i * 4 - ramOffset + 1];
+                    byteValue[2] = input[storageAddress + i * 4 - ramOffset + 2];
+                    byteValue[3] = input[storageAddress + i * 4 - ramOffset + 3];
+                    dataValue = RomAttributeParser.byteToFloat(byteValue, endian);
 
-                    } else { // integer storage type
-                        data[i].setBinValue(
-                                RomAttributeParser.parseByteValue(input,
-                                        endian,
-                                        storageAddress + i * storageType - ramOffset,
-                                        storageType,
-                                        signed));
-                    }
+                } else { // integer storage type
+                    dataValue = RomAttributeParser.parseByteValue(input,
+                            endian,
+                            storageAddress + i * storageType - ramOffset,
+                            storageType,
+                            signed);
+                }
 
-                    data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
-                    centerPanel.add(data[i]);
-                    data[i].setYCoord(i);
-                    data[i].setOriginalValue(data[i].getBinValue());
+                data[i] = new DataCell(this, dataValue, 0, i, scales.get(scaleIndex), getSettings().getCellSize());
+                data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
+                data[i].setBinValue(dataValue);
+                centerPanel.add(data[i]);
 
-                    // show locked cell
-                    if (tempLock) {
-                        data[i].setForeground(Color.GRAY);
-                    }
+                // show locked cell
+                if (tempLock) {
+                    data[i].setForeground(Color.GRAY);
                 }
             }
         }
 
         // reset locked status
         locked = tempLock;
+        loaded = true;
     }
 
     public int getType() {
@@ -551,6 +526,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
         scales.add(scale);
+        validateScaling();
     }
 
     public int getStorageAddress() {
@@ -631,136 +607,143 @@ public abstract class Table extends JPanel implements Serializable {
         return name;
     }
 
-    public boolean isStatic() {
-        return isStatic;
-    }
-
-    public void setIsStatic(boolean isStatic) {
-        this.isStatic = isStatic;
-    }
-
-    public void addStaticDataCell(DataCell input) {
-        if (isStatic) {
-            for (int i = 0; i < data.length; i++) {
-                if (data[i] == null) {
-                    data[i] = input;
-                    break;
-                }
-            }
-        }
-    }
-
-    public void colorize() {
-        if (compareDisplay == COMPARE_DISPLAY_OFF) {
-            if (!isStatic && !isAxis) {
-                double high = Double.MIN_VALUE;
-                double low = Double.MAX_VALUE;
-
-                if (getScale().getMax() != 0 || getScale().getMin() != 0) {
-                    // set min and max values if they are set in scale
-                    high = getScale().getMax();
-                    low = getScale().getMin();
-                } else {
-                    for (int i = 0; i < getDataSize(); i++) {
-                        double value = data[i].getValue();
-                        if (value > high) {
-                            high = value;
-                        }
-                        if (value < low) {
-                            low = value;
-                        }
-                    }
-                }
-
-                for (int i = 0; i < getDataSize(); i++) {
-                    double value = data[i].getValue();
-                    if (value > high || value < low) {
-                        // value exceeds limit
-                        data[i].setColor(getEditor().getSettings().getWarningColor());
-                    } else {
-                        // limits not set, scale based on table values
-                        double scale;
-                        if (high - low == 0) {
-                            // if all values are the same, color will be middle value
-                            scale = .5;
-                        } else {
-                            scale = (value - low) / (high - low);
-                        }
-
-                        data[i].setColor(getScaledColor(scale, getEditor().getSettings()));
-                    }
-                }
-            } else { // is static/axis
-                for (int i = 0; i < getDataSize(); i++) {
-                    data[i].setColor(getEditor().getSettings().getAxisColor());
-                    data[i].setOpaque(true);
-                    data[i].setBorder(createLineBorder(Color.BLACK, 1));
-                    data[i].setHorizontalAlignment(DataCell.CENTER);
-                }
+    @Override
+    public boolean equals(Object other) {
+        try {
+            if(null == other) {
+                return false;
             }
 
-        } else { // comparing is on
-            if (!isStatic) {
-                double high = Double.MIN_VALUE;
-
-                // determine ratios
-                for (int i = 0; i < getDataSize(); i++) {
-                    if (Math.abs(data[i].getBinValue() - data[i].getCompareValue()) > high) {
-                        high = Math.abs(data[i].getBinValue() - data[i].getCompareValue());
-                    }
-                }
-
-                // colorize
-                for (int i = 0; i < getDataSize(); i++) {
-                    double cellDifference = Math.abs(data[i].getBinValue() - data[i].getCompareValue());
-                    double scale;
-                    if (high == 0) {
-                        scale = 0;
-                    } else {
-                        scale = cellDifference / high;
-                    }
-
-                    if (scale == 0) {
-                        data[i].setColor(UNCHANGED_VALUE_COLOR);
-                    } else {
-                        data[i].setColor(getScaledColor(scale, getEditor().getSettings()));
-                    }
-
-                    // set border
-                    if (data[i].getBinValue() > data[i].getCompareValue()) {
-                        data[i].setBorder(createLineBorder(getEditor().getSettings().getIncreaseBorder()));
-                    } else if (data[i].getBinValue() < data[i].getCompareValue()) {
-                        data[i].setBorder(createLineBorder(getEditor().getSettings().getDecreaseBorder()));
-                    } else {
-                        data[i].setBorder(createLineBorder(Color.BLACK, 1));
-                    }
-                }
+            if(other == this) {
+                return true;
             }
-        }
 
-        // colorize border
-        for (int i = 0; i < getDataSize(); i++) {
-            double checkValue;
-            if(compareDisplay == COMPARE_DISPLAY_OFF) {
-                checkValue = data[i].getOriginalValue();
+            if(!(other instanceof Table)) {
+                return false;
+            }
+
+            Table otherTable = (Table)other;
+
+            if( (null == this.getName() && null == otherTable.getName())
+                    || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
+                ;// Skip name compare if name is null or empty.
             } else {
-                checkValue = data[i].getCompareValue();
+                if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+                    return false;
+                }
             }
 
-            if (checkValue > data[i].getBinValue()) {
-                data[i].setBorder(createLineBorder(getEditor().getSettings().getIncreaseBorder()));
-            } else if (checkValue < data[i].getBinValue()) {
-                data[i].setBorder(createLineBorder(getEditor().getSettings().getDecreaseBorder()));
-            } else {
-                data[i].setBorder(createLineBorder(Color.BLACK, 1));
+            if(this.data.length != otherTable.data.length)
+            {
+                return false;
             }
+
+            if(this.data.equals(otherTable.data))
+            {
+                return true;
+            }
+
+            // Compare Bin Values
+            for(int i=0 ; i < this.data.length ; i++) {
+                if(! this.data[i].equals(otherTable.data[i])) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch(Exception ex) {
+            // TODO: Log Exception.
+            return false;
         }
     }
 
-    public void setFrame(TableFrame frame) {
-        this.frame = frame;
-        //frame.setSize(getFrameSize());
-        frame.pack();
+    public void refreshDataBounds() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        }
+
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        refreshDataBoundsWorker = new RefreshDataBoundsWorker(this);
+        refreshDataBoundsWorker.execute();
+    }
+
+    public double getMaxValue() {
+        double maxVal = getScale().getMax();
+        if(0.0 == maxVal) {
+            maxVal = Double.MAX_VALUE;
+        }
+        return maxVal;
+    }
+
+    public double getMinValue() {
+        double minVal = getScale().getMin();
+        if(0.0 == minVal) {
+            minVal = -Double.MAX_VALUE;
+        }
+        return minVal;
+    }
+
+    public double getMaxBin() {
+        return this.maxBin;
+    }
+
+    public void setMaxBin(double maxBin) {
+        if(this.maxBin == maxBin)
+        {
+            return;
+        }
+
+        this.maxBin = maxBin;
+    }
+
+    public double getMinBin() {
+        return this.minBin;
+    }
+
+    public void setMinBin(double minBin) {
+        if(this.minBin == minBin)
+        {
+            return;
+        }
+
+        this.minBin = minBin;
+    }
+
+    public double getMaxCompare() {
+        return this.maxCompare;
+    }
+
+    public void setMaxCompare(double maxCompare) {
+        if(this.maxCompare == maxCompare)
+        {
+            return;
+        }
+
+        this.maxCompare = maxCompare;
+    }
+
+    public double getMinCompare() {
+        return this.minCompare;
+    }
+
+    public void setMinCompare(double minCompare) {
+        if(this.minCompare == minCompare)
+        {
+            return;
+        }
+
+        this.minCompare = minCompare;
+    }
+
+    public void drawTable() {
+        for(DataCell cell : data) {
+            if(null != cell) {
+                cell.drawCell();
+            }
+        }
     }
 
     public Dimension getFrameSize() {
@@ -776,19 +759,14 @@ public abstract class Table extends JPanel implements Serializable {
         return new Dimension(width, height);
     }
 
-    public TableFrame getFrame() {
-        return frame;
-    }
-
     public void increment(double increment) {
-        if (!isStatic && !locked && !(userLevel > getEditor().getSettings().getUserLevel())) {
+        if (!locked && !(userLevel > getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.increment(increment);
                 }
             }
-            colorize();
-        } else if (userLevel > getEditor().getSettings().getUserLevel()) {
+        } else if (userLevel > getSettings().getUserLevel()) {
             JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
                     userLevel + " or greater. Click View->User Level to change your userlevel.",
                     "Table cannot be modified",
@@ -797,48 +775,44 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void multiply(double factor) {
-        if (!isStatic && !locked && !(userLevel > getEditor().getSettings().getUserLevel())) {
+        if (!locked && !(userLevel > getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.multiply(factor);
                 }
             }
-        } else if (userLevel > getEditor().getSettings().getUserLevel()) {
+        } else if (userLevel > getSettings().getUserLevel()) {
             JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
                     userLevel + " or greater. Click View->User Level to change your userlevel.",
                     "Table cannot be modified",
                     JOptionPane.INFORMATION_MESSAGE);
         }
-        colorize();
     }
 
     public void setRealValue(String realValue) {
-        if (!isStatic && !locked && !(userLevel > getEditor().getSettings().getUserLevel())) {
-            for (DataCell cell : data) {
+        if (!!locked && !(userLevel > getSettings().getUserLevel())) {
+            for(DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.setRealValue(realValue);
                 }
             }
-        } else if (userLevel > getEditor().getSettings().getUserLevel()) {
+        } else if (userLevel > getSettings().getUserLevel()) {
             JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
                     userLevel + " or greater. Click View->User Level to change your userlevel.",
                     "Table cannot be modified",
                     JOptionPane.INFORMATION_MESSAGE);
         }
-        colorize();
-    }
-
-    public Rom getRom() {
-        return container;
-    }
-
-    public void setRom(Rom container) {
-        this.container = container;
     }
 
     public void clearSelection() {
+        clearSelectedData();
+    }
+
+    public void clearSelectedData() {
         for (DataCell cell : data) {
-            cell.setSelected(false);
+            if(cell.isSelected()) {
+                cell.setSelected(false);
+            }
         }
     }
 
@@ -866,8 +840,10 @@ public abstract class Table extends JPanel implements Serializable {
         // loop through, selected and un-highlight
         for (DataCell cell : data) {
             if (cell.isHighlighted()) {
-                cell.setSelected(true);
                 cell.setHighlighted(false);
+                if(!cell.isSelected()) {
+                    cell.setSelected(true);
+                }
             }
         }
     }
@@ -880,64 +856,35 @@ public abstract class Table extends JPanel implements Serializable {
 
     public abstract void cursorRight();
 
-    public Table getAxisParent() {
-        return axisParent;
-    }
-
-    public void setAxisParent(Table axisParent) {
-        this.axisParent = axisParent;
-    }
-
     public void setRevertPoint() {
-        if (!isStatic) {
-            for (DataCell cell : data) {
-                cell.setOriginalValue(cell.getBinValue());
-            }
+        for (DataCell cell : data) {
+            cell.setRevertPoint();
         }
-        colorize();
     }
 
     public void undoAll() {
         clearLiveDataTrace();
-        if (!isStatic) {
-            for (DataCell cell : data) {
-                if(cell.getBinValue() != cell.getOriginalValue()) {
-                    cell.setBinValue(cell.getOriginalValue());
-                }
-            }
+        for (DataCell cell : data) {
+            cell.undo();
         }
-        colorize();
     }
 
     public void undoSelected() {
         clearLiveDataTrace();
-        if (!isStatic) {
-            for (DataCell cell : data) {
-                // reset current value to original value
-                if (cell.isSelected()) {
-                    if(cell.getBinValue() != cell.getOriginalValue()) {
-                        cell.setBinValue(cell.getOriginalValue());
-                    }
-                }
+        for (DataCell cell : data) {
+            // reset current value to original value
+            if (cell.isSelected()) {
+                cell.undo();
             }
         }
-        colorize();
     }
 
     public byte[] saveFile(byte[] binData) {
-        if (!isStatic  // save if table is not static
-                &&     // and user level is great enough
-                userLevel <= getEditor().getSettings().getUserLevel()
-                &&     // and table is not in debug mode, unless saveDebugTables is true
-                (userLevel < 5
-                        ||
-                        getEditor().getSettings().isSaveDebugTables())) {
-
+        if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables()) ) {
             for (int i = 0; i < data.length; i++) {
-
                 // determine output byte values
                 byte[] output;
-                if (storageType != STORAGE_TYPE_FLOAT) {
+                if (storageType != Settings.STORAGE_TYPE_FLOAT) {
                     // convert byte values
                     output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
                     for (int z = 0; z < storageType; z++) { // insert into file
@@ -976,12 +923,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void selectCellAt(int y) {
         if(y >= 0 && y < data.length) {
-            if (type == TABLE_X_AXIS || type == TABLE_Y_AXIS) {
-                axisParent.clearSelection();
-            } else {
-                clearSelection();
-            }
-
+            clearSelection();
             data[y].setSelected(true);
             highlightY = y;
         }
@@ -989,22 +931,23 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void copySelection() {
         Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
-        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         copySelectionWorker = new CopySelectionWorker(this);
         copySelectionWorker.execute();
     }
 
     public StringBuffer getTableAsString() {
-        //make a string of the selection
-        StringBuffer output = new StringBuffer(BLANK);
+        StringBuffer output = new StringBuffer(Settings.BLANK);
         for (int i = 0; i < data.length; i++) {
-            output.append(data[i].getText());
+            output.append(data[i].getRealValue());
             if (i < data.length - 1) {
-                output.append(TAB);
+                output.append(Settings.TAB);
             }
         }
         return output;
@@ -1015,9 +958,9 @@ public abstract class Table extends JPanel implements Serializable {
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
-        getEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        copyTableWorker = new CopyTableWorker(getEditor().getSettings(), this);
+        copyTableWorker = new CopyTableWorker(this);
         copyTableWorker.execute();
     }
 
@@ -1036,7 +979,9 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void paste() {
-        StringTokenizer st = new StringTokenizer(BLANK);
+        // TODO: This sounds like desearialize.
+
+        StringTokenizer st = new StringTokenizer(Settings.BLANK);
         try {
             String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);
@@ -1068,53 +1013,10 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         }
-        colorize();
     }
-
-    public void applyColorSettings() {
-        if (this.getType() != TABLE_SWITCH) {
-            // apply settings to cells
-            for (int i = 0; i < getDataSize(); i++) {
-                this.setMaxColor(editor.getSettings().getMaxColor());
-                this.setMinColor(editor.getSettings().getMinColor());
-                data[i].setHighlightColor(editor.getSettings().getHighlightColor());
-                data[i].setIncreaseBorder(editor.getSettings().getIncreaseBorder());
-                data[i].setDecreaseBorder(editor.getSettings().getDecreaseBorder());
-                data[i].setFont(editor.getSettings().getTableFont());
-                data[i].repaint();
-            }
-            cellHeight = (int) editor.getSettings().getCellSize().getHeight();
-            cellWidth = (int) editor.getSettings().getCellSize().getWidth();
-            colorize();
-            validateScaling();
-        }
-    }
-
-    public void resize() {
-        //frame.setSize(getFrameSize());
-        frame.pack();
-    }
-
-    public Color getMaxColor() {
-        return maxColor;
-    }
-
-    public void setMaxColor(Color maxColor) {
-        this.maxColor = maxColor;
-    }
-
-    public Color getMinColor() {
-        return minColor;
-    }
-
-    public void setMinColor(Color minColor) {
-        this.minColor = minColor;
-    }
-
-    public abstract void setAxisColor(Color color);
 
     public void validateScaling() {
-        if (type != Table.TABLE_SWITCH && !isStatic) {
+        if (type != Settings.TABLE_SWITCH) {
 
             // make sure a scale is present
             if (scales.isEmpty()) {
@@ -1142,55 +1044,66 @@ public abstract class Table extends JPanel implements Serializable {
                         new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                getEditor().getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
+                                getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
                             }
                         }
                         );
 
-                JOptionPane.showMessageDialog(editor, panel,
+                JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(this), panel,
                         "Warning", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    public boolean fillCompareValues() {
-        if(null == compareTable) {
-            return false;
+    public void populateCompareValues(Table otherTable) {
+        loaded = false;
+        if(null == otherTable) {
+            loaded = true;
+            return;
         }
 
-        DataCell[] compareData = compareTable.getData();
+        DataCell[] compareData = otherTable.getData();
         if(data.length != compareData.length) {
-            return false;
+            loaded = true;
+            return;
         }
 
         clearLiveDataTrace();
 
         int i = 0;
         for(DataCell cell : data) {
-            if(compareType == COMPARE_TYPE_BIN) {
-                cell.setCompareValue(compareData[i].getBinValue());
-            } else {
-                cell.setCompareValue(compareData[i].getOriginalValue());
-            }
+            cell.setCompareValue(compareData[i]);
             i++;
         }
-        return true;
+        loaded = true;
+        refreshDataBounds();
     }
 
     public void setCompareDisplay(int compareDisplay) {
         this.compareDisplay = compareDisplay;
+        drawTable();
     }
 
     public int getCompareDisplay() {
         return this.compareDisplay;
     }
 
-    public void refreshCellDisplay() {
-        for(DataCell cell : data) {
-            cell.setCompareDisplay(compareDisplay);
-            cell.updateDisplayValue();
-        }
-        colorize();
+    public void setCompareValueType(int compareValueType) {
+        this.compareValueType = compareValueType;
+        drawTable();
+    }
+
+    public int getCompareValueType() {
+        return this.compareValueType;
+    }
+
+    public void setDisplayValueType(int displayValueType) {
+        this.displayValueType = displayValueType;
+        drawTable();
+    }
+
+    public int getDisplayValueType() {
+        return this.displayValueType;
     }
 
     public int getUserLevel() {
@@ -1211,32 +1124,40 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void setScaleIndex(int scaleIndex) {
+        // TODO: what is the scale max and min?
         this.scaleIndex = scaleIndex;
-        refreshValues();
+        // recalc max values.
+        if(maxBin < getScale().getMax()) {
+            maxBin = getScale().getMax();
+        }
+
+        if(minBin < getScale().getMin()) {
+            minBin = getScale().getMin();
+        }
     }
 
     public void setScaleByName(String scaleName) {
         for (int i = 0; i < scales.size(); i++) {
             if (scales.get(i).getName().equalsIgnoreCase(scaleName)) {
                 setScaleIndex(i);
+                break;
             }
         }
     }
 
-    public void refreshValues() {
-        if (!isStatic) {
-            for (int i = 0; i < getDataSize(); i++) {
-                data[i].refreshValue();
-            }
-        }
+    public void setSettings(Settings settings)
+    {
+        ECUEditorManager.getECUEditor().setSettings(settings);
     }
 
-    public void setEditor(ECUEditor editor) {
-        this.editor = editor;
+    public Settings getSettings()
+    {
+        return ECUEditorManager.getECUEditor().getSettings();
     }
 
-    public ECUEditor getEditor() {
-        return this.editor;
+    public TableToolBar getToolbar()
+    {
+        return ECUEditorManager.getECUEditor().getTableToolBar();
     }
 
     public boolean isLocked() {
@@ -1245,6 +1166,10 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public boolean isLoaded() {
+        return this.loaded;
     }
 
     public void setOverlayLog(boolean overlayLog) {
@@ -1259,101 +1184,65 @@ public abstract class Table extends JPanel implements Serializable {
         return this.overlayLog;
     }
 
-    public void setLiveValue(String liveValue) {
-        this.liveValue = liveValue;
-    }
-
-    public double getLiveValue() {
-        try {
-            return Double.parseDouble(liveValue);
-        } catch (NumberFormatException e) {
-            return 0.0;
-        }
-    }
-
     public abstract boolean isLiveDataSupported();
 
     public abstract boolean isButtonSelected();
 
-    protected void highlightLiveData() {
+    public void highlightLiveData(String liveValue) {
     }
 
     public void clearLiveDataTrace() {
-        liveValue = BLANK;
     }
 
-    public double getMin() {
-        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
-            double low = Double.MAX_VALUE;
-            for (int i = 0; i < getDataSize(); i++) {
-                double value = data[i].getValue();
-                if (value < low) {
-                    low = value;
-                }
-            }
-            return low;
-        } else {
-            return getScale().getMin();
+    public void addComparedToTable(Table table) {
+        if(!this.comparedToTables.contains(table)) {
+            this.comparedToTables.add(table);
         }
     }
 
-    public double getMax() {
-        if (getScale().getMin() == 0 && getScale().getMax() == 0) {
-            double high = Double.MIN_VALUE;
-            for (int i = 0; i < getDataSize(); i++) {
-                double value = data[i].getValue();
-                if (value > high) {
-                    high = value;
-                }
-            }
-            return high;
-        } else {
-            return getScale().getMax();
+    public void removeComparedToTable(Table table) {
+        if(this.comparedToTables.contains(table)) {
+            this.comparedToTables.remove(table);
         }
-    }
-
-    public boolean getIsStatic() {
-        return this.isStatic;
-    }
-
-    public boolean getIsAxis() {
-        return this.isAxis;
-    }
-
-    public int getCompareType() {
-        return this.compareType;
-    }
-
-    public void setCompareType(int compareType) {
-        this.compareType = compareType;
-    }
-
-    public void setCompareTable(Table compareTable) {
-        this.compareTable = compareTable;
     }
 
     public List<Table> getComparedToTables() {
         return this.comparedToTables;
     }
 
-    public void addComparedToTable(Table table) {
-        if(!table.equals(this) && !this.getComparedToTables().contains(table)) {
-            comparedToTables.add(table);
+    public Table getCompareTable() {
+        return compareTable;
+    }
+
+    public void removeFromCompareTo() {
+        if(getCompareTable() != null) {
+            getCompareTable().getComparedToTables().remove(this);
         }
     }
 
     public void refreshCompares() {
-        if(null == comparedToTables || comparedToTables.size() < 1) {
+        if(null == getComparedToTables() || getComparedToTables().size() < 1) {
             return;
         }
 
-        for(Table table : comparedToTables) {
-            if(null != table) {
-                if(table.fillCompareValues()) {
-                    table.refreshCellDisplay();
-                }
-            }
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
+
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         }
+
+        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        refreshTableCompareWorker = new RefreshTableCompareWorker(this);
+        refreshTableCompareWorker.execute();
+    }
+
+    public boolean isComparing() {
+        return this.comparing;
+    }
+
+    public void setComparing(boolean comparing) {
+        this.comparing = comparing;
     }
 }
 
@@ -1411,30 +1300,22 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
             ancestorWindow.setCursor(null);
         }
         table.setCursor(null);
-        table.getEditor().setCursor(null);
+        ECUEditorManager.getECUEditor().setCursor(null);
     }
 }
 
 class CopyTableWorker extends SwingWorker<Void, Void> {
-    Settings settings;
     Table table;
 
-    public CopyTableWorker(Settings settings, Table table) {
-        this.settings = settings;
+    public CopyTableWorker(Table table) {
         this.table = table;
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        String tableHeader = settings.getTableHeader();
-
+        String tableHeader = table.getSettings().getTableHeader();
         StringBuffer output = new StringBuffer(tableHeader);
-        for (int i = 0; i < table.getDataSize(); i++) {
-            output.append(table.getData()[i].getText());
-            if (i < table.getDataSize() - 1) {
-                output.append(Table.TAB);
-            }
-        }
+        output.append(table.getTableAsString());
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
         return null;
     }
@@ -1446,6 +1327,94 @@ class CopyTableWorker extends SwingWorker<Void, Void> {
             ancestorWindow.setCursor(null);
         }
         table.setCursor(null);
-        table.getEditor().setCursor(null);
+        ECUEditorManager.getECUEditor().setCursor(null);
+    }
+}
+
+class RefreshTableCompareWorker extends SwingWorker<Void, Void> {
+    Table table;
+
+    public RefreshTableCompareWorker(Table table) {
+        this.table = table;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        if(null == table.getComparedToTables() || table.getComparedToTables().size() < 1) {
+            return null;
+        }
+
+        for(Table comparedTable : table.getComparedToTables()) {
+            if(null != table) {
+                comparedTable.populateCompareValues(table);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void done() {
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(null);
+        }
+        table.setCursor(null);
+        ECUEditorManager.getECUEditor().setCursor(null);
+    }
+}
+
+class RefreshDataBoundsWorker extends SwingWorker<Void, Void> {
+    Table table;
+
+    public RefreshDataBoundsWorker(Table table) {
+        this.table = table;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        try {
+            double maxBin = table.getData()[0].getBinValue();
+            double minBin = table.getData()[0].getBinValue();
+
+            double maxCompare = table.getData()[0].getCompareValue();
+            double minCompare = table.getData()[0].getCompareValue();
+
+            for(DataCell cell : table.getData()) {
+                double cellVal = cell.getBinValue();
+                double compareVal = cell.getCompareValue();
+
+                if(cellVal > maxBin) {
+                    maxBin = cellVal;
+                }
+                if(cellVal < minBin) {
+                    minBin = cellVal;
+                }
+
+                if(compareVal > maxCompare) {
+                    maxCompare = compareVal;
+                }
+                if(compareVal < minCompare) {
+                    minCompare = compareVal;
+                }
+            }
+            table.setMaxBin(maxBin);
+            table.setMinBin(minBin);
+            table.setMaxCompare(maxCompare);
+            table.setMinCompare(minCompare);
+        } catch (Exception ex) {
+            ; // Do Nothing.
+        }
+        return null;
+    }
+
+    @Override
+    public void done() {
+        table.drawTable();
+        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
+        if(null != ancestorWindow) {
+            ancestorWindow.setCursor(null);
+        }
+        table.setCursor(null);
+        ECUEditorManager.getECUEditor().setCursor(null);
     }
 }
