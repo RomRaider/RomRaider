@@ -414,13 +414,13 @@ public abstract class Table extends JPanel implements Serializable {
         this.data = data;
     }
 
-    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         // temporarily remove lock
         boolean tempLock = locked;
         locked = false;
 
         if (!beforeRam) {
-            this.ramOffset = ramOffset;
+            this.ramOffset = romRamOffset;
         }
 
         for (int i = 0; i < data.length; i++) {

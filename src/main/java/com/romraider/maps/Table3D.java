@@ -157,12 +157,12 @@ public class Table3D extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input, int ramOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    public void populateTable(byte[] input, int romRamOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         loaded = false;
         // fill first empty cell
         centerPanel.add(new JLabel());
         if (!beforeRam) {
-            this.ramOffset = ramOffset;
+            this.ramOffset = romRamOffset;
         }
 
         // temporarily remove lock
@@ -171,8 +171,8 @@ public class Table3D extends Table {
 
         // populate axiis
         try {
-            xAxis.populateTable(input, ramOffset);
-            yAxis.populateTable(input, ramOffset);
+            xAxis.populateTable(input, romRamOffset);
+            yAxis.populateTable(input, romRamOffset);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new ArrayIndexOutOfBoundsException();
         }
