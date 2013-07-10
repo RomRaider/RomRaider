@@ -107,7 +107,7 @@ public final class RomAttributeParser {
         }
     }
 
-    public static long parseByteValue(byte[] input, int endian, int address, int length, boolean signed) throws ArrayIndexOutOfBoundsException {
+    public static long parseByteValue(byte[] input, int endian, int address, int length, boolean signed) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         try {
             long output = 0L;
             ByteBuffer bb = ByteBuffer.wrap(input, address, length);

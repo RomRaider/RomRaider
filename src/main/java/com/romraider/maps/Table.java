@@ -414,7 +414,7 @@ public abstract class Table extends JPanel implements Serializable {
         this.data = data;
     }
 
-    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException {
+    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         // temporarily remove lock
         boolean tempLock = locked;
         locked = false;

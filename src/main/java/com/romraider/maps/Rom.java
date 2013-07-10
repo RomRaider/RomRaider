@@ -169,6 +169,17 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                                 "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                         tableNodes.removeElementAt(i);
                         i--;
+                    } catch (IndexOutOfBoundsException iex) {
+
+                        LOGGER.error(table.getName() +
+                                " type " + table.getType() + " start " +
+                                table.getStorageAddress() + " " + binData.length + " filesize", iex);
+
+                        // table storage address extends beyond end of file
+                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table), "Storage address for table \"" + table.getName() +
+                                "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                        tableNodes.removeElementAt(i);
+                        i--;
                     }
 
                 } else {

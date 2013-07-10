@@ -126,7 +126,7 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException {
+    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         centerLayout.setRows(2);
         centerLayout.setColumns(this.getDataSize());
 
