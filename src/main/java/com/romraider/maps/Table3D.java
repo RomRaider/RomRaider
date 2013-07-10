@@ -157,7 +157,7 @@ public class Table3D extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input, int ramOffset) throws NullPointerException, ArrayIndexOutOfBoundsException {
+    public void populateTable(byte[] input, int ramOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         loaded = false;
         // fill first empty cell
         centerPanel.add(new JLabel());

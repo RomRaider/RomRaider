@@ -73,7 +73,7 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input, int ramOffset) {
+    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
         JPanel radioPanel = new JPanel(new GridLayout(0, 1));
         radioPanel.add(new JLabel("  " + name));
         for (String stateName : switchStates.keySet()) {
@@ -106,7 +106,8 @@ public class TableSwitch extends Table {
                         message,
                         "Warning - Checksum Status",
                         INFORMATION_MESSAGE);
-                getButtonByText(buttonGroup, "on").setSelected(true);            }
+                getButtonByText(buttonGroup, "on").setSelected(true);
+            }
             else {
                 getButtonByText(buttonGroup, "off").setSelected(true);
                 locked = false;
