@@ -19,15 +19,26 @@
 
 package com.romraider.util;
 
-import com.romraider.Settings;
 import java.awt.Color;
+
+import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditorManager;
 
 public final class ColorScaler {
 
     private ColorScaler() {
     }
 
-    public static Color getScaledColor(double scale, Settings settings) {
+    public static Color getScaledColor(double scale) {
+
+        Settings settings = ECUEditorManager.getECUEditor().getSettings();
+        if(0.0 == scale) {
+            return settings.getMinColor();
+        }
+
+        if(Double.NaN == scale) {
+            return settings.getMaxColor();
+        }
 
         Color minColor = settings.getMinColor();
         Color maxColor = settings.getMaxColor();

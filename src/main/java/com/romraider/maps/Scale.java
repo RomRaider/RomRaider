@@ -26,8 +26,6 @@ import java.io.Serializable;
 public class Scale implements Serializable {
 
     private static final long serialVersionUID = 5836610685159474795L;
-    public static final int LINEAR = 1;
-    public static final int INVERSE = 2;
 
     private String name = "Default";
     private String unit = "0x";
@@ -36,13 +34,14 @@ public class Scale implements Serializable {
     private String format = "#";
     private double coarseIncrement = 2;
     private double fineIncrement = 1;
-    private double min = 0;
-    private double max = 0;
+    private double min = 0.0;
+    private double max = 0.0;
     private Table table;
 
     public Scale() {
     }
 
+    @Override
     public String toString() {
         return "\n      ---- Scale ----" +
                 "\n      Name: " + getName() +

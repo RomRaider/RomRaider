@@ -19,25 +19,18 @@
 
 package com.romraider.swing;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Vector;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
+import com.romraider.Settings;
 
-public class TableMenuBar extends JMenuBar implements ActionListener {
+public class TableMenuBar extends JMenuBar {
 
     private static final long serialVersionUID = -695692646459410510L;
-    private final Table table;
     private JMenu fileMenu;
     private JMenuItem graph;
     //private JRadioButtonMenuItem overlay = new JRadioButtonMenuItem("Overlay Log");
@@ -65,283 +58,349 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     private JMenu viewMenu;
     private JMenuItem tableProperties;
 
+    private JRadioButtonMenuItem showRealValues;
+    private JRadioButtonMenuItem showBinValues;
+
     private ButtonGroup compareGroup;
     private ButtonGroup compareDisplayGroup;
     private ButtonGroup compareToGroup;
 
-    public TableMenuBar(Table table) {
-        this.table = table;
-        initTableMenuBar();
+    private ButtonGroup showValuesGroup;
+
+    public TableMenuBar(TableFrame frame) {
+        initFileMenu(frame);
+        initEditMenu(frame);
+        initViewMenu(frame);
+        applyTableTypeRules(frame);
     }
 
-    public void initTableMenuBar() {
-        initFileMenu();
-        initEditMenu();
-        initViewMenu();
-    }
-
-    public void refreshTableMenuBar() {
-        refreshSimilarOpenTables();
-        initCompareGroup();
-    }
-
-    private void initFileMenu() {
+    private void initFileMenu(TableFrame frame) {
         fileMenu = new JMenu("Table");
         graph = new JMenuItem("View Graph");
         compareMenu = new JMenu("Compare");
-        close = new JMenuItem("Close Table");
+        setClose(new JMenuItem("Close Table"));
 
-        initCompareMenu();
-        close.setText("Close " + table.getName());
+        initCompareMenu(frame);
+        getClose().setText("Close " + frame.getTable().getName());
 
-        graph.addActionListener(this);
-        close.addActionListener(this);
+        graph.addActionListener(frame);
+        getClose().addActionListener(frame);
 
         graph.setMnemonic('G');
-        close.setMnemonic('X');
+        getClose().setMnemonic('X');
         graph.setEnabled(false);
 
         fileMenu.add(graph);
         fileMenu.add(compareMenu);
         fileMenu.add(new JSeparator());
-        fileMenu.add(close);
+        fileMenu.add(getClose());
 
         this.add(fileMenu);
     }
 
-    private void initEditMenu() {
+    private void initEditMenu(TableFrame frame) {
         editMenu = new JMenu("Edit");
-        undoSel = new JMenuItem("Undo Selected Changes");
-        undoAll = new JMenuItem("Undo All Changes");
-        revert = new JMenuItem("Set Revert Point");
-        copySel = new JMenuItem("Copy Selection");
-        copyTable = new JMenuItem("Copy Table");
-        paste = new JMenuItem("Paste");
+        setUndoSel(new JMenuItem("Undo Selected Changes"));
+        setUndoAll(new JMenuItem("Undo All Changes"));
+        setRevert(new JMenuItem("Set Revert Point"));
+        setCopySel(new JMenuItem("Copy Selection"));
+        setCopyTable(new JMenuItem("Copy Table"));
+        setPaste(new JMenuItem("Paste"));
 
-        editMenu.add(undoSel);
-        editMenu.add(undoAll);
-        editMenu.add(revert);
+        editMenu.add(getUndoSel());
+        editMenu.add(getUndoAll());
+        editMenu.add(getRevert());
         editMenu.add(new JSeparator());
-        editMenu.add(copySel);
-        editMenu.add(copyTable);
+        editMenu.add(getCopySel());
+        editMenu.add(getCopyTable());
         editMenu.add(new JSeparator());
-        editMenu.add(paste);
+        editMenu.add(getPaste());
 
         editMenu.setMnemonic('E');
-        undoSel.setMnemonic('U');
-        undoAll.setMnemonic('A');
-        revert.setMnemonic('R');
-        copySel.setMnemonic('C');
-        copyTable.setMnemonic('T');
-        paste.setMnemonic('P');
+        getUndoSel().setMnemonic('U');
+        getUndoAll().setMnemonic('A');
+        getRevert().setMnemonic('R');
+        getCopySel().setMnemonic('C');
+        getCopyTable().setMnemonic('T');
+        getPaste().setMnemonic('P');
 
-        undoSel.addActionListener(this);
-        undoAll.addActionListener(this);
-        revert.addActionListener(this);
-        copySel.addActionListener(this);
-        copyTable.addActionListener(this);
-        paste.addActionListener(this);
+        getUndoSel().addActionListener(frame);
+        getUndoAll().addActionListener(frame);
+        getRevert().addActionListener(frame);
+        getCopySel().addActionListener(frame);
+        getCopyTable().addActionListener(frame);
+        getPaste().addActionListener(frame);
         this.add(editMenu);
     }
 
-    private void initViewMenu() {
-        tableProperties = new JMenuItem("Table Properties");
+    private void initViewMenu(TableFrame frame) {
 
         viewMenu = new JMenu("View");
-        viewMenu.add(tableProperties);
         viewMenu.setMnemonic('V');
-        tableProperties.setMnemonic('P');
-        tableProperties.addActionListener(this);
+
+        setTableProperties(new JMenuItem("Table Properties"));
+        getTableProperties().setToolTipText("Select to view the table properties.");
+        getTableProperties().setMnemonic('P');
+        getTableProperties().addActionListener(frame);
 
         fileMenu.setMnemonic('F');
         fileMenu.setMnemonic('T');
+
+        setShowRealValues(new JRadioButtonMenuItem("Show Real Values"));
+        getShowRealValues().setToolTipText("Select to display the cell values in converted byte(real) form.");
+        getShowRealValues().setMnemonic('R');
+        getShowRealValues().addActionListener(frame);
+        getShowRealValues().setSelected(true);
+
+        setShowBinValues(new JRadioButtonMenuItem("Show Raw Values"));
+        getShowBinValues().setToolTipText("Select to display the cell values in byte(raw) form.");
+        getShowBinValues().setMnemonic('B');
+        getShowBinValues().addActionListener(frame);
+
+        showValuesGroup = new ButtonGroup();
+        showValuesGroup.add(getShowRealValues());
+        showValuesGroup.add(getShowBinValues());
+
+        viewMenu.add(getTableProperties());
+        viewMenu.add(new JSeparator());
+        viewMenu.add(getShowRealValues());
+        viewMenu.add(getShowBinValues());
+
         this.add(viewMenu);
     }
 
-    private void initCompareMenu() {
-        compareOriginal = new JRadioButtonMenuItem("Show Changes");
-        compareOriginal.setToolTipText("Compares the current values to the original or revert point values.");
-        compareMap = new JRadioButtonMenuItem("Compare to Another Map");
-        compareMap.setToolTipText("Compares this table and a selected table.");
-        similarOpenTables = new JMenu("Compare to Table");
-        similarOpenTables.setToolTipText("Compares this table to a similar table.");
+    private void initCompareMenu(TableFrame frame) {
+        setCompareOriginal(new JRadioButtonMenuItem("Show Changes"));
+        getCompareOriginal().setToolTipText("Compares the current values to the original or revert point values.");
+        setCompareMap(new JRadioButtonMenuItem("Compare to Another Map"));
+        getCompareMap().setToolTipText("Compares this table and a selected table.");
+        setSimilarOpenTables(new JMenu("Compare to Table"));
+        getSimilarOpenTables().setToolTipText("Compares this table to a similar table.");
 
-        compareOff = new JRadioButtonMenuItem("Off");
+        setCompareOff(new JRadioButtonMenuItem("Off"));
 
-        comparePercent = new JRadioButtonMenuItem("Percent Difference");
-        compareAbsolute = new JRadioButtonMenuItem("Absolute Difference");
+        setComparePercent(new JRadioButtonMenuItem("Percent Difference"));
+        setCompareAbsolute(new JRadioButtonMenuItem("Absolute Difference"));
         compareDisplayGroup = new ButtonGroup();
-        compareDisplayGroup.add(comparePercent);
-        compareDisplayGroup.add(compareAbsolute);
+        compareDisplayGroup.add(getComparePercent());
+        compareDisplayGroup.add(getCompareAbsolute());
         compareDisplay = new JMenu("Display");
-        compareDisplay.add(comparePercent);
-        compareDisplay.add(compareAbsolute);
+        compareDisplay.add(getComparePercent());
+        compareDisplay.add(getCompareAbsolute());
 
-        compareToOriginal = new JRadioButtonMenuItem("Compre to Original Value");
-        compareToOriginal.setToolTipText("Compares this table to the selected table's original or revert point values.");
-        compareToBin = new JRadioButtonMenuItem("Compare to Bin Value");
-        compareToBin.setToolTipText("Compares this table to the selected table's current values.");
+        setCompareToOriginal(new JRadioButtonMenuItem("Compre to Original Value"));
+        getCompareToOriginal().setToolTipText("Compares this table to the selected table's original or revert point values.");
+        setCompareToBin(new JRadioButtonMenuItem("Compare to Bin Value"));
+        getCompareToBin().setToolTipText("Compares this table to the selected table's current values.");
         compareToGroup = new ButtonGroup();
-        compareToGroup.add(compareToOriginal);
-        compareToGroup.add(compareToBin);
+        compareToGroup.add(getCompareToOriginal());
+        compareToGroup.add(getCompareToBin());
         compareToValue = new JMenu("Compare to");
-        compareToValue.add(compareToOriginal);
-        compareToValue.add(compareToBin);
+        compareToValue.add(getCompareToOriginal());
+        compareToValue.add(getCompareToBin());
 
-        compareMenu.add(compareOriginal);
-        compareMenu.add(compareMap);
-        compareMenu.add(similarOpenTables);
-        compareMenu.add(compareOff);
+        compareMenu.add(getCompareOriginal());
+        compareMenu.add(getCompareMap());
+        compareMenu.add(getSimilarOpenTables());
+        compareMenu.add(getCompareOff());
         compareMenu.add(new JSeparator());
         compareMenu.add(compareDisplay);
         compareMenu.add(new JSeparator());
         compareMenu.add(compareToValue);
 
         compareMenu.setMnemonic('C');
-        compareOriginal.setMnemonic('C');
-        compareMap.setMnemonic('M');
-        compareOff.setMnemonic('O');
+        getCompareOriginal().setMnemonic('C');
+        getCompareMap().setMnemonic('M');
+        getCompareOff().setMnemonic('O');
         compareDisplay.setMnemonic('D');
-        comparePercent.setMnemonic('P');
-        compareAbsolute.setMnemonic('A');
-        similarOpenTables.setMnemonic('S');
+        getComparePercent().setMnemonic('P');
+        getCompareAbsolute().setMnemonic('A');
+        getSimilarOpenTables().setMnemonic('S');
         compareToValue.setMnemonic('T');
-        compareToOriginal.setMnemonic('R');
-        compareToOriginal.setMnemonic('B');
+        getCompareToOriginal().setMnemonic('R');
+        getCompareToOriginal().setMnemonic('B');
 
-        compareOff.setSelected(true);
-        compareAbsolute.setSelected(true);
-        compareToOriginal.setSelected(true);
+        getCompareOff().setSelected(true);
+        getCompareAbsolute().setSelected(true);
+        getCompareToOriginal().setSelected(true);
 
         initCompareGroup();
 
-        compareOriginal.addActionListener(this);
-        compareMap.addActionListener(this);
-        compareOff.addActionListener(this);
-        comparePercent.addActionListener(this);
-        compareAbsolute.addActionListener(this);
-        compareToOriginal.addActionListener(this);
-        compareToBin.addActionListener(this);
+        getCompareOriginal().addActionListener(frame);
+        getCompareMap().addActionListener(frame);
+        getCompareOff().addActionListener(frame);
+        getComparePercent().addActionListener(frame);
+        getCompareAbsolute().addActionListener(frame);
+        getCompareToOriginal().addActionListener(frame);
+        getCompareToBin().addActionListener(frame);
     }
 
-    private void initCompareGroup() {
+    public void initCompareGroup() {
         compareGroup = new ButtonGroup();
 
-        compareGroup.add(compareOriginal);
-        compareGroup.add(compareMap);
-        compareGroup.add(compareOff);
+        compareGroup.add(getCompareOriginal());
+        compareGroup.add(getCompareMap());
+        compareGroup.add(getCompareOff());
 
-        for(int i = 0; i< similarOpenTables.getItemCount(); i++) {
-            compareGroup.add(similarOpenTables.getItem(i));
+        for(int i = 0; i< getSimilarOpenTables().getItemCount(); i++) {
+            compareGroup.add(getSimilarOpenTables().getItem(i));
         }
     }
 
-    private void refreshSimilarOpenTables() {
-        similarOpenTables.removeAll();
-        String currentTableName = table.getName();
-        Vector<Rom> roms = table.getEditor().getImages();
-
-        for(Rom rom : roms) {
-            Vector<Table> tables = rom.getTables();
-            for(Table table : tables) {
-                if(table.getName().equalsIgnoreCase(currentTableName)) {
-                    JRadioButtonMenuItem similarTable = new TableMenuItem(table);
-                    similarTable.addActionListener(this);
-                    similarOpenTables.add(similarTable);
-                }
-            }
+    private void applyTableTypeRules(TableFrame frame) {
+        // Hide items that don't work with a DTC tables.
+        if(frame.getTable().getType() == Settings.TABLE_SWITCH) {
+            editMenu.setEnabled(false);
+            getCompareOriginal().setEnabled(false);
+            getComparePercent().setEnabled(false);
+            getCompareAbsolute().setEnabled(false);
+            getCompareToOriginal().setEnabled(false);
+            getCompareToBin().setEnabled(false);
         }
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == undoAll) {
-            table.undoAll();
-
-        } else if (e.getSource() == revert) {
-            table.setRevertPoint();
-
-        } else if (e.getSource() == undoSel) {
-            table.undoSelected();
-
-        } else if (e.getSource() == close) {
-            table.getEditor().removeDisplayTable(table.getFrame());
-
-        } else if (e.getSource() == tableProperties) {
-            JOptionPane.showMessageDialog(table, new TablePropertyPanel(table),
-                    table.getName() + " Table Properties", JOptionPane.INFORMATION_MESSAGE);
-
-        } else if (e.getSource() == copySel) {
-            table.copySelection();
-
-        } else if (e.getSource() == copyTable) {
-            table.copyTable();
-
-        } else if (e.getSource() == paste) {
-            table.paste();
-
-        } else if (e.getSource() == compareOff) {
-            compareByDisplay(Table.COMPARE_DISPLAY_OFF);
-
-        } else if (e.getSource() == compareAbsolute) {
-            compareByDisplay(Table.COMPARE_DISPLAY_ABSOLUTE);
-
-        } else if (e.getSource() == comparePercent) {
-            compareByDisplay(Table.COMPARE_DISPLAY_PERCENT);
-
-        } else if (e.getSource() == compareOriginal) {
-            table.setCompareType(Table.COMPARE_TYPE_ORIGINAL);
-            compareToOriginal.setSelected(true);
-            compareByTable(table);
-
-        } else if (e.getSource() == compareMap) {
-            JTableChooser chooser = new JTableChooser();
-            Table selectedTable = chooser.showChooser(table);
-            if(null != selectedTable) {
-                compareByTable(selectedTable);
-            }
-
-        } else if (e.getSource() instanceof TableMenuItem) {
-            Table selectedTable = ((TableMenuItem) e.getSource()).getTable();
-            compareByTable(selectedTable);
-
-        } else if (e.getSource() == compareToOriginal) {
-            compareByType(Table.COMPARE_TYPE_ORIGINAL);
-
-        } else if (e.getSource() == compareToBin) {
-            compareByType(Table.COMPARE_TYPE_BIN);
-
-        }
+    public JMenuItem getUndoAll() {
+        return undoAll;
     }
 
-    private void compareByType(int compareType) {
-        table.setCompareType(compareType);
-        if(table.fillCompareValues()) {
-            table.refreshCellDisplay();
-        }
+    public void setUndoAll(JMenuItem undoAll) {
+        this.undoAll = undoAll;
     }
 
-    private void compareByTable(Table selectedTable) {
-        if(null == selectedTable) {
-            return;
-        }
-
-        if(table.getCompareDisplay() == Table.COMPARE_DISPLAY_OFF) {
-            // Default to absolute if none selected.
-            this.compareAbsolute.setSelected(true);
-            table.setCompareDisplay(Table.COMPARE_DISPLAY_ABSOLUTE);
-        }
-
-        selectedTable.addComparedToTable(table);
-
-        table.setCompareTable(selectedTable);
-        if(table.fillCompareValues()) {
-            table.refreshCellDisplay();
-        }
+    public JMenuItem getRevert() {
+        return revert;
     }
 
-    public void compareByDisplay(int compareDisplay) {
-        table.setCompareDisplay(compareDisplay);
-        table.refreshCellDisplay();
+    public void setRevert(JMenuItem revert) {
+        this.revert = revert;
     }
+
+    public JMenuItem getUndoSel() {
+        return undoSel;
+    }
+
+    public void setUndoSel(JMenuItem undoSel) {
+        this.undoSel = undoSel;
+    }
+
+    public JMenuItem getClose() {
+        return close;
+    }
+
+    public void setClose(JMenuItem close) {
+        this.close = close;
+    }
+
+    public JMenuItem getTableProperties() {
+        return tableProperties;
+    }
+
+    public void setTableProperties(JMenuItem tableProperties) {
+        this.tableProperties = tableProperties;
+    }
+
+    public JMenuItem getCopySel() {
+        return copySel;
+    }
+
+    public void setCopySel(JMenuItem copySel) {
+        this.copySel = copySel;
+    }
+
+    public JMenuItem getCopyTable() {
+        return copyTable;
+    }
+
+    public void setCopyTable(JMenuItem copyTable) {
+        this.copyTable = copyTable;
+    }
+
+    public JMenuItem getPaste() {
+        return paste;
+    }
+
+    public void setPaste(JMenuItem paste) {
+        this.paste = paste;
+    }
+
+    public JRadioButtonMenuItem getCompareOff() {
+        return compareOff;
+    }
+
+    public void setCompareOff(JRadioButtonMenuItem compareOff) {
+        this.compareOff = compareOff;
+    }
+
+    public JRadioButtonMenuItem getCompareAbsolute() {
+        return compareAbsolute;
+    }
+
+    public void setCompareAbsolute(JRadioButtonMenuItem compareAbsolute) {
+        this.compareAbsolute = compareAbsolute;
+    }
+
+    public JRadioButtonMenuItem getComparePercent() {
+        return comparePercent;
+    }
+
+    public void setComparePercent(JRadioButtonMenuItem comparePercent) {
+        this.comparePercent = comparePercent;
+    }
+
+    public JRadioButtonMenuItem getCompareOriginal() {
+        return compareOriginal;
+    }
+
+    public void setCompareOriginal(JRadioButtonMenuItem compareOriginal) {
+        this.compareOriginal = compareOriginal;
+    }
+
+    public JRadioButtonMenuItem getCompareToOriginal() {
+        return compareToOriginal;
+    }
+
+    public void setCompareToOriginal(JRadioButtonMenuItem compareToOriginal) {
+        this.compareToOriginal = compareToOriginal;
+    }
+
+    public JRadioButtonMenuItem getCompareMap() {
+        return compareMap;
+    }
+
+    public void setCompareMap(JRadioButtonMenuItem compareMap) {
+        this.compareMap = compareMap;
+    }
+
+    public JRadioButtonMenuItem getCompareToBin() {
+        return compareToBin;
+    }
+
+    public void setCompareToBin(JRadioButtonMenuItem compareToBin) {
+        this.compareToBin = compareToBin;
+    }
+
+    public JMenu getSimilarOpenTables() {
+        return similarOpenTables;
+    }
+
+    public void setSimilarOpenTables(JMenu similarOpenTables) {
+        this.similarOpenTables = similarOpenTables;
+    }
+
+    public JRadioButtonMenuItem getShowRealValues() {
+        return this.showRealValues;
+    }
+
+    public void setShowRealValues(JRadioButtonMenuItem showRealValues) {
+        this.showRealValues = showRealValues;
+    }
+
+    public JRadioButtonMenuItem getShowBinValues() {
+        return this.showBinValues;
+    }
+
+    public void setShowBinValues(JRadioButtonMenuItem showBinValues) {
+        this.showBinValues = showBinValues;
+    }
+
 }

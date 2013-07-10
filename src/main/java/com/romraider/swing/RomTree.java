@@ -24,21 +24,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.maps.Rom;
 
 public class RomTree extends JTree implements MouseListener {
 
     private static final long serialVersionUID = 1630446543383498886L;
-    public static ECUEditor editor;
 
     public RomTree(DefaultMutableTreeNode input) {
         super(input);
@@ -56,7 +55,8 @@ public class RomTree extends JTree implements MouseListener {
             public void actionPerformed(ActionEvent e) {
                 try{
                     Object selectedRow = getSelectionPath().getLastPathComponent();
-                    showHideTable(selectedRow);
+                    showTable(selectedRow);
+                    setLastSelectedRom(selectedRow);
                 }catch(NullPointerException ex) {
                 }
             }
@@ -69,11 +69,7 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     public ECUEditor getEditor() {
-        return editor;
-    }
-
-    public void setContainer(ECUEditor container) {
-        RomTree.editor = container;
+        return ECUEditorManager.getECUEditor();
     }
 
     @Override
@@ -81,43 +77,49 @@ public class RomTree extends JTree implements MouseListener {
         try{
             Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
 
-            if (e.getClickCount() >= editor.getSettings().getTableClickCount()) {
-                showHideTable(selectedRow);
+            if(selectedRow instanceof TableTreeNode) {
+                if (e.getClickCount() >= getEditor().getSettings().getTableClickCount()) {
+                    showTable(selectedRow);
+                }
+            } else if(selectedRow instanceof Rom || selectedRow instanceof CategoryTreeNode) {
+                if (e.getClickCount() >= getEditor().getSettings().getTableClickCount()) {
+                    if(isCollapsed(getRowForLocation(e.getX(),e.getY()))) {
+                        expandRow(getRowForLocation(e.getX(),e.getY()));
+                    }
+                    else {
+                        collapseRow(getRowForLocation(e.getX(),e.getY()));
+                    }
+                }
             }
+
             setLastSelectedRom(selectedRow);
         }catch(NullPointerException ex) {
         }
     }
 
-    private void showHideTable(Object selectedRow) {
+    private void showTable(Object selectedRow) {
         try{
             if(selectedRow instanceof TableTreeNode) {
                 TableTreeNode node = (TableTreeNode) selectedRow;
-                editor.displayTable(node.getFrame());
+                if(null != node) {
+                    getEditor().displayTable(node.getFrame());
+                }
             }
-            setLastSelectedRom(selectedRow);
         } catch (NullPointerException ex) {
         }
     }
 
     private void setLastSelectedRom(Object selectedNode) {
-        TreePath selectedPath = getSelectionPath();
-        if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof RomTreeNode)
-        {
+        if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof Rom) {
             Object lastSelectedPathComponent = getLastSelectedPathComponent();
-            if(lastSelectedPathComponent instanceof TableTreeNode) {
-                TableTreeNode node = (TableTreeNode) getLastSelectedPathComponent();
-                editor.setLastSelectedRom(node.getTable().getRom());
-            } else if(lastSelectedPathComponent instanceof CategoryTreeNode) {
-                CategoryTreeNode node = (CategoryTreeNode) getLastSelectedPathComponent();
-                editor.setLastSelectedRom(node.getRom());
-            } else if(lastSelectedPathComponent instanceof RomTreeNode) {
-                RomTreeNode node = (RomTreeNode) getLastSelectedPathComponent();
-                editor.setLastSelectedRom(node.getRom());
+            if(lastSelectedPathComponent instanceof Rom) {
+                Rom node = (Rom) lastSelectedPathComponent;
+                if(null != node) {
+                    getEditor().setLastSelectedRom(node);
+                }
             }
         }
-        editor.getEditorMenuBar().updateMenu();
-        editor.getToolBar().updateButtons();
+        getEditor().refreshUI();
     }
 
     @Override
@@ -136,8 +138,4 @@ public class RomTree extends JTree implements MouseListener {
     public void mouseExited(MouseEvent e) {
     }
 
-    @Override
-    public void removeDescendantToggledPaths(Enumeration<TreePath> toRemove) {
-        super.removeDescendantToggledPaths(toRemove);
-    }
 }
