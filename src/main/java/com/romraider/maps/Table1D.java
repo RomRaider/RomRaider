@@ -52,12 +52,12 @@ public class Table1D extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input, int ramOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
+    public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
         loaded = false;
         centerLayout.setRows(1);
         centerLayout.setColumns(this.getDataSize());
 
-        super.populateTable(input, ramOffset);
+        super.populateTable(input, romRamOffset);
         loaded = false;
 
         // add to table
