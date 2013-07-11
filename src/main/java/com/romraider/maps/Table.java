@@ -99,15 +99,15 @@ public abstract class Table extends JPanel implements Serializable {
     protected CopyTableWorker copyTableWorker;
     protected CopySelectionWorker copySelectionWorker;
     protected RefreshTableCompareWorker refreshTableCompareWorker;
-    protected RefreshDataBoundsWorker refreshDataBoundsWorker;
 
-    protected boolean loaded = false;
+    protected double minAllowedValue = 0.0;
+    protected double maxAllowedValue = 0.0;
+
+    protected double maxBin;
+    protected double minBin;
 
     protected double maxCompare = 0.0;
     protected double minCompare = 0.0;
-
-    protected double maxBin = 0.0;
-    protected double minBin = 0.0;
 
     private boolean comparing = false;
 
@@ -446,7 +446,6 @@ public abstract class Table extends JPanel implements Serializable {
 
                 data[i] = new DataCell(this, dataValue, 0, i, scales.get(scaleIndex), getSettings().getCellSize());
                 data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
-                data[i].setBinValue(dataValue);
                 centerPanel.add(data[i]);
 
                 // show locked cell
@@ -458,7 +457,7 @@ public abstract class Table extends JPanel implements Serializable {
 
         // reset locked status
         locked = tempLock;
-        loaded = true;
+        calcCellRanges();
     }
 
     public int getType() {
@@ -543,6 +542,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setStorageType(int storageType) {
         this.storageType = storageType;
+        calcValueRange();
     }
 
     public boolean isSignedData() {
@@ -657,23 +657,10 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public void refreshDataBounds() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
-
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        refreshDataBoundsWorker = new RefreshDataBoundsWorker(this);
-        refreshDataBoundsWorker.execute();
-    }
-
     public double getMaxValue() {
         double maxVal = getScale().getMax();
         if(0.0 == maxVal) {
-            maxVal = Double.MAX_VALUE;
+            maxVal = maxAllowedValue;
         }
         return maxVal;
     }
@@ -681,34 +668,88 @@ public abstract class Table extends JPanel implements Serializable {
     public double getMinValue() {
         double minVal = getScale().getMin();
         if(0.0 == minVal) {
-            minVal = -Double.MAX_VALUE;
+            minVal = minAllowedValue;
         }
         return minVal;
+    }
+
+    private void calcValueRange() {
+        if (getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
+            if (isSignedData()) {
+                switch (getStorageType()) {
+                case 1:
+                    minAllowedValue = Byte.MIN_VALUE;
+                    maxAllowedValue = Byte.MAX_VALUE;
+                    break;
+                case 2:
+                    minAllowedValue = Short.MIN_VALUE;
+                    maxAllowedValue = Short.MAX_VALUE;
+                    break;
+                case 4:
+                    minAllowedValue = Integer.MIN_VALUE;
+                    maxAllowedValue = Integer.MAX_VALUE;
+                    break;
+                }
+            }
+            else {
+                maxAllowedValue = (Math.pow(256, getStorageType()) - 1);
+                minAllowedValue = 0.0;
+            }
+        } else {
+            maxAllowedValue = Float.MAX_VALUE;
+
+            if(isSignedData()) {
+                minAllowedValue = 0.0;
+            } else {
+                minAllowedValue = -Float.MAX_VALUE;
+            }
+        }
+    }
+
+    public void calcCellRanges() {
+        double binMax = data[0].getBinValue();
+        double binMin = data[0].getBinValue();
+
+        double compareMax = data[0].getBinValue() - data[0].getCompareValue();
+        double compareMin = data[0].getBinValue() - data[0].getCompareValue();
+
+        for(DataCell cell : data) {
+            // Calc bin
+            if(binMax < cell.getBinValue()) {
+                binMax = cell.getBinValue();
+            }
+            if(binMin > cell.getBinValue()) {
+                binMin = cell.getBinValue();
+            }
+
+            // Calc compare
+            double compareValue = cell.getBinValue() - cell.getCompareValue();
+            if(compareMax < compareValue) {
+                compareMax = compareValue;
+            }
+            if(compareMin > compareValue) {
+                compareMin = compareValue;
+            }
+        }
+        setMaxBin(binMax);
+        setMinBin(binMin);
+        setMaxCompare(compareMax);
+        setMinCompare(compareMin);
     }
 
     public double getMaxBin() {
         return this.maxBin;
     }
 
-    public void setMaxBin(double maxBin) {
-        if(this.maxBin == maxBin)
-        {
-            return;
-        }
-
-        this.maxBin = maxBin;
-    }
-
     public double getMinBin() {
         return this.minBin;
     }
 
-    public void setMinBin(double minBin) {
-        if(this.minBin == minBin)
-        {
-            return;
-        }
+    public void setMaxBin(double maxBin) {
+        this.maxBin = maxBin;
+    }
 
+    public void setMinBin(double minBin) {
         this.minBin = minBin;
     }
 
@@ -717,11 +758,6 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void setMaxCompare(double maxCompare) {
-        if(this.maxCompare == maxCompare)
-        {
-            return;
-        }
-
         this.maxCompare = maxCompare;
     }
 
@@ -730,11 +766,6 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void setMinCompare(double minCompare) {
-        if(this.minCompare == minCompare)
-        {
-            return;
-        }
-
         this.minCompare = minCompare;
     }
 
@@ -1056,15 +1087,12 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void populateCompareValues(Table otherTable) {
-        loaded = false;
         if(null == otherTable) {
-            loaded = true;
             return;
         }
 
         DataCell[] compareData = otherTable.getData();
         if(data.length != compareData.length) {
-            loaded = true;
             return;
         }
 
@@ -1075,8 +1103,8 @@ public abstract class Table extends JPanel implements Serializable {
             cell.setCompareValue(compareData[i]);
             i++;
         }
-        loaded = true;
-        refreshDataBounds();
+
+        calcCellRanges();
     }
 
     public void setCompareDisplay(int compareDisplay) {
@@ -1126,14 +1154,6 @@ public abstract class Table extends JPanel implements Serializable {
     public void setScaleIndex(int scaleIndex) {
         // TODO: what is the scale max and min?
         this.scaleIndex = scaleIndex;
-        // recalc max values.
-        if(maxBin < getScale().getMax()) {
-            maxBin = getScale().getMax();
-        }
-
-        if(minBin < getScale().getMin()) {
-            minBin = getScale().getMin();
-        }
     }
 
     public void setScaleByName(String scaleName) {
@@ -1166,10 +1186,6 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
-    }
-
-    public boolean isLoaded() {
-        return this.loaded;
     }
 
     public void setOverlayLog(boolean overlayLog) {
@@ -1348,61 +1364,6 @@ class RefreshTableCompareWorker extends SwingWorker<Void, Void> {
             if(null != table) {
                 comparedTable.populateCompareValues(table);
             }
-        }
-        return null;
-    }
-
-    @Override
-    public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(null);
-        }
-        table.setCursor(null);
-        ECUEditorManager.getECUEditor().setCursor(null);
-    }
-}
-
-class RefreshDataBoundsWorker extends SwingWorker<Void, Void> {
-    Table table;
-
-    public RefreshDataBoundsWorker(Table table) {
-        this.table = table;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        try {
-            double maxBin = table.getData()[0].getBinValue();
-            double minBin = table.getData()[0].getBinValue();
-
-            double maxCompare = table.getData()[0].getCompareValue();
-            double minCompare = table.getData()[0].getCompareValue();
-
-            for(DataCell cell : table.getData()) {
-                double cellVal = cell.getBinValue();
-                double compareVal = cell.getCompareValue();
-
-                if(cellVal > maxBin) {
-                    maxBin = cellVal;
-                }
-                if(cellVal < minBin) {
-                    minBin = cellVal;
-                }
-
-                if(compareVal > maxCompare) {
-                    maxCompare = compareVal;
-                }
-                if(compareVal < minCompare) {
-                    minCompare = compareVal;
-                }
-            }
-            table.setMaxBin(maxBin);
-            table.setMinBin(minBin);
-            table.setMaxCompare(maxCompare);
-            table.setMinCompare(minCompare);
-        } catch (Exception ex) {
-            ; // Do Nothing.
         }
         return null;
     }

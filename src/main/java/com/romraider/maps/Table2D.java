@@ -69,12 +69,6 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void refreshDataBounds(){
-        super.refreshDataBounds();
-        axis.refreshDataBounds();
-    }
-
-    @Override
     public void refreshCompares() {
         super.refreshCompares();
         axis.refreshCompares();
@@ -82,21 +76,15 @@ public class Table2D extends Table {
 
     @Override
     public void populateCompareValues(Table otherTable) {
-        loaded = false;
         if(null == otherTable || !(otherTable instanceof Table2D)) {
-            loaded = true;
             return;
         }
 
         Table2D compareTable2D = (Table2D) otherTable;
         if(data.length != compareTable2D.data.length ||
                 axis.data.length != compareTable2D.axis.data.length) {
-            loaded = true;
             return;
         }
-        loaded = true;
-        refreshDataBounds();
-        drawTable();
 
         super.populateCompareValues(otherTable);
         axis.populateCompareValues(compareTable2D.getAxis());
@@ -160,6 +148,7 @@ public class Table2D extends Table {
             add(new JLabel(axis.getName() + " (" + axis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
         }
         add(new JLabel(getScale().getUnit(), JLabel.CENTER), BorderLayout.SOUTH);
+        repaint();
     }
 
     @Override

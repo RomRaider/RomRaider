@@ -196,7 +196,6 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
 
         selectedTable.addComparedToTable(getTable());
         selectedTable.refreshCompares();
-        getTable().drawTable();
     }
 
     public void refreshSimilarOpenTables() {

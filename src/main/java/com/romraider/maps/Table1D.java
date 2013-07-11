@@ -42,7 +42,6 @@ public class Table1D extends Table {
     }
 
     public void addStaticDataCell(DataCell input) {
-        loaded = true;
         for(int i = 0; i < data.length; i++) {
             if(data[i] == null) {
                 data[i] = input;
@@ -53,12 +52,10 @@ public class Table1D extends Table {
 
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
-        loaded = false;
         centerLayout.setRows(1);
         centerLayout.setColumns(this.getDataSize());
 
         super.populateTable(input, romRamOffset);
-        loaded = false;
 
         // add to table
         for (int i = 0; i < this.getDataSize(); i++) {
@@ -73,7 +70,6 @@ public class Table1D extends Table {
         } else {
             add(new JLabel(name + " (" + getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
         }
-        loaded = true;
     }
 
     @Override

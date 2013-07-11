@@ -61,7 +61,6 @@ public class Table3D extends Table {
 
     CopyTable3DWorker copyTable3DWorker;
     CopySelection3DWorker copySelection3DWorker;
-    RefreshDataBounds3DWorker refreshDataBounds3DWorker;
 
     public Table3D() {
         super();
@@ -130,20 +129,6 @@ public class Table3D extends Table {
     }
 
     @Override
-    public void refreshDataBounds(){
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
-
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        refreshDataBounds3DWorker = new RefreshDataBounds3DWorker(this);
-        refreshDataBounds3DWorker.execute();
-    }
-
-    @Override
     public void drawTable() {
         for(DataCell[] column : data) {
             for(DataCell cell : column) {
@@ -158,7 +143,6 @@ public class Table3D extends Table {
 
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws NullPointerException, ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-        loaded = false;
         // fill first empty cell
         centerPanel.add(new JLabel());
         if (!beforeRam) {
@@ -222,7 +206,6 @@ public class Table3D extends Table {
                 }
 
                 data[x][y] = new DataCell(this, cellBinValue, x, y, scales.get(scaleIndex), getSettings().getCellSize());
-                data[x][y].setBinValue(cellBinValue);
                 offset++;
             }
         }
@@ -248,7 +231,42 @@ public class Table3D extends Table {
         add(yLabel, BorderLayout.WEST);
 
         add(new JLabel(getScale().getUnit(), JLabel.CENTER), BorderLayout.SOUTH);
-        loaded = true;
+
+        calcCellRanges();
+    }
+
+    @Override
+    public void calcCellRanges() {
+        double binMax = data[0][0].getBinValue();
+        double binMin = data[0][0].getBinValue();
+
+        double compareMax = data[0][0].getBinValue() - data[0][0].getCompareValue();
+        double compareMin = data[0][0].getBinValue() - data[0][0].getCompareValue();
+
+        for(DataCell[] column : data) {
+            for(DataCell cell : column) {
+                // Calc bin
+                if(binMax < cell.getBinValue()) {
+                    binMax = cell.getBinValue();
+                }
+                if(binMin > cell.getBinValue()) {
+                    binMin = cell.getBinValue();
+                }
+
+                // Calc compare
+                double compareValue = cell.getBinValue() - cell.getCompareValue();
+                if(compareMax < compareValue) {
+                    compareMax = compareValue;
+                }
+                if(compareMin > compareValue) {
+                    compareMin = compareValue;
+                }
+            }
+        }
+        setMaxBin(binMax);
+        setMinBin(binMin);
+        setMaxCompare(compareMax);
+        setMinCompare(compareMin);
     }
 
     @Override
@@ -279,9 +297,7 @@ public class Table3D extends Table {
 
     @Override
     public void populateCompareValues(Table otherTable) {
-        loaded = false;
         if(null == otherTable || !(otherTable instanceof Table3D)) {
-            loaded = true;
             return;
         }
 
@@ -290,7 +306,6 @@ public class Table3D extends Table {
                 data[0].length != compareTable3D.data[0].length ||
                 xAxis.getDataSize() != compareTable3D.xAxis.getDataSize() ||
                 yAxis.getDataSize() != compareTable3D.yAxis.getDataSize()) {
-            loaded = true;
             return;
         }
 
@@ -305,11 +320,11 @@ public class Table3D extends Table {
             }
             x++;
         }
-        loaded = true;
-        refreshDataBounds();
 
         xAxis.populateCompareValues(compareTable3D.getXAxis());
         yAxis.populateCompareValues(compareTable3D.getYAxis());
+
+        calcCellRanges();
     }
 
     @Override
@@ -1045,65 +1060,6 @@ class CopyTable3DWorker extends SwingWorker<Void, Void> {
     public void done() {
         Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
         if(null != ancestorWindow){
-            ancestorWindow.setCursor(null);
-        }
-        table.setCursor(null);
-        ECUEditorManager.getECUEditor().setCursor(null);
-    }
-}
-
-class RefreshDataBounds3DWorker extends SwingWorker<Void, Void> {
-    Table3D table;
-
-    public RefreshDataBounds3DWorker(Table3D table) {
-        this.table = table;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        try {
-            double maxBin = table.get3dData()[0][0].getBinValue();
-            double minBin = table.get3dData()[0][0].getBinValue();
-
-            double maxCompare = table.get3dData()[0][0].getCompareValue();
-            double minCompare = table.get3dData()[0][0].getCompareValue();
-
-            for(DataCell[] column : table.get3dData()) {
-                for(DataCell cell : column) {
-                    double cellVal = cell.getBinValue();
-                    double compareVal = cell.getCompareValue();
-
-                    if(cellVal > maxBin) {
-                        maxBin = cellVal;
-                    }
-                    if(cellVal < minBin) {
-                        minBin = cellVal;
-                    }
-                    if(compareVal > maxCompare) {
-                        maxCompare = compareVal;
-                    }
-                    if(compareVal < minCompare) {
-                        minCompare = compareVal;
-                    }
-                }
-            }
-            table.setMaxBin(maxBin);
-            table.setMinBin(minBin);
-            table.setMaxCompare(maxCompare);
-            table.setMinCompare(minCompare);
-            table.getXAxis().refreshDataBounds();
-            table.getYAxis().refreshDataBounds();
-        } catch (Exception ex) {
-            ;// Do nothing.
-        }
-        return null;
-    }
-
-    @Override
-    public void done() {
-        table.drawTable();
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
-        if(null != ancestorWindow) {
             ancestorWindow.setCursor(null);
         }
         table.setCursor(null);

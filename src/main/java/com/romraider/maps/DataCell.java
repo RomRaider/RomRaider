@@ -180,9 +180,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         double scaleValue = getBinValue();
         table.getMaxValue();
-        if (table.getMaxValue() < table.getMaxBin()) {
+        if (table.getMaxValue() < scaleValue) {
             return getSettings().getWarningColor();
-        } else if (table.getMinValue() > table.getMinBin()) {
+        } else if (table.getMinValue() > scaleValue) {
             return getSettings().getWarningColor();
         } else {
             // limits not set, scale based on table values
@@ -199,7 +199,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void drawCell() {
-        if(!staticValue && (table == null || !table.isLoaded()) ) {
+        if(table == null) {
             return;
         }
 
@@ -383,64 +383,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             return;
         }
 
-
-        // get current real and compare.
-        double currentBin = getBinValue();
-        double currentCompare = getCompareValue();
-
         // set bin.
         binValue = checkedValue;
-
         table.refreshCompares();
-
-        // get new real and compare.
-        double compareValue = getCompareValue();
-
-        // check for compare refresh.
-        if( (currentCompare == table.getMaxCompare() && compareValue < currentCompare) ||
-                (currentCompare == table.getMinCompare() && compareValue > currentCompare)) {
-            // look for a new max or min.
-            table.refreshDataBounds();
-            return;
-        }
-
-        boolean drawTable = false;
-
-        // if new max set max.
-        if(compareValue > table.getMaxCompare()) {
-            table.setMaxCompare(compareValue);
-            drawTable = true;
-        }
-        // if new min set min.
-        if(compareValue < table.getMinCompare()) {
-            table.setMinCompare(compareValue);
-            drawTable = true;
-        }
-
-        // check for bin refresh.
-        if( (currentBin == table.getMaxBin() && checkedValue < currentBin) ||
-                (currentBin == table.getMinBin() && checkedValue > currentBin)){
-            // look for a new max or min.
-            table.refreshDataBounds();
-            return;
-        }
-
-        // if new max set max.
-        if(checkedValue > table.getMaxBin()) {
-            table.setMaxBin(checkedValue);
-            drawTable = true;
-        }
-        // if new min set min.
-        if(checkedValue < table.getMinBin()) {
-            table.setMinBin(checkedValue);
-            drawTable = true;
-        }
-
-        if(drawTable) {
-            table.drawTable();
-        } else {
-            drawCell();
-        }
+        drawCell();
     }
 
     @Override
@@ -576,8 +522,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
             this.compareToValue = compareCell.originalValue;
         }
-
-        drawCell();
     }
 
     public void multiply(double factor) {

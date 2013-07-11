@@ -329,7 +329,7 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public void refreshDataBounds(){
+    public void calcCellRanges() {
         return; // Do nothing.
     }
 
