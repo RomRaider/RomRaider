@@ -64,7 +64,6 @@ import com.ecm.graphics.Graph3dFrameManager;
 import com.ecm.graphics.data.GraphData;
 import com.ecm.graphics.data.GraphDataListener;
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.DataCell;
 import com.romraider.maps.Scale;
@@ -81,6 +80,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final JButton incrementCoarse = new JButton();
     private final JButton decrementCoarse = new JButton();
     private final JButton enable3d = new JButton();
+    private final JButton colorCells = new JButton();
 
     private final JButton setValue = new JButton("Set");
     private final JButton multiply = new JButton("Mul");
@@ -101,6 +101,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final URL incrementCoarseImage = getClass().getResource("/graphics/icon-inccoarse.png");
     private final URL decrementCoarseImage = getClass().getResource("/graphics/icon-deccoarse.png");
     private final URL enable3dImage = getClass().getResource("/graphics/3d_render.png");
+    private final URL colorCellImage = getClass().getResource("/graphics/icon-palette.png");
 
     private final TitledBorder toolbarBorder = BorderFactory.createTitledBorder(Settings.defaultTableToolBarName);
 
@@ -135,6 +136,14 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         setValuePanel.add(multiply);
         this.add(setValuePanel);
 
+        colorCells.setEnabled(false);
+        enable3d.setEnabled(false);
+
+        JPanel otherPanel = new JPanel();
+        otherPanel.add(colorCells);
+        otherPanel.add(enable3d);
+        this.add(otherPanel);
+
         JPanel scaleSelectionPanel = new JPanel();
         scaleSelectionPanel.add(scaleSelection);
         // TODO: what is this?
@@ -150,6 +159,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         setValue.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         multiply.setPreferredSize(new Dimension(33, 23));
         multiply.setBorder(createLineBorder(new Color(150, 150, 150), 1));
+
+        colorCells.setBorder(createLineBorder(new Color(150, 150, 150), 1));
 
         scaleSelection.setPreferredSize(new Dimension(80, 23));
         scaleSelection.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -179,6 +190,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         multiply.setToolTipText("Multiply Value");
         overlayLog.setToolTipText("Enable Overlay Of Real Time Log Data");
         clearOverlay.setToolTipText("Clear Log Data Overlay Highlights");
+        colorCells.setToolTipText("Color Table Cells");
 
         incrementFine.addMouseListener(this);
         decrementFine.addMouseListener(this);
@@ -190,6 +202,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         scaleSelection.addItemListener(this);
         overlayLog.addItemListener(this);
         clearOverlay.addActionListener(this);
+        colorCells.addMouseListener(this);
 
         // key binding actions
         Action enterAction = new AbstractAction() {
@@ -220,9 +233,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         im.put(enter, "enterAction");
         getActionMap().put(im.get(enter), enterAction);
 
-        this.add(enable3d);
-        enable3d.setEnabled(false);
-
         //this.add(scaleSelection);
 
         liveDataPanel.add(overlayLog);
@@ -240,18 +250,18 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         incrementByCoarse.getInputMap().put(enter, "enterAction");
         setValueText.getInputMap().put(enter, "enterAction");
         setValue.getInputMap().put(enter, "enterAction");
-        incrementFine.getInputMap().put(enter, "enterAction");
 
         this.setEnabled(true);
     }
 
     public void updateIcons() {
-        ECUEditor editor = ECUEditorManager.getECUEditor();
-        incrementFine.setIcon(rescaleImageIcon(new ImageIcon(incrementFineImage), editor.getSettings().getTableIconScale()));
-        decrementFine.setIcon(rescaleImageIcon(new ImageIcon(decrementFineImage), editor.getSettings().getTableIconScale()));
-        incrementCoarse.setIcon(rescaleImageIcon(new ImageIcon(incrementCoarseImage), editor.getSettings().getTableIconScale()));
-        decrementCoarse.setIcon(rescaleImageIcon(new ImageIcon(decrementCoarseImage), editor.getSettings().getTableIconScale()));
-        enable3d.setIcon(rescaleImageIcon(new ImageIcon(enable3dImage), editor.getSettings().getTableIconScale()));
+        Settings settings = ECUEditorManager.getECUEditor().getSettings();
+        incrementFine.setIcon(rescaleImageIcon(new ImageIcon(incrementFineImage), settings.getTableIconScale()));
+        decrementFine.setIcon(rescaleImageIcon(new ImageIcon(decrementFineImage), settings.getTableIconScale()));
+        incrementCoarse.setIcon(rescaleImageIcon(new ImageIcon(incrementCoarseImage), settings.getTableIconScale()));
+        decrementCoarse.setIcon(rescaleImageIcon(new ImageIcon(decrementCoarseImage), settings.getTableIconScale()));
+        enable3d.setIcon(rescaleImageIcon(new ImageIcon(enable3dImage), settings.getTableIconScale()));
+        colorCells.setIcon(rescaleImageIcon(new ImageIcon(colorCellImage), settings.getTableIconScale()));
     }
 
     private ImageIcon rescaleImageIcon(ImageIcon imageIcon, int percentOfOriginal) {
@@ -360,6 +370,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         liveDataValue.setEnabled(enabled);
 
+        colorCells.setEnabled(enabled);
+
         //Only enable the 3d button if table includes 3d data
         if (null != currentTable && currentTable.getType() == Settings.TABLE_3D && enabled) {
             enable3d.setEnabled(true);
@@ -415,6 +427,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             multiply(curTable);
         } else if (e.getSource() == setValue) {
             setValue(curTable);
+        } else if (e.getSource() == colorCells) {
+            colorCells(curTable);
         }
     }
 
@@ -575,6 +589,11 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             Graph3dFrameManager.openGraph3dFrame(graphValues, minV, maxV, xValues, yValues, xLabel, yLabel, zLabel, currentTable.getName());
             GraphData.addGraphDataListener(this);
         }
+    }
+
+    public void colorCells(Table currentTable) {
+        currentTable.calcCellRanges();
+        currentTable.drawTable();
     }
 
     public void setCoarseValue(double input) {

@@ -83,6 +83,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.setFont(defaultFont);
         this.setOpaque(true);
         this.setVisible(true);
+        drawCell();
     }
 
     public DataCell(Table table) {
@@ -199,7 +200,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void drawCell() {
-        if(table == null) {
+        if(!staticValue && table == null) {
+            // Table will be null in the static case.
             return;
         }
 
