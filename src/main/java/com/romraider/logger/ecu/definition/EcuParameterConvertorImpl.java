@@ -108,4 +108,7 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
         return getUnits();
     }
 
+    public String getExpression() {
+        return expression;
+    }
 }

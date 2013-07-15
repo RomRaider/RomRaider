@@ -67,4 +67,7 @@ public final class EcuDtcConvertorImpl implements EcuDataConvertor {
         return getUnits();
     }
 
+    public String getExpression() {
+        return "x";
+    }
 }
