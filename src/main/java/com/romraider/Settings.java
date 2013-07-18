@@ -36,6 +36,7 @@ import java.util.Vector;
 
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.logger.ecu.definition.EcuDefinition;
+import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
 
 public class Settings implements Serializable {
 
@@ -150,6 +151,8 @@ public class Settings implements Serializable {
 
     private int editorIconScale = DEFAULT_EDITOR_ICON_SCALE;
     private int tableIconScale = DEFAULT_TABLE_ICON_SCALE;
+
+    private static Map<String, IntfKitSensor> phidgetSensors;
 
     public Settings() {
         //center window by default
@@ -688,5 +691,15 @@ public class Settings implements Serializable {
             final Locale lc = new Locale(language[0], language[1]);
             Locale.setDefault(lc);
         }
+    }
+
+    public static final Map<String, IntfKitSensor> getPhidgetSensors() {
+        return Settings.phidgetSensors;
+    }
+
+    public static final void setPhidgetSensors(
+            Map<String, IntfKitSensor> phidgetSensors) {
+
+        Settings.phidgetSensors = phidgetSensors;
     }
 }
