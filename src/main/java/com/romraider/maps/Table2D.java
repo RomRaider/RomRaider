@@ -45,6 +45,7 @@ import com.romraider.util.AxisRange;
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
     private Table1D axis = new Table1D();
+    private JLabel axisLabel;
 
     private CopyTable2DWorker copyTable2DWorker;
     private CopySelection2DWorker copySelection2DWorker;
@@ -141,26 +142,32 @@ public class Table2D extends Table {
 
         if(null == axis.getName() || axis.getName().length() < 1 || "" == axis.getName()) {
             ;// Do not add label.
-        } else if("0x" == axis.getScale().getUnit()) {
+        } else if(null == axis.getCurrentScale() || "0x" == axis.getCurrentScale().getUnit()) {
             // static or no scale exists.
-            add(new JLabel(axis.getName(), JLabel.CENTER), BorderLayout.NORTH);
+            axisLabel = new JLabel(axis.getName(), JLabel.CENTER);
+            add(axisLabel, BorderLayout.NORTH);
         } else {
-            add(new JLabel(axis.getName() + " (" + axis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
+            axisLabel = new JLabel(axis.getName() + " (" + axis.getCurrentScale().getUnit() + ")", JLabel.CENTER);
+            add(axisLabel, BorderLayout.NORTH);
         }
-        add(new JLabel(getScale().getUnit(), JLabel.CENTER), BorderLayout.SOUTH);
+
+        tableLabel = new JLabel(getCurrentScale().getUnit(), JLabel.CENTER);
+        add(tableLabel, BorderLayout.SOUTH);
         repaint();
     }
 
     @Override
-    public void increment(double increment) {
-        super.increment(increment);
-        axis.increment(increment);
-    }
+    public void updateTableLabel() {
+        if(null == axis.getName() || axis.getName().length() < 1 || "" == axis.getName()) {
+            ;// Do not update label.
+        } else if(null == axis.getCurrentScale() || "0x" == axis.getCurrentScale().getUnit()) {
+            // static or no scale exists.
+            axisLabel.setText(axis.getName());
+        } else {
+            axisLabel.setText(axis.getName() + " (" + axis.getCurrentScale().getUnit() + ")");
+        }
 
-    @Override
-    public void multiply(double factor) {
-        super.multiply(factor);
-        axis.multiply(factor);
+        tableLabel.setText(getCurrentScale().getUnit());
     }
 
     @Override
@@ -182,22 +189,10 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void undoSelected() {
-        super.undoSelected();
-        axis.undoSelected();
-    }
-
-    @Override
     public byte[] saveFile(byte[] binData) {
         binData = super.saveFile(binData);
         binData = axis.saveFile(binData);
         return binData;
-    }
-
-    @Override
-    public void setRealValue(String realValue) {
-        axis.setRealValue(realValue);
-        super.setRealValue(realValue);
     }
 
     @Override
@@ -312,12 +307,6 @@ public class Table2D extends Table {
     public void validateScaling() {
         super.validateScaling();
         axis.validateScaling();
-    }
-
-    @Override
-    public void setScaleIndex(int scaleIndex) {
-        super.setScaleIndex(scaleIndex);
-        axis.setScaleByName(getScale().getName());
     }
 
     @Override

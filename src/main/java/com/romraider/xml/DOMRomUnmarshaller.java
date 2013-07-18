@@ -530,14 +530,8 @@ public final class DOMRomUnmarshaller {
                 } else if (n.getNodeName().equalsIgnoreCase("scaling")) {
                     // check whether scale already exists. if so, modify, else
                     // use new instance
-                    Scale baseScale = new Scale();
-                    try {
-                        baseScale = table.getScaleByName(unmarshallAttribute(n,
-                                "name", "x"));
-                    } catch (Exception ex) {
-                    }
-
-                    table.setScale(unmarshallScale(n, baseScale));
+                    Scale baseScale = table.getScale(unmarshallAttribute(n,"name", "x"));
+                    table.addScale(unmarshallScale(n, baseScale));
 
                 } else if (n.getNodeName().equalsIgnoreCase("data")) {
                     // parse and add data to table

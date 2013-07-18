@@ -48,11 +48,11 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                 intType = "uint";
             }
 
-            unit.setText(table.getScale().getUnit());
-            byteToReal.setText(table.getScale().getExpression());
-            realToByte.setText(table.getScale().getByteExpression());
-            fine.setText(table.getScale().getFineIncrement() + "");
-            coarse.setText(table.getScale().getCoarseIncrement() + "");
+            unit.setText(table.getCurrentScale().getUnit());
+            byteToReal.setText(table.getCurrentScale().getExpression());
+            realToByte.setText(table.getCurrentScale().getByteExpression());
+            fine.setText(table.getCurrentScale().getFineIncrement() + "");
+            coarse.setText(table.getCurrentScale().getCoarseIncrement() + "");
         }
 
         storageSize.setText(intType + (table.getStorageType() * 8));

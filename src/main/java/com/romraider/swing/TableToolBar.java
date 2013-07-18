@@ -40,6 +40,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Vector;
 
+import javax.naming.NameNotFoundException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -146,8 +147,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         JPanel scaleSelectionPanel = new JPanel();
         scaleSelectionPanel.add(scaleSelection);
-        // TODO: what is this?
-        //this.add(scaleSelectionPanel);
+        this.add(scaleSelectionPanel);
 
         incrementFine.setBorder(createLineBorder(new Color(150, 150, 150), 1));
         decrementFine.setBorder(createLineBorder(new Color(150, 150, 150), 1));
@@ -296,11 +296,15 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void updateTableToolBar() {
-        this.selectedTable = getTable();
         this.updateTableToolBar(getTable());
     }
 
     public void updateTableToolBar(Table selectedTable) {
+        if(null != this.selectedTable && this.selectedTable.equals(selectedTable)) {
+            // Already up to date.  Return.
+            return;
+        }
+
         this.selectedTable = selectedTable;
         double fineIncrement = 0;
         double coarseIncrement = 0;
@@ -316,8 +320,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         try {
             // enable the toolbar.
-            fineIncrement = Math.abs(selectedTable.getScale().getFineIncrement());
-            coarseIncrement = Math.abs(selectedTable.getScale().getCoarseIncrement());
+            fineIncrement = Math.abs(selectedTable.getCurrentScale().getFineIncrement());
+            coarseIncrement = Math.abs(selectedTable.getCurrentScale().getCoarseIncrement());
         } catch (Exception ex) {
             // scaling units haven't been added yet -- no problem
         }
@@ -328,6 +332,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         this.enable3d.setEnabled(selectedTable.getType() == Settings.TABLE_3D);
 
         setScales(selectedTable.getScales());
+        this.scaleSelection.setSelectedItem(selectedTable.getCurrentScale().getName());
         toggleTableToolBar(selectedTable);
     }
 
@@ -575,7 +580,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
                ECUEditorManager.getECUEditor().rightPanel.add(graphFrame);
              */
 
-
+            // TODO: do we want to get the max/min allowed or the max/min current?
+            table3d.calcCellRanges();
             double maxV = table3d.getMaxReal();
             double minV = table3d.getMinReal();
             //TODO Remove this when above is working
@@ -650,7 +656,12 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         if (e.getSource() == scaleSelection) {
             // scale changed
-            curTable.setScaleIndex(scaleSelection.getSelectedIndex());
+            try {
+
+                curTable.setScaleByName((String)scaleSelection.getSelectedItem());
+            } catch (NameNotFoundException e1) {
+                e1.printStackTrace();
+            }
         } else if (e.getSource() == overlayLog) {
             // enable/disable log overlay and live data display
             curTable.setOverlayLog(overlayLog.isSelected());

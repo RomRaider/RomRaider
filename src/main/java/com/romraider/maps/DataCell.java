@@ -24,7 +24,6 @@ import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static javax.swing.BorderFactory.createLineBorder;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -48,7 +47,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     int unSelectMask1 = MouseEvent.BUTTON1_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
     int unSelectMask2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
 
-    private Scale scale = new Scale();
     private Table table;
 
     private final Color scaleTextColor = new Color(0, 0, 0);
@@ -90,20 +88,19 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.table = table;
     }
 
-    public DataCell(Table table, double originalValue, int x, int y, Scale scale, Dimension size) {
+    public DataCell(Table table, double originalValue, int x, int y) {
         this.table = table;
         this.originalValue = originalValue;
         this.binValue = originalValue;
         this.x = x;
         this.y = y;
-        this.scale = scale;
         this.setHorizontalAlignment(CENTER);
         this.setVerticalAlignment(CENTER);
         this.setFont(defaultFont);
         this.setOpaque(true);
         this.setVisible(true);
         this.addMouseListener(this);
-        this.setPreferredSize(size);
+        this.setPreferredSize(getSettings().getCellSize());
     }
 
     public double getBinValue() {
@@ -111,7 +108,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public double getRealValue() {
-        return JEPUtil.evaluate(scale.getExpression(), binValue);
+        return JEPUtil.evaluate(table.getCurrentScale().getExpression(), binValue);
     }
 
     public void setRealValue(String input) {
@@ -119,7 +116,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         try {
             double result = 0.0;
             if (!"x".equalsIgnoreCase(input)) {
-                result = JEPUtil.evaluate(scale.getByteExpression(), Double.parseDouble(input));
+                result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), Double.parseDouble(input));
                 if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
                     result = (int) Math.round(result);
                 }
@@ -149,7 +146,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public double getRealCompareValue() {
-        return JEPUtil.evaluate(scale.getExpression(), binValue) - JEPUtil.evaluate(scale.getExpression(), compareToValue);
+        return JEPUtil.evaluate(table.getCurrentScale().getExpression(), binValue) - JEPUtil.evaluate(table.getCurrentScale().getExpression(), compareToValue);
     }
 
     public Color getCompareColor() {
@@ -179,11 +176,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             }
         }
 
-        double scaleValue = getBinValue();
-        table.getMaxValue();
-        if (table.getMaxValue() < scaleValue) {
+        if (table.getMaxAllowedBin() < getBinValue()) {
             return getSettings().getWarningColor();
-        } else if (table.getMinValue() > scaleValue) {
+        } else if (table.getMinAllowedBin() > getBinValue()) {
             return getSettings().getWarningColor();
         } else {
             // limits not set, scale based on table values
@@ -192,7 +187,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                 // if all values are the same, color will be middle value
                 colorScale = .5;
             } else {
-                colorScale = (scaleValue - table.getMinBin()) / (table.getMaxBin() - table.getMinBin());
+                colorScale = (getBinValue() - table.getMinBin()) / (table.getMaxBin() - table.getMinBin());
             }
 
             return getScaledColor(colorScale);
@@ -287,7 +282,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             return staticText;
         }
 
-        DecimalFormat formatter = new DecimalFormat(scale.getFormat());
+        DecimalFormat formatter = new DecimalFormat(table.getCurrentScale().getFormat());
         String displayString = "";
 
         if (!table.isComparing()) {
@@ -345,41 +340,13 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         double checkedValue = newBinValue;
 
         // make sure it's in range
-        if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
-            if (table.isSignedData()) {
-                int minAllowedValue = 0;
-                int maxAllowedValue = 0;
-                switch (table.getStorageType()) {
-                case 1:
-                    minAllowedValue = Byte.MIN_VALUE;
-                    maxAllowedValue = Byte.MAX_VALUE;
-                    break;
-                case 2:
-                    minAllowedValue = Short.MIN_VALUE;
-                    maxAllowedValue = Short.MAX_VALUE;
-                    break;
-                case 4:
-                    minAllowedValue = Integer.MIN_VALUE;
-                    maxAllowedValue = Integer.MAX_VALUE;
-                    break;
-                }
-                if (checkedValue < minAllowedValue ) {
-                    checkedValue = minAllowedValue;
-                }
-                else if (checkedValue > maxAllowedValue) {
-                    checkedValue = maxAllowedValue;
-                }
-            }
-            else {
-                if (checkedValue < 0) {
-                    checkedValue = 0;
-                }
-                else if (checkedValue > Math.pow(256, table.getStorageType()) - 1) {
-                    checkedValue = (int) (Math.pow(256, table.getStorageType()) - 1);
-                }
-            }
+        if(checkedValue < table.getMinAllowedBin()) {
+            checkedValue = table.getMinAllowedBin();
         }
 
+        if(checkedValue > table.getMaxAllowedBin()) {
+            checkedValue = table.getMaxAllowedBin();
+        }
 
         if(binValue == checkedValue) {
             return;
@@ -469,11 +436,11 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public void increment(double increment) {
         double oldValue = getRealValue();
 
-        if (table.getScale().getCoarseIncrement() < 0.0) {
+        if (table.getCurrentScale().getCoarseIncrement() < 0.0) {
             increment = 0.0 - increment;
         }
 
-        double incResult = JEPUtil.evaluate(scale.getByteExpression(), (oldValue + increment));
+        double incResult = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), (oldValue + increment));
         if (table.getStorageType() == Settings.STORAGE_TYPE_FLOAT) {
             if(binValue != incResult) {
                 this.setBinValue(incResult);

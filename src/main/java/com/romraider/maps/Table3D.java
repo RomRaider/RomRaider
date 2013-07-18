@@ -53,6 +53,9 @@ public class Table3D extends Table {
     private static final long serialVersionUID = 3103448753263606599L;
     private Table1D xAxis = new Table1D();
     private Table1D yAxis = new Table1D();
+    private JLabel xAxisLabel;
+    private JLabel yAxisLabel;
+
     @SuppressWarnings("hiding")
     DataCell[][] data = new DataCell[1][1];
     private boolean swapXY = false;
@@ -205,7 +208,7 @@ public class Table3D extends Table {
                     data[x][y].setForeground(Color.GRAY);
                 }
 
-                data[x][y] = new DataCell(this, cellBinValue, x, y, scales.get(scaleIndex), getSettings().getCellSize());
+                data[x][y] = new DataCell(this, cellBinValue, x, y);
                 offset++;
             }
         }
@@ -224,15 +227,58 @@ public class Table3D extends Table {
         JPanel topPanel = new JPanel(topLayout);
         this.add(topPanel, BorderLayout.NORTH);
         topPanel.add(new JLabel(name, JLabel.CENTER), BorderLayout.NORTH);
-        topPanel.add(new JLabel(xAxis.getName() + " (" + xAxis.getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
 
-        JLabel yLabel = new JLabel(yAxis.getName() + " (" + yAxis.getScale().getUnit() + ")");
-        yLabel.setUI(new VerticalLabelUI(false));
-        add(yLabel, BorderLayout.WEST);
+        if(null == xAxis.getName() || xAxis.getName().length() < 1 || "" == xAxis.getName()) {
+            ;// Do not add label.
+        } else if(null == xAxis.getCurrentScale() || "0x" == xAxis.getCurrentScale().getUnit()) {
+            // static or no scale exists.
+            xAxisLabel = new JLabel(xAxis.getName(), JLabel.CENTER);
+            topPanel.add(xAxisLabel, BorderLayout.NORTH);
+        } else {
+            xAxisLabel = new JLabel(xAxis.getName() + " (" + xAxis.getCurrentScale().getUnit() + ")", JLabel.CENTER);
+            topPanel.add(xAxisLabel, BorderLayout.NORTH);
+        }
 
-        add(new JLabel(getScale().getUnit(), JLabel.CENTER), BorderLayout.SOUTH);
+        yAxisLabel = null;
+        if(null == yAxis.getName() || yAxis.getName().length() < 1 || "" == yAxis.getName()) {
+            ;// Do not add label.
+        } else if(null == yAxis.getCurrentScale() || "0x" == yAxis.getCurrentScale().getUnit()) {
+            // static or no scale exists.
+            yAxisLabel = new JLabel(yAxis.getName());
+        } else {
+            yAxisLabel = new JLabel(yAxis.getName() + " (" + yAxis.getCurrentScale().getUnit() + ")");
+        }
+
+        yAxisLabel.setUI(new VerticalLabelUI(false));
+        add(yAxisLabel, BorderLayout.WEST);
+
+        tableLabel = new JLabel(getCurrentScale().getUnit(), JLabel.CENTER);
+        add(tableLabel, BorderLayout.SOUTH);
 
         calcCellRanges();
+    }
+
+    @Override
+    public void updateTableLabel() {
+        if(null == xAxis.getName() || xAxis.getName().length() < 1 || "" == xAxis.getName()) {
+            ;// Do not update label.
+        } else if(null == xAxis.getCurrentScale() || "0x" == xAxis.getCurrentScale().getUnit()) {
+            // static or no scale exists.
+            xAxisLabel.setText(xAxis.getName());
+        } else {
+            xAxisLabel.setText(xAxis.getName() + " (" + xAxis.getCurrentScale().getUnit() + ")");
+        }
+
+        if(null == yAxis.getName() || yAxis.getName().length() < 1 || "" == yAxis.getName()) {
+            ;// Do not update label.
+        } else if(null == yAxis.getCurrentScale() || "0x" == yAxis.getCurrentScale().getUnit()) {
+            // static or no scale exists.
+            yAxisLabel.setText(yAxis.getName());
+        } else {
+            yAxisLabel.setText(yAxis.getName() + " (" + yAxis.getCurrentScale().getUnit() + ")");
+        }
+
+        tableLabel.setText(getCurrentScale().getUnit());
     }
 
     @Override
@@ -364,8 +410,6 @@ public class Table3D extends Table {
                 }
             }
         }
-        xAxis.increment(increment);
-        yAxis.increment(increment);
     }
 
     @Override
@@ -379,8 +423,6 @@ public class Table3D extends Table {
                 }
             }
         }
-        xAxis.multiply(factor);
-        yAxis.multiply(factor);
     }
 
     @Override
@@ -464,8 +506,6 @@ public class Table3D extends Table {
                 }
             }
         }
-        yAxis.undoSelected();
-        xAxis.undoSelected();
     }
 
 
@@ -782,53 +822,8 @@ public class Table3D extends Table {
         }
     }
 
-    @Override
-    public void setScaleIndex(int scaleIndex) {
-        super.setScaleIndex(scaleIndex);
-        xAxis.setScaleByName(getScale().getName());
-        yAxis.setScaleByName(getScale().getName());
-    }
-
     public DataCell[][] get3dData() {
         return data;
-    }
-
-    public double getMinReal() {
-        if (getScale().getMin() == 0.0 && getScale().getMax() == 0.0) {
-            double low = Double.MAX_VALUE;
-
-            for (DataCell[] column : data) {
-                for (DataCell cell : column) {
-                    double value = cell.getRealValue();
-                    if (value < low) {
-                        low = value;
-                    }
-                }
-            }
-
-            return low;
-        } else {
-            return getScale().getMin();
-        }
-    }
-
-    public double getMaxReal() {
-        if (getScale().getMin() == 0.0 && getScale().getMax() == 0.0) {
-            double high = -Double.MAX_VALUE;
-
-            for (DataCell[] column : data) {
-                for (DataCell cell : column) {
-                    double value = cell.getRealValue();
-                    if (value > high) {
-                        high = value;
-                    }
-                }
-            }
-
-            return high;
-        } else {
-            return getScale().getMax();
-        }
     }
 
     @Override

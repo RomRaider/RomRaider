@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.naming.NameNotFoundException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -65,7 +66,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected String category = "Other";
     protected String description = Settings.BLANK;
     protected Vector<Scale> scales = new Vector<Scale>();
-    protected int scaleIndex = 0; // index of selected scale
+    protected Scale curScale; // current scale
 
     protected int storageAddress;
     protected int storageType;
@@ -78,6 +79,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected BorderLayout borderLayout = new BorderLayout();
     protected GridLayout centerLayout = new GridLayout(1, 1, 0, 0);
     protected JPanel centerPanel = new JPanel(centerLayout);
+    protected JLabel tableLabel;
     protected int verticalOverhead = 103;
     protected int horizontalOverhead = 2;
     protected int cellHeight = (int) getSettings().getCellSize().getHeight();
@@ -100,8 +102,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected CopySelectionWorker copySelectionWorker;
     protected RefreshTableCompareWorker refreshTableCompareWorker;
 
-    protected double minAllowedValue = 0.0;
-    protected double maxAllowedValue = 0.0;
+    protected double minAllowedBin = 0.0;
+    protected double maxAllowedBin = 0.0;
 
     protected double maxBin;
     protected double minBin;
@@ -120,7 +122,6 @@ public abstract class Table extends JPanel implements Serializable {
 
     public Table() {
         scales.clear();
-        scales.add(new Scale());
 
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
@@ -444,7 +445,7 @@ public abstract class Table extends JPanel implements Serializable {
                             signed);
                 }
 
-                data[i] = new DataCell(this, dataValue, 0, i, scales.get(scaleIndex), getSettings().getCellSize());
+                data[i] = new DataCell(this, dataValue, 0, i);
                 data[i].setPreferredSize(new Dimension(cellWidth, cellHeight));
                 centerPanel.add(data[i]);
 
@@ -498,25 +499,24 @@ public abstract class Table extends JPanel implements Serializable {
         this.description = description;
     }
 
-    public Scale getScale() {
-        return scales.get(scaleIndex);
+    public Scale getCurrentScale() {
+        return this.curScale;
+    }
+
+    public Scale getScale(String scaleName) throws NameNotFoundException {
+        for (Scale scale : scales) {
+            if (scale.getName().equalsIgnoreCase(scaleName)) {
+                return scale;
+            }
+        }
+        return new Scale();
     }
 
     public Vector<Scale> getScales() {
         return scales;
     }
 
-    public Scale getScaleByName(String inputName) throws Exception {
-        // look for scale, else throw exception
-        for (Scale scale : scales) {
-            if (scale.getName().equalsIgnoreCase(inputName)) {
-                return scale;
-            }
-        }
-        throw new Exception();
-    }
-
-    public void setScale(Scale scale) {
+    public void addScale(Scale scale) {
         // look for scale, replace or add new
         for (int i = 0; i < scales.size(); i++) {
             if (scales.get(i).getName().equalsIgnoreCase(scale.getName())) {
@@ -525,6 +525,10 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
         scales.add(scale);
+
+        if(null == curScale) {
+            this.curScale = scale;
+        }
         validateScaling();
     }
 
@@ -657,20 +661,20 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public double getMaxValue() {
-        double maxVal = getScale().getMax();
-        if(0.0 == maxVal) {
-            maxVal = maxAllowedValue;
-        }
-        return maxVal;
+    public double getMaxAllowedBin() {
+        return maxAllowedBin;
     }
 
-    public double getMinValue() {
-        double minVal = getScale().getMin();
-        if(0.0 == minVal) {
-            minVal = minAllowedValue;
-        }
-        return minVal;
+    public double getMinAllowedBin() {
+        return minAllowedBin;
+    }
+
+    public double getMaxAllowedReal() {
+        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxAllowedBin());
+    }
+
+    public double getMinAllowedReal() {
+        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinAllowedBin());
     }
 
     private void calcValueRange() {
@@ -678,30 +682,30 @@ public abstract class Table extends JPanel implements Serializable {
             if (isSignedData()) {
                 switch (getStorageType()) {
                 case 1:
-                    minAllowedValue = Byte.MIN_VALUE;
-                    maxAllowedValue = Byte.MAX_VALUE;
+                    minAllowedBin = Byte.MIN_VALUE;
+                    maxAllowedBin = Byte.MAX_VALUE;
                     break;
                 case 2:
-                    minAllowedValue = Short.MIN_VALUE;
-                    maxAllowedValue = Short.MAX_VALUE;
+                    minAllowedBin = Short.MIN_VALUE;
+                    maxAllowedBin = Short.MAX_VALUE;
                     break;
                 case 4:
-                    minAllowedValue = Integer.MIN_VALUE;
-                    maxAllowedValue = Integer.MAX_VALUE;
+                    minAllowedBin = Integer.MIN_VALUE;
+                    maxAllowedBin = Integer.MAX_VALUE;
                     break;
                 }
             }
             else {
-                maxAllowedValue = (Math.pow(256, getStorageType()) - 1);
-                minAllowedValue = 0.0;
+                maxAllowedBin = (Math.pow(256, getStorageType()) - 1);
+                minAllowedBin = 0.0;
             }
         } else {
-            maxAllowedValue = Float.MAX_VALUE;
+            maxAllowedBin = Float.MAX_VALUE;
 
             if(isSignedData()) {
-                minAllowedValue = 0.0;
+                minAllowedBin = 0.0;
             } else {
-                minAllowedValue = -Float.MAX_VALUE;
+                minAllowedBin = -Float.MAX_VALUE;
             }
         }
     }
@@ -743,6 +747,14 @@ public abstract class Table extends JPanel implements Serializable {
 
     public double getMinBin() {
         return this.minBin;
+    }
+
+    public double getMaxReal() {
+        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
+    }
+
+    public double getMinReal() {
+        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
     }
 
     public void setMaxBin(double maxBin) {
@@ -821,7 +833,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void setRealValue(String realValue) {
-        if (!!locked && !(userLevel > getSettings().getUserLevel())) {
+        if (!locked && userLevel <= getSettings().getUserLevel()) {
             for(DataCell cell : data) {
                 if (cell.isSelected()) {
                     cell.setRealValue(realValue);
@@ -1054,34 +1066,36 @@ public abstract class Table extends JPanel implements Serializable {
                 scales.add(new Scale());
             }
 
-            double startValue = 5;
-            double toReal = JEPUtil.evaluate(scales.get(scaleIndex).getExpression(), startValue); // convert real world value of "5"
-            double endValue = JEPUtil.evaluate(scales.get(scaleIndex).getByteExpression(), toReal);
+            for(Scale scale : scales) {
+                double startValue = 5;
+                double toReal = JEPUtil.evaluate(scale.getExpression(), startValue); // convert real world value of "5"
+                double endValue = JEPUtil.evaluate(scale.getByteExpression(), toReal);
 
-            // if real to byte doesn't equal 5, report conflict
-            if (Math.abs(endValue - startValue) > .001) {
+                // if real to byte doesn't equal 5, report conflict
+                if (Math.abs(endValue - startValue) > .001) {
 
-                JPanel panel = new JPanel();
-                panel.setLayout(new GridLayout(4, 1));
-                panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
-                panel.add(new JLabel("To real value: " + scales.get(scaleIndex).getExpression()));
-                panel.add(new JLabel("To byte: " + scales.get(scaleIndex).getByteExpression()));
+                    JPanel panel = new JPanel();
+                    panel.setLayout(new GridLayout(4, 1));
+                    panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
+                    panel.add(new JLabel("To real value: " + scale.getExpression()));
+                    panel.add(new JLabel("To byte: " + scale.getByteExpression()));
 
-                JCheckBox check = new JCheckBox("Always display this message", true);
-                check.setHorizontalAlignment(JCheckBox.RIGHT);
-                panel.add(check);
+                    JCheckBox check = new JCheckBox("Always display this message", true);
+                    check.setHorizontalAlignment(JCheckBox.RIGHT);
+                    panel.add(check);
 
-                check.addActionListener(
-                        new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
+                    check.addActionListener(
+                            new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    getSettings().setCalcConflictWarning(((JCheckBox) e.getSource()).isSelected());
+                                }
                             }
-                        }
-                        );
+                            );
 
-                JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(this), panel,
-                        "Warning", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(this), panel,
+                            "Warning", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
@@ -1147,22 +1161,23 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
-    public int getScaleIndex() {
-        return scaleIndex;
-    }
-
-    public void setScaleIndex(int scaleIndex) {
-        // TODO: what is the scale max and min?
-        this.scaleIndex = scaleIndex;
-    }
-
-    public void setScaleByName(String scaleName) {
-        for (int i = 0; i < scales.size(); i++) {
-            if (scales.get(i).getName().equalsIgnoreCase(scaleName)) {
-                setScaleIndex(i);
-                break;
+    public void setScaleByName(String scaleName) throws NameNotFoundException {
+        for(Scale scale : scales) {
+            if(scale.getName().equalsIgnoreCase(scaleName)) {
+                if(!getCurrentScale().equals(scale)) {
+                    this.setCurrentScale(scale);
+                    updateTableLabel();
+                    drawTable();
+                }
+                return;
             }
         }
+
+        throw new NameNotFoundException();
+    }
+
+    public void setCurrentScale(Scale curScale) {
+        this.curScale = curScale;
     }
 
     public void setSettings(Settings settings)
@@ -1259,6 +1274,17 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setComparing(boolean comparing) {
         this.comparing = comparing;
+    }
+
+    public void updateTableLabel() {
+        if(null == name || name.length() < 1 || "" == name) {
+            ;// Do not update label.
+        } else if(null == getCurrentScale () || "0x" == getCurrentScale().getUnit()) {
+            // static or no scale exists.
+            tableLabel.setText(name);
+        } else {
+            tableLabel.setText(name + " (" + getCurrentScale().getUnit() + ")");
+        }
     }
 }
 

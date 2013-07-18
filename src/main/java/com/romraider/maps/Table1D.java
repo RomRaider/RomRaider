@@ -64,11 +64,13 @@ public class Table1D extends Table {
 
         if(null == name || name.length() < 1 || "" == name) {
             ;// Do not add label.
-        } else if("0x" == getScale().getUnit()) {
+        } else if(null == getCurrentScale () || "0x" == getCurrentScale().getUnit()) {
             // static or no scale exists.
-            add(new JLabel(name, JLabel.CENTER), BorderLayout.NORTH);
+            tableLabel = new JLabel(name, JLabel.CENTER);
+            add(tableLabel, BorderLayout.NORTH);
         } else {
-            add(new JLabel(name + " (" + getScale().getUnit() + ")", JLabel.CENTER), BorderLayout.NORTH);
+            tableLabel = new JLabel(name + " (" + getCurrentScale().getUnit() + ")", JLabel.CENTER);
+            add(tableLabel, BorderLayout.NORTH);
         }
     }
 
