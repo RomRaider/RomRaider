@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,14 +150,18 @@ public final class IntfKitManager {
                         final int inputCount = ik.getSensorCount();
                         for (int i = 0; i < inputCount; i++) {
                             final IntfKitSensor sensor = new IntfKitSensor();
-                            sensor.setInputNumber(i);
-                            final String inputName = String.format("Sensor %d:%d",
+                            final String inputName = String.format(
+                                    "Phidget IK Sensor %d:%d",
                                     serial,
                                     i);
+                            sensor.setInputNumber(i);
                             sensor.setInputName(inputName);
                             sensor.setUnits("raw value");
+                            sensor.setExpression("x");
+                            sensor.setFormat("0.00");
                             sensor.setMinValue(0);
                             sensor.setMaxValue(1000);
+                            sensor.setStepValue(100);
                             sensors.add(sensor);
                         }
                     }
