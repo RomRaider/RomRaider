@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,9 @@ package com.romraider.logger.external.phidget.interfacekit.io;
 
 /**
  * IntfKitSensor contains all the relevant information about a sensor as
- * reported from information gathered from the Phidget device.  An IntfKitSensor
- * is created for each input found on the Phidget device.
+ * reported from information gathered from the Phidget device or user defined
+ * in the settings.xml file.  An IntfKitSensor is created for each input found
+ * on the Phidget device.
  */
 public final class IntfKitSensor {
     private int inputNumber;
@@ -30,6 +31,9 @@ public final class IntfKitSensor {
     private String units;
     private float minValue;
     private float maxValue;
+    private String expression;
+    private String format;
+    private float step;
 
     /**
      * Create an IntfKitSensor with all fields set to type default values.
@@ -75,5 +79,29 @@ public final class IntfKitSensor {
 
     public void setMaxValue(float value) {
         maxValue = value;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public float getStepValue() {
+        return step;
+    }
+
+    public void setStepValue(float value) {
+        step = value;
     }
 }
