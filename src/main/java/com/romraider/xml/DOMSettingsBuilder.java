@@ -23,11 +23,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.imageio.metadata.IIOMetadataNode;
 
 import com.romraider.Settings;
+import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
 import com.romraider.swing.JProgressPane;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
@@ -315,6 +317,24 @@ public final class DOMSettingsBuilder {
                 plugin.setAttribute("id", entry.getKey());
                 plugin.setAttribute("port", entry.getValue());
                 plugins.appendChild(plugin);
+            }
+            final Map<String, IntfKitSensor> phidgets = Settings.getPhidgetSensors();
+            if (phidgets != null && !phidgets.isEmpty()) {
+                final Set<IntfKitSensor> sensors = (Set<IntfKitSensor>) phidgets.values();
+                IIOMetadataNode phidgetsNode = new IIOMetadataNode("phidgets");
+                for (IntfKitSensor entry : sensors) {
+                    IIOMetadataNode phidgetNode = new IIOMetadataNode("phidget");
+                    phidgetNode.setAttribute("name", entry.getInputName());
+                    phidgetNode.setAttribute("number", String.valueOf(entry.getInputNumber()));
+                    phidgetNode.setAttribute("units", entry.getUnits());
+                    phidgetNode.setAttribute("expression", entry.getExpression());
+                    phidgetNode.setAttribute("format", entry.getFormat());
+                    phidgetNode.setAttribute("min", String.valueOf(entry.getMinValue()));
+                    phidgetNode.setAttribute("max", String.valueOf(entry.getMaxValue()));
+                    phidgetNode.setAttribute("step", String.valueOf(entry.getStepValue()));
+                    phidgetsNode.appendChild(phidgetNode);
+                }
+                plugins.appendChild(phidgetsNode);
             }
             loggerSettings.appendChild(plugins);
         }
