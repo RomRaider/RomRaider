@@ -27,7 +27,7 @@ public class Scale implements Serializable {
 
     private static final long serialVersionUID = 5836610685159474795L;
 
-    private String name = "Default";
+    private String name = "Raw Value";
     private String unit = "0x";
     private String expression = "x";
     private String byteExpression = "x";

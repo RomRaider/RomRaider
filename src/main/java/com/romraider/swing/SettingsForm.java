@@ -132,6 +132,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         warningColor.setBackground(settings.getWarningColor());
         chckbxColorAxis.setSelected(settings.isColorAxis());
 
+        defaultScale.setText(settings.getDefaultScale());
+
         if(settings.getTableClipboardFormat().equalsIgnoreCase(Settings.AIRBOYS_CLIPBOARD_FORMAT)) {
             this.rdbtnAirboys.setSelected(true);
         } else if(settings.getTableClipboardFormat().equalsIgnoreCase(Settings.CUSTOM_CLIPBOARD_FORMAT)) {
@@ -200,6 +202,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         tableClickBehavior = new javax.swing.JComboBox();
         labelTableClick = new javax.swing.JLabel();
         tableClickCount = new javax.swing.JComboBox();
+        defaultScale = new javax.swing.JTextField();
 
         clipboardButtonGroup = new ButtonGroup();
         rdbtnDefault = new JRadioButton("RomRaider Default");
@@ -931,6 +934,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         getSettings().setValueLimitWarning(valueLimitWarning.isSelected());
         getSettings().setWarningColor(warningColor.getBackground());
         getSettings().setColorAxis(chckbxColorAxis.isSelected());
+        getSettings().setDefaultScale(defaultScale.getText());
 
         if(rdbtnAirboys.isSelected())
         {
@@ -1062,4 +1066,5 @@ public class SettingsForm extends JFrame implements MouseListener {
     private JPanel panelTreeSettings;
     private javax.swing.JComboBox tableClickBehavior;
     private javax.swing.JCheckBox chckbxOpenTablesAt;
+    private javax.swing.JTextField defaultScale;
 }

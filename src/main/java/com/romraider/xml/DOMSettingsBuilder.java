@@ -193,10 +193,15 @@ public final class DOMSettingsBuilder {
         openRomExpanded.setAttribute("value", String.valueOf(settings.isOpenExpanded()));
         options.appendChild(openRomExpanded);
 
-        // show table toolbar border
+        // always open at 0
         IIOMetadataNode alwaysOpenTableAtZero = new IIOMetadataNode("alwaysopentableatzero");
         alwaysOpenTableAtZero.setAttribute("value", String.valueOf(settings.isAlwaysOpenTableAtZero()));
         options.appendChild(alwaysOpenTableAtZero);
+
+        // defaultScale
+        IIOMetadataNode defaultScale = new IIOMetadataNode("defaultscale");
+        defaultScale.setAttribute("value", String.valueOf(settings.getDefaultScale()));
+        options.appendChild(defaultScale);
 
         return options;
     }

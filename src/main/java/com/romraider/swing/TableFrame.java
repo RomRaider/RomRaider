@@ -140,10 +140,9 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             getTable().paste();
 
         } else if (e.getSource() == menu.getCompareOff()) {
-            getTable().setComparing(false);
+            getTable().setCompareTable(null);
             getTable().setCompareValueType(Settings.DATA_TYPE_BIN);
             getTableMenuBar().getCompareToBin().setSelected(true);
-            getTable().removeFromCompareTo();
 
         } else if (e.getSource() == menu.getCompareAbsolute()) {
             getTable().setCompareDisplay(Settings.COMPARE_DISPLAY_ABSOLUTE);
@@ -171,31 +170,28 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
 
         } else if (e.getSource() == menu.getCompareToOriginal()) {
             getTable().setCompareValueType(Settings.DATA_TYPE_ORIGINAL);
-            if(getTable().getCompareTable() != null) {
-                getTable().getCompareTable().refreshCompares();
-            }
+            getTable().refreshCompare();
 
         } else if (e.getSource() == menu.getCompareToBin()) {
             getTable().setCompareValueType(Settings.DATA_TYPE_BIN);
-            if(getTable().getCompareTable() != null) {
-                getTable().getCompareTable().refreshCompares();
-            }
+            getTable().refreshCompare();
 
         } else if (e.getSource() == menu.getShowBinValues()) {
+
             getTable().setDisplayValueType(Settings.DATA_TYPE_BIN);
         } else if (e.getSource() == menu.getShowRealValues()) {
+
             getTable().setDisplayValueType(Settings.DATA_TYPE_REAL);
         }
     }
 
     private void compareByTable(Table selectedTable) {
-        getTable().setComparing(true);
         if(null == selectedTable) {
             return;
         }
-
-        selectedTable.addComparedToTable(getTable());
-        selectedTable.refreshCompares();
+        getTable().setCompareTable(selectedTable);
+        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(getTable());
+        getTable().populateCompareValues(selectedTable);
     }
 
     public void refreshSimilarOpenTables() {

@@ -35,8 +35,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -66,7 +64,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected String category = "Other";
     protected String description = Settings.BLANK;
     protected Vector<Scale> scales = new Vector<Scale>();
-    protected Scale curScale; // current scale
+    protected Scale curScale;
 
     protected int storageAddress;
     protected int storageType;
@@ -93,14 +91,11 @@ public abstract class Table extends JPanel implements Serializable {
     protected int userLevel = 0;
     protected boolean locked = false;
 
-    protected List<Table> comparedToTables = new ArrayList<Table>();
-
     protected String logParam = Settings.BLANK;
     protected boolean overlayLog = false;
 
     protected CopyTableWorker copyTableWorker;
     protected CopySelectionWorker copySelectionWorker;
-    protected RefreshTableCompareWorker refreshTableCompareWorker;
 
     protected double minAllowedBin = 0.0;
     protected double maxAllowedBin = 0.0;
@@ -111,22 +106,21 @@ public abstract class Table extends JPanel implements Serializable {
     protected double maxCompare = 0.0;
     protected double minCompare = 0.0;
 
-    private boolean comparing = false;
-
     protected int compareDisplay = Settings.COMPARE_DISPLAY_ABSOLUTE;
     protected int compareValueType = Settings.DATA_TYPE_BIN;
 
     public int displayValueType = Settings.DATA_TYPE_REAL;
 
-    private final Table compareTable = null;
+    private Table compareTable = null;
 
     public Table() {
         scales.clear();
+        curScale = new Scale();
+        this.addScale(curScale);
 
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);
         centerPanel.setVisible(true);
-        comparedToTables.clear();
 
         // key binding actions
         Action rightAction = new AbstractAction() {
@@ -529,6 +523,11 @@ public abstract class Table extends JPanel implements Serializable {
         if(null == curScale) {
             this.curScale = scale;
         }
+
+        if(ECUEditorManager.getECUEditor().getSettings().getDefaultScale().equalsIgnoreCase(scale.getName())) {
+            this.curScale = scale;
+        }
+
         validateScaling();
     }
 
@@ -714,8 +713,8 @@ public abstract class Table extends JPanel implements Serializable {
         double binMax = data[0].getBinValue();
         double binMin = data[0].getBinValue();
 
-        double compareMax = data[0].getBinValue() - data[0].getCompareValue();
-        double compareMin = data[0].getBinValue() - data[0].getCompareValue();
+        double compareMax = data[0].getCompareValue();
+        double compareMin = data[0].getCompareValue();
 
         for(DataCell cell : data) {
             // Calc bin
@@ -727,7 +726,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
 
             // Calc compare
-            double compareValue = cell.getBinValue() - cell.getCompareValue();
+            double compareValue = cell.getCompareValue();
             if(compareMax < compareValue) {
                 compareMax = compareValue;
             }
@@ -1119,6 +1118,7 @@ public abstract class Table extends JPanel implements Serializable {
         }
 
         calcCellRanges();
+        drawTable();
     }
 
     public void setCompareDisplay(int compareDisplay) {
@@ -1141,7 +1141,6 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setDisplayValueType(int displayValueType) {
         this.displayValueType = displayValueType;
-        drawTable();
     }
 
     public int getDisplayValueType() {
@@ -1225,55 +1224,12 @@ public abstract class Table extends JPanel implements Serializable {
     public void clearLiveDataTrace() {
     }
 
-    public void addComparedToTable(Table table) {
-        if(!this.comparedToTables.contains(table)) {
-            this.comparedToTables.add(table);
-        }
-    }
-
-    public void removeComparedToTable(Table table) {
-        if(this.comparedToTables.contains(table)) {
-            this.comparedToTables.remove(table);
-        }
-    }
-
-    public List<Table> getComparedToTables() {
-        return this.comparedToTables;
-    }
-
     public Table getCompareTable() {
         return compareTable;
     }
 
-    public void removeFromCompareTo() {
-        if(getCompareTable() != null) {
-            getCompareTable().getComparedToTables().remove(this);
-        }
-    }
-
-    public void refreshCompares() {
-        if(null == getComparedToTables() || getComparedToTables().size() < 1) {
-            return;
-        }
-
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(this);
-
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        }
-
-        ECUEditorManager.getECUEditor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        refreshTableCompareWorker = new RefreshTableCompareWorker(this);
-        refreshTableCompareWorker.execute();
-    }
-
-    public boolean isComparing() {
-        return this.comparing;
-    }
-
-    public void setComparing(boolean comparing) {
-        this.comparing = comparing;
+    public void setCompareTable(Table compareTable) {
+        this.compareTable = compareTable;
     }
 
     public void updateTableLabel() {
@@ -1285,6 +1241,10 @@ public abstract class Table extends JPanel implements Serializable {
         } else {
             tableLabel.setText(name + " (" + getCurrentScale().getUnit() + ")");
         }
+    }
+
+    public void refreshCompare() {
+        populateCompareValues(getCompareTable());
     }
 }
 
@@ -1364,39 +1324,6 @@ class CopyTableWorker extends SwingWorker<Void, Void> {
 
     @Override
     public void done() {
-        Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
-        if(null != ancestorWindow) {
-            ancestorWindow.setCursor(null);
-        }
-        table.setCursor(null);
-        ECUEditorManager.getECUEditor().setCursor(null);
-    }
-}
-
-class RefreshTableCompareWorker extends SwingWorker<Void, Void> {
-    Table table;
-
-    public RefreshTableCompareWorker(Table table) {
-        this.table = table;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        if(null == table.getComparedToTables() || table.getComparedToTables().size() < 1) {
-            return null;
-        }
-
-        for(Table comparedTable : table.getComparedToTables()) {
-            if(null != table) {
-                comparedTable.populateCompareValues(table);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void done() {
-        table.drawTable();
         Window ancestorWindow = SwingUtilities.getWindowAncestor(table);
         if(null != ancestorWindow) {
             ancestorWindow.setCursor(null);

@@ -82,6 +82,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final JButton decrementCoarse = new JButton();
     private final JButton enable3d = new JButton();
     private final JButton colorCells = new JButton();
+    private final JButton refreshCompare = new JButton();
 
     private final JButton setValue = new JButton("Set");
     private final JButton multiply = new JButton("Mul");
@@ -103,6 +104,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final URL decrementCoarseImage = getClass().getResource("/graphics/icon-deccoarse.png");
     private final URL enable3dImage = getClass().getResource("/graphics/3d_render.png");
     private final URL colorCellImage = getClass().getResource("/graphics/icon-palette.png");
+    private final URL refreshCompareImage = getClass().getResource("/graphics/table_refresh.png");
 
     private final TitledBorder toolbarBorder = BorderFactory.createTitledBorder(Settings.defaultTableToolBarName);
 
@@ -138,10 +140,12 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         this.add(setValuePanel);
 
         colorCells.setEnabled(false);
+        refreshCompare.setEnabled(false);
         enable3d.setEnabled(false);
 
         JPanel otherPanel = new JPanel();
         otherPanel.add(colorCells);
+        otherPanel.add(refreshCompare);
         otherPanel.add(enable3d);
         this.add(otherPanel);
 
@@ -161,6 +165,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         multiply.setBorder(createLineBorder(new Color(150, 150, 150), 1));
 
         colorCells.setBorder(createLineBorder(new Color(150, 150, 150), 1));
+        refreshCompare.setBorder(createLineBorder(new Color(150, 150, 150), 1));
 
         scaleSelection.setPreferredSize(new Dimension(80, 23));
         scaleSelection.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -191,6 +196,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         overlayLog.setToolTipText("Enable Overlay Of Real Time Log Data");
         clearOverlay.setToolTipText("Clear Log Data Overlay Highlights");
         colorCells.setToolTipText("Color Table Cells");
+        refreshCompare.setToolTipText("Refresh Table Compare");
 
         incrementFine.addMouseListener(this);
         decrementFine.addMouseListener(this);
@@ -203,6 +209,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         overlayLog.addItemListener(this);
         clearOverlay.addActionListener(this);
         colorCells.addMouseListener(this);
+        refreshCompare.addMouseListener(this);
 
         // key binding actions
         Action enterAction = new AbstractAction() {
@@ -262,6 +269,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         decrementCoarse.setIcon(rescaleImageIcon(new ImageIcon(decrementCoarseImage), settings.getTableIconScale()));
         enable3d.setIcon(rescaleImageIcon(new ImageIcon(enable3dImage), settings.getTableIconScale()));
         colorCells.setIcon(rescaleImageIcon(new ImageIcon(colorCellImage), settings.getTableIconScale()));
+        refreshCompare.setIcon(rescaleImageIcon(new ImageIcon(refreshCompareImage), settings.getTableIconScale()));
     }
 
     private ImageIcon rescaleImageIcon(ImageIcon imageIcon, int percentOfOriginal) {
@@ -376,6 +384,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         liveDataValue.setEnabled(enabled);
 
         colorCells.setEnabled(enabled);
+        refreshCompare.setEnabled(enabled);
 
         //Only enable the 3d button if table includes 3d data
         if (null != currentTable && currentTable.getType() == Settings.TABLE_3D && enabled) {
@@ -383,6 +392,12 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         }
         else{
             enable3d.setEnabled(false);
+        }
+
+        if(null == currentTable || null == currentTable.getCompareTable()) {
+            refreshCompare.setEnabled(false);
+        } else {
+            refreshCompare.setEnabled(true);
         }
 
         if (null != currentTable && currentTable.isLiveDataSupported() && enabled) {
@@ -434,6 +449,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             setValue(curTable);
         } else if (e.getSource() == colorCells) {
             colorCells(curTable);
+        } else if (e.getSource() == refreshCompare) {
+            refreshCompare(curTable);
         }
     }
 
@@ -600,6 +617,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     public void colorCells(Table currentTable) {
         currentTable.calcCellRanges();
         currentTable.drawTable();
+    }
+
+    public void refreshCompare(Table currentTable) {
+        currentTable.populateCompareValues(currentTable.getCompareTable());
     }
 
     public void setCoarseValue(double input) {

@@ -169,6 +169,9 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("alwaysopentableatzero")) {
                 settings.setAlwaysOpenTableAtZero(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("defaultscale")) {
+                settings.setDefaultScale(unmarshallAttribute(n, "value", "Metric"));
+
             }
         }
         return settings;

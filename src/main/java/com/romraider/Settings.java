@@ -214,6 +214,8 @@ public class Settings implements Serializable {
     private boolean showTableToolbarBorder = false;
     private boolean alwaysOpenTableAtZero = false;
 
+    private String defaultScale = "Metric";
+
     private static Map<String, IntfKitSensor> phidgetSensors;
 
     public Settings() {
@@ -803,6 +805,14 @@ public class Settings implements Serializable {
 
     public void setColorAxis(boolean colorAxis) {
         this.colorAxis = colorAxis;
+    }
+
+    public String getDefaultScale() {
+        return this.defaultScale;
+    }
+
+    public void setDefaultScale(String defaultScale) {
+        this.defaultScale = defaultScale;
     }
 
     public static final Map<String, IntfKitSensor> getPhidgetSensors() {

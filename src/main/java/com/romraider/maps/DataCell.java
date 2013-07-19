@@ -224,7 +224,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             backgroundColor = settings.getHighlightColor();
         } else if(selected) {
             backgroundColor = settings.getSelectColor();
-        } else if(!table.isComparing()) {
+        } else if(null == table.getCompareTable()) {
             backgroundColor = getBinColor();
         }else {
             backgroundColor = getCompareColor();
@@ -256,22 +256,19 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         }
 
         Border border;
-        if(table.isComparing()) {
-            if (compareToValue < binValue) {
-                border = createLineBorder(increaseBorderColor, 2);
-            } else if (compareToValue > binValue) {
-                border = createLineBorder(decreaseBorderColor, 2);
-            } else {
-                border = createLineBorder(defaultBorderColor, 1);
-            }
+        double checkValue;
+        if(null == table.getCompareTable()) {
+            checkValue= originalValue;
         } else {
-            if (originalValue < binValue) {
-                border = createLineBorder(increaseBorderColor, 2);
-            } else if (originalValue > binValue) {
-                border = createLineBorder(decreaseBorderColor, 2);
-            } else {
-                border = createLineBorder(defaultBorderColor, 1);
-            }
+            checkValue = compareToValue;
+        }
+
+        if (checkValue < binValue) {
+            border = createLineBorder(increaseBorderColor, 2);
+        } else if (checkValue > binValue) {
+            border = createLineBorder(decreaseBorderColor, 2);
+        } else {
+            border = createLineBorder(defaultBorderColor, 1);
         }
 
         return border;
@@ -285,7 +282,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         DecimalFormat formatter = new DecimalFormat(table.getCurrentScale().getFormat());
         String displayString = "";
 
-        if (!table.isComparing()) {
+        if (null == table.getCompareTable()) {
             if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
                 displayString = formatter.format(getRealValue());
             } else {
@@ -354,7 +351,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         // set bin.
         binValue = checkedValue;
-        table.refreshCompares();
         drawCell();
     }
 
