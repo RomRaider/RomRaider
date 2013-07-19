@@ -104,4 +104,16 @@ public final class IntfKitSensor {
     public void setStepValue(float value) {
         step = value;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s|%s|%s|%s|%s|%s|%s]",
+                this.getInputName(),
+                this.getExpression(),
+                this.getUnits(),
+                this.getFormat(),
+                this.getMinValue(),
+                this.getMaxValue(),
+                this.getStepValue());
+    }
 }
