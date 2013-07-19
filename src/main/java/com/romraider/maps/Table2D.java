@@ -304,12 +304,6 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void validateScaling() {
-        super.validateScaling();
-        axis.validateScaling();
-    }
-
-    @Override
     public boolean isLiveDataSupported() {
         return !isNullOrEmpty(axis.getLogParam());
     }
@@ -364,12 +358,6 @@ public class Table2D extends Table {
     public void setCompareValueType(int compareValueType) {
         super.setCompareValueType(compareValueType);
         axis.setCompareValueType(compareValueType);
-    }
-
-    @Override
-    public void setDisplayValueType(int displayValueType) {
-        super.setDisplayValueType(displayValueType);
-        axis.setDisplayValueType(displayValueType);
     }
 
     @Override

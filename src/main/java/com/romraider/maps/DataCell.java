@@ -283,28 +283,14 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         String displayString = "";
 
         if (null == table.getCompareTable()) {
-            if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
-                displayString = formatter.format(getRealValue());
-            } else {
-                displayString = formatter.format(getBinValue());
-            }
-
+            displayString = formatter.format(getRealValue());
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
-            if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
-                displayString = formatter.format(getRealCompareValue());
-            } else {
-                displayString = formatter.format(getCompareValue());
-            }
-
+            displayString = formatter.format(getRealCompareValue());
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
             if (getCompareValue() == 0.0) {
                 displayString = PERCENT_FORMAT.format(0.0);
             } else {
-                if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
-                    displayString = PERCENT_FORMAT.format(getRealCompareValue());
-                } else {
-                    displayString = PERCENT_FORMAT.format(getCompareValue());
-                }
+                displayString = PERCENT_FORMAT.format(getRealCompareValue());
             }
         }
 
@@ -319,14 +305,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             return staticText;
         }
 
-        // Always display the bin or real value as the tooltip.
-        String displayToolTipString = "";
-        if(table.getDisplayValueType() == Settings.DATA_TYPE_REAL) {
-            displayToolTipString = Double.toString(getRealValue());
-        } else {
-            displayToolTipString = Double.toString(getBinValue());
-        }
-        return displayToolTipString;
+        return Double.toString(getRealValue());
     }
 
     public void setBinValue(double newBinValue) {

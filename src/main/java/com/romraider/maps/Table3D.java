@@ -780,13 +780,6 @@ public class Table3D extends Table {
     }
 
     @Override
-    public void validateScaling() {
-        super.validateScaling();
-        xAxis.validateScaling();
-        yAxis.validateScaling();
-    }
-
-    @Override
     public boolean isLiveDataSupported() {
         return !isNullOrEmpty(xAxis.getLogParam()) && !isNullOrEmpty(yAxis.getLogParam());
     }
@@ -846,13 +839,6 @@ public class Table3D extends Table {
         super.setCompareValueType(compareValueType);
         xAxis.setCompareValueType(compareValueType);
         yAxis.setCompareValueType(compareValueType);
-    }
-
-    @Override
-    public void setDisplayValueType(int displayValueType) {
-        super.setDisplayValueType(displayValueType);
-        xAxis.setDisplayValueType(displayValueType);
-        yAxis.setDisplayValueType(displayValueType);
     }
 
     @Override

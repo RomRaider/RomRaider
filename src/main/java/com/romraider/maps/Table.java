@@ -109,8 +109,6 @@ public abstract class Table extends JPanel implements Serializable {
     protected int compareDisplay = Settings.COMPARE_DISPLAY_ABSOLUTE;
     protected int compareValueType = Settings.DATA_TYPE_BIN;
 
-    public int displayValueType = Settings.DATA_TYPE_REAL;
-
     private Table compareTable = null;
 
     public Table() {
@@ -1137,14 +1135,6 @@ public abstract class Table extends JPanel implements Serializable {
 
     public int getCompareValueType() {
         return this.compareValueType;
-    }
-
-    public void setDisplayValueType(int displayValueType) {
-        this.displayValueType = displayValueType;
-    }
-
-    public int getDisplayValueType() {
-        return this.displayValueType;
     }
 
     public int getUserLevel() {

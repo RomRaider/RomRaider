@@ -176,12 +176,6 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             getTable().setCompareValueType(Settings.DATA_TYPE_BIN);
             getTable().refreshCompare();
 
-        } else if (e.getSource() == menu.getShowBinValues()) {
-
-            getTable().setDisplayValueType(Settings.DATA_TYPE_BIN);
-        } else if (e.getSource() == menu.getShowRealValues()) {
-
-            getTable().setDisplayValueType(Settings.DATA_TYPE_REAL);
         }
     }
 

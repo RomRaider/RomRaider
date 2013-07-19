@@ -58,9 +58,6 @@ public class TableMenuBar extends JMenuBar {
     private JMenu viewMenu;
     private JMenuItem tableProperties;
 
-    private JRadioButtonMenuItem showRealValues;
-    private JRadioButtonMenuItem showBinValues;
-
     private ButtonGroup compareGroup;
     private ButtonGroup compareDisplayGroup;
     private ButtonGroup compareToGroup;
@@ -146,25 +143,7 @@ public class TableMenuBar extends JMenuBar {
         fileMenu.setMnemonic('F');
         fileMenu.setMnemonic('T');
 
-        setShowRealValues(new JRadioButtonMenuItem("Show Real Values"));
-        getShowRealValues().setToolTipText("Select to display the cell values in converted byte(real) form.");
-        getShowRealValues().setMnemonic('R');
-        getShowRealValues().addActionListener(frame);
-        getShowRealValues().setSelected(true);
-
-        setShowBinValues(new JRadioButtonMenuItem("Show Raw Values"));
-        getShowBinValues().setToolTipText("Select to display the cell values in byte(raw) form.");
-        getShowBinValues().setMnemonic('B');
-        getShowBinValues().addActionListener(frame);
-
-        showValuesGroup = new ButtonGroup();
-        showValuesGroup.add(getShowRealValues());
-        showValuesGroup.add(getShowBinValues());
-
         viewMenu.add(getTableProperties());
-        viewMenu.add(new JSeparator());
-        viewMenu.add(getShowRealValues());
-        viewMenu.add(getShowBinValues());
 
         this.add(viewMenu);
     }
@@ -386,21 +365,4 @@ public class TableMenuBar extends JMenuBar {
     public void setSimilarOpenTables(JMenu similarOpenTables) {
         this.similarOpenTables = similarOpenTables;
     }
-
-    public JRadioButtonMenuItem getShowRealValues() {
-        return this.showRealValues;
-    }
-
-    public void setShowRealValues(JRadioButtonMenuItem showRealValues) {
-        this.showRealValues = showRealValues;
-    }
-
-    public JRadioButtonMenuItem getShowBinValues() {
-        return this.showBinValues;
-    }
-
-    public void setShowBinValues(JRadioButtonMenuItem showBinValues) {
-        this.showBinValues = showBinValues;
-    }
-
 }
