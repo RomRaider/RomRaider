@@ -21,12 +21,22 @@ import javax.swing.table.TableColumn;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers.CentreRenderer;
 
+/**
+ * Display dialog to allow the user to custom define each Phidget InterfaceKit
+ * sensor found. 
+ */
 public class IntfKitConvertorPanel extends JDialog {
     private static final long serialVersionUID = -4785866140260703021L;
     private final int IK_WIDTH = 600;
     private final int IK_HEIGHT = 300;
     private JTable table;
 
+    /**
+     * Phidget InterfaceKit display panel.
+     * @param logger - the Logger frame
+     * @param ikData - rows of InterfaceKit sensor parameters
+     * @see #getTable()
+     */
     public IntfKitConvertorPanel(
             EcuLogger logger, List<List<String>> ikData) {
 
@@ -88,20 +98,18 @@ public class IntfKitConvertorPanel extends JDialog {
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-        final JButton applyButton = new JButton("Apply");
-        applyButton.setToolTipText("Apply current convertor settings then exit");
-        applyButton.setMnemonic(KeyEvent.VK_A);
-        applyButton.addActionListener(new ActionListener() {
-            @Override
+        final JButton saveButton = new JButton("Save");
+        saveButton.setToolTipText("Save convertor settings");
+        saveButton.setMnemonic(KeyEvent.VK_S);
+        saveButton.addActionListener(new ActionListener() {
             public final void actionPerformed(ActionEvent actionEvent) {
                 closeDialog();
             }
         });
-        buttonPane.add(applyButton);
-        getRootPane().setDefaultButton(applyButton);
+        buttonPane.add(saveButton);
 
         final JButton cancelButton = new JButton("Cancel");
-        cancelButton.setToolTipText("Cancel/exit without applying changes");
+        cancelButton.setToolTipText("Cancel without saving changes");
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 table = null;
@@ -109,8 +117,12 @@ public class IntfKitConvertorPanel extends JDialog {
             }
         });
         buttonPane.add(cancelButton);
+        getRootPane().setDefaultButton(cancelButton);
     }
 
+    /**
+     * Display the Phidget InterfaceKit dialog.
+     */
     public final void displayPanel() {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -122,6 +134,13 @@ public class IntfKitConvertorPanel extends JDialog {
         setVisible(true);
     }
 
+    /**
+     * After the Phidget InterfaceKit dialog is closed this method can be
+     * called to retrieve the table of updated values.
+     * @return a JTable of InterfaceKit sensor parameters.<br>
+     * - if <b>Save</b> was pressed to close the dialog the table will be valid.<br>
+     * - if <b>Cancel</b> was pressed to close the dialog the table will be <b>null</b>.
+     */
     public final JTable getTable() {
         return table;
     }
@@ -140,10 +159,14 @@ public class IntfKitConvertorPanel extends JDialog {
         for (int i = 0; i < table.getColumnCount(); i++) {
             column = table.getColumnModel().getColumn(i);
             if (i == 0) {
-                column.setPreferredWidth(220);
+                column.setPreferredWidth(150);
             }
+            else if (i == 1) {
+                column.setPreferredWidth(150);
+            }
+
             else {
-                column.setPreferredWidth(100);
+                column.setPreferredWidth(50);
             }
         }
     }
