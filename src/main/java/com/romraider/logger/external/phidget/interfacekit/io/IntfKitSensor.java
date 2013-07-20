@@ -21,9 +21,9 @@ package com.romraider.logger.external.phidget.interfacekit.io;
 
 /**
  * IntfKitSensor contains all the relevant information about a sensor as
- * reported from information gathered from the Phidget device or user defined
+ * reported from information gathered from the Phidget device or as user defined
  * in the settings.xml file.  An IntfKitSensor is created for each input found
- * on the Phidget device.
+ * on a Phidget device.
  */
 public final class IntfKitSensor {
     private int inputNumber;
