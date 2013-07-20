@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ package com.romraider.logger.external.phidget.interfacekit.io;
 import static com.romraider.util.ThreadUtil.sleep;
 import static org.apache.log4j.Logger.getLogger;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,11 +47,11 @@ public final class IntfKitRunner implements Stoppable {
     /**
      * IntfKitRunner interrogates the PhidgetInterfaceKits for data and updates
      * the appropriate sensor result.
-     * @param kits - array of serial numbers of the PhidgetInterfaceKits
+     * @param kits - List of serial numbers of the PhidgetInterfaceKits
      * @param dataItems - a Map of PhidgetInterfaceKit data items (sensors)
      */
     public IntfKitRunner(
-            final Integer[] kits,
+            final List<Integer> kits,
             final Map<String, IntfKitDataItem> dataItems) {
         this.dataItems = dataItems;
         this.connections = IntfKitConnector.openIkSerial(this, kits);

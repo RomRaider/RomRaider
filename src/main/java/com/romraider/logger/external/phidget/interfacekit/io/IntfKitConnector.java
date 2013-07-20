@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import static java.lang.System.currentTimeMillis;
 import static org.apache.log4j.Logger.getLogger;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -41,7 +42,7 @@ public final class IntfKitConnector {
      * Open a connection to each serial number provided and
      * return those connections in a Set for use by the runner.
      * @param ikr     - the instance of IntfKitRunner calling this class
-     * @param serials - array of serial numbers to open
+     * @param serials - List of serial numbers to open
      * @return a Set of InterfaceKitPhidget connections
      * @throws InterruptedException
      * @throws PhidgetException
@@ -49,7 +50,7 @@ public final class IntfKitConnector {
      */
     public static Set<InterfaceKitPhidget> openIkSerial(
             final IntfKitRunner ikr,
-            final Integer[] serials) {
+            final List<Integer> serials) {
 
         final Set<InterfaceKitPhidget> kits = new HashSet<InterfaceKitPhidget>();
         try {
