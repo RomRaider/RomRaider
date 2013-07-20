@@ -42,6 +42,10 @@
 			<attribute name="javadoc_location" value="http://twall.github.com/jna/3.4.0/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/common/phidget21.jar"/>
+	<classpathentry kind="lib" path="lib/common/phidget21.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.phidgets.com/documentation/web/javadoc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target"/>
 </classpath>
