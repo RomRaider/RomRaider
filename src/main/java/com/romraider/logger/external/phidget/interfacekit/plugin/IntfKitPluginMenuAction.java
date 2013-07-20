@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,20 +20,31 @@
 package com.romraider.logger.external.phidget.interfacekit.plugin;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.TableModel;
 
+import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.external.phidget.interfacekit.io.IntfKitManager;
+import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.core.ExternalDataSource;
+import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
 import com.romraider.swing.menubar.action.AbstractAction;
 
 /**
  * IntfKitPluginMenuAction is used to populate the Phidgets Plugins menu 
  * of the Logger. It will report the device type and serial number of each
- * PhidgetInterfaceKit found connected to the system.
- * This is informational only. 
+ * PhidgetInterfaceKit found and allow the user to custom define each sensor's
+ * field values.
  */
 public final class IntfKitPluginMenuAction extends AbstractAction {
+    private static final String PHIDGET_IK = "Phidget InterfaceKit";
+    private List<? extends ExternalDataItem> dataItems;
 
     /**
      * Initialise the Phidgets Plugins menu item.
@@ -44,38 +55,86 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-        JOptionPane.showMessageDialog(
-                logger,
-                getKits(),
-                "Interface Kits found",
-                JOptionPane.INFORMATION_MESSAGE);
+        final IntfKitConvertorPanel intfKitPanel =
+                new IntfKitConvertorPanel(logger, getDataItems());
+        intfKitPanel.displayPanel();
+        final JTable table = intfKitPanel.getTable();
+        if (table != null) {
+            saveChanges(table);
+        }
     }
 
-    /**
-     * Build a list of device types with serial numbers attached to the system.
-     * @return    a formated string to be displayed in the message box
-     * @see IntfKitManager
-     */
-    private String getKits() {
-        final Integer[] kits = IntfKitManager.findIntfkits();
+    private List<List<String>> getDataItems() {
         final StringBuilder sb = new StringBuilder();
-        if (kits.length < 1) {
-            sb.append("No Interface Kits attached");
-        }
-        else {
-            IntfKitManager.loadIk();
-            for (int serial : kits) {
-                final String result = IntfKitManager.getIkName(serial);
-                if (result != null) {
-                    sb.append(result);
-                }
-                else {
-                    sb.append("Unable to read properties of serial # " + serial +
-                            ", it may be in use");
-                }
-                sb.append("\n");
+        final List<List<String>> ikDataItems = new ArrayList<List<String>>();
+        final List<ExternalDataSource> externalSources = logger.getExternalDataSources();
+        dataItems = new ArrayList<ExternalDataItem>();
+        for (ExternalDataSource source : externalSources) {
+            if (source.getName().equals(PHIDGET_IK)) {
+                dataItems = source.getDataItems();
+                break;
             }
         }
-        return sb.toString();
+        for (ExternalDataItem item : dataItems) {
+            ikDataItems.add(Arrays.asList(
+                item.getName(),
+                item.getConvertors()[0].getExpression(),
+                item.getConvertors()[0].getFormat(),
+                item.getConvertors()[0].getUnits(),
+                String.valueOf(item.getConvertors()[0].getGaugeMinMax().min),
+                String.valueOf(item.getConvertors()[0].getGaugeMinMax().max),
+                String.valueOf(item.getConvertors()[0].getGaugeMinMax().step)
+            ));
+        }
+        for (List<String> ikData : ikDataItems) {
+            for (int i = 0; i < ikData.size(); i++) {
+                sb.append(ikData.get(i) + " : ");
+            }
+            sb.append("\n");
+        }
+        return ikDataItems;
+    }
+
+    private final void saveChanges(JTable table) {
+        final TableModel tm = table.getModel();
+        final Map<String, IntfKitSensor> phidgets = Settings.getPhidgetSensors();
+
+        for (int i = 0; i < tm.getRowCount(); i++) {
+            String value = (String) tm.getValueAt(i, 0);
+            String key = value.replaceAll("Phidget IK Sensor ", "");
+            if (phidgets.containsKey(key)) {
+                for (int j = 1; j < tm.getColumnCount(); j++) {
+                    value = (String) tm.getValueAt(i, j);
+                    switch (j) {
+                        case 1:
+                            phidgets.get(key).setExpression(value);
+                            break;
+                        case 2:
+                            phidgets.get(key).setFormat(value);
+                            break;
+                        case 3:
+                            phidgets.get(key).setUnits(value);
+                            break;
+                        case 4:
+                            phidgets.get(key).setMinValue(Float.parseFloat(value));
+                            break;
+                        case 5:
+                            phidgets.get(key).setMaxValue(Float.parseFloat(value));
+                            break;
+                        case 6:
+                            phidgets.get(key).setStepValue(Float.parseFloat(value));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        Settings.setPhidgetSensors(phidgets);
+        JOptionPane.showMessageDialog(
+              logger,
+              "Exit and restart the Logger to activate the changes.",
+              "Phidget InterfaceKit Settings Saved",
+              JOptionPane.INFORMATION_MESSAGE);
     }
 }
