@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,49 +24,62 @@ import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
+import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
 
 /**
  * IntfKitDataItem contains all the relevant information about a data item as
  * reported from information gathered from the Phidget device.  A data item
- * is created for each input found on the Phidget device.  Only raw data values
- * are recorded for these sensors as we don't know the conversion formula of
- * the analog device attached to the sensor input.  Data will need to be post-
- * processed in a spreadsheet application with the formula of the device.
+ * is created for each input found on the Phidget device.  The conversion formula
+ * of each sensor input is set to raw defaults and can be modified by the user
+ * using the Phidget InterfaceKit dialog from the Logger Plugins menu item.  
  */
 public final class IntfKitDataItem implements ExternalDataItem, DataListener {
     private final String name;
-    private final GaugeMinMax gaugeMinMax;
     private double data;
     private String units;
-
+    private EcuDataConvertor[] convertors;
+    
     /**
      * Create a new data item and set its fields according to the supplied
-     * parameters.
-     * @param name - unique name of the data item
-     * @param units - the units of the data
-     * @param minValue - the minimum value expected for the data item
-     * @param maxValue - the maximum value expected for the data item
+     * IntfKitSensor.  Append a default raw value convertor if the user has
+     * defined a custom convertor for the sensor.
+     * @param sensor - IntfKitSensor to create a data item for.
+     * @see IntfKitSensor
      */
-    public IntfKitDataItem(String name, String units, float minValue, float maxValue) {
+    public IntfKitDataItem(IntfKitSensor sensor) {
         super();
-        this.name = name;
-        this.units = units;
-        float step = (Math.abs(maxValue) + Math.abs(minValue)) / 10f;
-        if (step > 0.5f) {
-            step = (float) Math.round(step);
+        this.name = sensor.getInputName();
+        this.units = sensor.getUnits();
+        int convertorCount = 1;
+        if (!sensor.getExpression().equals("x")) {
+            convertorCount = 2;
         }
-        else {
-            step = 0.5f;
+        GaugeMinMax gaugeMinMax = new GaugeMinMax(
+                sensor.getMinValue(), sensor.getMaxValue(), sensor.getStepValue());
+        convertors = new EcuDataConvertor[convertorCount];
+        convertors[0] = new ExternalDataConvertorImpl(
+                this,
+                units,
+                sensor.getExpression(),
+                sensor.getFormat(),
+                gaugeMinMax);
+        if (convertorCount == 2) {
+            gaugeMinMax = new GaugeMinMax(0,1000, 100);
+            convertors[1] = new ExternalDataConvertorImpl(
+                    this,
+                    "raw value",
+                    "x",
+                    "0",
+                    gaugeMinMax);
         }
-        gaugeMinMax = new GaugeMinMax(minValue, maxValue, step);
     }
 
     public String getName() {
-        return "Phidget IK " + name;
+        return name;
     }
 
     public String getDescription() {
-        return "Phidget IK " + name + " data";
+        return name + " data";
     }
 
     public double getData() {
@@ -82,13 +95,6 @@ public final class IntfKitDataItem implements ExternalDataItem, DataListener {
     }
 
     public EcuDataConvertor[] getConvertors() {
-        EcuDataConvertor[] convertors = {
-                new ExternalDataConvertorImpl(
-                        this,
-                        units,
-                        "x",
-                        "0.##",
-                        gaugeMinMax)};
         return convertors;
     }
 }
