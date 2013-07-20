@@ -1487,6 +1487,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         learningTablesManager.execute();
     }
 
+    public final List<ExternalDataSource> getExternalDataSources() {
+        return externalDataSources;
+    }
+
     public void handleExit() {
         try {
             try {
