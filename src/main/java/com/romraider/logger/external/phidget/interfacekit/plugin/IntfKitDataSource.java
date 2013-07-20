@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,10 @@
 
 package com.romraider.logger.external.phidget.interfacekit.plugin;
 
-import static com.romraider.util.ThreadUtil.runAsDaemon;
-import static java.util.Collections.unmodifiableList;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +35,7 @@ import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.phidget.interfacekit.io.IntfKitManager;
 import com.romraider.logger.external.phidget.interfacekit.io.IntfKitRunner;
 import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
+import com.romraider.util.ThreadUtil;
 
 /**
  * The IntfKitDataSource class is called when the Logger starts up and the 
@@ -49,29 +49,25 @@ public final class IntfKitDataSource implements ExternalDataSource {
     private final Map<String, IntfKitDataItem> dataItems =
             new HashMap<String, IntfKitDataItem>();
     private IntfKitRunner runner;
-    private Integer[] kits;
+    private List<Integer> kits;
 
     {
         kits = IntfKitManager.findIntfkits();
-        if (kits.length > 0) {
+        if (kits.size() > 0) {
             IntfKitManager.loadIk();
-            for (int serial : kits) {
-                final Set<IntfKitSensor> sensors = IntfKitManager.getSensors(serial);
-                if (!sensors.isEmpty()) {
-                    for (IntfKitSensor sensor : sensors) {
-                        final String inputName = String.format("%d:%d",
-                                serial,
-                                sensor.getInputNumber());
-                        dataItems.put(
-                            inputName,
-                            new IntfKitDataItem(
-                                sensor.getInputName(),
-                                sensor.getUnits(),
-                                sensor.getMinValue(),
-                                sensor.getMaxValue()
-                            )
-                        );
-                    }
+            for (Iterator<Integer> kitIt = kits.iterator(); kitIt.hasNext();) {
+                final int serial = kitIt.next();
+                final Set<IntfKitSensor> sensors =
+                        IntfKitManager.getSensors(serial);
+                for (Iterator<IntfKitSensor> sensorIt = sensors.iterator();
+                        sensorIt.hasNext();) {
+
+                    final IntfKitSensor sensor = sensorIt.next();
+                    final String inputName = String.format(
+                            "%d:%d",
+                            serial,
+                            sensor.getInputNumber());
+                    dataItems.put(inputName, new IntfKitDataItem(sensor));
                 }
             }
         }
@@ -86,11 +82,12 @@ public final class IntfKitDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.01";
+        return "0.02";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {
-        return unmodifiableList(new ArrayList<IntfKitDataItem>(dataItems.values()));
+        return Collections.unmodifiableList(
+                new ArrayList<IntfKitDataItem>(dataItems.values()));
     }
 
     public Action getMenuAction(final EcuLogger logger) {
@@ -99,7 +96,7 @@ public final class IntfKitDataSource implements ExternalDataSource {
 
     public void connect() {
         runner = new IntfKitRunner(kits, dataItems);
-        runAsDaemon(runner);
+        ThreadUtil.runAsDaemon(runner);
     }
 
     public void disconnect() {
