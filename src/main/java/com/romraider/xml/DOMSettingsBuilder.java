@@ -22,8 +22,8 @@ package com.romraider.xml;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.imageio.metadata.IIOMetadataNode;
@@ -320,7 +320,7 @@ public final class DOMSettingsBuilder {
             }
             final Map<String, IntfKitSensor> phidgets = Settings.getPhidgetSensors();
             if (phidgets != null && !phidgets.isEmpty()) {
-                final Set<IntfKitSensor> sensors = (Set<IntfKitSensor>) phidgets.values();
+                final Collection<IntfKitSensor> sensors = phidgets.values();
                 IIOMetadataNode phidgetsNode = new IIOMetadataNode("phidgets");
                 for (IntfKitSensor entry : sensors) {
                     IIOMetadataNode phidgetNode = new IIOMetadataNode("phidget");

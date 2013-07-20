@@ -35,6 +35,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.romraider.Settings;
+import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
 
 public final class DOMSettingsUnmarshaller {
 
@@ -278,6 +279,37 @@ public final class DOMSettingsUnmarshaller {
                         String port = unmarshallAttribute(pluginNode, "port", null);
                         if (port == null || port.trim().length() == 0) continue;
                         pluginPorts.put(id.trim(), port.trim());
+                    }
+                    else if (pluginNode.getNodeType() == ELEMENT_NODE && pluginNode.getNodeName().equalsIgnoreCase("phidgets")) {
+                        final Map<String, IntfKitSensor> phidgets = new HashMap<String, IntfKitSensor>();
+                        NodeList sensorNodes = pluginNode.getChildNodes();
+                        for (int k = 0; k < sensorNodes.getLength(); k++) {
+                            Node sensorNode = sensorNodes.item(k);
+                            if (sensorNode.getNodeType() == ELEMENT_NODE && sensorNode.getNodeName().equalsIgnoreCase("phidget")) {
+                                final String name = unmarshallAttribute(sensorNode, "name", null);
+                                final int number = unmarshallAttribute(sensorNode, "number", -1);
+                                final String units = unmarshallAttribute(sensorNode, "units", null);
+                                final String expression = unmarshallAttribute(sensorNode, "expression", null);
+                                final String format = unmarshallAttribute(sensorNode, "format", null);
+                                final float min = Float.parseFloat(unmarshallAttribute(sensorNode, "min", "-1.0"));
+                                final float max = Float.parseFloat(unmarshallAttribute(sensorNode, "max", "-1.0"));
+                                final float step = Float.parseFloat(unmarshallAttribute(sensorNode, "step", "-1.0"));
+                                if (name != null && number != -1) {
+                                    final String inputName = name.replaceAll("Phidget IK Sensor ", "");
+                                    final IntfKitSensor sensor = new IntfKitSensor();
+                                    sensor.setInputNumber(number);
+                                    sensor.setInputName(name);
+                                    sensor.setUnits(units);
+                                    sensor.setExpression(expression);
+                                    sensor.setFormat(format);
+                                    sensor.setMinValue(min);
+                                    sensor.setMaxValue(max);
+                                    sensor.setStepValue(step);
+                                    phidgets.put(inputName, sensor);
+                                }
+                            }
+                        }
+                        Settings.setPhidgetSensors(phidgets);
                     }
                 }
                 settings.setLoggerPluginPorts(pluginPorts);
