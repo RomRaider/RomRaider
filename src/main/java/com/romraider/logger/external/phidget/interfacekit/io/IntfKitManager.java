@@ -19,12 +19,15 @@
 
 package com.romraider.logger.external.phidget.interfacekit.io;
 
+import static com.phidgets.Phidget.PHIDCLASS_INTERFACEKIT;
 import static java.lang.System.currentTimeMillis;
 import static org.apache.log4j.Logger.getLogger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -33,6 +36,7 @@ import com.phidgets.InterfaceKitPhidget;
 import com.phidgets.Manager;
 import com.phidgets.Phidget;
 import com.phidgets.PhidgetException;
+import com.romraider.Settings;
 
 /**
  * IntfKitManager is used to discover all the attached PhidgetInterfaceKits
@@ -41,7 +45,6 @@ import com.phidgets.PhidgetException;
  */
 public final class IntfKitManager {
     private static final Logger LOGGER = getLogger(IntfKitManager.class);
-    private static final String INTFKIT = "PhidgetInterfaceKit"; 
     private static InterfaceKitPhidget ik;
 
     /**
@@ -50,7 +53,7 @@ public final class IntfKitManager {
      * @throws PhidgetException
      * @throws InterruptedException
      */
-    public static Integer[] findIntfkits() {
+    public static List<Integer> findIntfkits() {
         final List<Integer> serials = new ArrayList<Integer>();
         try {
             final Manager fm = new Manager();
@@ -59,7 +62,7 @@ public final class IntfKitManager {
             @SuppressWarnings("unchecked")
             final List<Phidget> phidgets = fm.getPhidgets();
             for (Phidget phidget : phidgets) {
-                if (phidget.getDeviceType().equalsIgnoreCase(INTFKIT)) {
+                if (phidget.getDeviceClass() == PHIDCLASS_INTERFACEKIT) {
                     serials.add(phidget.getSerialNumber());
                 }
             }
@@ -71,7 +74,7 @@ public final class IntfKitManager {
         catch (InterruptedException e) {
             LOGGER.info("Sleep interrupted " + e);
         }
-        return serials.toArray(new Integer[0]);
+        return serials;
     }
 
     /**
@@ -82,7 +85,7 @@ public final class IntfKitManager {
     public static void loadIk() {
         try {
             ik = new InterfaceKitPhidget();
-            LOGGER.info(Phidget.getLibraryVersion());
+            LOGGER.info("Plugin found: " + Phidget.getLibraryVersion());
             }
             catch (PhidgetException e) {
                 LOGGER.error("InterfaceKit error: " + e);
@@ -103,7 +106,7 @@ public final class IntfKitManager {
             ik.open(serial);
             waitForAttached();
             try {
-                if (ik.getDeviceType().equalsIgnoreCase(INTFKIT)) {
+                if (ik.getDeviceClass() == PHIDCLASS_INTERFACEKIT) {
                        result = String.format(
                                "%s serial: %d",
                                ik.getDeviceName(), 
@@ -141,29 +144,46 @@ public final class IntfKitManager {
             waitForAttached();
             try {
                 if (ik.isAttached()) {
-                    if (ik.getDeviceType().equalsIgnoreCase(INTFKIT)) {
+                    if (ik.getDeviceClass() == PHIDCLASS_INTERFACEKIT) {
                            final String result = String.format(
                                    "Plugin found: %s Serial: %d",
-                                   ik.getDeviceName(), 
-                                serial);
+                                   ik.getDeviceName(),
+                                   serial);
                         LOGGER.info(result);
+                        Map<String, IntfKitSensor> phidgets =
+                                Settings.getPhidgetSensors();
+                        if (phidgets == null) {
+                            phidgets = new HashMap<String, IntfKitSensor>();
+                        }
                         final int inputCount = ik.getSensorCount();
                         for (int i = 0; i < inputCount; i++) {
-                            final IntfKitSensor sensor = new IntfKitSensor();
-                            final String inputName = String.format(
-                                    "Phidget IK Sensor %d:%d",
-                                    serial,
-                                    i);
-                            sensor.setInputNumber(i);
-                            sensor.setInputName(inputName);
-                            sensor.setUnits("raw value");
-                            sensor.setExpression("x");
-                            sensor.setFormat("0.00");
-                            sensor.setMinValue(0);
-                            sensor.setMaxValue(1000);
-                            sensor.setStepValue(100);
-                            sensors.add(sensor);
+                            final String key = String.format("%d:%d", serial, i);
+                            if (phidgets.containsKey(key)) {
+                                sensors.add(phidgets.get(key));
+                                final String stored = String.format(
+                                        "Plugin applying user settings for: %s",
+                                        phidgets.get(key).toString());
+                             LOGGER.info(stored);
+                            }
+                            else {
+                                final IntfKitSensor sensor = new IntfKitSensor();
+                                final String inputName = String.format(
+                                        "Phidget IK Sensor %d:%d",
+                                        serial,
+                                        i);
+                                sensor.setInputNumber(i);
+                                sensor.setInputName(inputName);
+                                sensor.setUnits("raw value");
+                                sensor.setExpression("x");
+                                sensor.setFormat("0");
+                                sensor.setMinValue(0);
+                                sensor.setMaxValue(1000);
+                                sensor.setStepValue(100);
+                                sensors.add(sensor);
+                                phidgets.put(key, sensor);
+                            }
                         }
+                        Settings.setPhidgetSensors(phidgets);
                     }
                     else {
                         LOGGER.info("No InterfaceKits attached");
