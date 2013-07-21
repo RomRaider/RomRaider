@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,8 @@ public final class EcuInitCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public List<byte[]> createCommands(byte id, byte[] data, byte[] address, int length) {
+    public List<byte[]> createCommands(byte id, byte[] data, byte[] address,
+            int length, boolean blockRead) {
         return asList(protocol.constructEcuInitRequest(id));
     }
 

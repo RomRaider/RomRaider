@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,8 +102,9 @@ public final class RamTuneTestApp extends AbstractFrame {
     private final JTextField addressField = new JTextField(6);
     private final JTextField lengthField = new JTextField(4);
     private final JTextField sendTimeoutField = new JTextField(4);
-    private final JTextArea dataField = new JTextArea(10, 80);
-    private final JTextArea responseField = new JTextArea(15, 80);
+    private final JTextArea dataField = new JTextArea(5, 80);
+    private final JTextArea responseField = new JTextArea(10, 80);
+    private final JCheckBox blockRead = new JCheckBox("Block Read");
     private final SerialPortComboBox portsComboBox;
     private final JComboBox commandComboBox;
     private static byte ecuId = 0x10;
@@ -191,12 +192,12 @@ public final class RamTuneTestApp extends AbstractFrame {
         JPanel inputPanel = new JPanel(gridBagLayout);
         inputPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Command"));
         GridBagConstraints constraints = new GridBagConstraints();
-        constraints.fill = BOTH;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(0, 5, 5, 5);
 
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.gridwidth = 2;
+        constraints.gridwidth = 1;
         constraints.gridheight = 1;
         constraints.weightx = 1;
         constraints.weighty = 1;
@@ -210,12 +211,17 @@ public final class RamTuneTestApp extends AbstractFrame {
         lengthField.setText("1");
         lengthPanel.add(lengthField);
         lengthPanel.add(new JLabel("byte(s)"));
+        JPanel blockReadPanel = new JPanel(new FlowLayout());
+        blockRead.setSelected(true);
+        blockRead.setToolTipText("uncheck to read range byte at a time");
+        blockReadPanel.add(blockRead);
         JPanel addressPanel = new JPanel(new FlowLayout(LEFT));
         addressPanel.add(addressFieldPanel);
         addressPanel.add(lengthPanel);
-        constraints.gridx = 3;
+        addressPanel.add(blockReadPanel);
+        constraints.gridx = 1;
         constraints.gridy = 0;
-        constraints.gridwidth = 2;
+        constraints.gridwidth = 4;
         constraints.gridheight = 1;
         constraints.weightx = 1;
         constraints.weighty = 1;
@@ -266,7 +272,7 @@ public final class RamTuneTestApp extends AbstractFrame {
                             final CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
                             if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
                                 StringBuilder builder = new StringBuilder();
-                                List<byte[]> commands = commandGenerator.createCommands(ecuId, getData(), getAddress(), getLength());
+                                List<byte[]> commands = commandGenerator.createCommands(ecuId, getData(), getAddress(), getLength(), getBlockRead());
                                 for (byte[] command : commands) {
                                     appendResponseLater("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
                                     byte[] response = protocol.preprocessResponse(command, commandExecutor.executeCommand(command), pollMode);
@@ -314,6 +320,10 @@ public final class RamTuneTestApp extends AbstractFrame {
 
     private int getLength() {
         return getIntFromField(lengthField);
+    }
+
+    private boolean getBlockRead() {
+        return blockRead.isSelected();
     }
 
     private int getSendTimeout() {

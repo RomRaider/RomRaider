@@ -35,7 +35,8 @@ public final class WriteCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public List<byte[]> createCommands(byte id, byte[] data, byte[] address, int length) {
+    public List<byte[]> createCommands(byte id, byte[] data, byte[] address,
+            int length, boolean blockRead) {
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(data, "data");
         final List<byte[]> commands = new ArrayList<byte[]>();

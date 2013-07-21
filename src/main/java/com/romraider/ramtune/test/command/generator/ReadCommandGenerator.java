@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,14 +34,15 @@ public final class ReadCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public List<byte[]> createCommands(byte id, byte[] data, byte[] address, int length) {
+    public List<byte[]> createCommands(byte id, byte[] data, byte[] address,
+            int length, boolean blockRead) {
         checkGreaterThanZero(id, "Target ID");
         checkNotNullOrEmpty(address, "address");
         checkGreaterThanZero(length, "length");
         if (length == 1) {
             return asList(createCommandForAddress(id, address));
         } else {
-            return createCommandsForRange(id, address, length);
+            return createCommandsForRange(id, address, length, blockRead);
         }
     }
 
@@ -49,18 +50,23 @@ public final class ReadCommandGenerator extends AbstractCommandGenerator {
         return protocol.constructReadAddressRequest(id, new byte[][]{address});
     }
 
-    private List<byte[]> createCommandsForRange(byte id, byte[] address, int length) {
+    private List<byte[]> createCommandsForRange(byte id, byte[] address,
+            int length, boolean blockRead) {
+        int incrementSize = 1;
+        if (blockRead) {
+            incrementSize = INCREMENT_SIZE;
+        }
         List<byte[]> commands = new ArrayList<byte[]>();
         byte[] readAddress = copy(address);
         int i = 0;
         while (i < length) {
-            int readLength = (length - i) > INCREMENT_SIZE ? INCREMENT_SIZE : length - i;
+            int readLength = (length - i) > incrementSize ? incrementSize : length - i;
             if (readLength == 1) {
                 commands.add(createCommandForAddress(id, readAddress));
             } else {
                 commands.add(protocol.constructReadMemoryRequest(id, readAddress, readLength));
             }
-            i += INCREMENT_SIZE;
+            i += incrementSize;
             System.arraycopy(incrementAddress(readAddress, readLength), 0, readAddress, 0, readAddress.length);
         }
         return commands;
