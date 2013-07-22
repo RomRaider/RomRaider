@@ -165,6 +165,7 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.logger.ecu.ui.playback.PlaybackManagerImpl;
 import com.romraider.logger.ecu.ui.swing.layout.BetterFlowLayout;
 import com.romraider.logger.ecu.ui.swing.menubar.EcuLoggerMenuBar;
+import com.romraider.logger.ecu.ui.swing.menubar.action.LearningTableValuesAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileNameFieldAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ToggleButtonAction;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon;
@@ -856,9 +857,37 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private JComponent buildTabbedPane() {
-        addSplitPaneTab("Data", buildSplitPane(buildParamListPane(dataTabParamListTableModel, dataTabSwitchListTableModel, dataTabExternalListTableModel), buildDataTab()), buildUnselectAllButton());
-        addSplitPaneTab("Graph", buildSplitPane(buildParamListPane(graphTabParamListTableModel, graphTabSwitchListTableModel, graphTabExternalListTableModel), buildGraphTab()), buildUnselectAllButton());
-        addSplitPaneTab("Dashboard", buildSplitPane(buildParamListPane(dashboardTabParamListTableModel, dashboardTabSwitchListTableModel, dashboardTabExternalListTableModel), buildDashboardTab()), buildUnselectAllButton(), buildToggleGaugeStyleButton());
+        addSplitPaneTab(
+                "Data",
+                buildSplitPane(
+                        buildParamListPane(
+                                dataTabParamListTableModel,
+                                dataTabSwitchListTableModel,
+                                dataTabExternalListTableModel),
+                        buildDataTab()),
+                buildUnselectAllButton(),
+                buildLtvButton());
+        addSplitPaneTab(
+                "Graph",
+                buildSplitPane(
+                        buildParamListPane(
+                                graphTabParamListTableModel,
+                                graphTabSwitchListTableModel,
+                                graphTabExternalListTableModel),
+                        buildGraphTab()),
+                buildUnselectAllButton(),
+                buildLtvButton());
+        addSplitPaneTab(
+                "Dashboard",
+                buildSplitPane(
+                        buildParamListPane(
+                                dashboardTabParamListTableModel,
+                                dashboardTabSwitchListTableModel,
+                                dashboardTabExternalListTableModel),
+                        buildDashboardTab()),
+                buildUnselectAllButton(),
+                buildLtvButton(),
+                buildToggleGaugeStyleButton());
         tabbedPane.add("MAF", mafTab.getPanel());
         tabbedPane.add("Injector", injectorTab.getPanel());
         tabbedPane.add("Dyno", dynoTab.getPanel());
@@ -942,6 +971,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 }
             }
         });
+        return button;
+    }
+
+    private JButton buildLtvButton() {
+        final JButton button = new JButton();
+        VerticalTextIcon textIcon =
+                new VerticalTextIcon(button, "Learning Values", ROTATE_LEFT);
+        button.setIcon(textIcon);
+        button.setPreferredSize(new Dimension(25, 90));
+        button.addActionListener(new LearningTableValuesAction(this));
         return button;
     }
 
