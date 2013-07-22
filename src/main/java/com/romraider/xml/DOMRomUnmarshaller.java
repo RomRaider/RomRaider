@@ -530,7 +530,7 @@ public final class DOMRomUnmarshaller {
                 } else if (n.getNodeName().equalsIgnoreCase("scaling")) {
                     // check whether scale already exists. if so, modify, else
                     // use new instance
-                    Scale baseScale = table.getScale(unmarshallAttribute(n,"name", "x"));
+                    Scale baseScale = table.getScale(unmarshallAttribute(n,"name", "Default"));
                     table.addScale(unmarshallScale(n, baseScale));
 
                 } else if (n.getNodeName().equalsIgnoreCase("data")) {
@@ -585,7 +585,7 @@ public final class DOMRomUnmarshaller {
         }
 
         // set remaining attributes
-        scale.setName(unmarshallAttribute(scaleNode, "name", scale.getName()));
+        scale.setName(unmarshallAttribute(scaleNode, "name", "Default"));
         scale.setUnit(unmarshallAttribute(scaleNode, "units", scale.getUnit()));
         scale.setExpression(unmarshallAttribute(scaleNode, "expression",
                 scale.getExpression()));

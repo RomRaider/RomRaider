@@ -113,8 +113,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     public Table() {
         scales.clear();
-        curScale = new Scale();
-        this.addScale(curScale);
+        scales.add(new Scale());
 
         this.setLayout(borderLayout);
         this.add(centerPanel, BorderLayout.CENTER);

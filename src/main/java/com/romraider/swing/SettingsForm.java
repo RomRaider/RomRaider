@@ -148,6 +148,15 @@ public class SettingsForm extends JFrame implements MouseListener {
         chckbxShowTableToolbar.setSelected(settings.isShowTableToolbarBorder());
         chckbxOpenRomNode.setSelected(settings.isOpenExpanded());
         chckbxOpenTablesAt.setSelected(settings.isAlwaysOpenTableAtZero());
+
+        if(settings.getDefaultScale().equalsIgnoreCase("Default")) {
+            comboBoxDefaultScale.setSelectedIndex(1);
+        } else if (settings.getDefaultScale().equalsIgnoreCase("Standard")) {
+            comboBoxDefaultScale.setSelectedIndex(2);
+        } else {
+            comboBoxDefaultScale.setSelectedIndex(0);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
@@ -164,6 +173,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         jPanelDefault = new javax.swing.JPanel();
         jPanelTableDisplay = new javax.swing.JPanel();
         jPanelIcons = new javax.swing.JPanel();
+        jPanelScale = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         lblAxis = new javax.swing.JLabel();
         lblHighlight = new javax.swing.JLabel();
@@ -203,6 +213,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         labelTableClick = new javax.swing.JLabel();
         tableClickCount = new javax.swing.JComboBox();
         defaultScale = new javax.swing.JTextField();
+        comboBoxDefaultScale = new javax.swing.JComboBox();
 
         clipboardButtonGroup = new ButtonGroup();
         rdbtnDefault = new JRadioButton("RomRaider Default");
@@ -443,6 +454,32 @@ public class SettingsForm extends JFrame implements MouseListener {
         settingsTabbedPane.addTab("Table Display", jPanelTableDisplay);
         settingsTabbedPane.addTab("Clipboard", jPanelClipboard);
         settingsTabbedPane.addTab("Icons", jPanelIcons);
+        settingsTabbedPane.addTab("Scale", jPanelScale);
+
+        JLabel lblDefaultScale = new JLabel("Default Scale:");
+
+
+        comboBoxDefaultScale.setModel(new DefaultComboBoxModel(new String[] {"Metric", "Default", "Standard"}));
+        GroupLayout gl_jPanelScale = new GroupLayout(jPanelScale);
+        gl_jPanelScale.setHorizontalGroup(
+                gl_jPanelScale.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_jPanelScale.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblDefaultScale)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(comboBoxDefaultScale, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(318, Short.MAX_VALUE))
+                );
+        gl_jPanelScale.setVerticalGroup(
+                gl_jPanelScale.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_jPanelScale.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(gl_jPanelScale.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(lblDefaultScale)
+                                .addComponent(comboBoxDefaultScale, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(489, Short.MAX_VALUE))
+                );
+        jPanelScale.setLayout(gl_jPanelScale);
 
         editorIconsPanel = new JPanel();
 
@@ -961,6 +998,8 @@ public class SettingsForm extends JFrame implements MouseListener {
             // Number formatted incorrectly reset.
             textFieldTableIconScale.setText(String.valueOf(getSettings().getTableIconScale()));
         }
+
+        getSettings().setDefaultScale(comboBoxDefaultScale.getSelectedItem().toString());
     }
 
     private Settings getSettings()
@@ -1030,6 +1069,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JPanel jPanelClipboard;
     private javax.swing.JPanel jPanelTableDisplay;
     private javax.swing.JPanel jPanelIcons;
+    private javax.swing.JPanel jPanelScale;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1067,4 +1107,5 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JComboBox tableClickBehavior;
     private javax.swing.JCheckBox chckbxOpenTablesAt;
     private javax.swing.JTextField defaultScale;
+    private javax.swing.JComboBox comboBoxDefaultScale;
 }

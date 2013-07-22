@@ -340,7 +340,14 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         this.enable3d.setEnabled(selectedTable.getType() == Settings.TABLE_3D);
 
         setScales(selectedTable.getScales());
-        this.scaleSelection.setSelectedItem(selectedTable.getCurrentScale().getName());
+
+        if(null == selectedTable.getCurrentScale())
+        {
+            this.scaleSelection.setSelectedItem("Default");
+        } else {
+            this.scaleSelection.setSelectedItem(selectedTable.getCurrentScale().getName());
+        }
+
         toggleTableToolBar(selectedTable);
     }
 
