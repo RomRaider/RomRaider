@@ -31,6 +31,9 @@ import javax.swing.table.TableModel;
 
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
+import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
@@ -65,7 +68,6 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
     }
 
     private List<List<String>> getDataItems() {
-        final StringBuilder sb = new StringBuilder();
         final List<List<String>> ikDataItems = new ArrayList<List<String>>();
         final List<ExternalDataSource> externalSources = logger.getExternalDataSources();
         dataItems = new ArrayList<ExternalDataItem>();
@@ -86,12 +88,6 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
                 String.valueOf(item.getConvertors()[0].getGaugeMinMax().step)
             ));
         }
-        for (List<String> ikData : ikDataItems) {
-            for (int i = 0; i < ikData.size(); i++) {
-                sb.append(ikData.get(i) + " : ");
-            }
-            sb.append("\n");
-        }
         return ikDataItems;
     }
 
@@ -100,11 +96,11 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
         final Map<String, IntfKitSensor> phidgets = Settings.getPhidgetSensors();
 
         for (int i = 0; i < tm.getRowCount(); i++) {
-            String value = (String) tm.getValueAt(i, 0);
-            String key = value.replaceAll("Phidget IK Sensor ", "");
+            String column0 = (String) tm.getValueAt(i, 0);
+            String key = column0.replaceAll("Phidget IK Sensor ", "");
             if (phidgets.containsKey(key)) {
                 for (int j = 1; j < tm.getColumnCount(); j++) {
-                    value = (String) tm.getValueAt(i, j);
+                    String value = (String) tm.getValueAt(i, j);
                     switch (j) {
                         case 1:
                             phidgets.get(key).setExpression(value);
@@ -129,12 +125,30 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
                     }
                 }
             }
+            final IntfKitDataItem ikDataItem = (IntfKitDataItem) dataItems.get(i);
+            final GaugeMinMax gaugeMinMax = new GaugeMinMax(
+                    Float.parseFloat((String) tm.getValueAt(i, 4)),
+                    Float.parseFloat((String) tm.getValueAt(i, 5)),
+                    Float.parseFloat((String) tm.getValueAt(i, 6)));
+
+            final EcuDataConvertor[] convertors = ikDataItem.getConvertors();
+            convertors[0] = new ExternalDataConvertorImpl(
+                    ikDataItem,
+                    (String) tm.getValueAt(i, 3),
+                    (String) tm.getValueAt(i, 1),
+                    (String) tm.getValueAt(i, 2),
+                    gaugeMinMax);
+
+            ikDataItem.setConvertors(convertors);
         }
         Settings.setPhidgetSensors(phidgets);
         JOptionPane.showMessageDialog(
               logger,
-              "Exit and restart the Logger to activate the changes.",
-              "Phidget InterfaceKit Settings Saved",
+              "Un-select each updated External Phidget data item on each Data,\n" +
+              "Graph and Dashboard Logger tabs to complete the update.\n\n" +
+              "Logging profiles using the old Phidget settings must be loaded\n" +
+              "and re-saved with the new settings.",
+              "Phidget InterfaceKit Settings Applied",
               JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -22,6 +22,7 @@ package com.romraider.logger.external.phidget.interfacekit.plugin;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
+import com.romraider.logger.external.core.ConvertorManager;
 import com.romraider.logger.external.core.DataListener;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
@@ -33,10 +34,11 @@ import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
  * of each sensor input is set to raw defaults and can be modified by the user
  * using the Phidget InterfaceKit dialog from the Logger Plugins menu item.  
  */
-public final class IntfKitDataItem implements ExternalDataItem, DataListener {
+public final class IntfKitDataItem implements
+        ExternalDataItem, DataListener, ConvertorManager {
+
     private final String name;
     private double data;
-    private String units;
     private EcuDataConvertor[] convertors;
     
     /**
@@ -49,9 +51,9 @@ public final class IntfKitDataItem implements ExternalDataItem, DataListener {
     public IntfKitDataItem(IntfKitSensor sensor) {
         super();
         this.name = sensor.getInputName();
-        this.units = sensor.getUnits();
         int convertorCount = 1;
-        if (!sensor.getExpression().equals("x")) {
+        if (!sensor.getExpression().equals("x") &&
+                !sensor.getUnits().equals("raw value")) {
             convertorCount = 2;
         }
         GaugeMinMax gaugeMinMax = new GaugeMinMax(
@@ -59,7 +61,7 @@ public final class IntfKitDataItem implements ExternalDataItem, DataListener {
         convertors = new EcuDataConvertor[convertorCount];
         convertors[0] = new ExternalDataConvertorImpl(
                 this,
-                units,
+                sensor.getUnits(),
                 sensor.getExpression(),
                 sensor.getFormat(),
                 gaugeMinMax);
@@ -74,27 +76,33 @@ public final class IntfKitDataItem implements ExternalDataItem, DataListener {
         }
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getDescription() {
         return name + " data";
     }
 
+    @Override
     public double getData() {
         return data;
     }
 
-    public String getUnits() {
-        return units;
-    }
-
+    @Override
     public void setData(double data) {
         this.data = data;
     }
 
+    @Override
     public EcuDataConvertor[] getConvertors() {
         return convertors;
+    }
+
+    @Override
+    public void setConvertors(EcuDataConvertor[] convertors) {
+        this.convertors = convertors;        
     }
 }
