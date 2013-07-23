@@ -87,10 +87,12 @@ import com.romraider.swing.menubar.Menu;
 import com.romraider.swing.menubar.MenuItem;
 import com.romraider.swing.menubar.RadioButtonMenuItem;
 import com.romraider.swing.menubar.action.AboutAction;
+import com.romraider.util.SettingsManager;
 
 public class EcuLoggerMenuBar extends JMenuBar {
 
     private static final long serialVersionUID = 7081586516953740186L;
+    Settings settings = SettingsManager.getSettings();
 
     public EcuLoggerMenuBar(EcuLogger logger, List<ExternalDataSource> externalDataSources) {
 
@@ -116,14 +118,14 @@ public class EcuLoggerMenuBar extends JMenuBar {
         RadioButtonMenuItem fastPoll = new RadioButtonMenuItem("Enable Fast Polling Mode", VK_M, getKeyStroke(VK_M, CTRL_MASK), new FastPollModeAction(logger), logger.getSettings().isFastPoll());
         fastPoll.setToolTipText("Select to enable faster K-line polling of the ECU");
         settingsMenu.add(fastPoll);
-        RadioButtonMenuItem canBus = new RadioButtonMenuItem("CAN bus Logging (2007+)", VK_N, getKeyStroke(VK_N, CTRL_MASK), new CanBusModeAction(logger), Settings.isCanBus());
+        RadioButtonMenuItem canBus = new RadioButtonMenuItem("CAN bus Logging (2007+)", VK_N, getKeyStroke(VK_N, CTRL_MASK), new CanBusModeAction(logger), settings.isCanBus());
         canBus.setToolTipText("Select to enable logging via CAN bus using a J2534 compatible cable");
         if (isPlatform(WINDOWS)) {
             settingsMenu.add(canBus);
         }
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));
-        final RadioButtonMenuItem numFormat = new RadioButtonMenuItem("Use US English number format in Log File", VK_B, getKeyStroke(VK_B, CTRL_MASK), new LogFileNumberFormatAction(logger), logger.getSettings().isUsNumberFormat()); 
+        final RadioButtonMenuItem numFormat = new RadioButtonMenuItem("Use US English number format in Log File", VK_B, getKeyStroke(VK_B, CTRL_MASK), new LogFileNumberFormatAction(logger), logger.getSettings().isUsNumberFormat());
         numFormat.setToolTipText("Select to force log files to be written with . decimal point and , field separator");
         settingsMenu.add(numFormat);
         add(settingsMenu);

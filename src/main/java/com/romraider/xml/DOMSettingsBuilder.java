@@ -286,15 +286,15 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode serial = new IIOMetadataNode("serial");
         serial.setAttribute("port", settings.getLoggerPortDefault());
         serial.setAttribute("refresh", String.valueOf(settings.getRefreshMode()));
-        serial.setAttribute("ecuid", String.valueOf(Settings.getDestinationId()));
+        serial.setAttribute("ecuid", String.valueOf(settings.getDestinationId()));
         serial.setAttribute("fastpoll", String.valueOf(settings.isFastPoll()));
         loggerSettings.appendChild(serial);
 
         // Protocol connection
         IIOMetadataNode protocol = new IIOMetadataNode("protocol");
-        protocol.setAttribute("name", Settings.getLoggerProtocol());
-        protocol.setAttribute("transport", Settings.getTransportProtocol());
-        protocol.setAttribute("library", Settings.getJ2534Device());
+        protocol.setAttribute("name", settings.getLoggerProtocol());
+        protocol.setAttribute("transport", settings.getTransportProtocol());
+        protocol.setAttribute("library", settings.getJ2534Device());
         loggerSettings.appendChild(protocol);
 
         // window maximized
@@ -323,17 +323,17 @@ public final class DOMSettingsBuilder {
 
         // definition path
         IIOMetadataNode definition = new IIOMetadataNode("definition");
-        definition.setAttribute("path", Settings.getLoggerDefinitionFilePath());
+        definition.setAttribute("path", settings.getLoggerDefinitionFilePath());
         loggerSettings.appendChild(definition);
 
         // profile path
         IIOMetadataNode profile = new IIOMetadataNode("profile");
-        profile.setAttribute("path", Settings.getLoggerProfileFilePath());
+        profile.setAttribute("path", settings.getLoggerProfileFilePath());
         loggerSettings.appendChild(profile);
 
         // file logging
         IIOMetadataNode filelogging = new IIOMetadataNode("filelogging");
-        filelogging.setAttribute("path", Settings.getLoggerOutputDirPath());
+        filelogging.setAttribute("path", settings.getLoggerOutputDirPath());
         filelogging.setAttribute("switchid", settings.getFileLoggingControllerSwitchId());
         filelogging.setAttribute("active", String.valueOf(settings.isFileLoggingControllerSwitchActive()));
         filelogging.setAttribute("absolutetimestamp", String.valueOf(settings.isFileLoggingAbsoluteTimestamp()));

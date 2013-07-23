@@ -19,15 +19,18 @@
 
 package com.romraider.logger.ecu.comms.manager;
 
+import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
+import static com.romraider.util.ParamChecker.checkNotNull;
+import static org.apache.log4j.Logger.getLogger;
+
+import java.util.Collection;
+
+import org.apache.log4j.Logger;
+
 import com.romraider.Settings;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
-import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.exception.NotConnectedException;
-import static com.romraider.util.ParamChecker.checkNotNull;
-import org.apache.log4j.Logger;
-import static org.apache.log4j.Logger.getLogger;
-import java.util.Collection;
 
 public final class TransmissionManagerImpl implements TransmissionManager {
     private static final Logger LOGGER = getLogger(TransmissionManagerImpl.class);
@@ -39,27 +42,31 @@ public final class TransmissionManagerImpl implements TransmissionManager {
         this.settings = settings;
     }
 
+    @Override
     public void start() {
         try {
-            connection = getConnection(Settings.getLoggerProtocol(), settings.getLoggerPort(), settings.getLoggerConnectionProperties());
+            connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(), settings.getLoggerConnectionProperties());
             LOGGER.info("TX Manager Started.");
         } catch (Throwable e) {
             stop();
         }
     }
 
+    @Override
     public void sendQueries(Collection<EcuQuery> queries, PollingState pollState) {
         checkNotNull(queries, "queries");
         checkNotNull(pollState, "pollState");
         if (connection == null) throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
-        connection.sendAddressReads(queries, Settings.getDestinationId(), pollState);
+        connection.sendAddressReads(queries, settings.getDestinationId(), pollState);
     }
 
+    @Override
     public void endQueries() {
         if (connection == null) throw new NotConnectedException("TransmissionManager must be started before ending queries!");
         connection.clearLine();
     }
 
+    @Override
     public void stop() {
         if (connection != null) {
             endQueries();

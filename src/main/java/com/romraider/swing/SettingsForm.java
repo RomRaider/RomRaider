@@ -53,6 +53,7 @@ import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.util.FileAssociator;
+import com.romraider.util.SettingsManager;
 
 public class SettingsForm extends JFrame implements MouseListener {
 
@@ -876,7 +877,20 @@ public class SettingsForm extends JFrame implements MouseListener {
                 btnChooseFont.setText(fc.getFont().getFontName());
             }
         } else if (e.getSource() == reset) {
-            getEditor().setSettings(new Settings());
+            Settings newSettings = new Settings();
+            Settings curSettings = getSettings();
+
+            newSettings.setEcuDefinitionFiles(curSettings.getEcuDefinitionFiles());
+            newSettings.setLastImageDir(curSettings.getLastImageDir());
+            newSettings.setLastRepositoryDir(curSettings.getLastRepositoryDir());
+            newSettings.setUserLevel(curSettings.getUserLevel());
+            newSettings.setLoggerDefinitionFilePath(curSettings.getLoggerDefinitionFilePath());
+            newSettings.setLoggerDebuggingLevel(curSettings.getLoggerDebuggingLevel());
+            newSettings.setLoggerProfileFilePath(curSettings.getLoggerProfileFilePath());
+            newSettings.setLoggerOutputDirPath(curSettings.getLoggerOutputDirPath());
+
+            getEditor().setSettings(newSettings);
+
             initSettings();
         } else if (e.getSource() == btnAddAssocs) {
             // add file associations for selected file types
@@ -1014,7 +1028,7 @@ public class SettingsForm extends JFrame implements MouseListener {
 
     public void saveSettings()
     {
-        getEditor().getSettingsManager().save(getSettings());
+        SettingsManager.save(getSettings());
 
         // TODO: check if table setting changed before refreshing all tables.
         // Refresh all tables.

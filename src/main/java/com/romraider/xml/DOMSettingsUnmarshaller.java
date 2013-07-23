@@ -250,13 +250,13 @@ public final class DOMSettingsUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
                 settings.setRefreshMode(unmarshallAttribute(n, "refresh", false));
-                Settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
+                settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
                 settings.setFastPoll(unmarshallAttribute(n, "fastpoll", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("protocol")) {
-                Settings.setLoggerProtocol(unmarshallAttribute(n, "name", "SSM"));
-                Settings.setTransportProtocol(unmarshallAttribute(n, "transport", "ISO9141"));
-                Settings.setJ2534Device(unmarshallAttribute(n, "library", null));
+                settings.setLoggerProtocol(unmarshallAttribute(n, "name", "SSM"));
+                settings.setTransportProtocol(unmarshallAttribute(n, "transport", "ISO9141"));
+                settings.setJ2534Device(unmarshallAttribute(n, "library", null));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
                 settings.setLoggerWindowMaximized(unmarshallAttribute(n, "value", false));
@@ -275,7 +275,7 @@ public final class DOMSettingsUnmarshaller {
                 settings.setLoggerParameterListState(unmarshallAttribute(n, "showlist", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("definition")) {
-                settings.setLoggerDefinitionFilePath(unmarshallAttribute(n, "path", Settings.getLoggerDefinitionFilePath()));
+                settings.setLoggerDefinitionFilePath(unmarshallAttribute(n, "path", settings.getLoggerDefinitionFilePath()));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("profile")) {
                 settings.setLoggerProfileFilePath(unmarshallAttribute(n, "path", ""));

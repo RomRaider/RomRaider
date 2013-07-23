@@ -85,7 +85,6 @@ import com.romraider.swing.TableFrame;
 import com.romraider.swing.TableToolBar;
 import com.romraider.swing.TableTreeNode;
 import com.romraider.util.SettingsManager;
-import com.romraider.util.SettingsManagerImpl;
 import com.romraider.xml.DOMRomUnmarshaller;
 import com.romraider.xml.RomNotFoundException;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
@@ -95,7 +94,6 @@ public class ECUEditor extends AbstractFrame {
 
     private final String titleText = PRODUCT_NAME + " v" + VERSION + " | ECU Editor";
 
-    private final SettingsManager settingsManager = new SettingsManagerImpl();
     private final RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private final RomTree imageList = new RomTree(imageRoot);
     public MDIDesktopPane rightPanel = new MDIDesktopPane();
@@ -115,7 +113,7 @@ public class ECUEditor extends AbstractFrame {
 
     public ECUEditor() {
         // get settings from xml
-        settings = settingsManager.load();
+        settings = SettingsManager.getSettings();
 
         if (!settings.getRecentVersion().equalsIgnoreCase(VERSION)) {
             showReleaseNotes();
@@ -238,7 +236,7 @@ public class ECUEditor extends AbstractFrame {
         getSettings().setWindowLocation(getLocation());
 
         // Save when exit to save file settings.
-        settingsManager.save(getSettings(), statusPanel);
+        SettingsManager.save(getSettings(), statusPanel);
         statusPanel.update("Ready...", 0);
         repaint();
     }
@@ -524,10 +522,6 @@ public class ECUEditor extends AbstractFrame {
         launchLoggerWorker = new LaunchLoggerWorker();
         launchLoggerWorker.addPropertyChangeListener(getStatusPanel());
         launchLoggerWorker.execute();
-    }
-
-    public SettingsManager getSettingsManager() {
-        return this.settingsManager;
     }
 
     public RomTreeRootNode getImageRoot() {

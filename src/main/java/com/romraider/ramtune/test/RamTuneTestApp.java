@@ -19,6 +19,52 @@
 
 package com.romraider.ramtune.test;
 
+import static com.romraider.util.HexUtil.asBytes;
+import static com.romraider.util.HexUtil.asHex;
+import static com.romraider.util.ThreadUtil.runAsDaemon;
+import static com.romraider.util.ThreadUtil.sleep;
+import static java.awt.FlowLayout.LEFT;
+import static java.awt.Font.PLAIN;
+import static java.awt.GridBagConstraints.BOTH;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
+import static javax.swing.JOptionPane.YES_OPTION;
+import static javax.swing.JOptionPane.showConfirmDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.border.BevelBorder.LOWERED;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+
 import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.Protocol;
@@ -37,53 +83,8 @@ import com.romraider.ramtune.test.command.generator.WriteCommandGenerator;
 import com.romraider.ramtune.test.io.RamTuneTestAppConnectionProperties;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.LookAndFeelManager;
-import static com.romraider.util.HexUtil.asBytes;
-import static com.romraider.util.HexUtil.asHex;
 import com.romraider.util.LogManager;
 import com.romraider.util.SettingsManager;
-import com.romraider.util.SettingsManagerImpl;
-
-import static com.romraider.util.ThreadUtil.runAsDaemon;
-import static com.romraider.util.ThreadUtil.sleep;
-import static java.awt.FlowLayout.LEFT;
-import static java.awt.Font.PLAIN;
-import static java.awt.GridBagConstraints.BOTH;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.WARNING_MESSAGE;
-import static javax.swing.JOptionPane.YES_NO_OPTION;
-import static javax.swing.JOptionPane.YES_OPTION;
-import static javax.swing.JOptionPane.showConfirmDialog;
-import static javax.swing.JOptionPane.showMessageDialog;
-import static javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-import static javax.swing.JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;
-import static javax.swing.border.BevelBorder.LOWERED;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.List;
 
 /*
  * This is a test app! Use at your own risk!!
@@ -113,12 +114,11 @@ public final class RamTuneTestApp extends AbstractFrame {
 
     public RamTuneTestApp(String title) {
         super(title);
-        final SettingsManager manager = new SettingsManagerImpl();
-        settings = manager.load();
+        settings = SettingsManager.getSettings();
         portsComboBox = new SerialPortComboBox(settings);
-        userTp = Settings.getTransportProtocol();
-        userLibrary = Settings.getJ2534Device();
-        Settings.setTransportProtocol(ISO9141);
+        userTp = settings.getTransportProtocol();
+        userLibrary = settings.getJ2534Device();
+        settings.setTransportProtocol(ISO9141);
         // Read Address blocks only seems to work with ISO9141, it
         // may not be implemented in the ECU for ISO15765
         final LoggerProtocol lp = ProtocolFactory.getProtocol(
@@ -262,8 +262,10 @@ public final class RamTuneTestApp extends AbstractFrame {
     private JButton buildSendButton() {
         final JButton button = new JButton("Send Command");
         button.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 runAsDaemon(new Runnable() {
+                    @Override
                     public void run() {
                         button.setEnabled(false);
                         try {
@@ -296,6 +298,7 @@ public final class RamTuneTestApp extends AbstractFrame {
 
     private void appendResponseLater(final String text) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 responseField.append(text);
             }
@@ -393,12 +396,14 @@ public final class RamTuneTestApp extends AbstractFrame {
         final JCheckBox ecuCheckBox = new JCheckBox("ECU");
         final JCheckBox tcuCheckBox = new JCheckBox("TCU");
         ecuCheckBox.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 tcuCheckBox.setSelected(false);
                 ecuId = 0x10;
-             }
+            }
         });
         tcuCheckBox.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 ecuCheckBox.setSelected(false);
                 ecuId = 0x18;
@@ -453,6 +458,7 @@ public final class RamTuneTestApp extends AbstractFrame {
 
     public static void startTestApp(final int defaultCloseOperation) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("SSM Read/Write");
                 ramTuneTestApp.setIconImage(new ImageIcon( getClass().getResource("/graphics/romraider-ico.gif")).getImage());
@@ -467,7 +473,7 @@ public final class RamTuneTestApp extends AbstractFrame {
 
     @Override
     public void windowClosing(WindowEvent e) {
-        Settings.setTransportProtocol(userTp);
-        Settings.setJ2534Device(userLibrary);
+        settings.setTransportProtocol(userTp);
+        settings.setJ2534Device(userLibrary);
     }
 }

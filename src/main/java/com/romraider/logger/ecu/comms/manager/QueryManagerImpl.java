@@ -79,13 +79,13 @@ public final class QueryManagerImpl implements QueryManager {
     private static boolean stop;
 
     public QueryManagerImpl(Settings settings,
-                            EcuInitCallback ecuInitCallback,
-                            MessageListener messageListener,
-                            DataUpdateHandler... dataUpdateHandlers) {
+            EcuInitCallback ecuInitCallback,
+            MessageListener messageListener,
+            DataUpdateHandler... dataUpdateHandlers) {
         checkNotNull(settings,
-                     ecuInitCallback,
-                     messageListener,
-                     dataUpdateHandlers);
+                ecuInitCallback,
+                messageListener,
+                dataUpdateHandlers);
         this.settings = settings;
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
@@ -93,17 +93,20 @@ public final class QueryManagerImpl implements QueryManager {
         stop = true;
     }
 
+    @Override
     public synchronized void addListener(StatusChangeListener listener) {
         checkNotNull(listener, "listener");
         listeners.add(listener);
     }
 
+    @Override
     public void setFileLoggerSwitchMonitor(FileLoggerControllerSwitchMonitor monitor) {
         checkNotNull(monitor);
         this.monitor = monitor;
         fileLoggerQuery = new EcuQueryImpl(monitor.getEcuSwitch());
     }
 
+    @Override
     public synchronized void addQuery(String callerId, LoggerData loggerData) {
         checkNotNull(callerId, loggerData);
         //FIXME: This is a hack!!
@@ -117,6 +120,7 @@ public final class QueryManagerImpl implements QueryManager {
         }
     }
 
+    @Override
     public synchronized void removeQuery(String callerId, LoggerData loggerData) {
         checkNotNull(callerId, loggerData);
         removeList.add(buildQueryId(callerId, loggerData));
@@ -125,14 +129,17 @@ public final class QueryManagerImpl implements QueryManager {
         }
     }
 
+    @Override
     public Thread getThread() {
         return queryManagerThread;
     }
 
+    @Override
     public boolean isRunning() {
         return started && !stop;
     }
 
+    @Override
     public void run() {
         started = true;
         queryManagerThread = Thread.currentThread();
@@ -142,10 +149,10 @@ public final class QueryManagerImpl implements QueryManager {
             while (!stop) {
                 notifyConnecting();
                 if (!settings.isLogExternalsOnly() &&
-                        doEcuInit(Settings.getDestinationId())) {
+                        doEcuInit(settings.getDestinationId())) {
 
                     notifyReading();
-                    runLogger(Settings.getDestinationId());
+                    runLogger(settings.getDestinationId());
                 } else if (settings.isLogExternalsOnly()) {
                     notifyReading();
                     runLogger((byte) -1);
@@ -170,12 +177,12 @@ public final class QueryManagerImpl implements QueryManager {
         if (id == 0x18){
             target = TCU;
         }
-        
+
         try {
             LoggerConnection connection =
-                    getConnection(Settings.getLoggerProtocol(),
-                                  settings.getLoggerPort(),
-                                  settings.getLoggerConnectionProperties());
+                    getConnection(settings.getLoggerProtocol(),
+                            settings.getLoggerPort(),
+                            settings.getLoggerConnectionProperties());
             try {
                 messageListener.reportMessage("Sending " + target + " Init...");
                 connection.ecuInit(ecuInitCallback, id);
@@ -306,7 +313,7 @@ public final class QueryManagerImpl implements QueryManager {
         if (fileLoggerQuery != null
                 && settings.isFileLoggingControllerSwitchActive())
             ecuQueries.add(fileLoggerQuery);
-           txManager.sendQueries(ecuQueries, pollState);
+        txManager.sendQueries(ecuQueries, pollState);
     }
 
     private void sendExternalQueries() {
@@ -315,7 +322,7 @@ public final class QueryManagerImpl implements QueryManager {
         for (ExternalQuery externalQuery : externalQueries) {
             //FIXME: This is a hack!!
             externalQuery.setResponse(
-                externalQuery.getLoggerData().getSelectedConvertor().convert(null));
+                    externalQuery.getLoggerData().getSelectedConvertor().convert(null));
         }
     }
 
@@ -329,6 +336,7 @@ public final class QueryManagerImpl implements QueryManager {
         final Response response = buildResponse(queryMap.values());
         for (final DataUpdateHandler dataUpdateHandler : dataUpdateHandlers) {
             runAsDaemon(new Runnable() {
+                @Override
                 public void run() {
                     dataUpdateHandler.handleDataUpdate(response);
                 }
@@ -366,6 +374,7 @@ public final class QueryManagerImpl implements QueryManager {
         return filtered;
     }
 
+    @Override
     public void stop() {
         stop = true;
     }
@@ -398,24 +407,25 @@ public final class QueryManagerImpl implements QueryManager {
         if (pollState.isFastPoll()) {
             state = "Fast-K:";
         }
-        if (Settings.getTransportProtocol().equals("ISO15765")) {
+        if (settings.getTransportProtocol().equals("ISO15765")) {
             state = "CAN bus:";
         }
         if (settings.isLogExternalsOnly()) {
             state = "Externals:";
         }
-        double duration = ((double) (System.currentTimeMillis() - start)) / 1000.0;
+        double duration = (System.currentTimeMillis() - start) / 1000.0;
         String result = String.format(
-                        "%s[ %.2f queries/sec, %.2f sec/query ]",
-                        state,
-                        ((double) count) / duration,
-                        duration / ((double) count)
-                        );
+                "%s[ %.2f queries/sec, %.2f sec/query ]",
+                state,
+                (count) / duration,
+                duration / (count)
+                );
         return result;
     }
 
     private void notifyConnecting() {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 for (StatusChangeListener listener : listeners) {
                     listener.connecting();
@@ -426,6 +436,7 @@ public final class QueryManagerImpl implements QueryManager {
 
     private void notifyReading() {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 for (StatusChangeListener listener : listeners) {
                     listener.readingData();
@@ -436,6 +447,7 @@ public final class QueryManagerImpl implements QueryManager {
 
     private void notifyStopped() {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 for (StatusChangeListener listener : listeners) {
                     listener.stopped();

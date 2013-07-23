@@ -19,12 +19,14 @@
 
 package com.romraider.logger.ecu.comms.reset;
 
+import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
+import static com.romraider.util.ParamChecker.checkNotNull;
+
+import org.apache.log4j.Logger;
+
 import com.romraider.Settings;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
-import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
 import com.romraider.logger.ecu.ui.MessageListener;
-import static com.romraider.util.ParamChecker.checkNotNull;
-import org.apache.log4j.Logger;
 
 public final class ResetManagerImpl implements ResetManager {
     private static final Logger LOGGER = Logger.getLogger(ResetManagerImpl.class);
@@ -37,15 +39,16 @@ public final class ResetManagerImpl implements ResetManager {
         this.messageListener = messageListener;
     }
 
+    @Override
     public boolean resetEcu() {
         String target = "ECU";
         try {
-            LoggerConnection connection = getConnection(Settings.getLoggerProtocol(), settings.getLoggerPort(),
+            LoggerConnection connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
-                if (Settings.getDestinationId() == 0x18) target = "TCU";
+                if (settings.getDestinationId() == 0x18) target = "TCU";
                 messageListener.reportMessage("Sending " + target + " Reset...");
-                connection.ecuReset(Settings.getDestinationId());
+                connection.ecuReset(settings.getDestinationId());
                 messageListener.reportMessage("Sending " + target + " Reset...done.");
                 return true;
             } finally {

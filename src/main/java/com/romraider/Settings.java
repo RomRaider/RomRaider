@@ -481,15 +481,15 @@ public class Settings implements Serializable {
         this.loggerPortDefault = loggerPortDefault;
     }
 
-    public static void setLoggerProtocol(String protocol) {
+    public void setLoggerProtocol(String protocol) {
         Settings.loggerProtocol = protocol;
     }
 
-    public static String getLoggerProtocol() {
+    public String getLoggerProtocol() {
         return loggerProtocol;
     }
 
-    public static String getLoggerDefinitionFilePath() {
+    public String getLoggerDefinitionFilePath() {
         return loggerDefinitionFilePath;
     }
 
@@ -497,7 +497,7 @@ public class Settings implements Serializable {
         Settings.loggerDefinitionFilePath = loggerDefinitionFilePath;
     }
 
-    public static String getLoggerOutputDirPath() {
+    public String getLoggerOutputDirPath() {
         return loggerOutputDirPath;
     }
 
@@ -533,7 +533,7 @@ public class Settings implements Serializable {
         this.loggerDividerLocation = dividerLocation;
     }
 
-    public static String getLoggerProfileFilePath() {
+    public String getLoggerProfileFilePath() {
         return loggerProfileFilePath;
     }
 
@@ -618,11 +618,11 @@ public class Settings implements Serializable {
         return loggerRefreshMode;
     }
 
-    public static void setDestinationId(byte id) {
+    public void setDestinationId(byte id) {
         loggerDestinationId = id;
     }
 
-    public static byte getDestinationId() {
+    public byte getDestinationId() {
         return loggerDestinationId;
     }
 
@@ -650,19 +650,19 @@ public class Settings implements Serializable {
         return loggerDebuggingLevel;
     }
 
-    public static void setJ2534Device(String j2534Device) {
+    public void setJ2534Device(String j2534Device) {
         Settings.j2534Device = j2534Device;
     }
 
-    public static String getJ2534Device() {
+    public String getJ2534Device() {
         return j2534Device;
     }
 
-    public static void setTransportProtocol(String transport) {
+    public void setTransportProtocol(String transport) {
         Settings.transportProtocol = transport;
     }
 
-    public static String getTransportProtocol() {
+    public String getTransportProtocol() {
         return transportProtocol;
     }
 
@@ -746,7 +746,7 @@ public class Settings implements Serializable {
         return logExternalsOnly;
     }
 
-    public static boolean isCanBus() {
+    public boolean isCanBus() {
         if (transportProtocol.equals(ISO15765)) {
             return true;
         }

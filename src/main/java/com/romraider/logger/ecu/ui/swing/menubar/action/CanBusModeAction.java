@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.swing.menubar.action.AbstractAction;
+import com.romraider.util.SettingsManager;
 
 public final class CanBusModeAction extends AbstractAction {
 
@@ -31,13 +32,16 @@ public final class CanBusModeAction extends AbstractAction {
         super(logger);
     }
 
+    @Override
     public void actionPerformed(ActionEvent actionEvent) {
         try {
+            Settings settings = SettingsManager.getSettings();
             if ((Boolean) getValue(SELECTED_KEY)) {
-                Settings.setTransportProtocol("ISO15765");
+
+                settings.setTransportProtocol("ISO15765");
             }
             else {
-                Settings.setTransportProtocol("ISO9141");
+                settings.setTransportProtocol("ISO9141");
             }
             logger.stopLogging();
             logger.startLogging();

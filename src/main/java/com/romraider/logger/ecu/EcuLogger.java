@@ -21,9 +21,9 @@ package com.romraider.logger.ecu;
 
 import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
 import static com.romraider.Version.LOGGER_DEFS_URL;
+import static com.romraider.Version.MIN_LOG_DEF_VERSION;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
-import static com.romraider.Version.MIN_LOG_DEF_VERSION;
 import static com.romraider.logger.ecu.profile.UserProfileLoader.BACKUP_PROFILE;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
 import static com.romraider.logger.ecu.ui.swing.vertical.VerticalTextIcon.ROTATE_LEFT;
@@ -181,10 +181,10 @@ import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.core.ExternalDataSourceLoader;
 import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
 import com.romraider.swing.AbstractFrame;
+import com.romraider.util.FormatFilename;
 import com.romraider.swing.SetFont;
 import com.romraider.util.JREChecker;
-import com.romraider.util.SettingsManagerImpl;
-import com.romraider.util.FormatFilename;
+import com.romraider.util.SettingsManager;
 import com.romraider.util.ThreadUtil;
 
 /*
@@ -300,12 +300,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         // fail until we actually try to use them since the logger requires
         // these libraries, this is a hard error here
         if (!JREChecker.is32bit()) {
-            showMessageDialog(null, 
-                "Incompatible JRE detected.\n" +
-                PRODUCT_NAME +
-                " ECU Logger requires a 32-bit JRE.\nLogger will now exit.", 
-                "JRE Incompatibility Error", 
-                ERROR_MESSAGE);
+            showMessageDialog(null,
+                    "Incompatible JRE detected.\n" +
+                            PRODUCT_NAME +
+                            " ECU Logger requires a 32-bit JRE.\nLogger will now exit.",
+                            "JRE Incompatibility Error",
+                            ERROR_MESSAGE);
             // this will generate a NullPointerException because we never got
             // things started
             WindowEvent e = new WindowEvent(this, WindowEvent.WINDOW_CLOSED);
@@ -378,7 +378,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                             ecuIdLabel.setText(buildEcuInfoLabelText(target + " ID", ecuId));
                             loadResult = String.format("Loading logger config for new %s ID: %s, ", target, ecuId);
                             loadLoggerParams();
-                            loadUserProfile(Settings.getLoggerProfileFilePath());
+                            loadUserProfile(settings.getLoggerProfileFilePath());
                         }
 
                         private String getCalId(String ecuId) {
@@ -512,23 +512,23 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
             settings.setLoggerEcuDefinitionMap(ecuDefinitionMap);
             LOGGER.info(
-                String.format(
-                    "%d ECU definitions loaded from %d files",
-                    ecuDefinitionMap.size(), ecuDefFiles.size()
-                )
-            );
+                    String.format(
+                            "%d ECU definitions loaded from %d files",
+                            ecuDefinitionMap.size(), ecuDefFiles.size()
+                            )
+                    );
         } catch (Exception e) {
             reportError(e);
         }
     }
 
     private void loadLoggerConfig() {
-        String loggerConfigFilePath = Settings.getLoggerDefinitionFilePath();
+        String loggerConfigFilePath = settings.getLoggerDefinitionFilePath();
         if (isNullOrEmpty(loggerConfigFilePath)) showMissingConfigDialog();
         else {
             try {
                 EcuDataLoader dataLoader = new EcuDataLoaderImpl();
-                dataLoader.loadConfigFromXml(loggerConfigFilePath, Settings.getLoggerProtocol(),
+                dataLoader.loadConfigFromXml(loggerConfigFilePath, settings.getLoggerProtocol(),
                         settings.getFileLoggingControllerSwitchId(), ecuInit);
                 List<EcuParameter> ecuParams = dataLoader.getEcuParameters();
                 addConvertorUpdateListeners(ecuParams);
@@ -544,16 +544,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                     defVersion = dataLoader.getDefVersion();
                 }
 
-                if ( defVersion.equals("na") || 
+                if ( defVersion.equals("na") ||
                         Integer.parseInt(defVersion) < MIN_LOG_DEF_VERSION ) {
                     final String wrongDefVersion = "This version of RomRaider " +
-                    		"Logger requires a logger definfition XML\nfile of " +
-                    		"version " + MIN_LOG_DEF_VERSION + " or higher due " +
-                    		"to a definition file format change.\n\nIncorrect " +
-                    		"results may occur if the definition file " +
-                    		"is not updated.\nUse the Help menu 'Update Logger " +
-                    		"Definition' item to go online\nand donwload the " + 
-                    		"latest logger definition.\n";
+                            "Logger requires a logger definfition XML\nfile of " +
+                            "version " + MIN_LOG_DEF_VERSION + " or higher due " +
+                            "to a definition file format change.\n\nIncorrect " +
+                            "results may occur if the definition file " +
+                            "is not updated.\nUse the Help menu 'Update Logger " +
+                            "Definition' item to go online\nand donwload the " +
+                            "latest logger definition.\n";
                     showMessageDialog(this,
                             wrongDefVersion,
                             "Configuration", INFORMATION_MESSAGE);
@@ -563,7 +563,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 loadResult = String.format(
                         "%sloaded %s: %d parameters, %d switches from def version %s.",
                         loadResult,
-                        Settings.getLoggerProtocol(),
+                        settings.getLoggerProtocol(),
                         ecuParams.size(),
                         dataLoader.getEcuSwitches().size(),
                         defVersion);
@@ -622,7 +622,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             final File profileFile = new File(path);
             if (profileFile.exists()) {
                 reportMessageInTitleBar(
-                    "Profile: " + FormatFilename.getShortName(profileFile));
+                        "Profile: " + FormatFilename.getShortName(profileFile));
             }
         }
         catch (Exception e) {
@@ -1216,31 +1216,31 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private final Component buildLogToFileButton() {
         logToFileButton = new JToggleButton(
-                LOG_TO_FILE_START, 
+                LOG_TO_FILE_START,
                 new ImageIcon(getClass().getResource(LOG_TO_FILE_ICON)));
         SetFont.plain(logToFileButton);
         logToFileButton.setToolTipText(LOG_TO_FILE_TT_TEXT);
         logToFileButton.setBackground(GREEN);
         logToFileButton.setOpaque(true);
         logToFileButton.addActionListener(
-            new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    if (logToFileButton.isSelected() && controller.isStarted()) {
-                        fileUpdateHandler.start();
-                        logToFileButton.setBackground(RED);
-                        logToFileButton.setText(LOG_TO_FILE_STOP);
-                    }
-                    else {
-                        fileUpdateHandler.stop();
-                        if (!controller.isStarted()) statusIndicator.stopped();
-                        logToFileButton.setBackground(GREEN);
-                        logToFileButton.setSelected(false);
-                        logToFileButton.setText(LOG_TO_FILE_START);
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        if (logToFileButton.isSelected() && controller.isStarted()) {
+                            fileUpdateHandler.start();
+                            logToFileButton.setBackground(RED);
+                            logToFileButton.setText(LOG_TO_FILE_STOP);
+                        }
+                        else {
+                            fileUpdateHandler.stop();
+                            if (!controller.isStarted()) statusIndicator.stopped();
+                            logToFileButton.setBackground(GREEN);
+                            logToFileButton.setSelected(false);
+                            logToFileButton.setText(LOG_TO_FILE_START);
+                        }
                     }
                 }
-            }
-        );
+                );
         logToFileButton.getInputMap(
                 WHEN_IN_FOCUSED_WINDOW).put(
                         getKeyStroke(LOG_TO_FILE_FK), "toggleFileLogging");
@@ -1298,7 +1298,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 startLogging();
             }
         });
-        if (Settings.getDestinationId() == 0x10) {
+        if (settings.getDestinationId() == 0x10) {
             ecuCheckBox.setSelected(true);
             tcuCheckBox.setSelected(false);
             setTargetEcu();
@@ -1348,12 +1348,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void setTargetEcu() {
-        Settings.setDestinationId(ECU_ID);
+        settings.setDestinationId(ECU_ID);
         target = "ECU";
     }
 
     private void setTargetTcu() {
-        Settings.setDestinationId(TCU_ID);
+        settings.setDestinationId(TCU_ID);
         target = "TCU";
     }
 
@@ -1491,7 +1491,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     public final boolean getDtcodesEmpty() {
-        LOGGER.info("DT codes defined: " + !dtcodes.isEmpty() + 
+        LOGGER.info("DT codes defined: " + !dtcodes.isEmpty() +
                 ", definition version: " + defVersion);
         return dtcodes.isEmpty();
     }
@@ -1505,16 +1505,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     public final int readEcuCodes() {
-        final ReadCodesManager readCodesManager = 
+        final ReadCodesManager readCodesManager =
                 new ReadCodesManagerImpl(
-                        this, 
-                        dtcodes, 
+                        this,
+                        dtcodes,
                         ecuInit.getEcuInitBytes().length);
         return readCodesManager.readCodes();
     }
 
     public final int ecuGlobalAdjustment() {
-        final GlobalAdjustManager globalAdjustManager = 
+        final GlobalAdjustManager globalAdjustManager =
                 new GlobalAdjustManagerImpl(
                         this,
                         dataTabParamListTableModel);
@@ -1565,15 +1565,15 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         if (settings.getLoggerParameterListState()) {
             final Component c = tabbedPane.getSelectedComponent();
             if (c instanceof JSplitPane) {
-            	// Only save the divider location if there is one
-            	final JSplitPane sp = (JSplitPane) c.getComponentAt(100, 100);
-            	settings.setLoggerDividerLocation(sp.getDividerLocation());
+                // Only save the divider location if there is one
+                final JSplitPane sp = (JSplitPane) c.getComponentAt(100, 100);
+                settings.setLoggerDividerLocation(sp.getDividerLocation());
             }
         }
         settings.setLoggerSelectedTabIndex(tabbedPane.getSelectedIndex());
         settings.setLoggerPluginPorts(getPluginPorts(externalDataSources));
         try {
-            new SettingsManagerImpl().save(settings);
+            SettingsManager.save(settings);
             LOGGER.debug("Logger settings saved");
         } catch (Exception e) {
             LOGGER.warn("Error saving logger settings:", e);

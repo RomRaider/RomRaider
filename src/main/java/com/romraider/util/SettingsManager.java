@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,77 @@
 
 package com.romraider.util;
 
+import static com.romraider.Version.VERSION;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 import com.romraider.Settings;
 import com.romraider.swing.JProgressPane;
+import com.romraider.xml.DOMSettingsBuilder;
+import com.romraider.xml.DOMSettingsUnmarshaller;
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
-public interface SettingsManager {
-    Settings load();
+public class SettingsManager {
+    private static final String SETTINGS_FILE = "/settings.xml";
+    private static final String USER_HOME =
+            System.getProperty("user.home") + "/.RomRaider";
+    private static final String START_DIR = System.getProperty("user.dir");
+    private static String settingsDir = USER_HOME;
 
-    void save(Settings settings);
+    private static Settings settings = null;
 
-    void save(Settings settings, JProgressPane progress);
+    public static Settings getSettings() {
+        if(null == settings) {
+            try {
+                FileInputStream settingsFileIn = null;
+                try {
+                    final File sf = new File(USER_HOME + SETTINGS_FILE);
+                    settingsFileIn = new FileInputStream(sf);
+                }
+                catch (Exception e) {
+                    final File sf = new File(START_DIR + SETTINGS_FILE);
+                    settingsFileIn = new FileInputStream(sf);
+                    settingsDir = START_DIR;
+                }
+                final InputSource src = new InputSource(settingsFileIn);
+                final DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
+                final DOMParser parser = new DOMParser();
+                parser.parse(src);
+                final Document doc = parser.getDocument();
+                settings = domUms.unmarshallSettings(doc.getDocumentElement());
+            } catch (FileNotFoundException e) {
+                showMessageDialog(null,
+                        "Settings file not found.\nUsing default settings.",
+                        "Error Loading Settings", INFORMATION_MESSAGE);
+                settings = new Settings();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return settings;
+    }
+
+    public static void save(Settings newSettings) {
+        save(settings, new JProgressPane());
+    }
+
+    public static void save(Settings newSettings, JProgressPane progress) {
+        final DOMSettingsBuilder builder = new DOMSettingsBuilder();
+        try {
+            final File newDir = new File(settingsDir);
+            newDir.mkdir();		// Creates directory if it does not exist
+            final File sf = new File(settingsDir + SETTINGS_FILE);
+            builder.buildSettings(settings, sf, progress, VERSION);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        settings = newSettings;
+    }
 }

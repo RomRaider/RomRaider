@@ -19,12 +19,12 @@
 
 package com.romraider.logger.ecu;
 
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+
 import com.romraider.Settings;
 import com.romraider.swing.LookAndFeelManager;
 import com.romraider.util.LogManager;
 import com.romraider.util.SettingsManager;
-import com.romraider.util.SettingsManagerImpl;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public final class EcuLoggerExec {
 
@@ -37,14 +37,13 @@ public final class EcuLoggerExec {
         LogManager.initDebugLogging();
 
         // check for dodgy threading - dev only
-//        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));
+        //        RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager(true));
 
         // set look and feel
         LookAndFeelManager.initLookAndFeel();
 
         // load settings
-        SettingsManager manager = new SettingsManagerImpl();
-        Settings settings = manager.load();
+        Settings settings = SettingsManager.getSettings();
 
         // start logger
         EcuLogger.startLogger(EXIT_ON_CLOSE, settings, args);

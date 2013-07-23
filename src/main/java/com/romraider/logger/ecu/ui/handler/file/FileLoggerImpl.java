@@ -19,18 +19,20 @@
 
 package com.romraider.logger.ecu.ui.handler.file;
 
-import com.romraider.Settings;
-import com.romraider.logger.ecu.exception.FileLoggerException;
-import com.romraider.logger.ecu.ui.MessageListener;
-import com.romraider.util.FormatFilename;
-
 import static com.romraider.util.ParamChecker.checkNotNull;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.romraider.Settings;
+import com.romraider.logger.ecu.exception.FileLoggerException;
+import com.romraider.logger.ecu.ui.MessageListener;
+import com.romraider.util.FormatFilename;
+import com.romraider.util.SettingsManager;
 
 public final class FileLoggerImpl implements FileLogger {
     private static final String NEW_LINE = System.getProperty("line.separator");
@@ -49,6 +51,7 @@ public final class FileLoggerImpl implements FileLogger {
         this.messageListener = messageListener;
     }
 
+    @Override
     public void start() {
         if (!started) {
             stop();
@@ -56,8 +59,8 @@ public final class FileLoggerImpl implements FileLogger {
                 String filePath = buildFilePath();
                 os = new BufferedOutputStream(new FileOutputStream(filePath));
                 messageListener.reportMessageInTitleBar(
-                        "Started logging to file: " + 
-                        FormatFilename.getShortName(filePath));
+                        "Started logging to file: " +
+                                FormatFilename.getShortName(filePath));
                 zero = true;
             } catch (Exception e) {
                 stop();
@@ -67,6 +70,7 @@ public final class FileLoggerImpl implements FileLogger {
         }
     }
 
+    @Override
     public void stop() {
         if (os != null) {
             try {
@@ -79,10 +83,12 @@ public final class FileLoggerImpl implements FileLogger {
         started = false;
     }
 
+    @Override
     public boolean isStarted() {
         return started;
     }
 
+    @Override
     public void writeHeaders(String headers) {
         String timeHeader = "Time";
         if (!settings.isFileLoggingAbsoluteTimestamp()) {
@@ -91,6 +97,7 @@ public final class FileLoggerImpl implements FileLogger {
         writeText(timeHeader + headers);
     }
 
+    @Override
     public void writeLine(String line, long timestamp) {
         writeText(prependTimestamp(line, timestamp));
     }
@@ -124,14 +131,14 @@ public final class FileLoggerImpl implements FileLogger {
     }
 
     private String buildFilePath() {
-        String logDir = Settings.getLoggerOutputDirPath();
+        String logDir = SettingsManager.getSettings().getLoggerOutputDirPath();
         if (!logDir.endsWith(File.separator)) {
             logDir += File.separator;
         }
         logDir += "romraiderlog_";
         if (settings.getLogfileNameText() != null
                 && !settings.getLogfileNameText().isEmpty()) {
-            logDir += settings.getLogfileNameText() + "_"; 
+            logDir += settings.getLogfileNameText() + "_";
         }
         logDir += dateFormat.format(new Date()) + ".csv";
         return logDir;
