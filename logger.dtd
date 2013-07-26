@@ -49,6 +49,16 @@
 
 <!ELEMENT switches ( switch+ ) >
 
+<!ELEMENT dtcode EMPTY >
+<!ATTLIST dtcode bit ( 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 ) #REQUIRED >
+<!ATTLIST dtcode memaddr CDATA #REQUIRED >
+<!ATTLIST dtcode tmpaddr CDATA #REQUIRED >
+<!ATTLIST dtcode desc CDATA #REQUIRED >
+<!ATTLIST dtcode name CDATA #REQUIRED >
+<!ATTLIST dtcode id ID #REQUIRED >
+
+<!ELEMENT dtcodes ( dtcode+) >
+
 <!ELEMENT ecuparam ( ecu+, conversions? ) >
 <!ATTLIST ecuparam target CDATA #REQUIRED >
 <!ATTLIST ecuparam desc CDATA #REQUIRED >
@@ -57,7 +67,7 @@
 
 <!ELEMENT ecuparams ( ecuparam+ ) >
 
-<!ELEMENT protocol ( parameters?, switches?, ecuparams? ) >
+<!ELEMENT protocol ( parameters?, switches?, dtcodes?, ecuparams? ) >
 <!ATTLIST protocol id ID #REQUIRED >
 <!ATTLIST protocol baud CDATA #REQUIRED >
 <!ATTLIST protocol databits CDATA #REQUIRED >
