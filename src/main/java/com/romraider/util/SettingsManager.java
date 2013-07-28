@@ -47,37 +47,43 @@ public class SettingsManager {
 
     public static Settings getSettings() {
         if(null == settings) {
-            try {
-                FileInputStream settingsFileIn = null;
-                try {
-                    final File sf = new File(USER_HOME + SETTINGS_FILE);
-                    settingsFileIn = new FileInputStream(sf);
-                }
-                catch (Exception e) {
-                    final File sf = new File(START_DIR + SETTINGS_FILE);
-                    settingsFileIn = new FileInputStream(sf);
-                    settingsDir = START_DIR;
-                }
-                final InputSource src = new InputSource(settingsFileIn);
-                final DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
-                final DOMParser parser = new DOMParser();
-                parser.parse(src);
-                final Document doc = parser.getDocument();
-                settings = domUms.unmarshallSettings(doc.getDocumentElement());
-            } catch (FileNotFoundException e) {
-                showMessageDialog(null,
-                        "Settings file not found.\nUsing default settings.",
-                        "Error Loading Settings", INFORMATION_MESSAGE);
-                settings = new Settings();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            settings = load();
         }
         return settings;
     }
 
+    private static Settings load() {
+        Settings loadedSettings;
+        try {
+            FileInputStream settingsFileIn = null;
+            try {
+                final File sf = new File(USER_HOME + SETTINGS_FILE);
+                settingsFileIn = new FileInputStream(sf);
+            }
+            catch (Exception e) {
+                final File sf = new File(START_DIR + SETTINGS_FILE);
+                settingsFileIn = new FileInputStream(sf);
+                settingsDir = START_DIR;
+            }
+            final InputSource src = new InputSource(settingsFileIn);
+            final DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
+            final DOMParser parser = new DOMParser();
+            parser.parse(src);
+            final Document doc = parser.getDocument();
+            loadedSettings = domUms.unmarshallSettings(doc.getDocumentElement());
+        } catch (FileNotFoundException e) {
+            showMessageDialog(null,
+                    "Settings file not found.\nUsing default settings.",
+                    "Error Loading Settings", INFORMATION_MESSAGE);
+            loadedSettings = new Settings();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return loadedSettings;
+    }
+
     public static void save(Settings newSettings) {
-        save(settings, new JProgressPane());
+        save(newSettings, new JProgressPane());
     }
 
     public static void save(Settings newSettings, JProgressPane progress) {
@@ -87,9 +93,11 @@ public class SettingsManager {
             newDir.mkdir();		// Creates directory if it does not exist
             final File sf = new File(settingsDir + SETTINGS_FILE);
             builder.buildSettings(settings, sf, progress, VERSION);
+            settings = newSettings;
         } catch (Exception e) {
+            // Load the settings from disk.
+            settings = load();
             throw new RuntimeException(e);
         }
-        settings = newSettings;
     }
 }
