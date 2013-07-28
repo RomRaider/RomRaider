@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2013 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,10 @@ public final class TestPlxConnection implements SerialConnection {
                                         0x00, 0x00, 0x01, 0x00, 0x09, // AFR 1
                                         0x00, 0x01, 0x00, 0x1F, 0x3F, // EGT 0
                                         0x00, 0x02, 0x00, 0x00, 0x3F, // Fluid Temp 0
+                                        0x40,
+                                 (byte) 0x80,
+                                        0x00, 0x00, 0x00, 0x01, 0x2f, // AFR 0
+                                        0x3f, 0x00, 0x00, 0x00, 0x00, // bogus sensor
                                         0x40};
     private int index;
     private byte[] result = new byte[1];
