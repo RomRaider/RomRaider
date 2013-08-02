@@ -336,6 +336,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         incrementByFine.setValue(fineIncrement);
         incrementByCoarse.setValue(coarseIncrement);
+
         this.overlayLog.setSelected(selectedTable.getOverlayLog());
         this.enable3d.setEnabled(selectedTable.getType() == Settings.TABLE_3D);
 
@@ -401,10 +402,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             enable3d.setEnabled(false);
         }
 
-        if(null == currentTable || null == currentTable.getCompareTable()) {
-            refreshCompare.setEnabled(false);
-        } else {
+        if(null != currentTable && null != currentTable.getCompareTable() && enabled) {
             refreshCompare.setEnabled(true);
+        } else {
+            refreshCompare.setEnabled(false);
         }
 
         if (null != currentTable && currentTable.isLiveDataSupported() && enabled) {
@@ -415,6 +416,31 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             overlayLog.setEnabled(false);
             clearOverlay.setEnabled(false);
         }
+
+        if(null != currentTable && currentTable.isStaticDataTable()) {
+            if(enabled) {
+                scaleSelection.setEnabled(true);
+            } else {
+                scaleSelection.setEnabled(false);
+            }
+
+            // Disable everything that does not apply to static value tables.
+            colorCells.setEnabled(false);
+            refreshCompare.setEnabled(false);
+
+            incrementFine.setEnabled(false);
+            decrementFine.setEnabled(false);
+            incrementCoarse.setEnabled(false);
+            decrementCoarse.setEnabled(false);
+            incrementByFine.setEnabled(false);
+            incrementByCoarse.setEnabled(false);
+            setValue.setEnabled(false);
+            setValueText.setEnabled(false);
+            multiply.setEnabled(false);
+            enable3d.setEnabled(false);
+        }
+
+
         repaint();
     }
 

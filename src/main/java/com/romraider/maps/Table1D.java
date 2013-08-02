@@ -27,24 +27,25 @@ import com.romraider.Settings;
 
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
-    private Table parent = null;
+    private Table axisParent = null;
 
     public Table1D() {
         super();
     }
 
     public void setAxisParent(Table axisParent) {
-        this.parent = axisParent;
+        this.axisParent = axisParent;
     }
 
     public Table getAxisParent() {
-        return parent;
+        return axisParent;
     }
 
     public void addStaticDataCell(DataCell input) {
         for(int i = 0; i < data.length; i++) {
             if(data[i] == null) {
                 data[i] = input;
+                data[i].setY(i);
                 break;
             }
         }
@@ -193,7 +194,7 @@ public class Table1D extends Table {
 
     public boolean isAxis() {
         return getType() == Settings.TABLE_X_AXIS ||
-                getType() == Settings.TABLE_Y_AXIS;
+                getType() == Settings.TABLE_Y_AXIS || isStaticDataTable();
     }
 
     @Override
@@ -239,5 +240,10 @@ public class Table1D extends Table {
             // TODO: Log Exception.
             return false;
         }
+    }
+
+    @Override
+    public void updateTableLabel() {
+        this.getAxisParent().updateTableLabel();
     }
 }

@@ -43,12 +43,17 @@ public class Scale implements Serializable {
 
     @Override
     public String toString() {
-        return "\n      ---- Scale ----" +
+        return  "\n      ---- Scale ----" +
                 "\n      Name: " + getName() +
                 "\n      Expression: " + getExpression() +
+                "\n      Byte Expression: " + getByteExpression() +
                 "\n      Unit: " + getUnit() +
-                "\n      ---- End Scale ----";
-
+                "\n      Format: " + getFormat() +
+                "\n      Coarse Increment: " + getCoarseIncrement() +
+                "\n      Fine Increment: " + getFineIncrement() +
+                "\n      Min: " + getMin() +
+                "\n      Max: " + getMax() +
+                "\n      ---- End Scale ----\n";
     }
 
     public String getUnit() {

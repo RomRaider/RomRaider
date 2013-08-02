@@ -109,6 +109,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected int compareDisplay = Settings.COMPARE_DISPLAY_ABSOLUTE;
     protected int compareValueType = Settings.DATA_TYPE_BIN;
 
+    protected boolean staticDataTable = false;
+
     private Table compareTable = null;
 
     public Table() {
@@ -961,7 +963,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void selectCellAt(int y) {
-        if(y >= 0 && y < data.length && !data[y].isStaticValue()) {
+        if(y >= 0 && y < data.length) {
             clearSelection();
             data[y].setSelected(true);
             highlightY = y;
@@ -1234,6 +1236,14 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void refreshCompare() {
         populateCompareValues(getCompareTable());
+    }
+
+    public boolean isStaticDataTable() {
+        return staticDataTable;
+    }
+
+    public void setStaticDataTable(boolean staticDataTable) {
+        this.staticDataTable = staticDataTable;
     }
 }
 

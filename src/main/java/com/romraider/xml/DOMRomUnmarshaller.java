@@ -535,7 +535,7 @@ public final class DOMRomUnmarshaller {
 
                 } else if (n.getNodeName().equalsIgnoreCase("data")) {
                     // parse and add data to table
-                    DataCell dataCell = new DataCell(unmarshallText(n));
+                    DataCell dataCell = new DataCell(table, unmarshallText(n));
                     if(table instanceof Table1D) {
                         ((Table1D)table).addStaticDataCell(dataCell);
                     } else {

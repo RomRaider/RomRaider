@@ -47,7 +47,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     int unSelectMask1 = MouseEvent.BUTTON1_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
     int unSelectMask2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
 
-    private Table table;
+    private final Table table;
 
     private final Color scaleTextColor = new Color(0, 0, 0);
     private final Color highlightTextColor = new Color(255, 255, 255);
@@ -70,30 +70,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private final Color increaseBorderColor = getSettings().getIncreaseBorder();
     private final Color decreaseBorderColor = getSettings().getDecreaseBorder();
 
-    private String staticText = "";
-    private boolean staticValue = false;
-
-    public DataCell(String staticText) {
-        this.staticValue = true;
-        this.staticText = staticText;
-        this.setHorizontalAlignment(CENTER);
-        this.setVerticalAlignment(CENTER);
-        this.setFont(defaultFont);
-        this.setOpaque(true);
-        this.setVisible(true);
-        drawCell();
-    }
+    private String staticText = null;
 
     public DataCell(Table table) {
         this.table = table;
-    }
-
-    public DataCell(Table table, double originalValue, int x, int y) {
-        this.table = table;
-        this.originalValue = originalValue;
-        this.binValue = originalValue;
-        this.x = x;
-        this.y = y;
         this.setHorizontalAlignment(CENTER);
         this.setVerticalAlignment(CENTER);
         this.setFont(defaultFont);
@@ -101,6 +81,20 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.setVisible(true);
         this.addMouseListener(this);
         this.setPreferredSize(getSettings().getCellSize());
+    }
+
+    public DataCell(Table table, String staticText) {
+        this(table);
+        this.staticText = staticText;
+        table.setStaticDataTable(true);
+    }
+
+    public DataCell(Table table, double originalValue, int x, int y) {
+        this(table);
+        this.originalValue = originalValue;
+        this.binValue = originalValue;
+        this.x = x;
+        this.y = y;
     }
 
     public double getBinValue() {
@@ -125,17 +119,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                     this.setBinValue(result);
                 }
             }
-        } catch (NumberFormatException e) {
-            // Do nothing.  input is null or not a valid number.
-        }
-    }
-
-    public void setStaticValue(String input) {
-        // create parser
-        try {
-            double result = Double.parseDouble(input);
-            binValue = result;
-            originalValue = result;
         } catch (NumberFormatException e) {
             // Do nothing.  input is null or not a valid number.
         }
@@ -195,7 +178,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void drawCell() {
-        if(!staticValue && table == null) {
+        if(table == null) {
             // Table will be null in the static case.
             return;
         }
@@ -208,18 +191,14 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         setForeground(getCellTextColor());
         setBorder(getCellBorder());
         this.validate();
-        if(null != table) {
-            table.repaint();
-        }
+        table.validate();
+        table.repaint();
     }
 
     private Color getCellBackgroundColor() {
         Settings settings = getSettings();
-        if(staticValue) {
-            return settings.getAxisColor();
-        }
-
         Color backgroundColor;
+
         if(highlighted) {
             backgroundColor = settings.getHighlightColor();
         } else if(selected) {
@@ -229,15 +208,13 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         }else {
             backgroundColor = getCompareColor();
         }
+
         return backgroundColor;
     }
 
     private Color getCellTextColor() {
-        if(staticValue) {
-            return scaleTextColor;
-        }
-
         Color textColor;
+
         if(traced) {
             textColor = liveDataTraceTextColor;
         } else if (highlighted) {
@@ -247,16 +224,14 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         } else {
             textColor = scaleTextColor;
         }
+
         return textColor;
     }
 
     private Border getCellBorder() {
-        if(staticValue) {
-            return createLineBorder(defaultBorderColor, 1);
-        }
-
         Border border;
         double checkValue;
+
         if(null == table.getCompareTable()) {
             checkValue= originalValue;
         } else {
@@ -275,8 +250,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     private String getCellText() {
-        if(staticValue) {
-            return staticText;
+        if(table.isStaticDataTable()) {
+            return getStaticText();
         }
 
         DecimalFormat formatter = new DecimalFormat(table.getCurrentScale().getFormat());
@@ -301,8 +276,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     private String getCellToolTip() {
-        if(staticValue) {
-            return staticText;
+        if(table.isStaticDataTable()) {
+            return getStaticText();
         }
 
         return Double.toString(getRealValue());
@@ -343,15 +318,14 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void setSelected(Boolean selected) {
-        if(!staticValue || this.selected != selected) {
+        if(!table.isStaticDataTable() && this.selected != selected) {
             this.selected = selected;
             drawCell();
-            ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
         }
     }
 
     public void setHighlighted(Boolean highlighted) {
-        if(!staticValue || this.highlighted != highlighted) {
+        if(!table.isStaticDataTable() && this.highlighted != highlighted) {
             this.highlighted = highlighted;
             drawCell();
         }
@@ -384,6 +358,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             table.startHighlight(x, y);
         }
         requestFocus();
+        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(table);
     }
 
     @Override
@@ -510,14 +485,27 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         DataCell otherCell = (DataCell) other;
 
-        if(this.staticValue != otherCell.staticValue) {
+        if(this.table.isStaticDataTable() != otherCell.table.isStaticDataTable()) {
             return false;
         }
 
         return binValue == otherCell.binValue;
     }
 
-    public boolean isStaticValue() {
-        return this.staticValue;
+    public String getStaticText() {
+        String displayString = "";
+        try {
+            DecimalFormat formatter = new DecimalFormat(table.getCurrentScale().getFormat());
+
+            double staticDouble = Double.parseDouble(staticText);
+            displayString = formatter.format(JEPUtil.evaluate(table.getCurrentScale().getExpression(), staticDouble));
+        } catch (Exception ex) {
+            displayString = this.staticText;
+        }
+        return displayString;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 }
