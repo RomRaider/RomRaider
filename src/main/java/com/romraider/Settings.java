@@ -131,6 +131,11 @@ public class Settings implements Serializable {
     /* MDI Desktop Settings*/
     public static int FRAME_OFFSET = 20;
 
+    /* Scale Settings */
+    public static String DEFAULT_SCALE = "Default";
+    public static String METRIC_SCALE = "Metric";
+    public static String STANDARD_SCALE = "Standard";
+
     private static final String ISO15765 = "ISO15765";
     private static final String ISO9141 = "ISO9141";
     private static final String SYSTEM_NUMFORMAT = "system";

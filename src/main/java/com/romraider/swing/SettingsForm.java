@@ -150,10 +150,12 @@ public class SettingsForm extends JFrame implements MouseListener {
         chckbxOpenRomNode.setSelected(settings.isOpenExpanded());
         chckbxOpenTablesAt.setSelected(settings.isAlwaysOpenTableAtZero());
 
-        if(settings.getDefaultScale().equalsIgnoreCase("Default")) {
-            comboBoxDefaultScale.setSelectedIndex(1);
-        } else if (settings.getDefaultScale().equalsIgnoreCase("Standard")) {
-            comboBoxDefaultScale.setSelectedIndex(2);
+        if(settings.getDefaultScale().equalsIgnoreCase(Settings.DEFAULT_SCALE)) {
+            comboBoxDefaultScale.setSelectedItem(Settings.DEFAULT_SCALE);
+        } else if (settings.getDefaultScale().equalsIgnoreCase(Settings.METRIC_SCALE)) {
+            comboBoxDefaultScale.setSelectedItem(Settings.METRIC_SCALE);
+        } else if (settings.getDefaultScale().equalsIgnoreCase(Settings.STANDARD_SCALE)) {
+            comboBoxDefaultScale.setSelectedItem(Settings.STANDARD_SCALE);
         } else {
             comboBoxDefaultScale.setSelectedIndex(0);
         }
@@ -460,7 +462,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         JLabel lblDefaultScale = new JLabel("Default Scale:");
 
 
-        comboBoxDefaultScale.setModel(new DefaultComboBoxModel(new String[] {"Metric", "Default", "Standard"}));
+        comboBoxDefaultScale.setModel(new DefaultComboBoxModel(new String[] { Settings.DEFAULT_SCALE, Settings.METRIC_SCALE, Settings.STANDARD_SCALE}));
         GroupLayout gl_jPanelScale = new GroupLayout(jPanelScale);
         gl_jPanelScale.setHorizontalGroup(
                 gl_jPanelScale.createParallelGroup(Alignment.LEADING)
