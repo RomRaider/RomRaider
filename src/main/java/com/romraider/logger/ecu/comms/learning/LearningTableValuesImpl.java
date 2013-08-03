@@ -224,10 +224,12 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
 
                 messageListener.reportMessage(
                         "Learning Table Values retrieved successfully.");
-                LearningTableValuesResultsPanel.displayLearningResultsPanel(
+                final LearningTableValuesResultsPanel results =
+                        new LearningTableValuesResultsPanel(
                         logger, vehicleInfo,
                         afRanges, afLearning,
                         flkcLoad, flkcRpm, flkcQueryGroups);
+                results.displayLearningResultsPanel();
             }
             finally {
                 connection.close();

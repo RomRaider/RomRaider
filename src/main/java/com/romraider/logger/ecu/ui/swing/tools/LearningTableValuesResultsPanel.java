@@ -58,6 +58,7 @@ import com.romraider.logger.ecu.ui.swing.tools.tablemodels.VehicleInformationTab
 import com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers.CentreRenderer;
 import com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers.LtvCellRenderer;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
+import com.romraider.swing.SetFont;
 import com.romraider.util.FormatFilename;
 
 /**
@@ -66,16 +67,16 @@ import com.romraider.util.FormatFilename;
  */
 public class LearningTableValuesResultsPanel extends JDialog {
     private static final long serialVersionUID = 6716454297236022709L;
-    private static final String DIALOG_TITLE = "Learning Table Values";
-    private static final String DT_FORMAT = "%1$tY%1$tm%1$td-%1$tH%1$tM%1$tS";
-    private static final int LTV_WIDTH = 720;
-    private static final int LTV_HEIGHT = 450;
-    private static final JPanel contentPanel = new JPanel();
-    private static JTable vehicleInfoTable;
-    private static JTable afLearningTable;
-    private static JTable flkcTable;
+    private final String DIALOG_TITLE = "Learning Table Values";
+    private final String DT_FORMAT = "%1$tY%1$tm%1$td-%1$tH%1$tM%1$tS";
+    private final int LTV_WIDTH = 720;
+    private final int LTV_HEIGHT = 450;
+    private final JPanel contentPanel = new JPanel();
+    private JTable vehicleInfoTable;
+    private JTable afLearningTable;
+    private JTable flkcTable;
 
-    private LearningTableValuesResultsPanel(
+    public LearningTableValuesResultsPanel(
                 EcuLogger logger,
                 Map<String, Object> vehicleInfo,
                 String[] afRanges,
@@ -109,34 +110,10 @@ public class LearningTableValuesResultsPanel extends JDialog {
     /**
      * This method is called to display the Learning Table Values
      * retrieved from the ECU.
-     * @param logger - the parent frame
-     * @param vehicleInfo - a Map of vehicle information headers and data
-     * @param afRanges - an array of the A/F Learning Ranges
-     * @param afLearning - a List of AF Learning data for each bank
-     * @param flkcLoad - an array of FLKC Engine Load Ranges
-     * @param flkcRpm - an array  of FLKC Engine RPM Ranges
-     * @param flkcData - a List of the FLKC data
      */
-    public static final void displayLearningResultsPanel(
-            EcuLogger logger,
-            Map<String, Object> vehicleInfo,
-            String[] afRanges,
-            List<List<Object>> afLearning,
-            String[] flkcLoad,
-            String[] flkcRpm,
-            List<List<EcuQuery>> flkcData) {
-
-        try {
-            final LearningTableValuesResultsPanel dialog =
-                    new LearningTableValuesResultsPanel(
-                            logger, vehicleInfo,
-                            afRanges, afLearning,
-                            flkcLoad, flkcRpm, flkcData);
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public final void displayLearningResultsPanel() {
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setVisible(true);
     }
 
     private final JPanel buildVehicleInfoPanel(
@@ -193,10 +170,12 @@ public class LearningTableValuesResultsPanel extends JDialog {
         afLearningTitlePanel.setLayout(new BorderLayout(0, 0));
 
         final JLabel xLabel = new JLabel("Air/Fuel Ranges (g/s)");
+        SetFont.plain(xLabel);
         xLabel.setHorizontalAlignment(SwingConstants.CENTER);
         afLearningTitlePanel.add(xLabel, BorderLayout.NORTH);
 
         final JLabel yLabel = new JLabel("Bank");
+        SetFont.plain(yLabel);
         yLabel.setUI(new VerticalLabelUI(false));
         afLearningTitlePanel.add(yLabel, BorderLayout.WEST);
 
@@ -247,10 +226,12 @@ public class LearningTableValuesResultsPanel extends JDialog {
         flkcTitlePanel.setLayout(new BorderLayout(0, 0));
 
         final JLabel xLabel = new JLabel("Engine Load Ranges (g/rev)");
+        SetFont.plain(xLabel);
         xLabel.setHorizontalAlignment(SwingConstants.CENTER);
         flkcTitlePanel.add(xLabel, BorderLayout.NORTH);
 
         final JLabel yLabel = new JLabel("Engine Speed Ranges (RPM)");
+        SetFont.plain(yLabel);
         yLabel.setUI(new VerticalLabelUI(false));
         flkcTitlePanel.add(yLabel, BorderLayout.WEST);
 
@@ -290,9 +271,10 @@ public class LearningTableValuesResultsPanel extends JDialog {
         th.setReorderingAllowed(false);
         th.setDefaultRenderer(new CentreRenderer(table));
 
-        final Font thFont = th.getFont();
-        final Font thBoldFont = new Font(thFont.getFamily(), Font.BOLD, 11);
-        th.setFont(thBoldFont);
+//        final Font thFont = th.getFont();
+//        final Font thBoldFont = new Font(thFont.getFamily(), Font.BOLD, 11);
+//        th.setFont(thBoldFont);
+        SetFont.bold(th, 11);
         return th;
     }
 
