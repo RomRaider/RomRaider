@@ -64,6 +64,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -180,6 +181,7 @@ import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.core.ExternalDataSourceLoader;
 import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
 import com.romraider.swing.AbstractFrame;
+import com.romraider.swing.SetFont;
 import com.romraider.util.JREChecker;
 import com.romraider.util.SettingsManagerImpl;
 import com.romraider.util.FormatFilename;
@@ -896,9 +898,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JButton buildToggleGaugeStyleButton() {
         final JButton button = new JButton();
+        SetFont.plain(button);
         VerticalTextIcon textIcon = new VerticalTextIcon(button, "Gauge Style", ROTATE_LEFT);
         button.setIcon(textIcon);
-        button.setPreferredSize(new Dimension(25, 90));
+        button.setPreferredSize(new Dimension(25, 80));
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
         button.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
             private static final long serialVersionUID = 6913964758354638587L;
@@ -933,11 +936,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JButton buildUnselectAllButton() {
         final JButton button = new JButton();
+        SetFont.plain(button);
         button.setBackground(YELLOW);
         VerticalTextIcon textIcon = new VerticalTextIcon(button, "Un-select ALL", ROTATE_LEFT);
         button.setToolTipText(UNSELECT_ALL_TT_TEXT);
         button.setIcon(textIcon);
-        button.setPreferredSize(new Dimension(25, 90));
+        button.setPreferredSize(new Dimension(25, 85));
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F9"), "un-selectAll");
         button.getActionMap().put("un-selectAll", new AbstractAction() {
             private static final long serialVersionUID = 4913964758354638588L;
@@ -976,21 +980,23 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JButton buildLtvButton() {
         final JButton button = new JButton();
+        SetFont.plain(button);
         VerticalTextIcon textIcon =
-                new VerticalTextIcon(button, "Learning Values", ROTATE_LEFT);
+                new VerticalTextIcon(button, "LTV (F6)", ROTATE_LEFT);
         button.setIcon(textIcon);
-        button.setPreferredSize(new Dimension(25, 90));
+        button.setPreferredSize(new Dimension(25, 60));
         button.addActionListener(new LearningTableValuesAction(this));
         return button;
     }
 
     private void addSplitPaneTab(String name, final JSplitPane splitPane, JComponent... extraControls) {
         final JToggleButton toggleListButton = new JToggleButton();
+        SetFont.plain(toggleListButton);
         toggleListButton.setToolTipText(TOGGLE_LIST_TT_TEXT);
         toggleListButton.setSelected(true);
         VerticalTextIcon textIcon = new VerticalTextIcon(toggleListButton, "Parameter List", ROTATE_LEFT);
         toggleListButton.setIcon(textIcon);
-        toggleListButton.setPreferredSize(new Dimension(25, 90));
+        toggleListButton.setPreferredSize(new Dimension(25, 95));
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         toggleListButton.getActionMap().put("toggleHideParams", new AbstractAction() {
             private static final long serialVersionUID = -276854997788647306L;
@@ -1212,6 +1218,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         logToFileButton = new JToggleButton(
                 LOG_TO_FILE_START, 
                 new ImageIcon(getClass().getResource(LOG_TO_FILE_ICON)));
+        SetFont.plain(logToFileButton);
         logToFileButton.setToolTipText(LOG_TO_FILE_TT_TEXT);
         logToFileButton.setBackground(GREEN);
         logToFileButton.setOpaque(true);
