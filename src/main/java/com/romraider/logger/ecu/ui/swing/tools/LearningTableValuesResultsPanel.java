@@ -270,10 +270,6 @@ public class LearningTableValuesResultsPanel extends JDialog {
         final JTableHeader th = table.getTableHeader();
         th.setReorderingAllowed(false);
         th.setDefaultRenderer(new CentreRenderer(table));
-
-//        final Font thFont = th.getFont();
-//        final Font thBoldFont = new Font(thFont.getFamily(), Font.BOLD, 11);
-//        th.setFont(thBoldFont);
         SetFont.bold(th, 11);
         return th;
     }
