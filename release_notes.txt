@@ -1,4 +1,4 @@
-                - RomRaider 0.5.6 RC6 -
+                - RomRaider 0.5.7 RC1 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,13 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.6 RC6 Notes (03/24/2013) -
+- 0.5.7 RC1 Notes (08/05/2013) -
 --------------------------------------------
 This is the latest release of the RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.5.6 RC6 Known Issues -
+- 0.5.7 RC1 Known Issues -
 --------------------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -54,6 +54,50 @@ Status of these items and more can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.5.7 RC1 (08/05/2013)
+----------------------------------
+
+[1] New Logger features require added parameters in the logger definition file.
+Therefore the minimum version of logger.xml is 155.  A warning will be displayed
+if the version is below this prompting the user to update.
+
+[2] The settings XML file can be stored in the RomRaider directory as an alternate
+location.  This allows multiple customized installations to exist each with their
+own settings.
+
+- Logger
+  - Added feature to read DTC via SSM connection [*1]
+  - Added feature to adjust the global timing and AC on/off idle RPM values [*1]
+  - Added feature to read ECU specific Learning Table Values [*1]
+  - Added feature to allow user to define conversion formulas for Phidget sensors
+  - TXS plugin update: by nitros
+  - changed QueryManager to break TCU queries up as TCU doesn't support long CAN queries
+  - support for signed integer values added [*1]
+  - support for non-contiguous multi-byte parameters added [*1]
+  - corrections to ISO15765 support, fixed debug messages and array index problem.
+  - changed SSM test application to write bytes rather than blocks
+  - changed SSM test application to allow selection of byte or block reads
+  - update PLX sensor types to drop data for unknown sensor address 4032
+  - force some font styles to plain as Linux seems to use bold as default
+
+Operational Notes
+    - Since RomRaider relies on various externally provided classes and vendor
+      libraries, the 64bit Java VM is not supported.  The RomRaider installer and
+      Editor will issue warnings if a 64bit Java VM is detected and advise the
+      user to uninstall it and install the 32bit Java VM.  It is unlikely that
+      64bit Java VM will even be supported as all external classes and vendor
+      libraries must be compiled for native 64bit operation. See note 3 for an
+      example.
+    - To log External sensors only, un-select both the ECU and TCU checkbox on
+      the Logger menu bar.  Then switch to the Externals tab and check the items
+      to be logged.  The log Externals only setting is not retained between
+      logging sessions.
+    - The use of ISO15765 requires a J2534 compliant cable.  Since the J2534
+      specification only defines Windows 32bit systems as a valid platform,
+      Linux systems are not officially supported.  When/if a Linux J2534 driver
+      becomes available then support can be enabled for non-Windows platforms. 
+
 
 0.5.6 RC6 (03/24/2013)
 ----------------------------------
