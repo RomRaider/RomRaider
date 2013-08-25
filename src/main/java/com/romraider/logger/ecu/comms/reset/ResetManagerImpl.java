@@ -27,15 +27,14 @@ import org.apache.log4j.Logger;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
 import com.romraider.logger.ecu.ui.MessageListener;
+import com.romraider.util.SettingsManager;
 
 public final class ResetManagerImpl implements ResetManager {
     private static final Logger LOGGER = Logger.getLogger(ResetManagerImpl.class);
-    private final Settings settings;
     private final MessageListener messageListener;
 
-    public ResetManagerImpl(Settings settings, MessageListener messageListener) {
-        checkNotNull(settings, messageListener);
-        this.settings = settings;
+    public ResetManagerImpl(MessageListener messageListener) {
+        checkNotNull(messageListener);
         this.messageListener = messageListener;
     }
 
@@ -43,6 +42,7 @@ public final class ResetManagerImpl implements ResetManager {
     public boolean resetEcu() {
         String target = "ECU";
         try {
+            Settings settings = SettingsManager.getSettings();
             LoggerConnection connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {

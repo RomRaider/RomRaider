@@ -44,7 +44,6 @@ import org.apache.log4j.Logger;
 
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.util.JREChecker;
-import com.romraider.util.SettingsManager;
 
 public class ECUExec {
     private static final Logger LOGGER = getLogger(ECUExec.class);
@@ -115,7 +114,7 @@ public class ECUExec {
     }
 
     private static void openLogger(String[] args) {
-        startLogger(EXIT_ON_CLOSE, SettingsManager.getSettings(), args);
+        startLogger(EXIT_ON_CLOSE, args);
     }
 
     private static void openRom(final ECUEditor editor, final String rom) {

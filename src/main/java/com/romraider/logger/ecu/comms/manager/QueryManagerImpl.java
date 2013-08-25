@@ -55,6 +55,7 @@ import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.StatusChangeListener;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import com.romraider.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitor;
+import com.romraider.util.SettingsManager;
 
 public final class QueryManagerImpl implements QueryManager {
     private static final Logger LOGGER = Logger.getLogger(QueryManagerImpl.class);
@@ -68,7 +69,6 @@ public final class QueryManagerImpl implements QueryManager {
     private static final String ECU = "ECU";
     private static final String TCU = "TCU";
     private static final String EXT = "Externals";
-    private final Settings settings;
     private final EcuInitCallback ecuInitCallback;
     private final MessageListener messageListener;
     private final DataUpdateHandler[] dataUpdateHandlers;
@@ -78,15 +78,12 @@ public final class QueryManagerImpl implements QueryManager {
     private static boolean started;
     private static boolean stop;
 
-    public QueryManagerImpl(Settings settings,
-            EcuInitCallback ecuInitCallback,
+    public QueryManagerImpl(EcuInitCallback ecuInitCallback,
             MessageListener messageListener,
             DataUpdateHandler... dataUpdateHandlers) {
-        checkNotNull(settings,
-                ecuInitCallback,
+        checkNotNull(ecuInitCallback,
                 messageListener,
                 dataUpdateHandlers);
-        this.settings = settings;
         this.ecuInitCallback = ecuInitCallback;
         this.messageListener = messageListener;
         this.dataUpdateHandlers = dataUpdateHandlers;
@@ -144,6 +141,7 @@ public final class QueryManagerImpl implements QueryManager {
         started = true;
         queryManagerThread = Thread.currentThread();
         LOGGER.debug("QueryManager started.");
+        Settings settings = SettingsManager.getSettings();
         try {
             stop = false;
             while (!stop) {
@@ -179,6 +177,7 @@ public final class QueryManagerImpl implements QueryManager {
         }
 
         try {
+            Settings settings = SettingsManager.getSettings();
             LoggerConnection connection =
                     getConnection(settings.getLoggerProtocol(),
                             settings.getLoggerPort(),
@@ -218,12 +217,13 @@ public final class QueryManagerImpl implements QueryManager {
         if (id == 0x18){
             target = TCU;
         }
-        TransmissionManager txManager = new TransmissionManagerImpl(settings);
+        TransmissionManager txManager = new TransmissionManagerImpl();
         long start = currentTimeMillis();
         long end = currentTimeMillis();
         int count = 0;
         try {
             txManager.start();
+            Settings settings = SettingsManager.getSettings();
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {
                 pollState.setFastPoll(settings.isFastPoll());
@@ -311,7 +311,7 @@ public final class QueryManagerImpl implements QueryManager {
     private void sendEcuQueries(TransmissionManager txManager) {
         final List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
         if (fileLoggerQuery != null
-                && settings.isFileLoggingControllerSwitchActive())
+                && SettingsManager.getSettings().isFileLoggingControllerSwitchActive())
             ecuQueries.add(fileLoggerQuery);
         txManager.sendQueries(ecuQueries, pollState);
     }
@@ -407,10 +407,10 @@ public final class QueryManagerImpl implements QueryManager {
         if (pollState.isFastPoll()) {
             state = "Fast-K:";
         }
-        if (settings.getTransportProtocol().equals("ISO15765")) {
+        if (SettingsManager.getSettings().getTransportProtocol().equals("ISO15765")) {
             state = "CAN bus:";
         }
-        if (settings.isLogExternalsOnly()) {
+        if (SettingsManager.getSettings().isLogExternalsOnly()) {
             state = "Externals:";
         }
         double duration = (System.currentTimeMillis() - start) / 1000.0;

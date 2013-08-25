@@ -38,16 +38,14 @@ public final class FileLoggerImpl implements FileLogger {
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
     private final SimpleDateFormat timestampFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    private final Settings settings;
     private final MessageListener messageListener;
     private boolean started;
     private OutputStream os;
     private long startTimestamp;
     private boolean zero;
 
-    public FileLoggerImpl(Settings settings, MessageListener messageListener) {
-        checkNotNull(settings, messageListener);
-        this.settings = settings;
+    public FileLoggerImpl(MessageListener messageListener) {
+        checkNotNull(messageListener);
         this.messageListener = messageListener;
     }
 
@@ -91,7 +89,7 @@ public final class FileLoggerImpl implements FileLogger {
     @Override
     public void writeHeaders(String headers) {
         String timeHeader = "Time";
-        if (!settings.isFileLoggingAbsoluteTimestamp()) {
+        if (!SettingsManager.getSettings().isFileLoggingAbsoluteTimestamp()) {
             timeHeader = timeHeader  + " (msec)";
         }
         writeText(timeHeader + headers);
@@ -116,7 +114,7 @@ public final class FileLoggerImpl implements FileLogger {
 
     private String prependTimestamp(String line, long timestamp) {
         String formattedTimestamp;
-        if (settings.isFileLoggingAbsoluteTimestamp()) {
+        if (SettingsManager.getSettings().isFileLoggingAbsoluteTimestamp()) {
             formattedTimestamp = timestampFormat.format(new Date(timestamp));
         } else {
             if (zero) {
@@ -136,6 +134,7 @@ public final class FileLoggerImpl implements FileLogger {
             logDir += File.separator;
         }
         logDir += "romraiderlog_";
+        Settings settings = SettingsManager.getSettings();
         if (settings.getLogfileNameText() != null
                 && !settings.getLogfileNameText().isEmpty()) {
             logDir += settings.getLogfileNameText() + "_";

@@ -99,7 +99,6 @@ public final class RamTuneTestApp extends AbstractFrame {
     private static final PollingState pollMode = new PollingStateImpl();
     private static final String ISO9141 = "ISO9141";
     private static Protocol protocol;
-    private final Settings settings;
     private final JTextField addressField = new JTextField(6);
     private final JTextField lengthField = new JTextField(4);
     private final JTextField sendTimeoutField = new JTextField(4);
@@ -114,8 +113,8 @@ public final class RamTuneTestApp extends AbstractFrame {
 
     public RamTuneTestApp(String title) {
         super(title);
-        settings = SettingsManager.getSettings();
-        portsComboBox = new SerialPortComboBox(settings);
+        Settings settings = SettingsManager.getSettings();
+        portsComboBox = new SerialPortComboBox();
         userTp = settings.getTransportProtocol();
         userLibrary = settings.getJ2534Device();
         settings.setTransportProtocol(ISO9141);
@@ -135,7 +134,7 @@ public final class RamTuneTestApp extends AbstractFrame {
     }
 
     private void startPortRefresherThread() {
-        SerialPortRefresher serialPortRefresher = new SerialPortRefresher(portsComboBox, settings.getLoggerPort());
+        SerialPortRefresher serialPortRefresher = new SerialPortRefresher(portsComboBox, SettingsManager.getSettings().getLoggerPort());
         runAsDaemon(serialPortRefresher);
         // wait until port refresher fully started before continuing
         while (!serialPortRefresher.isStarted()) {
@@ -473,6 +472,7 @@ public final class RamTuneTestApp extends AbstractFrame {
 
     @Override
     public void windowClosing(WindowEvent e) {
+        Settings settings = SettingsManager.getSettings();
         settings.setTransportProtocol(userTp);
         settings.setJ2534Device(userLibrary);
     }

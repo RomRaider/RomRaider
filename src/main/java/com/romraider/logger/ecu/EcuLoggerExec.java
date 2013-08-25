@@ -21,10 +21,8 @@ package com.romraider.logger.ecu;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
-import com.romraider.Settings;
 import com.romraider.swing.LookAndFeelManager;
 import com.romraider.util.LogManager;
-import com.romraider.util.SettingsManager;
 
 public final class EcuLoggerExec {
 
@@ -42,11 +40,8 @@ public final class EcuLoggerExec {
         // set look and feel
         LookAndFeelManager.initLookAndFeel();
 
-        // load settings
-        Settings settings = SettingsManager.getSettings();
-
         // start logger
-        EcuLogger.startLogger(EXIT_ON_CLOSE, settings, args);
+        EcuLogger.startLogger(EXIT_ON_CLOSE, args);
     }
 
 }

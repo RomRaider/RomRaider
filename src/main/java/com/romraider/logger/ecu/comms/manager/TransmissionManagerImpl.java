@@ -31,20 +31,19 @@ import com.romraider.Settings;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.exception.NotConnectedException;
+import com.romraider.util.SettingsManager;
 
 public final class TransmissionManagerImpl implements TransmissionManager {
     private static final Logger LOGGER = getLogger(TransmissionManagerImpl.class);
-    private final Settings settings;
     private LoggerConnection connection;
 
-    public TransmissionManagerImpl(Settings settings) {
-        checkNotNull(settings, "settings");
-        this.settings = settings;
+    public TransmissionManagerImpl() {
     }
 
     @Override
     public void start() {
         try {
+            Settings settings = SettingsManager.getSettings();
             connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(), settings.getLoggerConnectionProperties());
             LOGGER.info("TX Manager Started.");
         } catch (Throwable e) {
@@ -57,7 +56,7 @@ public final class TransmissionManagerImpl implements TransmissionManager {
         checkNotNull(queries, "queries");
         checkNotNull(pollState, "pollState");
         if (connection == null) throw new NotConnectedException("TransmissionManager must be started before queries can be sent!");
-        connection.sendAddressReads(queries, settings.getDestinationId(), pollState);
+        connection.sendAddressReads(queries, SettingsManager.getSettings().getDestinationId(), pollState);
     }
 
     @Override
