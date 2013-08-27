@@ -246,4 +246,20 @@ public class Table1D extends Table {
     public void updateTableLabel() {
         this.getAxisParent().updateTableLabel();
     }
+
+    @Override
+    public StringBuffer getTableAsString() {
+        if(isStaticDataTable()) {
+            StringBuffer output = new StringBuffer(Settings.BLANK);
+            for (int i = 0; i < data.length; i++) {
+                output.append(data[i].getStaticText());
+                if (i < data.length - 1) {
+                    output.append(Settings.TAB);
+                }
+            }
+            return output;
+        } else {
+            return super.getTableAsString();
+        }
+    }
 }

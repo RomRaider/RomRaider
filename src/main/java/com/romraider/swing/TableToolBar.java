@@ -575,10 +575,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
                 float[] rowValues = new float[valueCount];
                 for (int i = 0; i < valueCount; i++) {
                     DataCell theCell = tableData[i][j];
-                    rowValues[i] = (float) theCell.getBinValue();
-                    //float theValue = (float)theCell.getValue();
-                    //BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
-                    //rowValues[i] = finalRoundedValue.floatValue();
+                    rowValues[i] = (float) theCell.getRealValue();
                 }
                 graphValues.add(rowValues);
             }
@@ -592,10 +589,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             double[] xValues = new double[length];
 
             for (int i = 0; i < length; i++) {
-                xValues[i] = dataCells[i].getBinValue();
-                //double theValue = dataCells[i].getValue();
-                //BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2,BigDecimal.ROUND_HALF_UP);
-                //xValues[i] = finalRoundedValue.doubleValue();
+                xValues[i] = dataCells[i].getRealValue();
             }
 
             //Gather y/z axis values
@@ -604,7 +598,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             double[] yValues = new double[length];
 
             for (int i = 0; i < length; i++) {
-                double theValue = dataCells[i].getBinValue();
+                double theValue = dataCells[i].getRealValue();
                 BigDecimal finalRoundedValue = new BigDecimal(theValue).setScale(2, BigDecimal.ROUND_HALF_UP);
                 yValues[i] = finalRoundedValue.doubleValue();
             }
