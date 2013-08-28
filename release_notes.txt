@@ -1,4 +1,4 @@
-                - RomRaider 0.5.7 RC1 -
+                - RomRaider 0.5.7 RC2 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,13 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.7 RC1 Notes (08/05/2013) -
+- 0.5.7 RC2 Notes (08/28/2013) -
 --------------------------------------------
 This is the latest release of the RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.5.7 RC1 Known Issues -
+- 0.5.7 RC2 Known Issues -
 --------------------------------------
 - Editor
   - Pasting table data can cause hangs under certain circumstances
@@ -54,6 +54,13 @@ Status of these items and more can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.5.7 RC2 (08/28/2013)
+----------------------------------
+
+- Logger
+  - Fixed Learning Table Values reading ECU def problem for 6-cyl cars.
+
 
 0.5.7 RC1 (08/05/2013)
 ----------------------------------
