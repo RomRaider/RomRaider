@@ -198,28 +198,30 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                     flkcRpm = formatRpmRanges(queries);
                 }
 
-                final List<List<EcuQuery>> flkcQueryGroups =
-                        new FlkcTableQueryBuilder().build(
-                                flkc,
-                                flkcAddr,
-                                flkcRpm.length,
-                                flkcLoad.length - 1);
-
-                for (int i = 0; i < flkcQueryGroups.size(); i++) {
-                    queries.clear();
-                    for (int j = 0; j < flkcQueryGroups.get(i).size(); j++) {
-                        if (flkcQueryGroups.get(i).get(j) != null) {
-                            queries.add(flkcQueryGroups.get(i).get(j));
+                List<List<EcuQuery>> flkcQueryGroups = new ArrayList<List<EcuQuery>>();
+                if (flkc != null) {
+                    flkcQueryGroups = new FlkcTableQueryBuilder().build(
+                                            flkc,
+                                            flkcAddr,
+                                            flkcRpm.length,
+                                            flkcLoad.length - 1);
+    
+                    for (int i = 0; i < flkcQueryGroups.size(); i++) {
+                        queries.clear();
+                        for (int j = 0; j < flkcQueryGroups.get(i).size(); j++) {
+                            if (flkcQueryGroups.get(i).get(j) != null) {
+                                queries.add(flkcQueryGroups.get(i).get(j));
+                            }
                         }
+                        message = String.format("Retrieving FLKC row %d values...", i);
+                        messageListener.reportMessage(message);
+                        LOGGER.info(message);
+                        connection.sendAddressReads(
+                                queries,
+                                (byte) 0x10,
+                                new PollingStateImpl());
+                        LOGGER.info("FLKC row " + i + " values retrieved.");               
                     }
-                    message = String.format("Retrieving FLKC row %d values...", i);
-                    messageListener.reportMessage(message);
-                    LOGGER.info(message);
-                    connection.sendAddressReads(
-                            queries,
-                            (byte) 0x10,
-                            new PollingStateImpl());
-                    LOGGER.info("FLKC row " + i + " values retrieved.");               
                 }
 
                 messageListener.reportMessage(
@@ -238,13 +240,12 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
             }
         }
         catch (Exception e) {
-            messageListener.reportMessage(
-                    "Unable to retrieve current ECU learning values - check correct " +
-                    "serial port\nhas been selected, cable is connected and ignition " +
-                    "is on.");
-            LOGGER.error("Error retrieving current ECU learning values", e);
+            messageListener.reportError(
+                    "Unable to retrieve current ECU learning values");
+            LOGGER.error(message + " Error retrieving values", e);
             showMessageDialog(logger,
-                    "Error performing Learning Table Values read.\n" +
+                    message +
+                    "\nError performing Learning Table Values read.\n" +
                     "Check the following:\n" +
                     "* Logger has successfully conencted to the ECU\n" +
                     "* Correct COM port is selected (if not Openport 2)\n" +
@@ -288,7 +289,8 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
     }
 
     /**
-     * Define the start address of the FLKC table in RAM.
+     * Define the start address of the FLKC table in RAM base on a Extended
+     * parameter if defined.
      * Also isolate the FLKC extended parameter to use the data converter
      * when building the FLKC table queries.
      */
@@ -353,8 +355,9 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
 
         List<EcuQuery> tableAxis = new ArrayList<EcuQuery>();
         for (String tableName : tableNames) {
-            while (tableAxis.isEmpty()) {
-                tableAxis = loadTable(document, ecuDef, tableName);
+            tableAxis = loadTable(document, ecuDef, tableName);
+            if (!tableAxis.isEmpty()) {
+                break;
             }
         }
         return tableAxis;
@@ -426,6 +429,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
 
     /**
      * Build a List of EcuQueries to retrieve the axis and scaling of a table.
+     * A table is found when the storageaddress parameter has been identified.
      */
     private final List<EcuQuery> loadTable(
             Document document,
@@ -439,13 +443,16 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                         document,
                         inheritanceList, 
                         tableName);
-        final List<EcuQuery> tableAxisQuery = TableAxisQueryParameterSet.build(
-                tableMap.get("storageaddress"),
-                tableMap.get("storagetype"),
-                tableMap.get("expression"),
-                tableMap.get("units"),
-                tableMap.get("sizey")
-        );
+        List<EcuQuery> tableAxisQuery = new ArrayList<EcuQuery>();
+        if (tableMap.containsKey("storageaddress")) {
+            tableAxisQuery = TableAxisQueryParameterSet.build(
+                    tableMap.get("storageaddress"),
+                    tableMap.get("storagetype"),
+                    tableMap.get("expression"),
+                    tableMap.get("units"),
+                    tableMap.get("sizey")
+            );
+        }
         return tableAxisQuery;
     }
 
