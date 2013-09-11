@@ -219,7 +219,7 @@ public class LearningTableValuesResultsPanel extends JDialog {
         final JPanel flkcTitlePanel = new JPanel();
         flkcTitlePanel.setBorder(
                 new TitledBorder(null,
-                        "Fine Learning Knock Correction (deg. of correction)",
+                        "Fine Learning Knock Correction (° of correction)",
                         TitledBorder.LEADING,
                         TitledBorder.TOP, null, null));
         flkcTitlePanel.setBounds(10, 172, 692, 204);
@@ -342,7 +342,7 @@ public class LearningTableValuesResultsPanel extends JDialog {
                 bw.append(EOL);
             }
             bw.append(EOL);
-            bw.write("Fine Learning Knock Correction (deg. of correction)" + EOL);
+            bw.write("Fine Learning Knock Correction (° of correction)" + EOL);
             columnCount = flkcTable.getColumnCount();
             rowCount = flkcTable.getRowCount();
             for (int i = 0; i < columnCount; i++) {
