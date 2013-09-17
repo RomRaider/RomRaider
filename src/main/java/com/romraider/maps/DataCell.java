@@ -420,6 +420,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setRevertPoint() {
         this.setOriginalValue(binValue);
+        this.drawCell();
     }
 
     public void setOriginalValue(double originalValue) {
