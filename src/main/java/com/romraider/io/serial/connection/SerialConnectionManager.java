@@ -49,8 +49,8 @@ public final class SerialConnectionManager implements ConnectionManager {
         timeout = connectionProperties.getConnectTimeout();
         readTimeout = timeout;
         // Use TestSerialConnection for testing!!
-        //connection = new SerialConnectionImpl(portName, connectionProperties);
-        connection = new TestSerialConnection2(portName, connectionProperties);
+        connection = new SerialConnectionImpl(portName, connectionProperties);
+        //connection = new TestSerialConnection2(portName, connectionProperties);
     }
 
     // Send request and wait for response with known length
