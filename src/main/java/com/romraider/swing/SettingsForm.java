@@ -36,6 +36,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -50,8 +51,6 @@ import ZoeloeSoft.projects.JFontChooser.JFontChooser;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
 import com.romraider.util.FileAssociator;
 import com.romraider.util.SettingsManager;
 
@@ -891,7 +890,7 @@ public class SettingsForm extends JFrame implements MouseListener {
             newSettings.setLoggerProfileFilePath(curSettings.getLoggerProfileFilePath());
             newSettings.setLoggerOutputDirPath(curSettings.getLoggerOutputDirPath());
 
-            getEditor().setSettings(newSettings);
+            SettingsManager.save(newSettings);
 
             initSettings();
         } else if (e.getSource() == btnAddAssocs) {
@@ -1020,7 +1019,7 @@ public class SettingsForm extends JFrame implements MouseListener {
 
     private Settings getSettings()
     {
-        return getEditor().getSettings();
+        return SettingsManager.getSettings();
     }
 
     private ECUEditor getEditor()
@@ -1030,17 +1029,22 @@ public class SettingsForm extends JFrame implements MouseListener {
 
     public void saveSettings()
     {
-        SettingsManager.save(getSettings());
+        saveSettings(getSettings());
+    }
 
-        // TODO: check if table setting changed before refreshing all tables.
-        // Refresh all tables.
-        for(Rom rom : getEditor().getImages()) {
-            for(Table table : rom.getTables()) {
-                table.drawTable();
+    public void saveSettings(Settings newSettings) {
+        SettingsManager.save(newSettings);
+        drawVisibleTables();
+        getEditor().refreshUI();
+    }
+
+    private void drawVisibleTables() {
+        for(JInternalFrame frame : getEditor().getRightPanel().getAllFrames()) {
+            if(frame instanceof TableFrame && frame.isVisible()) {
+                TableFrame tableFrame = (TableFrame) frame;
+                tableFrame.getTable().drawTable();
             }
         }
-
-        getEditor().refreshUI();
     }
 
     @Override

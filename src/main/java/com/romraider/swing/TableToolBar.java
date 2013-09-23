@@ -24,7 +24,6 @@ import static javax.swing.BorderFactory.createLineBorder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -71,6 +70,7 @@ import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
 import com.romraider.maps.Table3D;
+import com.romraider.util.SettingsManager;
 
 public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ActionListener, GraphDataListener {
 
@@ -168,7 +168,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         refreshCompare.setBorder(createLineBorder(new Color(150, 150, 150), 1));
 
         scaleSelection.setPreferredSize(new Dimension(80, 23));
-        scaleSelection.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
         clearOverlay.setPreferredSize(new Dimension(75, 23));
         clearOverlay.setBorder(createLineBorder(new Color(150, 150, 150), 1));
@@ -262,7 +261,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void updateIcons() {
-        Settings settings = ECUEditorManager.getECUEditor().getSettings();
+        Settings settings = SettingsManager.getSettings();
         incrementFine.setIcon(rescaleImageIcon(new ImageIcon(incrementFineImage), settings.getTableIconScale()));
         decrementFine.setIcon(rescaleImageIcon(new ImageIcon(decrementFineImage), settings.getTableIconScale()));
         incrementCoarse.setIcon(rescaleImageIcon(new ImageIcon(incrementCoarseImage), settings.getTableIconScale()));
@@ -296,7 +295,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     @Override
     public void setBorder(Border border) {
-        if(ECUEditorManager.getECUEditor().getSettings().isShowTableToolbarBorder()) {
+        if(SettingsManager.getSettings().isShowTableToolbarBorder()) {
             super.setBorder(toolbarBorder);
         } else {
             super.setBorder(BorderFactory.createEmptyBorder());
@@ -308,14 +307,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void updateTableToolBar(Table selectedTable) {
-        if(null != this.selectedTable && this.selectedTable.equals(selectedTable)) {
-            // Already up to date.  Return.
-            return;
-        }
-
         this.selectedTable = selectedTable;
-        double fineIncrement = 0;
-        double coarseIncrement = 0;
 
         setBorder(toolbarBorder);
 
@@ -326,16 +318,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             return;
         }
 
-        try {
-            // enable the toolbar.
-            fineIncrement = Math.abs(selectedTable.getCurrentScale().getFineIncrement());
-            coarseIncrement = Math.abs(selectedTable.getCurrentScale().getCoarseIncrement());
-        } catch (Exception ex) {
-            // scaling units haven't been added yet -- no problem
-        }
-
-        incrementByFine.setValue(fineIncrement);
-        incrementByCoarse.setValue(coarseIncrement);
+        updateToolbarIncrementDecrementValues();
 
         this.overlayLog.setSelected(selectedTable.getOverlayLog());
         this.enable3d.setEnabled(selectedTable.getType() == Settings.TABLE_3D);
@@ -350,6 +333,26 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         }
 
         toggleTableToolBar(selectedTable);
+    }
+
+    private void updateToolbarIncrementDecrementValues() {
+        if(null == selectedTable) {
+            return;
+        }
+
+        double fineIncrement = 0;
+        double coarseIncrement = 0;
+
+        try {
+            // enable the toolbar.
+            fineIncrement = Math.abs(selectedTable.getCurrentScale().getFineIncrement());
+            coarseIncrement = Math.abs(selectedTable.getCurrentScale().getCoarseIncrement());
+        } catch (Exception ex) {
+            // scaling units haven't been added yet -- no problem
+        }
+
+        incrementByFine.setValue(fineIncrement);
+        incrementByCoarse.setValue(coarseIncrement);
     }
 
     private void toggleTableToolBar(Table currentTable) {
@@ -707,6 +710,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             try {
 
                 curTable.setScaleByName((String)scaleSelection.getSelectedItem());
+                updateToolbarIncrementDecrementValues();
             } catch (NameNotFoundException e1) {
                 e1.printStackTrace();
             }

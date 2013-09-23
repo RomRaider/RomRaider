@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.JEPUtil;
+import com.romraider.util.SettingsManager;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final long serialVersionUID = -2904293227148940937L;
@@ -80,7 +81,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.setOpaque(true);
         this.setVisible(true);
         this.addMouseListener(this);
-        this.setPreferredSize(getSettings().getCellSize());
     }
 
     public DataCell(Table table, String staticText) {
@@ -95,6 +95,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.binValue = originalValue;
         this.x = x;
         this.y = y;
+        this.setPreferredSize(getSettings().getCellSize());
     }
 
     public double getBinValue() {
@@ -471,7 +472,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     private Settings getSettings() {
-        return ECUEditorManager.getECUEditor().getSettings();
+        return SettingsManager.getSettings();
     }
 
     @Override

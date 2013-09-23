@@ -29,7 +29,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
-import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.ExternalDataConvertorImpl;
@@ -38,9 +37,10 @@ import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
 import com.romraider.swing.menubar.action.AbstractAction;
+import com.romraider.util.SettingsManager;
 
 /**
- * IntfKitPluginMenuAction is used to populate the Phidgets Plugins menu 
+ * IntfKitPluginMenuAction is used to populate the Phidgets Plugins menu
  * of the Logger. It will report the device type and serial number of each
  * PhidgetInterfaceKit found and allow the user to custom define each sensor's
  * field values.
@@ -57,6 +57,7 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
         super(logger);
     }
 
+    @Override
     public void actionPerformed(ActionEvent actionEvent) {
         final IntfKitConvertorPanel intfKitPanel =
                 new IntfKitConvertorPanel(logger, getDataItems());
@@ -79,21 +80,21 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
         }
         for (ExternalDataItem item : dataItems) {
             ikDataItems.add(Arrays.asList(
-                item.getName(),
-                item.getConvertors()[0].getExpression(),
-                item.getConvertors()[0].getFormat(),
-                item.getConvertors()[0].getUnits(),
-                String.valueOf(item.getConvertors()[0].getGaugeMinMax().min),
-                String.valueOf(item.getConvertors()[0].getGaugeMinMax().max),
-                String.valueOf(item.getConvertors()[0].getGaugeMinMax().step)
-            ));
+                    item.getName(),
+                    item.getConvertors()[0].getExpression(),
+                    item.getConvertors()[0].getFormat(),
+                    item.getConvertors()[0].getUnits(),
+                    String.valueOf(item.getConvertors()[0].getGaugeMinMax().min),
+                    String.valueOf(item.getConvertors()[0].getGaugeMinMax().max),
+                    String.valueOf(item.getConvertors()[0].getGaugeMinMax().step)
+                    ));
         }
         return ikDataItems;
     }
 
     private final void saveChanges(JTable table) {
         final TableModel tm = table.getModel();
-        final Map<String, IntfKitSensor> phidgets = Settings.getPhidgetSensors();
+        final Map<String, IntfKitSensor> phidgets = SettingsManager.getSettings().getPhidgetSensors();
 
         for (int i = 0; i < tm.getRowCount(); i++) {
             String column0 = (String) tm.getValueAt(i, 0);
@@ -102,26 +103,26 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
                 for (int j = 1; j < tm.getColumnCount(); j++) {
                     String value = (String) tm.getValueAt(i, j);
                     switch (j) {
-                        case 1:
-                            phidgets.get(key).setExpression(value);
-                            break;
-                        case 2:
-                            phidgets.get(key).setFormat(value);
-                            break;
-                        case 3:
-                            phidgets.get(key).setUnits(value);
-                            break;
-                        case 4:
-                            phidgets.get(key).setMinValue(Float.parseFloat(value));
-                            break;
-                        case 5:
-                            phidgets.get(key).setMaxValue(Float.parseFloat(value));
-                            break;
-                        case 6:
-                            phidgets.get(key).setStepValue(Float.parseFloat(value));
-                            break;
-                        default:
-                            break;
+                    case 1:
+                        phidgets.get(key).setExpression(value);
+                        break;
+                    case 2:
+                        phidgets.get(key).setFormat(value);
+                        break;
+                    case 3:
+                        phidgets.get(key).setUnits(value);
+                        break;
+                    case 4:
+                        phidgets.get(key).setMinValue(Float.parseFloat(value));
+                        break;
+                    case 5:
+                        phidgets.get(key).setMaxValue(Float.parseFloat(value));
+                        break;
+                    case 6:
+                        phidgets.get(key).setStepValue(Float.parseFloat(value));
+                        break;
+                    default:
+                        break;
                     }
                 }
             }
@@ -141,14 +142,14 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
 
             ikDataItem.setConvertors(convertors);
         }
-        Settings.setPhidgetSensors(phidgets);
+        SettingsManager.getSettings().setPhidgetSensors(phidgets);
         JOptionPane.showMessageDialog(
-              logger,
-              "Un-select each updated External Phidget data item on each Data,\n" +
-              "Graph and Dashboard Logger tabs to complete the update.\n\n" +
-              "Logging profiles using the old Phidget settings must be loaded\n" +
-              "and re-saved with the new settings.",
-              "Phidget InterfaceKit Settings Applied",
-              JOptionPane.INFORMATION_MESSAGE);
+                logger,
+                "Un-select each updated External Phidget data item on each Data,\n" +
+                        "Graph and Dashboard Logger tabs to complete the update.\n\n" +
+                        "Logging profiles using the old Phidget settings must be loaded\n" +
+                        "and re-saved with the new settings.",
+                        "Phidget InterfaceKit Settings Applied",
+                        JOptionPane.INFORMATION_MESSAGE);
     }
 }

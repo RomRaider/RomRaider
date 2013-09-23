@@ -92,7 +92,7 @@ public class SettingsManager {
             final File newDir = new File(settingsDir);
             newDir.mkdir();		// Creates directory if it does not exist
             final File sf = new File(settingsDir + SETTINGS_FILE);
-            builder.buildSettings(settings, sf, progress, VERSION);
+            builder.buildSettings(newSettings, sf, progress, VERSION);
             settings = newSettings;
         } catch (Exception e) {
             // Load the settings from disk.

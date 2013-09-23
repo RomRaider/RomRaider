@@ -35,6 +35,7 @@ import javax.swing.JViewport;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.util.SettingsManager;
 
 /**
  * An extension of WDesktopPane that supports often used MDI functionality. This
@@ -64,12 +65,12 @@ public class MDIDesktopPane extends JDesktopPane {
         int h;
 
         // get frame location.
-        if(getEditor().getSettings().isAlwaysOpenTableAtZero()) {
+        if(SettingsManager.getSettings().isAlwaysOpenTableAtZero()) {
             p = new Point(0, 0);
         } else {
             if (getAllFrames().length > 0) {
                 JInternalFrame selectedFrame = getSelectedFrame();
-                if(null == selectedFrame) {
+                if(null == selectedFrame || !selectedFrame.isVisible()) {
                     // if none selected get the location at index 0.
                     p = getAllFrames()[0].getLocation();
                 } else {

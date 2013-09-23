@@ -354,7 +354,7 @@ public final class DOMSettingsBuilder {
                 plugin.setAttribute("port", entry.getValue());
                 plugins.appendChild(plugin);
             }
-            final Map<String, IntfKitSensor> phidgets = Settings.getPhidgetSensors();
+            final Map<String, IntfKitSensor> phidgets = settings.getPhidgetSensors();
             if (phidgets != null && !phidgets.isEmpty()) {
                 final Collection<IntfKitSensor> sensors = phidgets.values();
                 IIOMetadataNode phidgetsNode = new IIOMetadataNode("phidgets");

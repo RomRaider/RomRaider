@@ -133,7 +133,7 @@ public class ECUExec {
 
     private static void openEditor(String[] args) {
         ECUEditor editor = getECUEditor();
-        editor.initializeToolbar();
+        editor.initializeEditorUI();
         editor.checkDefinitions();
 
         if (args.length > 0) {

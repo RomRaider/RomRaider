@@ -54,6 +54,7 @@ import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.ramtune.test.RamTuneTestApp;
+import com.romraider.util.SettingsManager;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
@@ -96,10 +97,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private final JMenu helpMenu = new JMenu("Help");
     private final JMenuItem about = new JMenuItem("About " + PRODUCT_NAME);
 
-    private final ECUEditor editor;
-
-    public ECUEditorMenuBar(ECUEditor editor) {
-        this.editor = editor;
+    public ECUEditorMenuBar() {
         // file menu items
         add(fileMenu);
         fileMenu.setMnemonic('F');
@@ -353,7 +351,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     }
 
     public void refreshImage() throws Exception {
-        ECUEditor parent = getEditor();
+        ECUEditor parent = ECUEditorManager.getECUEditor();
         if (parent.getLastSelectedRom() != null) {
             File file = parent.getLastSelectedRom().getFullFileName();
             parent.closeImage();
@@ -362,32 +360,34 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     }
 
     public void openImageDialog() throws Exception {
-        JFileChooser fc = new JFileChooser(getEditor().getSettings().getLastImageDir());
+        ECUEditor parent = ECUEditorManager.getECUEditor();
+        JFileChooser fc = new JFileChooser(SettingsManager.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());
         fc.setDialogTitle("Open Image");
 
-        if (fc.showOpenDialog(getEditor()) == JFileChooser.APPROVE_OPTION) {
-            getEditor().openImage(fc.getSelectedFile());
-            getEditor().getSettings().setLastImageDir(fc.getCurrentDirectory());
+        if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+            parent.openImage(fc.getSelectedFile());
+            SettingsManager.getSettings().setLastImageDir(fc.getCurrentDirectory());
         }
     }
 
     public void openImagesDialog() throws Exception {
+        ECUEditor parent = ECUEditorManager.getECUEditor();
         JFileChooser fc = new JFileChooser(getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());
         fc.setMultiSelectionEnabled(true);
         fc.setDialogTitle("Open Image(s)");
 
-        if(fc.showOpenDialog(getEditor()) == JFileChooser.APPROVE_OPTION) {
-            getEditor().openImages(fc.getSelectedFiles());
-            getEditor().getSettings().setLastImageDir(fc.getCurrentDirectory());
+        if(fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+            parent.openImages(fc.getSelectedFiles());
+            SettingsManager.getSettings().setLastImageDir(fc.getCurrentDirectory());
         }
     }
 
     public void saveImage(Rom input) throws Exception {
-        ECUEditor parent = getEditor();
+        ECUEditor parent = ECUEditorManager.getECUEditor();
         if (parent.getLastSelectedRom() != null) {
-            JFileChooser fc = new JFileChooser(parent.getSettings().getLastImageDir());
+            JFileChooser fc = new JFileChooser(SettingsManager.getSettings().getLastImageDir());
             fc.setFileFilter(new ECUImageFilter());
             if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
                 boolean save = true;
@@ -410,7 +410,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                     }
                     parent.getLastSelectedRom().setFullFileName(selectedFile.getAbsoluteFile());
                     parent.setLastSelectedRom(parent.getLastSelectedRom());
-                    parent.getSettings().setLastImageDir(selectedFile.getParentFile());
+                    SettingsManager.getSettings().setLastImageDir(selectedFile.getParentFile());
                 }
             }
         }
@@ -426,11 +426,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         fc.setAcceptAllFileFilterUsed(false);
         String separator = System.getProperty("file.separator");
 
-        if (fc.showSaveDialog(getEditor()) == JFileChooser.APPROVE_OPTION) {
+        if (fc.showSaveDialog(ECUEditorManager.getECUEditor()) == JFileChooser.APPROVE_OPTION) {
             boolean save = true;
             File selectedDir = fc.getSelectedFile();
             if (selectedDir.exists()) {
-                int option = showConfirmDialog(getEditor(), selectedDir.getName() + " already exists! Overwrite?");
+                int option = showConfirmDialog(ECUEditorManager.getECUEditor(), selectedDir.getName() + " already exists! Overwrite?");
 
                 // option: 0 = Cancel, 1 = No
                 if (option == CANCEL_OPTION || option == 1) {
@@ -473,15 +473,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     }
 
     private String getLastSelectedRomFileName() {
-        Rom lastSelectedRom = getEditor().getLastSelectedRom();
+        Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
         return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
     }
 
     private Settings getSettings() {
-        return getEditor().getSettings();
-    }
-
-    private ECUEditor getEditor() {
-        return editor;
+        return SettingsManager.getSettings();
     }
 }

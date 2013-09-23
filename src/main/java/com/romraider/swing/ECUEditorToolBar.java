@@ -36,6 +36,7 @@ import javax.swing.JToolBar;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.util.SettingsManager;
 
 public class ECUEditorToolBar extends JToolBar implements ActionListener {
 
@@ -147,7 +148,7 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     }
 
     private Settings getSettings() {
-        return getEditor().getSettings();
+        return SettingsManager.getSettings();
     }
 
     private ECUEditor getEditor() {

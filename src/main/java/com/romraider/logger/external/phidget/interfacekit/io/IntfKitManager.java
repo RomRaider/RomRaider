@@ -36,7 +36,7 @@ import com.phidgets.InterfaceKitPhidget;
 import com.phidgets.Manager;
 import com.phidgets.Phidget;
 import com.phidgets.PhidgetException;
-import com.romraider.Settings;
+import com.romraider.util.SettingsManager;
 
 /**
  * IntfKitManager is used to discover all the attached PhidgetInterfaceKits
@@ -86,14 +86,14 @@ public final class IntfKitManager {
         try {
             ik = new InterfaceKitPhidget();
             LOGGER.info("Plugin found: " + Phidget.getLibraryVersion());
-            }
-            catch (PhidgetException e) {
-                LOGGER.error("InterfaceKit error: " + e);
-            }
+        }
+        catch (PhidgetException e) {
+            LOGGER.error("InterfaceKit error: " + e);
+        }
     }
 
     /**
-     * For the serial number provided report the name of the 
+     * For the serial number provided report the name of the
      * associated PhidgetInterfaceKit.
      * @param serial - the serial number previously discovered to be opened
      * @return a format string of the name and serial number
@@ -107,9 +107,9 @@ public final class IntfKitManager {
             waitForAttached();
             try {
                 if (ik.getDeviceClass() == PHIDCLASS_INTERFACEKIT) {
-                       result = String.format(
-                               "%s serial: %d",
-                               ik.getDeviceName(), 
+                    result = String.format(
+                            "%s serial: %d",
+                            ik.getDeviceName(),
                             serial);
                 }
             }
@@ -145,13 +145,13 @@ public final class IntfKitManager {
             try {
                 if (ik.isAttached()) {
                     if (ik.getDeviceClass() == PHIDCLASS_INTERFACEKIT) {
-                           final String result = String.format(
-                                   "Plugin found: %s Serial: %d",
-                                   ik.getDeviceName(),
-                                   serial);
+                        final String result = String.format(
+                                "Plugin found: %s Serial: %d",
+                                ik.getDeviceName(),
+                                serial);
                         LOGGER.info(result);
                         Map<String, IntfKitSensor> phidgets =
-                                Settings.getPhidgetSensors();
+                                SettingsManager.getSettings().getPhidgetSensors();
                         if (phidgets == null) {
                             phidgets = new HashMap<String, IntfKitSensor>();
                         }
@@ -163,7 +163,7 @@ public final class IntfKitManager {
                                 final String stored = String.format(
                                         "Plugin applying user settings for: %s",
                                         phidgets.get(key).toString());
-                             LOGGER.info(stored);
+                                LOGGER.info(stored);
                             }
                             else {
                                 final IntfKitSensor sensor = new IntfKitSensor();
@@ -183,7 +183,7 @@ public final class IntfKitManager {
                                 phidgets.put(key, sensor);
                             }
                         }
-                        Settings.setPhidgetSensors(phidgets);
+                        SettingsManager.getSettings().setPhidgetSensors(phidgets);
                     }
                     else {
                         LOGGER.info("No InterfaceKits attached");

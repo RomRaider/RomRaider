@@ -330,7 +330,7 @@ public final class DOMSettingsUnmarshaller {
                                 }
                             }
                         }
-                        Settings.setPhidgetSensors(phidgets);
+                        settings.setPhidgetSensors(phidgets);
                     }
                 }
                 settings.setLoggerPluginPorts(pluginPorts);

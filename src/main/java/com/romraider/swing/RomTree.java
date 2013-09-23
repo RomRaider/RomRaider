@@ -34,6 +34,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
+import com.romraider.util.SettingsManager;
 
 public class RomTree extends JTree implements MouseListener {
 
@@ -78,11 +79,11 @@ public class RomTree extends JTree implements MouseListener {
             Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
 
             if(selectedRow instanceof TableTreeNode) {
-                if (e.getClickCount() >= getEditor().getSettings().getTableClickCount()) {
+                if (e.getClickCount() >= SettingsManager.getSettings().getTableClickCount()) {
                     showTable(selectedRow);
                 }
             } else if(selectedRow instanceof Rom || selectedRow instanceof CategoryTreeNode) {
-                if (e.getClickCount() >= getEditor().getSettings().getTableClickCount()) {
+                if (e.getClickCount() >= SettingsManager.getSettings().getTableClickCount()) {
                     if(isCollapsed(getRowForLocation(e.getX(),e.getY()))) {
                         expandRow(getRowForLocation(e.getX(),e.getY()));
                     }

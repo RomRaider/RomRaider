@@ -169,8 +169,9 @@ public class Settings implements Serializable {
     private Color selectColor = new Color(204, 204, 204);
     private Color highlightColor = new Color(27, 161, 226);
 
-    private Color decreaseBorder = new Color(255, 0, 0);
-    private Color increaseBorder = new Color(0, 0, 255);
+    private Color decreaseBorder = new Color(0, 0, 255);
+    private Color increaseBorder = new Color(255, 0, 0);
+
     private Color axisColor = new Color(255, 255, 255);
     private Color warningColor = new Color(255, 0, 0);
     private int tableClickCount = 1; // number of clicks to open table
@@ -221,7 +222,7 @@ public class Settings implements Serializable {
 
     private String defaultScale = "Metric";
 
-    private static Map<String, IntfKitSensor> phidgetSensors;
+    private Map<String, IntfKitSensor> phidgetSensors;
 
     public Settings() {
         //center window by default
@@ -820,13 +821,13 @@ public class Settings implements Serializable {
         this.defaultScale = defaultScale;
     }
 
-    public static final Map<String, IntfKitSensor> getPhidgetSensors() {
-        return Settings.phidgetSensors;
+    public Map<String, IntfKitSensor> getPhidgetSensors() {
+        return this.phidgetSensors;
     }
 
-    public static final void setPhidgetSensors(
+    public void setPhidgetSensors(
             Map<String, IntfKitSensor> phidgetSensors) {
 
-        Settings.phidgetSensors = phidgetSensors;
+        this.phidgetSensors = phidgetSensors;
     }
 }

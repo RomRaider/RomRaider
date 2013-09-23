@@ -29,6 +29,7 @@ import javax.swing.JFileChooser;
 import javax.swing.ListSelectionModel;
 
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.util.SettingsManager;
 
 public class DefinitionManager extends javax.swing.JFrame implements ActionListener {
 
@@ -59,7 +60,7 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
 
     private void initSettings() {
         // add definitions to list
-        Vector<File> definitionFiles = ECUEditorManager.getECUEditor().getSettings().getEcuDefinitionFiles();
+        Vector<File> definitionFiles = SettingsManager.getSettings().getEcuDefinitionFiles();
         fileNames = new Vector<String>();
 
         for (int i = 0; i < definitionFiles.size(); i++) {
@@ -203,7 +204,7 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
         }
 
         // save
-        ECUEditorManager.getECUEditor().getSettings().setEcuDefinitionFiles(output);
+        SettingsManager.getSettings().setEcuDefinitionFiles(output);
     }
 
     public void addFile() {

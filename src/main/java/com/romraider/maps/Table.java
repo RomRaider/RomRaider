@@ -54,6 +54,7 @@ import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableToolBar;
 import com.romraider.util.JEPUtil;
+import com.romraider.util.SettingsManager;
 import com.romraider.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
@@ -523,7 +524,7 @@ public abstract class Table extends JPanel implements Serializable {
             this.curScale = scale;
         }
 
-        if(ECUEditorManager.getECUEditor().getSettings().getDefaultScale().equalsIgnoreCase(scale.getName())) {
+        if(SettingsManager.getSettings().getDefaultScale().equalsIgnoreCase(scale.getName())) {
             this.curScale = scale;
         }
 
@@ -1170,14 +1171,9 @@ public abstract class Table extends JPanel implements Serializable {
         this.curScale = curScale;
     }
 
-    public void setSettings(Settings settings)
-    {
-        ECUEditorManager.getECUEditor().setSettings(settings);
-    }
-
     public Settings getSettings()
     {
-        return ECUEditorManager.getECUEditor().getSettings();
+        return SettingsManager.getSettings();
     }
 
     public TableToolBar getToolbar()

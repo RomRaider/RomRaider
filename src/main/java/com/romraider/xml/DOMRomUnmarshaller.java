@@ -50,6 +50,7 @@ import com.romraider.swing.DebugPanel;
 import com.romraider.swing.JProgressPane;
 import com.romraider.util.LogManager;
 import com.romraider.util.ObjectCloner;
+import com.romraider.util.SettingsManager;
 
 public final class DOMRomUnmarshaller {
     private static final Logger LOGGER = Logger
@@ -362,9 +363,8 @@ public final class DOMRomUnmarshaller {
 
             } catch (NullPointerException ex) {
                 JOptionPane.showMessageDialog(ECUEditorManager.getECUEditor(),
-                        new DebugPanel(ex, ECUEditorManager.getECUEditor()
-                                .getSettings().getSupportURL()), "Exception",
-                                JOptionPane.ERROR_MESSAGE);
+                        new DebugPanel(ex, SettingsManager.getSettings().getSupportURL()), "Exception",
+                        JOptionPane.ERROR_MESSAGE);
 
             }
         }
@@ -575,8 +575,7 @@ public final class DOMRomUnmarshaller {
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(
                                 ECUEditorManager.getECUEditor(),
-                                new DebugPanel(ex, ECUEditorManager
-                                        .getECUEditor().getSettings()
+                                new DebugPanel(ex, SettingsManager.getSettings()
                                         .getSupportURL()), "Exception",
                                         JOptionPane.ERROR_MESSAGE);
                     }

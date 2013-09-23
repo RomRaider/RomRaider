@@ -42,12 +42,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.swing.CategoryTreeNode;
 import com.romraider.swing.JProgressPane;
 import com.romraider.swing.TableFrame;
 import com.romraider.swing.TableTreeNode;
+import com.romraider.util.SettingsManager;
 import com.romraider.xml.TableNotFoundException;
 
 public class Rom extends DefaultMutableTreeNode implements Serializable  {
@@ -67,7 +67,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         // Remove all nodes from the ROM tree node.
         super.removeAllChildren();
 
-        Settings settings = ECUEditorManager.getECUEditor().getSettings();
+        Settings settings = SettingsManager.getSettings();
 
         // Add nodes to ROM tree.
         for (TableTreeNode tableTreeNode : tableNodes) {
