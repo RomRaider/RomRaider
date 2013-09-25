@@ -60,7 +60,7 @@ import com.romraider.xml.RomAttributeParser;
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
 
-    protected String name;
+    protected String name = "unknown";
     protected int type;
     protected String category = "Other";
     protected String description = Settings.BLANK;

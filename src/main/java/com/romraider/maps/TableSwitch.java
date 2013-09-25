@@ -275,7 +275,10 @@ public class TableSwitch extends Table {
 
             TableSwitch otherTable = (TableSwitch)other;
 
-            if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+            if( (null == this.getName() && null == otherTable.getName())
+                    || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
+                ;// Skip name compare if name is null or empty.
+            } else if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
                 return false;
             }
 

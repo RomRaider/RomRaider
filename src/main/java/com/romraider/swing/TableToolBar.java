@@ -567,6 +567,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
         //Pull data into format 3d graph understands
         Vector<float[]> graphValues = new Vector<float[]>();
+        graphValues.clear();
+
         if (currentTable.getType() == Settings.TABLE_3D) {
             Table3D table3d = (Table3D) currentTable;
             DataCell[][] tableData = table3d.get3dData();
@@ -638,7 +640,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             LOGGER.debug("Scale: " + maxV + "," + minV);
             //***********
 
-            //Render 3d
             Graph3dFrameManager.openGraph3dFrame(graphValues, minV, maxV, xValues, yValues, xLabel, yLabel, zLabel, currentTable.getName());
             GraphData.addGraphDataListener(this);
         }

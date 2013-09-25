@@ -140,7 +140,7 @@ public class Table2D extends Table {
             }
         }
 
-        if(null == axis.getName() || axis.getName().length() < 1 || "" == axis.getName()) {
+        if(null == axis.getName() || axis.getName().isEmpty() || "" == axis.getName()) {
             ;// Do not add label.
         } else if(null == axis.getCurrentScale() || "0x" == axis.getCurrentScale().getUnit()) {
             // static or no scale exists.
@@ -377,7 +377,10 @@ public class Table2D extends Table {
 
             Table2D otherTable = (Table2D)other;
 
-            if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+            if( (null == this.getName() && null == otherTable.getName())
+                    || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
+                ;// Skip name compare if name is null or empty.
+            } else if (!this.getName().equalsIgnoreCase(otherTable.getName())) {
                 return false;
             }
 

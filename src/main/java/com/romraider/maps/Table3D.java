@@ -858,7 +858,10 @@ public class Table3D extends Table {
 
             Table3D otherTable = (Table3D)other;
 
-            if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+            if( (null == this.getName() && null == otherTable.getName())
+                    || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
+                ;// Skip name compare if name is null or empty.
+            } else if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
                 return false;
             }
 

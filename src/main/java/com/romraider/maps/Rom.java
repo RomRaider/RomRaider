@@ -155,7 +155,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                         table.populateTable(binData, this.getRomID().getRamOffset());
                         TableUpdateHandler.getInstance().registerTable(table);
 
-                        if (table.getName().equalsIgnoreCase("Checksum Fix")){
+                        if (null != table.getName() && table.getName().equalsIgnoreCase("Checksum Fix")){
                             setEditStamp(binData, table.getStorageAddress());
                         }
                     } catch (ArrayIndexOutOfBoundsException ex) {
@@ -170,7 +170,6 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                         tableNodes.removeElementAt(i);
                         i--;
                     } catch (IndexOutOfBoundsException iex) {
-
                         LOGGER.error(table.getName() +
                                 " type " + table.getType() + " start " +
                                 table.getStorageAddress() + " " + binData.length + " filesize", iex);
@@ -189,6 +188,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 }
 
             } catch (NullPointerException ex) {
+                LOGGER.error("Error Populating Table", ex);
                 JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table), "There was an error loading table " + table.getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
                 tableNodes.removeElementAt(i);
                 i--;
