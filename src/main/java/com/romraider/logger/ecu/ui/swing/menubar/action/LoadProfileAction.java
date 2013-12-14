@@ -19,17 +19,18 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
-import com.romraider.Settings;
-import com.romraider.logger.ecu.EcuLogger;
-
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getFile;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getProfileFileChooser;
-import com.romraider.swing.menubar.action.AbstractAction;
-import com.romraider.util.FormatFilename;
 
-import javax.swing.JFileChooser;
 import java.awt.event.ActionEvent;
 import java.io.File;
+
+import javax.swing.JFileChooser;
+
+import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.swing.menubar.action.AbstractAction;
+import com.romraider.util.FormatFilename;
+import com.romraider.util.SettingsManager;
 
 public final class LoadProfileAction extends AbstractAction {
 
@@ -37,6 +38,7 @@ public final class LoadProfileAction extends AbstractAction {
         super(logger);
     }
 
+    @Override
     public void actionPerformed(ActionEvent actionEvent) {
         try {
             loadProfileDialog();
@@ -47,14 +49,14 @@ public final class LoadProfileAction extends AbstractAction {
 
     private void loadProfileDialog() throws Exception {
         logger.getSettings();
-        final File lastProfileFile = getFile(Settings.getLoggerProfileFilePath());
+        final File lastProfileFile = getFile(SettingsManager.getSettings().getLoggerProfileFilePath());
         JFileChooser fc = getProfileFileChooser(lastProfileFile);
         if (fc.showOpenDialog(logger) == JFileChooser.APPROVE_OPTION) {
             final String profileFilePath = fc.getSelectedFile().getAbsolutePath();
             logger.loadUserProfile(profileFilePath);
             logger.getSettings().setLoggerProfileFilePath(profileFilePath);
             logger.reportMessageInTitleBar("" +
-            		"Profile: " + FormatFilename.getShortName(profileFilePath));
+                    "Profile: " + FormatFilename.getShortName(profileFilePath));
             logger.restartLogging();
             logger.reportMessage("Profile succesfully loaded: " + profileFilePath);
         }

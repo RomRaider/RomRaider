@@ -19,12 +19,6 @@
 
 package com.romraider.logger.ecu.ui.handler.file;
 
-import com.romraider.Settings;
-import com.romraider.logger.ecu.comms.query.Response;
-import com.romraider.logger.ecu.definition.ConvertorUpdateListener;
-import com.romraider.logger.ecu.definition.LoggerData;
-import com.romraider.logger.ecu.ui.MessageListener;
-import com.romraider.logger.ecu.ui.StatusChangeListener;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
@@ -38,21 +32,29 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.romraider.logger.ecu.comms.query.Response;
+import com.romraider.logger.ecu.definition.ConvertorUpdateListener;
+import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.ui.MessageListener;
+import com.romraider.logger.ecu.ui.StatusChangeListener;
+
 public final class FileUpdateHandlerImpl implements FileUpdateHandler, ConvertorUpdateListener {
     private final Map<LoggerData, Integer> loggerDatas = synchronizedMap(new LinkedHashMap<LoggerData, Integer>());
     private final List<StatusChangeListener> listeners = synchronizedList(new ArrayList<StatusChangeListener>());
     private final FileLogger fileLogger;
     private Line currentLine = new Line(loggerDatas.keySet());
 
-    public FileUpdateHandlerImpl(Settings settings, MessageListener messageListener) {
-        fileLogger = new FileLoggerImpl(settings, messageListener);
+    public FileUpdateHandlerImpl(MessageListener messageListener) {
+        fileLogger = new FileLoggerImpl(messageListener);
     }
 
+    @Override
     public synchronized void addListener(StatusChangeListener listener) {
         checkNotNull(listener, "listener");
         listeners.add(listener);
     }
 
+    @Override
     public synchronized void registerData(LoggerData loggerData) {
         if (loggerDatas.keySet().contains(loggerData)) {
             loggerDatas.put(loggerData, loggerDatas.get(loggerData) + 1);
@@ -63,6 +65,7 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         }
     }
 
+    @Override
     public synchronized void handleDataUpdate(Response response) {
         if (fileLogger.isStarted()) {
             for (LoggerData loggerData : response.getData()) {
@@ -75,6 +78,7 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         }
     }
 
+    @Override
     public synchronized void deregisterData(LoggerData loggerData) {
         if (loggerDatas.keySet().contains(loggerData) && loggerDatas.get(loggerData) > 1) {
             loggerDatas.put(loggerData, loggerDatas.get(loggerData) - 1);
@@ -85,20 +89,24 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         }
     }
 
+    @Override
     public synchronized void cleanUp() {
         if (fileLogger.isStarted()) {
             fileLogger.stop();
         }
     }
 
+    @Override
     public synchronized void reset() {
     }
 
+    @Override
     public synchronized void notifyConvertorUpdate(LoggerData updatedLoggerData) {
         resetLine();
         writeHeaders();
     }
 
+    @Override
     public synchronized void start() {
         if (!fileLogger.isStarted()) {
             fileLogger.start();
@@ -107,6 +115,7 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         }
     }
 
+    @Override
     public synchronized void stop() {
         if (fileLogger.isStarted()) {
             fileLogger.stop();
@@ -140,15 +149,15 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
         private static final char SEMICOLON = ';';
         private final Set<String> locales = new HashSet<String>(
                 Arrays.asList(new String[] {
-                    "be_BY","bg_BG","ca_ES","cs_CZ","da_DK","de_AT","de_CH","de_DE","de_LU",
-                    "el_CY","el_GR","es_AR","es_BO","es_CL","es_CO","es_EC","es_ES","es_PE",
-                    "es_PY","es_UY","es_VE","et_EE","fi_FI","fr_BE","fr_CA","fr_CH","fr_FR",
-                    "fr_LU","hr_HR","hu_HU","in_ID","is_IS","it_CH","it_IT","lt_LT","lv_LV",
-                    "mk_MK","nl_BE","nl_NL","no_NO","no_NO_NY","pl_PL","pt_BR","pt_PT",
-                    "ro_RO","ru_RU","sk_SK","sl_SI","sq_AL","sr_BA","sr_CS","sr_ME","sr_RS",
-                    "sv_SE","tr_TR","uk_UA","vi_VN"
+                        "be_BY","bg_BG","ca_ES","cs_CZ","da_DK","de_AT","de_CH","de_DE","de_LU",
+                        "el_CY","el_GR","es_AR","es_BO","es_CL","es_CO","es_EC","es_ES","es_PE",
+                        "es_PY","es_UY","es_VE","et_EE","fi_FI","fr_BE","fr_CA","fr_CH","fr_FR",
+                        "fr_LU","hr_HR","hu_HU","in_ID","is_IS","it_CH","it_IT","lt_LT","lv_LV",
+                        "mk_MK","nl_BE","nl_NL","no_NO","no_NO_NY","pl_PL","pt_BR","pt_PT",
+                        "ro_RO","ru_RU","sk_SK","sl_SI","sq_AL","sr_BA","sr_CS","sr_ME","sr_RS",
+                        "sv_SE","tr_TR","uk_UA","vi_VN"
                 }
-                ));
+                        ));
         private final Map<LoggerData, String> loggerDataValues;
         private final char delimiter;
         {
@@ -186,7 +195,7 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
             StringBuilder buffer = new StringBuilder();
             for (LoggerData loggerData : loggerDataValues.keySet()) {
                 buffer.append(delimiter).append(loggerData.getName()).append(" (")
-                        .append(loggerData.getSelectedConvertor().getUnits()).append(')');
+                .append(loggerData.getSelectedConvertor().getUnits()).append(')');
             }
             return buffer.toString();
         }

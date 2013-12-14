@@ -47,9 +47,9 @@ import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
-import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.util.SettingsManager;
 import com.romraider.logger.ecu.ui.swing.tools.tablemodels.ReadCodesTableModel;
 
 public final class ReadCodesResultsPanel extends JPanel {
@@ -59,7 +59,7 @@ public final class ReadCodesResultsPanel extends JPanel {
 
     private ReadCodesResultsPanel(ArrayList<EcuQuery> dtcSet) {
         super(new GridLayout(1,0));
- 
+
         final ReadCodesTableModel dtcModel = new ReadCodesTableModel();
         dtcModel.setDtcList(dtcSet);
         final JTable table = new JTable(dtcModel);
@@ -83,9 +83,9 @@ public final class ReadCodesResultsPanel extends JPanel {
         final JTableHeader th = table.getTableHeader();
         final Font thFont = th.getFont();
         final Font thBoldFont = new Font(
-                                    thFont.getFamily(),
-                                    Font.BOLD,
-                                    thFont.getSize());
+                thFont.getFamily(),
+                Font.BOLD,
+                thFont.getSize());
         th.setFont(thBoldFont);
         resultsPanel.add(th, BorderLayout.PAGE_START);
         resultsPanel.add(table, BorderLayout.CENTER);
@@ -93,14 +93,14 @@ public final class ReadCodesResultsPanel extends JPanel {
     }
 
     public final static void displayResultsPane(
-                EcuLogger logger,
-                ArrayList<EcuQuery> dtcSet) {
+            EcuLogger logger,
+            ArrayList<EcuQuery> dtcSet) {
         final JDialog frame = new JDialog(logger, "Diagnostic Code Read Results");
         frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
         mainPanel.setOpaque(true);
-        final ReadCodesResultsPanel resultsPane = 
+        final ReadCodesResultsPanel resultsPane =
                 new ReadCodesResultsPanel(dtcSet);
         mainPanel.add(resultsPane);
         mainPanel.add(createSaveReultsPanel(dtcSet));
@@ -118,13 +118,13 @@ public final class ReadCodesResultsPanel extends JPanel {
 
     private final static JPanel createSaveReultsPanel(
             final ArrayList<EcuQuery> dtcSet) {
-        
+
         final JPanel basePanel = new JPanel(new BorderLayout());
         basePanel.setBorder(BorderFactory.createTitledBorder("Save Results"));
-        
+
         final JLabel comment = new JLabel();
         comment.setText("Click table, press Ctrl-A then Ctrl-C to copy " +
-                        "table to clipboard, or...");
+                "table to clipboard, or...");
 
         final JPanel controlPanel = new JPanel();
         final JButton toFile = new JButton("Save to File");
@@ -155,7 +155,7 @@ public final class ReadCodesResultsPanel extends JPanel {
     private static final void saveTableText(ArrayList<EcuQuery> dtcSet) {
         final String nowStr = String.format(DT_FORMAT, System.currentTimeMillis());
         final String fileName = String.format("%s%sromraiderDTC_%s.csv",
-                Settings.getLoggerOutputDirPath(),
+                SettingsManager.getSettings().getLoggerOutputDirPath(),
                 File.separator,
                 nowStr);
         try {
@@ -172,19 +172,19 @@ public final class ReadCodesResultsPanel extends JPanel {
                 if (result == 1 || result == 3) tmp = "true";
                 if (result == 2 || result == 3) mem = "true";
                 bw.append(query.getLoggerData().getName() + "," +
-                          tmp + "," +
-                          mem + eol);
+                        tmp + "," +
+                        mem + eol);
             }
             bw.close();
             showMessageDialog(
-                    null, 
+                    null,
                     "Table text saved to: " + fileName,
                     "Save Success",
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
-                    null, 
+                    null,
                     "Failed to save table, check path:\n" + fileName,
                     "Save Failed",
                     ERROR_MESSAGE);
@@ -193,13 +193,13 @@ public final class ReadCodesResultsPanel extends JPanel {
 
     private static final void saveTableImage() {
         final BufferedImage resultsImage = new BufferedImage(
-                resultsPanel.getWidth(), 
-                resultsPanel.getHeight(), 
+                resultsPanel.getWidth(),
+                resultsPanel.getHeight(),
                 BufferedImage.TYPE_INT_ARGB);
         resultsPanel.paint(resultsImage.createGraphics());
         final String nowStr = String.format(DT_FORMAT, System.currentTimeMillis());
         final String fileName = String.format("%s%sromraiderDTC_%s.png",
-                Settings.getLoggerOutputDirPath(),
+                SettingsManager.getSettings().getLoggerOutputDirPath(),
                 File.separator,
                 nowStr);
         try {
@@ -209,14 +209,14 @@ public final class ReadCodesResultsPanel extends JPanel {
                     "png",
                     imageFile);
             showMessageDialog(
-                    null, 
+                    null,
                     "Table image saved to: " + fileName,
                     "Save Success",
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
-                    null, 
+                    null,
                     "Failed to save image, check path:\n" + fileName,
                     "Save Failed",
                     ERROR_MESSAGE);

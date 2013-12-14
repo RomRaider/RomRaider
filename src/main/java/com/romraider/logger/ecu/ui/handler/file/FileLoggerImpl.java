@@ -19,12 +19,8 @@
 
 package com.romraider.logger.ecu.ui.handler.file;
 
-import com.romraider.Settings;
-import com.romraider.logger.ecu.exception.FileLoggerException;
-import com.romraider.logger.ecu.ui.MessageListener;
-import com.romraider.util.FormatFilename;
-
 import static com.romraider.util.ParamChecker.checkNotNull;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,23 +28,28 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.romraider.Settings;
+import com.romraider.logger.ecu.exception.FileLoggerException;
+import com.romraider.logger.ecu.ui.MessageListener;
+import com.romraider.util.FormatFilename;
+import com.romraider.util.SettingsManager;
+
 public final class FileLoggerImpl implements FileLogger {
     private static final String NEW_LINE = System.getProperty("line.separator");
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
     private final SimpleDateFormat timestampFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    private final Settings settings;
     private final MessageListener messageListener;
     private boolean started;
     private OutputStream os;
     private long startTimestamp;
     private boolean zero;
 
-    public FileLoggerImpl(Settings settings, MessageListener messageListener) {
-        checkNotNull(settings, messageListener);
-        this.settings = settings;
+    public FileLoggerImpl(MessageListener messageListener) {
+        checkNotNull(messageListener);
         this.messageListener = messageListener;
     }
 
+    @Override
     public void start() {
         if (!started) {
             stop();
@@ -56,8 +57,8 @@ public final class FileLoggerImpl implements FileLogger {
                 String filePath = buildFilePath();
                 os = new BufferedOutputStream(new FileOutputStream(filePath));
                 messageListener.reportMessageInTitleBar(
-                        "Started logging to file: " + 
-                        FormatFilename.getShortName(filePath));
+                        "Started logging to file: " +
+                                FormatFilename.getShortName(filePath));
                 zero = true;
             } catch (Exception e) {
                 stop();
@@ -67,6 +68,7 @@ public final class FileLoggerImpl implements FileLogger {
         }
     }
 
+    @Override
     public void stop() {
         if (os != null) {
             try {
@@ -79,18 +81,21 @@ public final class FileLoggerImpl implements FileLogger {
         started = false;
     }
 
+    @Override
     public boolean isStarted() {
         return started;
     }
 
+    @Override
     public void writeHeaders(String headers) {
         String timeHeader = "Time";
-        if (!settings.isFileLoggingAbsoluteTimestamp()) {
+        if (!SettingsManager.getSettings().isFileLoggingAbsoluteTimestamp()) {
             timeHeader = timeHeader  + " (msec)";
         }
         writeText(timeHeader + headers);
     }
 
+    @Override
     public void writeLine(String line, long timestamp) {
         writeText(prependTimestamp(line, timestamp));
     }
@@ -109,7 +114,7 @@ public final class FileLoggerImpl implements FileLogger {
 
     private String prependTimestamp(String line, long timestamp) {
         String formattedTimestamp;
-        if (settings.isFileLoggingAbsoluteTimestamp()) {
+        if (SettingsManager.getSettings().isFileLoggingAbsoluteTimestamp()) {
             formattedTimestamp = timestampFormat.format(new Date(timestamp));
         } else {
             if (zero) {
@@ -124,14 +129,15 @@ public final class FileLoggerImpl implements FileLogger {
     }
 
     private String buildFilePath() {
-        String logDir = Settings.getLoggerOutputDirPath();
+        String logDir = SettingsManager.getSettings().getLoggerOutputDirPath();
         if (!logDir.endsWith(File.separator)) {
             logDir += File.separator;
         }
         logDir += "romraiderlog_";
+        Settings settings = SettingsManager.getSettings();
         if (settings.getLogfileNameText() != null
                 && !settings.getLogfileNameText().isEmpty()) {
-            logDir += settings.getLogfileNameText() + "_"; 
+            logDir += settings.getLogfileNameText() + "_";
         }
         logDir += dateFormat.format(new Date()) + ".csv";
         return logDir;

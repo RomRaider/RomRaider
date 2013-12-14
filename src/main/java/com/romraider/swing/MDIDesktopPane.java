@@ -32,7 +32,10 @@ import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
+import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.util.SettingsManager;
 
 /**
  * An extension of WDesktopPane that supports often used MDI functionality. This
@@ -42,12 +45,9 @@ import com.romraider.editor.ecu.ECUEditor;
 public class MDIDesktopPane extends JDesktopPane {
 
     private static final long serialVersionUID = -1839360490978587035L;
-    private static int FRAME_OFFSET = 20;
     private final MDIDesktopManager manager;
-    private final ECUEditor parent;
 
-    public MDIDesktopPane(ECUEditor parent) {
-        this.parent = parent;
+    public MDIDesktopPane() {
         manager = new MDIDesktopManager(this);
         setDesktopManager(manager);
         setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
@@ -60,21 +60,36 @@ public class MDIDesktopPane extends JDesktopPane {
     }
 
     public Component add(JInternalFrame frame) {
-        JInternalFrame[] array = getAllFrames();
         Point p;
         int w;
         int h;
 
-        Component retval = super.add(frame);
-        checkDesktopSize();
-        if (array.length > 0) {
-            p = array[0].getLocation();
-            p.x = p.x + FRAME_OFFSET;
-            p.y = p.y + FRAME_OFFSET;
-        } else {
+        // get frame location.
+        if(SettingsManager.getSettings().isAlwaysOpenTableAtZero()) {
             p = new Point(0, 0);
+        } else {
+            if (getAllFrames().length > 0) {
+                JInternalFrame selectedFrame = getSelectedFrame();
+                if(null == selectedFrame || !selectedFrame.isVisible()) {
+                    // if none selected get the location at index 0.
+                    p = getAllFrames()[0].getLocation();
+                } else {
+                    // get the selected frame location and open off of that location.
+                    p = selectedFrame.getLocation();
+                }
+
+                p.x = p.x + Settings.FRAME_OFFSET;
+                p.y = p.y + Settings.FRAME_OFFSET;
+            } else {
+                p = new Point(0, 0);
+            }
         }
+
+        Component retval = super.add(frame);
         frame.setLocation(p.x, p.y);
+
+        checkDesktopSize();
+
         if (frame.isResizable()) {
             w = getWidth() - (getWidth() / 3);
             h = getHeight() - (getHeight() / 3);
@@ -86,25 +101,32 @@ public class MDIDesktopPane extends JDesktopPane {
             }
             frame.setSize(w, h);
         }
+
         moveToFront(frame);
         frame.setVisible(true);
-        TableFrame tableFrame = (TableFrame) frame;
-        parent.updateTableToolBar(tableFrame.getTable());
+
+        if(frame instanceof TableFrame) {
+            getEditor().getTableToolBar().updateTableToolBar();
+        }
+
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException e) {
             frame.toBack();
         }
+
         return retval;
     }
 
     @Override
     public void remove(Component c) {
         super.remove(c);
-
-        parent.updateTableToolBar(null);
-
+        getEditor().getTableToolBar().updateTableToolBar();
         checkDesktopSize();
+    }
+
+    public ECUEditor getEditor() {
+        return ECUEditorManager.getECUEditor();
     }
 
     /**
@@ -116,13 +138,13 @@ public class MDIDesktopPane extends JDesktopPane {
         JInternalFrame allFrames[] = getAllFrames();
 
         manager.setNormalSize();
-        int frameHeight = (getBounds().height - 5) - allFrames.length * FRAME_OFFSET;
-        int frameWidth = (getBounds().width - 5) - allFrames.length * FRAME_OFFSET;
+        int frameHeight = (getBounds().height - 5) - allFrames.length * Settings.FRAME_OFFSET;
+        int frameWidth = (getBounds().width - 5) - allFrames.length * Settings.FRAME_OFFSET;
         for (int i = allFrames.length - 1; i >= 0; i--) {
             allFrames[i].setSize(frameWidth, frameHeight);
             allFrames[i].setLocation(x, y);
-            x = x + FRAME_OFFSET;
-            y = y + FRAME_OFFSET;
+            x = x + Settings.FRAME_OFFSET;
+            y = y + Settings.FRAME_OFFSET;
         }
     }
 
@@ -208,8 +230,7 @@ class MDIDesktopManager extends DefaultDesktopManager {
 
             d.setSize(d.getWidth() - 20, d.getHeight() - 20);
             desktop.setAllSize(x, y);
-            scrollPane.invalidate();
-            scrollPane.validate();
+            scrollPane.revalidate();
         }
     }
 

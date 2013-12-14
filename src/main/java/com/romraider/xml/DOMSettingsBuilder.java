@@ -153,6 +153,11 @@ public final class DOMSettingsBuilder {
         tableClickCount.setAttribute("value", String.valueOf(settings.getTableClickCount()));
         options.appendChild(tableClickCount);
 
+        // table click behavior
+        IIOMetadataNode tableClickBehavior = new IIOMetadataNode("tableclickbehavior");
+        tableClickBehavior.setAttribute("value", String.valueOf(settings.getTableClickBehavior()));
+        options.appendChild(tableClickBehavior);
+
         // last version used
         IIOMetadataNode version = new IIOMetadataNode("version");
         version.setAttribute("value", versionNumber);
@@ -172,6 +177,31 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode valueLimitWarning = new IIOMetadataNode("valuelimitwarning");
         valueLimitWarning.setAttribute("value", String.valueOf(settings.isValueLimitWarning()));
         options.appendChild(valueLimitWarning);
+
+        // color axis
+        IIOMetadataNode colorAxis = new IIOMetadataNode("coloraxis");
+        colorAxis.setAttribute("value", String.valueOf(settings.isColorAxis()));
+        options.appendChild(colorAxis);
+
+        // show table toolbar border
+        IIOMetadataNode showTableToolbarBorder = new IIOMetadataNode("showtabletoolbarborder");
+        showTableToolbarBorder.setAttribute("value", String.valueOf(settings.isShowTableToolbarBorder()));
+        options.appendChild(showTableToolbarBorder);
+
+        // open top level rom node expanded
+        IIOMetadataNode openRomExpanded = new IIOMetadataNode("openromexpanded");
+        openRomExpanded.setAttribute("value", String.valueOf(settings.isOpenExpanded()));
+        options.appendChild(openRomExpanded);
+
+        // always open at 0
+        IIOMetadataNode alwaysOpenTableAtZero = new IIOMetadataNode("alwaysopentableatzero");
+        alwaysOpenTableAtZero.setAttribute("value", String.valueOf(settings.isAlwaysOpenTableAtZero()));
+        options.appendChild(alwaysOpenTableAtZero);
+
+        // defaultScale
+        IIOMetadataNode defaultScale = new IIOMetadataNode("defaultscale");
+        defaultScale.setAttribute("value", String.valueOf(settings.getDefaultScale()));
+        options.appendChild(defaultScale);
 
         return options;
     }
@@ -212,6 +242,12 @@ public final class DOMSettingsBuilder {
         highlight.setAttribute("g", String.valueOf(settings.getHighlightColor().getGreen()));
         highlight.setAttribute("b", String.valueOf(settings.getHighlightColor().getBlue()));
         colors.appendChild(highlight);
+        // select
+        IIOMetadataNode select = new IIOMetadataNode("select");
+        select.setAttribute("r", String.valueOf(settings.getSelectColor().getRed()));
+        select.setAttribute("g", String.valueOf(settings.getSelectColor().getGreen()));
+        select.setAttribute("b", String.valueOf(settings.getSelectColor().getBlue()));
+        colors.appendChild(select);
         // increased cell border
         IIOMetadataNode increaseBorder = new IIOMetadataNode("increaseborder");
         increaseBorder.setAttribute("r", String.valueOf(settings.getIncreaseBorder().getRed()));
@@ -250,15 +286,15 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode serial = new IIOMetadataNode("serial");
         serial.setAttribute("port", settings.getLoggerPortDefault());
         serial.setAttribute("refresh", String.valueOf(settings.getRefreshMode()));
-        serial.setAttribute("ecuid", String.valueOf(Settings.getDestinationId()));
+        serial.setAttribute("ecuid", String.valueOf(settings.getDestinationId()));
         serial.setAttribute("fastpoll", String.valueOf(settings.isFastPoll()));
         loggerSettings.appendChild(serial);
 
         // Protocol connection
         IIOMetadataNode protocol = new IIOMetadataNode("protocol");
-        protocol.setAttribute("name", Settings.getLoggerProtocol());
-        protocol.setAttribute("transport", Settings.getTransportProtocol());
-        protocol.setAttribute("library", Settings.getJ2534Device());
+        protocol.setAttribute("name", settings.getLoggerProtocol());
+        protocol.setAttribute("transport", settings.getTransportProtocol());
+        protocol.setAttribute("library", settings.getJ2534Device());
         loggerSettings.appendChild(protocol);
 
         // window maximized
@@ -287,17 +323,17 @@ public final class DOMSettingsBuilder {
 
         // definition path
         IIOMetadataNode definition = new IIOMetadataNode("definition");
-        definition.setAttribute("path", Settings.getLoggerDefinitionFilePath());
+        definition.setAttribute("path", settings.getLoggerDefinitionFilePath());
         loggerSettings.appendChild(definition);
 
         // profile path
         IIOMetadataNode profile = new IIOMetadataNode("profile");
-        profile.setAttribute("path", Settings.getLoggerProfileFilePath());
+        profile.setAttribute("path", settings.getLoggerProfileFilePath());
         loggerSettings.appendChild(profile);
 
         // file logging
         IIOMetadataNode filelogging = new IIOMetadataNode("filelogging");
-        filelogging.setAttribute("path", Settings.getLoggerOutputDirPath());
+        filelogging.setAttribute("path", settings.getLoggerOutputDirPath());
         filelogging.setAttribute("switchid", settings.getFileLoggingControllerSwitchId());
         filelogging.setAttribute("active", String.valueOf(settings.isFileLoggingControllerSwitchActive()));
         filelogging.setAttribute("absolutetimestamp", String.valueOf(settings.isFileLoggingAbsoluteTimestamp()));
@@ -318,7 +354,7 @@ public final class DOMSettingsBuilder {
                 plugin.setAttribute("port", entry.getValue());
                 plugins.appendChild(plugin);
             }
-            final Map<String, IntfKitSensor> phidgets = Settings.getPhidgetSensors();
+            final Map<String, IntfKitSensor> phidgets = settings.getPhidgetSensors();
             if (phidgets != null && !phidgets.isEmpty()) {
                 final Collection<IntfKitSensor> sensors = phidgets.values();
                 IIOMetadataNode phidgetsNode = new IIOMetadataNode("phidgets");

@@ -28,7 +28,8 @@ import java.util.Vector;
 import javax.swing.JFileChooser;
 import javax.swing.ListSelectionModel;
 
-import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.util.SettingsManager;
 
 public class DefinitionManager extends javax.swing.JFrame implements ActionListener {
 
@@ -36,13 +37,11 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
     public static int MOVE_UP = 0;
     public static int MOVE_DOWN = 1;
 
-    ECUEditor parent;
     Vector<String> fileNames;
 
-    public DefinitionManager(ECUEditor parent) {
-        this.setIconImage(parent.getIconImage());
+    public DefinitionManager() {
+        this.setIconImage(ECUEditorManager.getECUEditor().getIconImage());
         initComponents();
-        this.parent = parent;
         initSettings();
 
         definitionList.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -61,7 +60,7 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
 
     private void initSettings() {
         // add definitions to list
-        Vector<File> definitionFiles = parent.getSettings().getEcuDefinitionFiles();
+        Vector<File> definitionFiles = SettingsManager.getSettings().getEcuDefinitionFiles();
         fileNames = new Vector<String>();
 
         for (int i = 0; i < definitionFiles.size(); i++) {
@@ -205,7 +204,7 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
         }
 
         // save
-        parent.getSettings().setEcuDefinitionFiles(output);
+        SettingsManager.getSettings().setEcuDefinitionFiles(output);
     }
 
     public void addFile() {
@@ -245,7 +244,6 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
 
     public void updateListModel() {
         definitionList.setListData(fileNames);
-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

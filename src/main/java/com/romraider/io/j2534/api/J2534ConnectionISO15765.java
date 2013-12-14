@@ -24,13 +24,13 @@ import static org.apache.log4j.Logger.getLogger;
 
 import org.apache.log4j.Logger;
 
-import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.j2534.api.J2534Impl.Config;
 import com.romraider.io.j2534.api.J2534Impl.Protocol;
 import com.romraider.io.j2534.api.J2534Impl.TxFlags;
 import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.util.SettingsManager;
 
 public final class J2534ConnectionISO15765 implements ConnectionManager {
     private static final Logger LOGGER = getLogger(J2534ConnectionISO15765.class);
@@ -38,19 +38,20 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     private int channelId;
     private int deviceId;
     private int msgId;
-    private long timeout;
+    private final long timeout;
 
     public J2534ConnectionISO15765(
             ConnectionProperties connectionProperties,
             String library) {
 
         api = null;
-        timeout = (long) 2000;
+        timeout = 2000;
         initJ2534(500000, library);
         LOGGER.info("J2534/ISO15765 connection initialized");
     }
 
     // Send request and wait for response with known length
+    @Override
     public void send(byte[] request, byte[] response, PollingState pollState) {
         checkNotNull(request, "request");
         checkNotNull(response, "response");
@@ -63,17 +64,20 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     }
 
     // Send request and wait specified time for one response with unknown length
+    @Override
     public byte[] send(byte[] request) {
         checkNotNull(request, "request");
         api.writeMsg(channelId, request, timeout, TxFlags.ISO15765_FRAME_PAD);
         return api.readMsg(channelId, 1, timeout);
     }
 
+    @Override
     public void clearLine() {
-//        LOGGER.debug("J2534/ISO15765 clearing buffers");
-//        api.clearBuffers(channelId);
+        //        LOGGER.debug("J2534/ISO15765 clearing buffers");
+        //        api.clearBuffers(channelId);
     }
 
+    @Override
     public void close() {
         stopFcFilter();
         disconnectChannel();
@@ -91,10 +95,10 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
             final byte[] mask = {
                     (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
             byte[] pattern = {
-                        (byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe8};
+                    (byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe8};
             byte[] flowCntrl = {
-                        (byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe0};
-            if (Settings.getDestinationId() == 0x18) {
+                    (byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe0};
+            if (SettingsManager.getSettings().getDestinationId() == 0x18) {
                 pattern = new byte[] {
                         (byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe9};
                 flowCntrl = new byte[] {
@@ -102,7 +106,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
             }
 
             msgId = api.startFlowCntrlFilter(
-                    channelId, mask, pattern, 
+                    channelId, mask, pattern,
                     flowCntrl, TxFlags.ISO15765_FRAME_PAD);
 
             LOGGER.debug(String.format(
@@ -114,7 +118,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
                     "J2534/ISO15765 exception: deviceId:%d, channelId:%d, msgId:%d",
                     deviceId, channelId, msgId));
             close();
-            throw new J2534Exception("J2534/ISO15765 Error opening device: " + 
+            throw new J2534Exception("J2534/ISO15765 Error opening device: " +
                     e.getMessage(), e);
         }
     }
@@ -122,7 +126,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
     private void version(int deviceId) {
         if (!LOGGER.isDebugEnabled()) return;
         final Version version = api.readVersion(deviceId);
-        LOGGER.info("J2534 Version => firmware: " + version.firmware + 
+        LOGGER.info("J2534 Version => firmware: " + version.firmware +
                 ", dll: " + version.dll + ", api: " + version.api);
     }
 
@@ -141,7 +145,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
             api.stopMsgFilter(channelId, msgId);
             LOGGER.debug("J2534/ISO15765 stopped message filter:" + msgId);
         } catch (Exception e) {
-            LOGGER.warn("J2534/ISO15765 Error stopping msg filter: " + 
+            LOGGER.warn("J2534/ISO15765 Error stopping msg filter: " +
                     e.getMessage());
         }
     }
@@ -151,7 +155,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
             api.disconnect(channelId);
             LOGGER.debug("J2534/ISO15765 disconnected channel:" + channelId);
         } catch (Exception e) {
-            LOGGER.warn("J2534/ISO15765 Error disconnecting channel: " + 
+            LOGGER.warn("J2534/ISO15765 Error disconnecting channel: " +
                     e.getMessage());
         }
     }

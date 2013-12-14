@@ -21,15 +21,6 @@ package com.romraider.logger.ecu.ui.tab.dyno;
 
 import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
 import static com.romraider.Version.CARS_DEFS_URL;
-
-import com.romraider.Settings;
-import com.romraider.editor.ecu.ECUEditor;
-import com.romraider.logger.ecu.definition.EcuDataConvertor;
-import com.romraider.logger.ecu.definition.EcuParameter;
-import com.romraider.logger.ecu.definition.EcuSwitch;
-import com.romraider.logger.ecu.definition.ExternalData;
-import com.romraider.logger.ecu.definition.LoggerData;
-import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import static com.romraider.logger.car.util.SpeedCalculator.calculateMph;
 import static com.romraider.logger.car.util.SpeedCalculator.calculateRpm;
 import static com.romraider.logger.car.util.TorqueCalculator.calculateTorque;
@@ -42,29 +33,7 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.JOptionPane.showOptionDialog;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.border.TitledBorder;
-import javax.swing.text.JTextComponent;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -82,6 +51,41 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.border.TitledBorder;
+import javax.swing.text.JTextComponent;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.logger.ecu.definition.EcuDataConvertor;
+import com.romraider.logger.ecu.definition.EcuParameter;
+import com.romraider.logger.ecu.definition.EcuSwitch;
+import com.romraider.logger.ecu.definition.ExternalData;
+import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.ui.DataRegistrationBroker;
+import com.romraider.util.SettingsManager;
 
 public final class DynoControlPanel extends JPanel {
     private static final long serialVersionUID = 3787020251963102201L;
@@ -217,7 +221,7 @@ public final class DynoControlPanel extends JPanel {
     //    private String tqUnits = "lbf-ft";
     private double distance;
     private long lastET;
-    private double[] etResults = new double[12];
+    private final double[] etResults = new double[12];
 
     private final JPanel filterPanel = new JPanel();
     private final JPanel unitsPanel = new JPanel();
@@ -257,16 +261,16 @@ public final class DynoControlPanel extends JPanel {
             mass = (parseDouble(carMass) + parseDouble(deltaMass));    //kg
             pressure = atm * 1000;    // [Pa] = [kPa] * 1000
         }
-//        if (units.equals(SI)) {
-//            altitude = parseDouble(elevation);    // meters
-//            airTemp = parseDouble(ambTemp);    //[K]
-//            mass = (parseDouble(carMass) + parseDouble(deltaMass));    //kg
-//        }
+        //        if (units.equals(SI)) {
+        //            altitude = parseDouble(elevation);    // meters
+        //            airTemp = parseDouble(ambTemp);    //[K]
+        //            mass = (parseDouble(carMass) + parseDouble(deltaMass));    //kg
+        //        }
         tSize = parseDouble(tireSize) + parseDouble(tireWidth) / 25.4 * parseDouble(tireAspect) / 100 * 2;
         rpm2mph = parseDouble(gearRatio) * parseDouble(finalRatio) / (tSize * 0.002975);
         humidity = parseDouble(relHumid) / 100;
-//        carInfo = (String) carSelectBox.getSelectedItem() + "(" + gearSelectBox.getSelectedItem() + "), Pres: " + pressText +
-//          pressUnits + ", Hum: " + relHumid.getText().trim() + "%, Temp: " + ambTemp.getText().trim() + tempUnits;
+        //        carInfo = (String) carSelectBox.getSelectedItem() + "(" + gearSelectBox.getSelectedItem() + "), Pres: " + pressText +
+        //          pressUnits + ", Hum: " + relHumid.getText().trim() + "%, Temp: " + ambTemp.getText().trim() + tempUnits;
         // Use elevation if ATM was not read from ECU
         if (atm == 0) {
             pressure = 101325 * Math.pow((1 - 22.5577 * Math.pow(10, -6) * altitude), 5.25578);     //Pressure at altitude [Pa]
@@ -347,7 +351,7 @@ public final class DynoControlPanel extends JPanel {
             elevation.setText(String.format("%1.0f", altitude));
         }
         // disable user input if ECU parameters recorded
-//        ambTemp.setEnabled(false);
+        //        ambTemp.setEnabled(false);
         elevation.setEnabled(false);
         calculateEnv();
         updateChart();
@@ -508,7 +512,7 @@ public final class DynoControlPanel extends JPanel {
 
     public boolean isValidET(long now, double vs) {
         try {
-//            LOGGER.trace("lastET: " + lastET + " now: " + now + " VS: " + vs);
+            //            LOGGER.trace("lastET: " + lastET + " now: " + now + " VS: " + vs);
             if (vs > 0) {
                 if (vsLogUnits.equals(LOG_VS_M)) vs = (vs / KPH_2_MPH);
                 distance = distance + (vs * 5280 / 3600 * (now - lastET) / 1000);
@@ -574,7 +578,7 @@ public final class DynoControlPanel extends JPanel {
         add(panel, gridBagLayout, buildRadioPanel(), 0, 2, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildInterpolatePanel(), 0, 3, 1, HORIZONTAL);
         add(panel, gridBagLayout, buildReferencePanel(), 0, 4, 1, HORIZONTAL);
-//        add(panel, gridBagLayout, buildEtPanel(), 0, 5, 1, HORIZONTAL);
+        //        add(panel, gridBagLayout, buildEtPanel(), 0, 5, 1, HORIZONTAL);
         add(panel);
     }
 
@@ -586,7 +590,7 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JPanel buildRadioPanel() {
-//        JPanel panel = new JPanel();
+        //        JPanel panel = new JPanel();
         unitsPanel.setBorder(new TitledBorder("Measurement Units"));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
@@ -680,9 +684,9 @@ public final class DynoControlPanel extends JPanel {
         addComponent(filterPanel, gridBagLayout, recordButton, 31);
         addComponent(filterPanel, gridBagLayout, buildLoadFileCB(), 32);
         addComponent(filterPanel, gridBagLayout, buildResetButton(), 33);
-//        addLabeledComponent(panel, gridBagLayout, "Drag Coeff", dragCoeff, 33);
-//        addLabeledComponent(panel, gridBagLayout, "Frontal Area", frontalArea, 36);
-//        addLabeledComponent(panel, gridBagLayout, "Rolling Resist Coeff", rollCoeff, 39);
+        //        addLabeledComponent(panel, gridBagLayout, "Drag Coeff", dragCoeff, 33);
+        //        addLabeledComponent(panel, gridBagLayout, "Frontal Area", frontalArea, 36);
+        //        addLabeledComponent(panel, gridBagLayout, "Rolling Resist Coeff", rollCoeff, 39);
         setSelectAllFieldText(tireWidth);
         setSelectAllFieldText(tireAspect);
         setSelectAllFieldText(tireSize);
@@ -713,6 +717,7 @@ public final class DynoControlPanel extends JPanel {
     private JButton buildResetButton() {
         JButton resetButton = new JButton("Clear Data");
         resetButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 chartPanel.clear();
                 parent.repaint();
@@ -725,6 +730,7 @@ public final class DynoControlPanel extends JPanel {
     private JToggleButton buildRecordDataButton() {
         if (!carTypeArr[0].trim().equals(MISSING_CAR_DEF)) {
             recordDataButton.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent actionEvent) {
                     elevation.setEnabled(true);
                     if (dButton.isSelected()) {
@@ -777,6 +783,7 @@ public final class DynoControlPanel extends JPanel {
 
     private JCheckBox buildLoadFileCB() {
         loadFileCB.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (loadFileCB.isSelected()) {
                     recordDataButton.setText("Read From File");
@@ -799,6 +806,7 @@ public final class DynoControlPanel extends JPanel {
 
     private void buildModeButtons(JPanel panel) {
         dButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 chartPanel.setDyno();
                 if (loadFileCB.isSelected()) {
@@ -806,25 +814,26 @@ public final class DynoControlPanel extends JPanel {
                 } else {
                     recordDataButton.setText("Record Data");
                 }
-//                etPanel.setVisible(false);
-//                filterPanel.setVisible(true);
+                //                etPanel.setVisible(false);
+                //                filterPanel.setVisible(true);
                 unitsPanel.setVisible(true);
                 iPanel.setVisible(true);
-//                refPanel.setVisible(true);
+                //                refPanel.setVisible(true);
                 parent.repaint();
             }
         });
         dButton.setSelected(true);
 
         eButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 chartPanel.setET();
                 recordDataButton.setText("Record ET");
-//                filterPanel.setVisible(false);
+                //                filterPanel.setVisible(false);
                 unitsPanel.setVisible(false);
                 iPanel.setVisible(false);
-//                refPanel.setVisible(false);
-//                etPanel.setVisible(true);
+                //                refPanel.setVisible(false);
+                //                etPanel.setVisible(true);
                 parent.repaint();
             }
         });
@@ -838,37 +847,39 @@ public final class DynoControlPanel extends JPanel {
 
     private void buildRadioButtons(JPanel panel) {
         iButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 buttonAction(iButton);
             }
         });
-//            iButton.setActionCommand(IMPERIAL);
+        //            iButton.setActionCommand(IMPERIAL);
         iButton.setSelected(true);
 
         mButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 buttonAction(mButton);
             }
         });
-//            mButton.setActionCommand(METRIC);
+        //            mButton.setActionCommand(METRIC);
 
-//            final JRadioButton sButton = new JRadioButton(SI);
-//            sButton.addActionListener(new ActionListener() {
-//                public void actionPerformed(ActionEvent actionEvent) {
-//                    buttonAction(sButton);
-//                }
-//            });
-//            sButton.setActionCommand(SI);
+        //            final JRadioButton sButton = new JRadioButton(SI);
+        //            sButton.addActionListener(new ActionListener() {
+        //                public void actionPerformed(ActionEvent actionEvent) {
+        //                    buttonAction(sButton);
+        //                }
+        //            });
+        //            sButton.setActionCommand(SI);
 
         //Group the radio buttons.
         ButtonGroup group = new ButtonGroup();
         group.add(iButton);
         group.add(mButton);
-//            group.add(sButton);
+        //            group.add(sButton);
 
         panel.add(iButton);
         panel.add(mButton);
-//            panel.add(sButton);
+        //            panel.add(sButton);
 
     }
 
@@ -887,16 +898,16 @@ public final class DynoControlPanel extends JPanel {
                 elevation.setText(String.format("%1.0f", result));
                 atm = atm / 6.89475728;
             }
-//            if (preUnits.equals(SI)){
-//                result = parseDouble(ambTemp)* 9/5 - 459.67;
-//                ambTemp.setText(String.format("%1.0f", result));
-//                result = parseDouble(carMass) / 0.4536;
-//                carMass.setText(String.format("%1.0f", result));
-//                result = parseDouble(deltaMass) / 0.4536;
-//                deltaMass.setText(String.format("%1.0f", result));
-//                result = parseDouble(elevation) / 0.3048;
-//                elevation.setText(String.format("%1.0f", result));
-//            }
+            //            if (preUnits.equals(SI)){
+            //                result = parseDouble(ambTemp)* 9/5 - 459.67;
+            //                ambTemp.setText(String.format("%1.0f", result));
+            //                result = parseDouble(carMass) / 0.4536;
+            //                carMass.setText(String.format("%1.0f", result));
+            //                result = parseDouble(deltaMass) / 0.4536;
+            //                deltaMass.setText(String.format("%1.0f", result));
+            //                result = parseDouble(elevation) / 0.3048;
+            //                elevation.setText(String.format("%1.0f", result));
+            //            }
             preUnits = IMPERIAL;
             elevUnits = "ft";
             tempUnits = "\u00b0F";
@@ -919,10 +930,10 @@ public final class DynoControlPanel extends JPanel {
                 elevation.setText(String.format("%1.0f", result));
                 atm = atm * 6.89475728;
             }
-//            if (preUnits.equals(SI)){
-//                result = parseDouble(ambTemp) - 273.15;
-//                ambTemp.setText(String.format("%1.1f", result));
-//            }
+            //            if (preUnits.equals(SI)){
+            //                result = parseDouble(ambTemp) - 273.15;
+            //                ambTemp.setText(String.format("%1.1f", result));
+            //            }
             preUnits = METRIC;
             elevUnits = "m";
             tempUnits = "\u00b0C";
@@ -933,30 +944,30 @@ public final class DynoControlPanel extends JPanel {
             pressText = String.format("%1.2f", atm);
             pressUnits = "kPa";
         }
-//        if (units.equals(SI)) {
-//            if (preUnits.equals(IMPERIAL)){
-//                result = (parseDouble(ambTemp) + 459.67) * 5/9;
-//                ambTemp.setText(String.format("%1.1f", result));
-//                result = parseDouble(carMass) * 0.4536;
-//                carMass.setText(String.format("%1.0f", result));
-//                LOGGER.trace("units selcted: " + units + " result: " + result);
-//                result = parseDouble(deltaMass) * 0.4536;
-//                deltaMass.setText(String.format("%1.0f", result));
-//                result = parseDouble(elevation) * 0.3048;
-//                elevation.setText(String.format("%1.0f", result));
-//            }
-//            if (preUnits.equals(METRIC)){
-//                result = parseDouble(ambTemp) + 273.15;
-//                ambTemp.setText(String.format("%1.1f", result));
-//            }
-//            preUnits = SI;
-//            elevUnits = "m";
-//            tempUnits = "K";
-//            elevLabel.setText("Elevation (m)");
-//            tempLabel.setText("Air Temperature (K)");
-//            deltaMassLabel.setText("Delta Weight (kg)");
-//            carMassLabel.setText("Base Weight (kg)");
-//        }
+        //        if (units.equals(SI)) {
+        //            if (preUnits.equals(IMPERIAL)){
+        //                result = (parseDouble(ambTemp) + 459.67) * 5/9;
+        //                ambTemp.setText(String.format("%1.1f", result));
+        //                result = parseDouble(carMass) * 0.4536;
+        //                carMass.setText(String.format("%1.0f", result));
+        //                LOGGER.trace("units selcted: " + units + " result: " + result);
+        //                result = parseDouble(deltaMass) * 0.4536;
+        //                deltaMass.setText(String.format("%1.0f", result));
+        //                result = parseDouble(elevation) * 0.3048;
+        //                elevation.setText(String.format("%1.0f", result));
+        //            }
+        //            if (preUnits.equals(METRIC)){
+        //                result = parseDouble(ambTemp) + 273.15;
+        //                ambTemp.setText(String.format("%1.1f", result));
+        //            }
+        //            preUnits = SI;
+        //            elevUnits = "m";
+        //            tempUnits = "K";
+        //            elevLabel.setText("Elevation (m)");
+        //            tempLabel.setText("Air Temperature (K)");
+        //            deltaMassLabel.setText("Delta Weight (kg)");
+        //            carMassLabel.setText("Base Weight (kg)");
+        //        }
         if (resultStrings[0] != null) interpolateButton.doClick();
         LOGGER.info("DYNO Measurement units selected: " + units);
     }
@@ -1022,9 +1033,9 @@ public final class DynoControlPanel extends JPanel {
                     if (headers[x].contains(LOG_VS_I)) vsLogUnits = LOG_VS_I;
                     if (headers[x].contains(LOG_VS_M)) vsLogUnits = LOG_VS_M;
                 }
-                LOGGER.trace("DYNO log file conversions: Time Column: " + timeCol + "; Time X: " + timeMult + 
-                             "; RPM Column: " + rpmCol + "; TA Column: " + taCol + "; VS Column: " + vsCol +
-                             "; VS units: " + vsLogUnits);
+                LOGGER.trace("DYNO log file conversions: Time Column: " + timeCol + "; Time X: " + timeMult +
+                        "; RPM Column: " + rpmCol + "; TA Column: " + taCol + "; VS Column: " + vsCol +
+                        "; VS units: " + vsLogUnits);
                 while ((line = inputStream.readLine()) != null) {
                     String[] values = line.split(delimiter);
                     if (Double.parseDouble(values[taCol]) > 98) {
@@ -1083,6 +1094,7 @@ public final class DynoControlPanel extends JPanel {
         final JButton openButton = new JButton("Open");
 
         openButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 int returnVal = openFile.showOpenDialog(openButton);
 
@@ -1143,6 +1155,7 @@ public final class DynoControlPanel extends JPanel {
         final JButton saveButton = new JButton("Save");
 
         saveButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 int returnVal = openFile.showSaveDialog(saveButton);
 
@@ -1156,11 +1169,11 @@ public final class DynoControlPanel extends JPanel {
                             outputStream = new BufferedWriter(new FileWriter(traceFile));
                             LOGGER.info("DYNO Saving trace to file: " + traceFile.getName());
                             String line = units + TAB + orderComboBox.getSelectedItem() +
-                            TAB + resultStrings[1] +
-                            TAB + fToE +
-                            TAB + sToE +
-                            TAB + tToS +
-                            TAB + auc;
+                                    TAB + resultStrings[1] +
+                                    TAB + fToE +
+                                    TAB + sToE +
+                                    TAB + tToS +
+                                    TAB + auc;
                             outputStream.write(line, 0, line.length());
                             outputStream.newLine();
 
@@ -1212,6 +1225,7 @@ public final class DynoControlPanel extends JPanel {
     private JButton buildClearReferenceButton() {
         final JButton clearButton = new JButton("Clear");
         clearButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 reFfToE = 0;
                 reFsToE = 0;
@@ -1287,6 +1301,7 @@ public final class DynoControlPanel extends JPanel {
 
     private JButton buildInterpolateButton(final JComboBox orderComboBox) {
         interpolateButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (dButton.isSelected()) {
                     interpolateButton.setEnabled(true);
@@ -1364,18 +1379,20 @@ public final class DynoControlPanel extends JPanel {
         loadCars();
         final JComboBox selectComboBox = new JComboBox(carTypeArr);
         selectComboBox.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeCars(selectComboBox.getSelectedIndex());
             }
         });
-//        carSelectBox.setSelectedItem("05 USDM OBXT WGN LTD 5MT");
+        //        carSelectBox.setSelectedItem("05 USDM OBXT WGN LTD 5MT");
         return selectComboBox;
     }
 
     private JComboBox buildGearComboBox() {
-//        makeGearList();
+        //        makeGearList();
         final JComboBox gearSelectBox = new JComboBox();
         gearSelectBox.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 gearRatio.setText(gearsRatioArr[carSelectBox.getSelectedIndex()][gearSelectBox.getSelectedIndex() + 1]);
                 LOGGER.info("DYNO Car: " + carSelectBox.getSelectedItem() + ", Changed gear to: " + gearSelectBox.getSelectedItem() + " (" + gearRatio.getText() + ")");
@@ -1423,9 +1440,10 @@ public final class DynoControlPanel extends JPanel {
 
     private void loadCars() {
         try {
+            Settings settings = SettingsManager.getSettings();
             File carDef = null;
             final String SEPARATOR = System.getProperty("file.separator");
-            final String loggerFilePath = Settings.getLoggerDefinitionFilePath();
+            final String loggerFilePath = settings.getLoggerDefinitionFilePath();
             if (loggerFilePath != null) {
                 final int index = loggerFilePath.lastIndexOf(SEPARATOR);
                 if (index > 0) {
@@ -1434,7 +1452,7 @@ public final class DynoControlPanel extends JPanel {
                 }
             }
             if (!carDef.exists()) {
-                final String profileFilePath = Settings.getLoggerProfileFilePath();
+                final String profileFilePath = settings.getLoggerProfileFilePath();
                 if (profileFilePath != null) {
                     final int index = profileFilePath.lastIndexOf(SEPARATOR);
                     if (index > 0) {
@@ -1485,52 +1503,52 @@ public final class DynoControlPanel extends JPanel {
                         Element element = (Element) list.item(0);
                         if (element != null) {
                             NodeList value = element.getChildNodes();
-                            String data = ((Node) value.item(0)).getNodeValue().trim();
+                            String data = value.item(0).getNodeValue().trim();
                             switch (i) {
-                                case 0:
-                                    carTypeArr[s] = data;
-//                                    gearRatioArr[s] = data;
-                                    for (int g = 1; g <= 6; g++) {
-                                        String gearNo = "gearratio" + g;
-                                        NodeList grsList = carElement.getElementsByTagName(gearNo);
-                                        Element carGrsElement = (Element) grsList.item(0);
-                                        if (carGrsElement != null) {
-                                            NodeList grsValueList = carGrsElement.getChildNodes();
-                                            if (((Node) grsValueList.item(0)).getNodeValue().trim() != null) {
-                                                gearsRatioArr[s][0] = Integer.toString(g);
-                                                gearsRatioArr[s][g] = (String) ((Node) grsValueList.item(0)).getNodeValue().trim();
-                                            }
+                            case 0:
+                                carTypeArr[s] = data;
+                                //                                    gearRatioArr[s] = data;
+                                for (int g = 1; g <= 6; g++) {
+                                    String gearNo = "gearratio" + g;
+                                    NodeList grsList = carElement.getElementsByTagName(gearNo);
+                                    Element carGrsElement = (Element) grsList.item(0);
+                                    if (carGrsElement != null) {
+                                        NodeList grsValueList = carGrsElement.getChildNodes();
+                                        if (grsValueList.item(0).getNodeValue().trim() != null) {
+                                            gearsRatioArr[s][0] = Integer.toString(g);
+                                            gearsRatioArr[s][g] = grsValueList.item(0).getNodeValue().trim();
                                         }
-//                                        LOGGER.trace("Car: " + s + " Gear: " + g + " Ratio: " + gearsRatioArr[s][g]);
                                     }
-                                    break;
-                                case 1:
-                                    carMassArr[s] = data;
-                                    break;
-                                case 2:
-                                    dragCoeffArr[s] = data;
-                                    break;
-                                case 3:
-                                    rollCoeffArr[s] = data;
-                                    break;
-                                case 4:
-                                    frontalAreaArr[s] = data;
-                                    break;
-                                case 5:
-                                    finalRatioArr[s] = data;
-                                    break;
-                                case 6:
-                                    transArr[s] = data;
-                                    break;
-                                case 7:
-                                    widthArr[s] = data;
-                                    break;
-                                case 8:
-                                    aspectArr[s] = data;
-                                    break;
-                                case 9:
-                                    sizeArr[s] = data;
-                                    break;
+                                    //                                        LOGGER.trace("Car: " + s + " Gear: " + g + " Ratio: " + gearsRatioArr[s][g]);
+                                }
+                                break;
+                            case 1:
+                                carMassArr[s] = data;
+                                break;
+                            case 2:
+                                dragCoeffArr[s] = data;
+                                break;
+                            case 3:
+                                rollCoeffArr[s] = data;
+                                break;
+                            case 4:
+                                frontalAreaArr[s] = data;
+                                break;
+                            case 5:
+                                finalRatioArr[s] = data;
+                                break;
+                            case 6:
+                                transArr[s] = data;
+                                break;
+                            case 7:
+                                widthArr[s] = data;
+                                break;
+                            case 8:
+                                aspectArr[s] = data;
+                                break;
+                            case 9:
+                                sizeArr[s] = data;
+                                break;
                             }
                         }
                     }
@@ -1567,6 +1585,7 @@ public final class DynoControlPanel extends JPanel {
         // selected whenever the cursor is in that field (gains focus):
         if (allTextSelector == null) {
             allTextSelector = new java.awt.event.FocusAdapter() {
+                @Override
                 public void focusGained(FocusEvent ev) {
                     JTextComponent textComp = (JTextComponent) ev.getSource();
                     textComp.selectAll();

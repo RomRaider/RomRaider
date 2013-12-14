@@ -19,18 +19,21 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
-import com.romraider.Settings;
-import com.romraider.logger.ecu.EcuLogger;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getFile;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getProfileFileChooser;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.saveProfileToFile;
-import com.romraider.swing.menubar.action.AbstractAction;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JOptionPane.OK_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
-import javax.swing.JFileChooser;
+
 import java.awt.event.ActionEvent;
 import java.io.File;
+
+import javax.swing.JFileChooser;
+
+import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.swing.menubar.action.AbstractAction;
+import com.romraider.util.SettingsManager;
 
 public final class SaveProfileAsAction extends AbstractAction {
 
@@ -38,6 +41,7 @@ public final class SaveProfileAsAction extends AbstractAction {
         super(logger);
     }
 
+    @Override
     public void actionPerformed(ActionEvent actionEvent) {
         try {
             saveProfileAs();
@@ -48,7 +52,7 @@ public final class SaveProfileAsAction extends AbstractAction {
 
     private void saveProfileAs() throws Exception {
         logger.getSettings();
-        File lastProfileFile = getFile(Settings.getLoggerProfileFilePath());
+        File lastProfileFile = getFile(SettingsManager.getSettings().getLoggerProfileFilePath());
         JFileChooser fc = getProfileFileChooser(lastProfileFile);
         if (fc.showSaveDialog(logger) == APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();

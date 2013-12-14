@@ -19,44 +19,32 @@
 
 package com.romraider.swing;
 
-import com.romraider.maps.Rom;
-import com.romraider.maps.Table;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import com.romraider.maps.Table;
 
 public class TableTreeNode extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = 2824050968863990871L;
-    private String type;
-    private Rom rom;
-    private Table table;
     private String toolTip;
-    private TableFrame frame;
 
-    public TableTreeNode(Table table) {
-        //super(table.getName() + " (" + table.getType() + "D)");
-        super(table);
-        this.table = table;
-        this.frame = table.getFrame();
+    public TableTreeNode(TableFrame tableFrame) {
+        super(tableFrame);
     }
 
-    public String getType() {
-        return type;
+    public TableFrame getFrame() {
+        if(getUserObject() instanceof TableFrame) {
+            return (TableFrame)getUserObject();
+        }
+        return null;
     }
 
-    public Rom getRom() {
-        return rom;
-    }
-
-    public void setRom(Rom rom) {
-        this.rom = rom;
+    public void setFrame(TableFrame tableFrame) {
+        this.setUserObject(tableFrame);
     }
 
     public Table getTable() {
-        return table;
-    }
-
-    public void setTable(Table table) {
-        this.table = table;
+        return this.getFrame().getTable();
     }
 
     public void setToolTipText(String input) {
@@ -65,13 +53,5 @@ public class TableTreeNode extends DefaultMutableTreeNode {
 
     public String getToolTipText() {
         return toolTip;
-    }
-
-    public TableFrame getFrame() {
-        return frame;
-    }
-
-    public void setFrame(TableFrame frame) {
-        this.frame = frame;
     }
 }

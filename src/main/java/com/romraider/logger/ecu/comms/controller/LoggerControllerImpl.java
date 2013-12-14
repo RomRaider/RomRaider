@@ -19,7 +19,11 @@
 
 package com.romraider.logger.ecu.comms.controller;
 
-import com.romraider.Settings;
+import static com.romraider.util.ParamChecker.checkNotNull;
+import static com.romraider.util.ThreadUtil.runAsDaemon;
+
+import org.apache.log4j.Logger;
+
 import com.romraider.logger.ecu.comms.manager.QueryManager;
 import com.romraider.logger.ecu.comms.manager.QueryManagerImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
@@ -28,51 +32,55 @@ import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.StatusChangeListener;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
 import com.romraider.logger.ecu.ui.handler.file.FileLoggerControllerSwitchMonitor;
-import static com.romraider.util.ParamChecker.checkNotNull;
-import static com.romraider.util.ThreadUtil.runAsDaemon;
-import org.apache.log4j.Logger;
 
 public final class LoggerControllerImpl implements LoggerController {
     private static final Logger LOGGER = Logger.getLogger(LoggerControllerImpl.class);
     private final QueryManager queryManager;
 
-    public LoggerControllerImpl(Settings settings, EcuInitCallback ecuInitCallback, MessageListener messageListener,
-                                DataUpdateHandler... dataUpdateHandlers) {
-        checkNotNull(settings, ecuInitCallback, messageListener, dataUpdateHandlers);
-        queryManager = new QueryManagerImpl(settings, ecuInitCallback, messageListener, dataUpdateHandlers);
+    public LoggerControllerImpl(EcuInitCallback ecuInitCallback, MessageListener messageListener,
+            DataUpdateHandler... dataUpdateHandlers) {
+        checkNotNull(ecuInitCallback, messageListener, dataUpdateHandlers);
+        queryManager = new QueryManagerImpl(ecuInitCallback, messageListener, dataUpdateHandlers);
     }
 
+    @Override
     public synchronized void addListener(StatusChangeListener listener) {
         checkNotNull(listener, "listener");
         queryManager.addListener(listener);
     }
 
+    @Override
     public void setFileLoggerSwitchMonitor(FileLoggerControllerSwitchMonitor monitor) {
         checkNotNull(monitor);
         LOGGER.debug("Setting file logger switch monitor: [" + monitor.getEcuSwitch().getId() + "] " + monitor.getEcuSwitch().getName());
         queryManager.setFileLoggerSwitchMonitor(monitor);
     }
 
+    @Override
     public void addLogger(String callerId, LoggerData loggerData) {
         checkNotNull(loggerData);
         LOGGER.debug("Adding logger:   [" + loggerData.getId() + "] " + loggerData.getName());
         queryManager.addQuery(callerId, loggerData);
     }
 
+    @Override
     public void removeLogger(String callerId, LoggerData loggerData) {
         checkNotNull(loggerData, "ecuParam");
         LOGGER.debug("Removing logger: [" + loggerData.getId() + "] " + loggerData.getName());
         queryManager.removeQuery(callerId, loggerData);
     }
 
+    @Override
     public synchronized boolean isStarted() {
         return queryManager.isRunning();
     }
 
+    @Override
     public synchronized void start() {
         if (!isStarted()) runAsDaemon(queryManager);
     }
 
+    @Override
     public synchronized void stop() {
         if (isStarted() && queryManager.getThread().isAlive()) {
             queryManager.stop();

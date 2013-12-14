@@ -49,7 +49,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
-import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.ui.swing.tools.tablemodels.AirFuelLearningTableModel;
@@ -60,6 +59,7 @@ import com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers.LtvCellRend
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.swing.SetFont;
 import com.romraider.util.FormatFilename;
+import com.romraider.util.SettingsManager;
 
 /**
  * This class is used to build and display the Learning Table Values
@@ -75,26 +75,27 @@ public class LearningTableValuesResultsPanel extends JDialog {
     private JTable vehicleInfoTable;
     private JTable afLearningTable;
     private JTable flkcTable;
+    private final String FLKC_NAME = "Fine Learning Knock Correction (\u00B0 of correction)";
 
     public LearningTableValuesResultsPanel(
-                EcuLogger logger,
-                Map<String, Object> vehicleInfo,
-                String[] afRanges,
-                List<List<Object>> afLearning,
-                String[] flkcLoad,
-                String[] flkcRpm,
-                List<List<EcuQuery>> flkcData) {
+            EcuLogger logger,
+            Map<String, Object> vehicleInfo,
+            String[] afRanges,
+            List<List<Object>> afLearning,
+            String[] flkcLoad,
+            String[] flkcRpm,
+            List<List<EcuQuery>> flkcData) {
 
         super(logger, false);
         setIconImage(logger.getIconImage());
         setTitle(DIALOG_TITLE);
         setBounds(
                 (logger.getWidth() > LTV_WIDTH) ?
-                    logger.getX() + (logger.getWidth() - LTV_WIDTH) / 2 : 0,
-                (logger.getHeight() > LTV_HEIGHT) ?
-                    logger.getY() + ((logger.getHeight() - LTV_HEIGHT) / 2) : 0,
-                    LTV_WIDTH,
-                    LTV_HEIGHT);
+                        logger.getX() + (logger.getWidth() - LTV_WIDTH) / 2 : 0,
+                        (logger.getHeight() > LTV_HEIGHT) ?
+                                logger.getY() + ((logger.getHeight() - LTV_HEIGHT) / 2) : 0,
+                                LTV_WIDTH,
+                                LTV_HEIGHT);
         getContentPane().setLayout(new BorderLayout());
 
         contentPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
@@ -219,7 +220,7 @@ public class LearningTableValuesResultsPanel extends JDialog {
         final JPanel flkcTitlePanel = new JPanel();
         flkcTitlePanel.setBorder(
                 new TitledBorder(null,
-                        "Fine Learning Knock Correction (° of correction)",
+                        FLKC_NAME,
                         TitledBorder.LEADING,
                         TitledBorder.TOP, null, null));
         flkcTitlePanel.setBounds(10, 172, 692, 204);
@@ -303,7 +304,7 @@ public class LearningTableValuesResultsPanel extends JDialog {
     private final void saveTableText() {
         final String nowStr = String.format(DT_FORMAT, System.currentTimeMillis());
         final String fileName = String.format("%s%sromraiderLTV_%s.csv",
-                Settings.getLoggerOutputDirPath(),
+                SettingsManager.getSettings().getLoggerOutputDirPath(),
                 File.separator,
                 nowStr);
         try {
@@ -342,7 +343,7 @@ public class LearningTableValuesResultsPanel extends JDialog {
                 bw.append(EOL);
             }
             bw.append(EOL);
-            bw.write("Fine Learning Knock Correction (° of correction)" + EOL);
+            bw.write(FLKC_NAME + EOL);
             columnCount = flkcTable.getColumnCount();
             rowCount = flkcTable.getRowCount();
             for (int i = 0; i < columnCount; i++) {
@@ -361,14 +362,14 @@ public class LearningTableValuesResultsPanel extends JDialog {
             bw.close();
             final String shortName = FormatFilename.getShortName(fileName);
             showMessageDialog(
-                    null, 
+                    null,
                     "Table's text saved to: " + shortName,
                     "Save Success",
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
-                    null, 
+                    null,
                     "Failed to save tables, check path:\n" + fileName,
                     "Save Failed",
                     ERROR_MESSAGE);
@@ -377,13 +378,13 @@ public class LearningTableValuesResultsPanel extends JDialog {
 
     private final void saveTableImage() {
         final BufferedImage resultsImage = new BufferedImage(
-                contentPanel.getWidth(), 
-                contentPanel.getHeight(), 
+                contentPanel.getWidth(),
+                contentPanel.getHeight(),
                 BufferedImage.TYPE_INT_ARGB);
         contentPanel.paint(resultsImage.createGraphics());
         final String nowStr = String.format(DT_FORMAT, System.currentTimeMillis());
         final String fileName = String.format("%s%sromraiderLTV_%s.png",
-                Settings.getLoggerOutputDirPath(),
+                SettingsManager.getSettings().getLoggerOutputDirPath(),
                 File.separator,
                 nowStr);
         final String shortName = FormatFilename.getShortName(fileName);
@@ -394,14 +395,14 @@ public class LearningTableValuesResultsPanel extends JDialog {
                     "png",
                     imageFile);
             showMessageDialog(
-                    null, 
+                    null,
                     "Learning Table Values image saved to: " + shortName,
                     "Save Success",
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
-                    null, 
+                    null,
                     "Failed to save image, check path:\n" + fileName,
                     "Save Failed",
                     ERROR_MESSAGE);

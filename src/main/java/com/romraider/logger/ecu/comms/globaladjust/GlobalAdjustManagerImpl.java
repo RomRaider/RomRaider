@@ -56,18 +56,19 @@ public final class GlobalAdjustManagerImpl implements GlobalAdjustManager {
     public GlobalAdjustManagerImpl(
             EcuLogger logger,
             ParameterListTableModel dataTabParamListTableModel) {
-        
+
         checkNotNull(logger);
         this.logger = logger;
         this.settings = logger.getSettings();
-        this.messageListener = (MessageListener) logger;
+        this.messageListener = logger;
         this.parmeterList = dataTabParamListTableModel;
     }
 
+    @Override
     public final int ecuGlobalAdjustments() {
         try {
             LoggerConnection connection = getConnection(
-                    Settings.getLoggerProtocol(), settings.getLoggerPort(),
+                    settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
                 messageListener.reportMessage("Retrieving current ECU global values...");
@@ -110,7 +111,7 @@ public final class GlobalAdjustManagerImpl implements GlobalAdjustManager {
         } catch (Exception e) {
             messageListener.reportMessage(
                     "Unable to retrieve current ECU timing value - check correct " +
-                    "serial port \nhas been selected, cable is connected and ignition " +
+                            "serial port \nhas been selected, cable is connected and ignition " +
                     "is on.");
             LOGGER.error("Error retrieving current ECU global timing value", e);
             return 0;
@@ -124,9 +125,9 @@ public final class GlobalAdjustManagerImpl implements GlobalAdjustManager {
             for (ParameterRow parameterRow : parameterRows) {
                 final String id = parameterRow.getLoggerData().getId();
                 if (id.equals(ID_P239) ||
-                    id.equals(ID_P240) ||
-                    id.equals(ID_P241)) {
-                    
+                        id.equals(ID_P240) ||
+                        id.equals(ID_P241)) {
+
                     query.add(buildEcuQuery(parameterRow));
                 }
             }
