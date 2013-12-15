@@ -33,7 +33,7 @@
 #  ./start.sh http://izpack.org/
 #
 # author marc.eppelmann&#064;gmx.de
-# $Id: start.sh 2116 2008-04-19 13:00:24Z jponge $
+# $Id$
 #
 
 function detectDesktop() {

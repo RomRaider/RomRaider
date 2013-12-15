@@ -260,4 +260,6 @@
 
     <str id="log.error_0" txt="قادر به نوشتن ''{0}'' نیست."/>
 
+    <str id="data.validation.error.title" txt="خطا" />
+    <str id="data.validation.warning.title" txt="هشدار" />
 </langpack>

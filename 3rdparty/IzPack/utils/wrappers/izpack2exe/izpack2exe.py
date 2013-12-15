@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # ........................................................................... #
 #
-# IzPack - Copyright 2007, 2008 Julien Ponge, All Rights Reserved.
+# IzPack - Copyright 2007, 2010 Julien Ponge, All Rights Reserved.
 #
 # http://izpack.org/
 # http://izpack.codehaus.org/
@@ -20,11 +20,12 @@
 
 import os
 import sys
-from shutil import *
-from optparse import OptionParser
+import subprocess
+import shutil
+import optparse
 
 def parse_options():
-    parser = OptionParser()
+    parser = optparse.OptionParser()
     parser.add_option("--file", action="append", dest="file",
                       help="The installer JAR file / files")
     parser.add_option("--output", action="store", dest="output",
@@ -40,45 +41,80 @@ def parse_options():
                       default=False,
                       help="Do not use UPX to further compress the output")
     parser.add_option("--launch-file", action="store", dest="launch",
-                      default="launcher.exe",                      
+                      default="",
                       help="File to launch after extract")
+    parser.add_option("--launch-args", action="store", dest="launchargs",
+                      default="",
+                      help="Arguments for file to launch after extract")
+    parser.add_option("--name", action="store", dest="name",
+                      default="IzPack",
+                      help="Name of package for title bar and prompts")
+    parser.add_option("--prompt", action="store_true", dest="prompt",
+                      default=False,
+                      help="Prompt the user before extraction?")
     (options, args) = parser.parse_args()
     if (options.file is None):
         parser.error("no installer file has been given")
-    return options    
+    return options
 
 def create_exe(settings):
-    filename = os.path.basename(settings.launch)
-    if(len(settings.file) == 1):
+    if len(settings.file) > 0:
         filename = os.path.basename(settings.file[0])
-
-    files = " ".join(settings.file);  
-    p7z = '"%s" a -t7z -mx=9 -ms=off installer.7z %s' % (settings.p7z, files)
-
-    os.system(p7z)
-    config = open('config.txt', 'w')
-    config.write(';!@Install@!UTF-8!\r\n')
-    config.write('Title="IzPack"\r\n')
-    config.write('Progress="yes"\r\n')
-    config.write('ExecuteFile="%s"\r\n' % filename)
-    config.write(';!@InstallEnd@!\r\n')
-    config.close()
-
+    else:
+        filename = ''
+    
     if settings.p7z == '7za':
-        sfx = os.path.join(os.path.dirname(sys.argv[0]), '7zS.sfx')
-    else:    
-        sfx = os.path.join(os.path.dirname(settings.p7z), '7zS.sfx')
+        p7z = os.path.join(os.path.dirname(sys.argv[0]), '7za')
+    else:
+        p7z = settings.p7z
+    
+    use_shell = sys.platform != 'win32'
+    
+    if (os.access('installer.7z', os.F_OK)):
+        os.remove('installer.7z')
+    files = '" "'.join(settings.file)
+    p7zcmd = '"%s" a -mmt -t7z -mx=9 installer.7z "%s"' % (p7z, files)
+    subprocess.call(p7zcmd, shell=use_shell)
+    
+    config = open('config.txt', 'w')
+    config.write(';!@Install@!UTF-8!\n')
+    config.write('Title="%s"\n' % settings.name)
+    if settings.prompt:
+        config.write('BeginPrompt="Install %s?"\n' % settings.name)
+    config.write('Progress="yes"\n')
+    
+    if settings.launch == '':
+        config.write('ExecuteFile="javaw"\n')
+        config.write('ExecuteParameters="-jar \\\"%s\\\"' % filename)
+        if settings.launchargs != '':
+            config.write(' %s"\n' % settings.launchargs)
+        else:
+            config.write('"\n') 
+    else:
+        config.write('ExecuteFile="%s"\n' % settings.launch)
+        if settings.launchargs != '':
+            config.write('ExecuteParameters="%s"\n' % settings.launchargs)
+
+    config.write(';!@InstallEnd@!\n')
+    config.close()
+    
+    sfx = os.path.join(os.path.dirname(p7z), '7zS.sfx')
     files = [sfx, 'config.txt', 'installer.7z']
+    
     output = open(settings.output, 'wb')
     for f in files:
         in_file = open(f, 'rb')
-        copyfileobj(in_file, output, 2048)
+        shutil.copyfileobj(in_file, output, 2048)
         in_file.close()
     output.close()
-
+    
     if (not settings.no_upx):
-        upx = '"%s" --ultra-brute %s' % (settings.upx, settings.output)
-        os.system(upx)
+        if settings.upx == 'upx':
+            upx = os.path.join(os.path.dirname(sys.argv[0]), 'upx')
+        else:
+            upx = settings.upx
+        upx = '"%s" --ultra-brute "%s"' % (upx, settings.output)
+        subprocess.call(upx, shell=use_shell)
     
     os.remove('config.txt')
     os.remove('installer.7z')
