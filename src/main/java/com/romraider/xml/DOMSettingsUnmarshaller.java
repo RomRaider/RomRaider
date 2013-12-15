@@ -142,6 +142,9 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tableclickcount")) {
                 settings.setTableClickCount(unmarshallAttribute(n, "value", 2));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("tableclickbehavior")) {
+                settings.setTableClickBehavior(unmarshallAttribute(n, "value", 0));
+
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("version")) {
                 settings.setRecentVersion(unmarshallAttribute(n, "value", ""));
 
@@ -153,6 +156,21 @@ public final class DOMSettingsUnmarshaller {
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("valuelimitwarning")) {
                 settings.setValueLimitWarning(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("coloraxis")) {
+                settings.setColorAxis(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("showtabletoolbarborder")) {
+                settings.setShowTableToolbarBorder(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("openromexpanded")) {
+                settings.setOpenExpanded(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("alwaysopentableatzero")) {
+                settings.setAlwaysOpenTableAtZero(Boolean.parseBoolean(unmarshallAttribute(n, "value", "false")));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("defaultscale")) {
+                settings.setDefaultScale(unmarshallAttribute(n, "value", "Metric"));
 
             }
         }
@@ -199,6 +217,9 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("highlight")) {
                 settings.setHighlightColor(unmarshallColor(n));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("select")) {
+                settings.setSelectColor(unmarshallColor(n));
+
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("increaseborder")) {
                 settings.setIncreaseBorder(unmarshallColor(n));
 
@@ -221,7 +242,7 @@ public final class DOMSettingsUnmarshaller {
         NodeList nodes = loggerNode.getChildNodes();
         if (loggerNode.getNodeType() == ELEMENT_NODE && loggerNode.getNodeName().equalsIgnoreCase("logger")) {
             settings.setLocale(unmarshallAttribute(loggerNode, "locale", "system"));
-        } 
+        }
 
         for (int i = 0; i < nodes.getLength(); i++) {
             Node n = nodes.item(i);
@@ -229,13 +250,13 @@ public final class DOMSettingsUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
                 settings.setRefreshMode(unmarshallAttribute(n, "refresh", false));
-                Settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
+                settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
                 settings.setFastPoll(unmarshallAttribute(n, "fastpoll", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("protocol")) {
-                Settings.setLoggerProtocol(unmarshallAttribute(n, "name", "SSM"));
-                Settings.setTransportProtocol(unmarshallAttribute(n, "transport", "ISO9141"));
-                Settings.setJ2534Device(unmarshallAttribute(n, "library", null));
+                settings.setLoggerProtocol(unmarshallAttribute(n, "name", "SSM"));
+                settings.setTransportProtocol(unmarshallAttribute(n, "transport", "ISO9141"));
+                settings.setJ2534Device(unmarshallAttribute(n, "library", null));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
                 settings.setLoggerWindowMaximized(unmarshallAttribute(n, "value", false));
@@ -254,7 +275,7 @@ public final class DOMSettingsUnmarshaller {
                 settings.setLoggerParameterListState(unmarshallAttribute(n, "showlist", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("definition")) {
-                settings.setLoggerDefinitionFilePath(unmarshallAttribute(n, "path", Settings.getLoggerDefinitionFilePath()));
+                settings.setLoggerDefinitionFilePath(unmarshallAttribute(n, "path", settings.getLoggerDefinitionFilePath()));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("profile")) {
                 settings.setLoggerProfileFilePath(unmarshallAttribute(n, "path", ""));
@@ -309,7 +330,7 @@ public final class DOMSettingsUnmarshaller {
                                 }
                             }
                         }
-                        Settings.setPhidgetSensors(phidgets);
+                        settings.setPhidgetSensors(phidgets);
                     }
                 }
                 settings.setLoggerPluginPorts(pluginPorts);

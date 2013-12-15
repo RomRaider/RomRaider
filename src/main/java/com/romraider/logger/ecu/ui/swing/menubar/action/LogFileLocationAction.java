@@ -19,15 +19,18 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
-import com.romraider.Settings;
-import com.romraider.logger.ecu.EcuLogger;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getFile;
 import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getLoggerOutputDirFileChooser;
-import com.romraider.swing.menubar.action.AbstractAction;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
-import javax.swing.JFileChooser;
+
 import java.awt.event.ActionEvent;
 import java.io.File;
+
+import javax.swing.JFileChooser;
+
+import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.swing.menubar.action.AbstractAction;
+import com.romraider.util.SettingsManager;
 
 public final class LogFileLocationAction extends AbstractAction {
 
@@ -35,6 +38,7 @@ public final class LogFileLocationAction extends AbstractAction {
         super(logger);
     }
 
+    @Override
     public void actionPerformed(ActionEvent actionEvent) {
         try {
             setLogFileLocationDialog();
@@ -44,7 +48,7 @@ public final class LogFileLocationAction extends AbstractAction {
     }
 
     private void setLogFileLocationDialog() throws Exception {
-        File lastLoggerOutputDir = getFile(Settings.getLoggerOutputDirPath());
+        File lastLoggerOutputDir = getFile(SettingsManager.getSettings().getLoggerOutputDirPath());
         JFileChooser fc = getLoggerOutputDirFileChooser(lastLoggerOutputDir);
         if (fc.showOpenDialog(logger) == APPROVE_OPTION) {
             String loggerOutputDirPath = fc.getSelectedFile().getAbsolutePath();

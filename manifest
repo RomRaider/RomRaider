@@ -8,7 +8,6 @@ Class-Path:
  lib/log4j-1.2.14.jar
  lib/Jama.jar
  lib/jamlab.jar
- lib/JFontChooser.jar
  lib/swing-layout-1.0.jar
  lib/jcommon-1.0.12.jar
  lib/jfreechart-1.0.9.jar

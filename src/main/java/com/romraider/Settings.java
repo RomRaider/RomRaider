@@ -42,9 +42,12 @@ public class Settings implements Serializable {
 
     private static final long serialVersionUID = 1026542922680475190L;
 
+    /* String Format Settings */
     public static final String NEW_LINE = System.getProperty("line.separator");
     public static final String TAB = "\t";
+    public static final String BLANK = "";
 
+    /* Clipboard Settings */
     public static final String TABLE_CLIPBOARD_FORMAT_ELEMENT = "table-clipboard-format";
     public static final String TABLE_CLIPBOARD_FORMAT_ATTRIBUTE = "format-string";
     public static final String TABLE_ELEMENT = "table";
@@ -67,6 +70,7 @@ public class Settings implements Serializable {
 
     public static final String CUSTOM_CLIPBOARD_FORMAT = "Custom";
 
+    /* XML Settings */
     public static final String REPOSITORY_ELEMENT_NAME = "repository-dir";
     public static final String REPOSITORY_ATTRIBUTE_NAME = "path";
 
@@ -76,8 +80,61 @@ public class Settings implements Serializable {
     public static final String TABLE_ICONS_ELEMENT_NAME = "table-toolbar";
     public static final String TABLE_ICONS_SCALE_ATTRIBUTE_NAME = "scale";
 
+    /* UI Settings */
     public static final int DEFAULT_EDITOR_ICON_SCALE = 50;
     public static final int DEFAULT_TABLE_ICON_SCALE = 70;
+
+
+    /* Table Settings */
+    public static final String defaultTableToolBarName = "Table Tools";
+
+    public static final int ENDIAN_LITTLE = 1;
+    public static final int ENDIAN_BIG = 2;
+
+    public static final int TABLE_1D = 1;
+    public static final int TABLE_2D = 2;
+    public static final int TABLE_3D = 3;
+    public static final int TABLE_X_AXIS = 4;
+    public static final int TABLE_Y_AXIS = 5;
+    public static final int TABLE_SWITCH = 6;
+
+    public static final int DATA_TYPE_ORIGINAL = 0;
+    public static final int DATA_TYPE_BIN = 1;
+    public static final int DATA_TYPE_REAL = 3;
+
+    public static final int COMPARE_DISPLAY_PERCENT = 1;
+    public static final int COMPARE_DISPLAY_ABSOLUTE = 2;
+
+    public static final int STORAGE_TYPE_FLOAT = 99;
+    public static final boolean STORAGE_DATA_SIGNED = false;
+
+    public static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
+
+    public static final String INVALID_ATTRIBUTE_TEXT = "invalid";
+
+    /* Rom Settings */
+    public static final int CHECK_TOTAL = 0x5AA5A55A;
+
+    /* Scale Settings */
+    public static final int LINEAR = 1;
+    public static final int INVERSE = 2;
+
+    /* Compare Image Settings */
+    public static Color TABLE_EQUAL_COLOR = new Color(52,114,53);
+    public static Color TABLE_DIFFERENT_COLOR = new Color(193, 27, 23);
+    public static Color TABLE_MISSING_COLOR = new Color(251,185,23);
+
+    /* Compare DTC Foreground Colors */
+    public static Color TABLESWITCH_DEFAULT_COLOR = Color.black;
+    public static Color TABLESWITCH_DIFFERENT_COLOR = new Color(193, 27, 23);
+
+    /* MDI Desktop Settings*/
+    public static int FRAME_OFFSET = 20;
+
+    /* Scale Settings */
+    public static String DEFAULT_SCALE = "Default";
+    public static String METRIC_SCALE = "Metric";
+    public static String STANDARD_SCALE = "Standard";
 
     private static final String ISO15765 = "ISO15765";
     private static final String ISO9141 = "ISO9141";
@@ -85,6 +142,7 @@ public class Settings implements Serializable {
     private static final String USER_LANGUAGE = "user.language";
     private static final String USER_COUNTRY = "user.country";
     private static final String EN_US = "en_US";
+
     private final Dimension windowSize = new Dimension(800, 600);
     private final Point windowLocation = new Point();
     private int splitPaneLocation = 150;
@@ -107,12 +165,18 @@ public class Settings implements Serializable {
     private Dimension cellSize = new Dimension(42, 18);
     private Color maxColor = new Color(255, 102, 102);
     private Color minColor = new Color(153, 153, 255);
-    private Color highlightColor = new Color(204, 204, 204);
-    private Color increaseBorder = new Color(255, 0, 0);
+
+    private Color selectColor = new Color(204, 204, 204);
+    private Color highlightColor = new Color(27, 161, 226);
+
     private Color decreaseBorder = new Color(0, 0, 255);
+    private Color increaseBorder = new Color(255, 0, 0);
+
     private Color axisColor = new Color(255, 255, 255);
     private Color warningColor = new Color(255, 0, 0);
     private int tableClickCount = 1; // number of clicks to open table
+    private int tableClickBehavior = 0; // TableTreeNode click behavior. 0=open/close frame, 1=open/focus frame
+    private boolean colorAxis = false;
 
     private String loggerPort;
     private String loggerPortDefault;
@@ -125,7 +189,7 @@ public class Settings implements Serializable {
     private boolean fileLoggingAbsoluteTimestamp;
     private String logfileNameText;
     private boolean logExternalsOnly;
-    private static String userLocale = SYSTEM_NUMFORMAT; 
+    private static String userLocale = SYSTEM_NUMFORMAT;
 
     private Dimension loggerWindowSize = new Dimension(1000, 600);
     private Point loggerWindowLocation = new Point();
@@ -152,7 +216,13 @@ public class Settings implements Serializable {
     private int editorIconScale = DEFAULT_EDITOR_ICON_SCALE;
     private int tableIconScale = DEFAULT_TABLE_ICON_SCALE;
 
-    private static Map<String, IntfKitSensor> phidgetSensors;
+    private boolean openExpanded = true;
+    private boolean showTableToolbarBorder = false;
+    private boolean alwaysOpenTableAtZero = false;
+
+    private String defaultScale = "Metric";
+
+    private Map<String, IntfKitSensor> phidgetSensors;
 
     public Settings() {
         //center window by default
@@ -285,6 +355,14 @@ public class Settings implements Serializable {
         this.highlightColor = highlightColor;
     }
 
+    public Color getSelectColor() {
+        return selectColor;
+    }
+
+    public void setSelectColor(Color selectColor) {
+        this.selectColor = selectColor;
+    }
+
     public boolean isCalcConflictWarning() {
         return calcConflictWarning;
     }
@@ -337,6 +415,16 @@ public class Settings implements Serializable {
 
     public void setTableClickCount(int tableClickCount) {
         this.tableClickCount = tableClickCount;
+    }
+
+    public int getTableClickBehavior() {
+        return tableClickBehavior;
+    }
+
+    public void setTableClickBehavior(int clickBehavior) {
+        // 0 = open/close
+        // 1 = open/focus
+        this.tableClickBehavior = clickBehavior;
     }
 
     public String getRecentVersion() {
@@ -399,15 +487,15 @@ public class Settings implements Serializable {
         this.loggerPortDefault = loggerPortDefault;
     }
 
-    public static void setLoggerProtocol(String protocol) {
+    public void setLoggerProtocol(String protocol) {
         Settings.loggerProtocol = protocol;
     }
 
-    public static String getLoggerProtocol() {
+    public String getLoggerProtocol() {
         return loggerProtocol;
     }
 
-    public static String getLoggerDefinitionFilePath() {
+    public String getLoggerDefinitionFilePath() {
         return loggerDefinitionFilePath;
     }
 
@@ -415,7 +503,7 @@ public class Settings implements Serializable {
         Settings.loggerDefinitionFilePath = loggerDefinitionFilePath;
     }
 
-    public static String getLoggerOutputDirPath() {
+    public String getLoggerOutputDirPath() {
         return loggerOutputDirPath;
     }
 
@@ -451,7 +539,7 @@ public class Settings implements Serializable {
         this.loggerDividerLocation = dividerLocation;
     }
 
-    public static String getLoggerProfileFilePath() {
+    public String getLoggerProfileFilePath() {
         return loggerProfileFilePath;
     }
 
@@ -536,11 +624,11 @@ public class Settings implements Serializable {
         return loggerRefreshMode;
     }
 
-    public static void setDestinationId(byte id) {
+    public void setDestinationId(byte id) {
         loggerDestinationId = id;
     }
 
-    public static byte getDestinationId() {
+    public byte getDestinationId() {
         return loggerDestinationId;
     }
 
@@ -568,19 +656,19 @@ public class Settings implements Serializable {
         return loggerDebuggingLevel;
     }
 
-    public static void setJ2534Device(String j2534Device) {
+    public void setJ2534Device(String j2534Device) {
         Settings.j2534Device = j2534Device;
     }
 
-    public static String getJ2534Device() {
+    public String getJ2534Device() {
         return j2534Device;
     }
 
-    public static void setTransportProtocol(String transport) {
+    public void setTransportProtocol(String transport) {
         Settings.transportProtocol = transport;
     }
 
-    public static String getTransportProtocol() {
+    public String getTransportProtocol() {
         return transportProtocol;
     }
 
@@ -664,7 +752,7 @@ public class Settings implements Serializable {
         return logExternalsOnly;
     }
 
-    public static boolean isCanBus() {
+    public boolean isCanBus() {
         if (transportProtocol.equals(ISO15765)) {
             return true;
         }
@@ -693,13 +781,53 @@ public class Settings implements Serializable {
         }
     }
 
-    public static final Map<String, IntfKitSensor> getPhidgetSensors() {
-        return Settings.phidgetSensors;
+    public boolean isOpenExpanded() {
+        return openExpanded;
     }
 
-    public static final void setPhidgetSensors(
+    public void setOpenExpanded(boolean expanded) {
+        this.openExpanded = expanded;
+    }
+
+    public boolean isShowTableToolbarBorder() {
+        return showTableToolbarBorder;
+    }
+
+    public void setShowTableToolbarBorder(boolean showBorder) {
+        this.showTableToolbarBorder = showBorder;
+    }
+
+    public boolean isAlwaysOpenTableAtZero() {
+        return alwaysOpenTableAtZero;
+    }
+
+    public void setAlwaysOpenTableAtZero(boolean openAtZero) {
+        this.alwaysOpenTableAtZero = openAtZero;
+    }
+
+    public boolean isColorAxis() {
+        return this.colorAxis;
+    }
+
+    public void setColorAxis(boolean colorAxis) {
+        this.colorAxis = colorAxis;
+    }
+
+    public String getDefaultScale() {
+        return this.defaultScale;
+    }
+
+    public void setDefaultScale(String defaultScale) {
+        this.defaultScale = defaultScale;
+    }
+
+    public Map<String, IntfKitSensor> getPhidgetSensors() {
+        return this.phidgetSensors;
+    }
+
+    public void setPhidgetSensors(
             Map<String, IntfKitSensor> phidgetSensors) {
 
-        Settings.phidgetSensors = phidgetSensors;
+        this.phidgetSensors = phidgetSensors;
     }
 }

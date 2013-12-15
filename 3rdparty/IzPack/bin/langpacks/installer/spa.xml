@@ -282,4 +282,7 @@
     <str id="InstallationGroupPanel.colNameSize" txt="Tamaño"/>
 
     <str id="debug.changevariable" txt="Modificar valor"/>
+
+    <str id="data.validation.error.title" txt="Error" />
+    <str id="data.validation.warning.title" txt="Atención" />
 </langpack>

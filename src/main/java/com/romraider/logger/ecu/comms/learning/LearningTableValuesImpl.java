@@ -59,14 +59,15 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.logger.ecu.ui.swing.tools.LearningTableValuesResultsPanel;
 import com.romraider.util.ParamChecker;
+import com.romraider.util.SettingsManager;
 
 /**
  * This class manages the building of ECU queries and retrieving the data to
  * populate the table models which will be used by the Learning Table Values
- * display panel. 
+ * display panel.
  */
 public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
-                    implements LearningTableValues {
+implements LearningTableValues {
 
     private static final Logger LOGGER =
             Logger.getLogger(LearningTableValuesImpl.class);
@@ -81,7 +82,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
             "Fine Correction Rows (RPM)",
             "Fine Correction Rows (RPM) ");
     private final Map<String, Object> vehicleInfo =
-                                  new LinkedHashMap<String, Object>();
+            new LinkedHashMap<String, Object>();
     private final List<List<Object>> afLearning = new ArrayList<List<Object>>();
     private final EcuLogger logger;
     private final Settings settings;
@@ -101,7 +102,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                 "ParameterListTableModel");
         this.logger = logger;
         this.settings = logger.getSettings();
-        this.messageListener = (MessageListener) logger;
+        this.messageListener = logger;
         this.parmeterList = dataTabParamListTableModel;
         this.ecuDef = ecuDef;
         this.flkc = null;
@@ -114,18 +115,20 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
         if (ecuDef.getEcuDefFile() == null) {
             showMessageDialog(logger,
                     "ECU definition file not found or undefined. Learning\n" +
-                    "Table Values cannot be properly retrieved until an ECU\n" +
-                    "defintion is defined in the Editor's Definition Manager.",
-                    "ECU Defintion Missing", WARNING_MESSAGE);
+                            "Table Values cannot be properly retrieved until an ECU\n" +
+                            "defintion is defined in the Editor's Definition Manager.",
+                            "ECU Defintion Missing", WARNING_MESSAGE);
             return null;
         }
         else {
             document = EcuDefinitionDocumentLoader.getDocument(ecuDef);
         }
 
-        final String transport = Settings.getTransportProtocol();
-        if (Settings.isCanBus()) {
-            Settings.setTransportProtocol("ISO9141");
+        Settings settings = SettingsManager.getSettings();
+
+        final String transport = settings.getTransportProtocol();
+        if (settings.isCanBus()) {
+            settings.setTransportProtocol("ISO9141");
         }
         final boolean logging = logger.isLogging();
         if (logging) logger.stopLogging();
@@ -136,7 +139,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
 
         try {
             LoggerConnection connection = getConnection(
-                    Settings.getLoggerProtocol(), settings.getLoggerPort(),
+                    settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
                 Collection<EcuQuery> queries = buildLearningQueries();
@@ -198,67 +201,66 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                     flkcRpm = formatRpmRanges(queries);
                 }
 
-                List<List<EcuQuery>> flkcQueryGroups = new ArrayList<List<EcuQuery>>();
-                if (flkc != null) {
-                    flkcQueryGroups = new FlkcTableQueryBuilder().build(
-                                            flkc,
-                                            flkcAddr,
-                                            flkcRpm.length,
-                                            flkcLoad.length - 1);
-    
-                    for (int i = 0; i < flkcQueryGroups.size(); i++) {
-                        queries.clear();
-                        for (int j = 0; j < flkcQueryGroups.get(i).size(); j++) {
-                            if (flkcQueryGroups.get(i).get(j) != null) {
-                                queries.add(flkcQueryGroups.get(i).get(j));
-                            }
+                final List<List<EcuQuery>> flkcQueryGroups =
+                        new FlkcTableQueryBuilder().build(
+                                flkc,
+                                flkcAddr,
+                                flkcRpm.length,
+                                flkcLoad.length - 1);
+
+                for (int i = 0; i < flkcQueryGroups.size(); i++) {
+                    queries.clear();
+                    for (int j = 0; j < flkcQueryGroups.get(i).size(); j++) {
+                        if (flkcQueryGroups.get(i).get(j) != null) {
+                            queries.add(flkcQueryGroups.get(i).get(j));
                         }
-                        message = String.format("Retrieving FLKC row %d values...", i);
-                        messageListener.reportMessage(message);
-                        LOGGER.info(message);
-                        connection.sendAddressReads(
-                                queries,
-                                (byte) 0x10,
-                                new PollingStateImpl());
-                        LOGGER.info("FLKC row " + i + " values retrieved.");               
                     }
+                    message = String.format("Retrieving FLKC row %d values...", i);
+                    messageListener.reportMessage(message);
+                    LOGGER.info(message);
+                    connection.sendAddressReads(
+                            queries,
+                            (byte) 0x10,
+                            new PollingStateImpl());
+                    LOGGER.info("FLKC row " + i + " values retrieved.");
                 }
 
                 messageListener.reportMessage(
                         "Learning Table Values retrieved successfully.");
                 final LearningTableValuesResultsPanel results =
                         new LearningTableValuesResultsPanel(
-                        logger, vehicleInfo,
-                        afRanges, afLearning,
-                        flkcLoad, flkcRpm, flkcQueryGroups);
+                                logger, vehicleInfo,
+                                afRanges, afLearning,
+                                flkcLoad, flkcRpm, flkcQueryGroups);
                 results.displayLearningResultsPanel();
             }
             finally {
                 connection.close();
-                Settings.setTransportProtocol(transport);
+                SettingsManager.getSettings().setTransportProtocol(transport);
                 if (logging) logger.startLogging();
             }
         }
         catch (Exception e) {
-            messageListener.reportError(
-                    "Unable to retrieve current ECU learning values");
-            LOGGER.error(message + " Error retrieving values", e);
+            messageListener.reportMessage(
+                    "Unable to retrieve current ECU learning values - check correct " +
+                            "serial port\nhas been selected, cable is connected and ignition " +
+                    "is on.");
+            LOGGER.error("Error retrieving current ECU learning values", e);
             showMessageDialog(logger,
-                    message +
-                    "\nError performing Learning Table Values read.\n" +
-                    "Check the following:\n" +
-                    "* Logger has successfully conencted to the ECU\n" +
-                    "* Correct COM port is selected (if not Openport 2)\n" +
-                    "* Cable is connected properly\n* Ignition is ON\n",
-                    "Learning Table Values",
-                    ERROR_MESSAGE);
+                    "Error performing Learning Table Values read.\n" +
+                            "Check the following:\n" +
+                            "* Logger has successfully conencted to the ECU\n" +
+                            "* Correct COM port is selected (if not Openport 2)\n" +
+                            "* Cable is connected properly\n* Ignition is ON\n",
+                            "Learning Table Values",
+                            ERROR_MESSAGE);
         }
         return null;
     }
 
     /**
-     * Build a collection of queries based on the initialized values of 
-     * parameters defined for this ECU.  Also identify the IAM and FLKC 
+     * Build a collection of queries based on the initialized values of
+     * parameters defined for this ECU.  Also identify the IAM and FLKC
      * parameters used to locate and calculate the FLKC table.
      * @return the supported parameter list filtered for only the Learning Table
      * Value parameters needed.
@@ -289,8 +291,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
     }
 
     /**
-     * Define the start address of the FLKC table in RAM base on a Extended
-     * parameter if defined.
+     * Define the start address of the FLKC table in RAM.
      * Also isolate the FLKC extended parameter to use the data converter
      * when building the FLKC table queries.
      */
@@ -299,28 +300,28 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
             Parameter parameterId) {
 
         switch (parameterId) {
-            case E1:
-                if (flkcAddr == 0) {
-                    flkcAddr = getParameterAddr(parameterRow) + 0x02;
-                }
-                break;
-            case E31:
-                if (flkcAddr == 0) {
-                    flkcAddr = getParameterAddr(parameterRow) + 0x14;
-                }
-                break;
-            case E12:
-            case E41:
-                if (flkc == null) {
-                    flkc = parameterRow;
-                }
-                break;
-            case E173:
-                flkcAddr = getParameterAddr(parameterRow);
+        case E1:
+            if (flkcAddr == 0) {
+                flkcAddr = getParameterAddr(parameterRow) + 0x02;
+            }
+            break;
+        case E31:
+            if (flkcAddr == 0) {
+                flkcAddr = getParameterAddr(parameterRow) + 0x14;
+            }
+            break;
+        case E12:
+        case E41:
+            if (flkc == null) {
                 flkc = parameterRow;
-                break;
-            default:
-                break;
+            }
+            break;
+        case E173:
+            flkcAddr = getParameterAddr(parameterRow);
+            flkc = parameterRow;
+            break;
+        default:
+            break;
         }
     }
 
@@ -355,9 +356,8 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
 
         List<EcuQuery> tableAxis = new ArrayList<EcuQuery>();
         for (String tableName : tableNames) {
-            tableAxis = loadTable(document, ecuDef, tableName);
-            if (!tableAxis.isEmpty()) {
-                break;
+            while (tableAxis.isEmpty()) {
+                tableAxis = loadTable(document, ecuDef, tableName);
             }
         }
         return tableAxis;
@@ -380,56 +380,55 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                     query.getResponse(),
                     query.getLoggerData().getSelectedConvertor().getUnits());
             switch (parameterId) {
-                case E1:
-                    result = String.format("%.0f", query.getResponse());
-                    vehicleInfo.put(paramDesc, result);
-                    break;
-                case E31:
-                    result = String.format("%.3f", query.getResponse());
-                    vehicleInfo.put(paramDesc, result);
-                    break;
-                case E12:
-                case E41:
-                case E173:
-                    break;
-                case E13:
-                case E44:
-                    afLearningBank1.add((Object) "#1");
-                    afLearningBank1.add((Object) result);
-                    break;
-                case E14:
-                case E45:
-                case E15:
-                case E46:
-                    afLearningBank1.add((Object) result);
-                    break;
-                case E16:
-                case E47:
-                    afLearningBank1.add((Object) result);
-                    afLearning.add(afLearningBank1);
-                    break;
-                case E62:
-                    afLearningBank2.add((Object) "#2");
-                    afLearningBank2.add((Object) result);
-                    break;
-                case E63:
-                case E64:
-                    afLearningBank2.add((Object) result);
-                    break;
-                case E65:
-                    afLearningBank2.add((Object) result);
-                    afLearning.add(afLearningBank2);
-                    break;
-                default:
-                    vehicleInfo.put(paramDesc, result);
-                    break;
+            case E1:
+                result = String.format("%.0f", query.getResponse());
+                vehicleInfo.put(paramDesc, result);
+                break;
+            case E31:
+                result = String.format("%.3f", query.getResponse());
+                vehicleInfo.put(paramDesc, result);
+                break;
+            case E12:
+            case E41:
+            case E173:
+                break;
+            case E13:
+            case E44:
+                afLearningBank1.add("#1");
+                afLearningBank1.add(result);
+                break;
+            case E14:
+            case E45:
+            case E15:
+            case E46:
+                afLearningBank1.add(result);
+                break;
+            case E16:
+            case E47:
+                afLearningBank1.add(result);
+                afLearning.add(afLearningBank1);
+                break;
+            case E62:
+                afLearningBank2.add("#2");
+                afLearningBank2.add(result);
+                break;
+            case E63:
+            case E64:
+                afLearningBank2.add(result);
+                break;
+            case E65:
+                afLearningBank2.add(result);
+                afLearning.add(afLearningBank2);
+                break;
+            default:
+                vehicleInfo.put(paramDesc, result);
+                break;
             }
         }
     }
 
     /**
      * Build a List of EcuQueries to retrieve the axis and scaling of a table.
-     * A table is found when the storageaddress parameter has been identified.
      */
     private final List<EcuQuery> loadTable(
             Document document,
@@ -441,23 +440,20 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
         final Map<String, String> tableMap =
                 EcuTableDefinitionHandler.getTableDefinition(
                         document,
-                        inheritanceList, 
+                        inheritanceList,
                         tableName);
-        List<EcuQuery> tableAxisQuery = new ArrayList<EcuQuery>();
-        if (tableMap.containsKey("storageaddress")) {
-            tableAxisQuery = TableAxisQueryParameterSet.build(
-                    tableMap.get("storageaddress"),
-                    tableMap.get("storagetype"),
-                    tableMap.get("expression"),
-                    tableMap.get("units"),
-                    tableMap.get("sizey")
-            );
-        }
+        final List<EcuQuery> tableAxisQuery = TableAxisQueryParameterSet.build(
+                tableMap.get("storageaddress"),
+                tableMap.get("storagetype"),
+                tableMap.get("expression"),
+                tableMap.get("units"),
+                tableMap.get("sizey")
+                );
         return tableAxisQuery;
     }
 
     /**
-     * Format the range data to be used as table column header values. 
+     * Format the range data to be used as table column header values.
      */
     private final String[] formatRanges(
             Collection<EcuQuery> axisRanges,
@@ -483,7 +479,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
     }
 
     /**
-     * Format the RPM range data to be used as FLKC table row header values. 
+     * Format the RPM range data to be used as FLKC table row header values.
      */
     private final String[] formatRpmRanges(Collection<EcuQuery> axisRanges) {
 

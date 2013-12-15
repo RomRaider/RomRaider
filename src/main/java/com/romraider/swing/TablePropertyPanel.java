@@ -19,6 +19,14 @@
 
 package com.romraider.swing;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.LayoutStyle.ComponentPlacement;
+
+import com.romraider.Settings;
+import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
 
 public class TablePropertyPanel extends javax.swing.JPanel {
@@ -31,28 +39,41 @@ public class TablePropertyPanel extends javax.swing.JPanel {
 
         tableName.setText(table.getName() + " (" + table.getType() + "D)");
         category.setText(table.getCategory());
-        unit.setText(table.getScale().getUnit());
-        byteToReal.setText(table.getScale().getExpression());
-        realToByte.setText(table.getScale().getByteExpression());
+
         String intType;
-        if (table.isSignedData()) {
-            intType = "int";
+
+        if (Settings.TABLE_SWITCH == table.getType()) {
+            intType = "DTC";
+            // TODO: fill out other DTC specific properties.
+            textPaneScales.setText(Settings.INVALID_ATTRIBUTE_TEXT);
+        } else {
+            if (table.isSignedData()) {
+                intType = "int";
+            }
+            else {
+                intType = "uint";
+            }
+
+            String scaleText = "";
+            for(Scale scale : table.getScales()) {
+                scaleText += scale.toString();
+            }
+
+            textPaneScales.setText(scaleText);
         }
-        else {
-            intType = "uint";
-        }
+
+        textPaneScales.setCaretPosition(0);
+
         storageSize.setText(intType + (table.getStorageType() * 8));
         storageAddress.setText("0x" + Integer.toHexString(table.getStorageAddress()));
 
-        if (table.getEndian() == Table.ENDIAN_BIG) {
+        if (table.getEndian() == Settings.ENDIAN_BIG) {
             endian.setText("big");
         } else {
             endian.setText("little");
         }
 
         description.setText(table.getDescription());
-        fine.setText(table.getScale().getFineIncrement() + "");
-        coarse.setText(table.getScale().getCoarseIncrement() + "");
 
         if (table.getUserLevel() == 1) {
             userLevel.setText("Beginner");
@@ -75,16 +96,6 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         lblCategory = new javax.swing.JLabel();
         category = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        lblUnit = new javax.swing.JLabel();
-        unit = new javax.swing.JLabel();
-        lblByteToReal = new javax.swing.JLabel();
-        byteToReal = new javax.swing.JLabel();
-        realToByte = new javax.swing.JLabel();
-        lblRealToByte = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        coarse = new javax.swing.JLabel();
-        fine = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         lblStorageAddress = new javax.swing.JLabel();
         lblStorageSize = new javax.swing.JLabel();
@@ -97,6 +108,9 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         description = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
         userLevel = new javax.swing.JLabel();
+        textPaneScales = new JTextPane();
+        textPaneScales.setEditable(false);
+        scrollPane = new JScrollPane();
 
         setAutoscrolls(true);
         setFont(new java.awt.Font("Tahoma", 0, 12));
@@ -113,81 +127,20 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         category.setText("Category");
         category.setFocusable(false);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Conversion")));
-        lblUnit.setText("Unit:");
-        lblUnit.setFocusable(false);
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Conversions")));
 
-        unit.setText("unit");
-        unit.setFocusable(false);
-
-        lblByteToReal.setText("Byte to Real:");
-        lblByteToReal.setFocusable(false);
-
-        byteToReal.setText("bytetoreal");
-        byteToReal.setFocusable(false);
-
-        realToByte.setText("realtobyte");
-        realToByte.setFocusable(false);
-
-        lblRealToByte.setText("Real to Byte:");
-        lblRealToByte.setFocusable(false);
-
-        jLabel1.setText("Coarse adjust:");
-
-        jLabel2.setText("Fine adjust:");
-
-        coarse.setText("coarse");
-
-        fine.setText("fine");
-
-        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
+        GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(lblUnit)
-                                .add(lblByteToReal)
-                                .add(lblRealToByte)
-                                .add(jLabel1)
-                                .add(jLabel2))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 14, Short.MAX_VALUE)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(jPanel1Layout.createSequentialGroup()
-                                        .add(2, 2, 2)
-                                        .add(unit))
-                                .add(byteToReal)
-                                .add(realToByte)
-                                .add(coarse)
-                                .add(fine))
-                        .add(27, 27, 27))
-        );
+                jPanel1Layout.createParallelGroup(Alignment.LEADING)
+                .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel1Layout.createSequentialGroup()
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                .add(jPanel1Layout.createSequentialGroup()
-                                        .add(unit)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(byteToReal)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(realToByte))
-                                .add(jPanel1Layout.createSequentialGroup()
-                                .add(lblUnit)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(lblByteToReal)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(lblRealToByte)))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(jLabel1)
-                                .add(coarse))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(jLabel2)
-                        .add(fine)))
-        );
+                jPanel1Layout.createParallelGroup(Alignment.LEADING)
+                .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                );
+
+        scrollPane.setViewportView(textPaneScales);
+        jPanel1.setLayout(jPanel1Layout);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Storage"));
         lblStorageAddress.setText("Storage Address:");
@@ -212,43 +165,43 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
                 jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel2Layout.createSequentialGroup()
+                .add(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                 .add(lblStorageAddress)
                                 .add(lblStorageSize)
                                 .add(lblEndian))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(endian)
-                                .add(storageSize)
-                                .add(storageAddress))
-                        .addContainerGap(28, Short.MAX_VALUE))
-        );
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(endian)
+                                        .add(storageSize)
+                                        .add(storageAddress))
+                                        .addContainerGap(28, Short.MAX_VALUE))
+                );
         jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel2Layout.createSequentialGroup()
+                .add(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                                 .add(lblStorageSize)
                                 .add(storageSize))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(lblStorageAddress)
-                                .add(storageAddress))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(lblEndian)
-                                .add(endian))
-                        .addContainerGap(37, Short.MAX_VALUE))
-        );
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(lblStorageAddress)
+                                        .add(storageAddress))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                .add(lblEndian)
+                                                .add(endian))
+                                                .addContainerGap(37, Short.MAX_VALUE))
+                );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Description"));
         jScrollPane1.setBorder(null);
         description.setBackground(new java.awt.Color(236, 233, 216));
         description.setColumns(20);
         description.setEditable(false);
-        description.setFont(new java.awt.Font("Tahoma", 0, 11));
+        description.setFont(new java.awt.Font("Tahoma", 0, 12));
         description.setLineWrap(true);
         description.setRows(5);
         description.setText("Description");
@@ -262,96 +215,83 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
                 jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-        );
+                .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                );
         jPanel3Layout.setVerticalGroup(
                 jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(jPanel3Layout.createSequentialGroup()
+                .add(jPanel3Layout.createSequentialGroup()
                         .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
                         .addContainerGap())
-        );
+                );
 
         jLabel5.setText("User Level:");
 
         userLevel.setText("Beginner");
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
+        GroupLayout layout = new GroupLayout(this);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(layout.createSequentialGroup()
+                layout.createParallelGroup(Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(layout.createSequentialGroup()
-                                        .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .add(layout.createSequentialGroup()
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                                .add(lblCategory)
-                                                .add(lblTable))
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(layout.createSequentialGroup()
-                                                .add(category)
-                                                .add(110, 110, 110)
-                                                .add(jLabel5)
-                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                                .add(userLevel))
-                                        .add(tableName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)))
-                                .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-        );
+                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                                .addComponent(jPanel3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                                .addComponent(lblCategory)
+                                                .addComponent(lblTable))
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addComponent(category)
+                                                                .addGap(110)
+                                                                .addComponent(jLabel5)
+                                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                                .addComponent(userLevel))
+                                                                .addComponent(tableName, GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)))
+                                                                .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE))
+                                                                .addContainerGap())
+                );
         layout.setVerticalGroup(
-                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                        .add(layout.createSequentialGroup()
+                layout.createParallelGroup(Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(tableName)
-                                .add(lblTable))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(lblCategory)
-                                .add(category)
-                                .add(jLabel5)
-                                .add(userLevel))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                        .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                                .addComponent(tableName)
+                                .addComponent(lblTable))
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                                        .addComponent(lblCategory)
+                                        .addComponent(category)
+                                        .addComponent(jLabel5)
+                                        .addComponent(userLevel))
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap())
+                );
+        this.setLayout(layout);
     }// </editor-fold>//GEN-END:initComponents
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel byteToReal;
     private javax.swing.JLabel category;
-    private javax.swing.JLabel coarse;
     private javax.swing.JTextArea description;
     private javax.swing.JLabel endian;
-    private javax.swing.JLabel fine;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblByteToReal;
     private javax.swing.JLabel lblCategory;
     private javax.swing.JLabel lblEndian;
-    private javax.swing.JLabel lblRealToByte;
     private javax.swing.JLabel lblStorageAddress;
     private javax.swing.JLabel lblStorageSize;
     private javax.swing.JLabel lblTable;
-    private javax.swing.JLabel lblUnit;
-    private javax.swing.JLabel realToByte;
     private javax.swing.JLabel storageAddress;
     private javax.swing.JLabel storageSize;
     private javax.swing.JLabel tableName;
-    private javax.swing.JLabel unit;
     private javax.swing.JLabel userLevel;
-    // End of variables declaration//GEN-END:variables
+    private JTextPane textPaneScales;
+    private JScrollPane scrollPane;
 }

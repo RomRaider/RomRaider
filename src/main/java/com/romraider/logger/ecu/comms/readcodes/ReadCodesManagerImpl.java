@@ -34,29 +34,30 @@ import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
-import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.swing.tools.ReadCodesResultsPanel;
+import com.romraider.util.SettingsManager;
 
 public final class ReadCodesManagerImpl implements ReadCodesManager {
-    private static final Logger LOGGER = 
-                                Logger.getLogger(ReadCodesManagerImpl.class);
+    private static final Logger LOGGER =
+            Logger.getLogger(ReadCodesManagerImpl.class);
     private final MessageListener messageListener;
     private final EcuLogger logger;
     private final List<EcuSwitch> dtcodes;
     private final int ecuInitLength;
 
-    public ReadCodesManagerImpl(EcuLogger logger, 
-                                List<EcuSwitch> dtcodes,
-                                int ecuInitLength) {
+    public ReadCodesManagerImpl(EcuLogger logger,
+            List<EcuSwitch> dtcodes,
+            int ecuInitLength) {
         checkNotNull(logger, dtcodes);
         this.logger = logger;
-        this.messageListener = (MessageListener) logger;
+        this.messageListener = logger;
         this.dtcodes = dtcodes;
         this.ecuInitLength = ecuInitLength;
     }
 
+    @Override
     public final int readCodes() {
         final ArrayList<EcuQuery> queries = new ArrayList<EcuQuery>();
         String lastCode = dtcodes.get(dtcodes.size() - 1).getId();
@@ -67,22 +68,23 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
             lastCode = "D256";
         }
         LOGGER.debug(
-                "DT codes ECU init length: " + ecuInitLength + 
+                "DT codes ECU init length: " + ecuInitLength +
                 ", Last code: " + lastCode);
 
         for (int i = 0; !dtcodes.get(i).getId().equals(lastCode); i++) {
-            queries.add(new EcuQueryImpl((EcuData) dtcodes.get(i)));
+            queries.add(new EcuQueryImpl(dtcodes.get(i)));
             LOGGER.debug("Adding query for DTC: " + dtcodes.get(i).getName());
         }
 
         String target = "ECU";
         try {
+            Settings settings = SettingsManager.getSettings();
             final LoggerConnection connection = getConnection(
-                    Settings.getLoggerProtocol(), 
+                    settings.getLoggerProtocol(),
                     logger.getSettings().getLoggerPort(),
                     logger.getSettings().getLoggerConnectionProperties());
             try {
-                if (Settings.getDestinationId() == 0x18) target = "TCU";
+                if (settings.getDestinationId() == 0x18) target = "TCU";
                 messageListener.reportMessage(
                         "Reading " + target + " DTC codes...");
                 final Collection<EcuQuery> querySet = new ArrayList<EcuQuery>();
@@ -91,8 +93,8 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
                         querySet.add(queries.get(j));
                     }
                     connection.sendAddressReads(
-                            querySet, 
-                            Settings.getDestinationId(),
+                            querySet,
+                            settings.getDestinationId(),
                             new PollingStateImpl());
                     querySet.clear();
                 }
@@ -109,13 +111,13 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
                         if (result == 1 || result == 3) tmp = 1;
                         if (result == 2 || result == 3) mem = 1;
                         LOGGER.debug("DTC: " +
-                            query.getLoggerData().getName() + 
-                            " tmp:" + tmp + " mem:" + mem);
+                                query.getLoggerData().getName() +
+                                " tmp:" + tmp + " mem:" + mem);
                         dtcSet.add(query);
                     }
                 }
                 if (dtcSet.isEmpty()) {
-                    LOGGER.info("Success reading " + target + 
+                    LOGGER.info("Success reading " + target +
                             " DTC codes, none set");
                     return -1;
                 }
@@ -131,7 +133,7 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
         catch (Exception e) {
             messageListener.reportMessage(
                     "Unable to read " + target + " DTC " +
-                    " codes - check correct serial port has been selected," +
+                            " codes - check correct serial port has been selected," +
                     " cable is connected and ignition is on.");
             LOGGER.error("Error reading " + target + " DTC codes", e);
 

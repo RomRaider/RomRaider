@@ -143,4 +143,6 @@
 
     <!-- Add your own panels specific strings here if you need -->
 
+    <str id="data.validation.error.title" txt="Fejl" />
+    <str id="data.validation.warning.title" txt="Advarsel" />
 </langpack>

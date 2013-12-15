@@ -19,24 +19,13 @@
 
 package com.romraider.swing;
 
-import com.romraider.maps.Rom;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class CategoryTreeNode extends DefaultMutableTreeNode {
 
     private static final long serialVersionUID = -752423096680196879L;
-    private Rom rom;
 
-    public CategoryTreeNode(String name, Rom rom) {
+    public CategoryTreeNode(String name) {
         super(name);
-        this.setRom(rom);
-    }
-
-    public Rom getRom() {
-        return rom;
-    }
-
-    public void setRom(Rom rom) {
-        this.rom = rom;
     }
 }

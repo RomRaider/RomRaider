@@ -28,13 +28,14 @@ import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -43,7 +44,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
-import com.romraider.editor.ecu.ECUEditor;
+import com.romraider.Settings;
 
 public class TableSwitch extends Table {
 
@@ -52,10 +53,10 @@ public class TableSwitch extends Table {
     private final Map<String, byte[]> switchStates = new HashMap<String, byte[]>();
     private int dataSize = 0;
 
-    public TableSwitch(ECUEditor editor) {
-        super(editor);
+    public TableSwitch() {
+        super();
         storageType = 1;
-        type = TABLE_SWITCH;
+        type = Settings.TABLE_SWITCH;
         locked = true;
         removeAll();
         setLayout(new BorderLayout());
@@ -72,7 +73,7 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public void populateTable(byte[] input) {
+    public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
         JPanel radioPanel = new JPanel(new GridLayout(0, 1));
         radioPanel.add(new JLabel("  " + name));
         for (String stateName : switchStates.keySet()) {
@@ -105,7 +106,8 @@ public class TableSwitch extends Table {
                         message,
                         "Warning - Checksum Status",
                         INFORMATION_MESSAGE);
-                getButtonByText(buttonGroup, "on").setSelected(true);            }
+                getButtonByText(buttonGroup, "on").setSelected(true);
+            }
             else {
                 getButtonByText(buttonGroup, "off").setSelected(true);
                 locked = false;
@@ -116,7 +118,9 @@ public class TableSwitch extends Table {
         // Validate XML switch definition data against the ROM data to select
         // the appropriate switch setting or throw an error if there is a
         // mismatch and disable this table's editing ability.
-        if (!beforeRam) ramOffset = container.getRomID().getRamOffset();
+        if (!beforeRam) {
+            this.ramOffset = romRamOffset;
+        }
         Map<String, Integer> sourceStatus = new HashMap<String, Integer>();
         for (String stateName : switchStates.keySet()) {
             byte[] sourceData = new byte[dataSize];
@@ -160,7 +164,7 @@ public class TableSwitch extends Table {
 
     @Override
     public int getType() {
-        return TABLE_SWITCH;
+        return Settings.TABLE_SWITCH;
     }
 
     @Override
@@ -214,8 +218,12 @@ public class TableSwitch extends Table {
         return new Dimension(width, height);
     }
 
-    @Override
-    public void colorize() {
+    public ButtonGroup getButtonGroup() {
+        return this.buttonGroup;
+    }
+
+    public Map<String, byte[]> getSwitchStates() {
+        return this.switchStates;
     }
 
     @Override
@@ -235,10 +243,6 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public void setAxisColor(Color color) {
-    }
-
-    @Override
     public boolean isLiveDataSupported() {
         return false;
     }
@@ -251,6 +255,96 @@ public class TableSwitch extends Table {
         else {
             return true;
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        // TODO: Validate DTC equals.
+        try {
+            if(null == other) {
+                return false;
+            }
+
+            if(other == this) {
+                return true;
+            }
+
+            if(!(other instanceof TableSwitch)) {
+                return false;
+            }
+
+            TableSwitch otherTable = (TableSwitch)other;
+
+            if( (null == this.getName() && null == otherTable.getName())
+                    || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
+                ;// Skip name compare if name is null or empty.
+            } else if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+                return false;
+            }
+
+            if(this.getDataSize() != otherTable.getDataSize()) {
+                return false;
+            }
+
+            if(this.getSwitchStates() == otherTable.getSwitchStates()) {
+                return true;
+            }
+
+            // Compare Map Keys
+            Set<String> keys = new HashSet<String>(this.getSwitchStates().keySet());
+            Set<String> otherKeys = new HashSet<String>(otherTable.getSwitchStates().keySet());
+
+            if(keys.size() != otherKeys.size()) {
+                return false;
+            }
+
+            if(!keys.containsAll(otherKeys)) {
+                return false;
+            }
+
+            // Compare Map Values.
+            Set<byte[]> values = new HashSet<byte[]>(this.getSwitchStates().values());
+            Set<byte[]> otherValues = new HashSet<byte[]>(otherTable.getSwitchStates().values());
+            if(values.equals(otherValues)) {
+                return true;
+            }
+
+            // Compare DTC.  Is there a better way to compare the DTC?
+            for(String key : keys) {
+                JRadioButton button = getButtonByText(this.getButtonGroup(), key);
+                JRadioButton otherButton = getButtonByText(otherTable.getButtonGroup(), key);
+
+                if(button.isSelected() != otherButton.isSelected()) {
+                    return false;
+                }
+            }
+
+            return true;
+        } catch(Exception ex) {
+            // TODO: Log Exception.
+            return false;
+        }
+    }
+
+    @Override
+    public void populateCompareValues(Table compareTable) {
+        return; // Do nothing.
+    }
+
+    @Override
+    public void calcCellRanges() {
+        return; // Do nothing.
+    }
+
+    @Override
+    public void drawTable()
+    {
+        return; // Do nothing.
+    }
+
+    @Override
+    public void updateTableLabel() {
+        return; // Do nothing.
     }
 
     // returns the selected radio button in the specified group

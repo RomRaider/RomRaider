@@ -19,22 +19,23 @@
 
 package com.romraider.logger.ecu.ui;
 
-import com.romraider.Settings;
-import com.romraider.io.serial.port.SerialPortRefreshListener;
 import static com.romraider.util.ParamChecker.checkNotNull;
-import javax.swing.JComboBox;
+
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.swing.JComboBox;
+
+import com.romraider.io.serial.port.SerialPortRefreshListener;
+import com.romraider.util.SettingsManager;
+
 public final class SerialPortComboBox extends JComboBox implements SerialPortRefreshListener {
     private static final long serialVersionUID = 5693976713268676676L;
-    private final Settings settings;
 
-    public SerialPortComboBox(Settings settings) {
-        checkNotNull(settings);
-        this.settings = settings;
+    public SerialPortComboBox() {
     }
 
+    @Override
     public synchronized void refreshPortList(Set<String> ports, String defaultSelectedPort) {
         checkNotNull(ports);
         boolean changeDetected = ports.isEmpty() || ports.size() != getItemCount();
@@ -71,15 +72,16 @@ public final class SerialPortComboBox extends JComboBox implements SerialPortRef
                 }
                 if (selectedPort != null && ports.contains(selectedPort)) {
                     setSelectedItem(selectedPort);
-                    settings.setLoggerPort(selectedPort);
+                    SettingsManager.getSettings().setLoggerPort(selectedPort);
                 } else {
                     setSelectedIndex(0);
-                    settings.setLoggerPort((String) getItemAt(0));
+                    SettingsManager.getSettings().setLoggerPort((String) getItemAt(0));
                 }
             }
         }
     }
 
+    @Override
     public void setSelectedItem(Object object) {
         if (contains(object)) {
             super.setSelectedItem(object);

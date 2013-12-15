@@ -21,20 +21,11 @@
 
 package com.romraider.xml;
 
-import static com.romraider.maps.Scale.INVERSE;
-import static com.romraider.maps.Scale.LINEAR;
-import static com.romraider.maps.Table.ENDIAN_BIG;
-import static com.romraider.maps.Table.ENDIAN_LITTLE;
-import static com.romraider.maps.Table.STORAGE_TYPE_FLOAT;
-import static com.romraider.maps.Table.TABLE_1D;
-import static com.romraider.maps.Table.TABLE_2D;
-import static com.romraider.maps.Table.TABLE_3D;
-import static com.romraider.maps.Table.TABLE_X_AXIS;
-import static com.romraider.maps.Table.TABLE_Y_AXIS;
-
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
+import com.romraider.Settings;
 
 public final class RomAttributeParser {
 
@@ -42,14 +33,14 @@ public final class RomAttributeParser {
     }
 
     public static int parseEndian(String input) {
-        if (input.equalsIgnoreCase("big") || input.equalsIgnoreCase(String.valueOf(ENDIAN_BIG))) {
-            return ENDIAN_BIG;
+        if (input.equalsIgnoreCase("big") || input.equalsIgnoreCase(String.valueOf(Settings.ENDIAN_BIG))) {
+            return Settings.ENDIAN_BIG;
         }
-        else if (input.equalsIgnoreCase("little") || input.equalsIgnoreCase(String.valueOf(ENDIAN_LITTLE))) {
-            return ENDIAN_LITTLE;
+        else if (input.equalsIgnoreCase("little") || input.equalsIgnoreCase(String.valueOf(Settings.ENDIAN_LITTLE))) {
+            return Settings.ENDIAN_LITTLE;
         }
         else {
-            return ENDIAN_LITTLE;
+            return Settings.ENDIAN_LITTLE;
         }
     }
 
@@ -67,7 +58,7 @@ public final class RomAttributeParser {
 
     public static int parseStorageType(String input) {
         if (input.equalsIgnoreCase("float")) {
-            return STORAGE_TYPE_FLOAT;
+            return Settings.STORAGE_TYPE_FLOAT;
         }
         else if (input.startsWith("uint")) {
             return Integer.parseInt(input.substring(4)) / 8;
@@ -91,60 +82,60 @@ public final class RomAttributeParser {
 
     public static int parseScaleType(String input) {
         if (input.equalsIgnoreCase("inverse")) {
-            return INVERSE;
+            return Settings.INVERSE;
         }
         else {
-            return LINEAR;
+            return Settings.LINEAR;
         }
     }
 
     public static int parseTableType(String input) {
-        if (input.equalsIgnoreCase("3D") || input.equalsIgnoreCase(String.valueOf(TABLE_3D))) {
-            return TABLE_3D;
+        if (input.equalsIgnoreCase("3D") || input.equalsIgnoreCase(String.valueOf(Settings.TABLE_3D))) {
+            return Settings.TABLE_3D;
         }
-        else if (input.equalsIgnoreCase("2D") || input.equalsIgnoreCase(String.valueOf(TABLE_2D))) {
-            return TABLE_2D;
+        else if (input.equalsIgnoreCase("2D") || input.equalsIgnoreCase(String.valueOf(Settings.TABLE_2D))) {
+            return Settings.TABLE_2D;
         }
-        else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_X_AXIS))) {
-            return TABLE_X_AXIS;
+        else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(String.valueOf(Settings.TABLE_X_AXIS))) {
+            return Settings.TABLE_X_AXIS;
         }
-        else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(String.valueOf(TABLE_Y_AXIS))) {
-            return TABLE_Y_AXIS;
+        else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(String.valueOf(Settings.TABLE_Y_AXIS))) {
+            return Settings.TABLE_Y_AXIS;
         }
         else {
-            return TABLE_1D;
+            return Settings.TABLE_1D;
         }
     }
 
-    public static long parseByteValue(byte[] input, int endian, int address, int length, boolean signed) throws ArrayIndexOutOfBoundsException {
+    public static long parseByteValue(byte[] input, int endian, int address, int length, boolean signed) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         try {
             long output = 0L;
             ByteBuffer bb = ByteBuffer.wrap(input, address, length);
-            if (endian == ENDIAN_LITTLE) {
-                 bb.order(ByteOrder.LITTLE_ENDIAN);
+            if (endian == Settings.ENDIAN_LITTLE) {
+                bb.order(ByteOrder.LITTLE_ENDIAN);
             }
-             switch (length) {
-                 case 1:
-                         output = bb.get();
-                         break;
-                 case 2:
-                         output = bb.getShort();
-                         break;
-                 case 4:
-                         output = bb.getInt();
-                         break;
+            switch (length) {
+            case 1:
+                output = bb.get();
+                break;
+            case 2:
+                output = bb.getShort();
+                break;
+            case 4:
+                output = bb.getInt();
+                break;
             }
             if (!signed) {
                 switch (length) {
-                     case 1:
-                             output = output & 0xff;
-                             break;
-                     case 2:
-                             output = output & 0xffff;
-                             break;
-                     case 4:
-                             output = output & 0xffffffffL;
-                             break;
+                case 1:
+                    output = output & 0xff;
+                    break;
+                case 2:
+                    output = output & 0xffff;
+                    break;
+                case 4:
+                    output = output & 0xffffffffL;
+                    break;
                 }
             }
             return output;
@@ -156,19 +147,19 @@ public final class RomAttributeParser {
     public static byte[] parseIntegerValue(int input, int endian, int length) {
         try {
             ByteBuffer bb = ByteBuffer.allocate(length);
-            if (endian == ENDIAN_LITTLE) {
+            if (endian == Settings.ENDIAN_LITTLE) {
                 bb.order(ByteOrder.LITTLE_ENDIAN);
             }
             switch (length) {
-                case 1:
-                        bb.put((byte) input);
-                        break;
-                case 2:
-                        bb.putShort((short) input);
-                        break;
-                case 4:
-                        bb.putInt(input);
-                        break;
+            case 1:
+                bb.put((byte) input);
+                break;
+            case 2:
+                bb.putShort((short) input);
+                break;
+            case 4:
+                bb.putInt(input);
+                break;
             }
             return bb.array();
         }
@@ -194,7 +185,7 @@ public final class RomAttributeParser {
     public static byte[] floatToByte(float input, int endian) {
         byte[] output = new byte[4];
         ByteBuffer bb = ByteBuffer.wrap(output, 0, 4);
-        if (endian == ENDIAN_LITTLE) {
+        if (endian == Settings.ENDIAN_LITTLE) {
             bb.order(ByteOrder.BIG_ENDIAN);
         }
         bb.putFloat(input);
@@ -203,7 +194,7 @@ public final class RomAttributeParser {
 
     public static float byteToFloat(byte[] input, int endian) {
         ByteBuffer bb = ByteBuffer.wrap(input, 0, 4);
-        if (endian == ENDIAN_LITTLE) {
+        if (endian == Settings.ENDIAN_LITTLE) {
             bb.order(ByteOrder.BIG_ENDIAN);
         }
         return bb.getFloat();

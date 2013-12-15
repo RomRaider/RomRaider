@@ -226,4 +226,6 @@
     <str id="nextmedia.choosertitle" txt="Escolha a mídia de instalação"/>
     <str id="nextmedia.filedesc" rdid="pacotes de instalação (.pak*)"/>
 
+    <str id="data.validation.error.title" txt="Erro" />
+    <str id="data.validation.warning.title" txt="Aviso" />
 </langpack>
