@@ -63,14 +63,14 @@ public class Table1D extends Table {
             centerPanel.add(this.getDataCell(i));
         }
 
-        if(null == name || name.length() < 1 || "" == name) {
+        if(null == name || name.isEmpty()) {
             ;// Do not add label.
         } else if(null == getCurrentScale () || "0x" == getCurrentScale().getUnit()) {
             // static or no scale exists.
-            tableLabel = new JLabel(name, JLabel.CENTER);
+            tableLabel = new JLabel(getName(), JLabel.CENTER);
             add(tableLabel, BorderLayout.NORTH);
         } else {
-            tableLabel = new JLabel(name + " (" + getCurrentScale().getUnit() + ")", JLabel.CENTER);
+            tableLabel = new JLabel(getName() + " (" + getCurrentScale().getUnit() + ")", JLabel.CENTER);
             add(tableLabel, BorderLayout.NORTH);
         }
     }

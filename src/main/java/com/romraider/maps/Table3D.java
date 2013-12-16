@@ -189,16 +189,16 @@ public class Table3D extends Table {
                 // populate data cells
                 if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
                     byte[] byteValue = new byte[4];
-                    byteValue[0] = input[storageAddress + offset * 4 - ramOffset];
-                    byteValue[1] = input[storageAddress + offset * 4 - ramOffset + 1];
-                    byteValue[2] = input[storageAddress + offset * 4 - ramOffset + 2];
-                    byteValue[3] = input[storageAddress + offset * 4 - ramOffset + 3];
+                    byteValue[0] = input[getStorageAddress() + offset * 4 - ramOffset];
+                    byteValue[1] = input[getStorageAddress() + offset * 4 - ramOffset + 1];
+                    byteValue[2] = input[getStorageAddress() + offset * 4 - ramOffset + 2];
+                    byteValue[3] = input[getStorageAddress() + offset * 4 - ramOffset + 3];
                     cellBinValue = RomAttributeParser.byteToFloat(byteValue, endian);
 
                 } else { // integer storage type
                     cellBinValue = RomAttributeParser.parseByteValue(input,
                             endian,
-                            storageAddress + offset * storageType - ramOffset,
+                            getStorageAddress() + offset * storageType - ramOffset,
                             storageType,
                             signed);
                 }
@@ -226,7 +226,7 @@ public class Table3D extends Table {
         GridLayout topLayout = new GridLayout(2, 1);
         JPanel topPanel = new JPanel(topLayout);
         this.add(topPanel, BorderLayout.NORTH);
-        topPanel.add(new JLabel(name, JLabel.CENTER), BorderLayout.NORTH);
+        topPanel.add(new JLabel(getName(), JLabel.CENTER), BorderLayout.NORTH);
 
         if(null == xAxis.getName() || xAxis.getName().length() < 1 || "" == xAxis.getName()) {
             ;// Do not add label.
@@ -542,12 +542,12 @@ public class Table3D extends Table {
                     if (storageType != Settings.STORAGE_TYPE_FLOAT) {
                         output = RomAttributeParser.parseIntegerValue((int) data[x][y].getBinValue(), endian, storageType);
                         for (int z = 0; z < storageType; z++) {
-                            binData[offset * storageType + z + storageAddress - ramOffset] = output[z];
+                            binData[offset * storageType + z + getStorageAddress() - ramOffset] = output[z];
                         }
                     } else { // float
                         output = RomAttributeParser.floatToByte((float) data[x][y].getBinValue(), endian);
                         for (int z = 0; z < 4; z++) {
-                            binData[offset * 4 + z + storageAddress - ramOffset] = output[z];
+                            binData[offset * 4 + z + getStorageAddress() - ramOffset] = output[z];
                         }
                     }
 

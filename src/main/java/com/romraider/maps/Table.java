@@ -60,7 +60,7 @@ import com.romraider.xml.RomAttributeParser;
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
 
-    protected String name = "unknown";
+    protected String name;
     protected int type;
     protected String category = "Other";
     protected String description = Settings.BLANK;
@@ -425,16 +425,16 @@ public abstract class Table extends JPanel implements Serializable {
                 // populate data cells
                 if (storageType == Settings.STORAGE_TYPE_FLOAT) { //float storage type
                     byte[] byteValue = new byte[4];
-                    byteValue[0] = input[storageAddress + i * 4 - ramOffset];
-                    byteValue[1] = input[storageAddress + i * 4 - ramOffset + 1];
-                    byteValue[2] = input[storageAddress + i * 4 - ramOffset + 2];
-                    byteValue[3] = input[storageAddress + i * 4 - ramOffset + 3];
+                    byteValue[0] = input[getStorageAddress() + i * 4 - ramOffset];
+                    byteValue[1] = input[getStorageAddress() + i * 4 - ramOffset + 1];
+                    byteValue[2] = input[getStorageAddress() + i * 4 - ramOffset + 2];
+                    byteValue[3] = input[getStorageAddress() + i * 4 - ramOffset + 3];
                     dataValue = RomAttributeParser.byteToFloat(byteValue, endian);
 
                 } else { // integer storage type
                     dataValue = RomAttributeParser.parseByteValue(input,
                             endian,
-                            storageAddress + i * storageType - ramOffset,
+                            getStorageAddress() + i * storageType - ramOffset,
                             storageType,
                             signed);
                 }
@@ -469,12 +469,28 @@ public abstract class Table extends JPanel implements Serializable {
 
     @Override
     public String getName() {
+        if(null == name || name.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(Settings.DEFAULT_TABLE_NAME);
+
+            if(0 != this.getStorageAddress()) {
+                sb.append(" ("+this.getStorageAddress() + ")");
+            }
+
+            if(null != this.getLogParam() && !this.getLogParam().isEmpty()) {
+                sb.append(" - " + this.getLogParam());
+            }
+
+            return sb.toString();
+        }
         return name;
     }
 
     @Override
     public void setName(String name) {
-        this.name = name;
+        if(null != name && !name.isEmpty()) {
+            this.name = name;
+        }
     }
 
     public String getCategory() {
@@ -607,7 +623,7 @@ public abstract class Table extends JPanel implements Serializable {
         }
 
         return output;*/
-        return name;
+        return getName();
     }
 
     @Override
@@ -930,14 +946,14 @@ public abstract class Table extends JPanel implements Serializable {
                     // convert byte values
                     output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
                     for (int z = 0; z < storageType; z++) { // insert into file
-                        binData[i * storageType + z + storageAddress - ramOffset] = output[z];
+                        binData[i * storageType + z + getStorageAddress() - ramOffset] = output[z];
                     }
 
                 } else { // float
                     // convert byte values
                     output = RomAttributeParser.floatToByte((float) data[i].getBinValue(), endian);
                     for (int z = 0; z < 4; z++) { // insert in to file
-                        binData[i * 4 + z + storageAddress - ramOffset] = output[z];
+                        binData[i * 4 + z + getStorageAddress() - ramOffset] = output[z];
                     }
                 }
             }
@@ -1075,7 +1091,7 @@ public abstract class Table extends JPanel implements Serializable {
 
                     JPanel panel = new JPanel();
                     panel.setLayout(new GridLayout(4, 1));
-                    panel.add(new JLabel("The real value and byte value conversion expressions for table " + name + " are invalid."));
+                    panel.add(new JLabel("The real value and byte value conversion expressions for table " + getName() + " are invalid."));
                     panel.add(new JLabel("To real value: " + scale.getExpression()));
                     panel.add(new JLabel("To byte: " + scale.getByteExpression()));
 
@@ -1220,13 +1236,13 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void updateTableLabel() {
-        if(null == name || name.length() < 1 || "" == name) {
+        if(null == name || name.isEmpty()) {
             ;// Do not update label.
         } else if(null == getCurrentScale () || "0x" == getCurrentScale().getUnit()) {
             // static or no scale exists.
-            tableLabel.setText(name);
+            tableLabel.setText(getName());
         } else {
-            tableLabel.setText(name + " (" + getCurrentScale().getUnit() + ")");
+            tableLabel.setText(getName() + " (" + getCurrentScale().getUnit() + ")");
         }
     }
 

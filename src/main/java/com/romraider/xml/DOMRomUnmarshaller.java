@@ -215,21 +215,26 @@ public final class DOMRomUnmarshaller {
                 } else if (n.getNodeName().equalsIgnoreCase("table")) {
                     Table table = null;
                     try {
-                        table = rom.getTable(unmarshallAttribute(n, "name",
-                                "unknown"));
-                    } catch (TableNotFoundException e) { /*
-                     * table does not
-                     * already exist (do
-                     * nothing)
-                     */
+                        table = rom.getTableByName(unmarshallAttribute(n, "name",
+                                null));
+                    } catch (TableNotFoundException e) {
+                        /*
+                         * table does not
+                         * already exist (do
+                         * nothing)
+                         */
+                    } catch (InvalidTableNameException iex) {
+                        // Table name is null or empty.  Do nothing.
                     }
 
                     try {
                         table = unmarshallTable(n, table, rom);
+                        //rom.addTableByName(table);
                         rom.addTable(table);
                     } catch (TableIsOmittedException ex) {
                         // table is not supported in inherited def (skip)
                         if (table != null) {
+                            //rom.removeTableByName(table);
                             rom.removeTable(table);
                         }
                     } catch (XMLParseException ex) {
@@ -356,10 +361,12 @@ public final class DOMRomUnmarshaller {
                 "none")) { // copy base table for inheritance
             try {
                 table = (Table) ObjectCloner
-                        .deepCopy(rom.getTable(unmarshallAttribute(tableNode,
+                        .deepCopy(rom.getTableByName(unmarshallAttribute(tableNode,
                                 "base", "none")));
 
             } catch (TableNotFoundException ex) { /* table not found, do nothing */
+
+            } catch (InvalidTableNameException ex) { // Table name is invalid, do nothing.
 
             } catch (NullPointerException ex) {
                 JOptionPane.showMessageDialog(ECUEditorManager.getECUEditor(),

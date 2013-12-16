@@ -75,7 +75,7 @@ public class TableSwitch extends Table {
     @Override
     public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException  {
         JPanel radioPanel = new JPanel(new GridLayout(0, 1));
-        radioPanel.add(new JLabel("  " + name));
+        radioPanel.add(new JLabel("  " + getName()));
         for (String stateName : switchStates.keySet()) {
             JRadioButton button = new JRadioButton(stateName);
             buttonGroup.add(button);
@@ -88,7 +88,7 @@ public class TableSwitch extends Table {
         // if the result is  0: all the checksums matched
         // if the result is -1: all the checksums have been previously disabled
         if (super.getName().equalsIgnoreCase("Checksum Fix")) {
-            int result = validateRomChecksum(input, storageAddress, dataSize);
+            int result = validateRomChecksum(input, getStorageAddress(), dataSize);
             String message = String.format(
                     "Checksum No. %d is invalid.%n" +
                             "The ROM image may be corrupt.%n" +
@@ -189,7 +189,7 @@ public class TableSwitch extends Table {
                         switchStates.get(selectedButton.getText()),
                         0,
                         input,
-                        storageAddress - ramOffset,
+                        getStorageAddress() - ramOffset,
                         dataSize);
             }
         }

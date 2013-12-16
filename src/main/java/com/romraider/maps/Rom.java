@@ -48,6 +48,7 @@ import com.romraider.swing.JProgressPane;
 import com.romraider.swing.TableFrame;
 import com.romraider.swing.TableTreeNode;
 import com.romraider.util.SettingsManager;
+import com.romraider.xml.InvalidTableNameException;
 import com.romraider.xml.TableNotFoundException;
 
 public class Rom extends DefaultMutableTreeNode implements Serializable  {
@@ -100,6 +101,23 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         String frameTitle = this.getFileName()+" - "+table.getName();
 
         for (int i = 0; i < tableNodes.size(); i++) {
+            if (tableNodes.get(i).getTable().equals(table)) {
+                tableNodes.remove(i);
+                tableNodes.add(i, new TableTreeNode(new TableFrame(frameTitle, table)));
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            tableNodes.add(new TableTreeNode(new TableFrame(frameTitle, table)));
+        }
+    }
+
+    public void addTableByName(Table table) {
+        boolean found = false;
+        String frameTitle = this.getFileName()+" - "+table.getName();
+
+        for (int i = 0; i < tableNodes.size(); i++) {
             if (tableNodes.get(i).getTable().getName().equalsIgnoreCase(table.getName())) {
                 tableNodes.remove(i);
                 tableNodes.add(i, new TableTreeNode(new TableFrame(frameTitle, table)));
@@ -114,6 +132,15 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public void removeTable(Table table) {
         for(int i = 0; i < tableNodes.size(); i++) {
+            if(tableNodes.get(i).getTable().equals(table)) {
+                tableNodes.remove(i);
+                return;
+            }
+        }
+    }
+
+    public void removeTableByName(Table table) {
+        for(int i = 0; i < tableNodes.size(); i++) {
             if(tableNodes.get(i).getTable().getName().equalsIgnoreCase(table.getName())) {
                 tableNodes.remove(i);
                 return;
@@ -121,7 +148,11 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         }
     }
 
-    public Table getTable(String tableName) throws TableNotFoundException {
+    public Table getTableByName(String tableName) throws TableNotFoundException, InvalidTableNameException {
+        if(null == tableName || tableName.isEmpty()) {
+            throw new InvalidTableNameException();
+        }
+
         for (TableTreeNode tableNode : tableNodes) {
             if (tableNode.getTable().getName().equalsIgnoreCase(tableName)) {
                 return tableNode.getTable();

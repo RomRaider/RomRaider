@@ -84,7 +84,6 @@ public class Settings implements Serializable {
     public static final int DEFAULT_EDITOR_ICON_SCALE = 50;
     public static final int DEFAULT_TABLE_ICON_SCALE = 70;
 
-
     /* Table Settings */
     public static final String defaultTableToolBarName = "Table Tools";
 
@@ -111,6 +110,8 @@ public class Settings implements Serializable {
     public static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
 
     public static final String INVALID_ATTRIBUTE_TEXT = "invalid";
+
+    public static final String DEFAULT_TABLE_NAME = "Unknown";
 
     /* Rom Settings */
     public static final int CHECK_TOTAL = 0x5AA5A55A;
