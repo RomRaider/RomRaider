@@ -71,12 +71,16 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private final JMenu definitionMenu = new JMenu("ECU Definitions");
     private final JMenuItem defManager = new JMenuItem("ECU Definition Manager...");
-    //    private JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions...");
+    private final JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions...");
     private final JMenuItem updateDefinition = new JMenuItem("Get ECU Definitions...");
 
     private final JMenu editMenu = new JMenu("Edit");
     private final JMenuItem settings = new JMenuItem(PRODUCT_NAME + " Settings...");
     private final JMenuItem compareImages = new JMenuItem("Compare Images...");
+    private final JMenu convertRom = new JMenu("Convert Image");
+    private final JMenuItem convertIncrease = new JMenuItem("160KB --> 192KB...");
+    private final JMenuItem convertDecrease = new JMenuItem("192KB --> 160KB...");
+    private final ButtonGroup convertGroup = new ButtonGroup();
 
     private final JMenu viewMenu = new JMenu("View");
     private final JMenuItem romProperties = new JMenuItem("ECU Image Properties");
@@ -101,84 +105,122 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         // file menu items
         add(fileMenu);
         fileMenu.setMnemonic('F');
-        openImage.setMnemonic('O');
-        openImage.setMnemonic('I');
-        saveImage.setMnemonic('S');
-        saveAsRepository.setMnemonic('D');
-        refreshImage.setMnemonic('R');
-        closeImage.setMnemonic('C');
-        //closeAll.setMnemonic('A');
-        exit.setMnemonic('X');
+
         fileMenu.add(openImage);
-        //fileMenu.add(openImages);
-        fileMenu.add(saveImage);
-        fileMenu.add(saveAsRepository);
-        fileMenu.add(refreshImage);
-        fileMenu.add(new JSeparator());
-        fileMenu.add(closeImage);
-        //fileMenu.add(closeAll);
-        fileMenu.add(new JSeparator());
-        fileMenu.add(exit);
         openImage.addActionListener(this);
+        openImage.setMnemonic('O');
+
+        //fileMenu.add(openImages);
         //openImages.addActionListener(this);
+        //openImages.setMnemonic('I');
+
+        fileMenu.add(saveImage);
         saveImage.addActionListener(this);
+        saveImage.setMnemonic('S');
+
+        fileMenu.add(saveAsRepository);
+        saveAsRepository.setMnemonic('D');
         saveAsRepository.addActionListener(this);
+
+        fileMenu.add(refreshImage);
         refreshImage.addActionListener(this);
+        refreshImage.setMnemonic('R');
+
+        fileMenu.add(new JSeparator());
+
+        fileMenu.add(closeImage);
         closeImage.addActionListener(this);
+        closeImage.setMnemonic('C');
+
+        //fileMenu.add(closeAll);
         //closeAll.addActionListener(this);
+        //closeAll.setMnemonic('A');
+
+        fileMenu.add(new JSeparator());
+
+        fileMenu.add(exit);
         exit.addActionListener(this);
+        exit.setMnemonic('X');
 
         // edit menu items
         add(editMenu);
         editMenu.setMnemonic('E');
+
         editMenu.add(settings);
         settings.addActionListener(this);
+        settings.setMnemonic('S');
+
         editMenu.add(compareImages);
         compareImages.addActionListener(this);
+        compareImages.setMnemonic('C');
+
+        editMenu.add(convertRom);
+        convertRom.setMnemonic('O');
+
+        convertRom.add(convertIncrease);
+        convertIncrease.addActionListener(this);
+        convertIncrease.setMnemonic('I');
+
+        convertRom.add(convertDecrease);
+        convertDecrease.addActionListener(this);
+        convertDecrease.setMnemonic('D');
+
+        convertGroup.add(convertIncrease);
+        convertGroup.add(convertDecrease);
 
         // ecu def menu items
         add(definitionMenu);
         definitionMenu.setMnemonic('D');
-        defManager.setMnemonic('D');
-        //        editDefinition.setMnemonic('E');
-        updateDefinition.setMnemonic('U');
-        settings.setMnemonic('S');
-        compareImages.setMnemonic('C');
+
         definitionMenu.add(defManager);
-        //        definitionMenu.add(editDefinition);
-        definitionMenu.add(updateDefinition);
         defManager.addActionListener(this);
-        //        editDefinition.addActionListener(this);
+        defManager.setMnemonic('D');
+
+        definitionMenu.add(updateDefinition);
         updateDefinition.addActionListener(this);
+        updateDefinition.setMnemonic('U');
+
+        //definitionMenu.add(editDefinition);
+        //editDefinition.setMnemonic('E');
+        //editDefinition.addActionListener(this);
 
         // view menu items
         add(viewMenu);
         viewMenu.setMnemonic('V');
-        romProperties.setMnemonic('P');
-        levelMenu.setMnemonic('U');
-        level1.setMnemonic('1');
-        level2.setMnemonic('2');
-        level3.setMnemonic('3');
-        level4.setMnemonic('4');
-        level5.setMnemonic('5');
+
         viewMenu.add(romProperties);
-        viewMenu.add(levelMenu);
-        levelMenu.add(level1);
-        levelMenu.add(level2);
-        levelMenu.add(level3);
-        levelMenu.add(level4);
-        levelMenu.add(level5);
         romProperties.addActionListener(this);
+        romProperties.setMnemonic('P');
+
+        viewMenu.add(levelMenu);
+        levelMenu.setMnemonic('U');
+
+        levelMenu.add(level1);
         level1.addActionListener(this);
+        level1.setMnemonic('1');
+
+        levelMenu.add(level2);
         level2.addActionListener(this);
+        level2.setMnemonic('2');
+
+        levelMenu.add(level3);
         level3.addActionListener(this);
+        level3.setMnemonic('3');
+
+        levelMenu.add(level4);
         level4.addActionListener(this);
+        level4.setMnemonic('4');
+
+        levelMenu.add(level5);
         level5.addActionListener(this);
+        level5.setMnemonic('5');
+
         levelGroup.add(level1);
         levelGroup.add(level2);
         levelGroup.add(level3);
         levelGroup.add(level4);
         levelGroup.add(level5);
+
         // select correct userlevel button
         if (getSettings().getUserLevel() == 1) {
             level1.setSelected(true);
@@ -192,29 +234,30 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             level5.setSelected(true);
         }
 
-        // logger menu stuff
+        // logger menu items
         add(loggerMenu);
         loggerMenu.setMnemonic('L');
-        openLogger.setMnemonic('O');
+
         loggerMenu.add(openLogger);
         openLogger.addActionListener(this);
+        openLogger.setMnemonic('O');
 
-        // ramtune menu stuff
+        // ramtune menu items
         add(ramTuneMenu);
         ramTuneMenu.setMnemonic('R');
-        launchRamTuneTestApp.setMnemonic('L');
+
         ramTuneMenu.add(launchRamTuneTestApp);
         launchRamTuneTestApp.addActionListener(this);
+        launchRamTuneTestApp.setMnemonic('L');
 
-        // help menu stuff
+        // help menu items
         add(helpMenu);
         helpMenu.setMnemonic('H');
-        about.setMnemonic('A');
+
         helpMenu.add(about);
         about.addActionListener(this);
+        about.setMnemonic('A');
 
-        // disable unused buttons! 0.3.1
-        //        editDefinition.setEnabled(false);
         updateMenu();
     }
 
@@ -229,6 +272,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             saveImage.setText("Save As...");
             saveAsRepository.setText("Save As Repository...");
             compareImages.setEnabled(false);
+            convertRom.setEnabled(false);
         } else {
             saveImage.setEnabled(true);
             saveAsRepository.setEnabled(true);
@@ -238,10 +282,34 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             saveImage.setText("Save " + file + " As...");
             saveAsRepository.setText("Save "+ file +" As Repository...");
             compareImages.setEnabled(true);
+            convertRom.setEnabled(true);
         }
         refreshImage.setText("Refresh " + file);
         closeImage.setText("Close " + file);
         romProperties.setText(file + "Properties");
+
+        int lastSelectedRomSize = 0;
+        Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
+        if(null != lastSelectedRom) {
+            lastSelectedRomSize = lastSelectedRom.getRealFileSize();
+        }
+
+        if(Settings.SIXTEENBIT_SMALL_SIZE == lastSelectedRomSize) {
+            compareImages.setEnabled(true);
+            convertIncrease.setEnabled(true);
+            convertDecrease.setEnabled(false);
+        } else if (Settings.SIXTEENBIT_LARGE_SIZE == lastSelectedRomSize) {
+            compareImages.setEnabled(true);
+            convertIncrease.setEnabled(false);
+            convertDecrease.setEnabled(true);
+        } else {
+            compareImages.setEnabled(false);
+            convertIncrease.setEnabled(false);
+            convertDecrease.setEnabled(false);
+        }
+
+        openImages.setEnabled(false);
+        editDefinition.setEnabled(false);
         revalidate();
     }
 
@@ -266,14 +334,14 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == saveImage) {
             try {
-                this.saveImage(parent.getLastSelectedRom());
+                this.saveImage();
             } catch (Exception ex) {
                 showMessageDialog(parent,
                         new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
             }
         } else if (e.getSource() == saveAsRepository) {
             try {
-                this.saveAsRepository(parent.getLastSelectedRom(), getSettings().getLastRepositoryDir());
+                this.saveAsRepository();
             } catch(Exception ex) {
                 showMessageDialog(parent,
                         new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
@@ -295,7 +363,6 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         } else if (e.getSource() == refreshImage) {
             try {
                 refreshImage();
-
             } catch (Exception ex) {
                 showMessageDialog(parent, new DebugPanel(ex,
                         getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
@@ -310,6 +377,24 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             CompareImagesForm form = new CompareImagesForm(parent.getImages(), parent.getIconImage());
             form.setLocationRelativeTo(parent);
             form.setVisible(true);
+
+        } else if (e.getSource() == convertIncrease) {
+            try {
+                increaseRomSize();
+                refreshImage();
+            } catch (Exception ex) {
+                showMessageDialog(parent,
+                        new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
+            }
+
+        } else if (e.getSource() == convertDecrease) {
+            try {
+                decreaseRomSize();
+                refreshImage();
+            } catch (Exception ex) {
+                showMessageDialog(parent,
+                        new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
+            }
 
         } else if (e.getSource() == defManager) {
             DefinitionManager form = new DefinitionManager();
@@ -384,90 +469,149 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
     }
 
-    public void saveImage(Rom input) throws Exception {
-        ECUEditor parent = ECUEditorManager.getECUEditor();
-        if (parent.getLastSelectedRom() != null) {
-            JFileChooser fc = new JFileChooser(SettingsManager.getSettings().getLastImageDir());
-            fc.setFileFilter(new ECUImageFilter());
-            if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
-                boolean save = true;
-                File selectedFile = fc.getSelectedFile();
-                if (selectedFile.exists()) {
-                    int option = showConfirmDialog(parent, selectedFile.getName() + " already exists! Overwrite?");
-
-                    // option: 0 = Cancel, 1 = No
-                    if (option == CANCEL_OPTION || option == 1) {
-                        save = false;
-                    }
-                }
-                if (save) {
-                    byte[] output = parent.getLastSelectedRom().saveFile();
-                    FileOutputStream fos = new FileOutputStream(selectedFile);
-                    try {
-                        fos.write(output);
-                    } finally {
-                        fos.close();
-                    }
-                    parent.getLastSelectedRom().setFullFileName(selectedFile.getAbsoluteFile());
-                    parent.setLastSelectedRom(parent.getLastSelectedRom());
-                    SettingsManager.getSettings().setLastImageDir(selectedFile.getParentFile());
-                }
+    public void saveImage() throws Exception {
+        Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
+        if (lastSelectedRom != null) {
+            File selectedFile = getImageOutputFile();
+            if(null != selectedFile){
+                byte[] output = lastSelectedRom.saveFile();
+                this.writeImage(output, selectedFile);
             }
         }
     }
 
-    private void saveAsRepository(Rom image, File lastRepositoryDir) throws Exception {
+    private File getImageOutputFile() throws Exception {
+        ECUEditor parent = ECUEditorManager.getECUEditor();
+        JFileChooser fc = new JFileChooser(SettingsManager.getSettings().getLastImageDir());
+        fc.setFileFilter(new ECUImageFilter());
+        if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fc.getSelectedFile();
+            if (selectedFile.exists()) {
+                int option = showConfirmDialog(parent, selectedFile.getName() + " already exists! Overwrite?");
+
+                // option: 0 = Cancel, 1 = No
+                if (option == CANCEL_OPTION || option == 1) {
+                    return null;
+                }
+            }
+            return selectedFile;
+        }
+        return null;
+    }
+
+    private void writeImage(byte[] output, File selectedFile) throws Exception {
+        ECUEditor parent = ECUEditorManager.getECUEditor();
+        FileOutputStream fos = new FileOutputStream(selectedFile);
+        try {
+            fos.write(output);
+        } finally {
+            fos.close();
+        }
+        parent.getLastSelectedRom().setFullFileName(selectedFile.getAbsoluteFile());
+        parent.setLastSelectedRom(parent.getLastSelectedRom());
+        SettingsManager.getSettings().setLastImageDir(selectedFile.getParentFile());
+    }
+
+    private File getRepositoryOutputDir() {
         JFileChooser fc = new JFileChooser();
-        fc.setCurrentDirectory(lastRepositoryDir);
+        fc.setCurrentDirectory(getSettings().getLastRepositoryDir());
         fc.setDialogTitle("Select Repository Directory");
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         // disable the "All files" option
         fc.setAcceptAllFileFilterUsed(false);
-        String separator = System.getProperty("file.separator");
 
         if (fc.showSaveDialog(ECUEditorManager.getECUEditor()) == JFileChooser.APPROVE_OPTION) {
-            boolean save = true;
             File selectedDir = fc.getSelectedFile();
             if (selectedDir.exists()) {
                 int option = showConfirmDialog(ECUEditorManager.getECUEditor(), selectedDir.getName() + " already exists! Overwrite?");
 
                 // option: 0 = Cancel, 1 = No
                 if (option == CANCEL_OPTION || option == 1) {
-                    save = false;
+                    return null;
                 }
             }
-            if(save) {
-                for(TableTreeNode treeNode : image.getTableNodes())
+            return selectedDir;
+        }
+        return null;
+    }
+
+    private void saveAsRepository() throws Exception {
+        File selectedDir = getRepositoryOutputDir();
+        String separator = System.getProperty("file.separator");
+
+        if(null != selectedDir) {
+            for(TableTreeNode treeNode : ECUEditorManager.getECUEditor().getLastSelectedRom().getTableNodes())
+            {
+                Table table = treeNode.getTable();
+                String category = table.getCategory();
+                String tableName = table.getName();
+                String tableDirString = selectedDir.getAbsolutePath() + separator + category;
+                File tableDir = new File(tableDirString.replace('/', '-'));
+                tableDir.mkdirs();
+                String tableFileString = tableDir.getAbsolutePath() + separator + tableName+".txt";
+                File tableFile = new File(tableFileString.replace('/', '-'));
+
+                if(tableFile.exists())
                 {
-                    Table table = treeNode.getTable();
-                    String category = table.getCategory();
-                    String tableName = table.getName();
-                    String tableDirString = selectedDir.getAbsolutePath() + separator + category;
-                    File tableDir = new File(tableDirString.replace('/', '-'));
-                    tableDir.mkdirs();
-                    String tableFileString = tableDir.getAbsolutePath() + separator + tableName+".txt";
-                    File tableFile = new File(tableFileString.replace('/', '-'));
+                    tableFile.delete();
+                }
 
-                    if(tableFile.exists())
-                    {
-                        tableFile.delete();
-                    }
-
-                    tableFile.createNewFile();
-                    StringBuffer tableData = table.getTableAsString();
-                    BufferedWriter out = new BufferedWriter(new FileWriter(tableFile));
+                tableFile.createNewFile();
+                StringBuffer tableData = table.getTableAsString();
+                BufferedWriter out = new BufferedWriter(new FileWriter(tableFile));
+                try {
+                    out.write(tableData.toString());
+                } finally {
                     try {
-                        out.write(tableData.toString());
-                    } finally {
-                        try {
-                            out.close();
-                        } catch(Exception ex) {
-                            ;// Do Nothing.
-                        }
+                        out.close();
+                    } catch(Exception ex) {
+                        ;// Do Nothing.
                     }
                 }
-                getSettings().setLastRepositoryDir(selectedDir);
+            }
+            getSettings().setLastRepositoryDir(selectedDir);
+        }
+    }
+
+    private void increaseRomSize() throws Exception{
+        Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
+        if (lastSelectedRom != null) {
+            File selectedFile = getImageOutputFile();
+            if(null != selectedFile){
+                if(lastSelectedRom.getRealFileSize() != Settings.SIXTEENBIT_SMALL_SIZE)
+                {
+                    showMessageDialog(ECUEditorManager.getECUEditor(), "Error converting image.  Image size is invalid.");
+                } else {
+                    byte[] output = lastSelectedRom.saveFile();
+                    byte[] incOutput = new byte[Settings.SIXTEENBIT_LARGE_SIZE];
+                    System.arraycopy(output, 0, incOutput, 0, Settings.SIXTEENBIT_START_ADDRESS);
+                    System.arraycopy(output, Settings.SIXTEENBIT_START_ADDRESS, incOutput, Settings.SIXTEENBIT_END_ADDRESS, Settings.SIXTEENBIT_SEGMENT_SIZE);
+                    for(int i = Settings.SIXTEENBIT_START_ADDRESS; i < Settings.SIXTEENBIT_END_ADDRESS; i++) {
+                        // Fill space.
+                        incOutput[i] = Settings.SIXTEENBIT_SEGMENT_VALUE;
+                    }
+                    this.writeImage(incOutput, selectedFile);
+                }
+            }
+        }
+    }
+
+    private void decreaseRomSize() throws Exception {
+        Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
+        if (lastSelectedRom != null) {
+            File selectedFile = getImageOutputFile();
+            if(null != selectedFile){
+                if(lastSelectedRom.getRealFileSize() != Settings.SIXTEENBIT_LARGE_SIZE)
+                {
+                    showMessageDialog(ECUEditorManager.getECUEditor(), "Error converting image.  Image size is invalid.");
+                } else {
+                    byte[] output =lastSelectedRom.saveFile();
+                    byte[] decOutput = new byte[Settings.SIXTEENBIT_SMALL_SIZE];
+                    System.arraycopy(output, 0, decOutput, 0, Settings.SIXTEENBIT_START_ADDRESS);
+                    System.arraycopy(output, Settings.SIXTEENBIT_END_ADDRESS, decOutput, Settings.SIXTEENBIT_START_ADDRESS, Settings.SIXTEENBIT_SEGMENT_SIZE);
+                    this.writeImage(decOutput, selectedFile);
+                }
             }
         }
     }

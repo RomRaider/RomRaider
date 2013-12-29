@@ -115,6 +115,12 @@ public class Settings implements Serializable {
 
     /* Rom Settings */
     public static final int CHECK_TOTAL = 0x5AA5A55A;
+    public static final int SIXTEENBIT_START_ADDRESS = 0x20000;
+    public static final int SIXTEENBIT_END_ADDRESS = 0x28000;
+    public static final int SIXTEENBIT_SMALL_SIZE = 0x28000;
+    public static final int SIXTEENBIT_LARGE_SIZE = 0x30000;
+    public static final int SIXTEENBIT_SEGMENT_SIZE = SIXTEENBIT_SMALL_SIZE - SIXTEENBIT_START_ADDRESS; // 0x8000
+    public static final int SIXTEENBIT_SEGMENT_VALUE = 0x00;
 
     /* Scale Settings */
     public static final int LINEAR = 1;
