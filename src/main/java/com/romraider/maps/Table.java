@@ -1246,6 +1246,11 @@ public abstract class Table extends JPanel implements Serializable {
         }
     }
 
+    public void colorCells() {
+        calcCellRanges();
+        drawTable();
+    }
+
     public void refreshCompare() {
         populateCompareValues(getCompareTable());
     }

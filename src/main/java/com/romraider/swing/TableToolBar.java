@@ -646,8 +646,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void colorCells(Table currentTable) {
-        currentTable.calcCellRanges();
-        currentTable.drawTable();
+        currentTable.colorCells();
     }
 
     public void refreshCompare(Table currentTable) {

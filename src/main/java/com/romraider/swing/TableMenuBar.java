@@ -33,7 +33,6 @@ public class TableMenuBar extends JMenuBar {
     private static final long serialVersionUID = -695692646459410510L;
     private JMenu fileMenu;
     private JMenuItem graph;
-    //private JRadioButtonMenuItem overlay = new JRadioButtonMenuItem("Overlay Log");
 
     private JMenu compareMenu;
     private JRadioButtonMenuItem compareOriginal;
@@ -61,8 +60,6 @@ public class TableMenuBar extends JMenuBar {
     private ButtonGroup compareGroup;
     private ButtonGroup compareDisplayGroup;
     private ButtonGroup compareToGroup;
-
-    private ButtonGroup showValuesGroup;
 
     public TableMenuBar(TableFrame frame) {
         initFileMenu(frame);
