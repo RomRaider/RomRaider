@@ -226,6 +226,7 @@ public class Settings implements Serializable {
     private boolean openExpanded = true;
     private boolean showTableToolbarBorder = false;
     private boolean alwaysOpenTableAtZero = false;
+    private boolean scaleHeadersAndData = true;
 
     private String defaultScale = "Metric";
 
@@ -810,6 +811,14 @@ public class Settings implements Serializable {
 
     public void setAlwaysOpenTableAtZero(boolean openAtZero) {
         this.alwaysOpenTableAtZero = openAtZero;
+    }
+
+    public boolean isScaleHeadersAndData() {
+        return this.scaleHeadersAndData;
+    }
+
+    public void setScaleHeadersAndData(boolean headersAndData) {
+        this.scaleHeadersAndData = headersAndData;
     }
 
     public boolean isColorAxis() {

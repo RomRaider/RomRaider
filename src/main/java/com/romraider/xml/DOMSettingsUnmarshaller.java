@@ -172,6 +172,9 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("defaultscale")) {
                 settings.setDefaultScale(unmarshallAttribute(n, "value", "Metric"));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("scaleHeadersAndData")) {
+                settings.setScaleHeadersAndData(Boolean.parseBoolean(unmarshallAttribute(n, "value", "true")));
+
             }
         }
         return settings;

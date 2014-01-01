@@ -34,6 +34,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import javax.naming.NameNotFoundException;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -41,6 +42,7 @@ import javax.swing.SwingWorker;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.AxisRange;
+import com.romraider.util.SettingsManager;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
@@ -358,6 +360,19 @@ public class Table2D extends Table {
     public void setCompareValueType(int compareValueType) {
         super.setCompareValueType(compareValueType);
         axis.setCompareValueType(compareValueType);
+    }
+
+    @Override
+    public void setCurrentScale(Scale curScale) {
+        if(SettingsManager.getSettings().isScaleHeadersAndData()) {
+            try {
+                this.axis.setScaleByName(curScale.getName());
+            } catch (NameNotFoundException e) {
+            }
+        }
+        this.curScale = curScale;
+        updateTableLabel();
+        drawTable();
     }
 
     @Override

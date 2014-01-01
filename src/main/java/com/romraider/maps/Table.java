@@ -1173,8 +1173,6 @@ public abstract class Table extends JPanel implements Serializable {
             if(scale.getName().equalsIgnoreCase(scaleName)) {
                 if(!getCurrentScale().equals(scale)) {
                     this.setCurrentScale(scale);
-                    updateTableLabel();
-                    drawTable();
                 }
                 return;
             }
@@ -1185,6 +1183,8 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setCurrentScale(Scale curScale) {
         this.curScale = curScale;
+        updateTableLabel();
+        drawTable();
     }
 
     public Settings getSettings()

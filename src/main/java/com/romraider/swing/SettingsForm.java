@@ -159,6 +159,7 @@ public class SettingsForm extends JFrame implements MouseListener {
             comboBoxDefaultScale.setSelectedIndex(0);
         }
 
+        cbScaleHeaderAndData.setSelected(settings.isScaleHeadersAndData());
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
@@ -216,6 +217,7 @@ public class SettingsForm extends JFrame implements MouseListener {
         tableClickCount = new javax.swing.JComboBox();
         defaultScale = new javax.swing.JTextField();
         comboBoxDefaultScale = new javax.swing.JComboBox();
+        cbScaleHeaderAndData = new javax.swing.JCheckBox();
 
         clipboardButtonGroup = new ButtonGroup();
         rdbtnDefault = new JRadioButton("RomRaider Default");
@@ -458,19 +460,25 @@ public class SettingsForm extends JFrame implements MouseListener {
         settingsTabbedPane.addTab("Icons", jPanelIcons);
         settingsTabbedPane.addTab("Scale", jPanelScale);
 
+        this.cbScaleHeaderAndData = new JCheckBox("Scale Headers and Data.");
+        this.cbScaleHeaderAndData.setToolTipText("If checked, the header scale will change when the data scale is selected.  Otherwise click on a header row or column to select the scale.");
+
         JLabel lblDefaultScale = new JLabel("Default Scale:");
 
-
         comboBoxDefaultScale.setModel(new DefaultComboBoxModel(new String[] { Settings.DEFAULT_SCALE, Settings.METRIC_SCALE, Settings.STANDARD_SCALE}));
+
         GroupLayout gl_jPanelScale = new GroupLayout(jPanelScale);
         gl_jPanelScale.setHorizontalGroup(
                 gl_jPanelScale.createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_jPanelScale.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(lblDefaultScale)
-                        .addPreferredGap(ComponentPlacement.RELATED)
-                        .addComponent(comboBoxDefaultScale, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(318, Short.MAX_VALUE))
+                        .addGroup(gl_jPanelScale.createParallelGroup(Alignment.LEADING)
+                                .addComponent(cbScaleHeaderAndData)
+                                .addGroup(gl_jPanelScale.createSequentialGroup()
+                                        .addComponent(lblDefaultScale)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(comboBoxDefaultScale, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                        .addContainerGap(277, Short.MAX_VALUE))
                 );
         gl_jPanelScale.setVerticalGroup(
                 gl_jPanelScale.createParallelGroup(Alignment.LEADING)
@@ -479,7 +487,9 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .addGroup(gl_jPanelScale.createParallelGroup(Alignment.BASELINE)
                                 .addComponent(lblDefaultScale)
                                 .addComponent(comboBoxDefaultScale, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(489, Short.MAX_VALUE))
+                                .addPreferredGap(ComponentPlacement.UNRELATED)
+                                .addComponent(cbScaleHeaderAndData)
+                                .addContainerGap(453, Short.MAX_VALUE))
                 );
         jPanelScale.setLayout(gl_jPanelScale);
 
@@ -966,6 +976,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         getSettings().setIncreaseBorder(increaseColor.getBackground());
         getSettings().setDecreaseBorder(decreaseColor.getBackground());
 
+        getSettings().setScaleHeadersAndData(this.cbScaleHeaderAndData.isSelected());
+
         getSettings().setCellSize(new Dimension(Integer.parseInt(cellWidth.getText()),
                 Integer.parseInt(cellHeight.getText())));
 
@@ -1128,4 +1140,5 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JCheckBox chckbxOpenTablesAt;
     private javax.swing.JTextField defaultScale;
     private javax.swing.JComboBox comboBoxDefaultScale;
+    private javax.swing.JCheckBox cbScaleHeaderAndData;
 }

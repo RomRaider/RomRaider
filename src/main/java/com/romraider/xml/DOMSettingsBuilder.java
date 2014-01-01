@@ -203,6 +203,11 @@ public final class DOMSettingsBuilder {
         defaultScale.setAttribute("value", String.valueOf(settings.getDefaultScale()));
         options.appendChild(defaultScale);
 
+        // scale headers with data
+        IIOMetadataNode scaleHeaderAndData = new IIOMetadataNode("scaleHeadersAndData");
+        scaleHeaderAndData.setAttribute("value", String.valueOf(settings.isScaleHeadersAndData()));
+        options.appendChild(scaleHeaderAndData);
+
         return options;
     }
 

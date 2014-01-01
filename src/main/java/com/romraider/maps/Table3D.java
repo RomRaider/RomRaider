@@ -36,6 +36,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import javax.naming.NameNotFoundException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -46,6 +47,7 @@ import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.util.AxisRange;
+import com.romraider.util.SettingsManager;
 import com.romraider.xml.RomAttributeParser;
 
 public class Table3D extends Table {
@@ -839,6 +841,23 @@ public class Table3D extends Table {
         super.setCompareValueType(compareValueType);
         xAxis.setCompareValueType(compareValueType);
         yAxis.setCompareValueType(compareValueType);
+    }
+
+    @Override
+    public void setCurrentScale(Scale curScale) {
+        if(SettingsManager.getSettings().isScaleHeadersAndData()) {
+            try {
+                this.xAxis.setScaleByName(curScale.getName());
+            } catch (NameNotFoundException e) {
+            }
+            try {
+                this.yAxis.setScaleByName(curScale.getName());
+            } catch (NameNotFoundException e) {
+            }
+        }
+        this.curScale = curScale;
+        updateTableLabel();
+        drawTable();
     }
 
     @Override

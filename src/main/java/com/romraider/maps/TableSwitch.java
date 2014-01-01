@@ -347,6 +347,12 @@ public class TableSwitch extends Table {
         return; // Do nothing.
     }
 
+    @Override
+    public void setCurrentScale(Scale curScale) {
+        return; // Do nothing.
+    }
+
+
     // returns the selected radio button in the specified group
     private static JRadioButton getSelectedButton(ButtonGroup group) {
         for (Enumeration<AbstractButton> e = group.getElements(); e.hasMoreElements(); ) {
