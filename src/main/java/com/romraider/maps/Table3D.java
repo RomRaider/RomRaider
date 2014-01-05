@@ -791,7 +791,7 @@ public class Table3D extends Table {
 
     @Override
     public void highlightLiveData(String liveValue) {
-        if (overlayLog) {
+        if (getOverlayLog()) {
             int x = xAxis.getLiveDataIndex();
             int y = yAxis.getLiveDataIndex();
             DataCell cell = data[x][y];
@@ -801,8 +801,9 @@ public class Table3D extends Table {
         }
     }
 
+    @Override
     public void updateLiveDataHighlight() {
-        if (overlayLog) {
+        if (getOverlayLog()) {
             int x = xAxis.getLiveDataIndex();
             int y = yAxis.getLiveDataIndex();
             data[x][y].setLiveDataTrace(true);

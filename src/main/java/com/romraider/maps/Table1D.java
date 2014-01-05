@@ -194,7 +194,17 @@ public class Table1D extends Table {
 
             int startIdx = data.length;
             for (int i = 0; i < data.length; i++) {
-                double currentValue = data[i].getRealValue();
+                double currentValue = 0.0;
+                if(isStaticDataTable() && null != data[i].getStaticText()) {
+                    try {
+                        currentValue = Double.parseDouble(data[i].getStaticText());
+                    } catch(NumberFormatException nex) {
+                        return;
+                    }
+                } else {
+                    currentValue = data[i].getRealValue();
+                }
+
                 if (liveValue == currentValue) {
                     startIdx = i;
                     break;

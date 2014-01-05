@@ -500,7 +500,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public String getStaticText() {
-        String displayString = "";
+        String displayString = null;
         try {
             DecimalFormat formatter = new DecimalFormat(table.getCurrentScale().getFormat());
 
