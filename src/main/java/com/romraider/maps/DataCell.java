@@ -279,7 +279,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         if(traced) {
             if(!(table instanceof Table1D)) {
-                displayString = displayString + (isNullOrEmpty(liveValue) ? Settings.BLANK : (':' + liveValue));
+                displayString = getLiveValueString(displayString);
             }
         }
         return displayString;
@@ -295,6 +295,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     private String getLiveValue() {
         return this.liveValue;
+    }
+
+    private String getLiveValueString(String currentValue) {
+        return currentValue + (isNullOrEmpty(getLiveValue()) ? Settings.BLANK : (':' + getLiveValue()));
     }
 
     public void setBinValue(double newBinValue) {

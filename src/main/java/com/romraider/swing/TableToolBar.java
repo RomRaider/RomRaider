@@ -239,8 +239,6 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         im.put(enter, "enterAction");
         getActionMap().put(im.get(enter), enterAction);
 
-        //this.add(scaleSelection);
-
         liveDataPanel.add(overlayLog);
         liveDataPanel.add(clearOverlay);
         //liveDataPanel.add(liveDataValue);
