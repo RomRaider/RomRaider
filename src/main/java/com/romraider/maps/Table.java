@@ -111,6 +111,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected int compareValueType = Settings.DATA_TYPE_BIN;
 
     protected boolean staticDataTable = false;
+    protected String liveAxisValue = Settings.BLANK;
+    protected int liveDataIndex = 0;
 
     private Table compareTable = null;
 
@@ -1217,14 +1219,75 @@ public abstract class Table extends JPanel implements Serializable {
         return this.overlayLog;
     }
 
+    public double getLiveAxisValue() {
+        try {
+            return Double.parseDouble(liveAxisValue);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
+    }
+
     public abstract boolean isLiveDataSupported();
 
     public abstract boolean isButtonSelected();
 
-    public void highlightLiveData(String liveValue) {
+    public void highlightLiveData(String liveVal) {
+        if (getOverlayLog()) {
+            double liveValue = 0.0;
+            try{
+                liveValue = Double.parseDouble(liveVal);
+            } catch(NumberFormatException nex) {
+                return;
+            }
+
+            int startIdx = data.length;
+            for (int i = 0; i < data.length; i++) {
+                double currentValue = data[i].getRealValue();
+                if (liveValue == currentValue) {
+                    startIdx = i;
+                    break;
+                } else if (liveValue < currentValue){
+                    startIdx = i-1;
+                    break;
+                }
+            }
+
+            setLiveDataIndex(startIdx);
+            DataCell cell = data[getLiveDataIndex()];
+            cell.setLiveDataTrace(true);
+            cell.setLiveDataTraceValue(liveVal);
+            getToolbar().setLiveDataValue(liveVal);
+        }
+    }
+
+    public void updateLiveDataHighlight() {
+        if (getOverlayLog()) {
+            data[getLiveDataIndex()].setLiveDataTrace(true);
+        }
+    }
+
+    public int getLiveDataIndex() {
+        return liveDataIndex;
+    }
+
+    public void setLiveDataIndex(int index) {
+        if (index < 0) {
+            index = 0;
+        }
+        if (index >= data.length) {
+            index = data.length - 1;
+        }
+        this.liveDataIndex = index;
     }
 
     public void clearLiveDataTrace() {
+        for (DataCell cell : data) {
+            cell.setLiveDataTrace(false);
+        }
+    }
+
+    public String getLogParamString() {
+        return getName()+ ":" + getLogParam();
     }
 
     public Table getCompareTable() {

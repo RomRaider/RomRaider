@@ -20,7 +20,6 @@
 package com.romraider.maps;
 
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
-import static com.romraider.util.TableAxisUtil.getLiveDataRangeForAxis;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -41,7 +40,6 @@ import javax.swing.SwingWorker;
 
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
-import com.romraider.util.AxisRange;
 import com.romraider.util.SettingsManager;
 
 public class Table2D extends Table {
@@ -316,37 +314,32 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void highlightLiveData(String liveValue) {
-        if (overlayLog) {
-            AxisRange range = getLiveDataRangeForAxis(axis);
-            clearSelection();
-            boolean first = true;
-            for (int i = range.getStartIndex(); i <= range.getEndIndex(); i++) {
-                int x = 0;
-                int y = i;
-                if (axis.getType() == Settings.TABLE_X_AXIS) {
-                    x = i;
-                    y = 0;
-                }
-                if (first) {
-                    startHighlight(x, y);
-                    first = false;
-                } else {
-                    highlight(x, y);
-                }
-                DataCell cell = data[i];
-                cell.setLiveDataTrace(true);
-                cell.setLiveDataTraceValue(liveValue);
-            }
-            stopHighlight();
-            getToolbar().setLiveDataValue(liveValue);
+    public void clearLiveDataTrace() {
+        super.clearLiveDataTrace();
+        axis.clearLiveDataTrace();
+    }
+
+    @Override
+    public void updateLiveDataHighlight() {
+        if (getOverlayLog()) {
+            data[axis.getLiveDataIndex()].setLiveDataTrace(true);
         }
     }
 
     @Override
-    public void clearLiveDataTrace() {
-        for (DataCell cell : data) {
-            cell.setLiveDataTrace(false);
+    public String getLogParamString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(axis.getLogParamString()+ ", ");
+        sb.append(getName()+ ":" + getLogParam());
+        return sb.toString();
+    }
+
+    @Override
+    public void setOverlayLog(boolean overlayLog) {
+        super.setOverlayLog(overlayLog);
+        axis.setOverlayLog(overlayLog);
+        if (overlayLog) {
+            axis.clearLiveDataTrace();
         }
     }
 

@@ -183,6 +183,37 @@ public class Table1D extends Table {
     }
 
     @Override
+    public void highlightLiveData(String liveVal) {
+        if (getOverlayLog()) {
+            double liveValue = 0.0;
+            try{
+                liveValue = Double.parseDouble(liveVal);
+            } catch(NumberFormatException nex) {
+                return;
+            }
+
+            int startIdx = data.length;
+            for (int i = 0; i < data.length; i++) {
+                double currentValue = data[i].getRealValue();
+                if (liveValue == currentValue) {
+                    startIdx = i;
+                    break;
+                } else if (liveValue < currentValue){
+                    startIdx = i-1;
+                    break;
+                }
+            }
+
+            setLiveDataIndex(startIdx);
+            DataCell cell = data[getLiveDataIndex()];
+            cell.setLiveDataTrace(true);
+            cell.setLiveDataTraceValue(liveVal);
+            getToolbar().setLiveDataValue(liveVal);
+        }
+        getAxisParent().updateLiveDataHighlight();
+    }
+
+    @Override
     public boolean isLiveDataSupported() {
         return false;
     }

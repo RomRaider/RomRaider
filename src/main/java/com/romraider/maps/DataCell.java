@@ -50,11 +50,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     private final Table table;
 
-    private final Color scaleTextColor = new Color(0, 0, 0);
-    private final Color highlightTextColor = new Color(255, 255, 255);
-    private final Color selectTextColor = new Color(0, 0, 0);
-    private final Color liveDataTraceTextColor = new Color(229, 20, 0);
-
     private Boolean selected = false;
     private Boolean highlighted = false;
     private Boolean traced = false;
@@ -65,7 +60,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private double binValue = 0.0;
     private double originalValue = 0.0;
     private double compareToValue = 0.0;
-    private String liveValue = "";
+    private String liveValue = Settings.BLANK;
 
     private final Color defaultBorderColor = new Color(0, 0, 0);
     private final Color increaseBorderColor = getSettings().getIncreaseBorder();
@@ -217,13 +212,21 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         Color textColor;
 
         if(traced) {
-            textColor = liveDataTraceTextColor;
+            if(!getLiveValue().isEmpty()) {
+                if(table instanceof Table1D) {
+                    textColor = Settings.scaleTextColor;
+                } else {
+                    textColor = Settings.liveDataTraceTextColor;
+                }
+            } else {
+                textColor = Settings.scaleTextColor;
+            }
         } else if (highlighted) {
-            textColor = highlightTextColor;
+            textColor = Settings.highlightTextColor;
         } else if (selected) {
-            textColor = selectTextColor;
+            textColor = Settings.selectTextColor;
         } else {
-            textColor = scaleTextColor;
+            textColor = Settings.scaleTextColor;
         }
 
         return textColor;
@@ -231,20 +234,24 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     private Border getCellBorder() {
         Border border;
-        double checkValue;
-
-        if(null == table.getCompareTable()) {
-            checkValue= originalValue;
+        if(traced) {
+            border = createLineBorder(getSettings().getliveValueColor(), 2);
         } else {
-            checkValue = compareToValue;
-        }
+            double checkValue;
 
-        if (checkValue < binValue) {
-            border = createLineBorder(increaseBorderColor, 2);
-        } else if (checkValue > binValue) {
-            border = createLineBorder(decreaseBorderColor, 2);
-        } else {
-            border = createLineBorder(defaultBorderColor, 1);
+            if(null == table.getCompareTable()) {
+                checkValue= originalValue;
+            } else {
+                checkValue = compareToValue;
+            }
+
+            if (checkValue < binValue) {
+                border = createLineBorder(increaseBorderColor, 2);
+            } else if (checkValue > binValue) {
+                border = createLineBorder(decreaseBorderColor, 2);
+            } else {
+                border = createLineBorder(defaultBorderColor, 1);
+            }
         }
 
         return border;
@@ -271,7 +278,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         }
 
         if(traced) {
-            displayString = displayString + (isNullOrEmpty(liveValue) ? "" : (':' + liveValue));
+            if(!(table instanceof Table1D)) {
+                displayString = displayString + (isNullOrEmpty(liveValue) ? Settings.BLANK : (':' + liveValue));
+            }
         }
         return displayString;
     }
@@ -282,6 +291,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         }
 
         return Double.toString(getRealValue());
+    }
+
+    private String getLiveValue() {
+        return this.liveValue;
     }
 
     public void setBinValue(double newBinValue) {
@@ -460,14 +473,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         if(this.liveValue != liveValue) {
             this.liveValue = liveValue;
             drawCell();
-        }
-    }
-
-    public double getLiveDataTraceValue() {
-        try {
-            return Double.parseDouble(liveValue);
-        } catch (NumberFormatException e) {
-            return 0.0;
         }
     }
 

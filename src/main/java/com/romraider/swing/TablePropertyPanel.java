@@ -21,6 +21,7 @@ package com.romraider.swing;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -87,6 +88,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
             userLevel.setText("Debug");
         }
 
+        lblTableLogID.setText(table.getLogParamString());
     }
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
@@ -228,28 +230,33 @@ public class TablePropertyPanel extends javax.swing.JPanel {
 
         userLevel.setText("Beginner");
 
+        lblLogId = new JLabel("Log Param:");
+
+        lblTableLogID = new JLabel();
+
         GroupLayout layout = new GroupLayout(this);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                                .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
-                                .addComponent(jPanel3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                                 .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(Alignment.LEADING)
                                                 .addComponent(lblCategory)
-                                                .addComponent(lblTable))
+                                                .addComponent(lblTable)
+                                                .addComponent(lblLogId))
                                                 .addPreferredGap(ComponentPlacement.RELATED)
-                                                .addGroup(layout.createParallelGroup(Alignment.LEADING)
+                                                .addGroup(layout.createParallelGroup(Alignment.TRAILING)
+                                                        .addComponent(tableName, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+                                                        .addComponent(category, GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+                                                        .addComponent(lblTableLogID, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)))
                                                         .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(category)
-                                                                .addGap(110)
                                                                 .addComponent(jLabel5)
-                                                                .addPreferredGap(ComponentPlacement.RELATED)
-                                                                .addComponent(userLevel))
-                                                                .addComponent(tableName, GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)))
-                                                                .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE))
+                                                                .addPreferredGap(ComponentPlacement.UNRELATED)
+                                                                .addComponent(userLevel, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE))
+                                                                .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                                                                .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                                                                .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE))
                                                                 .addContainerGap())
                 );
         layout.setVerticalGroup(
@@ -262,16 +269,22 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(lblCategory)
-                                        .addComponent(category)
-                                        .addComponent(jLabel5)
-                                        .addComponent(userLevel))
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(ComponentPlacement.RELATED)
-                                        .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 136, GroupLayout.PREFERRED_SIZE)
-                                        .addContainerGap())
+                                        .addComponent(category))
+                                        .addGap(4)
+                                        .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                                                .addComponent(lblLogId)
+                                                .addComponent(lblTableLogID))
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(Alignment.BASELINE)
+                                                        .addComponent(jLabel5)
+                                                        .addComponent(userLevel))
+                                                        .addGap(5)
+                                                        .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                                        .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                                        .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(23))
                 );
         this.setLayout(layout);
     }// </editor-fold>//GEN-END:initComponents
@@ -294,4 +307,6 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     private javax.swing.JLabel userLevel;
     private JTextPane textPaneScales;
     private JScrollPane scrollPane;
+    private JLabel lblLogId;
+    private JLabel lblTableLogID;
 }

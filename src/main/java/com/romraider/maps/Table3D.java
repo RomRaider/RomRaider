@@ -20,7 +20,6 @@
 package com.romraider.maps;
 
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
-import static com.romraider.util.TableAxisUtil.getLiveDataRangeForAxis;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -46,7 +45,6 @@ import javax.swing.SwingWorker;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
-import com.romraider.util.AxisRange;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.RomAttributeParser;
 
@@ -794,30 +792,27 @@ public class Table3D extends Table {
     @Override
     public void highlightLiveData(String liveValue) {
         if (overlayLog) {
-            AxisRange rangeX = getLiveDataRangeForAxis(xAxis);
-            AxisRange rangeY = getLiveDataRangeForAxis(yAxis);
-            clearSelection();
-            boolean first = true;
-            for (int x = rangeX.getStartIndex(); x <= rangeX.getEndIndex(); x++) {
-                for (int y = rangeY.getStartIndex(); y <= rangeY.getEndIndex(); y++) {
-                    if (first) {
-                        startHighlight(x, y);
-                        first = false;
-                    } else {
-                        highlight(x, y);
-                    }
-                    DataCell cell = data[x][y];
-                    cell.setLiveDataTrace(true);
-                    cell.setLiveDataTraceValue(liveValue);
-                }
-            }
-            stopHighlight();
+            int x = xAxis.getLiveDataIndex();
+            int y = yAxis.getLiveDataIndex();
+            DataCell cell = data[x][y];
+            cell.setLiveDataTrace(true);
+            cell.setLiveDataTraceValue(liveValue);
             getToolbar().setLiveDataValue(liveValue);
+        }
+    }
+
+    public void updateLiveDataHighlight() {
+        if (overlayLog) {
+            int x = xAxis.getLiveDataIndex();
+            int y = yAxis.getLiveDataIndex();
+            data[x][y].setLiveDataTrace(true);
         }
     }
 
     @Override
     public void clearLiveDataTrace() {
+        xAxis.clearLiveDataTrace();
+        yAxis.clearLiveDataTrace();
         for (int x = 0; x < getSizeX(); x++) {
             for (int y = 0; y < getSizeY(); y++) {
                 data[x][y].setLiveDataTrace(false);
@@ -858,6 +853,26 @@ public class Table3D extends Table {
         this.curScale = curScale;
         updateTableLabel();
         drawTable();
+    }
+
+    @Override
+    public String getLogParamString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(xAxis.getLogParamString()+", ");
+        sb.append(yAxis.getLogParamString()+", ");
+        sb.append(getName()+ ":" + getLogParam());
+        return sb.toString();
+    }
+
+    @Override
+    public void setOverlayLog(boolean overlayLog) {
+        super.setOverlayLog(overlayLog);
+        xAxis.setOverlayLog(overlayLog);
+        yAxis.setOverlayLog(overlayLog);
+        if (overlayLog) {
+            xAxis.clearLiveDataTrace();
+            yAxis.clearLiveDataTrace();
+        }
     }
 
     @Override
