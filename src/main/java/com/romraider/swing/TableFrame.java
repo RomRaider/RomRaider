@@ -179,7 +179,7 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
         }
     }
 
-    private void compareByTable(Table selectedTable) {
+    public void compareByTable(Table selectedTable) {
         if(null == selectedTable) {
             return;
         }

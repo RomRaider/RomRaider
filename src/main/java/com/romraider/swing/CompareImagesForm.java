@@ -39,8 +39,11 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.romraider.Settings;
+import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 
@@ -114,8 +117,37 @@ public class CompareImagesForm extends JFrame implements ActionListener {
         scrollPaneResults.setViewportView(this.listChanges);
         listChanges.setCellRenderer(changeRenderer);
         listChanges.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        listChanges.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if (!arg0.getValueIsAdjusting()) {
+                    ListItem selectedTableName = (ListItem) listChanges.getSelectedValue();
+                    String tableName = selectedTableName.getValue();
+                    Rom leftRom = (Rom) comboBoxImageLeft.getSelectedItem();
+                    Rom rightRom = (Rom) comboBoxImageRight.getSelectedItem();
 
+                    // Display Tables
+                    TableTreeNode leftNode = findAndShowTable(leftRom, tableName);
+                    TableTreeNode rightNode = findAndShowTable(rightRom, tableName);
+
+                    // Set Comparison
+                    if(leftNode != null && rightNode != null) {
+                        leftNode.getFrame().compareByTable(rightNode.getTable());
+                    }
+                }
+            }
+        });
         populateComboBoxes();
+    }
+
+    private TableTreeNode findAndShowTable(Rom rom, String tableName) {
+        for(TableTreeNode node : rom.getTableNodes()) {
+            if(node != null && node.getTable().getName().equals(tableName)){
+                ECUEditorManager.getECUEditor().displayTable(node.getFrame());
+                return node;
+            }
+        }
+        return null;
     }
 
     public void populateComboBoxes()

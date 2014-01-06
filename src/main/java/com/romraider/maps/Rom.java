@@ -62,6 +62,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private boolean isAbstract = false;
 
     public Rom() {
+        tableNodes.clear();
     }
 
     public void refreshDisplayedTables() {
