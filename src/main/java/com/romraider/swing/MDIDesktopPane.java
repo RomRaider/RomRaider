@@ -107,6 +107,7 @@ public class MDIDesktopPane extends JDesktopPane {
 
         if(frame instanceof TableFrame) {
             getEditor().getTableToolBar().updateTableToolBar();
+            ((TableFrame) frame).RegisterTable();
         }
 
         try {

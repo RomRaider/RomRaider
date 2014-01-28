@@ -845,10 +845,18 @@ public class Table3D extends Table {
             try {
                 this.xAxis.setScaleByName(curScale.getName());
             } catch (NameNotFoundException e) {
+                try {
+                    this.xAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
+                } catch (NameNotFoundException e1) {
+                }
             }
             try {
                 this.yAxis.setScaleByName(curScale.getName());
             } catch (NameNotFoundException e) {
+                try {
+                    this.yAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
+                } catch (NameNotFoundException e1) {
+                }
             }
         }
         this.curScale = curScale;

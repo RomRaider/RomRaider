@@ -361,6 +361,10 @@ public class Table2D extends Table {
             try {
                 this.axis.setScaleByName(curScale.getName());
             } catch (NameNotFoundException e) {
+                try {
+                    this.axis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
+                } catch (NameNotFoundException e1) {
+                }
             }
         }
         this.curScale = curScale;

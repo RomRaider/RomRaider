@@ -25,6 +25,7 @@ import static java.util.Collections.synchronizedMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import com.romraider.logger.ecu.comms.query.Response;
@@ -39,6 +40,7 @@ public final class TableUpdateHandler implements DataUpdateHandler {
     private final Map<String, List<Table>> tableMap = synchronizedMap(new HashMap<String, List<Table>>());
 
     private TableUpdateHandler() {
+        tableMap.clear();
     }
 
     @Override
@@ -51,8 +53,9 @@ public final class TableUpdateHandler implements DataUpdateHandler {
             List<Table> tables = tableMap.get(loggerData.getId());
             if (tables != null && !tables.isEmpty()) {
                 String formattedValue = loggerData.getSelectedConvertor().format(response.getDataValue(loggerData));
-                for (Table table : tables) {
-                    table.highlightLiveData(formattedValue);
+                ListIterator<Table> item = tables.listIterator();
+                if(item.hasNext()) {
+                    item.next().highlightLiveData(formattedValue);
                 }
             }
         }
