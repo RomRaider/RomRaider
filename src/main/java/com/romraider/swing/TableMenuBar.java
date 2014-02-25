@@ -33,6 +33,7 @@ import javax.swing.JSeparator;
 
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
+import com.romraider.maps.Table3D;
 
 public class TableMenuBar extends JMenuBar implements ActionListener {
 
@@ -62,6 +63,9 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem copySel;
     private JMenuItem copyTable;
     private JMenuItem paste;
+    private JMenuItem interp;
+    private JMenuItem vertInterp;
+    private JMenuItem horizInterp;
     private JMenu viewMenu;
     private JMenuItem tableProperties;
 
@@ -117,6 +121,9 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         copySel = new JMenuItem("Copy Selection");
         copyTable = new JMenuItem("Copy Table");
         paste = new JMenuItem("Paste");
+        vertInterp = new JMenuItem("Vertical Interpolate");
+        horizInterp = new JMenuItem("Horizontal Interpolate");
+        interp = new JMenuItem("Interpolate");
 
         editMenu.add(undoSel);
         editMenu.add(undoAll);
@@ -126,6 +133,12 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         editMenu.add(copyTable);
         editMenu.add(new JSeparator());
         editMenu.add(paste);
+        editMenu.add(new JSeparator());
+        if (table instanceof Table3D) {
+	        editMenu.add(vertInterp);
+	        editMenu.add(horizInterp);
+        }
+        editMenu.add(interp);
 
         editMenu.setMnemonic('E');
         undoSel.setMnemonic('U');
@@ -134,6 +147,9 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         copySel.setMnemonic('C');
         copyTable.setMnemonic('T');
         paste.setMnemonic('P');
+        interp.setMnemonic('I');
+        vertInterp.setMnemonic('V');
+        horizInterp.setMnemonic('H');
 
         undoSel.addActionListener(this);
         undoAll.addActionListener(this);
@@ -141,6 +157,9 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
         copySel.addActionListener(this);
         copyTable.addActionListener(this);
         paste.addActionListener(this);
+        interp.addActionListener(this);
+        vertInterp.addActionListener(this);
+        horizInterp.addActionListener(this);
         this.add(editMenu);
     }
 
@@ -279,6 +298,15 @@ public class TableMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == paste) {
             table.paste();
+
+        } else if (e.getSource() == interp) {
+            table.interpolate();
+
+        } else if (e.getSource() == vertInterp) {
+            table.verticalInterpolate();
+
+        } else if (e.getSource() == horizInterp) {
+            table.horizontalInterpolate();
 
         } else if (e.getSource() == compareOff) {
             compareByDisplay(Table.COMPARE_DISPLAY_OFF);
