@@ -179,6 +179,14 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             getTable().setCompareValueType(Settings.DATA_TYPE_BIN);
             getTable().refreshCompare();
 
+        } else if (e.getSource() == menu.getInterp()) {
+            table.interpolate();
+
+        } else if (e.getSource() == menu.getVertInterp()) {
+            table.verticalInterpolate();
+
+        } else if (e.getSource() == menu.getHorizInterp()) {
+            table.horizontalInterpolate();
         }
     }
 

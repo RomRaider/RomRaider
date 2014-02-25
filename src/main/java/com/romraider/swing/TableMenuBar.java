@@ -27,6 +27,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 
 import com.romraider.Settings;
+import com.romraider.maps.Table3D;
 
 public class TableMenuBar extends JMenuBar {
 
@@ -54,6 +55,9 @@ public class TableMenuBar extends JMenuBar {
     private JMenuItem copySel;
     private JMenuItem copyTable;
     private JMenuItem paste;
+    private JMenuItem interp;
+    private JMenuItem vertInterp;
+    private JMenuItem horizInterp;
     private JMenu viewMenu;
     private JMenuItem tableProperties;
 
@@ -100,6 +104,9 @@ public class TableMenuBar extends JMenuBar {
         setCopySel(new JMenuItem("Copy Selection"));
         setCopyTable(new JMenuItem("Copy Table"));
         setPaste(new JMenuItem("Paste"));
+        setVertInterp(new JMenuItem("Vertical Interpolate"));
+        setHorizInterp(new JMenuItem("Horizontal Interpolate"));
+        setInterp(new JMenuItem("Interpolate"));
 
         editMenu.add(getUndoSel());
         editMenu.add(getUndoAll());
@@ -109,6 +116,12 @@ public class TableMenuBar extends JMenuBar {
         editMenu.add(getCopyTable());
         editMenu.add(new JSeparator());
         editMenu.add(getPaste());
+        editMenu.add(new JSeparator());
+        if (frame.getTable() instanceof Table3D) {
+            editMenu.add(getVertInterp());
+            editMenu.add(getHorizInterp());
+        }
+        editMenu.add(getInterp());
 
         editMenu.setMnemonic('E');
         getUndoSel().setMnemonic('U');
@@ -117,6 +130,9 @@ public class TableMenuBar extends JMenuBar {
         getCopySel().setMnemonic('C');
         getCopyTable().setMnemonic('T');
         getPaste().setMnemonic('P');
+        getInterp().setMnemonic('I');
+        getVertInterp().setMnemonic('V');
+        getHorizInterp().setMnemonic('H');
 
         getUndoSel().addActionListener(frame);
         getUndoAll().addActionListener(frame);
@@ -124,6 +140,9 @@ public class TableMenuBar extends JMenuBar {
         getCopySel().addActionListener(frame);
         getCopyTable().addActionListener(frame);
         getPaste().addActionListener(frame);
+        getInterp().addActionListener(frame);
+        getVertInterp().addActionListener(frame);
+        getHorizInterp().addActionListener(frame);
         this.add(editMenu);
     }
 
@@ -164,7 +183,7 @@ public class TableMenuBar extends JMenuBar {
         compareDisplay.add(getComparePercent());
         compareDisplay.add(getCompareAbsolute());
 
-        setCompareToOriginal(new JRadioButtonMenuItem("Compre to Original Value"));
+        setCompareToOriginal(new JRadioButtonMenuItem("Compare to Original Value"));
         getCompareToOriginal().setToolTipText("Compares this table to the selected table's original or revert point values.");
         setCompareToBin(new JRadioButtonMenuItem("Compare to Bin Value"));
         getCompareToBin().setToolTipText("Compares this table to the selected table's current values.");
@@ -270,7 +289,6 @@ public class TableMenuBar extends JMenuBar {
     public JMenuItem getTableProperties() {
         return tableProperties;
     }
-
     public void setTableProperties(JMenuItem tableProperties) {
         this.tableProperties = tableProperties;
     }
@@ -361,5 +379,29 @@ public class TableMenuBar extends JMenuBar {
 
     public void setSimilarOpenTables(JMenu similarOpenTables) {
         this.similarOpenTables = similarOpenTables;
+    }
+
+    public JMenuItem getInterp() {
+        return interp;
+    }
+
+    public void setInterp(JMenuItem interp) {
+        this.interp = interp;
+    }
+
+    public JMenuItem getHorizInterp() {
+        return this.horizInterp;
+    }
+
+    public void setHorizInterp(JMenuItem horizInterp) {
+        this.horizInterp = horizInterp;
+    }
+
+    public JMenuItem getVertInterp() {
+        return this.vertInterp;
+    }
+
+    public void setVertInterp(JMenuItem vertInterp) {
+        this.vertInterp = vertInterp;
     }
 }

@@ -293,6 +293,30 @@ public abstract class Table extends JPanel implements Serializable {
                 paste();
             }
         };
+        Action interpolate = new AbstractAction() {
+            private static final long serialVersionUID = -2350912575392447149L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                interpolate();
+            }
+        };
+        Action verticalInterpolate = new AbstractAction() {
+            private static final long serialVersionUID = -2350912575392447149L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                verticalInterpolate();
+            }
+        };
+        Action horizontalInterpolate = new AbstractAction() {
+            private static final long serialVersionUID = -6346750245035640773L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                horizontalInterpolate();
+            }
+        };
         Action multiplyAction = new AbstractAction() {
             private static final long serialVersionUID = -2350912575392447149L;
 
@@ -340,6 +364,9 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke numPoint = KeyStroke.getKeyStroke('.');
         KeyStroke copy = KeyStroke.getKeyStroke("control C");
         KeyStroke paste = KeyStroke.getKeyStroke("control V");
+        KeyStroke interp = KeyStroke.getKeyStroke("shift I");
+        KeyStroke vinterp = KeyStroke.getKeyStroke("shift V");
+        KeyStroke hinterp = KeyStroke.getKeyStroke("shift H");
         KeyStroke numNeg = KeyStroke.getKeyStroke('-');
 
         im.put(right, "right");
@@ -367,6 +394,9 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(numPoint, "numPointAction");
         im.put(copy, "copyAction");
         im.put(paste, "pasteAction");
+        im.put(interp, "interpolate");
+        im.put(vinterp, "verticalInterpolate");
+        im.put(hinterp, "horizontalInterpolate");
         im.put(mulKey, "mulAction");
         im.put(mulKeys, "mulAction");
         im.put(numNeg, "numNeg");
@@ -398,6 +428,9 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(mulKeys), multiplyAction);
         getActionMap().put(im.get(copy), copyAction);
         getActionMap().put(im.get(paste), pasteAction);
+        getActionMap().put(im.get(interp), interpolate);
+        getActionMap().put(im.get(vinterp), verticalInterpolate);
+        getActionMap().put(im.get(hinterp), horizontalInterpolate);
         getActionMap().put(im.get(numNeg), numNegAction);
 
         this.setInputMap(WHEN_FOCUSED, im);
@@ -1073,6 +1106,35 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         }
+    }
+
+    public void verticalInterpolate() {
+    }
+
+    public void horizontalInterpolate() {
+        int[] coords = { getDataSize(), 0};
+        DataCell[] tableData = getData();
+
+        int y;
+        for (y = 0; y < getDataSize(); y++) {
+            if (tableData[y].isSelected()) {
+                if (y < coords[0])
+                    coords[0] = y;
+                if (y > coords[1])
+                    coords[1] = y;
+            }
+        }
+        if (coords[1] - coords[0] > 1) {
+            double diff = (tableData[coords[0]].getRealValue() - tableData[coords[1]].getRealValue()) / (coords[1] - coords[0]);
+            if (Math.abs(diff) > 0) {
+                for (y = coords[0] + 1; y < coords[1]; y++)
+                    data[y].setRealValue(String.valueOf(tableData[y - 1].getRealValue() - diff));
+            }
+        }
+    }
+
+    public void interpolate() {
+        horizontalInterpolate();
     }
 
     public void validateScaling() {

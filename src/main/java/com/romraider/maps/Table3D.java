@@ -780,6 +780,76 @@ public class Table3D extends Table {
     }
 
     @Override
+    public void verticalInterpolate() {
+        int[] coords = { getSizeX(), getSizeY(), 0, 0};
+        DataCell[][] tableData = get3dData();
+
+        int x, y;
+        for (x = 0; x < getSizeX(); x++) {
+            for (y = 0; y < getSizeY(); y++) {
+                if (tableData[x][y].isSelected()) {
+                    if (x < coords[0])
+                        coords[0] = x;
+                    if (x > coords[2])
+                        coords[2] = x;
+                    if (y < coords[1])
+                        coords[1] = y;
+                    if (y > coords[3])
+                        coords[3] = y;
+                }
+            }
+        }
+        if (coords[3] - coords[1] > 1) {
+            double diff;
+            for (y = coords[0]; y <= coords[2]; y++) {
+                diff = (tableData[y][coords[1]].getRealValue() - tableData[y][coords[3]].getRealValue()) / (coords[3] - coords[1]);
+                if (Math.abs(diff) > 0) {
+                    for (x = coords[1] + 1; x < coords[3]; x++)
+                        tableData[y][x].setRealValue(String.valueOf(tableData[y][x - 1].getRealValue() - diff));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void horizontalInterpolate() {
+        int[] coords = { getSizeX(), getSizeY(), 0, 0 };
+        DataCell[][] tableData = get3dData();
+
+        int x, y;
+        for (x = 0; x < getSizeX(); x++) {
+            for (y = 0; y < getSizeY(); y++) {
+                if (tableData[x][y].isSelected()) {
+                    if (x < coords[0])
+                        coords[0] = x;
+                    if (x > coords[2])
+                        coords[2] = x;
+                    if (y < coords[1])
+                        coords[1] = y;
+                    if (y > coords[3])
+                        coords[3] = y;
+                }
+            }
+        }
+        if (coords[2] - coords[0] > 1) {
+            double diff;
+            for (x = coords[1]; x <= coords[3]; x++) {
+                diff = (tableData[coords[0]][x].getRealValue() - tableData[coords[2]][x].getRealValue()) / (coords[2] - coords[0]);
+                if (Math.abs(diff) > 0) {
+                    for (y = coords[0] + 1; y < coords[2]; y++)
+                        tableData[y][x].setRealValue(String.valueOf(tableData[y - 1][x].getRealValue() - diff));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void interpolate() {
+        verticalInterpolate();
+        horizontalInterpolate();
+    }
+
+    @Override
     public boolean isLiveDataSupported() {
         return !isNullOrEmpty(xAxis.getLogParam()) && !isNullOrEmpty(yAxis.getLogParam());
     }
