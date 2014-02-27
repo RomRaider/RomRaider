@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@ package com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -60,8 +62,15 @@ public class LtvCellRenderer extends DefaultTableCellRenderer {
                 if (value instanceof String) {
                     final String data = (String) value;
                     if (data.contains("%")) {
-                        double num = Double.parseDouble(data.split(" ")[0]);
-                        setColour(cell, num);
+                        final String numText = data.split(" ")[0];
+                        double num;
+                        try {
+                            num = NumberFormat.getNumberInstance()
+                                    .parse(numText).doubleValue();
+                            setColour(cell, num);
+                        } catch (ParseException e) {
+                            throw new IllegalArgumentException(e);
+                        }
                     }
                 }
             }
