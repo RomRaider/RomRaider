@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ public enum PlxSensorType {
     VOLTAGE(18),
     KNOCK(19),
     DUTY_CYCLE(20),
-    BOGUS(4032),
+    WIDEBAND_HEALTH(25),
+    WIDEBAND_REACTION(26),
     UNKNOWN(-1);
 
     private final int value;
@@ -58,6 +59,6 @@ public enum PlxSensorType {
         for (PlxSensorType type : values()) {
             if (type.v() == value) return type;
         }
-        throw new IllegalArgumentException("Unknown PLX Sensor Type: " + value);
+        return UNKNOWN;
     }
 }

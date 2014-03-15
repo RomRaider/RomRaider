@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,8 @@ import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.NB_V
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.RPM;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.VACUUM_IN;
 import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.VACUUM_MM;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.WB_HEALTH;
+import static com.romraider.logger.external.plx.plugin.PlxSensorConversions.WB_REACT;
 import static com.romraider.logger.external.plx.plugin.PlxSensorType.AIR_INTAKE_TEMPERATURE;
 import static com.romraider.logger.external.plx.plugin.PlxSensorType.BOOST;
 import static com.romraider.logger.external.plx.plugin.PlxSensorType.DUTY_CYCLE;
@@ -82,6 +84,8 @@ import static com.romraider.logger.external.plx.plugin.PlxSensorType.VACUUM;
 import static com.romraider.logger.external.plx.plugin.PlxSensorType.VEHICLE_SPEED;
 import static com.romraider.logger.external.plx.plugin.PlxSensorType.VOLTAGE;
 import static com.romraider.logger.external.plx.plugin.PlxSensorType.WIDEBAND;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.WIDEBAND_HEALTH;
+import static com.romraider.logger.external.plx.plugin.PlxSensorType.WIDEBAND_REACTION;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 
 import java.util.ArrayList;
@@ -123,6 +127,8 @@ public final class PlxDataSource implements ExternalDataSource {
         dataItems.put(VOLTAGE, new PlxDataItemImpl("Battery Voltage", 0, BATTERY));
         dataItems.put(KNOCK, new PlxDataItemImpl("Knock", 0, KNOCK_VDC));
         dataItems.put(DUTY_CYCLE, new PlxDataItemImpl("Duty Cycle", 0, DC_POS, DC_NEG));
+        dataItems.put(WIDEBAND_HEALTH, new PlxDataItemImpl("Wideband Health", 0, WB_HEALTH));
+        dataItems.put(WIDEBAND_REACTION, new PlxDataItemImpl("Wideband Reaction Time", 0, WB_REACT));
     }
 
     public String getId() {
@@ -134,7 +140,7 @@ public final class PlxDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.04";
+        return "0.05";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

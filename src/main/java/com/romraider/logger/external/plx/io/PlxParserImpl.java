@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,8 @@ public final class PlxParserImpl implements PlxParser {
         }
 
         switch (state) {
+            case EXPECTING_START:
+                break;
             case EXPECTING_FIRST_HALF_OF_SENSOR_TYPE:
                 state = EXPECTING_SECOND_HALF_OF_SENSOR_TYPE;
                 partialValue = b;
@@ -61,6 +63,10 @@ public final class PlxParserImpl implements PlxParser {
                 state = EXPECTING_INSTANCE;
                 int value = (partialValue << 6) | b;
                 sensorType = valueOf(value);
+                if (PlxSensorType.UNKNOWN == sensorType) {
+                    LOGGER.trace(String.format(
+                            "PLX sensor address: %d, unknown sensor type", value));
+                }
                 break;
 
             case EXPECTING_INSTANCE:
@@ -76,8 +82,10 @@ public final class PlxParserImpl implements PlxParser {
             case EXPECTING_SECOND_HALF_OF_VALUE:
                 state = EXPECTING_FIRST_HALF_OF_SENSOR_TYPE;
                 int rawValue = (partialValue << 6) | b;
-                LOGGER.trace("PLX sensor: " + sensorType + " instance: " + instance + " value: " + rawValue );
-                   return new PlxResponse(sensorType, instance, rawValue);    
+                LOGGER.trace(String.format(
+                        "PLX sensor: %s instance: %d, value: %d",
+                        sensorType, instance, rawValue));
+                return new PlxResponse(sensorType, instance, rawValue);    
         }
         return null;
     }
