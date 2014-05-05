@@ -53,8 +53,7 @@ public final class TableUpdateHandler implements DataUpdateHandler {
             List<Table> tables = tableMap.get(loggerData.getId());
             if (tables != null && !tables.isEmpty()) {
                 String formattedValue = loggerData.getSelectedConvertor().format(response.getDataValue(loggerData));
-                ListIterator<Table> item = tables.listIterator();
-                if(item.hasNext()) {
+                for(ListIterator<Table> item = tables.listIterator(); item.hasNext();) {
                     item.next().highlightLiveData(formattedValue);
                 }
             }
@@ -79,10 +78,7 @@ public final class TableUpdateHandler implements DataUpdateHandler {
             if (!tableMap.containsKey(logParam)) {
                 tableMap.put(logParam, new ArrayList<Table>());
             }
-            List<Table> tables = tableMap.get(logParam);
-            if (!tables.contains(table)) {
-                tables.add(table);
-            }
+            tableMap.get(logParam).add(table);
         }
         registerAxes(table);
     }
