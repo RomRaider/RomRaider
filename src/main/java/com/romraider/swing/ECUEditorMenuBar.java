@@ -295,15 +295,12 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         }
 
         if(Settings.SIXTEENBIT_SMALL_SIZE == lastSelectedRomSize) {
-            compareImages.setEnabled(true);
             convertIncrease.setEnabled(true);
             convertDecrease.setEnabled(false);
         } else if (Settings.SIXTEENBIT_LARGE_SIZE == lastSelectedRomSize) {
-            compareImages.setEnabled(true);
             convertIncrease.setEnabled(false);
             convertDecrease.setEnabled(true);
         } else {
-            compareImages.setEnabled(false);
             convertIncrease.setEnabled(false);
             convertDecrease.setEnabled(false);
         }
