@@ -33,6 +33,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
@@ -133,6 +134,15 @@ public class CompareImagesForm extends JFrame implements ActionListener {
                     // Set Comparison
                     if(leftNode != null && rightNode != null) {
                         leftNode.getFrame().compareByTable(rightNode.getTable());
+                        // Update menu bar
+                        for(int i = 0; i< leftNode.getFrame().getTableMenuBar().getSimilarOpenTables().getItemCount(); i++) {
+                            JMenuItem leftItem = leftNode.getFrame().getTableMenuBar().getSimilarOpenTables().getItem(i);
+                            String romFileName = leftItem.getText();
+                            if(rightRom.getFileName().equalsIgnoreCase(romFileName)) {
+                                leftItem.setSelected(true);
+                                break;
+                            }
+                        }
                     }
                 }
             }
