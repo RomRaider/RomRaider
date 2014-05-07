@@ -128,6 +128,19 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         return JEPUtil.evaluate(table.getCurrentScale().getExpression(), binValue) - JEPUtil.evaluate(table.getCurrentScale().getExpression(), compareToValue);
     }
 
+    public double getRealCompareChangeValue() {
+        double realBinValue = JEPUtil.evaluate(table.getCurrentScale().getExpression(), binValue);
+        double realCompareValue = JEPUtil.evaluate(table.getCurrentScale().getExpression(), compareToValue);
+
+        if(realCompareValue != 0.0) {
+            // Compare change formula ((V2 - V1) / |V1|).
+            return ((realBinValue - realCompareValue) / Math.abs(realCompareValue));
+        } else {
+            // Use this to avoid divide by 0 or infinite increase.
+            return realBinValue - realCompareValue;
+        }
+    }
+
     public Color getCompareColor() {
         if(table instanceof Table1D) {
             Table1D checkTable = (Table1D)table;
@@ -273,7 +286,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             if (getCompareValue() == 0.0) {
                 displayString = PERCENT_FORMAT.format(0.0);
             } else {
-                displayString = PERCENT_FORMAT.format(getRealCompareValue());
+                displayString = PERCENT_FORMAT.format(getRealCompareChangeValue());
             }
         }
 
