@@ -304,6 +304,24 @@ public class Table2D extends Table {
     }
 
     @Override
+    public void interpolate() {
+        super.interpolate();
+        this.getAxis().interpolate();
+    }
+
+    @Override
+    public void verticalInterpolate() {
+        super.verticalInterpolate();
+        this.getAxis().verticalInterpolate();
+    }
+
+    @Override
+    public void horizontalInterpolate() {
+        super.horizontalInterpolate();
+        this.getAxis().horizontalInterpolate();
+    }
+
+    @Override
     public boolean isLiveDataSupported() {
         return !isNullOrEmpty(axis.getLogParam());
     }

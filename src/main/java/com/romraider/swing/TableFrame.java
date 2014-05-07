@@ -180,13 +180,13 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             getTable().refreshCompare();
 
         } else if (e.getSource() == menu.getInterp()) {
-            table.interpolate();
+            getTable().interpolate();
 
         } else if (e.getSource() == menu.getVertInterp()) {
-            table.verticalInterpolate();
+            getTable().verticalInterpolate();
 
         } else if (e.getSource() == menu.getHorizInterp()) {
-            table.horizontalInterpolate();
+            getTable().horizontalInterpolate();
         }
     }
 

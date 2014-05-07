@@ -1109,6 +1109,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void verticalInterpolate() {
+        horizontalInterpolate();
     }
 
     public void horizontalInterpolate() {

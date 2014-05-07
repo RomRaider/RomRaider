@@ -809,6 +809,8 @@ public class Table3D extends Table {
                 }
             }
         }
+        // Interpolate y axis in case the y axis in selected.
+        this.getYAxis().verticalInterpolate();
     }
 
     @Override
@@ -841,6 +843,8 @@ public class Table3D extends Table {
                 }
             }
         }
+        // Interpolate x axis in case the x axis in selected.
+        this.getXAxis().horizontalInterpolate();
     }
 
     @Override
