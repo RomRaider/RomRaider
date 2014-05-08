@@ -1236,7 +1236,8 @@ public abstract class Table extends JPanel implements Serializable {
     public void setScaleByName(String scaleName) throws NameNotFoundException {
         for(Scale scale : scales) {
             if(scale.getName().equalsIgnoreCase(scaleName)) {
-                if(!getCurrentScale().equals(scale)) {
+                Scale currentScale = getCurrentScale();
+                if(currentScale == null || !currentScale.equals(scale)) {
                     this.setCurrentScale(scale);
                 }
                 return;

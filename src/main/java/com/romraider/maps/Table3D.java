@@ -916,20 +916,24 @@ public class Table3D extends Table {
     @Override
     public void setCurrentScale(Scale curScale) {
         if(SettingsManager.getSettings().isScaleHeadersAndData()) {
-            try {
-                this.xAxis.setScaleByName(curScale.getName());
-            } catch (NameNotFoundException e) {
+            if(!xAxis.isStaticDataTable()) {
                 try {
-                    this.xAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
-                } catch (NameNotFoundException e1) {
+                    this.xAxis.setScaleByName(curScale.getName());
+                } catch (NameNotFoundException e) {
+                    try {
+                        this.xAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
+                    } catch (NameNotFoundException e1) {
+                    }
                 }
             }
-            try {
-                this.yAxis.setScaleByName(curScale.getName());
-            } catch (NameNotFoundException e) {
+            if(!yAxis.isStaticDataTable()) {
                 try {
-                    this.yAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
-                } catch (NameNotFoundException e1) {
+                    this.yAxis.setScaleByName(curScale.getName());
+                } catch (NameNotFoundException e) {
+                    try {
+                        this.yAxis.setScaleByName(SettingsManager.getSettings().getDefaultScale());
+                    } catch (NameNotFoundException e1) {
+                    }
                 }
             }
         }

@@ -375,7 +375,7 @@ public class Table2D extends Table {
 
     @Override
     public void setCurrentScale(Scale curScale) {
-        if(SettingsManager.getSettings().isScaleHeadersAndData()) {
+        if(SettingsManager.getSettings().isScaleHeadersAndData() && !axis.isStaticDataTable()) {
             try {
                 this.axis.setScaleByName(curScale.getName());
             } catch (NameNotFoundException e) {

@@ -31,12 +31,11 @@ public class Scale implements Serializable {
     private String unit = "0x";
     private String expression = "x";
     private String byteExpression = "x";
-    private String format = "#";
+    private String format = "#.##";
     private double coarseIncrement = 2;
     private double fineIncrement = 1;
     private double min = 0.0;
     private double max = 0.0;
-    private Table table;
 
     public Scale() {
     }
@@ -142,11 +141,75 @@ public class Scale implements Serializable {
         this.max = max;
     }
 
-    public Table getTable() {
-        return table;
-    }
+    @Override
+    public boolean equals(Object other) {
+        try {
+            if(null == other) {
+                return false;
+            }
 
-    public void setTable(Table table) {
-        this.table = table;
+            if(other == this) {
+                return true;
+            }
+
+            if(!(other instanceof Scale)) {
+                return false;
+            }
+
+            Scale otherScale = (Scale)other;
+
+            if( (null == this.getName() && null == otherScale.getName())
+                    || (this.getName().isEmpty() && otherScale.getName().isEmpty()) ) {
+                ;// Skip name compare if name is null or empty.
+            } else {
+                if(!this.getName().equalsIgnoreCase(otherScale.getName())) {
+                    return false;
+                }
+            }
+
+            if(!this.getUnit().equals(otherScale.getUnit()))
+            {
+                return false;
+            }
+
+            if(!this.getExpression().equals(otherScale.getExpression()))
+            {
+                return false;
+            }
+
+            if(!this.getByteExpression().equals(otherScale.getByteExpression()))
+            {
+                return false;
+            }
+
+            if(!this.getFormat().equals(otherScale.getFormat()))
+            {
+                return false;
+            }
+
+            if(this.getCoarseIncrement() != otherScale.getCoarseIncrement())
+            {
+                return false;
+            }
+
+            if(this.getFineIncrement() != otherScale.getFineIncrement())
+            {
+                return false;
+            }
+
+            if(this.getMin() != otherScale.getMin())
+            {
+                return false;
+            }
+
+            if(this.getMax() != otherScale.getMax())
+            {
+                return false;
+            }
+
+            return true;
+        } catch(Exception ex) {
+            return false;
+        }
     }
 }
