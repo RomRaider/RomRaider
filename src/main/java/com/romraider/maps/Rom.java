@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,36 +291,17 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     }
 
     public byte[] saveFile() {
-        Table checksum = null;
+        final List<TableTreeNode> checksumTables = new ArrayList<TableTreeNode>();
         for (TableTreeNode tableNode : tableNodes) {
             tableNode.getTable().saveFile(binData);
-            if (tableNode.getTable().getName().equalsIgnoreCase("Checksum Fix"))
-            {
-                checksum = tableNode.getTable();
+            if (tableNode.getTable().getName().contains("Checksum Fix")) {
+                checksumTables.add(tableNode);
             }
         }
-        if (checksum != null && !checksum.isLocked()) {
-            calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
-        }
-        else if (checksum != null && checksum.isLocked() && !checksum.isButtonSelected()) {
-            Object[] options = {"Yes", "No"};
-            String message = String.format("One or more ROM image Checksums is invalid.  " +
-                    "Calculate new Checksums?%n" +
-                    "(NOTE: this will only fix the Checksums it will NOT repair a corrupt ROM image)");
-            int answer = showOptionDialog(SwingUtilities.windowForComponent(checksum),
-                    message,
-                    "Checksum Fix",
-                    DEFAULT_OPTION,
-                    QUESTION_MESSAGE,
-                    null,
-                    options,
-                    options[0]);
-            if (answer == 0) {
-                calculateRomChecksum(binData, checksum.getStorageAddress(), checksum.getDataSize());
-            }
-        }
-        if (checksum != null) {
-            byte count = binData[checksum.getStorageAddress() + 207];
+
+        if (checksumTables.size() == 1) {
+            final TableTreeNode checksum = checksumTables.get(0);
+            byte count = binData[checksum.getTable().getStorageAddress() + 207];
             if (count == -1) {
                 count = 1;
             }
@@ -334,9 +315,44 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                     romStamp,
                     0,
                     binData,
-                    checksum.getStorageAddress() + 204,
+                    checksum.getTable().getStorageAddress() + 204,
                     4);
-            setEditStamp(binData, checksum.getStorageAddress());
+            setEditStamp(binData, checksum.getTable().getStorageAddress());
+        }
+
+        for (TableTreeNode checksum : checksumTables) {
+            if (!checksum.getTable().isLocked()) {
+                calculateRomChecksum(
+                        binData,
+                        checksum.getTable().getStorageAddress(),
+                        checksum.getTable().getDataSize()
+                );
+            }
+            else if (checksum.getTable().isLocked() &&
+                    !checksum.getTable().isButtonSelected()) {
+                
+                Object[] options = {"Yes", "No"};
+                final String message = String.format(
+                        "One or more ROM image Checksums is invalid. " +
+                        "Calculate new Checksums?%n" +
+                        "(NOTE: this will only fix the Checksums it will NOT repair a corrupt ROM image)");
+                int answer = showOptionDialog(
+                        SwingUtilities.windowForComponent(checksum.getTable()),
+                        message,
+                        "Checksum Fix",
+                        DEFAULT_OPTION,
+                        QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[0]);
+                if (answer == 0) {
+                    calculateRomChecksum(
+                            binData,
+                            checksum.getTable().getStorageAddress(),
+                            checksum.getTable().getDataSize()
+                    );
+                }
+            }
         }
         return binData;
     }

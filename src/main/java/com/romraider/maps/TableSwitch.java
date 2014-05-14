@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,12 +87,14 @@ public class TableSwitch extends Table {
         // if the result is >0: position of failed checksum
         // if the result is  0: all the checksums matched
         // if the result is -1: all the checksums have been previously disabled
-        if (super.getName().equalsIgnoreCase("Checksum Fix")) {
+        if (super.getName().contains("Checksum Fix")) {
             int result = validateRomChecksum(input, getStorageAddress(), dataSize);
             String message = String.format(
-                    "Checksum No. %d is invalid.%n" +
-                            "The ROM image may be corrupt.%n" +
-                            "Use of this ROM image is not advised!", result);
+                    "Checksum No. %d is invalid in table: %s%n" +
+                    "The ROM image may be corrupt or it has been %n" +
+                    "hex edited manually.%n" +
+                    "The checksum can be corrected when the ROM is saved.",
+                    result, super.getName());
             if (result > 0) {
                 showMessageDialog(this,
                         message,
@@ -182,7 +184,7 @@ public class TableSwitch extends Table {
 
     @Override
     public byte[] saveFile(byte[] input) {
-        if (!super.getName().equalsIgnoreCase("Checksum Fix")) {
+        if (!super.getName().contains("Checksum Fix")) {
             if (!locked) {
                 JRadioButton selectedButton = getSelectedButton(buttonGroup);
                 System.arraycopy(
