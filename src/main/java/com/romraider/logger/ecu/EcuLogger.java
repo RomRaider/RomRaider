@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ package com.romraider.logger.ecu;
 
 import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
 import static com.romraider.Version.LOGGER_DEFS_URL;
-import static com.romraider.Version.MIN_LOG_DEF_VERSION;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
 import static com.romraider.logger.ecu.profile.UserProfileLoader.BACKUP_PROFILE;
@@ -298,12 +297,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         // fail until we actually try to use them since the logger requires
         // these libraries, this is a hard error here
         if (!JREChecker.is32bit()) {
-            showMessageDialog(null,
-                    "Incompatible JRE detected.\n" +
-                            PRODUCT_NAME +
-                            " ECU Logger requires a 32-bit JRE.\nLogger will now exit.",
-                            "JRE Incompatibility Error",
-                            ERROR_MESSAGE);
+            showMessageDialog(null, 
+                "Incompatible JRE detected.\n" +
+                PRODUCT_NAME +
+                " ECU Logger requires a 32-bit JRE.\nLogger will now exit.", 
+                "JRE Incompatibility Error", 
+                ERROR_MESSAGE);
             // this will generate a NullPointerException because we never got
             // things started
             WindowEvent e = new WindowEvent(this, WindowEvent.WINDOW_CLOSED);
@@ -503,7 +502,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             if (!ecuDefFiles.isEmpty()) {
                 EcuDataLoader dataLoader = new EcuDataLoaderImpl();
                 for (File ecuDefFile : ecuDefFiles) {
-                    dataLoader.loadEcuDefsFromXml(ecuDefFile);
+                    if (ecuDefFile.exists()) {
+                        dataLoader.loadEcuDefsFromXml(ecuDefFile);
+                    }
+                    else {
+                        LOGGER.error(String.format(
+                                "ECU definition file configured but not found: %s",
+                                ecuDefFile.toString()));
+                    }
                     ecuDefinitionMap.putAll(dataLoader.getEcuDefinitionMap());
                 }
             }
@@ -532,7 +538,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 loadEcuParams(ecuParams);
                 loadEcuSwitches(dataLoader.getEcuSwitches());
                 dtcodes = dataLoader.getEcuCodes();
-                if (target.equals("ECU")) initFileLoggingController(dataLoader.getFileLoggingControllerSwitch());
+                final EcuSwitch fileLogCntrlSw = dataLoader.getFileLoggingControllerSwitch();
+                if (fileLogCntrlSw != null && target.equals("ECU")) initFileLoggingController(fileLogCntrlSw);
                 getSettings().setLoggerConnectionProperties(dataLoader.getConnectionProperties());
                 if (dataLoader.getDefVersion() == null) {
                     defVersion = "na";
@@ -541,24 +548,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                     defVersion = dataLoader.getDefVersion();
                 }
 
-                if ( defVersion.equals("na") ||
-                        Integer.parseInt(defVersion) < MIN_LOG_DEF_VERSION ) {
-                    final String wrongDefVersion = "This version of RomRaider " +
-                            "Logger requires a logger definfition XML\nfile of " +
-                            "version " + MIN_LOG_DEF_VERSION + " or higher due " +
-                            "to a definition file format change.\n\nIncorrect " +
-                            "results may occur if the definition file " +
-                            "is not updated.\nUse the Help menu 'Update Logger " +
-                            "Definition' item to go online\nand donwload the " +
-                            "latest logger definition.\n";
-                    showMessageDialog(this,
-                            wrongDefVersion,
-                            "Configuration", INFORMATION_MESSAGE);
-                    throw new Exception(wrongDefVersion);
-                }
-
                 loadResult = String.format(
-                        "%sloaded %s: %d parameters, %d switches from def version %s.",
+                        "%sloaded protocol %s: %d parameters, %d switches from def version %s.",
                         loadResult,
                         getSettings().getLoggerProtocol(),
                         ecuParams.size(),
@@ -619,7 +610,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             final File profileFile = new File(path);
             if (profileFile.exists()) {
                 reportMessageInTitleBar(
-                        "Profile: " + FormatFilename.getShortName(profileFile));
+                    "Profile: " + FormatFilename.getShortName(profileFile));
             }
         }
         catch (Exception e) {
@@ -1220,24 +1211,24 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         logToFileButton.setBackground(GREEN);
         logToFileButton.setOpaque(true);
         logToFileButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        if (logToFileButton.isSelected() && controller.isStarted()) {
-                            fileUpdateHandler.start();
-                            logToFileButton.setBackground(RED);
-                            logToFileButton.setText(LOG_TO_FILE_STOP);
-                        }
-                        else {
-                            fileUpdateHandler.stop();
-                            if (!controller.isStarted()) statusIndicator.stopped();
-                            logToFileButton.setBackground(GREEN);
-                            logToFileButton.setSelected(false);
-                            logToFileButton.setText(LOG_TO_FILE_START);
-                        }
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    if (logToFileButton.isSelected() && controller.isStarted()) {
+                        fileUpdateHandler.start();
+                        logToFileButton.setBackground(RED);
+                        logToFileButton.setText(LOG_TO_FILE_STOP);
+                    }
+                    else {
+                        fileUpdateHandler.stop();
+                        if (!controller.isStarted()) statusIndicator.stopped();
+                        logToFileButton.setBackground(GREEN);
+                        logToFileButton.setSelected(false);
+                        logToFileButton.setText(LOG_TO_FILE_START);
                     }
                 }
-                );
+            }
+        );
         logToFileButton.getInputMap(
                 WHEN_IN_FOCUSED_WINDOW).put(
                         getKeyStroke(LOG_TO_FILE_FK), "toggleFileLogging");
