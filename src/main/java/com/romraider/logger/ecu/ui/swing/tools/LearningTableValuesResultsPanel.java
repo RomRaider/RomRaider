@@ -206,7 +206,13 @@ public class LearningTableValuesResultsPanel extends JDialog {
         afLearningTablePanel.add(
                 formatTableHeader(afLearningTable),
                 BorderLayout.PAGE_START);
-        afLearningTablePanel.add(afLearningTable);
+        if (afLearning.size() > 0) {
+            afLearningTablePanel.add(afLearningTable);
+        }
+        else {
+            afLearningTablePanel.add(new JLabel(
+                    " No data - A/F Extended parameter IDs not defined"));
+        }
 
         afLearningTitlePanel.add(afLearningTablePanel, BorderLayout.CENTER);
         return afLearningTitlePanel;
@@ -251,7 +257,13 @@ public class LearningTableValuesResultsPanel extends JDialog {
         flkcTablePanel.add(
                 formatTableHeader(flkcTable),
                 BorderLayout.PAGE_START);
-        flkcTablePanel.add(flkcTable);
+        if (flkcData.size() > 0) {
+            flkcTablePanel.add(flkcTable);
+        }
+        else {
+            flkcTablePanel.add(new JLabel(
+                    " No data - FLKC reference parameter ID not defined"));
+        }
 
         flkcTitlePanel.add(flkcTablePanel, BorderLayout.CENTER);
         return flkcTitlePanel;
