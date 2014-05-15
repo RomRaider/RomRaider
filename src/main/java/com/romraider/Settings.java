@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -155,6 +155,8 @@ public class Settings implements Serializable {
     private static final String USER_LANGUAGE = "user.language";
     private static final String USER_COUNTRY = "user.country";
     private static final String EN_US = "en_US";
+    private static final String SSM = "SSM";
+    private static final String OBD = "OBD";
 
     private final Dimension windowSize = new Dimension(800, 600);
     private final Point windowLocation = new Point();
@@ -194,7 +196,7 @@ public class Settings implements Serializable {
 
     private String loggerPort;
     private String loggerPortDefault;
-    private static String loggerProtocol = "SSM";
+    private static String loggerProtocol = SSM;
     private static String loggerDefinitionFilePath;
     private static String loggerProfileFilePath;
     private static String loggerOutputDirPath = System.getProperty("user.home");
@@ -777,6 +779,13 @@ public class Settings implements Serializable {
 
     public boolean isCanBus() {
         if (transportProtocol.equals(ISO15765)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isObdProtocol() {
+        if (loggerProtocol.equals(OBD)) {
             return true;
         }
         return false;

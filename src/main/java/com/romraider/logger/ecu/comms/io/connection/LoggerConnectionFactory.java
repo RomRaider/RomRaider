@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,8 @@ public final class LoggerConnectionFactory {
                     ConnectionManager.class).newInstance(manager);
         } catch (Exception e) {
             manager.close();
-            throw new UnsupportedProtocolException(e.getCause().getMessage(), e);
+            throw new UnsupportedProtocolException(
+                    protocolName, e);
         }
     }
 }

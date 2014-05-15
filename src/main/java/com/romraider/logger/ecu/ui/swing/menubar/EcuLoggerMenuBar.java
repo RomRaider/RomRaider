@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileNumberFormatActio
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebugLocationAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebuggingLevelAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDefinitionLocationAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.ObdModeAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ReadEcuCodesAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ReloadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ResetConnectionAction;
@@ -92,7 +93,7 @@ import com.romraider.util.SettingsManager;
 public class EcuLoggerMenuBar extends JMenuBar {
 
     private static final long serialVersionUID = 7081586516953740186L;
-    Settings settings = SettingsManager.getSettings();
+    final Settings settings = SettingsManager.getSettings();
 
     public EcuLoggerMenuBar(EcuLogger logger, List<ExternalDataSource> externalDataSources) {
 
@@ -120,8 +121,11 @@ public class EcuLoggerMenuBar extends JMenuBar {
         settingsMenu.add(fastPoll);
         RadioButtonMenuItem canBus = new RadioButtonMenuItem("CAN bus Logging (2007+)", VK_N, getKeyStroke(VK_N, CTRL_MASK), new CanBusModeAction(logger), settings.isCanBus());
         canBus.setToolTipText("Select to enable logging via CAN bus using a J2534 compatible cable");
+        RadioButtonMenuItem obdProtocol = new RadioButtonMenuItem("OBD Logging Protocol", VK_B, getKeyStroke(VK_B, ALT_MASK), new ObdModeAction(logger), settings.isObdProtocol());
+        obdProtocol.setToolTipText("Select to switch logging comminucations protocol to OBD. Only supported for CAN bus using a J2534 compatible cable.");
         if (isPlatform(WINDOWS)) {
             settingsMenu.add(canBus);
+            settingsMenu.add(obdProtocol);
         }
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,5 +69,10 @@ public final class EcuDtcConvertorImpl implements EcuDataConvertor {
 
     public String getExpression() {
         return "x";
+    }
+
+    @Override
+    public String getDataType() {
+        return null;
     }
 }

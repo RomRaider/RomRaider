@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ public final class QueryManagerImpl implements QueryManager {
     private final Map<String, Query> addList = new HashMap<String, Query>();
     private final List<String> removeList = new ArrayList<String>();
     private static final PollingState pollState = new PollingStateImpl();
+    private static final Settings settings = SettingsManager.getSettings();
     private static final String ECU = "ECU";
     private static final String TCU = "TCU";
     private static final String EXT = "Externals";
@@ -141,7 +142,7 @@ public final class QueryManagerImpl implements QueryManager {
         started = true;
         queryManagerThread = Thread.currentThread();
         LOGGER.debug("QueryManager started.");
-        Settings settings = SettingsManager.getSettings();
+
         try {
             stop = false;
             while (!stop) {
@@ -177,7 +178,6 @@ public final class QueryManagerImpl implements QueryManager {
         }
 
         try {
-            Settings settings = SettingsManager.getSettings();
             LoggerConnection connection =
                     getConnection(settings.getLoggerProtocol(),
                             settings.getLoggerPort(),
@@ -223,7 +223,6 @@ public final class QueryManagerImpl implements QueryManager {
         int count = 0;
         try {
             txManager.start();
-            Settings settings = SettingsManager.getSettings();
             boolean lastPollState = settings.isFastPoll();
             while (!stop) {
                 pollState.setFastPoll(settings.isFastPoll());
@@ -311,7 +310,7 @@ public final class QueryManagerImpl implements QueryManager {
     private void sendEcuQueries(TransmissionManager txManager) {
         final List<EcuQuery> ecuQueries = filterEcuQueries(queryMap.values());
         if (fileLoggerQuery != null
-                && SettingsManager.getSettings().isFileLoggingControllerSwitchActive())
+                && settings.isFileLoggingControllerSwitchActive())
             ecuQueries.add(fileLoggerQuery);
         txManager.sendQueries(ecuQueries, pollState);
     }
@@ -332,7 +331,8 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private void handleQueryResponse() {
-        monitor.monitorFileLoggerSwitch(fileLoggerQuery.getResponse());
+        if (settings.isFileLoggingControllerSwitchActive())
+            monitor.monitorFileLoggerSwitch(fileLoggerQuery.getResponse());
         final Response response = buildResponse(queryMap.values());
         for (final DataUpdateHandler dataUpdateHandler : dataUpdateHandlers) {
             runAsDaemon(new Runnable() {
@@ -407,10 +407,10 @@ public final class QueryManagerImpl implements QueryManager {
         if (pollState.isFastPoll()) {
             state = "Fast-K:";
         }
-        if (SettingsManager.getSettings().getTransportProtocol().equals("ISO15765")) {
+        if (settings.getTransportProtocol().equals("ISO15765")) {
             state = "CAN bus:";
         }
-        if (SettingsManager.getSettings().isLogExternalsOnly()) {
+        if (settings.isLogExternalsOnly()) {
             state = "Externals:";
         }
         double duration = (System.currentTimeMillis() - start) / 1000.0;

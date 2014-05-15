@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,8 @@ public final class JEPUtil {
     }
 
     public static double evaluate(String expression, double value) {
-        JEP parser = new JEP();
+        final JEP parser = new JEP();
+        parser.addStandardFunctions();
         parser.initSymTab(); // clear the contents of the symbol table
         parser.addVariable("x", value);
         parser.parseExpression(expression);
@@ -36,7 +37,7 @@ public final class JEPUtil {
     }
 
     public static double evaluate(String expression, Map<String, Double> valueMap) {
-        JEP parser = new JEP();
+        final JEP parser = new JEP();
         parser.initSymTab(); // clear the contents of the symbol table
         for (String id : valueMap.keySet()) {
             parser.addVariable(id, valueMap.get(id));

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ import static com.romraider.util.ByteUtil.asUnsignedInt;
 import static com.romraider.util.JEPUtil.evaluate;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import static com.romraider.util.ParamChecker.isValidBit;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -59,20 +58,20 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
         this.expression = expression;
         this.format = new DecimalFormat(format);
         this.bit = bit;
-        this.dataType = dataType;
+        this.dataType = (dataType == null ? "uint8" : dataType);
         this.replaceMap = replaceMap;
         this.gaugeMinMax = gaugeMinMax;
     }
 
     public double convert(byte[] bytes) {
-        if (isValidBit(bit)) {
-            return (bytes[0] & (1 << bit)) > 0 ? 1 : 0;
+        if (bit >= 0 && bit <= 31) {
+            return (asUnsignedInt(bytes) & (1 << bit)) != 0 ? 1 : 0;
         } else {
             double value = 0;
-            if (dataType != null && dataType.equalsIgnoreCase(FLOAT)) {
+            if (dataType.equalsIgnoreCase(FLOAT)) {
                 value = (double) asFloat(bytes, 0 , bytes.length);
             }
-            else if (dataType != null && dataType.startsWith(INT)) {
+            else if (dataType.toLowerCase().startsWith(INT)) {
                 value = (double) asSignedInt(bytes);
             }
             else {
@@ -110,5 +109,10 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
 
     public String getExpression() {
         return expression;
+    }
+
+    @Override
+    public String getDataType() {
+        return dataType;
     }
 }
