@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,77 +19,84 @@
 
 package com.romraider.swing;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.JTable;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import com.romraider.Settings;
 import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
+import com.romraider.maps.TableSwitch;
 
 public class TablePropertyPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -5817685772039277602L;
 
     public TablePropertyPanel(Table table) {
-        initComponents();
-        setVisible(true);
+    initComponents();
+    setVisible(true);
 
-        tableName.setText(table.getName() + " (" + table.getType() + "D)");
-        category.setText(table.getCategory());
+    category.setText(table.getCategory());
 
-        String intType;
-
-        if (Settings.TABLE_SWITCH == table.getType()) {
-            intType = "DTC";
-            // TODO: fill out other DTC specific properties.
-            textPaneScales.setText(Settings.INVALID_ATTRIBUTE_TEXT);
-        } else {
+    int dim;
+    if (Settings.TABLE_SWITCH == table.getType()) {
+        dim = 1;
+        storageSize.setText("switch");
+        scrollPane.setViewportView(populateScalesTable(
+                ((TableSwitch) table).getSwitchStates()));
+    }
+    else {
+        if (Settings.STORAGE_TYPE_FLOAT == table.getStorageType()) {
+            storageSize.setText("float");
+        }
+        else {
+            String dataType;
             if (table.isSignedData()) {
-                intType = "int";
+                dataType = "int";
             }
             else {
-                intType = "uint";
+                dataType = "uint";
             }
-
-            String scaleText = "";
-            for(Scale scale : table.getScales()) {
-                scaleText += scale.toString();
-            }
-
-            textPaneScales.setText(scaleText);
+            storageSize.setText(dataType + (table.getStorageType() * 8));
         }
-
-        textPaneScales.setCaretPosition(0);
-
-        storageSize.setText(intType + (table.getStorageType() * 8));
-        storageAddress.setText("0x" + Integer.toHexString(table.getStorageAddress()));
-
-        if (table.getEndian() == Settings.ENDIAN_BIG) {
-            endian.setText("big");
-        } else {
-            endian.setText("little");
-        }
-
-        description.setText(table.getDescription());
-
-        if (table.getUserLevel() == 1) {
-            userLevel.setText("Beginner");
-        } else if (table.getUserLevel() == 2) {
-            userLevel.setText("Intermediate");
-        } else if (table.getUserLevel() == 3) {
-            userLevel.setText("Advanced");
-        } else if (table.getUserLevel() == 4) {
-            userLevel.setText("All");
-        } else if (table.getUserLevel() == 5) {
-            userLevel.setText("Debug");
-        }
-
-        lblTableLogID.setText(table.getLogParamString());
+        dim = table.getType();
+        scrollPane.setViewportView(populateScalesTable(table.getScales()));
     }
+
+    tableName.setText(String.format("%s (%dD)", table.getName(), dim));
+    storageAddress.setText("0x" + Integer.toHexString(table.getStorageAddress()));
+
+    if (table.getEndian() == Settings.ENDIAN_BIG) {
+        endian.setText("big");
+    } else {
+        endian.setText("little");
+    }
+
+    description.setText(table.getDescription());
+
+    if (table.getUserLevel() == 1) {
+        userLevel.setText("Beginner");
+    } else if (table.getUserLevel() == 2) {
+        userLevel.setText("Intermediate");
+    } else if (table.getUserLevel() == 3) {
+        userLevel.setText("Advanced");
+    } else if (table.getUserLevel() == 4) {
+        userLevel.setText("All");
+    } else if (table.getUserLevel() == 5) {
+        userLevel.setText("Debug");
+    }
+
+    logIDscrollPane.setViewportView(populateLogParamTable(table.getLogParamString()));
+}
 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -110,10 +117,9 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         description = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
         userLevel = new javax.swing.JLabel();
-        textPaneScales = new JTextPane();
-        textPaneScales.setEditable(false);
         scrollPane = new JScrollPane();
-
+        logIDscrollPane = new JScrollPane();
+        
         setAutoscrolls(true);
         setFont(new java.awt.Font("Tahoma", 0, 12));
         setInheritsPopupMenu(true);
@@ -138,10 +144,9 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                 );
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(Alignment.LEADING)
-                .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
                 );
 
-        scrollPane.setViewportView(textPaneScales);
         jPanel1.setLayout(jPanel1Layout);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Storage"));
@@ -183,7 +188,6 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                 .add(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
                         .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                                 .add(lblStorageSize)
                                 .add(storageSize))
@@ -203,7 +207,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         description.setBackground(new java.awt.Color(236, 233, 216));
         description.setColumns(20);
         description.setEditable(false);
-        description.setFont(new java.awt.Font("Tahoma", 0, 12));
+        description.setFont(new java.awt.Font("Tahoma", 0, 11));
         description.setLineWrap(true);
         description.setRows(5);
         description.setText("Description");
@@ -232,8 +236,6 @@ public class TablePropertyPanel extends javax.swing.JPanel {
 
         lblLogId = new JLabel("Log Param:");
 
-        lblTableLogID = new JLabel();
-
         GroupLayout layout = new GroupLayout(this);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
@@ -249,16 +251,16 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                                                 .addGroup(layout.createParallelGroup(Alignment.TRAILING)
                                                         .addComponent(tableName, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
                                                         .addComponent(category, GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                                                        .addComponent(lblTableLogID, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)))
+                                                        .addComponent(logIDscrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 300, 300)))
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addComponent(jLabel5)
-                                                                .addPreferredGap(ComponentPlacement.UNRELATED)
+                                                                .addPreferredGap(ComponentPlacement.RELATED)
                                                                 .addComponent(userLevel, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE))
                                                                 .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                                                                 .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                                                                 .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE))
                                                                 .addContainerGap())
-                );
+        );
         layout.setVerticalGroup(
                 layout.createParallelGroup(Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -270,22 +272,22 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(lblCategory)
                                         .addComponent(category))
-                                        .addGap(4)
+                                        .addGap(6)
                                         .addGroup(layout.createParallelGroup(Alignment.BASELINE)
-                                                .addComponent(lblLogId)
-                                                .addComponent(lblTableLogID))
+                                                .addComponent(jLabel5)
+                                                .addComponent(userLevel))
                                                 .addPreferredGap(ComponentPlacement.RELATED)
                                                 .addGroup(layout.createParallelGroup(Alignment.BASELINE)
-                                                        .addComponent(jLabel5)
-                                                        .addComponent(userLevel))
-                                                        .addGap(5)
+                                                        .addComponent(lblLogId)
+                                                        .addComponent(logIDscrollPane, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE))
+                                                        .addGap(8)
                                                         .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                         .addPreferredGap(ComponentPlacement.RELATED)
                                                         .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
                                                         .addPreferredGap(ComponentPlacement.RELATED)
                                                         .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
                                                         .addGap(23))
-                );
+        );
         this.setLayout(layout);
     }// </editor-fold>//GEN-END:initComponents
     private javax.swing.JLabel category;
@@ -305,8 +307,56 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     private javax.swing.JLabel storageSize;
     private javax.swing.JLabel tableName;
     private javax.swing.JLabel userLevel;
-    private JTextPane textPaneScales;
     private JScrollPane scrollPane;
     private JLabel lblLogId;
-    private JLabel lblTableLogID;
+    private JScrollPane logIDscrollPane;
+
+    private JTable populateScalesTable(Vector<Scale> scales) {
+        final ScalesTableModel scalesModel = new ScalesTableModel();
+        scalesModel.setScalesList(scales);
+        return createScalesTable(scalesModel);
+    }
+
+    private JTable populateScalesTable(Map<String, byte[]> switchStates) {
+        final SwitchStateTableModel scalesModel = new SwitchStateTableModel();
+        scalesModel.setScalesList(switchStates);
+        return createScalesTable(scalesModel);
+    }
+
+    private JTable createScalesTable(DefaultTableModel tableModel) {
+        final JTable table = new JTable(tableModel);
+        table.setAutoCreateRowSorter(false);
+        table.setColumnSelectionAllowed(false);
+        table.setRowSelectionAllowed(true);
+        table.setFillsViewportHeight(true);
+        return table;
+    }
+
+    private JTable populateLogParamTable(String logParams) {
+        final Map<String, String> paramMap = new HashMap<String, String>();
+        final String[] paramEntries = logParams.split(", ");
+        for (String entry : paramEntries) {
+            final String[] entries = entry.split(":");
+            if(!paramMap.containsKey(entries[0])){
+                paramMap.put(entries[0], entries.length > 1 ? entries[1] : "n/a");
+            }
+        }
+        final ParameterIdsTableModel tableModel = new ParameterIdsTableModel();
+        tableModel.setParameterList(paramMap);
+        final JTable table = new JTable(tableModel);
+        TableColumn column = null;
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            column = table.getColumnModel().getColumn(i);
+            if (i == 0) {
+                column.setPreferredWidth(240);
+            } else {
+                column.setPreferredWidth(80);
+            }
+        }
+        table.setAutoCreateRowSorter(false);
+        table.setColumnSelectionAllowed(false);
+        table.setRowSelectionAllowed(true);
+        table.setFillsViewportHeight(true);
+        return table;
+    }
 }
