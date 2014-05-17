@@ -601,21 +601,24 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
-    public void loadUserProfile(String profileFilePath) {
+    public boolean loadUserProfile(String profileFilePath) {
         try {
             UserProfileLoader profileLoader = new UserProfileLoaderImpl();
             String path = isNullOrEmpty(profileFilePath) ? (HOME + BACKUP_PROFILE) : profileFilePath;
             UserProfile profile = profileLoader.loadProfile(path);
-            applyUserProfile(profile);
-            final File profileFile = new File(path);
-            if (profileFile.exists()) {
-                reportMessageInTitleBar(
-                    "Profile: " + FormatFilename.getShortName(profileFile));
+            if(applyUserProfile(profile)) {
+                final File profileFile = new File(path);
+                if (profileFile.exists()) {
+                    reportMessageInTitleBar(
+                        "Profile: " + FormatFilename.getShortName(profileFile));
+                }
+                return true;
             }
         }
         catch (Exception e) {
             reportError(e);
         }
+        return false;
     }
 
     private void initFileLoggingController(final EcuSwitch fileLoggingControllerSwitch) {
@@ -638,8 +641,30 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }));
     }
 
-    private void applyUserProfile(UserProfile profile) {
+    private boolean applyUserProfile(UserProfile profile) {
         if (profile != null) {
+            final String profileProto = 
+                    profile.getProtocol() == null ? "SSM" : profile.getProtocol();
+
+            if (!profileProto.equalsIgnoreCase(getSettings().getLoggerProtocol())) {
+
+                Object[] options = {"Load", "Cancel"};
+                final String message = String.format(
+                        "This profile was created for logging protocol %s.%n" +
+                        "Some parameters may not be selected by this profile if%n" +
+                        "you load it.  Change protocols in the Settings menu%n" +
+                        "then reload this profile.",
+                        profileProto);
+                int answer = showOptionDialog(this,
+                        message,
+                        "Protocol Mismatch", DEFAULT_OPTION, WARNING_MESSAGE, null, options, options[1]);
+                if (answer == 1) {
+                    final String cancelMsg = "Profile load canceled by user";
+                    LOGGER.info(cancelMsg);
+                    return false;
+                }
+            }
+
             applyUserProfileToLiveDataTabParameters(dataTabParamListTableModel, profile);
             applyUserProfileToLiveDataTabParameters(dataTabSwitchListTableModel, profile);
             applyUserProfileToLiveDataTabParameters(dataTabExternalListTableModel, profile);
@@ -649,7 +674,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             applyUserProfileToDashTabParameters(dashboardTabParamListTableModel, profile);
             applyUserProfileToDashTabParameters(dashboardTabSwitchListTableModel, profile);
             applyUserProfileToDashTabParameters(dashboardTabExternalListTableModel, profile);
+            return true;
         }
+        return false;
     }
 
     private void applyUserProfileToLiveDataTabParameters(ParameterListTableModel paramListTableModel, UserProfile profile) {
@@ -799,7 +826,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 graphTabSwitchListTableModel.getParameterRows(), dashboardTabSwitchListTableModel.getParameterRows());
         Map<String, UserProfileItem> externalProfileItems = getProfileItems(dataTabExternalListTableModel.getParameterRows(),
                 graphTabExternalListTableModel.getParameterRows(), dashboardTabExternalListTableModel.getParameterRows());
-        return new UserProfileImpl(paramProfileItems, switchProfileItems, externalProfileItems);
+        return new UserProfileImpl(
+                paramProfileItems,
+                switchProfileItems,
+                externalProfileItems,
+                getSettings().getLoggerProtocol());
     }
 
     private Map<String, String> getPluginPorts(List<ExternalDataSource> externalDataSources) {

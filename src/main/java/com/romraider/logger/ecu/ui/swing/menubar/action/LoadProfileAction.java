@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ import javax.swing.JFileChooser;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.swing.menubar.action.AbstractAction;
-import com.romraider.util.FormatFilename;
 import com.romraider.util.SettingsManager;
 
 public final class LoadProfileAction extends AbstractAction {
@@ -48,17 +47,15 @@ public final class LoadProfileAction extends AbstractAction {
     }
 
     private void loadProfileDialog() throws Exception {
-        logger.getSettings();
         final File lastProfileFile = getFile(SettingsManager.getSettings().getLoggerProfileFilePath());
         JFileChooser fc = getProfileFileChooser(lastProfileFile);
         if (fc.showOpenDialog(logger) == JFileChooser.APPROVE_OPTION) {
             final String profileFilePath = fc.getSelectedFile().getAbsolutePath();
-            logger.loadUserProfile(profileFilePath);
-            logger.getSettings().setLoggerProfileFilePath(profileFilePath);
-            logger.reportMessageInTitleBar("" +
-                    "Profile: " + FormatFilename.getShortName(profileFilePath));
-            logger.restartLogging();
-            logger.reportMessage("Profile succesfully loaded: " + profileFilePath);
+            if (logger.loadUserProfile(profileFilePath)) {
+                logger.getSettings().setLoggerProfileFilePath(profileFilePath);
+                logger.restartLogging();
+                logger.reportMessage("Profile succesfully loaded: " + profileFilePath);
+            }
         }
     }
 

@@ -33,3 +33,4 @@
 <!ELEMENT externals ( external* ) >
 
 <!ELEMENT profile ( serial?, logfilelocation?, parameters?, switches?, externals? ) >
+<!ATTLIST profile protocol CDATA #IMPLIED >
