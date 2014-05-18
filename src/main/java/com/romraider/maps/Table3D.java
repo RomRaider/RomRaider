@@ -596,6 +596,7 @@ public class Table3D extends Table {
         } else { // y axis
             selectCellAt(y, 0);
         }
+        ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(this);
     }
 
     public void deSelectCellAt(int x, int y) {

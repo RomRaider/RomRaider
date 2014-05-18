@@ -1019,6 +1019,7 @@ public abstract class Table extends JPanel implements Serializable {
             clearSelection();
             data[y].setSelected(true);
             highlightY = y;
+            ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(this);
         }
     }
 

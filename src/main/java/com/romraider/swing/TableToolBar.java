@@ -305,6 +305,16 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     }
 
     public void updateTableToolBar(Table selectedTable) {
+        if(selectedTable == null  && this.selectedTable == null) {
+            // Skip if the table is the same to avoid multiple updates
+            return;
+        } else if(selectedTable == null || this.selectedTable == null) {
+            // Update the toolbar.
+        } else if(this.selectedTable.equals(selectedTable)) {
+            // Skip if the table is the same to avoid multiple updates
+            return;
+        }
+
         this.selectedTable = selectedTable;
 
         setBorder(toolbarBorder);
