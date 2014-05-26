@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -189,7 +189,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 double gaugeStep = getConversionStep(attributes, conversionUnits);
                 conversionGauge = new GaugeMinMax(gaugeMin, gaugeMax, gaugeStep);
                 replaceMap = new HashMap<String, String>();
-                if (!derived && !EcuAddressCreated) {
+                if (!derived && !EcuAddressCreated && addrStrings.size() > 0) {
                     address = new EcuAddressImpl(addrStrings.toArray(new String[0]), addressLength, addressBit);
                     EcuAddressCreated = true;
                 }
