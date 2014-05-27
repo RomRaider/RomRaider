@@ -19,7 +19,7 @@
 
 package com.romraider.logger.ecu;
 
-import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
+import com.romraider.net.BrowserControl;
 import static com.romraider.Version.LOGGER_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
@@ -572,7 +572,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 "Logger definition not configured.\nGo online to download the latest definition file?",
                 "Configuration", DEFAULT_OPTION, WARNING_MESSAGE, null, options, options[0]);
         if (answer == 0) {
-            openURL(LOGGER_DEFS_URL);
+            BrowserControl.displayURL(LOGGER_DEFS_URL);
         } else {
             showMessageDialog(this,
                     "The Logger definition file needs to be configured before connecting to the ECU.\nMenu: Settings > Logger Definition Location...",

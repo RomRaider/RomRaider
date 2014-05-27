@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
-import com.centerkey.utils.BareBonesBrowserLaunch;
+import com.romraider.net.BrowserControl;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
@@ -183,7 +183,7 @@ public class ECUEditor extends AbstractFrame {
                     options,
                     options[0]);
             if (answer == 0) {
-                BareBonesBrowserLaunch.openURL(ECU_DEFS_URL);
+                BrowserControl.displayURL(ECU_DEFS_URL);
             } else {
                 showMessageDialog(this,
                         "ECU definition files need to be configured before ROM images can be opened.\nMenu: ECU Definitions > ECU Definition Manager...",

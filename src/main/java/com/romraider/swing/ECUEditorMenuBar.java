@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,12 +47,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 
-import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
+import com.romraider.net.BrowserControl;
 import com.romraider.ramtune.test.RamTuneTestApp;
 import com.romraider.util.SettingsManager;
 
@@ -416,7 +416,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         } else if (e.getSource() == openLogger) {
             parent.launchLogger();
         } else if (e.getSource() == updateDefinition) {
-            BareBonesBrowserLaunch.openURL(ECU_DEFS_URL);
+            BrowserControl.displayURL(ECU_DEFS_URL);
 
         } else if (e.getSource() == launchRamTuneTestApp) {
             RamTuneTestApp.startTestApp(DISPOSE_ON_CLOSE);

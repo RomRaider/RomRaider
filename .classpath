@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="lib/windows/vecmath.jar"/>
 	<classpathentry kind="lib" path="lib/windows/Graph3d.jar"/>
 	<classpathentry kind="lib" path="lib/common/jama-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/common/BareBonesBrowserLaunch.jar"/>
 	<classpathentry kind="lib" path="lib/common/jep.jar"/>
 	<classpathentry kind="lib" path="lib/common/Jama.jar"/>
 	<classpathentry kind="lib" path="lib/common/jamlab.jar"/>

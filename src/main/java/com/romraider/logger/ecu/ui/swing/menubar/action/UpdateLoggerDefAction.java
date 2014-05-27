@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
-import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
 import static com.romraider.Version.LOGGER_DEFS_URL;
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.net.BrowserControl;
 import com.romraider.swing.menubar.action.AbstractAction;
 import java.awt.event.ActionEvent;
 
@@ -32,6 +32,6 @@ public final class UpdateLoggerDefAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-        openURL(LOGGER_DEFS_URL);
+        BrowserControl.displayURL(LOGGER_DEFS_URL);
     }
 }

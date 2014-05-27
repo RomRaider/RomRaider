@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 
 package com.romraider.logger.ecu.ui.tab.dyno;
 
-import static com.centerkey.utils.BareBonesBrowserLaunch.openURL;
 import static com.romraider.Version.CARS_DEFS_URL;
 import static com.romraider.logger.car.util.SpeedCalculator.calculateMph;
 import static com.romraider.logger.car.util.SpeedCalculator.calculateRpm;
@@ -85,6 +84,7 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
+import com.romraider.net.BrowserControl;
 import com.romraider.util.SettingsManager;
 
 public final class DynoControlPanel extends JPanel {
@@ -1570,7 +1570,7 @@ public final class DynoControlPanel extends JPanel {
                     "Cars definition file not found.\nGo online to download the latest definition file?",
                     "Configuration", DEFAULT_OPTION, WARNING_MESSAGE, null, options, options[0]);
             if (answer == 0) {
-                openURL(CARS_DEFS_URL);
+                BrowserControl.displayURL(CARS_DEFS_URL);
             } else {
                 showMessageDialog(parent, MISSING_CAR_DEF +
                         " file from the installation or profiles or definitions directory.\nDyno feature will not be available until this file is present.", "Notice", WARNING_MESSAGE);
