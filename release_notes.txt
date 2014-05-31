@@ -1,4 +1,4 @@
-                - RomRaider 0.5.7 RC2 -
+                - RomRaider 0.5.8 RC1 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,27 +33,67 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.7 RC2 Notes (08/28/2013) -
+- 0.5.8 RC1 Notes (05/31/2014) -
 --------------------------------------------
 This is the latest release of the RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.5.7 RC2 Known Issues -
+- 0.5.8 RC1 Known Issues -
 --------------------------------------
-- Editor
-  - Pasting table data can cause hangs under certain circumstances
 - Logger
   - Gauge min/max/step limits incomplete in logger.xml
   - ECU connections under Linux are flaky (start the logger after
       you've started the engine)
   - Update latency via injector tab broken for some models (eg. 2007 2.5i)
+  - Switching between SSM and OBD protocol mode may not update the parameter
+    list completely.  A Logger restart will update the list correctly.
 Status of these items and more can be viewed at:
     https://github.com/RomRaider/RomRaider/issues?labels=bug&state=open
 
 --------------
 - Change Log -
 --------------
+
+0.5.8 RC1 (05/31/2014)
+----------------------------------
+
+- Editor
+  - Improved ROM image compare functions
+  - Memory utilization improvements
+  - Updates to Save As Repository option
+  - New Settings to customize table open/close and focus
+  - New Settings to customize where tables open on the screen
+  - New Settings for data cell select and highlight colours
+  - Map colourization is no longer automatic when a cell is changed. Use the
+    new button to re-colour the table after changes are made
+  - Cell Tool-Tip displays real value of cell data
+  - Fixed adding/removing associations
+  - Added ability to Ctrl+Alt+Click(Drag) to un-select cells
+  - Support added for multiple table scaling units.  With a compatible ECU
+    definition a user can select axis and/or data unit scaling such as imperial
+    or metric, etc. A sample ECU def can be found here:
+    https://raw.githubusercontent.com/scotthew/SubaruDefs/MultipleScales/RomRaider/ecu/standard/ecu_defs.xml
+  - Added a Raw Scaling definition so users can select it and see the table in
+    its natural units as stored in the ROM image
+  - Table Property updated to list all available scalings for the table as well
+    as the Logger parameter ID used for the Logger overlay function
+  - Removed JFontChooser library
+  - Added ability to convert ROM image from 160kB to 192kB
+  - Added ability to convert ROM image from 192kB to 160kB
+  - Added Table axis and data cell interpolation feature
+  - Added support for additional Checksum validation/corrections found in BRZ ROMs
+  - Removed BareBonesBrowser library, now uses existing class
+  - Updated Java 3D libraries to version 1.5.2
+     
+- Logger
+  - Fixed Learning Table Values international character support
+  - Added support for PLX SM-AFR Gen 3
+  - Removed reference to minimum Logger definition XML file version
+  - Add OBD mode 1 Logging support for CAN ECUs using J2534
+  - Add protocol attribute to user Logging Profiles to indicate OBD and SSM profiles
+
+
 
 0.5.7 RC2 (08/28/2013)
 ----------------------------------
