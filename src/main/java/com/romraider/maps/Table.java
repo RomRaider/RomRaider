@@ -800,11 +800,23 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public double getMaxReal() {
-        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
+        double minReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
+        double maxReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
+        if(minReal > maxReal) {
+            return minReal;
+        } else {
+            return maxReal;
+        }
     }
 
     public double getMinReal() {
-        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
+        double minReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
+        double maxReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
+        if(minReal < maxReal) {
+            return minReal;
+        } else {
+            return maxReal;
+        }
     }
 
     public void setMaxBin(double maxBin) {

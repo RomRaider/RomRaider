@@ -179,7 +179,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                 // if all values are the same, color will be middle value
                 colorScale = .5;
             } else {
-                colorScale = (getBinValue() - table.getMinBin()) / (table.getMaxBin() - table.getMinBin());
+                colorScale = (getRealValue() - table.getMinReal()) / (table.getMaxReal() - table.getMinReal());
             }
 
             return getScaledColor(colorScale);
