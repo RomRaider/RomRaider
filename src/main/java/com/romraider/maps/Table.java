@@ -50,6 +50,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import org.apache.log4j.Logger;
+
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableToolBar;
@@ -59,6 +61,7 @@ import com.romraider.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
+    private static final Logger LOGGER = Logger.getLogger(Table.class);
 
     protected String name;
     protected int type;
@@ -989,9 +992,27 @@ public abstract class Table extends JPanel implements Serializable {
             for (int i = 0; i < data.length; i++) {
                 // determine output byte values
                 byte[] output;
+                if(this.isStaticDataTable() && storageType > 0) {
+                    LOGGER.warn("Static data table: " +this.getName()+ ", storageType: "+storageType);
+                }
                 if (storageType != Settings.STORAGE_TYPE_FLOAT) {
                     // convert byte values
-                    output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
+                    if(this.isStaticDataTable() && storageType > 0) {
+                        try {
+                            int parsedValue = Integer.parseInt(data[i].getStaticText());
+                            output = RomAttributeParser.parseIntegerValue(parsedValue, endian, storageType);
+                        } catch (NumberFormatException ex) {
+                            LOGGER.error("Error parsing static data table value: " + data[i].getStaticText(), ex);
+                            LOGGER.error("Validate the table definition storageType and data value.");
+                            continue;
+                        }
+                    } else if(this.isStaticDataTable() && storageType < 1) {
+                        // Do not save the value.
+                        //LOGGER.debug("The static data table value will not be saved.");
+                        continue;
+                    }  else {
+                        output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
+                    }
                     for (int z = 0; z < storageType; z++) { // insert into file
                         binData[i * storageType + z + getStorageAddress() - ramOffset] = output[z];
                     }
