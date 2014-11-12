@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+//import java.util.Set;
 
 import javax.swing.Action;
 
@@ -37,14 +37,14 @@ import org.apache.log4j.Logger;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
-import com.romraider.logger.external.innovate.generic.mts.io.MTSSensor;
+//import com.romraider.logger.external.innovate.generic.mts.io.MTSSensor;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSConnector;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSRunner;
 
 
 public final class Lm2MtsDataSource implements ExternalDataSource {
     private static final Logger LOGGER = getLogger(Lm2MtsDataSource.class);
-    private final Map<Integer, Lm2MtsDataItem> dataItems = new HashMap<Integer, Lm2MtsDataItem>();
+    private Map<Integer, Lm2MtsDataItem> dataItems = new HashMap<Integer, Lm2MtsDataItem>();
     private MTSRunner runner;
     private int mtsPort = -1;
 
@@ -62,21 +62,23 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
         if (ports != null) {
             for (int i = 0; i < ports.length; i++) {
                 connector.usePort(i);
-                Set<MTSSensor> sensors = connector.getSensors();
-                if (sensors.isEmpty())
-                    continue;
-                dataItems.put(0, new Lm2MtsDataItem("LM-2", 0, "AFR", 9, 20)); // a default entry
-                for (MTSSensor sensor : sensors) {
-                    dataItems.put(
-                        sensor.getInputNumber(),
-                        new Lm2MtsDataItem(
-                            sensor.getDeviceName(),
-                            sensor.getDeviceChannel(),
-                            sensor.getUnits(),
-                            sensor.getMinValue(),
-                            sensor.getMaxValue()
-                        ));
-                }
+//                Set<MTSSensor> sensors = connector.getSensors();
+                dataItems = connector.getSensors();
+//                if (sensors.isEmpty())
+//                    continue;
+//                dataItems.put(0, new Lm2MtsDataItem("LM-2", 0, "AFR", 9, 20, 14.7f)); // a default entry
+//                for (MTSSensor sensor : sensors) {
+//                    dataItems.put(
+//                        sensor.getInputNumber(),
+//                        new Lm2MtsDataItem(
+//                            sensor.getDeviceName(),
+//                            sensor.getDeviceChannel(),
+//                            sensor.getUnits(),
+//                            sensor.getMinValue(),
+//                            sensor.getMaxValue(),
+//                            sensor.getMultiplier()
+//                        ));
+//                }
             }
         }
         else {
@@ -94,7 +96,7 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
     }
 
     public String getVersion() {
-        return "0.04";
+        return "0.05";
     }
 
     public List<? extends ExternalDataItem> getDataItems() {

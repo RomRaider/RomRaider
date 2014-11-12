@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@ import org.apache.log4j.Logger;
 
 import com.romraider.logger.external.core.Stoppable;
 import com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2MtsDataItem;
-// import com4j.EventCookie;
+import com4j.EventCookie;
 
 public final class MTSRunner implements MTSEvents, Stoppable {
     private static final Logger LOGGER = getLogger(MTSRunner.class);
     private final Map<Integer, Lm2MtsDataItem> dataItems;
-//    private EventCookie connectionEventCookie;
+    private EventCookie connectionEventCookie;
     private final MTS mts;
     private boolean running;
     private boolean stop;
@@ -78,14 +78,14 @@ public final class MTSRunner implements MTSEvents, Stoppable {
     private void doRun() {
         try {
             // attempt to connect to the specified device
-//            connectionEventCookie = mts.advise(MTSEvents.class, this);
+            connectionEventCookie = mts.advise(MTSEvents.class, this);
             mts.connect();
 
             try {
                 if (mts.inputCount() > 0) {
                     while (!stop) {
-                        readData();
-                        sleep(12L);
+//                        readData();
+                        sleep(2000L);
                     }
                 }
                 else {
@@ -97,7 +97,7 @@ public final class MTSRunner implements MTSEvents, Stoppable {
             }
         }
         finally {
-            //connectionEventCookie.close();
+            connectionEventCookie.close();
             mts.dispose();
         }
     }
@@ -105,6 +105,7 @@ public final class MTSRunner implements MTSEvents, Stoppable {
     public void connectionEvent(int result) {
         if (result == 0) {
             mts.startData();
+            LOGGER.debug("Innovate MTS connection success");
         }
         else if (result == -1) {
             throw new IllegalStateException("No Innovate MTS Data detected");
@@ -115,25 +116,31 @@ public final class MTSRunner implements MTSEvents, Stoppable {
     }
       
     public void connectionError() {
-        mts.disconnect();
+        stop();
         throw new IllegalStateException("Innovate MTS Connection Timeout");
     }
 
     public void newData() {
-        LOGGER.debug("Innovate MTS newData");
-        //readData();
+        LOGGER.debug("Innovate MTS newData event");
+        readData();
     }
     
     public void readData() {
+        Lm2MtsDataItem dataItem;
+        int type;
+        int function;
+        int sample;
+        float data = 0.0f;
+        float min;
+        float max;
+        float multiplier;
         for (int i = 0; i < mts.inputCount(); i++) {
-            float data = 0f;
-
             // select the input
+            dataItem = dataItems.get(i);
             mts.currentInput(i);
-            int type = mts.inputType();
-            int function = mts.inputFunction();
-            int sample = mts.inputSample();
-            LOGGER.trace("Innovate MTS input = " + i + ", type = " + type + ", function = " + function + ", sample = " + sample);
+            type = mts.inputType();
+            function = mts.inputFunction();
+            sample = mts.inputSample();
 
             // 5V channel
             // Determine the range between min and max,
@@ -141,8 +148,8 @@ public final class MTSRunner implements MTSEvents, Stoppable {
             // shift back to match our offset from 0.0 for min
             if (type == MTS_TYPE_VDC.getType()) {
                 if (function == MTS_FUNC_NOTLAMBDA.getFunction()) {
-                    float min = mts.inputMinValue();
-                    float max = mts.inputMaxValue();
+                    min = dataItem.getMinValue();
+                    max = dataItem.getMaxValue();
                     data = ((max - min) * ((float) sample / 1024f)) + min;
                 }
                 else {
@@ -158,7 +165,7 @@ public final class MTSRunner implements MTSEvents, Stoppable {
             // then multiply by the AFR multiplier
             if (type == MTS_TYPE_AFR.getType()) {
                 if (function == MTS_FUNC_LAMBDA.getFunction()) {
-                    float multiplier = mts.inputAFRMultiplier();
+                    multiplier = dataItem.getMultiplier();
                     data = ((float) sample / 1000f + 0.5f) * multiplier;
                 }
                 else if (function == MTS_FUNC_O2.getFunction()) {
@@ -184,8 +191,11 @@ public final class MTSRunner implements MTSEvents, Stoppable {
                 }
             }
             // set data for this sensor based on inputNumber
-            Lm2MtsDataItem dataItem = dataItems.get(i);
             if (dataItem != null) dataItem.setData(data);
+            final String result = String.format(
+                    "Innovate MTS input: %d, type: %d, function: %d, sample: %d, result: %f",
+                    i, type, function, sample, data);
+            LOGGER.trace(result);
         }
     }
 }

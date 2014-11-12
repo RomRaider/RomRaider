@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ public class Test implements MTSEvents {
 //        mts.currentInput(0);
         mts.currentPort(0);
         mts.connect();
-        mts.startData();
+//        mts.startData();
 
         // notes:
         // the inputFunction() method retrieves the meaning of the sample - this can be lambda/AFR,
@@ -128,7 +128,8 @@ public class Test implements MTSEvents {
 
         // retrieve 10 samples
 //        getSamples(10);
-           waitFor(60000);
+          System.out.println("Listening for 3600 seconds.");
+           waitFor(3600000);
 
         // dispose of the event handler instance
         connectionEventCookie.close();
@@ -145,11 +146,31 @@ public class Test implements MTSEvents {
     // see the SDK doc for explanation of error codes
 
     public void connectionEvent(int result) {
-        System.out.printf("connectionEvent raised.  result = %d%n", result);
+       // Triggered in response to every Connect() call
+       // Includes an integer result code:
+       //   0 = success
+       //   -1 no data read,
+       //   < -1 = unspecified internal error
+        if (result == 0) {
+            mts.startData();
+            System.out.printf("Innovate MTS connection success: %d%n", result);
+        }
+        else if (result == -1) {
+            System.out.printf("No Innovate MTS Data detected: %d%n", result);
+        }
+        else {
+            System.out.printf("Innovate MTS Connect Error: %d%n", result);
+        }
     }
 
     public void connectionError() {
-        // occurs when there is an error in the data stream (i.e. I assume connection lost, protocol error)
+        // Triggered in response to a data timeout on
+        // the MTS connection - Application should expect
+        // no more data, but must still call Disconnect()
+        System.out.printf("connectionError raised, shutting down.%n");
+        connectionEventCookie.close();
+        mts.disconnect();
+        mts.dispose();
     }
 
     public void newData() {
@@ -165,8 +186,8 @@ public class Test implements MTSEvents {
 //            float multiplier = mts.inputAFRMultiplier();
 //            int sampleMeaning = mts.inputFunction();
             String str = String.format(
-                    "%d, InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f, Sample: %f, Data: %f",
-                    count, i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue(), sample, data);
+                    "%d, %d, InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f, Sample: %f, Data: %f",
+                    count, System.currentTimeMillis(), i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue(), sample, data);
 
             System.out.printf("%s%n", str);
 //            System.out.printf("newData raised for Input: %02d, Function: %d, Data: %f,\tMultiplier: %f%n", i, sampleMeaning, data, multiplier);

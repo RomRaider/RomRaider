@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,12 +31,18 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
     private int channel;
     private double data;
     private String units;
+    private float minValue;
+    private float maxValue;
+    private float multiplier;
 
-    public Lm2MtsDataItem(String name, int channel, String units, float minValue, float maxValue) {
+    public Lm2MtsDataItem(String name, int channel, String units, float minValue, float maxValue, float multiplier) {
         super();
         this.name = name;
         this.channel = channel;
         this.units = units;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.multiplier = multiplier;
         float step = (Math.abs(maxValue) + Math.abs(minValue)) / 10f;
         if (step > 0.5f) {
             step = (float) Math.round(step);
@@ -65,6 +71,18 @@ public final class Lm2MtsDataItem implements ExternalDataItem, DataListener {
 
     public String getUnits() {
         return units;
+    }
+
+    public float getMinValue() {
+        return minValue;
+    }
+
+    public float getMaxValue() {
+        return maxValue;
+    }
+
+    public float getMultiplier() {
+        return multiplier;
     }
 
     public void setData(double data) {
