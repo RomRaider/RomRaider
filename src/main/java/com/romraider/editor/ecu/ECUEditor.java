@@ -727,6 +727,9 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
             // handles Java heap space issues when loading multiple Roms.
             showMessageDialog(editor, "Error loading Image. Out of memeory.", "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showMessageDialog(editor, "Error Loading. Caught Exception:\n" + ex.getMessage(), "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
         }
         return null;
     }
