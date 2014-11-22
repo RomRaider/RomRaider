@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
     public J2534ConnectionISO9141(ConnectionProperties connectionProperties, String library) {
         checkNotNull(connectionProperties, "connectionProperties");
         timeout = (long)connectionProperties.getConnectTimeout();
-        initJ2534(connectionProperties.getBaudRate(), library);
+        initJ2534(connectionProperties, library);
         LOGGER.info("J2534/ISO9141 connection initialised");
     }
 
@@ -117,13 +117,15 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
         closeDevice();
     }
 
-    private void initJ2534(int baudRate, String library) {
+    private void initJ2534(ConnectionProperties connectionProperties, String library) {
         api = new J2534Impl(Protocol.ISO9141, library);
         deviceId = api.open();
         try {
             version(deviceId);
-            channelId = api.connect(deviceId, Flag.ISO9141_NO_CHECKSUM.getValue(), baudRate);
-            setConfig(channelId);
+            channelId = api.connect(
+                    deviceId, Flag.ISO9141_NO_CHECKSUM.getValue(),
+                    connectionProperties.getBaudRate());
+            setConfig(channelId, connectionProperties);
             msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
             LOGGER.debug(String.format(
                     "J2534/ISO9141 success: deviceId:%d, channelId:%d, msgId:%d",
@@ -143,12 +145,18 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
         LOGGER.info("J2534 Version => firmware: " + version.firmware + ", dll: " + version.dll + ", api: " + version.api);
     }
 
-    private void setConfig(int channelId) {
+    private void setConfig(int channelId, ConnectionProperties connectionProperties) {
         final ConfigItem p1Max = new ConfigItem(Config.P1_MAX.getValue(), 2);
         final ConfigItem p3Min = new ConfigItem(Config.P3_MIN.getValue(), 0);
         final ConfigItem p4Min = new ConfigItem(Config.P4_MIN.getValue(), 0);
         final ConfigItem loopback = new ConfigItem(Config.LOOPBACK.getValue(), 1);
-        api.setConfig(channelId, p1Max, p3Min, p4Min, loopback);
+        final ConfigItem dataBits = new ConfigItem(
+                Config.DATA_BITS .getValue(),
+                connectionProperties.getDataBits());
+        final ConfigItem parity = new ConfigItem(
+                Config.PARITY.getValue(),
+                connectionProperties.getParity());
+        api.setConfig(channelId, p1Max, p3Min, p4Min, loopback, dataBits, parity);
     }
 
     private void stopMsgFilter() {
