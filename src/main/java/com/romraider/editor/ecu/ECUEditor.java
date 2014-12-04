@@ -669,6 +669,14 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
 
             // parse ecu definition files until result found
             for (int i = 0; i < settings.getEcuDefinitionFiles().size(); i++) {
+                if (!settings.getEcuDefinitionFiles().get(i).exists()) {
+                    showMessageDialog(editor,
+                            "ECU Definition file missing or moved.  Please correct the ECU Definition Manager listing.\n" +
+                                    settings.getEcuDefinitionFiles().get(i).getAbsolutePath(),
+                            "Missing ECU Definition File - " + settings.getEcuDefinitionFiles().get(i).getName(),
+                            ERROR_MESSAGE);
+                    continue;
+                }
                 fileStream = new FileInputStream(settings.getEcuDefinitionFiles().get(i));
                 InputSource src = new InputSource(fileStream);
 
