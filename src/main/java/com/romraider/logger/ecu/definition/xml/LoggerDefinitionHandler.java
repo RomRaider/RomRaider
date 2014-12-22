@@ -22,11 +22,13 @@ package com.romraider.logger.ecu.definition.xml;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMax;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMin;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getStep;
+import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static java.lang.Double.parseDouble;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -54,6 +56,7 @@ import com.romraider.logger.ecu.definition.EcuParameterImpl;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.EcuSwitchConvertorImpl;
 import com.romraider.logger.ecu.definition.EcuSwitchImpl;
+import com.romraider.logger.ecu.definition.Module;
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
@@ -69,6 +72,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_ECUPARAM = "ecuparam";
     private static final String TAG_ECU = "ecu";
     private static final String TAG_DTCODE = "dtcode";
+    private static final String TAG_TRANSPORT = "transport";
+    private static final String TAG_MODULE = "module";
     private static final String ATTR_VERSION = "version";
     private static final String ATTR_ID = "id";
     private static final String ATTR_NAME = "name";
@@ -97,6 +102,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_TARGET = "target";
     private static final String ATTR_TMPADDR = "tmpaddr";
     private static final String ATTR_MEMADDR = "memaddr";
+    private static final String ATTR_ADDRESS = "address";
+    private static final String ATTR_TESTER = "tester";
     private final String protocol;
     private final String fileLoggingControllerSwitchId;
     private final EcuInit ecuInit;
@@ -132,7 +139,11 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private GaugeMinMax conversionGauge;
     private String target;
     private String version;
-
+    private String transportId;
+    private String modAddr;
+    private String testerAddr;
+    private List<Module> moduleList;
+    private Map<String, Collection<Module>> transportList;
     public LoggerDefinitionHandler(String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(protocol, "protocol");
         checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
@@ -146,6 +157,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         switches = new ArrayList<EcuSwitch>();
         ecuDataMap = new HashMap<String, EcuData>();
         dtcodes = new ArrayList<EcuSwitch>();
+        moduleList = new ArrayList<Module>();
+        transportList = new HashMap<String, Collection<Module>>();
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -225,6 +238,16 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         1,
                         Integer.valueOf(attributes.getValue(ATTR_BIT)));
                 resetLists();
+            } else if (TAG_TRANSPORT.equals(qName)) {
+                transportId = attributes.getValue(ATTR_ID);
+            } else if (TAG_MODULE.equals(qName)) {
+                id = attributes.getValue(ATTR_ID);
+                modAddr = attributes.getValue(ATTR_ADDRESS);
+                desc = attributes.getValue(ATTR_DESC);
+                testerAddr = attributes.getValue(ATTR_TESTER);
+                final Module module = new Module(
+                        id, asBytes(modAddr), desc, asBytes(testerAddr));
+                moduleList.add(module);
             }
         }
         charBuffer = new StringBuilder();
@@ -310,6 +333,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 final EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
                 dtcodes.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
+            } else if (TAG_TRANSPORT.equals(qName)) {
+                transportList.put(transportId.toLowerCase(), moduleList);
             }
         }
     }
@@ -336,6 +361,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
 
     public List<EcuSwitch> getEcuCodes() {
         return dtcodes;
+    }
+
+    public Map<String, Collection<Module>> getTransportList() {
+        return transportList;
     }
 
     private void resetLists() {
