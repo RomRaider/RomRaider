@@ -82,6 +82,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_LENGTH = "length";
     private static final String ATTR_ECUBIT = "ecubit";
     private static final String ATTR_UNITS = "units";
+    private static final String ATTR_GROUP = "group";
+    private static final String ATTR_SUBGROUP = "subgroup";
+    private static final String ATTR_GROUPSIZE = "groupsize";
     private static final String ATTR_EXPRESSION = "expr";
     private static final String ATTR_FORMAT = "format";
     private static final String ATTR_BYTE = "byte";
@@ -119,6 +122,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String desc;
     private String ecuByteIndex;
     private String ecuBit;
+    private String group;
+    private String subgroup;
+    private String groupsize;
     private String ecuIds;
     private List<String> addrStrings = new ArrayList<String>();
     private boolean EcuAddressCreated;
@@ -144,6 +150,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String testerAddr;
     private List<Module> moduleList;
     private Map<String, Collection<Module>> transportList;
+
     public LoggerDefinitionHandler(String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(protocol, "protocol");
         checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
@@ -179,6 +186,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 desc = attributes.getValue(ATTR_DESC);
                 ecuByteIndex = attributes.getValue(ATTR_ECUBYTEINDEX);
                 ecuBit = attributes.getValue(ATTR_ECUBIT);
+                group = attributes.getValue(ATTR_GROUP);
+                subgroup = attributes.getValue(ATTR_SUBGROUP);
+                groupsize = attributes.getValue(ATTR_GROUPSIZE);
                 target = attributes.getValue(ATTR_TARGET);
                 resetLists();
             } else if (TAG_ADDRESS.equals(qName)) {
@@ -214,6 +224,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 desc = attributes.getValue(ATTR_DESC);
                 ecuByteIndex = attributes.getValue(ATTR_ECUBYTEINDEX);
                 ecuBit = attributes.getValue(ATTR_BIT);
+                group = attributes.getValue(ATTR_GROUP);
+                subgroup = attributes.getValue(ATTR_SUBGROUP);
+                groupsize = attributes.getValue(ATTR_GROUPSIZE);
                 target = attributes.getValue(ATTR_TARGET);
                 address = new EcuAddressImpl(attributes.getValue(ATTR_BYTE), 1, Integer.valueOf(attributes.getValue(ATTR_BIT)));
                 resetLists();
@@ -221,6 +234,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);
                 desc = attributes.getValue(ATTR_DESC);
+                group = attributes.getValue(ATTR_GROUP);
+                subgroup = attributes.getValue(ATTR_SUBGROUP);
+                groupsize = attributes.getValue(ATTR_GROUPSIZE);
                 target = attributes.getValue(ATTR_TARGET);
                 resetLists();
                 ecuAddressMap = new HashMap<String, EcuAddress>();
@@ -286,7 +302,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         if (convertorList.isEmpty()) {
                             convertorList.add(new EcuParameterConvertorImpl());
                         }
-                        EcuParameter param = new EcuParameterImpl(id, name, desc, address,
+                        EcuParameter param = new EcuParameterImpl(
+                                id, name, desc, address, group, subgroup, groupsize,
                                 convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                         params.add(param);
                         ecuDataMap.put(param.getId(), param);
@@ -305,7 +322,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     if (convertorList.isEmpty()) {
                         convertorList.add(new EcuParameterConvertorImpl());
                     }
-                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
+                    EcuParameter param = new EcuParameterImpl(
+                            id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
+                            group, subgroup, groupsize,
                             convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                     params.add(param);
                     ecuDataMap.put(param.getId(), param);
@@ -321,16 +340,22 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 if (ecuByteIndex == null || ecuBit == null || ecuInit == null || isSupportedParameter(ecuInit,
                         ecuByteIndex, ecuBit)) {
                     EcuDataConvertor[] convertors = new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())};
-                    EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
+                    EcuSwitch ecuSwitch = new EcuSwitchImpl(
+                            id, name, desc, address,
+                            group, subgroup, groupsize, convertors);
                     switches.add(ecuSwitch);
                     ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
                     if (id.equalsIgnoreCase(fileLoggingControllerSwitchId)) {
-                        fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
+                        fileLoggingControllerSwitch = new EcuSwitchImpl(
+                                id, name, desc, address,
+                                group, subgroup, groupsize, convertors);
                     }
                 }
             } else if (TAG_DTCODE.equals(qName)) {
                 final EcuDataConvertor[] convertors = new EcuDataConvertor[]{new EcuDtcConvertorImpl(address.getBit())};
-                final EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
+                final EcuSwitch ecuSwitch = new EcuSwitchImpl(
+                        id, name, desc, address,
+                        group, subgroup, groupsize, convertors);
                 dtcodes.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
             } else if (TAG_TRANSPORT.equals(qName)) {

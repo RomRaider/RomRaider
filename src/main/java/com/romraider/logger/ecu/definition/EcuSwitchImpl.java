@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +28,18 @@ public final class EcuSwitchImpl implements EcuSwitch {
     private final String name;
     private final String description;
     private final EcuAddress address;
+    private final String group;
+    private final String subgroup;
+    private final int groupsize;
     private final EcuDataConvertor[] convertors;
     private int selectedConvertorIndex;
     private boolean fileLogController;
     private boolean selected;
 
-    public EcuSwitchImpl(String id, String name, String description, EcuAddress address, EcuDataConvertor[] convertors) {
+    public EcuSwitchImpl(
+            String id, String name, String description, EcuAddress address,
+            String group, String subgroup, String groupsize,
+            EcuDataConvertor[] convertors) {
         checkNotNullOrEmpty(id, "id");
         checkNotNullOrEmpty(name, "name");
         checkNotNull(description, "description");
@@ -43,33 +49,58 @@ public final class EcuSwitchImpl implements EcuSwitch {
         this.name = name;
         this.description = description;
         this.address = address;
+        this.group = group;
+        this.subgroup = subgroup;
+        this.groupsize = groupsize == null ? 0 : Integer.parseInt(groupsize);
         this.convertors = convertors;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public EcuAddress getAddress() {
         return address;
     }
 
+    @Override
+    public String getGroup() {
+        return group;
+    }
+
+    @Override
+    public String getSubgroup() {
+        return subgroup;
+    }
+
+    @Override
+    public int getGroupSize() {
+        return groupsize;
+    }
+
+    @Override
     public EcuDataConvertor getSelectedConvertor() {
         return convertors[selectedConvertorIndex];
     }
 
+    @Override
     public EcuDataConvertor[] getConvertors() {
         return convertors;
     }
 
+    @Override
     public void selectConvertor(EcuDataConvertor convertor) {
         for (int i = 0; i < convertors.length; i++) {
             EcuDataConvertor dataConvertor = convertors[i];
@@ -79,14 +110,17 @@ public final class EcuSwitchImpl implements EcuSwitch {
         }
     }
 
+    @Override
     public EcuDataType getDataType() {
         return SWITCH;
     }
 
+    @Override
     public boolean isSelected() {
         return selected;
     }
 
+    @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
     }

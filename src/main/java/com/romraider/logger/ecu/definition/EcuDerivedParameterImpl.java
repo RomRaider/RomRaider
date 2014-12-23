@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,30 +50,37 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
         setEcuDatas(ecuDatas);
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public EcuAddress getAddress() {
         return address;
     }
 
+    @Override
     public EcuDataConvertor getSelectedConvertor() {
         return convertors[selectedConvertorIndex];
     }
 
+    @Override
     public EcuDataConvertor[] getConvertors() {
         return convertors;
     }
 
+    @Override
     public void selectConvertor(EcuDataConvertor convertor) {
         if (convertor != getSelectedConvertor()) {
             for (int i = 0; i < convertors.length; i++) {
@@ -86,21 +93,40 @@ public final class EcuDerivedParameterImpl implements EcuParameter {
         }
     }
 
+    @Override
     public EcuDataType getDataType() {
         return PARAMETER;
     }
 
+    @Override
     public boolean isSelected() {
         return selected;
     }
 
+    @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
 
+    @Override
     public void addConvertorUpdateListener(ConvertorUpdateListener listener) {
         checkNotNull(listener, "listener");
         listeners.add(listener);
+    }
+
+    @Override
+    public String getGroup() {
+        return null;
+    }
+
+    @Override
+    public String getSubgroup() {
+        return null;
+    }
+
+    @Override
+    public int getGroupSize() {
+        return 0;
     }
 
     private EcuAddress buildCombinedAddress(EcuData[] ecuDatas) {
