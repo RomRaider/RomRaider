@@ -157,6 +157,9 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
                 Config.PARITY.getValue(),
                 connectionProperties.getParity());
         api.setConfig(channelId, p1Max, p3Min, p4Min, loopback, dataBits, parity);
+        LOGGER.debug("J2534/ISO9141 set connection properties: bits=" +
+                connectionProperties.getDataBits() + ", parity=" +
+                connectionProperties.getParity());
     }
 
     private void stopMsgFilter() {
