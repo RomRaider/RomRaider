@@ -33,11 +33,12 @@ public final class HexUtil {
     }
 
     public static byte[] asBytes(String hex) {
+        if (null == hex) return new byte[0];
         if (hex.indexOf(' ') >= 0) {
             hex = hex.replaceAll(" ", "");
         }
-        if (hex.startsWith("0x")) {
-            hex = hex.substring(2);
+        if (hex.toLowerCase().indexOf("0x") >= 0) {
+            hex = hex.replaceAll("(?i)0x", "");
         }
         return hexToBytes(hex);
     }
