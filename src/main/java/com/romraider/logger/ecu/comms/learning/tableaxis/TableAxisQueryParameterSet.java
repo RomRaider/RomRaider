@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ public class TableAxisQueryParameterSet {
             final String id = addrStr + "-" + i;
             final EcuAddress ea = new EcuAddressImpl(addrStr, dataSize, -1);
             final EcuParameterImpl epi =
-                new EcuParameterImpl(id, addrStr, id, ea,
+                new EcuParameterImpl(id, addrStr, id, ea, null, null, null,
                     new EcuDataConvertor[] {
                         new EcuParameterConvertorImpl(
                             units, expression, "0.000", -1, storageType,

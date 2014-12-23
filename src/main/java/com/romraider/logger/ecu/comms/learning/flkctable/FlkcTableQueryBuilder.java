@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ public class FlkcTableQueryBuilder {
                                 j, k, addrStr));
                 final EcuAddress ea = new EcuAddressImpl(addrStr, dataSize, -1);
                 final EcuParameterImpl epi =
-                    new EcuParameterImpl(id, addrStr, id, ea,
+                    new EcuParameterImpl(id, addrStr, id, ea, null, null, null,
                         new EcuDataConvertor[] {
                             flkc.getLoggerData().getSelectedConvertor()
                         }
