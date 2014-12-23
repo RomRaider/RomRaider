@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ public final class GlobalAdjustManagerImpl implements GlobalAdjustManager {
                 final Collection<EcuQuery> queries = buildGlobalAdjustQueries();
                 connection.sendAddressReads(
                         queries,
-                        (byte) 0x10,
+                        settings.getDestinationTarget(),
                         new PollingStateImpl());
                 messageListener.reportMessage("Current ECU global values retrievied.");
                 final GlobalAdjustmentsPanel gap =
@@ -102,7 +102,7 @@ public final class GlobalAdjustManagerImpl implements GlobalAdjustManager {
                             writes.put(query, rpmOn);
                         }
                     }
-                    connection.sendAddressWrites(writes, (byte) 0x10);
+                    connection.sendAddressWrites(writes, settings.getDestinationTarget());
                 }
                 return 1;
             } finally {

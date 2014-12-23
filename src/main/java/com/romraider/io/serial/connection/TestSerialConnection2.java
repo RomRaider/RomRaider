@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,9 @@
 
 package com.romraider.io.serial.connection;
 
-import com.romraider.io.connection.ConnectionProperties;
-
 import static com.romraider.io.protocol.ssm.iso9141.SSMChecksumCalculator.calculateChecksum;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ADDRESS_SIZE;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.DATA_SIZE;
-import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.DIAGNOSTIC_TOOL_ID;
-import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ECU_ID;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ECU_INIT_COMMAND;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.HEADER;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.READ_ADDRESS_COMMAND;
@@ -36,10 +32,7 @@ import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.REQUEST_NON_DATA
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.WRITE_MEMORY_COMMAND;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.WRITE_MEMORY_RESPONSE;
-
-import com.romraider.logger.ecu.comms.manager.PollingState;
-import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
-import com.romraider.logger.ecu.exception.SerialCommunicationException;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.module;
 import static com.romraider.util.ByteUtil.asInt;
 import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.HexUtil.asHex;
@@ -47,9 +40,16 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ThreadUtil.sleep;
 import static java.lang.System.currentTimeMillis;
-import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
+
 import java.util.Random;
+
+import org.apache.log4j.Logger;
+
+import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
+import com.romraider.logger.ecu.exception.SerialCommunicationException;
 
 final class TestSerialConnection2 implements SerialConnection {
     private static final Logger LOGGER = getLogger(TestSerialConnection2.class);
@@ -92,10 +92,10 @@ final class TestSerialConnection2 implements SerialConnection {
                 pollState.getCurrentState() == 0 && pollState.getLastState() == 1) return 0;
         if (isEcuInitRequest()) {
             String init = "";
-            if (ECU_ID == 0x10){
+            if (module.getName().equalsIgnoreCase("ECU")){
                 init = ECU_INIT_RESPONSE;
             }
-            if (ECU_ID == 0x18){
+            if (module.getName().equalsIgnoreCase("TCU")){
                 init = ECU_INIT_RESPONSE_TCU;
             }
             return asBytes(init).length;
@@ -114,10 +114,10 @@ final class TestSerialConnection2 implements SerialConnection {
         long sleepTime = 200L;
 //        if (readResponse.length == 0) {
             if (isEcuInitRequest()) {
-                if (ECU_ID == 0x10){
+                if (module.getName().equalsIgnoreCase("ECU")){
                     System.arraycopy(asBytes(ECU_INIT_RESPONSE), 0, bytes, 0, bytes.length);
                 }
-                if (ECU_ID == 0x18){
+                if (module.getName().equalsIgnoreCase("TCU")){
                     System.arraycopy(asBytes(ECU_INIT_RESPONSE_TCU), 0, bytes, 0, bytes.length);
                 }
             } else if (isIamRequest()) {
@@ -131,8 +131,8 @@ final class TestSerialConnection2 implements SerialConnection {
                 int i = 0;
                 byte[] response = new byte[RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes()];
                 response[i++] = HEADER;
-                response[i++] = DIAGNOSTIC_TOOL_ID;
-                response[i++] = ECU_ID;
+                response[i++] = module.getTester()[0];
+                response[i++] = module.getAddress()[0];
                 response[i++] = (byte) (1 + responseData.length);
                 response[i++] = READ_ADDRESS_RESPONSE;
                 System.arraycopy(responseData, 0, response, i, responseData.length);
@@ -154,8 +154,8 @@ final class TestSerialConnection2 implements SerialConnection {
                 int i = 0;
                 byte[] response = new byte[RESPONSE_NON_DATA_BYTES + responseData.length];
                 response[i++] = HEADER;
-                response[i++] = DIAGNOSTIC_TOOL_ID;
-                response[i++] = ECU_ID;
+                response[i++] = module.getTester()[0];
+                response[i++] = module.getAddress()[0];
                 response[i++] = (byte) (1 + responseData.length);
                 response[i++] = READ_MEMORY_RESPONSE;
                 System.arraycopy(responseData, 0, response, i, responseData.length);
@@ -167,8 +167,8 @@ final class TestSerialConnection2 implements SerialConnection {
                 byte[] response = new byte[RESPONSE_NON_DATA_BYTES + numDataBytes];
                 int i = 0;
                 response[i++] = HEADER;
-                response[i++] = DIAGNOSTIC_TOOL_ID;
-                response[i++] = ECU_ID;
+                response[i++] = module.getTester()[0];
+                response[i++] = module.getAddress()[0];
                 response[i++] = (byte) (numDataBytes + 1);
                 response[i++] = WRITE_MEMORY_RESPONSE;
                 System.arraycopy(request, 8, response, i, numDataBytes);
@@ -265,8 +265,8 @@ final class TestSerialConnection2 implements SerialConnection {
         int i = 0;
         byte[] response = new byte[RESPONSE_NON_DATA_BYTES + calculateNumResponseDataBytes()];
         response[i++] = HEADER;
-        response[i++] = DIAGNOSTIC_TOOL_ID;
-        response[i++] = ECU_ID;
+        response[i++] = module.getTester()[0];
+        response[i++] = module.getAddress()[0];
         response[i++] = (byte) (1 + responseData.length);
         response[i++] = READ_ADDRESS_RESPONSE;
         System.arraycopy(responseData, 0, response, i, responseData.length);

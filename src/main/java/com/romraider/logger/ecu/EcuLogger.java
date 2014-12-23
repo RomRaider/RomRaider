@@ -75,6 +75,7 @@ import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +131,7 @@ import com.romraider.logger.ecu.definition.EvaluateEcuDefinition;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.definition.Module;
 import com.romraider.logger.ecu.exception.ConfigurationException;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.profile.UserProfile;
@@ -138,6 +140,7 @@ import com.romraider.logger.ecu.profile.UserProfileItem;
 import com.romraider.logger.ecu.profile.UserProfileItemImpl;
 import com.romraider.logger.ecu.profile.UserProfileLoader;
 import com.romraider.logger.ecu.profile.UserProfileLoaderImpl;
+import com.romraider.logger.ecu.ui.CustomButtonGroup;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.DataRegistrationBrokerImpl;
 import com.romraider.logger.ecu.ui.EcuDataComparator;
@@ -207,8 +210,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
     private static final String FILE_NAME_EXTENTION = "Right-click to select or type text to add to the saved logfile name.";
-    private static final String ECU_TEXT = "Engine Control Unit Polling. Uncheck both ECU & TCU for Externals logging only";
-    private static final String TCU_TEXT = "Transmission Control Unit Polling. Un-check both ECU & TCU for Externals logging only";
+//    private static final String ECU_TEXT = "Engine Control Unit Polling. Uncheck both ECU & TCU for Externals logging only";
+//    private static final String TCU_TEXT = "Transmission Control Unit Polling. Un-check both ECU & TCU for Externals logging only";
     private static final String[] LOG_FILE_TEXT = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
         "4th PT","5th PT","6th PT",
         "1st WOT","2nd WOT","3rd WOT",
@@ -216,8 +219,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     "cruising"};
     private static final String TOGGLE_LIST_TT_TEXT = "Hides the parameter list and saves the state on exit (F11)";
     private static final String UNSELECT_ALL_TT_TEXT = "Un-select all selected parameters/switches on all tabs! (F9)";
-    private static final byte ECU_ID = (byte) 0x10;
-    private static final byte TCU_ID = (byte) 0x18;
+//    private static final byte ECU_ID = (byte) 0x10;
+//    private static final byte TCU_ID = (byte) 0x18;
     private static final String LOG_TO_FILE_FK = "F1";
     private static final String LOG_TO_FILE_ICON = "/graphics/logger_log_to_file.png";
     private static final String LOG_TO_FILE_START = "Start file log";
@@ -280,6 +283,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private final String HOME = System.getProperty("user.home");
     private StatusIndicator statusIndicator;
     private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
+    private Map<String, Collection<Module>> transportList = new HashMap<String, Collection<Module>>();
 
     public EcuLogger() {
         super(ECU_LOGGER_TITLE);
@@ -538,6 +542,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 loadEcuParams(ecuParams);
                 loadEcuSwitches(dataLoader.getEcuSwitches());
                 dtcodes = dataLoader.getEcuCodes();
+                transportList = dataLoader.getTransportList();
                 final EcuSwitch fileLogCntrlSw = dataLoader.getFileLoggingControllerSwitch();
                 if (fileLogCntrlSw != null && target.equals("ECU")) initFileLoggingController(fileLogCntrlSw);
                 getSettings().setLoggerConnectionProperties(dataLoader.getConnectionProperties());
@@ -1282,54 +1287,99 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
-
-        final JCheckBox ecuCheckBox = new JCheckBox("ECU");
-        final JCheckBox tcuCheckBox = new JCheckBox("TCU");
-        ecuCheckBox.setToolTipText(ECU_TEXT);
-        tcuCheckBox.setToolTipText(TCU_TEXT);
-        ecuCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                stopLogging();
-                tcuCheckBox.setSelected(false);
-                if (ecuCheckBox.isSelected()) {
-                    getSettings().setLogExternalsOnly(false);
-                    setTargetEcu();
-                }
-                else {
-                    getSettings().setLogExternalsOnly(true);
-                }
-                startLogging();
+        
+        final CustomButtonGroup moduleGroup = new CustomButtonGroup();
+//        final Map<String, JCheckBox> checkBoxes = new HashMap<String, JCheckBox>();
+        
+//        final JCheckBox ecuCheckBox = new JCheckBox("ECU");
+//        final JCheckBox tcuCheckBox = new JCheckBox("TCU");
+//        ecuCheckBox.setEnabled(false);
+//        tcuCheckBox.setEnabled(false);
+//        ecuCheckBox.setToolTipText(ECU_TEXT);
+//        tcuCheckBox.setToolTipText(TCU_TEXT);
+        final Collection<Module> modules = transportList.get(getSettings().getTransportProtocol().toLowerCase());
+        for (Module module : modules) {
+            final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
+            final String tipText = String.format(
+                    "%s Polling. Uncheck all boxes for Externals logging only.",
+                    module.getDescription());
+            cb.setToolTipText(tipText);
+            if (getSettings().getTargetModule().equalsIgnoreCase(module.getName())) {
+                cb.setSelected(true);
+                setTarget(module.getName());
             }
-        });
-        tcuCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                stopLogging();
-                ecuCheckBox.setSelected(false);
-                if (tcuCheckBox.isSelected()) {
-                    getSettings().setLogExternalsOnly(false);
-                    setTargetTcu();
+            cb.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    stopLogging();
+                    final JCheckBox source = (JCheckBox) actionEvent.getSource();
+                    if (source.isSelected()) {
+                        getSettings().setLogExternalsOnly(false);
+                        setTarget(source.getText());
+                    }
+                    else {
+                        getSettings().setLogExternalsOnly(true);
+                    }
+                    startLogging();
                 }
-                else {
-                    getSettings().setLogExternalsOnly(true);
-                }
-                startLogging();
-            }
-        });
-        if (getSettings().getDestinationId() == 0x10) {
-            ecuCheckBox.setSelected(true);
-            tcuCheckBox.setSelected(false);
-            setTargetEcu();
-        }
-        else {
-            tcuCheckBox.setSelected(true);
-            ecuCheckBox.setSelected(false);
-            setTargetTcu();
-        }
+            });
 
-        comboBoxPanel.add(ecuCheckBox);
-        comboBoxPanel.add(tcuCheckBox);
+//                    cb.setEnabled(true);
+            moduleGroup.add(cb);
+            comboBoxPanel.add(cb);
+//                    if ("ECU".equalsIgnoreCase(module.getName())) {
+//                        ecuCheckBox.setEnabled(true);
+//                    }
+//                    if ("TCU".equalsIgnoreCase(module.getName())) {
+//                        tcuCheckBox.setEnabled(true);
+//                    }
+        }
+        setTarget(getSettings().getTargetModule().toUpperCase());
+
+//        ecuCheckBox.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//                stopLogging();
+//                tcuCheckBox.setSelected(false);
+//                if (ecuCheckBox.isSelected()) {
+//                    getSettings().setLogExternalsOnly(false);
+//                    setTargetEcu();
+//                }
+//                else {
+//                    getSettings().setLogExternalsOnly(true);
+//                }
+//                startLogging();
+//            }
+//        });
+//        tcuCheckBox.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//                stopLogging();
+//                ecuCheckBox.setSelected(false);
+//                if (tcuCheckBox.isSelected()) {
+//                    getSettings().setLogExternalsOnly(false);
+//                    setTargetTcu();
+//                }
+//                else {
+//                    getSettings().setLogExternalsOnly(true);
+//                }
+//                startLogging();
+//            }
+//        });
+//        if (getSettings().getDestinationId() == 0x10 ||
+//                getSettings().getDestinationId() == 0x12) {
+//            ecuCheckBox.setSelected(true);
+//            tcuCheckBox.setSelected(false);
+//            setTargetEcu();
+//        }
+//        else {
+//            tcuCheckBox.setSelected(true);
+//            ecuCheckBox.setSelected(false);
+//            setTargetTcu();
+//        }
+//
+//        comboBoxPanel.add(ecuCheckBox);
+//        comboBoxPanel.add(tcuCheckBox);
 
         JButton reconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_restart.png")));
         reconnectButton.setPreferredSize(new Dimension(25, 25));
@@ -1366,13 +1416,24 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return comboBoxPanel;
     }
 
+    private void setTarget(String name) {
+        final Collection<Module> modules = transportList.get(
+                getSettings().getTransportProtocol().toLowerCase());
+        for (Module module: modules) {
+            if (module.getName().equalsIgnoreCase(name)) {
+                getSettings().setDestinationTarget(module);
+            }
+        }
+        target = name;
+    }
+
     private void setTargetEcu() {
-        getSettings().setDestinationId(ECU_ID);
+//        getSettings().setDestinationId(ECU_ID);
         target = "ECU";
     }
 
     private void setTargetTcu() {
-        getSettings().setDestinationId(TCU_ID);
+//        getSettings().setDestinationId(TCU_ID);
         target = "TCU";
     }
 

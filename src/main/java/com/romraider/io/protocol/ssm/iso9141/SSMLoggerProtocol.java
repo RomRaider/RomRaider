@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,41 +19,43 @@
 
 package com.romraider.io.protocol.ssm.iso9141;
 
-import com.romraider.io.protocol.Protocol;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ADDRESS_SIZE;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.DATA_SIZE;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.REQUEST_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.iso9141.SSMResponseProcessor.extractResponseData;
 import static com.romraider.io.protocol.ssm.iso9141.SSMResponseProcessor.filterRequestFromResponse;
-
-import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
-import com.romraider.logger.ecu.comms.manager.PollingState;
-import com.romraider.logger.ecu.comms.query.EcuInit;
-import com.romraider.logger.ecu.comms.query.EcuInitCallback;
-import com.romraider.logger.ecu.comms.query.EcuQuery;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static java.lang.System.arraycopy;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.romraider.io.protocol.Protocol;
+import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.comms.query.EcuInit;
+import com.romraider.logger.ecu.comms.query.EcuInitCallback;
+import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.definition.Module;
+
 public final class SSMLoggerProtocol implements LoggerProtocol {
     private final Protocol protocol = new SSMProtocol();
 
-    public byte[] constructEcuInitRequest(byte id) {
-        return protocol.constructEcuInitRequest(id);
+    public byte[] constructEcuInitRequest(Module module) {
+        return protocol.constructEcuInitRequest(module);
     }
 
-    public byte[] constructEcuResetRequest(byte id) {
-        return protocol.constructEcuResetRequest(id);
+    public byte[] constructEcuResetRequest(Module module) {
+        return protocol.constructEcuResetRequest(module);
     }
 
-    public byte[] constructReadAddressRequest(byte id, Collection<EcuQuery> queries) {
+    public byte[] constructReadAddressRequest(Module module, Collection<EcuQuery> queries) {
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
-        return protocol.constructReadAddressRequest(id, convertToByteAddresses(filteredQueries));
+        return protocol.constructReadAddressRequest(module, convertToByteAddresses(filteredQueries));
     }
 
     public byte[] constructReadAddressResponse(Collection<EcuQuery> queries, PollingState pollState) {
@@ -116,9 +118,9 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
     }
 
     public byte[] constructWriteAddressRequest(
-            byte id, byte[] writeAddress, byte value) {
+            Module module, byte[] writeAddress, byte value) {
 
-        return protocol.constructWriteAddressRequest(id, writeAddress, value);
+        return protocol.constructWriteAddressRequest(module, writeAddress, value);
     }
 
     public void processWriteResponse(byte[] data, byte[] response) {

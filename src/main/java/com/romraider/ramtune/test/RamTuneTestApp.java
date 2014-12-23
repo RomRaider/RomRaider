@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ThreadUtil.runAsDaemon;
 import static com.romraider.util.ThreadUtil.sleep;
+import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static java.awt.FlowLayout.LEFT;
 import static java.awt.Font.PLAIN;
 import static java.awt.GridBagConstraints.BOTH;
@@ -49,8 +50,12 @@ import java.awt.event.WindowEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -73,6 +78,9 @@ import com.romraider.io.serial.port.SerialPortRefresher;
 import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocol;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
+import com.romraider.logger.ecu.definition.EcuDataLoader;
+import com.romraider.logger.ecu.definition.EcuDataLoaderImpl;
+import com.romraider.logger.ecu.definition.Module;
 import com.romraider.logger.ecu.ui.SerialPortComboBox;
 import com.romraider.ramtune.test.command.executor.CommandExecutor;
 import com.romraider.ramtune.test.command.executor.CommandExecutorImpl;
@@ -107,13 +115,27 @@ public final class RamTuneTestApp extends AbstractFrame {
     private final JCheckBox blockRead = new JCheckBox("Block Read");
     private final SerialPortComboBox portsComboBox;
     private final JComboBox commandComboBox;
-    private static byte ecuId = 0x10;
+    private static Module module;
     private static String userTp;
     private static String userLibrary;
+    private static String target;
+    private static Settings settings = SettingsManager.getSettings();
+    private Map<String, Collection<Module>> transportList =
+            new HashMap<String, Collection<Module>>();
 
     public RamTuneTestApp(String title) {
         super(title);
-        Settings settings = SettingsManager.getSettings();
+        final EcuDataLoader dataLoader = new EcuDataLoaderImpl();
+        if (isNullOrEmpty(settings.getLoggerDefinitionFilePath())) {
+            showErrorDialog("A Logger definition file needs to be configured before connecting.");
+            windowClosing(null);
+        }
+        dataLoader.loadConfigFromXml(
+                settings.getLoggerDefinitionFilePath(),
+                settings.getLoggerProtocol(),
+                settings.getFileLoggingControllerSwitchId(), null);
+        transportList = dataLoader.getTransportList();
+        target = settings.getTargetModule();
         portsComboBox = new SerialPortComboBox();
         userTp = settings.getTransportProtocol();
         userLibrary = settings.getJ2534Device();
@@ -121,7 +143,7 @@ public final class RamTuneTestApp extends AbstractFrame {
         // Read Address blocks only seems to work with ISO9141, it
         // may not be implemented in the ECU for ISO15765
         final LoggerProtocol lp = ProtocolFactory.getProtocol(
-                "SSM",
+                settings.getLoggerProtocol(),
                 ISO9141
                 );
         protocol = lp.getProtocol();
@@ -267,13 +289,14 @@ public final class RamTuneTestApp extends AbstractFrame {
                     @Override
                     public void run() {
                         button.setEnabled(false);
+                        CommandExecutor commandExecutor = null;
                         try {
                             ConnectionProperties connectionProperties = new RamTuneTestAppConnectionProperties(protocol.getDefaultConnectionProperties(), getSendTimeout());
-                            final CommandExecutor commandExecutor = new CommandExecutorImpl(connectionProperties, (String) portsComboBox.getSelectedItem());
+                            commandExecutor = new CommandExecutorImpl(connectionProperties, (String) portsComboBox.getSelectedItem());
                             final CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
                             if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
                                 StringBuilder builder = new StringBuilder();
-                                List<byte[]> commands = commandGenerator.createCommands(ecuId, getData(), getAddress(), getLength(), getBlockRead());
+                                List<byte[]> commands = commandGenerator.createCommands(module, getData(), getAddress(), getLength(), getBlockRead());
                                 for (byte[] command : commands) {
                                     appendResponseLater("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
                                     byte[] response = protocol.preprocessResponse(command, commandExecutor.executeCommand(command), pollMode);
@@ -282,10 +305,10 @@ public final class RamTuneTestApp extends AbstractFrame {
                                 }
                                 appendResponseLater("DATA [Raw]:\t" + builder.toString() + "\n\n");
                             }
-                            commandExecutor.close();
                         } catch (Exception ex) {
                             reportError(ex);
                         } finally {
+                            commandExecutor.close();
                             button.setEnabled(true);
                         }
                     }
@@ -392,28 +415,62 @@ public final class RamTuneTestApp extends AbstractFrame {
         JPanel panel = new JPanel(new FlowLayout(LEFT));
         panel.add(buildComPorts());
         panel.add(buildSendTimeout());
-        final JCheckBox ecuCheckBox = new JCheckBox("ECU");
-        final JCheckBox tcuCheckBox = new JCheckBox("TCU");
-        ecuCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                tcuCheckBox.setSelected(false);
-                ecuId = 0x10;
-            }
-        });
-        tcuCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                ecuCheckBox.setSelected(false);
-                ecuId = 0x18;
-            }
-        });
-        ecuCheckBox.setSelected(true);
+//        final JCheckBox ecuCheckBox = new JCheckBox("ECU");
+//        final JCheckBox tcuCheckBox = new JCheckBox("TCU");
+//        ecuCheckBox.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//                tcuCheckBox.setSelected(false);
+//                ecuId = 0x12;
+//            }
+//        });
+//        tcuCheckBox.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//                ecuCheckBox.setSelected(false);
+//                ecuId = 0x18;
+//            }
+//        });
+//        ecuCheckBox.setSelected(true);
+//
+//        panel.add(ecuCheckBox);
+//        panel.add(tcuCheckBox);
 
-        panel.add(ecuCheckBox);
-        panel.add(tcuCheckBox);
+        final ButtonGroup moduleGroup = new ButtonGroup();
+        final Collection<Module> modules = transportList.get(settings.getTransportProtocol().toLowerCase());
+        for (Module module : modules) {
+            final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
+            final String tipText = String.format(
+                    "%s Polling.", module.getDescription());
+            cb.setToolTipText(tipText);
+            if (settings.getTargetModule().equalsIgnoreCase(module.getName())) {
+                cb.setSelected(true);
+                setTarget(module.getName());
+            }
+            cb.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    final JCheckBox source = (JCheckBox) actionEvent.getSource();
+                    if (source.isSelected()) {
+                        setTarget(source.getText());
+                    }
+                }
+            });
 
-        return panel;
+            moduleGroup.add(cb);
+            panel.add(cb);
+        }
+    return panel;
+    }
+
+    private void setTarget(String name) {
+        final Collection<Module> modules = transportList.get(
+                settings.getTransportProtocol().toLowerCase());
+        for (Module module: modules) {
+            if (module.getName().equalsIgnoreCase(name)) {
+                RamTuneTestApp.module = module;
+            }
+        }
     }
 
     private Component buildSendTimeout() {
@@ -459,7 +516,7 @@ public final class RamTuneTestApp extends AbstractFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("SSM Read/Write");
+                RamTuneTestApp ramTuneTestApp = new RamTuneTestApp("Control Module Read/Write");
                 ramTuneTestApp.setIconImage(new ImageIcon( getClass().getResource("/graphics/romraider-ico.gif")).getImage());
                 ramTuneTestApp.setDefaultCloseOperation(defaultCloseOperation);
                 ramTuneTestApp.addWindowListener(ramTuneTestApp);
@@ -472,7 +529,7 @@ public final class RamTuneTestApp extends AbstractFrame {
 
     @Override
     public void windowClosing(WindowEvent e) {
-        Settings settings = SettingsManager.getSettings();
+        setTarget(target);
         settings.setTransportProtocol(userTp);
         settings.setJ2534Device(userLibrary);
     }

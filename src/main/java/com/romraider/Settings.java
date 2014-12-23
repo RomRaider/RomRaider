@@ -36,6 +36,7 @@ import java.util.Vector;
 
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.logger.ecu.definition.EcuDefinition;
+import com.romraider.logger.ecu.definition.Module;
 import com.romraider.logger.external.phidget.interfacekit.io.IntfKitSensor;
 
 public class Settings implements Serializable {
@@ -216,7 +217,8 @@ public class Settings implements Serializable {
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
     private Map<String, String> loggerPluginPorts;
     private boolean loggerRefreshMode;
-    private static byte loggerDestinationId = 0x10;
+    private static String loggerTargetModule = "ecu";
+    private static Module loggerDestinationTarget;
     private boolean fastPoll = true;
     private double loggerDividerLocation = 400;
     private String loggerDebuggingLevel = "info";
@@ -649,12 +651,20 @@ public class Settings implements Serializable {
         return loggerRefreshMode;
     }
 
-    public void setDestinationId(byte id) {
-        loggerDestinationId = id;
+    public void setTargetModule(String string) {
+        loggerTargetModule = string;
     }
 
-    public byte getDestinationId() {
-        return loggerDestinationId;
+    public String getTargetModule() {
+        return loggerTargetModule;
+    }
+
+    public void setDestinationTarget(Module module) {
+        loggerDestinationTarget = module;
+    }
+
+    public Module getDestinationTarget() {
+        return loggerDestinationTarget;
     }
 
     public void setFastPoll(boolean state) {

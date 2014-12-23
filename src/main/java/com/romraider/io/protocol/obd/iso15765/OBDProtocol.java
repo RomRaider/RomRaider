@@ -21,7 +21,7 @@ package com.romraider.io.protocol.obd.iso15765;
 
 import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.HexUtil.asHex;
-import static com.romraider.util.ParamChecker.checkGreaterThanZero;
+import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static java.lang.System.arraycopy;
 
@@ -37,22 +37,13 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.SSMEcuInit;
 import com.romraider.logger.ecu.definition.EcuDefinition;
+import com.romraider.logger.ecu.definition.Module;
 import com.romraider.logger.ecu.exception.InvalidResponseException;
 import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
 import com.romraider.util.SettingsManager;
 
 public final class OBDProtocol implements Protocol {
-    private static final byte[] ECU_TESTER = 
-            new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe0};
-    private static final byte[] TCU_TESTER = 
-            new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe1};
-    private static byte[] ECU_CALID = 
-            new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe8};
-    private static final byte[] TCU_CALID = 
-            new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe9};
     private final ByteArrayOutputStream bb = new ByteArrayOutputStream(255);
-    private static byte[] TESTER = ECU_TESTER;
-    public static byte[] ECU_ID = ECU_CALID;
     public static final byte OBD_INIT_COMMAND = (byte) 0x01;
     public static final byte OBD_INIT_RESPONSE = (byte) 0x41;
     public static final byte OBD_INFO_COMMAND = (byte) 0x09;
@@ -61,11 +52,12 @@ public final class OBDProtocol implements Protocol {
     public static final byte OBD_RESET_RESPONSE = (byte) 0x44;
     public static final byte OBD_NRC = (byte) 0x7F;
     public static final int RESPONSE_NON_DATA_BYTES = 5;
+    public static Module module;
     
     @Override
-    public byte[] constructEcuInitRequest(byte id) {
-        checkGreaterThanZero(id, "ECU_ID");
-        setIDs(id);
+    public byte[] constructEcuInitRequest(Module module) {
+        checkNotNull(module, "module");
+        OBDProtocol.module = module;
         final byte[] request = buildRequest(
                     OBD_INFO_COMMAND, true, new byte[]{4});
         return request;
@@ -73,7 +65,7 @@ public final class OBDProtocol implements Protocol {
 
     @Override
     public byte[] constructWriteMemoryRequest(
-            byte id, byte[] address, byte[] values) {
+            Module module, byte[] address, byte[] values) {
 
         throw new UnsupportedProtocolException(
                 "Write memory command is not supported on OBD for address: " + 
@@ -82,7 +74,7 @@ public final class OBDProtocol implements Protocol {
 
     @Override
     public byte[] constructWriteAddressRequest(
-            byte id, byte[] address, byte value) {
+            Module module, byte[] address, byte value) {
 
         throw new UnsupportedProtocolException(
                 "Write Address command is not supported on OBD for address: " + 
@@ -91,7 +83,7 @@ public final class OBDProtocol implements Protocol {
 
     @Override
     public byte[] constructReadMemoryRequest(
-            byte id, byte[] address, int numBytes) {
+            Module module, byte[] address, int numBytes) {
 
         throw new UnsupportedProtocolException(
                 "Read memory command is not supported on OBD for address: " + 
@@ -99,10 +91,10 @@ public final class OBDProtocol implements Protocol {
     }
 
     @Override
-    public byte[] constructReadAddressRequest(byte id, byte[][] addresses) {
-        checkGreaterThanZero(id, "ECU_ID");
+    public byte[] constructReadAddressRequest(Module module, byte[][] addresses) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(addresses, "addresses");
-        setIDs(id);
+        OBDProtocol.module = module;
         return buildRequest(OBD_INIT_COMMAND, true, addresses);
     }
 
@@ -131,7 +123,7 @@ public final class OBDProtocol implements Protocol {
         byte responseType = processedResponse[4];
         if (responseType != OBD_INFO_RESPONSE) {
             throw new InvalidResponseException(
-                    "Unexpected ECU Info response type: " + 
+                    "Unexpected " + module.getName() + " Info response type: " + 
                     asHex(new byte[]{responseType}));
         }
     }
@@ -160,8 +152,9 @@ public final class OBDProtocol implements Protocol {
     }
 
     @Override
-    public byte[] constructEcuResetRequest(byte id) {
-        checkGreaterThanZero(id, "ECU_ID");
+    public byte[] constructEcuResetRequest(Module module) {
+        checkNotNull(module, "module");
+        OBDProtocol.module = module;
         //  000007E0 04
         return buildRequest((byte) 0, false, new byte[]{OBD_RESET_COMMAND});
     }
@@ -223,7 +216,7 @@ public final class OBDProtocol implements Protocol {
 
         bb.reset();
         try {
-            bb.write(TESTER);
+            bb.write(module.getTester());
             if (addCommand) {
                 bb.write(command);
             }
@@ -234,14 +227,5 @@ public final class OBDProtocol implements Protocol {
             e.printStackTrace();
         }
         return bb.toByteArray();
-    }
-
-    private void setIDs(byte id) {
-        ECU_ID = ECU_CALID;
-        TESTER = ECU_TESTER;
-        if (id == 0x18) {
-            ECU_ID = TCU_CALID;
-            TESTER = TCU_TESTER;
-        }
     }
 }

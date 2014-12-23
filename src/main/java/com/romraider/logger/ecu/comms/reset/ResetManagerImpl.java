@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,15 +40,14 @@ public final class ResetManagerImpl implements ResetManager {
 
     @Override
     public boolean resetEcu() {
-        String target = "ECU";
+        final Settings settings = SettingsManager.getSettings();
+        final String target = settings.getDestinationTarget().getName();
         try {
-            Settings settings = SettingsManager.getSettings();
             LoggerConnection connection = getConnection(settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
-                if (settings.getDestinationId() == 0x18) target = "TCU";
                 messageListener.reportMessage("Sending " + target + " Reset...");
-                connection.ecuReset(settings.getDestinationId());
+                connection.ecuReset(settings.getDestinationTarget());
                 messageListener.reportMessage("Sending " + target + " Reset...done.");
                 return true;
             } finally {

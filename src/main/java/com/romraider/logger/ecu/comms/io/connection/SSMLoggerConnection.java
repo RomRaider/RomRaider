@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.definition.Module;
 import com.romraider.util.SettingsManager;
 
 public final class SSMLoggerConnection implements LoggerConnection {
@@ -58,8 +59,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
     }
 
     @Override
-    public void ecuReset(byte id) {
-        byte[] request = protocol.constructEcuResetRequest(id);
+    public void ecuReset(Module module) {
+        byte[] request = protocol.constructEcuResetRequest(module);
         LOGGER.debug("Ecu Reset Request  ---> " + asHex(request));
         byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
@@ -68,8 +69,8 @@ public final class SSMLoggerConnection implements LoggerConnection {
     }
 
     @Override
-    public void ecuInit(EcuInitCallback callback, byte id) {
-        byte[] request = protocol.constructEcuInitRequest(id);
+    public void ecuInit(EcuInitCallback callback, Module module) {
+        byte[] request = protocol.constructEcuInitRequest(module);
         LOGGER.debug("Ecu Init Request  ---> " + asHex(request));
         byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
@@ -80,13 +81,13 @@ public final class SSMLoggerConnection implements LoggerConnection {
     @Override
     public final void sendAddressReads(
             Collection<EcuQuery> queries,
-            byte id,
+            Module module,
             PollingState pollState) {
 
         // Determine if ISO15765 is selected and then if TCU is selected.  If
         // both are true then proceed to split queries so max CAN data packet
         // contains 8 or less bytes, otherwise don't split up the queries.
-        if (settings.isCanBus() && id == 0x18) {
+        if (settings.isCanBus() && module.getName().equalsIgnoreCase("TCU")) {
             tcuQueries = (ArrayList<EcuQuery>) queries;
             final int tcuQueryListLength = tcuQueries.size();
             for (int i = 0; i < tcuQueryListLength; i++) {
@@ -94,7 +95,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
                 tcuSubQuery.add(tcuQueries.get(i));
                 final int addrLength = tcuQueries.get(i).getAddresses().length;
                 final byte[] request = protocol.constructReadAddressRequest(
-                        id, tcuSubQuery);
+                        module, tcuSubQuery);
                 byte[] response = new byte[0];
                 if (addrLength == 1) {
                     LOGGER.debug("TCU CAN Request  ---> " + asHex(request));
@@ -105,7 +106,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
                 if (addrLength > 1) {
                     response = SSMLoggerCANSubQuery.doSubQuery(
                             (ArrayList<EcuQuery>) tcuSubQuery, manager,
-                            protocol, id, pollState);
+                            protocol, module, pollState);
                 }
                 final byte[] processedResponse = protocol.preprocessResponse(
                         request, response, pollState);
@@ -116,7 +117,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
         }
         else {
             final byte[] request = protocol.constructReadAddressRequest(
-                    id, queries);
+                    module, queries);
             if (pollState.getCurrentState() == 0) {
                 LOGGER.debug("Mode:" + pollState.getCurrentState() +
                         " ECU Request  ---> " + asHex(request));
@@ -145,13 +146,13 @@ public final class SSMLoggerConnection implements LoggerConnection {
 
     @Override
     public final void sendAddressWrites(
-            Map<EcuQuery, byte[]> writeQueries, byte id) {
+            Map<EcuQuery, byte[]> writeQueries, Module module) {
 
         for (EcuQuery writeKey : writeQueries.keySet()) {
             if (writeKey.getBytes().length == 3) {
                 final byte[] request =
                         protocol.constructWriteAddressRequest(
-                                id,
+                                module,
                                 writeKey.getBytes(),
                                 writeQueries.get(writeKey)[0]);
 

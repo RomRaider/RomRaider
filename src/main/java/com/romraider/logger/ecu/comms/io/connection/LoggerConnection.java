@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,19 +22,21 @@ package com.romraider.logger.ecu.comms.io.connection;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.definition.Module;
+
 import java.util.Collection;
 import java.util.Map;
 
 public interface LoggerConnection {
-    void ecuReset(byte id);
+    void ecuReset(Module module);
 
-    void ecuInit(EcuInitCallback callback, byte id);
+    void ecuInit(EcuInitCallback callback, Module module);
 
-    void sendAddressReads(Collection<EcuQuery> queries, byte id, PollingState pollState);
+    void sendAddressReads(Collection<EcuQuery> queries, Module module, PollingState pollState);
     
     void clearLine();
 
     void close();
 
-    void sendAddressWrites(Map<EcuQuery, byte[]> writeQueries, byte id);
+    void sendAddressWrites(Map<EcuQuery, byte[]> writeQueries, Module module);
 }

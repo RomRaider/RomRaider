@@ -19,8 +19,10 @@
 
 package com.romraider.logger.ecu.comms.io.protocol;
 
+import com.romraider.logger.ecu.definition.Module;
+
 
 public interface LoggerProtocolOBD extends LoggerProtocol {
 
-    byte[] constructReadPidRequest(byte id, byte[] pid);
+    byte[] constructReadPidRequest(Module module, byte[] pid);
 }

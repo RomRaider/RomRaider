@@ -145,7 +145,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                 LOGGER.info(message);
                 connection.sendAddressReads(
                         queries,
-                        (byte) 0x10,
+                        settings.getDestinationTarget(),
                         new PollingStateImpl());
                 LOGGER.info("Current vehicle info & A/F values retrieved.");
 
@@ -163,7 +163,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                     LOGGER.info(message);
                     connection.sendAddressReads(
                             queries,
-                            (byte) 0x10,
+                            settings.getDestinationTarget(),
                             new PollingStateImpl());
                     LOGGER.info("A/F Learning ranges retrieved.");
                     afRanges = formatRanges(queries, "%.2f");
@@ -178,7 +178,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                     LOGGER.info(message);
                     connection.sendAddressReads(
                             queries,
-                            (byte) 0x10,
+                            settings.getDestinationTarget(),
                             new PollingStateImpl());
                     LOGGER.info("FLKC Load ranges retrieved.");
                     flkcLoad = formatRanges(queries, "%.2f");
@@ -193,7 +193,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                     LOGGER.info(message);
                     connection.sendAddressReads(
                             queries,
-                            (byte) 0x10,
+                            settings.getDestinationTarget(),
                             new PollingStateImpl());
                     LOGGER.info("FLKC RPM ranges retrieved.");
                     flkcRpm = formatRpmRanges(queries);
@@ -219,7 +219,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                         LOGGER.info(message);
                         connection.sendAddressReads(
                                 queries,
-                                (byte) 0x10,
+                                settings.getDestinationTarget(),
                                 new PollingStateImpl());
                         LOGGER.info("FLKC row " + i + " values retrieved.");               
                     }

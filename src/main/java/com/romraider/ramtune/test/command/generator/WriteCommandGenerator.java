@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider.ramtune.test.command.generator;
 
+import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 import java.nio.ByteBuffer;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.romraider.io.protocol.Protocol;
+import com.romraider.logger.ecu.definition.Module;
 import com.romraider.util.ByteUtil;
 
 public final class WriteCommandGenerator extends AbstractCommandGenerator {
@@ -35,8 +37,9 @@ public final class WriteCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public List<byte[]> createCommands(byte id, byte[] data, byte[] address,
+    public List<byte[]> createCommands(Module module, byte[] data, byte[] address,
             int length, boolean blockRead) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(data, "data");
         final List<byte[]> commands = new ArrayList<byte[]>();
@@ -44,7 +47,7 @@ public final class WriteCommandGenerator extends AbstractCommandGenerator {
             int singleAddress = ByteUtil.asUnsignedInt(address) + i;
             byte[] singleAddrBytes = intToByteArray(singleAddress);
             commands.add(
-                    protocol.constructWriteAddressRequest(id, singleAddrBytes, data[i]));
+                    protocol.constructWriteAddressRequest(module, singleAddrBytes, data[i]));
         }
         return commands;
     }

@@ -38,6 +38,7 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.definition.Module;
 
 public final class OBDLoggerConnection implements LoggerConnection {
     private static final Logger LOGGER = getLogger(OBDLoggerConnection.class);
@@ -55,8 +56,8 @@ public final class OBDLoggerConnection implements LoggerConnection {
     }
 
     @Override
-    public void ecuReset(byte id) {
-        byte[] request = protocol.constructEcuResetRequest(id);
+    public void ecuReset(Module module) {
+        byte[] request = protocol.constructEcuResetRequest(module);
         LOGGER.debug(String.format("OBD Reset Request  ---> %s",
                 asHex(request)));
         byte[] response = manager.send(request);
@@ -70,9 +71,9 @@ public final class OBDLoggerConnection implements LoggerConnection {
     @Override
     // Build an init string similar to the SSM version so the logger definition
     // can reference supported parameters with ecubyte/bit attributes. 
-    public void ecuInit(EcuInitCallback callback, byte id) {
+    public void ecuInit(EcuInitCallback callback, Module module) {
         final byte[] processedResponse = new byte[46];
-        final byte[] request = protocol.constructEcuInitRequest(id);
+        final byte[] request = protocol.constructEcuInitRequest(module);
         LOGGER.debug(String.format("OBD Calibration ID Request  ---> %s",
                 asHex(request)));
         final byte[] tmp = manager.send(request);
@@ -94,7 +95,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
         int i = 13;
         for (byte pid : supportedPidsPid) {
             final byte[] pidRequest = protocol.constructReadPidRequest(
-                    id, new byte[]{pid});
+                    module, new byte[]{pid});
             LOGGER.debug(String.format("OBD PID Group %02X Request  ---> %s",
                     pid, asHex(pidRequest)));
             final byte[] pidtmp = manager.send(pidRequest);
@@ -113,7 +114,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
         // the logger definition to indicate supported switches.
         if ((processedResponse[25] & 0x08) > 0) {
             final byte[] aiRequest = protocol.constructReadPidRequest(
-                    id, new byte[]{0x65});
+                    module, new byte[]{0x65});
             LOGGER.debug(String.format(
                     "OBD Auxiliary Inputs Support Request  ---> %s",
                     asHex(aiRequest)));
@@ -133,7 +134,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
     @Override
     public final void sendAddressReads(
             Collection<EcuQuery> queries,
-            byte id, 
+            Module module, 
             PollingState pollState) {
 
         final int obdQueryListLength = queries.size();
@@ -142,7 +143,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
                 obdQueries.add(((ArrayList<EcuQuery>) queries).get(j));
             }
             final byte[] request = protocol.constructReadAddressRequest(
-                    id, obdQueries);
+                    module, obdQueries);
             LOGGER.debug(String.format("Mode:%d OBD Request  ---> %s",
                     pollState.getCurrentState(), asHex(request)));
 
@@ -170,7 +171,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
     }
 
     @Override
-    public void sendAddressWrites(Map<EcuQuery, byte[]> writeQueries, byte id) {
+    public void sendAddressWrites(Map<EcuQuery, byte[]> writeQueries, Module module) {
         throw new UnsupportedOperationException();
     }
 }
