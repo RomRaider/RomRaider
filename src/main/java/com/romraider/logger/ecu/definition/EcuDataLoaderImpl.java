@@ -44,7 +44,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
     private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
-    private Map<String, Collection<Module>> transportList = new HashMap<String, Collection<Module>>();
+    private Map<Transport, Collection<Module>> transportList = new HashMap<Transport, Collection<Module>>();
     private EcuSwitch fileLoggingControllerSwitch;
     private ConnectionProperties connectionProperties;
     private String defVersion;
@@ -127,7 +127,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
         return dtcodes;
     }
 
-    public Map<String, Collection<Module>> getTransportList() {
+    public Map<Transport, Collection<Module>> getTransportList() {
         return transportList;
     }
 }

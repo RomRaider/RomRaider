@@ -132,6 +132,7 @@ import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.definition.Module;
+import com.romraider.logger.ecu.definition.Transport;
 import com.romraider.logger.ecu.exception.ConfigurationException;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.profile.UserProfile;
@@ -283,7 +284,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private final String HOME = System.getProperty("user.home");
     private StatusIndicator statusIndicator;
     private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
-    private Map<String, Collection<Module>> transportList = new HashMap<String, Collection<Module>>();
+    private Map<Transport, Collection<Module>> transportList = new HashMap<Transport, Collection<Module>>();
 
     public EcuLogger() {
         super(ECU_LOGGER_TITLE);
@@ -1297,7 +1298,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 //        tcuCheckBox.setEnabled(false);
 //        ecuCheckBox.setToolTipText(ECU_TEXT);
 //        tcuCheckBox.setToolTipText(TCU_TEXT);
-        final Collection<Module> modules = transportList.get(getSettings().getTransportProtocol().toLowerCase());
+        final Transport loggerTransport = getTransportByName(getSettings().getTransportProtocol());
+        final Collection<Module> modules = transportList.get(loggerTransport);
         for (Module module : modules) {
             final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
             final String tipText = String.format(
@@ -1417,14 +1419,23 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void setTarget(String name) {
-        final Collection<Module> modules = transportList.get(
-                getSettings().getTransportProtocol().toLowerCase());
+        final Transport loggerTransport = getTransportByName(getSettings().getTransportProtocol());
+        final Collection<Module> modules = transportList.get(loggerTransport);
         for (Module module: modules) {
             if (module.getName().equalsIgnoreCase(name)) {
                 getSettings().setDestinationTarget(module);
             }
         }
         target = name;
+    }
+
+    private Transport getTransportByName(String name) {
+        Transport loggerTransport = null;
+        for (Transport transport : transportList.keySet()) {
+            if (transport.getName().equalsIgnoreCase(name))
+                loggerTransport = transport;
+        }
+        return loggerTransport;
     }
 
     private void setTargetEcu() {

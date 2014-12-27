@@ -27,8 +27,12 @@ public final class Module {
     private final byte[] address;
     private final String description;
     private final byte[] tester;
+    private final boolean fastpoll;
 
-    public Module(String name, byte[] address, String description, byte[] tester) {
+    public Module(
+            String name, byte[] address, String description,
+            byte[] tester, boolean fastpoll) {
+        
         checkNotNull(name, "name");
         checkNotNullOrEmpty(address, "address");
         checkNotNull(description, "description");
@@ -37,6 +41,7 @@ public final class Module {
         this.address = address;
         this.description = description;
         this.tester = tester;
+        this.fastpoll = fastpoll;
     }
 
     public String getName() {
@@ -53,6 +58,10 @@ public final class Module {
 
     public byte[] getTester() {
         return tester;
+    }
+
+    public boolean getFastPoll() {
+        return fastpoll;
     }
 
     @Override

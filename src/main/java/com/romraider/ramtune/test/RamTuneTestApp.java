@@ -81,6 +81,7 @@ import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.definition.EcuDataLoader;
 import com.romraider.logger.ecu.definition.EcuDataLoaderImpl;
 import com.romraider.logger.ecu.definition.Module;
+import com.romraider.logger.ecu.definition.Transport;
 import com.romraider.logger.ecu.ui.SerialPortComboBox;
 import com.romraider.ramtune.test.command.executor.CommandExecutor;
 import com.romraider.ramtune.test.command.executor.CommandExecutorImpl;
@@ -120,8 +121,8 @@ public final class RamTuneTestApp extends AbstractFrame {
     private static String userLibrary;
     private static String target;
     private static Settings settings = SettingsManager.getSettings();
-    private Map<String, Collection<Module>> transportList =
-            new HashMap<String, Collection<Module>>();
+    private Map<Transport, Collection<Module>> transportList =
+            new HashMap<Transport, Collection<Module>>();
 
     public RamTuneTestApp(String title) {
         super(title);
@@ -437,7 +438,8 @@ public final class RamTuneTestApp extends AbstractFrame {
 //        panel.add(tcuCheckBox);
 
         final ButtonGroup moduleGroup = new ButtonGroup();
-        final Collection<Module> modules = transportList.get(settings.getTransportProtocol().toLowerCase());
+        final Transport loggerTransport = getTransportByName(settings.getTransportProtocol());
+        final Collection<Module> modules = transportList.get(loggerTransport);
         for (Module module : modules) {
             final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
             final String tipText = String.format(
@@ -464,13 +466,22 @@ public final class RamTuneTestApp extends AbstractFrame {
     }
 
     private void setTarget(String name) {
-        final Collection<Module> modules = transportList.get(
-                settings.getTransportProtocol().toLowerCase());
+        final Transport loggerTransport = getTransportByName(settings.getTransportProtocol());
+        final Collection<Module> modules = transportList.get(loggerTransport);
         for (Module module: modules) {
             if (module.getName().equalsIgnoreCase(name)) {
                 RamTuneTestApp.module = module;
             }
         }
+    }
+
+    private Transport getTransportByName(String name) {
+        Transport loggerTransport = null;
+        for (Transport transport : transportList.keySet()) {
+            if (transport.getName().equalsIgnoreCase(name))
+                loggerTransport = transport;
+        }
+        return loggerTransport;
     }
 
     private Component buildSendTimeout() {

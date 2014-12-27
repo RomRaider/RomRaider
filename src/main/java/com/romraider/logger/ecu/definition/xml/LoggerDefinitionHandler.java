@@ -57,6 +57,7 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.EcuSwitchConvertorImpl;
 import com.romraider.logger.ecu.definition.EcuSwitchImpl;
 import com.romraider.logger.ecu.definition.Module;
+import com.romraider.logger.ecu.definition.Transport;
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
@@ -107,6 +108,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_MEMADDR = "memaddr";
     private static final String ATTR_ADDRESS = "address";
     private static final String ATTR_TESTER = "tester";
+    private static final String ATTR_FASTPOLL = "fastpoll";
     private final String protocol;
     private final String fileLoggingControllerSwitchId;
     private final EcuInit ecuInit;
@@ -145,11 +147,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private GaugeMinMax conversionGauge;
     private String target;
     private String version;
-    private String transportId;
-    private String modAddr;
-    private String testerAddr;
+    private Transport transport;
     private List<Module> moduleList;
-    private Map<String, Collection<Module>> transportList;
+    private Map<Transport, Collection<Module>> transportList;
 
     public LoggerDefinitionHandler(String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(protocol, "protocol");
@@ -165,7 +165,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         ecuDataMap = new HashMap<String, EcuData>();
         dtcodes = new ArrayList<EcuSwitch>();
         moduleList = new ArrayList<Module>();
-        transportList = new HashMap<String, Collection<Module>>();
+        transportList = new HashMap<Transport, Collection<Module>>();
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -255,14 +255,21 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         Integer.valueOf(attributes.getValue(ATTR_BIT)));
                 resetLists();
             } else if (TAG_TRANSPORT.equals(qName)) {
-                transportId = attributes.getValue(ATTR_ID);
+                id = attributes.getValue(ATTR_ID);
+                name = attributes.getValue(ATTR_NAME);
+                transport = new Transport(id, name);
             } else if (TAG_MODULE.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
-                modAddr = attributes.getValue(ATTR_ADDRESS);
+                final String modAddr = attributes.getValue(ATTR_ADDRESS);
                 desc = attributes.getValue(ATTR_DESC);
-                testerAddr = attributes.getValue(ATTR_TESTER);
+                final String testerAddr = attributes.getValue(ATTR_TESTER);
+                final String fastpoll = attributes.getValue(ATTR_FASTPOLL);
+                boolean fp = false;
+                if (fastpoll != null && fastpoll.equalsIgnoreCase("true")) {
+                    fp = true;
+                }
                 final Module module = new Module(
-                        id, asBytes(modAddr), desc, asBytes(testerAddr));
+                        id, asBytes(modAddr), desc, asBytes(testerAddr), fp);
                 moduleList.add(module);
             }
         }
@@ -359,7 +366,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 dtcodes.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
             } else if (TAG_TRANSPORT.equals(qName)) {
-                transportList.put(transportId.toLowerCase(), moduleList);
+                transportList.put(transport, moduleList);
             }
         }
     }
@@ -388,7 +395,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         return dtcodes;
     }
 
-    public Map<String, Collection<Module>> getTransportList() {
+    public Map<Transport, Collection<Module>> getTransportList() {
         return transportList;
     }
 

@@ -19,32 +19,29 @@
 
 package com.romraider.logger.ecu.definition;
 
-import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.logger.ecu.comms.query.EcuInit;
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import static com.romraider.util.ParamChecker.checkNotNull;
 
-public interface EcuDataLoader {
+public final class Transport {
+    private final String name;
+    private final String description;
 
-    void loadEcuDefsFromXml(File ecuDefsFile);
+    public Transport(String name, String description) {
+        checkNotNull(name, "name");
+        checkNotNull(description, "description");
+        this.name = name;
+        this.description = description;
+    }
 
-    void loadConfigFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit);
+    public String getName() {
+        return name;
+    }
 
-    Map<String, EcuDefinition> getEcuDefinitionMap();
+    public String getDescription() {
+        return description;
+    }
 
-    List<EcuParameter> getEcuParameters();
-
-    List<EcuSwitch> getEcuSwitches();
-
-    EcuSwitch getFileLoggingControllerSwitch();
-
-    ConnectionProperties getConnectionProperties();
-
-    String getDefVersion();
-
-    List<EcuSwitch> getEcuCodes();
-
-    Map<Transport, Collection<Module>> getTransportList();
+    @Override
+    public String toString() {
+        return name;
+    }
 }
