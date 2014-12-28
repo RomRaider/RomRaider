@@ -802,14 +802,14 @@ public class Table3D extends Table {
         }
         if (coords[3] - coords[1] > 1) {
             double x, x1, x2, y1, y2;
-            x1 = axisData[coords[1]].getValue();
-            x2 = axisData[coords[3]].getValue();
+            x1 = axisData[coords[1]].getBinValue();
+            x2 = axisData[coords[3]].getBinValue();
             for (i = coords[0]; i <= coords[2]; ++i) {
-                y1 = tableData[i][coords[1]].getValue();
-                y2 = tableData[i][coords[3]].getValue();
+                y1 = tableData[i][coords[1]].getBinValue();
+                y2 = tableData[i][coords[3]].getBinValue();
                 for (j = coords[1] + 1; j < coords[3]; ++j) {
-            		x = axisData[j].getValue();
-            		tableData[i][j].setRealValue(String.valueOf(linearInterpolation(x, x1, x2, y1, y2)));
+                    x = axisData[j].getBinValue();
+                    tableData[i][j].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
                 }
             }
         }
@@ -839,15 +839,15 @@ public class Table3D extends Table {
         }
         if (coords[2] - coords[0] > 1) {
             double x, x1, x2, y1, y2;
-            x1 = axisData[coords[0]].getValue();
-            x2 = axisData[coords[2]].getValue();
+            x1 = axisData[coords[0]].getBinValue();
+            x2 = axisData[coords[2]].getBinValue();
             for (i = coords[1]; i <= coords[3]; ++i) {
-                y1 = tableData[coords[0]][i].getValue();
-                y2 = tableData[coords[2]][i].getValue();
+                y1 = tableData[coords[0]][i].getBinValue();
+                y2 = tableData[coords[2]][i].getBinValue();
                 for (j = coords[0] + 1; j < coords[2]; ++j) {
-            		x = axisData[i].getValue();
-                    tableData[j][i].setRealValue(String.valueOf(linearInterpolation(x, x1, x2, y1, y2)));
-            	}
+                    x = axisData[j].getBinValue();
+                    tableData[j][i].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
+                }
             }
         }
         // Interpolate x axis in case the x axis in selected.
