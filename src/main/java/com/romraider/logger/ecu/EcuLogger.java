@@ -19,7 +19,6 @@
 
 package com.romraider.logger.ecu;
 
-import com.romraider.net.BrowserControl;
 import static com.romraider.Version.LOGGER_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
@@ -178,6 +177,7 @@ import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.core.ExternalDataSourceLoader;
 import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
+import com.romraider.net.BrowserControl;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.SetFont;
 import com.romraider.util.FormatFilename;
@@ -297,12 +297,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         // fail until we actually try to use them since the logger requires
         // these libraries, this is a hard error here
         if (!JREChecker.is32bit()) {
-            showMessageDialog(null, 
-                "Incompatible JRE detected.\n" +
-                PRODUCT_NAME +
-                " ECU Logger requires a 32-bit JRE.\nLogger will now exit.", 
-                "JRE Incompatibility Error", 
-                ERROR_MESSAGE);
+            showMessageDialog(null,
+                    "Incompatible JRE detected.\n" +
+                            PRODUCT_NAME +
+                            " ECU Logger requires a 32-bit JRE.\nLogger will now exit.",
+                            "JRE Incompatibility Error",
+                            ERROR_MESSAGE);
             // this will generate a NullPointerException because we never got
             // things started
             WindowEvent e = new WindowEvent(this, WindowEvent.WINDOW_CLOSED);
@@ -339,20 +339,20 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
         else {
             bootstrap();
-            ecuEditor.statusPanel.update("Loading ECU Defs...", 20);
+            ecuEditor.getStatusPanel().update("Loading ECU Defs...", 20);
             loadEcuDefs();
-            ecuEditor.statusPanel.update("Loading Plugins...", 40);
+            ecuEditor.getStatusPanel().update("Loading Plugins...", 40);
             loadLoggerPlugins();
-            ecuEditor.statusPanel.update("Loading ECU Parameters...", 60);
+            ecuEditor.getStatusPanel().update("Loading ECU Parameters...", 60);
             loadLoggerParams();
-            ecuEditor.statusPanel.update("Starting Logger...", 80);
+            ecuEditor.getStatusPanel().update("Starting Logger...", 80);
             initControllerListeners();
             initUserInterface();
-            ecuEditor.statusPanel.update("Complete...", 100);
+            ecuEditor.getStatusPanel().update("Complete...", 100);
             initDataUpdateHandlers();
             startPortRefresherThread();
             if (!isLogging()) startLogging();
-            ecuEditor.statusPanel.update("Ready...",0);
+            ecuEditor.getStatusPanel().update("Ready...",0);
         }
     }
 
@@ -610,7 +610,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 final File profileFile = new File(path);
                 if (profileFile.exists()) {
                     reportMessageInTitleBar(
-                        "Profile: " + FormatFilename.getShortName(profileFile));
+                            "Profile: " + FormatFilename.getShortName(profileFile));
                 }
                 return true;
             }
@@ -643,7 +643,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private boolean applyUserProfile(UserProfile profile) {
         if (profile != null) {
-            final String profileProto = 
+            final String profileProto =
                     profile.getProtocol() == null ? "SSM" : profile.getProtocol();
 
             if (!profileProto.equalsIgnoreCase(getSettings().getLoggerProtocol())) {
@@ -651,10 +651,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 Object[] options = {"Load", "Cancel"};
                 final String message = String.format(
                         "This profile was created for logging protocol %s.%n" +
-                        "Some parameters may not be selected by this profile if%n" +
-                        "you load it.  Change protocols in the Settings menu%n" +
-                        "then reload this profile.",
-                        profileProto);
+                                "Some parameters may not be selected by this profile if%n" +
+                                "you load it.  Change protocols in the Settings menu%n" +
+                                "then reload this profile.",
+                                profileProto);
                 int answer = showOptionDialog(this,
                         message,
                         "Protocol Mismatch", DEFAULT_OPTION, WARNING_MESSAGE, null, options, options[1]);
@@ -1242,24 +1242,24 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         logToFileButton.setBackground(GREEN);
         logToFileButton.setOpaque(true);
         logToFileButton.addActionListener(
-            new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    if (logToFileButton.isSelected() && controller.isStarted()) {
-                        fileUpdateHandler.start();
-                        logToFileButton.setBackground(RED);
-                        logToFileButton.setText(LOG_TO_FILE_STOP);
-                    }
-                    else {
-                        fileUpdateHandler.stop();
-                        if (!controller.isStarted()) statusIndicator.stopped();
-                        logToFileButton.setBackground(GREEN);
-                        logToFileButton.setSelected(false);
-                        logToFileButton.setText(LOG_TO_FILE_START);
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        if (logToFileButton.isSelected() && controller.isStarted()) {
+                            fileUpdateHandler.start();
+                            logToFileButton.setBackground(RED);
+                            logToFileButton.setText(LOG_TO_FILE_STOP);
+                        }
+                        else {
+                            fileUpdateHandler.stop();
+                            if (!controller.isStarted()) statusIndicator.stopped();
+                            logToFileButton.setBackground(GREEN);
+                            logToFileButton.setSelected(false);
+                            logToFileButton.setText(LOG_TO_FILE_START);
+                        }
                     }
                 }
-            }
-        );
+                );
         logToFileButton.getInputMap(
                 WHEN_IN_FOCUSED_WINDOW).put(
                         getKeyStroke(LOG_TO_FILE_FK), "toggleFileLogging");

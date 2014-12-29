@@ -989,6 +989,8 @@ public class SettingsForm extends JFrame implements MouseListener {
             getSettings().setTableClickCount(2);
         }
 
+        getEditor().getImageList().setToggleClickCount(getSettings().getTableClickCount());
+
         if(1 == tableClickBehavior.getSelectedIndex()) { // open/close frame
             getSettings().setTableClickBehavior(1);
         } else { // open/focus frame
