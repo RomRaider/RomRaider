@@ -147,9 +147,11 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private GaugeMinMax conversionGauge;
     private String target;
     private String version;
+    private String protocolId;
     private Transport transport;
-    private List<Module> moduleList;
-    private Map<Transport, Collection<Module>> transportList;
+    private Collection<Module> moduleList;
+    private Map<Transport, Collection<Module>> transportMap;
+    private Map<String, Map<Transport, Collection<Module>>> protocolMap;
 
     public LoggerDefinitionHandler(String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(protocol, "protocol");
@@ -164,21 +166,40 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         switches = new ArrayList<EcuSwitch>();
         ecuDataMap = new HashMap<String, EcuData>();
         dtcodes = new ArrayList<EcuSwitch>();
-        moduleList = new ArrayList<Module>();
-        transportList = new HashMap<Transport, Collection<Module>>();
+        protocolMap = new HashMap<String, Map<Transport, Collection<Module>>>();
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if (TAG_LOGGER.equals(qName)) {
             version = attributes.getValue(ATTR_VERSION);
         } else if (TAG_PROTOCOL.equals(qName)) {
-            parseProtocol = protocol.equalsIgnoreCase(attributes.getValue(ATTR_ID));
+            protocolId = attributes.getValue(ATTR_ID);
+            parseProtocol = protocol.equalsIgnoreCase(protocolId);
             if (parseProtocol) {
                 connectionProperties = new ConnectionPropertiesImpl(Integer.parseInt(attributes.getValue(ATTR_BAUD)),
                         Integer.parseInt(attributes.getValue(ATTR_DATABITS)), Integer.parseInt(attributes.getValue(ATTR_STOPBITS)),
                         Integer.parseInt(attributes.getValue(ATTR_PARITY)), Integer.parseInt(attributes.getValue(ATTR_CONNECT_TIMEOUT)),
                         Integer.parseInt(attributes.getValue(ATTR_SEND_TIMEOUT)));
             }
+            transportMap = new HashMap<Transport, Collection<Module>>();
+        } else if (TAG_TRANSPORT.equals(qName)) {
+            id = attributes.getValue(ATTR_ID);
+            name = attributes.getValue(ATTR_NAME);
+            transport = new Transport(id, name);
+            moduleList = new ArrayList<Module>();
+        } else if (TAG_MODULE.equals(qName)) {
+            id = attributes.getValue(ATTR_ID);
+            final String modAddr = attributes.getValue(ATTR_ADDRESS);
+            desc = attributes.getValue(ATTR_DESC);
+            final String testerAddr = attributes.getValue(ATTR_TESTER);
+            final String fastpoll = attributes.getValue(ATTR_FASTPOLL);
+            boolean fp = false;
+            if (fastpoll != null && fastpoll.equalsIgnoreCase("true")) {
+                fp = true;
+            }
+            final Module module = new Module(
+                    id, asBytes(modAddr), desc, asBytes(testerAddr), fp);
+            moduleList.add(module);
         } else if (parseProtocol) {
             if (TAG_PARAMETER.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
@@ -254,23 +275,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         1,
                         Integer.valueOf(attributes.getValue(ATTR_BIT)));
                 resetLists();
-            } else if (TAG_TRANSPORT.equals(qName)) {
-                id = attributes.getValue(ATTR_ID);
-                name = attributes.getValue(ATTR_NAME);
-                transport = new Transport(id, name);
-            } else if (TAG_MODULE.equals(qName)) {
-                id = attributes.getValue(ATTR_ID);
-                final String modAddr = attributes.getValue(ATTR_ADDRESS);
-                desc = attributes.getValue(ATTR_DESC);
-                final String testerAddr = attributes.getValue(ATTR_TESTER);
-                final String fastpoll = attributes.getValue(ATTR_FASTPOLL);
-                boolean fp = false;
-                if (fastpoll != null && fastpoll.equalsIgnoreCase("true")) {
-                    fp = true;
-                }
-                final Module module = new Module(
-                        id, asBytes(modAddr), desc, asBytes(testerAddr), fp);
-                moduleList.add(module);
             }
         }
         charBuffer = new StringBuilder();
@@ -285,6 +289,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) {
         if (TAG_PROTOCOL.equals(qName)) {
             parseProtocol = false;
+            protocolMap.put(protocolId, transportMap);
+        } else if (TAG_TRANSPORT.equals(qName)) {
+            transportMap.put(transport, moduleList);
         } else if (parseProtocol) {
             if (TAG_ADDRESS.equals(qName)) {
                 addrStrings.add(charBuffer.toString());
@@ -365,8 +372,6 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         group, subgroup, groupsize, convertors);
                 dtcodes.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
-            } else if (TAG_TRANSPORT.equals(qName)) {
-                transportList.put(transport, moduleList);
             }
         }
     }
@@ -395,8 +400,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         return dtcodes;
     }
 
-    public Map<Transport, Collection<Module>> getTransportList() {
-        return transportList;
+    public Map<String, Map<Transport, Collection<Module>>> getProtocols() {
+        return protocolMap;
     }
 
     private void resetLists() {
