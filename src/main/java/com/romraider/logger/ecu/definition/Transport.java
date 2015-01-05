@@ -42,6 +42,6 @@ public final class Transport {
 
     @Override
     public String toString() {
-        return name;
+        return description;
     }
 }

@@ -66,6 +66,6 @@ public final class Module {
 
     @Override
     public String toString() {
-        return name;
+        return name.toUpperCase();
     }
 }
