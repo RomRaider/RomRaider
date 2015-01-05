@@ -1358,7 +1358,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 getSettings().setDestinationTarget(module);
             }
         }
-        target = name;
+        target = name.toUpperCase();
     }
 
     private Transport getTransportByName(String name) {

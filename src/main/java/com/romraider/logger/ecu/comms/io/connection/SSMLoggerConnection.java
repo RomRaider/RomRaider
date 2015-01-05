@@ -61,20 +61,20 @@ public final class SSMLoggerConnection implements LoggerConnection {
     @Override
     public void ecuReset(Module module) {
         byte[] request = protocol.constructEcuResetRequest(module);
-        LOGGER.debug("Ecu Reset Request  ---> " + asHex(request));
+        LOGGER.debug(module + " Reset Request  ---> " + asHex(request));
         byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
-        LOGGER.debug("Ecu Reset Response <--- " + asHex(processedResponse));
+        LOGGER.debug(module + " Reset Response <--- " + asHex(processedResponse));
         protocol.processEcuResetResponse(processedResponse);
     }
 
     @Override
     public void ecuInit(EcuInitCallback callback, Module module) {
         byte[] request = protocol.constructEcuInitRequest(module);
-        LOGGER.debug("Ecu Init Request  ---> " + asHex(request));
+        LOGGER.debug(module + " Init Request  ---> " + asHex(request));
         byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());
-        LOGGER.debug("Ecu Init Response <--- " + asHex(processedResponse));
+        LOGGER.debug(module + " Init Response <--- " + asHex(processedResponse));
         protocol.processEcuInitResponse(callback, processedResponse);
     }
 
@@ -98,7 +98,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
                         module, tcuSubQuery);
                 byte[] response = new byte[0];
                 if (addrLength == 1) {
-                    LOGGER.debug("TCU CAN Request  ---> " + asHex(request));
+                    LOGGER.debug(module + " CAN Request  ---> " + asHex(request));
                     response = protocol.constructReadAddressResponse(
                             tcuSubQuery, pollState);
                     manager.send(request, response, pollState);
@@ -110,7 +110,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
                 }
                 final byte[] processedResponse = protocol.preprocessResponse(
                         request, response, pollState);
-                LOGGER.debug("TCU CAN Response <--- " + asHex(processedResponse));
+                LOGGER.debug(module + " CAN Response <--- " + asHex(processedResponse));
                 protocol.processReadAddressResponses(
                         tcuSubQuery, processedResponse, pollState);
             }
@@ -119,16 +119,16 @@ public final class SSMLoggerConnection implements LoggerConnection {
             final byte[] request = protocol.constructReadAddressRequest(
                     module, queries);
             if (pollState.getCurrentState() == 0) {
-                LOGGER.debug("Mode:" + pollState.getCurrentState() +
-                        " ECU Request  ---> " + asHex(request));
+                LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
+                        module + " Request  ---> " + asHex(request));
             }
             final byte[] response = protocol.constructReadAddressResponse(
                     queries, pollState);
             manager.send(request, response, pollState);
             final byte[] processedResponse = protocol.preprocessResponse(
                     request, response, pollState);
-            LOGGER.debug("Mode:" + pollState.getCurrentState() +
-                    " ECU Response <--- " + asHex(processedResponse));
+            LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
+                    module + " Response <--- " + asHex(processedResponse));
             protocol.processReadAddressResponses(
                     queries, processedResponse, pollState);
         }
@@ -156,14 +156,14 @@ public final class SSMLoggerConnection implements LoggerConnection {
                                 writeKey.getBytes(),
                                 writeQueries.get(writeKey)[0]);
 
-                LOGGER.debug("ECU Write Request  ---> " + asHex(request));
+                LOGGER.debug(module + " Write Request  ---> " + asHex(request));
                 final byte[] response = manager.send(request);
                 byte[] processedResponse =
                         protocol.preprocessResponse(
                                 request,
                                 response,
                                 new PollingStateImpl());
-                LOGGER.debug("ECU Write Response <--- " + asHex(processedResponse));
+                LOGGER.debug(module + " Write Response <--- " + asHex(processedResponse));
                 protocol.processWriteResponse(
                         writeQueries.get(writeKey), processedResponse);
             }

@@ -72,7 +72,7 @@ public class SSMLoggerCANSubQuery {
             subQuery.add(new EcuQueryImpl((EcuData) epi));
             final byte[] request = protocol.constructReadAddressRequest(
                     module, subQuery);
-            LOGGER.debug("TCU CAN Sub Request " + i + " ---> " + asHex(request));
+            LOGGER.debug(module + " CAN Sub Request " + i + " ---> " + asHex(request));
             final byte[] response = protocol.constructReadAddressResponse(
                     subQuery, pollState);
             manager.send(request, response, pollState);
