@@ -121,8 +121,8 @@ public final class RamTuneTestApp extends AbstractFrame {
     private static String userLibrary;
     private static String target;
     private static Settings settings = SettingsManager.getSettings();
-    private Map<Transport, Collection<Module>> transportList =
-            new HashMap<Transport, Collection<Module>>();
+    private Map<String, Map<Transport, Collection<Module>>> protocolList =
+            new HashMap<String, Map<Transport, Collection<Module>>>();
 
     public RamTuneTestApp(String title) {
         super(title);
@@ -135,7 +135,7 @@ public final class RamTuneTestApp extends AbstractFrame {
                 settings.getLoggerDefinitionFilePath(),
                 settings.getLoggerProtocol(),
                 settings.getFileLoggingControllerSwitchId(), null);
-        transportList = dataLoader.getTransportList();
+        protocolList = dataLoader.getProtocols();
         target = settings.getTargetModule();
         portsComboBox = new SerialPortComboBox();
         userTp = settings.getTransportProtocol();
@@ -416,30 +416,12 @@ public final class RamTuneTestApp extends AbstractFrame {
         JPanel panel = new JPanel(new FlowLayout(LEFT));
         panel.add(buildComPorts());
         panel.add(buildSendTimeout());
-//        final JCheckBox ecuCheckBox = new JCheckBox("ECU");
-//        final JCheckBox tcuCheckBox = new JCheckBox("TCU");
-//        ecuCheckBox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//                tcuCheckBox.setSelected(false);
-//                ecuId = 0x12;
-//            }
-//        });
-//        tcuCheckBox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//                ecuCheckBox.setSelected(false);
-//                ecuId = 0x18;
-//            }
-//        });
-//        ecuCheckBox.setSelected(true);
-//
-//        panel.add(ecuCheckBox);
-//        panel.add(tcuCheckBox);
 
         final ButtonGroup moduleGroup = new ButtonGroup();
+        final Map<Transport, Collection<Module>> transportMap =
+                protocolList.get(settings.getLoggerProtocol());
         final Transport loggerTransport = getTransportByName(settings.getTransportProtocol());
-        final Collection<Module> modules = transportList.get(loggerTransport);
+        final Collection<Module> modules = transportMap.get(loggerTransport);
         for (Module module : modules) {
             final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
             final String tipText = String.format(
@@ -466,8 +448,10 @@ public final class RamTuneTestApp extends AbstractFrame {
     }
 
     private void setTarget(String name) {
+        final Map<Transport, Collection<Module>> transportMap =
+                protocolList.get(settings.getLoggerProtocol());
         final Transport loggerTransport = getTransportByName(settings.getTransportProtocol());
-        final Collection<Module> modules = transportList.get(loggerTransport);
+        final Collection<Module> modules = transportMap.get(loggerTransport);
         for (Module module: modules) {
             if (module.getName().equalsIgnoreCase(name)) {
                 RamTuneTestApp.module = module;
@@ -476,8 +460,10 @@ public final class RamTuneTestApp extends AbstractFrame {
     }
 
     private Transport getTransportByName(String name) {
+        final Map<Transport, Collection<Module>> transportMap =
+                protocolList.get(settings.getLoggerProtocol());
         Transport loggerTransport = null;
-        for (Transport transport : transportList.keySet()) {
+        for (Transport transport : transportMap.keySet()) {
             if (transport.getName().equalsIgnoreCase(name))
                 loggerTransport = transport;
         }

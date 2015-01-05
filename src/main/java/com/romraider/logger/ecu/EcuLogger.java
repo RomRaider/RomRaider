@@ -284,7 +284,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private final String HOME = System.getProperty("user.home");
     private StatusIndicator statusIndicator;
     private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
-    private Map<Transport, Collection<Module>> transportList = new HashMap<Transport, Collection<Module>>();
+    private Map<String, Map<Transport, Collection<Module>>> protocolList =
+            new HashMap<String, Map<Transport, Collection<Module>>>();
 
     public EcuLogger() {
         super(ECU_LOGGER_TITLE);
@@ -543,7 +544,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 loadEcuParams(ecuParams);
                 loadEcuSwitches(dataLoader.getEcuSwitches());
                 dtcodes = dataLoader.getEcuCodes();
-                transportList = dataLoader.getTransportList();
+                protocolList = dataLoader.getProtocols();
                 final EcuSwitch fileLogCntrlSw = dataLoader.getFileLoggingControllerSwitch();
                 if (fileLogCntrlSw != null && target.equals("ECU")) initFileLoggingController(fileLogCntrlSw);
                 getSettings().setLoggerConnectionProperties(dataLoader.getConnectionProperties());
@@ -1298,8 +1299,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 //        tcuCheckBox.setEnabled(false);
 //        ecuCheckBox.setToolTipText(ECU_TEXT);
 //        tcuCheckBox.setToolTipText(TCU_TEXT);
+        final Map<Transport, Collection<Module>> transportMap =
+                protocolList.get(getSettings().getLoggerProtocol());
         final Transport loggerTransport = getTransportByName(getSettings().getTransportProtocol());
-        final Collection<Module> modules = transportList.get(loggerTransport);
+        final Collection<Module> modules = transportMap.get(loggerTransport);
         for (Module module : modules) {
             final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
             final String tipText = String.format(
@@ -1419,8 +1422,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void setTarget(String name) {
+        final Map<Transport, Collection<Module>> transportMap =
+                protocolList.get(getSettings().getLoggerProtocol());
         final Transport loggerTransport = getTransportByName(getSettings().getTransportProtocol());
-        final Collection<Module> modules = transportList.get(loggerTransport);
+        final Collection<Module> modules = transportMap.get(loggerTransport);
         for (Module module: modules) {
             if (module.getName().equalsIgnoreCase(name)) {
                 getSettings().setDestinationTarget(module);
@@ -1430,8 +1435,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private Transport getTransportByName(String name) {
+        final Map<Transport, Collection<Module>> transportMap =
+                protocolList.get(getSettings().getLoggerProtocol());
         Transport loggerTransport = null;
-        for (Transport transport : transportList.keySet()) {
+        for (Transport transport : transportMap.keySet()) {
             if (transport.getName().equalsIgnoreCase(name))
                 loggerTransport = transport;
         }
