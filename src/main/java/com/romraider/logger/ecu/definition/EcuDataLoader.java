@@ -46,5 +46,5 @@ public interface EcuDataLoader {
 
     List<EcuSwitch> getEcuCodes();
 
-    Map<Transport, Collection<Module>> getTransportList();
+    Map<String, Map<Transport, Collection<Module>>> getProtocols();
 }
