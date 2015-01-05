@@ -1287,11 +1287,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(portsComboBox);
         
         final CustomButtonGroup moduleGroup = new CustomButtonGroup();
-        final Map<Transport, Collection<Module>> transportMap =
-                protocolList.get(getSettings().getLoggerProtocol());
-        final Transport loggerTransport = getTransportByName(getSettings().getTransportProtocol());
-        final Collection<Module> modules = transportMap.get(loggerTransport);
-        for (Module module : modules) {
+        for (Module module : getModuleList()) {
             final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
             final String tipText = String.format(
                     "%s Polling. Uncheck all boxes for Externals logging only.",
@@ -1357,11 +1353,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void setTarget(String name) {
-        final Map<Transport, Collection<Module>> transportMap =
-                protocolList.get(getSettings().getLoggerProtocol());
-        final Transport loggerTransport = getTransportByName(getSettings().getTransportProtocol());
-        final Collection<Module> modules = transportMap.get(loggerTransport);
-        for (Module module: modules) {
+        for (Module module: getModuleList()) {
             if (module.getName().equalsIgnoreCase(name)) {
                 getSettings().setDestinationTarget(module);
             }
@@ -1370,14 +1362,20 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private Transport getTransportByName(String name) {
-        final Map<Transport, Collection<Module>> transportMap =
-                protocolList.get(getSettings().getLoggerProtocol());
         Transport loggerTransport = null;
-        for (Transport transport : transportMap.keySet()) {
+        for (Transport transport : getTransportMap().keySet()) {
             if (transport.getName().equalsIgnoreCase(name))
                 loggerTransport = transport;
         }
         return loggerTransport;
+    }
+
+    private Map<Transport, Collection<Module>> getTransportMap() {
+        return protocolList.get(getSettings().getLoggerProtocol());
+    }
+
+    private Collection<Module> getModuleList() {
+        return getTransportMap().get(getTransportByName(getSettings().getTransportProtocol()));
     }
 
     public String getTarget() {

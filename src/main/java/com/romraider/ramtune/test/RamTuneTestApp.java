@@ -418,11 +418,7 @@ public final class RamTuneTestApp extends AbstractFrame {
         panel.add(buildSendTimeout());
 
         final ButtonGroup moduleGroup = new ButtonGroup();
-        final Map<Transport, Collection<Module>> transportMap =
-                protocolList.get(settings.getLoggerProtocol());
-        final Transport loggerTransport = getTransportByName(settings.getTransportProtocol());
-        final Collection<Module> modules = transportMap.get(loggerTransport);
-        for (Module module : modules) {
+        for (Module module : getModuleList()) {
             final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
             final String tipText = String.format(
                     "%s Polling.", module.getDescription());
@@ -448,11 +444,7 @@ public final class RamTuneTestApp extends AbstractFrame {
     }
 
     private void setTarget(String name) {
-        final Map<Transport, Collection<Module>> transportMap =
-                protocolList.get(settings.getLoggerProtocol());
-        final Transport loggerTransport = getTransportByName(settings.getTransportProtocol());
-        final Collection<Module> modules = transportMap.get(loggerTransport);
-        for (Module module: modules) {
+        for (Module module: getModuleList()) {
             if (module.getName().equalsIgnoreCase(name)) {
                 RamTuneTestApp.module = module;
             }
@@ -460,14 +452,20 @@ public final class RamTuneTestApp extends AbstractFrame {
     }
 
     private Transport getTransportByName(String name) {
-        final Map<Transport, Collection<Module>> transportMap =
-                protocolList.get(settings.getLoggerProtocol());
         Transport loggerTransport = null;
-        for (Transport transport : transportMap.keySet()) {
+        for (Transport transport : getTransportMap().keySet()) {
             if (transport.getName().equalsIgnoreCase(name))
                 loggerTransport = transport;
         }
         return loggerTransport;
+    }
+
+    private Map<Transport, Collection<Module>> getTransportMap() {
+        return protocolList.get(settings.getLoggerProtocol());
+    }
+
+    private Collection<Module> getModuleList() {
+        return getTransportMap().get(getTransportByName(settings.getTransportProtocol()));
     }
 
     private Component buildSendTimeout() {
