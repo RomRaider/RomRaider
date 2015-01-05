@@ -211,17 +211,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
     private static final String FILE_NAME_EXTENTION = "Right-click to select or type text to add to the saved logfile name.";
-//    private static final String ECU_TEXT = "Engine Control Unit Polling. Uncheck both ECU & TCU for Externals logging only";
-//    private static final String TCU_TEXT = "Transmission Control Unit Polling. Un-check both ECU & TCU for Externals logging only";
     private static final String[] LOG_FILE_TEXT = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
         "4th PT","5th PT","6th PT",
         "1st WOT","2nd WOT","3rd WOT",
         "4th WOT","5th WOT","6th WOT",
-    "cruising"};
+        "cruising"};
     private static final String TOGGLE_LIST_TT_TEXT = "Hides the parameter list and saves the state on exit (F11)";
     private static final String UNSELECT_ALL_TT_TEXT = "Un-select all selected parameters/switches on all tabs! (F9)";
-//    private static final byte ECU_ID = (byte) 0x10;
-//    private static final byte TCU_ID = (byte) 0x18;
     private static final String LOG_TO_FILE_FK = "F1";
     private static final String LOG_TO_FILE_ICON = "/graphics/logger_log_to_file.png";
     private static final String LOG_TO_FILE_START = "Start file log";
@@ -1291,14 +1287,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(portsComboBox);
         
         final CustomButtonGroup moduleGroup = new CustomButtonGroup();
-//        final Map<String, JCheckBox> checkBoxes = new HashMap<String, JCheckBox>();
-        
-//        final JCheckBox ecuCheckBox = new JCheckBox("ECU");
-//        final JCheckBox tcuCheckBox = new JCheckBox("TCU");
-//        ecuCheckBox.setEnabled(false);
-//        tcuCheckBox.setEnabled(false);
-//        ecuCheckBox.setToolTipText(ECU_TEXT);
-//        tcuCheckBox.setToolTipText(TCU_TEXT);
         final Map<Transport, Collection<Module>> transportMap =
                 protocolList.get(getSettings().getLoggerProtocol());
         final Transport loggerTransport = getTransportByName(getSettings().getTransportProtocol());
@@ -1329,62 +1317,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 }
             });
 
-//                    cb.setEnabled(true);
             moduleGroup.add(cb);
             comboBoxPanel.add(cb);
-//                    if ("ECU".equalsIgnoreCase(module.getName())) {
-//                        ecuCheckBox.setEnabled(true);
-//                    }
-//                    if ("TCU".equalsIgnoreCase(module.getName())) {
-//                        tcuCheckBox.setEnabled(true);
-//                    }
         }
-        setTarget(getSettings().getTargetModule().toUpperCase());
-
-//        ecuCheckBox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//                stopLogging();
-//                tcuCheckBox.setSelected(false);
-//                if (ecuCheckBox.isSelected()) {
-//                    getSettings().setLogExternalsOnly(false);
-//                    setTargetEcu();
-//                }
-//                else {
-//                    getSettings().setLogExternalsOnly(true);
-//                }
-//                startLogging();
-//            }
-//        });
-//        tcuCheckBox.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//                stopLogging();
-//                ecuCheckBox.setSelected(false);
-//                if (tcuCheckBox.isSelected()) {
-//                    getSettings().setLogExternalsOnly(false);
-//                    setTargetTcu();
-//                }
-//                else {
-//                    getSettings().setLogExternalsOnly(true);
-//                }
-//                startLogging();
-//            }
-//        });
-//        if (getSettings().getDestinationId() == 0x10 ||
-//                getSettings().getDestinationId() == 0x12) {
-//            ecuCheckBox.setSelected(true);
-//            tcuCheckBox.setSelected(false);
-//            setTargetEcu();
-//        }
-//        else {
-//            tcuCheckBox.setSelected(true);
-//            ecuCheckBox.setSelected(false);
-//            setTargetTcu();
-//        }
-//
-//        comboBoxPanel.add(ecuCheckBox);
-//        comboBoxPanel.add(tcuCheckBox);
 
         JButton reconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_restart.png")));
         reconnectButton.setPreferredSize(new Dimension(25, 25));
@@ -1443,16 +1378,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 loggerTransport = transport;
         }
         return loggerTransport;
-    }
-
-    private void setTargetEcu() {
-//        getSettings().setDestinationId(ECU_ID);
-        target = "ECU";
-    }
-
-    private void setTargetTcu() {
-//        getSettings().setDestinationId(TCU_ID);
-        target = "TCU";
     }
 
     public String getTarget() {
