@@ -401,6 +401,17 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     }
 
     public Map<String, Map<Transport, Collection<Module>>> getProtocols() {
+        if (protocolMap.get(protocol).isEmpty()) {
+            final Module module = new Module(
+                    "ecu", new byte[]{0x10}, "Engine Control Unit",
+                    new byte[]{(byte)0xF0}, true);
+            moduleList = new ArrayList<Module>();
+            moduleList.add(module);
+            transport = new Transport("iso9141", "K-Line");
+            transportMap = new HashMap<Transport, Collection<Module>>();
+            transportMap.put(transport, moduleList);
+            protocolMap.put(protocol, transportMap);
+        }
         return protocolMap;
     }
 
