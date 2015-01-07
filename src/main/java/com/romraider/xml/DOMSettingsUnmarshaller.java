@@ -253,12 +253,12 @@ public final class DOMSettingsUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
                 settings.setRefreshMode(unmarshallAttribute(n, "refresh", false));
-                settings.setTargetModule(unmarshallAttribute(n, "module", "ecu"));
-                settings.setFastPoll(unmarshallAttribute(n, "fastpoll", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("protocol")) {
                 settings.setLoggerProtocol(unmarshallAttribute(n, "name", "SSM"));
                 settings.setTransportProtocol(unmarshallAttribute(n, "transport", "ISO9141"));
+                settings.setTargetModule(unmarshallAttribute(n, "module", "ecu"));
+                settings.setFastPoll(unmarshallAttribute(n, "fastpoll", true));
                 settings.setJ2534Device(unmarshallAttribute(n, "library", null));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {

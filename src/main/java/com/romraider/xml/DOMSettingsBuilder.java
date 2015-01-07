@@ -291,14 +291,14 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode serial = new IIOMetadataNode("serial");
         serial.setAttribute("port", settings.getLoggerPortDefault());
         serial.setAttribute("refresh", String.valueOf(settings.getRefreshMode()));
-        serial.setAttribute("module", settings.getTargetModule());
-        serial.setAttribute("fastpoll", String.valueOf(settings.isFastPoll()));
         loggerSettings.appendChild(serial);
 
         // Protocol connection
         IIOMetadataNode protocol = new IIOMetadataNode("protocol");
         protocol.setAttribute("name", settings.getLoggerProtocol());
         protocol.setAttribute("transport", settings.getTransportProtocol());
+        protocol.setAttribute("module", settings.getTargetModule());
+        protocol.setAttribute("fastpoll", String.valueOf(settings.isFastPoll()));
         protocol.setAttribute("library", settings.getJ2534Device());
         loggerSettings.appendChild(protocol);
 
