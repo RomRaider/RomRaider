@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1378,10 +1378,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
-    private Transport getTransportByName(String name) {
+    private Transport getTransportById(String id) {
         Transport loggerTransport = null;
         for (Transport transport : getTransportMap().keySet()) {
-            if (transport.getName().equalsIgnoreCase(name))
+            if (transport.getId().equalsIgnoreCase(id))
                 loggerTransport = transport;
         }
         return loggerTransport;
@@ -1392,15 +1392,19 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private Collection<Module> getModuleList() {
-        return getTransportMap().get(getTransportByName(getSettings().getTransportProtocol()));
+        return getTransportMap().get(getTransportById(getSettings().getTransportProtocol()));
+    }
+
+    public String getDefVersion() {
+        return defVersion;
     }
 
     public String getTarget() {
         return target;
     }
 
-    public String getDefVersion() {
-        return defVersion;
+    public Map<String, Map<Transport, Collection<Module>>> getProtocolList() {
+        return protocolList;
     }
 
     public void restartLogging() {
