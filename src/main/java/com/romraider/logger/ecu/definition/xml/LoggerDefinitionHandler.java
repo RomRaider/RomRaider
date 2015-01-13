@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -185,7 +185,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         } else if (TAG_TRANSPORT.equals(qName)) {
             id = attributes.getValue(ATTR_ID);
             name = attributes.getValue(ATTR_NAME);
-            transport = new Transport(id, name);
+            desc = attributes.getValue(ATTR_DESC);
+            transport = new Transport(id, name, desc);
             moduleList = new ArrayList<Module>();
         } else if (TAG_MODULE.equals(qName)) {
             id = attributes.getValue(ATTR_ID);
@@ -407,7 +408,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     new byte[]{(byte)0xF0}, true);
             moduleList = new ArrayList<Module>();
             moduleList.add(module);
-            transport = new Transport("iso9141", "K-Line");
+            transport = new Transport("iso9141", "K-Line", "Low speed serial");
             transportMap = new HashMap<Transport, Collection<Module>>();
             transportMap.put(transport, moduleList);
             protocolMap.put(protocol, transportMap);
