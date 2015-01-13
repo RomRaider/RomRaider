@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,21 @@ package com.romraider.logger.ecu.definition;
 import static com.romraider.util.ParamChecker.checkNotNull;
 
 public final class Transport {
+    private final String id;
     private final String name;
     private final String description;
 
-    public Transport(String name, String description) {
+    public Transport(String id, String name, String description) {
+        checkNotNull(name, "id");
         checkNotNull(name, "name");
         checkNotNull(description, "description");
+        this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -42,6 +49,6 @@ public final class Transport {
 
     @Override
     public String toString() {
-        return description;
+        return name.toUpperCase();
     }
 }
