@@ -30,7 +30,7 @@ public final class Transport {
         checkNotNull(name, "id");
         checkNotNull(name, "name");
         checkNotNull(description, "description");
-        this.id = id;
+        this.id = id.toUpperCase();
         this.name = name;
         this.description = description;
     }
@@ -49,6 +49,6 @@ public final class Transport {
 
     @Override
     public String toString() {
-        return name.toUpperCase();
+        return name;
     }
 }
