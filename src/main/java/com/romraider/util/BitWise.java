@@ -28,15 +28,14 @@ import org.nfunk.jep.function.PostfixMathCommand;
  * Performs a bitwise operation on the inStack variables. The parameters are popped
  * off the <code>inStack</code> and then processed.
  * <p>
- * These bitwise operations are supported:
- * <ol>
- * <li>bitwise AND  &
- * <li>bitwise inclusive OR  |
- * <li>bitwise exclusive OR  ^
- * <li>signed left shift  <<
- * <li>signed right shift  >>
- * <li>unsigned right shift  >>>
- * <li>unary bitwise complement  ~</ol>
+ * These bitwise operations are supported:<br>
+ *  1 - bitwise AND  &<br>
+ *  2 - bitwise inclusive OR  |<br>
+ *  3 - bitwise exclusive OR  ^<br>
+ *  4 - signed left shift  <<<br>
+ *  5 - signed right shift  >><br>
+ *  6 - unsigned right shift  >>><br>
+ *  7 - unary bitwise complement  ~
  * <p>
  * <dl>
  * <dt>Usage:</dt>
