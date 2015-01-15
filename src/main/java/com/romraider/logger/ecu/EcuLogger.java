@@ -1353,12 +1353,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void setTarget(String name) {
+        target = name.toUpperCase();
+        getSettings().setTargetModule(target);
         for (Module module: getModuleList()) {
             if (module.getName().equalsIgnoreCase(name)) {
                 getSettings().setDestinationTarget(module);
             }
         }
-        target = name.toUpperCase();
     }
 
     private Transport getTransportByName(String name) {
