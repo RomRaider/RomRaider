@@ -82,6 +82,7 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.ResetConnectionAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ResetEcuAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.SaveProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.SaveProfileAsAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.SelectProtocolAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.UpdateLoggerDefAction;
 import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.swing.menubar.Menu;
@@ -112,21 +113,31 @@ public class EcuLoggerMenuBar extends JMenuBar {
         settingsMenu.add(new MenuItem("Logger Definition Location...", new LoggerDefinitionLocationAction(logger), VK_F, getKeyStroke(VK_F, CTRL_MASK)));
         settingsMenu.add(new MenuItem("Log File Output Location...", new LogFileLocationAction(logger), VK_O, getKeyStroke(VK_O, CTRL_MASK)));
         settingsMenu.add(new JSeparator());
-        settingsMenu.add(new RadioButtonMenuItem("Control File Logging With Defogger Switch", VK_C, getKeyStroke(VK_C, CTRL_MASK), new LogFileControllerSwitchAction(logger), logger.getSettings().isFileLoggingControllerSwitchActive()));
+        RadioButtonMenuItem fileLoggingControl = new RadioButtonMenuItem("Control File Logging With Defogger Switch", VK_C, getKeyStroke(VK_C, CTRL_MASK), new LogFileControllerSwitchAction(logger), logger.getSettings().isFileLoggingControllerSwitchActive());
+        fileLoggingControl.setEnabled(false);
+        fileLoggingControl.setSelected(false);
+        settingsMenu.add(fileLoggingControl);
+        logger.getComponentList().put("fileLoggingControl", fileLoggingControl);
         RadioButtonMenuItem autoRefresh = new RadioButtonMenuItem("Enable COM port Auto Refresh", VK_E, getKeyStroke(VK_E, CTRL_MASK), new ComPortAutoRefreshAction(logger), logger.getSettings().getRefreshMode());
         autoRefresh.setToolTipText("Select to enable automatic COM port refreshing");
         settingsMenu.add(autoRefresh);
         RadioButtonMenuItem fastPoll = new RadioButtonMenuItem("Enable Fast Polling Mode", VK_M, getKeyStroke(VK_M, CTRL_MASK), new FastPollModeAction(logger), logger.getSettings().isFastPoll());
         fastPoll.setToolTipText("Select to enable faster K-line polling of the ECU");
+        fastPoll.setEnabled(false);
+        fastPoll.setSelected(false);
         settingsMenu.add(fastPoll);
-        RadioButtonMenuItem canBus = new RadioButtonMenuItem("CAN bus Logging (2007+)", VK_N, getKeyStroke(VK_N, CTRL_MASK), new CanBusModeAction(logger), settings.isCanBus());
-        canBus.setToolTipText("Select to enable logging via CAN bus using a J2534 compatible cable");
-        RadioButtonMenuItem obdProtocol = new RadioButtonMenuItem("OBD Logging Protocol", VK_B, getKeyStroke(VK_B, ALT_MASK), new ObdModeAction(logger), settings.isObdProtocol());
-        obdProtocol.setToolTipText("Select to switch logging comminucations protocol to OBD. Only supported for CAN bus using a J2534 compatible cable.");
-        if (isPlatform(WINDOWS)) {
-            settingsMenu.add(canBus);
-            settingsMenu.add(obdProtocol);
-        }
+        logger.getComponentList().put("fastPoll", fastPoll);
+//        RadioButtonMenuItem canBus = new RadioButtonMenuItem("CAN bus Logging (2007+)", VK_N, getKeyStroke(VK_N, CTRL_MASK), new CanBusModeAction(logger), settings.isCanBus());
+//        canBus.setToolTipText("Select to enable logging via CAN bus using a J2534 compatible cable");
+//        RadioButtonMenuItem obdProtocol = new RadioButtonMenuItem("OBD Logging Protocol", VK_B, getKeyStroke(VK_B, ALT_MASK), new ObdModeAction(logger), settings.isObdProtocol());
+//        obdProtocol.setToolTipText("Select to switch logging comminucations protocol to OBD. Only supported for CAN bus using a J2534 compatible cable.");
+//        if (isPlatform(WINDOWS)) {
+//            settingsMenu.add(canBus);
+//            settingsMenu.add(obdProtocol);
+//        }
+        MenuItem selectProtocol = new MenuItem("Select Logging Protocol Options", new SelectProtocolAction(logger), VK_O, getKeyStroke(VK_O, ALT_MASK));
+        selectProtocol.setToolTipText("Select to switch logging comminucations protocol.");
+        settingsMenu.add(selectProtocol);
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));
         final RadioButtonMenuItem numFormat = new RadioButtonMenuItem("Use US English number format in Log File", VK_B, getKeyStroke(VK_B, CTRL_MASK), new LogFileNumberFormatAction(logger), logger.getSettings().isUsNumberFormat());
