@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu;
 
+import com.romraider.net.BrowserControl;
 import static com.romraider.Version.LOGGER_DEFS_URL;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.VERSION;
@@ -181,7 +182,6 @@ import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
 import com.romraider.logger.external.core.ExternalDataSourceLoader;
 import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
-import com.romraider.net.BrowserControl;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.SetFont;
 import com.romraider.util.FormatFilename;
@@ -282,6 +282,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
     private Map<String, Map<Transport, Collection<Module>>> protocolList =
             new HashMap<String, Map<Transport, Collection<Module>>>();
+    private final List<JComponent> labelsForUpdate = new ArrayList<JComponent>();
 
     public EcuLogger() {
         super(ECU_LOGGER_TITLE);
@@ -299,12 +300,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         // fail until we actually try to use them since the logger requires
         // these libraries, this is a hard error here
         if (!JREChecker.is32bit()) {
-            showMessageDialog(null,
-                    "Incompatible JRE detected.\n" +
-                            PRODUCT_NAME +
-                            " ECU Logger requires a 32-bit JRE.\nLogger will now exit.",
-                            "JRE Incompatibility Error",
-                            ERROR_MESSAGE);
+            showMessageDialog(null, 
+                "Incompatible JRE detected.\n" +
+                PRODUCT_NAME +
+                " RomRaider Logger requires a 32-bit JRE.\nLogger will now exit.", 
+                "JRE Incompatibility Error", 
+                ERROR_MESSAGE);
             // this will generate a NullPointerException because we never got
             // things started
             WindowEvent e = new WindowEvent(this, WindowEvent.WINDOW_CLOSED);
@@ -319,7 +320,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             JProgressBar progressBar = startbar();
             bootstrap();
             progressBar.setValue(20);
-            startText.setText(" Loading ECU Defs...");
+            startText.setText(" Loading Logger Defs...");
             loadEcuDefs();
             progressBar.setValue(40);
             startText.setText(" Loading Plugins...");
@@ -327,7 +328,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             loadLoggerPlugins();
             progressBar.setIndeterminate(false);
             progressBar.setValue(60);
-            startText.setText(" Loading ECU Parameters...");
+            startText.setText(" Loading Logging Parameters...");
             loadLoggerParams();
             progressBar.setValue(80);
             startText.setText(" Starting Logger...");
@@ -341,11 +342,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
         else {
             bootstrap();
-            ecuEditor.getStatusPanel().update("Loading ECU Defs...", 20);
+            ecuEditor.getStatusPanel().update("Loading Logger Defs...", 20);
             loadEcuDefs();
             ecuEditor.getStatusPanel().update("Loading Plugins...", 40);
             loadLoggerPlugins();
-            ecuEditor.getStatusPanel().update("Loading ECU Parameters...", 60);
+            ecuEditor.getStatusPanel().update("Loading Logging Parameters...", 60);
             loadLoggerParams();
             ecuEditor.getStatusPanel().update("Starting Logger...", 80);
             initControllerListeners();
@@ -613,7 +614,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 final File profileFile = new File(path);
                 if (profileFile.exists()) {
                     reportMessageInTitleBar(
-                            "Profile: " + FormatFilename.getShortName(profileFile));
+                        "Profile: " + FormatFilename.getShortName(profileFile));
                 }
                 return true;
             }
@@ -654,10 +655,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 Object[] options = {"Load", "Cancel"};
                 final String message = String.format(
                         "This profile was created for logging protocol %s.%n" +
-                                "Some parameters may not be selected by this profile if%n" +
-                                "you load it.  Change protocols in the Settings menu%n" +
-                                "then reload this profile.",
-                                profileProto);
+                        "Some parameters may not be selected by this profile if%n" +
+                        "you load it.  Change protocols in the Settings menu%n" +
+                        "then reload this profile.",
+                        profileProto);
                 int answer = showOptionDialog(this,
                         message,
                         "Protocol Mismatch", DEFAULT_OPTION, WARNING_MESSAGE, null, options, options[1]);
@@ -1113,6 +1114,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         ecuIdPanel.setBorder(createLoweredBevelBorder());
         ecuIdPanel.add(calIdLabel);
         ecuIdPanel.add(ecuIdLabel);
+        labelsForUpdate.add(ecuIdLabel);
         constraints.gridx = 2;
         constraints.gridy = 0;
         constraints.gridwidth = 1;
@@ -1198,6 +1200,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
         JPopupMenu fileNamePopup = new JPopupMenu();
         JMenuItem ecuIdItem = new JMenuItem("Use Current " + target + " ID");
+        labelsForUpdate.add(ecuIdItem);
         ecuIdItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1245,24 +1248,24 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         logToFileButton.setBackground(GREEN);
         logToFileButton.setOpaque(true);
         logToFileButton.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        if (logToFileButton.isSelected() && controller.isStarted()) {
-                            fileUpdateHandler.start();
-                            logToFileButton.setBackground(RED);
-                            logToFileButton.setText(LOG_TO_FILE_STOP);
-                        }
-                        else {
-                            fileUpdateHandler.stop();
-                            if (!controller.isStarted()) statusIndicator.stopped();
-                            logToFileButton.setBackground(GREEN);
-                            logToFileButton.setSelected(false);
-                            logToFileButton.setText(LOG_TO_FILE_START);
-                        }
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    if (logToFileButton.isSelected() && controller.isStarted()) {
+                        fileUpdateHandler.start();
+                        logToFileButton.setBackground(RED);
+                        logToFileButton.setText(LOG_TO_FILE_STOP);
+                    }
+                    else {
+                        fileUpdateHandler.stop();
+                        if (!controller.isStarted()) statusIndicator.stopped();
+                        logToFileButton.setBackground(GREEN);
+                        logToFileButton.setSelected(false);
+                        logToFileButton.setText(LOG_TO_FILE_START);
                     }
                 }
-                );
+            }
+        );
         logToFileButton.getInputMap(
                 WHEN_IN_FOCUSED_WINDOW).put(
                         getKeyStroke(LOG_TO_FILE_FK), "toggleFileLogging");
@@ -1318,6 +1321,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
 
         JButton reconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_restart.png")));
+        labelsForUpdate.add(reconnectButton);
         reconnectButton.setPreferredSize(new Dimension(25, 25));
         reconnectButton.setToolTipText("Reconnect to " + target);
         reconnectButton.addActionListener(new ActionListener() {
@@ -1332,6 +1336,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         });
         comboBoxPanel.add(reconnectButton);
         JButton disconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_stop.png")));
+        labelsForUpdate.add(disconnectButton);
         disconnectButton.setPreferredSize(new Dimension(25, 25));
         disconnectButton.setToolTipText("Disconnect from " + target);
         disconnectButton.addActionListener(new ActionListener() {
@@ -1358,6 +1363,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         for (Module module: getModuleList()) {
             if (module.getName().equalsIgnoreCase(name)) {
                 getSettings().setDestinationTarget(module);
+            }
+        }
+        for (JComponent jc : labelsForUpdate) {
+            if (jc instanceof JLabel) {
+                ((JLabel) jc).setText(((JLabel) jc).getText().replaceAll("[A-Z]{3}", target));
+            }
+            if (jc instanceof JMenuItem) {
+                ((JMenuItem) jc).setText(((JMenuItem) jc).getText().replaceAll("[A-Z]{3}", target));
+            }
+            if (jc instanceof JButton) {
+                jc.setToolTipText(jc.getToolTipText().replaceAll("[A-Z]{3}", target));
             }
         }
     }
