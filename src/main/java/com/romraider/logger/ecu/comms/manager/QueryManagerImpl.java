@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -391,12 +391,12 @@ public final class QueryManagerImpl implements QueryManager {
     }
 
     private String buildStatsMessage(long start, int count) {
-        String state = "Slow-K:";
+        String state = String.format("%s Slow-K:",settings.getLoggerProtocol());
         if (pollState.isFastPoll()) {
-            state = "Fast-K:";
+            state = String.format("%s Fast-K:",settings.getLoggerProtocol());
         }
         if (settings.getTransportProtocol().equals("ISO15765")) {
-            state = "CAN bus:";
+            state = String.format("%s CAN bus:",settings.getLoggerProtocol());
         }
         if (settings.isLogExternalsOnly()) {
             state = "Externals:";
