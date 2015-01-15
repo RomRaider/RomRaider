@@ -184,6 +184,7 @@ import com.romraider.logger.external.core.ExternalDataSourceLoader;
 import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.SetFont;
+import com.romraider.swing.menubar.RadioButtonMenuItem;
 import com.romraider.util.FormatFilename;
 import com.romraider.util.JREChecker;
 import com.romraider.util.SettingsManager;
@@ -282,7 +283,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
     private Map<String, Map<Transport, Collection<Module>>> protocolList =
             new HashMap<String, Map<Transport, Collection<Module>>>();
-    private final List<JComponent> labelsForUpdate = new ArrayList<JComponent>();
+    private Map<String, Object> componentList = new HashMap<String, Object>();
 
     public EcuLogger() {
         super(ECU_LOGGER_TITLE);
@@ -543,7 +544,20 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 dtcodes = dataLoader.getEcuCodes();
                 protocolList = dataLoader.getProtocols();
                 final EcuSwitch fileLogCntrlSw = dataLoader.getFileLoggingControllerSwitch();
-                if (fileLogCntrlSw != null && target.equals("ECU")) initFileLoggingController(fileLogCntrlSw);
+                final RadioButtonMenuItem flc = (RadioButtonMenuItem) componentList.get("fileLoggingControl");
+                if (fileLogCntrlSw != null && target.equals("ECU")) {
+                    initFileLoggingController(fileLogCntrlSw);
+                    if (flc != null) {
+                        flc.setEnabled(true);
+                        flc.setSelected(getSettings().isFileLoggingControllerSwitchActive());
+                    }
+                }
+                else {
+                    if (flc != null) {
+                        flc.setSelected(false);
+                        flc.setEnabled(false);
+                    }
+                }
                 getSettings().setLoggerConnectionProperties(dataLoader.getConnectionProperties());
                 if (dataLoader.getDefVersion() == null) {
                     defVersion = "na";
@@ -1114,7 +1128,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         ecuIdPanel.setBorder(createLoweredBevelBorder());
         ecuIdPanel.add(calIdLabel);
         ecuIdPanel.add(ecuIdLabel);
-        labelsForUpdate.add(ecuIdLabel);
         constraints.gridx = 2;
         constraints.gridy = 0;
         constraints.gridwidth = 1;
@@ -1200,7 +1213,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
         JPopupMenu fileNamePopup = new JPopupMenu();
         JMenuItem ecuIdItem = new JMenuItem("Use Current " + target + " ID");
-        labelsForUpdate.add(ecuIdItem);
+        componentList.put("ecuIdItem", ecuIdItem);
         ecuIdItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1321,7 +1334,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
 
         JButton reconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_restart.png")));
-        labelsForUpdate.add(reconnectButton);
+        componentList.put("reconnectButton", reconnectButton);
         reconnectButton.setPreferredSize(new Dimension(25, 25));
         reconnectButton.setToolTipText("Reconnect to " + target);
         reconnectButton.addActionListener(new ActionListener() {
@@ -1336,7 +1349,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         });
         comboBoxPanel.add(reconnectButton);
         JButton disconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_stop.png")));
-        labelsForUpdate.add(disconnectButton);
+        componentList.put("disconnectButton", disconnectButton);
         disconnectButton.setPreferredSize(new Dimension(25, 25));
         disconnectButton.setToolTipText("Disconnect from " + target);
         disconnectButton.addActionListener(new ActionListener() {
@@ -1363,19 +1376,37 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         for (Module module: getModuleList()) {
             if (module.getName().equalsIgnoreCase(name)) {
                 getSettings().setDestinationTarget(module);
+                final RadioButtonMenuItem fp =
+                        (RadioButtonMenuItem) componentList.get("fastPoll");
+                if(module.getFastPoll()) {
+                    fp.setEnabled(module.getFastPoll());
+                    fp.setSelected(getSettings().isFastPoll());
+                }
+                else {
+                    fp.setSelected(false);
+                    fp.setEnabled(false);
+                    getSettings().setFastPoll(false);
+                }
             }
         }
-        for (JComponent jc : labelsForUpdate) {
-            if (jc instanceof JLabel) {
-                ((JLabel) jc).setText(((JLabel) jc).getText().replaceAll("[A-Z]{3}", target));
-            }
-            if (jc instanceof JMenuItem) {
-                ((JMenuItem) jc).setText(((JMenuItem) jc).getText().replaceAll("[A-Z]{3}", target));
-            }
-            if (jc instanceof JButton) {
-                jc.setToolTipText(jc.getToolTipText().replaceAll("[A-Z]{3}", target));
-            }
-        }
+
+        ecuIdLabel.setText(replaceString(ecuIdLabel.getText(), target));
+
+        final JMenuItem ecuIdItem = (JMenuItem) componentList.get("ecuIdItem");
+        if (ecuIdItem != null)
+            ecuIdItem.setText(replaceString(ecuIdItem.getText(), target));
+
+        final JButton reconnectButton = (JButton) componentList.get("reconnectButton");
+        if (reconnectButton != null)
+            reconnectButton.setToolTipText(replaceString(reconnectButton.getToolTipText(), target));
+
+        final JButton disconnectButton = (JButton) componentList.get("disconnectButton");
+        if (disconnectButton != null)
+            disconnectButton.setToolTipText(replaceString(reconnectButton.getToolTipText(), target));
+    }
+
+    private String replaceString(String inString, String newString) {
+        return inString.replaceAll("[A-Z]{3}", newString);
     }
 
     private Transport getTransportById(String id) {
@@ -1405,6 +1436,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     public Map<String, Map<Transport, Collection<Module>>> getProtocolList() {
         return protocolList;
+    }
+
+    public Map<String, Object> getComponentList() {
+        return componentList;
     }
 
     public void restartLogging() {
