@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,11 +217,11 @@ public final class SSMProtocol implements Protocol {
             }
             for (byte[] tmp : content) {
                 bb.write(tmp);
-                bb.write((byte) 0x00);
-                request = bb.toByteArray();
-                final byte cs = calculateChecksum(request);
-                request[request.length - 1] = cs;
             }
+            bb.write((byte) 0x00);
+            request = bb.toByteArray();
+            final byte cs = calculateChecksum(request);
+            request[request.length - 1] = cs;
         }
         catch (IOException e) {
             e.printStackTrace();
