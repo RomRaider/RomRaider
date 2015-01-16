@@ -114,7 +114,7 @@ import com.romraider.io.serial.port.SerialPortRefresher;
 import com.romraider.logger.ecu.comms.controller.LoggerController;
 import com.romraider.logger.ecu.comms.controller.LoggerControllerImpl;
 import com.romraider.logger.ecu.comms.globaladjust.GlobalAdjustManager;
-import com.romraider.logger.ecu.comms.globaladjust.GlobalAdjustManagerImpl;
+import com.romraider.logger.ecu.comms.globaladjust.SSMGlobalAdjustManager;
 import com.romraider.logger.ecu.comms.learning.LearningTableValues;
 import com.romraider.logger.ecu.comms.learning.SSMLearningTableValues;
 import com.romraider.logger.ecu.comms.query.EcuInit;
@@ -1593,7 +1593,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     public final int ecuGlobalAdjustment() {
         final GlobalAdjustManager globalAdjustManager =
-                new GlobalAdjustManagerImpl(
+                new SSMGlobalAdjustManager(
                         this,
                         dataTabParamListTableModel);
         return globalAdjustManager.ecuGlobalAdjustments();
