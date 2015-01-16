@@ -1393,17 +1393,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
         ecuIdLabel.setText(replaceString(ecuIdLabel.getText(), target));
 
-        final JMenuItem ecuIdItem = (JMenuItem) componentList.get("ecuIdItem");
-        if (ecuIdItem != null)
-            ecuIdItem.setText(replaceString(ecuIdItem.getText(), target));
-
-        final JButton reconnectButton = (JButton) componentList.get("reconnectButton");
-        if (reconnectButton != null)
-            reconnectButton.setToolTipText(replaceString(reconnectButton.getToolTipText(), target));
-
-        final JButton disconnectButton = (JButton) componentList.get("disconnectButton");
-        if (disconnectButton != null)
-            disconnectButton.setToolTipText(replaceString(reconnectButton.getToolTipText(), target));
+        for (String key : componentList.keySet()) {
+            if (key.equals("ecuIdItem")) {
+                final JMenuItem menuItem = (JMenuItem) componentList.get(key);
+                menuItem.setText(replaceString(menuItem.getText(), target));
+            }
+            if (key.equals("reconnectButton") ||
+                    key.equals("disconnectButton")) {
+                final JButton button = (JButton) componentList.get(key);
+                button.setToolTipText(replaceString(button.getToolTipText(), target));
+            }
+        }
     }
 
     private String replaceString(String inString, String newString) {
