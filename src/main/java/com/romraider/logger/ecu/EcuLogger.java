@@ -116,7 +116,7 @@ import com.romraider.logger.ecu.comms.controller.LoggerControllerImpl;
 import com.romraider.logger.ecu.comms.globaladjust.GlobalAdjustManager;
 import com.romraider.logger.ecu.comms.globaladjust.GlobalAdjustManagerImpl;
 import com.romraider.logger.ecu.comms.learning.LearningTableValues;
-import com.romraider.logger.ecu.comms.learning.LearningTableValuesImpl;
+import com.romraider.logger.ecu.comms.learning.SSMLearningTableValues;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.readcodes.ReadCodesManager;
@@ -1604,7 +1604,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 getSettings().getLoggerEcuDefinitionMap(),
                 ecuInit.getEcuId());
         final LearningTableValues learningTablesManager =
-                new LearningTableValuesImpl(
+                new SSMLearningTableValues(
                         this,
                         dataTabParamListTableModel,
                         ecuDef);

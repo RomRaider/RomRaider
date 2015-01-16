@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,11 +66,11 @@ import com.romraider.util.SettingsManager;
  * populate the table models which will be used by the Learning Table Values
  * display panel.
  */
-public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
+public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                     implements LearningTableValues {
 
     private static final Logger LOGGER =
-            Logger.getLogger(LearningTableValuesImpl.class);
+            Logger.getLogger(SSMLearningTableValues.class);
     private static final List<String> AF_TABLE_NAMES = Arrays.asList(
             "A/F Learning #1 Airflow Ranges",
             "A/F Learning #1 Airflow Ranges ",
@@ -92,7 +92,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
     private ParameterRow flkc;
     private int flkcAddr;
 
-    public LearningTableValuesImpl(
+    public SSMLearningTableValues(
             EcuLogger logger,
             ParameterListTableModel dataTabParamListTableModel,
             EcuDefinition ecuDef) {
