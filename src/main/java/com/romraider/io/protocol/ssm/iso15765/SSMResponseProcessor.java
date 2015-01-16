@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 package com.romraider.io.protocol.ssm.iso15765;
 
-import static com.romraider.io.protocol.obd.iso15765.OBDProtocol.module;
+import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.module;
 import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.ECU_INIT_RESPONSE;
 import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.ECU_NRC;
 import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.READ_ADDRESS_RESPONSE;
