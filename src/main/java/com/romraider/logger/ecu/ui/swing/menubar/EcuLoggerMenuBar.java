@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@
 package com.romraider.logger.ecu.ui.swing.menubar;
 
 import static com.romraider.Version.PRODUCT_NAME;
-import static com.romraider.util.Platform.WINDOWS;
-import static com.romraider.util.Platform.isPlatform;
 import static java.awt.event.InputEvent.ALT_MASK;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.InputEvent.SHIFT_MASK;
@@ -39,7 +37,6 @@ import static java.awt.event.KeyEvent.VK_H;
 import static java.awt.event.KeyEvent.VK_I;
 import static java.awt.event.KeyEvent.VK_L;
 import static java.awt.event.KeyEvent.VK_M;
-import static java.awt.event.KeyEvent.VK_N;
 import static java.awt.event.KeyEvent.VK_O;
 import static java.awt.event.KeyEvent.VK_P;
 import static java.awt.event.KeyEvent.VK_R;
@@ -60,7 +57,6 @@ import javax.swing.JSeparator;
 
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.ecu.ui.swing.menubar.action.CanBusModeAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ComPortAutoRefreshAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.DisconnectAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ExitAction;
@@ -75,7 +71,6 @@ import com.romraider.logger.ecu.ui.swing.menubar.action.LogFileNumberFormatActio
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebugLocationAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDebuggingLevelAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.LoggerDefinitionLocationAction;
-import com.romraider.logger.ecu.ui.swing.menubar.action.ObdModeAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ReadEcuCodesAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ReloadProfileAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ResetConnectionAction;
@@ -113,6 +108,9 @@ public class EcuLoggerMenuBar extends JMenuBar {
         settingsMenu.add(new MenuItem("Logger Definition Location...", new LoggerDefinitionLocationAction(logger), VK_F, getKeyStroke(VK_F, CTRL_MASK)));
         settingsMenu.add(new MenuItem("Log File Output Location...", new LogFileLocationAction(logger), VK_O, getKeyStroke(VK_O, CTRL_MASK)));
         settingsMenu.add(new JSeparator());
+        MenuItem selectProtocol = new MenuItem("Select Logging Protocol Options", new SelectProtocolAction(logger), VK_O, getKeyStroke(VK_O, ALT_MASK));
+        selectProtocol.setToolTipText("Select to switch logging comminucations protocol.");
+        settingsMenu.add(selectProtocol);
         RadioButtonMenuItem fileLoggingControl = new RadioButtonMenuItem("Control File Logging With Defogger Switch", VK_C, getKeyStroke(VK_C, CTRL_MASK), new LogFileControllerSwitchAction(logger), logger.getSettings().isFileLoggingControllerSwitchActive());
         fileLoggingControl.setEnabled(false);
         fileLoggingControl.setSelected(false);
@@ -127,17 +125,6 @@ public class EcuLoggerMenuBar extends JMenuBar {
         fastPoll.setSelected(false);
         settingsMenu.add(fastPoll);
         logger.getComponentList().put("fastPoll", fastPoll);
-//        RadioButtonMenuItem canBus = new RadioButtonMenuItem("CAN bus Logging (2007+)", VK_N, getKeyStroke(VK_N, CTRL_MASK), new CanBusModeAction(logger), settings.isCanBus());
-//        canBus.setToolTipText("Select to enable logging via CAN bus using a J2534 compatible cable");
-//        RadioButtonMenuItem obdProtocol = new RadioButtonMenuItem("OBD Logging Protocol", VK_B, getKeyStroke(VK_B, ALT_MASK), new ObdModeAction(logger), settings.isObdProtocol());
-//        obdProtocol.setToolTipText("Select to switch logging comminucations protocol to OBD. Only supported for CAN bus using a J2534 compatible cable.");
-//        if (isPlatform(WINDOWS)) {
-//            settingsMenu.add(canBus);
-//            settingsMenu.add(obdProtocol);
-//        }
-        MenuItem selectProtocol = new MenuItem("Select Logging Protocol Options", new SelectProtocolAction(logger), VK_O, getKeyStroke(VK_O, ALT_MASK));
-        selectProtocol.setToolTipText("Select to switch logging comminucations protocol.");
-        settingsMenu.add(selectProtocol);
         settingsMenu.add(new JSeparator());
         settingsMenu.add(new RadioButtonMenuItem("Use Absolute Timestamp In Log File", VK_T, getKeyStroke(VK_T, CTRL_MASK), new LogFileAbsoluteTimestampAction(logger), logger.getSettings().isFileLoggingAbsoluteTimestamp()));
         final RadioButtonMenuItem numFormat = new RadioButtonMenuItem("Use US English number format in Log File", VK_B, getKeyStroke(VK_B, CTRL_MASK), new LogFileNumberFormatAction(logger), logger.getSettings().isUsNumberFormat());
