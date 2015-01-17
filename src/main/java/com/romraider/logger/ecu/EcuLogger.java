@@ -1398,6 +1398,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 final JMenuItem menuItem = (JMenuItem) componentList.get(key);
                 menuItem.setText(replaceString(menuItem.getText(), target));
             }
+            if (key.equals("resetMenu")) {
+                final JMenuItem menuItem = (JMenuItem) componentList.get(key);
+                menuItem.setText(String.format("Reset %s [%s]",
+                        getSettings().getDestinationTarget().getDescription(),
+                        getSettings().getDestinationTarget().getName().toUpperCase()));
+            }
             if (key.equals("reconnectButton") ||
                     key.equals("disconnectButton")) {
                 final JButton button = (JButton) componentList.get(key);

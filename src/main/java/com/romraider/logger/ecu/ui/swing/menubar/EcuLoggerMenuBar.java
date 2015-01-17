@@ -140,7 +140,9 @@ public class EcuLoggerMenuBar extends JMenuBar {
 
         // tools menu items
         JMenu toolsMenu = new Menu("Tools", VK_T);
-        toolsMenu.add(new MenuItem("Reset ECU/TCU", new ResetEcuAction(logger), VK_R, getKeyStroke(VK_F7, 0)));
+        final MenuItem resetMenu = new MenuItem("Reset ECU", new ResetEcuAction(logger), VK_R, getKeyStroke(VK_F7, 0));
+        toolsMenu.add(resetMenu);
+        logger.getComponentList().put("resetMenu", resetMenu);
         toolsMenu.add(new JSeparator());
         toolsMenu.add(new MenuItem("Read Diagnostic Codes", new ReadEcuCodesAction(logger), VK_D, getKeyStroke(VK_F8, 0)));
         toolsMenu.add(new JSeparator());
