@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -451,10 +451,10 @@ public final class RamTuneTestApp extends AbstractFrame {
         }
     }
 
-    private Transport getTransportByName(String name) {
+    private Transport getTransportById(String id) {
         Transport loggerTransport = null;
         for (Transport transport : getTransportMap().keySet()) {
-            if (transport.getName().equalsIgnoreCase(name))
+            if (transport.getId().equalsIgnoreCase(id))
                 loggerTransport = transport;
         }
         return loggerTransport;
@@ -465,7 +465,7 @@ public final class RamTuneTestApp extends AbstractFrame {
     }
 
     private Collection<Module> getModuleList() {
-        return getTransportMap().get(getTransportByName(settings.getTransportProtocol()));
+        return getTransportMap().get(getTransportById(settings.getTransportProtocol()));
     }
 
     private Component buildSendTimeout() {
