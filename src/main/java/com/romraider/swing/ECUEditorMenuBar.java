@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private final JMenu loggerMenu = new JMenu("Logger");
     private final JMenuItem openLogger = new JMenuItem("Launch Logger...");
 
-    private final JMenu ramTuneMenu = new JMenu("SSM");
+    private final JMenu ramTuneMenu = new JMenu("Tools");
     private final JMenuItem launchRamTuneTestApp = new JMenuItem("Launch Test App...");
 
     private final JMenu helpMenu = new JMenu("Help");
