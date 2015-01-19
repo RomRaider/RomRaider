@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import java.util.Map;
  * This Emun defines all the possible parameters used to query the Learning
  * Table Values of an ECU. 
  */
-public enum Parameter {
+public enum SSMParameter {
     E1("E1"),       // IAM 16 bit
     E31("E31"),     // IAM 32 bit
     E12("E12"),     // Fine Learning Knock Correction*
@@ -54,15 +54,15 @@ public enum Parameter {
     P153("P153"),   // Whole Learning value in timing
     E173("E173");   // Fine Learning Knock Correction Table Start (4-byte)*
 
-    private static final Map<String, Parameter> lookup
-            = new HashMap<String, Parameter>();
+    private static final Map<String, SSMParameter> lookup
+            = new HashMap<String, SSMParameter>();
 
     static {
-        for(Parameter s : EnumSet.allOf(Parameter.class))
+        for(SSMParameter s : EnumSet.allOf(SSMParameter.class))
         lookup.put(s.toString(), s);
     }
 
-    private Parameter(final String text) {
+    private SSMParameter(final String text) {
         this.text = text;
     }
 
@@ -78,8 +78,8 @@ public enum Parameter {
      * @param value - the value of the Parameter in String format
      * @return the Parameter that has the given value or null if undefined. 
      */
-    public static Parameter fromValue(String value) {
-        Parameter result = null;
+    public static SSMParameter fromValue(String value) {
+        SSMParameter result = null;
         if (lookup.containsKey(value)) {
             result = lookup.get(value);
         }

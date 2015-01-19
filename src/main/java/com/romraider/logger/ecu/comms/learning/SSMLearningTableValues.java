@@ -42,8 +42,8 @@ import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
 import com.romraider.logger.ecu.comms.learning.flkctable.FlkcTableQueryBuilder;
-import com.romraider.logger.ecu.comms.learning.parameter.Parameter;
-import com.romraider.logger.ecu.comms.learning.parameter.ParameterCrossReference;
+import com.romraider.logger.ecu.comms.learning.parameter.SSMParameter;
+import com.romraider.logger.ecu.comms.learning.parameter.SSMParameterCrossReference;
 import com.romraider.logger.ecu.comms.learning.parameter.ParameterIdComparator;
 import com.romraider.logger.ecu.comms.learning.tableaxis.TableAxisQueryParameterSet;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
@@ -281,8 +281,8 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
         final List<ParameterRow> parameterRows = parmeterList.getParameterRows();
         if (!ParamChecker.isNullOrEmpty(parameterRows)) {
             for (ParameterRow parameterRow : parameterRows) {
-                final Parameter parameterId =
-                        Parameter.fromValue(parameterRow.getLoggerData().getId());
+                final SSMParameter parameterId =
+                        SSMParameter.fromValue(parameterRow.getLoggerData().getId());
                 if (parameterId != null) {
                     query.add(buildEcuQuery(parameterRow));
                     setFlkcTableAddress(parameterRow, parameterId);                    }
@@ -309,7 +309,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
      */
     private final void setFlkcTableAddress(
             ParameterRow parameterRow,
-            Parameter parameterId) {
+            SSMParameter parameterId) {
 
         switch (parameterId) {
             case E1:
@@ -381,13 +381,13 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
      * table models datasets.
      */
     private final void processEcuQueryResponses(List<EcuQuery> queries) {
-        final ParameterCrossReference parameterMap = new ParameterCrossReference();
+        final SSMParameterCrossReference parameterMap = new SSMParameterCrossReference();
         final List<Object> afLearningBank1 = new ArrayList<Object>();
         final List<Object> afLearningBank2 = new ArrayList<Object>();
 
         for (EcuQuery query : queries) {
-            final Parameter parameterId =
-                    Parameter.fromValue(query.getLoggerData().getId());
+            final SSMParameter parameterId =
+                    SSMParameter.fromValue(query.getLoggerData().getId());
             final String paramDesc = parameterMap.getValue(parameterId);
             String result = String.format("%.2f %s",
                     query.getResponse(),

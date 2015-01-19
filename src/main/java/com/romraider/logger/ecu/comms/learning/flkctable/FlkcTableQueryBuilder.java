@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.romraider.logger.ecu.comms.learning.parameter.Parameter;
+import com.romraider.logger.ecu.comms.learning.parameter.SSMParameter;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
 import com.romraider.logger.ecu.definition.EcuAddress;
@@ -66,8 +66,8 @@ public class FlkcTableQueryBuilder {
         final List<List<EcuQuery>> flkcQueryRows = new ArrayList<List<EcuQuery>>();
         int checksummed = 1;
         int dataSize = 1;
-        if (Parameter.fromValue(flkc.getLoggerData().getId()) == Parameter.E41 ||
-            Parameter.fromValue(flkc.getLoggerData().getId()) == Parameter.E173) {
+        if (SSMParameter.fromValue(flkc.getLoggerData().getId()) == SSMParameter.E41 ||
+            SSMParameter.fromValue(flkc.getLoggerData().getId()) == SSMParameter.E173) {
             checksummed = 2;
             dataSize = 4;
         }
