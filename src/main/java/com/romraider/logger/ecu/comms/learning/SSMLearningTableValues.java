@@ -85,15 +85,17 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
     private final Map<String, Object> vehicleInfo =
             new LinkedHashMap<String, Object>();
     private final List<List<Object>> afLearning = new ArrayList<List<Object>>();
-    private final EcuLogger logger;
-    private final Settings settings;
-    private final MessageListener messageListener;
-    private final ParameterListTableModel parmeterList;
-    private final EcuDefinition ecuDef;
+    private EcuLogger logger;
+    private Settings settings;
+    private MessageListener messageListener;
+    private ParameterListTableModel parmeterList;
+    private EcuDefinition ecuDef;
     private ParameterRow flkc;
     private int flkcAddr;
 
-    public SSMLearningTableValues(
+    public SSMLearningTableValues() {}
+
+    public void init(
             EcuLogger logger,
             ParameterListTableModel dataTabParamListTableModel,
             EcuDefinition ecuDef) {

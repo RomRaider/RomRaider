@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,17 @@
 
 package com.romraider.logger.ecu.comms.learning;
 
+import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.ecu.definition.EcuDefinition;
+import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
+
 
 public interface LearningTableValues {
+
+    void init(
+            EcuLogger logger,
+            ParameterListTableModel dataTabParamListTableModel,
+            EcuDefinition ecuDef);
 
     void execute();
 }
