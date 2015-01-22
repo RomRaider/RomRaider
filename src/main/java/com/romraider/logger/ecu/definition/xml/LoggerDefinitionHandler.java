@@ -39,6 +39,7 @@ import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.connection.ConnectionPropertiesImpl;
 import com.romraider.logger.ecu.comms.query.EcuInit;
@@ -92,6 +93,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_BIT = "bit";
     private static final String ATTR_PARAMETER = "parameter";
     private static final String ATTR_STORAGETYPE = "storagetype";
+    private static final String ATTR_ENDIAN = "endian";
     private static final String ATTR_BAUD = "baud";
     private static final String ATTR_DATABITS = "databits";
     private static final String ATTR_STOPBITS = "stopbits";
@@ -144,6 +146,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String conversionExpression;
     private String conversionFormat;
     private String conversionStorageType;
+    private int conversionEndian;
     private GaugeMinMax conversionGauge;
     private String target;
     private String version;
@@ -229,6 +232,13 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 conversionExpression = attributes.getValue(ATTR_EXPRESSION);
                 conversionFormat = attributes.getValue(ATTR_FORMAT);
                 conversionStorageType = attributes.getValue(ATTR_STORAGETYPE);
+                String endian = attributes.getValue(ATTR_ENDIAN);
+                if (endian != null) {
+                    conversionEndian = endian.equalsIgnoreCase("little") ? Settings.ENDIAN_LITTLE : Settings.ENDIAN_BIG;
+                }
+                else {
+                    conversionEndian = Settings.ENDIAN_BIG;
+                }
                 double gaugeMin = getConversionMin(attributes, conversionUnits);
                 double gaugeMax = getConversionMax(attributes, conversionUnits);
                 double gaugeStep = getConversionStep(attributes, conversionUnits);
@@ -329,8 +339,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     derivedConvertorList.add(new EcuDerivedParameterConvertorImpl(conversionUnits,
                             conversionExpression, conversionFormat, replaceMap, conversionGauge));
                 } else {
-                    convertorList.add(new EcuParameterConvertorImpl(conversionUnits, conversionExpression, conversionFormat, address.getBit(),
-                            conversionStorageType, replaceMap, conversionGauge));
+                    convertorList.add(new EcuParameterConvertorImpl(
+                            conversionUnits, conversionExpression, conversionFormat,
+                            address.getBit(), conversionStorageType, conversionEndian,
+                            replaceMap, conversionGauge));
                 }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
