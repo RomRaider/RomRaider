@@ -38,11 +38,11 @@ import com.romraider.util.HexUtil;
 /**
  * Build an EcuQuery for each of the cells in the FLKC RAM table. 
  */
-public class FlkcTableQueryBuilder {
+public class SSMFlkcTableQueryBuilder {
     private static final Logger LOGGER =
-            Logger.getLogger(FlkcTableQueryBuilder.class);
+            Logger.getLogger(SSMFlkcTableQueryBuilder.class);
 
-    public FlkcTableQueryBuilder() {
+    public SSMFlkcTableQueryBuilder() {
     }
 
     /**

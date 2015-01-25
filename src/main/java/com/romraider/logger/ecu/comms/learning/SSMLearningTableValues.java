@@ -41,7 +41,7 @@ import org.w3c.dom.Node;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
-import com.romraider.logger.ecu.comms.learning.flkctable.FlkcTableQueryBuilder;
+import com.romraider.logger.ecu.comms.learning.flkctable.SSMFlkcTableQueryBuilder;
 import com.romraider.logger.ecu.comms.learning.parameter.SSMParameter;
 import com.romraider.logger.ecu.comms.learning.parameter.SSMParameterCrossReference;
 import com.romraider.logger.ecu.comms.learning.parameter.ParameterIdComparator;
@@ -207,7 +207,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
 
                 List<List<EcuQuery>> flkcQueryGroups = new ArrayList<List<EcuQuery>>();
                 if (flkc != null) {
-                    flkcQueryGroups = new FlkcTableQueryBuilder().build(
+                    flkcQueryGroups = new SSMFlkcTableQueryBuilder().build(
                                             flkc,
                                             flkcAddr,
                                             flkcRpm.length,
