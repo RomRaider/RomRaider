@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,10 +142,15 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
         Map<String, byte[]> addressResults = new HashMap<String, byte[]>();
 
+        int srcPos = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
             byte[] bytes = new byte[getDataLength(filteredQuery)];
-            arraycopy(responseData, filteredQuery.getBytes()[0], bytes, 0, bytes.length);
+            if (((EcuData) filteredQuery.getLoggerData()).getGroupSize() > 0) {
+                srcPos = filteredQuery.getBytes()[0];
+            }
+            arraycopy(responseData, srcPos, bytes, 0, bytes.length);
             addressResults.put(filteredQuery.getHex(), bytes);
+            srcPos = 0;
         }
         for (EcuQuery query : queries) {
             query.setResponse(addressResults.get(query.getHex()));
