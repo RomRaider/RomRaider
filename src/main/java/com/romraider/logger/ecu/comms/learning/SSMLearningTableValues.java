@@ -59,7 +59,7 @@ import com.romraider.logger.ecu.definition.xml.EcuTableDefinitionHandler;
 import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
-import com.romraider.logger.ecu.ui.swing.tools.LearningTableValuesResultsPanel;
+import com.romraider.logger.ecu.ui.swing.tools.SSMLearningTableValuesResultsPanel;
 import com.romraider.util.ParamChecker;
 
 /**
@@ -238,8 +238,8 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
 
                 messageListener.reportMessage(
                         "Learning Table Values retrieved successfully.");
-                final LearningTableValuesResultsPanel results =
-                        new LearningTableValuesResultsPanel(
+                final SSMLearningTableValuesResultsPanel results =
+                        new SSMLearningTableValuesResultsPanel(
                                 logger, vehicleInfo,
                                 afRanges, afLearning,
                                 flkcLoad, flkcRpm, flkcQueryGroups);
