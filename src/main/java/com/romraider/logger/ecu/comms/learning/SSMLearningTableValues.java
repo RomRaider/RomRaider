@@ -45,7 +45,7 @@ import com.romraider.logger.ecu.comms.learning.flkctable.FlkcTableQueryBuilder;
 import com.romraider.logger.ecu.comms.learning.parameter.SSMParameter;
 import com.romraider.logger.ecu.comms.learning.parameter.SSMParameterCrossReference;
 import com.romraider.logger.ecu.comms.learning.parameter.ParameterIdComparator;
-import com.romraider.logger.ecu.comms.learning.tableaxis.TableAxisQueryParameterSet;
+import com.romraider.logger.ecu.comms.learning.tableaxis.SSMTableAxisQueryParameterSet;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
@@ -458,7 +458,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                         tableName);
         List<EcuQuery> tableAxisQuery = new ArrayList<EcuQuery>();
         if (tableMap.containsKey("storageaddress")) {
-            tableAxisQuery = TableAxisQueryParameterSet.build(
+            tableAxisQuery = SSMTableAxisQueryParameterSet.build(
                     tableMap.get("storageaddress"),
                     tableMap.get("storagetype"),
                     tableMap.get("expression"),

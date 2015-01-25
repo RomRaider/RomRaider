@@ -39,9 +39,9 @@ import com.romraider.util.HexUtil;
 /**
  * Build a List of ECU Queries to retrieve a Table's axis values.
  */
-public class TableAxisQueryParameterSet {
+public class SSMTableAxisQueryParameterSet {
 
-    private TableAxisQueryParameterSet() {
+    private SSMTableAxisQueryParameterSet() {
     }
 
     /**
