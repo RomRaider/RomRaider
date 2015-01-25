@@ -73,7 +73,7 @@ public class SSMTableAxisQueryParameterSet {
             dataSize = 4;
         }
 
-        final int count = Integer.parseInt(size, 16);
+        final int count = Integer.parseInt(size, 10);
         for (int i = 0; i < count; i++) {
             final String addrStr =
                     HexUtil.intToHexString(tableAddrBase + (i * dataSize));
