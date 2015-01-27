@@ -82,6 +82,14 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
     }
 
     @Override
+    public byte[] constructReadMemoryRange(
+            Module module, Collection<EcuQuery> queries, int length) {
+
+        return protocol.constructReadMemoryRequest(
+                module, convertToByteAddresses(queries), length);
+    }
+
+    @Override
     public byte[] constructReadAddressResponse(Collection<EcuQuery> queries,
             PollingState pollState) {
         return null;
@@ -98,6 +106,12 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
             numAddresses += getDataLength(ecuQuery); 
         }
         return new byte[requestSize + RESPONSE_NON_DATA_BYTES + numAddresses];
+    }
+
+    @Override
+    public byte[] constructReadMemoryRangeResponse(int requestSize, int length) {
+
+        return new byte[requestSize + RESPONSE_NON_DATA_BYTES + length];
     }
 
     @Override
@@ -133,7 +147,13 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
         protocol.checkValidEcuResetResponse(response);
     }
 
-    // processes the response bytes and sets individual responses on corresponding query objects
+    /**
+     * Processes the response bytes and set individual response on corresponding
+     * query objects.
+     * If EcuData has a group size value greater than 0 then the response is
+     * the result of a group read and the address is the index into the response
+     * array. 
+     **/
     @Override
     public void processReadAddressResponses(Collection<EcuQuery> queries, byte[] response, PollingState pollState) {
         checkNotNullOrEmpty(queries, "queries");
@@ -152,6 +172,43 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
             addressResults.put(filteredQuery.getHex(), bytes);
             srcPos = 0;
         }
+        for (EcuQuery query : queries) {
+            query.setResponse(addressResults.get(query.getHex()));
+        }
+    }
+
+    /**
+     * Processes the response bytes and set individual response on corresponding
+     * query objects.
+     * The response data is based on the lowest EcuData address and the length
+     * is the result of the difference between the highest and lowest address.
+     * The index into the response array is based in the lowest address. 
+     **/
+    public void processReadMemoryRangeResponse(
+            Collection<EcuQuery> queries, byte[] response) {
+        
+        checkNotNullOrEmpty(queries, "queries");
+        checkNotNullOrEmpty(response, "response");
+        final byte[] responseData = extractResponseData(response);
+        final Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
+        final Map<String, byte[]> addressResults = new HashMap<String, byte[]>();
+
+        int lowestAddress = Integer.MAX_VALUE;
+        for (EcuQuery filteredQuery : filteredQueries) {
+            final int address = Integer.parseInt(filteredQuery.getHex(), 16);
+            if (address < lowestAddress) {
+                lowestAddress = address;
+            }
+        }
+
+        int srcPos = 0;
+        for (EcuQuery filteredQuery : filteredQueries) {
+            final byte[] bytes = new byte[getDataLength(filteredQuery)];
+            srcPos = Integer.parseInt(filteredQuery.getHex(), 16) - lowestAddress;
+            arraycopy(responseData, srcPos, bytes, 0, bytes.length);
+            addressResults.put(filteredQuery.getHex(), bytes);
+        }
+
         for (EcuQuery query : queries) {
             query.setResponse(addressResults.get(query.getHex()));
         }

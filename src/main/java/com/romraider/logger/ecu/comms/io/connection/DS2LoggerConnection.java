@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.comms.query.EcuQueryRangeTest;
 import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.Module;
 import com.romraider.util.SettingsManager;
@@ -106,19 +107,35 @@ public final class DS2LoggerConnection implements LoggerConnection {
                 }
             }
             else if (group.equalsIgnoreCase("0x060x00")) {
-                for (EcuQuery query : querySet) {
-                    final Collection<EcuQuery> queryList = new ArrayList<EcuQuery>();
-                    queryList.add(query);
-                    request = protocol.constructReadMemoryRequest(
-                            module, queryList);
+                final EcuQueryRangeTest range = new EcuQueryRangeTest(querySet);
+                final Collection<EcuQuery> newQuery = range.validate();
+                int length = range.getLength();
+                if (newQuery != null && length > 0) {
+                    request = protocol.constructReadMemoryRange(
+                            module, newQuery, length);
                     LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
                             module + " Request  ---> " + asHex(request));
-                    response = protocol.constructReadAddressResponse(
-                            queryList, request.length);
-                    protocol.processReadAddressResponses(
-                            queryList,
-                            sendRcv(module ,request, response, pollState),
-                            pollState);
+                    response = protocol.constructReadMemoryRangeResponse(
+                            request.length, length);
+                    protocol.processReadMemoryRangeResponse(
+                            querySet,
+                            sendRcv(module, request, response, pollState));
+                }
+                else {
+                    for (EcuQuery query : querySet) {
+                        final Collection<EcuQuery> queryList = new ArrayList<EcuQuery>();
+                        queryList.add(query);
+                        request = protocol.constructReadMemoryRequest(
+                                module, queryList);
+                        LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
+                                module + " Request  ---> " + asHex(request));
+                        response = protocol.constructReadAddressResponse(
+                                queryList, request.length);
+                        protocol.processReadAddressResponses(
+                                queryList,
+                                sendRcv(module, request, response, pollState),
+                                pollState);
+                    }
                 }
             }
             else {

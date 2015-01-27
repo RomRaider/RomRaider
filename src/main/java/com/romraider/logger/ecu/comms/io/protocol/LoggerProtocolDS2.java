@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,4 +39,11 @@ public interface LoggerProtocolDS2 extends LoggerProtocol {
 
     byte[] constructReadMemoryRequest(
             Module module, Collection<EcuQuery> queryList);
+
+    byte[] constructReadMemoryRange(Module module,
+            Collection<EcuQuery> queries, int length);
+
+    public byte[] constructReadMemoryRangeResponse(int requestSize, int length);
+
+    void processReadMemoryRangeResponse(Collection<EcuQuery> queries, byte[] response);
 }
