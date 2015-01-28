@@ -317,7 +317,30 @@ public class Table2D extends Table {
 
     @Override
     public void horizontalInterpolate() {
-        super.horizontalInterpolate();
+        int[] coords = { getDataSize(), 0};
+        DataCell[] tableData = getData();
+        DataCell[] axisData = getAxis().getData();
+
+        for (int i = 0; i < getDataSize(); ++i) {
+            if (tableData[i].isSelected()) {
+                if (i < coords[0])
+                    coords[0] = i;
+                if (i > coords[1])
+                    coords[1] = i;
+            }
+        }
+        if (coords[1] - coords[0] > 1) {
+            double x, x1, x2, y1, y2;
+            x1 = axisData[coords[0]].getRealValue();
+            y1 = tableData[coords[0]].getRealValue();
+            x2 = axisData[coords[1]].getRealValue();
+            y2 = tableData[coords[1]].getRealValue();
+        	for (int i = coords[0] + 1; i < coords[1]; ++i) {
+        		x = axisData[i].getRealValue();
+        		data[i].setRealValue(String.valueOf(linearInterpolation(x, x1, x2, y1, y2)));
+        	}
+        }
+        // Interpolate x axis in case the x axis in selected.
         this.getAxis().horizontalInterpolate();
     }
 
