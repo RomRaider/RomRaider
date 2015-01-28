@@ -39,6 +39,7 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.comms.query.EcuQueryDataType;
 import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.Module;
 
@@ -103,7 +104,7 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
         int numAddresses = 0;
         for (EcuQuery ecuQuery : filteredQueries) {
-            numAddresses += getDataLength(ecuQuery); 
+            numAddresses += EcuQueryDataType.getDataLength(ecuQuery); 
         }
         return new byte[requestSize + RESPONSE_NON_DATA_BYTES + numAddresses];
     }
@@ -164,7 +165,7 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
 
         int srcPos = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
-            byte[] bytes = new byte[getDataLength(filteredQuery)];
+            byte[] bytes = new byte[EcuQueryDataType.getDataLength(filteredQuery)];
             if (((EcuData) filteredQuery.getLoggerData()).getGroupSize() > 0) {
                 srcPos = filteredQuery.getBytes()[0];
             }
@@ -203,7 +204,7 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
 
         int srcPos = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
-            final byte[] bytes = new byte[getDataLength(filteredQuery)];
+            final byte[] bytes = new byte[EcuQueryDataType.getDataLength(filteredQuery)];
             srcPos = Integer.parseInt(filteredQuery.getHex(), 16) - lowestAddress;
             arraycopy(responseData, srcPos, bytes, 0, bytes.length);
             addressResults.put(filteredQuery.getHex(), bytes);
@@ -262,35 +263,10 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
         return addresses;
     }
 
-    private int getDataLength(EcuQuery ecuQuery) {
-        int dataLength = 1;
-        final String dataType =
-                ecuQuery.getLoggerData().getSelectedConvertor().getDataType().toLowerCase();
-        if (dataType.contains("int16")) {
-            dataLength = 2;
-        }
-        else if (dataType.contains("int32") ||
-                 dataType.contains("float")) {
-            dataLength = 4;
-        }
-        return dataLength;
-    }
-
     private int getDataLength(Collection<EcuQuery> queries) {
         int dataLength = 0;
         for (EcuQuery query : queries) {
-            final String dataType =
-                    query.getLoggerData().getSelectedConvertor().getDataType().toLowerCase();
-            if (dataType.contains("int16")) {
-                dataLength += 2;
-            }
-            else if (dataType.contains("int32") ||
-                     dataType.contains("float")) {
-                dataLength += 4;
-            }
-            else {
-                dataLength += 1;
-            }
+            dataLength += EcuQueryDataType.getDataLength(query);
         }
         return dataLength;
     }

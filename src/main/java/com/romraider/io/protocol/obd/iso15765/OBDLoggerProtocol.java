@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.comms.query.EcuQueryDataType;
 import com.romraider.logger.ecu.definition.Module;
 
 public final class OBDLoggerProtocol implements LoggerProtocolOBD {
@@ -82,7 +83,7 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
         int numAddresses = 0;
         for (EcuQuery ecuQuery : filteredQueries) {
             numAddresses += ecuQuery.getBytes().length;
-            numAddresses += getDataLength(ecuQuery); 
+            numAddresses += EcuQueryDataType.getDataLength(ecuQuery); 
         }
         return new byte[(numAddresses + RESPONSE_NON_DATA_BYTES)];
     }
@@ -122,7 +123,7 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
         int i = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
             final int addrLength = filteredQuery.getBytes().length;
-            final int dataLength = getDataLength(filteredQuery);
+            final int dataLength = EcuQueryDataType.getDataLength(filteredQuery);
             final byte[] addr = new byte[addrLength];
             final byte[] data = new byte[dataLength];
             arraycopy(responseData, i, addr, 0, addrLength);
@@ -181,19 +182,5 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
             }
         }
         return addresses;
-    }
-
-    private int getDataLength(EcuQuery ecuQuery) {
-        int dataLength = 1;
-        final String dataType =
-                ecuQuery.getLoggerData().getSelectedConvertor().getDataType().toLowerCase();
-        if (dataType.contains("int16")) {
-            dataLength = 2;
-        }
-        else if (dataType.contains("int32") ||
-                 dataType.contains("float")) {
-            dataLength = 4;
-        }
-        return dataLength;
     }
 }
