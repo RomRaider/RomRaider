@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,11 +43,17 @@ public final class WriteCommandGenerator extends AbstractCommandGenerator {
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(data, "data");
         final List<byte[]> commands = new ArrayList<byte[]>();
-        for (int i = 0; i < length; i++) {
-            int singleAddress = ByteUtil.asUnsignedInt(address) + i;
-            byte[] singleAddrBytes = intToByteArray(singleAddress);
+        if (blockRead) {
             commands.add(
-                    protocol.constructWriteAddressRequest(module, singleAddrBytes, data[i]));
+                    protocol.constructWriteMemoryRequest(module, address, data));
+        }
+        else {
+            for (int i = 0; i < length; i++) {
+                int singleAddress = ByteUtil.asUnsignedInt(address) + i;
+                byte[] singleAddrBytes = intToByteArray(singleAddress);
+                commands.add(
+                        protocol.constructWriteAddressRequest(module, singleAddrBytes, data[i]));
+            }
         }
         return commands;
     }

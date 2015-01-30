@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,10 +41,6 @@ import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
 public final class DS2Protocol implements ProtocolDS2 {
     public static final byte[] READ_MEMORY_COMMAND = new byte[]{0x06, 0x00};
     public static final byte[] READ_ADDRESS_COMMAND = new byte[]{0x0B, 0x02, 0x0e};
-    public static final byte[] WRITE_MEMORY_COMMAND = new byte[]{(byte) 0xB0};
-    public static final byte[] WRITE_MEMORY_RESPONSE = new byte[]{(byte) 0xF0};
-    public static final byte[] WRITE_ADDRESS_COMMAND = new byte[]{(byte) 0xB8};
-    public static final byte[] WRITE_ADDRESS_RESPONSE = new byte[]{(byte) 0xF8};
     public static final byte[] ECU_INIT_COMMAND = new byte[]{0x00};
     public static final byte VALID_RESPONSE = (byte) 0xA0;
     public static final int ADDRESS_SIZE = 3;
@@ -65,9 +61,7 @@ public final class DS2Protocol implements ProtocolDS2 {
     public byte[] constructWriteMemoryRequest(
             Module module, byte[] address, byte[] values) {
 
-        throw new UnsupportedProtocolException(
-                "Write memory command is not supported on DS2 for address: " + 
-                asHex(address));
+        return buildRequest(new byte[0], new byte[0], values);
     }
 
     @Override
@@ -75,7 +69,7 @@ public final class DS2Protocol implements ProtocolDS2 {
             Module module, byte[] address, byte value) {
 
         throw new UnsupportedProtocolException(
-                "Write Address command is not supported on DS2 for address: " + 
+                "Write Address command is not supported by DS2 for address: " + 
                 asHex(address));
     }
 
@@ -154,7 +148,7 @@ public final class DS2Protocol implements ProtocolDS2 {
         checkNotNullOrEmpty(processedResponse, "processedResponse");
         DS2ResponseProcessor.validateResponse(processedResponse);
         byte responseType = processedResponse[4];
-        if (responseType != WRITE_ADDRESS_RESPONSE[0] || processedResponse[5] != (byte) 0x40) {
+        if (responseType != (byte) 0x40) {
             throw new InvalidResponseException("Unexpected " + module.getName() +
                     " Reset response: " + asHex(processedResponse));
         }
