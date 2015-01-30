@@ -39,7 +39,7 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
-import com.romraider.logger.ecu.comms.query.EcuQueryDataType;
+import com.romraider.logger.ecu.comms.query.EcuQueryData;
 import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.Module;
 
@@ -104,7 +104,7 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
         int numAddresses = 0;
         for (EcuQuery ecuQuery : filteredQueries) {
-            numAddresses += EcuQueryDataType.getDataLength(ecuQuery); 
+            numAddresses += EcuQueryData.getDataLength(ecuQuery); 
         }
         return new byte[requestSize + RESPONSE_NON_DATA_BYTES + numAddresses];
     }
@@ -165,7 +165,7 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
 
         int srcPos = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
-            byte[] bytes = new byte[EcuQueryDataType.getDataLength(filteredQuery)];
+            byte[] bytes = new byte[EcuQueryData.getDataLength(filteredQuery)];
             if (((EcuData) filteredQuery.getLoggerData()).getGroupSize() > 0) {
                 srcPos = filteredQuery.getBytes()[0];
             }
@@ -204,7 +204,7 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
 
         int srcPos = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
-            final byte[] bytes = new byte[EcuQueryDataType.getDataLength(filteredQuery)];
+            final byte[] bytes = new byte[EcuQueryData.getDataLength(filteredQuery)];
             srcPos = Integer.parseInt(filteredQuery.getHex(), 16) - lowestAddress;
             arraycopy(responseData, srcPos, bytes, 0, bytes.length);
             addressResults.put(filteredQuery.getHex(), bytes);
@@ -266,7 +266,7 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
     private int getDataLength(Collection<EcuQuery> queries) {
         int dataLength = 0;
         for (EcuQuery query : queries) {
-            dataLength += EcuQueryDataType.getDataLength(query);
+            dataLength += EcuQueryData.getDataLength(query);
         }
         return dataLength;
     }

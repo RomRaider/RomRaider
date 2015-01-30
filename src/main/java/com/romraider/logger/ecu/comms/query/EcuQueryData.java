@@ -19,14 +19,26 @@
 
 package com.romraider.logger.ecu.comms.query;
 
-public final class EcuQueryDataType {
+import com.romraider.logger.ecu.definition.LoggerData;
 
-    private EcuQueryDataType() {}
+/**
+ * @return the length of the data based on the data storage type
+ * value set in the selected converter.
+ */
+public final class EcuQueryData {
 
     public final static int getDataLength(EcuQuery ecuQuery) {
-        int dataLength = 1;
+        return getDataLength(ecuQuery.getLoggerData());
+    }
+
+    public final static int getDataLength(LoggerData loggerData) {
         final String dataType =
-                ecuQuery.getLoggerData().getSelectedConvertor().getDataType().toLowerCase();
+                loggerData.getSelectedConvertor().getDataType().toLowerCase();
+        return getDataLength(dataType);
+    }
+
+    public final static int getDataLength(String dataType) {
+        int dataLength = 1;
         if (dataType.contains("int16")) {
             dataLength = 2;
         }
@@ -36,4 +48,6 @@ public final class EcuQueryDataType {
         }
         return dataLength;
     }
+
+    private EcuQueryData() {}
 }

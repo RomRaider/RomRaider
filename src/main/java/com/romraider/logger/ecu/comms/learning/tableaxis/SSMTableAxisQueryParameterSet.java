@@ -27,6 +27,7 @@ import java.util.List;
 
 import com.romraider.Settings;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.comms.query.EcuQueryData;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
 import com.romraider.logger.ecu.definition.EcuAddress;
 import com.romraider.logger.ecu.definition.EcuAddressImpl;
@@ -65,13 +66,7 @@ public class SSMTableAxisQueryParameterSet {
         final String tableAddrStr = storageAddress.replaceAll("0x", "");
         final int tableAddrBase = Integer.parseInt(tableAddrStr, 16);
 
-        int dataSize = 1;
-        if (storageType.toLowerCase().contains("int16")) {
-            dataSize = 2;
-        }
-        if (storageType.toLowerCase().contains("float")) {
-            dataSize = 4;
-        }
+        int dataSize = EcuQueryData.getDataLength(storageType);
 
         final int count = Integer.parseInt(size, 10);
         for (int i = 0; i < count; i++) {

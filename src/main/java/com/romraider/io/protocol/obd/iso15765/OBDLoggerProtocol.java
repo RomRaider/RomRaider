@@ -38,7 +38,7 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
-import com.romraider.logger.ecu.comms.query.EcuQueryDataType;
+import com.romraider.logger.ecu.comms.query.EcuQueryData;
 import com.romraider.logger.ecu.definition.Module;
 
 public final class OBDLoggerProtocol implements LoggerProtocolOBD {
@@ -83,7 +83,7 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
         int numAddresses = 0;
         for (EcuQuery ecuQuery : filteredQueries) {
             numAddresses += ecuQuery.getBytes().length;
-            numAddresses += EcuQueryDataType.getDataLength(ecuQuery); 
+            numAddresses += EcuQueryData.getDataLength(ecuQuery); 
         }
         return new byte[(numAddresses + RESPONSE_NON_DATA_BYTES)];
     }
@@ -123,7 +123,7 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
         int i = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
             final int addrLength = filteredQuery.getBytes().length;
-            final int dataLength = EcuQueryDataType.getDataLength(filteredQuery);
+            final int dataLength = EcuQueryData.getDataLength(filteredQuery);
             final byte[] addr = new byte[addrLength];
             final byte[] data = new byte[dataLength];
             arraycopy(responseData, i, addr, 0, addrLength);

@@ -25,8 +25,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.romraider.logger.ecu.definition.EcuData;
-
 /**
  * Inspect the address of each query to determine if a single query
  * with a start address and byte length can be substituted as opposed
@@ -60,16 +58,7 @@ public final class EcuQueryRangeTest {
         int lowestAddress = Integer.MAX_VALUE;
         int highestAddress = 0;
         for (EcuQuery query : queryList) {
-            final EcuData parameter = (EcuData) query.getLoggerData();
-            final String storageType = parameter.getSelectedConvertor().getDataType();
-            int dataSize = 1;
-            if (storageType.toLowerCase().contains("int16")) {
-                dataSize = 2;
-            }
-            if (storageType.toLowerCase().contains("float") ||
-                    storageType.toLowerCase().contains("int32")) {
-                dataSize = 4;
-            }
+            int dataSize = EcuQueryData.getDataLength(query);
             final int address = Integer.parseInt(query.getHex(), 16);
             if (address < lowestAddress) {
                 lowestAddress = address;
