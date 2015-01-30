@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ public final class DS2ResponseProcessor {
 
     public static void validateResponse(byte[] response) {
         int i = 0;
-        assertTrue(response.length > RESPONSE_NON_DATA_BYTES, "Invalid response length");
+        assertTrue(response.length >= RESPONSE_NON_DATA_BYTES, "Invalid response length");
         assertEquals(module.getAddress()[0], response[i++], "Invalid " + module.getName() + " id");
         assertEquals(asByte(response.length), response[i++], "Invalid response packet length");
         assertEquals(VALID_RESPONSE, response[i], "Invalid response");
