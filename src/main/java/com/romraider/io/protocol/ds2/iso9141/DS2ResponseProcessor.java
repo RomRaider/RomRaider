@@ -58,7 +58,7 @@ public final class DS2ResponseProcessor {
         assertTrue(response.length >= RESPONSE_NON_DATA_BYTES, "Invalid response length");
         assertEquals(module.getAddress()[0], response[i++], "Invalid " + module.getName() + " id");
         assertEquals(asByte(response.length), response[i++], "Invalid response packet length");
-        assertEquals(VALID_RESPONSE, response[i], "Invalid response");
+        assertEquals(VALID_RESPONSE, response[i], "Request not supported");
         assertEquals(calculateChecksum(response), response[response.length - 1], "Invalid checksum");
     }
 
