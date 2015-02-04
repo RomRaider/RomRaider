@@ -84,7 +84,7 @@ public class RomTree extends JTree implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         try{
-            Object selectedRow = getLastSelectedPathComponent();
+            Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
             /* if nothing is selected */
             if (selectedRow == null) {
                 return;
