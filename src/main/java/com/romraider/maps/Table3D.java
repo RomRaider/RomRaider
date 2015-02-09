@@ -845,7 +845,7 @@ public class Table3D extends Table {
                 y1 = tableData[coords[0]][i].getRealValue();
                 y2 = tableData[coords[2]][i].getRealValue();
                 for (j = coords[0] + 1; j < coords[2]; ++j) {
-            		x = axisData[i].getRealValue();
+            		x = axisData[j].getRealValue();
                     tableData[j][i].setRealValue(String.valueOf(linearInterpolation(x, x1, x2, y1, y2)));
             	}
             }
