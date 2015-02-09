@@ -1110,33 +1110,17 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void verticalInterpolate() {
-        horizontalInterpolate();
     }
 
     public void horizontalInterpolate() {
-        int[] coords = { getDataSize(), 0};
-        DataCell[] tableData = getData();
-
-        int y;
-        for (y = 0; y < getDataSize(); y++) {
-            if (tableData[y].isSelected()) {
-                if (y < coords[0])
-                    coords[0] = y;
-                if (y > coords[1])
-                    coords[1] = y;
-            }
-        }
-        if (coords[1] - coords[0] > 1) {
-            double diff = (tableData[coords[0]].getRealValue() - tableData[coords[1]].getRealValue()) / (coords[1] - coords[0]);
-            if (Math.abs(diff) > 0) {
-                for (y = coords[0] + 1; y < coords[1]; y++)
-                    data[y].setRealValue(String.valueOf(tableData[y - 1].getRealValue() - diff));
-            }
-        }
     }
 
     public void interpolate() {
         horizontalInterpolate();
+    }
+    
+    public double linearInterpolation(double x, double x1, double x2, double y1, double y2) {
+        return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
     }
 
     public void validateScaling() {
