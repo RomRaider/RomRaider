@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.Action;
 
@@ -99,6 +100,9 @@ public final class TEDataSource implements ExternalDataSource {
 
     public String getPort() {
         return port;
+    }
+
+    public void setProperties(Properties properties) {
     }
 
     public void connect() {

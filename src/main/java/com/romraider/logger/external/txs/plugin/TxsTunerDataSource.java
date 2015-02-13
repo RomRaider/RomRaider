@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
 import javax.swing.Action;
 
 import com.romraider.logger.ecu.EcuLogger;
@@ -91,6 +93,9 @@ public class TxsTunerDataSource implements ExternalDataSource {
         return port;
     }
     
+    public void setProperties(Properties properties) {
+    }
+
     public void connect() {
         runner = new TxsRunner(port, dataItems, LOGGER, DEVICE);
         runAsDaemon(runner);
