@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ public enum SensorConversionsOther implements ExternalSensorConversions {
     MAF_GS    ("g/sec", "x", "0.00", new GaugeMinMax(0,400,50)),
     MAF_GS2LB    ("lb/min", "x/7.54", "0.00", new GaugeMinMax(0,50,5)),
     PERCENT    ("%", "x", "0.0", new GaugeMinMax(0,100,10)),
+    ENGINE_RPM  ("rpm", "x", "0", new GaugeMinMax(0,15000,1500)),
     VOLTS_5DC("VDC", "x", "0.0", new GaugeMinMax(0,5,0.5)),
     VOLTS_12DC("VDC", "x", "0.0", new GaugeMinMax(0,15,1.5));
 

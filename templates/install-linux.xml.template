@@ -58,6 +58,7 @@
             <file src="plugins/aem2.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/aem.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/aem.xwifi.plugin" targetdir="$INSTALL_PATH/plugins"/>
+            <file src="plugins/ecotrons.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/fourteenpoint7.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/innovate.plugin" targetdir="$INSTALL_PATH/plugins"/>
             <file src="plugins/mrf.plugin" targetdir="$INSTALL_PATH/plugins"/>
@@ -76,6 +77,7 @@
                 <exclude name="plugins/aem2.plugin"/>
                 <exclude name="plugins/aem.plugin"/>
                 <exclude name="plugins/aem.xwifi.plugin"/>
+                <exclude name="plugins/ecotrons.plugin"/>
                 <exclude name="plugins/fourteenpoint7.plugin"/>
                 <exclude name="plugins/innovate.plugin"/>
                 <exclude name="plugins/mrf.plugin"/>
