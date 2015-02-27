@@ -41,7 +41,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.connection.ConnectionPropertiesImpl;
+import com.romraider.io.connection.SerialConnectionProperties;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.definition.EcuAddress;
 import com.romraider.logger.ecu.definition.EcuAddressImpl;
@@ -179,7 +179,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             protocolId = attributes.getValue(ATTR_ID);
             parseProtocol = protocol.equalsIgnoreCase(protocolId);
             if (parseProtocol) {
-                connectionProperties = new ConnectionPropertiesImpl(Integer.parseInt(attributes.getValue(ATTR_BAUD)),
+                connectionProperties = new SerialConnectionProperties(Integer.parseInt(attributes.getValue(ATTR_BAUD)),
                         Integer.parseInt(attributes.getValue(ATTR_DATABITS)), Integer.parseInt(attributes.getValue(ATTR_STOPBITS)),
                         Integer.parseInt(attributes.getValue(ATTR_PARITY)), Integer.parseInt(attributes.getValue(ATTR_CONNECT_TIMEOUT)),
                         Integer.parseInt(attributes.getValue(ATTR_SEND_TIMEOUT)));
