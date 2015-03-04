@@ -1,0 +1,5 @@
+datasource.class=com.romraider.logger.external.apsx.plugin.ApsxDataSource
+datasource.baudrate=9600
+datasource.databits=8
+datasource.parity=0
+datasource.stopbits=1
