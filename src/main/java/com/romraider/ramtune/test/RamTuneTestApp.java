@@ -111,6 +111,7 @@ public final class RamTuneTestApp extends AbstractFrame {
     private final JTextField addressField = new JTextField(6);
     private final JTextField lengthField = new JTextField(4);
     private final JTextField sendTimeoutField = new JTextField(4);
+    private final JTextField blocksize = new JTextField(3);
     private final JTextArea dataField = new JTextArea(5, 80);
     private final JTextArea responseField = new JTextArea(10, 80);
     private final JCheckBox blockRead = new JCheckBox("Block Read");
@@ -237,6 +238,11 @@ public final class RamTuneTestApp extends AbstractFrame {
         blockRead.setSelected(true);
         blockRead.setToolTipText("uncheck to read range byte at a time");
         blockReadPanel.add(blockRead);
+        blockReadPanel.add(new JLabel("Block Size:"));
+        blocksize.setText("128");
+        blocksize.setToolTipText("Set to value allowed by the ECU");
+        blockReadPanel.add(blocksize);
+
         JPanel addressPanel = new JPanel(new FlowLayout(LEFT));
         addressPanel.add(addressFieldPanel);
         addressPanel.add(lengthPanel);
@@ -297,7 +303,7 @@ public final class RamTuneTestApp extends AbstractFrame {
                             final CommandGenerator commandGenerator = (CommandGenerator) commandComboBox.getSelectedItem();
                             if (validateInput(commandGenerator) && confirmCommandExecution(commandGenerator)) {
                                 StringBuilder builder = new StringBuilder();
-                                List<byte[]> commands = commandGenerator.createCommands(module, getData(), getAddress(), getLength(), getBlockRead());
+                                List<byte[]> commands = commandGenerator.createCommands(module, getData(), getAddress(), getLength(), getBlockRead(), getBlockSize());
                                 for (byte[] command : commands) {
                                     appendResponseLater("SND [" + commandGenerator + "]:\t" + asHex(command) + "\n");
                                     byte[] response = protocol.preprocessResponse(command, commandExecutor.executeCommand(command), pollMode);
@@ -350,6 +356,10 @@ public final class RamTuneTestApp extends AbstractFrame {
 
     private boolean getBlockRead() {
         return blockRead.isSelected();
+    }
+
+    private int getBlockSize() {
+        return getIntFromField(blocksize);
     }
 
     private int getSendTimeout() {

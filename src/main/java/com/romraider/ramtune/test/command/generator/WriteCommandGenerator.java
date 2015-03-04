@@ -38,7 +38,7 @@ public final class WriteCommandGenerator extends AbstractCommandGenerator {
     }
 
     public List<byte[]> createCommands(Module module, byte[] data, byte[] address,
-            int length, boolean blockRead) {
+            int length, boolean blockRead, int blocksize) {
         checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(data, "data");

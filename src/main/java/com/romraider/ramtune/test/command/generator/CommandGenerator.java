@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,6 @@ import com.romraider.logger.ecu.definition.Module;
 
 public interface CommandGenerator {
 
-    List<byte[]> createCommands(Module module, byte[] data, byte[] address, int length, boolean blockRead);
-
+    List<byte[]> createCommands(Module module, byte[] data, byte[] address,
+            int length, boolean blockRead, int blocksize);
 }

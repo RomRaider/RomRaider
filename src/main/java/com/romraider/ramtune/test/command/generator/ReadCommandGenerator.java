@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,21 +32,21 @@ import com.romraider.io.protocol.Protocol;
 import com.romraider.logger.ecu.definition.Module;
 
 public final class ReadCommandGenerator extends AbstractCommandGenerator {
-    private static final int INCREMENT_SIZE = 128;
     
     public ReadCommandGenerator(Protocol protocol) {
         super(protocol);
     }
 
     public List<byte[]> createCommands(Module module, byte[] data, byte[] address,
-            int length, boolean blockRead) {
+            int length, boolean blockRead, int blocksize) {
         checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkGreaterThanZero(length, "length");
+        checkGreaterThanZero(blocksize, "blocksize");
         if (length == 1) {
             return asList(createCommandForAddress(module, address));
         } else {
-            return createCommandsForRange(module, address, length, blockRead);
+            return createCommandsForRange(module, address, length, blockRead, blocksize);
         }
     }
 
@@ -55,10 +55,10 @@ public final class ReadCommandGenerator extends AbstractCommandGenerator {
     }
 
     private List<byte[]> createCommandsForRange(Module module, byte[] address,
-            int length, boolean blockRead) {
+            int length, boolean blockRead, int blocksize) {
         int incrementSize = 1;
         if (blockRead) {
-            incrementSize = INCREMENT_SIZE;
+            incrementSize = blocksize;
         }
         List<byte[]> commands = new ArrayList<byte[]>();
         byte[] readAddress = copy(address);
