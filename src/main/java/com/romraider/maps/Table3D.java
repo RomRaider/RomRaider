@@ -133,10 +133,6 @@ public class Table3D extends Table {
 
     @Override
     public void drawTable() {
-        if (xAxis == null)
-            throw new NullPointerException("xAxis");
-        if (yAxis == null)
-            throw new NullPointerException("yAxis");
         for(DataCell[] column : data) {
             for(DataCell cell : column) {
                 if(null != cell) {
