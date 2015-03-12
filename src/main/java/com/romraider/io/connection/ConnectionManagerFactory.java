@@ -83,55 +83,55 @@ public final class ConnectionManagerFactory {
             if (libraries.isEmpty())
                 throw new RuntimeException(
                         "No J2534 libraries found that support protocol " +
-                                settings.getTransportProtocol());;
+                                settings.getTransportProtocol());
 
-                                // if the J2534 device has not been previously defined, search for it
-                                // else use the defined device
-                                if (settings.getJ2534Device() == null) {
-                                    for (J2534Library dll : libraries) {
-                                        LOGGER.info(String.format("Trying new J2534/%s connection: %s",
-                                                settings.getTransportProtocol(),
-                                                dll.getVendor()));
-                                        try {
-                                            settings.setJ2534Device(dll.getLibrary());
-                                            return J2534TransportFactory.getManager(
-                                                    settings.getTransportProtocol().toUpperCase(),
-                                                    connectionProperties,
-                                                    dll.getLibrary());
+            // if the J2534 device has not been previously defined, search for it
+            // else use the defined device
+            if (settings.getJ2534Device() == null) {
+                for (J2534Library dll : libraries) {
+                    LOGGER.info(String.format("Trying new J2534/%s connection: %s",
+                            settings.getTransportProtocol(),
+                            dll.getVendor()));
+                    try {
+                        settings.setJ2534Device(dll.getLibrary());
+                        return J2534TransportFactory.getManager(
+                                settings.getTransportProtocol().toUpperCase(),
+                                connectionProperties,
+                                dll.getLibrary());
 
-                                        }
-                                        catch (Throwable t) {
-                                            settings.setJ2534Device(null);
-                                            LOGGER.info(String.format("%s is not available: %s",
-                                                    dll.getVendor(), t.getMessage()));
-                                        }
-                                    }
-                                }
-                                else {
-                                    for (J2534Library dll : libraries) {
-                                        if (dll.getLibrary().toLowerCase().contains(
-                                                settings.getJ2534Device().toLowerCase())) {
+                    }
+                    catch (Throwable t) {
+                        settings.setJ2534Device(null);
+                        LOGGER.info(String.format("%s is not available: %s",
+                                dll.getVendor(), t.getMessage()));
+                    }
+                }
+            }
+            else {
+                for (J2534Library dll : libraries) {
+                    if (dll.getLibrary().toLowerCase().contains(
+                            settings.getJ2534Device().toLowerCase())) {
 
-                                            LOGGER.info(String.format(
-                                                    "Re-trying previous J2534/%s connection: %s",
-                                                    settings.getTransportProtocol(),
-                                                    dll.getVendor()));
-                                            try {
-                                                settings.setJ2534Device(dll.getLibrary());
-                                                return J2534TransportFactory.getManager(
-                                                        settings.getTransportProtocol().toUpperCase(),
-                                                        connectionProperties,
-                                                        dll.getLibrary());
-                                            }
-                                            catch (Throwable t) {
-                                                settings.setJ2534Device(null);
-                                                LOGGER.info(String.format("%s is not available: %s",
-                                                        dll.getVendor(), t.getMessage()));
-                                            }
-                                        }
-                                    }
-                                }
-                                throw new RuntimeException("J2534 connection not available");
+                        LOGGER.info(String.format(
+                                "Re-trying previous J2534/%s connection: %s",
+                                settings.getTransportProtocol(),
+                                dll.getVendor()));
+                        try {
+                            settings.setJ2534Device(dll.getLibrary());
+                            return J2534TransportFactory.getManager(
+                                    settings.getTransportProtocol().toUpperCase(),
+                                    connectionProperties,
+                                    dll.getLibrary());
+                        }
+                        catch (Throwable t) {
+                            settings.setJ2534Device(null);
+                            LOGGER.info(String.format("%s is not available: %s",
+                                    dll.getVendor(), t.getMessage()));
+                        }
+                    }
+                }
+            }
+            throw new RuntimeException("J2534 connection not available");
         }
         catch (Throwable t) {
             settings.setJ2534Device(null);
