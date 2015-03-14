@@ -1378,14 +1378,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 getSettings().setDestinationTarget(module);
                 final RadioButtonMenuItem fp =
                         (RadioButtonMenuItem) componentList.get("fastPoll");
+                fp.setEnabled(module.getFastPoll());
                 if(module.getFastPoll()) {
-                    getSettings().setFastPoll(true);
-                    fp.setEnabled(module.getFastPoll());
                     fp.setSelected(getSettings().isFastPoll());
                 }
                 else {
                     fp.setSelected(false);
-                    fp.setEnabled(false);
                     getSettings().setFastPoll(false);
                 }
             }
