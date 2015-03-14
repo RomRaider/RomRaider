@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,8 @@ final class TestSerialConnection2 implements SerialConnection {
     private byte[] request = new byte[0];
     private byte[] readResponse = new byte[0];
     private byte[] result = new byte[1];
+    private boolean close = false;
+    private int index = 0;
 //    private int index;
 
 
@@ -88,6 +90,7 @@ final class TestSerialConnection2 implements SerialConnection {
     }
 
     public int available() {
+        if (close) return 0;
         if (pollState.isLastQuery() && !pollState.isNewQuery() && 
                 pollState.getCurrentState() == 0 && pollState.getLastState() == 1) return 0;
         if (isEcuInitRequest()) {
@@ -111,7 +114,7 @@ final class TestSerialConnection2 implements SerialConnection {
     }
 
     public void read(byte[] bytes) {
-        long sleepTime = 200L;
+        long sleepTime = 500L;
 //        if (readResponse.length == 0) {
             if (isEcuInitRequest()) {
                 if (module.getName().equalsIgnoreCase("ECU")){
@@ -122,6 +125,23 @@ final class TestSerialConnection2 implements SerialConnection {
                 }
             } else if (isIamRequest()) {
                 byte[] response = asBytes("0x80F01006E83F600000000D");
+                System.arraycopy(response, 0, bytes, request.length, response.length);
+            } else if (isFBKCRequest()) {
+                byte[] response = new byte[7];
+                switch (index) {
+                    case 0:
+                        response = asBytes("0x80F01002E844AE");
+                        index = 1;
+                        break;
+                    case 1:
+                        response = asBytes("0x80F01002E860CA");
+                        index = 2;
+                        break;
+                    case 2:
+                        response = asBytes("0x80F01002E880EA");
+                        index = 0;
+                        break;
+                }
                 System.arraycopy(response, 0, bytes, request.length, response.length);
             } else if (isEngineLoadRequest()) {
                 byte[] response = asBytes("0x80F01006E83EC74A760033");
@@ -194,6 +214,7 @@ final class TestSerialConnection2 implements SerialConnection {
 
     public byte[] readAvailable() {
         byte[] response = new byte[available()];
+        if (response.length == 0) return new byte[]{0};
         read(response);
         return response;
     }
@@ -215,6 +236,7 @@ final class TestSerialConnection2 implements SerialConnection {
     }
 
     public void sendBreak(int duration) {
+        close = true;
     }
 
     private int calculateNumResponseDataBytes() {
@@ -224,6 +246,11 @@ final class TestSerialConnection2 implements SerialConnection {
     private boolean isIamRequest() {
         String hex = asHex(request);
         return hex.startsWith("8010F011A8") && hex.contains("FF8228FF8229FF822AFF822B");
+    }
+
+    private boolean isFBKCRequest() {
+        String hex = asHex(request);
+        return hex.startsWith("8010F005A8") && hex.contains("FF6ADD73");
     }
 
     private boolean isEngineLoadRequest() {
@@ -240,6 +267,7 @@ final class TestSerialConnection2 implements SerialConnection {
     }
 
     private boolean isEcuInitRequest() {
+        close = false;
         byte command = ECU_INIT_COMMAND;
         return isCommand(command);
     }
