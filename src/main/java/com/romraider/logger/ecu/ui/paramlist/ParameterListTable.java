@@ -52,7 +52,7 @@ public final class ParameterListTable extends JTable {
                 setColumnSortable(column, true);
             }
         }
-        if (EcuLogger.uiscale != 1)
+        if (EcuLogger.isTouchEnabled() == true)
         {
             this.setRowHeight(40);
             

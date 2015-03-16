@@ -43,7 +43,7 @@ public final class UnitsComboBoxRenderer extends JComboBox implements TableCellR
         EcuDataConvertor[] convertors = currentEcuData.getConvertors();
         JComboBox<EcuDataConvertor> comboBox = new JComboBox();
         
-        if (EcuLogger.uiscale != 1)
+        if (EcuLogger.isTouchEnabled() == true)
         {
             comboBox.setPreferredSize(new Dimension(75, 100));
             comboBox.setRenderer(new FontCellRenderer());
@@ -60,9 +60,6 @@ public final class UnitsComboBoxRenderer extends JComboBox implements TableCellR
 
 class FontCellRenderer extends DefaultListCellRenderer {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 5963151264549169227L;
 
 	public Component getListCellRendererComponent(

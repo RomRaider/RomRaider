@@ -29,7 +29,6 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,13 +46,11 @@ public final class UnitsComboBoxEditor extends AbstractCellEditor implements Tab
         currentEcuData = (LoggerData) ecuData;
         EcuDataConvertor[] convertors = currentEcuData.getConvertors();
         JComboBox<EcuDataConvertor> comboBox = new JComboBox<EcuDataConvertor>();
-        if (EcuLogger.uiscale != 1)
+        if (EcuLogger.isTouchEnabled() == true)
         {
-            //comboBox.setPreferredSize(new Dimension(75, 100));
             comboBox.setRenderer(new FontCellRenderer());
             Font font = new Font("Tahoma", Font.PLAIN, 18);
-            comboBox.setFont(font);
-            
+            comboBox.setFont(font);            
         }
         for (EcuDataConvertor convertor : convertors) {
             comboBox.addItem(convertor);
