@@ -102,6 +102,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JWindow;
+import javax.swing.KeyStroke;
 import javax.swing.table.TableColumn;
 
 import org.apache.log4j.Level;
@@ -201,6 +202,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
     private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU/TCU Logger";
     private static final String LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
+    private static final String LOGGER_TOUCH_ARG = "-logger.touch";
     private static final URL ICON_PATH =  Settings.class.getClass().getResource("/graphics/romraider-ico.gif");
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
@@ -223,6 +225,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String LOG_TO_FILE_START = "Start file log";
     private static final String LOG_TO_FILE_STOP = "Stop file log";
     private static final String LOG_TO_FILE_TT_TEXT = "Start/stop file logging (F1)";
+    public static int uiscale = 1; 
     private static String target = "ECU";
     private static String loadResult  = "";
     private String defVersion;
@@ -878,6 +881,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private JComponent buildTabbedPane() {
+    	
+    	
+    	if (uiscale == 1)
+    	{
         addSplitPaneTab(
                 "Data",
                 buildSplitPane(
@@ -912,15 +919,53 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         tabbedPane.add("MAF", mafTab.getPanel());
         tabbedPane.add("Injector", injectorTab.getPanel());
         tabbedPane.add("Dyno", dynoTab.getPanel());
+    	}
+    	else
+    	{
+            addSplitPaneTab(
+            		"<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Data" + "</body></html>",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    dataTabParamListTableModel,
+                                    dataTabSwitchListTableModel,
+                                    dataTabExternalListTableModel),
+                                    buildDataTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton());
+            addSplitPaneTab(
+            		"<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Graph" + "</body></html>",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    graphTabParamListTableModel,
+                                    graphTabSwitchListTableModel,
+                                    graphTabExternalListTableModel),
+                                    buildGraphTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton());
+            addSplitPaneTab(
+            		"<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dashboard" + "</body></html>",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    dashboardTabParamListTableModel,
+                                    dashboardTabSwitchListTableModel,
+                                    dashboardTabExternalListTableModel),
+                                    buildDashboardTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton(),
+                                    buildToggleGaugeStyleButton());
+            tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "MAF"+ "</body></html>", mafTab.getPanel());
+            tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Injector"+ "</body></html>", injectorTab.getPanel());
+            tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dyno" + "</body></html>", dynoTab.getPanel());    		
+        }
         return tabbedPane;
     }
 
     private JButton buildToggleGaugeStyleButton() {
         final JButton button = new JButton();
         SetFont.plain(button);
-        VerticalTextIcon textIcon = new VerticalTextIcon(button, "Gauge Style", ROTATE_LEFT);
+        VerticalTextIcon textIcon = new VerticalTextIcon(button,  "Gauge Style" , ROTATE_LEFT);
         button.setIcon(textIcon);
-        button.setPreferredSize(new Dimension(25, 80));
+        button.setPreferredSize(new Dimension(14*uiscale, 80));
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
         button.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
             private static final long serialVersionUID = 6913964758354638587L;
@@ -960,7 +1005,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         VerticalTextIcon textIcon = new VerticalTextIcon(button, "Un-select ALL", ROTATE_LEFT);
         button.setToolTipText(UNSELECT_ALL_TT_TEXT);
         button.setIcon(textIcon);
-        button.setPreferredSize(new Dimension(25, 85));
+        button.setPreferredSize(new Dimension(14*uiscale, 85));
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F9"), "un-selectAll");
         button.getActionMap().put("un-selectAll", new AbstractAction() {
             private static final long serialVersionUID = 4913964758354638588L;
@@ -1003,7 +1048,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         VerticalTextIcon textIcon =
                 new VerticalTextIcon(button, "LTV (F6)", ROTATE_LEFT);
         button.setIcon(textIcon);
-        button.setPreferredSize(new Dimension(25, 60));
+        button.setPreferredSize(new Dimension(14*uiscale, 60));
         button.addActionListener(new LearningTableValuesAction(this));
         return button;
     }
@@ -1015,7 +1060,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         toggleListButton.setSelected(true);
         VerticalTextIcon textIcon = new VerticalTextIcon(toggleListButton, "Parameter List", ROTATE_LEFT);
         toggleListButton.setIcon(textIcon);
-        toggleListButton.setPreferredSize(new Dimension(25, 95));
+        toggleListButton.setPreferredSize(new Dimension(14*uiscale, 95));
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         toggleListButton.getActionMap().put("toggleHideParams", new AbstractAction() {
             private static final long serialVersionUID = -276854997788647306L;
@@ -1050,11 +1095,19 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
 
         JPanel tabControlPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 1, 1));
-        tabControlPanel.setPreferredSize(new Dimension(25, 25));
+        if (uiscale != 1)
+        {
+        	tabControlPanel.setPreferredSize(new Dimension(14*uiscale, 25));
+        }
+        else
+        {
+        	tabControlPanel.setPreferredSize(new Dimension(25, 25));	
+        }
         tabControlPanel.add(toggleListButton);
         for (JComponent control : extraControls) tabControlPanel.add(control);
 
         JPanel panel = new JPanel(new BorderLayout(0, 0));
+
         panel.add(tabControlPanel, WEST);
         panel.add(splitPane, CENTER);
 
@@ -1066,16 +1119,38 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         JScrollPane externalList = new JScrollPane(buildParamListTable(externalListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabs.addTab(HEADING_PARAMETERS, paramList);
-        tabs.addTab(HEADING_SWITCHES, switchList);
-        tabs.addTab("External Sensors", externalList);
+        
+        if (uiscale == 1)
+        {
+        	tabs.addTab(HEADING_PARAMETERS, paramList);
+        	tabs.addTab(HEADING_SWITCHES, switchList);
+        	tabs.addTab("External Sensors", externalList);
+        }
+        else
+        {
+        	tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + HEADING_PARAMETERS + "</body></html>", paramList);
+            tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + HEADING_SWITCHES + "</body></html>", switchList);
+            tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>External Sensors</body></html>", externalList); 
+        }
         return tabs;
     }
 
     private JTable buildParamListTable(ParameterListTableModel tableModel) {
         JTable paramListTable = new ParameterListTable(tableModel);
-        changeColumnWidth(paramListTable, 0, 20, 55, 55);
-        changeColumnWidth(paramListTable, 2, 50, 250, 130);
+        
+        changeColumnWidth(paramListTable, 0, 20, 75, 75);
+        //changeColumnWidth(paramListTable, 1, 500, 700, 500);
+        changeColumnWidth(paramListTable, 2, 50, 75, 75);
+        
+        paramListTable.getInputMap().put(KeyStroke.getKeyStroke("SPACE"),
+                "pressed");
+//component.getInputMap().put(KeyStroke.getKeyStroke("released SPACE"),
+//                "released");
+//        paramListTable.getActionMap().put("pressed",
+//                 pressedAction);
+//component.getActionMap().put("released",
+//                 releasedAction);
+        
         return paramListTable;
     }
 
@@ -1139,7 +1214,15 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
         splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
         splitPane.setDividerSize(5);
-        splitPane.setDividerLocation((int) getSettings().getDividerLocation());
+        
+        if(uiscale !=1)
+        {
+        	splitPane.setDividerLocation((int) getSettings().getDividerLocation()+200);
+        }
+        else
+        {
+        	splitPane.setDividerLocation((int) getSettings().getDividerLocation());
+        }
         splitPane.addPropertyChangeListener(this);
         return splitPane;
     }
@@ -1150,6 +1233,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JPanel buildControlToolbar() {
         JPanel controlPanel = new JPanel(new BorderLayout());
+        
+        if(uiscale != 1)
+        {
+        	portsComboBox.setPreferredSize(new Dimension(100,50));
+        }
+        
         controlPanel.add(buildPortsComboBox(), WEST);
         //TODO: Finish log playback stuff...
         //        controlPanel.add(buildPlaybackControls(), CENTER);
@@ -1181,6 +1270,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private Component buildFileNameExtention() {
         JLabel fileNameLabel = new JLabel("Logfile Text");
         final JTextField fileNameExtention = new JTextField("",8);
+        if(uiscale != 1)
+        {
+             fileNameExtention.setPreferredSize(new Dimension(200, 50));
+        }
         fileNameExtention.setToolTipText(FILE_NAME_EXTENTION);
         fileNameExtention.addFocusListener(new FocusListener() {
             @Override
@@ -1238,6 +1331,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 LOG_TO_FILE_START,
                 new ImageIcon(getClass().getResource(LOG_TO_FILE_ICON)));
         SetFont.plain(logToFileButton);
+        if(uiscale != 1)
+        {
+             logToFileButton.setPreferredSize(new Dimension(200, 50));
+        }
         logToFileButton.setToolTipText(LOG_TO_FILE_TT_TEXT);
         logToFileButton.setBackground(GREEN);
         logToFileButton.setOpaque(true);
@@ -1285,6 +1382,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
         final JCheckBox ecuCheckBox = new JCheckBox("ECU");
         final JCheckBox tcuCheckBox = new JCheckBox("TCU");
+        
+        if (uiscale != 1)
+        {
+        	ecuCheckBox.setPreferredSize(new Dimension(75, 50));
+        	tcuCheckBox.setPreferredSize(new Dimension(75, 50));
+        }
+        
         ecuCheckBox.setToolTipText(ECU_TEXT);
         tcuCheckBox.setToolTipText(TCU_TEXT);
         ecuCheckBox.addActionListener(new ActionListener() {
@@ -1332,7 +1436,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(tcuCheckBox);
 
         JButton reconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_restart.png")));
-        reconnectButton.setPreferredSize(new Dimension(25, 25));
+        if (uiscale == 1)
+        {
+        	reconnectButton.setPreferredSize(new Dimension(25, 25));
+        }
+        else
+        {
+        	reconnectButton.setPreferredSize(new Dimension(75, 50));
+        }
         reconnectButton.setToolTipText("Reconnect to " + target);
         reconnectButton.addActionListener(new ActionListener() {
             @Override
@@ -1346,7 +1457,15 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         });
         comboBoxPanel.add(reconnectButton);
         JButton disconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_stop.png")));
-        disconnectButton.setPreferredSize(new Dimension(25, 25));
+        if (uiscale == 1)
+        {
+        	disconnectButton.setPreferredSize(new Dimension(25, 25));
+        }
+        else
+        {
+        	disconnectButton.setPreferredSize(new Dimension(75, 50));
+        }
+        
         disconnectButton.setToolTipText("Disconnect from " + target);
         disconnectButton.addActionListener(new ActionListener() {
             @Override
@@ -1398,7 +1517,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JComponent buildDataTab() {
         JPanel panel = new JPanel(new BorderLayout());
-        JButton resetButton = new JButton("Reset Data");
+        JButton resetButton;
+        
+        if(uiscale !=1)
+        {
+        	resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
+        }
+        else
+        {
+        	resetButton = new JButton("Reset Data");
+        }
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -1414,7 +1542,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JComponent buildGraphTab() {
         JPanel panel = new JPanel(new BorderLayout());
-        JButton resetButton = new JButton("Reset Data");
+        JButton resetButton;
+        
+        if(uiscale !=1)
+        {
+        	resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
+        }
+        else
+        {
+        	resetButton = new JButton("Reset Data");
+        }
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -1430,7 +1567,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JComponent buildDashboardTab() {
         JPanel panel = new JPanel(new BorderLayout());
-        JButton resetButton = new JButton("Reset Data");
+        JButton resetButton;
+        
+        if(uiscale !=1)
+        {
+        	resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
+        }
+        else
+        {
+        	resetButton = new JButton("Reset Data");
+        }
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -1731,8 +1877,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     public static void startLogger(int defaultCloseOperation, String... args) {
-        EcuLogger ecuLogger = new EcuLogger();
+    	uiscale = setUIScale(args);
+    	EcuLogger ecuLogger = new EcuLogger();
         boolean fullscreen = containsFullScreenArg(args);
+        
         createAndShowGui(defaultCloseOperation, ecuLogger, fullscreen);
     }
 
@@ -1743,6 +1891,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return false;
     }
 
+    private static int setUIScale(String... args) {
+        for (String arg : args) {
+            if (LOGGER_TOUCH_ARG.equalsIgnoreCase(arg)) return 4;
+        }
+        return 1;
+    }
+    
     private static void createAndShowGui(final int defaultCloseOperation, final EcuLogger ecuLogger, final boolean fullscreen) {
         invokeLater(new Runnable() {
             @Override

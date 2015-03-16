@@ -19,15 +19,18 @@
 
 package com.romraider.logger.ecu.ui.paramlist;
 
+import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.ExternalData;
 
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
+
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
@@ -49,8 +52,15 @@ public final class ParameterListTable extends JTable {
                 setColumnSortable(column, true);
             }
         }
+        if (EcuLogger.uiscale != 1)
+        {
+            this.setRowHeight(40);
+            
+            Font font = new Font("Tahoma", Font.PLAIN, 16);
+            this.setFont(font);
+        }
     }
-
+    
     public TableCellRenderer getCellRenderer(int row, int col) {
         return displayComboBox(row, col) ? comboBoxRenderer : super.getCellRenderer(row, col);
     }

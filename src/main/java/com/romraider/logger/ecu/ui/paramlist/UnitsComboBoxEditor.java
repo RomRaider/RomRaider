@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.paramlist;
 
+import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.LoggerData;
 
@@ -26,7 +27,10 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
+
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -42,7 +46,15 @@ public final class UnitsComboBoxEditor extends AbstractCellEditor implements Tab
     public Component getTableCellEditorComponent(JTable table, Object ecuData, boolean isSelected, int row, int column) {
         currentEcuData = (LoggerData) ecuData;
         EcuDataConvertor[] convertors = currentEcuData.getConvertors();
-        JComboBox comboBox = new JComboBox();
+        JComboBox<EcuDataConvertor> comboBox = new JComboBox<EcuDataConvertor>();
+        if (EcuLogger.uiscale != 1)
+        {
+            //comboBox.setPreferredSize(new Dimension(75, 100));
+            comboBox.setRenderer(new FontCellRenderer());
+            Font font = new Font("Tahoma", Font.PLAIN, 18);
+            comboBox.setFont(font);
+            
+        }
         for (EcuDataConvertor convertor : convertors) {
             comboBox.addItem(convertor);
         }
@@ -58,7 +70,7 @@ public final class UnitsComboBoxEditor extends AbstractCellEditor implements Tab
         if (EDIT_COMMAND.equals(actionEvent.getActionCommand())) {
             Object source = actionEvent.getSource();
             if (source != null && JComboBox.class.isAssignableFrom(source.getClass())) {
-                JComboBox comboBox = (JComboBox) source;
+                JComboBox<?> comboBox = (JComboBox<?>) source;
                 currentEcuData.selectConvertor((EcuDataConvertor) comboBox.getSelectedItem());
                 fireEditingStopped();
             }
