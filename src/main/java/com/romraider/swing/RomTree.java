@@ -30,6 +30,7 @@ import javax.swing.Action;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
@@ -83,8 +84,11 @@ public class RomTree extends JTree implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        try{
-            Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
+        TreePath treePath = getPathForLocation(e.getX(), e.getY());
+        if (treePath == null)
+            return; // this happens if we click in the empty area
+        try {
+            Object selectedRow = treePath.getLastPathComponent();
             /* if nothing is selected */
             if (selectedRow == null) {
                 return;
