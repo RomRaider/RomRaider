@@ -41,7 +41,7 @@ public final class UnitsComboBoxRenderer extends JComboBox implements TableCellR
     public Component getTableCellRendererComponent(JTable table, Object ecuData, boolean isSelected, boolean hasFocus, int row, int column) {
         LoggerData currentEcuData = (LoggerData) ecuData;
         EcuDataConvertor[] convertors = currentEcuData.getConvertors();
-        JComboBox<EcuDataConvertor> comboBox = new JComboBox();
+        JComboBox comboBox = new JComboBox();
         
         if (EcuLogger.isTouchEnabled() == true)
         {

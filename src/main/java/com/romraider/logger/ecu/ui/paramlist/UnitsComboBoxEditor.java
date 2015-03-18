@@ -45,7 +45,7 @@ public final class UnitsComboBoxEditor extends AbstractCellEditor implements Tab
     public Component getTableCellEditorComponent(JTable table, Object ecuData, boolean isSelected, int row, int column) {
         currentEcuData = (LoggerData) ecuData;
         EcuDataConvertor[] convertors = currentEcuData.getConvertors();
-        JComboBox<EcuDataConvertor> comboBox = new JComboBox<EcuDataConvertor>();
+        JComboBox comboBox = new JComboBox();
         if (EcuLogger.isTouchEnabled() == true)
         {
             comboBox.setRenderer(new FontCellRenderer());
@@ -67,7 +67,7 @@ public final class UnitsComboBoxEditor extends AbstractCellEditor implements Tab
         if (EDIT_COMMAND.equals(actionEvent.getActionCommand())) {
             Object source = actionEvent.getSource();
             if (source != null && JComboBox.class.isAssignableFrom(source.getClass())) {
-                JComboBox<?> comboBox = (JComboBox<?>) source;
+                JComboBox comboBox = (JComboBox) source;
                 currentEcuData.selectConvertor((EcuDataConvertor) comboBox.getSelectedItem());
                 fireEditingStopped();
             }
