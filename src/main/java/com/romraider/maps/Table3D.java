@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,6 @@ public class Table3D extends Table {
     private JLabel xAxisLabel;
     private JLabel yAxisLabel;
 
-    @SuppressWarnings("hiding")
     DataCell[][] data = new DataCell[1][1];
     private boolean swapXY = false;
     private boolean flipX = false;
@@ -193,7 +192,7 @@ public class Table3D extends Table {
                     byteValue[1] = input[getStorageAddress() + offset * 4 - ramOffset + 1];
                     byteValue[2] = input[getStorageAddress() + offset * 4 - ramOffset + 2];
                     byteValue[3] = input[getStorageAddress() + offset * 4 - ramOffset + 3];
-                    cellBinValue = RomAttributeParser.byteToFloat(byteValue, endian);
+                    cellBinValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
 
                 } else { // integer storage type
                     cellBinValue = RomAttributeParser.parseByteValue(input,
@@ -545,7 +544,7 @@ public class Table3D extends Table {
                             binData[offset * storageType + z + getStorageAddress() - ramOffset] = output[z];
                         }
                     } else { // float
-                        output = RomAttributeParser.floatToByte((float) data[x][y].getBinValue(), endian);
+                        output = RomAttributeParser.floatToByte((float) data[x][y].getBinValue(), endian, memModelEndian);
                         for (int z = 0; z < 4; z++) {
                             binData[offset * 4 + z + getStorageAddress() - ramOffset] = output[z];
                         }

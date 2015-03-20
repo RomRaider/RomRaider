@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ import com.romraider.xml.RomAttributeParser;
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
     private static final Logger LOGGER = Logger.getLogger(Table.class);
+    protected static int memModelEndian;
 
     protected String name;
     protected int type;
@@ -467,7 +468,7 @@ public abstract class Table extends JPanel implements Serializable {
                     byteValue[1] = input[getStorageAddress() + i * 4 - ramOffset + 1];
                     byteValue[2] = input[getStorageAddress() + i * 4 - ramOffset + 2];
                     byteValue[3] = input[getStorageAddress() + i * 4 - ramOffset + 3];
-                    dataValue = RomAttributeParser.byteToFloat(byteValue, endian);
+                    dataValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
 
                 } else { // integer storage type
                     dataValue = RomAttributeParser.parseByteValue(input,
@@ -1019,7 +1020,7 @@ public abstract class Table extends JPanel implements Serializable {
 
                 } else { // float
                     // convert byte values
-                    output = RomAttributeParser.floatToByte((float) data[i].getBinValue(), endian);
+                    output = RomAttributeParser.floatToByte((float) data[i].getBinValue(), endian, memModelEndian);
                     for (int z = 0; z < 4; z++) { // insert in to file
                         binData[i * 4 + z + getStorageAddress() - ramOffset] = output[z];
                     }
@@ -1406,6 +1407,14 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setStaticDataTable(boolean staticDataTable) {
         this.staticDataTable = staticDataTable;
+    }
+
+    public void setMemModelEndian(int endian) {
+        memModelEndian = endian;
+    }
+
+    public int getMemModelEndian() {
+        return memModelEndian;
     }
 }
 

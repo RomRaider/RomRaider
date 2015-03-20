@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,20 +182,38 @@ public final class RomAttributeParser {
         }
     }
 
-    public static byte[] floatToByte(float input, int endian) {
+    public static byte[] floatToByte(float input, int endian, int memModelEndian) {
         byte[] output = new byte[4];
         ByteBuffer bb = ByteBuffer.wrap(output, 0, 4);
-        if (endian == Settings.ENDIAN_LITTLE) {
+        if (memModelEndian == Settings.ENDIAN_LITTLE) {
+            bb.order(ByteOrder.LITTLE_ENDIAN);
+        }
+        else if (memModelEndian == Settings.ENDIAN_BIG) {
             bb.order(ByteOrder.BIG_ENDIAN);
+        }
+        else {
+            // this case corrects improperly defined float table endian in legacy definition files
+            if (endian == Settings.ENDIAN_LITTLE) {
+                bb.order(ByteOrder.BIG_ENDIAN);
+            }
         }
         bb.putFloat(input);
         return bb.array();
     }
 
-    public static float byteToFloat(byte[] input, int endian) {
+    public static float byteToFloat(byte[] input, int endian, int memModelEndian) {
         ByteBuffer bb = ByteBuffer.wrap(input, 0, 4);
-        if (endian == Settings.ENDIAN_LITTLE) {
+        if (memModelEndian == Settings.ENDIAN_LITTLE) {
+            bb.order(ByteOrder.LITTLE_ENDIAN);
+        }
+        else if (memModelEndian == Settings.ENDIAN_BIG) {
             bb.order(ByteOrder.BIG_ENDIAN);
+        }
+        else {
+            // this case corrects improperly defined float table endian in legacy definition files
+            if (endian == Settings.ENDIAN_LITTLE) {
+                bb.order(ByteOrder.BIG_ENDIAN);
+            }
         }
         return bb.getFloat();
     }
