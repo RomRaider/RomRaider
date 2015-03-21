@@ -7,5 +7,6 @@
 java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
 #java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar -logger >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
 #java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar -logger.fullscreen >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
+#java -Djava.library.path=lib/linux -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=false -Xms64M -Xmx512M -XX:-UseParallelGC -XX:CompileThreshold=10000 -jar RomRaider.jar -logger.touch >> "$HOME/.RomRaider/romraider_sout.log" 2>&1
 
 exit 0

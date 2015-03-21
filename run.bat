@@ -7,3 +7,5 @@ start javaw.exe -Djava.library.path=lib/windows -Dawt.useSystemAAFontSettings=lc
 rem start javaw -Djava.library.path=lib/windows -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=true -Xms64M -Xmx512M -jar RomRaider.jar -logger.fullscreen
 :: Start Logger
 rem start javaw -Djava.library.path=lib/windows -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=true -Xms64M -Xmx512M -jar RomRaider.jar -logger
+:: Start Logger in Touch screen mode
+rem start javaw -Djava.library.path=lib/windows -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.d3d=true -Xms64M -Xmx512M -jar RomRaider.jar -logger.touch
