@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ public class SettingsManager {
             else {
                 sf = new File(USER_HOME + SETTINGS_FILE);
                 settingsFileIn = new FileInputStream(sf);
-            }                
+            }
 
             final InputSource src = new InputSource(settingsFileIn);
             final DOMSettingsUnmarshaller domUms = new DOMSettingsUnmarshaller();
@@ -91,7 +91,7 @@ public class SettingsManager {
         final DOMSettingsBuilder builder = new DOMSettingsBuilder();
         try {
             final File newDir = new File(settingsDir);
-            newDir.mkdir();		// Creates directory if it does not exist
+            newDir.mkdir();     // Creates directory if it does not exist
             final File sf = new File(settingsDir + SETTINGS_FILE);
             builder.buildSettings(newSettings, sf, progress, VERSION);
             settings = newSettings;

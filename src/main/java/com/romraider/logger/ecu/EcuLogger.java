@@ -224,7 +224,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String LOG_TO_FILE_ICON = "/graphics/logger_log_to_file.png";
     private static final String LOG_TO_FILE_START = "Start file log";
     private static final String LOG_TO_FILE_STOP = "Stop file log";
-    private static final String LOG_TO_FILE_TT_TEXT = "Start/stop file logging (F1)"; 
+    private static final String LOG_TO_FILE_TT_TEXT = "Start/stop file logging (F1)";
     private static String target = "ECU";
     private static String loadResult  = "";
     private String defVersion;
@@ -286,7 +286,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             new HashMap<String, Map<Transport, Collection<Module>>>();
     private Map<String, Object> componentList = new HashMap<String, Object>();
     private static boolean touchEnabled = false;
-    
+
     public EcuLogger() {
         super(ECU_LOGGER_TITLE);
         construct();
@@ -303,11 +303,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         // fail until we actually try to use them since the logger requires
         // these libraries, this is a hard error here
         if (!JREChecker.is32bit()) {
-            showMessageDialog(null, 
+            showMessageDialog(null,
                 "Incompatible JRE detected.\n" +
                 PRODUCT_NAME +
-                " RomRaider Logger requires a 32-bit JRE.\nLogger will now exit.", 
-                "JRE Incompatibility Error", 
+                " RomRaider Logger requires a 32-bit JRE.\nLogger will now exit.",
+                "JRE Incompatibility Error",
                 ERROR_MESSAGE);
             // this will generate a NullPointerException because we never got
             // things started
@@ -897,48 +897,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         dashboardHandlerManager.addHandler(TableUpdateHandler.getInstance());
     }
 
-    private JComponent buildTabbedPane() {    	    	
-    	if (touchEnabled == false)
-    	{
-	        addSplitPaneTab(
-	                "Data",
-	                buildSplitPane(
-	                        buildParamListPane(
-	                                dataTabParamListTableModel,
-	                                dataTabSwitchListTableModel,
-	                                dataTabExternalListTableModel),
-	                                buildDataTab()),
-	                                buildUnselectAllButton(),
-	                                buildLtvButton());
-	        addSplitPaneTab(
-	                "Graph",
-	                buildSplitPane(
-	                        buildParamListPane(
-	                                graphTabParamListTableModel,
-	                                graphTabSwitchListTableModel,
-	                                graphTabExternalListTableModel),
-	                                buildGraphTab()),
-	                                buildUnselectAllButton(),
-	                                buildLtvButton());
-	        addSplitPaneTab(
-	                "Dashboard",
-	                buildSplitPane(
-	                        buildParamListPane(
-	                                dashboardTabParamListTableModel,
-	                                dashboardTabSwitchListTableModel,
-	                                dashboardTabExternalListTableModel),
-	                                buildDashboardTab()),
-	                                buildUnselectAllButton(),
-	                                buildLtvButton(),
-	                                buildToggleGaugeStyleButton());
-	        tabbedPane.add("MAF", mafTab.getPanel());
-	        tabbedPane.add("Injector", injectorTab.getPanel());
-	        tabbedPane.add("Dyno", dynoTab.getPanel());
-    	}
-    	else
-    	{
+    private JComponent buildTabbedPane() {
+        if (touchEnabled == false)
+        {
             addSplitPaneTab(
-            		"<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Data" + "</body></html>",
+                    "Data",
                     buildSplitPane(
                             buildParamListPane(
                                     dataTabParamListTableModel,
@@ -948,7 +911,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                                     buildUnselectAllButton(),
                                     buildLtvButton());
             addSplitPaneTab(
-            		"<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Graph" + "</body></html>",
+                    "Graph",
                     buildSplitPane(
                             buildParamListPane(
                                     graphTabParamListTableModel,
@@ -958,7 +921,44 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                                     buildUnselectAllButton(),
                                     buildLtvButton());
             addSplitPaneTab(
-            		"<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dashboard" + "</body></html>",
+                    "Dashboard",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    dashboardTabParamListTableModel,
+                                    dashboardTabSwitchListTableModel,
+                                    dashboardTabExternalListTableModel),
+                                    buildDashboardTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton(),
+                                    buildToggleGaugeStyleButton());
+            tabbedPane.add("MAF", mafTab.getPanel());
+            tabbedPane.add("Injector", injectorTab.getPanel());
+            tabbedPane.add("Dyno", dynoTab.getPanel());
+        }
+        else
+        {
+            addSplitPaneTab(
+                    "<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Data" + "</body></html>",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    dataTabParamListTableModel,
+                                    dataTabSwitchListTableModel,
+                                    dataTabExternalListTableModel),
+                                    buildDataTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton());
+            addSplitPaneTab(
+                    "<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Graph" + "</body></html>",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    graphTabParamListTableModel,
+                                    graphTabSwitchListTableModel,
+                                    graphTabExternalListTableModel),
+                                    buildGraphTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton());
+            addSplitPaneTab(
+                    "<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dashboard" + "</body></html>",
                     buildSplitPane(
                             buildParamListPane(
                                     dashboardTabParamListTableModel,
@@ -970,7 +970,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                                     buildToggleGaugeStyleButton());
             tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "MAF"+ "</body></html>", mafTab.getPanel());
             tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Injector"+ "</body></html>", injectorTab.getPanel());
-            tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dyno" + "</body></html>", dynoTab.getPanel());    		
+            tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dyno" + "</body></html>", dynoTab.getPanel());
         }
         return tabbedPane;
     }
@@ -1083,7 +1083,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
         else
         {
-        	button.setPreferredSize(new Dimension(56, 60));
+            button.setPreferredSize(new Dimension(56, 60));
         }
         button.addActionListener(new LearningTableValuesAction(this));
         return button;
@@ -1102,7 +1102,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
         else
         {
-        	toggleListButton.setPreferredSize(new Dimension(56, 95));
+            toggleListButton.setPreferredSize(new Dimension(56, 95));
         }
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         toggleListButton.getActionMap().put("toggleHideParams", new AbstractAction() {
@@ -1140,11 +1140,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         JPanel tabControlPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 1, 1));
         if (touchEnabled == false)
         {
-        	tabControlPanel.setPreferredSize(new Dimension(25, 25));
+            tabControlPanel.setPreferredSize(new Dimension(25, 25));
         }
         else
         {
-        	tabControlPanel.setPreferredSize(new Dimension(56, 25));	
+            tabControlPanel.setPreferredSize(new Dimension(56, 25));
         }
         tabControlPanel.add(toggleListButton);
         for (JComponent control : extraControls) tabControlPanel.add(control);
@@ -1161,33 +1161,33 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         JScrollPane externalList = new JScrollPane(buildParamListTable(externalListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        
+
         if (touchEnabled == false)
         {
-        	tabs.addTab(HEADING_PARAMETERS, paramList);
-        	tabs.addTab(HEADING_SWITCHES, switchList);
-        	tabs.addTab("External Sensors", externalList);
+            tabs.addTab(HEADING_PARAMETERS, paramList);
+            tabs.addTab(HEADING_SWITCHES, switchList);
+            tabs.addTab("External Sensors", externalList);
         }
         else
         {
-        	tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + HEADING_PARAMETERS + "</body></html>", paramList);
+            tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + HEADING_PARAMETERS + "</body></html>", paramList);
             tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + HEADING_SWITCHES + "</body></html>", switchList);
-            tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>External Sensors</body></html>", externalList); 
+            tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>External Sensors</body></html>", externalList);
         }
         return tabs;
     }
 
     private JTable buildParamListTable(ParameterListTableModel tableModel) {
         JTable paramListTable = new ParameterListTable(tableModel);
-        
+
         if( touchEnabled == false)
         {
-        	changeColumnWidth(paramListTable, 0, 20, 55, 55); 
-        	changeColumnWidth(paramListTable, 2, 50, 250, 130); 
+            changeColumnWidth(paramListTable, 0, 20, 55, 55);
+            changeColumnWidth(paramListTable, 2, 50, 250, 130);
         }
         else
         {
-        	changeColumnWidth(paramListTable, 0, 20, 75, 75);
+            changeColumnWidth(paramListTable, 0, 20, 75, 75);
             changeColumnWidth(paramListTable, 2, 50, 75, 75);
         }
         return paramListTable;
@@ -1253,14 +1253,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
         splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
         splitPane.setDividerSize(5);
-        
+
         if (touchEnabled == false)
         {
-        	splitPane.setDividerLocation((int) getSettings().getDividerLocation());
+            splitPane.setDividerLocation((int) getSettings().getDividerLocation());
         }
         else
         {
-        	splitPane.setDividerLocation((int) getSettings().getDividerLocation()+200);
+            splitPane.setDividerLocation((int) getSettings().getDividerLocation()+200);
         }
         splitPane.addPropertyChangeListener(this);
         return splitPane;
@@ -1272,12 +1272,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JPanel buildControlToolbar() {
         JPanel controlPanel = new JPanel(new BorderLayout());
-        
+
         if (touchEnabled == true)
         {
-        	portsComboBox.setPreferredSize(new Dimension(100,50));
+            portsComboBox.setPreferredSize(new Dimension(100,50));
         }
-        
+
         controlPanel.add(buildPortsComboBox(), WEST);
         //TODO: Finish log playback stuff...
         //        controlPanel.add(buildPlaybackControls(), CENTER);
@@ -1419,14 +1419,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
-        
+
         final CustomButtonGroup moduleGroup = new CustomButtonGroup();
         for (Module module : getModuleList()) {
             final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
-       		if (touchEnabled == true)
-        	{
-        		cb.setPreferredSize(new Dimension(75, 50));
-        	}
+            if (touchEnabled == true)
+            {
+                cb.setPreferredSize(new Dimension(75, 50));
+            }
             final String tipText = String.format(
                     "%s Polling. Uncheck all boxes for Externals logging only.",
                     module.getDescription());
@@ -1459,11 +1459,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         componentList.put("reconnectButton", reconnectButton);
         if (touchEnabled == false)
         {
-        	reconnectButton.setPreferredSize(new Dimension(25, 25));
+            reconnectButton.setPreferredSize(new Dimension(25, 25));
         }
         else
         {
-        	reconnectButton.setPreferredSize(new Dimension(75, 50));
+            reconnectButton.setPreferredSize(new Dimension(75, 50));
         }
         reconnectButton.setToolTipText("Reconnect to " + target);
         reconnectButton.addActionListener(new ActionListener() {
@@ -1481,13 +1481,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         componentList.put("disconnectButton", disconnectButton);
         if (touchEnabled == false)
         {
-        	disconnectButton.setPreferredSize(new Dimension(25, 25));
+            disconnectButton.setPreferredSize(new Dimension(25, 25));
         }
         else
         {
-        	disconnectButton.setPreferredSize(new Dimension(75, 50));
+            disconnectButton.setPreferredSize(new Dimension(75, 50));
         }
-        
+
         disconnectButton.setToolTipText("Disconnect from " + target);
         disconnectButton.addActionListener(new ActionListener() {
             @Override
@@ -1599,14 +1599,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JComponent buildDataTab() {
         JPanel panel = new JPanel(new BorderLayout());
         JButton resetButton;
-        
+
         if (touchEnabled == false)
         {
-        	resetButton = new JButton("Reset Data");
+            resetButton = new JButton("Reset Data");
         }
         else
         {
-        	resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
+            resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
         }
         resetButton.addActionListener(new ActionListener() {
             @Override
@@ -1624,14 +1624,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JComponent buildGraphTab() {
         JPanel panel = new JPanel(new BorderLayout());
         JButton resetButton;
-        
+
         if (touchEnabled == false)
         {
-        	resetButton = new JButton("Reset Data");
+            resetButton = new JButton("Reset Data");
         }
         else
         {
-        	resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
+            resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
         }
         resetButton.addActionListener(new ActionListener() {
             @Override
@@ -1649,14 +1649,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JComponent buildDashboardTab() {
         JPanel panel = new JPanel(new BorderLayout());
         JButton resetButton;
-        
+
         if (touchEnabled == false)
         {
-        	resetButton = new JButton("Reset Data");
+            resetButton = new JButton("Reset Data");
         }
         else
         {
-        	resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
+            resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
         }
         resetButton.addActionListener(new ActionListener() {
             @Override
@@ -1772,7 +1772,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 getSettings().getLoggerEcuDefinitionMap(),
                 ecuInit.getEcuId());
         final LearningTableValues learningTablesManager =
-                LearningTableValuesFactory.getManager(        
+                LearningTableValuesFactory.getManager(
                         getSettings().getLoggerProtocol());
         learningTablesManager.init(
                 this,
@@ -1926,13 +1926,13 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     public static boolean isTouchEnabled()
     {
-    	if( touchEnabled == true)
-    	{
-    		return true;
-    	}
-    	
-    	return false;
+        if( touchEnabled == true)
+        {
+            return true;
+        }
+        return false;
     }
+
     public void setRefreshMode(boolean refreshMode) {
         getSettings().setRefreshMode(refreshMode);
         refresher.setRefreshMode(refreshMode);
@@ -1969,8 +1969,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     public static void startLogger(int defaultCloseOperation, String... args) {
-    	touchEnabled = setTouchEnabled(args);
-    	EcuLogger ecuLogger = new EcuLogger();
+        touchEnabled = setTouchEnabled(args);
+        EcuLogger ecuLogger = new EcuLogger();
         boolean fullscreen = containsFullScreenArg(args);
 
         createAndShowGui(defaultCloseOperation, ecuLogger, fullscreen);

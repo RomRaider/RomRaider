@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,21 +26,21 @@ import javax.swing.ButtonModel;
  * Custom ButtonGroup allows none or only one button in the group to be selected.
  */
 public class CustomButtonGroup extends ButtonGroup {
-	private static final long serialVersionUID = 3271988244802054464L;
+    private static final long serialVersionUID = 3271988244802054464L;
 
-	/**
-	 * Sets the selected value for the ButtonModel.
-	 * Only one button in the group may be selected at a time but this
-	 * override allows a selected button to be un-selected so none in the group
-	 * are selected.
-	 */
-	@Override
-	public void setSelected(ButtonModel m, boolean b) {
-		if (b && m != null && m != getSelection()) {
-			super.setSelected(m, b);
-		}
-		else if (!b && m == getSelection()) {
-			clearSelection();
-		}
-	}
+    /**
+     * Sets the selected value for the ButtonModel.
+     * Only one button in the group may be selected at a time but this
+     * override allows a selected button to be un-selected so none in the group
+     * are selected.
+     */
+    @Override
+    public void setSelected(ButtonModel m, boolean b) {
+        if (b && m != null && m != getSelection()) {
+            super.setSelected(m, b);
+            }
+        else if (!b && m == getSelection()) {
+            clearSelection();
+        }
+    }
 }

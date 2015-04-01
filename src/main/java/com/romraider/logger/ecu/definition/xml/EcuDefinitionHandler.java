@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ import java.util.Map;
 */
 public final class EcuDefinitionHandler extends DefaultHandler {
     private static final Logger LOGGER = Logger.getLogger(EcuDefinitionHandler.class);
-    private static final String TAG_ROM    	 = "rom";
+    private static final String TAG_ROM      = "rom";
     private static final String TAG_ROMID    = "romid";
     private static final String TAG_CALID    = "internalidstring";
     private static final String TAG_ECUID    = "ecuid";
