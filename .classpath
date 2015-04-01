@@ -13,7 +13,6 @@
 	<classpathentry kind="lib" path="lib/common/Jama.jar"/>
 	<classpathentry kind="lib" path="lib/common/jamlab.jar"/>
 	<classpathentry kind="lib" path="lib/common/log4j-1.2.14.jar"/>
-	<classpathentry kind="lib" path="lib/common/swing-layout-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/common/cmu_time_awb.jar"/>
 	<classpathentry kind="lib" path="lib/common/cmu_us_kal.jar"/>
 	<classpathentry kind="lib" path="lib/common/cmudict04.jar"/>
