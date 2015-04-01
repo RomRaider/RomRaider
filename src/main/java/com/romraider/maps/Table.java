@@ -298,7 +298,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         };
         Action interpolate = new AbstractAction() {
-            private static final long serialVersionUID = -2350912575392447149L;
+            private static final long serialVersionUID = -2357532575392447149L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -306,7 +306,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         };
         Action verticalInterpolate = new AbstractAction() {
-            private static final long serialVersionUID = -2350912575392447149L;
+            private static final long serialVersionUID = -2375322575392447149L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -322,7 +322,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         };
         Action multiplyAction = new AbstractAction() {
-            private static final long serialVersionUID = -2350912575392447149L;
+            private static final long serialVersionUID = -2753212575392447149L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -330,7 +330,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         };
         Action numNegAction = new AbstractAction() {
-            private static final long serialVersionUID = -6346750245035640773L;
+            private static final long serialVersionUID = -7532750245035640773L;
 
             @Override
             public void actionPerformed(ActionEvent e) {

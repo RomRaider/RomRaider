@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ public class RomTree extends JTree implements MouseListener {
 
         // key binding actions
         Action tableSelectAction = new AbstractAction() {
-            private static final long serialVersionUID = -6008026264821746092L;
+            private static final long serialVersionUID = -6007532264821746092L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
