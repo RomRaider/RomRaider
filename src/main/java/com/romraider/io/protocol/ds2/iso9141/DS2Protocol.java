@@ -28,6 +28,7 @@ import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.protocol.ProtocolDS2;
@@ -35,13 +36,13 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.DS2EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.definition.Module;
-import com.romraider.logger.ecu.exception.InvalidResponseException;
 import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
 
 public final class DS2Protocol implements ProtocolDS2 {
     public static final byte[] READ_MEMORY_COMMAND = new byte[]{0x06, 0x00};
     public static final byte[] READ_ADDRESS_COMMAND = new byte[]{0x0B, 0x02, 0x0e};
     public static final byte[] ECU_INIT_COMMAND = new byte[]{0x00};
+    public static final byte[] ECU_RESET_COMMAND = new byte[]{0x43};
     public static final byte VALID_RESPONSE = (byte) 0xA0;
     public static final int ADDRESS_SIZE = 3;
     public static final int DATA_SIZE = 1;
@@ -133,13 +134,13 @@ public final class DS2Protocol implements ProtocolDS2 {
     }
 
     @Override
-    public final byte[] constructEcuResetRequest(Module module) {
-        //  80 10 F0 05 B8 00 00 60 40 DD
+    public final byte[] constructEcuResetRequest(Module module, int resetCode) {
+        //  0x12 data_length cmd byte1 byte2 checksum
         checkNotNull(module, "module");
-        final byte[] resetAddress = new byte[]{
-                (byte) 0x00, (byte) 0x00, (byte) 0x60};
-        final byte reset = 0x40;
-        return constructWriteAddressRequest(module, resetAddress, reset);
+        final byte[] resetBytes = ByteBuffer.allocate(4).putInt(resetCode).array();
+        final byte[] reset = new byte[2];
+        System.arraycopy(resetBytes, 2, reset, 0, 2);
+        return buildRequest(ECU_RESET_COMMAND, new byte[0], reset);
     }
 
     @Override
@@ -147,11 +148,6 @@ public final class DS2Protocol implements ProtocolDS2 {
         // 80 F0 10 02 F8 40 BA
         checkNotNullOrEmpty(processedResponse, "processedResponse");
         DS2ResponseProcessor.validateResponse(processedResponse);
-        byte responseType = processedResponse[4];
-        if (responseType != (byte) 0x40) {
-            throw new InvalidResponseException("Unexpected " + module.getName() +
-                    " Reset response: " + asHex(processedResponse));
-        }
     }
 
     @Override

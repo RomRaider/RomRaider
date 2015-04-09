@@ -52,8 +52,8 @@ public final class DS2LoggerProtocol implements LoggerProtocolDS2 {
     }
 
     @Override
-    public byte[] constructEcuResetRequest(Module module) {
-        return protocol.constructEcuResetRequest(module);
+    public byte[] constructEcuResetRequest(Module module, int resetCode) {
+        return protocol.constructEcuResetRequest(module, resetCode);
     }
 
     @Override

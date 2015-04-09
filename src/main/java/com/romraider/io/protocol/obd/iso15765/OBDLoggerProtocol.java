@@ -50,8 +50,8 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
     }
 
     @Override
-    public byte[] constructEcuResetRequest(Module module) {
-        return protocol.constructEcuResetRequest(module);
+    public byte[] constructEcuResetRequest(Module module, int resetCode) {
+        return protocol.constructEcuResetRequest(module, resetCode);
     }
 
     @Override

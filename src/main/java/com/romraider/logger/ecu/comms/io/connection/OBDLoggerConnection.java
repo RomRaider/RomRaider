@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,8 +56,8 @@ public final class OBDLoggerConnection implements LoggerConnection {
     }
 
     @Override
-    public void ecuReset(Module module) {
-        byte[] request = protocol.constructEcuResetRequest(module);
+    public void ecuReset(Module module, int resetCode) {
+        byte[] request = protocol.constructEcuResetRequest(module, resetCode);
         LOGGER.debug(String.format("%s Reset Request  ---> %s",
                 module, asHex(request)));
         byte[] response = manager.send(request);

@@ -131,12 +131,11 @@ public final class SSMProtocol implements Protocol {
         return new SSMEcuInit(parseResponseData(processedResponse));
     }
 
-    public final byte[] constructEcuResetRequest(Module module) {
+    public final byte[] constructEcuResetRequest(Module module, int resetCode) {
         //  80 10 F0 05 B8 00 00 60 40 DD
         final byte[] resetAddress = new byte[]{
                 (byte) 0x00, (byte) 0x00, (byte) 0x60};
-        final byte reset = 0x40;
-        return constructWriteAddressRequest(module, resetAddress, reset);
+        return constructWriteAddressRequest(module, resetAddress, (byte) resetCode);
     }
 
     public void checkValidEcuResetResponse(byte[] processedResponse) {

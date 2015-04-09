@@ -59,8 +59,8 @@ public final class DS2LoggerConnection implements LoggerConnection {
     }
 
     @Override
-    public void ecuReset(Module module) {
-        byte[] request = protocol.constructEcuResetRequest(module);
+    public void ecuReset(Module module, int resetCode) {
+        byte[] request = protocol.constructEcuResetRequest(module, resetCode);
         LOGGER.debug(module + " Reset Request  ---> " + asHex(request));
         byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(request, response, new PollingStateImpl());

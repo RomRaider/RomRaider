@@ -1732,8 +1732,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
-    public boolean resetEcu() {
-        return resetManager.resetEcu();
+    public boolean resetEcu(int resetCode) {
+        return resetManager.resetEcu(resetCode);
     }
 
     public final boolean getDtcodesEmpty() {
