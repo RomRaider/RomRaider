@@ -20,7 +20,7 @@
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
 import com.romraider.logger.ecu.EcuLogger;
-import com.romraider.logger.ecu.ui.swing.tools.DS2ResetItemsPanel;
+import com.romraider.logger.ecu.ui.swing.tools.DS2ResetPanel;
 import com.romraider.swing.menubar.action.AbstractAction;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -74,8 +74,8 @@ public final class ResetEcuAction extends AbstractAction {
     }
 
     private void selectResetItems() {
-        final DS2ResetItemsPanel resetPanel = new DS2ResetItemsPanel(logger);
-        resetPanel.showResetItemsPanel();
+        final DS2ResetPanel resetPanel = new DS2ResetPanel(logger);
+        resetPanel.showResetPanel();
         final int result = resetPanel.getResults();
         if (result > 0) {
             resetEcu(result);

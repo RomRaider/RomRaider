@@ -34,38 +34,42 @@ import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 import com.romraider.logger.ecu.EcuLogger;
 
-public final class DS2ResetItemsPanel extends JDialog {
+public final class DS2ResetPanel extends JDialog {
     private static final long serialVersionUID = 2406346286060014312L;
-    private static final String DIALOG_TITLE = "Reset DS2 Adaption Selection";
+    private static final String DIALOG_TITLE = "Reset DS2 Adaptation Selection";
     private static final String OK_BUTTON_TEXT = "OK";
     private static final String CANCEL_BUTTON_TEXT = "Cancel";
+    private static final String PANEL_TT = "Unsupported items are ignored by the ECU if selected.";
     private static int results;
     private final JCheckBox selectAll = new JCheckBox("Select All");
-    private final ResetItem[] resetItems = {
-            new ResetItem("Byte 1 bit 0", 0x0100),
-            new ResetItem("Byte 1 bit 1", 0x0200),
-            new ResetItem("Byte 1 bit 2", 0x0400),
-            new ResetItem("Byte 1 bit 3", 0x0800),
-            new ResetItem("Byte 1 bit 4", 0x1000),
-            new ResetItem("Byte 1 bit 5", 0x2000),
-            new ResetItem("Byte 1 bit 6", 0x4000),
-            new ResetItem("Byte 1 bit 7", 0x8000),
-            new ResetItem("Byte 0 bit 0", 0x0001),
-            new ResetItem("Byte 0 bit 1", 0x0002)
+    private final ResetCheckBox[] resetItems = {
+            new ResetCheckBox("Knock Adaptations", 0x0100),
+            new ResetCheckBox("Idle Speed Adaptations", 0x0200),
+            new ResetCheckBox("Lambda Adaptations", 0x0400),
+            new ResetCheckBox("Throttle Adaptations", 0x0800),
+            new ResetCheckBox("Altitude Correction", 0x1000),
+            new ResetCheckBox("Undefined Adaptation", 0x2000),
+            new ResetCheckBox("Undefined Adaptation", 0x4000),
+            new ResetCheckBox("Undefined Adaptation", 0x8000),
+            new ResetCheckBox("Undefined Adaptation", 0x0001),
+            new ResetCheckBox("External Load History (M3 only)", 0x0002),
+            new ResetCheckBox("Undefined Adaptation (MS43 only)", 0x0004),
+            new ResetCheckBox("Undefined Adaptation (MS43 only)", 0x0008)
     };
     
-    public DS2ResetItemsPanel(EcuLogger logger) {
+    public DS2ResetPanel(EcuLogger logger) {
         
         super(logger, true);
         setIconImage(logger.getIconImage());
         setTitle(DIALOG_TITLE);
         setBounds(
-                logger.getX() + (logger.getWidth() / 2) - 166,
+                logger.getX() + (logger.getWidth() / 2) - 180,
                 logger.getY() + 90,
-                332,
-                332);
+                240,
+                375);
 
         final JPanel contentPanel = new JPanel();
+        contentPanel.setToolTipText(PANEL_TT);
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         getContentPane().setLayout(new BorderLayout());
@@ -74,18 +78,17 @@ public final class DS2ResetItemsPanel extends JDialog {
         selectAll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                for (ResetItem item : resetItems) {
-                    item.checkBox.setSelected(selectAll.isSelected());
+                for (ResetCheckBox item : resetItems) {
+                    item.setSelected(selectAll.isSelected());
                 }
             }
         });
-        contentPanel.add(selectAll);
 
-        contentPanel.add(new JSeparator());
-
-        for (ResetItem item : resetItems) {
-            contentPanel.add(item.checkBox);
+        for (ResetCheckBox checkBox : resetItems) {
+            contentPanel.add(checkBox);
         }
+        contentPanel.add(new JSeparator());
+        contentPanel.add(selectAll);
 
         final JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -95,9 +98,9 @@ public final class DS2ResetItemsPanel extends JDialog {
         okButton.setActionCommand(OK_BUTTON_TEXT);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                for (ResetItem item : resetItems) {
-                    if(item.checkBox.isSelected()) {
-                        results |= item.mask; 
+                for (ResetCheckBox checkBox : resetItems) {
+                    if(checkBox.isSelected()) {
+                        results |= checkBox.mask; 
                     }
                 }
                 closeDialog();
@@ -117,7 +120,7 @@ public final class DS2ResetItemsPanel extends JDialog {
         getRootPane().setDefaultButton(cancelButton);
     }
 
-    public final void showResetItemsPanel() {
+    public final void showResetPanel() {
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -139,16 +142,14 @@ public final class DS2ResetItemsPanel extends JDialog {
         dispose();
     }
 
-    class ResetItem {
-        public String name;
+    class ResetCheckBox extends JCheckBox {
+        private static final long serialVersionUID = 6324945868965147832L;
         public int mask;
-        public JCheckBox checkBox;
 
-        public ResetItem(String name, int mask) {
-            this.name = name;
+        public ResetCheckBox(String name, int mask) {
             this.mask = mask;
-            checkBox = new JCheckBox(name);
-            checkBox.addActionListener(new ActionListener() {
+            this.setText(name);
+            this.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
                     final JCheckBox source = (JCheckBox) actionEvent.getSource();
@@ -157,11 +158,6 @@ public final class DS2ResetItemsPanel extends JDialog {
                     }
                 }
             });
-        }
-
-        @Override
-        public String toString() {
-            return name;
         }
     }
 }
