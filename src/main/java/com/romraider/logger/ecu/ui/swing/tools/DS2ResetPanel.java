@@ -65,8 +65,8 @@ public final class DS2ResetPanel extends JDialog {
         setBounds(
                 logger.getX() + (logger.getWidth() / 2) - 180,
                 logger.getY() + 90,
-                240,
-                375);
+                286,
+                377);
 
         final JPanel contentPanel = new JPanel();
         contentPanel.setToolTipText(PANEL_TT);
