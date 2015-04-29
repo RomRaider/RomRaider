@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -202,7 +202,7 @@ public class Settings implements Serializable {
     private static String loggerProfileFilePath;
     private static String loggerOutputDirPath = System.getProperty("user.home");
     private String fileLoggingControllerSwitchId = "S20"; // defogger switch by default
-    private boolean fileLoggingControllerSwitchActive = true;
+    private boolean fileLoggingControllerSwitchActive = false;
     private boolean fileLoggingAbsoluteTimestamp;
     private String logfileNameText;
     private boolean logExternalsOnly;

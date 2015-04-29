@@ -235,7 +235,7 @@ public final class SelectProtocolAction extends AbstractAction {
 
         private final void confirmSelection() {
             final int result = showConfirmDialog(logger,
-                    "This selection requires shutting down the RomRaider application, proceed?",
+                    "Are you sure you want to change the logging protocol?",
                     "Confirm new selection",
                     YES_NO_OPTION,
                     QUESTION_MESSAGE);
@@ -250,11 +250,8 @@ public final class SelectProtocolAction extends AbstractAction {
                     logger.getSettings().setLoggerProtocol(parentName);
                     logger.getSettings().setTransportProtocol(((Transport) o).getId());
                 }
-                setVisible(false);
-                dispose();
-                logger.setVisible(false);
-                logger.handleExit();
-                logger.dispose();
+                logger.loadLoggerParams();
+                closeDialog();
             }
         }
 

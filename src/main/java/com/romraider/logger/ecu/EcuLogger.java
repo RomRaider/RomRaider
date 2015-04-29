@@ -80,6 +80,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -286,6 +287,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             new HashMap<String, Map<Transport, Collection<Module>>>();
     private Map<String, Object> componentList = new HashMap<String, Object>();
     private static boolean touchEnabled = false;
+    private final JPanel moduleSelectPanel = new JPanel(new FlowLayout());
 
     public EcuLogger() {
         super(ECU_LOGGER_TITLE);
@@ -545,6 +547,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 loadEcuSwitches(dataLoader.getEcuSwitches());
                 dtcodes = dataLoader.getEcuCodes();
                 protocolList = dataLoader.getProtocols();
+                buildModuleSelectPanel();
                 final EcuSwitch fileLogCntrlSw = dataLoader.getFileLoggingControllerSwitch();
                 final RadioButtonMenuItem flc = (RadioButtonMenuItem) componentList.get("fileLoggingControl");
                 if (fileLogCntrlSw != null && target.equals("ECU")) {
@@ -595,7 +598,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             BrowserControl.displayURL(LOGGER_DEFS_URL);
         } else {
             showMessageDialog(this,
-                    "The Logger definition file needs to be configured before connecting to the ECU.\nMenu: Settings > Logger Definition Location...",
+                    "The Logger definition file needs to be configured before connecting to the ECU.\nMenu: Settings > Logger Definition Location...\nOnce configured, restart the Logger application.",
                     "Configuration", INFORMATION_MESSAGE);
             reportError("Logger definition file not found");
         }
@@ -1420,40 +1423,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
 
-        final CustomButtonGroup moduleGroup = new CustomButtonGroup();
-        for (Module module : getModuleList()) {
-            final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
-            if (touchEnabled == true)
-            {
-                cb.setPreferredSize(new Dimension(75, 50));
-            }
-            final String tipText = String.format(
-                    "%s Polling. Uncheck all boxes for Externals logging only.",
-                    module.getDescription());
-            cb.setToolTipText(tipText);
-            if (getSettings().getTargetModule().equalsIgnoreCase(module.getName())) {
-                cb.setSelected(true);
-                setTarget(module.getName());
-            }
-            cb.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    stopLogging();
-                    final JCheckBox source = (JCheckBox) actionEvent.getSource();
-                    if (source.isSelected()) {
-                        getSettings().setLogExternalsOnly(false);
-                        setTarget(source.getText());
-                    }
-                    else {
-                        getSettings().setLogExternalsOnly(true);
-                    }
-                    startLogging();
-                }
-            });
-
-            moduleGroup.add(cb);
-            comboBoxPanel.add(cb);
-        }
+        comboBoxPanel.add(moduleSelectPanel);
 
         JButton reconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_restart.png")));
         componentList.put("reconnectButton", reconnectButton);
@@ -1507,6 +1477,45 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return comboBoxPanel;
     }
 
+    private void buildModuleSelectPanel() {
+        moduleSelectPanel.removeAll();
+        final CustomButtonGroup moduleGroup = new CustomButtonGroup();
+        for (Module module : getModuleList()) {
+            final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
+            if (touchEnabled == true)
+            {
+                cb.setPreferredSize(new Dimension(75, 50));
+            }
+            final String tipText = String.format(
+                    "%s Polling. Uncheck all boxes for Externals logging only.",
+                    module.getDescription());
+            cb.setToolTipText(tipText);
+            if (getSettings().getTargetModule().equalsIgnoreCase(module.getName())) {
+                cb.setSelected(true);
+                setTarget(module.getName());
+            }
+            cb.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    stopLogging();
+                    final JCheckBox source = (JCheckBox) actionEvent.getSource();
+                    if (source.isSelected()) {
+                        getSettings().setLogExternalsOnly(false);
+                        setTarget(source.getText());
+                    }
+                    else {
+                        getSettings().setLogExternalsOnly(true);
+                    }
+                    startLogging();
+                }
+            });
+
+            moduleGroup.add(cb);
+            moduleSelectPanel.add(cb);
+            moduleSelectPanel.validate();
+        }
+    }
+
     private void setTarget(String name) {
         target = name.toUpperCase();
         getSettings().setTargetModule(target);
@@ -1515,13 +1524,15 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 getSettings().setDestinationTarget(module);
                 final RadioButtonMenuItem fp =
                         (RadioButtonMenuItem) componentList.get("fastPoll");
-                fp.setEnabled(module.getFastPoll());
-                if(module.getFastPoll()) {
-                    fp.setSelected(getSettings().isFastPoll());
-                }
-                else {
-                    fp.setSelected(false);
-                    getSettings().setFastPoll(false);
+                if (fp != null) {
+                    fp.setEnabled(module.getFastPoll());
+                    if(module.getFastPoll()) {
+                        fp.setSelected(getSettings().isFastPoll());
+                    }
+                    else {
+                        fp.setSelected(false);
+                        getSettings().setFastPoll(false);
+                    }
                 }
             }
         }
