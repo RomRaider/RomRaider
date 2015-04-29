@@ -1,4 +1,4 @@
-                - RomRaider 0.5.9 RC1 -
+                - RomRaider 0.5.9 RC2 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,13 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.9 RC1 Notes (04/21/2015) -
+- 0.5.9 RC2 Notes (04/29/2015) -
 --------------------------------------------
 This is the latest release of the RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.5.9 RC1 Known Issues -
+- 0.5.9 RC2 Known Issues -
 --------------------------------------
 - Logger
   - Gauge min/max/step limits incomplete in logger.xml
@@ -54,6 +54,13 @@ Status of these items and more can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.5.9 RC2 (04/29/2015)
+----------------------------------
+
+- Logger
+  - Changed the way the Logger definition update or protocol change is handled
+
 
 0.5.9 RC1 (04/21/2015)
 ----------------------------------
