@@ -292,6 +292,9 @@ public final class DOMSettingsUnmarshaller {
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("debug")) {
                 settings.setLoggerDebuggingLevel(unmarshallAttribute(n, "level", "info"));
 
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("gauge")) {
+                settings.setLoggerSelectedGaugeIndex(unmarshallAttribute(n, "index", 0));
+
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("plugins")) {
                 Map<String, String> pluginPorts = new HashMap<String, String>();
                 NodeList pluginNodes = n.getChildNodes();

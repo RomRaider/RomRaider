@@ -212,6 +212,7 @@ public class Settings implements Serializable {
     private Point loggerWindowLocation = new Point();
     private boolean loggerWindowMaximized;
     private int loggerSelectedTabIndex;
+    private int loggerSelectedGaugeIndex = 0;
     private boolean loggerParameterListState = true;
     private ConnectionProperties loggerConnectionProperties;
     private Map<String, EcuDefinition> loggerEcuDefinitionMap;
@@ -625,6 +626,14 @@ public class Settings implements Serializable {
 
     public int getLoggerSelectedTabIndex() {
         return loggerSelectedTabIndex;
+    }
+
+    public void setLoggerSelectedGaugeIndex(int loggerSelectGaugeIndex) {
+        this.loggerSelectedGaugeIndex = loggerSelectGaugeIndex;
+    }
+
+    public int getLoggerSelectedGaugeIndex() {
+        return loggerSelectedGaugeIndex;
     }
 
     public Map<String, String> getLoggerPluginPorts() {

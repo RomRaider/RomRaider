@@ -380,6 +380,11 @@ public final class DOMSettingsBuilder {
             loggerSettings.appendChild(plugins);
         }
 
+        // Dashboard Gauge Index
+        IIOMetadataNode gaugeindex = new IIOMetadataNode("gauge");
+        gaugeindex.setAttribute("index", String.valueOf(((int) settings.getLoggerSelectedGaugeIndex())));
+        loggerSettings.appendChild(gaugeindex);
+
         return loggerSettings;
     }
 

@@ -36,10 +36,11 @@ public final class DashboardUpdateHandler implements DataUpdateHandler, Converto
     private static final Class[] STYLES = {PlainGaugeStyle.class, SmallGaugeStyle.class, NoFrillsGaugeStyle.class, DialGaugeStyle.class, SmallDialGaugeStyle.class};
     private final Map<LoggerData, Gauge> gauges = synchronizedMap(new HashMap<LoggerData, Gauge>());
     private final JPanel dashboardPanel;
-    private int styleIndex;
+    public int styleIndex;
 
-    public DashboardUpdateHandler(JPanel dashboardPanel) {
+    public DashboardUpdateHandler(JPanel dashboardPanel, int styleIndex) {
         this.dashboardPanel = dashboardPanel;
+        this.styleIndex = styleIndex;
     }
 
     public synchronized void registerData(final LoggerData loggerData) {

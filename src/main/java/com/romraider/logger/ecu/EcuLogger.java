@@ -408,7 +408,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         graphPanel = new JPanel(new BorderLayout(2, 2));
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
         dashboardPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 3, 3));
-        dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
+        dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel, getSettings().getLoggerSelectedGaugeIndex());
         mafUpdateHandler = new MafUpdateHandler();
         injectorUpdateHandler = new InjectorUpdateHandler();
         dynoUpdateHandler = new DynoUpdateHandler();
@@ -1816,7 +1816,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
-    private void saveSettings() {
+    private void saveSettings() { 
+        getSettings().setLoggerSelectedGaugeIndex(dashboardUpdateHandler.styleIndex);
         getSettings().setLoggerPortDefault((String) portsComboBox.getSelectedItem());
         getSettings().setLoggerWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
         getSettings().setLoggerWindowSize(getSize());
