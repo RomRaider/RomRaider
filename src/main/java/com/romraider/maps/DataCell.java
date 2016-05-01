@@ -50,9 +50,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     private final Table table;
 
-    private Boolean selected = false;
-    private Boolean highlighted = false;
-    private Boolean traced = false;
+    private boolean selected = false;
+    private boolean highlighted = false;
+    private boolean traced = false;
 
     private int x = 0;
     private int y = 0;
@@ -344,18 +344,18 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         return getCellText();
     }
 
-    public Boolean isSelected() {
+    public boolean isSelected() {
         return selected;
     }
 
-    public void setSelected(Boolean selected) {
+    public void setSelected(boolean selected) {
         if(!table.isStaticDataTable() && this.selected != selected) {
             this.selected = selected;
             drawCell();
         }
     }
 
-    public void setHighlighted(Boolean highlighted) {
+    public void setHighlighted(boolean highlighted) {
         if(!table.isStaticDataTable() && this.highlighted != highlighted) {
             this.highlighted = highlighted;
             drawCell();
