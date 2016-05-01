@@ -20,20 +20,45 @@
 package com.romraider.util;
 
 import org.nfunk.jep.JEP;
+
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 public final class JEPUtil {
+    @SuppressWarnings("serial")
+    static class LRUCache<K, V> extends LinkedHashMap<K, V> {
+        private int cacheSize;
+
+        public LRUCache(int cacheSize) {
+          super(16, 0.75f, true);
+          this.cacheSize = cacheSize;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+          return size() >= cacheSize;
+        }
+    };
+    
+    private static final LRUCache<String, JEP> parserCache = new LRUCache<String, JEP>(16);
 
     private JEPUtil() {
     }
 
     public static double evaluate(String expression, double value) {
-        final JEP parser = new JEP();
-        parser.addStandardFunctions();
-        parser.addFunction("BitWise", new BitWise());
-        parser.initSymTab(); // clear the contents of the symbol table
-        parser.addVariable("x", value);
-        parser.parseExpression(expression);
+        JEP parser = parserCache.get(expression);
+        if (parser == null) {
+            parser = new JEP();
+            parser.addStandardFunctions();
+            parser.addFunction("BitWise", new BitWise());
+            parser.initSymTab(); // clear the contents of the symbol table
+            parser.addVariable("x", value);
+            parser.parseExpression(expression);
+
+            parserCache.put(expression, parser);
+        } else {
+            parser.setVarValue("x", value);
+        }
         return parser.getValue();
     }
 
