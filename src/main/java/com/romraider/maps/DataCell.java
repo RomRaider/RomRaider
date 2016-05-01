@@ -43,10 +43,10 @@ import com.romraider.util.SettingsManager;
 public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final long serialVersionUID = -2904293227148940937L;
     private static final Logger LOGGER = Logger.getLogger(DataCell.class);
-    private final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
-    private final Font defaultFont = new Font("Arial", Font.BOLD, 12);
-    int unSelectMask1 = MouseEvent.BUTTON1_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
-    int unSelectMask2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
+    private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
+    private static final Font DEFAULT_FONT = new Font("Arial", Font.BOLD, 12);
+    private static int UNSELECT_MASK1 = MouseEvent.BUTTON1_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
+    private static int UNSELECT_MASK2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
 
     private final Table table;
 
@@ -62,7 +62,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private double compareToValue = 0.0;
     private String liveValue = Settings.BLANK;
 
-    private final Color defaultBorderColor = new Color(0, 0, 0);
+    private static final Color DEFAULT_BORDER_COLOR = new Color(0, 0, 0);
     private final Color increaseBorderColor = getSettings().getIncreaseBorder();
     private final Color decreaseBorderColor = getSettings().getDecreaseBorder();
 
@@ -72,7 +72,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         this.table = table;
         this.setHorizontalAlignment(CENTER);
         this.setVerticalAlignment(CENTER);
-        this.setFont(defaultFont);
+        this.setFont(DEFAULT_FONT);
         this.setOpaque(true);
         this.setVisible(true);
         this.addMouseListener(this);
@@ -263,7 +263,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             } else if (checkValue > binValue) {
                 border = createLineBorder(decreaseBorderColor, 2);
             } else {
-                border = createLineBorder(defaultBorderColor, 1);
+                border = createLineBorder(DEFAULT_BORDER_COLOR, 1);
             }
         }
 
@@ -368,9 +368,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        if(unSelectMask1 == (e.getModifiersEx() & unSelectMask1)) {
+        if (UNSELECT_MASK1 == (e.getModifiersEx() & UNSELECT_MASK1)) {
             clearCell();
-        } else if(unSelectMask2 == (e.getModifiersEx() & unSelectMask2)) {
+        } else if (UNSELECT_MASK2 == (e.getModifiersEx() & UNSELECT_MASK2)) {
             clearCell();
         } else {
             table.highlight(x, y);
