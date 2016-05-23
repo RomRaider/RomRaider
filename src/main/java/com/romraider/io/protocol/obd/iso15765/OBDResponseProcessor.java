@@ -19,12 +19,12 @@
 
 package com.romraider.io.protocol.obd.iso15765;
 
-import static com.romraider.io.protocol.obd.iso15765.OBDProtocol.ECU_ID;
 import static com.romraider.io.protocol.obd.iso15765.OBDProtocol.OBD_INFO_RESPONSE;
 import static com.romraider.io.protocol.obd.iso15765.OBDProtocol.OBD_INIT_RESPONSE;
 import static com.romraider.io.protocol.obd.iso15765.OBDProtocol.OBD_NRC;
 import static com.romraider.io.protocol.obd.iso15765.OBDProtocol.OBD_RESET_RESPONSE;
 import static com.romraider.io.protocol.obd.iso15765.OBDProtocol.RESPONSE_NON_DATA_BYTES;
+import static com.romraider.io.protocol.obd.iso15765.OBDProtocol.module;
 import static com.romraider.util.ByteUtil.asUnsignedInt;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
@@ -51,7 +51,8 @@ public final class OBDResponseProcessor {
         checkNotNullOrEmpty(response, "response");
         assertTrue(response.length > RESPONSE_NON_DATA_BYTES,
                 "Invalid response length");
-        assertEquals(ECU_ID, response, "Invalid ECU id");
+        assertEquals(module.getAddress(), response, "Invalid " +
+                module.getName() + " id");
         if (response[4] == OBD_NRC) {
             assertNrc(OBD_NRC, response[4], response[5], response[6],
                     "Request type not supported");

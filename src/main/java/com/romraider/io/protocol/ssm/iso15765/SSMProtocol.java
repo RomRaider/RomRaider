@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,36 +19,26 @@
 
 package com.romraider.io.protocol.ssm.iso15765;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.protocol.Protocol;
-
-import com.romraider.logger.ecu.comms.manager.PollingState;
-import com.romraider.logger.ecu.comms.query.EcuInit;
-import com.romraider.logger.ecu.comms.query.SSMEcuInit;
-import com.romraider.logger.ecu.exception.InvalidResponseException;
-import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
-
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkGreaterThanZero;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.protocol.Protocol;
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.comms.query.EcuInit;
+import com.romraider.logger.ecu.comms.query.SSMEcuInit;
+import com.romraider.logger.ecu.definition.Module;
+import com.romraider.logger.ecu.exception.InvalidResponseException;
+import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
+
 public final class SSMProtocol implements Protocol {
-    private static final byte[] ECU_TESTER = 
-            new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe0};
-    private static final byte[] TCU_TESTER = 
-            new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe1};
-    private static byte[] ECU_CALID = 
-            new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe8};
-    private static final byte[] TCU_CALID = 
-            new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe9};
     private static final byte[] resetAddress = 
             new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x60};
-    private final ByteArrayOutputStream bb = new ByteArrayOutputStream(255);
-    private static byte[] TESTER = ECU_TESTER;
-    public static byte[] ECU_ID = ECU_CALID;
     public static final byte READ_MEMORY_PADDING = (byte) 0x00;
     public static final byte READ_MEMORY_COMMAND = (byte) 0xA0;
     public static final byte READ_MEMORY_RESPONSE = (byte) 0xE0;
@@ -64,20 +54,22 @@ public final class SSMProtocol implements Protocol {
     public static final int ADDRESS_SIZE = 3;
     public static final int DATA_SIZE = 1;
     public static final int RESPONSE_NON_DATA_BYTES = 5;
+    public static Module module;
+    private final ByteArrayOutputStream bb = new ByteArrayOutputStream(255);
     
-    public byte[] constructEcuInitRequest(byte id) {
-        checkGreaterThanZero(id, "ECU_ID");
-        setIDs(id);
+    public byte[] constructEcuInitRequest(Module module) {
+        checkNotNull(module, "module");
+        SSMProtocol.module = module;
         // 000007E0 AA
         return buildRequest(ECU_INIT_COMMAND, false, new byte[0]);
     }
 
     public byte[] constructWriteMemoryRequest(
-            byte id, byte[] address, byte[] values) {
-        checkGreaterThanZero(id, "ECU_ID");
+            Module module, byte[] address, byte[] values) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(values, "values");
-        setIDs(id);
+        SSMProtocol.module = module;
         // 000007E0 B0 from_address value1 value2 ... valueN
         throw new UnsupportedProtocolException(
                 "Write memory command is not supported on CAN for address: " + 
@@ -85,33 +77,33 @@ public final class SSMProtocol implements Protocol {
     }
 
     public byte[] constructWriteAddressRequest(
-            byte id, byte[] address, byte value) {
+            Module module, byte[] address, byte value) {
 
-        checkGreaterThanZero(id, "ECU_ID");
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkNotNull(value, "value");
-        setIDs(id);
+        SSMProtocol.module = module;
         // 000007E0 B8 address value
         return buildRequest(
                 WRITE_ADDRESS_COMMAND, false, address, new byte[]{value});
     }
 
     public byte[] constructReadMemoryRequest(
-            byte id, byte[] address, int numBytes) {
-        checkGreaterThanZero(id, "ECU_ID");
+            Module module, byte[] address, int numBytes) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkGreaterThanZero(numBytes, "numBytes");
-        setIDs(id);
+        SSMProtocol.module = module;
         // 000007E0 A0 padding from_address num_bytes-1
         throw new UnsupportedProtocolException(
                 "Read memory command is not supported on CAN for address: " + 
                 asHex(address));
     }
 
-    public byte[] constructReadAddressRequest(byte id, byte[][] addresses) {
-        checkGreaterThanZero(id, "ECU_ID");
+    public byte[] constructReadAddressRequest(Module module, byte[][] addresses) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(addresses, "addresses");
-        setIDs(id);
+        SSMProtocol.module = module;
         // 000007E0 A8 padding [address1] [address2] ... [addressN]
         return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }
@@ -137,7 +129,7 @@ public final class SSMProtocol implements Protocol {
         byte responseType = processedResponse[4];
         if (responseType != ECU_INIT_RESPONSE) {
             throw new InvalidResponseException(
-                    "Unexpected ECU Init response type: " + 
+                    "Unexpected " + module.getName() + " Init response type: " + 
                     asHex(new byte[]{responseType}));
         }
     }
@@ -146,10 +138,9 @@ public final class SSMProtocol implements Protocol {
         return new SSMEcuInit(parseResponseData(processedResponse));
     }
 
-    public byte[] constructEcuResetRequest(byte id) {
-        checkGreaterThanZero(id, "ECU_ID");
+    public byte[] constructEcuResetRequest(Module module, int resetCode) {
         //  000007E0 B8 000060 40
-        return constructWriteAddressRequest(id, resetAddress, (byte) 0x40);
+        return constructWriteAddressRequest(module, resetAddress, (byte) resetCode);
     }
 
     public void checkValidEcuResetResponse(byte[] processedResponse) {
@@ -159,7 +150,7 @@ public final class SSMProtocol implements Protocol {
         if (responseType != WRITE_ADDRESS_RESPONSE || 
                 processedResponse[5] != (byte) 0x40) {
             throw new InvalidResponseException(
-                    "Unexpected ECU Reset response: " + 
+                    "Unexpected " + module.getName() + " Reset response: " + 
                     asHex(processedResponse));
         }
     }
@@ -172,7 +163,7 @@ public final class SSMProtocol implements Protocol {
         if (responseType != WRITE_ADDRESS_RESPONSE || 
                 processedResponse[5] != (byte) data[0]) {
             throw new InvalidResponseException(
-                    "Unexpected ECU Write response: " + 
+                    "Unexpected " + module.getName() + " Write response: " + 
                     asHex(processedResponse));
         }
     }
@@ -217,7 +208,7 @@ public final class SSMProtocol implements Protocol {
 
         bb.reset();
         try {
-            bb.write(TESTER);
+            bb.write(module.getTester());
             bb.write(command);
             if (padContent) {
                 bb.write(READ_MEMORY_PADDING);
@@ -229,14 +220,5 @@ public final class SSMProtocol implements Protocol {
             e.printStackTrace();
         }
         return bb.toByteArray();
-    }
-
-    private void setIDs(byte id) {
-        ECU_ID = ECU_CALID;
-        TESTER = ECU_TESTER;
-        if (id == 0x18) {
-            ECU_ID = TCU_CALID;
-            TESTER = TCU_TESTER;
-        }
     }
 }

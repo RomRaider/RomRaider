@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,36 +41,37 @@ import org.w3c.dom.Node;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
-import com.romraider.logger.ecu.comms.learning.flkctable.FlkcTableQueryBuilder;
-import com.romraider.logger.ecu.comms.learning.parameter.Parameter;
-import com.romraider.logger.ecu.comms.learning.parameter.ParameterCrossReference;
+import com.romraider.logger.ecu.comms.learning.flkctable.SSMFlkcTableQueryBuilder;
+import com.romraider.logger.ecu.comms.learning.parameter.SSMParameter;
+import com.romraider.logger.ecu.comms.learning.parameter.SSMParameterCrossReference;
 import com.romraider.logger.ecu.comms.learning.parameter.ParameterIdComparator;
-import com.romraider.logger.ecu.comms.learning.tableaxis.TableAxisQueryParameterSet;
+import com.romraider.logger.ecu.comms.learning.tableaxis.SSMTableAxisQueryParameterSet;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
 import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.EcuDefinition;
+import com.romraider.logger.ecu.definition.Module;
+import com.romraider.logger.ecu.definition.Transport;
 import com.romraider.logger.ecu.definition.xml.EcuDefinitionDocumentLoader;
 import com.romraider.logger.ecu.definition.xml.EcuDefinitionInheritanceList;
 import com.romraider.logger.ecu.definition.xml.EcuTableDefinitionHandler;
 import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
-import com.romraider.logger.ecu.ui.swing.tools.LearningTableValuesResultsPanel;
+import com.romraider.logger.ecu.ui.swing.tools.SSMLearningTableValuesResultsPanel;
 import com.romraider.util.ParamChecker;
-import com.romraider.util.SettingsManager;
 
 /**
  * This class manages the building of ECU queries and retrieving the data to
  * populate the table models which will be used by the Learning Table Values
  * display panel.
  */
-public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
+public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                     implements LearningTableValues {
 
     private static final Logger LOGGER =
-            Logger.getLogger(LearningTableValuesImpl.class);
+            Logger.getLogger(SSMLearningTableValues.class);
     private static final List<String> AF_TABLE_NAMES = Arrays.asList(
             "A/F Learning #1 Airflow Ranges",
             "A/F Learning #1 Airflow Ranges ",
@@ -84,15 +85,17 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
     private final Map<String, Object> vehicleInfo =
             new LinkedHashMap<String, Object>();
     private final List<List<Object>> afLearning = new ArrayList<List<Object>>();
-    private final EcuLogger logger;
-    private final Settings settings;
-    private final MessageListener messageListener;
-    private final ParameterListTableModel parmeterList;
-    private final EcuDefinition ecuDef;
+    private EcuLogger logger;
+    private Settings settings;
+    private MessageListener messageListener;
+    private ParameterListTableModel parmeterList;
+    private EcuDefinition ecuDef;
     private ParameterRow flkc;
     private int flkcAddr;
 
-    public LearningTableValuesImpl(
+    public SSMLearningTableValues() {}
+
+    public void init(
             EcuLogger logger,
             ParameterListTableModel dataTabParamListTableModel,
             EcuDefinition ecuDef) {
@@ -125,8 +128,11 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
         }
 
         final String transport = settings.getTransportProtocol();
+        final Module module = settings.getDestinationTarget();
         if (settings.isCanBus()) {
             settings.setTransportProtocol("ISO9141");
+            final Module ecuModule = getModule("ECU");
+            settings.setDestinationTarget(ecuModule);
         }
         final boolean logging = logger.isLogging();
         if (logging) logger.stopLogging();
@@ -145,7 +151,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                 LOGGER.info(message);
                 connection.sendAddressReads(
                         queries,
-                        (byte) 0x10,
+                        settings.getDestinationTarget(),
                         new PollingStateImpl());
                 LOGGER.info("Current vehicle info & A/F values retrieved.");
 
@@ -163,7 +169,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                     LOGGER.info(message);
                     connection.sendAddressReads(
                             queries,
-                            (byte) 0x10,
+                            settings.getDestinationTarget(),
                             new PollingStateImpl());
                     LOGGER.info("A/F Learning ranges retrieved.");
                     afRanges = formatRanges(queries, "%.2f");
@@ -178,7 +184,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                     LOGGER.info(message);
                     connection.sendAddressReads(
                             queries,
-                            (byte) 0x10,
+                            settings.getDestinationTarget(),
                             new PollingStateImpl());
                     LOGGER.info("FLKC Load ranges retrieved.");
                     flkcLoad = formatRanges(queries, "%.2f");
@@ -193,7 +199,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                     LOGGER.info(message);
                     connection.sendAddressReads(
                             queries,
-                            (byte) 0x10,
+                            settings.getDestinationTarget(),
                             new PollingStateImpl());
                     LOGGER.info("FLKC RPM ranges retrieved.");
                     flkcRpm = formatRpmRanges(queries);
@@ -201,7 +207,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
 
                 List<List<EcuQuery>> flkcQueryGroups = new ArrayList<List<EcuQuery>>();
                 if (flkc != null) {
-                    flkcQueryGroups = new FlkcTableQueryBuilder().build(
+                    flkcQueryGroups = new SSMFlkcTableQueryBuilder().build(
                                             flkc,
                                             flkcAddr,
                                             flkcRpm.length,
@@ -219,7 +225,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                         LOGGER.info(message);
                         connection.sendAddressReads(
                                 queries,
-                                (byte) 0x10,
+                                settings.getDestinationTarget(),
                                 new PollingStateImpl());
                         LOGGER.info("FLKC row " + i + " values retrieved.");               
                     }
@@ -232,8 +238,8 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
 
                 messageListener.reportMessage(
                         "Learning Table Values retrieved successfully.");
-                final LearningTableValuesResultsPanel results =
-                        new LearningTableValuesResultsPanel(
+                final SSMLearningTableValuesResultsPanel results =
+                        new SSMLearningTableValuesResultsPanel(
                                 logger, vehicleInfo,
                                 afRanges, afLearning,
                                 flkcLoad, flkcRpm, flkcQueryGroups);
@@ -241,7 +247,8 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
             }
             finally {
                 connection.close();
-                SettingsManager.getSettings().setTransportProtocol(transport);
+                settings.setTransportProtocol(transport);
+                settings.setDestinationTarget(module);
                 if (logging) logger.startLogging();
             }
         }
@@ -274,8 +281,8 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
         final List<ParameterRow> parameterRows = parmeterList.getParameterRows();
         if (!ParamChecker.isNullOrEmpty(parameterRows)) {
             for (ParameterRow parameterRow : parameterRows) {
-                final Parameter parameterId =
-                        Parameter.fromValue(parameterRow.getLoggerData().getId());
+                final SSMParameter parameterId =
+                        SSMParameter.fromValue(parameterRow.getLoggerData().getId());
                 if (parameterId != null) {
                     query.add(buildEcuQuery(parameterRow));
                     setFlkcTableAddress(parameterRow, parameterId);                    }
@@ -302,7 +309,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
      */
     private final void setFlkcTableAddress(
             ParameterRow parameterRow,
-            Parameter parameterId) {
+            SSMParameter parameterId) {
 
         switch (parameterId) {
             case E1:
@@ -374,13 +381,13 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
      * table models datasets.
      */
     private final void processEcuQueryResponses(List<EcuQuery> queries) {
-        final ParameterCrossReference parameterMap = new ParameterCrossReference();
+        final SSMParameterCrossReference parameterMap = new SSMParameterCrossReference();
         final List<Object> afLearningBank1 = new ArrayList<Object>();
         final List<Object> afLearningBank2 = new ArrayList<Object>();
 
         for (EcuQuery query : queries) {
-            final Parameter parameterId =
-                    Parameter.fromValue(query.getLoggerData().getId());
+            final SSMParameter parameterId =
+                    SSMParameter.fromValue(query.getLoggerData().getId());
             final String paramDesc = parameterMap.getValue(parameterId);
             String result = String.format("%.2f %s",
                     query.getResponse(),
@@ -451,7 +458,7 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
                         tableName);
         List<EcuQuery> tableAxisQuery = new ArrayList<EcuQuery>();
         if (tableMap.containsKey("storageaddress")) {
-            tableAxisQuery = TableAxisQueryParameterSet.build(
+            tableAxisQuery = SSMTableAxisQueryParameterSet.build(
                     tableMap.get("storageaddress"),
                     tableMap.get("storagetype"),
                     tableMap.get("expression"),
@@ -509,5 +516,36 @@ public final class LearningTableValuesImpl extends SwingWorker<Void, Void>
         final String range = String.format("%.0f+", rangeMax);
         ranges.add(range);
         return ranges.toArray(new String[0]);
+    }
+
+    /**
+     * Return a Transport based on its String ID.
+     */
+    private Transport getTransportById(String id) {
+        for (Transport transport : getTransportMap().keySet()) {
+            if (transport.getId().equalsIgnoreCase(id))
+                return transport;
+        }
+        return null;
+    }
+
+    /**
+     * Return a Map of Transport and associated Modules for the current protocol.
+     */
+    private Map<Transport, Collection<Module>> getTransportMap() {
+        return logger.getProtocolList().get(settings.getLoggerProtocol());
+    }
+
+    /**
+     * Return a Module based on its String name.
+     */
+    private Module getModule(String name) {
+        final Collection<Module> modules = getTransportMap().get(
+                getTransportById(settings.getTransportProtocol()));
+        for (Module module: modules) {
+            if (module.getName().equalsIgnoreCase(name))
+                return module;
+        }
+        return null;
     }
 }

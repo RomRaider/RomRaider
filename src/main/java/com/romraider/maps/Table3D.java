@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,6 @@ public class Table3D extends Table {
     private JLabel xAxisLabel;
     private JLabel yAxisLabel;
 
-    @SuppressWarnings("hiding")
     DataCell[][] data = new DataCell[1][1];
     private boolean swapXY = false;
     private boolean flipX = false;
@@ -193,7 +192,7 @@ public class Table3D extends Table {
                     byteValue[1] = input[getStorageAddress() + offset * 4 - ramOffset + 1];
                     byteValue[2] = input[getStorageAddress() + offset * 4 - ramOffset + 2];
                     byteValue[3] = input[getStorageAddress() + offset * 4 - ramOffset + 3];
-                    cellBinValue = RomAttributeParser.byteToFloat(byteValue, endian);
+                    cellBinValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
 
                 } else { // integer storage type
                     cellBinValue = RomAttributeParser.parseByteValue(input,
@@ -545,7 +544,7 @@ public class Table3D extends Table {
                             binData[offset * storageType + z + getStorageAddress() - ramOffset] = output[z];
                         }
                     } else { // float
-                        output = RomAttributeParser.floatToByte((float) data[x][y].getBinValue(), endian);
+                        output = RomAttributeParser.floatToByte((float) data[x][y].getBinValue(), endian, memModelEndian);
                         for (int z = 0; z < 4; z++) {
                             binData[offset * 4 + z + getStorageAddress() - ramOffset] = output[z];
                         }
@@ -784,29 +783,32 @@ public class Table3D extends Table {
     public void verticalInterpolate() {
         int[] coords = { getSizeX(), getSizeY(), 0, 0};
         DataCell[][] tableData = get3dData();
-
-        int x, y;
-        for (x = 0; x < getSizeX(); x++) {
-            for (y = 0; y < getSizeY(); y++) {
-                if (tableData[x][y].isSelected()) {
-                    if (x < coords[0])
-                        coords[0] = x;
-                    if (x > coords[2])
-                        coords[2] = x;
-                    if (y < coords[1])
-                        coords[1] = y;
-                    if (y > coords[3])
-                        coords[3] = y;
+        DataCell[] axisData = getYAxis().getData();
+        int i, j;
+        for (i = 0; i < getSizeX(); ++i) {
+            for (j = 0; j < getSizeY(); ++j) {
+                if (tableData[i][j].isSelected()) {
+                    if (i < coords[0])
+                        coords[0] = i;
+                    if (i > coords[2])
+                        coords[2] = i;
+                    if (j < coords[1])
+                        coords[1] = j;
+                    if (j > coords[3])
+                        coords[3] = j;
                 }
             }
         }
         if (coords[3] - coords[1] > 1) {
-            double diff;
-            for (y = coords[0]; y <= coords[2]; y++) {
-                diff = (tableData[y][coords[1]].getRealValue() - tableData[y][coords[3]].getRealValue()) / (coords[3] - coords[1]);
-                if (Math.abs(diff) > 0) {
-                    for (x = coords[1] + 1; x < coords[3]; x++)
-                        tableData[y][x].setRealValue(String.valueOf(tableData[y][x - 1].getRealValue() - diff));
+            double x, x1, x2, y1, y2;
+            x1 = axisData[coords[1]].getBinValue();
+            x2 = axisData[coords[3]].getBinValue();
+            for (i = coords[0]; i <= coords[2]; ++i) {
+                y1 = tableData[i][coords[1]].getBinValue();
+                y2 = tableData[i][coords[3]].getBinValue();
+                for (j = coords[1] + 1; j < coords[3]; ++j) {
+                    x = axisData[j].getBinValue();
+                    tableData[i][j].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
                 }
             }
         }
@@ -818,29 +820,32 @@ public class Table3D extends Table {
     public void horizontalInterpolate() {
         int[] coords = { getSizeX(), getSizeY(), 0, 0 };
         DataCell[][] tableData = get3dData();
-
-        int x, y;
-        for (x = 0; x < getSizeX(); x++) {
-            for (y = 0; y < getSizeY(); y++) {
-                if (tableData[x][y].isSelected()) {
-                    if (x < coords[0])
-                        coords[0] = x;
-                    if (x > coords[2])
-                        coords[2] = x;
-                    if (y < coords[1])
-                        coords[1] = y;
-                    if (y > coords[3])
-                        coords[3] = y;
+        DataCell[] axisData = getXAxis().getData();
+        int i, j;
+        for (i = 0; i < getSizeX(); ++i) {
+            for (j = 0; j < getSizeY(); ++j) {
+                if (tableData[i][j].isSelected()) {
+                    if (i < coords[0])
+                        coords[0] = i;
+                    if (i > coords[2])
+                        coords[2] = i;
+                    if (j < coords[1])
+                        coords[1] = j;
+                    if (j > coords[3])
+                        coords[3] = j;
                 }
             }
         }
         if (coords[2] - coords[0] > 1) {
-            double diff;
-            for (x = coords[1]; x <= coords[3]; x++) {
-                diff = (tableData[coords[0]][x].getRealValue() - tableData[coords[2]][x].getRealValue()) / (coords[2] - coords[0]);
-                if (Math.abs(diff) > 0) {
-                    for (y = coords[0] + 1; y < coords[2]; y++)
-                        tableData[y][x].setRealValue(String.valueOf(tableData[y - 1][x].getRealValue() - diff));
+            double x, x1, x2, y1, y2;
+            x1 = axisData[coords[0]].getBinValue();
+            x2 = axisData[coords[2]].getBinValue();
+            for (i = coords[1]; i <= coords[3]; ++i) {
+                y1 = tableData[coords[0]][i].getBinValue();
+                y2 = tableData[coords[2]][i].getBinValue();
+                for (j = coords[0] + 1; j < coords[2]; ++j) {
+                    x = axisData[j].getBinValue();
+                    tableData[j][i].setBinValue(linearInterpolation(x, x1, x2, y1, y2));
                 }
             }
         }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ public final class TxsDataItem implements ExternalDataItem, DataListener {
     }
 
     public int getItemIndex(){
-    	return itemIndex;
+        return itemIndex;
     }
-    
+
     public String getName() {
         return name;
     }

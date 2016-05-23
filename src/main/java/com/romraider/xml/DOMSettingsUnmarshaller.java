@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -253,12 +253,12 @@ public final class DOMSettingsUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("serial")) {
                 settings.setLoggerPortDefault(unmarshallAttribute(n, "port", ""));
                 settings.setRefreshMode(unmarshallAttribute(n, "refresh", false));
-                settings.setDestinationId((byte) unmarshallAttribute(n, "ecuid", (byte) 0x10));
-                settings.setFastPoll(unmarshallAttribute(n, "fastpoll", true));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("protocol")) {
                 settings.setLoggerProtocol(unmarshallAttribute(n, "name", "SSM"));
                 settings.setTransportProtocol(unmarshallAttribute(n, "transport", "ISO9141"));
+                settings.setTargetModule(unmarshallAttribute(n, "module", "ecu"));
+                settings.setFastPoll(unmarshallAttribute(n, "fastpoll", true));
                 settings.setJ2534Device(unmarshallAttribute(n, "library", null));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("maximized")) {
@@ -291,6 +291,9 @@ public final class DOMSettingsUnmarshaller {
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("debug")) {
                 settings.setLoggerDebuggingLevel(unmarshallAttribute(n, "level", "info"));
+
+            } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("gauge")) {
+                settings.setLoggerSelectedGaugeIndex(unmarshallAttribute(n, "index", 0));
 
             } else if (n.getNodeType() == ELEMENT_NODE && n.getNodeName().equalsIgnoreCase("plugins")) {
                 Map<String, String> pluginPorts = new HashMap<String, String>();

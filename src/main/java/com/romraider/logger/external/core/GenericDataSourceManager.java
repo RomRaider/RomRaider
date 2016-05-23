@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import static org.apache.log4j.Logger.getLogger;
 import javax.swing.Action;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public final class GenericDataSourceManager implements ExternalDataSource {
     private static final Logger LOGGER = getLogger(GenericDataSourceManager.class);
@@ -71,6 +72,9 @@ public final class GenericDataSourceManager implements ExternalDataSource {
 
     public String getPort() {
         return dataSource.getPort();
+    }
+
+    public void setProperties(Properties properties) {
     }
 
     public synchronized void connect() {

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,10 @@ package com.romraider.ramtune.test.command.generator;
 
 import java.util.List;
 
+import com.romraider.logger.ecu.definition.Module;
+
 public interface CommandGenerator {
 
-    List<byte[]> createCommands(byte id, byte[] data, byte[] address, int length, boolean blockRead);
-
+    List<byte[]> createCommands(Module module, byte[] data, byte[] address,
+            int length, boolean blockRead, int blocksize);
 }

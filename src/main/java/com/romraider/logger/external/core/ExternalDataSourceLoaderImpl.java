@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@ public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoa
         try {
             File pluginsDir = new File("./plugins");
             if (pluginsDir.exists() && pluginsDir.isDirectory()) {
-//                externalDataSources = new ArrayList<ExternalDataSource>();
                 File[] pluginPropertyFiles = pluginsDir.listFiles(new PluginFilenameFilter());
                 for (File pluginPropertyFile : pluginPropertyFiles) {
                     Properties pluginProps = new Properties();
@@ -50,7 +49,7 @@ public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoa
                             try {
                                 Class<?> dataSourceClass = getClass().getClassLoader().loadClass(datasourceClassName);
                                 if (dataSourceClass != null && ExternalDataSource.class.isAssignableFrom(dataSourceClass)) {
-                                    ExternalDataSource dataSource = dataSource(dataSourceClass, loggerPluginPorts);
+                                    ExternalDataSource dataSource = dataSource(dataSourceClass, loggerPluginPorts, pluginProps);
                                     ExternalDataSource managedDataSource = new GenericDataSourceManager(dataSource);
                                     externalDataSources.add(managedDataSource);
                                     LOGGER.info("Plugin loaded: " + dataSource.getName() + " v" + dataSource.getVersion());
@@ -70,12 +69,17 @@ public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoa
         }
     }
 
-    private ExternalDataSource dataSource(Class<?> dataSourceClass, Map<String, String> loggerPluginPorts) throws Exception {
+    private ExternalDataSource dataSource(
+            Class<?> dataSourceClass,
+            Map<String, String> loggerPluginPorts,
+            Properties pluginProps) throws Exception {
+
         ExternalDataSource dataSource = (ExternalDataSource) dataSourceClass.newInstance();
         if (loggerPluginPorts != null) {
             String port = loggerPluginPorts.get(dataSource.getId());
             if (port != null && port.trim().length() > 0) dataSource.setPort(port);
         }
+        dataSource.setProperties(pluginProps);
         return dataSource;
     }
 

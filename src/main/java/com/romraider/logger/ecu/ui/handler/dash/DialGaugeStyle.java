@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ import static java.awt.Color.RED;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
 import static java.lang.Double.MAX_VALUE;
-import static java.lang.Double.MIN_VALUE;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.dial.DialBackground;
@@ -61,7 +60,7 @@ public class DialGaugeStyle implements GaugeStyle {
     protected final DefaultValueDataset min = new DefaultValueDataset(0.0);
     protected final DialTextAnnotation unitsLabel = new DialTextAnnotation("");
     protected final LoggerData loggerData;
-    private double maxValue = MIN_VALUE;
+    private double maxValue = MAX_VALUE * -1;
     private double minValue = MAX_VALUE;
     private JPanel panel;
 
@@ -108,7 +107,8 @@ public class DialGaugeStyle implements GaugeStyle {
                 if (value > maxValue) {
                     maxValue = value;
                     max.setValue(value);
-                } else if (value < minValue) {
+                }
+                if (value < minValue) {
                     minValue = value;
                     min.setValue(value);
                 }
@@ -127,7 +127,7 @@ public class DialGaugeStyle implements GaugeStyle {
     private void resetMinMax(final double value) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                maxValue = MIN_VALUE;
+                maxValue = MAX_VALUE * -1;
                 minValue = MAX_VALUE;
                 max.setValue(value);
                 min.setValue(value);

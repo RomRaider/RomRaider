@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,14 +25,15 @@ import com.romraider.io.protocol.Protocol;
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.definition.Module;
 
 public interface LoggerProtocol {
 
-    byte[] constructEcuInitRequest(byte id);
+    byte[] constructEcuInitRequest(Module module);
 
-    byte[] constructEcuResetRequest(byte id);
+    byte[] constructEcuResetRequest(Module module, int resetCode);
 
-    byte[] constructReadAddressRequest(byte id, Collection<EcuQuery> queries);
+    byte[] constructReadAddressRequest(Module module, Collection<EcuQuery> queries);
 
     byte[] constructReadAddressResponse(Collection<EcuQuery> queries, PollingState pollState);
 
@@ -46,7 +47,7 @@ public interface LoggerProtocol {
 
     Protocol getProtocol();
 
-    byte[] constructWriteAddressRequest(byte id, byte[] writeAddress, byte value);
+    byte[] constructWriteAddressRequest(Module module, byte[] writeAddress, byte value);
 
     void processWriteResponse(byte[] data, byte[] processedResponse);
 }

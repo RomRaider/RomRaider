@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,14 +291,14 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode serial = new IIOMetadataNode("serial");
         serial.setAttribute("port", settings.getLoggerPortDefault());
         serial.setAttribute("refresh", String.valueOf(settings.getRefreshMode()));
-        serial.setAttribute("ecuid", String.valueOf(settings.getDestinationId()));
-        serial.setAttribute("fastpoll", String.valueOf(settings.isFastPoll()));
         loggerSettings.appendChild(serial);
 
         // Protocol connection
         IIOMetadataNode protocol = new IIOMetadataNode("protocol");
         protocol.setAttribute("name", settings.getLoggerProtocol());
         protocol.setAttribute("transport", settings.getTransportProtocol());
+        protocol.setAttribute("module", settings.getTargetModule());
+        protocol.setAttribute("fastpoll", String.valueOf(settings.isFastPoll()));
         protocol.setAttribute("library", settings.getJ2534Device());
         loggerSettings.appendChild(protocol);
 
@@ -379,6 +379,11 @@ public final class DOMSettingsBuilder {
             }
             loggerSettings.appendChild(plugins);
         }
+
+        // Dashboard Gauge Index
+        IIOMetadataNode gaugeindex = new IIOMetadataNode("gauge");
+        gaugeindex.setAttribute("index", String.valueOf(((int) settings.getLoggerSelectedGaugeIndex())));
+        loggerSettings.appendChild(gaugeindex);
 
         return loggerSettings;
     }

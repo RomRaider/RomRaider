@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.romraider.Settings;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.comms.query.EcuQueryData;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
 import com.romraider.logger.ecu.definition.EcuAddress;
 import com.romraider.logger.ecu.definition.EcuAddressImpl;
@@ -38,9 +40,9 @@ import com.romraider.util.HexUtil;
 /**
  * Build a List of ECU Queries to retrieve a Table's axis values.
  */
-public class TableAxisQueryParameterSet {
+public class SSMTableAxisQueryParameterSet {
 
-    private TableAxisQueryParameterSet() {
+    private SSMTableAxisQueryParameterSet() {
     }
 
     /**
@@ -50,6 +52,7 @@ public class TableAxisQueryParameterSet {
      * @param expression -  the equation to convert byte data to a real number.
      * @param units - the value's unit of measure.
      * @param size - the length of the Table's axis.
+     * @param endian - the data endian.
      * @return a List of ECU Query items. 
      */
     public static final List<EcuQuery> build(
@@ -63,26 +66,21 @@ public class TableAxisQueryParameterSet {
         final String tableAddrStr = storageAddress.replaceAll("0x", "");
         final int tableAddrBase = Integer.parseInt(tableAddrStr, 16);
 
-        int dataSize = 1;
-        if (storageType.toLowerCase().contains("int16")) {
-            dataSize = 2;
-        }
-        if (storageType.toLowerCase().contains("float")) {
-            dataSize = 4;
-        }
+        int dataSize = EcuQueryData.getDataLength(storageType);
 
-        final int count = Integer.parseInt(size, 16);
+        final int count = Integer.parseInt(size, 10);
         for (int i = 0; i < count; i++) {
             final String addrStr =
                     HexUtil.intToHexString(tableAddrBase + (i * dataSize));
             final String id = addrStr + "-" + i;
             final EcuAddress ea = new EcuAddressImpl(addrStr, dataSize, -1);
             final EcuParameterImpl epi =
-                new EcuParameterImpl(id, addrStr, id, ea,
+                new EcuParameterImpl(id, addrStr, id, ea, null, null, null,
                     new EcuDataConvertor[] {
                         new EcuParameterConvertorImpl(
                             units, expression, "0.000", -1, storageType,
-                            new HashMap<String, String>(), getDefault()
+                            Settings.ENDIAN_BIG, new HashMap<String, String>(),
+                            getDefault()
                         )
                     }
                 );

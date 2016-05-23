@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
     protected final JTextField warnTextField = new JTextField();
     private final String zeroText;
     private final LoggerData loggerData;
-    private double max = Double.MIN_VALUE;
+    private double max = Double.MAX_VALUE * -1;
     private double min = Double.MAX_VALUE;
     private JPanel panel = new JPanel();
 
@@ -97,13 +97,15 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 liveValueLabel.setText(zeroText);
-                max = Double.MIN_VALUE;
+                max = Double.MAX_VALUE * -1;
                 maxLabel.setText(zeroText);
                 min = Double.MAX_VALUE;
                 minLabel.setText(zeroText);
+                progressBar.setIndeterminate(true);
                 progressBar.setMinimum(scaleForProgressBar(min));
                 progressBar.setMaximum(scaleForProgressBar(max));
                 progressBar.setValue(scaleForProgressBar(min));
+                progressBar.setIndeterminate(false);
             }
         });
     }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 package com.romraider.io.connection;
 
-public final class ConnectionPropertiesImpl implements ConnectionProperties {
+public final class SerialConnectionProperties implements ConnectionProperties {
     private final int baudRate;
     private final int dataBits;
     private final int stopBits;
@@ -28,7 +28,8 @@ public final class ConnectionPropertiesImpl implements ConnectionProperties {
     private final int sendTimeout;
 
 
-    public ConnectionPropertiesImpl(int baudRate, int dataBits, int stopBits, int parity, int connectTimeout, int sendTimeout) {
+    public SerialConnectionProperties(int baudRate, int dataBits, int stopBits,
+            int parity, int connectTimeout, int sendTimeout) {
         this.baudRate = baudRate;
         this.dataBits = dataBits;
         this.stopBits = stopBits;

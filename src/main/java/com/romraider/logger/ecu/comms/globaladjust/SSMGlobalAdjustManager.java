@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,8 +43,8 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.logger.ecu.ui.swing.tools.GlobalAdjustmentsPanel;
 
-public final class GlobalAdjustManagerImpl implements GlobalAdjustManager {
-    private static final Logger LOGGER = Logger.getLogger(GlobalAdjustManagerImpl.class);
+public final class SSMGlobalAdjustManager implements GlobalAdjustManager {
+    private static final Logger LOGGER = Logger.getLogger(SSMGlobalAdjustManager.class);
     private static final String ID_P239 = "P239";
     private static final String ID_P240 = "P240";
     private static final String ID_P241 = "P241";
@@ -53,7 +53,7 @@ public final class GlobalAdjustManagerImpl implements GlobalAdjustManager {
     private final MessageListener messageListener;
     private final ParameterListTableModel parmeterList;
 
-    public GlobalAdjustManagerImpl(
+    public SSMGlobalAdjustManager(
             EcuLogger logger,
             ParameterListTableModel dataTabParamListTableModel) {
 
@@ -75,7 +75,7 @@ public final class GlobalAdjustManagerImpl implements GlobalAdjustManager {
                 final Collection<EcuQuery> queries = buildGlobalAdjustQueries();
                 connection.sendAddressReads(
                         queries,
-                        (byte) 0x10,
+                        settings.getDestinationTarget(),
                         new PollingStateImpl());
                 messageListener.reportMessage("Current ECU global values retrievied.");
                 final GlobalAdjustmentsPanel gap =
@@ -102,7 +102,7 @@ public final class GlobalAdjustManagerImpl implements GlobalAdjustManager {
                             writes.put(query, rpmOn);
                         }
                     }
-                    connection.sendAddressWrites(writes, (byte) 0x10);
+                    connection.sendAddressWrites(writes, settings.getDestinationTarget());
                 }
                 return 1;
             } finally {

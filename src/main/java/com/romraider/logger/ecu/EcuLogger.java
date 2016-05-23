@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,9 +76,11 @@ import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -113,9 +115,9 @@ import com.romraider.io.serial.port.SerialPortRefresher;
 import com.romraider.logger.ecu.comms.controller.LoggerController;
 import com.romraider.logger.ecu.comms.controller.LoggerControllerImpl;
 import com.romraider.logger.ecu.comms.globaladjust.GlobalAdjustManager;
-import com.romraider.logger.ecu.comms.globaladjust.GlobalAdjustManagerImpl;
+import com.romraider.logger.ecu.comms.globaladjust.SSMGlobalAdjustManager;
 import com.romraider.logger.ecu.comms.learning.LearningTableValues;
-import com.romraider.logger.ecu.comms.learning.LearningTableValuesImpl;
+import com.romraider.logger.ecu.comms.learning.LearningTableValuesFactory;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.readcodes.ReadCodesManager;
@@ -131,6 +133,8 @@ import com.romraider.logger.ecu.definition.EvaluateEcuDefinition;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.ExternalDataImpl;
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.logger.ecu.definition.Module;
+import com.romraider.logger.ecu.definition.Transport;
 import com.romraider.logger.ecu.exception.ConfigurationException;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.profile.UserProfile;
@@ -139,6 +143,7 @@ import com.romraider.logger.ecu.profile.UserProfileItem;
 import com.romraider.logger.ecu.profile.UserProfileItemImpl;
 import com.romraider.logger.ecu.profile.UserProfileLoader;
 import com.romraider.logger.ecu.profile.UserProfileLoaderImpl;
+import com.romraider.logger.ecu.ui.CustomButtonGroup;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.DataRegistrationBrokerImpl;
 import com.romraider.logger.ecu.ui.EcuDataComparator;
@@ -180,6 +185,7 @@ import com.romraider.logger.external.core.ExternalDataSourceLoader;
 import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.SetFont;
+import com.romraider.swing.menubar.RadioButtonMenuItem;
 import com.romraider.util.FormatFilename;
 import com.romraider.util.JREChecker;
 import com.romraider.util.SettingsManager;
@@ -201,23 +207,20 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
     private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU/TCU Logger";
     private static final String LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
+    private static final String LOGGER_TOUCH_ARG = "-logger.touch";
     private static final URL ICON_PATH =  Settings.class.getClass().getResource("/graphics/romraider-ico.gif");
     private static final String HEADING_PARAMETERS = "Parameters";
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
     private static final String FILE_NAME_EXTENTION = "Right-click to select or type text to add to the saved logfile name.";
-    private static final String ECU_TEXT = "Engine Control Unit Polling. Uncheck both ECU & TCU for Externals logging only";
-    private static final String TCU_TEXT = "Transmission Control Unit Polling. Un-check both ECU & TCU for Externals logging only";
     private static final String[] LOG_FILE_TEXT = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
         "4th PT","5th PT","6th PT",
         "1st WOT","2nd WOT","3rd WOT",
         "4th WOT","5th WOT","6th WOT",
-    "cruising"};
+        "cruising"};
     private static final String TOGGLE_LIST_TT_TEXT = "Hides the parameter list and saves the state on exit (F11)";
     private static final String UNSELECT_ALL_TT_TEXT = "Un-select all selected parameters/switches on all tabs! (F9)";
-    private static final byte ECU_ID = (byte) 0x10;
-    private static final byte TCU_ID = (byte) 0x18;
     private static final String LOG_TO_FILE_FK = "F1";
     private static final String LOG_TO_FILE_ICON = "/graphics/logger_log_to_file.png";
     private static final String LOG_TO_FILE_START = "Start file log";
@@ -280,6 +283,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private final String HOME = System.getProperty("user.home");
     private StatusIndicator statusIndicator;
     private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
+    private Map<String, Map<Transport, Collection<Module>>> protocolList =
+            new HashMap<String, Map<Transport, Collection<Module>>>();
+    private Map<String, Object> componentList = new HashMap<String, Object>();
+    private static boolean touchEnabled = false;
+    private final JPanel moduleSelectPanel = new JPanel(new FlowLayout());
 
     public EcuLogger() {
         super(ECU_LOGGER_TITLE);
@@ -297,11 +305,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         // fail until we actually try to use them since the logger requires
         // these libraries, this is a hard error here
         if (!JREChecker.is32bit()) {
-            showMessageDialog(null, 
+            showMessageDialog(null,
                 "Incompatible JRE detected.\n" +
                 PRODUCT_NAME +
-                " ECU Logger requires a 32-bit JRE.\nLogger will now exit.", 
-                "JRE Incompatibility Error", 
+                " RomRaider Logger requires a 32-bit JRE.\nLogger will now exit.",
+                "JRE Incompatibility Error",
                 ERROR_MESSAGE);
             // this will generate a NullPointerException because we never got
             // things started
@@ -317,7 +325,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             JProgressBar progressBar = startbar();
             bootstrap();
             progressBar.setValue(20);
-            startText.setText(" Loading ECU Defs...");
+            startText.setText(" Loading Logger Defs...");
             loadEcuDefs();
             progressBar.setValue(40);
             startText.setText(" Loading Plugins...");
@@ -325,7 +333,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             loadLoggerPlugins();
             progressBar.setIndeterminate(false);
             progressBar.setValue(60);
-            startText.setText(" Loading ECU Parameters...");
+            startText.setText(" Loading Logging Parameters...");
             loadLoggerParams();
             progressBar.setValue(80);
             startText.setText(" Starting Logger...");
@@ -339,20 +347,20 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
         else {
             bootstrap();
-            ecuEditor.statusPanel.update("Loading ECU Defs...", 20);
+            ecuEditor.getStatusPanel().update("Loading Logger Defs...", 20);
             loadEcuDefs();
-            ecuEditor.statusPanel.update("Loading Plugins...", 40);
+            ecuEditor.getStatusPanel().update("Loading Plugins...", 40);
             loadLoggerPlugins();
-            ecuEditor.statusPanel.update("Loading ECU Parameters...", 60);
+            ecuEditor.getStatusPanel().update("Loading Logging Parameters...", 60);
             loadLoggerParams();
-            ecuEditor.statusPanel.update("Starting Logger...", 80);
+            ecuEditor.getStatusPanel().update("Starting Logger...", 80);
             initControllerListeners();
             initUserInterface();
-            ecuEditor.statusPanel.update("Complete...", 100);
+            ecuEditor.getStatusPanel().update("Complete...", 100);
             initDataUpdateHandlers();
             startPortRefresherThread();
             if (!isLogging()) startLogging();
-            ecuEditor.statusPanel.update("Ready...",0);
+            ecuEditor.getStatusPanel().update("Ready...",0);
         }
     }
 
@@ -400,7 +408,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         graphPanel = new JPanel(new BorderLayout(2, 2));
         graphUpdateHandler = new GraphUpdateHandler(graphPanel);
         dashboardPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 3, 3));
-        dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel);
+        dashboardUpdateHandler = new DashboardUpdateHandler(dashboardPanel, getSettings().getLoggerSelectedGaugeIndex());
         mafUpdateHandler = new MafUpdateHandler();
         injectorUpdateHandler = new InjectorUpdateHandler();
         dynoUpdateHandler = new DynoUpdateHandler();
@@ -538,8 +546,23 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 loadEcuParams(ecuParams);
                 loadEcuSwitches(dataLoader.getEcuSwitches());
                 dtcodes = dataLoader.getEcuCodes();
+                protocolList = dataLoader.getProtocols();
+                buildModuleSelectPanel();
                 final EcuSwitch fileLogCntrlSw = dataLoader.getFileLoggingControllerSwitch();
-                if (fileLogCntrlSw != null && target.equals("ECU")) initFileLoggingController(fileLogCntrlSw);
+                final RadioButtonMenuItem flc = (RadioButtonMenuItem) componentList.get("fileLoggingControl");
+                if (fileLogCntrlSw != null && target.equals("ECU")) {
+                    initFileLoggingController(fileLogCntrlSw);
+                    if (flc != null) {
+                        flc.setEnabled(true);
+                        flc.setSelected(getSettings().isFileLoggingControllerSwitchActive());
+                    }
+                }
+                else {
+                    if (flc != null) {
+                        flc.setSelected(false);
+                        flc.setEnabled(false);
+                    }
+                }
                 getSettings().setLoggerConnectionProperties(dataLoader.getConnectionProperties());
                 if (dataLoader.getDefVersion() == null) {
                     defVersion = "na";
@@ -575,7 +598,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             BrowserControl.displayURL(LOGGER_DEFS_URL);
         } else {
             showMessageDialog(this,
-                    "The Logger definition file needs to be configured before connecting to the ECU.\nMenu: Settings > Logger Definition Location...",
+                    "The Logger definition file needs to be configured before connecting to the ECU.\nMenu: Settings > Logger Definition Location...\nOnce configured, restart the Logger application.",
                     "Configuration", INFORMATION_MESSAGE);
             reportError("Logger definition file not found");
         }
@@ -643,7 +666,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private boolean applyUserProfile(UserProfile profile) {
         if (profile != null) {
-            final String profileProto = 
+            final String profileProto =
                     profile.getProtocol() == null ? "SSM" : profile.getProtocol();
 
             if (!profileProto.equalsIgnoreCase(getSettings().getLoggerProtocol())) {
@@ -878,40 +901,80 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private JComponent buildTabbedPane() {
-        addSplitPaneTab(
-                "Data",
-                buildSplitPane(
-                        buildParamListPane(
-                                dataTabParamListTableModel,
-                                dataTabSwitchListTableModel,
-                                dataTabExternalListTableModel),
-                                buildDataTab()),
-                                buildUnselectAllButton(),
-                                buildLtvButton());
-        addSplitPaneTab(
-                "Graph",
-                buildSplitPane(
-                        buildParamListPane(
-                                graphTabParamListTableModel,
-                                graphTabSwitchListTableModel,
-                                graphTabExternalListTableModel),
-                                buildGraphTab()),
-                                buildUnselectAllButton(),
-                                buildLtvButton());
-        addSplitPaneTab(
-                "Dashboard",
-                buildSplitPane(
-                        buildParamListPane(
-                                dashboardTabParamListTableModel,
-                                dashboardTabSwitchListTableModel,
-                                dashboardTabExternalListTableModel),
-                                buildDashboardTab()),
-                                buildUnselectAllButton(),
-                                buildLtvButton(),
-                                buildToggleGaugeStyleButton());
-        tabbedPane.add("MAF", mafTab.getPanel());
-        tabbedPane.add("Injector", injectorTab.getPanel());
-        tabbedPane.add("Dyno", dynoTab.getPanel());
+        if (touchEnabled == false)
+        {
+            addSplitPaneTab(
+                    "Data",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    dataTabParamListTableModel,
+                                    dataTabSwitchListTableModel,
+                                    dataTabExternalListTableModel),
+                                    buildDataTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton());
+            addSplitPaneTab(
+                    "Graph",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    graphTabParamListTableModel,
+                                    graphTabSwitchListTableModel,
+                                    graphTabExternalListTableModel),
+                                    buildGraphTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton());
+            addSplitPaneTab(
+                    "Dashboard",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    dashboardTabParamListTableModel,
+                                    dashboardTabSwitchListTableModel,
+                                    dashboardTabExternalListTableModel),
+                                    buildDashboardTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton(),
+                                    buildToggleGaugeStyleButton());
+            tabbedPane.add("MAF", mafTab.getPanel());
+            tabbedPane.add("Injector", injectorTab.getPanel());
+            tabbedPane.add("Dyno", dynoTab.getPanel());
+        }
+        else
+        {
+            addSplitPaneTab(
+                    "<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Data" + "</body></html>",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    dataTabParamListTableModel,
+                                    dataTabSwitchListTableModel,
+                                    dataTabExternalListTableModel),
+                                    buildDataTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton());
+            addSplitPaneTab(
+                    "<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Graph" + "</body></html>",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    graphTabParamListTableModel,
+                                    graphTabSwitchListTableModel,
+                                    graphTabExternalListTableModel),
+                                    buildGraphTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton());
+            addSplitPaneTab(
+                    "<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dashboard" + "</body></html>",
+                    buildSplitPane(
+                            buildParamListPane(
+                                    dashboardTabParamListTableModel,
+                                    dashboardTabSwitchListTableModel,
+                                    dashboardTabExternalListTableModel),
+                                    buildDashboardTab()),
+                                    buildUnselectAllButton(),
+                                    buildLtvButton(),
+                                    buildToggleGaugeStyleButton());
+            tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "MAF"+ "</body></html>", mafTab.getPanel());
+            tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Injector"+ "</body></html>", injectorTab.getPanel());
+            tabbedPane.add("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + "Dyno" + "</body></html>", dynoTab.getPanel());
+        }
         return tabbedPane;
     }
 
@@ -920,7 +983,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         SetFont.plain(button);
         VerticalTextIcon textIcon = new VerticalTextIcon(button, "Gauge Style", ROTATE_LEFT);
         button.setIcon(textIcon);
-        button.setPreferredSize(new Dimension(25, 80));
+        if (touchEnabled == false)
+        {
+            button.setPreferredSize(new Dimension(25, 80));
+        }
+        else
+        {
+            button.setPreferredSize(new Dimension(56, 80));
+        }
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F12"), "toggleGaugeStyle");
         button.getActionMap().put("toggleGaugeStyle", new AbstractAction() {
             private static final long serialVersionUID = 6913964758354638587L;
@@ -960,7 +1030,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         VerticalTextIcon textIcon = new VerticalTextIcon(button, "Un-select ALL", ROTATE_LEFT);
         button.setToolTipText(UNSELECT_ALL_TT_TEXT);
         button.setIcon(textIcon);
-        button.setPreferredSize(new Dimension(25, 85));
+        if (touchEnabled == false)
+        {
+            button.setPreferredSize(new Dimension(25, 85));
+        }
+        else
+        {
+            button.setPreferredSize(new Dimension(56, 85));
+        }
         button.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F9"), "un-selectAll");
         button.getActionMap().put("un-selectAll", new AbstractAction() {
             private static final long serialVersionUID = 4913964758354638588L;
@@ -1003,7 +1080,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         VerticalTextIcon textIcon =
                 new VerticalTextIcon(button, "LTV (F6)", ROTATE_LEFT);
         button.setIcon(textIcon);
-        button.setPreferredSize(new Dimension(25, 60));
+        if (touchEnabled == false)
+        {
+            button.setPreferredSize(new Dimension(25, 60));
+        }
+        else
+        {
+            button.setPreferredSize(new Dimension(56, 60));
+        }
         button.addActionListener(new LearningTableValuesAction(this));
         return button;
     }
@@ -1015,7 +1099,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         toggleListButton.setSelected(true);
         VerticalTextIcon textIcon = new VerticalTextIcon(toggleListButton, "Parameter List", ROTATE_LEFT);
         toggleListButton.setIcon(textIcon);
-        toggleListButton.setPreferredSize(new Dimension(25, 95));
+        if (touchEnabled == false)
+        {
+            toggleListButton.setPreferredSize(new Dimension(25, 95));
+        }
+        else
+        {
+            toggleListButton.setPreferredSize(new Dimension(56, 95));
+        }
         toggleListButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(getKeyStroke("F11"), "toggleHideParams");
         toggleListButton.getActionMap().put("toggleHideParams", new AbstractAction() {
             private static final long serialVersionUID = -276854997788647306L;
@@ -1050,7 +1141,14 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
 
         JPanel tabControlPanel = new JPanel(new BetterFlowLayout(FlowLayout.CENTER, 1, 1));
-        tabControlPanel.setPreferredSize(new Dimension(25, 25));
+        if (touchEnabled == false)
+        {
+            tabControlPanel.setPreferredSize(new Dimension(25, 25));
+        }
+        else
+        {
+            tabControlPanel.setPreferredSize(new Dimension(56, 25));
+        }
         tabControlPanel.add(toggleListButton);
         for (JComponent control : extraControls) tabControlPanel.add(control);
 
@@ -1066,16 +1164,35 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         JScrollPane externalList = new JScrollPane(buildParamListTable(externalListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JScrollPane switchList = new JScrollPane(buildParamListTable(switchListTableModel), VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabs.addTab(HEADING_PARAMETERS, paramList);
-        tabs.addTab(HEADING_SWITCHES, switchList);
-        tabs.addTab("External Sensors", externalList);
+
+        if (touchEnabled == false)
+        {
+            tabs.addTab(HEADING_PARAMETERS, paramList);
+            tabs.addTab(HEADING_SWITCHES, switchList);
+            tabs.addTab("External Sensors", externalList);
+        }
+        else
+        {
+            tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + HEADING_PARAMETERS + "</body></html>", paramList);
+            tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>" + HEADING_SWITCHES + "</body></html>", switchList);
+            tabs.addTab("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>External Sensors</body></html>", externalList);
+        }
         return tabs;
     }
 
     private JTable buildParamListTable(ParameterListTableModel tableModel) {
         JTable paramListTable = new ParameterListTable(tableModel);
-        changeColumnWidth(paramListTable, 0, 20, 55, 55);
-        changeColumnWidth(paramListTable, 2, 50, 250, 130);
+
+        if( touchEnabled == false)
+        {
+            changeColumnWidth(paramListTable, 0, 20, 55, 55);
+            changeColumnWidth(paramListTable, 2, 50, 250, 130);
+        }
+        else
+        {
+            changeColumnWidth(paramListTable, 0, 20, 75, 75);
+            changeColumnWidth(paramListTable, 2, 50, 75, 75);
+        }
         return paramListTable;
     }
 
@@ -1139,7 +1256,15 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JSplitPane buildSplitPane(JComponent leftComponent, JComponent rightComponent) {
         splitPane = new JSplitPane(HORIZONTAL_SPLIT, leftComponent, rightComponent);
         splitPane.setDividerSize(5);
-        splitPane.setDividerLocation((int) getSettings().getDividerLocation());
+
+        if (touchEnabled == false)
+        {
+            splitPane.setDividerLocation((int) getSettings().getDividerLocation());
+        }
+        else
+        {
+            splitPane.setDividerLocation((int) getSettings().getDividerLocation()+200);
+        }
         splitPane.addPropertyChangeListener(this);
         return splitPane;
     }
@@ -1150,6 +1275,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JPanel buildControlToolbar() {
         JPanel controlPanel = new JPanel(new BorderLayout());
+
+        if (touchEnabled == true)
+        {
+            portsComboBox.setPreferredSize(new Dimension(100,50));
+        }
+
         controlPanel.add(buildPortsComboBox(), WEST);
         //TODO: Finish log playback stuff...
         //        controlPanel.add(buildPlaybackControls(), CENTER);
@@ -1181,6 +1312,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private Component buildFileNameExtention() {
         JLabel fileNameLabel = new JLabel("Logfile Text");
         final JTextField fileNameExtention = new JTextField("",8);
+        if (touchEnabled == true)
+        {
+             fileNameExtention.setPreferredSize(new Dimension(200, 50));
+        }
         fileNameExtention.setToolTipText(FILE_NAME_EXTENTION);
         fileNameExtention.addFocusListener(new FocusListener() {
             @Override
@@ -1195,6 +1330,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
         JPopupMenu fileNamePopup = new JPopupMenu();
         JMenuItem ecuIdItem = new JMenuItem("Use Current " + target + " ID");
+        componentList.put("ecuIdItem", ecuIdItem);
         ecuIdItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1238,6 +1374,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 LOG_TO_FILE_START,
                 new ImageIcon(getClass().getResource(LOG_TO_FILE_ICON)));
         SetFont.plain(logToFileButton);
+        if (touchEnabled == true)
+        {
+             logToFileButton.setPreferredSize(new Dimension(200, 50));
+        }
         logToFileButton.setToolTipText(LOG_TO_FILE_TT_TEXT);
         logToFileButton.setBackground(GREEN);
         logToFileButton.setOpaque(true);
@@ -1283,56 +1423,18 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         comboBoxPanel.add(new JLabel("COM Port:"));
         comboBoxPanel.add(portsComboBox);
 
-        final JCheckBox ecuCheckBox = new JCheckBox("ECU");
-        final JCheckBox tcuCheckBox = new JCheckBox("TCU");
-        ecuCheckBox.setToolTipText(ECU_TEXT);
-        tcuCheckBox.setToolTipText(TCU_TEXT);
-        ecuCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                stopLogging();
-                tcuCheckBox.setSelected(false);
-                if (ecuCheckBox.isSelected()) {
-                    getSettings().setLogExternalsOnly(false);
-                    setTargetEcu();
-                }
-                else {
-                    getSettings().setLogExternalsOnly(true);
-                }
-                startLogging();
-            }
-        });
-        tcuCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                stopLogging();
-                ecuCheckBox.setSelected(false);
-                if (tcuCheckBox.isSelected()) {
-                    getSettings().setLogExternalsOnly(false);
-                    setTargetTcu();
-                }
-                else {
-                    getSettings().setLogExternalsOnly(true);
-                }
-                startLogging();
-            }
-        });
-        if (getSettings().getDestinationId() == 0x10) {
-            ecuCheckBox.setSelected(true);
-            tcuCheckBox.setSelected(false);
-            setTargetEcu();
-        }
-        else {
-            tcuCheckBox.setSelected(true);
-            ecuCheckBox.setSelected(false);
-            setTargetTcu();
-        }
-
-        comboBoxPanel.add(ecuCheckBox);
-        comboBoxPanel.add(tcuCheckBox);
+        comboBoxPanel.add(moduleSelectPanel);
 
         JButton reconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_restart.png")));
-        reconnectButton.setPreferredSize(new Dimension(25, 25));
+        componentList.put("reconnectButton", reconnectButton);
+        if (touchEnabled == false)
+        {
+            reconnectButton.setPreferredSize(new Dimension(25, 25));
+        }
+        else
+        {
+            reconnectButton.setPreferredSize(new Dimension(75, 50));
+        }
         reconnectButton.setToolTipText("Reconnect to " + target);
         reconnectButton.addActionListener(new ActionListener() {
             @Override
@@ -1346,7 +1448,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         });
         comboBoxPanel.add(reconnectButton);
         JButton disconnectButton = new JButton(new ImageIcon( getClass().getResource("/graphics/logger_stop.png")));
-        disconnectButton.setPreferredSize(new Dimension(25, 25));
+        componentList.put("disconnectButton", disconnectButton);
+        if (touchEnabled == false)
+        {
+            disconnectButton.setPreferredSize(new Dimension(25, 25));
+        }
+        else
+        {
+            disconnectButton.setPreferredSize(new Dimension(75, 50));
+        }
+
         disconnectButton.setToolTipText("Disconnect from " + target);
         disconnectButton.addActionListener(new ActionListener() {
             @Override
@@ -1366,22 +1477,122 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return comboBoxPanel;
     }
 
-    private void setTargetEcu() {
-        getSettings().setDestinationId(ECU_ID);
-        target = "ECU";
+    private void buildModuleSelectPanel() {
+        moduleSelectPanel.removeAll();
+        final CustomButtonGroup moduleGroup = new CustomButtonGroup();
+        for (Module module : getModuleList()) {
+            final JCheckBox cb = new JCheckBox(module.getName().toUpperCase());
+            if (touchEnabled == true)
+            {
+                cb.setPreferredSize(new Dimension(75, 50));
+            }
+            final String tipText = String.format(
+                    "%s Polling. Uncheck all boxes for Externals logging only.",
+                    module.getDescription());
+            cb.setToolTipText(tipText);
+            if (getSettings().getTargetModule().equalsIgnoreCase(module.getName())) {
+                cb.setSelected(true);
+                setTarget(module.getName());
+            }
+            cb.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    stopLogging();
+                    final JCheckBox source = (JCheckBox) actionEvent.getSource();
+                    if (source.isSelected()) {
+                        getSettings().setLogExternalsOnly(false);
+                        setTarget(source.getText());
+                    }
+                    else {
+                        getSettings().setLogExternalsOnly(true);
+                    }
+                    startLogging();
+                }
+            });
+
+            moduleGroup.add(cb);
+            moduleSelectPanel.add(cb);
+            moduleSelectPanel.validate();
+        }
     }
 
-    private void setTargetTcu() {
-        getSettings().setDestinationId(TCU_ID);
-        target = "TCU";
+    private void setTarget(String name) {
+        target = name.toUpperCase();
+        getSettings().setTargetModule(target);
+        for (Module module: getModuleList()) {
+            if (module.getName().equalsIgnoreCase(name)) {
+                getSettings().setDestinationTarget(module);
+                final RadioButtonMenuItem fp =
+                        (RadioButtonMenuItem) componentList.get("fastPoll");
+                if (fp != null) {
+                    fp.setEnabled(module.getFastPoll());
+                    if(module.getFastPoll()) {
+                        fp.setSelected(getSettings().isFastPoll());
+                    }
+                    else {
+                        fp.setSelected(false);
+                        getSettings().setFastPoll(false);
+                    }
+                }
+            }
+        }
+
+        ecuIdLabel.setText(replaceString(ecuIdLabel.getText(), target));
+
+        for (String key : componentList.keySet()) {
+            if (key.equals("ecuIdItem")) {
+                final JMenuItem menuItem = (JMenuItem) componentList.get(key);
+                menuItem.setText(replaceString(menuItem.getText(), target));
+            }
+            if (key.equals("resetMenu")) {
+                final JMenuItem menuItem = (JMenuItem) componentList.get(key);
+                menuItem.setText(String.format("Reset %s [%s]",
+                        getSettings().getDestinationTarget().getDescription(),
+                        getSettings().getDestinationTarget().getName().toUpperCase()));
+            }
+            if (key.equals("reconnectButton") ||
+                    key.equals("disconnectButton")) {
+                final JButton button = (JButton) componentList.get(key);
+                button.setToolTipText(replaceString(button.getToolTipText(), target));
+            }
+        }
+    }
+
+    private String replaceString(String inString, String newString) {
+        return inString.replaceAll("[A-Z]{3}", newString);
+    }
+
+    private Transport getTransportById(String id) {
+        Transport loggerTransport = null;
+        for (Transport transport : getTransportMap().keySet()) {
+            if (transport.getId().equalsIgnoreCase(id))
+                loggerTransport = transport;
+        }
+        return loggerTransport;
+    }
+
+    private Map<Transport, Collection<Module>> getTransportMap() {
+        return protocolList.get(getSettings().getLoggerProtocol());
+    }
+
+    private Collection<Module> getModuleList() {
+        return getTransportMap().get(getTransportById(getSettings().getTransportProtocol()));
+    }
+
+    public String getDefVersion() {
+        return defVersion;
     }
 
     public String getTarget() {
         return target;
     }
 
-    public String getDefVersion() {
-        return defVersion;
+    public Map<String, Map<Transport, Collection<Module>>> getProtocolList() {
+        return protocolList;
+    }
+
+    public Map<String, Object> getComponentList() {
+        return componentList;
     }
 
     public void restartLogging() {
@@ -1398,7 +1609,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JComponent buildDataTab() {
         JPanel panel = new JPanel(new BorderLayout());
-        JButton resetButton = new JButton("Reset Data");
+        JButton resetButton;
+
+        if (touchEnabled == false)
+        {
+            resetButton = new JButton("Reset Data");
+        }
+        else
+        {
+            resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
+        }
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -1414,7 +1634,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JComponent buildGraphTab() {
         JPanel panel = new JPanel(new BorderLayout());
-        JButton resetButton = new JButton("Reset Data");
+        JButton resetButton;
+
+        if (touchEnabled == false)
+        {
+            resetButton = new JButton("Reset Data");
+        }
+        else
+        {
+            resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
+        }
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -1430,7 +1659,16 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     private JComponent buildDashboardTab() {
         JPanel panel = new JPanel(new BorderLayout());
-        JButton resetButton = new JButton("Reset Data");
+        JButton resetButton;
+
+        if (touchEnabled == false)
+        {
+            resetButton = new JButton("Reset Data");
+        }
+        else
+        {
+            resetButton = new JButton("<html><body leftmargin=15 topmargin=15 marginwidth=15 marginheight=15>Reset Data</body></html>");
+        }
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -1505,8 +1743,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
-    public boolean resetEcu() {
-        return resetManager.resetEcu();
+    public boolean resetEcu(int resetCode) {
+        return resetManager.resetEcu(resetCode);
     }
 
     public final boolean getDtcodesEmpty() {
@@ -1534,7 +1772,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
     public final int ecuGlobalAdjustment() {
         final GlobalAdjustManager globalAdjustManager =
-                new GlobalAdjustManagerImpl(
+                new SSMGlobalAdjustManager(
                         this,
                         dataTabParamListTableModel);
         return globalAdjustManager.ecuGlobalAdjustments();
@@ -1545,10 +1783,12 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 getSettings().getLoggerEcuDefinitionMap(),
                 ecuInit.getEcuId());
         final LearningTableValues learningTablesManager =
-                new LearningTableValuesImpl(
-                        this,
-                        dataTabParamListTableModel,
-                        ecuDef);
+                LearningTableValuesFactory.getManager(
+                        getSettings().getLoggerProtocol());
+        learningTablesManager.init(
+                this,
+                dataTabParamListTableModel,
+                ecuDef);
         learningTablesManager.execute();
     }
 
@@ -1576,7 +1816,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
-    private void saveSettings() {
+    private void saveSettings() { 
+        getSettings().setLoggerSelectedGaugeIndex(dashboardUpdateHandler.styleIndex);
         getSettings().setLoggerPortDefault((String) portsComboBox.getSelectedItem());
         getSettings().setLoggerWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);
         getSettings().setLoggerWindowSize(getSize());
@@ -1695,6 +1936,15 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
+    public static boolean isTouchEnabled()
+    {
+        if( touchEnabled == true)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public void setRefreshMode(boolean refreshMode) {
         getSettings().setRefreshMode(refreshMode);
         refresher.setRefreshMode(refreshMode);
@@ -1731,14 +1981,23 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     public static void startLogger(int defaultCloseOperation, String... args) {
+        touchEnabled = setTouchEnabled(args);
         EcuLogger ecuLogger = new EcuLogger();
         boolean fullscreen = containsFullScreenArg(args);
+
         createAndShowGui(defaultCloseOperation, ecuLogger, fullscreen);
     }
 
     private static boolean containsFullScreenArg(String... args) {
         for (String arg : args) {
             if (LOGGER_FULLSCREEN_ARG.equalsIgnoreCase(arg)) return true;
+        }
+        return false;
+    }
+
+    private static boolean setTouchEnabled(String... args) {
+        for (String arg : args) {
+            if (LOGGER_TOUCH_ARG.equalsIgnoreCase(arg)) return true;
         }
         return false;
     }

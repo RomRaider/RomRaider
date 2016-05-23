@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.SSMEcuInit;
+import com.romraider.logger.ecu.definition.Module;
 import com.romraider.logger.ecu.exception.InvalidResponseException;
 import static com.romraider.util.ByteUtil.asByte;
 import static com.romraider.util.HexUtil.asHex;
@@ -40,8 +41,6 @@ import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 
 public final class SSMProtocol implements Protocol {
     public static final byte HEADER = (byte) 0x80;
-    public static byte ECU_ID = (byte) 0x10;
-    public static final byte DIAGNOSTIC_TOOL_ID = (byte) 0xF0;
     public static final byte READ_ADDRESS_ONCE = (byte) 0x00;
     public static final byte READ_ADDRESS_CONTINUOUS = (byte) 0x01;
     public static final byte READ_MEMORY_PADDING = (byte) 0x00;
@@ -59,49 +58,50 @@ public final class SSMProtocol implements Protocol {
     public static final int DATA_SIZE = 1;
     public static final int RESPONSE_NON_DATA_BYTES = 6;
     public static final int REQUEST_NON_DATA_BYTES = 7;
+    public static Module module;
     private final PollingState pollState = new PollingStateImpl();
     private final ByteArrayOutputStream bb = new ByteArrayOutputStream(255);
     
-    public byte[] constructEcuInitRequest(byte id) {
-        checkGreaterThanZero(id, "ECU_ID");
-        SSMProtocol.ECU_ID = id;
+    public byte[] constructEcuInitRequest(Module module) {
+        checkNotNull(module, "module");
+        SSMProtocol.module = module;
         // 0x80 0x10 0xF0 0x01 0xBF 0x40
         return buildRequest(ECU_INIT_COMMAND, false, new byte[0]);
     }
 
-    public byte[] constructWriteMemoryRequest(byte id, byte[] address, byte[] values) {
-        checkGreaterThanZero(id, "ECU_ID");
+    public byte[] constructWriteMemoryRequest(Module module, byte[] address, byte[] values) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkNotNullOrEmpty(values, "values");
-        SSMProtocol.ECU_ID = id;
+        SSMProtocol.module = module;
         // 0x80 0x10 0xF0 data_length 0xB0 from_address value1 value2 ... valueN checksum
         return buildRequest(WRITE_MEMORY_COMMAND, false, address, values);
     }
 
     public byte[] constructWriteAddressRequest(
-            byte id, byte[] address, byte value) {
+            Module module, byte[] address, byte value) {
 
-        checkGreaterThanZero(id, "ECU_ID");
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkNotNull(value, "value");
-        SSMProtocol.ECU_ID = id;
+        SSMProtocol.module = module;
         // 0x80 0x10 0xF0 data_length 0xB8 from_address value checksum
         return buildRequest(WRITE_ADDRESS_COMMAND, false, address, new byte[]{value});
     }
 
-    public byte[] constructReadMemoryRequest(byte id, byte[] address, int numBytes) {
-        checkGreaterThanZero(id, "ECU_ID");
+    public byte[] constructReadMemoryRequest(Module module, byte[] address, int numBytes) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkGreaterThanZero(numBytes, "numBytes");
-        SSMProtocol.ECU_ID = id;
+        SSMProtocol.module = module;
         // 0x80 0x10 0xF0 data_length 0xA0 padding from_address num_bytes-1 checksum
         return buildRequest(READ_MEMORY_COMMAND, true, address, new byte[]{asByte(numBytes - 1)});
     }
 
-    public byte[] constructReadAddressRequest(byte id, byte[][] addresses) {
-        checkGreaterThanZero(id, "ECU_ID");
+    public byte[] constructReadAddressRequest(Module module, byte[][] addresses) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(addresses, "addresses");
-        SSMProtocol.ECU_ID = id;
+        SSMProtocol.module = module;
         // 0x80 0x10 0xF0 data_length 0xA8 padding address1 address2 ... addressN checksum
         return buildRequest(READ_ADDRESS_COMMAND, true, addresses);
     }
@@ -122,7 +122,8 @@ public final class SSMProtocol implements Protocol {
         SSMResponseProcessor.validateResponse(processedResponse);
         byte responseType = processedResponse[4];
         if (responseType != ECU_INIT_RESPONSE) {
-            throw new InvalidResponseException("Unexpected ECU Init response type: " + asHex(new byte[]{responseType}));
+            throw new InvalidResponseException("Unexpected " + module.getName() +
+                    " Init response type: " + asHex(new byte[]{responseType}));
         }
     }
 
@@ -130,13 +131,11 @@ public final class SSMProtocol implements Protocol {
         return new SSMEcuInit(parseResponseData(processedResponse));
     }
 
-    public final byte[] constructEcuResetRequest(byte id) {
+    public final byte[] constructEcuResetRequest(Module module, int resetCode) {
         //  80 10 F0 05 B8 00 00 60 40 DD
-        checkGreaterThanZero(id, "ECU_ID");
         final byte[] resetAddress = new byte[]{
                 (byte) 0x00, (byte) 0x00, (byte) 0x60};
-        final byte reset = 0x40;
-        return constructWriteAddressRequest(id, resetAddress, reset);
+        return constructWriteAddressRequest(module, resetAddress, (byte) resetCode);
     }
 
     public void checkValidEcuResetResponse(byte[] processedResponse) {
@@ -145,7 +144,8 @@ public final class SSMProtocol implements Protocol {
         SSMResponseProcessor.validateResponse(processedResponse);
         byte responseType = processedResponse[4];
         if (responseType != WRITE_ADDRESS_RESPONSE || processedResponse[5] != (byte) 0x40) {
-            throw new InvalidResponseException("Unexpected ECU Reset response: " + asHex(processedResponse));
+            throw new InvalidResponseException("Unexpected " + module.getName() +
+                    " Reset response: " + asHex(processedResponse));
         }
     }
 
@@ -157,7 +157,7 @@ public final class SSMProtocol implements Protocol {
         if (responseType != WRITE_ADDRESS_RESPONSE || 
                 processedResponse[5] != (byte) data[0]) {
             throw new InvalidResponseException(
-                    "Unexpected ECU Write response: " + 
+                    "Unexpected " + module.getName() + " Write response: " + 
                     asHex(processedResponse));
         }
     }
@@ -202,27 +202,29 @@ public final class SSMProtocol implements Protocol {
         for (byte[] tmp : content) {
             length += tmp.length;
         }
-        bb.reset();
-        bb.write(HEADER);
-        bb.write(ECU_ID);
-        bb.write(DIAGNOSTIC_TOOL_ID);
-        bb.write(Integer.valueOf(length + (padContent ? 2 : 1)).byteValue());
-        bb.write(command);
-        if (padContent) {
-            bb.write((pollState.isFastPoll() ? 
-                    READ_ADDRESS_CONTINUOUS : READ_ADDRESS_ONCE));
-        }
-        for (byte[] tmp : content) {
-            try {
-                bb.write(tmp);
-            } catch (IOException e) {
-                e.printStackTrace();
+        byte[] request = new byte[0];
+        try {
+            bb.reset();
+            bb.write(HEADER);
+            bb.write(module.getAddress());
+            bb.write(module.getTester());
+            bb.write(Integer.valueOf(length + (padContent ? 2 : 1)).byteValue());
+            bb.write(command);
+            if (padContent) {
+                bb.write((pollState.isFastPoll() ? 
+                        READ_ADDRESS_CONTINUOUS : READ_ADDRESS_ONCE));
             }
+            for (byte[] tmp : content) {
+                bb.write(tmp);
+            }
+            bb.write((byte) 0x00);
+            request = bb.toByteArray();
+            final byte cs = calculateChecksum(request);
+            request[request.length - 1] = cs;
         }
-        bb.write((byte) 0x00);
-        final byte[] request = bb.toByteArray();
-        final byte cs = calculateChecksum(request);
-        request[request.length - 1] = cs;
+        catch (IOException e) {
+            e.printStackTrace();
+        }
         return request;
     }
 }

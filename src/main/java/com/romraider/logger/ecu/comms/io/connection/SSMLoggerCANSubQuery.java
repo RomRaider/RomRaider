@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import com.romraider.logger.ecu.definition.EcuAddressImpl;
 import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.EcuParameterImpl;
+import com.romraider.logger.ecu.definition.Module;
 import com.romraider.util.HexUtil;
 
 public class SSMLoggerCANSubQuery {
@@ -50,7 +51,7 @@ public class SSMLoggerCANSubQuery {
             ArrayList<EcuQuery> tcuSubQuery,
             ConnectionManager manager,
             LoggerProtocol protocol, 
-            byte id,
+            Module module,
             PollingState pollState) {
         
         final byte[][] addresses = convertToByteAddresses(tcuSubQuery);
@@ -62,7 +63,7 @@ public class SSMLoggerCANSubQuery {
                     new EcuParameterImpl(tcuSubQuery.get(0).getLoggerData().getId(),
                             tcuSubQuery.get(0).getLoggerData().getName(),
                             tcuSubQuery.get(0).getLoggerData().getDescription(),
-                            ea, 
+                            ea, null, null, null,
                             new EcuDataConvertor[] {
                                 tcuSubQuery.get(0).getLoggerData().getSelectedConvertor()
                             }
@@ -70,8 +71,8 @@ public class SSMLoggerCANSubQuery {
             subQuery.clear();
             subQuery.add(new EcuQueryImpl((EcuData) epi));
             final byte[] request = protocol.constructReadAddressRequest(
-                    id, subQuery);
-            LOGGER.debug("TCU CAN Sub Request " + i + " ---> " + asHex(request));
+                    module, subQuery);
+            LOGGER.debug(module + " CAN Sub Request " + i + " ---> " + asHex(request));
             final byte[] response = protocol.constructReadAddressResponse(
                     subQuery, pollState);
             manager.send(request, response, pollState);

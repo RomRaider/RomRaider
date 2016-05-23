@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,13 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.event.ActionEvent;
+import java.util.Collection;
+import java.util.Map;
 
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.ecu.definition.Module;
+import com.romraider.logger.ecu.definition.Transport;
 import com.romraider.swing.menubar.action.AbstractAction;
 import com.romraider.util.SettingsManager;
 
@@ -45,13 +49,17 @@ public final class GlobalAdjustmentAction extends AbstractAction {
     public final void actionPerformed(ActionEvent actionEvent) {
         if (showConfirmation() == OK_OPTION) {
             final String transport = settings.getTransportProtocol();
+            final Module module = settings.getDestinationTarget();
             if (settings.isCanBus()) {
                 settings.setTransportProtocol("ISO9141");
+                final Module ecuModule = getModule("ECU");
+                settings.setDestinationTarget(ecuModule);
             }
             final boolean logging = logger.isLogging();
             if (logging) logger.stopLogging();
             adjustEcu();
             settings.setTransportProtocol(transport);
+            settings.setDestinationTarget(module);
             if (logging) logger.startLogging();
         }
     }
@@ -99,5 +107,27 @@ public final class GlobalAdjustmentAction extends AbstractAction {
             logger.reportError("Error performing ECU global adjustments", e);
             return 0;
         }
+    }
+
+    private Transport getTransportById(String id) {
+        for (Transport transport : getTransportMap().keySet()) {
+            if (transport.getId().equalsIgnoreCase(id))
+                return transport;
+        }
+        return null;
+    }
+
+    private Map<Transport, Collection<Module>> getTransportMap() {
+        return logger.getProtocolList().get(settings.getLoggerProtocol());
+    }
+
+    private Module getModule(String name) {
+        final Collection<Module> modules = getTransportMap().get(
+                getTransportById(settings.getTransportProtocol()));
+        for (Module module: modules) {
+            if (module.getName().equalsIgnoreCase(name))
+                return module;
+        }
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
     private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
+    private Map<String, Map<Transport, Collection<Module>>> protocolList = new HashMap<String, Map<Transport, Collection<Module>>>();
     private EcuSwitch fileLoggingControllerSwitch;
     private ConnectionProperties connectionProperties;
     private String defVersion;
@@ -83,6 +85,7 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 connectionProperties = handler.getConnectionProperties();
                 defVersion = handler.getVersion();
                 dtcodes = handler.getEcuCodes();
+                protocolList = handler.getProtocols();
             } finally {
                 inputStream.close();
             }
@@ -122,5 +125,9 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
 
     public List<EcuSwitch> getEcuCodes() {
         return dtcodes;
+    }
+
+    public Map<String, Map<Transport, Collection<Module>>> getProtocols() {
+        return protocolList;
     }
 }

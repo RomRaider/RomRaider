@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.paramlist;
 
+import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.LoggerData;
 
@@ -26,7 +27,9 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
+
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -43,6 +46,12 @@ public final class UnitsComboBoxEditor extends AbstractCellEditor implements Tab
         currentEcuData = (LoggerData) ecuData;
         EcuDataConvertor[] convertors = currentEcuData.getConvertors();
         JComboBox comboBox = new JComboBox();
+        if (EcuLogger.isTouchEnabled() == true)
+        {
+            comboBox.setRenderer(new FontCellRenderer());
+            Font font = new Font("Tahoma", Font.PLAIN, 18);
+            comboBox.setFont(font);            
+        }
         for (EcuDataConvertor convertor : convertors) {
             comboBox.addItem(convertor);
         }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,14 @@ package com.romraider.logger.external.innovate.generic.mts.io;
 import static com.romraider.logger.external.innovate.generic.mts.io.MTSFactory.createMTS;
 import static org.apache.log4j.Logger.getLogger;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+//import java.util.HashSet;
+import java.util.Map;
+//import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+import com.romraider.logger.external.innovate.lm2.mts.plugin.Lm2MtsDataItem;
 
 
 public final class MTSConnector {
@@ -123,8 +127,11 @@ public final class MTSConnector {
         }
     }
 
-    public Set<MTSSensor> getSensors() {
-        Set<MTSSensor> sensors = new HashSet<MTSSensor>();
+    public Map<Integer, Lm2MtsDataItem> getSensors() {
+//        Set<MTSSensor> sensors = new HashSet<MTSSensor>();
+        final Map<Integer, Lm2MtsDataItem> dataItems =
+                new HashMap<Integer, Lm2MtsDataItem>();
+
         try {
             // attempt to connect to the specified device
             mts.connect();
@@ -138,15 +145,26 @@ public final class MTSConnector {
                     for (int i = 0; i < inputCount; i++) {
                         // report each input found
                         mts.currentInput(i);
-                        MTSSensor sensor = new MTSSensor();
-                        sensor.setInputNumber(i);
-                        sensor.setInputName(mts.inputName());
-                        sensor.setDeviceName(mts.inputDeviceName());
-                        sensor.setDeviceChannel(mts.inputDeviceChannel());
-                        sensor.setUnits(mts.inputUnit());
-                        sensor.setMinValue(mts.inputMinValue());
-                        sensor.setMaxValue(mts.inputMaxValue());
-                        sensors.add(sensor);
+//                        MTSSensor sensor = new MTSSensor();
+//                        sensor.setInputNumber(i);
+//                        sensor.setInputName(mts.inputName());
+//                        sensor.setDeviceName(mts.inputDeviceName());
+//                        sensor.setDeviceChannel(mts.inputDeviceChannel());
+//                        sensor.setUnits(mts.inputUnit());
+//                        sensor.setMinValue(mts.inputMinValue());
+//                        sensor.setMaxValue(mts.inputMaxValue());
+//                        sensor.setMultiplier(mts.inputAFRMultiplier());
+//                        sensors.add(sensor);
+                        dataItems.put(
+                                i,
+                                new Lm2MtsDataItem(
+                                        mts.inputDeviceName(),
+                                        mts.inputDeviceChannel(),
+                                        mts.inputUnit(),
+                                        mts.inputMinValue(),
+                                        mts.inputMaxValue(),
+                                        mts.inputAFRMultiplier()
+                                ));
                         LOGGER.debug(String.format(
                             "Innovate MTS: InputNo: %02d, InputName: %s, InputType: %d, DeviceName: %s, DeviceType: %d, DeviceChannel: %d, Units: %s, Multiplier: %f, MinValue: %f, MaxValue: %f",
                             i, mts.inputName(), mts.inputType(), mts.inputDeviceName(), mts.inputDeviceType(), mts.inputDeviceChannel(), mts.inputUnit(), mts.inputAFRMultiplier(), mts.inputMinValue(), mts.inputMaxValue()));
@@ -162,6 +180,6 @@ public final class MTSConnector {
         }
         finally {
         }
-        return sensors;
+        return dataItems;
     }
 }

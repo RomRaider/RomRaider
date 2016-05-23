@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import javax.swing.Action;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
@@ -47,16 +48,24 @@ public class RomTree extends JTree implements MouseListener {
         addMouseListener(this);
         setCellRenderer(new RomCellRenderer());
         setFont(new Font("Tahoma", Font.PLAIN, 11));
+        setToggleClickCount(SettingsManager.getSettings().getTableClickCount());
 
         // key binding actions
         Action tableSelectAction = new AbstractAction() {
-            private static final long serialVersionUID = -6008026264821746092L;
+            private static final long serialVersionUID = -6007532264821746092L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
-                    Object selectedRow = getSelectionPath().getLastPathComponent();
-                    showTable(selectedRow);
+                    Object selectedRow = getLastSelectedPathComponent();
+                    /* if nothing is selected */
+                    if (selectedRow == null) {
+                        return;
+                    }
+
+                    if(selectedRow instanceof TableTreeNode) {
+                        showTable(selectedRow);
+                    }
                     setLastSelectedRom(selectedRow);
                 }catch(NullPointerException ex) {
                 }
@@ -75,22 +84,19 @@ public class RomTree extends JTree implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        try{
-            Object selectedRow = getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
+        TreePath treePath = getPathForLocation(e.getX(), e.getY());
+        if (treePath == null)
+            return; // this happens if we click in the empty area
+        try {
+            Object selectedRow = treePath.getLastPathComponent();
+            /* if nothing is selected */
+            if (selectedRow == null) {
+                return;
+            }
 
-            if(selectedRow instanceof TableTreeNode) {
-                if (e.getClickCount() >= SettingsManager.getSettings().getTableClickCount()) {
-                    showTable(selectedRow);
-                }
-            } else if(selectedRow instanceof Rom || selectedRow instanceof CategoryTreeNode) {
-                if (e.getClickCount() >= SettingsManager.getSettings().getTableClickCount()) {
-                    if(isCollapsed(getRowForLocation(e.getX(),e.getY()))) {
-                        expandRow(getRowForLocation(e.getX(),e.getY()));
-                    }
-                    else {
-                        collapseRow(getRowForLocation(e.getX(),e.getY()));
-                    }
-                }
+            if(e.getClickCount() >= SettingsManager.getSettings().getTableClickCount()
+                    && selectedRow instanceof TableTreeNode) {
+                showTable(selectedRow);
             }
 
             setLastSelectedRom(selectedRow);
@@ -111,16 +117,30 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     private void setLastSelectedRom(Object selectedNode) {
-        if (selectedNode instanceof TableTreeNode || selectedNode instanceof CategoryTreeNode || selectedNode instanceof Rom) {
-            Object lastSelectedPathComponent = getLastSelectedPathComponent();
-            if(lastSelectedPathComponent instanceof Rom) {
-                Rom node = (Rom) lastSelectedPathComponent;
-                if(null != node) {
-                    getEditor().setLastSelectedRom(node);
-                }
-            }
+        if (selectedNode == null || selectedNode instanceof RomTreeRootNode) {
+            return;
         }
+
+        Rom romNode = getRomNode(selectedNode);
+        if(romNode == null) {
+            return;
+        }
+        getEditor().setLastSelectedRom(romNode);
         getEditor().refreshUI();
+    }
+
+    private Rom getRomNode(Object currentNode){
+        if(currentNode == null) {
+            return null;
+        } else if(currentNode instanceof Rom) {
+            return (Rom)currentNode;
+        } else if(currentNode instanceof TableTreeNode) {
+            return getRomNode(((TableTreeNode)currentNode).getParent());
+        } else if(currentNode instanceof CategoryTreeNode) {
+            return getRomNode(((CategoryTreeNode)currentNode).getParent());
+        }else {
+            return null;
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,42 +19,46 @@
 
 package com.romraider.ramtune.test.command.generator;
 
-import com.romraider.io.protocol.Protocol;
 import static com.romraider.util.ParamChecker.checkGreaterThanZero;
+import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static java.util.Arrays.asList;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.romraider.io.protocol.Protocol;
+import com.romraider.logger.ecu.definition.Module;
+
 public final class ReadCommandGenerator extends AbstractCommandGenerator {
-    private static final int INCREMENT_SIZE = 128;
     
     public ReadCommandGenerator(Protocol protocol) {
         super(protocol);
     }
 
-    public List<byte[]> createCommands(byte id, byte[] data, byte[] address,
-            int length, boolean blockRead) {
-        checkGreaterThanZero(id, "Target ID");
+    public List<byte[]> createCommands(Module module, byte[] data, byte[] address,
+            int length, boolean blockRead, int blocksize) {
+        checkNotNull(module, "module");
         checkNotNullOrEmpty(address, "address");
         checkGreaterThanZero(length, "length");
+        checkGreaterThanZero(blocksize, "blocksize");
         if (length == 1) {
-            return asList(createCommandForAddress(id, address));
+            return asList(createCommandForAddress(module, address));
         } else {
-            return createCommandsForRange(id, address, length, blockRead);
+            return createCommandsForRange(module, address, length, blockRead, blocksize);
         }
     }
 
-    private byte[] createCommandForAddress(byte id, byte[] address) {
-        return protocol.constructReadAddressRequest(id, new byte[][]{address});
+    private byte[] createCommandForAddress(Module module, byte[] address) {
+        return protocol.constructReadAddressRequest(module, new byte[][]{address});
     }
 
-    private List<byte[]> createCommandsForRange(byte id, byte[] address,
-            int length, boolean blockRead) {
+    private List<byte[]> createCommandsForRange(Module module, byte[] address,
+            int length, boolean blockRead, int blocksize) {
         int incrementSize = 1;
         if (blockRead) {
-            incrementSize = INCREMENT_SIZE;
+            incrementSize = blocksize;
         }
         List<byte[]> commands = new ArrayList<byte[]>();
         byte[] readAddress = copy(address);
@@ -62,9 +66,9 @@ public final class ReadCommandGenerator extends AbstractCommandGenerator {
         while (i < length) {
             int readLength = (length - i) > incrementSize ? incrementSize : length - i;
             if (readLength == 1) {
-                commands.add(createCommandForAddress(id, readAddress));
+                commands.add(createCommandForAddress(module, readAddress));
             } else {
-                commands.add(protocol.constructReadMemoryRequest(id, readAddress, readLength));
+                commands.add(protocol.constructReadMemoryRequest(module, readAddress, readLength));
             }
             i += incrementSize;
             System.arraycopy(incrementAddress(readAddress, readLength), 0, readAddress, 0, readAddress.length);

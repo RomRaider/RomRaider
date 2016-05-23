@@ -49,6 +49,7 @@ public class ECUExec {
     private static final Logger LOGGER = getLogger(ECUExec.class);
     private static final String START_LOGGER_ARG = "-logger";
     private static final String START_LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
+    private static final String LOGGER_TOUCH_ARG = "-logger.touch";
 
     private ECUExec() {
         throw new UnsupportedOperationException();
@@ -106,7 +107,7 @@ public class ECUExec {
 
     private static boolean containsLoggerArg(String[] args) {
         for (String arg : args) {
-            if (arg.equalsIgnoreCase(START_LOGGER_ARG) || arg.equalsIgnoreCase(START_LOGGER_FULLSCREEN_ARG)) {
+            if (arg.equalsIgnoreCase(START_LOGGER_ARG) || arg.equalsIgnoreCase(START_LOGGER_FULLSCREEN_ARG) || arg.equalsIgnoreCase(LOGGER_TOUCH_ARG)) {
                 return true;
             }
         }

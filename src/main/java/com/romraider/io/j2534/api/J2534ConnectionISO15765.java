@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,16 +94,10 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
 
             final byte[] mask = {
                     (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-            byte[] pattern = {
-                    (byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe8};
-            byte[] flowCntrl = {
-                    (byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe0};
-            if (SettingsManager.getSettings().getDestinationId() == 0x18) {
-                pattern = new byte[] {
-                        (byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe9};
-                flowCntrl = new byte[] {
-                        (byte) 0x00, (byte) 0x00, (byte) 0x07, (byte) 0xe1};
-            }
+            final byte[] pattern =
+                    SettingsManager.getSettings().getDestinationTarget().getAddress();
+            final byte[] flowCntrl =
+                    SettingsManager.getSettings().getDestinationTarget().getTester();
 
             msgId = api.startFlowCntrlFilter(
                     channelId, mask, pattern,

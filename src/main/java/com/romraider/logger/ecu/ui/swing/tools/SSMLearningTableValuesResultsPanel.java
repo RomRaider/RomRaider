@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ import com.romraider.util.SettingsManager;
  * This class is used to build and display the Learning Table Values
  * retrieved from the ECU.
  */
-public class LearningTableValuesResultsPanel extends JDialog {
+public class SSMLearningTableValuesResultsPanel extends JDialog {
     private static final long serialVersionUID = 6716454297236022709L;
     private final String DIALOG_TITLE = "Learning Table Values";
     private final String DT_FORMAT = "%1$tY%1$tm%1$td-%1$tH%1$tM%1$tS";
@@ -77,7 +77,7 @@ public class LearningTableValuesResultsPanel extends JDialog {
     private JTable flkcTable;
     private final String FLKC_NAME = "Fine Learning Knock Correction (\u00B0 of correction)";
 
-    public LearningTableValuesResultsPanel(
+    public SSMLearningTableValuesResultsPanel(
             EcuLogger logger,
             Map<String, Object> vehicleInfo,
             String[] afRanges,

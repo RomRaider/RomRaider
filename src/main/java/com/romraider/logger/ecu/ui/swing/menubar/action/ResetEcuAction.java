@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 package com.romraider.logger.ecu.ui.swing.menubar.action;
 
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.ecu.ui.swing.tools.DS2ResetPanel;
 import com.romraider.swing.menubar.action.AbstractAction;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
@@ -39,7 +40,12 @@ public final class ResetEcuAction extends AbstractAction {
         if (showConfirmation() == OK_OPTION) {
             boolean logging = logger.isLogging();
             if (logging) logger.stopLogging();
-            resetEcu();
+            if (logger.getSettings().getLoggerProtocol().equals("DS2")) {
+                selectResetItems();
+            }
+            else {
+                resetEcu(0x40);
+            }
             if (logging) logger.startLogging();
         }
     }
@@ -48,8 +54,8 @@ public final class ResetEcuAction extends AbstractAction {
         return showConfirmDialog(logger, "Do you want to reset the " + logger.getTarget() + "?", "Reset " + logger.getTarget(), YES_NO_OPTION, WARNING_MESSAGE);
     }
 
-    private void resetEcu() {
-        if (doReset()) {
+    private void resetEcu(int resetCode) {
+        if (doReset(resetCode)) {
             showMessageDialog(logger, "Reset Successful!\nTurn your ignition OFF and then\nback ON to complete the process.",
                     "Reset " + logger.getTarget(), INFORMATION_MESSAGE);
         } else {
@@ -58,12 +64,22 @@ public final class ResetEcuAction extends AbstractAction {
         }
     }
 
-    private boolean doReset() {
+    private boolean doReset(int resetCode) {
         try {
-            return logger.resetEcu();
+            return logger.resetEcu(resetCode);
         } catch (Exception e) {
             logger.reportError("Error performing " + logger.getTarget() + " reset", e);
             return false;
         }
     }
+
+    private void selectResetItems() {
+        final DS2ResetPanel resetPanel = new DS2ResetPanel(logger);
+        resetPanel.showResetPanel();
+        final int result = resetPanel.getResults();
+        if (result > 0) {
+            resetEcu(result);
+        }
+    }
+
 }

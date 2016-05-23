@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,20 +19,20 @@
 
 package com.romraider.io.protocol.ssm.iso15765;
 
-import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.ECU_ID;
+import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.module;
 import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.ECU_INIT_RESPONSE;
+import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.ECU_NRC;
 import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.READ_ADDRESS_RESPONSE;
 import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.READ_MEMORY_RESPONSE;
 import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.WRITE_ADDRESS_RESPONSE;
 import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.WRITE_MEMORY_RESPONSE;
-import static com.romraider.io.protocol.ssm.iso15765.SSMProtocol.ECU_NRC;
-
-import com.romraider.logger.ecu.comms.manager.PollingState;
-import com.romraider.logger.ecu.exception.InvalidResponseException;
 import static com.romraider.util.ByteUtil.asUnsignedInt;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.exception.InvalidResponseException;
 
 public final class SSMResponseProcessor {
 
@@ -47,7 +47,8 @@ public final class SSMResponseProcessor {
 
     public static void validateResponse(byte[] response) {
         assertTrue(response.length > RESPONSE_NON_DATA_BYTES, "Invalid response length");
-        assertEquals(ECU_ID, response, "Invalid ECU id");
+        assertEquals(module.getAddress(), response, "Invalid " +
+                module.getName() + " id");
         if (response[4] == ECU_NRC) {
             assertNrc(ECU_NRC, response[4], response[5], response[6],"Request type not supported");
         }

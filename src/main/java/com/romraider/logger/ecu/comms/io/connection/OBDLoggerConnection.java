@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.definition.Module;
 
 public final class OBDLoggerConnection implements LoggerConnection {
     private static final Logger LOGGER = getLogger(OBDLoggerConnection.class);
@@ -55,38 +56,38 @@ public final class OBDLoggerConnection implements LoggerConnection {
     }
 
     @Override
-    public void ecuReset(byte id) {
-        byte[] request = protocol.constructEcuResetRequest(id);
-        LOGGER.debug(String.format("OBD Reset Request  ---> %s",
-                asHex(request)));
+    public void ecuReset(Module module, int resetCode) {
+        byte[] request = protocol.constructEcuResetRequest(module, resetCode);
+        LOGGER.debug(String.format("%s Reset Request  ---> %s",
+                module, asHex(request)));
         byte[] response = manager.send(request);
         byte[] processedResponse = protocol.preprocessResponse(
                 request, response, new PollingStateImpl());
-        LOGGER.debug(String.format("OBD Reset Response <--- %s",
-                asHex(processedResponse)));
+        LOGGER.debug(String.format("%s Reset Response <--- %s",
+                module, asHex(processedResponse)));
         protocol.processEcuResetResponse(processedResponse);
     }
 
     @Override
     // Build an init string similar to the SSM version so the logger definition
     // can reference supported parameters with ecubyte/bit attributes. 
-    public void ecuInit(EcuInitCallback callback, byte id) {
+    public void ecuInit(EcuInitCallback callback, Module module) {
         final byte[] processedResponse = new byte[46];
-        final byte[] request = protocol.constructEcuInitRequest(id);
-        LOGGER.debug(String.format("OBD Calibration ID Request  ---> %s",
-                asHex(request)));
+        final byte[] request = protocol.constructEcuInitRequest(module);
+        LOGGER.debug(String.format("%s Calibration ID Request  ---> %s",
+                module, asHex(request)));
         final byte[] tmp = manager.send(request);
         final byte[] response = protocol.preprocessResponse(
                 request, tmp, new PollingStateImpl());
-        LOGGER.debug(String.format("OBD Calibration ID Response <--- %s",
-                asHex(response)));
+        LOGGER.debug(String.format("%s Calibration ID Response <--- %s",
+                module, asHex(response)));
         System.arraycopy(response, 0, processedResponse, 0, response.length);
         int j = 7;
         while (response[j] != 0 && j < response.length) { j++; }
         final byte[] calIdStr = new byte[j - 7];
         System.arraycopy(response, 7, calIdStr, 0, j - 7);
         System.arraycopy(calIdStr, 0, processedResponse, 5, 8);
-        LOGGER.info(String.format("OBD Calibration ID: %s", new String(calIdStr)));
+        LOGGER.info(String.format("%s Calibration ID: %s", module, new String(calIdStr)));
 
         final byte[] supportedPidsPid = {
             (byte) 0x00, (byte) 0x20, (byte) 0x40, (byte) 0x60,
@@ -94,14 +95,14 @@ public final class OBDLoggerConnection implements LoggerConnection {
         int i = 13;
         for (byte pid : supportedPidsPid) {
             final byte[] pidRequest = protocol.constructReadPidRequest(
-                    id, new byte[]{pid});
-            LOGGER.debug(String.format("OBD PID Group %02X Request  ---> %s",
-                    pid, asHex(pidRequest)));
+                    module, new byte[]{pid});
+            LOGGER.debug(String.format("%s PID Group %02X Request  ---> %s",
+                    module, pid, asHex(pidRequest)));
             final byte[] pidtmp = manager.send(pidRequest);
             final byte[] pidPpResponse = protocol.preprocessResponse(
                     pidRequest, pidtmp, new PollingStateImpl());
-            LOGGER.debug(String.format("OBD PID Group %02X Response <--- %s",
-                    pid, asHex(pidPpResponse)));
+            LOGGER.debug(String.format("%s PID Group %02X Response <--- %s",
+                    module, pid, asHex(pidPpResponse)));
             System.arraycopy(pidPpResponse, 6, processedResponse, i, 4);
             i = i + 4;
             if ((pidPpResponse[pidPpResponse.length - 1] & 0x01) == 0) break;
@@ -113,27 +114,27 @@ public final class OBDLoggerConnection implements LoggerConnection {
         // the logger definition to indicate supported switches.
         if ((processedResponse[25] & 0x08) > 0) {
             final byte[] aiRequest = protocol.constructReadPidRequest(
-                    id, new byte[]{0x65});
+                    module, new byte[]{0x65});
             LOGGER.debug(String.format(
-                    "OBD Auxiliary Inputs Support Request  ---> %s",
-                    asHex(aiRequest)));
+                    "%s Auxiliary Inputs Support Request  ---> %s",
+                    module, asHex(aiRequest)));
             final byte[] aiResponse = manager.send(aiRequest);
             final byte[] aiPpResponse = protocol.preprocessResponse(
                     aiRequest, aiResponse, new PollingStateImpl());
             LOGGER.debug(String.format(
-                    "OBD Auxiliary Inputs Support Response <--- %s",
-                    asHex(aiPpResponse)));
+                    "%s Auxiliary Inputs Support Response <--- %s",
+                    module, asHex(aiPpResponse)));
             System.arraycopy(aiPpResponse, 6, processedResponse, 45, 1);
         }
-        LOGGER.debug(String.format("OBD Init Response <--- %s",
-                asHex(processedResponse)));  // contains CALID not ECUID
+        LOGGER.debug(String.format("%s Init Response <--- %s",
+                module, asHex(processedResponse)));  // contains CALID not ECUID
         protocol.processEcuInitResponse(callback, processedResponse);
     }
 
     @Override
     public final void sendAddressReads(
             Collection<EcuQuery> queries,
-            byte id, 
+            Module module, 
             PollingState pollState) {
 
         final int obdQueryListLength = queries.size();
@@ -142,17 +143,17 @@ public final class OBDLoggerConnection implements LoggerConnection {
                 obdQueries.add(((ArrayList<EcuQuery>) queries).get(j));
             }
             final byte[] request = protocol.constructReadAddressRequest(
-                    id, obdQueries);
-            LOGGER.debug(String.format("Mode:%d OBD Request  ---> %s",
-                    pollState.getCurrentState(), asHex(request)));
+                    module, obdQueries);
+            LOGGER.debug(String.format("Mode:%d %s Request  ---> %s",
+                    pollState.getCurrentState(), module, asHex(request)));
 
             final byte[] response = protocol.constructReadAddressResponse(
                     obdQueries, pollState);
             manager.send(request, response, pollState);
             final byte[] processedResponse = protocol.preprocessResponse(
                     request, response, pollState);
-            LOGGER.debug(String.format("Mode:%d OBD Response <--- %s",
-                    pollState.getCurrentState(), asHex(processedResponse)));
+            LOGGER.debug(String.format("Mode:%d %s Response <--- %s",
+                    pollState.getCurrentState(), module, asHex(processedResponse)));
             protocol.processReadAddressResponses(
                     obdQueries, processedResponse, pollState);
             obdQueries.clear();
@@ -170,7 +171,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
     }
 
     @Override
-    public void sendAddressWrites(Map<EcuQuery, byte[]> writeQueries, byte id) {
+    public void sendAddressWrites(Map<EcuQuery, byte[]> writeQueries, Module module) {
         throw new UnsupportedOperationException();
     }
 }

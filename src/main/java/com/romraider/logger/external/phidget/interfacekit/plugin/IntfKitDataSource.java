@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.Action;
@@ -92,6 +93,9 @@ public final class IntfKitDataSource implements ExternalDataSource {
 
     public Action getMenuAction(final EcuLogger logger) {
         return new IntfKitPluginMenuAction(logger);
+    }
+
+    public void setProperties(Properties properties) {
     }
 
     public void connect() {

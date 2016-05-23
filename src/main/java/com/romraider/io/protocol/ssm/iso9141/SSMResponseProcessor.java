@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@
 package com.romraider.io.protocol.ssm.iso9141;
 
 import static com.romraider.io.protocol.ssm.iso9141.SSMChecksumCalculator.calculateChecksum;
-import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.DIAGNOSTIC_TOOL_ID;
-import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ECU_ID;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.ECU_INIT_RESPONSE;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.HEADER;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.READ_ADDRESS_COMMAND;
@@ -30,13 +28,14 @@ import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.READ_MEMORY_RESP
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.WRITE_ADDRESS_RESPONSE;
 import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.WRITE_MEMORY_RESPONSE;
-
-import com.romraider.logger.ecu.comms.manager.PollingState;
-import com.romraider.logger.ecu.exception.InvalidResponseException;
+import static com.romraider.io.protocol.ssm.iso9141.SSMProtocol.module;
 import static com.romraider.util.ByteUtil.asByte;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.exception.InvalidResponseException;
 
 public final class SSMResponseProcessor {
 
@@ -64,8 +63,9 @@ public final class SSMResponseProcessor {
         int i = 0;
         assertTrue(response.length > RESPONSE_NON_DATA_BYTES, "Invalid response length");
         assertEquals(HEADER, response[i++], "Invalid header");
-        assertEquals(DIAGNOSTIC_TOOL_ID, response[i++], "Invalid diagnostic tool id");
-        assertEquals(ECU_ID, response[i++], "Invalid ECU id");
+        assertEquals(module.getTester()[0], response[i++], "Invalid diagnostic tool id");
+        assertEquals(module.getAddress()[0], response[i++],
+                "Invalid " + module.getName() + " id");
         assertEquals(asByte(response.length - RESPONSE_NON_DATA_BYTES + 1), response[i++], "Invalid response data length");
         assertOneOf(new byte[]{ECU_INIT_RESPONSE, READ_ADDRESS_RESPONSE, READ_MEMORY_RESPONSE, WRITE_ADDRESS_RESPONSE, WRITE_MEMORY_RESPONSE}, response[i], "Invalid response code");
         assertEquals(calculateChecksum(response), response[response.length - 1], "Invalid checksum");

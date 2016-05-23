@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ public final class DOMRomUnmarshaller {
             .getLogger(DOMRomUnmarshaller.class);
     private JProgressPane progress = null;
     private final List<Scale> scales = new ArrayList<Scale>();
+    private String memModelEndian = null;
 
     public DOMRomUnmarshaller() {
     }
@@ -333,7 +334,7 @@ public final class DOMRomUnmarshaller {
 
                 } else if (n.getNodeName().equalsIgnoreCase("memmodel")) {
                     romID.setMemModel(unmarshallText(n));
-
+                    memModelEndian = unmarshallAttribute(n, "endian", null);
                 } else if (n.getNodeName().equalsIgnoreCase("filesize")) {
                     romID.setFileSize(RomAttributeParser
                             .parseFileSize(unmarshallText(n)));
@@ -436,8 +437,15 @@ public final class DOMRomUnmarshaller {
         table.setStorageType(RomAttributeParser
                 .parseStorageType(unmarshallAttribute(tableNode, "storagetype",
                         String.valueOf(table.getStorageType()))));
-        table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(
-                tableNode, "endian", String.valueOf(table.getEndian()))));
+        if (memModelEndian == null) {
+            table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(
+                    tableNode, "endian", String.valueOf(table.getEndian()))));
+        }
+        else {
+            final int endian = memModelEndian.equalsIgnoreCase("little") ? 1 : 2;
+            table.setMemModelEndian(endian);
+            table.setEndian(endian);
+        }
         table.setStorageAddress(RomAttributeParser
                 .parseHexString(unmarshallAttribute(tableNode,
                         "storageaddress",

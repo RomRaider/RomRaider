@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import org.apache.log4j.Logger;
+
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableToolBar;
@@ -59,6 +61,8 @@ import com.romraider.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
+    private static final Logger LOGGER = Logger.getLogger(Table.class);
+    protected static int memModelEndian;
 
     protected String name;
     protected int type;
@@ -294,7 +298,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         };
         Action interpolate = new AbstractAction() {
-            private static final long serialVersionUID = -2350912575392447149L;
+            private static final long serialVersionUID = -2357532575392447149L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -302,7 +306,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         };
         Action verticalInterpolate = new AbstractAction() {
-            private static final long serialVersionUID = -2350912575392447149L;
+            private static final long serialVersionUID = -2375322575392447149L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -318,7 +322,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         };
         Action multiplyAction = new AbstractAction() {
-            private static final long serialVersionUID = -2350912575392447149L;
+            private static final long serialVersionUID = -2753212575392447149L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -326,7 +330,7 @@ public abstract class Table extends JPanel implements Serializable {
             }
         };
         Action numNegAction = new AbstractAction() {
-            private static final long serialVersionUID = -6346750245035640773L;
+            private static final long serialVersionUID = -7532750245035640773L;
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -464,7 +468,7 @@ public abstract class Table extends JPanel implements Serializable {
                     byteValue[1] = input[getStorageAddress() + i * 4 - ramOffset + 1];
                     byteValue[2] = input[getStorageAddress() + i * 4 - ramOffset + 2];
                     byteValue[3] = input[getStorageAddress() + i * 4 - ramOffset + 3];
-                    dataValue = RomAttributeParser.byteToFloat(byteValue, endian);
+                    dataValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
 
                 } else { // integer storage type
                     dataValue = RomAttributeParser.parseByteValue(input,
@@ -800,11 +804,23 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public double getMaxReal() {
-        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
+        double minReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
+        double maxReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
+        if(minReal > maxReal) {
+            return minReal;
+        } else {
+            return maxReal;
+        }
     }
 
     public double getMinReal() {
-        return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
+        double minReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMinBin());
+        double maxReal = JEPUtil.evaluate(getCurrentScale().getExpression(), getMaxBin());
+        if(minReal < maxReal) {
+            return minReal;
+        } else {
+            return maxReal;
+        }
     }
 
     public void setMaxBin(double maxBin) {
@@ -977,16 +993,34 @@ public abstract class Table extends JPanel implements Serializable {
             for (int i = 0; i < data.length; i++) {
                 // determine output byte values
                 byte[] output;
+                if(this.isStaticDataTable() && storageType > 0) {
+                    LOGGER.warn("Static data table: " +this.getName()+ ", storageType: "+storageType);
+                }
                 if (storageType != Settings.STORAGE_TYPE_FLOAT) {
                     // convert byte values
-                    output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
+                    if(this.isStaticDataTable() && storageType > 0) {
+                        try {
+                            int parsedValue = Integer.parseInt(data[i].getStaticText());
+                            output = RomAttributeParser.parseIntegerValue(parsedValue, endian, storageType);
+                        } catch (NumberFormatException ex) {
+                            LOGGER.error("Error parsing static data table value: " + data[i].getStaticText(), ex);
+                            LOGGER.error("Validate the table definition storageType and data value.");
+                            continue;
+                        }
+                    } else if(this.isStaticDataTable() && storageType < 1) {
+                        // Do not save the value.
+                        //LOGGER.debug("The static data table value will not be saved.");
+                        continue;
+                    }  else {
+                        output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
+                    }
                     for (int z = 0; z < storageType; z++) { // insert into file
                         binData[i * storageType + z + getStorageAddress() - ramOffset] = output[z];
                     }
 
                 } else { // float
                     // convert byte values
-                    output = RomAttributeParser.floatToByte((float) data[i].getBinValue(), endian);
+                    output = RomAttributeParser.floatToByte((float) data[i].getBinValue(), endian, memModelEndian);
                     for (int z = 0; z < 4; z++) { // insert in to file
                         binData[i * 4 + z + getStorageAddress() - ramOffset] = output[z];
                     }
@@ -1110,33 +1144,17 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void verticalInterpolate() {
-        horizontalInterpolate();
     }
 
     public void horizontalInterpolate() {
-        int[] coords = { getDataSize(), 0};
-        DataCell[] tableData = getData();
-
-        int y;
-        for (y = 0; y < getDataSize(); y++) {
-            if (tableData[y].isSelected()) {
-                if (y < coords[0])
-                    coords[0] = y;
-                if (y > coords[1])
-                    coords[1] = y;
-            }
-        }
-        if (coords[1] - coords[0] > 1) {
-            double diff = (tableData[coords[0]].getRealValue() - tableData[coords[1]].getRealValue()) / (coords[1] - coords[0]);
-            if (Math.abs(diff) > 0) {
-                for (y = coords[0] + 1; y < coords[1]; y++)
-                    data[y].setRealValue(String.valueOf(tableData[y - 1].getRealValue() - diff));
-            }
-        }
     }
 
     public void interpolate() {
         horizontalInterpolate();
+    }
+    
+    public double linearInterpolation(double x, double x1, double x2, double y1, double y2) {
+        return (x1 == x2) ? 0.0 : (y1 + (x - x1) * (y2 - y1) / (x2 - x1));
     }
 
     public void validateScaling() {
@@ -1389,6 +1407,14 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void setStaticDataTable(boolean staticDataTable) {
         this.staticDataTable = staticDataTable;
+    }
+
+    public void setMemModelEndian(int endian) {
+        memModelEndian = endian;
+    }
+
+    public int getMemModelEndian() {
+        return memModelEndian;
     }
 }
 

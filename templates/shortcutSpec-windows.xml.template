@@ -43,6 +43,44 @@
     </shortcut>
 
     <shortcut
+            name="@name.package@ Logger Fullscreen"
+            programGroup="yes"
+            desktop="yes"
+            applications="no"
+            startMenu="no"
+            startup="no"
+            target="$INSTALL_PATH/@name.package@.exe"
+            commandLine="-logger.fullscreen"
+            initialState="normal"
+            iconFile="$INSTALL_PATH/@name.package@.exe"
+            iconIndex="0"
+            workingDirectory="$INSTALL_PATH"
+            type="Application"
+            encoding="UTF-8"
+            description="@description.package@">
+        <createForPack name="Base"/>
+    </shortcut>
+
+    <shortcut
+            name="@name.package@ Logger Touch Screen"
+            programGroup="yes"
+            desktop="yes"
+            applications="no"
+            startMenu="no"
+            startup="no"
+            target="$INSTALL_PATH/@name.package@.exe"
+            commandLine="-logger.touch"
+            initialState="normal"
+            iconFile="$INSTALL_PATH/@name.package@.exe"
+            iconIndex="0"
+            workingDirectory="$INSTALL_PATH"
+            type="Application"
+            encoding="UTF-8"
+            description="@description.package@">
+        <createForPack name="Base"/>
+    </shortcut>
+
+    <shortcut
             name="@name.package@ License"
             programGroup="yes"
             desktop="yes"

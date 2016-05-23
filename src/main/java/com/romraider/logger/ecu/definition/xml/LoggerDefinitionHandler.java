@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,13 @@ package com.romraider.logger.ecu.definition.xml;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMax;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMin;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getStep;
+import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static java.lang.Double.parseDouble;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -37,8 +39,9 @@ import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.romraider.Settings;
 import com.romraider.io.connection.ConnectionProperties;
-import com.romraider.io.connection.ConnectionPropertiesImpl;
+import com.romraider.io.connection.SerialConnectionProperties;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.definition.EcuAddress;
 import com.romraider.logger.ecu.definition.EcuAddressImpl;
@@ -54,6 +57,8 @@ import com.romraider.logger.ecu.definition.EcuParameterImpl;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.EcuSwitchConvertorImpl;
 import com.romraider.logger.ecu.definition.EcuSwitchImpl;
+import com.romraider.logger.ecu.definition.Module;
+import com.romraider.logger.ecu.definition.Transport;
 import com.romraider.logger.ecu.ui.handler.dash.GaugeMinMax;
 
 public final class LoggerDefinitionHandler extends DefaultHandler {
@@ -69,6 +74,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String TAG_ECUPARAM = "ecuparam";
     private static final String TAG_ECU = "ecu";
     private static final String TAG_DTCODE = "dtcode";
+    private static final String TAG_TRANSPORT = "transport";
+    private static final String TAG_MODULE = "module";
     private static final String ATTR_VERSION = "version";
     private static final String ATTR_ID = "id";
     private static final String ATTR_NAME = "name";
@@ -77,12 +84,16 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_LENGTH = "length";
     private static final String ATTR_ECUBIT = "ecubit";
     private static final String ATTR_UNITS = "units";
+    private static final String ATTR_GROUP = "group";
+    private static final String ATTR_SUBGROUP = "subgroup";
+    private static final String ATTR_GROUPSIZE = "groupsize";
     private static final String ATTR_EXPRESSION = "expr";
     private static final String ATTR_FORMAT = "format";
     private static final String ATTR_BYTE = "byte";
     private static final String ATTR_BIT = "bit";
     private static final String ATTR_PARAMETER = "parameter";
     private static final String ATTR_STORAGETYPE = "storagetype";
+    private static final String ATTR_ENDIAN = "endian";
     private static final String ATTR_BAUD = "baud";
     private static final String ATTR_DATABITS = "databits";
     private static final String ATTR_STOPBITS = "stopbits";
@@ -97,6 +108,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private static final String ATTR_TARGET = "target";
     private static final String ATTR_TMPADDR = "tmpaddr";
     private static final String ATTR_MEMADDR = "memaddr";
+    private static final String ATTR_ADDRESS = "address";
+    private static final String ATTR_TESTER = "tester";
+    private static final String ATTR_FASTPOLL = "fastpoll";
     private final String protocol;
     private final String fileLoggingControllerSwitchId;
     private final EcuInit ecuInit;
@@ -112,6 +126,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String desc;
     private String ecuByteIndex;
     private String ecuBit;
+    private String group;
+    private String subgroup;
+    private String groupsize;
     private String ecuIds;
     private List<String> addrStrings = new ArrayList<String>();
     private boolean EcuAddressCreated;
@@ -129,9 +146,15 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String conversionExpression;
     private String conversionFormat;
     private String conversionStorageType;
+    private int conversionEndian;
     private GaugeMinMax conversionGauge;
     private String target;
     private String version;
+    private String protocolId;
+    private Transport transport;
+    private Collection<Module> moduleList;
+    private Map<Transport, Collection<Module>> transportMap;
+    private Map<String, Map<Transport, Collection<Module>>> protocolMap;
 
     public LoggerDefinitionHandler(String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
         checkNotNullOrEmpty(protocol, "protocol");
@@ -146,19 +169,41 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
         switches = new ArrayList<EcuSwitch>();
         ecuDataMap = new HashMap<String, EcuData>();
         dtcodes = new ArrayList<EcuSwitch>();
+        protocolMap = new HashMap<String, Map<Transport, Collection<Module>>>();
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if (TAG_LOGGER.equals(qName)) {
             version = attributes.getValue(ATTR_VERSION);
         } else if (TAG_PROTOCOL.equals(qName)) {
-            parseProtocol = protocol.equalsIgnoreCase(attributes.getValue(ATTR_ID));
+            protocolId = attributes.getValue(ATTR_ID);
+            parseProtocol = protocol.equalsIgnoreCase(protocolId);
             if (parseProtocol) {
-                connectionProperties = new ConnectionPropertiesImpl(Integer.parseInt(attributes.getValue(ATTR_BAUD)),
+                connectionProperties = new SerialConnectionProperties(Integer.parseInt(attributes.getValue(ATTR_BAUD)),
                         Integer.parseInt(attributes.getValue(ATTR_DATABITS)), Integer.parseInt(attributes.getValue(ATTR_STOPBITS)),
                         Integer.parseInt(attributes.getValue(ATTR_PARITY)), Integer.parseInt(attributes.getValue(ATTR_CONNECT_TIMEOUT)),
                         Integer.parseInt(attributes.getValue(ATTR_SEND_TIMEOUT)));
             }
+            transportMap = new HashMap<Transport, Collection<Module>>();
+        } else if (TAG_TRANSPORT.equals(qName)) {
+            id = attributes.getValue(ATTR_ID);
+            name = attributes.getValue(ATTR_NAME);
+            desc = attributes.getValue(ATTR_DESC);
+            transport = new Transport(id, name, desc);
+            moduleList = new ArrayList<Module>();
+        } else if (TAG_MODULE.equals(qName)) {
+            id = attributes.getValue(ATTR_ID);
+            final String modAddr = attributes.getValue(ATTR_ADDRESS);
+            desc = attributes.getValue(ATTR_DESC);
+            final String testerAddr = attributes.getValue(ATTR_TESTER);
+            final String fastpoll = attributes.getValue(ATTR_FASTPOLL);
+            boolean fp = false;
+            if (fastpoll != null && fastpoll.equalsIgnoreCase("true")) {
+                fp = true;
+            }
+            final Module module = new Module(
+                    id, asBytes(modAddr), desc, asBytes(testerAddr), fp);
+            moduleList.add(module);
         } else if (parseProtocol) {
             if (TAG_PARAMETER.equals(qName)) {
                 id = attributes.getValue(ATTR_ID);
@@ -166,6 +211,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 desc = attributes.getValue(ATTR_DESC);
                 ecuByteIndex = attributes.getValue(ATTR_ECUBYTEINDEX);
                 ecuBit = attributes.getValue(ATTR_ECUBIT);
+                group = attributes.getValue(ATTR_GROUP);
+                subgroup = attributes.getValue(ATTR_SUBGROUP);
+                groupsize = attributes.getValue(ATTR_GROUPSIZE);
                 target = attributes.getValue(ATTR_TARGET);
                 resetLists();
             } else if (TAG_ADDRESS.equals(qName)) {
@@ -184,6 +232,13 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 conversionExpression = attributes.getValue(ATTR_EXPRESSION);
                 conversionFormat = attributes.getValue(ATTR_FORMAT);
                 conversionStorageType = attributes.getValue(ATTR_STORAGETYPE);
+                String endian = attributes.getValue(ATTR_ENDIAN);
+                if (endian != null) {
+                    conversionEndian = endian.equalsIgnoreCase("little") ? Settings.ENDIAN_LITTLE : Settings.ENDIAN_BIG;
+                }
+                else {
+                    conversionEndian = Settings.ENDIAN_BIG;
+                }
                 double gaugeMin = getConversionMin(attributes, conversionUnits);
                 double gaugeMax = getConversionMax(attributes, conversionUnits);
                 double gaugeStep = getConversionStep(attributes, conversionUnits);
@@ -201,6 +256,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 desc = attributes.getValue(ATTR_DESC);
                 ecuByteIndex = attributes.getValue(ATTR_ECUBYTEINDEX);
                 ecuBit = attributes.getValue(ATTR_BIT);
+                group = attributes.getValue(ATTR_GROUP);
+                subgroup = attributes.getValue(ATTR_SUBGROUP);
+                groupsize = attributes.getValue(ATTR_GROUPSIZE);
                 target = attributes.getValue(ATTR_TARGET);
                 address = new EcuAddressImpl(attributes.getValue(ATTR_BYTE), 1, Integer.valueOf(attributes.getValue(ATTR_BIT)));
                 resetLists();
@@ -208,6 +266,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 id = attributes.getValue(ATTR_ID);
                 name = attributes.getValue(ATTR_NAME);
                 desc = attributes.getValue(ATTR_DESC);
+                group = attributes.getValue(ATTR_GROUP);
+                subgroup = attributes.getValue(ATTR_SUBGROUP);
+                groupsize = attributes.getValue(ATTR_GROUPSIZE);
                 target = attributes.getValue(ATTR_TARGET);
                 resetLists();
                 ecuAddressMap = new HashMap<String, EcuAddress>();
@@ -239,6 +300,9 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) {
         if (TAG_PROTOCOL.equals(qName)) {
             parseProtocol = false;
+            protocolMap.put(protocolId, transportMap);
+        } else if (TAG_TRANSPORT.equals(qName)) {
+            transportMap.put(transport, moduleList);
         } else if (parseProtocol) {
             if (TAG_ADDRESS.equals(qName)) {
                 addrStrings.add(charBuffer.toString());
@@ -263,7 +327,8 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                         if (convertorList.isEmpty()) {
                             convertorList.add(new EcuParameterConvertorImpl());
                         }
-                        EcuParameter param = new EcuParameterImpl(id, name, desc, address,
+                        EcuParameter param = new EcuParameterImpl(
+                                id, name, desc, address, group, subgroup, groupsize,
                                 convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                         params.add(param);
                         ecuDataMap.put(param.getId(), param);
@@ -274,15 +339,19 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                     derivedConvertorList.add(new EcuDerivedParameterConvertorImpl(conversionUnits,
                             conversionExpression, conversionFormat, replaceMap, conversionGauge));
                 } else {
-                    convertorList.add(new EcuParameterConvertorImpl(conversionUnits, conversionExpression, conversionFormat, address.getBit(),
-                            conversionStorageType, replaceMap, conversionGauge));
+                    convertorList.add(new EcuParameterConvertorImpl(
+                            conversionUnits, conversionExpression, conversionFormat,
+                            address.getBit(), conversionStorageType, conversionEndian,
+                            replaceMap, conversionGauge));
                 }
             } else if (TAG_ECUPARAM.equals(qName)) {
                 if (ecuInit != null && ecuAddressMap.containsKey(ecuInit.getEcuId())) {
                     if (convertorList.isEmpty()) {
                         convertorList.add(new EcuParameterConvertorImpl());
                     }
-                    EcuParameter param = new EcuParameterImpl(id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
+                    EcuParameter param = new EcuParameterImpl(
+                            id, name, desc, ecuAddressMap.get(ecuInit.getEcuId()),
+                            group, subgroup, groupsize,
                             convertorList.toArray(new EcuDataConvertor[convertorList.size()]));
                     params.add(param);
                     ecuDataMap.put(param.getId(), param);
@@ -298,16 +367,22 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 if (ecuByteIndex == null || ecuBit == null || ecuInit == null || isSupportedParameter(ecuInit,
                         ecuByteIndex, ecuBit)) {
                     EcuDataConvertor[] convertors = new EcuDataConvertor[]{new EcuSwitchConvertorImpl(address.getBit())};
-                    EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
+                    EcuSwitch ecuSwitch = new EcuSwitchImpl(
+                            id, name, desc, address,
+                            group, subgroup, groupsize, convertors);
                     switches.add(ecuSwitch);
                     ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
                     if (id.equalsIgnoreCase(fileLoggingControllerSwitchId)) {
-                        fileLoggingControllerSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
+                        fileLoggingControllerSwitch = new EcuSwitchImpl(
+                                id, name, desc, address,
+                                group, subgroup, groupsize, convertors);
                     }
                 }
             } else if (TAG_DTCODE.equals(qName)) {
                 final EcuDataConvertor[] convertors = new EcuDataConvertor[]{new EcuDtcConvertorImpl(address.getBit())};
-                final EcuSwitch ecuSwitch = new EcuSwitchImpl(id, name, desc, address, convertors);
+                final EcuSwitch ecuSwitch = new EcuSwitchImpl(
+                        id, name, desc, address,
+                        group, subgroup, groupsize, convertors);
                 dtcodes.add(ecuSwitch);
                 ecuDataMap.put(ecuSwitch.getId(), ecuSwitch);
             }
@@ -336,6 +411,21 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
 
     public List<EcuSwitch> getEcuCodes() {
         return dtcodes;
+    }
+
+    public Map<String, Map<Transport, Collection<Module>>> getProtocols() {
+        if (protocolMap.get(protocol).isEmpty()) {
+            final Module module = new Module(
+                    "ecu", new byte[]{0x10}, "Engine Control Unit",
+                    new byte[]{(byte)0xF0}, true);
+            moduleList = new ArrayList<Module>();
+            moduleList.add(module);
+            transport = new Transport("iso9141", "K-Line", "Low speed serial");
+            transportMap = new HashMap<Transport, Collection<Module>>();
+            transportMap.put(transport, moduleList);
+            protocolMap.put(protocol, transportMap);
+        }
+        return protocolMap;
     }
 
     private void resetLists() {

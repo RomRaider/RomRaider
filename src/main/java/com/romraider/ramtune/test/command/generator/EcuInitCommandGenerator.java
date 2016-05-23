@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,12 @@
 
 package com.romraider.ramtune.test.command.generator;
 
-import com.romraider.io.protocol.Protocol;
 import static java.util.Arrays.asList;
+
 import java.util.List;
+
+import com.romraider.io.protocol.Protocol;
+import com.romraider.logger.ecu.definition.Module;
 
 public final class EcuInitCommandGenerator extends AbstractCommandGenerator {
 
@@ -29,9 +32,9 @@ public final class EcuInitCommandGenerator extends AbstractCommandGenerator {
         super(protocol);
     }
 
-    public List<byte[]> createCommands(byte id, byte[] data, byte[] address,
-            int length, boolean blockRead) {
-        return asList(protocol.constructEcuInitRequest(id));
+    public List<byte[]> createCommands(Module module, byte[] data, byte[] address,
+            int length, boolean blockRead, int blocksize) {
+        return asList(protocol.constructEcuInitRequest(module));
     }
 
     public String toString() {

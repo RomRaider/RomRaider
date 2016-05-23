@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2015 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,34 +38,36 @@ import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.comms.query.EcuQueryData;
+import com.romraider.logger.ecu.definition.Module;
 
 public final class OBDLoggerProtocol implements LoggerProtocolOBD {
     private final Protocol protocol = new OBDProtocol();
 
     @Override
-    public byte[] constructEcuInitRequest(byte id) {
-        return protocol.constructEcuInitRequest(id);
+    public byte[] constructEcuInitRequest(Module module) {
+        return protocol.constructEcuInitRequest(module);
     }
 
     @Override
-    public byte[] constructEcuResetRequest(byte id) {
-        return protocol.constructEcuResetRequest(id);
+    public byte[] constructEcuResetRequest(Module module, int resetCode) {
+        return protocol.constructEcuResetRequest(module, resetCode);
     }
 
     @Override
     public byte[] constructReadAddressRequest(
-            byte id, Collection<EcuQuery> queries) {
+            Module module, Collection<EcuQuery> queries) {
 
         Collection<EcuQuery> filteredQueries = filterDuplicates(queries);
         return protocol.constructReadAddressRequest(
-                id, convertToByteAddresses(filteredQueries));
+                module, convertToByteAddresses(filteredQueries));
     }
 
     @Override
-    public byte[] constructReadPidRequest(byte id, byte[] pid) {
+    public byte[] constructReadPidRequest(Module module, byte[] pid) {
         final byte[][] request = new byte[1][pid.length];
         arraycopy(pid, 0, request[0], 0, pid.length);
-        return protocol.constructReadAddressRequest(id, request);
+        return protocol.constructReadAddressRequest(module, request);
     }
 
     @Override
@@ -81,7 +83,7 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
         int numAddresses = 0;
         for (EcuQuery ecuQuery : filteredQueries) {
             numAddresses += ecuQuery.getBytes().length;
-            numAddresses += getDataLength(ecuQuery); 
+            numAddresses += EcuQueryData.getDataLength(ecuQuery); 
         }
         return new byte[(numAddresses + RESPONSE_NON_DATA_BYTES)];
     }
@@ -121,7 +123,7 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
         int i = 0;
         for (EcuQuery filteredQuery : filteredQueries) {
             final int addrLength = filteredQuery.getBytes().length;
-            final int dataLength = getDataLength(filteredQuery);
+            final int dataLength = EcuQueryData.getDataLength(filteredQuery);
             final byte[] addr = new byte[addrLength];
             final byte[] data = new byte[dataLength];
             arraycopy(responseData, i, addr, 0, addrLength);
@@ -141,9 +143,9 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
 
     @Override
     public byte[] constructWriteAddressRequest(
-            byte id, byte[] writeAddress, byte value) {
+            Module module, byte[] writeAddress, byte value) {
 
-        return protocol.constructWriteAddressRequest(id, writeAddress, value);
+        return protocol.constructWriteAddressRequest(module, writeAddress, value);
     }
 
     @Override
@@ -180,19 +182,5 @@ public final class OBDLoggerProtocol implements LoggerProtocolOBD {
             }
         }
         return addresses;
-    }
-
-    private int getDataLength(EcuQuery ecuQuery) {
-        int dataLength = 1;
-        final String dataType =
-                ecuQuery.getLoggerData().getSelectedConvertor().getDataType().toLowerCase();
-        if (dataType.contains("int16")) {
-            dataLength = 2;
-        }
-        else if (dataType.contains("int32") ||
-                 dataType.contains("float")) {
-            dataLength = 4;
-        }
-        return dataLength;
     }
 }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2014 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,15 +76,14 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
             LOGGER.debug("Adding query for DTC: " + dtcodes.get(i).getName());
         }
 
-        String target = "ECU";
+        final Settings settings = SettingsManager.getSettings();
+        final String target = settings.getDestinationTarget().getName();
         try {
-            Settings settings = SettingsManager.getSettings();
             final LoggerConnection connection = getConnection(
                     settings.getLoggerProtocol(),
-                    logger.getSettings().getLoggerPort(),
-                    logger.getSettings().getLoggerConnectionProperties());
+                    settings.getLoggerPort(),
+                    settings.getLoggerConnectionProperties());
             try {
-                if (settings.getDestinationId() == 0x18) target = "TCU";
                 messageListener.reportMessage(
                         "Reading " + target + " DTC codes...");
                 final Collection<EcuQuery> querySet = new ArrayList<EcuQuery>();
@@ -94,7 +93,7 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
                     }
                     connection.sendAddressReads(
                             querySet,
-                            settings.getDestinationId(),
+                            settings.getDestinationTarget(),
                             new PollingStateImpl());
                     querySet.clear();
                 }

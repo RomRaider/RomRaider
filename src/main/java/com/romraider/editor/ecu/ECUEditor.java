@@ -68,10 +68,10 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
-import com.romraider.net.BrowserControl;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.maps.Rom;
+import com.romraider.net.BrowserControl;
 import com.romraider.net.URL;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.CustomToolbarLayout;
@@ -95,8 +95,10 @@ public class ECUEditor extends AbstractFrame {
 
     private final RomTreeRootNode imageRoot = new RomTreeRootNode("Open Images");
     private final RomTree imageList = new RomTree(imageRoot);
-    public MDIDesktopPane rightPanel = new MDIDesktopPane();
-    public JProgressPane statusPanel = new JProgressPane();
+    private final MDIDesktopPane rightPanel = new MDIDesktopPane();
+    private final JProgressPane statusPanel = new JProgressPane();
+    private final JScrollPane leftScrollPane;
+    private final JScrollPane rightScrollPane;
     private JSplitPane splitPane = new JSplitPane();
     private Rom lastSelectedRom = null;
     private ECUEditorToolBar toolBar;
@@ -121,9 +123,9 @@ public class ECUEditor extends AbstractFrame {
             setExtendedState(MAXIMIZED_BOTH);
         }
 
-        JScrollPane rightScrollPane = new JScrollPane(rightPanel,
+        rightScrollPane = new JScrollPane(rightPanel,
                 VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        JScrollPane leftScrollPane = new JScrollPane(imageList,
+        leftScrollPane = new JScrollPane(imageList,
                 VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftScrollPane, rightScrollPane);
@@ -526,6 +528,14 @@ public class ECUEditor extends AbstractFrame {
     public MDIDesktopPane getRightPanel() {
         return this.rightPanel;
     }
+
+    public JScrollPane getLeftScrollPane() {
+        return this.leftScrollPane;
+    }
+
+    public JScrollPane getRightScrollPane() {
+        return this.rightScrollPane;
+    }
 }
 
 class LaunchLoggerWorker extends SwingWorker<Void, Void> {
@@ -659,6 +669,14 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
 
             // parse ecu definition files until result found
             for (int i = 0; i < settings.getEcuDefinitionFiles().size(); i++) {
+                if (!settings.getEcuDefinitionFiles().get(i).exists()) {
+                    showMessageDialog(editor,
+                            "ECU Definition file missing or moved.  Please correct the ECU Definition Manager listing.\n" +
+                                    settings.getEcuDefinitionFiles().get(i).getAbsolutePath(),
+                            "Missing ECU Definition File - " + settings.getEcuDefinitionFiles().get(i).getName(),
+                            ERROR_MESSAGE);
+                    continue;
+                }
                 fileStream = new FileInputStream(settings.getEcuDefinitionFiles().get(i));
                 InputSource src = new InputSource(fileStream);
 
@@ -717,6 +735,9 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
             // handles Java heap space issues when loading multiple Roms.
             showMessageDialog(editor, "Error loading Image. Out of memeory.", "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showMessageDialog(editor, "Error Loading. Caught Exception:\n" + ex.getMessage(), "Error Loading " + inputFile.getName(), ERROR_MESSAGE);
         }
         return null;
     }
