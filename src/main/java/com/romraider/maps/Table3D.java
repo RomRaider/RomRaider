@@ -227,7 +227,7 @@ public class Table3D extends Table {
         this.add(topPanel, BorderLayout.NORTH);
         topPanel.add(new JLabel(getName(), JLabel.CENTER), BorderLayout.NORTH);
 
-        if(null == xAxis.getName() || xAxis.getName().length() < 1 || "" == xAxis.getName()) {
+        if(null == xAxis.getName() || xAxis.getName().length() < 1 || Settings.BLANK == xAxis.getName()) {
             ;// Do not add label.
         } else if(null == xAxis.getCurrentScale() || "0x" == xAxis.getCurrentScale().getUnit()) {
             // static or no scale exists.
@@ -239,7 +239,7 @@ public class Table3D extends Table {
         }
 
         yAxisLabel = null;
-        if(null == yAxis.getName() || yAxis.getName().length() < 1 || "" == yAxis.getName()) {
+        if(null == yAxis.getName() || yAxis.getName().length() < 1 || Settings.BLANK == yAxis.getName()) {
             ;// Do not add label.
         } else if(null == yAxis.getCurrentScale() || "0x" == yAxis.getCurrentScale().getUnit()) {
             // static or no scale exists.
@@ -259,7 +259,7 @@ public class Table3D extends Table {
 
     @Override
     public void updateTableLabel() {
-        if(null == xAxis.getName() || xAxis.getName().length() < 1 || "" == xAxis.getName()) {
+        if(null == xAxis.getName() || xAxis.getName().length() < 1 || Settings.BLANK == xAxis.getName()) {
             ;// Do not update label.
         } else if(null == xAxis.getCurrentScale() || "0x" == xAxis.getCurrentScale().getUnit()) {
             // static or no scale exists.
@@ -268,7 +268,7 @@ public class Table3D extends Table {
             xAxisLabel.setText(xAxis.getName() + " (" + xAxis.getCurrentScale().getUnit() + ")");
         }
 
-        if(null == yAxis.getName() || yAxis.getName().length() < 1 || "" == yAxis.getName()) {
+        if(null == yAxis.getName() || yAxis.getName().length() < 1 || Settings.BLANK == yAxis.getName()) {
             ;// Do not update label.
         } else if(null == yAxis.getCurrentScale() || "0x" == yAxis.getCurrentScale().getUnit()) {
             // static or no scale exists.
@@ -696,8 +696,8 @@ public class Table3D extends Table {
 
     @Override
     public void paste() {
-        StringTokenizer st = new StringTokenizer("");
-        String input = "";
+        StringTokenizer st = new StringTokenizer(Settings.BLANK);
+        String input = Settings.BLANK;
         try {
             input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);
@@ -743,8 +743,7 @@ public class Table3D extends Table {
     }
 
     public void pasteValues() {
-        StringTokenizer st = new StringTokenizer("");
-        String newline = System.getProperty("line.separator");
+        StringTokenizer st = new StringTokenizer(Settings.BLANK);
         try {
             String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);
@@ -766,7 +765,7 @@ public class Table3D extends Table {
         // set values
         for (int y = startY; y < getSizeY(); y++) {
             if (st.hasMoreTokens()) {
-                StringTokenizer currentLine = new StringTokenizer(st.nextToken(newline));
+                StringTokenizer currentLine = new StringTokenizer(st.nextToken(Settings.NEW_LINE));
                 for (int x = startX; x < getSizeX(); x++) {
                     if (currentLine.hasMoreTokens()) {
                         String currentToken = currentLine.nextToken();
@@ -1084,8 +1083,7 @@ class CopySelection3DWorker extends SwingWorker<Void, Void> {
         }
         // make string of selection
         if (copy) {
-            String newline = System.getProperty("line.separator");
-            StringBuffer output = new StringBuffer("[Selection3D]" + newline);
+            StringBuffer output = new StringBuffer("[Selection3D]" + Settings.NEW_LINE);
             for (int y = coords[1]; y <= coords[3]; y++) {
                 for (int x = coords[0]; x <= coords[2]; x++) {
                     if (table.get3dData()[x][y].isSelected()) {
@@ -1098,7 +1096,7 @@ class CopySelection3DWorker extends SwingWorker<Void, Void> {
                     }
                 }
                 if (y < coords[3]) {
-                    output.append(newline);
+                    output.append(Settings.NEW_LINE);
                 }
                 //copy to clipboard
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);

@@ -140,7 +140,7 @@ public class Table2D extends Table {
             }
         }
 
-        if(null == axis.getName() || axis.getName().isEmpty() || "" == axis.getName()) {
+        if(null == axis.getName() || axis.getName().isEmpty() || Settings.BLANK == axis.getName()) {
             ;// Do not add label.
         } else if(null == axis.getCurrentScale() || "0x" == axis.getCurrentScale().getUnit()) {
             // static or no scale exists.
@@ -158,7 +158,7 @@ public class Table2D extends Table {
 
     @Override
     public void updateTableLabel() {
-        if(null == axis.getName() || axis.getName().length() < 1 || "" == axis.getName()) {
+        if(null == axis.getName() || axis.getName().length() < 1 || Settings.BLANK == axis.getName()) {
             ;// Do not update label.
         } else if(null == axis.getCurrentScale() || "0x" == axis.getCurrentScale().getUnit()) {
             // static or no scale exists.
@@ -270,8 +270,8 @@ public class Table2D extends Table {
 
     @Override
     public void paste() {
-        StringTokenizer st = new StringTokenizer("");
-        String input = "";
+        StringTokenizer st = new StringTokenizer(Settings.BLANK);
+        String input = Settings.BLANK;
         try {
             input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
             st = new StringTokenizer(input);

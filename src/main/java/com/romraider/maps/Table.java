@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1429,8 +1429,7 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         // find bounds of selection
         // coords[0] = x min, y min, x max, y max
-        String newline = System.getProperty("line.separator");
-        String output = "[Selection1D]" + newline;
+        String output = "[Selection1D]" + Settings.NEW_LINE;
         boolean copy = false;
         int[] coords = new int[2];
         coords[0] = table.getDataSize();
