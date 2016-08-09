@@ -763,20 +763,20 @@ public class Table3D extends Table {
         }
 
         // set values
-        for (int y = startY; y < getSizeY(); y++) {
-            if (st.hasMoreTokens()) {
-                StringTokenizer currentLine = new StringTokenizer(st.nextToken(Settings.NEW_LINE));
-                for (int x = startX; x < getSizeX(); x++) {
-                    if (currentLine.hasMoreTokens()) {
-                        String currentToken = currentLine.nextToken();
+        for (int y = startY; st.hasMoreTokens() && y < getSizeY(); y++) {
+            String checkToken = st.nextToken(Settings.NEW_LINE);
+            if (y==startY && checkToken.endsWith("\t")) {
+                checkToken = st.nextToken(Settings.NEW_LINE);
+            }
+            StringTokenizer currentLine = new StringTokenizer(checkToken);
+            for (int x = startX; currentLine.hasMoreTokens() && x < getSizeX(); x++) {
+                String currentToken = currentLine.nextToken();
 
-                        try {
-                            if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
-                                data[x][y].setRealValue(currentToken);
-                            }
-                        } catch (ArrayIndexOutOfBoundsException ex) { /* copied table is larger than current table*/ }
+                try {
+                    if (!data[x][y].getText().equalsIgnoreCase(currentToken)) {
+                        data[x][y].setRealValue(currentToken);
                     }
-                }
+                } catch (ArrayIndexOutOfBoundsException ex) { /* copied table is larger than current table*/ }
             }
         }
     }

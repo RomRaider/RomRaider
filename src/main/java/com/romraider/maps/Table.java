@@ -1134,8 +1134,11 @@ public abstract class Table extends JPanel implements Serializable {
             if (data[highlightY].isSelected()) {
                 int i = 0;
                 while (st.hasMoreTokens()) {
+                    String currentToken = st.nextToken();
                     try {
-                        data[highlightY + i].setRealValue(st.nextToken());
+                        if (!data[highlightY + i].getText().equalsIgnoreCase(currentToken)) {
+                            data[highlightY + i].setRealValue(currentToken);
+                        }
                     } catch (ArrayIndexOutOfBoundsException ex) { /* paste larger than target, ignore */ }
                     i++;
                 }
