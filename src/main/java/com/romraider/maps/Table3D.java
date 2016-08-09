@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -708,15 +708,18 @@ public class Table3D extends Table {
         String pasteType = st.nextToken();
 
         if ("[Table3D]".equalsIgnoreCase(pasteType)) { // Paste table
-            String newline = System.getProperty("line.separator");
-            String xAxisValues = "[Table1D]" + newline + st.nextToken(newline);
+            String currentToken = st.nextToken(Settings.NEW_LINE);
+            if (currentToken.endsWith("\t")) {
+                currentToken = st.nextToken(Settings.NEW_LINE);
+            }
+            String xAxisValues = "[Table1D]" + Settings.NEW_LINE + currentToken;
 
             // build y axis and data values
-            StringBuffer yAxisValues = new StringBuffer("[Table1D]" + newline + st.nextToken("\t"));
-            StringBuffer dataValues = new StringBuffer("[Table3D]" + newline + st.nextToken("\t") + st.nextToken(newline));
+            StringBuffer yAxisValues = new StringBuffer("[Table1D]" + Settings.NEW_LINE + st.nextToken("\t"));
+            StringBuffer dataValues = new StringBuffer("[Table3D]" + Settings.NEW_LINE + st.nextToken("\t") + st.nextToken(Settings.NEW_LINE));
             while (st.hasMoreTokens()) {
                 yAxisValues.append("\t").append(st.nextToken("\t"));
-                dataValues.append(newline).append(st.nextToken("\t")).append(st.nextToken(newline));
+                dataValues.append(Settings.NEW_LINE).append(st.nextToken("\t")).append(st.nextToken(Settings.NEW_LINE));
             }
 
             // put x axis in clipboard and paste
