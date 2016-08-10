@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ public final class SerialConnectionManager implements ConnectionManager {
             readTimeout -= 1;
             if (readTimeout <= 0) {
                 byte[] badBytes = connection.readAvailable();
-                LOGGER.debug("SSM Bad read response (read timeout): " + asHex(badBytes));
+                LOGGER.debug("Serial Bad Read response (read timeout): " + asHex(badBytes));
                 return; // this will reinitialize the connection
             }
         }
@@ -91,7 +91,7 @@ public final class SerialConnectionManager implements ConnectionManager {
                 arraycopy(response, 0, lastResponse, 0, response.length);
             }
             else{
-                LOGGER.error("SSM Bad Data response: " + asHex(response));
+                LOGGER.error("Serial Bad Data response: " + asHex(response));
                 arraycopy(lastResponse, 0, response, 0, response.length);
                 pollState.setNewQuery(true);
             }
@@ -120,7 +120,7 @@ public final class SerialConnectionManager implements ConnectionManager {
 
     @Override
     public void clearLine() {
-        LOGGER.debug("SSM sending line break");
+        LOGGER.debug("Serial sending line break");
         connection.sendBreak( 1 /
                 (connectionProperties.getBaudRate() *
                         (connectionProperties.getDataBits() +
@@ -129,7 +129,7 @@ public final class SerialConnectionManager implements ConnectionManager {
         do {
             sleep(2);
             byte[] badBytes = connection.readAvailable();
-            LOGGER.debug("SSM clearing line (stale data): " + asHex(badBytes));
+            LOGGER.debug("Serial clearing line (stale data): " + asHex(badBytes));
             sleep(10);
         } while (connection.available() > 0 );
     }
