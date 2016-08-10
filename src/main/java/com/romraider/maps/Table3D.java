@@ -662,6 +662,51 @@ public class Table3D extends Table {
         }
     }
 
+	@Override
+	public void shiftCursorUp() {
+        if (highlightY > 0 && data[highlightX][highlightY].isSelected()) {
+        	selectCellAtWithoutClear(highlightX, highlightY - 1);
+        } else if (data[highlightX][highlightY].isSelected()) {
+        	data[highlightX][highlightY].setSelected(false);
+        	xAxis.selectCellAt(highlightX);
+        } else {
+        	xAxis.cursorUp();
+        	yAxis.shiftCursorUp();
+        }
+	}
+
+	@Override
+	public void shiftCursorDown() {
+        if (highlightY < getSizeY() - 1 && data[highlightX][highlightY].isSelected()) {
+        	selectCellAtWithoutClear(highlightX, highlightY + 1);
+        } else {
+            xAxis.shiftCursorDown();
+            yAxis.shiftCursorDown();
+        }
+	}
+
+	@Override
+	public void shiftCursorLeft() {
+        if (highlightX > 0 && data[highlightX][highlightY].isSelected()) {
+        	selectCellAtWithoutClear(highlightX - 1, highlightY);
+        } else if (data[highlightX][highlightY].isSelected()) {
+            yAxis.selectCellAt(highlightY);
+        } else {
+            xAxis.shiftCursorLeft();
+            yAxis.shiftCursorLeft();
+        }
+	}
+
+	@Override
+	public void shiftCursorRight() {
+        if (highlightX < getSizeX() - 1 && data[highlightX][highlightY].isSelected()) {
+        	selectCellAtWithoutClear(highlightX + 1, highlightY);
+        } else {
+            xAxis.shiftCursorRight();
+            yAxis.shiftCursorRight();
+        }
+	}
+
     @Override
     public void startHighlight(int x, int y) {
         xAxis.clearSelectedData();

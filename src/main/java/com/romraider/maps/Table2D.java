@@ -237,6 +237,37 @@ public class Table2D extends Table {
         }
     }
 
+	@Override
+	public void shiftCursorUp() {
+        if (data[highlightY].isSelected()) {
+        	data[highlightY].setSelected(false);
+        }
+        axis.selectCellAt(highlightY);
+	}
+
+	@Override
+	public void shiftCursorDown() {
+        axis.cursorDown();
+	}
+
+	@Override
+	public void shiftCursorLeft() {
+        if (highlightY > 0 && data[highlightY].isSelected()) {
+        	selectCellAtWithoutClear(highlightY - 1);
+        } else {
+        	axis.shiftCursorLeft();
+        }
+	}
+
+	@Override
+	public void shiftCursorRight() {
+        if (highlightY < data.length - 1 && data[highlightY].isSelected()) {
+        	selectCellAtWithoutClear(highlightY + 1);
+        } else {
+        	axis.shiftCursorRight();
+        }
+	}
+
     @Override
     public void startHighlight(int x, int y) {
         axis.clearSelectedData();

@@ -244,6 +244,22 @@ public class TableSwitch extends Table {
     public void cursorRight() {
     }
 
+	@Override
+	public void shiftCursorUp() {
+	}
+
+	@Override
+	public void shiftCursorDown() {
+	}
+
+	@Override
+	public void shiftCursorLeft() {
+	}
+
+	@Override
+	public void shiftCursorRight() {
+	}
+
     @Override
     public boolean isLiveDataSupported() {
         return false;

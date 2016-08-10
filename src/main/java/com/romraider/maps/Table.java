@@ -161,6 +161,38 @@ public abstract class Table extends JPanel implements Serializable {
                 cursorUp();
             }
         };
+        Action shiftRightAction = new AbstractAction() {
+            private static final long serialVersionUID = 1042888914300385041L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                shiftCursorRight();
+            }
+        };
+        Action shiftLeftAction = new AbstractAction() {
+            private static final long serialVersionUID = -4970441655277214171L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	shiftCursorLeft();
+            }
+        };
+        Action shiftDownAction = new AbstractAction() {
+            private static final long serialVersionUID = -7898502951812125984L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	shiftCursorDown();
+            }
+        };
+        Action shiftUpAction = new AbstractAction() {
+            private static final long serialVersionUID = 6937621527147666631L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	shiftCursorUp();
+            }
+        };
         Action incCoarseAction = new AbstractAction() {
             private static final long serialVersionUID = -8308522736529183148L;
 
@@ -345,6 +377,10 @@ public abstract class Table extends JPanel implements Serializable {
         KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
         KeyStroke up = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0);
         KeyStroke down = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
+        KeyStroke shiftRight = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.SHIFT_DOWN_MASK);
+        KeyStroke shiftLeft = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,  KeyEvent.SHIFT_DOWN_MASK);
+        KeyStroke shiftUp = KeyStroke.getKeyStroke(KeyEvent.VK_UP,  KeyEvent.SHIFT_DOWN_MASK);
+        KeyStroke shiftDown = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,  KeyEvent.SHIFT_DOWN_MASK);
         KeyStroke decrement = KeyStroke.getKeyStroke('-');
         KeyStroke increment = KeyStroke.getKeyStroke('+');
         KeyStroke decrement2 = KeyStroke.getKeyStroke("control DOWN");
@@ -377,6 +413,10 @@ public abstract class Table extends JPanel implements Serializable {
         im.put(left, "left");
         im.put(up, "up");
         im.put(down, "down");
+        im.put(shiftRight, "shiftRight");
+        im.put(shiftLeft, "shiftLeft");
+        im.put(shiftUp, "shiftUp");
+        im.put(shiftDown, "shiftDown");
         im.put(increment, "incCoarseAction");
         im.put(decrement, "decCoarseAction");
         im.put(increment2, "incCoarseAction");
@@ -409,6 +449,10 @@ public abstract class Table extends JPanel implements Serializable {
         getActionMap().put(im.get(left), leftAction);
         getActionMap().put(im.get(up), upAction);
         getActionMap().put(im.get(down), downAction);
+        getActionMap().put(im.get(shiftRight), shiftRightAction);
+        getActionMap().put(im.get(shiftLeft), shiftLeftAction);
+        getActionMap().put(im.get(shiftUp), shiftUpAction);
+        getActionMap().put(im.get(shiftDown), shiftDownAction);
         getActionMap().put(im.get(increment), incCoarseAction);
         getActionMap().put(im.get(decrement), decCoarseAction);
         getActionMap().put(im.get(increment2), incCoarseAction);
@@ -965,6 +1009,14 @@ public abstract class Table extends JPanel implements Serializable {
 
     public abstract void cursorRight();
 
+    public abstract void shiftCursorUp();
+
+    public abstract void shiftCursorDown();
+
+    public abstract void shiftCursorLeft();
+
+    public abstract void shiftCursorRight();
+
     public void setRevertPoint() {
         for (DataCell cell : data) {
             cell.setRevertPoint();
@@ -1051,6 +1103,14 @@ public abstract class Table extends JPanel implements Serializable {
     public void selectCellAt(int y) {
         if(y >= 0 && y < data.length) {
             clearSelection();
+            data[y].setSelected(true);
+            highlightY = y;
+            ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(this);
+        }
+    }
+
+    public void selectCellAtWithoutClear(int y) {
+        if(y >= 0 && y < data.length) {
             data[y].setSelected(true);
             highlightY = y;
             ECUEditorManager.getECUEditor().getTableToolBar().updateTableToolBar(this);
