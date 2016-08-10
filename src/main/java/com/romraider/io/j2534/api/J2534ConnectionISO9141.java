@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,7 +151,7 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
         final ConfigItem p4Min = new ConfigItem(Config.P4_MIN.getValue(), 0);
         final ConfigItem loopback = new ConfigItem(Config.LOOPBACK.getValue(), 1);
         final ConfigItem dataBits = new ConfigItem(
-                Config.DATA_BITS .getValue(),
+                Config.DATA_BITS.getValue(),
                 connectionProperties.getDataBits());
         final ConfigItem parity = new ConfigItem(
                 Config.PARITY.getValue(),
