@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.StringTokenizer;
 
 import javax.swing.JLabel;
 import javax.swing.border.Border;
@@ -80,7 +81,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public DataCell(Table table, String staticText) {
         this(table);
-        this.staticText = staticText;
+        final StringTokenizer st = new StringTokenizer(staticText,"\t\n\r\f");
+        if (st.hasMoreTokens()) {
+            this.staticText = st.nextToken();
+        }
         table.setStaticDataTable(true);
     }
 
