@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,11 +72,30 @@ public class DS2TableAxisQueryParameterSet {
         final List<EcuQuery> tableAxisQuery = new ArrayList<EcuQuery>();
         final String tableAddrStr = storageAddress.replaceAll("0x", "");
         int tableAddrBase = Integer.parseInt(tableAddrStr, 16);
-        if (tableAddrBase > 0x10000) {
+        //Adjust address from ECU table def to linear RAM read address 
+        //MS41 256kB - full
+        if (tableAddrBase > 0x16000 && tableAddrBase < 0x17000) {
             tableAddrBase -= 0x4000;
         }
-        else {
+        //MS41 24kB - partial
+        else if (tableAddrBase > 0x2000 && tableAddrBase < 0x3000) {
             tableAddrBase += 0x10000;
+        }
+        //MS42 512kB - full
+        else if (tableAddrBase > 0x48000 && tableAddrBase < 0x49000) {
+            //no change
+        }
+        //MS42 32kB - partial
+        else if (tableAddrBase > 0x800 && tableAddrBase < 0x900) {
+            tableAddrBase += 0x48000;
+        }
+        //MS43 512kB - full
+        else if (tableAddrBase > 0x74000 && tableAddrBase < 0x74100) {
+            //no change
+        }
+        //MS43 32kB - partial
+        else if (tableAddrBase > 0x4000 && tableAddrBase < 0x4100) {
+            tableAddrBase += 0x70000;
         }
 
         int dataSize = EcuQueryData.getDataLength(storageType);
