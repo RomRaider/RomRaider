@@ -1168,39 +1168,40 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void paste() {
         // TODO: This sounds like desearialize.
-
-        StringTokenizer st = new StringTokenizer(Settings.BLANK);
-        try {
-            String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input);
-        } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
-        } catch (IOException ex) {
-        }
-
-        String pasteType = st.nextToken();
-
-        if ("[Table1D]".equalsIgnoreCase(pasteType)) { // copied entire table
-            int i = 0;
-            while (st.hasMoreTokens()) {
-                String currentToken = st.nextToken();
-                try {
-                    if (!data[i].getText().equalsIgnoreCase(currentToken)) {
-                        data[i].setRealValue(currentToken);
-                    }
-                } catch (ArrayIndexOutOfBoundsException ex) { /* table larger than target, ignore*/ }
-                i++;
+        if (!staticDataTable) {
+            StringTokenizer st = new StringTokenizer(Settings.BLANK);
+            try {
+                String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
+                st = new StringTokenizer(input);
+            } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
+            } catch (IOException ex) {
             }
-        } else if ("[Selection1D]".equalsIgnoreCase(pasteType)) { // copied selection
-            if (data[highlightY].isSelected()) {
+    
+            String pasteType = st.nextToken();
+    
+            if ("[Table1D]".equalsIgnoreCase(pasteType)) { // copied entire table
                 int i = 0;
                 while (st.hasMoreTokens()) {
                     String currentToken = st.nextToken();
                     try {
-                        if (!data[highlightY + i].getText().equalsIgnoreCase(currentToken)) {
-                            data[highlightY + i].setRealValue(currentToken);
+                        if (!data[i].getText().equalsIgnoreCase(currentToken)) {
+                            data[i].setRealValue(currentToken);
                         }
-                    } catch (ArrayIndexOutOfBoundsException ex) { /* paste larger than target, ignore */ }
+                    } catch (ArrayIndexOutOfBoundsException ex) { /* table larger than target, ignore*/ }
                     i++;
+                }
+            } else if ("[Selection1D]".equalsIgnoreCase(pasteType)) { // copied selection
+                if (data[highlightY].isSelected()) {
+                    int i = 0;
+                    while (st.hasMoreTokens()) {
+                        String currentToken = st.nextToken();
+                        try {
+                            if (!data[highlightY + i].getText().equalsIgnoreCase(currentToken)) {
+                                data[highlightY + i].setRealValue(currentToken);
+                            }
+                        } catch (ArrayIndexOutOfBoundsException ex) { /* paste larger than target, ignore */ }
+                        i++;
+                    }
                 }
             }
         }
