@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider.logger.external.mrf.io;
 
+import static com.romraider.Settings.COMMA;
 import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.serial.connection.SerialConnection;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
@@ -48,7 +49,7 @@ public final class MrfRunner implements Stoppable {
                 String response = connection.readLine();
                 if (isNullOrEmpty(response)) continue;
                 LOGGER.trace("MRF Stealth Gauge Response: " + response);
-                String[] values = response.split(",");
+                String[] values = response.split(COMMA);
                 for (int i = 0; i < values.length; i++) {
                     MrfDataItem dataItem = dataItems.get(MrfSensorType.valueOf(i));
                     if (dataItem != null) dataItem.setData(parseDouble(values[i]));

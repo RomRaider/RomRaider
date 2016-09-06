@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.tab.dyno;
 
+import static com.romraider.Settings.COMMA;
 import com.romraider.logger.ecu.ui.handler.graph.SpringUtilities;
 import com.romraider.logger.ecu.ui.tab.CircleDrawer;
 import com.romraider.logger.ecu.ui.tab.XYTrendline;
@@ -135,7 +136,7 @@ public final class DynoChartPanel extends JPanel {
     }
 
     public String getPwrTq(int x) {
-        String dataSet = data.getX(x) + "," + data.getY(x) + "," + data1.getY(x);
+        String dataSet = data.getX(x) + COMMA + data.getY(x) + COMMA + data1.getY(x);
         return dataSet;
     }
 

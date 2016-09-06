@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.swing.tools;
 
+import static com.romraider.Settings.COMMA;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -330,12 +331,14 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
             for (int i = 0; i < columnCount; i++ ) {
                 result = vehicleInfoTable.getTableHeader().getColumnModel().
                         getColumn(i).getHeaderValue();
-                bw.append(result.toString() + ",");
+                bw.append(result.toString());
+                bw.append(COMMA);
             }
             bw.append(EOL);
             for (int i = 0; i < columnCount; i++ ) {
                 result = vehicleInfoTable.getValueAt(0, i);
-                bw.append(result + ",");
+                bw.append(result.toString());
+                bw.append(COMMA);
             }
             bw.append(EOL + EOL);
             bw.write("A/F Learning (Stored)" + EOL);
@@ -344,13 +347,15 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
             for (int i = 0; i < columnCount; i++) {
                 result = afLearningTable.getTableHeader().getColumnModel().
                         getColumn(i).getHeaderValue();
-                bw.append(result.toString() + ",");
+                bw.append(result.toString());
+                bw.append(COMMA);
             }
             bw.append(EOL);
             for (int i = 0; i < rowCount; i++) {
                 for (int j = 0; j < columnCount; j++) {
                     result = afLearningTable.getValueAt(i, j);
-                    bw.append(result + ",");
+                    bw.append(result.toString());
+                    bw.append(COMMA);
                 }
                 bw.append(EOL);
             }
@@ -361,13 +366,15 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
             for (int i = 0; i < columnCount; i++) {
                 result = flkcTable.getTableHeader().getColumnModel().
                         getColumn(i).getHeaderValue();
-                bw.append(result.toString() + ",");
+                bw.append(result.toString());
+                bw.append(COMMA);
             }
             bw.append(EOL);
             for (int i = 0; i < rowCount; i++) {
                 for (int j = 0; j < columnCount; j++) {
                     result = flkcTable.getValueAt(i, j);
-                    bw.append(result + ",");
+                    bw.append(result.toString());
+                    bw.append(COMMA);
                 }
                 bw.append(EOL);
             }

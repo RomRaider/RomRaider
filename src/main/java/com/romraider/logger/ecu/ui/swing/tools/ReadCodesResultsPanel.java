@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.swing.tools;
 
+import static com.romraider.Settings.COMMA;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -49,8 +50,8 @@ import javax.swing.table.TableColumn;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
-import com.romraider.util.SettingsManager;
 import com.romraider.logger.ecu.ui.swing.tools.tablemodels.ReadCodesTableModel;
+import com.romraider.util.SettingsManager;
 
 public final class ReadCodesResultsPanel extends JPanel {
     private static final long serialVersionUID = -3180488605471088911L;
@@ -171,9 +172,12 @@ public final class ReadCodesResultsPanel extends JPanel {
                 String mem = "false";
                 if (result == 1 || result == 3) tmp = "true";
                 if (result == 2 || result == 3) mem = "true";
-                bw.append(query.getLoggerData().getName() + "," +
-                        tmp + "," +
-                        mem + eol);
+                bw.append(query.getLoggerData().getName());
+                bw.append(COMMA);
+                bw.append(tmp);
+                bw.append(COMMA);
+                bw.append(mem);
+                bw.append(eol);
             }
             bw.close();
             showMessageDialog(

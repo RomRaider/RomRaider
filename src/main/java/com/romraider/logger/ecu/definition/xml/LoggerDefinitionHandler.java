@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.definition.xml;
 
+import static com.romraider.Settings.COMMA;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMax;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getMin;
 import static com.romraider.logger.ecu.definition.xml.ConverterMaxMinDefaults.getStep;
@@ -359,7 +360,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
             } else if (TAG_ECU.equals(qName)) {
                 address = new EcuAddressImpl(addrStrings.toArray(new String[0]), addressLength, addressBit);
                 EcuAddressCreated = true;
-                for (String ecuId : ecuIds.split(",")) {
+                for (String ecuId : ecuIds.split(COMMA)) {
                     ecuAddressMap.put(ecuId, address);
                 }
                 addrStrings.clear();

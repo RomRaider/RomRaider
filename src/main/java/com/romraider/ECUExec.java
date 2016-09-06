@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider;
 
+import static com.romraider.Settings.COMMA;
 import static com.romraider.Version.BUILDNUMBER;
 import static com.romraider.Version.PRODUCT_NAME;
 import static com.romraider.Version.SUPPORT_URL;
@@ -64,7 +65,7 @@ public class ECUExec {
         LOGGER.info("When requesting assistance at " + SUPPORT_URL + " please include the System Properties information below:");
         LOGGER.info(DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.LONG).format(System.currentTimeMillis()));
         LOGGER.info("System Properties: \n\t"
-                + System.getProperties().toString().replace(",", "\n\t"));
+                + System.getProperties().toString().replace(COMMA, "\n\t"));
 
         // 64-bit won't work with the native libs (e.g. serial rxtx) but won't
         // fail until we actually try to use them we'll just warn here

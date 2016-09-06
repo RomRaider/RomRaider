@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider.swing;
 
+import static com.romraider.Settings.COMMA;
 import static javax.swing.BorderFactory.createLineBorder;
 
 import java.awt.Color;
@@ -645,7 +646,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             //***********
             /*minV = 0.0;
             maxV = 13.01;*/
-            LOGGER.debug("Scale: " + maxV + "," + minV);
+            LOGGER.debug("Scale: " + maxV + COMMA + minV);
             //***********
 
             Graph3dFrameManager.openGraph3dFrame(graphValues, minV, maxV, xValues, yValues, xLabel, yLabel, zLabel, currentTable.getName());

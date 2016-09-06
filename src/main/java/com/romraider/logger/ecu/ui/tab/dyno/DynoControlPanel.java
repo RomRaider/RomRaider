@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.tab.dyno;
 
+import static com.romraider.Settings.COMMA;
 import static com.romraider.Settings.SEMICOLON;
 import static com.romraider.Version.CARS_DEFS_URL;
 import static com.romraider.logger.car.util.SpeedCalculator.calculateMph;
@@ -121,7 +122,6 @@ public final class DynoControlPanel extends JPanel {
     private static final String DYNO_TT = "Use this mode to estimate Power & Torque";
     private static final String ET_TT = "Use this mode to measure trap times";
     private static final String COLON = ":";
-    private static final String COMMA = ",";
     private static final String TAB = "\u0009";
     private static final String RR_LOG_TIME = "Time";
     private static final String COBB_AP_TIME = "Seconds";
