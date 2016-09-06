@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,8 @@ public class Settings implements Serializable {
     public static final String NEW_LINE = System.getProperty("line.separator");
     public static final String TAB = "\t";
     public static final String BLANK = "";
+    public static final String COMMA = ",";
+    public static final String SEMICOLON = ";";
 
     /* Clipboard Settings */
     public static final String TABLE_CLIPBOARD_FORMAT_ELEMENT = "table-clipboard-format";
