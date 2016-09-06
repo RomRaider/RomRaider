@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 package com.romraider.logger.ecu.ui.tab.dyno;
 
+import static com.romraider.Settings.SEMICOLON;
 import static com.romraider.Version.CARS_DEFS_URL;
 import static com.romraider.logger.car.util.SpeedCalculator.calculateMph;
 import static com.romraider.logger.car.util.SpeedCalculator.calculateRpm;
@@ -121,7 +122,6 @@ public final class DynoControlPanel extends JPanel {
     private static final String ET_TT = "Use this mode to measure trap times";
     private static final String COLON = ":";
     private static final String COMMA = ",";
-    private static final String SEMICOLON = ";";
     private static final String TAB = "\u0009";
     private static final String RR_LOG_TIME = "Time";
     private static final String COBB_AP_TIME = "Seconds";

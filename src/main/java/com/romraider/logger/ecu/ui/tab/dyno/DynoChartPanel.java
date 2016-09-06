@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ package com.romraider.logger.ecu.ui.tab.dyno;
 import com.romraider.logger.ecu.ui.handler.graph.SpringUtilities;
 import com.romraider.logger.ecu.ui.tab.CircleDrawer;
 import com.romraider.logger.ecu.ui.tab.XYTrendline;
-
+import static com.romraider.Settings.SEMICOLON;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import jamlab.Polyfit;
 import static java.awt.Color.BLACK;
@@ -259,7 +259,7 @@ public final class DynoChartPanel extends JPanel {
             zTo60Text = "97 km/h";
         }
         hpAxis.setLabel("Vehicle Speed (" + units + ")");
-        String[] car = carInfo.split(";");
+        String[] car = carInfo.split(SEMICOLON);
         car[0] = "LANE 1: " + car[0].substring(0, car[0].length() - 3) + " - ET: " + String.format("%1.3f", etResults[8]) + "\" / " + String.format("%1.2f", etResults[9]) + " " + units;
         double ySpace = hpAxis.getUpperBound() / 25;
         double xMin = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 7) + plot.getDomainAxis().getLowerBound();
