@@ -46,6 +46,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final Logger LOGGER = Logger.getLogger(DataCell.class);
     private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
     private static final Font DEFAULT_FONT = new Font("Arial", Font.BOLD, 12);
+    private static final DecimalFormat ttFormatter = new DecimalFormat("#,##0.##########");
+
     private static int UNSELECT_MASK1 = MouseEvent.BUTTON1_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
     private static int UNSELECT_MASK2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
 
@@ -306,8 +308,19 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         if(table.isStaticDataTable()) {
             return getStaticText();
         }
-
-        return Double.toString(getRealValue());
+        String ttString = null;
+        if (null == table.getCompareTable()) {
+            ttString = ttFormatter.format(getRealValue());
+        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
+        	ttString = ttFormatter.format(getRealCompareValue());
+        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
+            if (getCompareValue() == 0.0) {
+            	ttString = PERCENT_FORMAT.format(0.0);
+            } else {
+            	ttString = PERCENT_FORMAT.format(getRealCompareChangeValue());
+            }
+        }
+        return ttString;
     }
 
     private String getLiveValue() {
