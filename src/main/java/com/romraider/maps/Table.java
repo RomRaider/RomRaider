@@ -56,12 +56,13 @@ import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableToolBar;
 import com.romraider.util.JEPUtil;
+import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
-    private static final Logger LOGGER = Logger.getLogger(Table.class);
+    protected static final Logger LOGGER = Logger.getLogger(Table.class);
     protected static int memModelEndian;
 
     protected String name;
@@ -1381,10 +1382,11 @@ public abstract class Table extends JPanel implements Serializable {
     public void highlightLiveData(String liveVal) {
         if (getOverlayLog()) {
             double liveValue = 0.0;
-            try{
-                liveValue = Double.parseDouble(liveVal);
-            } catch(NumberFormatException nex) {
-                return;
+            try {
+            	liveValue = NumberUtil.doubleValue(liveVal);
+            } catch (Exception ex) {
+            	LOGGER.error("Table - live data highlight parsing error for value: " + liveVal);
+            	return;
             }
 
             int startIdx = data.length;

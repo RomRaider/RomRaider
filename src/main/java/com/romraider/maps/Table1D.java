@@ -20,10 +20,10 @@
 package com.romraider.maps;
 
 import java.awt.BorderLayout;
-
 import javax.swing.JLabel;
 
 import com.romraider.Settings;
+import com.romraider.util.NumberUtil;
 
 public class Table1D extends Table {
     private static final long serialVersionUID = -8747180767803835631L;
@@ -257,9 +257,10 @@ public class Table1D extends Table {
     public void highlightLiveData(String liveVal) {
         if (getOverlayLog()) {
             double liveValue = 0.0;
-            try{
-                liveValue = Double.parseDouble(liveVal);
-            } catch(NumberFormatException nex) {
+            try {
+                liveValue = NumberUtil.doubleValue(liveVal);
+            } catch (Exception ex) {
+            	LOGGER.error("Table1D - live data highlight parsing error for value: " + liveVal);
                 return;
             }
 
