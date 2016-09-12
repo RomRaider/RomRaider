@@ -810,6 +810,7 @@ public final class DynoControlPanel extends JPanel {
         dButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                loadFileCB.setEnabled(true);
                 chartPanel.setDyno();
                 if (loadFileCB.isSelected()) {
                     recordDataButton.setText("Load From File");
@@ -829,6 +830,8 @@ public final class DynoControlPanel extends JPanel {
         eButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                loadFileCB.setEnabled(false);
+                loadFileCB.setSelected(false);
                 chartPanel.setET();
                 recordDataButton.setText("Record ET");
                 //                filterPanel.setVisible(false);
