@@ -49,6 +49,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,6 +88,7 @@ import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.net.BrowserControl;
+import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 
 public final class DynoControlPanel extends JPanel {
@@ -1000,18 +1002,18 @@ public final class DynoControlPanel extends JPanel {
                 int taCol = 0;
                 double minRpm = 3500;
                 double maxRpm = 0;
-                String delimiter = COMMA;
+                String delimiter = SEMICOLON;
                 String line = inputStream.readLine();
                 String[] headers;
-                headers = line.split(COMMA);
+                headers = line.split(SEMICOLON);
                 if (headers.length < 3) {
                     headers = line.split(TAB);
                     if (headers.length > 2) {
                         delimiter = TAB;
                     }
                     else {
-                        headers = line.split(SEMICOLON);
-                        if (headers.length > 2) delimiter = SEMICOLON;
+                        headers = line.split(COMMA);
+                        if (headers.length > 2) delimiter = COMMA;
                     }
                 }
                 for (int x = 0; x < headers.length; x++) {
@@ -1038,30 +1040,30 @@ public final class DynoControlPanel extends JPanel {
                         "; VS units: " + vsLogUnits);
                 while ((line = inputStream.readLine()) != null) {
                     String[] values = line.split(delimiter);
-                    if (Double.parseDouble(values[taCol]) > 98) {
+                    if (NumberUtil.doubleValue(values[taCol]) > 98) {
                         double logTime = 0;
                         if (atrTime) {
                             String[] timeStamp = values[timeCol].split(COLON);
                             if (timeStamp.length == 3) {
-                                logTime = ((Double.parseDouble(timeStamp[0]) * 3600) +
-                                        (Double.parseDouble(timeStamp[1]) * 60) +
-                                        Double.parseDouble(timeStamp[2])) * timeMult;
+                                logTime = (NumberUtil.doubleValue(timeStamp[0]) * 3600) +
+                                        (NumberUtil.doubleValue(timeStamp[1]) * 60) +
+                                        NumberUtil.doubleValue(timeStamp[2]) * timeMult;
                             } else {
-                                logTime = ((Double.parseDouble(timeStamp[0]) * 60) +
-                                        Double.parseDouble(timeStamp[1])) * timeMult;
+                                logTime = (NumberUtil.doubleValue(timeStamp[0]) * 60) +
+                                        NumberUtil.doubleValue(timeStamp[1]) * timeMult;
                             }
                         } else {
-                            logTime = Double.parseDouble(values[timeCol]) * timeMult;
+                            logTime = NumberUtil.doubleValue(values[timeCol]) * timeMult;
                         }
                         if (startTime == -999999999) startTime = logTime;
                         logTime = logTime - startTime;
                         double logRpm = 0;
                         if (isManual()) {
-                            logRpm = Double.parseDouble(values[rpmCol]);
+                            logRpm = NumberUtil.doubleValue(values[rpmCol]);
                             minRpm = Math.min(minRpm, logRpm);
                             maxRpm = Math.max(maxRpm, logRpm);
                         } else {
-                            logRpm = Double.parseDouble(values[vsCol]);
+                            logRpm = NumberUtil.doubleValue(values[vsCol]);
                             minRpm = Math.min(minRpm, calculateRpm(logRpm, rpm2mph, vsLogUnits));
                             maxRpm = Math.max(maxRpm, calculateRpm(logRpm, rpm2mph, vsLogUnits));
                         }
@@ -1075,6 +1077,12 @@ public final class DynoControlPanel extends JPanel {
                 interpolateButton.doClick();
             }
             catch (IOException e) {
+				e.printStackTrace();
+            }
+            catch (ParseException e) {
+				e.printStackTrace();
+			}
+            finally {
                 if (inputStream != null) {
                     try {
                         inputStream.close();
