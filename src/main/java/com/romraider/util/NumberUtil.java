@@ -27,7 +27,7 @@ import java.util.Locale;
  * This class provides Number conversion utilities based on the default Locale. 
  */
 public final class NumberUtil {
-    private static final NumberFormat numFormat = NumberFormat.getInstance(Locale.getDefault());
+    private static final NumberFormat NUM_FORMATTER = NumberFormat.getInstance(Locale.getDefault());
 
     private NumberUtil() {
     }
@@ -40,6 +40,6 @@ public final class NumberUtil {
      * @exception ParseException is thrown when parse errors are encountered.
      */
     public static double doubleValue(String str) throws ParseException {
-       	return numFormat.parse(str).doubleValue();
+       	return NUM_FORMATTER.parse(str).doubleValue();
     }
 }
