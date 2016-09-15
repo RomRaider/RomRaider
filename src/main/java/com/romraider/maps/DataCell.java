@@ -44,9 +44,12 @@ import com.romraider.util.SettingsManager;
 public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final long serialVersionUID = -2904293227148940937L;
     private static final Logger LOGGER = Logger.getLogger(DataCell.class);
-    private static final DecimalFormat PERCENT_FORMAT = new DecimalFormat("#,##0.0%");
     private static final Font DEFAULT_FONT = new Font("Arial", Font.BOLD, 12);
-    private static final DecimalFormat ttFormatter = new DecimalFormat("#,##0.##########");
+    private static final String ST_DELIMITER = "\t\n\r\f";
+    private static final DecimalFormat FORMATTER = new DecimalFormat();
+    private static final String PERCENT_FORMAT = "#,##0.0%";
+    private static final String TT_FORMAT = "#,##0.##########";
+    private static final String TT_PERCENT_FORMAT = "#,##0.0#########%";
 
     private static int UNSELECT_MASK1 = MouseEvent.BUTTON1_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
     private static int UNSELECT_MASK2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
@@ -83,7 +86,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public DataCell(Table table, String staticText) {
         this(table);
-        final StringTokenizer st = new StringTokenizer(staticText,"\t\n\r\f");
+        final StringTokenizer st = new StringTokenizer(staticText, ST_DELIMITER);
         if (st.hasMoreTokens()) {
             this.staticText = st.nextToken();
         }
@@ -281,18 +284,19 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             return getStaticText();
         }
 
-        DecimalFormat formatter = new DecimalFormat(table.getCurrentScale().getFormat());
+        FORMATTER.applyPattern(table.getCurrentScale().getFormat());
         String displayString = "";
 
         if (null == table.getCompareTable()) {
-            displayString = formatter.format(getRealValue());
+            displayString = FORMATTER.format(getRealValue());
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
-            displayString = formatter.format(getRealCompareValue());
+            displayString = FORMATTER.format(getRealCompareValue());
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
+        	FORMATTER.applyPattern(PERCENT_FORMAT);
             if (getCompareValue() == 0.0) {
-                displayString = PERCENT_FORMAT.format(0.0);
+                displayString = FORMATTER.format(0.0);
             } else {
-                displayString = PERCENT_FORMAT.format(getRealCompareChangeValue());
+                displayString = FORMATTER.format(getRealCompareChangeValue());
             }
         }
 
@@ -309,15 +313,22 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             return getStaticText();
         }
         String ttString = null;
+        FORMATTER.applyPattern(TT_FORMAT);
         if (null == table.getCompareTable()) {
-            ttString = ttFormatter.format(getRealValue());
+            ttString = FORMATTER.format(getRealValue());
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
-        	ttString = ttFormatter.format(getRealCompareValue());
+        	ttString = FORMATTER.format(getRealCompareValue());
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
-            if (getCompareValue() == 0.0) {
-            	ttString = PERCENT_FORMAT.format(0.0);
+        	FORMATTER.applyPattern(TT_PERCENT_FORMAT);
+        	if (getCompareValue() == 0.0) {
+            	ttString = FORMATTER.format(0.0);
             } else {
-            	ttString = PERCENT_FORMAT.format(getRealCompareChangeValue());
+            	ttString = FORMATTER.format(getRealCompareChangeValue());
+            }
+        }
+        if(traced) {
+            if(!(table instanceof Table1D)) {
+            	ttString = getLiveValueString(ttString);
             }
         }
         return ttString;
@@ -536,10 +547,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public String getStaticText() {
         String displayString = null;
         try {
-            DecimalFormat formatter = new DecimalFormat(table.getCurrentScale().getFormat());
-
+        	FORMATTER.applyPattern(table.getCurrentScale().getFormat());
             double staticDouble = Double.parseDouble(staticText);
-            displayString = formatter.format(JEPUtil.evaluate(table.getCurrentScale().getExpression(), staticDouble));
+            displayString = FORMATTER.format(JEPUtil.evaluate(table.getCurrentScale().getExpression(), staticDouble));
         } catch (Exception ex) {
             displayString = this.staticText;
         }
