@@ -415,9 +415,6 @@ public class Table2D extends Table {
     public void setOverlayLog(boolean overlayLog) {
         super.setOverlayLog(overlayLog);
         axis.setOverlayLog(overlayLog);
-        if (overlayLog) {
-            axis.clearLiveDataTrace();
-        }
     }
 
     @Override

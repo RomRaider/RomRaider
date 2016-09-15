@@ -1009,10 +1009,6 @@ public class Table3D extends Table {
         super.setOverlayLog(overlayLog);
         xAxis.setOverlayLog(overlayLog);
         yAxis.setOverlayLog(overlayLog);
-        if (overlayLog) {
-            xAxis.clearLiveDataTrace();
-            yAxis.clearLiveDataTrace();
-        }
     }
 
     @Override
