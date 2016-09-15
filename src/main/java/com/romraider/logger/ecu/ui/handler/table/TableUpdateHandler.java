@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,14 +50,16 @@ public final class TableUpdateHandler implements DataUpdateHandler {
     @Override
     public void handleDataUpdate(Response response) {
         for (LoggerData loggerData : response.getData()) {
-            List<Table> tables = tableMap.get(loggerData.getId());
-            if (tables != null && !tables.isEmpty()) {
-                String formattedValue = loggerData.getSelectedConvertor().format(response.getDataValue(loggerData));
-                for(ListIterator<Table> item = tables.listIterator(); item.hasNext();) {
-                    item.next().highlightLiveData(formattedValue);
-                }
-            }
-        }
+        	synchronized(tableMap) {
+	            List<Table> tables = tableMap.get(loggerData.getId());
+	            if (tables != null && !tables.isEmpty()) {
+	                String formattedValue = loggerData.getSelectedConvertor().format(response.getDataValue(loggerData));
+	                for(ListIterator<Table> item = tables.listIterator(); item.hasNext();) {
+	                    item.next().highlightLiveData(formattedValue);
+	                }
+	            }
+	        }
+    	}
     }
 
     @Override
