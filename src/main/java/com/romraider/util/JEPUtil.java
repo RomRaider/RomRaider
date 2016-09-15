@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package com.romraider.util;
 
 import org.nfunk.jep.JEP;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.LinkedHashMap;
 
@@ -30,7 +31,7 @@ public final class JEPUtil {
         private int cacheSize;
 
         public LRUCache(int cacheSize) {
-          super(16, 0.75f, true);
+          super(32, 0.75f, true);
           this.cacheSize = cacheSize;
         }
 
@@ -40,12 +41,13 @@ public final class JEPUtil {
         }
     };
     
-    private static final LRUCache<String, JEP> parserCache = new LRUCache<String, JEP>(16);
+    private static final Map<String, JEP> parserCache =
+    		Collections.synchronizedMap(new LRUCache<String, JEP>(32));
 
     private JEPUtil() {
     }
 
-    public static double evaluate(String expression, double value) {
+    public static synchronized double evaluate(String expression, double value) {
         JEP parser = parserCache.get(expression);
         if (parser == null) {
             parser = new JEP();
@@ -54,7 +56,6 @@ public final class JEPUtil {
             parser.initSymTab(); // clear the contents of the symbol table
             parser.addVariable("x", value);
             parser.parseExpression(expression);
-
             parserCache.put(expression, parser);
         } else {
             parser.setVarValue("x", value);
@@ -62,13 +63,22 @@ public final class JEPUtil {
         return parser.getValue();
     }
 
-    public static double evaluate(String expression, Map<String, Double> valueMap) {
-        final JEP parser = new JEP();
-        parser.initSymTab(); // clear the contents of the symbol table
-        for (String id : valueMap.keySet()) {
-            parser.addVariable(id, valueMap.get(id));
-        }
-        parser.parseExpression(expression);
-        return parser.getValue();
-    }
+    public static synchronized double evaluate(String expression, Map<String, Double> valueMap) {
+	    JEP parser = parserCache.get(expression);
+	    if (parser == null) {
+	        parser = new JEP();
+	        parser.initSymTab(); // clear the contents of the symbol table
+	        for (String id : valueMap.keySet()) {
+	            parser.addVariable(id, valueMap.get(id));
+	        }
+	        parser.parseExpression(expression);
+	        parserCache.put(expression, parser);
+	    }
+	    else {
+	        for (String id : valueMap.keySet()) {
+	            parser.setVarValue(id, valueMap.get(id));
+	        }
+	    }
+	    return parser.getValue();
+	}
 }
