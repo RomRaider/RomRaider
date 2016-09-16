@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ public final class DOMRomUnmarshaller {
     private JProgressPane progress = null;
     private final List<Scale> scales = new ArrayList<Scale>();
     private String memModelEndian = null;
+    private final Scale rawScale = new Scale();
 
     public DOMRomUnmarshaller() {
     }
@@ -386,10 +387,15 @@ public final class DOMRomUnmarshaller {
             if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("3D")) {
                 table = new Table3D();
+                table.getScales().add(rawScale);
+                ((Table3D) table).getXAxis().getScales().add(rawScale);
+                ((Table3D) table).getYAxis().getScales().add(rawScale);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("2D")) {
                 table = new Table2D();
+                table.getScales().add(rawScale);
+                ((Table2D) table).getAxis().getScales().add(rawScale);
 
             } else if (unmarshallAttribute(tableNode, "type", "unknown")
                     .equalsIgnoreCase("1D")) {
@@ -619,7 +625,12 @@ public final class DOMRomUnmarshaller {
 
         scale.setFineIncrement(unmarshallAttribute(scaleNode, "fineincrement",
                 scale.getFineIncrement()));
-
+        for (Scale s : scales) {
+        	if (s.equals(scale)) {
+        		return s;
+        	}
+        }
+        scales.add(scale);
         return scale;
     }
 }
