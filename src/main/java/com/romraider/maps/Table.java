@@ -1133,7 +1133,12 @@ public abstract class Table extends JPanel implements Serializable {
     public StringBuffer getTableAsString() {
         StringBuffer output = new StringBuffer(Settings.BLANK);
         for (int i = 0; i < data.length; i++) {
-            output.append(data[i].getRealValue());
+            if (overlayLog) {
+                output.append(data[i].getCellText());
+            }
+            else {
+                output.append(data[i].getRealValue());
+            }
             if (i < data.length - 1) {
                 output.append(Settings.TAB);
             }

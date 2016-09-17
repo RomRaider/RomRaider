@@ -326,7 +326,12 @@ public class Table3D extends Table {
             output.append(Settings.TAB);
 
             for (int x = 0; x < getSizeX(); x++) {
-                output.append(data[x][y].getRealValue());
+                if (overlayLog) {
+                    output.append(data[x][y].getCellText());
+                }
+                else {
+                    output.append(data[x][y].getRealValue());
+                }
                 if (x < getSizeX() - 1) {
                     output.append(Settings.TAB);
                 }

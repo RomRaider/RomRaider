@@ -279,7 +279,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         return border;
     }
 
-    private String getCellText() {
+    public String getCellText() {
         if(table.isStaticDataTable()) {
             return getStaticText();
         }
