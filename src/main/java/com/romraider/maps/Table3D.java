@@ -45,6 +45,7 @@ import javax.swing.SwingWorker;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
+import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.RomAttributeParser;
 
@@ -322,7 +323,7 @@ public class Table3D extends Table {
         output.append(Settings.NEW_LINE);
 
         for (int y = 0; y < getSizeY(); y++) {
-            output.append(yAxis.data[y].getRealValue());
+            output.append(NumberUtil.stringValue(yAxis.data[y].getRealValue()));
             output.append(Settings.TAB);
 
             for (int x = 0; x < getSizeX(); x++) {
@@ -330,7 +331,7 @@ public class Table3D extends Table {
                     output.append(data[x][y].getCellText());
                 }
                 else {
-                    output.append(data[x][y].getRealValue());
+                    output.append(NumberUtil.stringValue(data[x][y].getRealValue()));
                 }
                 if (x < getSizeX() - 1) {
                     output.append(Settings.TAB);
@@ -750,7 +751,7 @@ public class Table3D extends Table {
         String input = Settings.BLANK;
         try {
             input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input);
+            st = new StringTokenizer(input, ST_DELIMITER);
         } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
         } catch (IOException ex) {
         }
@@ -796,7 +797,7 @@ public class Table3D extends Table {
         StringTokenizer st = new StringTokenizer(Settings.BLANK);
         try {
             String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input);
+            st = new StringTokenizer(input, ST_DELIMITER);
         } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
         } catch (IOException ex) {
         }
@@ -818,7 +819,7 @@ public class Table3D extends Table {
             if (y==startY && checkToken.endsWith("\t")) {
                 checkToken = st.nextToken(Settings.NEW_LINE);
             }
-            StringTokenizer currentLine = new StringTokenizer(checkToken);
+            StringTokenizer currentLine = new StringTokenizer(checkToken, ST_DELIMITER);
             for (int x = startX; currentLine.hasMoreTokens() && x < getSizeX(); x++) {
                 String currentToken = currentLine.nextToken();
 
@@ -1133,7 +1134,7 @@ class CopySelection3DWorker extends SwingWorker<Void, Void> {
             for (int y = coords[1]; y <= coords[3]; y++) {
                 for (int x = coords[0]; x <= coords[2]; x++) {
                     if (table.get3dData()[x][y].isSelected()) {
-                        output.append(table.get3dData()[x][y].getText());
+                        output.append(NumberUtil.stringValue(table.get3dData()[x][y].getRealValue()));
                     } else {
                         output.append("x"); // x represents non-selected cell
                     }

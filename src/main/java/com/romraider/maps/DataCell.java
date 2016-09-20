@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.StringTokenizer;
 
 import javax.swing.JLabel;
@@ -39,6 +40,7 @@ import org.apache.log4j.Logger;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.util.JEPUtil;
+import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 
 public class DataCell extends JLabel implements MouseListener, Serializable {
@@ -50,6 +52,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private static final String PERCENT_FORMAT = "#,##0.0%";
     private static final String TT_FORMAT = "#,##0.##########";
     private static final String TT_PERCENT_FORMAT = "#,##0.0#########%";
+    private static final String REPLACE_TEXT = "\u0020|\u00a0";
 
     private static int UNSELECT_MASK1 = MouseEvent.BUTTON1_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
     private static int UNSELECT_MASK2 = MouseEvent.BUTTON3_DOWN_MASK + MouseEvent.CTRL_DOWN_MASK + MouseEvent.ALT_DOWN_MASK;
@@ -112,10 +115,11 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setRealValue(String input) {
         // create parser
+    	input = input.replaceAll(REPLACE_TEXT, Settings.BLANK);
         try {
             double result = 0.0;
             if (!"x".equalsIgnoreCase(input)) {
-                result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), Double.parseDouble(input));
+				result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), NumberUtil.doubleValue(input));
                 if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
                     result = (int) Math.round(result);
                 }
@@ -124,7 +128,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
                     this.setBinValue(result);
                 }
             }
-        } catch (NumberFormatException e) {
+        } catch (ParseException e) {
             // Do nothing.  input is null or not a valid number.
         }
     }
@@ -548,7 +552,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         String displayString = null;
         try {
         	FORMATTER.applyPattern(table.getCurrentScale().getFormat());
-            double staticDouble = Double.parseDouble(staticText);
+            double staticDouble = NumberUtil.doubleValue(staticText);
             displayString = FORMATTER.format(JEPUtil.evaluate(table.getCurrentScale().getExpression(), staticDouble));
         } catch (Exception ex) {
             displayString = this.staticText;

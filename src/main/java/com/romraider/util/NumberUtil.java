@@ -19,6 +19,7 @@
 
 package com.romraider.util;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
@@ -28,18 +29,31 @@ import java.util.Locale;
  */
 public final class NumberUtil {
     private static final NumberFormat NUM_FORMATTER = NumberFormat.getInstance(Locale.getDefault());
+    private static final String NAN = "NaN";
+    static {
+        ((DecimalFormat) NUM_FORMATTER).applyPattern("0.0#################");
+    }
 
     private NumberUtil() {
     }
 
     /**
      * Returns the value of the specified number in the default locale as a double.
-     * @param    str - string to be converted.
+     * @param   str - string to be converted.
      * @return  the numeric value represented by this object after conversion 
      * to type double.
      * @exception ParseException is thrown when parse errors are encountered.
      */
     public static double doubleValue(String str) throws ParseException {
        	return NUM_FORMATTER.parse(str).doubleValue();
+    }
+
+    /**
+     * Format a double using the current Locale
+     * @param  value to format
+     * @return the number as a String
+     */
+    public static String stringValue(double value) {
+        return Double.isNaN(value) ? NAN : NUM_FORMATTER.format(value);
     }
 }

@@ -305,7 +305,7 @@ public class Table2D extends Table {
         String input = Settings.BLANK;
         try {
             input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-            st = new StringTokenizer(input);
+            st = new StringTokenizer(input, ST_DELIMITER);
         } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
         } catch (IOException ex) {
         }

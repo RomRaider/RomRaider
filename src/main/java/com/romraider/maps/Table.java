@@ -63,6 +63,7 @@ import com.romraider.xml.RomAttributeParser;
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
     protected static final Logger LOGGER = Logger.getLogger(Table.class);
+    protected static final String ST_DELIMITER = "\t\n\r\f";
     protected static int memModelEndian;
 
     protected String name;
@@ -1137,7 +1138,7 @@ public abstract class Table extends JPanel implements Serializable {
                 output.append(data[i].getCellText());
             }
             else {
-                output.append(data[i].getRealValue());
+                output.append(NumberUtil.stringValue(data[i].getRealValue()));
             }
             if (i < data.length - 1) {
                 output.append(Settings.TAB);
@@ -1177,7 +1178,7 @@ public abstract class Table extends JPanel implements Serializable {
             StringTokenizer st = new StringTokenizer(Settings.BLANK);
             try {
                 String input = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-                st = new StringTokenizer(input);
+                st = new StringTokenizer(input, ST_DELIMITER);
             } catch (UnsupportedFlavorException ex) { /* wrong paste type -- do nothing */
             } catch (IOException ex) {
             }
@@ -1516,7 +1517,7 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
         //make a string of the selection
         for (int i = coords[0]; i <= coords[1]; i++) {
             if (table.getData()[i].isSelected()) {
-                output = output + table.getData()[i].getText();
+                output = output + NumberUtil.stringValue(table.getData()[i].getRealValue());
             } else {
                 output = output + "x"; // x represents non-selected cell
             }
