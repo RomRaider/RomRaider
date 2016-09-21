@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2016 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,8 +176,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         for (int i = 0; i < tableNodes.size(); i++) {
 
             // update progress
-            int currProgress = (int) (i / (double) tableNodes.size() * 40);
-            progress.update("Populating tables...", 50 + currProgress);
+            int currProgress = (int) (i / (double) tableNodes.size() * 100);
+            progress.update("Populating tables...", currProgress);
 
             Table table = tableNodes.get(i).getTable();
             try {
