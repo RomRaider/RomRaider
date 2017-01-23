@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,7 @@ import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
 import com.romraider.maps.Table3D;
+import com.romraider.util.NumberUtil;
 import com.romraider.util.SettingsManager;
 
 public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ActionListener, GraphDataListener {
@@ -513,9 +514,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
 
     public void multiply(Table currentTable) {
         try{
-            currentTable.multiply(Double.parseDouble(setValueText.getText()));
-        }catch(NumberFormatException nex) {
-            // Do Nothing.  setValueText is null or not a valid double.
+            currentTable.multiply(NumberUtil.doubleValue(setValueText.getText()));
+        }catch(ParseException nex) {
+            LOGGER.error(this.getClass().getName() + ".multiply(" + currentTable + ") " + nex);
         }
     }
 
