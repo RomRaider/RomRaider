@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ public class Scale implements Serializable {
     private static final long serialVersionUID = 5836610685159474795L;
 
     private String name = "Raw Value";
-    private String unit = "0x";
+    private String unit = "raw value";
     private String expression = "x";
     private String byteExpression = "x";
     private String format = "#.##";
