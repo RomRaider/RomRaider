@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -515,6 +515,14 @@ public abstract class Table extends JPanel implements Serializable {
                     byteValue[3] = input[getStorageAddress() + i * 4 - ramOffset + 3];
                     dataValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
 
+                } else if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
+                		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
+                    dataValue = RomAttributeParser.parseByteValue(input,
+                            endian,
+                            getStorageAddress() + i * 3 - ramOffset,
+                            storageType,
+                            signed);
+
                 } else { // integer storage type
                     dataValue = RomAttributeParser.parseByteValue(input,
                             endian,
@@ -792,6 +800,14 @@ public abstract class Table extends JPanel implements Serializable {
                     minAllowedBin = Integer.MIN_VALUE;
                     maxAllowedBin = Integer.MAX_VALUE;
                     break;
+                case Settings.STORAGE_TYPE_MOVI20:
+                    minAllowedBin = Settings.MOVI20_MIN_VALUE;
+                    maxAllowedBin = Settings.MOVI20_MAX_VALUE;
+                    break;
+                case Settings.STORAGE_TYPE_MOVI20S:
+                    minAllowedBin = Settings.MOVI20S_MIN_VALUE;
+                    maxAllowedBin = Settings.MOVI20S_MAX_VALUE;
+                    break;
                 }
             }
             else {
@@ -1067,8 +1083,13 @@ public abstract class Table extends JPanel implements Serializable {
                     }  else {
                         output = RomAttributeParser.parseIntegerValue((int) data[i].getBinValue(), endian, storageType);
                     }
-                    for (int z = 0; z < storageType; z++) { // insert into file
-                        binData[i * storageType + z + getStorageAddress() - ramOffset] = output[z];
+                    int byteLength = storageType;
+                    if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
+                    		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
+                    	byteLength = 3;
+                    }
+                    for (int z = 0; z < byteLength; z++) { // insert into file
+                        binData[i * byteLength + z + getStorageAddress() - ramOffset] = output[z];
                     }
 
                 } else { // float

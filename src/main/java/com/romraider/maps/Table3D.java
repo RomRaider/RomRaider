@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ public class Table3D extends Table {
         boolean tempLock = locked;
         locked = false;
 
-        // populate axiis
+        // populate axes
         try {
             xAxis.populateTable(input, romRamOffset);
             yAxis.populateTable(input, romRamOffset);
@@ -194,6 +194,14 @@ public class Table3D extends Table {
                     byteValue[2] = input[getStorageAddress() + offset * 4 - ramOffset + 2];
                     byteValue[3] = input[getStorageAddress() + offset * 4 - ramOffset + 3];
                     cellBinValue = RomAttributeParser.byteToFloat(byteValue, endian, memModelEndian);
+
+                } else if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
+                		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
+                	cellBinValue = RomAttributeParser.parseByteValue(input,
+                            endian,
+                            getStorageAddress() + i * 3 - ramOffset,
+                            storageType,
+                            signed);
 
                 } else { // integer storage type
                     cellBinValue = RomAttributeParser.parseByteValue(input,
@@ -546,8 +554,13 @@ public class Table3D extends Table {
                     byte[] output;
                     if (storageType != Settings.STORAGE_TYPE_FLOAT) {
                         output = RomAttributeParser.parseIntegerValue((int) data[x][y].getBinValue(), endian, storageType);
-                        for (int z = 0; z < storageType; z++) {
-                            binData[offset * storageType + z + getStorageAddress() - ramOffset] = output[z];
+                        int byteLength = storageType;
+                        if (storageType == Settings.STORAGE_TYPE_MOVI20 ||
+                        		storageType == Settings.STORAGE_TYPE_MOVI20S) { // when data is in MOVI20 instruction
+                        	byteLength = 3;
+                        }
+                        for (int z = 0; z < byteLength; z++) {
+                            binData[offset * byteLength + z + getStorageAddress() - ramOffset] = output[z];
                         }
                     } else { // float
                         output = RomAttributeParser.floatToByte((float) data[x][y].getBinValue(), endian, memModelEndian);

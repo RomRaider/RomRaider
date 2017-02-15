@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,12 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     else {
         if (Settings.STORAGE_TYPE_FLOAT == table.getStorageType()) {
             storageSize.setText("float");
+        }
+        else if (table.getStorageType() == Settings.STORAGE_TYPE_MOVI20) {
+            storageSize.setText("int20");
+        }
+        else if (table.getStorageType() == Settings.STORAGE_TYPE_MOVI20S) {
+            storageSize.setText("int28");
         }
         else {
             String dataType;

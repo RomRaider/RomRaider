@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,13 @@ public final class RomAttributeParser {
     }
 
     public static int parseStorageType(String input) {
-        if (input.equalsIgnoreCase("float")) {
+    	if (input.equalsIgnoreCase("movi20")) {	// when data is in MOVI20 instruction
+    		return Settings.STORAGE_TYPE_MOVI20;
+    	}
+    	else if (input.equalsIgnoreCase("movi20s")) {	// when data is in MOVI20 instruction
+    		return Settings.STORAGE_TYPE_MOVI20S;
+    	}
+    	else if (input.equalsIgnoreCase("float")) {
             return Settings.STORAGE_TYPE_FLOAT;
         }
         else if (input.startsWith("uint")) {
@@ -72,7 +78,8 @@ public final class RomAttributeParser {
     }
 
     public static boolean parseStorageDataSign(String input) {
-        if (input.startsWith("int")) {
+        if (input.toLowerCase().startsWith("int") ||
+        		input.toLowerCase().startsWith("movi20")) { // when data is in MOVI20 instruction
             return true;
         }
         else {
@@ -110,7 +117,12 @@ public final class RomAttributeParser {
     public static long parseByteValue(byte[] input, int endian, int address, int length, boolean signed) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         try {
             long output = 0L;
-            ByteBuffer bb = ByteBuffer.wrap(input, address, length);
+            int llength = length;
+            if (length == Settings.STORAGE_TYPE_MOVI20 ||
+            		length == Settings.STORAGE_TYPE_MOVI20S) {
+            	llength = 3;
+            }
+            final ByteBuffer bb = ByteBuffer.wrap(input, address, llength);
             if (endian == Settings.ENDIAN_LITTLE) {
                 bb.order(ByteOrder.LITTLE_ENDIAN);
             }
@@ -123,6 +135,11 @@ public final class RomAttributeParser {
                 break;
             case 4:
                 output = bb.getInt();
+                break;
+            case Settings.STORAGE_TYPE_MOVI20:
+            case Settings.STORAGE_TYPE_MOVI20S:
+            	bb.position(bb.position()-1);
+                output = getMovi20(bb.getInt());
                 break;
             }
             if (!signed) {
@@ -144,9 +161,27 @@ public final class RomAttributeParser {
         }
     }
 
-    public static byte[] parseIntegerValue(int input, int endian, int length) {
+    // when data is in MOVI20 instruction
+    private static int getMovi20(int value) {
+    	final int shift = value & 0x00010000;
+    	value = ((value & 0x00f00000) >>> 4) + (value & 0x0000FFFF);
+    	if ((value & 0x00080000) > 0) {
+    		value = (value | 0xfff00000);
+    	}
+		if (shift > 0) { //MOVI20S
+			return (value << 8);
+		}
+    	return value;
+	}
+
+	public static byte[] parseIntegerValue(int input, int endian, int length) {
         try {
-            ByteBuffer bb = ByteBuffer.allocate(length);
+        	int llength = length;
+        	if (length == Settings.STORAGE_TYPE_MOVI20 ||
+        			length == Settings.STORAGE_TYPE_MOVI20S) {
+        		llength = 4;
+        	}
+            final ByteBuffer bb = ByteBuffer.allocate(llength);
             if (endian == Settings.ENDIAN_LITTLE) {
                 bb.order(ByteOrder.LITTLE_ENDIAN);
             }
@@ -160,6 +195,10 @@ public final class RomAttributeParser {
             case 4:
                 bb.putInt(input);
                 break;
+            case Settings.STORAGE_TYPE_MOVI20:
+            	return parseMovi20(bb.putInt(input).array(), length);
+            case Settings.STORAGE_TYPE_MOVI20S:
+            	return parseMovi20(bb.putInt(input>>8).array(), length);
             }
             return bb.array();
         }
@@ -167,6 +206,18 @@ public final class RomAttributeParser {
             throw new BufferOverflowException();
         }
     }
+
+    // when data is in MOVI20 instruction
+    private static byte[] parseMovi20(byte[] bytes, int length) {
+    	final byte[] output = {0,0,0};
+   		output[0] = (byte) (bytes[1] << 4);
+    	if (length == Settings.STORAGE_TYPE_MOVI20S) { //MOVI20S
+    		output[0] = (byte) ((bytes[1] << 4) | 0x01);
+    	}
+    	output[1] = bytes[2];
+    	output[2] = bytes[3];
+    	return output;
+	}
 
     public static int parseFileSize(String input) throws NumberFormatException {
         try {

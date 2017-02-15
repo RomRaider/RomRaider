@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,6 +107,12 @@ public class Settings implements Serializable {
     public static final int COMPARE_DISPLAY_PERCENT = 1;
     public static final int COMPARE_DISPLAY_ABSOLUTE = 2;
 
+    public static final int MOVI20_MIN_VALUE = 0xfff80000;
+    public static final int MOVI20_MAX_VALUE = 0x0007ffff;
+    public static final int MOVI20S_MIN_VALUE = 0xf8000000;
+    public static final int MOVI20S_MAX_VALUE = 0x07ffff00;
+    public static final int STORAGE_TYPE_MOVI20 = 20;
+    public static final int STORAGE_TYPE_MOVI20S = 28;
     public static final int STORAGE_TYPE_FLOAT = 99;
     public static final boolean STORAGE_DATA_SIGNED = false;
 
