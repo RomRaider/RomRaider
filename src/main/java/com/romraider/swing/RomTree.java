@@ -56,19 +56,16 @@ public class RomTree extends JTree implements MouseListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    Object selectedRow = getLastSelectedPathComponent();
-                    /* if nothing is selected */
-                    if (selectedRow == null) {
-                        return;
-                    }
-
-                    if(selectedRow instanceof TableTreeNode) {
-                        showTable(selectedRow);
-                    }
-                    setLastSelectedRom(selectedRow);
-                }catch(NullPointerException ex) {
+                Object selectedRow = getLastSelectedPathComponent();
+                /* if nothing is selected */
+                if (selectedRow == null) {
+                    return;
                 }
+
+                if (selectedRow instanceof TableTreeNode) {
+                    showTable((TableTreeNode)selectedRow);
+                }
+                setLastSelectedRom(selectedRow);
             }
         };
 
@@ -87,32 +84,24 @@ public class RomTree extends JTree implements MouseListener {
         TreePath treePath = getPathForLocation(e.getX(), e.getY());
         if (treePath == null)
             return; // this happens if we click in the empty area
-        try {
-            Object selectedRow = treePath.getLastPathComponent();
-            /* if nothing is selected */
-            if (selectedRow == null) {
-                return;
-            }
-
-            if(e.getClickCount() >= SettingsManager.getSettings().getTableClickCount()
-                    && selectedRow instanceof TableTreeNode) {
-                showTable(selectedRow);
-            }
-
-            setLastSelectedRom(selectedRow);
-        }catch(NullPointerException ex) {
+        Object selectedRow = treePath.getLastPathComponent();
+        /* if nothing is selected */
+        if (selectedRow == null) {
+            return;
         }
+
+        if (e.getClickCount() >= SettingsManager.getSettings().getTableClickCount()
+                && selectedRow instanceof TableTreeNode) {
+            showTable((TableTreeNode)selectedRow);
+        }
+
+        setLastSelectedRom(selectedRow);
     }
 
-    private void showTable(Object selectedRow) {
-        try{
-            if(selectedRow instanceof TableTreeNode) {
-                TableTreeNode node = (TableTreeNode) selectedRow;
-                if(null != node) {
-                    getEditor().displayTable(node.getFrame());
-                }
-            }
-        } catch (NullPointerException ex) {
+    private void showTable(TableTreeNode selectedRow) {
+        TableTreeNode node = (TableTreeNode) selectedRow;
+        if (null != node) {
+            getEditor().displayTable(node.getFrame());
         }
     }
 
@@ -122,7 +111,7 @@ public class RomTree extends JTree implements MouseListener {
         }
 
         Rom romNode = getRomNode(selectedNode);
-        if(romNode == null) {
+        if (romNode == null) {
             return;
         }
         getEditor().setLastSelectedRom(romNode);
@@ -130,7 +119,7 @@ public class RomTree extends JTree implements MouseListener {
     }
 
     private Rom getRomNode(Object currentNode){
-        if(currentNode == null) {
+        if (currentNode == null) {
             return null;
         } else if(currentNode instanceof Rom) {
             return (Rom)currentNode;
@@ -138,7 +127,7 @@ public class RomTree extends JTree implements MouseListener {
             return getRomNode(((TableTreeNode)currentNode).getParent());
         } else if(currentNode instanceof CategoryTreeNode) {
             return getRomNode(((CategoryTreeNode)currentNode).getParent());
-        }else {
+        } else {
             return null;
         }
     }
