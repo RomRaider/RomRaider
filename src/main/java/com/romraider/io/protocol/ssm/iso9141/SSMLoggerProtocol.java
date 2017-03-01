@@ -68,9 +68,9 @@ public final class SSMLoggerProtocol implements LoggerProtocol {
             numAddresses += (ecuQuery.getBytes().length / ADDRESS_SIZE);
         }
         switch (pollState.getCurrentState()) {
-        case 0:
+            case STATE_0:
             return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES) + (numAddresses * ADDRESS_SIZE + REQUEST_NON_DATA_BYTES)];
-        case 1:
+            case STATE_1:
             return new byte[(numAddresses * DATA_SIZE + RESPONSE_NON_DATA_BYTES)];
         default:
             throw new UnsupportedOperationException("Poll mode not supported:" + pollState.getCurrentState());

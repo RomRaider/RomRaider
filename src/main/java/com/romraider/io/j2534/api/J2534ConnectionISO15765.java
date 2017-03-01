@@ -57,7 +57,7 @@ public final class J2534ConnectionISO15765 implements ConnectionManager {
         checkNotNull(response, "response");
         checkNotNull(pollState, "pollState");
         pollState.setFastPoll(false);
-        pollState.setCurrentState(0);
+        pollState.setCurrentState(PollingState.State.STATE_0);
         api.writeMsg(channelId, request, timeout, TxFlags.ISO15765_FRAME_PAD);
         final byte[] readMsg = api.readMsg(channelId, 1, timeout);
         System.arraycopy(readMsg, 0, response, 0, readMsg.length) ;

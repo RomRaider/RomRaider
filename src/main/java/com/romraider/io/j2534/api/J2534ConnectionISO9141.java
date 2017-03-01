@@ -57,16 +57,17 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
         checkNotNull(response, "response");
         checkNotNull(pollState, "pollState");
 
-        if (pollState.getCurrentState() == 0 && pollState.getLastState() == 1) {
+        if (pollState.getCurrentState() == PollingState.State.STATE_0 &&
+                pollState.getLastState() == PollingState.State.STATE_1) {
             clearLine();
         }
 
-        if (pollState.getCurrentState() == 0) {
+        if (pollState.getCurrentState() == PollingState.State.STATE_0) {
             api.writeMsg(channelId, request, timeout, TxFlags.NO_FLAGS);
         }
         api.readMsg(channelId, response, timeout);
 
-        if (pollState.getCurrentState() == 1){
+        if (pollState.getCurrentState() == PollingState.State.STATE_1){
             if (    response[0] == (byte) 0x80
                 &&  response[1] == (byte) 0xF0
                 && (response[2] == (byte) 0x10 || response[2] == (byte) 0x18)

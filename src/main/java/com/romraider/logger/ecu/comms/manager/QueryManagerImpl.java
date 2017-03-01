@@ -217,9 +217,9 @@ public final class QueryManagerImpl implements QueryManager {
                 updateQueryList();
                 if (queryMap.isEmpty()) {
                     if (pollState.isLastQuery() &&
-                            pollState.getCurrentState() == 0) {
+                            pollState.getCurrentState() == PollingState.State.STATE_0) {
                         endEcuQueries(txManager);
-                        pollState.setLastState(0);
+                        pollState.setLastState(PollingState.State.STATE_0);
                     }
                     start = System.currentTimeMillis();
                     count = 0;
@@ -237,40 +237,40 @@ public final class QueryManagerImpl implements QueryManager {
                                 endEcuQueries(txManager);
                             }
                             if (pollState.isFastPoll()) {
-                                if (pollState.getCurrentState() == 0 &&
+                                if (pollState.getCurrentState() == PollingState.State.STATE_0 &&
                                         pollState.isNewQuery()) {
-                                    pollState.setCurrentState(1);
+                                    pollState.setCurrentState(PollingState.State.STATE_1);
                                     pollState.setNewQuery(false);
                                 }
-                                if (pollState.getCurrentState() == 0 &&
+                                if (pollState.getCurrentState() == PollingState.State.STATE_0 &&
                                         !pollState.isNewQuery()) {
-                                    pollState.setCurrentState(1);
+                                    pollState.setCurrentState(PollingState.State.STATE_1);
                                 }
-                                if (pollState.getCurrentState() == 1 &&
+                                if (pollState.getCurrentState() == PollingState.State.STATE_1 &&
                                         pollState.isNewQuery()) {
-                                    pollState.setCurrentState(0);
-                                    pollState.setLastState(1);
+                                    pollState.setCurrentState(PollingState.State.STATE_0);
+                                    pollState.setLastState(PollingState.State.STATE_1);
                                     pollState.setNewQuery(false);
                                 }
-                                if (pollState.getCurrentState() == 1 &&
+                                if (pollState.getCurrentState() == PollingState.State.STATE_1 &&
                                         !pollState.isNewQuery()) {
-                                    pollState.setLastState(1);
+                                    pollState.setLastState(PollingState.State.STATE_1);
                                 }
                                 pollState.setLastQuery(true);
                             }
                             else {
-                                pollState.setCurrentState(0);
-                                pollState.setLastState(0);
+                                pollState.setCurrentState(PollingState.State.STATE_0);
+                                pollState.setLastState(PollingState.State.STATE_0);
                                 pollState.setNewQuery(false);
                             }
                             lastPollState = pollState.isFastPoll();
                         }
                         else {
                             if (pollState.isLastQuery() &&
-                                    pollState.getLastState() == 1) {
+                                    pollState.getLastState() == PollingState.State.STATE_1) {
                                 endEcuQueries(txManager);
-                                pollState.setLastState(0);
-                                pollState.setCurrentState(0);
+                                pollState.setLastState(PollingState.State.STATE_0);
+                                pollState.setCurrentState(PollingState.State.STATE_0);
                                 pollState.setNewQuery(true);
                             }
                         }
@@ -290,7 +290,7 @@ public final class QueryManagerImpl implements QueryManager {
             messageListener.reportError(e);
         } finally {
             txManager.stop();
-            pollState.setCurrentState(0);
+            pollState.setCurrentState(PollingState.State.STATE_0);
             pollState.setNewQuery(true);
         }
     }
