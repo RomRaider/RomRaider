@@ -48,11 +48,11 @@ public final class SSMResponseProcessor {
         checkNotNullOrEmpty(response, "response");
         checkNotNull(pollState, "pollState");
         byte[] filteredResponse = new byte[0];
-        if (request[4] != READ_ADDRESS_COMMAND || pollState.getCurrentState() == 0){
+        if (request[4] != READ_ADDRESS_COMMAND || pollState.getCurrentState() == PollingState.State.STATE_0) {
             filteredResponse = new byte[response.length - request.length];
             System.arraycopy(response, request.length, filteredResponse, 0, filteredResponse.length);
         }
-        if (request[4] == READ_ADDRESS_COMMAND && pollState.getCurrentState() == 1){
+        if (request[4] == READ_ADDRESS_COMMAND && pollState.getCurrentState() == PollingState.State.STATE_1) {
             filteredResponse = new byte[response.length];
             System.arraycopy(response, 0, filteredResponse, 0, filteredResponse.length);
         }

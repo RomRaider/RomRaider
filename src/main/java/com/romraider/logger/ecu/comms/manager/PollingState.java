@@ -21,14 +21,18 @@ package com.romraider.logger.ecu.comms.manager;
 
 
 public interface PollingState {
+        enum State {
+                STATE_0,
+                STATE_1
+        }
 
-        int getCurrentState();
+        State getCurrentState();
 
-        void setCurrentState(int i);
+        void setCurrentState(State state);
 
-        int getLastState();
+        State getLastState();
 
-        void setLastState(int i);
+        void setLastState(State state);
 
         boolean isNewQuery();
 

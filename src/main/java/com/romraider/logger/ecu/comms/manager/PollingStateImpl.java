@@ -20,34 +20,36 @@
 package com.romraider.logger.ecu.comms.manager;
 
 public final class PollingStateImpl implements PollingState {
-    private static int currentState;
-    private static int lastpollState;
+    // todo: something is not right here! why are these fields all 'static'? looks like should be instance variables
+    // todo: not class variables?
+    private static State currentState;
+    private static State lastpollState;
     private static boolean newQuery;
     private static boolean lastQuery;
     private static boolean fastPoll;
 
     public PollingStateImpl() {
-        setCurrentState(0);
-        setLastState(0);
+        setCurrentState(State.STATE_0);
+        setLastState(State.STATE_0);
         setNewQuery(true);
         setLastQuery(false);
         setFastPoll(false);
     }
 
-    public int getCurrentState() {
+    public State getCurrentState() {
         return currentState;
     }
 
-    public void setCurrentState(int i) {
-        currentState = i;
+    public void setCurrentState(State state) {
+        currentState = state;
     }
 
-    public int getLastState() {
+    public State getLastState() {
         return lastpollState;
     }
 
-    public void setLastState(int i) {
-        lastpollState = i;
+    public void setLastState(State state) {
+        lastpollState = state;
     }
 
     public boolean isNewQuery() {

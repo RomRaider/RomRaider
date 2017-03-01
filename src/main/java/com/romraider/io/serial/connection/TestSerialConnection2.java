@@ -92,7 +92,10 @@ final class TestSerialConnection2 implements SerialConnection {
     public int available() {
         if (close) return 0;
         if (pollState.isLastQuery() && !pollState.isNewQuery() && 
-                pollState.getCurrentState() == 0 && pollState.getLastState() == 1) return 0;
+                pollState.getCurrentState() == PollingState.State.STATE_0 &&
+                pollState.getLastState() == PollingState.State.STATE_1) {
+            return 0;
+        }
         if (isEcuInitRequest()) {
             String init = "";
             if (module.getName().equalsIgnoreCase("ECU")){
@@ -157,12 +160,12 @@ final class TestSerialConnection2 implements SerialConnection {
                 response[i++] = READ_ADDRESS_RESPONSE;
                 System.arraycopy(responseData, 0, response, i, responseData.length);
                 response[i += responseData.length] = calculateChecksum(response);
-                if (pollState.getCurrentState() == 0) {
+                if (pollState.getCurrentState() == PollingState.State.STATE_0) {
                     readResponse = new byte[request.length + response.length];
                     System.arraycopy(request, 0, readResponse, 0, request.length);
                     System.arraycopy(response, 0, readResponse, request.length, response.length);
                 }
-                if (pollState.getCurrentState() == 1) {
+                if (pollState.getCurrentState() == PollingState.State.STATE_1) {
                     readResponse = new byte[response.length];
                     System.arraycopy(response, 0, readResponse, 0, response.length);
                     sleepTime = 20L;

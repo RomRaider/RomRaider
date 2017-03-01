@@ -118,7 +118,7 @@ public final class SSMLoggerConnection implements LoggerConnection {
         else {
             final byte[] request = protocol.constructReadAddressRequest(
                     module, queries);
-            if (pollState.getCurrentState() == 0) {
+            if (pollState.getCurrentState() == PollingState.State.STATE_0) {
                 LOGGER.debug("Mode:" + pollState.getCurrentState() + " " +
                         module + " Request  ---> " + asHex(request));
             }

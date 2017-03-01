@@ -42,11 +42,11 @@ public final class DS2ResponseProcessor {
         checkNotNullOrEmpty(response, "response");
         checkNotNull(pollState, "pollState");
         byte[] filteredResponse = new byte[0];
-        if (pollState.getCurrentState() == 0) {
+        if (pollState.getCurrentState() == PollingState.State.STATE_0) {
             filteredResponse = new byte[response.length - request.length];
             System.arraycopy(response, request.length, filteredResponse, 0, filteredResponse.length);
         }
-        if (pollState.getCurrentState() == 1) {
+        if (pollState.getCurrentState() == PollingState.State.STATE_1) {
             filteredResponse = new byte[response.length];
             System.arraycopy(response, 0, filteredResponse, 0, filteredResponse.length);
         }

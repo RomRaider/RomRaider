@@ -39,13 +39,13 @@ import com.romraider.logger.ecu.definition.Module;
 import com.romraider.logger.ecu.exception.UnsupportedProtocolException;
 
 public final class DS2Protocol implements ProtocolDS2 {
-    public static final byte[] READ_MEMORY_COMMAND = new byte[]{0x06, 0x00};
-    public static final byte[] READ_ADDRESS_COMMAND = new byte[]{0x0B, 0x02, 0x0e};
-    public static final byte[] ECU_INIT_COMMAND = new byte[]{0x00};
-    public static final byte[] ECU_RESET_COMMAND = new byte[]{0x43};
+    private static final byte[] READ_MEMORY_COMMAND = new byte[]{0x06, 0x00};
+    private static final byte[] READ_ADDRESS_COMMAND = new byte[]{0x0B, 0x02, 0x0e};
+    private static final byte[] ECU_INIT_COMMAND = new byte[]{0x00};
+    private static final byte[] ECU_RESET_COMMAND = new byte[]{0x43};
     public static final byte VALID_RESPONSE = (byte) 0xA0;
-    public static final int ADDRESS_SIZE = 3;
-    public static final int DATA_SIZE = 1;
+    private static final int ADDRESS_SIZE = 3;
+    private static final int DATA_SIZE = 1;
     public static final int RESPONSE_NON_DATA_BYTES = 4;
     public static Module module;
     private final ByteArrayOutputStream bb = new ByteArrayOutputStream(255);
