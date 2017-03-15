@@ -335,7 +335,7 @@
         <attribute name="os"/>
         <sequential>
             <mkdir dir="${classes.dir}"/>
-            <javac failonerror="true" srcdir="${src.java.dir}" destdir="${classes.dir}" target="1.6" source="1.6" includeantruntime="false" debug="on">
+            <javac failonerror="true" srcdir="${src.java.dir}" destdir="${classes.dir}" target="1.7" source="1.7" includeantruntime="false" debug="on">
                 <classpath refid="@{os}.classpath"/>
             </javac>
         </sequential>
