@@ -259,6 +259,8 @@ public final class RomAttributeParser {
         }
         else if (memModelEndian == Settings.ENDIAN_BIG) {
             bb.order(ByteOrder.BIG_ENDIAN);
+        } else {
+            bb.order(ByteOrder.LITTLE_ENDIAN);
         }
         else {
             // this case corrects improperly defined float table endian in legacy definition files
