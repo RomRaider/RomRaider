@@ -506,8 +506,13 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             this.compareToValue = compareCell.originalValue;
         }
     }
-
+    
     public void multiply(double factor) {
+    	setRealValue((getRealValue() * factor) + "");
+    }
+    
+    //Used to be multiply(), this doesn't work as expected on negative values though
+    public void multiplyRaw(double factor) {
         setBinValue(binValue * factor);
     }
 

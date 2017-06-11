@@ -36,7 +36,6 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Vector;
 
@@ -49,7 +48,6 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -89,9 +87,9 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final JButton setValue = new JButton("Set");
     private final JButton multiply = new JButton("Mul");
 
-    private final JFormattedTextField incrementByFine = new JFormattedTextField(new DecimalFormat("#.####"));
-    private final JFormattedTextField incrementByCoarse = new JFormattedTextField(new DecimalFormat("#.####"));
-    private final JFormattedTextField setValueText = new JFormattedTextField(new DecimalFormat("#.####"));
+    private final ECUEditorNumberField incrementByFine = new ECUEditorNumberField();
+    private final ECUEditorNumberField incrementByCoarse = new ECUEditorNumberField();
+    private final ECUEditorNumberField setValueText = new ECUEditorNumberField();
 
     private final JComboBox scaleSelection = new JComboBox();
 
