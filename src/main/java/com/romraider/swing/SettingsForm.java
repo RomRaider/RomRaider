@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +21,15 @@ package com.romraider.swing;
 
 import static com.romraider.Version.PRODUCT_NAME;
 import static java.io.File.separator;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javax.swing.*;
@@ -85,6 +88,8 @@ public class SettingsForm extends JFrame implements MouseListener {
     private void initSettings() {
         Settings settings = getSettings();
         obsoleteWarning.setSelected(settings.isObsoleteWarning());
+        oldLocale = settings.getLocale();
+        localeFormatCheckBox.setSelected(oldLocale.equals("en_US"));
         calcConflictWarning.setSelected(settings.isCalcConflictWarning());
         displayHighTables.setSelected(settings.isDisplayHighTables());
         saveDebugTables.setSelected(settings.isSaveDebugTables());
@@ -154,6 +159,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private void initComponents() {
         obsoleteWarning = new javax.swing.JCheckBox();
         calcConflictWarning = new javax.swing.JCheckBox();
+        localeFormatCheckBox = new javax.swing.JCheckBox();
         debug = new javax.swing.JCheckBox();
         btnCancel = new javax.swing.JButton();
         btnOk = new javax.swing.JButton();
@@ -219,14 +225,19 @@ public class SettingsForm extends JFrame implements MouseListener {
         setTitle(PRODUCT_NAME + " Settings");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setFont(new java.awt.Font("Tahoma", 0, 12));
+        
         obsoleteWarning.setText("Warn me when opening out of date ECU image revision");
         obsoleteWarning.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         obsoleteWarning.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
+        localeFormatCheckBox.setText("Use US English number format (Dot Notation)");
+        localeFormatCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        localeFormatCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        
         calcConflictWarning.setText("Warn me when real and byte value calculations conflict");
         calcConflictWarning.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         calcConflictWarning.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
+        
         debug.setText("Debug mode");
         debug.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         debug.setEnabled(false);
@@ -532,6 +543,7 @@ public class SettingsForm extends JFrame implements MouseListener {
                                 .addComponent(panelUISettings, GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                                 .addComponent(obsoleteWarning)
                                 .addComponent(calcConflictWarning)
+                                .addComponent(localeFormatCheckBox)
                                 .addComponent(debug))
                                 .addContainerGap())
                 );
@@ -542,6 +554,8 @@ public class SettingsForm extends JFrame implements MouseListener {
                         .addComponent(obsoleteWarning)
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(calcConflictWarning)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(localeFormatCheckBox)
                         .addPreferredGap(ComponentPlacement.RELATED)
                         .addComponent(debug)
                         .addPreferredGap(ComponentPlacement.RELATED)
@@ -943,11 +957,26 @@ public class SettingsForm extends JFrame implements MouseListener {
         try {
             Integer.parseInt(cellWidth.getText());
         } catch (NumberFormatException ex) {
-            // number formatted imporperly, reset
+            // number formatted improperly, reset
             cellWidth.setText((int) (getSettings().getCellSize().getWidth()) + "");
         }
 
         getSettings().setObsoleteWarning(obsoleteWarning.isSelected());
+
+        //Apply locale settings
+        if (localeFormatCheckBox.isSelected()) 
+            getSettings().setLocale("en_US");       
+        else 
+            getSettings().setLocale("system");
+        
+        //Show Info if locale changed
+        if(!oldLocale.equals(getSettings().getLocale())){
+        showMessageDialog(this, "The Editor has been set to use the " +
+                getSettings().getLocale() + " number format.\n\n" +
+                "Exit and restart the Editor to apply the new setting.",
+                "Editor Number Format Change", INFORMATION_MESSAGE);
+        }
+        
         getSettings().setCalcConflictWarning(calcConflictWarning.isSelected());
         getSettings().setDisplayHighTables(displayHighTables.isSelected());
         getSettings().setSaveDebugTables(saveDebugTables.isSelected());
@@ -1131,4 +1160,6 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JTextField defaultScale;
     private javax.swing.JComboBox comboBoxDefaultScale;
     private javax.swing.JCheckBox cbScaleHeaderAndData;
+    private javax.swing.JCheckBox localeFormatCheckBox;
+    private String oldLocale;
 }

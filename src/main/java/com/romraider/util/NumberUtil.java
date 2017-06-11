@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,15 @@ public final class NumberUtil {
 
     private NumberUtil() {
     }
-
+    
+    /**
+     * Returns the separator based on the current locale (. or ,)
+     * @return  The separation character
+     */
+    public static char getSeperator(){
+    	return ((DecimalFormat) NUM_FORMATTER).getDecimalFormatSymbols().getDecimalSeparator();
+    }
+    
     /**
      * Returns the value of the specified number in the default locale as a double.
      * @param   str - string to be converted.
