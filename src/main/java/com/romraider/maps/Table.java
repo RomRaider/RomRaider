@@ -945,10 +945,16 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void multiply(double factor) {
+    	
         if (!locked && !(userLevel > getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
-                    cell.multiply(factor);
+                	
+                	//Use raw or real value, depending on view settings
+                	if(getCurrentScale().getName().equals("Default"))
+                		cell.multiply(factor);                	
+                	else 
+                		cell.multiplyRaw(factor);               	
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
