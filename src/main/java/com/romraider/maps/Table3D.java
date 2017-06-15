@@ -439,10 +439,11 @@ public class Table3D extends Table {
             for (int x = 0; x < this.getSizeX(); x++) {
                 for (int y = 0; y < this.getSizeY(); y++) {
                     if (data[x][y].isSelected()) {
-                    	if(getCurrentScale().getName().equals("Default"))
-                    		data[x][y].multiply(factor);                	
+                    	System.out.println(getCurrentScale().getName());
+                    	if(getCurrentScale().getName().equals("Raw Value"))
+                    		data[x][y].multiplyRaw(factor);                	
                     	else 
-                    		data[x][y].multiplyRaw(factor);                            
+                    		data[x][y].multiply(factor);                            
                     }
                 }
             }

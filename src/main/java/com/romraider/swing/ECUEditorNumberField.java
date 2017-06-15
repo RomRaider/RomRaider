@@ -44,22 +44,22 @@ public class ECUEditorNumberField extends JFormattedTextField {
 			     if (c== ',')
 			       e.setKeyChar('.');
 			     
-			     String textValue = ECUEditorNumberField.this.getText();
+			     ECUEditorNumberField field = ECUEditorNumberField.this;
+			     
+			     String textValue = field.getText();
 			     int dotCount = textValue.length() - textValue.replace(".", "").length();
 			     
 			     //Only allow one dot
-			     if(e.getKeyChar()== '.' && dotCount == 1){
-			    	e.consume();		    
-			     }
+			     if(e.getKeyChar()== '.' && (dotCount == 0 || field.getSelectionStart() == 0)) return;
 			     
-			     //dash can only be the first char
-			     if(e.getKeyChar()== '-' && ECUEditorNumberField.this.getCaretPosition() != 0){
-			    	e.consume();		    
-			     }
+			     //Only one dash allowed at the start
+			     else if(e.getKeyChar()== '-' && (field.getCaretPosition() == 0 || field.getSelectionStart() == 0)) return;
 			     
 			     //Only allow numbers
-			     else if(!(c >= '0' && c <= '9') && e.getKeyChar()!= '.' && e.getKeyChar()!= '-') e.consume();
-
+			     else if(c >= '0' && c <= '9') return;
+			     
+			     //Don't allow if input doesn't meet these rules
+			     else e.consume();			    
 			  }
 
 			@Override
