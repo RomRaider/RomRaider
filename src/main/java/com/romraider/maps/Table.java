@@ -949,7 +949,6 @@ public abstract class Table extends JPanel implements Serializable {
         if (!locked && !(userLevel > getSettings().getUserLevel())) {
             for (DataCell cell : data) {
                 if (cell.isSelected()) {
-                	System.out.println(getCurrentScale().getName());
                 	
                 	//Use raw or real value, depending on view settings
                 	if(getCurrentScale().getName().equals("Raw Value"))
