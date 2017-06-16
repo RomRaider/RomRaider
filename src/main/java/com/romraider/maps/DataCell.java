@@ -120,7 +120,8 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             double result = 0.0;
             if (!"x".equalsIgnoreCase(input)) {
 				result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), NumberUtil.doubleValue(input));
-                if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
+
+				if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
                     result = (int) Math.round(result);
                 }
 
@@ -508,7 +509,12 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
     
     public void multiply(double factor) {
-    	setRealValue((getRealValue() * factor) + "");
+    	String newValue = (getRealValue() * factor) + "";
+    	
+    	//We need to convert from dot to comma, in the case of EU Format. This is because getRealValue to String has dot notation.
+    	if(NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
+    	
+    	setRealValue(newValue);
     }
     
     //Used to be multiply(), this doesn't work as expected on negative values though

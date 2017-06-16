@@ -36,7 +36,15 @@ public final class NumberUtil {
 
     private NumberUtil() {
     }
-
+    
+    /**
+     * Returns the separator based on the current locale (. or ,)
+     * @return  The separation character
+     */
+    public static char getSeperator(){
+    	return ((DecimalFormat) NUM_FORMATTER).getDecimalFormatSymbols().getDecimalSeparator();
+    }
+    
     /**
      * Returns the value of the specified number in the default locale as a double.
      * @param   str - string to be converted.

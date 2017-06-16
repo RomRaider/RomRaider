@@ -24,6 +24,8 @@ import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 import javax.swing.JFormattedTextField;
 
+import com.romraider.util.NumberUtil;
+
 public class ECUEditorNumberField extends JFormattedTextField {
 	private static final long serialVersionUID = 4756399956045598977L;
 	
@@ -39,21 +41,24 @@ public class ECUEditorNumberField extends JFormattedTextField {
 
 			  public void keyTyped(KeyEvent e) {
 			    char c = e.getKeyChar();
-				
-			    //Replace , with .
-			     if (c== ',')
-			       e.setKeyChar('.');
+							    
+			    //Get separator for the defined locale
+			    char seperator = NumberUtil.getSeperator();
+			    
+			    //Replace , with . or vice versa
+			    if ((c == ',' || c == '.') && seperator != c)
+			      e.setKeyChar(seperator);			    
+			     			     
+			    ECUEditorNumberField field = ECUEditorNumberField.this;
 			     
-			     ECUEditorNumberField field = ECUEditorNumberField.this;
+			    String textValue = field.getText();
+			    int dotCount = textValue.length() - textValue.replace(seperator + "", "").length();
 			     
-			     String textValue = field.getText();
-			     int dotCount = textValue.length() - textValue.replace(".", "").length();
+			    //Only allow one dot
+			    if(e.getKeyChar() == seperator && (dotCount == 0 || field.getSelectionStart() == 0)) return;
 			     
-			     //Only allow one dot
-			     if(e.getKeyChar()== '.' && (dotCount == 0 || field.getSelectionStart() == 0)) return;
-			     
-			     //Only one dash allowed at the start
-			     else if(e.getKeyChar()== '-' && (field.getCaretPosition() == 0 || field.getSelectionStart() == 0)) return;
+			    //Only one dash allowed at the start
+			    else if(e.getKeyChar()== '-' && (field.getCaretPosition() == 0 || field.getSelectionStart() == 0)) return;
 			     
 			     //Only allow numbers
 			     else if(c >= '0' && c <= '9') return;

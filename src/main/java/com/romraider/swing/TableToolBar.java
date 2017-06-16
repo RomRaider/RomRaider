@@ -514,6 +514,7 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         try{
             currentTable.multiply(NumberUtil.doubleValue(setValueText.getText()));
         }catch(ParseException nex) {
+        	System.out.println(this.getClass().getName() + ".multiply(" + currentTable + ") " + nex);
             LOGGER.error(this.getClass().getName() + ".multiply(" + currentTable + ") " + nex);
         }
     }
