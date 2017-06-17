@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,8 +55,13 @@ public final class FileUpdateHandlerImpl implements FileUpdateHandler, Convertor
                     "sv_SE","tr_TR","uk_UA","vi_VN"
             }
                     ));
-    private final String delimiter =
-    		locales.contains(Locale.getDefault().toString()) ? SEMICOLON : COMMA;
+    private final String language = System.getProperty("user.language.format");
+    private final String country = System.getProperty("user.country.format");
+
+    private final String delimiter = language == null ?
+            locales.contains(Locale.getDefault().toString()) ? SEMICOLON : COMMA
+                    : locales.contains(language + "_" + country) ? SEMICOLON : COMMA;
+
     private Line currentLine = new Line(loggerDatas.keySet());
 
     public FileUpdateHandlerImpl(MessageListener messageListener) {
