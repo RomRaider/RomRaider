@@ -344,20 +344,23 @@ public class CompareImagesForm extends JFrame implements ActionListener {
             case 1:
                 // equal - default green
                 setForeground(Settings.TABLE_EQUAL_COLOR);
+                setText("[unchanged] "+item.getValue());
                 break;
             case 2:
                 // different - default red
                 setForeground(Settings.TABLE_DIFFERENT_COLOR);
+                setText("[modified] "+item.getValue());
                 break;
             case 3:
                 // missing - default yellow
                 setForeground(Settings.TABLE_MISSING_COLOR);
+                setText("[missing] "+item.getValue());
                 break;
             default:
                 setForeground(paramList.getForeground());
+                setText(item.getValue());
                 break;
             }
-            setText(item.getValue());
             return this;
         }
     }
