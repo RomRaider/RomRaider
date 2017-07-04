@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ import com.romraider.maps.Table1D;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
 import com.romraider.maps.TableSwitch;
+import com.romraider.maps.checksum.ChecksumFactory;
+import com.romraider.maps.checksum.ChecksumManager;
 import com.romraider.swing.DebugPanel;
 import com.romraider.swing.JProgressPane;
 import com.romraider.util.ObjectCloner;
@@ -61,6 +63,7 @@ public final class DOMRomUnmarshaller {
     private String memModelEndian = null;
     private final Scale rawScale = new Scale();
     private final Map<String, Integer> tableNames = new HashMap<String, Integer>();
+    private ChecksumManager checksumManager = null;
 
     public DOMRomUnmarshaller() {
     }
@@ -107,6 +110,7 @@ public final class DOMRomUnmarshaller {
                             output.getRomID().setRamOffset(
                                     output.getRomID().getFileSize()
                                     - input.length);
+                            output.setChecksumManager(checksumManager);
                             return output;
                         }
                     }
@@ -230,6 +234,9 @@ public final class DOMRomUnmarshaller {
                     } catch (XMLParseException ex) {
                         LOGGER.error("Error unmarshalling rom", ex);
                     }
+                } else if (n.getNodeName().equalsIgnoreCase("checksum")) {
+                    rom.getRomID().setChecksum(unmarshallAttribute(n, "type", ""));
+                    checksumManager = unmarshallChecksum(n);
 
                 } else { /* unexpected element in Rom (skip) */
                 }
@@ -673,5 +680,21 @@ public final class DOMRomUnmarshaller {
                 }
             }
         }
+    }
+
+    /**
+     * Unmarshall the attributes of the checksum element and populate a
+     * CheckSumManager object to be assigned to the ROM.
+     * @param node -  the checksum element node to process
+     * @return CheckSumManager object
+     */
+    private ChecksumManager unmarshallChecksum(Node node) {
+        final Map<String, String> attrs = new HashMap<String, String>();
+
+        for (int i = 0; i < node.getAttributes().getLength(); i++) {
+            attrs.put(node.getAttributes().item(i).getNodeName().toLowerCase(),
+                    node.getAttributes().item(i).getNodeValue());
+        }
+           return ChecksumFactory.getManager(attrs);
     }
 }

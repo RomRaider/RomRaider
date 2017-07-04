@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@ import static com.romraider.util.HexUtil.asBytes;
 import static com.romraider.util.HexUtil.asHex;
 import static javax.swing.JOptionPane.DEFAULT_OPTION;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
+import static javax.swing.JOptionPane.WARNING_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.JOptionPane.showOptionDialog;
 
 import java.beans.PropertyVetoException;
@@ -43,6 +45,7 @@ import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
+import com.romraider.maps.checksum.ChecksumManager;
 import com.romraider.swing.CategoryTreeNode;
 import com.romraider.swing.JProgressPane;
 import com.romraider.swing.TableFrame;
@@ -60,6 +63,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private final Vector<TableTreeNode> tableNodes = new Vector<TableTreeNode>();
     private byte[] binData;
     private boolean isAbstract = false;
+    private ChecksumManager checksumManager;
 
     public Rom() {
         tableNodes.clear();
@@ -354,6 +358,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                 }
             }
         }
+        updateChecksum();
         return binData;
     }
 
@@ -415,5 +420,36 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     @Override
     public DefaultMutableTreeNode getLastChild() {
         return (DefaultMutableTreeNode) super.getLastChild();
+    }
+
+    public void setChecksumManager(ChecksumManager checksumManager) {
+        this.checksumManager = checksumManager;
+    }
+
+    public ChecksumManager getChecksumType() {
+        return checksumManager;
+    }
+
+    public void validateChecksum() {
+        if (checksumManager != null) {
+            final String message = String.format(
+                    "Checksum is invalid.%n" +
+                    "The ROM image may be corrupt or it has been " +
+                    "hex edited manually.%n" +
+                    "The checksum can be corrected when the ROM " +
+                    "is saved if your trust it is not corrupt.");
+            if (!checksumManager.validate(binData)) {
+                showMessageDialog(null,
+                        message,
+                        "ERROR - Checksum Failed",
+                        WARNING_MESSAGE);
+            }
+        }
+    }
+
+    public void updateChecksum() {
+        if (checksumManager != null) {
+            checksumManager.update(binData);
+        }
     }
 }

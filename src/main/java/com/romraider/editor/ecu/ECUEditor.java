@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -716,6 +716,11 @@ class OpenImageWorker extends SwingWorker<Void, Void> {
                 editor.refreshTableCompareMenus();
 
                 editor.getStatusPanel().setStatus("Done loading image...");
+                setProgress(95);
+
+                  editor.getStatusPanel().setStatus("Validating checksum...");
+                   rom.validateChecksum();
+                
                 setProgress(100);
                 return null;
             }

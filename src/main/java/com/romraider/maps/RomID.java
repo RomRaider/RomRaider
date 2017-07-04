@@ -43,6 +43,7 @@ public class RomID implements Serializable {
     private int    fileSize;
     private int    ramOffset;
     private boolean obsolete;           // whether a more recent revision exists
+    private String checksum;            // checksum method used to validate ROM contents
 
     public String toString() {
         return String.format(
@@ -215,5 +216,13 @@ public class RomID implements Serializable {
 
     public void setEditStamp(String editStamp) {
         this.editStamp = editStamp;
+    }
+
+    public void setChecksum(String checksum) {
+        this.checksum = checksum;
+    }
+
+    public String getChecksum() {
+        return checksum;
     }
 }
