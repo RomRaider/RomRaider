@@ -29,7 +29,6 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javax.swing.*;
@@ -62,6 +61,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         increaseColor.addMouseListener(this);
         decreaseColor.addMouseListener(this);
         warningColor.addMouseListener(this);
+        liveValueColor.addMouseListener(this);
+        curLiveValueColor.addMouseListener(this);
 
         btnOk.addMouseListener(this);
         btnApply.addMouseListener(this);
@@ -102,6 +103,10 @@ public class SettingsForm extends JFrame implements MouseListener {
         axisColor.setBackground(settings.getAxisColor());
         increaseColor.setBackground(settings.getIncreaseBorder());
         decreaseColor.setBackground(settings.getDecreaseBorder());
+        liveValueColor.setBackground(settings.getliveValueColor());
+        liveValueColor.setToolTipText("Color of live overlay cell visited");
+        curLiveValueColor.setBackground(settings.getCurLiveValueColor());
+        curLiveValueColor.setToolTipText("Color of current live overlay cell");
 
         cellWidth.setText(((int) settings.getCellSize().getWidth()) + "");
         cellHeight.setText(((int) settings.getCellSize().getHeight()) + "");
@@ -189,6 +194,10 @@ public class SettingsForm extends JFrame implements MouseListener {
         increaseColor = new javax.swing.JLabel();
         decreaseColor = new javax.swing.JLabel();
         lblDecrease = new javax.swing.JLabel();
+        liveValueColor = new javax.swing.JLabel();
+        lblLiveValue = new javax.swing.JLabel();
+        curLiveValueColor = new javax.swing.JLabel();
+        lblCurLiveValue = new javax.swing.JLabel();
         lblCellHeight = new javax.swing.JLabel();
         cellHeight = new javax.swing.JTextField();
         cellWidth = new javax.swing.JTextField();
@@ -363,29 +372,60 @@ public class SettingsForm extends JFrame implements MouseListener {
 
         lblDecrease.setText("Decreased:");
 
+        liveValueColor.setBackground(new java.awt.Color(255, 0, 0));
+        liveValueColor.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        liveValueColor.setOpaque(true);
+
+        lblLiveValue.setText("Stale Live Value:");
+
+        curLiveValueColor.setBackground(new java.awt.Color(255, 0, 0));
+        curLiveValueColor.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        curLiveValueColor.setOpaque(true);
+
+        lblCurLiveValue.setText("Current Live Value:");
+
         GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
-                jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lblIncrease)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+            jPanel3Layout.createParallelGroup(Alignment.TRAILING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addContainerGap()
+
+                    .addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
+                        .addComponent(lblLiveValue)
+                        .addComponent(lblIncrease))
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addGroup(jPanel3Layout.createParallelGroup(Alignment.TRAILING)
                         .addComponent(increaseColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                        .addComponent(lblDecrease)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(decreaseColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                );
+                        .addComponent(liveValueColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
+                        .addGroup(Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                            .addComponent(lblCurLiveValue)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(curLiveValueColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+                        .addGroup(Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                            .addComponent(lblDecrease)
+                            .addPreferredGap(ComponentPlacement.RELATED)
+                            .addComponent(decreaseColor, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))
+                    .addContainerGap())
+        );
         jPanel3Layout.setVerticalGroup(
-                jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(decreaseColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblDecrease)
-                        .addComponent(lblIncrease)
+            jPanel3Layout.createParallelGroup(Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE)
+                            .addComponent(decreaseColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblDecrease)
+                            .addComponent(lblIncrease))
                         .addComponent(increaseColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
-                );
+                    .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE)
+                        .addComponent(lblLiveValue)
+                        .addComponent(liveValueColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblCurLiveValue)
+                        .addComponent(curLiveValueColor, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)))
+        );
 
         lblCellHeight.setText("Cell Height:");
 
@@ -866,6 +906,18 @@ public class SettingsForm extends JFrame implements MouseListener {
             if (color != null) {
                 decreaseColor.setBackground(color);
             }
+        } else if (e.getSource() == liveValueColor) {
+            Color color = JColorChooser.showDialog(this.getContentPane(),
+                    "Background Color", settings.getliveValueColor());
+            if (color != null) {
+                liveValueColor.setBackground(color);
+            }
+        } else if (e.getSource() == curLiveValueColor) {
+            Color color = JColorChooser.showDialog(this.getContentPane(),
+                    "Background Color", settings.getCurLiveValueColor());
+            if (color != null) {
+                curLiveValueColor.setBackground(color);
+            }
         } else if (e.getSource() == warningColor) {
             Color color = JColorChooser.showDialog(this.getContentPane(),
                     "Warning Color", settings.getWarningColor());
@@ -992,6 +1044,8 @@ public class SettingsForm extends JFrame implements MouseListener {
         getSettings().setAxisColor(axisColor.getBackground());
         getSettings().setIncreaseBorder(increaseColor.getBackground());
         getSettings().setDecreaseBorder(decreaseColor.getBackground());
+        getSettings().setLiveValueColor(liveValueColor.getBackground());
+        getSettings().setCurLiveValueColor(curLiveValueColor.getBackground());
 
         getSettings().setScaleHeadersAndData(this.cbScaleHeaderAndData.isSelected());
 
@@ -1105,6 +1159,7 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JCheckBox calcConflictWarning;
     private javax.swing.JTextField cellHeight;
     private javax.swing.JTextField cellWidth;
+    private javax.swing.JLabel curLiveValueColor;
     private javax.swing.JCheckBox debug;
     private javax.swing.JLabel decreaseColor;
     private javax.swing.JCheckBox displayHighTables;
@@ -1127,14 +1182,17 @@ public class SettingsForm extends JFrame implements MouseListener {
     private javax.swing.JLabel lblAxis;
     private javax.swing.JLabel lblCellHeight;
     private javax.swing.JLabel lblCellWidth;
+    private javax.swing.JLabel lblCurLiveValue;
     private javax.swing.JLabel lblDecrease;
     private javax.swing.JLabel lblFont;
     private javax.swing.JLabel lblHighlight;
     private javax.swing.JLabel lblSelect;
     private javax.swing.JLabel lblIncrease;
+    private javax.swing.JLabel lblLiveValue;
     private javax.swing.JLabel lblMax;
     private javax.swing.JLabel lblMin;
     private javax.swing.JLabel lblWarning;
+    private javax.swing.JLabel liveValueColor;
     private javax.swing.JLabel maxColor;
     private javax.swing.JLabel minColor;
     private javax.swing.JCheckBox obsoleteWarning;

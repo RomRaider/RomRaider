@@ -62,6 +62,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private boolean selected = false;
     private boolean highlighted = false;
     private boolean traced = false;
+    private boolean tracedStale = false;
 
     private int x = 0;
     private int y = 0;
@@ -71,9 +72,14 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private double compareToValue = 0.0;
     private String liveValue = Settings.BLANK;
 
-    private static final Color DEFAULT_BORDER_COLOR = new Color(0, 0, 0);
-    private final Color increaseBorderColor = getSettings().getIncreaseBorder();
-    private final Color decreaseBorderColor = getSettings().getDecreaseBorder();
+//    private static final Color DEFAULT_BORDER_COLOR = new Color(0, 0, 0);
+//    private final Color increaseBorderColor = getSettings().getIncreaseBorder();
+//    private final Color decreaseBorderColor = getSettings().getDecreaseBorder();
+    private static final Border DEFAULT_BORDER = createLineBorder(new Color(0, 0, 0), 1);
+    private static final Border INCREASE_BORDER = createLineBorder(getSettings().getIncreaseBorder(), 2);
+    private static final Border DECREASE_BORDER = createLineBorder(getSettings().getDecreaseBorder(), 2);
+    private static final Border CURLIVE_BORDER = createLineBorder(getSettings().getCurLiveValueColor(), 2);
+    private static final Border STALELIVE_BORDER = createLineBorder(getSettings().getliveValueColor(), 2);
 
     private String staticText = null;
 
@@ -115,13 +121,13 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
     public void setRealValue(String input) {
         // create parser
-    	input = input.replaceAll(REPLACE_TEXT, Settings.BLANK);
+        input = input.replaceAll(REPLACE_TEXT, Settings.BLANK);
         try {
             double result = 0.0;
             if (!"x".equalsIgnoreCase(input)) {
-				result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), NumberUtil.doubleValue(input));
+                result = JEPUtil.evaluate(table.getCurrentScale().getByteExpression(), NumberUtil.doubleValue(input));
 
-				if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
+                if (table.getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
                     result = (int) Math.round(result);
                 }
 
@@ -262,7 +268,10 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private Border getCellBorder() {
         Border border;
         if(traced) {
-            border = createLineBorder(getSettings().getliveValueColor(), 2);
+            border = CURLIVE_BORDER;
+            if(tracedStale) {
+                border = STALELIVE_BORDER;
+            }
         } else {
             double checkValue;
 
@@ -273,11 +282,11 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
             }
 
             if (checkValue < binValue) {
-                border = createLineBorder(increaseBorderColor, 2);
+                border = INCREASE_BORDER;
             } else if (checkValue > binValue) {
-                border = createLineBorder(decreaseBorderColor, 2);
+                border = DECREASE_BORDER;
             } else {
-                border = createLineBorder(DEFAULT_BORDER_COLOR, 1);
+                border = DEFAULT_BORDER;
             }
         }
 
@@ -297,7 +306,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
             displayString = FORMATTER.format(getRealCompareValue());
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
-        	FORMATTER.applyPattern(PERCENT_FORMAT);
+            FORMATTER.applyPattern(PERCENT_FORMAT);
             if (getCompareValue() == 0.0) {
                 displayString = FORMATTER.format(0.0);
             } else {
@@ -322,18 +331,18 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         if (null == table.getCompareTable()) {
             ttString = FORMATTER.format(getRealValue());
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
-        	ttString = FORMATTER.format(getRealCompareValue());
+            ttString = FORMATTER.format(getRealCompareValue());
         } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
-        	FORMATTER.applyPattern(TT_PERCENT_FORMAT);
-        	if (getCompareValue() == 0.0) {
-            	ttString = FORMATTER.format(0.0);
+            FORMATTER.applyPattern(TT_PERCENT_FORMAT);
+            if (getCompareValue() == 0.0) {
+                ttString = FORMATTER.format(0.0);
             } else {
-            	ttString = FORMATTER.format(getRealCompareChangeValue());
+                ttString = FORMATTER.format(getRealCompareChangeValue());
             }
         }
         if(traced) {
             if(!(table instanceof Table1D)) {
-            	ttString = getLiveValueString(ttString);
+                ttString = getLiveValueString(ttString);
             }
         }
         return ttString;
@@ -509,12 +518,12 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
     
     public void multiply(double factor) {
-    	String newValue = (getRealValue() * factor) + "";
-    	
-    	//We need to convert from dot to comma, in the case of EU Format. This is because getRealValue to String has dot notation.
-    	if(NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
-    	
-    	setRealValue(newValue);
+        String newValue = (getRealValue() * factor) + "";
+        
+        //We need to convert from dot to comma, in the case of EU Format. This is because getRealValue to String has dot notation.
+        if(NumberUtil.getSeperator() == ',') newValue = newValue.replace('.', ',');
+        
+        setRealValue(newValue);
     }
     
     //Used to be multiply(), this doesn't work as expected on negative values though
@@ -529,6 +538,13 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         }
     }
 
+    public void setPreviousLiveDataTrace(boolean trace) {
+        if(tracedStale != trace) {
+            tracedStale = trace;
+            drawCell();
+        }
+    }
+
     public void setLiveDataTraceValue(String liveValue) {
         if(this.liveValue != liveValue) {
             this.liveValue = liveValue;
@@ -536,7 +552,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         }
     }
 
-    private Settings getSettings() {
+    private static Settings getSettings() {
         return SettingsManager.getSettings();
     }
 
@@ -562,7 +578,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     public String getStaticText() {
         String displayString = null;
         try {
-        	FORMATTER.applyPattern(table.getCurrentScale().getFormat());
+            FORMATTER.applyPattern(table.getCurrentScale().getFormat());
             double staticDouble = NumberUtil.doubleValue(staticText);
             displayString = FORMATTER.format(JEPUtil.evaluate(table.getCurrentScale().getExpression(), staticDouble));
         } catch (Exception ex) {

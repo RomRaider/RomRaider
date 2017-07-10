@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -277,6 +277,18 @@ public final class DOMSettingsBuilder {
         warning.setAttribute("g", String.valueOf(settings.getWarningColor().getGreen()));
         warning.setAttribute("b", String.valueOf(settings.getWarningColor().getBlue()));
         colors.appendChild(warning);
+        // live cells visited
+        IIOMetadataNode oldlive = new IIOMetadataNode("livevalue");
+        oldlive.setAttribute("r", String.valueOf(settings.getliveValueColor().getRed()));
+        oldlive.setAttribute("g", String.valueOf(settings.getliveValueColor().getGreen()));
+        oldlive.setAttribute("b", String.valueOf(settings.getliveValueColor().getBlue()));
+        colors.appendChild(oldlive);
+        // current live cell
+        IIOMetadataNode curlive = new IIOMetadataNode("curlivevalue");
+        curlive.setAttribute("r", String.valueOf(settings.getCurLiveValueColor().getRed()));
+        curlive.setAttribute("g", String.valueOf(settings.getCurLiveValueColor().getGreen()));
+        curlive.setAttribute("b", String.valueOf(settings.getCurLiveValueColor().getBlue()));
+        colors.appendChild(curlive);
 
         tableDisplay.appendChild(colors);
 

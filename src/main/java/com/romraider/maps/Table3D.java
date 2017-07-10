@@ -956,6 +956,10 @@ public class Table3D extends Table {
         if (getOverlayLog()) {
             int x = xAxis.getLiveDataIndex();
             int y = yAxis.getLiveDataIndex();
+            int xp = xAxis.getPreviousLiveDataIndex();
+            int yp = yAxis.getPreviousLiveDataIndex();
+            data[xp][yp].setPreviousLiveDataTrace(true);
+            data[x][y].setPreviousLiveDataTrace(false);
             data[x][y].setLiveDataTrace(true);
         }
     }
@@ -967,6 +971,7 @@ public class Table3D extends Table {
         for (int x = 0; x < getSizeX(); x++) {
             for (int y = 0; y < getSizeY(); y++) {
                 data[x][y].setLiveDataTrace(false);
+                data[x][y].setPreviousLiveDataTrace(false);
             }
         }
     }

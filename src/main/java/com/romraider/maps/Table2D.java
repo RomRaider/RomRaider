@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2017 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -399,6 +399,8 @@ public class Table2D extends Table {
     @Override
     public void updateLiveDataHighlight() {
         if (getOverlayLog()) {
+            data[axis.getPreviousLiveDataIndex()].setPreviousLiveDataTrace(true);
+            data[axis.getLiveDataIndex()].setPreviousLiveDataTrace(false);
             data[axis.getLiveDataIndex()].setLiveDataTrace(true);
         }
     }

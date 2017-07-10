@@ -119,6 +119,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected boolean staticDataTable = false;
     protected String liveAxisValue = Settings.BLANK;
     protected int liveDataIndex = 0;
+    protected int previousLiveDataIndex = 0;
 
     private Table compareTable = null;
 
@@ -1432,6 +1433,7 @@ public abstract class Table extends JPanel implements Serializable {
 
             setLiveDataIndex(startIdx);
             DataCell cell = data[getLiveDataIndex()];
+            cell.setPreviousLiveDataTrace(false);
             cell.setLiveDataTrace(true);
             cell.setLiveDataTraceValue(liveVal);
             getToolbar().setLiveDataValue(liveVal);
@@ -1440,12 +1442,18 @@ public abstract class Table extends JPanel implements Serializable {
 
     public void updateLiveDataHighlight() {
         if (getOverlayLog()) {
+            data[getPreviousLiveDataIndex()].setPreviousLiveDataTrace(true);
+            data[getLiveDataIndex()].setPreviousLiveDataTrace(false);
             data[getLiveDataIndex()].setLiveDataTrace(true);
         }
     }
 
     public int getLiveDataIndex() {
         return liveDataIndex;
+    }
+
+    public int getPreviousLiveDataIndex() {
+        return previousLiveDataIndex;
     }
 
     public void setLiveDataIndex(int index) {
@@ -1455,12 +1463,14 @@ public abstract class Table extends JPanel implements Serializable {
         if (index >= data.length) {
             index = data.length - 1;
         }
+        this.previousLiveDataIndex = this.liveDataIndex;
         this.liveDataIndex = index;
     }
 
     public void clearLiveDataTrace() {
         for (DataCell cell : data) {
             cell.setLiveDataTrace(false);
+            cell.setPreviousLiveDataTrace(false);
         }
     }
 

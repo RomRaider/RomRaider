@@ -287,7 +287,10 @@ public class Table1D extends Table {
             }
 
             setLiveDataIndex(startIdx);
+            DataCell cellp = data[getPreviousLiveDataIndex()];
+            cellp.setPreviousLiveDataTrace(true);
             DataCell cell = data[getLiveDataIndex()];
+            cell.setPreviousLiveDataTrace(false);
             cell.setLiveDataTrace(true);
             cell.setLiveDataTraceValue(liveVal);
             getToolbar().setLiveDataValue(liveVal);

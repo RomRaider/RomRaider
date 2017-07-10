@@ -193,6 +193,7 @@ public class Settings implements Serializable {
     private Color selectColor = new Color(204, 204, 204);
     private Color highlightColor = new Color(27, 161, 226);
     private Color liveValueColor = new Color (0, 255, 0);
+    private Color curLiveValueColor = new Color (255, 0, 255);
 
     private Color decreaseBorder = new Color(0, 0, 255);
     private Color increaseBorder = new Color(255, 0, 0);
@@ -389,6 +390,14 @@ public class Settings implements Serializable {
 
     public void setLiveValueColor(Color liveValueColor) {
         this.liveValueColor = liveValueColor;
+    }
+
+    public Color getCurLiveValueColor() {
+        return this.curLiveValueColor;
+    }
+
+    public void setCurLiveValueColor(Color curLiveValueColor) {
+        this.curLiveValueColor = curLiveValueColor;
     }
 
     public Color getSelectColor() {
