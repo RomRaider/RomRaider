@@ -72,9 +72,6 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     private double compareToValue = 0.0;
     private String liveValue = Settings.BLANK;
 
-//    private static final Color DEFAULT_BORDER_COLOR = new Color(0, 0, 0);
-//    private final Color increaseBorderColor = getSettings().getIncreaseBorder();
-//    private final Color decreaseBorderColor = getSettings().getDecreaseBorder();
     private static final Border DEFAULT_BORDER = createLineBorder(new Color(0, 0, 0), 1);
     private static final Border INCREASE_BORDER = createLineBorder(getSettings().getIncreaseBorder(), 2);
     private static final Border DECREASE_BORDER = createLineBorder(getSettings().getDecreaseBorder(), 2);
