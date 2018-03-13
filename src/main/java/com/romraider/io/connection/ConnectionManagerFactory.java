@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,19 +62,30 @@ public final class ConnectionManagerFactory {
         try {
 
             if (!isPlatform(WINDOWS)) {
-                final String op2Lib = "/usr/local/lib/j2534.so";
-                final File libFile = new File(op2Lib);
-                if (libFile.exists()) {
-                    return J2534TransportFactory.getManager(
-                            settings.getTransportProtocol().toUpperCase(),
-                            connectionProperties,
-                            op2Lib);
+                final String[] op2Lib = {
+                        settings.getJ2534Device(),
+                        "lib/linux/j2534.so",
+                        "/usr/local/lib/j2534.so"
+                };
+                for (String lib : op2Lib) {
+                    if (lib == null) continue;
+                    final File libFile = new File(lib);
+                    if (libFile.exists()) {
+                        settings.setJ2534Device(lib);
+                        LOGGER.debug("Loading Linux Openport 2.0 library from: " +
+                                lib);
+                        return J2534TransportFactory.getManager(
+                                settings.getTransportProtocol().toUpperCase(),
+                                connectionProperties,
+                                lib);
+                    }
+                    else {
+                        LOGGER.info("Linux Openport 2.0 library not found at: " +
+                                lib);
+                    }
                 }
-                else {
-                    throw new RuntimeException(
-                            "Linux Openport 2.0 library not found in: " +
-                            op2Lib);
-                }
+                settings.setJ2534Device("");
+                throw new RuntimeException("Linux Openport 2.0 library not found");
             }
             Set<J2534Library> libraries =
                     J2534DllLocator.listLibraries(
