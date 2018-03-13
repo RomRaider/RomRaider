@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
 
     public J2534ConnectionISO9141(ConnectionProperties connectionProperties, String library) {
         checkNotNull(connectionProperties, "connectionProperties");
+        deviceId = -1;
         timeout = (long)connectionProperties.getConnectTimeout();
         initJ2534(connectionProperties, library);
         LOGGER.info("J2534/ISO9141 connection initialised");
@@ -119,24 +120,30 @@ public final class J2534ConnectionISO9141 implements ConnectionManager {
     }
 
     private void initJ2534(ConnectionProperties connectionProperties, String library) {
-        api = new J2534Impl(Protocol.ISO9141, library);
-        deviceId = api.open();
         try {
-            version(deviceId);
-            channelId = api.connect(
-                    deviceId, Flag.ISO9141_NO_CHECKSUM.getValue(),
-                    connectionProperties.getBaudRate());
-            setConfig(channelId, connectionProperties);
-            msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
-            LOGGER.debug(String.format(
-                    "J2534/ISO9141 success: deviceId:%d, channelId:%d, msgId:%d",
-                    deviceId, channelId, msgId));
-        } catch (Exception e) {
-            LOGGER.debug(String.format(
-                    "J2534/ISO9141 exception: deviceId:%d, channelId:%d, msgId:%d",
-                    deviceId, channelId, msgId));
-            close();
-            throw new J2534Exception("J2534/ISO9141 Error opening device: " + e.getMessage(), e);
+            api = new J2534Impl(Protocol.ISO9141, library);
+            deviceId = api.open();
+            try {
+                version(deviceId);
+                channelId = api.connect(
+                        deviceId, Flag.ISO9141_NO_CHECKSUM.getValue(),
+                        connectionProperties.getBaudRate());
+                setConfig(channelId, connectionProperties);
+                msgId = api.startPassMsgFilter(channelId, (byte) 0x00, (byte) 0x00);
+                LOGGER.debug(String.format(
+                        "J2534/ISO9141 success: deviceId:%d, channelId:%d, msgId:%d",
+                        deviceId, channelId, msgId));
+            } catch (Exception e) {
+                LOGGER.debug(String.format(
+                        "J2534/ISO9141 exception: deviceId:%d, channelId:%d, msgId:%d",
+                        deviceId, channelId, msgId));
+                close();
+                throw new J2534Exception("J2534/ISO9141 Error opening device: " + e.getMessage(), e);
+            }
+        } catch (J2534Exception e) {
+            api.close(deviceId);
+            api = null;
+            throw new J2534Exception(e.getMessage(), e);
         }
     }
 
