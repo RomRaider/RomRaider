@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,7 +144,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
             }
             final byte[] request = protocol.constructReadAddressRequest(
                     module, obdQueries);
-            LOGGER.debug(String.format("Mode:%d %s Request  ---> %s",
+            LOGGER.debug(String.format("Mode:%s %s Request  ---> %s",
                     pollState.getCurrentState(), module, asHex(request)));
 
             final byte[] response = protocol.constructReadAddressResponse(
@@ -152,7 +152,7 @@ public final class OBDLoggerConnection implements LoggerConnection {
             manager.send(request, response, pollState);
             final byte[] processedResponse = protocol.preprocessResponse(
                     request, response, pollState);
-            LOGGER.debug(String.format("Mode:%d %s Response <--- %s",
+            LOGGER.debug(String.format("Mode:%s %s Response <--- %s",
                     pollState.getCurrentState(), module, asHex(processedResponse)));
             protocol.processReadAddressResponses(
                     obdQueries, processedResponse, pollState);
