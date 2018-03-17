@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@ import com.romraider.util.SettingsManager;
 
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
+
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 public final class UserProfileImpl implements UserProfile {
@@ -89,7 +91,14 @@ public final class UserProfileImpl implements UserProfile {
     }
 
     public byte[] getBytes() {
-        return buildXml().getBytes();
+        byte[] profile = null;
+        try {
+            profile = buildXml().getBytes("ISO-8859-1");
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new UnsupportedOperationException("Unsupported Document Encoding: " + e.getMessage());
+        }
+        return profile;
     }
 
     @Override
