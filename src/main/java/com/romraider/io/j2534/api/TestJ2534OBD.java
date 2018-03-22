@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,7 @@ import com.romraider.util.LogManager;
  * an active ECU using the ISO14230 protocol.
  */
 public final class TestJ2534OBD {
-    private static final J2534 api = new J2534Impl(
-            Protocol.ISO14230, "op20pt32"); //op20pt32 MONGI432
+    private static J2534 api;
     private static final int LOOPBACK = 0;
 
     public TestJ2534OBD() throws InterruptedException {
@@ -171,6 +170,14 @@ public final class TestJ2534OBD {
 
     public static void main(String args[]) throws InterruptedException{
         LogManager.initDebugLogging();
+        if (args.length < 1) {
+            System.out.printf("Provide \"library_name\" cmdline arg.");
+            return;
+        }
+        else {
+            api = new J2534Impl(  //op20pt32 MONGI432 /usr/local/lib/j2534.so
+                    Protocol.ISO14230, args[0]);
+        }
         TestJ2534OBD test1 = new TestJ2534OBD();
     }
 }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -346,12 +346,12 @@ public final class TestJ2534IsoTp {
 
     public final static void main(String args[]) throws InterruptedException{
         LogManager.initDebugLogging();
-        if (args.length == 0) {   //op20pt32 MONGI432
-        api = new J2534Impl(
-                Protocol.ISO15765,  "op20pt32");
+        if (args.length < 1) {
+            System.out.printf("Provide \"library_name\" cmdline arg.");
+            return;
         }
         else {
-            api = new J2534Impl(
+            api = new J2534Impl(  //op20pt32 MONGI432 /usr/local/lib/j2534.so
                     Protocol.ISO15765, args[0]);
         }
 
