@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,10 +147,31 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                     settings.getLoggerConnectionProperties());
             try {
                 Collection<EcuQuery> queries = buildLearningQueries();
+                // Break queries into two sets to avoid the ECU packet limit
+                final int setSize = queries.size() / 2;
+                final Collection<EcuQuery> querySet1 = new ArrayList<EcuQuery>();
+                final Collection<EcuQuery> querySet2 = new ArrayList<EcuQuery>();
+                int s = 0;
+                for (EcuQuery q : queries) {
+                    if (s < setSize) {
+                        querySet1.add(q);
+                    }
+                    else {
+                        querySet2.add(q);
+                    }
+                    s++;
+                }
+                LOGGER.trace(
+                    String.format("Queries:%d, Set size:%d, Set 1 size:%d, Set 2 size:%d",
+                        queries.size(), setSize, querySet1.size(), querySet2.size()));
 
                 LOGGER.info(message);
                 connection.sendAddressReads(
-                        queries,
+                        querySet1,
+                        settings.getDestinationTarget(),
+                        new PollingStateImpl());
+                connection.sendAddressReads(
+                        querySet2,
                         settings.getDestinationTarget(),
                         new PollingStateImpl());
                 LOGGER.info("Current vehicle info & A/F values retrieved.");
