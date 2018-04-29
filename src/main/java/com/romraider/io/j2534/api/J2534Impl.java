@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -776,7 +776,7 @@ public final class J2534Impl implements J2534 {
                 outMsg.getPointer()
             );
            if (ret.intValue() != Status.NOERROR.getValue()) handleError(
-                   "PassThruIoctl", ret.intValue());
+                   "PassThruIoctl FAST_INIT", ret.intValue());
            outMsg.read();
         LOGGER.trace("Ioctl outMsg: " + toString(outMsg));
         byte[] response = new byte[outMsg.dataSize.intValue()];
