@@ -100,6 +100,9 @@ public final class ByteUtil {
         }
         return -1;
     }
+    public static boolean isBitSet(byte b, int position) {
+    	return (b & 1 << position) != 0;
+    }
 
     private static int[] computeFailure(byte[] pattern) {
         int[] failure = new int[pattern.length];
@@ -115,4 +118,5 @@ public final class ByteUtil {
         }
         return failure;
     }
+    
 }
