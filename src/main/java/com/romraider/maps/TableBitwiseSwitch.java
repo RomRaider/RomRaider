@@ -26,7 +26,6 @@ public class TableBitwiseSwitch extends Table {
         super();
         storageType = 1;
         type = Settings.TABLE_SWITCH;
-        locked = true;
         removeAll();
         setLayout(new BorderLayout());
         checkboxes = new ArrayList<JCheckBox>();
@@ -139,7 +138,40 @@ public class TableBitwiseSwitch extends Table {
 
     @Override
     public boolean equals(Object other) {
-    	return false;
+    	try {
+            if(null == other) {
+                return false;
+            }
+
+            if(other == this) {
+                return true;
+            }
+
+            if(!(other instanceof TableSwitch)) {
+                return false;
+            }
+
+            TableBitwiseSwitch otherTable = (TableBitwiseSwitch) other;
+
+            if( (null == this.getName() && null == otherTable.getName())
+                    || (this.getName().isEmpty() && otherTable.getName().isEmpty()) ) {
+                ;// Skip name compare if name is null or empty.
+            } else if(!this.getName().equalsIgnoreCase(otherTable.getName())) {
+                return false;
+            }
+
+            if(this.getDataSize() != otherTable.getDataSize()) {
+                return false;
+            }
+
+            if(this.getSwitchStates().keySet().equals(otherTable.getSwitchStates().keySet())) {
+                return true;
+            }
+            return false;
+    	} catch(Exception ex) {
+            // TODO: Log Exception.
+            return false;
+        }
     }
 
     @Override
