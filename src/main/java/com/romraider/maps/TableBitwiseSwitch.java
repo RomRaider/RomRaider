@@ -147,7 +147,7 @@ public class TableBitwiseSwitch extends Table {
                 return true;
             }
 
-            if(!(other instanceof TableSwitch)) {
+            if(!(other instanceof TableBitwiseSwitch)) {
                 return false;
             }
 
