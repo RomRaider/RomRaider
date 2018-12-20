@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.comms.learning.flkctable;
+package com.romraider.logger.ecu.comms.learning.tables;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.romraider.logger.ecu.comms.learning.parameter.SSMParameter;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.logger.ecu.comms.query.EcuQueryData;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
 import com.romraider.logger.ecu.definition.EcuAddress;
 import com.romraider.logger.ecu.definition.EcuAddressImpl;
@@ -33,22 +33,21 @@ import com.romraider.logger.ecu.definition.EcuData;
 import com.romraider.logger.ecu.definition.EcuDataConvertor;
 import com.romraider.logger.ecu.definition.EcuParameterImpl;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
-import com.romraider.util.HexUtil;
 
 /**
  * Build an EcuQuery for each of the cells in the FLKC RAM table. 
  */
-public class SSMFlkcTableQueryBuilder {
+public class DS2FlkcTableQueryBuilder {
     private static final Logger LOGGER =
-            Logger.getLogger(SSMFlkcTableQueryBuilder.class);
+            Logger.getLogger(DS2FlkcTableQueryBuilder.class);
 
-    public SSMFlkcTableQueryBuilder() {
+    public DS2FlkcTableQueryBuilder() {
     }
 
     /**
-     * Build an EcuQuery for each cell of the FLKC RAM table. <i>Note this
-     * returns an extra null query for column 0 of each row which is later
-     * populated with the row header (RPM Ranges) data.</i>
+     * Build an EcuQuery for each cell of the Knock Adaptation RAM table.
+     * <i>Note this returns an extra null query for column 0 of each row
+     * which is later populated with the row header (RPM Ranges) data.</i>
      * @param flkc - a ParameterRow item that helps to identify the
      * ECU bitness and provide a Converter for the raw data.
      * @param flkcAddr - the address in RAM of the start of the table.
@@ -64,38 +63,35 @@ public class SSMFlkcTableQueryBuilder {
             int columns) {
 
         final List<List<EcuQuery>> flkcQueryRows = new ArrayList<List<EcuQuery>>();
-        int checksummed = 1;
-        int dataSize = 1;
-        if (SSMParameter.fromValue(flkc.getLoggerData().getId()) == SSMParameter.E41 ||
-            SSMParameter.fromValue(flkc.getLoggerData().getId()) == SSMParameter.E173) {
-            checksummed = 2;
-            dataSize = 4;
-        }
+        final EcuData parameter = (EcuData) flkc.getLoggerData();
+        int dataSize = EcuQueryData.getDataLength(parameter);
         LOGGER.debug(
                 String.format(
-                        "FLKC Data format rows:%d col:%d checksummed:%d " +
-                        "dataSize:%d FLKC:%s",
-                        rows, columns, checksummed, dataSize,
-                        flkc.getLoggerData().getId()));
+                        "Knock Data format rows:%d col:%d " +
+                        "dataSize:%d Knock Index:%s",
+                        rows, columns, dataSize,
+                        parameter.getId()));
 
         int i = 0;
         for (int j = 0; j < rows; j++) {
             final List<EcuQuery> flkcQueryCols = new ArrayList<EcuQuery>();
             flkcQueryCols.add(null);
             for (int k = 0; k < columns; k++) {
-                String id = "flkc-r" + j + "c" + k;
-                final String addrStr =
-                        HexUtil.intToHexString(
-                                flkcAddr + (i * dataSize * checksummed));
+                String id = "Knock-r" + j + "c" + k;
+                final String addrStr = String.format("0x%06X", flkcAddr + (i * dataSize));
                 LOGGER.debug(
                         String.format(
-                                "FLKC Data row:%d col:%d addr:%s",
+                                "Knock Data row:%d col:%d addr:%s",
                                 j, k, addrStr));
                 final EcuAddress ea = new EcuAddressImpl(addrStr, dataSize, -1);
+                new String();
                 final EcuParameterImpl epi =
-                    new EcuParameterImpl(id, addrStr, id, ea, null, null, null,
+                    new EcuParameterImpl(id, addrStr, id, ea,
+                            parameter.getGroup(),
+                            parameter.getSubgroup(),
+                            String.valueOf(parameter.getGroupSize()),
                         new EcuDataConvertor[] {
-                            flkc.getLoggerData().getSelectedConvertor()
+                            parameter.getSelectedConvertor()
                         }
                     );
                 flkcQueryCols.add(new EcuQueryImpl((EcuData) epi));
