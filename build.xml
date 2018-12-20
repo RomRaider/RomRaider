@@ -3,7 +3,7 @@
 <!-- Master build file for RomRaider
 
  RomRaider Open-Source Tuning, Logging and Reflashing
- Copyright (C) 2006-2018 RomRaider.com
+ Copyright (C) 2006-2013 RomRaider.com
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -75,11 +75,11 @@
         <!-- java compiler properties -->
         <property name="javac.source" value="1.6" />
         <property name="javac.target" value="1.6" />
-    	<property name="debug" value="off" />
+        <property name="debug" value="off" />
         <property name="deprecation" value="on" />
 
-    	<!-- version properties are set in this file, both for the product itself and
-		        for some of the external dependencies (jar files and such) -->
+        <!-- version properties are set in this file, both for the product itself and
+                for some of the external dependencies (jar files and such) -->
         <property file="version.properties" />
 
         <!-- basic project properties -->
@@ -309,16 +309,16 @@
             <javac 
                 failonerror="true"
                 srcdir="${src.java.dir}" 
-            	destdir="${classes.dir}"
+                destdir="${classes.dir}"
                 source="${javac.source}"
                 target="${javac.target}"
                 includeantruntime="false"
                 debug="${debug}"
                 deprecation="${deprecation}">
                 <classpath refid="@{os}.classpath" />
-            	<!--
-            	<compilerarg value="-Xlint" />
-            	-->
+                <!--
+                <compilerarg value="-Xlint" />
+                -->
             </javac>
         </sequential>
     </macrodef>
@@ -340,6 +340,7 @@
                 <zipfileset dir="lib/common" prefix="${name.package}/lib/common" />
                 <zipfileset dir="lib/@{os}" prefix="${name.package}/lib/@{os}" />
                 <zipfileset dir="src" prefix="${name.package}/src" excludes="**/*.template" />
+                <zipfileset dir="customize" prefix="${name.package}/customize"/>
             </zip>
         </sequential>
     </macrodef>
