@@ -32,6 +32,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.romraider.io.j2534.api.J2534_v0404.PASSTHRU_MSG;
+import com.romraider.io.j2534.api.J2534_v0404.SBYTE_ARRAY;
 import com.romraider.io.j2534.api.J2534_v0404.SCONFIG;
 import com.romraider.io.j2534.api.J2534_v0404.SCONFIG.ByReference;
 import com.romraider.io.j2534.api.J2534_v0404.SCONFIG_LIST;
@@ -760,10 +761,37 @@ public final class J2534Impl implements J2534 {
     }
 
     /**
-     * This function performs an ISO14230 fast initialization sequence.
+     * This function performs an ISO9141 five baud initialization sequence.
      * @param    channelId - handle to the open communications channel
      * @param    input      - start message to be transmitted to the vehicle network
      * @return    response  - response upon a successful initialization
+     */
+    public byte[] fiveBaudInit(int channelId, byte[] input) {
+        SBYTE_ARRAY inMsg = sByteMessage(input);
+        final byte[] out = new byte[2];
+        SBYTE_ARRAY outMsg = sByteMessage(out);
+        LOGGER.trace("Ioctl inMsg: " + inMsg.toString());
+        NativeLong ret = lib.PassThruIoctl(
+                new NativeLong(channelId),
+                new NativeLong(IOCtl.FIVE_BAUD_INIT.value),
+                inMsg.getPointer(),
+                outMsg.getPointer()
+            );
+        if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+                "PassThruIoctl FIVE_BAUD_INIT", ret.intValue());
+        outMsg.read();
+        LOGGER.trace("Ioctl outMsg: " + outMsg.toString());
+        byte[] response = new byte[outMsg.numOfBytes.intValue()];
+        arraycopy(outMsg.bytePtr, 0, response, 0, outMsg.numOfBytes.intValue());
+        clearBuffers(channelId);
+        return response;
+    }
+
+    /**
+     * This function performs an ISO14230 fast initialization sequence.
+     * @param    channelId - handle to the open communications channel
+     * @param    input     - start message to be transmitted to the vehicle network
+     * @return   response  - response upon a successful initialization
      */
     public byte[] fastInit(int channelId, byte[] input) {
         PASSTHRU_MSG inMsg = passThruMessage(input);
@@ -775,13 +803,14 @@ public final class J2534Impl implements J2534 {
                 inMsg.getPointer(),
                 outMsg.getPointer()
             );
-           if (ret.intValue() != Status.NOERROR.getValue()) handleError(
-                   "PassThruIoctl FAST_INIT", ret.intValue());
-           outMsg.read();
+        if (ret.intValue() != Status.NOERROR.getValue()) handleError(
+                "PassThruIoctl FAST_INIT", ret.intValue());
+        outMsg.read();
         LOGGER.trace("Ioctl outMsg: " + toString(outMsg));
         byte[] response = new byte[outMsg.dataSize.intValue()];
         arraycopy(outMsg.data, 0, response, 0, outMsg.dataSize.intValue());
-           return response;
+        clearBuffers(channelId);
+        return response;
     }
 
     /**
@@ -826,37 +855,62 @@ public final class J2534Impl implements J2534 {
     }
 
     /**
-     * Retrieve a message through the existing communication channel from the vehicle.
+     * Retrieve a fixed size message within timeout through the existing
+     * communication channel from the vehicle.
      * @param    channelId - handle to the open communications channel
      * @param    response  - data array to be populated with the vehicle network message
-     * @param    timeout      - maximum time (in milliseconds) for read completion
+     * @param    timeout   - maximum time (in milliseconds) for read completion
+     * @throws   J2534Exception
      */
     public void readMsg(int channelId, byte[] response, long timeout) {
         int index = 0;
-        long end = currentTimeMillis() + timeout;
+        long start = currentTimeMillis();
+        long end = start + timeout;
+        long current = start;
         do {
+            if (currentTimeMillis() >= end) {
+                String errString = String.format(
+                    "readMsg error: timeout expired waiting for %d more bytes",
+                    response.length - index);
+                throw new J2534Exception(errString);
+            }
             PASSTHRU_MSG msg = doReadMsg(channelId);
-            LOGGER.trace("Read Msg: " + toString(msg));
+            LOGGER.trace("Read B Msg: " + toString(msg));
             if (!isResponse(msg)) continue;
-            arraycopy(msg.data, 0, response, index, msg.dataSize.intValue());
-            index += msg.dataSize.intValue();
-        } while (currentTimeMillis() <= end && index < response.length - 1);
+            // if we get a large msg back, only read what will fit in the response buffer
+            int len = 0;
+            if (msg.dataSize.intValue() <= response.length) {
+                len = msg.dataSize.intValue();
+            }
+            else {
+                len = response.length;
+                LOGGER.trace(String.format(
+                        "readMsg: only read %d of %d bytes from response message",
+                        len, msg.dataSize.intValue()));
+            }
+            arraycopy(msg.data, 0, response, index, len);
+            index += len;
+            current = currentTimeMillis();
+        } while ((current <= end) && (index < response.length));
+        LOGGER.trace(String.format(
+                "readMsg: read %d of %d bytes in %d msecs",
+                index, response.length, (current - start)));
     }
 
     /**
-     * Retrieve a message through the existing communication channel from the vehicle.
+     * Retrieve messages until timeout through the existing communication channel from the vehicle.
      * @param    channelId - handle to the open communications channel
-     * @param    maxWait      - maximum time (in milliseconds) for read completion
-     * @return    bytes read from the vehicle network
+     * @param    maxWait   - maximum time (in milliseconds) for read completion
+     * @return   bytes read from the vehicle network
      */
     public byte[] readMsg(int channelId, long maxWait) {
         List<byte[]> responses = new ArrayList<byte[]>();
         long end = currentTimeMillis() + maxWait;
         do {
             PASSTHRU_MSG msg = doReadMsg(channelId);
-            LOGGER.trace("Read Msg: " + toString(msg));
+            LOGGER.trace("Read W Msg: " + toString(msg));
             if (isResponse(msg)) responses.add(data(msg));
-            ThreadUtil.sleep(2);
+                ThreadUtil.sleep(2);
         } while (currentTimeMillis() <= end);
         return concat(responses);
     }
@@ -866,9 +920,9 @@ public final class J2534Impl implements J2534 {
      * channel from the vehicle. If the number of messages can not be read before the
      * timeout expires, throw an exception.
      * @param    channelId - handle to the open communications channel
-     * @param    numMsg      - number of valid messages to retrieve
-     * @return    bytes read from the vehicle network
-     * @throws    J2534Exception
+     * @param    numMsg    - number of valid messages to retrieve
+     * @return   bytes read from the vehicle network
+     * @throws   J2534Exception
      */
     public byte[] readMsg(int channelId, int numMsg, long timeout) {
         if (loopback) {
@@ -884,7 +938,7 @@ public final class J2534Impl implements J2534 {
                 throw new J2534Exception(errString);
             }
             PASSTHRU_MSG msg = doReadMsg(channelId);
-            LOGGER.trace("Read Msg: " + toString(msg));
+            LOGGER.trace("Read # Msg: " + toString(msg));
             if (isResponse(msg)) {
                 responses.add(data(msg));
                 numMsg--;
@@ -1086,6 +1140,14 @@ public final class J2534Impl implements J2534 {
         list.write();
 //        System.out.printf("list:%n%s%n", list);
         return list;
+    }
+
+    private SBYTE_ARRAY sByteMessage(byte... data) {
+        SBYTE_ARRAY msg = new SBYTE_ARRAY();
+        msg.numOfBytes = new NativeLong(data.length);
+        arraycopy(data, 0, msg.bytePtr, 0, data.length);
+        msg.write();
+        return msg;
     }
 
     private PASSTHRU_MSG passThruMessage(byte... data) {
