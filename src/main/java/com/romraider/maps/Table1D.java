@@ -30,7 +30,6 @@ public class Table1D extends Table {
     private Table axisParent = null;
 
     public Table1D() {
-        super();
     }
 
     public void setAxisParent(Table axisParent) {

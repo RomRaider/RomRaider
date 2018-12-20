@@ -43,7 +43,6 @@ public final class VerticalLabelUI extends BasicLabelUI {
     }
 
     public VerticalLabelUI(boolean clockwise) {
-        super();
         this.clockwise = clockwise;
     }
 

@@ -29,7 +29,6 @@ public final class Gauge extends JPanel {
     private GaugeStyle style;
 
     public Gauge(GaugeStyle style) {
-        super();
         setLayout(new BorderLayout(0, 0));
         setGaugeStyle(style);
     }

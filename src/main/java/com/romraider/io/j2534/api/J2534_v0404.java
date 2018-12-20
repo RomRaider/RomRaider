@@ -113,7 +113,6 @@ public class J2534_v0404 implements Library {
         public NativeLong parameter;
         public NativeLong value;
         public SCONFIG() {
-            super();
             initFieldOrder();
         }
         protected void initFieldOrder() {
@@ -133,7 +132,6 @@ public class J2534_v0404 implements Library {
         public NativeLong numOfParams;
         public SCONFIG.ByReference configPtr;
         public SCONFIG_LIST() {
-            super();
             initFieldOrder();
         }
         protected void initFieldOrder() {
