@@ -32,34 +32,34 @@ import com.romraider.maps.Table3D;
 public class TableMenuBar extends JMenuBar {
 
     private static final long serialVersionUID = -695692646459410510L;
-    private JMenu fileMenu;
-    private JMenuItem graph;
+    private JMenu fileMenu = new JMenu("Table");
+    private JMenuItem graph = new JMenuItem("View Graph");
 
-    private JMenu compareMenu;
-    private JRadioButtonMenuItem compareOriginal;
-    private JRadioButtonMenuItem compareMap;
-    private JMenu similarOpenTables;
-    private JRadioButtonMenuItem compareOff;
-    private JMenu compareDisplay;
-    private JRadioButtonMenuItem comparePercent;
-    private JRadioButtonMenuItem compareAbsolute;
-    private JMenu compareToValue;
-    private JRadioButtonMenuItem compareToOriginal;
-    private JRadioButtonMenuItem compareToBin;
+    private JMenu compareMenu = new JMenu("Compare");
+    private JRadioButtonMenuItem compareOriginal = new JRadioButtonMenuItem("Show Changes");
+    private JRadioButtonMenuItem compareMap = new JRadioButtonMenuItem("Compare to Another Map");
+    private JMenu similarOpenTables = new JMenu("Compare to Table");
+    private JRadioButtonMenuItem compareOff = new JRadioButtonMenuItem("Off");
+    private JMenu compareDisplay = new JMenu("Display");
+    private JRadioButtonMenuItem comparePercent = new JRadioButtonMenuItem("Percent Difference");
+    private JRadioButtonMenuItem compareAbsolute = new JRadioButtonMenuItem("Absolute Difference");
+    private JMenu compareToValue = new JMenu("Compare to");
+    private JRadioButtonMenuItem compareToOriginal = new JRadioButtonMenuItem("Compare to Original Value");
+    private JRadioButtonMenuItem compareToBin = new JRadioButtonMenuItem("Compare to Bin Value");
 
     private JMenuItem close;
-    private JMenu editMenu;
-    private JMenuItem undoSel;
-    private JMenuItem undoAll;
-    private JMenuItem revert;
-    private JMenuItem copySel;
-    private JMenuItem copyTable;
-    private JMenuItem paste;
-    private JMenuItem interp;
-    private JMenuItem vertInterp;
-    private JMenuItem horizInterp;
-    private JMenu viewMenu;
-    private JMenuItem tableProperties;
+    private JMenu editMenu = new JMenu("Edit");
+    private JMenuItem undoSel = new JMenuItem("Undo Selected Changes");
+    private JMenuItem undoAll = new JMenuItem("Undo All Changes");
+    private JMenuItem revert = new JMenuItem("Set Revert Point");
+    private JMenuItem copySel = new JMenuItem("Copy Selection");
+    private JMenuItem copyTable = new JMenuItem("Copy Table");
+    private JMenuItem paste = new JMenuItem("Paste");
+    private JMenuItem interp = new JMenuItem("Interpolate");
+    private JMenuItem vertInterp = new JMenuItem("Vertical Interpolate");
+    private JMenuItem horizInterp = new JMenuItem("Horizontal Interpolate");
+    private JMenu viewMenu = new JMenu("View");
+    private JMenuItem tableProperties = new JMenuItem("Table Properties");
 
     private ButtonGroup compareGroup;
     private ButtonGroup compareDisplayGroup;
@@ -73,10 +73,7 @@ public class TableMenuBar extends JMenuBar {
     }
 
     private void initFileMenu(TableFrame frame) {
-        fileMenu = new JMenu("Table");
-        graph = new JMenuItem("View Graph");
-        compareMenu = new JMenu("Compare");
-        setClose(new JMenuItem("Close Table"));
+        close = new JMenuItem("Close Table");
 
         initCompareMenu(frame);
         getClose().setText("Close " + frame.getTable().getName());
@@ -97,17 +94,6 @@ public class TableMenuBar extends JMenuBar {
     }
 
     private void initEditMenu(TableFrame frame) {
-        editMenu = new JMenu("Edit");
-        setUndoSel(new JMenuItem("Undo Selected Changes"));
-        setUndoAll(new JMenuItem("Undo All Changes"));
-        setRevert(new JMenuItem("Set Revert Point"));
-        setCopySel(new JMenuItem("Copy Selection"));
-        setCopyTable(new JMenuItem("Copy Table"));
-        setPaste(new JMenuItem("Paste"));
-        setVertInterp(new JMenuItem("Vertical Interpolate"));
-        setHorizInterp(new JMenuItem("Horizontal Interpolate"));
-        setInterp(new JMenuItem("Interpolate"));
-
         editMenu.add(getUndoSel());
         editMenu.add(getUndoAll());
         editMenu.add(getRevert());
@@ -147,11 +133,8 @@ public class TableMenuBar extends JMenuBar {
     }
 
     private void initViewMenu(TableFrame frame) {
-
-        viewMenu = new JMenu("View");
         viewMenu.setMnemonic('V');
 
-        setTableProperties(new JMenuItem("Table Properties"));
         getTableProperties().setToolTipText("Select to view the table properties.");
         getTableProperties().setMnemonic('P');
         getTableProperties().addActionListener(frame);
@@ -165,32 +148,21 @@ public class TableMenuBar extends JMenuBar {
     }
 
     private void initCompareMenu(TableFrame frame) {
-        setCompareOriginal(new JRadioButtonMenuItem("Show Changes"));
         getCompareOriginal().setToolTipText("Compares the current values to the original or revert point values.");
-        setCompareMap(new JRadioButtonMenuItem("Compare to Another Map"));
         getCompareMap().setToolTipText("Compares this table and a selected table.");
-        setSimilarOpenTables(new JMenu("Compare to Table"));
         getSimilarOpenTables().setToolTipText("Compares this table to a similar table.");
 
-        setCompareOff(new JRadioButtonMenuItem("Off"));
-
-        setComparePercent(new JRadioButtonMenuItem("Percent Difference"));
-        setCompareAbsolute(new JRadioButtonMenuItem("Absolute Difference"));
         compareDisplayGroup = new ButtonGroup();
         compareDisplayGroup.add(getComparePercent());
         compareDisplayGroup.add(getCompareAbsolute());
-        compareDisplay = new JMenu("Display");
         compareDisplay.add(getComparePercent());
         compareDisplay.add(getCompareAbsolute());
 
-        setCompareToOriginal(new JRadioButtonMenuItem("Compare to Original Value"));
         getCompareToOriginal().setToolTipText("Compares this table to the selected table's original or revert point values.");
-        setCompareToBin(new JRadioButtonMenuItem("Compare to Bin Value"));
         getCompareToBin().setToolTipText("Compares this table to the selected table's current values.");
         compareToGroup = new ButtonGroup();
         compareToGroup.add(getCompareToOriginal());
         compareToGroup.add(getCompareToBin());
-        compareToValue = new JMenu("Compare to");
         compareToValue.add(getCompareToOriginal());
         compareToValue.add(getCompareToBin());
 
@@ -258,150 +230,76 @@ public class TableMenuBar extends JMenuBar {
         return undoAll;
     }
 
-    public void setUndoAll(JMenuItem undoAll) {
-        this.undoAll = undoAll;
-    }
-
     public JMenuItem getRevert() {
         return revert;
-    }
-
-    public void setRevert(JMenuItem revert) {
-        this.revert = revert;
     }
 
     public JMenuItem getUndoSel() {
         return undoSel;
     }
 
-    public void setUndoSel(JMenuItem undoSel) {
-        this.undoSel = undoSel;
-    }
-
     public JMenuItem getClose() {
         return close;
     }
 
-    public void setClose(JMenuItem close) {
-        this.close = close;
-    }
-
     public JMenuItem getTableProperties() {
         return tableProperties;
-    }
-    public void setTableProperties(JMenuItem tableProperties) {
-        this.tableProperties = tableProperties;
     }
 
     public JMenuItem getCopySel() {
         return copySel;
     }
 
-    public void setCopySel(JMenuItem copySel) {
-        this.copySel = copySel;
-    }
-
     public JMenuItem getCopyTable() {
         return copyTable;
-    }
-
-    public void setCopyTable(JMenuItem copyTable) {
-        this.copyTable = copyTable;
     }
 
     public JMenuItem getPaste() {
         return paste;
     }
 
-    public void setPaste(JMenuItem paste) {
-        this.paste = paste;
-    }
-
     public JRadioButtonMenuItem getCompareOff() {
         return compareOff;
-    }
-
-    public void setCompareOff(JRadioButtonMenuItem compareOff) {
-        this.compareOff = compareOff;
     }
 
     public JRadioButtonMenuItem getCompareAbsolute() {
         return compareAbsolute;
     }
 
-    public void setCompareAbsolute(JRadioButtonMenuItem compareAbsolute) {
-        this.compareAbsolute = compareAbsolute;
-    }
-
     public JRadioButtonMenuItem getComparePercent() {
         return comparePercent;
-    }
-
-    public void setComparePercent(JRadioButtonMenuItem comparePercent) {
-        this.comparePercent = comparePercent;
     }
 
     public JRadioButtonMenuItem getCompareOriginal() {
         return compareOriginal;
     }
 
-    public void setCompareOriginal(JRadioButtonMenuItem compareOriginal) {
-        this.compareOriginal = compareOriginal;
-    }
-
     public JRadioButtonMenuItem getCompareToOriginal() {
         return compareToOriginal;
-    }
-
-    public void setCompareToOriginal(JRadioButtonMenuItem compareToOriginal) {
-        this.compareToOriginal = compareToOriginal;
     }
 
     public JRadioButtonMenuItem getCompareMap() {
         return compareMap;
     }
 
-    public void setCompareMap(JRadioButtonMenuItem compareMap) {
-        this.compareMap = compareMap;
-    }
-
     public JRadioButtonMenuItem getCompareToBin() {
         return compareToBin;
-    }
-
-    public void setCompareToBin(JRadioButtonMenuItem compareToBin) {
-        this.compareToBin = compareToBin;
     }
 
     public JMenu getSimilarOpenTables() {
         return similarOpenTables;
     }
 
-    public void setSimilarOpenTables(JMenu similarOpenTables) {
-        this.similarOpenTables = similarOpenTables;
-    }
-
     public JMenuItem getInterp() {
         return interp;
-    }
-
-    public void setInterp(JMenuItem interp) {
-        this.interp = interp;
     }
 
     public JMenuItem getHorizInterp() {
         return this.horizInterp;
     }
 
-    public void setHorizInterp(JMenuItem horizInterp) {
-        this.horizInterp = horizInterp;
-    }
-
     public JMenuItem getVertInterp() {
         return this.vertInterp;
     }
 
-    public void setVertInterp(JMenuItem vertInterp) {
-        this.vertInterp = vertInterp;
-    }
 }
