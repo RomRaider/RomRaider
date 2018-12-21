@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,8 +113,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected double maxCompare = 0.0;
     protected double minCompare = 0.0;
 
-    protected int compareDisplay = Settings.COMPARE_DISPLAY_ABSOLUTE;
-    protected int compareValueType = Settings.DATA_TYPE_BIN;
+    protected Settings.CompareDisplay compareDisplay = Settings.CompareDisplay.ABSOLUTE;
+    protected Settings.DataType compareValueType = Settings.DataType.BIN;
 
     protected boolean staticDataTable = false;
     protected String liveAxisValue = Settings.BLANK;
@@ -1319,21 +1319,21 @@ public abstract class Table extends JPanel implements Serializable {
         drawTable();
     }
 
-    public void setCompareDisplay(int compareDisplay) {
+    public void setCompareDisplay(Settings.CompareDisplay compareDisplay) {
         this.compareDisplay = compareDisplay;
         drawTable();
     }
 
-    public int getCompareDisplay() {
+    public Settings.CompareDisplay getCompareDisplay() {
         return this.compareDisplay;
     }
 
-    public void setCompareValueType(int compareValueType) {
+    public void setCompareValueType(Settings.DataType compareValueType) {
         this.compareValueType = compareValueType;
         drawTable();
     }
 
-    public int getCompareValueType() {
+    public Settings.DataType getCompareValueType() {
         return this.compareValueType;
     }
 

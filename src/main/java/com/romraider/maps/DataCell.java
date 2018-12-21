@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -300,9 +300,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
 
         if (null == table.getCompareTable()) {
             displayString = FORMATTER.format(getRealValue());
-        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
+        } else if (table.getCompareDisplay() == Settings.CompareDisplay.ABSOLUTE) {
             displayString = FORMATTER.format(getRealCompareValue());
-        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
+        } else if (table.getCompareDisplay() == Settings.CompareDisplay.PERCENT) {
             FORMATTER.applyPattern(PERCENT_FORMAT);
             if (getCompareValue() == 0.0) {
                 displayString = FORMATTER.format(0.0);
@@ -327,9 +327,9 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
         FORMATTER.applyPattern(TT_FORMAT);
         if (null == table.getCompareTable()) {
             ttString = FORMATTER.format(getRealValue());
-        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_ABSOLUTE) {
+        } else if (table.getCompareDisplay() == Settings.CompareDisplay.ABSOLUTE) {
             ttString = FORMATTER.format(getRealCompareValue());
-        } else if (table.getCompareDisplay() == Settings.COMPARE_DISPLAY_PERCENT) {
+        } else if (table.getCompareDisplay() == Settings.CompareDisplay.PERCENT) {
             FORMATTER.applyPattern(TT_PERCENT_FORMAT);
             if (getCompareValue() == 0.0) {
                 ttString = FORMATTER.format(0.0);
@@ -498,7 +498,7 @@ public class DataCell extends JLabel implements MouseListener, Serializable {
     }
 
     public void setCompareValue(DataCell compareCell) {
-        if(Settings.DATA_TYPE_BIN == table.getCompareValueType())
+        if(Settings.DataType.BIN == table.getCompareValueType())
         {
             if(this.compareToValue == compareCell.binValue) {
                 return;
