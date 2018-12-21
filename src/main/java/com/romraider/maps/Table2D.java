@@ -419,13 +419,13 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void setCompareDisplay(int compareDisplay) {
+    public void setCompareDisplay(Settings.CompareDisplay compareDisplay) {
         super.setCompareDisplay(compareDisplay);
         axis.setCompareDisplay(compareDisplay);
     }
 
     @Override
-    public void setCompareValueType(int compareValueType) {
+    public void setCompareValueType(Settings.DataType compareValueType) {
         super.setCompareValueType(compareValueType);
         axis.setCompareValueType(compareValueType);
     }

@@ -980,14 +980,14 @@ public class Table3D extends Table {
     }
 
     @Override
-    public void setCompareDisplay(int compareDisplay) {
+    public void setCompareDisplay(Settings.CompareDisplay compareDisplay) {
         super.setCompareDisplay(compareDisplay);
         xAxis.setCompareDisplay(compareDisplay);
         yAxis.setCompareDisplay(compareDisplay);
     }
 
     @Override
-    public void setCompareValueType(int compareValueType) {
+    public void setCompareValueType(Settings.DataType compareValueType) {
         super.setCompareValueType(compareValueType);
         xAxis.setCompareValueType(compareValueType);
         yAxis.setCompareValueType(compareValueType);
