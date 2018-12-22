@@ -282,17 +282,4 @@ public final class J2534ConnectionISO14230 implements ConnectionManager {
         LOGGER.trace(String.format("Config get P3_MIN value  = %d msec", i / 2));
         return i;
     }
-//
-//    private void addressLoadReset() {
-//        final byte[] loadReset = {
-//                (byte) 0x02,
-//                (byte) 0xAC, (byte) 0x81
-//                (byte) 0x04, (byte) 0x21, (byte) 0x00, (byte) 0x04, (byte) 0x01, (byte) 0x2A
-//                };
-//        //04210004012A
-//        api.writeMsg(channelId, loadReset, 155L, TxFlags.NO_FLAGS);
-//        LOGGER.debug(String.format("loadReset Request  = %s", asHex(loadReset)));
-//        final byte[] response = api.readMsg(channelId, 1, 2000L);
-//        LOGGER.debug(String.format("loadReset Response = %s", asHex(response)));
-//    }
 }
