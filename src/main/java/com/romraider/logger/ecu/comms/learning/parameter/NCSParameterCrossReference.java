@@ -19,6 +19,8 @@
 
 package com.romraider.logger.ecu.comms.learning.parameter;
 
+import static com.romraider.logger.ecu.comms.learning.parameter.NCSParameter.P4390;
+import static com.romraider.logger.ecu.comms.learning.parameter.NCSParameter.P4389;
 import static com.romraider.logger.ecu.comms.learning.parameter.NCSParameter.P11;
 import static com.romraider.logger.ecu.comms.learning.parameter.NCSParameter.P17;
 import static com.romraider.logger.ecu.comms.learning.parameter.NCSParameter.P2;
@@ -34,9 +36,11 @@ public class NCSParameterCrossReference {
 
     public NCSParameterCrossReference() {
         map = new HashMap<NCSParameter, String>();
-        map.put(P17,  "Battery");
-        map.put(P11,  "IAT");
-        map.put(P2,   "ECT");
+        map.put(P4390, "LFTB2");
+        map.put(P4389, "LFTB1");
+        map.put(P17,   "Battery");
+        map.put(P11,   "IAT");
+        map.put(P2,    "ECT");
     }
 
 /**

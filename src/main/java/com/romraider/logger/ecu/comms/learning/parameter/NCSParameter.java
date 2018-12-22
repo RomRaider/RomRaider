@@ -32,7 +32,10 @@ public enum NCSParameter {
     P11("P11"),     // IAT
     P17("P17"),     // Battery Volts
     E173("E173"),   // mixed ratio learning map trim
-    E174("E174");   // mixed ratio learning map count
+    E174("E174"),   // mixed ratio learning map count
+    P4389("P4389"), // Learned Fuel Trim B1
+    P4390("P4390"); // Learned Fuel Trim B2
+
 
     private static final Map<String, NCSParameter> lookup
             = new HashMap<String, NCSParameter>();
