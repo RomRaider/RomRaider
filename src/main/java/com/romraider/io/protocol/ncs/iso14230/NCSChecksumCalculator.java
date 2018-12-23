@@ -34,6 +34,6 @@ public final class NCSChecksumCalculator {
             byte b = bytes[i];
             total += asInt(b);
         }
-        return asByte(total - ((total >>> 8) << 8));
+        return asByte(total & 0xFF);
     }
 }
