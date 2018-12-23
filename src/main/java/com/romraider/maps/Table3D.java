@@ -52,8 +52,8 @@ import com.romraider.xml.RomAttributeParser;
 public class Table3D extends Table {
 
     private static final long serialVersionUID = 3103448753263606599L;
-    private Table1D xAxis = new Table1D();
-    private Table1D yAxis = new Table1D();
+    private Table1D xAxis = new Table1D(TableType.X_AXIS);
+    private Table1D yAxis = new Table1D(TableType.Y_AXIS);
     private JLabel xAxisLabel;
     private JLabel yAxisLabel;
 
@@ -68,6 +68,11 @@ public class Table3D extends Table {
     public Table3D() {
         verticalOverhead += 39;
         horizontalOverhead += 10;
+    }
+
+    @Override
+    public TableType getType() {
+        return Table.TableType.TABLE_3D;
     }
 
     public Table1D getXAxis() {
@@ -612,7 +617,7 @@ public class Table3D extends Table {
     }
 
     public void selectCellAt(int y, Table1D axisType) {
-        if (axisType.getType() == Settings.TABLE_Y_AXIS) {
+        if (axisType.getType() == Table.TableType.Y_AXIS) {
             selectCellAt(0, y);
         } else { // y axis
             selectCellAt(y, 0);

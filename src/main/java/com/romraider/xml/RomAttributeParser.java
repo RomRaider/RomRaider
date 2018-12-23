@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import com.romraider.Settings;
+import com.romraider.maps.Table;
 
 public final class RomAttributeParser {
 
@@ -96,21 +97,21 @@ public final class RomAttributeParser {
         }
     }
 
-    public static int parseTableType(String input) {
-        if (input.equalsIgnoreCase("3D") || input.equalsIgnoreCase(String.valueOf(Settings.TABLE_3D))) {
-            return Settings.TABLE_3D;
+    public static Table.TableType parseTableType(String input) {
+        if (input.equalsIgnoreCase("3D") || input.equalsIgnoreCase(Table.TableType.TABLE_3D.getMarshallingString())) {
+            return Table.TableType.TABLE_3D;
         }
-        else if (input.equalsIgnoreCase("2D") || input.equalsIgnoreCase(String.valueOf(Settings.TABLE_2D))) {
-            return Settings.TABLE_2D;
+        else if (input.equalsIgnoreCase("2D") || input.equalsIgnoreCase(Table.TableType.TABLE_2D.getMarshallingString())) {
+            return Table.TableType.TABLE_2D;
         }
-        else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(String.valueOf(Settings.TABLE_X_AXIS))) {
-            return Settings.TABLE_X_AXIS;
+        else if (input.equalsIgnoreCase("X Axis") || input.equalsIgnoreCase("Static X Axis") || input.equalsIgnoreCase(Table.TableType.X_AXIS.getMarshallingString())) {
+            return Table.TableType.X_AXIS;
         }
-        else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(String.valueOf(Settings.TABLE_Y_AXIS))) {
-            return Settings.TABLE_Y_AXIS;
+        else if (input.equalsIgnoreCase("Y Axis") || input.equalsIgnoreCase("Static Y Axis") || input.equalsIgnoreCase(Table.TableType.Y_AXIS.getMarshallingString())) {
+            return Table.TableType.Y_AXIS;
         }
         else {
-            return Settings.TABLE_1D;
+            return Table.TableType.TABLE_1D;
         }
     }
 

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     category.setText(table.getCategory());
 
     int dim;
-    if (Settings.TABLE_SWITCH == table.getType()) {
+    if (Table.TableType.SWITCH == table.getType()) {
         dim = 1;
         storageSize.setText("switch");
         scrollPane.setViewportView(populateScalesTable(
@@ -71,7 +71,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
             }
             storageSize.setText(dataType + (table.getStorageType() * 8));
         }
-        dim = table.getType();
+        dim = table.getType().getDimension();
         scrollPane.setViewportView(populateScalesTable(table.getScales()));
     }
 

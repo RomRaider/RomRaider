@@ -44,7 +44,7 @@ import com.romraider.util.SettingsManager;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
-    private Table1D axis = new Table1D();
+    private Table1D axis = new Table1D(Table.TableType.Y_AXIS);
     private JLabel axisLabel;
 
     private CopyTable2DWorker copyTable2DWorker;
@@ -52,6 +52,11 @@ public class Table2D extends Table {
 
     public Table2D() {
         verticalOverhead += 18;
+    }
+
+    @Override
+    public TableType getType() {
+        return TableType.TABLE_2D;
     }
 
     public Table1D getAxis() {

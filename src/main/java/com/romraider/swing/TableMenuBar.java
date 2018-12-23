@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 
-import com.romraider.Settings;
+import com.romraider.maps.Table;
 import com.romraider.maps.Table3D;
 
 public class TableMenuBar extends JMenuBar {
@@ -216,7 +216,7 @@ public class TableMenuBar extends JMenuBar {
 
     private void applyTableTypeRules(TableFrame frame) {
         // Hide items that don't work with a DTC tables.
-        if(frame.getTable().getType() == Settings.TABLE_SWITCH) {
+        if(frame.getTable().getType() == Table.TableType.SWITCH) {
             editMenu.setEnabled(false);
             getCompareOriginal().setEnabled(false);
             getComparePercent().setEnabled(false);

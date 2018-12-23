@@ -67,7 +67,6 @@ public abstract class Table extends JPanel implements Serializable {
     protected static int memModelEndian;
 
     protected String name;
-    protected int type;
     protected String category = "Other";
     protected String description = Settings.BLANK;
     protected Vector<Scale> scales = new Vector<Scale>();
@@ -123,7 +122,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     private Table compareTable = null;
 
-    public Table() {
+    protected Table() {
         scales.clear();
 
         this.setLayout(borderLayout);
@@ -548,16 +547,10 @@ public abstract class Table extends JPanel implements Serializable {
         calcCellRanges();
     }
 
-    public int getType() {
-        return type;
-    }
+    public abstract TableType getType();
 
     public DataCell getDataCell(int location) {
         return data[location];
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     @Override
@@ -1256,7 +1249,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void validateScaling() {
-        if (type != Settings.TABLE_SWITCH) {
+        if (getType() != TableType.SWITCH) {
 
             // make sure a scale is present
             if (scales.isEmpty()) {
@@ -1520,6 +1513,38 @@ public abstract class Table extends JPanel implements Serializable {
 
     public int getMemModelEndian() {
         return memModelEndian;
+    }
+
+    public enum TableType {
+        TABLE_1D(1),
+        TABLE_2D(2),
+        TABLE_3D(3),
+        X_AXIS(4),
+        Y_AXIS(5),
+        SWITCH(6);
+
+        private final int marshallingCode;
+
+        TableType(int marshallingCode) {
+            this.marshallingCode = marshallingCode;
+        }
+
+        public int getDimension() {
+            switch (this) {
+                case TABLE_1D:
+                    return 1;
+                case TABLE_2D:
+                    return 2;
+                case TABLE_3D:
+                    return 3;
+                default:
+                    return -1;
+            }
+        }
+
+        public String getMarshallingString() {
+            return String.valueOf(marshallingCode);
+        }
     }
 }
 

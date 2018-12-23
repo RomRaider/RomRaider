@@ -93,13 +93,6 @@ public class Settings implements Serializable {
     public static final int ENDIAN_LITTLE = 1;
     public static final int ENDIAN_BIG = 2;
 
-    public static final int TABLE_1D = 1;
-    public static final int TABLE_2D = 2;
-    public static final int TABLE_3D = 3;
-    public static final int TABLE_X_AXIS = 4;
-    public static final int TABLE_Y_AXIS = 5;
-    public static final int TABLE_SWITCH = 6;
-
     public enum DataType {
         ORIGINAL,
         BIN
