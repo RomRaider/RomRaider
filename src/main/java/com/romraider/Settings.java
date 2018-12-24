@@ -104,7 +104,6 @@ public class Settings implements Serializable {
             return String.valueOf(marshallingCode);
         }
     }
-    public static final int ENDIAN_BIG = 2;
 
     public enum DataType {
         ORIGINAL,
