@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.management.modelmbean.XMLParseException;
 import javax.swing.JOptionPane;
 
+import com.romraider.Settings;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -442,10 +443,10 @@ public final class DOMRomUnmarshaller {
                         String.valueOf(table.getStorageType()))));
         if (memModelEndian == null) {
             table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(
-                    tableNode, "endian", String.valueOf(table.getEndian()))));
+                    tableNode, "endian", table.getEndian().getMarshallingString())));
         }
         else {
-            final int endian = memModelEndian.equalsIgnoreCase("little") ? 1 : 2;
+            final Settings.Endian endian = memModelEndian.equalsIgnoreCase("little") ? Settings.Endian.LITTLE : Settings.Endian.BIG;
             table.setMemModelEndian(endian);
             table.setEndian(endian);
         }

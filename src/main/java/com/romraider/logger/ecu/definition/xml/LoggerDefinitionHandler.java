@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,7 +147,7 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
     private String conversionExpression;
     private String conversionFormat;
     private String conversionStorageType;
-    private int conversionEndian;
+    private Settings.Endian conversionEndian;
     private GaugeMinMax conversionGauge;
     private String target;
     private String version;
@@ -235,10 +235,10 @@ public final class LoggerDefinitionHandler extends DefaultHandler {
                 conversionStorageType = attributes.getValue(ATTR_STORAGETYPE);
                 String endian = attributes.getValue(ATTR_ENDIAN);
                 if (endian != null) {
-                    conversionEndian = endian.equalsIgnoreCase("little") ? Settings.ENDIAN_LITTLE : Settings.ENDIAN_BIG;
+                    conversionEndian = endian.equalsIgnoreCase("little") ? Settings.Endian.LITTLE : Settings.Endian.BIG;
                 }
                 else {
-                    conversionEndian = Settings.ENDIAN_BIG;
+                    conversionEndian = Settings.Endian.BIG;
                 }
                 double gaugeMin = getConversionMin(attributes, conversionUnits);
                 double gaugeMax = getConversionMax(attributes, conversionUnits);

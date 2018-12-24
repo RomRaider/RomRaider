@@ -78,7 +78,7 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     tableName.setText(String.format("%s (%dD)", table.getName(), dim));
     storageAddress.setText("0x" + Integer.toHexString(table.getStorageAddress()));
 
-    if (table.getEndian() == Settings.ENDIAN_BIG) {
+    if (table.getEndian() == Settings.Endian.BIG) {
         endian.setText("big");
     } else {
         endian.setText("little");

@@ -33,15 +33,15 @@ public final class RomAttributeParser {
     private RomAttributeParser() {
     }
 
-    public static int parseEndian(String input) {
-        if (input.equalsIgnoreCase("big") || input.equalsIgnoreCase(String.valueOf(Settings.ENDIAN_BIG))) {
-            return Settings.ENDIAN_BIG;
+    public static Settings.Endian parseEndian(String input) {
+        if (input.equalsIgnoreCase("big") || input.equalsIgnoreCase(Settings.Endian.BIG.getMarshallingString())) {
+            return Settings.Endian.BIG;
         }
-        else if (input.equalsIgnoreCase("little") || input.equalsIgnoreCase(String.valueOf(Settings.ENDIAN_LITTLE))) {
-            return Settings.ENDIAN_LITTLE;
+        else if (input.equalsIgnoreCase("little") || input.equalsIgnoreCase(Settings.Endian.LITTLE.getMarshallingString())) {
+            return Settings.Endian.LITTLE;
         }
         else {
-            return Settings.ENDIAN_LITTLE;
+            return Settings.Endian.LITTLE;
         }
     }
 
@@ -115,7 +115,7 @@ public final class RomAttributeParser {
         }
     }
 
-    public static long parseByteValue(byte[] input, int endian, int address, int length, boolean signed) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    public static long parseByteValue(byte[] input, Settings.Endian endian, int address, int length, boolean signed) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         try {
             long output = 0L;
             int llength = length;
@@ -124,7 +124,7 @@ public final class RomAttributeParser {
             	llength = 3;
             }
             final ByteBuffer bb = ByteBuffer.wrap(input, address, llength);
-            if (endian == Settings.ENDIAN_LITTLE) {
+            if (endian == Settings.Endian.LITTLE) {
                 bb.order(ByteOrder.LITTLE_ENDIAN);
             }
             switch (length) {
@@ -175,7 +175,7 @@ public final class RomAttributeParser {
     	return value;
 	}
 
-	public static byte[] parseIntegerValue(int input, int endian, int length) {
+	public static byte[] parseIntegerValue(int input, Settings.Endian endian, int length) {
         try {
         	int llength = length;
         	if (length == Settings.STORAGE_TYPE_MOVI20 ||
@@ -183,7 +183,7 @@ public final class RomAttributeParser {
         		llength = 4;
         	}
             final ByteBuffer bb = ByteBuffer.allocate(llength);
-            if (endian == Settings.ENDIAN_LITTLE) {
+            if (endian == Settings.Endian.LITTLE) {
                 bb.order(ByteOrder.LITTLE_ENDIAN);
             }
             switch (length) {
@@ -234,18 +234,18 @@ public final class RomAttributeParser {
         }
     }
 
-    public static byte[] floatToByte(float input, int endian, int memModelEndian) {
+    public static byte[] floatToByte(float input, Settings.Endian endian, Settings.Endian memModelEndian) {
         byte[] output = new byte[4];
         ByteBuffer bb = ByteBuffer.wrap(output, 0, 4);
-        if (memModelEndian == Settings.ENDIAN_LITTLE) {
+        if (memModelEndian == Settings.Endian.LITTLE) {
             bb.order(ByteOrder.LITTLE_ENDIAN);
         }
-        else if (memModelEndian == Settings.ENDIAN_BIG) {
+        else if (memModelEndian == Settings.Endian.BIG) {
             bb.order(ByteOrder.BIG_ENDIAN);
         }
         else {
             // this case corrects improperly defined float table endian in legacy definition files
-            if (endian == Settings.ENDIAN_LITTLE) {
+            if (endian == Settings.Endian.LITTLE) {
                 bb.order(ByteOrder.BIG_ENDIAN);
             }
         }
@@ -253,17 +253,17 @@ public final class RomAttributeParser {
         return bb.array();
     }
 
-    public static float byteToFloat(byte[] input, int endian, int memModelEndian) {
+    public static float byteToFloat(byte[] input, Settings.Endian endian, Settings.Endian memModelEndian) {
         ByteBuffer bb = ByteBuffer.wrap(input, 0, 4);
-        if (memModelEndian == Settings.ENDIAN_LITTLE) {
+        if (memModelEndian == Settings.Endian.LITTLE) {
             bb.order(ByteOrder.LITTLE_ENDIAN);
         }
-        else if (memModelEndian == Settings.ENDIAN_BIG) {
+        else if (memModelEndian == Settings.Endian.BIG) {
             bb.order(ByteOrder.BIG_ENDIAN);
         }
         else {
             // this case corrects improperly defined float table endian in legacy definition files
-            if (endian == Settings.ENDIAN_LITTLE) {
+            if (endian == Settings.Endian.LITTLE) {
                 bb.order(ByteOrder.BIG_ENDIAN);
             }
         }

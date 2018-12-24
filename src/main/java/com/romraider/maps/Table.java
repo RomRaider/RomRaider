@@ -64,7 +64,7 @@ public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
     protected static final Logger LOGGER = Logger.getLogger(Table.class);
     protected static final String ST_DELIMITER = "\t\n\r\f";
-    protected static int memModelEndian;
+    protected static Settings.Endian memModelEndian;
 
     protected String name;
     protected String category = "Other";
@@ -75,7 +75,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected int storageAddress;
     protected int storageType;
     protected boolean signed;
-    protected int endian;
+    protected Settings.Endian endian = Settings.Endian.BIG;
     protected boolean flip;
     protected DataCell[] data = new DataCell[0];
     protected boolean beforeRam = false;
@@ -658,11 +658,11 @@ public abstract class Table extends JPanel implements Serializable {
         this.signed = signed;
     }
 
-    public int getEndian() {
+    public Settings.Endian getEndian() {
         return endian;
     }
 
-    public void setEndian(int endian) {
+    public void setEndian(Settings.Endian endian) {
         this.endian = endian;
     }
 
@@ -1507,11 +1507,11 @@ public abstract class Table extends JPanel implements Serializable {
         this.staticDataTable = staticDataTable;
     }
 
-    public void setMemModelEndian(int endian) {
+    public void setMemModelEndian(Settings.Endian endian) {
         memModelEndian = endian;
     }
 
-    public int getMemModelEndian() {
+    public Settings.Endian getMemModelEndian() {
         return memModelEndian;
     }
 

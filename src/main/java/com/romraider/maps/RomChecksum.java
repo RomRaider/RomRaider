@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ public class RomChecksum {
     public static void calculateRomChecksum(byte[] input, int storageAddress, int dataSize) {
         for (int i = storageAddress; i < storageAddress + dataSize; i+=12) {
             byte[] newSum = calculateChecksum(input,
-                    (int)parseByteValue(input, 0, i  , 4, true),
-                    (int)parseByteValue(input, 0, i+4, 4, true));
+                    (int)parseByteValue(input, Settings.Endian.BIG, i  , 4, true),
+                    (int)parseByteValue(input, Settings.Endian.BIG, i+4, 4, true));
             System.arraycopy(newSum, 0, input, i + 8, 4);
         }
     }
@@ -40,9 +40,9 @@ public class RomChecksum {
         int[] results = new int[dataSize / 12];
         int j = 0;
         for (int i = storageAddress; i < storageAddress + dataSize; i+=12) {
-            int startAddr = (int)parseByteValue(input, 0, i  , 4, true);
-            int endAddr   = (int)parseByteValue(input, 0, i+4, 4, true);
-            int diff      = (int)parseByteValue(input, 0, i+8, 4, true);
+            int startAddr = (int)parseByteValue(input, Settings.Endian.BIG, i  , 4, true);
+            int endAddr   = (int)parseByteValue(input, Settings.Endian.BIG, i+4, 4, true);
+            int diff      = (int)parseByteValue(input, Settings.Endian.BIG, i+8, 4, true);
             if (j == 0 &&
                     startAddr == 0 &&
                     endAddr   == 0 &&
@@ -65,7 +65,7 @@ public class RomChecksum {
     private static int validateChecksum(byte[] input, int startAddr, int endAddr, int diff) {
         int byteSum = 0;
         for (int i=startAddr; i<endAddr; i+=4) {
-            byteSum += (int)parseByteValue(input, 0, i, 4, true);
+            byteSum += (int)parseByteValue(input, Settings.Endian.BIG, i, 4, true);
         }
         int result = (Settings.CHECK_TOTAL - diff - byteSum);
         return result;
@@ -74,8 +74,8 @@ public class RomChecksum {
     private static byte[] calculateChecksum(byte[] input, int startAddr, int endAddr) {
         int byteSum = 0;
         for (int i=startAddr; i<endAddr; i+=4) {
-            byteSum += (int)parseByteValue(input, 0, i, 4, true);
+            byteSum += (int)parseByteValue(input, Settings.Endian.BIG, i, 4, true);
         }
-        return parseIntegerValue((Settings.CHECK_TOTAL - byteSum), 0, 4);
+        return parseIntegerValue((Settings.CHECK_TOTAL - byteSum), Settings.Endian.BIG, 4);
     }
 }

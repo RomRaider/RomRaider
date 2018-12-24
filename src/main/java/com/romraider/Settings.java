@@ -90,7 +90,20 @@ public class Settings implements Serializable {
     /* Table Settings */
     public static final String defaultTableToolBarName = "Table Tools";
 
-    public static final int ENDIAN_LITTLE = 1;
+    public enum Endian {
+        LITTLE(1),
+        BIG(2);
+
+        private final int marshallingCode;
+
+        Endian(int marshallingCode) {
+            this.marshallingCode = marshallingCode;
+        }
+
+        public String getMarshallingString() {
+            return String.valueOf(marshallingCode);
+        }
+    }
     public static final int ENDIAN_BIG = 2;
 
     public enum DataType {
