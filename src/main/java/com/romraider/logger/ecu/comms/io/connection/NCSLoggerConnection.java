@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@ import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ThreadUtil.sleep;
 import static org.apache.log4j.Logger.getLogger;
+import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.SID_21;
+import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.SID_22;
 
 import java.util.Collection;
 import java.util.Map;
@@ -202,13 +204,13 @@ public final class NCSLoggerConnection implements LoggerConnection {
 
         if (queries.size() != queryCount
                 || pollState.isNewQuery()) {
-            // max data bytes 255 including TX loopback
+            // max data bytes 63 when length encoded into format byte
             int dataLength = 0;
             for (EcuQuery query : queries) {
-                dataLength += query.getBytes().length;
+                dataLength += calcLength(query.getBytes());
             }
             // if length is too big then notify user to un-select some parameters
-            if (dataLength > 60) {
+            if (dataLength > 56) {
                 throw new SerialCommunicationException(
                         "Request message too large, un-select some parameters");
             }
@@ -216,7 +218,10 @@ public final class NCSLoggerConnection implements LoggerConnection {
             LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
                     pollState.getCurrentState(), module, asHex(request)));
 
-            final byte[] response = new byte[4];
+            byte[] response = new byte[4];  // short header response
+            if ((request[0] & (byte)0x80) == (byte)0x80) {
+                response = new byte[6];     // long header response
+            }
             manager.send(request, response, pollState);
             LOGGER.debug(String.format("Mode:%s %s Load address response  <--- %s",
                     pollState.getCurrentState(), module, asHex(response)));
@@ -258,5 +263,15 @@ public final class NCSLoggerConnection implements LoggerConnection {
     @Override
     public void sendAddressWrites(Map<EcuQuery, byte[]> writeQueries, Module module) {
         throw new UnsupportedOperationException();
+    }
+
+    private int calcLength(byte[] address) {
+        switch (address[0]) {
+            case SID_21:
+            case SID_22:
+                return 3;
+            default:
+                return 5;
+        }
     }
 }

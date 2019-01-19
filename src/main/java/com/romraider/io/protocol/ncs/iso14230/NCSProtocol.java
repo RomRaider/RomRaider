@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,7 +129,10 @@ public final class NCSProtocol implements ProtocolNCS {
     @Override
     public byte[] constructLoadAddressRequest(byte[][] addresses) {
         checkNotNullOrEmpty(addresses, "addresses");
-        // len 0xac 0x81 fld_typ address1 [[fld_typ address2] ... [fld_typ addressN]] checksum
+        // short header - false, length encoded into lower 5 bits of first byte
+        // 0x8Len 0x10 0xFC 0xac 0x81 fld_typ address1 [[fld_typ address2] ... [fld_typ addressN]] checksum
+        // short header - true
+        // Len 0xac 0x81 fld_typ address1 [[fld_typ address2] ... [fld_typ addressN]] checksum
         return buildLoadAddrRequest(true, addresses);
     }
 

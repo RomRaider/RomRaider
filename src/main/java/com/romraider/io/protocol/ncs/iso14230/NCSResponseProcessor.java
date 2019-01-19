@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,8 @@ import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.NCS_NRC;
 import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.READ_LOAD_RESPONSE;
 import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.RESPONSE_NON_DATA_BYTES;
 import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.READ_SID_GRP_RESPONSE;
-import static com.romraider.util.ByteUtil.asUnsignedInt;
 import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-
-import java.util.Arrays;
 
 import com.romraider.logger.ecu.comms.manager.PollingState;
 import com.romraider.logger.ecu.exception.InvalidResponseException;
@@ -58,9 +55,16 @@ public final class NCSResponseProcessor {
             assertNrc((byte) (response[2] + 0x40), response[1], response[2], response[3],
                     "Request type not supported");
         }
-        assertOneOf(new byte[]{ECU_ID_SID_RESPONSE, LOAD_ADDRESS_RESPONSE,
-                READ_LOAD_RESPONSE, READ_SID_GRP_RESPONSE},
-                response[1], "Invalid response code");
+        if ((response[0] & (byte)0x80) == (byte)0x80) { // long header
+            assertOneOf(new byte[]{ECU_ID_SID_RESPONSE, LOAD_ADDRESS_RESPONSE,
+                    READ_LOAD_RESPONSE, READ_SID_GRP_RESPONSE},
+                    response[3], "Invalid response code");
+        }
+        else {  // short header
+            assertOneOf(new byte[]{ECU_ID_SID_RESPONSE, LOAD_ADDRESS_RESPONSE,
+                    READ_LOAD_RESPONSE, READ_SID_GRP_RESPONSE},
+                    response[1], "Invalid response code");
+        }
     }
 
     public final static byte[] extractResponseData(byte[] response) {
