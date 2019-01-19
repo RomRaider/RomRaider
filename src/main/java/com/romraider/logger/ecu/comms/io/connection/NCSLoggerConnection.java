@@ -23,8 +23,6 @@ import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ThreadUtil.sleep;
 import static org.apache.log4j.Logger.getLogger;
-import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.SID_21;
-import static com.romraider.io.protocol.ncs.iso14230.NCSProtocol.SID_22;
 
 import java.util.Collection;
 import java.util.Map;
@@ -207,10 +205,12 @@ public final class NCSLoggerConnection implements LoggerConnection {
             // max data bytes 63 when length encoded into format byte
             int dataLength = 0;
             for (EcuQuery query : queries) {
-                dataLength += calcLength(query.getBytes());
+                for (final String address : query.getAddresses()) {
+                    dataLength += calcLength(address);
+                }
             }
             // if length is too big then notify user to un-select some parameters
-            if (dataLength > 56) {
+            if (dataLength > 61) {
                 throw new SerialCommunicationException(
                         "Request message too large, un-select some parameters");
             }
@@ -265,13 +265,12 @@ public final class NCSLoggerConnection implements LoggerConnection {
         throw new UnsupportedOperationException();
     }
 
-    private int calcLength(byte[] address) {
-        switch (address[0]) {
-            case SID_21:
-            case SID_22:
-                return 3;
-            default:
-                return 5;
+    private int calcLength(String address) {
+        if (address.toLowerCase().startsWith("0x2")) {
+            return 3;
+        }
+        else {
+            return 5;
         }
     }
 }
