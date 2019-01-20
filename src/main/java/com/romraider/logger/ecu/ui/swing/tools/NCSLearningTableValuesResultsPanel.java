@@ -79,7 +79,7 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
     //TODO: replace AF learning with a knock table
     private JTable afLearningTable;
     private List<JTable> ltftTables = new ArrayList<JTable>();
-    private final String LTFT_NAME = "Long Term Fuel Trim Tables";
+    private final String LTFT_NAME = "Learned Fuel Trim Tables";
 
     public NCSLearningTableValuesResultsPanel(
             EcuLogger logger,
@@ -175,7 +175,7 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
         ltftTitlePanel.setBounds(10, 72, 692, 226);
         ltftTitlePanel.setLayout(new BorderLayout(0, 0));
 
-        final JLabel xLabel = new JLabel("Injector Pule Width (msec)");
+        final JLabel xLabel = new JLabel("Injector Pulse Width (msec)");
         SetFont.plain(xLabel);
         xLabel.setHorizontalAlignment(SwingConstants.CENTER);
         ltftTitlePanel.add(xLabel, BorderLayout.NORTH);
