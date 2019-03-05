@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import com.romraider.Settings;
+import com.romraider.maps.Table.TableType;
 import com.romraider.util.ByteUtil;
 
 import static com.romraider.util.ByteUtil.isBitSet;
@@ -46,7 +47,6 @@ public class TableBitwiseSwitch extends Table {
     public TableBitwiseSwitch() {
         super();
         storageType = 1;
-        type = Settings.TABLE_SWITCH;
         removeAll();
         setLayout(new BorderLayout());
         checkboxes = new ArrayList<JCheckBox>();
@@ -72,8 +72,8 @@ public class TableBitwiseSwitch extends Table {
     }
 
     @Override
-    public int getType() {
-        return Settings.TABLE_SWITCH;
+    public TableType getType() {
+        return Table.TableType.SWITCH;
     }
 
     @Override
