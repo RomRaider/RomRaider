@@ -104,6 +104,21 @@ public final class ByteUtil {
     	return (b & 1 << position) != 0;
     }
 
+    public static boolean[] byteToBoolArr(byte b) {
+        boolean boolArr[] = new boolean[8];
+        for(int i=0;i<8;i++) boolArr[i] = (b & (byte)(128 / Math.pow(2, i))) != 0;
+        return boolArr;
+    }
+    
+    public static byte booleanArrayToBit(boolean[] arr){
+      byte val = 0;
+      for (boolean b: arr) {
+        val <<= 1;
+        if (b) val |= 1;
+      }
+      return val;
+    }
+
     private static int[] computeFailure(byte[] pattern) {
         int[] failure = new int[pattern.length];
         int j = 0;
