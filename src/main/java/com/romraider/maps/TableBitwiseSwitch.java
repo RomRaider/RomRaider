@@ -33,6 +33,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import com.romraider.Settings;
+import com.romraider.util.ByteUtil;
+
 import static com.romraider.util.ByteUtil.isBitSet;
 
 public class TableBitwiseSwitch extends Table {
@@ -89,23 +91,30 @@ public class TableBitwiseSwitch extends Table {
 
     @Override
     public byte[] saveFile(byte[] input) {
-    	
-    	boolean[] bools = new boolean[8];
+    	// get original values
+    	boolean[] bools = ByteUtil.byteToBoolArr(input[storageAddress]);
+    	// invert original values because input checboxes are in reverse order
+    	for(int i=0; i<bools.length/2; i++){
+		  boolean temp = bools[i];
+		  bools[i] = bools[bools.length -i -1];
+		  bools[bools.length -i -1] = temp;
+		}
+    	// set to new state from checkboxes, in reverse order
     	for (Entry<String, Integer> entry: controlBits.entrySet()) {
     		JCheckBox cb = getButtonByText(entry.getKey());
     		bools[entry.getValue()] = cb.isSelected();
     	}
+    	// reverse back the array so it is correct representation of byte
+    	for(int i=0; i<bools.length/2; i++){
+		  boolean temp = bools[i];
+		  bools[i] = bools[bools.length -i -1];
+		  bools[bools.length -i -1] = temp;
+		}
     	
-    	int bits = 0;
-    	for (int i = 0; i < bools.length; i++) {
-    	    if (bools[i])
-    	        bits |= 1 << i;
-    	}
-    	
-    	input[storageAddress] = (byte) bits;
+    	input[storageAddress] = ByteUtil.booleanArrayToBit(bools);
         return input;
     }
-
+    
     public void setValues(String name, String input) {
         controlBits.put(name, Integer.parseInt(input));
     }
