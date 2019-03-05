@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,22 +90,30 @@ public class Settings implements Serializable {
     /* Table Settings */
     public static final String defaultTableToolBarName = "Table Tools";
 
-    public static final int ENDIAN_LITTLE = 1;
-    public static final int ENDIAN_BIG = 2;
+    public enum Endian {
+        LITTLE(1),
+        BIG(2);
 
-    public static final int TABLE_1D = 1;
-    public static final int TABLE_2D = 2;
-    public static final int TABLE_3D = 3;
-    public static final int TABLE_X_AXIS = 4;
-    public static final int TABLE_Y_AXIS = 5;
-    public static final int TABLE_SWITCH = 6;
+        private final int marshallingCode;
 
-    public static final int DATA_TYPE_ORIGINAL = 0;
-    public static final int DATA_TYPE_BIN = 1;
-    public static final int DATA_TYPE_REAL = 3;
+        Endian(int marshallingCode) {
+            this.marshallingCode = marshallingCode;
+        }
 
-    public static final int COMPARE_DISPLAY_PERCENT = 1;
-    public static final int COMPARE_DISPLAY_ABSOLUTE = 2;
+        public String getMarshallingString() {
+            return String.valueOf(marshallingCode);
+        }
+    }
+
+    public enum DataType {
+        ORIGINAL,
+        BIN
+    }
+
+    public enum CompareDisplay {
+        PERCENT,
+        ABSOLUTE
+    }
 
     public static final int MOVI20_MIN_VALUE = 0xfff80000;
     public static final int MOVI20_MAX_VALUE = 0x0007ffff;
@@ -114,11 +122,8 @@ public class Settings implements Serializable {
     public static final int STORAGE_TYPE_MOVI20 = 20;
     public static final int STORAGE_TYPE_MOVI20S = 28;
     public static final int STORAGE_TYPE_FLOAT = 99;
-    public static final boolean STORAGE_DATA_SIGNED = false;
 
     public static final Color UNCHANGED_VALUE_COLOR = new Color(160, 160, 160);
-
-    public static final String INVALID_ATTRIBUTE_TEXT = "invalid";
 
     public static final String DEFAULT_TABLE_NAME = "Unknown";
 
@@ -139,10 +144,6 @@ public class Settings implements Serializable {
     public static Color TABLE_EQUAL_COLOR = new Color(52,114,53);
     public static Color TABLE_DIFFERENT_COLOR = new Color(193, 27, 23);
     public static Color TABLE_MISSING_COLOR = new Color(251,185,23);
-
-    /* Compare DTC Foreground Colors */
-    public static Color TABLESWITCH_DEFAULT_COLOR = Color.black;
-    public static Color TABLESWITCH_DIFFERENT_COLOR = new Color(193, 27, 23);
 
     /* MDI Desktop Settings*/
     public static int FRAME_OFFSET = 20;

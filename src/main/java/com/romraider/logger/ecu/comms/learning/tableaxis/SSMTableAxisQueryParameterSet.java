@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,8 +52,7 @@ public class SSMTableAxisQueryParameterSet {
      * @param expression -  the equation to convert byte data to a real number.
      * @param units - the value's unit of measure.
      * @param size - the length of the Table's axis.
-     * @param endian - the data endian.
-     * @return a List of ECU Query items. 
+     * @return a List of ECU Query items.
      */
     public static final List<EcuQuery> build(
             String storageAddress,
@@ -79,7 +78,7 @@ public class SSMTableAxisQueryParameterSet {
                     new EcuDataConvertor[] {
                         new EcuParameterConvertorImpl(
                             units, expression, "0.000", -1, storageType,
-                            Settings.ENDIAN_BIG, new HashMap<String, String>(),
+                            Settings.Endian.BIG, new HashMap<String, String>(),
                             getDefault()
                         )
                     }

@@ -33,11 +33,11 @@ import java.util.Map;
 import javax.management.modelmbean.XMLParseException;
 import javax.swing.JOptionPane;
 
+import com.romraider.Settings;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.DataCell;
 import com.romraider.maps.Rom;
@@ -374,10 +374,7 @@ public final class DOMRomUnmarshaller {
             }
         }
 
-        try {
-            if (table.getType() < 1) {
-            }
-        } catch (NullPointerException ex) { // if type is null or less than 0,
+        if (table == null) {
             // create new instance (otherwise it
             // is inherited)
             final String tn = unmarshallAttribute(tableNode, "name", "unknown");
@@ -398,20 +395,19 @@ public final class DOMRomUnmarshaller {
 
                 } else if (unmarshallAttribute(tableNode, "type", "unknown")
                         .equalsIgnoreCase("1D")) {
-                    table = new Table1D();
+                    table = new Table1D(Table.TableType.TABLE_1D);
 
                 } else if (unmarshallAttribute(tableNode, "type", "unknown")
                         .equalsIgnoreCase("X Axis")
                         || unmarshallAttribute(tableNode, "type", "unknown")
-                        .equalsIgnoreCase("Y Axis")) {
-                    table = new Table1D();
+                        .equalsIgnoreCase("Static X Axis"))  {
+                    table = new Table1D(Table.TableType.X_AXIS);
 
                 } else if (unmarshallAttribute(tableNode, "type", "unknown")
-                        .equalsIgnoreCase("Static Y Axis")
+                        .equalsIgnoreCase("Y Axis")
                         || unmarshallAttribute(tableNode, "type", "unknown")
-                        .equalsIgnoreCase("Static X Axis")) {
-                    table = new Table1D();
-
+                        .equalsIgnoreCase("Static Y Axis")) {
+                    table = new Table1D(Table.TableType.Y_AXIS);
                 } else if (unmarshallAttribute(tableNode, "type", "unknown")
                         .equalsIgnoreCase("Switch")) {
                     table = new TableSwitch();
@@ -433,10 +429,7 @@ public final class DOMRomUnmarshaller {
 
         // unmarshall table attributes
         final String tn = unmarshallAttribute(tableNode, "name", table.getName());
-        final int type = RomAttributeParser.parseTableType(unmarshallAttribute(
-               tableNode, "type", String.valueOf(table.getType())));
         table.setName(tn);
-        table.setType(type);
         if (unmarshallAttribute(tableNode, "beforeram", "false")
                 .equalsIgnoreCase("true")) {
             table.setBeforeRam(true);
@@ -455,10 +448,10 @@ public final class DOMRomUnmarshaller {
                         String.valueOf(table.getStorageType()))));
         if (memModelEndian == null) {
             table.setEndian(RomAttributeParser.parseEndian(unmarshallAttribute(
-                    tableNode, "endian", String.valueOf(table.getEndian()))));
+                    tableNode, "endian", table.getEndian().getMarshallingString())));
         }
         else {
-            final int endian = memModelEndian.equalsIgnoreCase("little") ? 1 : 2;
+            final Settings.Endian endian = memModelEndian.equalsIgnoreCase("little") ? Settings.Endian.LITTLE : Settings.Endian.BIG;
             table.setMemModelEndian(endian);
             table.setEndian(endian);
         }
@@ -484,7 +477,7 @@ public final class DOMRomUnmarshaller {
         table.setLogParam(unmarshallAttribute(tableNode, "logparam",
                 table.getLogParam()));
 
-        if (table.getType() == Settings.TABLE_3D) {
+        if (table.getType() == Table.TableType.TABLE_3D) {
             ((Table3D) table).setSwapXY(unmarshallAttribute(tableNode,
                     "swapxy", ((Table3D) table).getSwapXY()));
             ((Table3D) table).setFlipX(unmarshallAttribute(tableNode, "flipx",
@@ -506,15 +499,15 @@ public final class DOMRomUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("table")) {
 
-                    if (table.getType() == Settings.TABLE_2D) { // if table is 2D,
+                    if (table.getType() == Table.TableType.TABLE_2D) { // if table is 2D,
                         // parse axis
 
                         if (RomAttributeParser
                                 .parseTableType(unmarshallAttribute(n, "type",
-                                        "unknown")) == Settings.TABLE_Y_AXIS
+                                        "unknown")) == Table.TableType.Y_AXIS
                                         || RomAttributeParser
                                         .parseTableType(unmarshallAttribute(n,
-                                                "type", "unknown")) == Settings.TABLE_X_AXIS) {
+                                                "type", "unknown")) == Table.TableType.X_AXIS) {
 
                             Table1D tempTable = (Table1D) unmarshallTable(n,
                                     ((Table2D) table).getAxis(), rom);
@@ -526,13 +519,13 @@ public final class DOMRomUnmarshaller {
                             ((Table2D) table).setAxis(tempTable);
 
                         }
-                    } else if (table.getType() == Settings.TABLE_3D) { // if table
+                    } else if (table.getType() == Table.TableType.TABLE_3D) { // if table
                         // is 3D,
                         // populate
                         // xAxis
                         if (RomAttributeParser
                                 .parseTableType(unmarshallAttribute(n, "type",
-                                        "unknown")) == Settings.TABLE_X_AXIS) {
+                                        "unknown")) == Table.TableType.X_AXIS) {
 
                             Table1D tempTable = (Table1D) unmarshallTable(n,
                                     ((Table3D) table).getXAxis(), rom);
@@ -547,7 +540,7 @@ public final class DOMRomUnmarshaller {
 
                         } else if (RomAttributeParser
                                 .parseTableType(unmarshallAttribute(n, "type",
-                                        "unknown")) == Settings.TABLE_Y_AXIS) {
+                                        "unknown")) == Table.TableType.Y_AXIS) {
 
                             Table1D tempTable = (Table1D) unmarshallTable(n,
                                     ((Table3D) table).getYAxis(), rom);

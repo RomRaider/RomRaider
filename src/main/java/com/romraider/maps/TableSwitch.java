@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
-import com.romraider.Settings;
-
 public class TableSwitch extends Table {
 
     private static final long serialVersionUID = -4887718305447362308L;
@@ -56,7 +54,6 @@ public class TableSwitch extends Table {
     public TableSwitch() {
         super();
         storageType = 1;
-        type = Settings.TABLE_SWITCH;
         locked = true;
         removeAll();
         setLayout(new BorderLayout());
@@ -165,8 +162,8 @@ public class TableSwitch extends Table {
     }
 
     @Override
-    public int getType() {
-        return Settings.TABLE_SWITCH;
+    public TableType getType() {
+        return Table.TableType.SWITCH;
     }
 
     @Override

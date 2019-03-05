@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,15 +44,19 @@ import com.romraider.util.SettingsManager;
 
 public class Table2D extends Table {
     private static final long serialVersionUID = -7684570967109324784L;
-    private Table1D axis = new Table1D();
+    private Table1D axis = new Table1D(Table.TableType.Y_AXIS);
     private JLabel axisLabel;
 
     private CopyTable2DWorker copyTable2DWorker;
     private CopySelection2DWorker copySelection2DWorker;
 
     public Table2D() {
-        super();
         verticalOverhead += 18;
+    }
+
+    @Override
+    public TableType getType() {
+        return TableType.TABLE_2D;
     }
 
     public Table1D getAxis() {
@@ -420,13 +424,13 @@ public class Table2D extends Table {
     }
 
     @Override
-    public void setCompareDisplay(int compareDisplay) {
+    public void setCompareDisplay(Settings.CompareDisplay compareDisplay) {
         super.setCompareDisplay(compareDisplay);
         axis.setCompareDisplay(compareDisplay);
     }
 
     @Override
-    public void setCompareValueType(int compareValueType) {
+    public void setCompareValueType(Settings.DataType compareValueType) {
         super.setCompareValueType(compareValueType);
         axis.setCompareValueType(compareValueType);
     }

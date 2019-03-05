@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,8 +52,8 @@ import com.romraider.xml.RomAttributeParser;
 public class Table3D extends Table {
 
     private static final long serialVersionUID = 3103448753263606599L;
-    private Table1D xAxis = new Table1D();
-    private Table1D yAxis = new Table1D();
+    private Table1D xAxis = new Table1D(TableType.X_AXIS);
+    private Table1D yAxis = new Table1D(TableType.Y_AXIS);
     private JLabel xAxisLabel;
     private JLabel yAxisLabel;
 
@@ -66,9 +66,13 @@ public class Table3D extends Table {
     CopySelection3DWorker copySelection3DWorker;
 
     public Table3D() {
-        super();
         verticalOverhead += 39;
         horizontalOverhead += 10;
+    }
+
+    @Override
+    public TableType getType() {
+        return Table.TableType.TABLE_3D;
     }
 
     public Table1D getXAxis() {
@@ -613,7 +617,7 @@ public class Table3D extends Table {
     }
 
     public void selectCellAt(int y, Table1D axisType) {
-        if (axisType.getType() == Settings.TABLE_Y_AXIS) {
+        if (axisType.getType() == Table.TableType.Y_AXIS) {
             selectCellAt(0, y);
         } else { // y axis
             selectCellAt(y, 0);
@@ -981,14 +985,14 @@ public class Table3D extends Table {
     }
 
     @Override
-    public void setCompareDisplay(int compareDisplay) {
+    public void setCompareDisplay(Settings.CompareDisplay compareDisplay) {
         super.setCompareDisplay(compareDisplay);
         xAxis.setCompareDisplay(compareDisplay);
         yAxis.setCompareDisplay(compareDisplay);
     }
 
     @Override
-    public void setCompareValueType(int compareValueType) {
+    public void setCompareValueType(Settings.DataType compareValueType) {
         super.setCompareValueType(compareValueType);
         xAxis.setCompareValueType(compareValueType);
         yAxis.setCompareValueType(compareValueType);

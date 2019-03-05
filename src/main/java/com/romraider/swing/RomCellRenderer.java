@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
-import com.romraider.Settings;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 
@@ -108,13 +107,13 @@ public class RomCellRenderer implements TreeCellRenderer {
             renderer.setBackground(Color.WHITE);
 
             // display icon
-            if (table.getType() == Settings.TABLE_1D) {
+            if (table.getType() == Table.TableType.TABLE_1D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/1d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Settings.TABLE_2D) {
+            } else if (table.getType() == Table.TableType.TABLE_2D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/2d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Settings.TABLE_3D) {
+            } else if (table.getType() == Table.TableType.TABLE_3D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/3d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Settings.TABLE_SWITCH) {
+            } else if (table.getType() == Table.TableType.SWITCH) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/switch.gif")), JLabel.LEFT);
             }
 

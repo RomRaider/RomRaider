@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import static com.romraider.xml.RomAttributeParser.parseIntegerValue;
 
 import java.util.Map;
 
+import com.romraider.Settings;
 import com.romraider.util.HexUtil;
 
 /**
@@ -57,16 +58,16 @@ import com.romraider.util.HexUtil;
     public boolean validate(byte[] binData) {
         calculate(binData);
         final boolean valid =
-                (sumt == (int)parseByteValue(binData, 0, sumloc, 4, true)) &&
-                (xort == (int)parseByteValue(binData, 0, xorloc, 4, true));
+                (sumt == (int)parseByteValue(binData, Settings.Endian.BIG, sumloc, 4, true)) &&
+                (xort == (int)parseByteValue(binData, Settings.Endian.BIG, xorloc, 4, true));
         return valid;
     }
 
     @Override
     public void update(byte[] binData) {
         calculate(binData);
-        System.arraycopy(parseIntegerValue(sumt, 0, 4), 0, binData, sumloc, 4);
-        System.arraycopy(parseIntegerValue(xort, 0, 4), 0, binData, xorloc, 4);
+        System.arraycopy(parseIntegerValue(sumt, Settings.Endian.BIG, 4), 0, binData, sumloc, 4);
+        System.arraycopy(parseIntegerValue(xort, Settings.Endian.BIG, 4), 0, binData, xorloc, 4);
     }
 
     private void calculate(byte[] binData) {
@@ -75,7 +76,7 @@ import com.romraider.util.HexUtil;
         int dw = 0;
         for (int i = start; i < end; i += 4) {
             if ((i == sumloc) || (i == xorloc)) continue;
-            dw = (int)parseByteValue(binData, 0, i, 4, true);
+            dw = (int)parseByteValue(binData, Settings.Endian.BIG, i, 4, true);
             sumt += dw;
             xort ^= dw;
         }

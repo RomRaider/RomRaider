@@ -32,7 +32,6 @@ public final class MrfDataItem implements ExternalDataItem, DataListener {
     private double data;
 
     public MrfDataItem(String name, ExternalSensorConversions... convertorList) {
-        super();
         this.name = name;
         convertors = new EcuDataConvertor[convertorList.length];
         convertors = loadConvertors(this, convertors, convertorList);

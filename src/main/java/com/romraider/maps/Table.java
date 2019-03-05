@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,10 +64,9 @@ public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
     protected static final Logger LOGGER = Logger.getLogger(Table.class);
     protected static final String ST_DELIMITER = "\t\n\r\f";
-    protected static int memModelEndian;
+    protected static Settings.Endian memModelEndian;
 
     protected String name;
-    protected int type;
     protected String category = "Other";
     protected String description = Settings.BLANK;
     protected Vector<Scale> scales = new Vector<Scale>();
@@ -76,7 +75,7 @@ public abstract class Table extends JPanel implements Serializable {
     protected int storageAddress;
     protected int storageType;
     protected boolean signed;
-    protected int endian;
+    protected Settings.Endian endian = Settings.Endian.BIG;
     protected boolean flip;
     protected DataCell[] data = new DataCell[0];
     protected boolean beforeRam = false;
@@ -113,8 +112,8 @@ public abstract class Table extends JPanel implements Serializable {
     protected double maxCompare = 0.0;
     protected double minCompare = 0.0;
 
-    protected int compareDisplay = Settings.COMPARE_DISPLAY_ABSOLUTE;
-    protected int compareValueType = Settings.DATA_TYPE_BIN;
+    protected Settings.CompareDisplay compareDisplay = Settings.CompareDisplay.ABSOLUTE;
+    protected Settings.DataType compareValueType = Settings.DataType.BIN;
 
     protected boolean staticDataTable = false;
     protected String liveAxisValue = Settings.BLANK;
@@ -123,7 +122,7 @@ public abstract class Table extends JPanel implements Serializable {
 
     private Table compareTable = null;
 
-    public Table() {
+    protected Table() {
         scales.clear();
 
         this.setLayout(borderLayout);
@@ -548,16 +547,10 @@ public abstract class Table extends JPanel implements Serializable {
         calcCellRanges();
     }
 
-    public int getType() {
-        return type;
-    }
+    public abstract TableType getType();
 
     public DataCell getDataCell(int location) {
         return data[location];
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     @Override
@@ -665,11 +658,11 @@ public abstract class Table extends JPanel implements Serializable {
         this.signed = signed;
     }
 
-    public int getEndian() {
+    public Settings.Endian getEndian() {
         return endian;
     }
 
-    public void setEndian(int endian) {
+    public void setEndian(Settings.Endian endian) {
         this.endian = endian;
     }
 
@@ -1256,7 +1249,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void validateScaling() {
-        if (type != Settings.TABLE_SWITCH) {
+        if (getType() != TableType.SWITCH) {
 
             // make sure a scale is present
             if (scales.isEmpty()) {
@@ -1319,21 +1312,21 @@ public abstract class Table extends JPanel implements Serializable {
         drawTable();
     }
 
-    public void setCompareDisplay(int compareDisplay) {
+    public void setCompareDisplay(Settings.CompareDisplay compareDisplay) {
         this.compareDisplay = compareDisplay;
         drawTable();
     }
 
-    public int getCompareDisplay() {
+    public Settings.CompareDisplay getCompareDisplay() {
         return this.compareDisplay;
     }
 
-    public void setCompareValueType(int compareValueType) {
+    public void setCompareValueType(Settings.DataType compareValueType) {
         this.compareValueType = compareValueType;
         drawTable();
     }
 
-    public int getCompareValueType() {
+    public Settings.DataType getCompareValueType() {
         return this.compareValueType;
     }
 
@@ -1514,12 +1507,44 @@ public abstract class Table extends JPanel implements Serializable {
         this.staticDataTable = staticDataTable;
     }
 
-    public void setMemModelEndian(int endian) {
+    public void setMemModelEndian(Settings.Endian endian) {
         memModelEndian = endian;
     }
 
-    public int getMemModelEndian() {
+    public Settings.Endian getMemModelEndian() {
         return memModelEndian;
+    }
+
+    public enum TableType {
+        TABLE_1D(1),
+        TABLE_2D(2),
+        TABLE_3D(3),
+        X_AXIS(4),
+        Y_AXIS(5),
+        SWITCH(6);
+
+        private final int marshallingCode;
+
+        TableType(int marshallingCode) {
+            this.marshallingCode = marshallingCode;
+        }
+
+        public int getDimension() {
+            switch (this) {
+                case TABLE_1D:
+                    return 1;
+                case TABLE_2D:
+                    return 2;
+                case TABLE_3D:
+                    return 3;
+                default:
+                    return -1;
+            }
+        }
+
+        public String getMarshallingString() {
+            return String.valueOf(marshallingCode);
+        }
     }
 }
 

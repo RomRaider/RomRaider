@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,17 +42,17 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
     private final DecimalFormat format;
     private final int bit;
     private final String dataType;
-    private final int endian;
+    private final Settings.Endian endian;
     private final Map<String, String> replaceMap;
     private final GaugeMinMax gaugeMinMax;
 
     public EcuParameterConvertorImpl() {
-        this("Raw data", "x", "0", -1, "uint", Settings.ENDIAN_BIG,
+        this("Raw data", "x", "0", -1, "uint", Settings.Endian.BIG,
                 new HashMap<String, String>(), getDefault());
     }
 
     public EcuParameterConvertorImpl(String units, String expression,
-            String format, int bit, String dataType, int endian,
+            String format, int bit, String dataType, Settings.Endian endian,
             Map<String, String> replaceMap, GaugeMinMax gaugeMinMax) {
 
         checkNotNullOrEmpty(units, "units");
@@ -71,7 +71,7 @@ public final class EcuParameterConvertorImpl implements EcuDataConvertor {
 
     public double convert(byte[] bytes) {
         final ByteBuffer bb = ByteBuffer.wrap(bytes);
-        if (endian == Settings.ENDIAN_LITTLE) {
+        if (endian == Settings.Endian.LITTLE) {
             bb.order(ByteOrder.LITTLE_ENDIAN);
         }
 
