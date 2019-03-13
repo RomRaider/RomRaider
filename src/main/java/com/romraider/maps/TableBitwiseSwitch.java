@@ -37,6 +37,8 @@ import com.romraider.maps.Table.TableType;
 import com.romraider.util.ByteUtil;
 
 import static com.romraider.util.ByteUtil.isBitSet;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class TableBitwiseSwitch extends Table {
 
@@ -58,6 +60,14 @@ public class TableBitwiseSwitch extends Table {
     	JPanel radioPanel = new JPanel(new GridLayout(0, 1));
         radioPanel.add(new JLabel("  " + getName()));
         for (Entry<String, Integer> entry: controlBits.entrySet()) {
+        	if (entry.getValue() > 7) {
+        		String mismatch = String.format("Table: %s%nDefinition file specified an out of range bit switch! Only values 0-7 are valid!", super.getName());
+        		showMessageDialog(this,
+                        mismatch,
+                        "ERROR - Incorrect definition",
+                        ERROR_MESSAGE);
+        		continue;
+			}
             JCheckBox cb = new JCheckBox(entry.getKey());
             cb.setSelected(isBitSet(currentValue, entry.getValue()));
             checkboxes.add(cb);
@@ -93,23 +103,12 @@ public class TableBitwiseSwitch extends Table {
     public byte[] saveFile(byte[] input) {
     	// get original values
     	boolean[] bools = ByteUtil.byteToBoolArr(input[storageAddress]);
-    	// invert original values because input checboxes are in reverse order
-    	for(int i=0; i<bools.length/2; i++){
-		  boolean temp = bools[i];
-		  bools[i] = bools[bools.length -i -1];
-		  bools[bools.length -i -1] = temp;
-		}
+    	
     	// set to new state from checkboxes, in reverse order
     	for (Entry<String, Integer> entry: controlBits.entrySet()) {
     		JCheckBox cb = getButtonByText(entry.getKey());
-    		bools[entry.getValue()] = cb.isSelected();
+    		bools[7 -entry.getValue()] = cb.isSelected();
     	}
-    	// reverse back the array so it is correct representation of byte
-    	for(int i=0; i<bools.length/2; i++){
-		  boolean temp = bools[i];
-		  bools[i] = bools[bools.length -i -1];
-		  bools[bools.length -i -1] = temp;
-		}
     	
     	input[storageAddress] = ByteUtil.booleanArrayToBit(bools);
         return input;
