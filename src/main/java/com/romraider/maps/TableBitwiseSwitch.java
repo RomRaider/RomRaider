@@ -32,11 +32,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import com.romraider.Settings;
-import com.romraider.maps.Table.TableType;
 import com.romraider.util.ByteUtil;
-
 import static com.romraider.util.ByteUtil.isBitSet;
+
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
