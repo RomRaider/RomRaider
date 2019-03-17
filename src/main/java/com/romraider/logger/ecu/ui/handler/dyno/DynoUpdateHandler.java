@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
     private static final String VS = "P9";
     private static final String IAT = "P11";
     private static final String TA = "P13";
+    private static final String TV = "P19";
     private static final String ATM = "P24";
     private static final Boolean TEST = false;
     private DynoTab dynoTab;
@@ -44,6 +45,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
     private static final double[] logRpm = {1690, 1733, 1776, 1852, 1935, 2004, 2091, 2148, 2241, 2325, 2405, 2496, 2597, 2754, 2871, 2943, 3093, 3243, 3350, 3475, 3617, 3780, 3843, 4025, 4125, 4234, 4355, 4511, 4618, 4720, 4835, 4947, 5067, 5138, 5254, 5351, 5485, 5581, 5642, 5735, 5816, 5939, 6041, 6104, 6183, 6280, 6347, 6406, 6483, 6548, 6651, 6693, 6800, 6870, 6924, 6974, 7079};
     private static final double[] logThrottle = {49.78, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 99.96, 10};
     private static final double[] logKph = {36, 37, 39, 40, 42, 43, 45, 46, 48, 50, 52, 54, 56, 59, 61, 64, 67, 70, 73, 75, 78, 81, 83, 86, 89, 92, 94, 97, 99, 102, 104, 106, 109, 111, 113, 116, 118, 120, 122, 124, 126, 128, 130, 132, 133, 135, 137, 138, 140, 141, 143, 145, 146, 148, 149, 150, 150};
+    private static final double[] logTv = {4.78, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 4.96, 1};
 
     // 05 LGT tingtang (http://legacygt.com/forums/showpost.php?p=2783186&postcount=185) 3rd gear, 5800ft, 45 degrees F
 //    private static final long[] logTime = {825, 1050, 1238, 1454, 1655, 1875, 2087, 2295, 2502, 2713, 2918, 3125, 3334, 3546, 3753, 3969, 4167, 4382, 4580, 4798, 4995, 5232, 5426, 5639, 5832, 6040, 6248, 6456, 6664, 6880, 7083, 7289, 7498, 7708, 7912, 8138, 8331, 8546, 8748, 8957, 9165, 9373, 9617, 9811, 10006, 10208, 10428, 10644, 10844, 11053, 11264, 11469, 11677};
@@ -96,6 +98,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
     private double rpm;
     private double vs;
     private double ta;
+    private double tv;
     private long now;
     private long startNow = -999999999;
     private double iat;
@@ -103,6 +106,7 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
 
     public synchronized void handleDataUpdate(Response response) {
         if (dynoTab.isRecordData() && (containsData(response, RPM, TA)
+                || containsData(response, RPM, TV)
                 || containsData(response, VS, TA)
                 || containsData(response, VS))) {
             boolean valid = true;
@@ -126,6 +130,25 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
                 LOGGER.info("DYNO Sample: [Time]: " + now + " [RPM:P8]: " + rpm + " [TA:P13]: " + ta);
                 if (valid) addRawData(now, rpm);
             }
+            if (valid && containsData(response, RPM, TV) &&
+                    dynoTab.isManual()) {
+                if (TEST) {
+                    if (i >= logTime.length) {
+                        i = 0;
+                    }
+                    now = logTime[i];
+                    rpm = logRpm[i];
+                    tv = logTv[i];
+                    i++;
+                } else {
+                    now = currentTimeMillis();
+                    rpm = findValue(response, RPM);
+                    tv = findValue(response, TV);
+                }
+                valid = dynoTab.isValidData(rpm, tv);
+                LOGGER.info("DYNO Sample: [Time]: " + now + " [RPM:P8]: " + rpm + " [TV:P19]: " + tv);
+                if (valid) addRawData(now, rpm);
+            }
             if (valid && containsData(response, VS, TA) &&
                     !dynoTab.isManual()) {
                 if (TEST) {
@@ -144,6 +167,26 @@ public final class DynoUpdateHandler implements DataUpdateHandler {
                 rpm = dynoTab.calcRpm(vs);
                 valid = dynoTab.isValidData(rpm, ta);
                 LOGGER.info("DYNO Sample: [Time]: " + now + " [RPM:calc]: " + rpm + " [TA:P13]: " + ta + " [VS:P9]: " + vs);
+                if (valid) addRawData(now, vs);
+            }
+            if (valid && containsData(response, VS, TV) &&
+                    !dynoTab.isManual()) {
+                if (TEST) {
+                    if (i >= logTime.length) {
+                        i = 0;
+                    }
+                    vs = logKph[i];
+                    tv = logTv[i];
+                    now = logTime[i];
+                    i++;
+                } else {
+                    now = currentTimeMillis();
+                    vs = findValue(response, VS);
+                    tv = findValue(response, TV);
+                }
+                rpm = dynoTab.calcRpm(vs);
+                valid = dynoTab.isValidData(rpm, tv);
+                LOGGER.info("DYNO Sample: [Time]: " + now + " [RPM:calc]: " + rpm + " [TV:P19]: " + ta + " [VS:P9]: " + vs);
                 if (valid) addRawData(now, vs);
             }
             if (valid && dynoTab.isRecordET() && containsData(response, VS)) {

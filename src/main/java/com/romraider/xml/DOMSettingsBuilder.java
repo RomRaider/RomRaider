@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -396,6 +396,14 @@ public final class DOMSettingsBuilder {
         IIOMetadataNode gaugeindex = new IIOMetadataNode("gauge");
         gaugeindex.setAttribute("index", String.valueOf(((int) settings.getLoggerSelectedGaugeIndex())));
         loggerSettings.appendChild(gaugeindex);
+
+        // Dyno tab settings
+        IIOMetadataNode dyno = new IIOMetadataNode("dyno");
+        dyno.setAttribute("car", settings.getSelectedCar());
+        dyno.setAttribute("gear", settings.getSelectedGear());
+        dyno.setAttribute("threshold", settings.getDynoThreshold());
+        dyno.setAttribute("units", settings.getDynoThrottle());
+        loggerSettings.appendChild(dyno);
 
         return loggerSettings;
     }

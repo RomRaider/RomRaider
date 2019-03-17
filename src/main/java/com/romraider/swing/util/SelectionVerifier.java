@@ -17,31 +17,34 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.ui.tab.dyno;
+package com.romraider.swing.util;
 
-import com.romraider.logger.ecu.ui.tab.Tab;
+import javax.swing.InputVerifier;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 
-public interface DynoTab extends Tab {
 
-    boolean isValidData(double rpm, double ta);
+/**
+ * SelectionVerifier checks the field value to be true or false allowing
+ * focus transfer or not.
+ */
+public class SelectionVerifier extends InputVerifier {
+    private boolean selectionValid;
 
-    boolean isManual();
+    /**
+     * The set method allows an external validity check to change the field
+     * value to allowing focus transfer or not.
+     * @param valid boolean value
+     */
+    public void set(final boolean valid) {
+        selectionValid = valid;
+    }
 
-    boolean getEnv();
-
-    boolean isRecordET();
-
-    boolean isValidET(long now, double vs);
-
-    void updateEnv(double iat, double pressure);
-
-    void addData(double xData, double yData, double y1Data);
-
-    void addRawData(double xData, double yData);
-
-    double calcRpm(double vs);
-
-    int getSampleCount();
-
-    void saveSettings();
+    @Override
+    public boolean verify(final JComponent input) {
+        if (!(input instanceof JComboBox)) {
+            return true;
+        }
+        return selectionValid;
+    }
 }
