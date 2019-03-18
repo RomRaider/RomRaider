@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,30 +40,39 @@ import static org.apache.log4j.Logger.getLogger;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.util.JREChecker;
+import com.romraider.util.ResourceUtil;
 
 public class ECUExec {
     private static final Logger LOGGER = getLogger(ECUExec.class);
     private static final String START_LOGGER_ARG = "-logger";
     private static final String START_LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
     private static final String LOGGER_TOUCH_ARG = "-logger.touch";
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            ECUExec.class.getName());
 
     private ECUExec() {
         throw new UnsupportedOperationException();
     }
 
     public static void main(String args[]) {
+        // init i18n resources
+        if (rb == null) return;
         // init debug logging
         initDebugLogging();
         // dump the system properties to the log file as early as practical to
         // help debugging/support
         LOGGER.info(PRODUCT_NAME + " " + VERSION + " Build: " + BUILDNUMBER);
-        LOGGER.info("When requesting assistance at " + SUPPORT_URL + " please include the System Properties information below:");
-        LOGGER.info(DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.LONG).format(System.currentTimeMillis()));
+        LOGGER.info(MessageFormat.format(rb.getString("SUPPORT"), SUPPORT_URL));
+        LOGGER.info(DateFormat.getDateTimeInstance(
+                DateFormat.FULL,
+                DateFormat.LONG).format(System.currentTimeMillis()));
         LOGGER.info("System Properties: \n\t"
                 + System.getProperties().toString().replace(COMMA, "\n\t"));
 
@@ -72,11 +81,9 @@ public class ECUExec {
         if (!JREChecker.is32bit() &&
                 !containsLoggerArg(args)) {
             showMessageDialog(null,
-                    "Incompatible JRE detected.\n" +
-                            PRODUCT_NAME +
-                            " requires a 32-bit JRE for some operations.\nSome features may be unavailable.",
-                            "JRE Incompatibility Warning",
-                            WARNING_MESSAGE);
+                    MessageFormat.format(rb.getString("COMPATJRE"), PRODUCT_NAME),
+                    rb.getString("JREWARN"),
+                    WARNING_MESSAGE);
         }
 
         // check for dodgy threading - dev only
@@ -103,7 +110,9 @@ public class ECUExec {
     }
 
     private static void showAlreadyRunningMessage() {
-        showMessageDialog(null, PRODUCT_NAME + " is already running.", PRODUCT_NAME, INFORMATION_MESSAGE);
+        showMessageDialog(null,
+                MessageFormat.format(rb.getString("ISRUNNING"), PRODUCT_NAME),
+                PRODUCT_NAME, INFORMATION_MESSAGE);
     }
 
     private static boolean containsLoggerArg(String[] args) {
@@ -127,7 +136,7 @@ public class ECUExec {
                     File file = new File(rom);
                     editor.openImage(file);
                 } catch (Exception ex) {
-                    LOGGER.error("Error opening rom", ex);
+                    LOGGER.error(rb.getString("ERRROM"), ex);
                 }
             }
         });
@@ -151,7 +160,7 @@ public class ECUExec {
                 openRom(editor, rom);
             }
         } catch (Throwable e) {
-            LOGGER.error("Error occurred", e);
+            LOGGER.error(rb.getString("ERROR"), e);
         }
     }
 }
