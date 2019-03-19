@@ -67,6 +67,7 @@ public class NCSTableAxisQueryParameterSet {
         final int tableAddrBase = Integer.parseInt(tableAddrStr, 16);
 
         int dataSize = EcuQueryData.getDataLength(storageType);
+        final Settings.Endian dataEndian = Settings.Endian.BIG;
 
         final int count = Integer.parseInt(size, 10);
         for (int i = 0; i < count; i++) {
@@ -79,7 +80,7 @@ public class NCSTableAxisQueryParameterSet {
                     new EcuDataConvertor[] {
                         new EcuParameterConvertorImpl(
                             units, expression, "0.000", -1, storageType,
-                            Settings.ENDIAN_BIG, new HashMap<String, String>(),
+                            dataEndian, new HashMap<String, String>(),
                             getDefault()
                         )
                     }
