@@ -75,11 +75,13 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -187,6 +189,7 @@ import com.romraider.swing.SetFont;
 import com.romraider.swing.menubar.RadioButtonMenuItem;
 import com.romraider.util.FormatFilename;
 import com.romraider.util.JREChecker;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.util.ThreadUtil;
 
@@ -204,7 +207,9 @@ TODO: Add log analysis tab (or maybe new window?), including log playback, custo
 public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final long serialVersionUID = 7145423251696282784L;
     private static final Logger LOGGER = Logger.getLogger(EcuLogger.class);
-    private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | ECU/TCU Logger";
+    protected static final ResourceBundle rb = new ResourceUtil().getBundle(
+            EcuLogger.class.getName());
+    private static final String ECU_LOGGER_TITLE = PRODUCT_NAME + " v" + VERSION + " | " + rb.getString("TITLE");
     private static final String LOGGER_FULLSCREEN_ARG = "-logger.fullscreen";
     private static final String LOGGER_TOUCH_ARG = "-logger.touch";
     private static final URL ICON_PATH =  Settings.class.getClass().getResource("/graphics/romraider-ico.gif");
@@ -212,19 +217,19 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private static final String HEADING_SWITCHES = "Switches";
     private static final String HEADING_EXTERNAL = "External";
     private static final String CAL_ID_LABEL = "CAL ID";
-    private static final String FILE_NAME_EXTENTION = "Right-click to select or type text to add to the saved logfile name.";
+    private static final String FILE_NAME_EXTENTION = rb.getString("FILENAMEEXTENTION");
     private static final String[] LOG_FILE_TEXT = {"1st PT","2nd PT","3rd PT", // PT = Part Throttle
         "4th PT","5th PT","6th PT",
         "1st WOT","2nd WOT","3rd WOT",
         "4th WOT","5th WOT","6th WOT",
         "cruising"};
-    private static final String TOGGLE_LIST_TT_TEXT = "Hides the parameter list and saves the state on exit (F11)";
-    private static final String UNSELECT_ALL_TT_TEXT = "Un-select all selected parameters/switches on all tabs! (F9)";
+    private static final String TOGGLE_LIST_TT_TEXT = rb.getString("TTTEXTF11");
+    private static final String UNSELECT_ALL_TT_TEXT = rb.getString("TTTEXTF9");
     private static final String LOG_TO_FILE_FK = "F1";
     private static final String LOG_TO_FILE_ICON = "/graphics/logger_log_to_file.png";
-    private static final String LOG_TO_FILE_START = "Start file log";
-    private static final String LOG_TO_FILE_STOP = "Stop file log";
-    private static final String LOG_TO_FILE_TT_TEXT = "Start/stop file logging (F1)";
+    private static final String LOG_TO_FILE_START = rb.getString("STARTFILELOG");
+    private static final String LOG_TO_FILE_STOP = rb.getString("STOPFILELOG");
+    private static final String LOG_TO_FILE_TT_TEXT = rb.getString("TTTEXTF1");
     private static String target = "ECU";
     private static String loadResult  = "";
     private String defVersion;
@@ -278,7 +283,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private List<EcuParameter> ecuParams;
     private SerialPortRefresher refresher;
     private JWindow startStatus;
-    private final JLabel startText = new JLabel(" Initializing Logger...");
+    private final JLabel startText = new JLabel(rb.getString("INITIALIZELOGGER"));
     private final String HOME = System.getProperty("user.home");
     private StatusIndicator statusIndicator;
     private List<EcuSwitch> dtcodes = new ArrayList<EcuSwitch>();
@@ -305,10 +310,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         // these libraries, this is a hard error here
         if (!JREChecker.is32bit()) {
             showMessageDialog(null,
-                "Incompatible JRE detected.\n" +
-                PRODUCT_NAME +
-                " RomRaider Logger requires a 32-bit JRE.\nLogger will now exit.",
-                "JRE Incompatibility Error",
+                    MessageFormat.format(
+                            rb.getString("INCOMPJRE"),
+                            PRODUCT_NAME),
+                rb.getString("INCOMPJREERR"),
                 ERROR_MESSAGE);
             // this will generate a NullPointerException because we never got
             // things started
@@ -324,18 +329,18 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             JProgressBar progressBar = startbar();
             bootstrap();
             progressBar.setValue(20);
-            startText.setText(" Loading Logger Defs...");
+            startText.setText(rb.getString("LOADINGDEFS"));
             loadEcuDefs();
             progressBar.setValue(40);
-            startText.setText(" Loading Plugins...");
+            startText.setText(rb.getString("LOADINGPLUG"));
             progressBar.setIndeterminate(true);
             loadLoggerPlugins();
             progressBar.setIndeterminate(false);
             progressBar.setValue(60);
-            startText.setText(" Loading Logging Parameters...");
+            startText.setText(rb.getString("LOADINGPARAMS"));
             loadLoggerParams();
             progressBar.setValue(80);
-            startText.setText(" Starting Logger...");
+            startText.setText(rb.getString("STARTINGLOGGER"));
             initControllerListeners();
             initUserInterface();
             progressBar.setValue(100);
@@ -346,20 +351,20 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
         else {
             bootstrap();
-            ecuEditor.getStatusPanel().update("Loading Logger Defs...", 20);
+            ecuEditor.getStatusPanel().update(rb.getString("LOADINGDEFS"), 20);
             loadEcuDefs();
-            ecuEditor.getStatusPanel().update("Loading Plugins...", 40);
+            ecuEditor.getStatusPanel().update(rb.getString("LOADINGPLUG"), 40);
             loadLoggerPlugins();
-            ecuEditor.getStatusPanel().update("Loading Logging Parameters...", 60);
+            ecuEditor.getStatusPanel().update(rb.getString("LOADINGPARAMS"), 60);
             loadLoggerParams();
-            ecuEditor.getStatusPanel().update("Starting Logger...", 80);
+            ecuEditor.getStatusPanel().update(rb.getString("STARTINGLOGGER"), 80);
             initControllerListeners();
             initUserInterface();
-            ecuEditor.getStatusPanel().update("Complete...", 100);
+            ecuEditor.getStatusPanel().update(rb.getString("COMPLETE"), 100);
             initDataUpdateHandlers();
             startPortRefresherThread();
             if (!isLogging()) startLogging();
-            ecuEditor.getStatusPanel().update("Ready...",0);
+            ecuEditor.getStatusPanel().update(rb.getString("READY"),0);
         }
     }
 
@@ -589,16 +594,22 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private void showMissingConfigDialog() {
-        Object[] options = {"Yes", "No"};
+        Object[] options = {rb.getString("YES"), rb.getString("NO")};
         int answer = showOptionDialog(this,
-                "Logger definition not configured.\nGo online to download the latest definition file?",
-                "Configuration", DEFAULT_OPTION, WARNING_MESSAGE, null, options, options[0]);
+                rb.getString("LOGGERDEFNOTCFG"),
+                rb.getString("LOGGERCONFIG"),
+                DEFAULT_OPTION,
+                WARNING_MESSAGE,
+                null,
+                options,
+                options[0]);
         if (answer == 0) {
             BrowserControl.displayURL(LOGGER_DEFS_URL);
         } else {
             showMessageDialog(this,
-                    "The Logger definition file needs to be configured before connecting to the ECU.\nMenu: Settings > Logger Definition Location...\nOnce configured, restart the Logger application.",
-                    "Configuration", INFORMATION_MESSAGE);
+                    rb.getString("CFGEDFSMENU"),
+                    rb.getString("LOGGERCONFIG"),
+                    INFORMATION_MESSAGE);
             reportError("Logger definition file not found");
         }
     }
@@ -632,7 +643,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                 final File profileFile = new File(path);
                 if (profileFile.exists()) {
                     reportMessageInTitleBar(
-                        "Profile: " + FormatFilename.getShortName(profileFile));
+                            MessageFormat.format(
+                                    rb.getString("PROFILENAME"),
+                                    FormatFilename.getShortName(profileFile)));
                 }
                 return true;
             }
@@ -669,17 +682,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                     profile.getProtocol() == null ? "SSM" : profile.getProtocol();
 
             if (!profileProto.equalsIgnoreCase(getSettings().getLoggerProtocol())) {
-
-                Object[] options = {"Load", "Cancel"};
-                final String message = String.format(
-                        "This profile was created for logging protocol %s.%n" +
-                        "Some parameters may not be selected by this profile if%n" +
-                        "you load it.  Change protocols in the Settings menu%n" +
-                        "then reload this profile.",
-                        profileProto);
+                Object[] options = {rb.getString("LOAD"), rb.getString("CANCEL")};
                 int answer = showOptionDialog(this,
-                        message,
-                        "Protocol Mismatch", DEFAULT_OPTION, WARNING_MESSAGE, null, options, options[1]);
+                        MessageFormat.format(
+                                rb.getString("PROFILEWRONGPROTO"),
+                                profileProto),
+                                rb.getString("PROTOCOLMISMATCH"),
+                        DEFAULT_OPTION,
+                        WARNING_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
                 if (answer == 1) {
                     final String cancelMsg = "Profile load canceled by user";
                     LOGGER.info(cancelMsg);
@@ -800,7 +813,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
                     externalDatas.add(new ExternalDataImpl(item, dataSource));
                 }
             } catch (Exception e) {
-                reportError("Error loading plugin: " + dataSource.getName() + " v" + dataSource.getVersion(), e);
+                reportError(MessageFormat.format(
+                        rb.getString("LOADPLUGINERR"),
+                        dataSource.getName(),
+                        dataSource.getVersion()), e);
             }
         }
         return externalDatas;
@@ -980,7 +996,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     private JButton buildToggleGaugeStyleButton() {
         final JButton button = new JButton();
         SetFont.plain(button);
-        VerticalTextIcon textIcon = new VerticalTextIcon(button, "Gauge Style", ROTATE_LEFT);
+        VerticalTextIcon textIcon = new VerticalTextIcon(
+                button,
+                rb.getString("BTNGAUGESTYLE"),
+                ROTATE_LEFT);
         button.setIcon(textIcon);
         if (touchEnabled == false)
         {
@@ -1026,7 +1045,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         final JButton button = new JButton();
         SetFont.plain(button);
         button.setBackground(YELLOW);
-        VerticalTextIcon textIcon = new VerticalTextIcon(button, "Un-select ALL", ROTATE_LEFT);
+        VerticalTextIcon textIcon = new VerticalTextIcon(
+                button,
+                rb.getString("BTNUNSELECTALL"),
+                ROTATE_LEFT);
         button.setToolTipText(UNSELECT_ALL_TT_TEXT);
         button.setIcon(textIcon);
         if (touchEnabled == false)
@@ -1077,7 +1099,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         final JButton button = new JButton();
         SetFont.plain(button);
         VerticalTextIcon textIcon =
-                new VerticalTextIcon(button, "LTV (F6)", ROTATE_LEFT);
+                new VerticalTextIcon(
+                        button,
+                        "LTV (F6)",
+                        ROTATE_LEFT);
         button.setIcon(textIcon);
         if (touchEnabled == false)
         {
@@ -1096,7 +1121,10 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         SetFont.plain(toggleListButton);
         toggleListButton.setToolTipText(TOGGLE_LIST_TT_TEXT);
         toggleListButton.setSelected(true);
-        VerticalTextIcon textIcon = new VerticalTextIcon(toggleListButton, "Parameter List", ROTATE_LEFT);
+        VerticalTextIcon textIcon = new VerticalTextIcon(
+                toggleListButton,
+                rb.getString("BTNPARAMLIST"),
+                ROTATE_LEFT);
         toggleListButton.setIcon(textIcon);
         if (touchEnabled == false)
         {
@@ -1309,7 +1337,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
     }
 
     private Component buildFileNameExtention() {
-        JLabel fileNameLabel = new JLabel("Logfile Text");
+        JLabel fileNameLabel = new JLabel(rb.getString("LOGFILETEXT"));
         final JTextField fileNameExtention = new JTextField("",8);
         if (touchEnabled == true)
         {
@@ -1328,7 +1356,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         });
 
         JPopupMenu fileNamePopup = new JPopupMenu();
-        JMenuItem ecuIdItem = new JMenuItem("Use Current " + target + " ID");
+        JMenuItem ecuIdItem = new JMenuItem(MessageFormat.format(
+                rb.getString("TARGETID"), target));
         componentList.put("ecuIdItem", ecuIdItem);
         ecuIdItem.addActionListener(new ActionListener() {
             @Override
@@ -1340,8 +1369,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         fileNamePopup.add(ecuIdItem);
         for (final String item : LOG_FILE_TEXT) {
             ecuIdItem = new JMenuItem(item);
-            if (item.endsWith("PT"))  ecuIdItem.setToolTipText("Part Throttle");
-            if (item.endsWith("WOT")) ecuIdItem.setToolTipText("Wide Open Throttle");
+            if (item.endsWith("PT"))  ecuIdItem.setToolTipText(rb.getString("PT"));
+            if (item.endsWith("WOT")) ecuIdItem.setToolTipText(rb.getString("WOT"));
             ecuIdItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -1351,7 +1380,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             });
             fileNamePopup.add(ecuIdItem);
         }
-        ecuIdItem = new JMenuItem("Clear Logfile Text");
+        ecuIdItem = new JMenuItem(rb.getString("CLT"));
         ecuIdItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1419,7 +1448,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
         });
         JPanel comboBoxPanel = new JPanel(new FlowLayout());
-        comboBoxPanel.add(new JLabel("COM Port:"));
+        comboBoxPanel.add(new JLabel(rb.getString("COMPORT")));
         comboBoxPanel.add(portsComboBox);
 
         comboBoxPanel.add(moduleSelectPanel);
@@ -1434,7 +1463,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         {
             reconnectButton.setPreferredSize(new Dimension(75, 50));
         }
-        reconnectButton.setToolTipText("Reconnect to " + target);
+        reconnectButton.setToolTipText(MessageFormat.format(
+                rb.getString("TTTEXTRECON"),
+                target));
         reconnectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -1457,7 +1488,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             disconnectButton.setPreferredSize(new Dimension(75, 50));
         }
 
-        disconnectButton.setToolTipText("Disconnect from " + target);
+        disconnectButton.setToolTipText(MessageFormat.format(
+                rb.getString("TTTEXTDISCON"),
+                target));
         disconnectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -1485,10 +1518,9 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             {
                 cb.setPreferredSize(new Dimension(75, 50));
             }
-            final String tipText = String.format(
-                    "%s Polling. Uncheck all boxes for Externals logging only.",
-                    module.getDescription());
-            cb.setToolTipText(tipText);
+            cb.setToolTipText(MessageFormat.format(
+                    rb.getString("TTTEXTEXTERNALS"),
+                    module.getDescription()));
             if (getSettings().getTargetModule().equalsIgnoreCase(module.getName())) {
                 cb.setSelected(true);
                 setTarget(module.getName());
@@ -1545,7 +1577,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             }
             if (key.equals("resetMenu")) {
                 final JMenuItem menuItem = (JMenuItem) componentList.get(key);
-                menuItem.setText(String.format("Reset %s [%s]",
+                menuItem.setText(MessageFormat.format(
+                        rb.getString("RESET"),
                         getSettings().getDestinationTarget().getDescription(),
                         getSettings().getDestinationTarget().getName().toUpperCase()));
             }
@@ -1612,7 +1645,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
         if (touchEnabled == false)
         {
-            resetButton = new JButton("Reset Data");
+            resetButton = new JButton(rb.getString("RESETDATA"));
         }
         else
         {
@@ -1637,7 +1670,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
         if (touchEnabled == false)
         {
-            resetButton = new JButton("Reset Data");
+            resetButton = new JButton(rb.getString("RESETDATA"));
         }
         else
         {
@@ -1662,7 +1695,7 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
 
         if (touchEnabled == false)
         {
-            resetButton = new JButton("Reset Data");
+            resetButton = new JButton(rb.getString("RESETDATA"));
         }
         else
         {
@@ -1903,7 +1936,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    messageLabel.setText("Error: " + error);
+                    messageLabel.setText(MessageFormat.format(
+                            rb.getString("ERROR"), error));
                     messageLabel.setForeground(RED);
                 }
             });
