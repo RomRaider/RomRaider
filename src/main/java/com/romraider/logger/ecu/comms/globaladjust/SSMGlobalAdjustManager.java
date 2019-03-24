@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
@@ -42,9 +43,12 @@ import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.logger.ecu.ui.swing.tools.GlobalAdjustmentsPanel;
+import com.romraider.util.ResourceUtil;
 
 public final class SSMGlobalAdjustManager implements GlobalAdjustManager {
     private static final Logger LOGGER = Logger.getLogger(SSMGlobalAdjustManager.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            SSMGlobalAdjustManager.class.getName());
     private static final String ID_P239 = "P239";
     private static final String ID_P240 = "P240";
     private static final String ID_P241 = "P241";
@@ -71,13 +75,13 @@ public final class SSMGlobalAdjustManager implements GlobalAdjustManager {
                     settings.getLoggerProtocol(), settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
-                messageListener.reportMessage("Retrieving current ECU global values...");
+                messageListener.reportMessage(rb.getString("GLOBALVALUES"));
                 final Collection<EcuQuery> queries = buildGlobalAdjustQueries();
                 connection.sendAddressReads(
                         queries,
                         settings.getDestinationTarget(),
                         new PollingStateImpl());
-                messageListener.reportMessage("Current ECU global values retrievied.");
+                messageListener.reportMessage(rb.getString("GLOBALDONE"));
                 final GlobalAdjustmentsPanel gap =
                         new GlobalAdjustmentsPanel(logger, queries);
                 gap.showGlobalAdjustPanel();
@@ -110,9 +114,7 @@ public final class SSMGlobalAdjustManager implements GlobalAdjustManager {
             }
         } catch (Exception e) {
             messageListener.reportMessage(
-                    "Unable to retrieve current ECU timing value - check correct " +
-                            "serial port \nhas been selected, cable is connected and ignition " +
-                    "is on.");
+                    rb.getString("NOCONNECTION"));
             LOGGER.error("Error retrieving current ECU global timing value", e);
             return 0;
         }
