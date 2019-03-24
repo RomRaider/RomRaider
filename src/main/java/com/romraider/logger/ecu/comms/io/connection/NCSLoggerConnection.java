@@ -26,10 +26,12 @@ import static org.apache.log4j.Logger.getLogger;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.io.connection.ConnectionManager;
 import com.romraider.io.protocol.ProtocolFactory;
@@ -43,6 +45,8 @@ import com.romraider.logger.ecu.exception.SerialCommunicationException;
 
 public final class NCSLoggerConnection implements LoggerConnection {
     private static final Logger LOGGER = getLogger(NCSLoggerConnection.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            NCSLoggerConnection.class.getName());
     private final LoggerProtocolNCS protocol;
     private final ConnectionManager manager;
     private int queryCount;
@@ -212,7 +216,7 @@ public final class NCSLoggerConnection implements LoggerConnection {
             // if length is too big then notify user to un-select some parameters
             if (dataLength > 61) {
                 throw new SerialCommunicationException(
-                        "Request message too large, un-select some parameters");
+                        rb.getString("TOOLARGE"));
             }
             final byte[] request = protocol.constructLoadAddressRequest(queries);
             LOGGER.debug(String.format("Mode:%s %s Load address request  ---> %s",
