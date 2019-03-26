@@ -24,6 +24,9 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,6 +34,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.SwingWorker;
 
@@ -41,11 +45,11 @@ import org.w3c.dom.Node;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.io.connection.LoggerConnection;
-import com.romraider.logger.ecu.comms.learning.flkctable.SSMFlkcTableQueryBuilder;
 import com.romraider.logger.ecu.comms.learning.parameter.SSMParameter;
 import com.romraider.logger.ecu.comms.learning.parameter.SSMParameterCrossReference;
 import com.romraider.logger.ecu.comms.learning.parameter.ParameterIdComparator;
 import com.romraider.logger.ecu.comms.learning.tableaxis.SSMTableAxisQueryParameterSet;
+import com.romraider.logger.ecu.comms.learning.tables.SSMFlkcTableQueryBuilder;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
@@ -72,14 +76,14 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
 
     private static final Logger LOGGER =
             Logger.getLogger(SSMLearningTableValues.class);
-    private static final List<String> AF_TABLE_NAMES = Arrays.asList(
+    private static List<String> AF_TABLE_NAMES = Arrays.asList(
             "A/F Learning #1 Airflow Ranges",
             "A/F Learning #1 Airflow Ranges ",
             "A/F Learning Airflow Ranges");
-    private static final List<String> FLKC_LOAD_TABLE_NAMES = Arrays.asList(
+    private static List<String> FLKC_LOAD_TABLE_NAMES = Arrays.asList(
             "Fine Correction Columns (Load)",
             "Fine Correction Columns (Load) ");
-    private static final List<String> FLKC_RPM_TABLE_NAMES = Arrays.asList(
+    private static List<String> FLKC_RPM_TABLE_NAMES = Arrays.asList(
             "Fine Correction Rows (RPM)",
             "Fine Correction Rows (RPM) ");
     private final Map<String, Object> vehicleInfo =
@@ -110,6 +114,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
         this.ecuDef = ecuDef;
         this.flkc = null;
         this.flkcAddr = 0;
+        loadProperties();
     }
 
     @Override
@@ -568,5 +573,50 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                 return module;
         }
         return null;
+    }
+    /**
+     * Load ECU def table names from a user customized properties file.
+     * The file will replace the Class defined names if it is present.
+     * Names in the file should be separated by the : character
+     * @exception    FileNotFoundException if the directory or file is not present
+     * @exception    IOException if there's some kind of IO error
+     */
+    private void loadProperties() {
+        final Properties learning = new Properties();
+        FileInputStream propFile;
+        try {
+            propFile = new FileInputStream("./customize/ssmlearning.properties");
+            learning.load(propFile);
+            final String af_table_names =
+                    learning.getProperty("af_table_names");
+            String[] names = af_table_names.split(":", 0);
+            AF_TABLE_NAMES = new ArrayList<String>();
+            for (String name : names) {
+                if (ParamChecker.isNullOrEmpty(name)) continue;
+                AF_TABLE_NAMES.add(name);
+            }
+            final String flkc_table_column_names =
+                    learning.getProperty("flkc_table_column_names");
+            names = flkc_table_column_names.split(":", 0);
+            FLKC_LOAD_TABLE_NAMES = new ArrayList<String>();
+            for (String name : names) {
+                if (ParamChecker.isNullOrEmpty(name)) continue;
+                FLKC_LOAD_TABLE_NAMES.add(name);
+            }
+            final String flkc_table_row_names =
+                    learning.getProperty("flkc_table_row_names");
+            names = flkc_table_row_names.split(":", 0);
+            FLKC_RPM_TABLE_NAMES = new ArrayList<String>();
+            for (String name : names) {
+                if (ParamChecker.isNullOrEmpty(name)) continue;
+                FLKC_RPM_TABLE_NAMES.add(name);
+            }
+            propFile.close();
+            LOGGER.info("SSMLearningTableValues loaded table names from file: ./customize/ssmlearning.properties");
+        } catch (FileNotFoundException e) {
+            LOGGER.error("SSMLearningTableValues properties file: " + e.getLocalizedMessage());
+        } catch (IOException e) {
+            LOGGER.error("SSMLearningTableValues IOException: " + e.getLocalizedMessage());
+        }
     }
 }

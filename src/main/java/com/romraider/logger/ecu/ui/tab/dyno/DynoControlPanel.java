@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -49,11 +50,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.ResourceBundle;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -61,6 +64,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -88,41 +92,30 @@ import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.net.BrowserControl;
+import com.romraider.swing.util.NumberVerifier;
+import com.romraider.swing.util.SelectionVerifier;
 import com.romraider.util.NumberUtil;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 public final class DynoControlPanel extends JPanel {
     private static final long serialVersionUID = 3787020251963102201L;
     private static final Logger LOGGER = Logger.getLogger(DynoControlPanel.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            DynoControlPanel.class.getName());
     private static final String CARS_FILE = "cars_def.xml";
-    private static final String MISSING_CAR_DEF = "Missing cars_def.xml";
+    private static final String MISSING_CAR_DEF = rb.getString("MISSING");
     private static final String ENGINE_SPEED = "P8";
     private static final String VEHICLE_SPEED = "P9";
     private static final String IAT = "P11";
     private static final String THROTTLE_ANGLE = "P13";
+    private static final String THROTTLE_VOLTS = "P19";
     private static final String ATM = "P24";
     private static final String MANUAL = "manual";
     private static final String IMPERIAL = "Imperial";
     private static final String METRIC = "Metric";
     private static final String DYNO_MODE = "Dyno";
     private static final String ET_MODE = "ET";
-    private static final String CAR_MASS_TT = "Base mass of car from factory";
-    private static final String DELTA_MASS_TT = "Mass of all occupants and accessories added";
-    private static final String HUMIDITY_TT = "Current relative Humidity";
-    private static final String TIRE_WIDTH_TT = "Tire width in millimeters";
-    private static final String TIRE_ASPECT_TT = "Tire aspect ratio in percentage";
-    private static final String WHEEL_SIZE_TT = "Wheel (rim) size in inches";
-    private static final String CAR_SELECT_TT = "Select car, default is first in list";
-    private static final String GEAR_SELECT_TT = "Select gear, default is 2nd for 4AT, 3rd for 5MT and 4th for 6MT";
-    private static final String RPM_MIN_TT = "RPM min is updated after WOT";
-    private static final String RPM_MAX_TT = "RPM max is updated after WOT";
-    private static final String ELEVATION_TT = "Elevation is calculated from ECU ATM sensor";
-    private static final String AMB_TEMP_TT = "Ambient Temperature is updated from IAT sensor";
-    private static final String ORDER_TT = "Lower number provides more smoothing";
-    private static final String RESET_TT = "This clears all recorded or file loaded data";
-    private static final String RECORD_TT = "Press to acquire data, multiple sets of Dyno data can be acquired";
-    private static final String DYNO_TT = "Use this mode to estimate Power & Torque";
-    private static final String ET_TT = "Use this mode to measure trap times";
     private static final String COLON = ":";
     private static final String TAB = "\u0009";
     private static final String RR_LOG_TIME = "Time";
@@ -165,6 +158,7 @@ public final class DynoControlPanel extends JPanel {
     private double reFauc;
     private double auc;
     private double aucStart;
+    private double tpsMin;
     private long fTime;
     private long sTime;
     private long eTime;
@@ -202,10 +196,10 @@ public final class DynoControlPanel extends JPanel {
     private final JTextField tireWidth = new JTextField("0", 4);
     private final JTextField tireAspect = new JTextField("0", 4);
     private final JTextField tireSize = new JTextField("0", 4);
-    private final JLabel elevLabel = new JLabel("Elevation (ft)");
-    private final JLabel tempLabel = new JLabel("Air Temperature (\u00b0F)");
-    private final JLabel deltaMassLabel = new JLabel("Delta Weight (lbs)");
-    private final JLabel carMassLabel = new JLabel("Base Weight (lbs)");
+    private final JLabel elevLabel = new JLabel(rb.getString("ELEVATION_I"));
+    private final JLabel tempLabel = new JLabel(rb.getString("AIRTEMP_I"));
+    private final JLabel deltaMassLabel = new JLabel(rb.getString("DELTAWEIGHT_I"));
+    private final JLabel carMassLabel = new JLabel(rb.getString("BASEWEIGHT_I"));
     //    private static final String SI = "SI";
     private String units = IMPERIAL;
     private String preUnits = IMPERIAL;
@@ -217,6 +211,7 @@ public final class DynoControlPanel extends JPanel {
     private String iatLogUnits = "F";
     private String atmLogUnits = "psi";
     private String vsLogUnits = LOG_VS_I;
+    private String throttle_param = THROTTLE_ANGLE;;
     private final double[] results = new double[5];
     private final String[] resultStrings = new String[6];
     //    private String hpUnits = "hp(I)";
@@ -233,14 +228,16 @@ public final class DynoControlPanel extends JPanel {
     private final JComboBox orderComboBox = buildPolyOrderComboBox();
     private final JComboBox carSelectBox = buildCarSelectComboBox();
     private final JComboBox gearSelectBox = buildGearComboBox();
-    private final JButton interpolateButton = new JButton("Recalculate");
-    private final JToggleButton recordDataButton = new JToggleButton("Record Data");
+    private final JButton interpolateButton = new JButton(rb.getString("RECALC"));
+    private final JToggleButton recordDataButton = new JToggleButton(rb.getString("RECORD"));
     private final JToggleButton recordButton = buildRecordDataButton();
     private final JRadioButton dButton = new JRadioButton(DYNO_MODE);
     private final JRadioButton eButton = new JRadioButton(ET_MODE);
-    private final JRadioButton iButton = new JRadioButton(IMPERIAL);
-    private final JRadioButton mButton = new JRadioButton(METRIC);
-    private final JCheckBox loadFileCB = new JCheckBox("Load From File");
+    private final JRadioButton iButton = new JRadioButton(rb.getString("IMPERIAL"));
+    private final JRadioButton mButton = new JRadioButton(rb.getString("METRIC"));
+    private final JCheckBox loadFileCB = new JCheckBox(rb.getString("LOADFILE"));
+    private final JComboBox tpsComboBox = new JComboBox(new Object[]{"%", "VDC"});
+
 
     public DynoControlPanel(Component parent, DataRegistrationBroker broker, ECUEditor ecuEditor, DynoChartPanel chartPanel) {
         checkNotNull(parent, broker, chartPanel);
@@ -249,7 +246,6 @@ public final class DynoControlPanel extends JPanel {
         this.chartPanel = chartPanel;
         addControls();
     }
-
     private void calculateEnv() {
         if (units.equals(IMPERIAL)) {
             altitude = parseDouble(elevation) * 0.3048;    // feet to meters
@@ -536,12 +532,12 @@ public final class DynoControlPanel extends JPanel {
     }
 
     public boolean isValidData(double rpm, double ta) {
-        if (wotSet && (ta < 99)) {
+        if (wotSet && (ta < tpsMin)) {
             recordDataButton.setSelected(false);
             rpmMax.setText(String.format("%1.0f", rpm));
             deregister();
         } else {
-            if (ta > 98) {
+            if (ta > tpsMin) {
                 if (!wotSet) rpmMin.setText(String.format("%1.0f", rpm));
                 wotSet = true;
                 return true;
@@ -557,9 +553,9 @@ public final class DynoControlPanel extends JPanel {
 
     private void deregister() {
         if (isManual()) {
-            deregisterData(ENGINE_SPEED, THROTTLE_ANGLE);
+            deregisterData(ENGINE_SPEED, throttle_param);
         } else {
-            deregisterData(VEHICLE_SPEED, THROTTLE_ANGLE);
+            deregisterData(VEHICLE_SPEED, throttle_param);
         }
         registerData(IAT, ATM);
         getEnv = true;
@@ -593,7 +589,7 @@ public final class DynoControlPanel extends JPanel {
 
     private JPanel buildRadioPanel() {
         //        JPanel panel = new JPanel();
-        unitsPanel.setBorder(new TitledBorder("Measurement Units"));
+        unitsPanel.setBorder(new TitledBorder(rb.getString("MEASUREMENT")));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         unitsPanel.setLayout(gridBagLayout);
@@ -604,7 +600,7 @@ public final class DynoControlPanel extends JPanel {
 
     private JPanel buildModePanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Mode"));
+        panel.setBorder(new TitledBorder(rb.getString("MODE")));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
@@ -614,19 +610,19 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JPanel buildInterpolatePanel() {
-        iPanel.setBorder(new TitledBorder("Recalculate"));
+        iPanel.setBorder(new TitledBorder(rb.getString("RECALC")));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         iPanel.setLayout(gridBagLayout);
 
-        addLabeledComponent(iPanel, gridBagLayout, "Smoothing Factor", orderComboBox, 0);
+        addLabeledComponent(iPanel, gridBagLayout, rb.getString("SMOOTHFAC"), orderComboBox, 0);
         addComponent(iPanel, gridBagLayout, buildInterpolateButton(orderComboBox), 2);
-        addMinMaxFilter(iPanel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 4);
+        addMinMaxFilter(iPanel, gridBagLayout, rb.getString("RPMRANGE"), rpmMin, rpmMax, 4);
         add(iPanel, gridBagLayout, elevLabel, 0, 6, 3, HORIZONTAL);
         add(iPanel, gridBagLayout, elevation, 1, 7, 0, NONE);
         add(iPanel, gridBagLayout, tempLabel, 0, 8, 3, HORIZONTAL);
         add(iPanel, gridBagLayout, ambTemp, 1, 9, 0, NONE);
-        addLabeledComponent(iPanel, gridBagLayout, "Rel Humidity (%)", relHumid, 10);
+        addLabeledComponent(iPanel, gridBagLayout, rb.getString("HUMIDITY"), relHumid, 10);
         setSelectAllFieldText(rpmMin);
         setSelectAllFieldText(rpmMax);
         setSelectAllFieldText(elevation);
@@ -636,7 +632,7 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JPanel buildReferencePanel() {
-        refPanel.setBorder(new TitledBorder("Reference Trace"));
+        refPanel.setBorder(new TitledBorder(rb.getString("REFTRACE")));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         refPanel.setLayout(gridBagLayout);
@@ -648,12 +644,12 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JPanel buildEtPanel() {
-        etPanel.setBorder(new TitledBorder("Elapsed Time"));
+        etPanel.setBorder(new TitledBorder(rb.getString("ELAPSEDTIME")));
         etPanel.setVisible(false);
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         etPanel.setLayout(gridBagLayout);
-        addLabeledComponent(etPanel, gridBagLayout, "Select Car", carSelectBox, 0);
+        addLabeledComponent(etPanel, gridBagLayout, rb.getString("SELECTCAR"), carSelectBox, 0);
         addComponent(etPanel, gridBagLayout, recordButton, 2);
         add(etPanel, gridBagLayout, buildSaveReferenceButton(), 1, 3, 1, NONE);
 
@@ -668,24 +664,25 @@ public final class DynoControlPanel extends JPanel {
     private JPanel buildFilterPanel() {
         changeCars(0);
         setToolTips();
-        filterPanel.setBorder(new TitledBorder("Dyno Settings"));
+        filterPanel.setBorder(new TitledBorder(rb.getString("DYNOSETTINGS")));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         filterPanel.setLayout(gridBagLayout);
 
-        add(filterPanel, gridBagLayout, new JLabel("Wheel (Width/Aspect-Diam.)"), 0, 15, 3, HORIZONTAL);
-        add(filterPanel, gridBagLayout, tireWidth, 0, 16, 1, NONE);
-        add(filterPanel, gridBagLayout, tireAspect, 1, 16, 1, NONE);
-        add(filterPanel, gridBagLayout, tireSize, 2, 16, 1, NONE);
-        addLabeledComponent(filterPanel, gridBagLayout, "Select Car", carSelectBox, 18);
-        addLabeledComponent(filterPanel, gridBagLayout, "Select Gear", gearSelectBox, 21);
-        add(filterPanel, gridBagLayout, deltaMassLabel, 0, 24, 3, HORIZONTAL);
-        add(filterPanel, gridBagLayout, deltaMass, 1, 25, 1, NONE);
-        add(filterPanel, gridBagLayout, carMassLabel, 0, 27, 3, HORIZONTAL);
-        add(filterPanel, gridBagLayout, carMass, 1, 28, 1, NONE);
-        addComponent(filterPanel, gridBagLayout, recordButton, 31);
-        addComponent(filterPanel, gridBagLayout, buildLoadFileCB(), 32);
-        addComponent(filterPanel, gridBagLayout, buildResetButton(), 33);
+        addLabeledComponent(filterPanel, gridBagLayout, rb.getString("MINTHROTTLE"), buildMinTpsField(), 14);
+        add(filterPanel, gridBagLayout, new JLabel(rb.getString("WHEELDIM")), 0, 16, 3, HORIZONTAL);
+        add(filterPanel, gridBagLayout, tireWidth, 0, 17, 1, NONE);
+        add(filterPanel, gridBagLayout, tireAspect, 1, 17, 1, NONE);
+        add(filterPanel, gridBagLayout, tireSize, 2, 17, 1, NONE);
+        addLabeledComponent(filterPanel, gridBagLayout, rb.getString("SELECTCAR"), carSelectBox, 19);
+        addLabeledComponent(filterPanel, gridBagLayout, rb.getString("SELECTGEAR"), gearSelectBox, 22);
+        add(filterPanel, gridBagLayout, deltaMassLabel, 0, 25, 3, HORIZONTAL);
+        add(filterPanel, gridBagLayout, deltaMass, 1, 26, 1, NONE);
+        add(filterPanel, gridBagLayout, carMassLabel, 0, 28, 3, HORIZONTAL);
+        add(filterPanel, gridBagLayout, carMass, 1, 29, 1, NONE);
+        addComponent(filterPanel, gridBagLayout, recordButton, 32);
+        addComponent(filterPanel, gridBagLayout, buildLoadFileCB(), 33);
+        addComponent(filterPanel, gridBagLayout, buildResetButton(), 34);
         //        addLabeledComponent(panel, gridBagLayout, "Drag Coeff", dragCoeff, 33);
         //        addLabeledComponent(panel, gridBagLayout, "Frontal Area", frontalArea, 36);
         //        addLabeledComponent(panel, gridBagLayout, "Rolling Resist Coeff", rollCoeff, 39);
@@ -694,30 +691,31 @@ public final class DynoControlPanel extends JPanel {
         setSelectAllFieldText(tireSize);
         setSelectAllFieldText(deltaMass);
         setSelectAllFieldText(carMass);
+        gearSelectBox.setSelectedItem(getSettings().getSelectedGear());
         return filterPanel;
     }
 
     private void setToolTips() {
-        relHumid.setToolTipText(HUMIDITY_TT);
-        carMass.setToolTipText(CAR_MASS_TT);
-        deltaMass.setToolTipText(DELTA_MASS_TT);
-        tireWidth.setToolTipText(TIRE_WIDTH_TT);
-        tireAspect.setToolTipText(TIRE_ASPECT_TT);
-        tireSize.setToolTipText(WHEEL_SIZE_TT);
-        carSelectBox.setToolTipText(CAR_SELECT_TT);
-        gearSelectBox.setToolTipText(GEAR_SELECT_TT);
-        rpmMin.setToolTipText(RPM_MIN_TT);
-        rpmMax.setToolTipText(RPM_MAX_TT);
-        elevation.setToolTipText(ELEVATION_TT);
-        ambTemp.setToolTipText(AMB_TEMP_TT);
-        orderComboBox.setToolTipText(ORDER_TT);
-        recordDataButton.setToolTipText(RECORD_TT);
-        dButton.setToolTipText(DYNO_TT);
-        eButton.setToolTipText(ET_TT);
+        relHumid.setToolTipText(applyProperty("HUMIDITY_TT"));
+        carMass.setToolTipText(applyProperty("CAR_MASS_TT"));
+        deltaMass.setToolTipText(applyProperty("DELTA_MASS_TT"));
+        tireWidth.setToolTipText(applyProperty("TIRE_WIDTH_TT"));
+        tireAspect.setToolTipText(applyProperty("TIRE_ASPECT_TT"));
+        tireSize.setToolTipText(applyProperty("WHEEL_SIZE_TT"));
+        carSelectBox.setToolTipText(applyProperty("CAR_SELECT_TT"));
+        gearSelectBox.setToolTipText(applyProperty("GEAR_SELECT_TT"));
+        rpmMin.setToolTipText(applyProperty("RPM_MIN_TT"));
+        rpmMax.setToolTipText(applyProperty("RPM_MAX_TT"));
+        elevation.setToolTipText(applyProperty("ELEVATION_TT"));
+        ambTemp.setToolTipText(applyProperty("AMB_TEMP_TT"));
+        orderComboBox.setToolTipText(applyProperty("ORDER_TT"));
+        recordDataButton.setToolTipText(applyProperty("RECORD_TT"));
+        dButton.setToolTipText(applyProperty("DYNO_TT"));
+        eButton.setToolTipText(applyProperty("ET_TT"));
     }
 
     private JButton buildResetButton() {
-        JButton resetButton = new JButton("Clear Data");
+        JButton resetButton = new JButton(rb.getString("CLEARDATA"));
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -725,7 +723,7 @@ public final class DynoControlPanel extends JPanel {
                 parent.repaint();
             }
         });
-        resetButton.setToolTipText(RESET_TT);
+        resetButton.setToolTipText(applyProperty("RESET_TT"));
         return resetButton;
     }
 
@@ -740,21 +738,23 @@ public final class DynoControlPanel extends JPanel {
                             loadFromFile();
                         } else {
                             if (recordDataButton.isSelected()) {
+                                System.out.println(tpsMin);
+                                tpsComboBox.setSelectedItem(tpsComboBox.getSelectedItem());
                                 chartPanel.clearGraph();
                                 parent.repaint();
                                 calculateEnv();
                                 if (isManual()) {
-                                    registerData(ENGINE_SPEED, THROTTLE_ANGLE);
+                                    registerData(ENGINE_SPEED, throttle_param);
                                 } else {
-                                    registerData(VEHICLE_SPEED, THROTTLE_ANGLE);
+                                    registerData(VEHICLE_SPEED, throttle_param);
                                 }
                                 chartPanel.startPrompt("wot");
                             } else {
                                 recordDataButton.setSelected(false);
                                 if (isManual()) {
-                                    deregisterData(ENGINE_SPEED, THROTTLE_ANGLE);
+                                    deregisterData(ENGINE_SPEED, throttle_param);
                                 } else {
-                                    deregisterData(VEHICLE_SPEED, THROTTLE_ANGLE);
+                                    deregisterData(VEHICLE_SPEED, throttle_param);
                                 }
                                 chartPanel.clearPrompt();
                             }
@@ -788,9 +788,9 @@ public final class DynoControlPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (loadFileCB.isSelected()) {
-                    recordDataButton.setText("Read From File");
+                    recordDataButton.setText(rb.getString("READFF"));
                 } else {
-                    recordDataButton.setText("Record Data");
+                    recordDataButton.setText(rb.getString("RECORD"));
                 }
             }
 
@@ -813,9 +813,9 @@ public final class DynoControlPanel extends JPanel {
                 loadFileCB.setEnabled(true);
                 chartPanel.setDyno();
                 if (loadFileCB.isSelected()) {
-                    recordDataButton.setText("Load From File");
+                    recordDataButton.setText(rb.getString("LOADFF"));
                 } else {
-                    recordDataButton.setText("Record Data");
+                    recordDataButton.setText(rb.getString("RECORD"));
                 }
                 //                etPanel.setVisible(false);
                 //                filterPanel.setVisible(true);
@@ -833,7 +833,7 @@ public final class DynoControlPanel extends JPanel {
                 loadFileCB.setEnabled(false);
                 loadFileCB.setSelected(false);
                 chartPanel.setET();
-                recordDataButton.setText("Record ET");
+                recordDataButton.setText(rb.getString("RECORDET"));
                 //                filterPanel.setVisible(false);
                 unitsPanel.setVisible(false);
                 iPanel.setVisible(false);
@@ -916,10 +916,10 @@ public final class DynoControlPanel extends JPanel {
             preUnits = IMPERIAL;
             elevUnits = "ft";
             tempUnits = "\u00b0F";
-            elevLabel.setText("Elevation (ft)");
-            tempLabel.setText("Air Temperature (\u00b0F)");
-            deltaMassLabel.setText("Delta Weight (lbs)");
-            carMassLabel.setText("Base Weight (lbs)");
+            elevLabel.setText(rb.getString("ELEVATION_I"));
+            tempLabel.setText(rb.getString("AIRTEMP_I"));
+            deltaMassLabel.setText(rb.getString("DELTAWEIGHT_I"));
+            carMassLabel.setText(rb.getString("BASEWEIGTH_I"));
             pressText = String.format("%1.2f", atm);
             pressUnits = "psi";
         }
@@ -942,10 +942,10 @@ public final class DynoControlPanel extends JPanel {
             preUnits = METRIC;
             elevUnits = "m";
             tempUnits = "\u00b0C";
-            elevLabel.setText("Elevation (m)");
-            tempLabel.setText("Air Temperature (\u00b0C)");
-            deltaMassLabel.setText("Delta Weight (kg)");
-            carMassLabel.setText("Base Weight (kg)");
+            elevLabel.setText(rb.getString("ELEVATION_M"));
+            tempLabel.setText(rb.getString("AIRTEMP_M"));
+            deltaMassLabel.setText(rb.getString("DELTAWEIGHT_M"));
+            carMassLabel.setText(rb.getString("BASEWEIGTH_M"));
             pressText = String.format("%1.2f", atm);
             pressUnits = "kPa";
         }
@@ -1043,7 +1043,7 @@ public final class DynoControlPanel extends JPanel {
                         "; VS units: " + vsLogUnits);
                 while ((line = inputStream.readLine()) != null) {
                     String[] values = line.split(delimiter);
-                    if (NumberUtil.doubleValue(values[taCol]) > 98) {
+                    if (NumberUtil.doubleValue(values[taCol]) > tpsMin) {
                         double logTime = 0;
                         if (atrTime) {
                             String[] timeStamp = values[timeCol].split(COLON);
@@ -1102,7 +1102,7 @@ public final class DynoControlPanel extends JPanel {
     private JButton buildOpenReferenceButton() {
         final JFileChooser openFile = new JFileChooser();
         if (path != null) openFile.setCurrentDirectory(new File(path));
-        final JButton openButton = new JButton("Open");
+        final JButton openButton = new JButton(rb.getString("OPEN"));
 
         openButton.addActionListener(new ActionListener() {
             @Override
@@ -1163,7 +1163,7 @@ public final class DynoControlPanel extends JPanel {
     private JButton buildSaveReferenceButton() {
         final JFileChooser openFile = new JFileChooser();
         if (path != null) openFile.setCurrentDirectory(new File(path));
-        final JButton saveButton = new JButton("Save");
+        final JButton saveButton = new JButton(rb.getString("SAVE"));
 
         saveButton.addActionListener(new ActionListener() {
             @Override
@@ -1234,7 +1234,7 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private JButton buildClearReferenceButton() {
-        final JButton clearButton = new JButton("Clear");
+        final JButton clearButton = new JButton(rb.getString("CLEAR"));
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -1252,12 +1252,17 @@ public final class DynoControlPanel extends JPanel {
     private void registerData(String... ids) {
         for (String id : ids) {
             LoggerData data = findData(id);
+            if (data == null) {
+                final String msg = MessageFormat.format(
+                        rb.getString("MISSINGID"), id);
+                notifyError(msg);
+            }
             EcuDataConvertor convertor = data.getSelectedConvertor();
             String convertorUnits = convertor.getUnits();
             if (id.equals(ATM)) atmLogUnits = convertorUnits;
             if (id.equals(IAT)) iatLogUnits = convertorUnits;
             if (id.equals(VEHICLE_SPEED)) vsLogUnits = convertorUnits;
-            if (data != null) broker.registerLoggerDataForLogging(data);
+            broker.registerLoggerDataForLogging(data);
         }
     }
 
@@ -1268,6 +1273,12 @@ public final class DynoControlPanel extends JPanel {
         }
     }
 
+    /**
+     * Find the LoggerData item from the parameter ID string in the currently
+     * loaded parameter list.
+     * @param id - String of the parameter to find
+     * @return LoggerData item or null if ID is not found
+     */
     private LoggerData findData(String id) {
         for (EcuParameter param : params) {
             if (id.equals(param.getId())) return param;
@@ -1320,7 +1331,7 @@ public final class DynoControlPanel extends JPanel {
                         calculateEnv();
                         updateChart();
                     } else {
-                        showMessageDialog(parent, "Invalid PRM range specified.", "Error", ERROR_MESSAGE);
+                        notifyError(rb.getString("INVALIDRPM"));
                     }
                 }
             }
@@ -1332,6 +1343,71 @@ public final class DynoControlPanel extends JPanel {
         final JComboBox orderComboBox = new JComboBox(new Object[]{5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19});
         orderComboBox.setSelectedItem(9);
         return orderComboBox;
+    }
+
+    private JPanel buildMinTpsField() {
+        final JPanel tpsPanel = new JPanel();
+        final JTextField minTpsField = new JFormattedTextField(
+                new DecimalFormat("#.##"));
+        minTpsField.setToolTipText(applyProperty("TPS_SELECT_TT"));
+        minTpsField.setColumns(6);
+        setSelectAllFieldText(minTpsField);
+        minTpsField.addFocusListener (new FocusListener () {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!minTpsField.getText().isEmpty()) {
+                    tpsMin = parseDouble(minTpsField);
+                    LOGGER.info("DYNO TPS threshold set to: " + tpsMin);
+                }
+            }
+        });
+        minTpsField.setInputVerifier(new NumberVerifier("Threshold"));
+        minTpsField.setText(getSettings().getDynoThreshold());
+        tpsMin = parseDouble(minTpsField);
+        tpsPanel.add(minTpsField);
+
+        tpsComboBox.setToolTipText(applyProperty("TPS_MODE_TT"));
+        tpsComboBox.setSelectedItem(getSettings().getDynoThrottle());
+        final SelectionVerifier verifier = new SelectionVerifier();
+        tpsComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tpsComboBox.setPopupVisible(false);
+                final String itemSel = (String) tpsComboBox.getSelectedItem();
+                if ("%".equals(itemSel)) {
+                    if (null == findData(THROTTLE_ANGLE)) {
+                        disableRecordButton();
+                        notifyError(rb.getString("TANOSUPPORT"));
+                        verifier.set(false);
+                    }
+                    else {
+                        throttle_param = THROTTLE_ANGLE;
+                        enableRecordButton();
+                        verifier.set(true);
+                    }
+                }
+                else if ("VDC".equals(itemSel)) {
+                    if (null == findData(THROTTLE_VOLTS)) {
+                        disableRecordButton();
+                        notifyError(rb.getString("TVNOSUPPORT"));
+                        verifier.set(false);
+                    }
+                    else {
+                        throttle_param = THROTTLE_VOLTS;
+                        enableRecordButton();
+                        verifier.set(true);
+                    }
+                }
+                LOGGER.info("DYNO Throttle parameter set to: " + throttle_param);
+            }
+        });
+        tpsComboBox.setInputVerifier(verifier);
+        tpsPanel.add(tpsComboBox);
+        return tpsPanel;
     }
 
     private boolean areNumbers(JTextField... textFields) {
@@ -1371,7 +1447,12 @@ public final class DynoControlPanel extends JPanel {
     }
 
     private double parseDouble(JTextField field) {
-        return Double.parseDouble(field.getText().trim());
+        try {
+            return NumberUtil.doubleValue(field.getText().trim());
+        } catch (ParseException e) {
+            LOGGER.error(rb.getString("ERROR"), e);
+        }
+        return Double.parseDouble("NaN");
     }
 
     public void setEcuParams(List<EcuParameter> params) {
@@ -1389,13 +1470,13 @@ public final class DynoControlPanel extends JPanel {
     private JComboBox buildCarSelectComboBox() {
         loadCars();
         final JComboBox selectComboBox = new JComboBox(carTypeArr);
+        selectComboBox.setSelectedItem(getSettings().getSelectedCar());
         selectComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 changeCars(selectComboBox.getSelectedIndex());
             }
         });
-        //        carSelectBox.setSelectedItem("05 USDM OBXT WGN LTD 5MT");
         return selectComboBox;
     }
 
@@ -1451,10 +1532,9 @@ public final class DynoControlPanel extends JPanel {
 
     private void loadCars() {
         try {
-            Settings settings = SettingsManager.getSettings();
             File carDef = null;
             final String SEPARATOR = System.getProperty("file.separator");
-            final String loggerFilePath = settings.getLoggerDefinitionFilePath();
+            final String loggerFilePath = getSettings().getLoggerDefinitionFilePath();
             if (loggerFilePath != null) {
                 final int index = loggerFilePath.lastIndexOf(SEPARATOR);
                 if (index > 0) {
@@ -1463,7 +1543,7 @@ public final class DynoControlPanel extends JPanel {
                 }
             }
             if (!carDef.exists()) {
-                final String profileFilePath = settings.getLoggerProfileFilePath();
+                final String profileFilePath = getSettings().getLoggerProfileFilePath();
                 if (profileFilePath != null) {
                     final int index = profileFilePath.lastIndexOf(SEPARATOR);
                     if (index > 0) {
@@ -1567,7 +1647,12 @@ public final class DynoControlPanel extends JPanel {
             }
         }
         catch (SAXParseException err) {
-            showMessageDialog(parent, "Parsing error" + ", line " + err.getLineNumber() + ", " + err.getSystemId() + ".\n" + err.getMessage(), "Error", ERROR_MESSAGE);
+            final String msg = MessageFormat.format(
+                    rb.getString("PARSEERROR"),
+                    err.getLineNumber(),
+                    err.getSystemId(),
+                    err.getMessage());
+            notifyError(msg);
             LOGGER.error("DYNO ** Parsing error" + ", line " + err.getLineNumber() + ", uri " + err.getSystemId());
             LOGGER.error(" " + err.getMessage());
         }
@@ -1578,13 +1663,18 @@ public final class DynoControlPanel extends JPanel {
         catch (Throwable t) {    // file not found
             Object[] options = {"Yes", "No"};
             int answer = showOptionDialog(this,
-                    "Cars definition file not found.\nGo online to download the latest definition file?",
-                    "Configuration", DEFAULT_OPTION, WARNING_MESSAGE, null, options, options[0]);
+                    rb.getString("CDNOTFOUND"),
+                    rb.getString("CONFIGURATION"),
+                    DEFAULT_OPTION, WARNING_MESSAGE,
+                    null, options, options[0]);
             if (answer == 0) {
                 BrowserControl.displayURL(CARS_DEFS_URL);
             } else {
-                showMessageDialog(parent, MISSING_CAR_DEF +
-                        " file from the installation or profiles or definitions directory.\nDyno feature will not be available until this file is present.", "Notice", WARNING_MESSAGE);
+                final String msg = MessageFormat.format(
+                        rb.getString("MISSINGCD"), MISSING_CAR_DEF);
+                showMessageDialog(parent,
+                msg,
+                rb.getString("NOTICE"), WARNING_MESSAGE);
             }
             carTypeArr = new String[]{MISSING_CAR_DEF};
             t.printStackTrace();
@@ -1604,5 +1694,41 @@ public final class DynoControlPanel extends JPanel {
             };
         }
         comp.addFocusListener(allTextSelector);
+    }
+
+    private Settings getSettings() {
+        return SettingsManager.getSettings();
+    }
+
+    private void enableRecordButton() {
+        if (!recordDataButton.isEnabled()) {
+            recordDataButton.setEnabled(true);
+        }
+    }
+
+    private void disableRecordButton() {
+        if (recordDataButton.isEnabled()) {
+            recordDataButton.setEnabled(false);
+        }
+    }
+
+    private String applyProperty(String key) {
+        if (rb.containsKey(key)) {
+            return rb.getString(key);
+        }
+        return "null";
+    }
+
+    private void notifyError(final String msg) {
+        showMessageDialog(parent,
+                msg,
+                rb.getString("ERROR"), ERROR_MESSAGE);
+    }
+
+    public void saveSettings() {
+        getSettings().setSelectedCar((String) carSelectBox.getSelectedItem());
+        getSettings().setSelectedGear((String) gearSelectBox.getSelectedItem());
+        getSettings().setDynoThreshold(NumberUtil.stringValue(tpsMin));
+        getSettings().setDynoThrottle((String) tpsComboBox.getSelectedItem());
     }
 }

@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,9 +78,9 @@ public final class PollingStateImpl implements PollingState {
 
     public String toString() {
         final String state = String.format(
-                "Polling State [isFastPoll=%s, CurrentState=%d, LastState=%d, " +
+                "Polling State [isFastPoll=%s, CurrentState=%s, LastState=%s, " +
                 "isNewQuery=%s, isLastQuery=%s]",
-               isFastPoll(),
+            isFastPoll(),
             getCurrentState(),
             getLastState(),
             isNewQuery(),

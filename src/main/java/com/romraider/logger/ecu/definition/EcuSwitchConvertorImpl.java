@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,14 @@ public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
     private static final GaugeMinMax GAUGE_MIN_MAX = new GaugeMinMax(0.0, 1.0, 1.0);
     private static final String FORMAT = "0";
     private final int bit;
+    private final String units;
+    private final String dataType;
 
-    public EcuSwitchConvertorImpl(int bit) {
+    public EcuSwitchConvertorImpl(int bit, String dataType, String units) {
         checkBit(bit);
         this.bit = bit;
+        this.dataType = (dataType == null ? "uint8" : dataType);
+        this.units = (units == null ? "On/Off" : units);
     }
 
     public double convert(byte[] bytes) {
@@ -37,7 +41,7 @@ public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
     }
 
     public String getUnits() {
-        return "On/Off";
+        return units;
     }
 
     public GaugeMinMax getGaugeMinMax() {
@@ -63,6 +67,7 @@ public final class EcuSwitchConvertorImpl implements EcuDataConvertor {
 
     @Override
     public String getDataType() {
-        return null;
+        // return "uint16"; // usually a bit within a byte
+        return dataType;    // NCS provides a byte followed by a mask byte
     }
 }

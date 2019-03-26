@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -253,6 +253,26 @@ public class Settings implements Serializable {
     private String defaultScale = "Metric";
 
     private Map<String, IntfKitSensor> phidgetSensors;
+
+    /**
+     * Car selection for Dyno tab
+     */
+    private String selectedCar = "";
+
+    /**
+     * Gear selection for selected car on Dyno tab
+     */
+    private String selectedGear = "";
+
+    /**
+     * Throttle threshold value to indicate WOT on Dyno tab
+     */
+    private String tpsThreshold;
+
+    /**
+     * Throttle value units % or VDC on Dyno tab, not all cars support both
+     */
+    private String tpsThresholdPID;
 
     public Settings() {
         //center window by default
@@ -906,5 +926,37 @@ public class Settings implements Serializable {
             Map<String, IntfKitSensor> phidgetSensors) {
 
         this.phidgetSensors = phidgetSensors;
+    }
+
+    public String getSelectedCar() {
+        return this.selectedCar;
+    }
+
+    public String getSelectedGear() {
+        return this.selectedGear;
+    }
+
+    public String getDynoThrottle() {
+        return this.tpsThresholdPID;
+    }
+
+    public String getDynoThreshold() {
+        return this.tpsThreshold;
+    }
+
+    public void setSelectedCar(final String value) {
+        this.selectedCar = value;
+    }
+
+    public void setSelectedGear(final String value) {
+        this.selectedGear = value;
+    }
+
+    public void setDynoThrottle(final String value) {
+        this.tpsThresholdPID = value;
+    }
+
+    public void setDynoThreshold(final String value) {
+        this.tpsThreshold = value;
     }
 }

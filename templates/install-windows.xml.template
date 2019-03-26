@@ -44,52 +44,45 @@
     <packs>
         <pack name="Base" required="yes">
             <description>RomRaider binary files</description>
-            <file src="build/windows/lib/@name.package@.jar" targetdir="$INSTALL_PATH" />
-            <file src="build/dist/@name.package@.exe" targetdir="$INSTALL_PATH" />
-            <file src="license.txt" targetdir="$INSTALL_PATH" />
-            <file src="release_notes.txt" targetdir="$INSTALL_PATH" />
+            <file src="build/windows/lib/@name.package@.jar" targetdir="$INSTALL_PATH"/>
+            <file src="build/dist/@name.package@.exe" targetdir="$INSTALL_PATH"/>
+            <file src="license.txt" targetdir="$INSTALL_PATH"/>
+            <file src="release_notes.txt" targetdir="$INSTALL_PATH"/>
 
-            <file src="log4j.properties" targetdir="$INSTALL_PATH" />
+            <file src="log4j.properties" targetdir="$INSTALL_PATH"/>
 
-            <file src="cars_def.dtd" targetdir="$INSTALL_PATH" />
-            <file src="ecu_defs.dtd" targetdir="$INSTALL_PATH" />
-            <file src="logger.dtd" targetdir="$INSTALL_PATH" />
-            <file src="profile.dtd" targetdir="$INSTALL_PATH" />
+            <file src="cars_def.dtd" targetdir="$INSTALL_PATH"/>
+            <file src="ecu_defs.dtd" targetdir="$INSTALL_PATH"/>
+            <file src="logger.dtd" targetdir="$INSTALL_PATH"/>
+            <file src="profile.dtd" targetdir="$INSTALL_PATH"/>
 
-            <file src="post-install-tasks.bat" targetdir="$INSTALL_PATH" />
+            <file src="post-install-tasks.bat" targetdir="$INSTALL_PATH"/>
 
-            <file src="plugins/aem2.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/aem.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/aem.xwifi.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/fourteenpoint7.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/innovate.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/lm2_mts.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/mrf.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/phidget_ik.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/plx.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/te.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/txs_tuner.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/txs_utec.plugin" targetdir="$INSTALL_PATH/plugins" />
-            <file src="plugins/zt2.plugin" targetdir="$INSTALL_PATH/plugins" />
+            <fileset dir="plugins" targetdir="$INSTALL_PATH/plugins"/>
+            <fileset dir="customize" targetdir="$INSTALL_PATH/customize"/>
+            <fileset dir="i18n" targetdir="$INSTALL_PATH/i18n"/>
 
-            <fileset dir="lib/common" targetdir="$INSTALL_PATH/lib/common" />
-            <fileset dir="lib/windows" targetdir="$INSTALL_PATH/lib/windows" />
+            <fileset dir="lib/common" targetdir="$INSTALL_PATH/lib/common"/>
+            <fileset dir="lib/windows" targetdir="$INSTALL_PATH/lib/windows"/>
 
             <updatecheck>
-                <include name="plugins/**" />
-                <exclude name="plugins/aem.plugin" />
-                <exclude name="plugins/aem2.plugin" />
-                <exclude name="plugins/aem.xwifi.plugin" />
-                <exclude name="plugins/fourteenpoint7.plugin" />
-                <exclude name="plugins/innovate.plugin" />
-                <exclude name="plugins/lm2_mts.plugin" />
-                <exclude name="plugins/mrf.plugin" />
-                <exclude name="plugins/phidget_ik.plugin" />
-                <exclude name="plugins/plx.plugin" />
-                <exclude name="plugins/te.plugin" />
-                <exclude name="plugins/txs_tuner.plugin" />
-                <exclude name="plugins/txs_utec.plugin" />
-                <exclude name="plugins/zt2.plugin" />
+                <include name="plugins/**"/>
+                <exclude name="plugins/aem.plugin"/>
+                <exclude name="plugins/aem2.plugin"/>
+                <exclude name="plugins/aem.xwifi.plugin"/>
+                <exclude name="plugins/apsx.plugin"/>
+                <exclude name="plugins/ecotrons.plugin"/>
+                <exclude name="plugins/fourteenpoint7.plugin"/>
+                <exclude name="plugins/innovate.plugin"/>
+                <exclude name="plugins/lm2_mts.plugin"/>
+                <exclude name="plugins/mrf.plugin"/>
+                <exclude name="plugins/phidget_ik.plugin"/>
+                <exclude name="plugins/plx.plugin"/>
+                <exclude name="plugins/te.plugin"/>
+                <exclude name="plugins/txs_tuner.plugin"/>
+                <exclude name="plugins/txs_utec.plugin"/>
+                <exclude name="plugins/zt2.plugin"/>
+                <exclude name="customize/**"/>
             </updatecheck>
 
 	        <executable targetfile="$INSTALL_PATH/post-install-tasks.bat" stage="postinstall"

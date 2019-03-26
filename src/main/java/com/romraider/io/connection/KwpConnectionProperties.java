@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,31 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.ui.tab.dyno;
+package com.romraider.io.connection;
 
-import com.romraider.logger.ecu.ui.tab.Tab;
+public interface KwpConnectionProperties extends ConnectionProperties {
+    public int getP1Max();
 
-public interface DynoTab extends Tab {
+    public int getP3Min();
 
-    boolean isValidData(double rpm, double ta);
-
-    boolean isManual();
-
-    boolean getEnv();
-
-    boolean isRecordET();
-
-    boolean isValidET(long now, double vs);
-
-    void updateEnv(double iat, double pressure);
-
-    void addData(double xData, double yData, double y1Data);
-
-    void addRawData(double xData, double yData);
-
-    double calcRpm(double vs);
-
-    int getSampleCount();
-
-    void saveSettings();
+    public int getP4Min();
 }

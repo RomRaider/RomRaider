@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,31 +17,24 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.ui.tab.dyno;
+package com.romraider.io.protocol;
 
-import com.romraider.logger.ecu.ui.tab.Tab;
+import com.romraider.logger.ecu.comms.manager.PollingState;
+import com.romraider.logger.ecu.definition.Module;
 
-public interface DynoTab extends Tab {
 
-    boolean isValidData(double rpm, double ta);
+public interface ProtocolNCS extends Protocol {
 
-    boolean isManual();
+    byte[] constructEcuFastInitRequest(Module module);
 
-    boolean getEnv();
+    byte[] constructReadSidPidRequest(Module module, byte sid, byte[][] pid);
 
-    boolean isRecordET();
+    byte[] constructLoadAddressRequest(byte[][] addresses);
 
-    boolean isValidET(long now, double vs);
+    void validateLoadAddressResponse(byte[] response);
 
-    void updateEnv(double iat, double pressure);
+    void checkValidSidPidResponse(byte[] response);
 
-    void addData(double xData, double yData, double y1Data);
-
-    void addRawData(double xData, double yData);
-
-    double calcRpm(double vs);
-
-    int getSampleCount();
-
-    void saveSettings();
+    byte[] constructReadAddressRequest(Module module, byte[][] bs,
+            PollingState pollState);
 }

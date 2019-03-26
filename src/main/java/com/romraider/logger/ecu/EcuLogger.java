@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -1816,7 +1815,8 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         }
     }
 
-    private void saveSettings() { 
+    private void saveSettings() {
+        dynoTab.saveSettings();
         getSettings().setLoggerSelectedGaugeIndex(dashboardUpdateHandler.styleIndex);
         getSettings().setLoggerPortDefault((String) portsComboBox.getSelectedItem());
         getSettings().setLoggerWindowMaximized(getExtendedState() == MAXIMIZED_BOTH);

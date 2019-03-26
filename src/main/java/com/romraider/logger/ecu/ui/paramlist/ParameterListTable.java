@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,9 @@ public final class ParameterListTable extends JTable {
     public String getToolTipText(MouseEvent mouseEvent) {
         List<ParameterRow> parameterRows = tableModel.getParameterRows();
         if (!isNullOrEmpty(parameterRows)) {
-            ParameterRow parameterRow = parameterRows.get(rowAtPoint(mouseEvent.getPoint()));
+            ParameterRow parameterRow = parameterRows.get(
+                    convertRowIndexToModel(
+                            rowAtPoint(mouseEvent.getPoint())));
             if (parameterRow != null) {
                 String description = parameterRow.getLoggerData().getDescription();
                 if (!isNullOrEmpty(description)) {

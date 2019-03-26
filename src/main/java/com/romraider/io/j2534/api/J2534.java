@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ public interface J2534 {
 
     int startFlowCntrlFilter(int channelId, byte[] mask,
             byte[] pattern, byte[] flowCntrl, TxFlags flag);
+
+    byte[] fiveBaudInit(int channelId, byte[] input);
 
     byte[] fastInit(int channelId, byte[] input);
 

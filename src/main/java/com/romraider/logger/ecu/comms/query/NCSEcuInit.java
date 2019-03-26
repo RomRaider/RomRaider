@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,31 +17,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.logger.ecu.ui.tab.dyno;
+package com.romraider.logger.ecu.comms.query;
 
-import com.romraider.logger.ecu.ui.tab.Tab;
+import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
+import static java.lang.System.arraycopy;
 
-public interface DynoTab extends Tab {
+public final class NCSEcuInit implements EcuInit {
+    private byte[] ecuInitBytes;
+    private String ecuId;
 
-    boolean isValidData(double rpm, double ta);
+    public NCSEcuInit(byte[] ecuInitBytes) {
+        checkNotNullOrEmpty(ecuInitBytes, "ecuInitBytes");
+        this.ecuInitBytes = ecuInitBytes;
+        final byte[] ecuIdBytes = new byte[5];
+        arraycopy(ecuInitBytes, 3, ecuIdBytes, 0, 5);
+        ecuId = new String(ecuIdBytes);
+    }
 
-    boolean isManual();
+    public String getEcuId() {
+        return ecuId;
+    }
 
-    boolean getEnv();
-
-    boolean isRecordET();
-
-    boolean isValidET(long now, double vs);
-
-    void updateEnv(double iat, double pressure);
-
-    void addData(double xData, double yData, double y1Data);
-
-    void addRawData(double xData, double yData);
-
-    double calcRpm(double vs);
-
-    int getSampleCount();
-
-    void saveSettings();
+    public byte[] getEcuInitBytes() {
+        return ecuInitBytes;
+    }
 }

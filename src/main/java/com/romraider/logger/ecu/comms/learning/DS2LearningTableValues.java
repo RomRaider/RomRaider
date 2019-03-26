@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2018 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,11 +41,11 @@ import org.w3c.dom.Node;
 import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.io.connection.DS2LoggerConnection;
-import com.romraider.logger.ecu.comms.learning.flkctable.DS2FlkcTableQueryBuilder;
 import com.romraider.logger.ecu.comms.learning.parameter.DS2Parameter;
 import com.romraider.logger.ecu.comms.learning.parameter.DS2ParameterCrossReference;
 import com.romraider.logger.ecu.comms.learning.parameter.ParameterIdComparator;
 import com.romraider.logger.ecu.comms.learning.tableaxis.DS2TableAxisQueryParameterSet;
+import com.romraider.logger.ecu.comms.learning.tables.DS2FlkcTableQueryBuilder;
 import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
