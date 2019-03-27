@@ -19,13 +19,28 @@
 
 package com.romraider.maps.checksum;
 
+import java.util.Map;
+
+import com.romraider.util.HexUtil;
+
 /**
- * This class implements the "std" checksum validation and calculations
+ * This class implements the "alt2" checksum validation and calculations
  * for Nissan ROMs.
  */
-    public final class ChecksumSTD extends NissanChecksum {
+public final class ChecksumALT2 extends NissanChecksum {
+    protected static final String SKIPLOC = "skiploc";
 
-    public ChecksumSTD() {
-        calculator = new CalculateSTD();
+    public ChecksumALT2() {
+        calculator = new CalculateALT2();
+    }
+
+    public void configure(Map<String, String> vars) {
+        super.configure(vars);
+        if (vars.containsKey(SKIPLOC)) {
+            range.put(SKIPLOC, HexUtil.hexToInt(vars.get(SKIPLOC)));
+        }
+        else {
+            range.put(SKIPLOC, 0x20000);
+        }
     }
 }

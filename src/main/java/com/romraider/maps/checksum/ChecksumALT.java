@@ -20,12 +20,12 @@
 package com.romraider.maps.checksum;
 
 /**
- * This class implements the "std" checksum validation and calculations
+ * This class implements the "alt" checksum validation and calculations
  * for Nissan ROMs.
  */
-    public final class ChecksumSTD extends NissanChecksum {
+    public final class ChecksumALT extends NissanChecksum {
 
-    public ChecksumSTD() {
+    public ChecksumALT() {
         calculator = new CalculateSTD();
     }
 }

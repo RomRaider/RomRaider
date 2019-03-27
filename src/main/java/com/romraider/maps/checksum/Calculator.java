@@ -19,13 +19,20 @@
 
 package com.romraider.maps.checksum;
 
-/**
- * This class implements the "std" checksum validation and calculations
- * for Nissan ROMs.
- */
-    public final class ChecksumSTD extends NissanChecksum {
+import java.util.Map;
 
-    public ChecksumSTD() {
-        calculator = new CalculateSTD();
-    }
+/**
+ * The Calculator interface is implemented by CalculateXXX classes
+ * which perform the actual checksum calculation.
+ */
+public interface Calculator {
+
+    /**
+     * Calculate the sum and xor total over the address range provided.
+     * @param	range	- a map of with the address ranges use.
+     * @param   binData - the binary data t calculate over.
+     * @param   results - a map containing the keys for sumt and xort
+     */
+    void calculate(
+            Map<String, Integer> range, byte[] binData, Map<String, Integer> results);
 }
