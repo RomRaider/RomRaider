@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.swing.SwingWorker;
 
@@ -61,6 +63,7 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.logger.ecu.ui.swing.tools.DS2LearningTableValuesResultsPanel;
 import com.romraider.util.ParamChecker;
+import com.romraider.util.ResourceUtil;
 
 /**
  * This class manages the building of ECU queries and retrieving the data to
@@ -72,6 +75,8 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
 
     private static final Logger LOGGER =
             Logger.getLogger(DS2LearningTableValues.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            DS2LearningTableValues.class.getName());
     private static final String[] AF_RANGE_NAMES = new String[]{" ",
             "Additive Adaptation",
             "Multiplicative Adaptation"};
@@ -114,10 +119,9 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
         Document document = null;
         if (ecuDef.getEcuDefFile() == null) {
             showMessageDialog(logger,
-                    "ECU definition file not found or undefined. Adaptation\n" +
-                    "Table Values cannot be properly retrieved until an ECU\n" +
-                    "defintion is defined in the Editor's Definition Manager.",
-                    "ECU Defintion Missing", WARNING_MESSAGE);
+                    rb.getString("DEFNOTFOUND"),
+                    rb.getString("DEFMISSING"),
+                    WARNING_MESSAGE);
             return null;
         }
         else {
@@ -134,7 +138,7 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
         final boolean logging = logger.isLogging();
         if (logging) logger.stopLogging();
 
-        String message = "Retrieving vehicle info & A/F values...";
+        String message = rb.getString("GETAFVALUES");
         messageListener.reportMessage(message);
         buildVehicleInfoMap(ecuDef);
 
@@ -145,7 +149,7 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
             try {
                 Collection<EcuQuery> queries = buildLearningQueries();
 
-                LOGGER.info(message);
+                LOGGER.info("Retrieving vehicle info & A/F values ...");
                 connection.sendAddressReads(
                         queries,
                         settings.getDestinationTarget(),
@@ -157,13 +161,13 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
 
                 processEcuQueryResponses((List<EcuQuery>) queries);
 
-                message = "Retrieving Knock Load ranges...";
+                message = rb.getString("GETKNOCKRANGES");
                 messageListener.reportMessage(message);
                 String[] flkcLoad = new String[0];
                 queries.clear();
                 queries = getTableAxisRanges(document, ecuDef, KNK_LOAD_TABLE_NAMES);
                 if (queries != null && !queries.isEmpty()) {
-                    LOGGER.info(message);
+                    LOGGER.info("Retrieving Knock Load ranges ...");
                     connection.sendAddressReads(
                             queries,
                             settings.getDestinationTarget(),
@@ -172,13 +176,13 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
                     flkcLoad = formatRanges(queries, "%.0f");
                 }
 
-                message = "Retrieving Knock RPM ranges...";
+                message = rb.getString("GETRPMRANGES");
                 messageListener.reportMessage(message);
                 String[] flkcRpm = new String[0];
                 queries.clear();
                 queries = getTableAxisRanges(document, ecuDef, KNK_RPM_TABLE_NAMES);
                 if (queries != null && !queries.isEmpty()) {
-                    LOGGER.info(message);
+                    LOGGER.info("Retrieving Knock RPM ranges ...");
                     connection.sendAddressReads(
                             queries,
                             settings.getDestinationTarget(),
@@ -206,10 +210,12 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
                                 }
                             }
                         }
-                        message = String.format("Retrieving Table %d Knock values...",
+                        message = MessageFormat.format(
+                                rb.getString("GETTABLEKNOCK"),
                                 (k/64+1));
                         messageListener.reportMessage(message);
-                        LOGGER.info(message);
+                        LOGGER.info(String.format("Retrieving Table %d Knock values ...",
+                                (k/64+1)));
                         connection.sendAddressReads(
                                 queries,
                                 settings.getDestinationTarget(),
@@ -220,13 +226,13 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
                     }
                 }
                 else {
-                    message = String.format("Error retrieving Knock data values, missing Knock reference");
+                    message = rb.getString("ERRTABLEKNOCK");
                     messageListener.reportMessage(message);
-                    LOGGER.error(message);
+                    LOGGER.error("Error retrieving Knock data values, missing Knock reference");
                 }
 
                 messageListener.reportMessage(
-                        "Adaptation Table Values retrieved successfully.");
+                        rb.getString("ADAPTSUCCESS"));
                 final DS2LearningTableValuesResultsPanel results =
                         new DS2LearningTableValuesResultsPanel(
                                 logger, vehicleInfo,
@@ -243,16 +249,12 @@ public final class DS2LearningTableValues extends SwingWorker<Void, Void>
         }
         catch (Exception e) {
             messageListener.reportError(
-                    "Unable to retrieve current ECU adapation values");
+                    rb.getString("ERRADAPT"));
             LOGGER.error(message + " Error retrieving values", e);
             showMessageDialog(logger,
-                    message +
-                    "\nError performing Adaptation Table Values read.\n" +
-                    "Check the following:\n" +
-                    "* Logger has successfully conencted to the ECU\n" +
-                    "* Correct COM port is selected (if not Openport 2)\n" +
-                    "* Cable is connected properly\n* Ignition is ON\n",
-                    "Adaptation Table Values",
+                    MessageFormat.format(
+                            rb.getString("ERRCONNECT"), message),
+                    rb.getString("ATV"),
                     ERROR_MESSAGE);
         }
         return null;
