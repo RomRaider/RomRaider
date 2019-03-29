@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.swing.SwingWorker;
 
@@ -65,6 +67,7 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.logger.ecu.ui.swing.tools.NCSLearningTableValuesResultsPanel;
 import com.romraider.util.ParamChecker;
+import com.romraider.util.ResourceUtil;
 
 
 /**
@@ -77,6 +80,8 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
 
     private static final Logger LOGGER =
             Logger.getLogger(NCSLearningTableValues.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            NCSLearningTableValues.class.getName());
     private static final List<String> AF_TABLE_NAMES = Arrays.asList(
             "A/F Learning #1 Airflow Ranges",
             "A/F Learning #1 Airflow Ranges ",
@@ -127,10 +132,8 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
         Document document = null;
         if (ecuDef.getEcuDefFile() == null) {
             showMessageDialog(logger,
-                    "ECU definition file not found or undefined. Learning\n" +
-                    "Table Values cannot be properly retrieved until an ECU\n" +
-                    "defintion is defined in the Editor's Definition Manager.",
-                    "ECU Defintion Missing", WARNING_MESSAGE);
+                    rb.getString("DEFNOTFOUND"),
+                    rb.getString("DEFMISSING"), WARNING_MESSAGE);
             return null;
         }
         else {
@@ -147,7 +150,7 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
         final boolean logging = logger.isLogging();
         if (logging) logger.stopLogging();
 
-        String message = "Retrieving vehicle info & LTFT values...";
+        String message = rb.getString("GETLTFTVALUES");
         messageListener.reportMessage(message);
         buildVehicleInfoMap(ecuDef);
 
@@ -176,7 +179,7 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                             "Queries:%d, Set size:%d, Set 1 size:%d, Set 2 size:%d",
                             queries.size(), setSize, querySet1.size(), querySet2.size()));
 
-                LOGGER.info(message);
+                LOGGER.info("Retrieving vehicle info & LTFT values ...");
                 connection.sendAddressReads(
                         querySet1,
                         settings.getDestinationTarget(),
@@ -195,13 +198,13 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                 //TODO: afRanges to be replaced with Knock tables once known how they operate
                 String[] afRanges = new String[0];
 
-                message = "Retrieving LTFT column ranges...";
+                message = rb.getString("GETCOLRANGES");
                 messageListener.reportMessage(message);
                 String[] ltftCol = new String[0];
                 queries.clear();
                 queries = getTableAxisRanges(document, ecuDef, LTFT_TABLE_COLUMN_NAMES);
                 if (queries != null && !queries.isEmpty()) {
-                    LOGGER.info(message);
+                    LOGGER.info("Retrieving LTFT column ranges ...");
                     connection.sendAddressReads(
                             queries,
                             settings.getDestinationTarget(),
@@ -210,13 +213,13 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                     ltftCol = formatRanges(queries, "%.2f");
                 }
 
-                message = "Retrieving LTFT row ranges...";
+                message = rb.getString("GETROWRANGES");
                 messageListener.reportMessage(message);
                 String[] ltftRow = new String[0];
                 queries.clear();
                 queries = getTableAxisRanges(document, ecuDef, LTFT_TABLE_ROW_NAMES);
                 if (queries != null && !queries.isEmpty()) {
-                    LOGGER.info(message);
+                    LOGGER.info("Retrieving LTFT row ranges ...");
                     connection.sendAddressReads(
                             queries,
                             settings.getDestinationTarget(),
@@ -243,11 +246,13 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                                     queries.add(ltftQueryGroups.get(i).get(j));
                                 }
                             }
-                            message = String.format(
-                                    "Retrieving Table %d LTFT row %d values...",
+                            message = MessageFormat.format(
+                                    rb.getString("GETTABLELTFT"),
                                     (k/128+1), i);
                             messageListener.reportMessage(message);
-                            LOGGER.info(message);
+                            LOGGER.info(String.format(
+                                    "Retrieving Table %d LTFT row %d values ...",
+                                    (k/128+1), i));
                             setSize = queries.size() / 2;
                             querySet1 = new ArrayList<EcuQuery>();
                             querySet2 = new ArrayList<EcuQuery>();
@@ -266,7 +271,6 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                                         "Queries:%d, Set size:%d, Set 1 size:%d, Set 2 size:%d",
                                         queries.size(), setSize, querySet1.size(), querySet2.size()));
     
-                            LOGGER.info(message);
                             connection.sendAddressReads(
                                     querySet1,
                                     settings.getDestinationTarget(),
@@ -283,10 +287,9 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                     }
                 }
                 else {
-                    message = String.format(
-                            "Error retrieving LTFT data values, missing LTFT reference");
+                    message = rb.getString("ERRTABLELTFT");
                     messageListener.reportMessage(message);
-                    LOGGER.error(message);
+                    LOGGER.error("Error retrieving LTFT data values, missing LTFT reference");
                 }
                 if (ltftCnt != null) {
                     for (int k = 0; k < 128; k += 64) {
@@ -304,10 +307,12 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                                     queries.add(ltftQueryGroups.get(i).get(j));
                                 }
                             }
-                            message = String.format("Retrieving Table %d LTFT row %d values...",
+                            message = MessageFormat.format(
+                                    rb.getString("GETTABLELTFT"),
                                     (k/64+3), i);
                             messageListener.reportMessage(message);
-                            LOGGER.info(message);
+                            LOGGER.info(String.format("Retrieving Table %d LTFT row %d values...",
+                                    (k/64+3), i));
                             setSize = queries.size() / 2;
                             querySet1 = new ArrayList<EcuQuery>();
                             querySet2 = new ArrayList<EcuQuery>();
@@ -325,7 +330,6 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                                 String.format("Queries:%d, Set size:%d, Set 1 size:%d, Set 2 size:%d",
                                     queries.size(), setSize, querySet1.size(), querySet2.size()));
     
-                            LOGGER.info(message);
                             connection.sendAddressReads(
                                     querySet1,
                                     settings.getDestinationTarget(),
@@ -341,13 +345,13 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
                     }
                 }
                 else {
-                    message = String.format("Error retrieving LTFT data values, missing LTFT reference");
+                    message = rb.getString("ERRTABLELTFT");
                     messageListener.reportMessage(message);
-                    LOGGER.error(message);
+                    LOGGER.error("Error retrieving LTFT data values, missing LTFT reference");
                 }
 
                 messageListener.reportMessage(
-                        "Learning Table Values retrieved successfully.");
+                        rb.getString("LTFTSUCCESS"));
                 final NCSLearningTableValuesResultsPanel results =
                         new NCSLearningTableValuesResultsPanel(
                                 logger, vehicleInfo,
@@ -364,16 +368,12 @@ public final class NCSLearningTableValues extends SwingWorker<Void, Void>
         }
         catch (Exception e) {
             messageListener.reportError(
-                    "Unable to retrieve current ECU learning values");
+                    rb.getString("ERRLTFT"));
             LOGGER.error(message + " Error retrieving values", e);
             showMessageDialog(logger,
-                    message +
-                    "\nError performing Learning Table Values read.\n" +
-                    "Check the following:\n" +
-                    "* Logger has successfully conencted to the ECU\n" +
-                    "* Correct COM port is selected (if not Openport 2)\n" +
-                    "* Cable is connected properly\n* Ignition is ON\n",
-                    "Learning Table Values",
+                    MessageFormat.format(
+                            rb.getString("ERRCONNECT"), message),
+                    rb.getString("LTV"),
                     ERROR_MESSAGE);
         }
         return null;
