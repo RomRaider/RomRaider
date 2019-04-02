@@ -919,7 +919,7 @@ public final class DynoControlPanel extends JPanel {
             elevLabel.setText(rb.getString("ELEVATION_I"));
             tempLabel.setText(rb.getString("AIRTEMP_I"));
             deltaMassLabel.setText(rb.getString("DELTAWEIGHT_I"));
-            carMassLabel.setText(rb.getString("BASEWEIGTH_I"));
+            carMassLabel.setText(rb.getString("BASEWEIGHT_I"));
             pressText = String.format("%1.2f", atm);
             pressUnits = "psi";
         }
@@ -945,7 +945,7 @@ public final class DynoControlPanel extends JPanel {
             elevLabel.setText(rb.getString("ELEVATION_M"));
             tempLabel.setText(rb.getString("AIRTEMP_M"));
             deltaMassLabel.setText(rb.getString("DELTAWEIGHT_M"));
-            carMassLabel.setText(rb.getString("BASEWEIGTH_M"));
+            carMassLabel.setText(rb.getString("BASEWEIGHT_M"));
             pressText = String.format("%1.2f", atm);
             pressUnits = "kPa";
         }
