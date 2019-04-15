@@ -47,7 +47,7 @@ public class TableBitwiseSwitch extends Table {
 	private static final long serialVersionUID = -4887718305447362308L;
 	private final Map<String, Integer> controlBits = new HashMap<String, Integer>();
 	private ArrayList<JCheckBox> checkboxes;
-	private int dataSize = 0;
+	private int dataSize = 1;
 
 	public TableBitwiseSwitch() {
 		super();
@@ -61,7 +61,7 @@ public class TableBitwiseSwitch extends Table {
 	public void populateTable(byte[] input, int romRamOffset)
 			throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
 		int maxBitPosition = ((dataSize * 8) - 1);
-		boolean[] bits_array = new boolean[maxBitPosition + 1];	
+		boolean[] bits_array = new boolean[maxBitPosition + 1];
 
 		for (int i = 0; i < dataSize; i++) {
 			boolean[] byte_values = ByteUtil.byteToBoolArr(input[storageAddress + i]);
@@ -114,19 +114,19 @@ public class TableBitwiseSwitch extends Table {
 
 	@Override
 	public byte[] saveFile(byte[] input) {
-		
+
 		for (Entry<String, Integer> entry : controlBits.entrySet()) {
 			int entry_offset = (dataSize - 1) - (entry.getValue() / 8);
 			int bitpos = 7 - (entry.getValue() % 8);
-			
+
 			boolean[] bools = ByteUtil.byteToBoolArr(input[storageAddress + entry_offset]);
 			JCheckBox cb = getButtonByText(entry.getKey());
 			bools[bitpos] = cb.isSelected();
 			byte result = ByteUtil.booleanArrayToBit(bools);
-			
+
 			input[storageAddress + entry_offset] = result;
 		}
-		
+
 		return input;
 	}
 
@@ -267,22 +267,22 @@ public class TableBitwiseSwitch extends Table {
 		}
 		return null;
 	}
-	
-	  private Map<String, Integer> sortByValue(Map<String, Integer> unsortMap) {
-	        List<Map.Entry<String, Integer>> list =
-	                new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
-	        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-	            public int compare(Map.Entry<String, Integer> o1,
-	                               Map.Entry<String, Integer> o2) {
-	                return (o1.getValue()).compareTo(o2.getValue());
-	            }
-	        });
-	        
-	        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
-	        for (Map.Entry<String, Integer> entry : list) {
-	            sortedMap.put(entry.getKey(), entry.getValue());
-	        }
-	        
-	        return sortedMap;
-	    }
+
+	private Map<String, Integer> sortByValue(Map<String, Integer> unsortMap) {
+		List<Map.Entry<String, Integer>> list =
+						new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+				public int compare(Map.Entry<String, Integer> o1,
+													 Map.Entry<String, Integer> o2) {
+						return (o1.getValue()).compareTo(o2.getValue());
+				}
+		});
+
+		Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+		for (Map.Entry<String, Integer> entry : list) {
+				sortedMap.put(entry.getKey(), entry.getValue());
+		}
+
+		return sortedMap;
+	}
 }
