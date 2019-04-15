@@ -79,6 +79,7 @@ public class TableBitwiseSwitch extends Table {
 						"Table: %s%nDefinition file specified an out of range bit switch! Only values >= 0 and < size * 8 are allowed!",
 						super.getName());
 				showMessageDialog(this, mismatch, "ERROR - Incorrect definition", ERROR_MESSAGE);
+				break;
 			} else {
 				JCheckBox cb = new JCheckBox(entry.getKey());
 				cb.setSelected(bits_array[entry.getValue()]);
