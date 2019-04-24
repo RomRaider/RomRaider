@@ -220,8 +220,7 @@ public class TableBitwiseSwitch extends Table {
 
 	@Override
 	public void setDataSize(int size) {
-		if (dataSize == 0)
-			dataSize = size;
+		dataSize = size;
 	}
 
 	@Override
