@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.swing.SwingWorker;
 
@@ -65,6 +67,7 @@ import com.romraider.logger.ecu.ui.paramlist.ParameterListTableModel;
 import com.romraider.logger.ecu.ui.paramlist.ParameterRow;
 import com.romraider.logger.ecu.ui.swing.tools.SSMLearningTableValuesResultsPanel;
 import com.romraider.util.ParamChecker;
+import com.romraider.util.ResourceUtil;
 
 /**
  * This class manages the building of ECU queries and retrieving the data to
@@ -76,6 +79,8 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
 
     private static final Logger LOGGER =
             Logger.getLogger(SSMLearningTableValues.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            SSMLearningTableValues.class.getName());
     private static List<String> AF_TABLE_NAMES = Arrays.asList(
             "A/F Learning #1 Airflow Ranges",
             "A/F Learning #1 Airflow Ranges ",
@@ -122,10 +127,9 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
         Document document = null;
         if (ecuDef.getEcuDefFile() == null) {
             showMessageDialog(logger,
-                    "ECU definition file not found or undefined. Learning\n" +
-                    "Table Values cannot be properly retrieved until an ECU\n" +
-                    "defintion is defined in the Editor's Definition Manager.",
-                    "ECU Defintion Missing", WARNING_MESSAGE);
+                    rb.getString("DEFNOTFOUND"),
+                    rb.getString("DEFMISSING"),
+                    WARNING_MESSAGE);
             return null;
         }
         else {
@@ -142,7 +146,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
         final boolean logging = logger.isLogging();
         if (logging) logger.stopLogging();
 
-        String message = "Retrieving vehicle info & A/F values...";
+        String message = rb.getString("GETAFVALUES");
         messageListener.reportMessage(message);
         buildVehicleInfoMap(ecuDef);
 
@@ -186,7 +190,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
 
                 processEcuQueryResponses((List<EcuQuery>) queries);
 
-                message = "Retrieving A/F Learning ranges...";
+                message = rb.getString("GETAFSUCCESS");
                 messageListener.reportMessage(message);
                 String[] afRanges = new String[0];
                 queries.clear();
@@ -201,7 +205,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                     afRanges = formatRanges(queries, "%.2f");
                 }
 
-                message = "Retrieving FLKC Load ranges...";
+                message = rb.getString("GETKNOCKRANGES");
                 messageListener.reportMessage(message);
                 String[] flkcLoad = new String[0];
                 queries.clear();
@@ -216,7 +220,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                     flkcLoad = formatRanges(queries, "%.2f");
                 }
 
-                message = "Retrieving FLKC RPM ranges...";
+                message = rb.getString("GETRPMRANGES");
                 messageListener.reportMessage(message);
                 String[] flkcRpm = new String[0];
                 queries.clear();
@@ -246,7 +250,7 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                                 queries.add(flkcQueryGroups.get(i).get(j));
                             }
                         }
-                        message = String.format("Retrieving FLKC row %d values...", i);
+                        message = MessageFormat.format(rb.getString("GETKNOCKROW"), i);
                         messageListener.reportMessage(message);
                         LOGGER.info(message);
                         connection.sendAddressReads(
@@ -257,13 +261,12 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
                     }
                 }
                 else {
-                    message = String.format("Error retrieving FLKC data values, missing FLKC reference");
+                    message = rb.getString("ERRTABLEKNOCK");
                     messageListener.reportMessage(message);
                     LOGGER.error(message);
                 }
 
-                messageListener.reportMessage(
-                        "Learning Table Values retrieved successfully.");
+                messageListener.reportMessage(rb.getString("LTVSUCCESS"));
                 final SSMLearningTableValuesResultsPanel results =
                         new SSMLearningTableValuesResultsPanel(
                                 logger, vehicleInfo,
@@ -279,17 +282,12 @@ public final class SSMLearningTableValues extends SwingWorker<Void, Void>
             }
         }
         catch (Exception e) {
-            messageListener.reportError(
-                    "Unable to retrieve current ECU learning values");
+            messageListener.reportError(rb.getString("ERRLTV"));
             LOGGER.error(message + " Error retrieving values", e);
             showMessageDialog(logger,
-                    message +
-                    "\nError performing Learning Table Values read.\n" +
-                    "Check the following:\n" +
-                    "* Logger has successfully conencted to the ECU\n" +
-                    "* Correct COM port is selected (if not Openport 2)\n" +
-                    "* Cable is connected properly\n* Ignition is ON\n",
-                    "Learning Table Values",
+                    MessageFormat.format(
+                            rb.getString("ERRCONNECT"), message),
+                    rb.getString("LTV"),
                     ERROR_MESSAGE);
         }
         return null;
