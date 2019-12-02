@@ -48,6 +48,7 @@ import com.romraider.maps.Table1D;
 import com.romraider.maps.Table2D;
 import com.romraider.maps.Table3D;
 import com.romraider.maps.TableBitwiseSwitch;
+import com.romraider.maps.Table2DMaskedSwitchable;
 import com.romraider.maps.TableSwitch;
 import com.romraider.maps.checksum.ChecksumFactory;
 import com.romraider.maps.checksum.ChecksumManager;
@@ -415,7 +416,10 @@ public final class DOMRomUnmarshaller {
                 } else if (unmarshallAttribute(tableNode, "type", "unknown")
                         .equalsIgnoreCase("BitwiseSwitch")) {
                     table = new TableBitwiseSwitch();
-
+                }
+                else if (unmarshallAttribute(tableNode, "type", "unknown")
+                            .equalsIgnoreCase("Table2DMaskedSwitchable")) {
+                        table = new Table2DMaskedSwitchable();
                 } else {
                     throw new XMLParseException("Error loading table, "
                             + tableNode.getAttributes().getNamedItem("name"));
@@ -425,7 +429,6 @@ public final class DOMRomUnmarshaller {
                 return table;
             }
         }
-
 
         // unmarshall table attributes
         final String tn = unmarshallAttribute(tableNode, "name", table.getName());
@@ -464,6 +467,7 @@ public final class DOMRomUnmarshaller {
                         "storageaddress",
                         String.valueOf(table.getStorageAddress()))));
         }
+        
         table.setDescription(unmarshallAttribute(tableNode, "description",
                 table.getDescription()));
         table.setDataSize(unmarshallAttribute(tableNode, "sizey",
@@ -476,6 +480,7 @@ public final class DOMRomUnmarshaller {
                 table.isLocked()));
         table.setLogParam(unmarshallAttribute(tableNode, "logparam",
                 table.getLogParam()));
+        
 
         if (table.getType() == Table.TableType.TABLE_3D) {
             ((Table3D) table).setSwapXY(unmarshallAttribute(tableNode,
@@ -579,18 +584,24 @@ public final class DOMRomUnmarshaller {
                     ((TableSwitch) table).setValues(
                             unmarshallAttribute(n, "name", ""),
                             unmarshallAttribute(n, "data", "0.0"));
-
-                } else if (n.getNodeName().equalsIgnoreCase("bit")) {
-                    ((TableBitwiseSwitch) table).setValues(
-                            unmarshallAttribute(n, "name", ""),
-                            unmarshallAttribute(n, "position", "0"));
-
+                    
+                	//<maskedState name="Enabled"  longName="" data="01" />
+                    
+                } else if (n.getNodeName().equalsIgnoreCase("mask")) {
+                    ((Table2DMaskedSwitchable) table).setStringMask(
+                            unmarshallAttribute(n, "value", "FFFFFFFF"));
+                } else if (n.getNodeName().equalsIgnoreCase("maskedstate")) {
+                    ((Table2DMaskedSwitchable) table).setPredefinedOption(
+                            unmarshallAttribute(n, "maskedName", ""),
+                            unmarshallAttribute(n, "maskedData", "0")
+                           
+                            );
                 } else { /* unexpected element in Table (skip) */
                 }
             } else { /* unexpected node-type in Table (skip) */
             }
         }
-
+    	//<singleState name="Enabled"  longName="" data="01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00" />
         return table;
     }
 

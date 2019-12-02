@@ -118,6 +118,19 @@ public final class ByteUtil {
       }
       return val;
     }
+    
+    public static byte firstOneOfMask(long mask) {
+    	byte index = (byte) 0xFF;
+    	
+    	for(byte i=0; i < 32; i++) {
+    		if(((mask >> i) & 1) == 1) {
+    			index = i;
+    			break;
+    		}
+    	}
+    	
+    	return index;
+    }
 
     private static int[] computeFailure(byte[] pattern) {
         int[] failure = new int[pattern.length];
@@ -133,5 +146,6 @@ public final class ByteUtil {
         }
         return failure;
     }
+    
     
 }
