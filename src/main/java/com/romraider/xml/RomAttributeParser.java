@@ -27,6 +27,7 @@ import java.nio.ByteOrder;
 
 import com.romraider.Settings;
 import com.romraider.maps.Table;
+import com.romraider.util.ByteUtil;
 
 public final class RomAttributeParser {
 
@@ -114,7 +115,17 @@ public final class RomAttributeParser {
             return Table.TableType.TABLE_1D;
         }
     }
-
+    
+    //This assumes the bits inside the mask aren't spread. OK = 11110000, Not OK = 11001100
+    public static long parseByteValueMasked(byte[] input, Settings.Endian endian, int address, int length, boolean signed, long mask) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    	 	
+    	long tempValue = parseByteValue(input,endian,address,length,signed) & mask;
+    	
+    	byte index = ByteUtil.firstOneOfMask(mask);
+    	
+    	return tempValue >> index;
+    }
+    
     public static long parseByteValue(byte[] input, Settings.Endian endian, int address, int length, boolean signed) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         try {
             long output = 0L;
@@ -229,6 +240,9 @@ public final class RomAttributeParser {
             }
             else if (input.substring(input.length() - 2).equalsIgnoreCase("mb")) {
                 return Integer.parseInt(input.substring(0, input.length() - 2)) * 1024 * 1024;
+            }
+            else if (input.substring(input.length() - 1).equalsIgnoreCase("b")) {
+                return Integer.parseInt(input.substring(0, input.length() - 1));
             }
             throw new NumberFormatException();
         }

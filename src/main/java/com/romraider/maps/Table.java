@@ -778,7 +778,7 @@ public abstract class Table extends JPanel implements Serializable {
         return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinAllowedBin());
     }
 
-    private void calcValueRange() {
+    protected void calcValueRange() {
         if (getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
             if (isSignedData()) {
                 switch (getStorageType()) {
