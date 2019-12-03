@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,7 +112,7 @@ public final class DOMRomUnmarshaller {
                             output.getRomID().setRamOffset(
                                     output.getRomID().getFileSize()
                                     - input.length);
-                            output.setChecksumManager(checksumManager);
+                            //output.addChecksumManager(checksumManager);
                             return output;
                         }
                     }
@@ -239,6 +239,7 @@ public final class DOMRomUnmarshaller {
                 } else if (n.getNodeName().equalsIgnoreCase("checksum")) {
                     rom.getRomID().setChecksum(unmarshallAttribute(n, "type", ""));
                     checksumManager = unmarshallChecksum(n);
+                    rom.addChecksumManager(checksumManager);
 
                 } else { /* unexpected element in Rom (skip) */
                 }
@@ -584,9 +585,7 @@ public final class DOMRomUnmarshaller {
                     ((TableSwitch) table).setValues(
                             unmarshallAttribute(n, "name", ""),
                             unmarshallAttribute(n, "data", "0.0"));
-                    
-                	//<maskedState name="Enabled"  longName="" data="01" />
-                    
+                                      
                 } else if (n.getNodeName().equalsIgnoreCase("mask")) {
                     ((Table2DMaskedSwitchable) table).setStringMask(
                             unmarshallAttribute(n, "value", "FFFFFFFF"));
@@ -601,7 +600,6 @@ public final class DOMRomUnmarshaller {
             } else { /* unexpected node-type in Table (skip) */
             }
         }
-    	//<singleState name="Enabled"  longName="" data="01 00 01 00 01 00 01 00 01 00 01 00 01 00 01 00" />
         return table;
     }
 

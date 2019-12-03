@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
@@ -63,7 +64,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private final Vector<TableTreeNode> tableNodes = new Vector<TableTreeNode>();
     private byte[] binData;
     private boolean isAbstract = false;
-    private ChecksumManager checksumManager;
+    private LinkedList<ChecksumManager> checksumManagers = new LinkedList<ChecksumManager>();
 
     public Rom() {
         tableNodes.clear();
@@ -422,34 +423,42 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
         return (DefaultMutableTreeNode) super.getLastChild();
     }
 
-    public void setChecksumManager(ChecksumManager checksumManager) {
-        this.checksumManager = checksumManager;
+    public void addChecksumManager(ChecksumManager checksumManager) {
+    	this.checksumManagers.add(checksumManager);
     }
 
-    public ChecksumManager getChecksumType() {
-        return checksumManager;
+    public ChecksumManager getChecksumType(int index) {
+        return checksumManagers.get(index);
     }
 
     public void validateChecksum() {
-        if (checksumManager != null) {
+        if (!checksumManagers.isEmpty()) {
             final String message = String.format(
-                    "Checksum is invalid.%n" +
+                    "At least one Checksum is invalid.%n" +
                     "The ROM image may be corrupt or it has been " +
                     "hex edited manually.%n" +
                     "The checksum can be corrected when the ROM " +
                     "is saved if your trust it is not corrupt.");
-            if (!checksumManager.validate(binData)) {
-                showMessageDialog(null,
-                        message,
-                        "ERROR - Checksum Failed",
-                        WARNING_MESSAGE);
+            
+            boolean valid = true;
+            
+            for(ChecksumManager cm: checksumManagers) {
+            	if (!cm.validate(binData)) valid = false;
             }
+            
+            if(!valid)
+            	showMessageDialog(null,
+                        message,
+                        "ERROR - At least one Checksum Failed",
+                        WARNING_MESSAGE);
         }
     }
 
     public void updateChecksum() {
-        if (checksumManager != null) {
-            checksumManager.update(binData);
+        if (!checksumManagers.isEmpty()) {
+            for(ChecksumManager cm: checksumManagers) {
+            	cm.update(binData);
+            }
         }
     }
 }
