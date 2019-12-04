@@ -117,7 +117,7 @@ public final class RomAttributeParser {
     }
     
     //This assumes the bits inside the mask aren't spread. OK = 11110000, Not OK = 11001100
-    public static long parseByteValueMasked(byte[] input, Settings.Endian endian, int address, int length, boolean signed, long mask) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
+    public static long parseByteValueMasked(byte[] input, Settings.Endian endian, int address, int length, boolean signed, int mask) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
     	 	
     	long tempValue = parseByteValue(input,endian,address,length,signed) & mask;
     	

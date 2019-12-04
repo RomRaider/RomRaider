@@ -62,7 +62,15 @@ public class Table2D extends Table {
     public Table1D getAxis() {
         return axis;
     }
-
+    
+    public JLabel getAxisLabel() {
+    	return axisLabel;
+    }
+    
+    public void setAxisLabel(JLabel label) {
+    	axisLabel = label;
+    }
+    
     public void setAxis(Table1D axis) {
         this.axis = axis;
         axis.setAxisParent(this);
