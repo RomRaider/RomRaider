@@ -126,7 +126,7 @@ public class Table2DMaskedSwitchable extends Table2D {
 		
 		// Add presets
 		if(defaultEntries.size() > 0) {
-			JLabel optionLabel = new JLabel(" Predefined Options");
+			JLabel optionLabel = new JLabel(" Presets");
 			
 			Font f = optionLabel.getFont();
 			optionLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));		
