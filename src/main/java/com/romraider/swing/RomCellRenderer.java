@@ -111,7 +111,9 @@ public class RomCellRenderer implements TreeCellRenderer {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/1d.gif")), JLabel.LEFT);
             } else if (table.getType() == Table.TableType.TABLE_2D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/2d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Table.TableType.TABLE_3D) {
+            }else if (table.getType() == Table.TableType.TABLE_2D_MASKED_SWITCHABLE) {
+                tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/2d_masked.gif")), JLabel.LEFT);
+            }else if (table.getType() == Table.TableType.TABLE_3D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/3d.gif")), JLabel.LEFT);
             } else if (table.getType() == Table.TableType.SWITCH) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/switch.gif")), JLabel.LEFT);

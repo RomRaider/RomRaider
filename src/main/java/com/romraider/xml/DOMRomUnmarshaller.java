@@ -495,7 +495,12 @@ public final class DOMRomUnmarshaller {
             ((Table3D) table).setSizeY(unmarshallAttribute(tableNode, "sizey",
                     ((Table3D) table).getSizeY()));
         }
-
+        
+        if (table.getType() == Table.TableType.TABLE_2D_MASKED_SWITCHABLE) {
+        ((Table2DMaskedSwitchable) table).setStringMask(
+                unmarshallAttribute(tableNode, "mask", "FFFFFFFF"));
+        }
+        
         Node n;
         NodeList nodes = tableNode.getChildNodes();
 
@@ -505,7 +510,7 @@ public final class DOMRomUnmarshaller {
             if (n.getNodeType() == ELEMENT_NODE) {
                 if (n.getNodeName().equalsIgnoreCase("table")) {
 
-                    if (table.getType() == Table.TableType.TABLE_2D) { // if table is 2D,
+                    if (table.getType() == Table.TableType.TABLE_2D || table.getType() == Table.TableType.TABLE_2D_MASKED_SWITCHABLE) { // if table is 2D,
                         // parse axis
 
                         if (RomAttributeParser
@@ -586,12 +591,9 @@ public final class DOMRomUnmarshaller {
                             unmarshallAttribute(n, "name", ""),
                             unmarshallAttribute(n, "data", "0.0"));
                                       
-                } else if (n.getNodeName().equalsIgnoreCase("mask")) {
-                    ((Table2DMaskedSwitchable) table).setStringMask(
-                            unmarshallAttribute(n, "value", "FFFFFFFF"));
-                } else if (n.getNodeName().equalsIgnoreCase("maskedstate")) {
+                } else if (n.getNodeName().equalsIgnoreCase("maskedPreset")) {
                     ((Table2DMaskedSwitchable) table).setPredefinedOption(
-                            unmarshallAttribute(n, "maskedName", ""),
+                            unmarshallAttribute(n, "presetName", ""),
                             unmarshallAttribute(n, "maskedData", "0")
                            
                             );
@@ -682,11 +684,12 @@ public final class DOMRomUnmarshaller {
                     return;
                 }
 
-                if (!tableNames.containsKey(name) && address > 0) {
+                //Why cant the address not be zero?
+                if (!tableNames.containsKey(name) && address >= 0) {
                     tableNames.put(name, address);
                 }
                 else if (tableNames.containsKey(name)) {
-                    if (tableNames.get(name) < 1 && address > 0) {
+                    if (tableNames.get(name) < 1 && address >= 0) {
                         tableNames.put(name, address);
                         }
                 }

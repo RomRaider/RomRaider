@@ -187,7 +187,8 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             Table table = tableNodes.get(i).getTable();
             try {
                 // if storageaddress has not been set (or is set to 0) omit table
-                if (table.getStorageAddress() != 0) {
+            	//Why can the address not be zero? - Changed
+                if (table.getStorageAddress() >= 0) {
                     try {
                         table.populateTable(binData, this.getRomID().getRamOffset());
                         TableUpdateHandler.getInstance().registerTable(table);

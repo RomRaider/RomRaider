@@ -25,9 +25,10 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.LinkedList;
 
-import javax.swing.BorderFactory;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,25 +38,28 @@ import com.romraider.Settings;
 import com.romraider.util.ByteUtil;
 import com.romraider.xml.RomAttributeParser;
 
-public class Table2DMaskedSwitchable extends Table {
-	private static final long serialVersionUID = 1L;
+@SuppressWarnings("serial")
+public class Table2DMaskedSwitchable extends Table2D {
 
-	int bitMask;
-	private LinkedList<DefaultEntry> defaultEntries = new LinkedList<DefaultEntry>();
+	
+	private int bitMask;
+	private LinkedList<PresetEntry> defaultEntries = new LinkedList<PresetEntry>();
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
-	class DefaultEntry {
+	//Struct for saving Preset values
+	class PresetEntry {
 		String name;
 		LinkedList<Integer> data;
 	}
-
+	   
 	public Table2DMaskedSwitchable() {
 		super();
-		super.setDataSize(1);
 	}
 
 	public void setBitMask(int mask) {
-		bitMask = mask;
+		
+		//Clamp mask to max size
+		bitMask = (int) Math.min(mask, Math.pow(2,getStorageType()*8)-1);
 		calcValueRange();
 	}
 
@@ -63,15 +67,13 @@ public class Table2DMaskedSwitchable extends Table {
 		return bitMask;
 	}
 
-	public void setStringMask(String stringMask) {
-		int mask = Integer.parseUnsignedInt(stringMask, 16);
+	public void setStringMask(String stringMask) {	
+		int mask = Integer.parseUnsignedInt(stringMask, 16); 		
 		setBitMask(mask);
 	}
 
 	public void setPredefinedOption(String name, String data) {
-		DefaultEntry entry = new DefaultEntry();
-		System.out.println(super.getDataSize());
-
+		PresetEntry entry = new PresetEntry();
 		entry.data = new LinkedList<Integer>();
 
 		for (String s : data.split(",")) {
@@ -84,23 +86,14 @@ public class Table2DMaskedSwitchable extends Table {
 
 	@Override
 	public void populateTable(byte[] input, int romRamOffset) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
-		centerLayout.setRows(1);
-		centerLayout.setColumns(this.getDataSize());
 		super.populateTable(input, romRamOffset);
 
 		// temporarily remove lock
 		boolean tempLock = locked;
 		locked = false;
-
-
+		
 		// Saves the masked value in dataCell
 		for (int i = 0; i < getDataSize(); i++) {
-
-			if (isSignedData()) {
-				LOGGER.error("Single Cell Table only works on unsigned data!");
-				return;
-			}
-
 			// populate data cells
 			if (storageType == Settings.STORAGE_TYPE_FLOAT) { // float storage type
 				LOGGER.error("Float is not supported for Table2DMaskedSwitchable!");
@@ -110,68 +103,45 @@ public class Table2DMaskedSwitchable extends Table {
 				LOGGER.error("MOVI20(S) is not supported for Table2DMaskedSwitchable!");
 				return;
 
-			} else {
-				data[i].setBinValue(RomAttributeParser.parseByteValueMasked(input, endian,
-						getStorageAddress() + i * storageType - ramOffset, storageType, signed, bitMask));
+			} else {	
+				double binValue = RomAttributeParser.parseByteValueMasked(input, endian, getStorageAddress() + i * storageType - ramOffset, storageType, signed, bitMask);
+				data[i].setBinValue(binValue);
 			}
-
-			// System.out.println(dataValue);
 
 			// show locked cell
 			if (tempLock) {
 				data[i].setForeground(Color.GRAY);
 			}
-
 		}
 		
-		// Setup Top Text
-		JLabel descriptionArea = new JLabel(" " + getName() +" | " + description);
-		descriptionArea.setBorder(BorderFactory.createEmptyBorder(5, 0, 5,0));
-		Font f = descriptionArea.getFont();
-		descriptionArea.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
-		descriptionArea.setOpaque(false);
-		add(descriptionArea, BorderLayout.NORTH);
+		JLabel axisLabel = getAxisLabel();
+		
+		if(getAxis().isStaticDataTable()) {
+			axisLabel.setText(" " + axisLabel.getText() + " ");
+			Font f = axisLabel.getFont();
+			axisLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+		}
 		
 		JPanel radioPanel = new JPanel(new GridLayout(0, 1));
-		// Add default values
+		
+		// Add presets
 		if(defaultEntries.size() > 0) {
 			JLabel optionLabel = new JLabel(" Predefined Options");
 			
-			f = optionLabel.getFont();
+			Font f = optionLabel.getFont();
 			optionLabel.setFont(f.deriveFont(f.getStyle() | Font.BOLD));		
 			radioPanel.add(optionLabel);
-			//radioPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-	
-			// System.out.println(defaultEntries.size());
 		}
 		
-		for (DefaultEntry entry : defaultEntries) {
-			JRadioButton button = new JRadioButton(entry.name);
+		//Setup radio button for each preset
+		for (PresetEntry entry : defaultEntries) {
+			PresetJRadioButton button = new PresetJRadioButton();
 
-			// Check if the radio button is current selected
-			boolean found = true;
-			for (int i = 0; i < getDataSize(); i++) {
-				if ((int) data[i].getBinValue() != entry.data.get(i)) {
-					found = false;
-					break;
-				}
-			}
-			button.setSelected(found);
-
-			button.addActionListener(new ActionListener() {
-				LinkedList<Integer> values = entry.data;
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					for (int i = 0; i < getDataSize(); i++) {
-						data[i].setBinValue(values.get(i));
-					}
-
-					calcCellRanges();
-					repaint();
-				}
-			});
-
+			button.setText(entry.name);
+			button.setPresetData(entry.data);
+			button.checkIfActive();
+			button.addActionListener(new PresetListener());
+			
 			buttonGroup.add(button);
 			radioPanel.add(button);
 		}
@@ -180,17 +150,38 @@ public class Table2DMaskedSwitchable extends Table {
 
 		// reset locked status
 		locked = tempLock;
+		
+		calcValueRange();
 		calcCellRanges();
 
 		repaint();
 	}
 
+	//New values, check if any presets are active
+	@Override
+	public void repaint() {
+		super.repaint();
+	
+		if (buttonGroup != null) {
+			Enumeration<AbstractButton> buttons = buttonGroup.getElements();
+			
+			if (buttons != null) {
+				buttonGroup.clearSelection();
+				
+				while(buttons.hasMoreElements()) {
+					PresetJRadioButton button = (PresetJRadioButton)buttons.nextElement();
+					button.checkIfActive();
+				}
+			}
+		}
+	} 
+	
 	@Override
 	protected void calcValueRange() {
 		if (getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
-			if (!isSignedData()) {
-				maxAllowedBin = bitMask >> ByteUtil.firstOneOfMask(bitMask);
-				minAllowedBin = 0.0;
+			if (!isSignedData()) {				
+					maxAllowedBin =(int)(Math.pow(2,ByteUtil.lengthOfMask(bitMask)) - 1);
+					minAllowedBin = 0.0;
 			}
 		}
 	}
@@ -199,16 +190,16 @@ public class Table2DMaskedSwitchable extends Table {
 	public byte[] saveFile(byte[] binData) {
 		if (userLevel <= getSettings().getUserLevel() && (userLevel < 5 || getSettings().isSaveDebugTables())) {
 
-			for (int i = 0; i < data.length; i++) {
-				// determine output byte values
-
+	        binData = getAxis().saveFile(binData);
+			
+			for (int i = 0; i < data.length; i++) {				
 				byte[] output = null;
+				
 				if (this.isStaticDataTable() && storageType > 0) {
 					LOGGER.warn("Static data table: " + this.getName() + ", storageType: " + storageType);
 				}
 				if (storageType != Settings.STORAGE_TYPE_FLOAT) {
 
-					// Convert byte values
 					if (!this.isStaticDataTable() && storageType > 0) {
 						// Shift left again
 						int tempData = (int) data[i].getBinValue() << ByteUtil.firstOneOfMask(bitMask);
@@ -217,8 +208,8 @@ public class Table2DMaskedSwitchable extends Table {
 					}
 
 					int byteLength = storageType;
-
-					for (int z = 0; z < byteLength; z++) { // insert into file
+					
+					for (int z = 0; z < byteLength; z++) { // insert into file							
 						// Trim mask depending on bit
 						bitMask &= 0xFF << (8 * z);
 
@@ -234,29 +225,10 @@ public class Table2DMaskedSwitchable extends Table {
 		return binData;
 	}
 
-	@Override
-	public void setName(String name) {
-		super.setName(name);
-	}
 
 	@Override
 	public TableType getType() {
-		return Table.TableType.TABLE_2D;
-	}
-
-	@Override
-	public void setDescription(String description) {
-		super.setDescription(description);
-
-		return;
-		/*
-		 * JTextArea descriptionArea = new JTextArea(description);
-		 * descriptionArea.setOpaque(false); descriptionArea.setEditable(false);
-		 * descriptionArea.setWrapStyleWord(true); descriptionArea.setLineWrap(true);
-		 * descriptionArea.setMargin(new Insets(0, 5, 5, 5));
-		 * 
-		 * add(descriptionArea, BorderLayout.NORTH);
-		 */
+		return Table.TableType.TABLE_2D_MASKED_SWITCHABLE;
 	}
 
 	@Override
@@ -297,64 +269,47 @@ public class Table2DMaskedSwitchable extends Table {
 		}
 	}
 
-	@Override
-	public void cursorUp() {
-		// TODO Auto-generated method stub
-
+	/*
+	 * Custom JRadioButton and Actionlistener
+	 */
+	class PresetJRadioButton extends JRadioButton{
+		private static final long serialVersionUID = 1L;
+		LinkedList<Integer> values; //Pointer to PresetEntry.data
+		
+		public void setPresetData(LinkedList<Integer> list) {
+			values = list;
+		}
+		
+		public void checkIfActive() {
+			// Check if the radio button is current selected
+			boolean found = true;
+			
+			if (values != null) {
+				for (int i = 0; i < getDataSize(); i++) {
+					if(getDataSize() == values.size()) {
+						if ((int) data[i].getBinValue() != values.get(i)) {
+							found = false;
+							break;
+						}
+					}
+				}				
+				setSelected(found);
+			}	
+		}
 	}
-
-	@Override
-	public void cursorDown() {
-		// TODO Auto-generated method stub
-
+	
+	class PresetListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			PresetJRadioButton button = (PresetJRadioButton)event.getSource();
+			
+			if(getDataSize() == button.values.size()) {
+				for (int i = 0; i < getDataSize(); i++) {
+					data[i].setBinValue(button.values.get(i));
+				}
+			}
+			calcCellRanges();
+			repaint();
+		}
 	}
-
-	@Override
-	public void cursorLeft() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void cursorRight() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void shiftCursorUp() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void shiftCursorDown() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void shiftCursorLeft() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void shiftCursorRight() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isLiveDataSupported() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isButtonSelected() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }
