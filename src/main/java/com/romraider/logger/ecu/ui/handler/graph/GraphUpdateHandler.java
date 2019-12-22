@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@ import com.romraider.logger.ecu.comms.query.Response;
 import com.romraider.logger.ecu.definition.ConvertorUpdateListener;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.handler.DataUpdateHandler;
+import com.romraider.util.ResourceUtil;
+
 import static com.romraider.logger.ecu.ui.handler.graph.SpringUtilities.makeCompactGrid;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
@@ -53,8 +55,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpdateListener {
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            GraphUpdateHandler.class.getName());
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
     private final Map<LoggerData, ChartPanel> chartMap = synchronizedMap(new HashMap<LoggerData, ChartPanel>());
@@ -71,9 +76,10 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
 
     public GraphUpdateHandler(final JPanel panel) {
         this.graphPanel = new JPanel(new SpringLayout());
-        final JCheckBox combinedCheckbox = new JCheckBox("Combine Graphs", combinedChart);
+        final JCheckBox combinedCheckbox = new JCheckBox(
+                rb.getString("COMBINE"), combinedChart);
         combinedCheckbox.addActionListener(new CombinedActionListener(combinedCheckbox));
-        JToggleButton playPauseButton = new JToggleButton("Pause Graphs");
+        JToggleButton playPauseButton = new JToggleButton(rb.getString("PAUSE"));
         playPauseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 paused = !paused;
@@ -214,9 +220,11 @@ public final class GraphUpdateHandler implements DataUpdateHandler, ConvertorUpd
     }
 
     private JFreeChart createXYLineChart(LoggerData loggerData, XYDataset dataset, boolean combined) {
-        String title = combined ? "Combined Data" : loggerData.getName();
-        String rangeAxisTitle = combined ? "Data" : buildRangeAxisTitle(loggerData);
-        JFreeChart chart = ChartFactory.createXYLineChart(title, "Time (sec)", rangeAxisTitle, dataset, VERTICAL, false, true, false);
+        String title = combined ? rb.getString("COMBINED") : loggerData.getName();
+        String rangeAxisTitle = combined ? rb.getString("DATA") : buildRangeAxisTitle(loggerData);
+        JFreeChart chart = ChartFactory.createXYLineChart(title,
+                rb.getString("LBLXAXIS"), rangeAxisTitle,
+                dataset, VERTICAL, false, true, false);
         chart.setBackgroundPaint(BLACK);
         chart.getTitle().setPaint(WHITE);
         XYPlot plot = chart.getXYPlot();
