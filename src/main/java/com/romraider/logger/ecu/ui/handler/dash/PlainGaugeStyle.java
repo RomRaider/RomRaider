@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@ package com.romraider.logger.ecu.ui.handler.dash;
 
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.tts.Speaker;
+import com.romraider.util.ResourceUtil;
+
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
@@ -43,11 +45,14 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
 public class PlainGaugeStyle implements GaugeStyle, ActionListener {
+    protected static final ResourceBundle rb = new ResourceUtil().getBundle(
+            PlainGaugeStyle.class.getName());
     private static final String BLANK = "";
-    private static final String ABOVE = "above";
-    private static final String BELOW = "below";
+    private static final String ABOVE = rb.getString("ABOVE");
+    private static final String BELOW = rb.getString("BELOW");
     protected static final Color RED = new Color(190, 30, 30);
     protected static final Color GREEN = new Color(34, 139, 34);
     protected static final Color DARK_GREY = new Color(40, 40, 40);
@@ -59,7 +64,7 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
     protected final JLabel minLabel = new JLabel(BLANK, JLabel.CENTER);
     protected final JLabel title = new JLabel(BLANK, JLabel.CENTER);
     protected final JProgressBar progressBar = new JProgressBar(JProgressBar.VERTICAL);
-    protected final JCheckBox warnCheckBox = new JCheckBox("Warn");
+    protected final JCheckBox warnCheckBox = new JCheckBox(rb.getString("LBLWARN"));
     protected final JComboBox warnType = new JComboBox(new Object[]{ABOVE, BELOW});
     protected final JTextField warnTextField = new JTextField();
     private final String zeroText;
@@ -148,8 +153,8 @@ public class PlainGaugeStyle implements GaugeStyle, ActionListener {
         // max/min panel
         JPanel maxMinPanel = new JPanel(new BorderLayout(2, 2));
         maxMinPanel.setBackground(BLACK);
-        JPanel maxPanel = buildMaxMinPanel("max", maxLabel);
-        JPanel minPanel = buildMaxMinPanel("min", minLabel);
+        JPanel maxPanel = buildMaxMinPanel(rb.getString("LBLMAX"), maxLabel);
+        JPanel minPanel = buildMaxMinPanel(rb.getString("LBLMIN"), minLabel);
         maxMinPanel.add(maxPanel, NORTH);
         maxMinPanel.add(minPanel, SOUTH);
         data.add(maxMinPanel);

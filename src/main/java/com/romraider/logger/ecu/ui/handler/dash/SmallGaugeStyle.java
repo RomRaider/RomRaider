@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,8 +62,8 @@ public final class SmallGaugeStyle extends PlainGaugeStyle {
         // max/min panel
         JPanel maxMinPanel = new JPanel(new BorderLayout(1, 1));
         maxMinPanel.setBackground(BLACK);
-        JPanel maxPanel = buildMaxMinPanel("max", maxLabel);
-        JPanel minPanel = buildMaxMinPanel("min", minLabel);
+        JPanel maxPanel = buildMaxMinPanel(rb.getString("LBLMAX"), maxLabel);
+        JPanel minPanel = buildMaxMinPanel(rb.getString("LBLMIN"), minLabel);
         maxMinPanel.add(maxPanel, NORTH);
         maxMinPanel.add(minPanel, SOUTH);
         data.add(maxMinPanel);
