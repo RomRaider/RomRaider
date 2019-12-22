@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@ package com.romraider.logger.ecu.ui.paramlist;
 
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
+import com.romraider.util.ResourceUtil;
+
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
 import javax.swing.table.AbstractTableModel;
@@ -29,17 +31,23 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public final class ParameterListTableModel extends AbstractTableModel {
     private static final long serialVersionUID = -2556400867696538881L;
+    protected static final ResourceBundle rb = new ResourceUtil().getBundle(
+            ParameterListTableModel.class.getName());
     private final String[] columnNames;
-    private final List<LoggerData> registeredLoggerData = synchronizedList(new LinkedList<LoggerData>());
-    private final Map<LoggerData, ParameterRow> paramRowMap = synchronizedMap(new LinkedHashMap<LoggerData, ParameterRow>());
+    private final List<LoggerData> registeredLoggerData = synchronizedList(
+            new LinkedList<LoggerData>());
+    private final Map<LoggerData, ParameterRow> paramRowMap = synchronizedMap(
+            new LinkedHashMap<LoggerData, ParameterRow>());
     private final DataRegistrationBroker broker;
 
     public ParameterListTableModel(DataRegistrationBroker broker, String dataType) {
         this.broker = broker;
-        columnNames = new String[]{"Selected?", dataType, "Units"};
+        columnNames = new String[]{rb.getString("LBLCOL1"), dataType,
+                rb.getString("LBLCOL3")};
     }
 
     public synchronized int getRowCount() {
@@ -69,7 +77,7 @@ public final class ParameterListTableModel extends AbstractTableModel {
                 LoggerData loggerData = paramRow.getLoggerData();
                 return loggerData.getConvertors().length > 1 ? loggerData : loggerData.getSelectedConvertor().getUnits();
             default:
-                return "Error!";
+                return rb.getString("ERROR");
         }
     }
 

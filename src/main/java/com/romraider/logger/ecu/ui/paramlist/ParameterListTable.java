@@ -45,7 +45,8 @@ public final class ParameterListTable extends JTable {
         this.tableModel = tableModel;
         this.getTableHeader().setReorderingAllowed(false);
         for (int column = 0; column < tableModel.getColumnCount(); column++) {
-            if (tableModel.getColumnName(2).equalsIgnoreCase("units")) {
+            if (tableModel.getColumnName(2).equalsIgnoreCase(
+                    ParameterListTableModel.rb.getString("LBLCOL3"))) {
                 setColumnSortable(column, false);
             }
             else {
