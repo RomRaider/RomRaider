@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 package com.romraider.logger.ecu.ui.handler.livedata;
 
 import com.romraider.logger.ecu.definition.LoggerData;
+import com.romraider.util.ResourceUtil;
+
 import static java.util.Collections.synchronizedList;
 import static java.util.Collections.synchronizedMap;
 import javax.swing.table.AbstractTableModel;
@@ -27,12 +29,19 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public final class LiveDataTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 3712433453224086342L;
-    private final String[] columnNames = {"Logger Data", "Min Value", "Current Value", "Max Value", "Units"};
-    private final List<LoggerData> registeredLoggerData = synchronizedList(new LinkedList<LoggerData>());
-    private final Map<LoggerData, LiveDataRow> dataRowMap = synchronizedMap(new LinkedHashMap<LoggerData, LiveDataRow>());
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            LiveDataTableModel.class.getName());
+    private final String[] columnNames = {rb.getString("LBLCOL1"),
+            rb.getString("LBLCOL2"), rb.getString("LBLCOL3"),
+            rb.getString("LBLCOL4"), rb.getString("LBLCOL5")};
+    private final List<LoggerData> registeredLoggerData = synchronizedList(
+            new LinkedList<LoggerData>());
+    private final Map<LoggerData, LiveDataRow> dataRowMap = synchronizedMap(
+            new LinkedHashMap<LoggerData, LiveDataRow>());
 
     public synchronized int getRowCount() {
         return dataRowMap.size();
@@ -64,7 +73,7 @@ public final class LiveDataTableModel extends AbstractTableModel {
             case 4:
                 return dataRow.getUnits();
             default:
-                return "Error!";
+                return rb.getString("ERROR");
         }
     }
 
