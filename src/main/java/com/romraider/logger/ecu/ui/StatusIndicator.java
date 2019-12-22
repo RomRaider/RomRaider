@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,15 +25,21 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import com.romraider.util.ResourceUtil;
+
 import java.awt.BorderLayout;
+import java.util.ResourceBundle;
 
 public final class StatusIndicator extends JPanel implements StatusChangeListener {
     private static final long serialVersionUID = -3244690866698807677L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            StatusIndicator.class.getName());
     private final JLabel statusLabel = new JLabel();
-    private static final String TEXT_CONNECTING = "Connecting ";
-    private static final String TEXT_READING = "Reading data ";
-    private static final String TEXT_LOGGING = "Logging to file ";
-    private static final String TEXT_STOPPED = "Stopped ";
+    private static final String TEXT_CONNECTING = rb.getString("CONNECTING");
+    private static final String TEXT_READING = rb.getString("READING");
+    private static final String TEXT_LOGGING = rb.getString("LOGGING");
+    private static final String TEXT_STOPPED = rb.getString("STOPPED");
     private static final ImageIcon ICON_CONNECTING = new ImageIcon(StatusIndicator.class.getClass().getResource("/graphics/logger_blue.png"));
     private static final ImageIcon ICON_READING = new ImageIcon(StatusIndicator.class.getClass().getResource("/graphics/logger_green.png"));
     private static final ImageIcon ICON_LOGGING = new ImageIcon(StatusIndicator.class.getClass().getResource("/graphics/logger_recording.png"));
