@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@ import com.romraider.logger.ecu.comms.query.EcuInit;
 import com.romraider.logger.ecu.definition.xml.EcuDefinitionHandler;
 import com.romraider.logger.ecu.definition.xml.LoggerDefinitionHandler;
 import com.romraider.logger.ecu.exception.ConfigurationException;
+import com.romraider.util.ResourceUtil;
+
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import static com.romraider.util.SaxParserFactory.getSaxParser;
@@ -33,13 +35,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public final class EcuDataLoaderImpl implements EcuDataLoader {
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            EcuDataLoaderImpl.class.getName());
     private Map<String, EcuDefinition> ecuDefinitionMap = new HashMap<String, EcuDefinition>();
     private List<EcuParameter> ecuParameters = new ArrayList<EcuParameter>();
     private List<EcuSwitch> ecuSwitches = new ArrayList<EcuSwitch>();
@@ -52,7 +58,8 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
     public void loadEcuDefsFromXml(File ecuDefsFile) {
         checkNotNull(ecuDefsFile, "ecuDefsFile");
         try {
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(ecuDefsFile));
+            InputStream inputStream = new BufferedInputStream(
+                    new FileInputStream(ecuDefsFile));
             try {
                 EcuDefinitionHandler handler = new EcuDefinitionHandler(ecuDefsFile);
                 getSaxParser().parse(inputStream, handler);
@@ -61,23 +68,31 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 inputStream.close();
             }
         } catch (SAXParseException spe) {
-            // catch general parsing exception - enough people don't unzip the defs that a better error message is in order
-            throw new ConfigurationException("Unable to read ECU definition file " + ecuDefsFile + ".  Please make sure the definition file is correct.  If it is in a ZIP archive, unzip the file and try again.");
+            // catch general parsing exception - enough people don't
+            // unzip the defs that a better error message is in order
+            throw new ConfigurationException(MessageFormat.format(
+                    rb.getString("UNZIPECU"), ecuDefsFile));
         } catch (FileNotFoundException fnfe) {
-            throw new ConfigurationException("The specified ECU definition file " + ecuDefsFile + " does not exist.");
+            throw new ConfigurationException(MessageFormat.format(
+                    rb.getString("ECUFNF"), ecuDefsFile));
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
     }
 
-    public void loadConfigFromXml(String loggerConfigFilePath, String protocol, String fileLoggingControllerSwitchId, EcuInit ecuInit) {
+    public void loadConfigFromXml(String loggerConfigFilePath,
+                                  String protocol,
+                                  String fileLoggingControllerSwitchId,
+                                  EcuInit ecuInit) {
         checkNotNullOrEmpty(loggerConfigFilePath, "loggerConfigFilePath");
         checkNotNullOrEmpty(protocol, "protocol");
         checkNotNullOrEmpty(fileLoggingControllerSwitchId, "fileLoggingControllerSwitchId");
         try {
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(new File(loggerConfigFilePath)));
+            InputStream inputStream = new BufferedInputStream(
+                    new FileInputStream(new File(loggerConfigFilePath)));
             try {
-                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(protocol, fileLoggingControllerSwitchId, ecuInit);
+                LoggerDefinitionHandler handler = new LoggerDefinitionHandler(
+                        protocol, fileLoggingControllerSwitchId, ecuInit);
                 getSaxParser().parse(inputStream, handler);
                 ecuParameters = handler.getEcuParameters();
                 ecuSwitches = handler.getEcuSwitches();
@@ -90,10 +105,13 @@ public final class EcuDataLoaderImpl implements EcuDataLoader {
                 inputStream.close();
             }
         } catch (FileNotFoundException fnfe) {
-            throw new ConfigurationException("The specified Logger Config file " + loggerConfigFilePath + " does not exist.");
+            throw new ConfigurationException(MessageFormat.format(
+                    rb.getString("LOGFNF"), loggerConfigFilePath));
         } catch (SAXParseException spe) {
-            // catch general parsing exception - enough people don't unzip the defs that a better error message is in order
-            throw new ConfigurationException("Unable to read Logger Config file " + loggerConfigFilePath + ".  Please make sure the configuration file is correct.  If it is in a ZIP archive, unzip the file and try again.");
+            // catch general parsing exception - enough people don't
+            // unzip the defs that a better error message is in order
+            throw new ConfigurationException(MessageFormat.format(
+                    rb.getString("UNZIPLOG"), loggerConfigFilePath));
         } catch (Exception e) {
             throw new ConfigurationException(e);
         }
