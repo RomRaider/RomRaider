@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,11 @@ package com.romraider.logger.ecu.comms.readcodes;
 import static com.romraider.logger.ecu.comms.io.connection.LoggerConnectionFactory.getConnection;
 import static com.romraider.util.ParamChecker.checkNotNull;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
@@ -37,11 +39,14 @@ import com.romraider.logger.ecu.comms.query.EcuQueryImpl;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.logger.ecu.ui.swing.tools.ReadCodesResultsPanel;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 public final class ReadCodesManagerImpl implements ReadCodesManager {
     private static final Logger LOGGER =
             Logger.getLogger(ReadCodesManagerImpl.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            ReadCodesManagerImpl.class.getName());
     private final MessageListener messageListener;
     private final EcuLogger logger;
     private final List<EcuSwitch> dtcodes;
@@ -77,15 +82,15 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
         }
 
         final Settings settings = SettingsManager.getSettings();
-        final String target = settings.getDestinationTarget().getName();
+        final String target = settings.getDestinationTarget().getName().toUpperCase();
         try {
             final LoggerConnection connection = getConnection(
                     settings.getLoggerProtocol(),
                     settings.getLoggerPort(),
                     settings.getLoggerConnectionProperties());
             try {
-                messageListener.reportMessage(
-                        "Reading " + target + " DTC codes...");
+                messageListener.reportMessage(MessageFormat.format(
+                        rb.getString("READCODES"), target));
                 final Collection<EcuQuery> querySet = new ArrayList<EcuQuery>();
                 for (int i = 0; i < queries.size(); i += 150) {
                     for (int j = i; (j < i + 150) && (j < queries.size()); j++) {
@@ -97,8 +102,8 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
                             new PollingStateImpl());
                     querySet.clear();
                 }
-                messageListener.reportMessage(
-                        "Reading " + target + " DTC codes...complete.");
+                messageListener.reportMessage(MessageFormat.format(
+                        rb.getString("COMPLETE"), target));
 
                 double result = 0;
                 final ArrayList<EcuQuery> dtcSet = new ArrayList<EcuQuery>();
@@ -130,10 +135,8 @@ public final class ReadCodesManagerImpl implements ReadCodesManager {
             }
         }
         catch (Exception e) {
-            messageListener.reportMessage(
-                    "Unable to read " + target + " DTC " +
-                            " codes - check correct serial port has been selected," +
-                    " cable is connected and ignition is on.");
+            messageListener.reportMessage(MessageFormat.format(
+                    rb.getString("FAILED"), target));
             LOGGER.error("Error reading " + target + " DTC codes", e);
 
             return 0;
