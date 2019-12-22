@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,16 +26,21 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.definition.LoggerData;
 import com.romraider.logger.ecu.exception.ConfigurationException;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public final class UserProfileImpl implements UserProfile {
     private static final String NEW_LINE = System.getProperty("line.separator");
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            UserProfileImpl.class.getName());
     private final Map<String, UserProfileItem> params;
     private final Map<String, UserProfileItem> switches;
     private final Map<String, UserProfileItem> external;
@@ -84,7 +89,11 @@ public final class UserProfileImpl implements UserProfile {
                 for (EcuDataConvertor convertor : loggerData.getConvertors()) {
                     if (defaultUnits.equals(convertor.getUnits())) return convertor;
                 }
-                throw new ConfigurationException("Unknown default units, '" + defaultUnits + "', specified for [" + loggerData.getId() + "] " + loggerData.getName());
+                throw new ConfigurationException(MessageFormat.format(
+                        rb.getString("UNKNDEFAULT"),
+                        defaultUnits,
+                        loggerData.getId(),
+                        loggerData.getName()));
             }
         }
         return loggerData.getSelectedConvertor();
@@ -96,7 +105,9 @@ public final class UserProfileImpl implements UserProfile {
             profile = buildXml().getBytes("ISO-8859-1");
         }
         catch (UnsupportedEncodingException e) {
-            throw new UnsupportedOperationException("Unsupported Document Encoding: " + e.getMessage());
+            throw new UnsupportedOperationException(MessageFormat.format(
+                    rb.getString("UNSUPPORTEDENCODE"),
+                    e.getMessage()));
         }
         return profile;
     }
@@ -155,6 +166,8 @@ public final class UserProfileImpl implements UserProfile {
         if (loggerData instanceof EcuParameter) return params;
         else if (loggerData instanceof EcuSwitch) return switches;
         else if (loggerData instanceof ExternalData) return external;
-        else throw new UnsupportedOperationException("Unknown LoggerData type: " + loggerData.getClass());
+        else throw new UnsupportedOperationException(MessageFormat.format(
+                    rb.getString("UNKNLOGGERDATA"),
+                    loggerData.getClass()));
     }
 }
