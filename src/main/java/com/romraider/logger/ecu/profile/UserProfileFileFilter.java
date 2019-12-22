@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,17 @@
 package com.romraider.logger.ecu.profile;
 
 import com.romraider.swing.GenericFileFilter;
+import com.romraider.util.ResourceUtil;
+
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
+import java.util.ResourceBundle;
 
 public final class UserProfileFileFilter extends FileFilter {
-
-    private final FileFilter filter = new GenericFileFilter("ECU Logger User Profiles", "xml");
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            UserProfileFileFilter.class.getName());
+    private final FileFilter filter = new GenericFileFilter(
+            rb.getString("FILTER"), "xml");
 
     public boolean accept(File file) {
         return filter.accept(file);
