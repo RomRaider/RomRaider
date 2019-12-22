@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,17 +25,22 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 import com.romraider.Settings;
 import com.romraider.logger.ecu.exception.FileLoggerException;
 import com.romraider.logger.ecu.ui.MessageListener;
 import com.romraider.util.FormatFilename;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 public final class FileLoggerImpl implements FileLogger {
     private static final String NEW_LINE = System.getProperty("line.separator");
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            FileLoggerImpl.class.getName());
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
     private final SimpleDateFormat timestampFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private final MessageListener messageListener;
@@ -56,9 +61,9 @@ public final class FileLoggerImpl implements FileLogger {
             try {
                 String filePath = buildFilePath();
                 os = new BufferedOutputStream(new FileOutputStream(filePath));
-                messageListener.reportMessageInTitleBar(
-                        "Started logging to file: " +
-                                FormatFilename.getShortName(filePath));
+                messageListener.reportMessageInTitleBar(MessageFormat.format(
+                        rb.getString("STARTLOG"),
+                        FormatFilename.getShortName(filePath)));
                 zero = true;
             } catch (Exception e) {
                 stop();
@@ -73,7 +78,7 @@ public final class FileLoggerImpl implements FileLogger {
         if (os != null) {
             try {
                 os.close();
-                messageListener.reportMessageInTitleBar("Stopped logging to file.");
+                messageListener.reportMessageInTitleBar(rb.getString("STOPLOG"));
             } catch (Exception e) {
                 throw new FileLoggerException(e);
             }
