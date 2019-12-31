@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +21,20 @@ package com.romraider.logger.ecu.ui.swing.menubar.util;
 
 import com.romraider.logger.ecu.profile.UserProfile;
 import com.romraider.swing.GenericFileFilter;
+import com.romraider.util.ResourceUtil;
+
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
 import javax.swing.JFileChooser;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 public final class FileHelper {
     private static final String USER_HOME_DIR = System.getProperty("user.home");
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            FileHelper.class.getName());
 
     private FileHelper() {
         throw new UnsupportedOperationException();
@@ -40,11 +45,11 @@ public final class FileHelper {
     }
 
     public static JFileChooser getProfileFileChooser(File lastProfileFile) {
-        return getFileChooser(lastProfileFile, "ECU Logger User Profiles", "xml");
+        return getFileChooser(lastProfileFile, rb.getString("LOGUSERPROFILE"), "xml");
     }
 
     public static JFileChooser getDefinitionFileChooser(File lastDefFile) {
-        return getFileChooser(lastDefFile, "ECU Logger Definitions", "xml");
+        return getFileChooser(lastDefFile, rb.getString("LOGDEFINITIONS"), "xml");
     }
 
     public static String saveProfileToFile(UserProfile profile, File destinationFile) throws IOException {
