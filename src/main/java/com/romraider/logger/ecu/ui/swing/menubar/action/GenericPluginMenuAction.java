@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import gnu.io.CommPortIdentifier;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.showInputDialog;
 import java.awt.event.ActionEvent;
+import java.text.MessageFormat;
 import java.util.List;
 
 public final class GenericPluginMenuAction extends AbstractAction {
@@ -42,8 +43,9 @@ public final class GenericPluginMenuAction extends AbstractAction {
     public void actionPerformed(ActionEvent actionEvent) {
         String port = (String) showInputDialog(
                 logger,
-                "Select COM port:",
-                dataSource.getName() + " Plugin Settings",
+                rb.getString("SELECTPORT"),
+                MessageFormat.format(
+                        rb.getString("PLUGINSETTINGS"), dataSource.getName()),
                 QUESTION_MESSAGE,
                 null,
                 getPorts(),

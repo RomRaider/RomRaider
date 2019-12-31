@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,17 @@
 package com.romraider.swing.menubar.action;
 
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.util.ResourceUtil;
+
 import javax.swing.Action;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 public abstract class AbstractAction implements Action {
+    protected static final ResourceBundle rb = new ResourceUtil().getBundle(
+            AbstractAction.class.getName());
     public static final String SELECTED_KEY = "selected";
     private final Map<String, Object> valueMap = new HashMap<String, Object>();
     private boolean enabled = true;

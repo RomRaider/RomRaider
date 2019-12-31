@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.text.MessageFormat;
 
 import javax.swing.JFileChooser;
 
@@ -56,11 +57,17 @@ public final class SaveProfileAsAction extends AbstractAction {
         JFileChooser fc = getProfileFileChooser(lastProfileFile);
         if (fc.showSaveDialog(logger) == APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();
-            if (!selectedFile.exists() || showConfirmDialog(logger, selectedFile.getName() + " already exists! Overwrite?") == OK_OPTION) {
+            if (!selectedFile.exists() ||
+                    showConfirmDialog(logger,
+                            MessageFormat.format(
+                                    rb.getString("SPAACONFIRM"),
+                                    selectedFile.getName())) == OK_OPTION) {
                 String profileFilePath = saveProfileToFile(logger.getCurrentProfile(), selectedFile);
                 logger.getSettings().setLoggerProfileFilePath(profileFilePath);
-                logger.reportMessageInTitleBar("Profile: " + profileFilePath);
-                logger.reportMessage("Profile succesfully saved as: " + profileFilePath);
+                logger.reportMessageInTitleBar(MessageFormat.format(
+                        rb.getString("SPATITLE"), profileFilePath));
+                logger.reportMessage(MessageFormat.format(
+                        rb.getString("SPAMSG"), profileFilePath));
             }
         }
     }

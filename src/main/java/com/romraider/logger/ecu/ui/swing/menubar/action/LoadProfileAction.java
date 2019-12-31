@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.getProfi
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.text.MessageFormat;
 
 import javax.swing.JFileChooser;
 
@@ -54,9 +55,9 @@ public final class LoadProfileAction extends AbstractAction {
             if (logger.loadUserProfile(profileFilePath)) {
                 logger.getSettings().setLoggerProfileFilePath(profileFilePath);
                 logger.restartLogging();
-                logger.reportMessage("Profile succesfully loaded: " + profileFilePath);
+                logger.reportMessage(MessageFormat.format(
+                        rb.getString("LPASUCCESS"), profileFilePath));
             }
         }
     }
-
 }

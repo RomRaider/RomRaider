@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import com.romraider.swing.menubar.action.AbstractAction;
 import static javax.swing.JOptionPane.QUESTION_MESSAGE;
 import static javax.swing.JOptionPane.showInputDialog;
 import java.awt.event.ActionEvent;
+import java.text.MessageFormat;
 
 public final class Lm2MtsPluginMenuAction extends AbstractAction {
     private final ExternalDataSource dataSource;
@@ -39,8 +40,9 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
     public void actionPerformed(ActionEvent actionEvent) {
         String port = (String) showInputDialog(
                 logger,
-                "Select MTS port:",
-                dataSource.getName() + " Plugin Settings",
+                rb.getString("LPMAPORT"),
+                MessageFormat.format(
+                        rb.getString("LPMAPORTTITLE"), dataSource.getName()),
                 QUESTION_MESSAGE,
                 null,
                 getPorts(),
@@ -59,14 +61,14 @@ public final class Lm2MtsPluginMenuAction extends AbstractAction {
             mts.disconnect();
             int portCount = mts.portCount();
             results = new String[portCount];
-            results[0] = "-1 - [ no ports found ]";
+            results[0] = rb.getString("LPMANOPORTS");
             for (int i = 0; i < portCount; i++) {
                 mts.currentPort(i);
                 String name = mts.portName();
                 mts.connect();
                 int inputs = mts.inputCount();
-                String result = String.format(
-                        "%d - [ %s: %d sesnors ]",
+                String result = MessageFormat.format(
+                        rb.getString("LPMAPORTS"),
                         i, name, inputs);
                 results[i] = result;
                 mts.disconnect();

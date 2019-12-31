@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,8 +66,8 @@ public final class GlobalAdjustmentAction extends AbstractAction {
 
     private final int showConfirmation() {
         return showConfirmDialog(logger,
-                "Do you want to adjust the ECU's Global Timing or Idle RPM values?",
-                "Adjust ECU Global Parameters",
+                rb.getString("GAACONFIRM"),
+                rb.getString("GAATITLE"),
                 YES_NO_OPTION,
                 QUESTION_MESSAGE);
     }
@@ -76,26 +76,20 @@ public final class GlobalAdjustmentAction extends AbstractAction {
         final int result = doAdjustEcu();
         if (result == 1) {
             showMessageDialog(logger,
-                    "ECU global adjustment successful !",
-                    "Adjust ECU Global Parameters",
+                    rb.getString("GAASUCCESSMSG"),
+                    rb.getString("GAATITLE"),
                     INFORMATION_MESSAGE);
         }
         else if (result == 0) {
             showMessageDialog(logger,
-                    "Error performing ECU Global Timing or Idle RPM adjustment.\n" +
-                    "Check the following:\n" +
-                    "* Logger has successfully conencted to the ECU\n" +
-                    "* Correct COM port is selected (if not Openport 2)\n" +
-                    "* CAN bus logging mode is disabled\n" +
-                    "* Cable is connected properly\n* Ignition is ON\n" +
-                    "* Logger definition XML file is up to date\n",
-                    "Adjust ECU Global Parameters",
+                    rb.getString("GAAERRORMSG"),
+                    rb.getString("GAATITLE"),
                     ERROR_MESSAGE);
         }
         if (result == -1) {
             showMessageDialog(logger,
-                    "User cancelled ECU global adjustments.",
-                    "Adjust ECU Global Parameters",
+                    rb.getString("GAACANCELMSG"),
+                    rb.getString("GAATITLE"),
                     INFORMATION_MESSAGE);
         }
     }

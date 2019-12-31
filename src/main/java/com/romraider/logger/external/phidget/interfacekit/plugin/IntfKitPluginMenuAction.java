@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,11 +145,8 @@ public final class IntfKitPluginMenuAction extends AbstractAction {
         SettingsManager.getSettings().setPhidgetSensors(phidgets);
         JOptionPane.showMessageDialog(
                 logger,
-                "Un-select each updated External Phidget data item on each Data,\n" +
-                        "Graph and Dashboard Logger tabs to complete the update.\n\n" +
-                        "Logging profiles using the old Phidget settings must be loaded\n" +
-                        "and re-saved with the new settings.",
-                        "Phidget InterfaceKit Settings Applied",
-                        JOptionPane.INFORMATION_MESSAGE);
+                rb.getString("IPMAMSG"),
+                rb.getString("IPMAMSGTITLE"),
+                JOptionPane.INFORMATION_MESSAGE);
     }
 }

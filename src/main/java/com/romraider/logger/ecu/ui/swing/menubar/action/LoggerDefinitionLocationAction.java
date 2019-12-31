@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import static javax.swing.JFileChooser.APPROVE_OPTION;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.text.MessageFormat;
 
 import javax.swing.JFileChooser;
 
@@ -55,7 +56,8 @@ public final class LoggerDefinitionLocationAction extends AbstractAction {
         if (fc.showOpenDialog(logger) == APPROVE_OPTION) {
             String path = fc.getSelectedFile().getAbsolutePath();
             logger.getSettings().setLoggerDefinitionFilePath(path);
-            logger.reportMessage("Logger definition location successfully updated: " + path);
+            logger.reportMessage(MessageFormat.format(
+                    rb.getString("LDLASUCCESS"), path));
         }
     }
 }

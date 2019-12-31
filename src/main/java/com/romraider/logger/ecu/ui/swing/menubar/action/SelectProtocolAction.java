@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,13 +71,13 @@ public final class SelectProtocolAction extends AbstractAction {
 
     private class CommSettings extends JDialog {
         private static final long serialVersionUID = -6226102628115868401L;
-        private final JButton selectButton = new JButton("Select");
+        private final JButton selectButton = new JButton(rb.getString("SPRABTN"));
         private final Map<String, Map<Transport, Collection<Module>>> protocolList;
         private TreePath selectedPath;
 
         private CommSettings() {
             this.protocolList = logger.getProtocolList();
-            setTitle("Communications Settings");
+            setTitle(rb.getString("SPRATITLE"));
             setModalityType(ModalityType.APPLICATION_MODAL);
             setIconImage(logger.getIconImage());
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -108,7 +108,7 @@ public final class SelectProtocolAction extends AbstractAction {
             buttonPane.add(selectButton);
             getRootPane().setDefaultButton(selectButton);
 
-            final JButton cancelButton = new JButton("Cancel");
+            final JButton cancelButton = new JButton(rb.getString("SPRACANCEL"));
             cancelButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -147,8 +147,7 @@ public final class SelectProtocolAction extends AbstractAction {
                             }
                         }
                         else {
-                            return "Select the transport to use under the desired " +
-                                    "protocol to query the target control module";
+                            return rb.getString("SPRATRANSPORT");
                         }
                     }
                     return null;
@@ -212,7 +211,7 @@ public final class SelectProtocolAction extends AbstractAction {
 
         private MutableTreeNode buildNodeTree() {
             final DefaultMutableTreeNode root;
-            root = new DefaultMutableTreeNode("Protocol and Transport Selection");
+            root = new DefaultMutableTreeNode(rb.getString("SPRATREE"));
             for (String protocol : protocolList.keySet()) {
                 final DefaultMutableTreeNode protocolNode =
                         new DefaultMutableTreeNode(protocol);
@@ -235,8 +234,8 @@ public final class SelectProtocolAction extends AbstractAction {
 
         private final void confirmSelection() {
             final int result = showConfirmDialog(logger,
-                    "Are you sure you want to change the logging protocol?",
-                    "Confirm new selection",
+                    rb.getString("SPRACONFIRM"),
+                    rb.getString("SPRACONFIRMTITLE"),
                     YES_NO_OPTION,
                     QUESTION_MESSAGE);
 

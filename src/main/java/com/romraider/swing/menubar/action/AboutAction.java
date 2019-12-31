@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.event.ActionEvent;
-
+import java.text.MessageFormat;
 import com.romraider.Version;
 import com.romraider.logger.ecu.EcuLogger;
 
@@ -34,14 +34,15 @@ public final class AboutAction extends AbstractAction {
     }
 
     public void actionPerformed(final ActionEvent actionEvent) {
-        final String message = String.format(
-                "%s - ECU Logger%nVersion: %s%nBuild #: %s%n%s%nLogger Def Version: %s",
+        final String message = MessageFormat.format(
+                rb.getString("VERSIONSTR"),
                 Version.PRODUCT_NAME,
                 Version.VERSION,
                 Version.BUILDNUMBER,
                 Version.SUPPORT_URL,
                 logger.getDefVersion());
-        final String title = "About " + Version.PRODUCT_NAME;
+        final String title = MessageFormat.format(
+                rb.getString("ABOUT"), Version.PRODUCT_NAME);
         showMessageDialog(logger, message, title,
                 INFORMATION_MESSAGE, Version.ABOUT_ICON);
     }

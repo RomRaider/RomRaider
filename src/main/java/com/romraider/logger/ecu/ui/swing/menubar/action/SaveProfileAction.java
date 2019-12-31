@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import static com.romraider.logger.ecu.ui.swing.menubar.util.FileHelper.saveProf
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.text.MessageFormat;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.swing.menubar.action.AbstractAction;
@@ -48,7 +49,9 @@ public final class SaveProfileAction extends AbstractAction {
         File lastProfileFile = new File(SettingsManager.getSettings().getLoggerProfileFilePath());
         String profileFilePath = saveProfileToFile(logger.getCurrentProfile(), lastProfileFile);
         logger.getSettings().setLoggerProfileFilePath(profileFilePath);
-        logger.reportMessageInTitleBar("Profile: " + profileFilePath);
-        logger.reportMessage("Profile succesfully saved: " + profileFilePath);
+        logger.reportMessageInTitleBar(MessageFormat.format(
+                rb.getString("SPATITLE"), profileFilePath));
+        logger.reportMessage(MessageFormat.format(
+                rb.getString("SPAMSG"), profileFilePath));
     }
 }

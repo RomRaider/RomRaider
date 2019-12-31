@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import java.awt.event.ActionEvent;
+import java.text.MessageFormat;
 
 public final class ResetEcuAction extends AbstractAction {
     public ResetEcuAction(EcuLogger logger) {
@@ -51,16 +52,29 @@ public final class ResetEcuAction extends AbstractAction {
     }
 
     private int showConfirmation() {
-        return showConfirmDialog(logger, "Do you want to reset the " + logger.getTarget() + "?", "Reset " + logger.getTarget(), YES_NO_OPTION, WARNING_MESSAGE);
+        return showConfirmDialog(logger,
+                MessageFormat.format(
+                        rb.getString("REACONFIM"), logger.getTarget()),
+                MessageFormat.format(
+                        rb.getString("REATITLE"), logger.getTarget()),
+                YES_NO_OPTION,
+                WARNING_MESSAGE);
     }
 
     private void resetEcu(int resetCode) {
         if (doReset(resetCode)) {
-            showMessageDialog(logger, "Reset Successful!\nTurn your ignition OFF and then\nback ON to complete the process.",
-                    "Reset " + logger.getTarget(), INFORMATION_MESSAGE);
+            showMessageDialog(logger,
+                    rb.getString("REASUCCESS"),
+                    MessageFormat.format(
+                            rb.getString("REATITLE"), logger.getTarget()),
+                    INFORMATION_MESSAGE);
         } else {
-            showMessageDialog(logger, "Error performing " + logger.getTarget() + " reset.\nCheck the following:\n* Correct COM port selected\n" +
-                    "* Cable is connected properly\n* Ignition is ON\n* Logger is stopped", "Reset " + logger.getTarget(), ERROR_MESSAGE);
+            showMessageDialog(logger,
+                    MessageFormat.format(
+                            rb.getString("REAERROR"), logger.getTarget()),
+                    MessageFormat.format(
+                            rb.getString("REATITLE"), logger.getTarget()),
+                    ERROR_MESSAGE);
         }
     }
 
@@ -68,7 +82,9 @@ public final class ResetEcuAction extends AbstractAction {
         try {
             return logger.resetEcu(resetCode);
         } catch (Exception e) {
-            logger.reportError("Error performing " + logger.getTarget() + " reset", e);
+            logger.reportError(MessageFormat.format(
+                    rb.getString("REAREPORTERROR"), logger.getTarget()),
+                    e);
             return false;
         }
     }

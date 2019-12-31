@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2014 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.event.ActionEvent;
+import java.text.MessageFormat;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.swing.menubar.action.AbstractAction;
@@ -39,24 +40,14 @@ public final class ReadEcuCodesAction extends AbstractAction {
 
     public final void actionPerformed(ActionEvent actionEvent) {
         if (logger.getDtcodesEmpty()) {
-            final String wrongDefVersion = "To read diagnostic codes the " +
-                    "Logger requires a logger definfition\n" +
-                    "XML file containing compatible DTC parameter definitions.\n" +
-                    "Use the Help menu 'Update Logger Definition' item to\n" +
-                    "go online and download the latest logger definition.\n";
             showMessageDialog(logger,
-                    wrongDefVersion,
-                    "Definition Error", ERROR_MESSAGE);
+                    rb.getString("RECADEFERROR"),
+                    rb.getString("RECADEFERRORTITLE"), ERROR_MESSAGE);
         }
         else if (!logger.isEcuInit()) {
-            final String notInit = "To read diagnostic codes the " +
-                    "Logger must first intialize with the\n" + 
-                    logger.getTarget() +
-                    ". Press the Restart button to connect with the Logger then\n" +
-                    "try reading the codes again.\n";
-            showMessageDialog(logger,
-                    notInit,
-                    "Not Initialized", ERROR_MESSAGE);
+            showMessageDialog(logger,MessageFormat.format(
+                            rb.getString("RECANOINIT"), logger.getTarget()),
+                    rb.getString("RECANOINITTITLE"), ERROR_MESSAGE);
         }
         else {
             final boolean logging = logger.isLogging();
@@ -71,9 +62,10 @@ public final class ReadEcuCodesAction extends AbstractAction {
     private final int showConfirmation() {
         return showConfirmDialog(
                 logger, 
-                "Do you want to read the " + logger.getTarget() + 
-                " diagnostic codes?", 
-                "Read " + logger.getTarget() + " diagnostic codes", 
+                MessageFormat.format(
+                        rb.getString("RECACONFIRM"), logger.getTarget()), 
+                MessageFormat.format(
+                        rb.getString("RECACONFIRMTITLE"), logger.getTarget()), 
                 YES_NO_OPTION, WARNING_MESSAGE);
     }
 
@@ -82,19 +74,18 @@ public final class ReadEcuCodesAction extends AbstractAction {
         if (result == -1) {
             showMessageDialog(
                     logger, 
-                    "No diagnostic codes set.", "Read Success",
+                    rb.getString("RECANOCODES"),
+                    rb.getString("RECANOCODESTILTE"),
                     INFORMATION_MESSAGE);
         }
         else if (result == 0) {
             showMessageDialog(
                     logger, 
-                    "Error reading " + logger.getTarget() + " diagnostic codes.\n" + 
-                    "Check the following:\n" + 
-                    "* Logger has successfully conencted to the ECU\n" +
-                    "* Correct COM port is selected (if not Openport 2)\n" +
-                    "* Cable is connected properly\n* Ignition is ON\n* " + 
-                    "* Logger definition XML file is up to date", 
-                    "Error Read " + logger.getTarget(), ERROR_MESSAGE);
+                    MessageFormat.format(
+                            rb.getString("RECAREADERROR"), logger.getTarget()), 
+                    MessageFormat.format(
+                            rb.getString("RECAREADERRORTITLE"), logger.getTarget()),
+                    ERROR_MESSAGE);
         }
     }
 
@@ -103,7 +94,10 @@ public final class ReadEcuCodesAction extends AbstractAction {
             return logger.readEcuCodes();
         } catch (Exception e) {
             logger.reportError(
-                    "Error performing " + logger.getTarget() + " codes read", e);
+                    MessageFormat.format(
+                            rb.getString("RECAREPORTERROR"),
+                            logger.getTarget()),
+                    e);
             return 0;
         }
     }

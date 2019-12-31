@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.event.ActionEvent;
+import java.text.MessageFormat;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.swing.menubar.action.AbstractAction;
@@ -38,14 +39,10 @@ public final class LearningTableValuesAction extends AbstractAction {
 
     public final void actionPerformed(ActionEvent actionEvent) {
         if (!logger.isEcuInit()) {
-            final String notInit = "To read Learning Table Values the " +
-                    "Logger must first intialize with the\n" + 
-                    logger.getTarget() +
-                    ". Press the Restart button to connect with the Logger then try\n" +
-                    "reading the Learning Table Values again.\n";
             showMessageDialog(logger,
-                    notInit,
-                    "Not Initialized", ERROR_MESSAGE);
+                    MessageFormat.format(
+                            rb.getString("LTVINITMSG"), logger.getTarget()),
+                    rb.getString("LTVINTTITLE"), ERROR_MESSAGE);
         }
         else {
             if (!logger.isLogging() ||
@@ -59,8 +56,8 @@ public final class LearningTableValuesAction extends AbstractAction {
 
     private final int showConfirmation() {
         return showConfirmDialog(logger,
-                "Interrupt Logging to read the Learning Table values?",
-                "Learning Table Values",
+                rb.getString("LTVINTERRUPT"),
+                rb.getString("LTVTITLE"),
                 YES_NO_OPTION,
                 QUESTION_MESSAGE);
     }

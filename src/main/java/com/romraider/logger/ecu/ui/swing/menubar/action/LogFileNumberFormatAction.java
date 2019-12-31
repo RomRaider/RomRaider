@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.event.ActionEvent;
+import java.text.MessageFormat;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.swing.menubar.action.AbstractAction;
@@ -43,10 +44,9 @@ public final class LogFileNumberFormatAction extends AbstractAction {
             else {
                 logger.getSettings().setLocale(SYSTEM_NUMFORMAT);
             }
-            showMessageDialog(logger, "The Logger has been set to use the " +
-                    logger.getSettings().getLocale() + " number format.\n\n" +
-                    "Exit and restart the Logger to apply the new setting.",
-                    "Log File Number Format Change", INFORMATION_MESSAGE);
+            showMessageDialog(logger, MessageFormat.format(
+                    rb.getString("LFNFAMSG"), logger.getSettings().getLocale()),
+                    rb.getString("LFNFATITLE"), INFORMATION_MESSAGE);
         } catch (Exception e) {
             logger.reportError(e);
         }
