@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,10 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -60,6 +62,7 @@ import com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers.LtvCellRend
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.swing.SetFont;
 import com.romraider.util.FormatFilename;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 /**
@@ -68,7 +71,9 @@ import com.romraider.util.SettingsManager;
  */
 public class SSMLearningTableValuesResultsPanel extends JDialog {
     private static final long serialVersionUID = 6716454297236022709L;
-    private final String DIALOG_TITLE = "Learning Table Values";
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            SSMLearningTableValuesResultsPanel.class.getName());
+    private final String DIALOG_TITLE = rb.getString("DIALOGTITLE");
     private final String DT_FORMAT = "%1$tY%1$tm%1$td-%1$tH%1$tM%1$tS";
     private final int LTV_WIDTH = 720;
     private final int LTV_HEIGHT = 450;
@@ -76,7 +81,7 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
     private JTable vehicleInfoTable;
     private JTable afLearningTable;
     private JTable flkcTable;
-    private final String FLKC_NAME = "Fine Learning Knock Correction (\u00B0 of correction)";
+    private final String FLKC_NAME = rb.getString("FLKCNAME");
 
     public SSMLearningTableValuesResultsPanel(
             EcuLogger logger,
@@ -123,7 +128,7 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
 
         final JPanel vehicleInfoTitlePanel = new JPanel();
         vehicleInfoTitlePanel.setBorder(
-                BorderFactory.createTitledBorder("Vehicle Information"));
+                BorderFactory.createTitledBorder(rb.getString("VITITLE")));
         vehicleInfoTitlePanel.setBounds(10, 2, 692, 70);
         vehicleInfoTitlePanel.setLayout(new BorderLayout(0, 0));
 
@@ -165,18 +170,18 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
         final JPanel afLearningTitlePanel = new JPanel();
         afLearningTitlePanel.setBorder(
                 new TitledBorder(null,
-                        "A/F Learning (Stored)",
+                        rb.getString("AFLEARNING"),
                         TitledBorder.LEADING,
                         TitledBorder.TOP, null, null));
         afLearningTitlePanel.setBounds(10, 72, 450, 100);
         afLearningTitlePanel.setLayout(new BorderLayout(0, 0));
 
-        final JLabel xLabel = new JLabel("Air/Fuel Ranges (g/s)");
+        final JLabel xLabel = new JLabel(rb.getString("AFRANGES"));
         SetFont.plain(xLabel);
         xLabel.setHorizontalAlignment(SwingConstants.CENTER);
         afLearningTitlePanel.add(xLabel, BorderLayout.NORTH);
 
-        final JLabel yLabel = new JLabel("Bank");
+        final JLabel yLabel = new JLabel(rb.getString("BANK"));
         SetFont.plain(yLabel);
         yLabel.setUI(new VerticalLabelUI(false));
         afLearningTitlePanel.add(yLabel, BorderLayout.WEST);
@@ -212,7 +217,7 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
         }
         else {
             afLearningTablePanel.add(new JLabel(
-                    " No data - A/F Extended parameter IDs not defined"));
+                    rb.getString("AFNODATA")));
         }
 
         afLearningTitlePanel.add(afLearningTablePanel, BorderLayout.CENTER);
@@ -233,12 +238,12 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
         flkcTitlePanel.setBounds(10, 172, 692, 204);
         flkcTitlePanel.setLayout(new BorderLayout(0, 0));
 
-        final JLabel xLabel = new JLabel("Engine Load Ranges (g/rev)");
+        final JLabel xLabel = new JLabel(rb.getString("ENGINELOAD"));
         SetFont.plain(xLabel);
         xLabel.setHorizontalAlignment(SwingConstants.CENTER);
         flkcTitlePanel.add(xLabel, BorderLayout.NORTH);
 
-        final JLabel yLabel = new JLabel("Engine Speed Ranges (RPM)");
+        final JLabel yLabel = new JLabel(rb.getString("ENGINESPEED"));
         SetFont.plain(yLabel);
         yLabel.setUI(new VerticalLabelUI(false));
         flkcTitlePanel.add(yLabel, BorderLayout.WEST);
@@ -263,7 +268,7 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
         }
         else {
             flkcTablePanel.add(new JLabel(
-                    " No data - FLKC reference parameter ID not defined"));
+                    rb.getString("FLKCNODATA")));
         }
 
         flkcTitlePanel.add(flkcTablePanel, BorderLayout.CENTER);
@@ -291,8 +296,8 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
     private final JPanel buildSaveReultsPanel() {
 
         final JPanel controlPanel = new JPanel();
-        final JButton toFile = new JButton("Save to File");
-        toFile.setToolTipText("Save tables to a text file");
+        final JButton toFile = new JButton(rb.getString("SAVETOFILE"));
+        toFile.setToolTipText(rb.getString("SAVETOFILETT"));
         toFile.setMnemonic(KeyEvent.VK_F);
         toFile.addActionListener(new ActionListener() {
             @Override
@@ -300,8 +305,8 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
                 saveTableText();
             }
         });
-        final JButton toImage = new JButton("Save as Image");
-        toImage.setToolTipText("Save tables as an image");
+        final JButton toImage = new JButton(rb.getString("SAVETOIMAGE"));
+        toImage.setToolTipText(rb.getString("SAVETOIMAGETT"));
         toImage.setMnemonic(KeyEvent.VK_I);
         toImage.addActionListener(new ActionListener() {
             @Override
@@ -325,7 +330,7 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
             final String EOL = System.getProperty("line.separator");
             final BufferedWriter bw = new BufferedWriter(
                     new FileWriter(csvFile));
-            bw.write("Learning Table Values" + EOL);
+            bw.write(rb.getString("DIALOGTITLE") + EOL);
             Object result = 0;
             int columnCount = vehicleInfoTable.getColumnCount();
             for (int i = 0; i < columnCount; i++ ) {
@@ -341,7 +346,7 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
                 bw.append(COMMA);
             }
             bw.append(EOL + EOL);
-            bw.write("A/F Learning (Stored)" + EOL);
+            bw.write(rb.getString("AFLEARNING") + EOL);
             columnCount = afLearningTable.getColumnCount();
             int rowCount = afLearningTable.getRowCount();
             for (int i = 0; i < columnCount; i++) {
@@ -382,15 +387,17 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
             final String shortName = FormatFilename.getShortName(fileName);
             showMessageDialog(
                     null,
-                    "Table's text saved to: " + shortName,
-                    "Save Success",
+                    MessageFormat.format(
+                            rb.getString("TABLESAVED"), shortName),
+                    rb.getString("SUCCESS"),
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
                     null,
-                    "Failed to save tables, check path:\n" + fileName,
-                    "Save Failed",
+                    MessageFormat.format(
+                            rb.getString("TABLEFAILED"), fileName),
+                    rb.getString("FAILED"),
                     ERROR_MESSAGE);
         }
     }
@@ -415,15 +422,17 @@ public class SSMLearningTableValuesResultsPanel extends JDialog {
                     imageFile);
             showMessageDialog(
                     null,
-                    "Learning Table Values image saved to: " + shortName,
-                    "Save Success",
+                    MessageFormat.format(
+                            rb.getString("IMAGESAVED"), shortName),
+                    rb.getString("SUCCESS"),
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
                     null,
-                    "Failed to save image, check path:\n" + fileName,
-                    "Save Failed",
+                    MessageFormat.format(
+                            rb.getString("IMAGEFAILED"), fileName),
+                    rb.getString("FAILED"),
                     ERROR_MESSAGE);
         }
     }
