@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,11 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -62,6 +64,7 @@ import com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers.LtvCellRend
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.swing.SetFont;
 import com.romraider.util.FormatFilename;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 /**
@@ -70,7 +73,9 @@ import com.romraider.util.SettingsManager;
  */
 public class NCSLearningTableValuesResultsPanel extends JDialog {
     private static final long serialVersionUID = 6716454297236022709L;
-    private final String DIALOG_TITLE = "Learning Table Values";
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            NCSLearningTableValuesResultsPanel.class.getName());
+    private final String DIALOG_TITLE = rb.getString("DIALOGTITLE");
     private final String DT_FORMAT = "%1$tY%1$tm%1$td-%1$tH%1$tM%1$tS";
     private final int LTV_WIDTH = 720;
     private final int LTV_HEIGHT = 450;
@@ -79,7 +84,7 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
     //TODO: replace AF learning with a knock table
     private JTable afLearningTable;
     private List<JTable> ltftTables = new ArrayList<JTable>();
-    private final String LTFT_NAME = "Learned Fuel Trim Tables";
+    private final String LTFT_NAME = rb.getString("LTFTNAME");
 
     public NCSLearningTableValuesResultsPanel(
             EcuLogger logger,
@@ -126,7 +131,7 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
 
         final JPanel vehicleInfoTitlePanel = new JPanel();
         vehicleInfoTitlePanel.setBorder(
-                BorderFactory.createTitledBorder("Vehicle Information"));
+                BorderFactory.createTitledBorder(rb.getString("VITITLE")));
         vehicleInfoTitlePanel.setBounds(10, 2, 692, 70);
         vehicleInfoTitlePanel.setLayout(new BorderLayout(0, 0));
 
@@ -175,12 +180,12 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
         ltftTitlePanel.setBounds(10, 72, 692, 226);
         ltftTitlePanel.setLayout(new BorderLayout(0, 0));
 
-        final JLabel xLabel = new JLabel("Injector Pulse Width (msec)");
+        final JLabel xLabel = new JLabel(rb.getString("INJPWLABEL"));
         SetFont.plain(xLabel);
         xLabel.setHorizontalAlignment(SwingConstants.CENTER);
         ltftTitlePanel.add(xLabel, BorderLayout.NORTH);
 
-        final JLabel yLabel = new JLabel("Engine Speed (RPM)");
+        final JLabel yLabel = new JLabel(rb.getString("ENGINESPEED"));
         SetFont.plain(yLabel);
         yLabel.setUI(new VerticalLabelUI(false));
         ltftTitlePanel.add(yLabel, BorderLayout.WEST);
@@ -201,16 +206,16 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
                     new EtchedBorder(EtchedBorder.LOWERED, null, null));
             switch (i) {
                 case 0:
-                    tabs.addTab("Left Bank - Trim (%)", ltftTablePanel);
+                    tabs.addTab(rb.getString("LBTRIM"), ltftTablePanel);
                     break;
                 case 1:
-                    tabs.addTab("Right Bank - Trim (%)", ltftTablePanel);
+                    tabs.addTab(rb.getString("RBTRIM"), ltftTablePanel);
                     break;
                 case 2:
-                    tabs.addTab("Left Bank - Count", ltftTablePanel);
+                    tabs.addTab(rb.getString("LBCOUNT"), ltftTablePanel);
                     break;
                 case 3:
-                    tabs.addTab("Right Bank - Count", ltftTablePanel);
+                    tabs.addTab(rb.getString("RBCOUNT"), ltftTablePanel);
                     break;
             }
         }
@@ -220,7 +225,7 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
         else {
             ltftTitlePanel.removeAll();
             ltftTitlePanel.add(new JLabel(
-                    " No data - Knock Adaptation parameter ID not defined"),
+                    rb.getString("NOKNDATA")),
                     BorderLayout.CENTER);
         }
         return ltftTitlePanel;
@@ -247,8 +252,8 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
     private final JPanel buildSaveReultsPanel() {
 
         final JPanel controlPanel = new JPanel();
-        final JButton toFile = new JButton("Save to File");
-        toFile.setToolTipText("Save tables to a text file");
+        final JButton toFile = new JButton(rb.getString("SAVETOFILE"));
+        toFile.setToolTipText(rb.getString("SAVETOFILETT"));
         toFile.setMnemonic(KeyEvent.VK_F);
         toFile.addActionListener(new ActionListener() {
             @Override
@@ -256,8 +261,8 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
                 saveTableText();
             }
         });
-        final JButton toImage = new JButton("Save as Image");
-        toImage.setToolTipText("Save tables as an image");
+        final JButton toImage = new JButton(rb.getString("SAVEASIMAGE"));
+        toImage.setToolTipText(rb.getString("SAVEASIMAGETT"));
         toImage.setMnemonic(KeyEvent.VK_I);
         toImage.addActionListener(new ActionListener() {
             @Override
@@ -281,7 +286,7 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
             final String EOL = System.getProperty("line.separator");
             final BufferedWriter bw = new BufferedWriter(
                     new FileWriter(csvFile));
-            bw.write("Learning Table Values" + EOL);
+            bw.write(rb.getString("DIALOGTITLE") + EOL);
             Object result = 0;
             int columnCount = vehicleInfoTable.getColumnCount();
             for (int i = 0; i < columnCount; i++ ) {
@@ -326,16 +331,16 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
                     if (result.toString().equals(" ")) {
                         switch (k) {
                             case 1:
-                                result = "Left Bank - Trim (%)";
+                                result = rb.getObject("LBTRIM");
                                 break;
                             case 2:
-                                result = "Right Bank - Trim (%)";
+                                result = rb.getObject("RBTRIM");
                                 break;
                             case 3:
-                                result = "Left Bank - Count";
+                                result = rb.getObject("LBCOUNT");
                                 break;
                             case 4:
-                                result = "Right Bank - Count";
+                                result = rb.getObject("RBCOUNT");
                                 break;
                         }
                     }
@@ -361,15 +366,17 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
             final String shortName = FormatFilename.getShortName(fileName);
             showMessageDialog(
                     null,
-                    "Table's text saved to: " + shortName,
-                    "Save Success",
+                    MessageFormat.format(
+                            rb.getString("TABLESAVED"), shortName),
+                    rb.getString("SUCCESS"),
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
                     null,
-                    "Failed to save tables, check path:\n" + fileName,
-                    "Save Failed",
+                    MessageFormat.format(
+                            rb.getString("SAVEFAILED"), fileName),
+                    rb.getString("FAILED"),
                     ERROR_MESSAGE);
         }
     }
@@ -394,15 +401,17 @@ public class NCSLearningTableValuesResultsPanel extends JDialog {
                     imageFile);
             showMessageDialog(
                     null,
-                    "Learning Table Values image saved to: " + shortName,
-                    "Save Success",
+                    MessageFormat.format(
+                            rb.getString("IMAGESAVED"), shortName),
+                    rb.getString("SUCCESS"),
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
                     null,
-                    "Failed to save image, check path:\n" + fileName,
-                    "Save Failed",
+                    MessageFormat.format(
+                            rb.getString("IMAGEFAILED"), fileName),
+                    rb.getString("FAILED"),
                     ERROR_MESSAGE);
         }
     }
