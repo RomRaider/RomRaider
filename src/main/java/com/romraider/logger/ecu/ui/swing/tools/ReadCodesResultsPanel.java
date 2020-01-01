@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,9 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -51,10 +53,13 @@ import javax.swing.table.TableColumn;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.ui.swing.tools.tablemodels.ReadCodesTableModel;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 public final class ReadCodesResultsPanel extends JPanel {
     private static final long serialVersionUID = -3180488605471088911L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            ReadCodesResultsPanel.class.getName());
     private static final JPanel resultsPanel = new JPanel();
     private static final String DT_FORMAT = "%1$tY%1$tm%1$td-%1$tH%1$tM%1$tS";
 
@@ -96,7 +101,7 @@ public final class ReadCodesResultsPanel extends JPanel {
     public final static void displayResultsPane(
             EcuLogger logger,
             ArrayList<EcuQuery> dtcSet) {
-        final JDialog frame = new JDialog(logger, "Diagnostic Code Read Results");
+        final JDialog frame = new JDialog(logger, rb.getString("READRESULTS"));
         frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         final JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
@@ -121,15 +126,15 @@ public final class ReadCodesResultsPanel extends JPanel {
             final ArrayList<EcuQuery> dtcSet) {
 
         final JPanel basePanel = new JPanel(new BorderLayout());
-        basePanel.setBorder(BorderFactory.createTitledBorder("Save Results"));
+        basePanel.setBorder(BorderFactory.createTitledBorder(
+                rb.getString("SAVETITLE")));
 
         final JLabel comment = new JLabel();
-        comment.setText("Click table, press Ctrl-A then Ctrl-C to copy " +
-                "table to clipboard, or...");
+        comment.setText(rb.getString("COPYTIP"));
 
         final JPanel controlPanel = new JPanel();
-        final JButton toFile = new JButton("Save to File");
-        toFile.setToolTipText("Save table to a text file");
+        final JButton toFile = new JButton(rb.getString("SAVETOFILE"));
+        toFile.setToolTipText(rb.getString("SAVETOFILETT"));
         toFile.setMnemonic(KeyEvent.VK_F);
         toFile.addActionListener(new ActionListener() {
             @Override
@@ -137,8 +142,8 @@ public final class ReadCodesResultsPanel extends JPanel {
                 saveTableText(dtcSet);
             }
         });
-        final JButton toImage = new JButton("Save as Image");
-        toImage.setToolTipText("Save table as an image");
+        final JButton toImage = new JButton(rb.getString("SAVETOIMAGE"));
+        toImage.setToolTipText(rb.getString("SAVETOIMAGETT"));
         toImage.setMnemonic(KeyEvent.VK_I);
         toImage.addActionListener(new ActionListener() {
             @Override
@@ -164,14 +169,14 @@ public final class ReadCodesResultsPanel extends JPanel {
             final String eol = System.getProperty("line.separator");
             final BufferedWriter bw = new BufferedWriter(
                     new FileWriter(csvFile));
-            bw.write("Diagnostic Code Name,Temporary,Memorized" + eol);
+            bw.write(rb.getString("TABLEHEADER") + eol);
             double result = 0;
             for (EcuQuery query : dtcSet) {
                 result = query.getResponse();
-                String tmp = "false";
-                String mem = "false";
-                if (result == 1 || result == 3) tmp = "true";
-                if (result == 2 || result == 3) mem = "true";
+                String tmp = rb.getString("FALSE");
+                String mem = rb.getString("FALSE");
+                if (result == 1 || result == 3) tmp = rb.getString("TRUE");
+                if (result == 2 || result == 3) mem = rb.getString("TRUE");
                 bw.append(query.getLoggerData().getName());
                 bw.append(COMMA);
                 bw.append(tmp);
@@ -182,15 +187,17 @@ public final class ReadCodesResultsPanel extends JPanel {
             bw.close();
             showMessageDialog(
                     null,
-                    "Table text saved to: " + fileName,
-                    "Save Success",
+                    MessageFormat.format(
+                            rb.getString("TABLESAVED"), fileName),
+                    rb.getString("SUCCESS"),
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
                     null,
-                    "Failed to save table, check path:\n" + fileName,
-                    "Save Failed",
+                    MessageFormat.format(
+                            rb.getString("TABLEFAILED"), fileName),
+                    rb.getString("FAILED"),
                     ERROR_MESSAGE);
         }
     }
@@ -214,15 +221,17 @@ public final class ReadCodesResultsPanel extends JPanel {
                     imageFile);
             showMessageDialog(
                     null,
-                    "Table image saved to: " + fileName,
-                    "Save Success",
+                    MessageFormat.format(
+                            rb.getString("IMAGESAVED"), fileName),
+                    rb.getString("SUCCESS"),
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
                     null,
-                    "Failed to save image, check path:\n" + fileName,
-                    "Save Failed",
+                    MessageFormat.format(
+                            rb.getString("IMAGEFAILED"), fileName),
+                    rb.getString("FAILED"),
                     ERROR_MESSAGE);
         }
     }
