@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ResourceBundle;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -33,28 +35,31 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.util.ResourceUtil;
 
 public final class DS2ResetPanel extends JDialog {
     private static final long serialVersionUID = 2406346286060014312L;
-    private static final String DIALOG_TITLE = "Reset DS2 Adaptation Selection";
-    private static final String OK_BUTTON_TEXT = "OK";
-    private static final String CANCEL_BUTTON_TEXT = "Cancel";
-    private static final String PANEL_TT = "Unsupported items are ignored by the ECU if selected.";
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            DS2ResetPanel.class.getName());
+    private static final String DIALOG_TITLE = rb.getString("DIALOGTITLE");
+    private static final String OK_BUTTON_TEXT = rb.getString("OKBTN");
+    private static final String CANCEL_BUTTON_TEXT = rb.getString("CANCELBTN");
+    private static final String PANEL_TT = rb.getString("PANELTT");
     private static int results;
-    private final JCheckBox selectAll = new JCheckBox("Select All");
+    private final JCheckBox selectAll = new JCheckBox(rb.getString("SELECTALL"));
     private final ResetCheckBox[] resetItems = {
-            new ResetCheckBox("Knock Adaptations", 0x0100),
-            new ResetCheckBox("Idle Speed Adaptations", 0x0200),
-            new ResetCheckBox("Lambda Adaptations", 0x0400),
-            new ResetCheckBox("Throttle Adaptations", 0x0800),
-            new ResetCheckBox("Altitude Correction", 0x1000),
-            new ResetCheckBox("Undefined Adaptation", 0x2000),
-            new ResetCheckBox("Undefined Adaptation", 0x4000),
-            new ResetCheckBox("Undefined Adaptation", 0x8000),
-            new ResetCheckBox("Undefined Adaptation", 0x0001),
-            new ResetCheckBox("External Load History (M3 only)", 0x0002),
-            new ResetCheckBox("Undefined Adaptation (MS43 only)", 0x0004),
-            new ResetCheckBox("Undefined Adaptation (MS43 only)", 0x0008)
+            new ResetCheckBox(rb.getString("CHKBOX1"), 0x0100),
+            new ResetCheckBox(rb.getString("CHKBOX2"), 0x0200),
+            new ResetCheckBox(rb.getString("CHKBOX3"), 0x0400),
+            new ResetCheckBox(rb.getString("CHKBOX4"), 0x0800),
+            new ResetCheckBox(rb.getString("CHKBOX5"), 0x1000),
+            new ResetCheckBox(rb.getString("CHKBOX6"), 0x2000),
+            new ResetCheckBox(rb.getString("CHKBOX7"), 0x4000),
+            new ResetCheckBox(rb.getString("CHKBOX8"), 0x8000),
+            new ResetCheckBox(rb.getString("CHKBOX9"), 0x0001),
+            new ResetCheckBox(rb.getString("CHKBOX10"), 0x0002),
+            new ResetCheckBox(rb.getString("CHKBOX11"), 0x0004),
+            new ResetCheckBox(rb.getString("CHKBOX12"), 0x0008)
     };
     
     public DS2ResetPanel(EcuLogger logger) {
