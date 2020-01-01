@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,11 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -63,6 +65,7 @@ import com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers.LtvCellRend
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.swing.SetFont;
 import com.romraider.util.FormatFilename;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 /**
@@ -71,7 +74,9 @@ import com.romraider.util.SettingsManager;
  */
 public class DS2LearningTableValuesResultsPanel extends JDialog {
     private static final long serialVersionUID = 6716454294436022709L;
-    private final String DIALOG_TITLE = "Adaptation Table Values";
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            DS2LearningTableValuesResultsPanel.class.getName());
+    private final String DIALOG_TITLE = rb.getString("DIALOGTITLE");
     private final String DT_FORMAT = "%1$tY%1$tm%1$td-%1$tH%1$tM%1$tS";
     private final int LTV_WIDTH = 720;
     private final int LTV_HEIGHT = 595;
@@ -79,7 +84,7 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
     private JTable vehicleInfoTable;
     private JTable afLearningTable;
     private List<JTable> knockTables = new ArrayList<JTable>();
-    private final String FLKC_NAME = "Knock Adaptation (\u00B0 of correction)";
+    private final String FLKC_NAME = rb.getString("FLKCNAME");
 
     public DS2LearningTableValuesResultsPanel(
             EcuLogger logger,
@@ -126,7 +131,7 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
 
         final JPanel vehicleInfoTitlePanel = new JPanel();
         vehicleInfoTitlePanel.setBorder(
-                BorderFactory.createTitledBorder("Vehicle Information"));
+                BorderFactory.createTitledBorder(rb.getString("VEHICLEINFOTITLE")));
         vehicleInfoTitlePanel.setBounds(10, 2, 692, 70);
         vehicleInfoTitlePanel.setLayout(new BorderLayout(0, 0));
 
@@ -168,18 +173,18 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
         final JPanel afLearningTitlePanel = new JPanel();
         afLearningTitlePanel.setBorder(
                 new TitledBorder(null,
-                        "A/F Adaptation (Stored)",
+                        rb.getString("AFSTORED"),
                         TitledBorder.LEADING,
                         TitledBorder.TOP, null, null));
         afLearningTitlePanel.setBounds(10, 72, 450, 100);
         afLearningTitlePanel.setLayout(new BorderLayout(0, 0));
 
-        final JLabel xLabel = new JLabel("Applied Adaptations");
+        final JLabel xLabel = new JLabel(rb.getString("APPLIEDADAPTIONS"));
         SetFont.plain(xLabel);
         xLabel.setHorizontalAlignment(SwingConstants.CENTER);
         afLearningTitlePanel.add(xLabel, BorderLayout.NORTH);
 
-        final JLabel yLabel = new JLabel("Bank");
+        final JLabel yLabel = new JLabel(rb.getString("BANK"));
         SetFont.plain(yLabel);
         yLabel.setUI(new VerticalLabelUI(false));
         afLearningTitlePanel.add(yLabel, BorderLayout.WEST);
@@ -214,8 +219,7 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
             afLearningTablePanel.add(afLearningTable);
         }
         else {
-            afLearningTablePanel.add(new JLabel(
-                    " No data - A/F Adaptation parameter IDs not defined"));
+            afLearningTablePanel.add(new JLabel(rb.getString("AFNODATA")));
         }
 
         afLearningTitlePanel.add(afLearningTablePanel, BorderLayout.CENTER);
@@ -236,12 +240,12 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
         flkcTitlePanel.setBounds(10, 172, 692, 354);
         flkcTitlePanel.setLayout(new BorderLayout(0, 0));
 
-        final JLabel xLabel = new JLabel("Engine Load (mg/stroke)");
+        final JLabel xLabel = new JLabel(rb.getString("ENGINELOAD"));
         SetFont.plain(xLabel);
         xLabel.setHorizontalAlignment(SwingConstants.CENTER);
         flkcTitlePanel.add(xLabel, BorderLayout.NORTH);
 
-        final JLabel yLabel = new JLabel("Engine Speed (RPM)");
+        final JLabel yLabel = new JLabel(rb.getString("ENGINESPEED"));
         SetFont.plain(yLabel);
         yLabel.setUI(new VerticalLabelUI(false));
         flkcTitlePanel.add(yLabel, BorderLayout.WEST);
@@ -260,15 +264,15 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
             final JScrollPane flkcTablePanel = new JScrollPane(knockTable);
             flkcTablePanel.setBorder(
                     new EtchedBorder(EtchedBorder.LOWERED, null, null));
-            tabs.addTab("Table " + (i + 1), flkcTablePanel);
+            tabs.addTab(MessageFormat.format(
+                    rb.getString("TABLE"), (i + 1)), flkcTablePanel);
         }
         if (flkcQueryTables.size() > 0) {
             flkcTitlePanel.add(tabs, BorderLayout.CENTER);
         }
         else {
             flkcTitlePanel.removeAll();
-            flkcTitlePanel.add(new JLabel(
-                    " No data - Knock Adaptation parameter ID not defined"),
+            flkcTitlePanel.add(new JLabel(rb.getString("KNKNODATA")),
                     BorderLayout.CENTER);
         }
         return flkcTitlePanel;
@@ -295,8 +299,8 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
     private final JPanel buildSaveReultsPanel() {
 
         final JPanel controlPanel = new JPanel();
-        final JButton toFile = new JButton("Save to File");
-        toFile.setToolTipText("Save tables to a text file");
+        final JButton toFile = new JButton(rb.getString("SAVETOFILE"));
+        toFile.setToolTipText(rb.getString("SAVETOFILETT"));
         toFile.setMnemonic(KeyEvent.VK_F);
         toFile.addActionListener(new ActionListener() {
             @Override
@@ -304,8 +308,8 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
                 saveTableText();
             }
         });
-        final JButton toImage = new JButton("Save as Image");
-        toImage.setToolTipText("Save tables as an image");
+        final JButton toImage = new JButton(rb.getString("SAVETOIMAGE"));
+        toImage.setToolTipText(rb.getString("SAVETOIMAGETT"));
         toImage.setMnemonic(KeyEvent.VK_I);
         toImage.addActionListener(new ActionListener() {
             @Override
@@ -329,7 +333,7 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
             final String EOL = System.getProperty("line.separator");
             final BufferedWriter bw = new BufferedWriter(
                     new FileWriter(csvFile));
-            bw.write("Adaptation Table Values" + EOL);
+            bw.write(rb.getString("DIALOGTITLE") + EOL);
             Object result = 0;
             int columnCount = vehicleInfoTable.getColumnCount();
             for (int i = 0; i < columnCount; i++ ) {
@@ -345,7 +349,7 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
                 bw.append(COMMA);
             }
             bw.append(EOL + EOL);
-            bw.write("A/F Adaptation (Stored)" + EOL);
+            bw.write(rb.getString("AFSTORED") + EOL);
             columnCount = afLearningTable.getColumnCount();
             int rowCount = afLearningTable.getRowCount();
             for (int i = 0; i < columnCount; i++) {
@@ -372,7 +376,8 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
                     result = knockTable.getTableHeader().getColumnModel().
                             getColumn(i).getHeaderValue();
                     if (result.toString().equals(" ")) {
-                        result = String.format("Table %d", k);
+                        result = MessageFormat.format(
+                                rb.getString("TABLE"), k);
                     }
                     bw.append(result.toString());
                     bw.append(COMMA);
@@ -396,15 +401,17 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
             final String shortName = FormatFilename.getShortName(fileName);
             showMessageDialog(
                     null,
-                    "Table's text saved to: " + shortName,
-                    "Save Success",
+                    MessageFormat.format(
+                            rb.getString("SAVEMSG"), shortName),
+                    rb.getString("SAVEMSGTITLE"),
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
                     null,
-                    "Failed to save tables, check path:\n" + fileName,
-                    "Save Failed",
+                    MessageFormat.format(
+                            rb.getString("SAVEFAILED"), fileName),
+                    rb.getString("SAVEFAILEDTITLE"),
                     ERROR_MESSAGE);
         }
     }
@@ -429,15 +436,17 @@ public class DS2LearningTableValuesResultsPanel extends JDialog {
                     imageFile);
             showMessageDialog(
                     null,
-                    "Adaptation Table Values image saved to: " + shortName,
-                    "Save Success",
+                    MessageFormat.format(
+                            rb.getString("SAVEIMAGE"), shortName),
+                    rb.getString("SAVEMSGTITLE"),
                     INFORMATION_MESSAGE);
         }
         catch (Exception e) {
             showMessageDialog(
                     null,
-                    "Failed to save image, check path:\n" + fileName,
-                    "Save Failed",
+                    MessageFormat.format(
+                            rb.getString("FAILEDIMAGE"), fileName),
+                    rb.getString("SAVEFAILEDTITLE"),
                     ERROR_MESSAGE);
         }
     }
