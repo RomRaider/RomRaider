@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2019 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collection;
+import java.util.ResourceBundle;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
@@ -42,29 +43,33 @@ import javax.swing.border.EmptyBorder;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.util.ResourceUtil;
 
 public final class GlobalAdjustmentsPanel extends JDialog {
     private static final long serialVersionUID = 6751698409230811074L;
-    private static final String DIALOG_TITLE = "Global Parameter Adjustments";
-    private static final String TIMING_ADJUST_LABEL_TEXT = "Timing Adjustment";
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            GlobalAdjustmentsPanel.class.getName());
+    private static final String DIALOG_TITLE = rb.getString("DIALOGTITLE");
+    private static final String TIMING_ADJUST_LABEL_TEXT =
+            rb.getString("TIMINGADJ");
     private static final String[] COMBO_DATA =
             new String[] {"0", "-1", "-2", "-3", "-4", "-5"};
     private static final String TIMING_UNITS_LABEL_TEXT = "\u00B0";
     private static final String IDLE_AC_OFF_LABEL_TEXT =
-            "Idle Engine Speed A/C Off";
-    private static final String IDLE_RPM_LABEL_TEXT = "RPM";
+            rb.getString("IDLEACOFF");
+    private static final String IDLE_RPM_LABEL_TEXT = rb.getString("RPM");
     private static final String IDLE_RPM_TT_TEXT =
-            "valid range: -100 to 300 in steps of 25";
+            rb.getString("IDLERPMTT");
     private static final SpinnerNumberModel OFF_RPM_SPINNER =
             new SpinnerNumberModel(0, -100, 300, 25);
     private static final SpinnerNumberModel ON_RPM_SPINNER =
             new SpinnerNumberModel(0, -100, 300, 25);
     private static final String IDLE_AC_ON_LABEL_TEXT =
-            "Idle Engine Speed A/C On";
+            rb.getString("IDLEACON");
     private static final String RESET_WARNING =
-            "Note: These values will be set to 0 by a Reset";
-    private static final String APPLY_BUTTON_TEXT = "Apply";
-    private static final String CANCEL_BUTTON_TEXT = "Cancel";
+            rb.getString("RESETWARNING");
+    private static final String APPLY_BUTTON_TEXT = rb.getString("APPLY");
+    private static final String CANCEL_BUTTON_TEXT = rb.getString("CANCEL");
     private static int[] results;
 
     public GlobalAdjustmentsPanel(
