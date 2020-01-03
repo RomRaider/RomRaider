@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,13 +25,19 @@ import jamlab.Polyval;
 import org.jfree.data.xy.AbstractXYDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
+
+import com.romraider.util.ResourceUtil;
+
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public final class XYTrendline extends AbstractXYDataset {
 
     private static final long serialVersionUID = 1375705537694372443L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            XYTrendline.class.getName());
     private List<XYDataItem> items = new ArrayList<XYDataItem>();
     private double[] xVals = new double[0];
     private double[] yPoly = new double[0];
@@ -82,13 +88,15 @@ public final class XYTrendline extends AbstractXYDataset {
     }
 
     public synchronized double[] calculate(double[] x) {
-        if (polyfit == null) throw new IllegalStateException("Interpolation required");
+        if (polyfit == null) throw new IllegalStateException(
+                rb.getString("INTERPREQD"));
         Polyval polyval = new Polyval(x, polyfit);
         return polyval.getYout();
     }
 
     public synchronized Polyfit getPolyFit() {
-        if (polyfit == null) throw new IllegalStateException("Interpolation required");
+        if (polyfit == null) throw new IllegalStateException(
+                rb.getString("INTERPREQD"));
         return polyfit;
     }
 
