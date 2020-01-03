@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,17 @@
 package com.romraider.logger.ecu.ui.swing.tools.tablemodels;
 
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import javax.swing.table.DefaultTableModel;
 
 import com.romraider.logger.ecu.comms.query.EcuQuery;
+import com.romraider.util.ResourceUtil;
 
 public final class ReadCodesTableModel extends DefaultTableModel {
     private static final long serialVersionUID = -4229633011594395331L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            ReadCodesTableModel.class.getName());
     private ArrayList<EcuQuery> dtcSet;
     
     public final int getColumnCount() {
@@ -35,9 +39,9 @@ public final class ReadCodesTableModel extends DefaultTableModel {
     
     public final String getColumnName(int column) {
         switch (column) {
-            case 0:     return "Diagnostic Code Name";
-            case 1:     return "Temporary";
-            case 2:     return "Memorized";
+            case 0:     return rb.getString("DTCNAME");
+            case 1:     return rb.getString("TEMPORARY");
+            case 2:     return rb.getString("MEMORIZED");
             default:    return "";
         }
     }
