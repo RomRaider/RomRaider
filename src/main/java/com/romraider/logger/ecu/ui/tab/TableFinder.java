@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,21 @@ package com.romraider.logger.ecu.ui.tab;
 
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
+import com.romraider.util.ResourceUtil;
+
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public final class TableFinder {
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            TableFinder.class.getName());
     public static Table findTableStartsWith(Rom rom, String name) {
         List<Table> tables = rom.findTables("^" + name + ".*$");
-        if (tables.isEmpty()) throw new IllegalStateException("No table found for name: \"" + name + "\"");
-        if (tables.size() > 1) throw new IllegalStateException("Multiple tables found for name: \"" + name + "\"");
+        if (tables.isEmpty()) throw new IllegalStateException(
+                MessageFormat.format(rb.getString("NOTABLENAME"), name));
+        if (tables.size() > 1) throw new IllegalStateException(
+                MessageFormat.format(rb.getString("MULTITABLENAME"), name));
         return tables.get(0);
     }
 }
