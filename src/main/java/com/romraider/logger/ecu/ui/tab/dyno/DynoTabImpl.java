@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 
 import java.awt.BorderLayout;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,10 +36,16 @@ import com.romraider.logger.ecu.definition.EcuParameter;
 import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
+import com.romraider.util.ResourceUtil;
 
 public final class DynoTabImpl extends JPanel implements DynoTab {
     private static final long serialVersionUID = 2787020251963102201L;
-    private final DynoChartPanel chartPanel = new DynoChartPanel("Engine Speed (RPM)", "Calculated Wheel Power", "Calculated Engine Torque");
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            DynoTabImpl.class.getName());
+    private final DynoChartPanel chartPanel = new DynoChartPanel(
+            rb.getString("XAXISLBL"),
+            rb.getString("HPAXISLBL"),
+            rb.getString("TQAXISLBL"));
     private final DynoControlPanel controlPanel;
 
     public DynoTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
