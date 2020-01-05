@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2016 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,12 @@
 package com.romraider.logger.ecu.ui.tab.dyno;
 
 import static com.romraider.Settings.COMMA;
+
 import com.romraider.logger.ecu.ui.handler.graph.SpringUtilities;
 import com.romraider.logger.ecu.ui.tab.CircleDrawer;
 import com.romraider.logger.ecu.ui.tab.XYTrendline;
+import com.romraider.util.ResourceUtil;
+
 import static com.romraider.Settings.SEMICOLON;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import jamlab.Polyfit;
@@ -54,20 +57,24 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 public final class DynoChartPanel extends JPanel {
     private static final long serialVersionUID = -6577979878171615665L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            DynoChartPanel.class.getName());
     private static final Color DARK_GREY = new Color(80, 80, 80);
     private static final Color LIGHT_GREY = new Color(110, 110, 110);
-    private static final String START_PROMPT = "Accelerate using WOT when ready!!";
-    private static final String ET_PROMPT_I = "Accelerate for 1/4 mile when ready!!";
-    private static final String ET_PROMPT_M = "Accelerate for 402 meters when ready!!";
-    private final XYSeries data = new XYSeries("Raw HP");        // series for HorsePower/RPM
-    private final XYSeries data1 = new XYSeries("Raw TQ");        // series for Torque/RPM
-    private final XYSeries logRpm = new XYSeries("Logger RPM");        // series for raw sample time/RPM
+    private static final String START_PROMPT = rb.getString("STARTPROMPT");
+    private static final String ET_PROMPT_I = rb.getString("ETPROMPTI");
+    private static final String ET_PROMPT_M = rb.getString("ETPROMPTM");
+    private final XYSeries data = new XYSeries("Raw HP");       // series for HorsePower/RPM
+    private final XYSeries data1 = new XYSeries("Raw TQ");      // series for Torque/RPM
+    private final XYSeries logRpm = new XYSeries("Logger RPM"); // series for raw sample time/RPM
     private final XYTrendline rpmTrend = new XYTrendline(logRpm);
-    private final XYSeries hpRef = new XYSeries("HP Ref");        // series for reference HP/RPM
-    private final XYSeries tqRef = new XYSeries("TQ Ref");        // series for reference TQ/RPM
+    private final XYSeries hpRef = new XYSeries("HP Ref");      // series for reference HP/RPM
+    private final XYSeries tqRef = new XYSeries("TQ Ref");      // series for reference TQ/RPM
     private final String labelX;
     private String labelY1 = null;
     private String labelY2 = null;
@@ -81,9 +88,9 @@ public final class DynoChartPanel extends JPanel {
     private XYAnnotation bestHp;
     private XYAnnotation bestTq;
     private final XYPointerAnnotation hpPointer = new XYPointerAnnotation(
-            "Max HP", 1, 1, 3.0 * Math.PI / 6.0);
+            rb.getString("MAXHP"), 1, 1, 3.0 * Math.PI / 6.0);
     private final XYPointerAnnotation tqPointer = new XYPointerAnnotation(
-            "Max TQ", 1, 1, 3.0 * Math.PI / 6.0);
+            rb.getString("MAXTQ"), 1, 1, 3.0 * Math.PI / 6.0);
     private final XYTextAnnotation refStat = new XYTextAnnotation(" ", 0, 0);
 
     public DynoChartPanel(String labelX, String labelY1, String labelY2) {
@@ -120,11 +127,13 @@ public final class DynoChartPanel extends JPanel {
 
     public void updateRefTrace(String[] line) {
         if (hpRef.getItemCount() > 0) {
-            refStat.setText("Reference: " + line[2] + " (" +
-                    String.format("%1.2f", Double.parseDouble(line[3])) + "; " +
-                    String.format("%1.2f", Double.parseDouble(line[4])) + "; " +
-                    String.format("%1.2f", Double.parseDouble(line[5])) + "; " +
-                    String.format("%1.2f", Double.parseDouble(line[6])) + ")");
+            refStat.setText(MessageFormat.format(
+                            rb.getString("REFERENCE"),
+                            line[2],
+                            Double.parseDouble(line[3]),
+                            Double.parseDouble(line[4]),
+                            Double.parseDouble(line[5]),
+                            Double.parseDouble(line[6])));
             refStat.setX(plot.getDomainAxis().getLowerBound() + 10);
             refStat.setY(hpAxis.getUpperBound());
             plot.addAnnotation(refStat);
@@ -246,22 +255,28 @@ public final class DynoChartPanel extends JPanel {
     }
 
     public void updateEtResults(String carInfo, double[] etResults, String units) {
-        String s60Text = "60 ft";
-        String s330Text = "330 ft";
-        String s660Text = "1/2 track";
-        String s1000Text = "1,000 ft";
-        String s1320Text = "1/4 mile";
-        String zTo60Text = "60 mph";
+        String s60Text = rb.getString("S60TEXTI");
+        String s330Text = rb.getString("S330TEXTI");
+        String s660Text = rb.getString("S660TEXTI");
+        String s1000Text = rb.getString("S1000TEXTI");
+        String s1320Text = rb.getString("S1320TEXTI");
+        String zTo60Text = rb.getString("ZTO60TEXTI");
         if (units.equalsIgnoreCase("km/h")) {
-            s60Text = "18.3m";
-            s330Text = "100m";
-            s1000Text = "305m";
-            s1320Text = "402m";
-            zTo60Text = "97 km/h";
+            s60Text = rb.getString("S60TEXTM");
+            s330Text = rb.getString("S330TEXTM");
+            s1000Text = rb.getString("S1000TEXTM");
+            s1320Text = rb.getString("S1320TEXTM");
+            zTo60Text = rb.getString("ZTO60TEXTM");
         }
-        hpAxis.setLabel("Vehicle Speed (" + units + ")");
+        hpAxis.setLabel(MessageFormat.format(
+                rb.getString("HPAXISLBL"), units));
         String[] car = carInfo.split(SEMICOLON);
-        car[0] = "LANE 1: " + car[0].substring(0, car[0].length() - 3) + " - ET: " + String.format("%1.3f", etResults[8]) + "\" / " + String.format("%1.2f", etResults[9]) + " " + units;
+        car[0] = MessageFormat.format(
+                    rb.getString("CARTEXT"),
+                    car[0].substring(0, car[0].length() - 3),
+                    etResults[8],
+                    etResults[9],
+                    units);
         double ySpace = hpAxis.getUpperBound() / 25;
         double xMin = ((plot.getDomainAxis().getUpperBound() - plot.getDomainAxis().getLowerBound()) / 7) + plot.getDomainAxis().getLowerBound();
         tqAxis.setRange(hpAxis.getLowerBound(), hpAxis.getUpperBound());
@@ -406,16 +421,16 @@ public final class DynoChartPanel extends JPanel {
 
     public void setET() {
         clear();
-        plot.getDomainAxis().setLabel("Time (seconds)");
-        hpAxis.setLabel("Vehicle Speed");
+        plot.getDomainAxis().setLabel(rb.getString("ETXAXISLBL"));
+        hpAxis.setLabel(rb.getString("ETHPAXISLBL"));
         tqAxis.setLabel(" ");
     }
 
     public void setDyno() {
         clear();
-        plot.getDomainAxis().setLabel("Engine Speed (RPM)");
-        hpAxis.setLabel("Calculated Wheel Power");
-        tqAxis.setLabel("Calculated Engine Torque");
+        plot.getDomainAxis().setLabel(rb.getString("DYNOXAXISLBL"));
+        hpAxis.setLabel(rb.getString("DYNOHPAXISLBL"));
+        tqAxis.setLabel(rb.getString("DYNOTQAXISLBL"));
     }
 
     public void startPrompt(String select) {
