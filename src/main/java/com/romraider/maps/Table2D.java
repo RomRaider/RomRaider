@@ -326,13 +326,16 @@ public class Table2D extends Table {
             String dataValues = "[Table1D]" + Settings.NEW_LINE + st.nextToken(Settings.NEW_LINE);
 
             // put axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues), null);
+            //Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(axisValues), null);
+            setClipboardContents(axisValues);
             axis.paste();
             // put datavalues in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues), null);
+            //Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(dataValues), null);
+            setClipboardContents(dataValues);
             super.paste();
             // reset clipboard
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
+            //Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
+            setClipboardContents(input);
 
         } else if (pasteType.equalsIgnoreCase("[Selection1D]")) { // paste selection
             if (data[highlightY].isSelected()) {
@@ -554,7 +557,8 @@ class CopyTable2DWorker extends SwingWorker<Void, Void> {
         output.append(table.getTableAsString());
 
         //copy to clipboard
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
+        //Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output.toString()), null);
+        Table.setClipboardContents(output.toString());
         return null;
 
     }

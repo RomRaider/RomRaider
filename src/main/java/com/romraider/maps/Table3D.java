@@ -795,17 +795,21 @@ public class Table3D extends Table {
             }
 
             // put x axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(xAxisValues), null);
+            // Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(xAxisValues), null);
+            setClipboardContents(xAxisValues);
             xAxis.paste();
             // put y axis in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(yAxisValues)), null);
+            // Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(yAxisValues)), null);
+            setClipboardContents(String.valueOf(yAxisValues));
             yAxis.paste();
             // put datavalues in clipboard and paste
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(dataValues)), null);
+            // Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(dataValues)), null);
+            setClipboardContents(String.valueOf(dataValues));
             pasteValues();
             // reset clipboard
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
-
+            // Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
+            setClipboardContents(input);
+            
         } else if ("[Selection3D]".equalsIgnoreCase(pasteType)) { // paste selection
             pasteValues();
         } else if ("[Selection1D]".equalsIgnoreCase(pasteType)) { // paste selection
@@ -813,7 +817,7 @@ public class Table3D extends Table {
             yAxis.paste();
         }
     }
-
+    
     public void pasteValues() {
         StringTokenizer st = new StringTokenizer(Settings.BLANK);
         try {
@@ -1172,7 +1176,8 @@ class CopySelection3DWorker extends SwingWorker<Void, Void> {
                     output.append(Settings.NEW_LINE);
                 }
                 //copy to clipboard
-                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+                //Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+                Table.setClipboardContents(String.valueOf(output));
             }
         } else {
             table.getXAxis().copySelection();
@@ -1205,7 +1210,8 @@ class CopyTable3DWorker extends SwingWorker<Void, Void> {
         String tableHeader = table.getSettings().getTable3DHeader();
         StringBuffer output = new StringBuffer(tableHeader);
         output.append(table.getTableAsString());
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+        //Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+        Table3D.setClipboardContents(String.valueOf(output));
         return null;
     }
 

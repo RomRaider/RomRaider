@@ -1233,6 +1233,29 @@ public abstract class Table extends JPanel implements Serializable {
             }
         }
     }
+    
+    public static void setClipboardContents(String input)
+    {
+    	int attempt = 0;
+    	while (attempt < 5)
+    	{
+    		try
+    		{
+    			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
+    			return;
+    		}
+    		catch(IllegalStateException ex)
+    		{
+    			attempt++;
+    			try
+    			{
+        			Thread.sleep(100);
+    			}
+    			catch (Exception ex2) {}
+    		}
+    	}
+    	Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(input), null);
+    }
 
     public void verticalInterpolate() {
     }
@@ -1589,7 +1612,8 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
         }
         //copy to clipboard
         if (copy) {
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output), null);
+            //Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(output), null);
+            Table.setClipboardContents(output);
         }
         return null;
     }
@@ -1603,6 +1627,8 @@ class CopySelectionWorker extends SwingWorker<Void, Void> {
         table.setCursor(null);
         ECUEditorManager.getECUEditor().setCursor(null);
     }
+    
+    
 }
 
 class CopyTableWorker extends SwingWorker<Void, Void> {
@@ -1617,7 +1643,8 @@ class CopyTableWorker extends SwingWorker<Void, Void> {
         String tableHeader = table.getSettings().getTableHeader();
         StringBuffer output = new StringBuffer(tableHeader);
         output.append(table.getTableAsString());
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+        //Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(output)), null);
+        Table.setClipboardContents(String.valueOf(output));
         return null;
     }
 
