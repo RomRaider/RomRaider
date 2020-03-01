@@ -1,3 +1,22 @@
+/*
+ * RomRaider Open-Source Tuning, Logging and Reflashing
+ * Copyright (C) 2006-2020 RomRaider.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package com.romraider.logger.external.phidget.interfacekit.plugin;
 
 import java.awt.BorderLayout;
@@ -9,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,6 +40,7 @@ import javax.swing.table.TableColumn;
 
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers.CentreRenderer;
+import com.romraider.util.ResourceUtil;
 
 /**
  * Display dialog to allow the user to custom define each Phidget InterfaceKit
@@ -27,6 +48,8 @@ import com.romraider.logger.ecu.ui.swing.tools.tablemodels.renderers.CentreRende
  */
 public class IntfKitConvertorPanel extends JDialog {
     private static final long serialVersionUID = -4785866140260703021L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            IntfKitConvertorPanel.class.getName());
     private final int IK_WIDTH = 600;
     private final int IK_HEIGHT = 300;
     private JTable table;
@@ -41,7 +64,7 @@ public class IntfKitConvertorPanel extends JDialog {
             EcuLogger logger, List<List<String>> ikData) {
 
         super(logger, true);
-        setTitle("Phidget InterfaceKit User Defined Convertors");
+        setTitle(rb.getString("TITLE"));
         setBounds(
                 (logger.getWidth() > IK_WIDTH) ?
                     logger.getX() + (logger.getWidth() - IK_WIDTH) / 2 : 0,
@@ -63,26 +86,25 @@ public class IntfKitConvertorPanel extends JDialog {
                 final int column = convertColumnIndexToModel(colIndex);
                 switch (column) {
                     case 0:
-                        tip = "Sensor module serial number and input number";
+                        tip = rb.getString("TIP0");
                         break;
                     case 1:
-                        tip = "Equation used to convert raw data to real value";
+                        tip = rb.getString("TIP1");
                         break;
                     case 2:
-                        tip = "Format of real value for display and logging";
+                        tip = rb.getString("TIP2");
                         break;
                     case 3:
-                        tip = "Units of measure of the real value";
+                        tip = rb.getString("TIP3");
                         break;
                     case 4:
-                        tip = "Minimum real value expected";
+                        tip = rb.getString("TIP4");
                         break;
                     case 5:
-                        tip = "Maximum real value expected";
+                        tip = rb.getString("TIP5");
                         break;
                     case 6:
-                        tip = "Tick mark step for Gauge Tab display, " +
-                              "typically (max-min)/10";
+                        tip = rb.getString("TIP6");
                         break;
                     default:
                         tip = super.getToolTipText(e);
@@ -98,8 +120,8 @@ public class IntfKitConvertorPanel extends JDialog {
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-        final JButton saveButton = new JButton("Save");
-        saveButton.setToolTipText("Save convertor settings");
+        final JButton saveButton = new JButton(rb.getString("SAVE"));
+        saveButton.setToolTipText(rb.getString("SAVESETTINGS"));
         saveButton.setMnemonic(KeyEvent.VK_S);
         saveButton.addActionListener(new ActionListener() {
             public final void actionPerformed(ActionEvent actionEvent) {
@@ -108,8 +130,8 @@ public class IntfKitConvertorPanel extends JDialog {
         });
         buttonPane.add(saveButton);
 
-        final JButton cancelButton = new JButton("Cancel");
-        cancelButton.setToolTipText("Cancel without saving changes");
+        final JButton cancelButton = new JButton(rb.getString("CANCEL"));
+        cancelButton.setToolTipText(rb.getString("CANCELSAVE"));
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 table = null;
@@ -164,7 +186,6 @@ public class IntfKitConvertorPanel extends JDialog {
             else if (i == 1) {
                 column.setPreferredWidth(150);
             }
-
             else {
                 column.setPreferredWidth(50);
             }
