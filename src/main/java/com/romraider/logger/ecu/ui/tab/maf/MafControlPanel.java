@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -62,10 +64,13 @@ import com.romraider.maps.DataCell;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.maps.Table2D;
+import com.romraider.util.ResourceUtil;
 
 public final class MafControlPanel extends JPanel {
     private static final long serialVersionUID = 5787020251107365950L;
     private static final Logger LOGGER = Logger.getLogger(MafControlPanel.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            MafControlPanel.class.getName());
     private static final String COOLANT_TEMP = "P2";
     private static final String AF_CORRECTION_1 = "P3";
     private static final String AF_LEARNING_1 = "P4";
@@ -78,7 +83,8 @@ public final class MafControlPanel extends JPanel {
     private static final String CL_OL_32 = "E33";
     private static final String TIP_IN_THROTTLE_16 = "E23";
     private static final String TIP_IN_THROTTLE_32 = "E54";
-    private final JToggleButton recordDataButton = new JToggleButton("Record Data");
+    private final JToggleButton recordDataButton = new JToggleButton(
+            rb.getString("RECORDDATA"));
     private final JTextField mafvMin = new JTextField("1.20", 3);
     private final JTextField mafvMax = new JTextField("2.60", 3);
     private final JTextField afrMin = new JTextField("13.0", 3);
@@ -99,7 +105,8 @@ public final class MafControlPanel extends JPanel {
     private List<EcuParameter> params = new ArrayList<EcuParameter>();
     private List<EcuSwitch> switches = new ArrayList<EcuSwitch>();
 
-    public MafControlPanel(Component parent, DataRegistrationBroker broker, ECUEditor ecuEditor, LoggerChartPanel chartPanel) {
+    public MafControlPanel(Component parent, DataRegistrationBroker broker,
+            ECUEditor ecuEditor, LoggerChartPanel chartPanel) {
         checkNotNull(parent, broker, chartPanel);
         this.parent = parent;
         this.broker = broker;
@@ -117,31 +124,31 @@ public final class MafControlPanel extends JPanel {
     }
 
     public boolean isValidAfr(double value) {
-        return checkInRange("AFR", afrMin, afrMax, value);
+        return checkInRange(rb.getString("AFR"), afrMin, afrMax, value);
     }
 
     public boolean isValidRpm(double value) {
-        return checkInRange("RPM", rpmMin, rpmMax, value);
+        return checkInRange(rb.getString("RPM"), rpmMin, rpmMax, value);
     }
 
     public boolean isValidMaf(double value) {
-        return checkInRange("MAF", mafMin, mafMax, value);
+        return checkInRange(rb.getString("MAF"), mafMin, mafMax, value);
     }
 
     public boolean isValidMafv(double value) {
-        return checkInRange("MAFv", mafvMin, mafvMax, value);
+        return checkInRange(rb.getString("MAFV"), mafvMin, mafvMax, value);
     }
 
     public boolean isValidCoolantTemp(double value) {
-        return checkGreaterThan("Coolant Temp.", coolantMin, value);
+        return checkGreaterThan(rb.getString("ECT"), coolantMin, value);
     }
 
     public boolean isValidIntakeAirTemp(double value) {
-        return checkLessThan("Intake Air Temp.", iatMax, value);
+        return checkLessThan(rb.getString("IAT"), iatMax, value);
     }
 
     public boolean isValidMafvChange(double value) {
-        return checkLessThan("dMAFv/dt", mafvChangeMax, value);
+        return checkLessThan(rb.getString("DMAFVDT"), mafvChangeMax, value);
     }
 
     public boolean isValidTipInThrottle(double value) {
@@ -152,7 +159,9 @@ public final class MafControlPanel extends JPanel {
         if (isValidRange(min, max)) {
             return inRange(value, min, max);
         } else {
-            showMessageDialog(parent, "Invalid " + name + " range specified.", "Error", ERROR_MESSAGE);
+            showMessageDialog(parent, MessageFormat.format(
+                    rb.getString("INVALIDRANGE"), name),
+                    rb.getString("ERROR"), ERROR_MESSAGE);
             recordDataButton.setSelected(false);
             return false;
         }
@@ -162,7 +171,9 @@ public final class MafControlPanel extends JPanel {
         if (isNumber(min)) {
             return value >= parseDouble(min);
         } else {
-            showMessageDialog(parent, "Invalid " + name + " specified.", "Error", ERROR_MESSAGE);
+            showMessageDialog(parent, MessageFormat.format(
+                    rb.getString("INVALIDMINMAX"), name),
+                    rb.getString("ERROR"), ERROR_MESSAGE);
             recordDataButton.setSelected(false);
             return false;
         }
@@ -172,7 +183,9 @@ public final class MafControlPanel extends JPanel {
         if (isNumber(max)) {
             return value <= parseDouble(max);
         } else {
-            showMessageDialog(parent, "Invalid " + name + " specified.", "Error", ERROR_MESSAGE);
+            showMessageDialog(parent, MessageFormat.format(
+                    rb.getString("INVALIDMINMAX"), name),
+                    rb.getString("ERROR"), ERROR_MESSAGE);
             recordDataButton.setSelected(false);
             return false;
         }
@@ -207,26 +220,27 @@ public final class MafControlPanel extends JPanel {
 
     private JPanel buildAfrSourcePanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("AFR Source"));
+        panel.setBorder(new TitledBorder(rb.getString("AFRSRC")));
         panel.add(afrSourceList);
         return panel;
     }
 
     private JPanel buildResetPanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Reset"));
+        panel.setBorder(new TitledBorder(rb.getString("RESET")));
         panel.add(buildResetButton());
         return panel;
     }
 
     private JPanel buildUpdateMafPanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Update MAF"));
+        panel.setBorder(new TitledBorder(rb.getString("UPDATEMAF")));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        addMinMaxFilter(panel, gridBagLayout, "MAFv Range", mafvMin, mafvMax, 0);
+        addMinMaxFilter(panel, gridBagLayout, rb.getString("MAFVRANGE"),
+                mafvMin, mafvMax, 0);
         addComponent(panel, gridBagLayout, buildUpdateMafButton(), 3);
 
         return panel;
@@ -234,36 +248,38 @@ public final class MafControlPanel extends JPanel {
 
     private JPanel buildInterpolatePanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Interpolate"));
+        panel.setBorder(new TitledBorder(rb.getString("INTERPOLATE")));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
         JComboBox orderComboBox = buildPolyOrderComboBox();
-        addLabeledComponent(panel, gridBagLayout, "Poly. order", orderComboBox, 0);
+        addLabeledComponent(panel, gridBagLayout, rb.getString("POLYORDER"),
+                orderComboBox, 0);
         addComponent(panel, gridBagLayout, buildInterpolateButton(orderComboBox), 2);
 
         return panel;
     }
 
-    private void addLabeledComponent(JPanel panel, GridBagLayout gridBagLayout, String name, JComponent component, int y) {
+    private void addLabeledComponent(JPanel panel, GridBagLayout gridBagLayout,
+            String name, JComponent component, int y) {
         add(panel, gridBagLayout, new JLabel(name), 0, y, 3, HORIZONTAL);
         add(panel, gridBagLayout, component, 0, y + 1, 3, NONE);
     }
 
     private JPanel buildFilterPanel() {
         JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder("Filter Data"));
+        panel.setBorder(new TitledBorder(rb.getString("FILTERDATA")));
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         panel.setLayout(gridBagLayout);
 
-        addMinMaxFilter(panel, gridBagLayout, "AFR Range", afrMin, afrMax, 0);
-        addMinMaxFilter(panel, gridBagLayout, "RPM Range", rpmMin, rpmMax, 3);
-        addMinMaxFilter(panel, gridBagLayout, "MAF Range (g/s)", mafMin, mafMax, 6);
-        addLabeledComponent(panel, gridBagLayout, "Min. Coolant Temp.", coolantMin, 9);
-        addLabeledComponent(panel, gridBagLayout, "Max. Intake Temp.", iatMax, 12);
-        addLabeledComponent(panel, gridBagLayout, "Max. dMAFv/dt (V/s)", mafvChangeMax, 15);
+        addMinMaxFilter(panel, gridBagLayout, rb.getString("AFRRANGE"), afrMin, afrMax, 0);
+        addMinMaxFilter(panel, gridBagLayout, rb.getString("RPMRANGE"), rpmMin, rpmMax, 3);
+        addMinMaxFilter(panel, gridBagLayout, rb.getString("MAFRANGE"), mafMin, mafMax, 6);
+        addLabeledComponent(panel, gridBagLayout, rb.getString("MINECT"), coolantMin, 9);
+        addLabeledComponent(panel, gridBagLayout, rb.getString("MAXIAT"), iatMax, 12);
+        addLabeledComponent(panel, gridBagLayout, rb.getString("MAXDELTA"), mafvChangeMax, 15);
         addComponent(panel, gridBagLayout, buildRecordDataButton(), 18);
 
         return panel;
@@ -276,10 +292,16 @@ public final class MafControlPanel extends JPanel {
                 if (recordDataButton.isSelected()) {
                     //                    afrSourceList.setEnabled(false);
                     //                    registerAfr();
-                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+                    registerData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1,
+                            ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW,
+                            MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32,
+                            TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
                 } else {
                     //                    deregisterAfr();
-                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1, ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW, MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32, TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
+                    deregisterData(COOLANT_TEMP, AF_CORRECTION_1, AF_LEARNING_1,
+                            ENGINE_SPEED, INTAKE_AIR_TEMP, MASS_AIR_FLOW,
+                            MASS_AIR_FLOW_V, CL_OL_16, CL_OL_32,
+                            TIP_IN_THROTTLE_16, TIP_IN_THROTTLE_32);
                     //                    afrSourceList.setEnabled(true);
                 }
             }
@@ -370,7 +392,7 @@ public final class MafControlPanel extends JPanel {
     }
 
     private JButton buildResetButton() {
-        JButton resetButton = new JButton("Reset Data");
+        JButton resetButton = new JButton(rb.getString("RESETDATA"));
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -382,7 +404,7 @@ public final class MafControlPanel extends JPanel {
     }
 
     private JButton buildInterpolateButton(final JComboBox orderComboBox) {
-        JButton interpolateButton = new JButton("Interpolate");
+        JButton interpolateButton = new JButton(rb.getString("INTERPOLATE"));
         interpolateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -400,7 +422,7 @@ public final class MafControlPanel extends JPanel {
     }
 
     private JButton buildUpdateMafButton() {
-        final JButton updateMafButton = new JButton("Update MAF");
+        final JButton updateMafButton = new JButton(rb.getString("UPDATEMAF"));
         updateMafButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -425,15 +447,21 @@ public final class MafControlPanel extends JPanel {
                                     }
                                 }
                             } else {
-                                showMessageDialog(parent, "Invalid MAFv range specified.", "Error", ERROR_MESSAGE);
+                                showMessageDialog(parent,
+                                        rb.getString("INVALIDMAFRANGE"),
+                                        rb.getString("ERROR"), ERROR_MESSAGE);
                             }
                         } else {
-                            showMessageDialog(parent, "Error finding MAF Sensor Scaling table.", "Error", ERROR_MESSAGE);
+                            showMessageDialog(parent,
+                                    rb.getString("MAFTBLNOTFND"),
+                                    rb.getString("ERROR"), ERROR_MESSAGE);
                         }
                     }
                 } catch (Exception e) {
                     String msg = e.getMessage() != null && e.getMessage().length() > 0 ? e.getMessage() : "Unknown";
-                    showMessageDialog(parent, "Error: " + msg, "Error", ERROR_MESSAGE);
+                    showMessageDialog(parent, MessageFormat.format(
+                            rb.getString("ERRORMSG"), msg),
+                            rb.getString("ERROR"), ERROR_MESSAGE);
                 }
             }
         });
@@ -473,7 +501,9 @@ public final class MafControlPanel extends JPanel {
     }
 
     private int showUpdateMafConfirmation() {
-        return showConfirmDialog(parent, "Update MAF Sensor Scaling table?", "Confirm Update", YES_NO_OPTION, WARNING_MESSAGE);
+        return showConfirmDialog(parent, 
+                rb.getString("UPDATETABLE"),
+                rb.getString("CONFIRM"), YES_NO_OPTION, WARNING_MESSAGE);
     }
 
     private Table2D getMafTable(ECUEditor ecuEditor) {
