@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ import com.romraider.logger.ecu.definition.EcuSwitch;
 import com.romraider.logger.ecu.definition.ExternalData;
 import com.romraider.logger.ecu.ui.DataRegistrationBroker;
 import com.romraider.logger.ecu.ui.tab.LoggerChartPanel;
+import com.romraider.util.ResourceUtil;
+
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
@@ -33,16 +35,21 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public final class MafTabImpl extends JPanel implements MafTab {
     private static final long serialVersionUID = -6978027421649432740L;
-    private final LoggerChartPanel chartPanel = new LoggerChartPanel("MAF (v)", "Total Correction (%)");
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            MafTabImpl.class.getName());
+    private final LoggerChartPanel chartPanel = new LoggerChartPanel(
+            rb.getString("MAFV"), rb.getString("TOTALCORR"));
     private final MafControlPanel controlPanel;
 
     public MafTabImpl(DataRegistrationBroker broker, ECUEditor ecuEditor) {
         super(new BorderLayout(2, 2));
         controlPanel = new MafControlPanel(this, broker, ecuEditor, chartPanel);
-        JScrollPane scrollPane = new JScrollPane(controlPanel, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scrollPane = new JScrollPane(controlPanel,
+                VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_NEVER);
         add(scrollPane, WEST);
         add(chartPanel, CENTER);
     }
