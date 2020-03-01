@@ -541,11 +541,11 @@ public final class InjectorControlPanel extends JPanel {
     }
 
     private Table2D getInjectorFlowTable(ECUEditor ecuEditor) {
-        return getTable(ecuEditor, rb.getString("INJFLOWSCALING"));
+        return getTable(ecuEditor, "Injector Flow Scaling");
     }
 
     private Table2D getInjectorLatencyTable(ECUEditor ecuEditor) {
-        return getTable(ecuEditor, rb.getString("INJLAT"));
+        return getTable(ecuEditor, "Injector Latency");
     }
 
     private <T extends Table> T getTable(ECUEditor ecuEditor, String name) {
