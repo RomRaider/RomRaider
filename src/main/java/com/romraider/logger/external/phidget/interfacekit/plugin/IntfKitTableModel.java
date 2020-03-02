@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2013 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,11 @@
 package com.romraider.logger.external.phidget.interfacekit.plugin;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.table.DefaultTableModel;
+
+import com.romraider.util.ResourceUtil;
 
 /**
  * PhidgetInterfaceKit Table Model used to populate user defined convertor
@@ -29,9 +32,18 @@ import javax.swing.table.DefaultTableModel;
  */
 public final class IntfKitTableModel extends DefaultTableModel {
     private static final long serialVersionUID = -1733139047249681709L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            IntfKitTableModel.class.getName());
     private List<List<String>> ikData;
     private String[] columnNames = new String[]{
-            "Sensor serial:input Number","Expression","Format","Units","Min", "Max", "Step"};
+                rb.getString("SENSORID"),
+                rb.getString("EXPR"),
+                rb.getString("FORMAT"),
+                rb.getString("UNITS"),
+                rb.getString("MIN"),
+                rb.getString("MAX"),
+                rb.getString("STEP")
+            };
 
     @Override
     public final int getColumnCount() {
