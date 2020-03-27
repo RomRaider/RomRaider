@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,16 +25,16 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 
 import com.romraider.Settings;
+import com.romraider.Settings.Endian;
 import com.romraider.util.ByteUtil;
 import com.romraider.xml.RomAttributeParser;
 
@@ -44,7 +44,7 @@ public class Table2DMaskedSwitchable extends Table2D {
 	
 	private int bitMask;
 	private LinkedList<PresetEntry> defaultEntries = new LinkedList<PresetEntry>();
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final List<PresetButton> buttonGroup = new ArrayList<PresetButton>();
 
 	//Struct for saving Preset values
 	class PresetEntry {
@@ -71,14 +71,30 @@ public class Table2DMaskedSwitchable extends Table2D {
 		int mask = Integer.parseUnsignedInt(stringMask, 16); 		
 		setBitMask(mask);
 	}
-
+	
 	public void setPredefinedOption(String name, String data) {
 		PresetEntry entry = new PresetEntry();
 		entry.data = new LinkedList<Integer>();
-
-		for (String s : data.split(",")) {
-			entry.data.add(Integer.parseUnsignedInt(s, 16));
+	
+		
+		for (String s : data.split(",")) {	
+			Integer i = Integer.parseUnsignedInt(s, 16);
+			
+			if (getStorageType() > 1 && getEndian() == Endian.LITTLE)
+			{
+				if(getStorageType() == 2) {
+					i = Short.reverseBytes((short)(i&0xFFFF))&0xFFFF;
+				}
+					
+				else if(getStorageType() == 4)
+					i = Integer.reverseBytes(i);
+				
+			}
+			
+			
+			entry.data.add(i);
 		}
+		
 		entry.name = name;
 
 		defaultEntries.add(entry);
@@ -105,6 +121,7 @@ public class Table2DMaskedSwitchable extends Table2D {
 
 			} else {	
 				double binValue = RomAttributeParser.parseByteValueMasked(input, endian, getStorageAddress() + i * storageType - ramOffset, storageType, signed, bitMask);
+				
 				data[i].setBinValue(binValue);
 			}
 
@@ -133,13 +150,13 @@ public class Table2DMaskedSwitchable extends Table2D {
 			radioPanel.add(optionLabel);
 		}
 		
-		//Setup radio button for each preset
+		//Setup button for each preset
 		for (PresetEntry entry : defaultEntries) {
-			PresetJRadioButton button = new PresetJRadioButton();
+			PresetButton button = new PresetButton();
 
 			button.setText(entry.name);
 			button.setPresetData(entry.data);
-			button.checkIfActive();
+
 			button.addActionListener(new PresetListener());
 			
 			buttonGroup.add(button);
@@ -163,15 +180,8 @@ public class Table2DMaskedSwitchable extends Table2D {
 		super.repaint();
 	
 		if (buttonGroup != null) {
-			Enumeration<AbstractButton> buttons = buttonGroup.getElements();
-			
-			if (buttons != null) {
-				buttonGroup.clearSelection();
-				
-				while(buttons.hasMoreElements()) {
-					PresetJRadioButton button = (PresetJRadioButton)buttons.nextElement();
+			for (PresetButton button: buttonGroup) {
 					button.checkIfActive();
-				}
 			}
 		}
 	} 
@@ -203,18 +213,21 @@ public class Table2DMaskedSwitchable extends Table2D {
 					if (!this.isStaticDataTable() && storageType > 0) {
 						// Shift left again
 						int tempData = (int) data[i].getBinValue() << ByteUtil.firstOneOfMask(bitMask);
-
+										
 						output = RomAttributeParser.parseIntegerValue(tempData, endian, storageType);
 					}
 
 					int byteLength = storageType;
+					int tempBitMask = 0; 
 					
 					for (int z = 0; z < byteLength; z++) { // insert into file							
-						// Trim mask depending on bit
-						bitMask &= 0xFF << (8 * z);
 
+						tempBitMask = bitMask;
+						//Trim mask depending on byte, from left to right
+						tempBitMask = (tempBitMask & (0xFF << 8 * (byteLength - 1 - z))) >> 8*(byteLength - 1 - z);
+						
 						// Delete old bits
-						binData[i * byteLength + z + getStorageAddress() - ramOffset] &= ~bitMask;
+						binData[i * byteLength + z + getStorageAddress() - ramOffset] &= ~tempBitMask;
 
 						// Overwrite
 						binData[i * byteLength + z + getStorageAddress() - ramOffset] |= output[z];
@@ -270,9 +283,9 @@ public class Table2DMaskedSwitchable extends Table2D {
 	}
 
 	/*
-	 * Custom JRadioButton and Actionlistener
+	 * Custom Button and Actionlistener
 	 */
-	class PresetJRadioButton extends JRadioButton{
+	class PresetButton extends JCheckBox{
 		private static final long serialVersionUID = 1L;
 		LinkedList<Integer> values; //Pointer to PresetEntry.data
 		
@@ -301,7 +314,7 @@ public class Table2DMaskedSwitchable extends Table2D {
 	class PresetListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			PresetJRadioButton button = (PresetJRadioButton)event.getSource();
+			PresetButton button = (PresetButton)event.getSource();
 			
 			if(getDataSize() == button.values.size()) {
 				for (int i = 0; i < getDataSize(); i++) {
