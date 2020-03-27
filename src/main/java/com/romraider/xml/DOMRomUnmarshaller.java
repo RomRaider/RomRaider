@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -419,7 +419,7 @@ public final class DOMRomUnmarshaller {
                     table = new TableBitwiseSwitch();
                 }
                 else if (unmarshallAttribute(tableNode, "type", "unknown")
-                            .equalsIgnoreCase("Table2DMaskedSwitchable")) {
+                            .equalsIgnoreCase("2DMaskedSwitchable")) {
                         table = new Table2DMaskedSwitchable();
                 } else {
                     throw new XMLParseException("Error loading table, "
