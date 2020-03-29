@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -304,6 +304,37 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         this.updateTableToolBar(getTable());
     }
 
+    
+    private void saveFineCourseValuesInTable(Table t) {
+    	if(t == null || t.getCurrentScale() == null) return;
+    	
+    	double incCoarse = 0;
+    	double incFine = 0;
+    	
+    	try {
+    		//Commit the value which was typed (if field still has focus)
+    		incrementByCoarse.commitEdit();
+    		incrementByFine.commitEdit();
+    		
+	        incCoarse = Double.parseDouble(String.valueOf(incrementByCoarse.getValue()));
+	        incFine = Double.parseDouble(String.valueOf(incrementByFine.getValue()));
+    	}
+    	//Current value in the inc/dec field are not valid
+    	catch(ParseException e) {
+    		return; 
+    	}
+    	//Should not happen since ParseException would happen before that
+    	catch(NumberFormatException e) {
+    		return; 
+    	}
+    	  	
+	    //Save current inc/dec values in table before we switch
+    	if(incCoarse!=0 && incFine != 0) {
+    		t.updateIncrementDecrementValues(incFine,incCoarse);		    
+    	}
+    	
+    }
+    	
     public void updateTableToolBar(Table selectedTable) {
         if(selectedTable == null  && this.selectedTable == null) {
             // Skip if the table is the same to avoid multiple updates
@@ -315,6 +346,10 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
             return;
         }
 
+
+        //Save the current inc/dec values in the table
+        saveFineCourseValuesInTable(this.selectedTable);
+        
         this.selectedTable = selectedTable;
 
         setBorder(toolbarBorder);

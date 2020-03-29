@@ -594,7 +594,14 @@ public abstract class Table extends JPanel implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
+    
+    
+    //Gets called by toolbar
+    public void updateIncrementDecrementValues(double fineInc, double courseInc) { 	
+    	this.curScale.setCoarseIncrement(courseInc);
+    	this.curScale.setFineIncrement(fineInc);
+    }
+    
     public Scale getCurrentScale() {
         return this.curScale;
     }
@@ -905,6 +912,7 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void drawTable() {
+    	
         for(DataCell cell : data) {
             if(null != cell) {
                 cell.drawCell();
