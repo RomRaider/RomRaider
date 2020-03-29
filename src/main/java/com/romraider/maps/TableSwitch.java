@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,10 +31,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.swing.AbstractButton;
@@ -44,9 +46,13 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
+import com.romraider.util.ResourceUtil;
+
 public class TableSwitch extends Table {
 
     private static final long serialVersionUID = -4887718305447362308L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            TableSwitch.class.getName());
     private final ButtonGroup buttonGroup = new ButtonGroup();
     private final Map<String, byte[]> switchStates = new HashMap<String, byte[]>();
     private int dataSize = 0;
@@ -86,24 +92,20 @@ public class TableSwitch extends Table {
         // if the result is -1: all the checksums have been previously disabled
         if (super.getName().contains("Checksum Fix")) {
             int result = validateRomChecksum(input, getStorageAddress(), dataSize);
-            String message = String.format(
-                    "Checksum No. %d is invalid in table: %s%n" +
-                    "The ROM image may be corrupt or it has been %n" +
-                    "hex edited manually.%n" +
-                    "The checksum can be corrected when the ROM is saved.",
-                    result, super.getName());
+            String message = MessageFormat.format(
+                    rb.getString("CHKSUMINVALID"), result, super.getName());
             if (result > 0) {
                 showMessageDialog(this,
                         message,
-                        "ERROR - Checksums Failed",
+                        rb.getString("CHKSUMSFAILED"),
                         WARNING_MESSAGE);
                 setButtonsUnselected(buttonGroup);
             }
             else if (result == -1){
-                message = "All Checksums are disabled.";
+                message = rb.getString("ALLDISABLED");
                 showMessageDialog(this,
                         message,
-                        "Warning - Checksum Status",
+                        rb.getString("CHKSUMSTATUS"),
                         INFORMATION_MESSAGE);
                 getButtonByText(buttonGroup, "on").setSelected(true);
             }
@@ -147,10 +149,11 @@ public class TableSwitch extends Table {
         }
 
         if (locked) {
-            String mismatch = String.format("Table: %s%nTable editing has been disabled.%nDefinition file or ROM image may be corrupt.", super.getName());
+            String mismatch = MessageFormat.format(
+                    rb.getString("EDITDISABLE"), super.getName());
             showMessageDialog(this,
                     mismatch,
-                    "ERROR - Data Mismatch",
+                    rb.getString("DATAMISMATCH"),
                     ERROR_MESSAGE);
             setButtonsUnselected(buttonGroup);
         }
