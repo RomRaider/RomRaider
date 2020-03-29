@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,6 +118,31 @@ public final class ByteUtil {
       }
       return val;
     }
+    
+    public static byte firstOneOfMask(int mask) {
+    	byte index = (byte) 0xFF;
+    	
+    	for(byte i=0; i < 32; i++) {
+    		if(((mask >> i) & 1) == 1) {
+    			index = i;
+    			break;
+    		}
+    	}
+    	
+    	return index;
+    }
+    
+    public static byte lengthOfMask(int mask) {
+    	byte counter = 0;
+    	
+    	for(byte i=0; i < 32; i++) {
+    		if(((mask >> i) & 1) == 1) {
+    			counter++;
+    		}
+    	}
+    	
+    	return counter;
+    }
 
     private static int[] computeFailure(byte[] pattern) {
         int[] failure = new int[pattern.length];
@@ -133,5 +158,6 @@ public final class ByteUtil {
         }
         return failure;
     }
+    
     
 }

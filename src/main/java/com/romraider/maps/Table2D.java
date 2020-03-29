@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,15 @@ public class Table2D extends Table {
     public Table1D getAxis() {
         return axis;
     }
-
+    
+    public JLabel getAxisLabel() {
+    	return axisLabel;
+    }
+    
+    public void setAxisLabel(JLabel label) {
+    	axisLabel = label;
+    }
+    
     public void setAxis(Table1D axis) {
         this.axis = axis;
         axis.setAxisParent(this);

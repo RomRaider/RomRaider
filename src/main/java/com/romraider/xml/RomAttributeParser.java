@@ -1,6 +1,14 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+<<<<<<< HEAD
+<<<<<<< HEAD
+ * Copyright (C) 2006-2020 RomRaider.com
+=======
+ * Copyright (C) 2006-2019 RomRaider.com
+>>>>>>> Added XOR for single byte checksums. Added possibility of multiple checksums in file
+=======
+ * Copyright (C) 2006-2020 RomRaider.com
+>>>>>>> Updated copyright. Switched to checkboxes for presets. Allowed multiple selection. Fixed saving bug. CChanged table name to 2DMaskedSwitchable
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +35,7 @@ import java.nio.ByteOrder;
 
 import com.romraider.Settings;
 import com.romraider.maps.Table;
+import com.romraider.util.ByteUtil;
 
 public final class RomAttributeParser {
 
@@ -114,7 +123,17 @@ public final class RomAttributeParser {
             return Table.TableType.TABLE_1D;
         }
     }
+    
+    //This assumes the bits inside the mask aren't spread. OK = 11110000, Not OK = 11001100
 
+    public static long parseByteValueMasked(byte[] input, Settings.Endian endian, int address, int length, boolean signed, int mask) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException { 	 	
+    	long tempValue = parseByteValue(input,endian,address,length,signed) & mask;
+    	
+    	byte index = ByteUtil.firstOneOfMask(mask);
+    	
+    	return tempValue >> index;
+    }
+    
     public static long parseByteValue(byte[] input, Settings.Endian endian, int address, int length, boolean signed) throws ArrayIndexOutOfBoundsException, IndexOutOfBoundsException {
         try {
             long output = 0L;
@@ -229,6 +248,9 @@ public final class RomAttributeParser {
             }
             else if (input.substring(input.length() - 2).equalsIgnoreCase("mb")) {
                 return Integer.parseInt(input.substring(0, input.length() - 2)) * 1024 * 1024;
+            }
+            else if (input.substring(input.length() - 1).equalsIgnoreCase("b")) {
+                return Integer.parseInt(input.substring(0, input.length() - 1));
             }
             throw new NumberFormatException();
         }

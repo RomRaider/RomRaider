@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -778,7 +778,7 @@ public abstract class Table extends JPanel implements Serializable {
         return JEPUtil.evaluate(getCurrentScale().getExpression(), getMinAllowedBin());
     }
 
-    private void calcValueRange() {
+    protected void calcValueRange() {
         if (getStorageType() != Settings.STORAGE_TYPE_FLOAT) {
             if (isSignedData()) {
                 switch (getStorageType()) {
@@ -820,34 +820,36 @@ public abstract class Table extends JPanel implements Serializable {
     }
 
     public void calcCellRanges() {
-        double binMax = data[0].getBinValue();
-        double binMin = data[0].getBinValue();
-
-        double compareMax = data[0].getCompareValue();
-        double compareMin = data[0].getCompareValue();
-
-        for(DataCell cell : data) {
-            // Calc bin
-            if(binMax < cell.getBinValue()) {
-                binMax = cell.getBinValue();
-            }
-            if(binMin > cell.getBinValue()) {
-                binMin = cell.getBinValue();
-            }
-
-            // Calc compare
-            double compareValue = cell.getCompareValue();
-            if(compareMax < compareValue) {
-                compareMax = compareValue;
-            }
-            if(compareMin > compareValue) {
-                compareMin = compareValue;
-            }
-        }
-        setMaxBin(binMax);
-        setMinBin(binMin);
-        setMaxCompare(compareMax);
-        setMinCompare(compareMin);
+    	if(data.length > 0) {
+	        double binMax = data[0].getBinValue();
+	        double binMin = data[0].getBinValue();
+	
+	        double compareMax = data[0].getCompareValue();
+	        double compareMin = data[0].getCompareValue();
+	
+	        for(DataCell cell : data) {
+	            // Calc bin
+	            if(binMax < cell.getBinValue()) {
+	                binMax = cell.getBinValue();
+	            }
+	            if(binMin > cell.getBinValue()) {
+	                binMin = cell.getBinValue();
+	            }
+	
+	            // Calc compare
+	            double compareValue = cell.getCompareValue();
+	            if(compareMax < compareValue) {
+	                compareMax = compareValue;
+	            }
+	            if(compareMin > compareValue) {
+	                compareMin = compareValue;
+	            }
+	        }
+	        setMaxBin(binMax);
+	        setMinBin(binMin);
+	        setMaxCompare(compareMax);
+	        setMinCompare(compareMin);
+    	}
     }
 
     public double getMaxBin() {
@@ -1521,7 +1523,8 @@ public abstract class Table extends JPanel implements Serializable {
         TABLE_3D(3),
         X_AXIS(4),
         Y_AXIS(5),
-        SWITCH(6);
+        SWITCH(6),
+    	TABLE_2D_MASKED_SWITCHABLE(7);
 
         private final int marshallingCode;
 
@@ -1534,6 +1537,7 @@ public abstract class Table extends JPanel implements Serializable {
                 case TABLE_1D:
                     return 1;
                 case TABLE_2D:
+                case TABLE_2D_MASKED_SWITCHABLE:
                     return 2;
                 case TABLE_3D:
                     return 3;
