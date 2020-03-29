@@ -35,6 +35,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -57,12 +59,15 @@ import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.swing.TableToolBar;
 import com.romraider.util.JEPUtil;
 import com.romraider.util.NumberUtil;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.RomAttributeParser;
 
 public abstract class Table extends JPanel implements Serializable {
     private static final long serialVersionUID = 6559256489995552645L;
     protected static final Logger LOGGER = Logger.getLogger(Table.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            Table.class.getName());
     protected static final String ST_DELIMITER = "\t\n\r\f";
     protected static Settings.Endian memModelEndian;
 
@@ -941,9 +946,9 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
-            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
-                    userLevel + " or greater. Click View->User Level to change your userlevel.",
-                    "Table cannot be modified",
+            JOptionPane.showMessageDialog(this, MessageFormat.format(
+                    rb.getString("USERLVLTOLOW"), userLevel),
+                    rb.getString("TBLNOTMODIFY"),
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -962,9 +967,9 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
-            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
-                    userLevel + " or greater. Click View->User Level to change your userlevel.",
-                    "Table cannot be modified",
+            JOptionPane.showMessageDialog(this, MessageFormat.format(
+                    rb.getString("USERLVLTOLOW"), userLevel),
+                    rb.getString("TBLNOTMODIFY"),
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -977,9 +982,9 @@ public abstract class Table extends JPanel implements Serializable {
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
-            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
-                    userLevel + " or greater. Click View->User Level to change your userlevel.",
-                    "Table cannot be modified",
+            JOptionPane.showMessageDialog(this, MessageFormat.format(
+                    rb.getString("USERLVLTOLOW"), userLevel),
+                    rb.getString("TBLNOTMODIFY"),
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -1276,11 +1281,14 @@ public abstract class Table extends JPanel implements Serializable {
 
                     JPanel panel = new JPanel();
                     panel.setLayout(new GridLayout(4, 1));
-                    panel.add(new JLabel("The real value and byte value conversion expressions for table " + getName() + " are invalid."));
-                    panel.add(new JLabel("To real value: " + scale.getExpression()));
-                    panel.add(new JLabel("To byte: " + scale.getByteExpression()));
+                    panel.add(new JLabel(MessageFormat.format(
+                            rb.getString("REALBYTEINVALID"), getName())));
+                    panel.add(new JLabel(MessageFormat.format(
+                            rb.getString("REALVALUE"), scale.getExpression())));
+                    panel.add(new JLabel(MessageFormat.format(
+                            rb.getString("BYTEVALUE"), scale.getByteExpression())));
 
-                    JCheckBox check = new JCheckBox("Always display this message", true);
+                    JCheckBox check = new JCheckBox(rb.getString("DISPLAYMSG"), true);
                     check.setHorizontalAlignment(JCheckBox.RIGHT);
                     panel.add(check);
 
@@ -1294,7 +1302,7 @@ public abstract class Table extends JPanel implements Serializable {
                             );
 
                     JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(this), panel,
-                            "Warning", JOptionPane.ERROR_MESSAGE);
+                            rb.getString("WARNING"), JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
