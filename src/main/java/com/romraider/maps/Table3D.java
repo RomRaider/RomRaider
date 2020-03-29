@@ -33,6 +33,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.naming.NameNotFoundException;
@@ -46,12 +48,15 @@ import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.swing.vertical.VerticalLabelUI;
 import com.romraider.util.NumberUtil;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.RomAttributeParser;
 
 public class Table3D extends Table {
 
     private static final long serialVersionUID = 3103448753263606599L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            Table3D.class.getName());
     private Table1D xAxis = new Table1D(TableType.X_AXIS);
     private Table1D yAxis = new Table1D(TableType.Y_AXIS);
     private JLabel xAxisLabel;
@@ -596,9 +601,9 @@ public class Table3D extends Table {
                 }
             }
         } else if (userLevel > getSettings().getUserLevel()) {
-            JOptionPane.showMessageDialog(this, "This table can only be modified by users with a userlevel of \n" +
-                    userLevel + " or greater. Click View->User Level to change your userlevel.",
-                    "Table cannot be modified",
+            JOptionPane.showMessageDialog(this, MessageFormat.format(
+                    rb.getString("USERLVLTOLOW"), userLevel),
+                    rb.getString("TBLNOTMODIFY"),
                     JOptionPane.INFORMATION_MESSAGE);
         }
         xAxis.setRealValue(realValue);
