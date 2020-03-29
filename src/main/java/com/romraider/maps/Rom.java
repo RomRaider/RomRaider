@@ -31,11 +31,13 @@ import static javax.swing.JOptionPane.showOptionDialog;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -51,6 +53,7 @@ import com.romraider.swing.CategoryTreeNode;
 import com.romraider.swing.JProgressPane;
 import com.romraider.swing.TableFrame;
 import com.romraider.swing.TableTreeNode;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 import com.romraider.xml.InvalidTableNameException;
 import com.romraider.xml.TableNotFoundException;
@@ -58,6 +61,8 @@ import com.romraider.xml.TableNotFoundException;
 public class Rom extends DefaultMutableTreeNode implements Serializable  {
     private static final long serialVersionUID = 7865405179738828128L;
     private static final Logger LOGGER = Logger.getLogger(Rom.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            Rom.class.getName());
     private RomID romID = new RomID();
     private String fileName = "";
     private File fullFileName = new File(".");
@@ -182,7 +187,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
             // update progress
             int currProgress = (int) (i / (double) tableNodes.size() * 100);
-            progress.update("Populating tables...", currProgress);
+            progress.update(rb.getString("POPTABLES"), currProgress);
 
             Table table = tableNodes.get(i).getTable();
             try {
@@ -203,8 +208,9 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                                 table.getStorageAddress() + " " + binData.length + " filesize", ex);
 
                         // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table), "Storage address for table \"" + table.getName() +
-                                "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table),
+                                MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
+                                rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
                         tableNodes.removeElementAt(i);
                         i--;
                     } catch (IndexOutOfBoundsException iex) {
@@ -213,8 +219,9 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
                                 table.getStorageAddress() + " " + binData.length + " filesize", iex);
 
                         // table storage address extends beyond end of file
-                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table), "Storage address for table \"" + table.getName() +
-                                "\" is out of bounds.\nPlease check ECU definition file.", "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table),
+                                MessageFormat.format(rb.getString("ADDROUTOFBNDS"), table.getName()),
+                                rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
                         tableNodes.removeElementAt(i);
                         i--;
                     }
@@ -227,7 +234,9 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
             } catch (NullPointerException ex) {
                 LOGGER.error("Error Populating Table", ex);
-                JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table), "There was an error loading table " + table.getName(), "ECU Definition Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(SwingUtilities.windowForComponent(table),
+                        MessageFormat.format(rb.getString("TABLELOADERR"), table.getName()),
+                        rb.getString("ECUDEFERROR"), JOptionPane.ERROR_MESSAGE);
                 tableNodes.removeElementAt(i);
                 i--;
             }
@@ -337,15 +346,12 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             else if (checksum.getTable().isLocked() &&
                     !checksum.getTable().isButtonSelected()) {
                 
-                Object[] options = {"Yes", "No"};
-                final String message = String.format(
-                        "One or more ROM image Checksums is invalid. " +
-                        "Calculate new Checksums?%n" +
-                        "(NOTE: this will only fix the Checksums it will NOT repair a corrupt ROM image)");
+                Object[] options = {rb.getString("YES"), rb.getString("NO")};
+                final String message = rb.getString("CHKSUMINVALID");
                 int answer = showOptionDialog(
                         SwingUtilities.windowForComponent(checksum.getTable()),
                         message,
-                        "Checksum Fix",
+                        rb.getString("CHECKSUMFIX"),
                         DEFAULT_OPTION,
                         QUESTION_MESSAGE,
                         null,
@@ -434,12 +440,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
 
     public void validateChecksum() {
         if (!checksumManagers.isEmpty()) {
-            final String message = String.format(
-                    "At least one Checksum is invalid.%n" +
-                    "The ROM image may be corrupt or it has been " +
-                    "hex edited manually.%n" +
-                    "The checksum can be corrected when the ROM " +
-                    "is saved if your trust it is not corrupt.");
+            final String message = rb.getString("INVLAIDCHKSUM");
             
             boolean valid = true;
             
@@ -450,7 +451,7 @@ public class Rom extends DefaultMutableTreeNode implements Serializable  {
             if(!valid)
             	showMessageDialog(null,
                         message,
-                        "ERROR - At least one Checksum Failed",
+                        rb.getString("CHKSUMFAIL"),
                         WARNING_MESSAGE);
         }
     }
