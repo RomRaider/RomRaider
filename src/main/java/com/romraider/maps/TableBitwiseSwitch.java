@@ -22,6 +22,7 @@ package com.romraider.maps;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Map.Entry;
 
 import javax.swing.JCheckBox;
@@ -38,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import com.romraider.util.ByteUtil;
+import com.romraider.util.ResourceUtil;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -45,6 +48,8 @@ import static javax.swing.JOptionPane.showMessageDialog;
 public class TableBitwiseSwitch extends Table {
 
 	private static final long serialVersionUID = -4887718305447362308L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            TableBitwiseSwitch.class.getName());
 	private final Map<String, Integer> controlBits = new HashMap<String, Integer>();
 	private ArrayList<JCheckBox> checkboxes;
 	private int dataSize = 1;
@@ -75,10 +80,10 @@ public class TableBitwiseSwitch extends Table {
 
 		for (Entry<String, Integer> entry : sortByValue(controlBits).entrySet()) {
 			if (entry.getValue() > maxBitPosition) {
-				String mismatch = String.format(
-						"Table: %s%nDefinition file specified an out of range bit switch! Only values >= 0 and < size * 8 are allowed!",
-						super.getName());
-				showMessageDialog(this, mismatch, "ERROR - Incorrect definition", ERROR_MESSAGE);
+				String mismatch = MessageFormat.format(
+						rb.getString("OUTOFRANGE"), super.getName());
+				showMessageDialog(this, mismatch,
+				        rb.getString("DEFERROR"), ERROR_MESSAGE);
 				break;
 			} else {
 				JCheckBox cb = new JCheckBox(entry.getKey());
