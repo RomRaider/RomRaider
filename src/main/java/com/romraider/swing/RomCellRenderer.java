@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,9 @@ public class RomCellRenderer implements TreeCellRenderer {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/1d.gif")), JLabel.LEFT);
             } else if (table.getType() == Table.TableType.TABLE_2D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/2d.gif")), JLabel.LEFT);
-            } else if (table.getType() == Table.TableType.TABLE_3D) {
+            }else if (table.getType() == Table.TableType.TABLE_2D_MASKED_SWITCHABLE) {
+                tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/2d_masked.gif")), JLabel.LEFT);
+            }else if (table.getType() == Table.TableType.TABLE_3D) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/3d.gif")), JLabel.LEFT);
             } else if (table.getType() == Table.TableType.SWITCH) {
                 tableName = new JLabel(table.getName() + " ", new ImageIcon(getClass().getResource("/graphics/switch.gif")), JLabel.LEFT);
