@@ -1,14 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
-<<<<<<< HEAD
-<<<<<<< HEAD
  * Copyright (C) 2006-2020 RomRaider.com
-=======
- * Copyright (C) 2006-2019 RomRaider.com
->>>>>>> Added XOR for single byte checksums. Added possibility of multiple checksums in file
-=======
- * Copyright (C) 2006-2020 RomRaider.com
->>>>>>> Updated copyright. Switched to checkboxes for presets. Allowed multiple selection. Fixed saving bug. CChanged table name to 2DMaskedSwitchable
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
