@@ -75,8 +75,10 @@
         <!-- java compiler properties -->
         <property name="javac.source" value="1.6" />
         <property name="javac.target" value="1.6" />
+        <property name="bootclasspath.dir" value="C:\Program Files (x86)\Java\jdk1.6.0_45\jre\lib" />
         <property name="debug" value="off" />
         <property name="deprecation" value="on" />
+        <property name="javac.verbose" value="off" />
 
         <!-- version properties are set in this file, both for the product itself and
                 for some of the external dependencies (jar files and such) -->
@@ -306,6 +308,9 @@
         <attribute name="os" />
         <sequential>
             <mkdir dir="${classes.dir}" />
+            <path id="bootpath.ref">
+              <fileset dir="${bootclasspath.dir}" includes="*.jar"/>
+            </path>
             <javac 
                 failonerror="true"
                 srcdir="${src.java.dir}" 
@@ -314,11 +319,14 @@
                 target="${javac.target}"
                 includeantruntime="false"
                 debug="${debug}"
-                deprecation="${deprecation}">
-                <classpath refid="@{os}.classpath" />
-                <!--
+                verbose="${javac.verbose}"
+                deprecation="${deprecation}"
+                compiler="javac${javac.target}"
+                bootclasspath="${toString:bootpath.ref}" >
+                <!-- 
                 <compilerarg value="-Xlint" />
                 -->
+                <classpath refid="@{os}.classpath" />
             </javac>
         </sequential>
     </macrodef>
