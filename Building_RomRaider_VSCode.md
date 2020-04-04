@@ -1,15 +1,15 @@
-Here are steps to setup Visual Studio Code to build and debug Romraider.
+Here are steps to setup Visual Studio Code to build and debug RomRaider.
 
-1. Download Git for your operating system. You'll use git to clone the Romraider repository.
+1. Download Git for your operating system. You'll use git to clone the RomRaider repository.
 	> https://git-scm.com/downloads
 	
-1. Download a Java OpenJDK 8 32bit version, several options are available: RedHat, Oracle, Adopt, etc. I use AdoptOpenJdk 8 just because I don't to register to download it.
+1. Download a Java OpenJDK 8 32bit version, several options are available: RedHat, Oracle, Adopt, etc. I use AdoptOpenJdk 8 just because I don't have to register to download it.
 
-	When installing if there's a option to set JAVA_HOME variable, have the installer it. You may have to do it manually later, Adopt lets you set this during OpenJDK install.
+	When installing, if there's a option to set JAVA_HOME variable, have the installer do it. You may have to edit it manually later, Adopt lets you set this during OpenJDK install.
 	
 	> Links:
 	>
-	> [Redhat OpenJdk](https://developers.redhat.com/products/openjdk/download?extIdCarryOver=true&sc_cid=701f2000000RWTnAAO)
+	> [Red Hat OpenJdk](https://developers.redhat.com/products/openjdk/download?extIdCarryOver=true&sc_cid=701f2000000RWTnAAO)
 	>
 	> [Adopt OpenJdk](https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=openj9)
 
@@ -19,11 +19,11 @@ Here are steps to setup Visual Studio Code to build and debug Romraider.
 	> 
 	> For example, I use windows and decided on: 'C:\Users\Walter\ANT'
 	
-1. Add '**ANT_HOME**' as a System Environment variable execluding the quotes.
+1. Add '**ANT_HOME**' as a System Environment variable excluding the quotes.
 	> - For the value use the unzipped ANT path from the previous step. For Example: 'C:\Users\<USERNAME>\ANT'
 	> - If you do not know how to add a environment variable, see: https://docs.oracle.com/javase/tutorial/essential/environment/paths.html
 
-1. Edit the existing '**PATH**' System Environment, add the file directory you unzipped ANT to with the bin directory appended.
+1. Edit the existing '**PATH**' System Environment, add the directory you unzipped ANT to with the \bin directory appended.
 	> For Example: 'C:\Users\<USERNAME>\ANT\bin'
 		
 1. Download & Install '**Visual Studio Code**':
@@ -34,7 +34,7 @@ Here are steps to setup Visual Studio Code to build and debug Romraider.
 
 1. Optional: Download & Install '**Ant Target Runner**' Extension: https://marketplace.visualstudio.com/items?itemName=nickheap.vscode-ant
 
-1. Open the Romraider folder in VS Code. Ensure the Explorer panel is open. 
+1. Open the RomRaider folder in VS Code. Ensure the Explorer panel is open. 
 	> 'View Menu > Explorer'
 
 1. Open the terminal window '**View Menu > Terminal**'
@@ -73,12 +73,12 @@ Here are steps to setup Visual Studio Code to build and debug Romraider.
 	}
 
 1. At the top of the debug panel, you'll see a label '**Run And Debug**' and a drop down box. 
-	> - From the dropdown box select the appropriate option depending on whether you want to debug Romraider Editor or Romraider Logger.
+	> - From the dropdown box select the appropriate option depending on whether you want to debug RomRaider Editor or RomRaider Logger.
 	> - Press the play button next to the dropdown or press F5.
 	> - You will likely get a popup: 'Build failed, do you want to continue?' Click Proceed.
-	> - Romraider should launch.
+	> - RomRaider should launch.
 
-1. If you're still here, Congrats! You are now able  to debug Romroader. You can set breakpoints in the source code, and step through the code.
+1. If you're still here, Congrats! You are now able to debug RomRaider. You can set breakpoints in the source code, and step through the code.
 
 1. If the steps above didn't work, please review them to make sure you didn't miss anything. If it still doesn't work contact me via my github account below.
 
