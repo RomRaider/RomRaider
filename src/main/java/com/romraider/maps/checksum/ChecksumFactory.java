@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,17 +22,21 @@ package com.romraider.maps.checksum;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+import java.text.MessageFormat;
 import java.util.Map;
+import java.util.ResourceBundle;
+
+import com.romraider.util.ResourceUtil;
 
 /**
  * Instantiate a ChecksumManager class.
  */
 public final class ChecksumFactory {
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            ChecksumFactory.class.getName());
     private static final String TYPE = "type";
-    private static final String MISSING =
-            "Error in checksum definition, 'type' attribute missing.";
-    private static final String NO_CLASS =
-            "Error loading Checksum Manager of type: %s";
+    private static final String MISSING = rb.getString("MISSING");
+    private static final String NO_CLASS = rb.getString("NOCLASS");
     private ChecksumFactory() {
     }
 
@@ -63,11 +67,11 @@ public final class ChecksumFactory {
                 message = MISSING;
             }
             else {
-                message = String.format(NO_CLASS, type.toUpperCase());
+                message = MessageFormat.format(NO_CLASS, type.toUpperCase());
             }
             showMessageDialog(null,
                     message,
-                    "Error Loading Checksum Manager", ERROR_MESSAGE);
+                    rb.getString("LOADERR"), ERROR_MESSAGE);
         }
         return cm;
     }
