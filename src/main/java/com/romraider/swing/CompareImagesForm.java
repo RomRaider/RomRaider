@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
@@ -47,10 +49,12 @@ import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
+import com.romraider.util.ResourceUtil;
 
 public class CompareImagesForm extends JFrame implements ActionListener {
-
     private static final long serialVersionUID = -8937472127815934398L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            CompareImagesForm.class.getName());
     private final Vector<Rom> roms;
     private final JPanel contentPane;
     private final JComboBox comboBoxImageLeft;
@@ -67,14 +71,14 @@ public class CompareImagesForm extends JFrame implements ActionListener {
         setResizable(false);
         this.roms = roms;
 
-        setTitle("Compare Images");
+        setTitle(rb.getString("TITLE"));
 
         setBounds(100, 100, 600, 450);
         this.contentPane = new JPanel();
         this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(this.contentPane);
 
-        JLabel lblSelectImages = new JLabel("Selected Images");
+        JLabel lblSelectImages = new JLabel(rb.getString("LBLSELECTED"));
         lblSelectImages.setBounds(10, 11, 79, 14);
 
         contentPane.setLayout(null);
@@ -86,28 +90,28 @@ public class CompareImagesForm extends JFrame implements ActionListener {
 
         this.comboBoxImageLeft = new JComboBox();
         this.comboBoxImageLeft.setBounds(10, 7, 554, 20);
-        this.comboBoxImageLeft.setToolTipText("Select an image to compare.");
+        this.comboBoxImageLeft.setToolTipText(rb.getString("TTSELECTIMG"));
         this.comboBoxImageLeft.setRenderer( new ComboBoxRenderer() );
         panelImageSelector.add(this.comboBoxImageLeft);
 
         this.comboBoxImageRight = new JComboBox();
         this.comboBoxImageRight.setBounds(10, 32, 554, 20);
-        this.comboBoxImageRight.setToolTipText("Select an image to compare.");
+        this.comboBoxImageRight.setToolTipText(rb.getString("TTSELECTIMG"));
         this.comboBoxImageRight.setRenderer( new ComboBoxRenderer() );
         panelImageSelector.add(this.comboBoxImageRight);
 
-        this.btnCompare = new JButton("Compare");
+        this.btnCompare = new JButton(rb.getString("BTNCOMPARE"));
         this.btnCompare.addActionListener(this);
         this.btnCompare.setBounds(10, 64, 89, 23);
         panelImageSelector.add(this.btnCompare);
         this.contentPane.add(panelImageSelector);
         this.contentPane.add(lblSelectImages);
 
-        JLabel lblResults = new JLabel("Results:");
+        JLabel lblResults = new JLabel(rb.getString("LBLRESULTS"));
         lblResults.setBounds(10, 141, 46, 14);
         contentPane.add(lblResults);
 
-        lblImageResultString = new JLabel("Compare images...");
+        lblImageResultString = new JLabel(rb.getString("LBLCOMPAREIMGS"));
         lblImageResultString.setBounds(66, 141, 518, 14);
         contentPane.add(lblImageResultString);
         scrollPaneResults = new JScrollPane();
@@ -228,21 +232,23 @@ public class CompareImagesForm extends JFrame implements ActionListener {
 
         // Fill out the result string.
         if(equal > 0 && different == 0 && missing == 0) {
-            lblImageResultString.setText("Images are equal.");
+            lblImageResultString.setText(rb.getString("LBLEQUALS"));
             lblImageResultString.setForeground(Settings.TABLE_EQUAL_COLOR);
         } else if(different > 0) {
-            lblImageResultString.setText("Images are NOT equal.  Equal Tables: "+equal+", Changed Tables: "+different+", Missing Tables: "+missing);
+            lblImageResultString.setText(MessageFormat.format(
+                    rb.getString("LBLNOTEQUAL"), equal, different, missing));
             lblImageResultString.setForeground(Settings.TABLE_DIFFERENT_COLOR);
         } else {
-            lblImageResultString.setText("Images are NOT equal.  Equal Tables: "+equal+", Changed Tables: "+different+", Missing Tables: "+missing);
+            lblImageResultString.setText(MessageFormat.format(
+                    rb.getString("LBLNOTEQUAL"), equal, different, missing));
             lblImageResultString.setForeground(Settings.TABLE_MISSING_COLOR);
         }
 
         // Check if the list has items.
         if(listModelChanges.size() < 1)
         {
-            listModelChanges.addElement(new ListItem(0, "No tables are equal, different, or missing."));
-            lblImageResultString.setText("Unable to compare images.");
+            listModelChanges.addElement(new ListItem(0, rb.getString("LBLNOEDM")));
+            lblImageResultString.setText(rb.getString("NOCOMPARE"));
             lblImageResultString.setForeground(Color.RED);
             return;
         }
@@ -250,17 +256,17 @@ public class CompareImagesForm extends JFrame implements ActionListener {
         // Add list items for 0 counts.
         if(equal == 0)
         {
-            listModelChanges.addElement(new ListItem(1, "No Equal Tables."));
+            listModelChanges.addElement(new ListItem(1, rb.getString("NOEQUAL")));
         }
 
         if(different == 0)
         {
-            listModelChanges.addElement(new ListItem(2, "No Changed Tables."));
+            listModelChanges.addElement(new ListItem(2, rb.getString("NOCHANGED")));
         }
 
         if(missing == 0)
         {
-            listModelChanges.addElement(new ListItem(3, "No Missing Tables."));
+            listModelChanges.addElement(new ListItem(3, rb.getString("NOMISSING")));
         }
 
     }
@@ -344,17 +350,20 @@ public class CompareImagesForm extends JFrame implements ActionListener {
             case 1:
                 // equal - default green
                 setForeground(Settings.TABLE_EQUAL_COLOR);
-                setText("[unchanged] "+item.getValue());
+                setText(MessageFormat.format(
+                        rb.getString("UNCHANGED"), item.getValue()));
                 break;
             case 2:
                 // different - default red
                 setForeground(Settings.TABLE_DIFFERENT_COLOR);
-                setText("[modified] "+item.getValue());
+                setText(MessageFormat.format(
+                        rb.getString("MODIFIED"), item.getValue()));
                 break;
             case 3:
                 // missing - default yellow
                 setForeground(Settings.TABLE_MISSING_COLOR);
-                setText("[missing] "+item.getValue());
+                setText(MessageFormat.format(
+                        rb.getString("MISSING"), item.getValue()));
                 break;
             default:
                 setForeground(paramList.getForeground());
