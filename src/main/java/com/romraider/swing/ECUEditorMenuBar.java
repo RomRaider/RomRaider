@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
@@ -54,52 +56,57 @@ import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
 import com.romraider.net.BrowserControl;
 import com.romraider.ramtune.test.RamTuneTestApp;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private static final long serialVersionUID = -4777040428837855236L;
-    private final JMenu fileMenu = new JMenu("File");
-    private final JMenuItem openImage = new JMenuItem("Open Image...");
-    private final JMenuItem openImages = new JMenuItem("Open Image(s)...");
-    private final JMenuItem saveImage = new JMenuItem("Save Image As...");
-    private final JMenuItem saveAsRepository = new JMenuItem("Save Image As Repository...");
-    private final JMenuItem refreshImage = new JMenuItem("Refresh Image");
-    private final JMenuItem closeImage = new JMenuItem("Close Image");
-    private final JMenuItem closeAll = new JMenuItem("Close All Images");
-    private final JMenuItem exit = new JMenuItem("Exit");
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            ECUEditorMenuBar.class.getName());
+    private final JMenu fileMenu = new JMenu(rb.getString("FILE"));
+    private final JMenuItem openImage = new JMenuItem(rb.getString("OPENIMG"));
+    private final JMenuItem openImages = new JMenuItem(rb.getString("OPENIMGS"));
+    private final JMenuItem saveImage = new JMenuItem(rb.getString("SAVEAS"));
+    private final JMenuItem saveAsRepository = new JMenuItem(rb.getString("SAVEREPO"));
+    private final JMenuItem refreshImage = new JMenuItem(rb.getString("REFRESH"));
+    private final JMenuItem closeImage = new JMenuItem(rb.getString("CLOSE"));
+    private final JMenuItem closeAll = new JMenuItem(rb.getString("CLOSEALL"));
+    private final JMenuItem exit = new JMenuItem(rb.getString("EXIT"));
 
-    private final JMenu definitionMenu = new JMenu("ECU Definitions");
-    private final JMenuItem defManager = new JMenuItem("ECU Definition Manager...");
-    private final JMenuItem editDefinition = new JMenuItem("Edit ECU Definitions...");
-    private final JMenuItem updateDefinition = new JMenuItem("Get ECU Definitions...");
+    private final JMenu definitionMenu = new JMenu(rb.getString("ECUDEF"));
+    private final JMenuItem defManager = new JMenuItem(rb.getString("ECUDEFMAN"));
+    private final JMenuItem editDefinition = new JMenuItem(rb.getString("EDITDEF"));
+    private final JMenuItem updateDefinition = new JMenuItem(rb.getString("GETDEF"));
 
-    private final JMenu editMenu = new JMenu("Edit");
-    private final JMenuItem settings = new JMenuItem(PRODUCT_NAME + " Settings...");
-    private final JMenuItem compareImages = new JMenuItem("Compare Images...");
-    private final JMenu convertRom = new JMenu("Convert Image");
-    private final JMenuItem convertIncrease = new JMenuItem("160KB --> 192KB...");
-    private final JMenuItem convertDecrease = new JMenuItem("192KB --> 160KB...");
+    private final JMenu editMenu = new JMenu(rb.getString("EDIT"));
+    private final JMenuItem settings = new JMenuItem(MessageFormat.format(
+            rb.getString("SETTINGS"), PRODUCT_NAME));
+    private final JMenuItem compareImages = new JMenuItem(rb.getString("COMPARE"));
+    private final JMenu convertRom = new JMenu(rb.getString("CONVERT"));
+    private final JMenuItem convertIncrease = new JMenuItem(rb.getString("ONE60"));
+    private final JMenuItem convertDecrease = new JMenuItem(rb.getString("ONE92"));
     private final ButtonGroup convertGroup = new ButtonGroup();
 
-    private final JMenu viewMenu = new JMenu("View");
-    private final JMenuItem romProperties = new JMenuItem("ECU Image Properties");
+    private final JMenu viewMenu = new JMenu(rb.getString("VIEW"));
+    private final JMenuItem romProperties = new JMenuItem(rb.getString("PROPERTIES"));
     private final ButtonGroup levelGroup = new ButtonGroup();
-    private final JMenu levelMenu = new JMenu("User Level");
-    private final JRadioButtonMenuItem level1 = new JRadioButtonMenuItem("1 Beginner");
-    private final JRadioButtonMenuItem level2 = new JRadioButtonMenuItem("2 Intermediate");
-    private final JRadioButtonMenuItem level3 = new JRadioButtonMenuItem("3 Advanced");
-    private final JRadioButtonMenuItem level4 = new JRadioButtonMenuItem("4 Highest");
-    private final JRadioButtonMenuItem level5 = new JRadioButtonMenuItem("5 Debug Mode");
+    private final JMenu levelMenu = new JMenu(rb.getString("USERLVL"));
+    private final JRadioButtonMenuItem level1 = new JRadioButtonMenuItem(rb.getString("BEGIN"));
+    private final JRadioButtonMenuItem level2 = new JRadioButtonMenuItem(rb.getString("INTER"));
+    private final JRadioButtonMenuItem level3 = new JRadioButtonMenuItem(rb.getString("ADVND"));
+    private final JRadioButtonMenuItem level4 = new JRadioButtonMenuItem(rb.getString("HIGH"));
+    private final JRadioButtonMenuItem level5 = new JRadioButtonMenuItem(rb.getString("DEBUG"));
 
-    private final JMenu loggerMenu = new JMenu("Logger");
-    private final JMenuItem openLogger = new JMenuItem("Launch Logger...");
+    private final JMenu loggerMenu = new JMenu(rb.getString("LOGGER"));
+    private final JMenuItem openLogger = new JMenuItem(rb.getString("LLOGGER"));
 
-    private final JMenu ramTuneMenu = new JMenu("Tools");
-    private final JMenuItem launchRamTuneTestApp = new JMenuItem("Launch Test App...");
+    private final JMenu ramTuneMenu = new JMenu(rb.getString("TOOLS"));
+    private final JMenuItem launchRamTuneTestApp = new JMenuItem(rb.getString("TESTAPP"));
 
-    private final JMenu helpMenu = new JMenu("Help");
-    private final JMenuItem about = new JMenuItem("About " + PRODUCT_NAME);
+    private final JMenu helpMenu = new JMenu(rb.getString("HELP"));
+    private final JMenuItem about = new JMenuItem(MessageFormat.format(
+            rb.getString("ABOUT"), PRODUCT_NAME));
 
     public ECUEditorMenuBar() {
         // file menu items
@@ -269,8 +276,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             closeImage.setEnabled(false);
             //closeAll.setEnabled(false);
             romProperties.setEnabled(false);
-            saveImage.setText("Save As...");
-            saveAsRepository.setText("Save As Repository...");
+            saveImage.setText(rb.getString("SAVEAS"));
+            saveAsRepository.setText(rb.getString("SAVEREPO"));
             compareImages.setEnabled(false);
             convertRom.setEnabled(false);
         } else {
@@ -279,14 +286,19 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             closeImage.setEnabled(true);
             //closeAll.setEnabled(true);
             romProperties.setEnabled(true);
-            saveImage.setText("Save " + file + " As...");
-            saveAsRepository.setText("Save "+ file +" As Repository...");
+            saveImage.setText(MessageFormat.format(
+                    rb.getString("SAVEFAS"), file));
+            saveAsRepository.setText(MessageFormat.format(
+                    rb.getString("SAVEFREPO"), file));
             compareImages.setEnabled(true);
             convertRom.setEnabled(true);
         }
-        refreshImage.setText("Refresh " + file);
-        closeImage.setText("Close " + file);
-        romProperties.setText(file + "Properties");
+        refreshImage.setText(MessageFormat.format(
+                rb.getString("REFRESHF"), file));
+        closeImage.setText(MessageFormat.format(
+                rb.getString("CLOSEF"), file));
+        romProperties.setText(MessageFormat.format(
+                rb.getString("PROPERTIESF"), file));
 
         int lastSelectedRomSize = 0;
         Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
@@ -318,7 +330,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 openImageDialog();
             } catch (Exception ex) {
                 showMessageDialog(parent,
-                        new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
+                        new DebugPanel(ex, getSettings().getSupportURL()),
+                        rb.getString("EXCEPTN"), ERROR_MESSAGE);
             }
 
         } else if (e.getSource() == openImages) {
@@ -326,7 +339,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 openImagesDialog();
             } catch (Exception ex) {
                 showMessageDialog(parent,
-                        new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
+                        new DebugPanel(ex, getSettings().getSupportURL()),
+                        rb.getString("EXCEPTN"), ERROR_MESSAGE);
             }
 
         } else if (e.getSource() == saveImage) {
@@ -334,14 +348,16 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 this.saveImage();
             } catch (Exception ex) {
                 showMessageDialog(parent,
-                        new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
+                        new DebugPanel(ex, getSettings().getSupportURL()),
+                        rb.getString("EXCEPTN"), ERROR_MESSAGE);
             }
         } else if (e.getSource() == saveAsRepository) {
             try {
                 this.saveAsRepository();
             } catch(Exception ex) {
                 showMessageDialog(parent,
-                        new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
+                        new DebugPanel(ex, getSettings().getSupportURL()),
+                        rb.getString("EXCEPTN"), ERROR_MESSAGE);
             }
         } else if (e.getSource() == closeImage) {
             parent.closeImage();
@@ -355,14 +371,17 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
         } else if (e.getSource() == romProperties) {
             showMessageDialog(parent, new RomPropertyPanel(parent.getLastSelectedRom()),
-                    parent.getLastSelectedRom().getRomIDString() + " Properties", INFORMATION_MESSAGE);
+                    MessageFormat.format(rb.getString("PROPERTIESF"),
+                            parent.getLastSelectedRom().getRomIDString()),
+                    INFORMATION_MESSAGE);
 
         } else if (e.getSource() == refreshImage) {
             try {
                 refreshImage();
             } catch (Exception ex) {
                 showMessageDialog(parent, new DebugPanel(ex,
-                        getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
+                        getSettings().getSupportURL()),
+                        rb.getString("EXCEPTN"), ERROR_MESSAGE);
             }
 
         } else if (e.getSource() == settings) {
@@ -371,7 +390,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             form.setVisible(true);
 
         } else if (e.getSource() == compareImages){
-            CompareImagesForm form = new CompareImagesForm(parent.getImages(), parent.getIconImage());
+            CompareImagesForm form = new CompareImagesForm(parent.getImages(),
+                    parent.getIconImage());
             form.setLocationRelativeTo(parent);
             form.setVisible(true);
 
@@ -381,7 +401,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 refreshImage();
             } catch (Exception ex) {
                 showMessageDialog(parent,
-                        new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
+                        new DebugPanel(ex, getSettings().getSupportURL()),
+                        rb.getString("EXCEPTN"), ERROR_MESSAGE);
             }
 
         } else if (e.getSource() == convertDecrease) {
@@ -390,7 +411,8 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
                 refreshImage();
             } catch (Exception ex) {
                 showMessageDialog(parent,
-                        new DebugPanel(ex, getSettings().getSupportURL()), "Exception", ERROR_MESSAGE);
+                        new DebugPanel(ex, getSettings().getSupportURL()),
+                        rb.getString("EXCEPTN"), ERROR_MESSAGE);
             }
 
         } else if (e.getSource() == defManager) {
@@ -422,13 +444,16 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             RamTuneTestApp.startTestApp(DISPOSE_ON_CLOSE);
 
         } else if (e.getSource() == about) {
-            //TODO:  change this to use com.romraider.swing.menubar.action.AboutAction
-            String message = PRODUCT_NAME + " - ECU Editor\n"
-                    + "Version: " + VERSION + "\n"
-                    + "Build #: " + BUILDNUMBER + "\n"
-                    + SUPPORT_URL;
-            String title = "About " + PRODUCT_NAME;
-            showMessageDialog(parent, message, title, INFORMATION_MESSAGE, ABOUT_ICON);
+            showMessageDialog(parent,
+                    MessageFormat.format(
+                            rb.getString("ABOUTMSG"), PRODUCT_NAME,
+                            VERSION, BUILDNUMBER, SUPPORT_URL,
+                            System.getProperty("java.vendor"),
+                            System.getProperty("java.runtime.version"),
+                            System.getProperty("os.arch")),
+                    MessageFormat.format(
+                            rb.getString("ABOUT"), PRODUCT_NAME),
+                    INFORMATION_MESSAGE, ABOUT_ICON);
         }
     }
 
@@ -445,7 +470,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         ECUEditor parent = ECUEditorManager.getECUEditor();
         JFileChooser fc = new JFileChooser(SettingsManager.getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());
-        fc.setDialogTitle("Open Image");
+        fc.setDialogTitle(rb.getString("OPENIMG"));
 
         if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             parent.openImage(fc.getSelectedFile());
@@ -458,7 +483,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         JFileChooser fc = new JFileChooser(getSettings().getLastImageDir());
         fc.setFileFilter(new ECUImageFilter());
         fc.setMultiSelectionEnabled(true);
-        fc.setDialogTitle("Open Image(s)");
+        fc.setDialogTitle(rb.getString("OPENIMGS"));
 
         if(fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
             parent.openImages(fc.getSelectedFiles());
@@ -484,7 +509,10 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         if (fc.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();
             if (selectedFile.exists()) {
-                int option = showConfirmDialog(parent, selectedFile.getName() + " already exists! Overwrite?");
+                int option = showConfirmDialog(parent,
+                        MessageFormat.format(
+                        rb.getString("OVERWRITE"),
+                        selectedFile.getName()));
 
                 // option: 0 = Cancel, 1 = No
                 if (option == CANCEL_OPTION || option == 1) {
@@ -512,7 +540,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
     private File getRepositoryOutputDir() {
         JFileChooser fc = new JFileChooser();
         fc.setCurrentDirectory(getSettings().getLastRepositoryDir());
-        fc.setDialogTitle("Select Repository Directory");
+        fc.setDialogTitle(rb.getString("SELECTDIR"));
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         // disable the "All files" option
@@ -521,7 +549,11 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
         if (fc.showSaveDialog(ECUEditorManager.getECUEditor()) == JFileChooser.APPROVE_OPTION) {
             File selectedDir = fc.getSelectedFile();
             if (selectedDir.exists()) {
-                int option = showConfirmDialog(ECUEditorManager.getECUEditor(), selectedDir.getName() + " already exists! Overwrite?");
+                int option = showConfirmDialog(
+                        ECUEditorManager.getECUEditor(),
+                        MessageFormat.format(
+                                rb.getString("OVERWRITE"),
+                                selectedDir.getName()));
 
                 // option: 0 = Cancel, 1 = No
                 if (option == CANCEL_OPTION || option == 1) {
@@ -578,12 +610,21 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             if(null != selectedFile){
                 if(lastSelectedRom.getRealFileSize() != Settings.SIXTEENBIT_SMALL_SIZE)
                 {
-                    showMessageDialog(ECUEditorManager.getECUEditor(), "Error converting image.  Image size is invalid.");
+                    showMessageDialog(ECUEditorManager.getECUEditor(),
+                            rb.getString("CONVERTERR"));
                 } else {
                     byte[] output = lastSelectedRom.saveFile();
                     byte[] incOutput = new byte[Settings.SIXTEENBIT_LARGE_SIZE];
-                    System.arraycopy(output, 0, incOutput, 0, Settings.SIXTEENBIT_START_ADDRESS);
-                    System.arraycopy(output, Settings.SIXTEENBIT_START_ADDRESS, incOutput, Settings.SIXTEENBIT_END_ADDRESS, Settings.SIXTEENBIT_SEGMENT_SIZE);
+                    System.arraycopy(output,
+                            0,
+                            incOutput,
+                            0,
+                            Settings.SIXTEENBIT_START_ADDRESS);
+                    System.arraycopy(output,
+                            Settings.SIXTEENBIT_START_ADDRESS,
+                            incOutput,
+                            Settings.SIXTEENBIT_END_ADDRESS,
+                            Settings.SIXTEENBIT_SEGMENT_SIZE);
                     for(int i = Settings.SIXTEENBIT_START_ADDRESS; i < Settings.SIXTEENBIT_END_ADDRESS; i++) {
                         // Fill space.
                         incOutput[i] = Settings.SIXTEENBIT_SEGMENT_VALUE;
@@ -601,12 +642,21 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
             if(null != selectedFile){
                 if(lastSelectedRom.getRealFileSize() != Settings.SIXTEENBIT_LARGE_SIZE)
                 {
-                    showMessageDialog(ECUEditorManager.getECUEditor(), "Error converting image.  Image size is invalid.");
+                    showMessageDialog(ECUEditorManager.getECUEditor(),
+                            rb.getString("CONVERTERR"));
                 } else {
                     byte[] output =lastSelectedRom.saveFile();
                     byte[] decOutput = new byte[Settings.SIXTEENBIT_SMALL_SIZE];
-                    System.arraycopy(output, 0, decOutput, 0, Settings.SIXTEENBIT_START_ADDRESS);
-                    System.arraycopy(output, Settings.SIXTEENBIT_END_ADDRESS, decOutput, Settings.SIXTEENBIT_START_ADDRESS, Settings.SIXTEENBIT_SEGMENT_SIZE);
+                    System.arraycopy(output,
+                            0,
+                            decOutput,
+                            0,
+                            Settings.SIXTEENBIT_START_ADDRESS);
+                    System.arraycopy(output,
+                            Settings.SIXTEENBIT_END_ADDRESS,
+                            decOutput,
+                            Settings.SIXTEENBIT_START_ADDRESS,
+                            Settings.SIXTEENBIT_SEGMENT_SIZE);
                     this.writeImage(decOutput, selectedFile);
                 }
             }
@@ -615,7 +665,7 @@ public class ECUEditorMenuBar extends JMenuBar implements ActionListener {
 
     private String getLastSelectedRomFileName() {
         Rom lastSelectedRom = ECUEditorManager.getECUEditor().getLastSelectedRom();
-        return lastSelectedRom == null ? "" : lastSelectedRom.getFileName() + " ";
+        return lastSelectedRom == null ? "" : lastSelectedRom.getFileName();
     }
 
     private Settings getSettings() {
