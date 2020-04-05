@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,18 @@
 package com.romraider.swing;
 
 import javax.swing.filechooser.FileFilter;
+
+import com.romraider.util.ResourceUtil;
+
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.ResourceBundle;
 
 public class XMLFilter extends FileFilter {
 
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            XMLFilter.class.getName());
     private Hashtable<String, FileFilter> filters = null;
     private String description = null;
     private String fullDescription = null;
@@ -34,7 +40,7 @@ public class XMLFilter extends FileFilter {
     public XMLFilter() {
         this.filters = new Hashtable<String, FileFilter>();
         this.addExtension("xml");
-        this.setDescription("ECU Definition Files");
+        this.setDescription(rb.getString("DESC"));
     }
 
     public boolean accept(File f) {
