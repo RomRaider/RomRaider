@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,28 +20,37 @@
 package com.romraider.swing;
 
 import static com.romraider.Version.PRODUCT_NAME;
+
 import com.romraider.net.URL;
+import com.romraider.util.ResourceUtil;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 public class DebugPanel extends JPanel {
 
     private static final long serialVersionUID = -7159385694793030962L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            DebugPanel.class.getName());
 
     public DebugPanel(Exception ex, String url) {
         setLayout(new BorderLayout());
 
         JPanel top = new JPanel(new GridLayout(7, 1));
-        top.add(new JLabel(PRODUCT_NAME + " has encountered an exception. Please review the details below."));
-        top.add(new JLabel("If you are unable to fix this problem please visit the following website"));
-        top.add(new JLabel("and provide these details and the steps that lead to this error."));
+        top.add(new JLabel(MessageFormat.format(
+                rb.getString("LABEL1"),
+                PRODUCT_NAME)));
+        top.add(new JLabel(rb.getString("LABEL2")));
+        top.add(new JLabel(rb.getString("LABEL3")));
         top.add(new JLabel());
         top.add(new URL(url));
         top.add(new JLabel());
-        top.add(new JLabel("Details:"));
+        top.add(new JLabel(rb.getString("LABEL4")));
         add(top, BorderLayout.NORTH);
 
         JTextArea output = new JTextArea(ex.getMessage());
