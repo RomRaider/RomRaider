@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@ import static javax.swing.BorderFactory.createBevelBorder;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
@@ -37,10 +39,13 @@ import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.logger.ecu.ui.handler.table.TableUpdateHandler;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
+import com.romraider.util.ResourceUtil;
 
 public class TableFrame extends JInternalFrame implements InternalFrameListener, ActionListener {
 
     private static final long serialVersionUID = -2651279694660392351L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            TableFrame.class.getName());
     private final Table table;
     private TableMenuBar tableMenuBar = null;
 
@@ -130,8 +135,11 @@ public class TableFrame extends JInternalFrame implements InternalFrameListener,
             ECUEditorManager.getECUEditor().removeDisplayTable(this);
 
         } else if (e.getSource() == menu.getTableProperties()) {
-            JOptionPane.showMessageDialog(getTable(), new TablePropertyPanel(getTable()),
-                    getTable().getName() + " Table Properties", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(getTable(),
+                    new TablePropertyPanel(getTable()),
+                    MessageFormat.format(
+                            rb.getString("TBLPROP"), getTable().getName()),
+                    JOptionPane.INFORMATION_MESSAGE);
 
         } else if (e.getSource() == menu.getCopySel()) {
             getTable().copySelection();
