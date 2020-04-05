@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,18 @@
 package com.romraider.swing;
 
 import javax.swing.filechooser.FileFilter;
+
+import com.romraider.util.ResourceUtil;
+
 import java.io.File;
+import java.util.ResourceBundle;
 
 public class ECUImageFilter extends FileFilter {
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            ECUImageFilter.class.getName());
 
-    private final FileFilter filter = new GenericFileFilter("ECU Image Files", "bin", "hex");
+    private final FileFilter filter = new GenericFileFilter(
+            rb.getString("IMAGEFILE"), "bin", "hex");
 
     public boolean accept(File file) {
         return filter.accept(file);
