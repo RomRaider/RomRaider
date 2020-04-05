@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2017 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,10 @@
 
 package com.romraider.swing;
 
+import java.util.ResourceBundle;
+
 import com.romraider.maps.Rom;
+import com.romraider.util.ResourceUtil;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -28,6 +31,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 public class RomPropertyPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 5583360728106071942L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            RomPropertyPanel.class.getName());
     Rom rom = new Rom();
 
     public RomPropertyPanel(Rom rom) {
@@ -37,7 +42,12 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         fileName.setText(rom.getFileName());
         xmlID.setText(rom.getRomID().getXmlid());
         ecuVersion.setText(rom.getRomID().getCaseId());
-        fileSize.setText((rom.getRealFileSize() / 1024) + "kb");
+        if (rom.getRealFileSize() > 1024) {
+            fileSize.setText((rom.getRealFileSize() / 1024) + "kB");
+        }
+        else {
+            fileSize.setText(rom.getRealFileSize() + "B");
+        }
         internalID.setText(rom.getRomID().getInternalIdString());
         storageAddress.setText("0x" + Integer.toHexString(rom.getRomID().getInternalIdAddress()));
 
@@ -87,49 +97,49 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         lblChecksum = new javax.swing.JLabel();
         checksum = new javax.swing.JLabel();
 
-        lblChecksum.setText("Checksum:");
+        lblChecksum.setText(rb.getString("LBLCHKSUM"));
 
         checksum.setText("subaru");
 
-        lblEditStamp.setText("Edit Stamp:");
+        lblEditStamp.setText(rb.getString("LBLEDIT"));
         
         editStamp.setText("stamp");
         
-        lblFilename.setText("Filename:");
+        lblFilename.setText(rb.getString("LBLFN"));
 
         fileName.setText("Filename");
 
-        lblECURevision.setText("ECU Revision:");
+        lblECURevision.setText(rb.getString("LBLECU"));
 
         xmlID.setText("XMLID");
 
-        lblFilesize.setText("Filesize:");
+        lblFilesize.setText(rb.getString("LBLFS"));
 
         fileSize.setText("999kb");
 
-        lblEcuVersion.setText("ECU Version:");
+        lblEcuVersion.setText(rb.getString("LBLVER"));
 
         ecuVersion.setText("ECUVER");
 
-        lblInternalId.setText("Internal ID:");
+        lblInternalId.setText(rb.getString("LBLID"));
 
         internalID.setText("INTERNAL");
 
-        lblStorageAddress.setText("ID Storage Address:");
+        lblStorageAddress.setText(rb.getString("LBLADDR"));
 
         storageAddress.setText("0x00");
 
-        lblMake.setText("Make:");
+        lblMake.setText(rb.getString("LBLMAKE"));
 
-        lblMarket.setText("Market:");
+        lblMarket.setText(rb.getString("LBLMRKT"));
 
-        lblTransmission.setText("Transmission:");
+        lblTransmission.setText(rb.getString("LBLTRANS"));
 
-        lblModel.setText("Model:");
+        lblModel.setText(rb.getString("LBLMDL"));
 
-        lblSubmodel.setText("Submodel:");
+        lblSubmodel.setText(rb.getString("LBLSMDL"));
 
-        lblYear.setText("Year:");
+        lblYear.setText(rb.getString("LBLYR"));
 
         make.setText("Make");
 
@@ -160,7 +170,7 @@ public class RomPropertyPanel extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tableList);
 
-        lblTables.setText("Tables:");
+        lblTables.setText(rb.getString("LBLTBLS"));
 
         GroupLayout layout = new GroupLayout(this);
         layout.setHorizontalGroup(
