@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,16 +23,20 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.*;
 
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 public class DefinitionManager extends javax.swing.JFrame implements ActionListener {
 
     private static final long serialVersionUID = -3920843496218196737L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            DefinitionManager.class.getName());
     public static int MOVE_UP = 0;
     public static int MOVE_DOWN = 1;
 
@@ -84,26 +88,26 @@ public class DefinitionManager extends javax.swing.JFrame implements ActionListe
         btnUndo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Definition File Manager");
+        setTitle(rb.getString("TITLE"));
         jScrollPane1.setViewportView(definitionList);
 
-        defLabel.setText("ECU Definition File Priority");
+        defLabel.setText(rb.getString("FILEPRIORITY"));
 
-        btnMoveUp.setText("Move Up");
+        btnMoveUp.setText(rb.getString("MOVEUP"));
 
-        btnMoveDown.setText("Move Down");
+        btnMoveDown.setText(rb.getString("MOVEDOWN"));
 
-        btnAddDefinition.setText("Add...");
+        btnAddDefinition.setText(rb.getString("ADD"));
 
-        btnRemoveDefinition.setText("Remove");
+        btnRemoveDefinition.setText(rb.getString("REMOVE"));
 
-        btnSave.setText("Save");
+        btnSave.setText(rb.getString("SAVE"));
 
-        btnCancel.setText("Cancel");
+        btnCancel.setText(rb.getString("CANCEL"));
 
-        btnApply.setText("Apply");
+        btnApply.setText(rb.getString("APPLY"));
 
-        btnUndo.setText("Undo");
+        btnUndo.setText(rb.getString("UNDO"));
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
