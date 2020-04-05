@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ package com.romraider.swing;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -36,16 +37,20 @@ import javax.swing.tree.TreePath;
 import com.romraider.editor.ecu.ECUEditorManager;
 import com.romraider.maps.Rom;
 import com.romraider.maps.Table;
+import com.romraider.util.ResourceUtil;
 
 public class JTableChooser extends JOptionPane implements MouseListener {
-    public JTableChooser() {
-    }
 
     private static final long serialVersionUID = 5611729002131147882L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            JTableChooser.class.getName());
     JPanel displayPanel = new JPanel();
     DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Open Images");
     JTree displayTree = new JTree(rootNode);
     JScrollPane displayScrollPane;
+
+    public JTableChooser() {
+    }
 
     public Table showChooser(Table targetTable) {
         Vector<Rom> roms = ECUEditorManager.getECUEditor().getImages();
@@ -94,9 +99,11 @@ public class JTableChooser extends JOptionPane implements MouseListener {
         displayScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         displayPanel.add(displayScrollPane);
 
-        Object[] values = {"Compare", "Cancel"};
+        Object[] values = {rb.getString("COMPARE"), rb.getString("CANCEL")};
 
-        if ((showOptionDialog(SwingUtilities.windowForComponent(targetTable), displayPanel, "Select a Map", JOptionPane.DEFAULT_OPTION,
+        if ((showOptionDialog(SwingUtilities.windowForComponent(targetTable),
+                displayPanel,
+                rb.getString("SELECT"), JOptionPane.DEFAULT_OPTION,
                 JOptionPane.PLAIN_MESSAGE, null, values, values[0]) == 0
                 && (displayTree.getLastSelectedPathComponent() instanceof TableChooserTreeNode))) {
             return ((TableChooserTreeNode) displayTree.getLastSelectedPathComponent()).getTable();
@@ -107,7 +114,8 @@ public class JTableChooser extends JOptionPane implements MouseListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        displayTree.setPreferredSize(new Dimension(displayTree.getWidth(), (displayTree.getRowCount()*displayTree.getRowHeight())));
+        displayTree.setPreferredSize(new Dimension(displayTree.getWidth(),
+                (displayTree.getRowCount()*displayTree.getRowHeight())));
         displayTree.revalidate();
     }
     @Override
