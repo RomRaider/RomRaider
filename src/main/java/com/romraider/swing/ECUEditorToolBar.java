@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@ import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -36,11 +38,14 @@ import javax.swing.JToolBar;
 import com.romraider.Settings;
 import com.romraider.editor.ecu.ECUEditor;
 import com.romraider.editor.ecu.ECUEditorManager;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 public class ECUEditorToolBar extends JToolBar implements ActionListener {
 
     private static final long serialVersionUID = 7778170684606193919L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            ECUEditorToolBar.class.getName());
     private final JButton openImage = new JButton();
     private final JButton saveImage = new JButton();
     private final JButton refreshImage = new JButton();
@@ -101,10 +106,13 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
     public void updateButtons() {
         String file = getEditor().getLastSelectedRomFileName();
 
-        openImage.setToolTipText("Open Image");
-        saveImage.setToolTipText("Save " + file + " As New Image...");
-        refreshImage.setToolTipText("Refresh " + file + " from saved copy");
-        closeImage.setToolTipText("Close " + file);
+        openImage.setToolTipText(rb.getString("OPEN"));
+        saveImage.setToolTipText(MessageFormat.format(
+                rb.getString("SAVEAS"), file));
+        refreshImage.setToolTipText(MessageFormat.format(
+                rb.getString("REFRESH"), file));
+        closeImage.setToolTipText(MessageFormat.format(
+                rb.getString("CLOSE"), file));
 
         if ("".equals(file)) {
             saveImage.setEnabled(false);
@@ -125,7 +133,8 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
                 ((ECUEditorMenuBar) getEditor().getJMenuBar()).openImageDialog();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
-                        getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                        getSettings().getSupportURL()),
+                        rb.getString("EXCEPTION"), JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == saveImage) {
             try {
@@ -133,7 +142,8 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
                 getEditor().refreshUI();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
-                        getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                        getSettings().getSupportURL()),
+                        rb.getString("EXCEPTION"), JOptionPane.ERROR_MESSAGE);
             }
         } else if (e.getSource() == closeImage) {
             getEditor().closeImage();
@@ -142,7 +152,8 @@ public class ECUEditorToolBar extends JToolBar implements ActionListener {
                 ((ECUEditorMenuBar) getEditor().getJMenuBar()).refreshImage();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getEditor(), new DebugPanel(ex,
-                        getSettings().getSupportURL()), "Exception", JOptionPane.ERROR_MESSAGE);
+                        getSettings().getSupportURL()),
+                        rb.getString("EXCEPTION"), JOptionPane.ERROR_MESSAGE);
             }
         }
     }

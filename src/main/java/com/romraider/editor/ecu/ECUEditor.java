@@ -407,7 +407,7 @@ public class ECUEditor extends AbstractFrame {
 
     public String getLastSelectedRomFileName() {
         Rom lastSelRom = getLastSelectedRom();
-        return lastSelRom == null ? "" : lastSelRom.getFileName() + " ";
+        return lastSelRom == null ? "" : lastSelRom.getFileName();
     }
 
     public void setLastSelectedRom(Rom lastSelectedRom) {
