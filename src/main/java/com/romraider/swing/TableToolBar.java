@@ -37,6 +37,7 @@ import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.naming.NameNotFoundException;
@@ -70,12 +71,15 @@ import com.romraider.maps.Table;
 import com.romraider.maps.Table1D;
 import com.romraider.maps.Table3D;
 import com.romraider.util.NumberUtil;
+import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
 
 public class TableToolBar extends JToolBar implements MouseListener, ItemListener, ActionListener, GraphDataListener {
 
     private static final long serialVersionUID = 8697645329367637930L;
     private static final Logger LOGGER = Logger.getLogger(TableToolBar.class);
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            TableToolBar.class.getName());
     private final JButton incrementFine = new JButton();
     private final JButton decrementFine = new JButton();
     private final JButton incrementCoarse = new JButton();
@@ -84,8 +88,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final JButton colorCells = new JButton();
     private final JButton refreshCompare = new JButton();
 
-    private final JButton setValue = new JButton("Set");
-    private final JButton multiply = new JButton("Mul");
+    private final JButton setValue = new JButton(rb.getString("SET"));
+    private final JButton multiply = new JButton(rb.getString("MUL"));
 
     private final ECUEditorNumberField incrementByFine = new ECUEditorNumberField();
     private final ECUEditorNumberField incrementByCoarse = new ECUEditorNumberField();
@@ -94,8 +98,8 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
     private final JComboBox scaleSelection = new JComboBox();
 
     private final JPanel liveDataPanel = new JPanel();
-    private final JCheckBox overlayLog = new JCheckBox("Overlay Log");
-    private final JButton clearOverlay = new JButton("Clear Overlay");
+    private final JCheckBox overlayLog = new JCheckBox(rb.getString("OVERLAYLOG"));
+    private final JButton clearOverlay = new JButton(rb.getString("CLEAROVERLAY"));
     private final JLabel liveDataValue = new JLabel();
 
     private final URL incrementFineImage = getClass().getResource("/graphics/icon-incfine.png");
@@ -182,20 +186,20 @@ public class TableToolBar extends JToolBar implements MouseListener, ItemListene
         setValueText.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
         setValueText.setPreferredSize(new Dimension(45, 23));
 
-        incrementFine.setToolTipText("Increment Value (Fine)");
-        decrementFine.setToolTipText("Decrement Value (Fine)");
-        incrementCoarse.setToolTipText("Increment Value (Coarse)");
-        decrementCoarse.setToolTipText("Decrement Value (Coarse)");
-        enable3d.setToolTipText("Render data in 3d");
-        setValue.setToolTipText("Set Absolute Value");
-        setValueText.setToolTipText("Set Absolute Value");
-        incrementByFine.setToolTipText("Fine Value Adjustment");
-        incrementByCoarse.setToolTipText("Coarse Value Adjustment");
-        multiply.setToolTipText("Multiply Value");
-        overlayLog.setToolTipText("Enable Overlay Of Real Time Log Data");
-        clearOverlay.setToolTipText("Clear Log Data Overlay Highlights");
-        colorCells.setToolTipText("Color Table Cells");
-        refreshCompare.setToolTipText("Refresh Table Compare");
+        incrementFine.setToolTipText(rb.getString("INCFTT"));
+        decrementFine.setToolTipText(rb.getString("DECFTT"));
+        incrementCoarse.setToolTipText(rb.getString("INCCTT"));
+        decrementCoarse.setToolTipText(rb.getString("DECCTT"));
+        enable3d.setToolTipText(rb.getString("RENDERTT"));
+        setValue.setToolTipText(rb.getString("SETABSTT"));
+        setValueText.setToolTipText(rb.getString("SETABSTT"));
+        incrementByFine.setToolTipText(rb.getString("FINEVALUETT"));
+        incrementByCoarse.setToolTipText(rb.getString("COURSEVALUETT"));
+        multiply.setToolTipText(rb.getString("MULTVALUETT"));
+        overlayLog.setToolTipText(rb.getString("OVERLAYLOGTT"));
+        clearOverlay.setToolTipText(rb.getString("CLEAROVERLAYTT"));
+        colorCells.setToolTipText(rb.getString("CTCTT"));
+        refreshCompare.setToolTipText(rb.getString("RTCTT"));
 
         incrementFine.addMouseListener(this);
         decrementFine.addMouseListener(this);
