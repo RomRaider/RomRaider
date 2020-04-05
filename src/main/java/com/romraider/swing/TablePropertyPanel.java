@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@ package com.romraider.swing;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -33,10 +34,13 @@ import com.romraider.Settings;
 import com.romraider.maps.Scale;
 import com.romraider.maps.Table;
 import com.romraider.maps.TableSwitch;
+import com.romraider.util.ResourceUtil;
 
 public class TablePropertyPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = -5817685772039277602L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            TablePropertyPanel.class.getName());
 
     public TablePropertyPanel(Table table) {
     initComponents();
@@ -89,15 +93,15 @@ public class TablePropertyPanel extends javax.swing.JPanel {
     description.setText(table.getDescription());
 
     if (table.getUserLevel() == 1) {
-        userLevel.setText("Beginner");
+        userLevel.setText(rb.getString("LVL1"));
     } else if (table.getUserLevel() == 2) {
-        userLevel.setText("Intermediate");
+        userLevel.setText(rb.getString("LVL2"));
     } else if (table.getUserLevel() == 3) {
-        userLevel.setText("Advanced");
+        userLevel.setText(rb.getString("LVL3"));
     } else if (table.getUserLevel() == 4) {
-        userLevel.setText("All");
+        userLevel.setText(rb.getString("LVL4"));
     } else if (table.getUserLevel() == 5) {
-        userLevel.setText("Debug");
+        userLevel.setText(rb.getString("LVL5"));
     }
 
     logIDscrollPane.setViewportView(populateLogParamTable(table.getLogParamString()));
@@ -128,19 +132,20 @@ public class TablePropertyPanel extends javax.swing.JPanel {
         setAutoscrolls(true);
         setFont(new java.awt.Font("Tahoma", 0, 12));
         setInheritsPopupMenu(true);
-        lblTable.setText("Table:");
+        lblTable.setText(rb.getString("TABLE"));
         lblTable.setFocusable(false);
 
         tableName.setText("Tablename (3D)");
         tableName.setFocusable(false);
 
-        lblCategory.setText("Category:");
+        lblCategory.setText(rb.getString("CATEGORY"));
         lblCategory.setFocusable(false);
 
         category.setText("Category");
         category.setFocusable(false);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Conversions")));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createTitledBorder(rb.getString("CONV"))));
 
         GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1Layout.setHorizontalGroup(
@@ -154,14 +159,15 @@ public class TablePropertyPanel extends javax.swing.JPanel {
 
         jPanel1.setLayout(jPanel1Layout);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Storage"));
-        lblStorageAddress.setText("Storage Address:");
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                rb.getString("STORAGE")));
+        lblStorageAddress.setText(rb.getString("STORAGEADDR"));
         lblStorageAddress.setFocusable(false);
 
-        lblStorageSize.setText("Data Type:");
+        lblStorageSize.setText(rb.getString("DATATYPE"));
         lblStorageSize.setFocusable(false);
 
-        lblEndian.setText("Endian:");
+        lblEndian.setText(rb.getString("ENDIAN"));
         lblEndian.setFocusable(false);
 
         endian.setText("little");
@@ -207,7 +213,8 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                         .addContainerGap(37, Short.MAX_VALUE))
                 );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Description"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                rb.getString("DESC")));
         jScrollPane1.setBorder(null);
         description.setBackground(new java.awt.Color(236, 233, 216));
         description.setColumns(20);
@@ -235,11 +242,11 @@ public class TablePropertyPanel extends javax.swing.JPanel {
                         .addContainerGap())
                 );
 
-        jLabel5.setText("User Level:");
+        jLabel5.setText(rb.getString("USERLVL"));
 
         userLevel.setText("Beginner");
 
-        lblLogId = new JLabel("Log Param:");
+        lblLogId = new JLabel(rb.getString("LOGPARAM"));
 
         GroupLayout layout = new GroupLayout(this);
         layout.setHorizontalGroup(
