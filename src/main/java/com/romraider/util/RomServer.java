@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import java.net.Socket;
 public final class RomServer {
     private static final Logger LOGGER = getLogger(RomServer.class);
     private static final String HOST = "localhost";
-    private static final int PORT = 50001;
+    private static final int PORT = 65329;
 
     public static boolean isRunning() {
         try {
