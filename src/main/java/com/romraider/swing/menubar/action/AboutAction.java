@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2019 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,10 @@ public final class AboutAction extends AbstractAction {
                 Version.VERSION,
                 Version.BUILDNUMBER,
                 Version.SUPPORT_URL,
-                logger.getDefVersion());
+                logger.getDefVersion(),
+                System.getProperty("java.vendor"),
+                System.getProperty("java.runtime.version"),
+                System.getProperty("os.arch"));
         final String title = MessageFormat.format(
                 rb.getString("ABOUT"), Version.PRODUCT_NAME);
         showMessageDialog(logger, message, title,
