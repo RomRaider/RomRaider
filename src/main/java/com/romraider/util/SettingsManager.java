@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2015 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ResourceBundle;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -37,6 +38,8 @@ import com.romraider.xml.DOMSettingsUnmarshaller;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 
 public class SettingsManager {
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            SettingsManager.class.getName());
     private static final String SETTINGS_FILE = "/settings.xml";
     private static final String USER_HOME =
             System.getProperty("user.home") + "/.RomRaider";
@@ -74,8 +77,8 @@ public class SettingsManager {
             loadedSettings = domUms.unmarshallSettings(doc.getDocumentElement());
         } catch (FileNotFoundException e) {
             showMessageDialog(null,
-                    "Settings file not found.\nUsing default settings.",
-                    "Error Loading Settings", INFORMATION_MESSAGE);
+                    rb.getString("FNF"),
+                    rb.getString("ERROR"), INFORMATION_MESSAGE);
             loadedSettings = new Settings();
         } catch (Exception e) {
             throw new RuntimeException(e);
