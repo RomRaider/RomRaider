@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,14 +24,19 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ResourceBundle;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
+import com.romraider.util.ResourceUtil;
+
 public class JProgressPane extends JPanel implements PropertyChangeListener{
 
     private static final long serialVersionUID = -6827936662738014543L;
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(
+            JProgressPane.class.getName());
     JLabel label = new JLabel();
     JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL, 0, 100);
     String status = "ready";
@@ -42,7 +47,7 @@ public class JProgressPane extends JPanel implements PropertyChangeListener{
         this.setPreferredSize(new Dimension(500, 18));
         this.setLayout(new BorderLayout(1, 2));
         label.setHorizontalAlignment(JLabel.CENTER);
-        label.setText(" Ready...");
+        label.setText(rb.getString("READY"));
         label.setFont(new Font("Tahoma", Font.PLAIN, 11));
         label.setHorizontalAlignment(JLabel.LEFT);
         progressBar.setMinimumSize(new Dimension(200, 50));
