@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2018 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ public class DS2TableAxisQueryParameterSet {
             //no change
         }
         //MS42 32kB - partial
-        else if (tableAddrBase > 0x800 && tableAddrBase < 0x900) {
+        else if (tableAddrBase > 0x800 && tableAddrBase < 0x930) {
             tableAddrBase += 0x48000;
         }
         //MS43 512kB - full
