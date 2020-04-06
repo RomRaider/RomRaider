@@ -1,4 +1,4 @@
-                - RomRaider 0.5.9 RC3 -
+                - RomRaider 0.6.0 APR6 2020 -
             Open-Source ECU Tuning -- www.romraider.com
 
 
@@ -33,13 +33,13 @@ RomRaider is still in beta status and changing frequently,
 documentation may be incomplete or out of date.
 
 --------------------------------------------
-- 0.5.9 RC3 Notes (09/28/2016) -
+- 0.6.0 APR6 2020 Notes (04/06/2020) -
 --------------------------------------------
-This is the latest release of the RomRaider from the GitHub repo:
+This is the latest release of RomRaider from the GitHub repo:
 https://github.com/RomRaider/RomRaider
 
 --------------------------------------
-- 0.5.9 RC3 Known Issues -
+- 0.6.0 APR6 2020 Known Issues -
 --------------------------------------
 - Logger
   - Gauge min/max/step limits incomplete in logger.xml
@@ -54,6 +54,34 @@ Status of these items and more can be viewed at:
 --------------
 - Change Log -
 --------------
+
+0.6.0 APR6 2020 (04/06/2020)
+----------------------------------
+
+RomRaider GUI is now ready for translation.
+Visit https://github.com/RomRaider/RomRaider/wiki/GUI-Translation to see the
+guide. 
+  - All CUI text moved to resource bundle property files under i18n
+
+- Editor
+  - Change RomServer TCP port, issue #88
+  - (GTO2013) Save Fine Course Values when Switching Tables, issue #61
+  - (GTO2013) Implemented Maskable and Switchable 2D Tables
+  - (stirkac) Added bitwise map editing
+  - Expand MS42 address range, fix for issue RomRaider#90
+  - Implement overlay enhancement to highlight current cell, issue #71
+  - Added support for values encoded in SH-2A MOVI20 instruction
+  
+- Logger
+  - Added Nissan logging support via J2534 cable using K-line
+  - Update Dyno tab to support different Throttle parameters
+  - Create SSM Learning table properties file
+  - Add the ability to read table names from properties file
+  - Enable a warning panel when a 64-bit JRE is detected
+  - Split SSM LTV queries into two sets to fix issue #72
+  - Change LM2 MTS plugin to poll mode by default
+  - Fix Learning Tables View showing incorrect table axis values: issue#67
+  
 
 0.5.9 RC3 (09/28/2016)
 ----------------------------------
