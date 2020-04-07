@@ -1,5 +1,5 @@
                 - RomRaider 0.6.0 APR6 2020 -
-            Open-Source ECU Tuning -- www.romraider.com
+      Open-Source ECU Tuning and Logging -- www.romraider.com
 
 
 PLEASE MAKE SURE TO READ RELEASE _NOTES.TXT_ EACH TIME YOU DOWNLOAD
@@ -61,7 +61,7 @@ Status of these items and more can be viewed at:
 RomRaider GUI is now ready for translation.
 Visit https://github.com/RomRaider/RomRaider/wiki/GUI-Translation to see the
 guide. 
-  - All CUI text moved to resource bundle property files under i18n
+  - All GUI text moved to resource bundle property files under i18n
 
 - Editor
   - Change RomServer TCP port, issue #88
