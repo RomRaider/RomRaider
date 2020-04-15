@@ -58,26 +58,28 @@ public class J2534DllLocator {
         HKEY hklm = HKEY_LOCAL_MACHINE;
         String passThru = "SOFTWARE\\PassThruSupport.04.04";
         HKEYByReference passThruHandle = getHandle(hklm, passThru);
- 
-        List<String> vendors = getKeys(passThruHandle.getValue());
-        for (String vendor : vendors) {
-            HKEYByReference vendorKey =
-                    getHandle(passThruHandle.getValue(), vendor);
-            int supported = getDWord(vendorKey.getValue(), protocol);
-            if (supported == 0 ) continue;
-            String library = getSZ(vendorKey.getValue(), FUNCTIONLIBRARY);
-            LOGGER.debug(String.format("Found J2534 Vendor:%s | Library:%s",
-                    vendor, library));
-            if (ParamChecker.isNullOrEmpty(library)) continue;
-            libraries.add(new J2534Library(vendor, library));
-            advapi32.RegCloseKey(vendorKey.getValue());
+        
+        if(passThruHandle != null) {
+	        List<String> vendors = getKeys(passThruHandle.getValue());
+	        for (String vendor : vendors) {
+	            HKEYByReference vendorKey =
+	                    getHandle(passThruHandle.getValue(), vendor);
+	            int supported = getDWord(vendorKey.getValue(), protocol);
+	            if (supported == 0 ) continue;
+	            String library = getSZ(vendorKey.getValue(), FUNCTIONLIBRARY);
+	            LOGGER.debug(String.format("Found J2534 Vendor:%s | Library:%s",
+	                    vendor, library));
+	            if (ParamChecker.isNullOrEmpty(library)) continue;
+	            libraries.add(new J2534Library(vendor, library));
+	            advapi32.RegCloseKey(vendorKey.getValue());
+	        }
+	        advapi32.RegCloseKey(passThruHandle.getValue());
         }
-        advapi32.RegCloseKey(passThruHandle.getValue());
+        
         return libraries;
     }
  
-    private static HKEYByReference getHandle(HKEY hKey, String lpSubKey)
-            throws Exception {
+    private static HKEYByReference getHandle(HKEY hKey, String lpSubKey){
 
         HKEYByReference phkResult = new HKEYByReference();
         int ret = advapi32.RegOpenKeyEx(
@@ -88,7 +90,8 @@ public class J2534DllLocator {
             phkResult);
     
         if(ret != ERROR_SUCCESS) {
-            handleError("RegOpenKeyEx", ret);
+            //handleError("RegOpenKeyEx", ret);
+        	return null;
         }
         return phkResult;
     }
