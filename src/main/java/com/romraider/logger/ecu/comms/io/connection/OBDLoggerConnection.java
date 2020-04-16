@@ -49,10 +49,8 @@ public final class OBDLoggerConnection implements LoggerConnection {
     public OBDLoggerConnection(ConnectionManager manager) {
         checkNotNull(manager, "manager");
         this.manager = manager;
-        final Settings settings = SettingsManager.getSettings();
-        this.protocol = (LoggerProtocolOBD) ProtocolFactory.getProtocol(
-                settings.getLoggerProtocol(),
-                settings.getTransportProtocol());
+        final Settings settings = SettingsManager.getSettings();        
+        this.protocol = (LoggerProtocolOBD) ProtocolFactory.getProtocol(settings.getLoggerProtocol(), settings.getTransportProtocol());
     }
 
     @Override

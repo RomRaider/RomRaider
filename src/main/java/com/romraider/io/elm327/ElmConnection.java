@@ -17,17 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package com.romraider.io.serial.connection;
+package com.romraider.io.elm327;
 
 import com.romraider.io.connection.ConnectionProperties;
+import com.romraider.io.serial.connection.SerialConnectionImpl;
 import com.romraider.logger.ecu.exception.NotConnectedException;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
 import com.romraider.logger.ecu.exception.UnsupportedPortTypeException;
-import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
-import static com.romraider.util.ThreadUtil.sleep;
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;
 import static gnu.io.CommPortIdentifier.getPortIdentifier;
@@ -35,128 +34,114 @@ import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import static gnu.io.SerialPort.FLOWCONTROL_NONE;
-import static java.lang.System.currentTimeMillis;
 import gnu.io.UnsupportedCommOperationException;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
-public class SerialConnectionImpl implements SerialConnection {
+
+public final class ElmConnection {
     private static final Logger LOGGER = getLogger(SerialConnectionImpl.class);
-    private static final String RXTX_READ_LINE_HACK = "Underlying input stream returned zero bytes";
     private final SerialPort serialPort;
-    private final BufferedOutputStream os;
+    private final PrintWriter os;
     private final BufferedInputStream is;
-    private final BufferedReader reader;
 
-    public SerialConnectionImpl(String portName, ConnectionProperties connectionProperties) {
+    public ElmConnection(String portName, ConnectionProperties connectionProperties) {
         checkNotNullOrEmpty(portName, "portName");
         checkNotNull(connectionProperties, "connectionProperties");
         try {
+        	connectionProperties.setBaudRate(38400);
+        	
             serialPort = connect(portName, connectionProperties);
-            os = new BufferedOutputStream(serialPort.getOutputStream());
-            is = new BufferedInputStream(serialPort.getInputStream());
-            reader = new BufferedReader(new InputStreamReader(is));
-            LOGGER.info("Serial connection initialised: " + connectionProperties);
+            os = new PrintWriter(serialPort.getOutputStream());
+            is = new BufferedInputStream (serialPort.getInputStream());
+                   
+            LOGGER.info("ELM connection initialised: " + connectionProperties);
         } catch (Exception e) {
             close();
             throw new NotConnectedException(e);
         }
     }
-
-    public void write(byte[] bytes) {
+       
+    public void write(String command) {
         try {
-            os.write(bytes, 0, bytes.length);
+            os.println(command);
             os.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new SerialCommunicationException(e);
         }
     }
 
     public int available() {
         try {
-            return is.available();
-        } catch (IOException e) {
-            throw new SerialCommunicationException(e);
-        }
+			return is.available();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return 0;
     }
 
-    public int read() {
+    public String read() {
         try {
-            waitForBytes(1);
-            return is.read();
-        } catch (IOException e) {
-            throw new SerialCommunicationException(e);
-        }
+			return "" + (char)is.read();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        return "";
     }
 
-    public void read(byte[] bytes) {
+    //Reads up to numChars
+    public String read(int numChars) {
+        StringBuilder response = new StringBuilder();
+
         try {
-            waitForBytes(bytes.length);
-            is.read(bytes, 0, bytes.length);
-        } catch (IOException e) {
+            for(int i = 0; i < numChars && available() > 0; i++) {
+                response.append((char)is.read());
+            }           
+
+        } catch (Exception e) {
             throw new SerialCommunicationException(e);
         }
+        
+        return response.toString();
     }
 
-    public String readLine() {
-        try {
-            waitForBytes(1);
-            return reader.readLine();
-        } catch (IOException e) {
-            /*
-            This is a dodgy hack to workaround RXTX seemingly not respecting the request
-            to disable to the receive timeout. ie. gnu.io.SerialPort.disableReceiveTimeout()
-             */
-            if (RXTX_READ_LINE_HACK.equalsIgnoreCase(e.getMessage())) return null;
-            throw new SerialCommunicationException(e);
-        }
-    }
-
-    public byte[] readAvailable() {
-        byte[] response = new byte[available()];
-        read(response);
+    //Reads everything that is available
+    public String readAvailable() {
+        String response = "";
+        response = read(available());
         return response;
     }
 
     public void readStaleData() {
         if (available() <= 0) return;
-        final long end = currentTimeMillis() + 100L;
-        do {
-            byte[] staleBytes = readAvailable();
-            LOGGER.debug("Stale data read: " + asHex(staleBytes));
-            sleep(2);
-        } while (  (available() > 0)
-                && (currentTimeMillis() <= end));
+        
+    	while(available() > 0)
+			try {
+				is.read();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
     }
 
     public void close() {
         if (os != null) {
             try {
                 os.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOGGER.error("Error closing output stream", e);
-            }
-        }
-        if (reader != null) {
-            try {
-                //readStaleData();
-                reader.close();
-            } catch (IOException e) {
-                LOGGER.error("Error closing input stream reader", e);
             }
         }
         if (is != null) {
             try {
-                //readStaleData();
-                is.close();
-            } catch (IOException e) {
-                LOGGER.error("Error closing input stream", e);
-            }
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
         if (serialPort != null) {
             try {
@@ -179,9 +164,10 @@ public class SerialConnectionImpl implements SerialConnection {
     private SerialPort connect(String portName, ConnectionProperties connectionProperties) {
         CommPortIdentifier portIdentifier = resolvePortIdentifier(portName);
         SerialPort serialPort = openPort(portIdentifier, connectionProperties.getConnectTimeout());
-        initSerialPort(serialPort, connectionProperties.getBaudRate(), connectionProperties.getDataBits(), connectionProperties.getStopBits(),
-                connectionProperties.getParity());
-        LOGGER.info("Connected to: " + portName);
+        
+        //Baudrate is fixed
+        initSerialPort(serialPort, connectionProperties.getBaudRate(), connectionProperties.getDataBits(), connectionProperties.getStopBits(),connectionProperties.getParity());
+        LOGGER.info("Connected to: " + portName);      
         return serialPort;
     }
 
@@ -217,9 +203,5 @@ public class SerialConnectionImpl implements SerialConnection {
         } catch (NoSuchPortException e) {
             throw new PortNotFoundException("Unable to resolve port: " + portName);
         }
-    }
-
-    private void waitForBytes(int numBytes) {
-        while (available() < numBytes) sleep(2L);
     }
 }

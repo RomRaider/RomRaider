@@ -20,7 +20,7 @@
 package com.romraider.io.connection;
 
 public final class SerialConnectionProperties implements ConnectionProperties {
-    private final int baudRate;
+    private int baudRate;
     private final int dataBits;
     private final int stopBits;
     private final int parity;
@@ -42,10 +42,11 @@ public final class SerialConnectionProperties implements ConnectionProperties {
         return baudRate;
     }
 
-    public void setBaudRate(int b) {
-
-    }
-
+	public void setBaudRate(int b) {
+		baudRate = b;
+		
+	}
+	
     public int getDataBits() {
         return dataBits;
     }
@@ -80,4 +81,6 @@ public final class SerialConnectionProperties implements ConnectionProperties {
         );
         return properties;
     }
+
+
 }
