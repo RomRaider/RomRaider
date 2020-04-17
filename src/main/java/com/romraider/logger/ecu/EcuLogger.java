@@ -1983,6 +1983,11 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         getSettings().setRefreshMode(refreshMode);
         refresher.setRefreshMode(refreshMode);
     }
+    
+	public void setElmEnabled(Boolean value) {
+		
+        getSettings().setElm327Enabled(value);
+	}
 
     private JProgressBar startbar() {
         startStatus = new JWindow();

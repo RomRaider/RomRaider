@@ -1347,8 +1347,8 @@ public final class DynoControlPanel extends JPanel {
 
     private JPanel buildMinTpsField() {
         final JPanel tpsPanel = new JPanel();
-        final JTextField minTpsField = new JFormattedTextField(
-                new DecimalFormat("#.##"));
+        final JTextField minTpsField = new JFormattedTextField(new DecimalFormat("#.##"));
+        minTpsField.setText("0");
         minTpsField.setToolTipText(applyProperty("TPS_SELECT_TT"));
         minTpsField.setColumns(6);
         setSelectAllFieldText(minTpsField);
@@ -1366,7 +1366,9 @@ public final class DynoControlPanel extends JPanel {
             }
         });
         minTpsField.setInputVerifier(new NumberVerifier("Threshold"));
-        minTpsField.setText(getSettings().getDynoThreshold());
+        String thres = getSettings().getDynoThreshold();    
+        minTpsField.setText(thres);
+
         tpsMin = parseDouble(minTpsField);
         tpsPanel.add(minTpsField);
 

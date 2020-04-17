@@ -24,6 +24,7 @@ import static com.romraider.util.ParamChecker.checkNotNull;
 import static org.apache.log4j.Logger.getLogger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.definition.Module;
+import com.romraider.logger.ecu.exception.SerialCommunicationException;
 
 public final class ELMOBDLoggerConnection implements LoggerConnection {
     private static final Logger LOGGER = getLogger(OBDLoggerConnection.class);
@@ -55,25 +57,48 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
 
     @Override
     public void ecuReset(Module module, int resetCode) {
+    	/*
         byte[] request = protocol.constructEcuResetRequest(module, resetCode);
-        LOGGER.debug(String.format("%s Reset Request  ---> %s",
-                module, asHex(request)));
+        LOGGER.debug(String.format("%s Reset Request  ---> %s", module, asHex(request)));
         byte[] response = manager.send(request);
-        byte[] processedResponse = protocol.preprocessResponse(
-                request, response, new PollingStateImpl());
-        LOGGER.debug(String.format("%s Reset Response <--- %s",
-                module, asHex(processedResponse)));
-        protocol.processEcuResetResponse(processedResponse);
+        byte[] processedResponse = protocol.preprocessResponse( request, response, new PollingStateImpl());
+        LOGGER.debug(String.format("%s Reset Response <--- %s",module, asHex(processedResponse)));
+        protocol.processEcuResetResponse(processedResponse);*/
     }
 
     @Override
     public void ecuInit(EcuInitCallback callback, Module module) {
-    	manager.resetAndInit(settings.getTransportProtocol(), ""+(int)module.getAddress()[0], ""+(int)module.getTester()[0]);
-    	//manager.getSupportedPids(processedResponse);//protocol.preprocessResponse(request, tmp, new PollingStateImpl());
+    	String moduleStr =  concatBytes(module.getAddress());   
+    	String testerStr =  concatBytes(module.getTester());   
+    	
+    	boolean result = manager.resetAndInit(settings.getTransportProtocol(), moduleStr, testerStr);
+    	
+    	if(!result) {
+    		throw new SerialCommunicationException("ELM327 was not found!");
+    	}
+    	
     }
+    
+    private String concatBytes(final byte[] bytes) {
+        final StringBuilder sb = new StringBuilder();
+        boolean foundData = false;
+        
+        for (byte b : bytes) {
+        	if(b!= 0) foundData = true;
+        	
+        	if(foundData)
+        		sb.append(String.format("%02X", (int)b & 0xFF)); //Unsigned
+        }
+        
+        String finalS = sb.toString();
+        if(finalS.startsWith("0")) finalS = finalS.replaceFirst("0", "");
+        
+        return finalS;
+    }
+    
 
     @Override
-    public final void sendAddressReads(Collection<EcuQuery> queries,Module module, PollingState pollState) {
+    public final void sendAddressReads(Collection<EcuQuery> queries, Module module, PollingState pollState) {
 
         final int obdQueryListLength = queries.size();
         for (int i = 0; i < obdQueryListLength; i++) {
@@ -82,28 +107,30 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
             obdQueries.add(query);
    	
             final byte[] request = protocol.constructReadAddressRequest(module, obdQueries);
-                                   
-            String result = manager.sendAndWaitForNewLine(String.format("%02X %02X", request[4], request[5]), 2500);
-            
-            if(result.length() > 4) {           
-            	
-            	result = result.substring(0, result.length() - 3); //remove \r\r>
-	            String[] resultSplit = result.split(" ");
-	            
-	            byte[] response = new byte[resultSplit.length - 4];
-	            
-	            //Skip header (4 Bytes)
-	            for(int j = 4; j < resultSplit.length; j++) {
-	            	try {
-	            		response[j - 4] = (byte) Integer.parseInt(resultSplit[j], 16);
-	            	}
-	            	catch(NumberFormatException e) {
-	            		throw e;
-	            	}
-	            }
-	            	            
-	            query.setResponse(response);           	
-            }
+            String reqStr = String.format("%02X %02X", (int)request[4], (int)request[5]);
+            String result = manager.sendAndWaitForNewLine(reqStr, 2500);
+           	result = result.trim();
+           	
+           	String[] resultSplit = result.split("\r");
+           	String moduleStr = concatBytes(module.getAddress());         	
+           	         	
+           	for(String s : resultSplit) {
+           		
+           		if(s.startsWith(moduleStr)) {
+		            String[] bytesSplit = s.split(" ");
+		            
+		            //Skip header (3 Bytes plus Request PID)
+		            if(bytesSplit.length > 4) {           	            	            
+			            byte[] response = new byte[bytesSplit.length - 4];
+			         
+			            for(int j = 4; j < bytesSplit.length; j++) {
+			            		response[j - 4] = (byte) Integer.parseInt(bytesSplit[j], 16);	
+			            }
+			            	            
+			            query.setResponse(response);           	
+		            }
+           		}
+           	}
             
             obdQueries.clear();
         }

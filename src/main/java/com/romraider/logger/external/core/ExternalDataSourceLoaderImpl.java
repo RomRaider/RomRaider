@@ -21,6 +21,8 @@ package com.romraider.logger.external.core;
 
 import com.romraider.logger.ecu.definition.plugin.PluginFilenameFilter;
 import com.romraider.logger.ecu.exception.ConfigurationException;
+import com.romraider.logger.ecu.exception.PluginNotInstalledException;
+
 import static com.romraider.util.ParamChecker.isNullOrEmpty;
 import org.apache.log4j.Logger;
 import java.io.File;
@@ -54,7 +56,11 @@ public final class ExternalDataSourceLoaderImpl implements ExternalDataSourceLoa
                                     externalDataSources.add(managedDataSource);
                                     LOGGER.info("Plugin loaded: " + dataSource.getName() + " v" + dataSource.getVersion());
                                 }
-                            } catch (Throwable t) {
+                            }
+                            catch (PluginNotInstalledException e) {
+                                LOGGER.warn(e.getMessage());
+                            }
+                            catch (Throwable t) {
                                 LOGGER.error("Error loading external datasource: " + datasourceClassName + ", specified in: "
                                         + pluginPropertyFile.getAbsolutePath(), t);
                             }

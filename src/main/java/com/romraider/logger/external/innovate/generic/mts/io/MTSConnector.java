@@ -74,15 +74,9 @@ public final class MTSConnector {
         mts.dispose();
     }
 
-    private void createMts() {
-      // create mts interface
-        try {
-              mts = createMTS();
-              mts.disconnect();
-        }
-        catch (com4j.ExecutionException e) {
-            LOGGER.error("COM4J error creating MTS interface: " + e);
-        }
+    private void createMts() throws com4j.ComException{
+      mts = createMTS();
+      mts.disconnect();
     }
 
     private void setMtsPorts() {

@@ -151,8 +151,7 @@ public final class QueryManagerImpl implements QueryManager {
             stop = false;
             while (!stop) {
                 notifyConnecting();
-                if (!settings.isLogExternalsOnly() &&
-                        doEcuInit(settings.getDestinationTarget())) {
+                if (!settings.isLogExternalsOnly() && doEcuInit(settings.getDestinationTarget())) {
 
                     notifyReading();
                     runLogger(settings.getDestinationTarget());
@@ -189,8 +188,7 @@ public final class QueryManagerImpl implements QueryManager {
                 connection.close();
             }
         } catch (Exception e) {
-            messageListener.reportMessage(MessageFormat.format(
-                    rb.getString("INITFAIL"), module.getName()));
+            messageListener.reportMessage(MessageFormat.format(rb.getString("INITFAIL"), module.getName()));
             logError(e);
             return false;
         }

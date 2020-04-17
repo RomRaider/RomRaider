@@ -61,6 +61,7 @@ import com.romraider.Settings;
 import com.romraider.logger.ecu.EcuLogger;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ComPortAutoRefreshAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.DisconnectAction;
+import com.romraider.logger.ecu.ui.swing.menubar.action.ElmEnabledAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.ExitAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.FastPollModeAction;
 import com.romraider.logger.ecu.ui.swing.menubar.action.GlobalAdjustmentAction;
@@ -92,8 +93,7 @@ import com.romraider.util.SettingsManager;
 public class EcuLoggerMenuBar extends JMenuBar {
 
     private static final long serialVersionUID = 7081586516953740186L;
-    private static final ResourceBundle rb = new ResourceUtil().getBundle(
-            EcuLoggerMenuBar.class.getName());
+    private static final ResourceBundle rb = new ResourceUtil().getBundle(EcuLoggerMenuBar.class.getName());
     final Settings settings = SettingsManager.getSettings();
 
     public EcuLoggerMenuBar(EcuLogger logger, List<ExternalDataSource> externalDataSources) {
@@ -124,6 +124,11 @@ public class EcuLoggerMenuBar extends JMenuBar {
         RadioButtonMenuItem autoRefresh = new RadioButtonMenuItem(rb.getString("COMREFRESH"), VK_E, getKeyStroke(VK_E, CTRL_MASK), new ComPortAutoRefreshAction(logger), logger.getSettings().getRefreshMode());
         autoRefresh.setToolTipText(rb.getString("COMREFRESHTT"));
         settingsMenu.add(autoRefresh);
+        RadioButtonMenuItem elmEnabled = new RadioButtonMenuItem(rb.getString("ELM327ENABLED"), VK_C, getKeyStroke(VK_C, CTRL_MASK), new ElmEnabledAction(logger), logger.getSettings().getElm327Enabled());
+        elmEnabled.setToolTipText(rb.getString("ELM327ENABLEDTT"));
+        logger.getComponentList().put("elmEnabled", elmEnabled);
+        settingsMenu.add(elmEnabled);
+        
         RadioButtonMenuItem fastPoll = new RadioButtonMenuItem(rb.getString("FASTPOLL"), VK_M, getKeyStroke(VK_M, CTRL_MASK), new FastPollModeAction(logger), logger.getSettings().isFastPoll());
         fastPoll.setToolTipText(rb.getString("FASTPOLLTT"));
         fastPoll.setEnabled(false);

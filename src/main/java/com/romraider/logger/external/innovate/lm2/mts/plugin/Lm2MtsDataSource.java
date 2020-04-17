@@ -36,11 +36,14 @@ import javax.swing.Action;
 import org.apache.log4j.Logger;
 
 import com.romraider.logger.ecu.EcuLogger;
+import com.romraider.logger.ecu.exception.PluginNotInstalledException;
 import com.romraider.logger.external.core.ExternalDataItem;
 import com.romraider.logger.external.core.ExternalDataSource;
 //import com.romraider.logger.external.innovate.generic.mts.io.MTSSensor;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSConnector;
 import com.romraider.logger.external.innovate.generic.mts.io.MTSRunner;
+
+import sun.misc.ExtensionInstallationException;
 
 
 public final class Lm2MtsDataSource implements ExternalDataSource {
@@ -59,18 +62,21 @@ public final class Lm2MtsDataSource implements ExternalDataSource {
      * one stream can be processed.
      */
     {
-        final MTSConnector connector = new MTSConnector();
-        int[] ports = connector.getMtsPorts();
-        if (ports != null) {
-            for (int i = 0; i < ports.length; i++) {
-                connector.usePort(i);
-                dataItems = connector.getSensors();
-            }
-        }
-        else {
-            throw new IllegalStateException("Innovate LogWorks MTS control does not appear to be installed on this computer");
-        }
-        connector.dispose();
+    	try {
+	        final MTSConnector connector = new MTSConnector();
+	        int[] ports = connector.getMtsPorts();
+	        if (ports != null) {
+	            for (int i = 0; i < ports.length; i++) {
+	                connector.usePort(i);
+	                dataItems = connector.getSensors();
+	            }
+	        }
+	        
+	        connector.dispose();
+    	}
+    	catch(com4j.ExecutionException e) {
+    		throw new PluginNotInstalledException("Innovate LogWorks MTS control does not appear to be installed on this computer");
+    	}
     }
 
     public String getId() {

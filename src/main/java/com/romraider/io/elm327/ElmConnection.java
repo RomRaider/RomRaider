@@ -48,22 +48,27 @@ public final class ElmConnection {
     private final PrintWriter os;
     private final BufferedInputStream is;
 
-    public ElmConnection(String portName, ConnectionProperties connectionProperties) {
+    public ElmConnection(String portName) {
         checkNotNullOrEmpty(portName, "portName");
-        checkNotNull(connectionProperties, "connectionProperties");
-        try {
-        	connectionProperties.setBaudRate(38400);
-        	
-            serialPort = connect(portName, connectionProperties);
+
+        try {      	
+            serialPort = connect(portName);
             os = new PrintWriter(serialPort.getOutputStream());
             is = new BufferedInputStream (serialPort.getInputStream());
-                   
-            LOGGER.info("ELM connection initialised: " + connectionProperties);
         } catch (Exception e) {
             close();
             throw new NotConnectedException(e);
         }
     }
+    
+    public void flush() {
+        try {
+            os.flush();
+        } catch (Exception e) {
+            throw new SerialCommunicationException(e);
+        }
+    }
+
        
     public void write(String command) {
         try {
@@ -161,12 +166,11 @@ public final class ElmConnection {
         }
     }
 
-    private SerialPort connect(String portName, ConnectionProperties connectionProperties) {
+    private SerialPort connect(String portName) {
         CommPortIdentifier portIdentifier = resolvePortIdentifier(portName);
-        SerialPort serialPort = openPort(portIdentifier, connectionProperties.getConnectTimeout());
+        SerialPort serialPort = openPort(portIdentifier, 3000);
         
-        //Baudrate is fixed
-        initSerialPort(serialPort, connectionProperties.getBaudRate(), connectionProperties.getDataBits(), connectionProperties.getStopBits(),connectionProperties.getParity());
+        initSerialPort(serialPort, 38400, 8, 1 ,0);
         LOGGER.info("Connected to: " + portName);      
         return serialPort;
     }

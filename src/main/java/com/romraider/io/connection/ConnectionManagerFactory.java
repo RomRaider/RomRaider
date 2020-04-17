@@ -147,18 +147,15 @@ public final class ConnectionManagerFactory {
         }
         catch (Throwable t) {
             settings.setJ2534Device(null);
-            LOGGER.info(String.format("%s, trying ELM connection...", t.getMessage()));
-            return new ElmConnectionManager(portName, connectionProperties);	
-        }
- 
-    /*
-    try {
-        return new SerialConnectionManager(portName, connectionProperties);	
-    }
-    catch(Throwable t) {
-        LOGGER.info(String.format("%s, trying serial connection...", t.getMessage()));
-        return new SerialConnectionManager(portName, connectionProperties);	
-    }*/
-        
+            
+            if(settings.isObdProtocol() && SettingsManager.getSettings().getElm327Enabled()) {           
+	            LOGGER.info(String.format("%s, trying to connect to ELM327...", t.getMessage()));
+	            return ElmConnectionManager.getInstance(portName, connectionProperties);	
+            }
+            else {
+              LOGGER.info(String.format("%s, trying serial connection...", t.getMessage()));
+              return new SerialConnectionManager(portName, connectionProperties);	
+            }
+        }   
     }
 }
