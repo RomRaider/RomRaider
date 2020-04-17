@@ -250,7 +250,8 @@ public final class SelectProtocolAction extends AbstractAction {
                     logger.getSettings().setTransportProtocol(((Transport) o).getId());
 
                 }
-                            	
+                
+                logger.updateElmSelectable();                          	
                 logger.loadLoggerParams();
                 closeDialog();
             }

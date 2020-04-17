@@ -126,7 +126,10 @@ public class EcuLoggerMenuBar extends JMenuBar {
         settingsMenu.add(autoRefresh);
         RadioButtonMenuItem elmEnabled = new RadioButtonMenuItem(rb.getString("ELM327ENABLED"), VK_C, getKeyStroke(VK_C, CTRL_MASK), new ElmEnabledAction(logger), logger.getSettings().getElm327Enabled());
         elmEnabled.setToolTipText(rb.getString("ELM327ENABLEDTT"));
+        elmEnabled.setSelected(false);
         logger.getComponentList().put("elmEnabled", elmEnabled);
+        logger.updateElmSelectable();
+
         settingsMenu.add(elmEnabled);
         
         RadioButtonMenuItem fastPoll = new RadioButtonMenuItem(rb.getString("FASTPOLL"), VK_M, getKeyStroke(VK_M, CTRL_MASK), new FastPollModeAction(logger), logger.getSettings().isFastPoll());

@@ -147,7 +147,9 @@ public final class ElmConnectionManager implements ConnectionManager {
          
             String result = "";
               
-            clearLine();          
+            clearLine(); //Clear input buffer
+            send("");	//Clear buffer of ELM incase there is some data
+            
             //Check if ELM is even there
             result = sendAndWaitForResponse("ATZ", 2500, 15);
 

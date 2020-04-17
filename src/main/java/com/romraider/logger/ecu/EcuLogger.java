@@ -58,6 +58,7 @@ import static javax.swing.SwingConstants.BOTTOM;
 import static javax.swing.SwingConstants.RIGHT;
 import static javax.swing.SwingConstants.VERTICAL;
 import static javax.swing.SwingUtilities.invokeLater;
+import com.romraider.swing.menubar.RadioButtonMenuItem;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -186,11 +187,12 @@ import com.romraider.logger.external.core.ExternalDataSourceLoader;
 import com.romraider.logger.external.core.ExternalDataSourceLoaderImpl;
 import com.romraider.swing.AbstractFrame;
 import com.romraider.swing.SetFont;
-import com.romraider.swing.menubar.RadioButtonMenuItem;
 import com.romraider.util.FormatFilename;
 import com.romraider.util.JREChecker;
 import com.romraider.util.ResourceUtil;
 import com.romraider.util.SettingsManager;
+
+
 import com.romraider.util.ThreadUtil;
 
 /*
@@ -1603,6 +1605,17 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
         return loggerTransport;
     }
 
+	public void updateElmSelectable() {	
+		boolean value = getSettings().isObdProtocol();
+		RadioButtonMenuItem c = (RadioButtonMenuItem)getComponentList().get("elmEnabled");
+		c.setEnabled(value);	
+		
+		if(!value) {
+			c.setSelected(false);
+			getSettings().setElm327Enabled(false);
+		}
+	}
+    
     private Map<Transport, Collection<Module>> getTransportMap() {
         return protocolList.get(getSettings().getLoggerProtocol());
     }
@@ -2081,4 +2094,6 @@ public final class EcuLogger extends AbstractFrame implements MessageListener {
             ecuLogger.setVisible(true);
         }
     }
+
+
 }

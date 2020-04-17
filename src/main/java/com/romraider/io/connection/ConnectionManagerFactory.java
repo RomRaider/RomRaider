@@ -148,7 +148,7 @@ public final class ConnectionManagerFactory {
         catch (Throwable t) {
             settings.setJ2534Device(null);
             
-            if(settings.isObdProtocol() && SettingsManager.getSettings().getElm327Enabled()) {           
+            if(SettingsManager.getSettings().getElm327Enabled()) {           
 	            LOGGER.info(String.format("%s, trying to connect to ELM327...", t.getMessage()));
 	            return ElmConnectionManager.getInstance(portName, connectionProperties);	
             }
