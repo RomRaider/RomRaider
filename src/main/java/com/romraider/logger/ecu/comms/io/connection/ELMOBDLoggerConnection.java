@@ -19,16 +19,14 @@
 
 package com.romraider.logger.ecu.comms.io.connection;
 
-import static com.romraider.util.HexUtil.asHex;
 import static com.romraider.util.ParamChecker.checkNotNull;
+
 import static org.apache.log4j.Logger.getLogger;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 import com.romraider.Settings;
 import com.romraider.util.SettingsManager;
@@ -36,7 +34,6 @@ import com.romraider.io.elm327.ElmConnectionManager;
 import com.romraider.io.protocol.ProtocolFactory;
 import com.romraider.logger.ecu.comms.io.protocol.LoggerProtocolOBD;
 import com.romraider.logger.ecu.comms.manager.PollingState;
-import com.romraider.logger.ecu.comms.manager.PollingStateImpl;
 import com.romraider.logger.ecu.comms.query.EcuInitCallback;
 import com.romraider.logger.ecu.comms.query.EcuQuery;
 import com.romraider.logger.ecu.definition.Module;
@@ -126,7 +123,8 @@ public final class ELMOBDLoggerConnection implements LoggerConnection {
 			            for(int j = 4; j < bytesSplit.length; j++) {
 			            		response[j - 4] = (byte) Integer.parseInt(bytesSplit[j], 16);	
 			            }
-			            	            
+			            
+			            LOGGER.debug("Response for Module " + moduleStr +  " " + response);
 			            query.setResponse(response);           	
 		            }
            		}

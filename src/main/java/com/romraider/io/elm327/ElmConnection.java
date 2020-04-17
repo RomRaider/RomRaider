@@ -1,6 +1,6 @@
 /*
  * RomRaider Open-Source Tuning, Logging and Reflashing
- * Copyright (C) 2006-2012 RomRaider.com
+ * Copyright (C) 2006-2020 RomRaider.com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,11 @@
 
 package com.romraider.io.elm327;
 
-import com.romraider.io.connection.ConnectionProperties;
 import com.romraider.io.serial.connection.SerialConnectionImpl;
 import com.romraider.logger.ecu.exception.NotConnectedException;
 import com.romraider.logger.ecu.exception.PortNotFoundException;
 import com.romraider.logger.ecu.exception.SerialCommunicationException;
 import com.romraider.logger.ecu.exception.UnsupportedPortTypeException;
-import static com.romraider.util.ParamChecker.checkNotNull;
 import static com.romraider.util.ParamChecker.checkNotNullOrEmpty;
 import gnu.io.CommPortIdentifier;
 import static gnu.io.CommPortIdentifier.PORT_SERIAL;
